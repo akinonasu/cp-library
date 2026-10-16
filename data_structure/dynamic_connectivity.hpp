@@ -19,7 +19,7 @@ class DynamicConnectivity {
 	static constexpr bool aggregate = !std::is_void_v<S>;
 	struct Empty {};
 	using Value = std::conditional_t<aggregate, S, Empty>;
-	struct Node {
+	struct alignas(32) Node {
 		int ch[2] = {}, parent = 0, size = 0, key = 0, aux = 0;
 		std::uint8_t own = 0, flags = 0;
 	};
@@ -91,8 +91,34 @@ class DynamicConnectivity {
 		if (!t[x].parent) return;
 		while (t[x].parent) {
 			int p = t[x].parent, g = t[p].parent;
-			if (g) rotate((t[p].ch[0] == x) == (t[g].ch[0] == p) ? p : x);
-			rotate(x);
+			if (!g) { rotate(x); break; }
+			int gg = t[g].parent, d = t[p].ch[1] == x, side = t[g].ch[1] == p;
+			if (d == side) {
+				int a = t[p].ch[d ^ 1], b = t[x].ch[d ^ 1];
+				t[g].ch[d] = a;
+				if (a) t[a].parent = g;
+				t[p].ch[d] = b;
+				if (b) t[b].parent = p;
+				t[p].ch[d ^ 1] = g;
+				t[g].parent = p;
+				t[x].ch[d ^ 1] = p;
+				t[p].parent = x;
+				pull(g);
+				pull(p);
+			} else {
+				int a = t[x].ch[d], b = t[x].ch[d ^ 1];
+				t[p].ch[d] = b;
+				if (b) t[b].parent = p;
+				t[g].ch[side] = a;
+				if (a) t[a].parent = g;
+				t[x].ch[d] = g;
+				t[x].ch[d ^ 1] = p;
+				t[p].parent = t[g].parent = x;
+				pull(p);
+				pull(g);
+			}
+			t[x].parent = gg;
+			if (gg) t[gg].ch[t[gg].ch[1] == g] = x;
 		}
 		if constexpr (update) pull(x);
 	}

@@ -1,0 +1,7 @@
+g++: standalone data_structure/dynamic_connectivity.hpp
+g++: dynamic_connectivity.cpp
+g++: standalone.cpp
+clang++: standalone data_structure/dynamic_connectivity.hpp
+clang++: dynamic_connectivity.cpp
+clang++: standalone.cpp
+Verification passed
