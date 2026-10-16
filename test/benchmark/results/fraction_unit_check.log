@@ -1,0 +1,7 @@
+g++: standalone math/fraction.hpp
+g++: fraction.cpp
+g++: standalone.cpp
+clang++: standalone math/fraction.hpp
+clang++: fraction.cpp
+clang++: standalone.cpp
+Verification passed

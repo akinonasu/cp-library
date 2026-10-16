@@ -16,6 +16,7 @@
 #include "math/comb.hpp"
 #include "math/factorize.hpp"
 #include "math/fps.hpp"
+#include "math/fraction.hpp"
 #include "math/min_of_mod_of_linear.hpp"
 #include "math/monoid_floor_sum.hpp"
 #include "math/sqrt_floor.hpp"
@@ -85,6 +86,9 @@ int main() {
 	init_comb();
 	assert(comb(5, 2).val() == 10);
 	assert(is_prime(998244353));
+	Fraction<> rational(2, -6);
+	assert(rational + Fraction<>(5, 6) == Fraction<>(1, 2));
+	assert(rational < 0 && rational.floor() == -1);
 	assert(min_of_mod_of_linear(4, 13, 10, 11) == 2);
 	assert(factorize(12) == std::vector<std::uint64_t>({2, 2, 3}));
 	fps f{1, 2, 3};

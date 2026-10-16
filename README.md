@@ -57,6 +57,7 @@
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
 | `math/bigint.hpp` | 多倍長整数 | [使い方](docs/bigint.md) |
 | `math/mint.hpp` | modint998244353 | [使い方](docs/mint.md) |
+| `math/fraction.hpp` | 有理数の四則演算・正確な比較 | [使い方](docs/fraction.md) |
 | `math/comb.hpp` | 階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 | `math/factorize.hpp` | 素因数分解・素数判定 | [使い方](docs/factorize.md) |
 | `math/generalized_floor_sum.hpp` | 一般化 floor sum | [使い方](docs/generalized_floor_sum.md) |
