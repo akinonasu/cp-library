@@ -15,6 +15,7 @@
 #include <istream>
 #include <limits>
 #include <ostream>
+#include <streambuf>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -623,8 +624,34 @@ public:
 		return result;
 	}
 	friend std::istream &operator>>(std::istream &in, BigInt &value) {
-		std::string text;
-		if (in >> text) value = BigInt(text);
+		std::istream::sentry sentry(in);
+		if (!sentry) return in;
+		auto state = std::ios_base::goodbit;
+		try {
+			std::string text;
+			auto *buffer = in.rdbuf();
+			auto c = buffer->sgetc();
+			if (c == '+' || c == '-') {
+				text.push_back(static_cast<char>(c));
+				c = buffer->snextc();
+			}
+			auto start = text.size();
+			while (c >= '0' && c <= '9') {
+				text.push_back(static_cast<char>(c));
+				c = buffer->snextc();
+			}
+			if (std::char_traits<char>::eq_int_type(c, std::char_traits<char>::eof())) state |= std::ios_base::eofbit;
+			if (text.size() == start) {
+				value = 0;
+				state |= std::ios_base::failbit;
+			} else value = BigInt(text);
+		} catch (...) {
+			bool rethrow = (in.exceptions() & std::ios_base::badbit) != 0;
+			try { in.setstate(std::ios_base::badbit); } catch (...) {}
+			if (rethrow) throw;
+			return in;
+		}
+		if (state != std::ios_base::goodbit) in.setstate(state);
 		return in;
 	}
 	friend std::ostream &operator<<(std::ostream &out, const BigInt &value) { return out << value.str(); }
