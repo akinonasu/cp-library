@@ -1,0 +1,71 @@
+name: segtree beats benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      verify:
+        description: Run current header, sanitizer and official tests
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Record environment
+        run: |
+          mkdir -p benchmark-results
+          { uname -a; lscpu; g++ --version; } > benchmark-results/environment.txt
+          cat benchmark-results/environment.txt
+      - name: Generate variants and check correctness
+        run: |
+          python3 test/benchmark/segtree_beats_variants.py /tmp/beats-variants
+          python3 test/benchmark/segtree_beats_reference.py /tmp/beats-variants
+          cp /tmp/beats-variants/reference-source.sha256 benchmark-results/
+          for source in /tmp/beats-variants/*_test.cpp; do
+            g++ -std=c++23 -O2 -Wall -Wextra -Werror -I . "$source" -o /tmp/beats-unit
+            /tmp/beats-unit
+          done
+      - name: Benchmark GCC
+        run: |
+          g++ -std=c++23 -O2 -I . -I /tmp/beats-variants test/benchmark/segtree_beats.cpp -o /tmp/beats-bench
+          /tmp/beats-bench 200000 200000 5 > benchmark-results/assertions.csv
+          g++ -std=c++23 -O2 -DNDEBUG -I . -I /tmp/beats-variants test/benchmark/segtree_beats.cpp -o /tmp/beats-bench
+          /tmp/beats-bench 262144 200000 5 > benchmark-results/release.csv
+          python3 - <<'PY'
+          import csv
+          from collections import defaultdict
+          for filename in ['assertions.csv', 'release.csv']:
+              checksums = defaultdict(set)
+              for row in csv.DictReader(open('benchmark-results/' + filename)):
+                  checksums[row['workload']].add(row['checksum'])
+              assert all(len(values) == 1 for values in checksums.values()), checksums
+          PY
+      - name: Check current header with GCC and Clang
+        if: inputs.verify
+        run: |
+          python3 -c 'import json; from pathlib import Path; Path("/tmp/beats-selection.json").write_text(json.dumps({"headers":["data_structure/segtree_beats.hpp"],"unit":["test/unit/segtree_beats.cpp"]}))'
+          python3 test/verify.py --unit-only --cxx g++ clang++ --selection /tmp/beats-selection.json
+          UBSAN_OPTIONS=halt_on_error=1 python3 test/verify.py --unit-only --sanitize --cxx clang++ --selection /tmp/beats-selection.json
+      - name: Verify Library Checker
+        if: inputs.verify
+        run: |
+          python3 -m pip install -r test/requirements.txt
+          oj-verify run --timeout 1200 --tle 10 -j 2 test/segtree_beats.test.cpp > benchmark-results/judge.log 2>&1
+          tail -n 25 benchmark-results/judge.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: segtree-beats-linux-gcc-benchmark
+          path: benchmark-results

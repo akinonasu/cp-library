@@ -34,6 +34,7 @@
 | `convolution/multivariate_convolution.hpp` | 多変数の切り捨て畳み込み | [使い方](docs/multivariate_convolution.md) |
 | `data_structure/slope_trick.hpp` | Slope Trick | [使い方](docs/slope_trick.md) |
 | `data_structure/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
+| `data_structure/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
 | `data_structure/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
 | `data_structure/dynamic_connectivity.hpp` | Online Dynamic Connectivity | [使い方](docs/dynamic_connectivity.md) |
 | `data_structure/li_chao_tree.hpp` | Li Chao Tree | [使い方](docs/li_chao_tree.md) |
@@ -41,6 +42,8 @@
 | `data_structure/wavelet_matrix.hpp` | Wavelet Matrix | [使い方](docs/wavelet_matrix.md) |
 | `data_structure/dynamic_wavelet_matrix.hpp` | Dynamic Wavelet Matrix | [使い方](docs/dynamic_wavelet_matrix.md) |
 | `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
+| `graph/general_matching.hpp` | General Matching（一般グラフ最大マッチング） | [使い方](docs/general_matching.md) |
+| `graph/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
 | `graph/dijkstra.hpp` | Dijkstra | [使い方](docs/dijkstra.md) |
 | `graph/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `graph/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |

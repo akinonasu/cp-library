@@ -1,0 +1,68 @@
+name: hungarian benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      verify:
+        description: Run current header, sanitizer and official tests
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Record environment
+        run: |
+          mkdir -p benchmark-results
+          { uname -a; lscpu; g++ --version; } > benchmark-results/environment.txt
+          cat benchmark-results/environment.txt
+      - name: Generate variants
+        run: |
+          python3 test/benchmark/hungarian_variants.py /tmp/hungarian-variants
+          python3 test/benchmark/hungarian_reference.py /tmp/hungarian-variants
+          cp /tmp/hungarian-variants/reference-source.sha256 benchmark-results/
+      - name: Benchmark GCC
+        run: |
+          g++ -std=c++23 -O2 -I . -I /tmp/hungarian-variants test/benchmark/hungarian.cpp -o /tmp/hungarian-bench
+          /tmp/hungarian-bench 512 512 5 > benchmark-results/square.csv
+          g++ -std=c++23 -O2 -DNDEBUG -I . -I /tmp/hungarian-variants test/benchmark/hungarian.cpp -o /tmp/hungarian-bench
+          /tmp/hungarian-bench 1024 1024 5 > benchmark-results/square-release.csv
+          /tmp/hungarian-bench 256 2048 5 > benchmark-results/rectangular.csv
+          python3 - <<'PY'
+          import csv
+          from collections import defaultdict
+          for filename in ['square.csv', 'square-release.csv', 'rectangular.csv']:
+              costs = defaultdict(set)
+              for row in csv.DictReader(open('benchmark-results/' + filename)):
+                  costs[row['kind']].add(row['cost'])
+              assert all(len(values) == 1 for values in costs.values()), costs
+          PY
+      - name: Check current header with GCC and Clang
+        if: inputs.verify
+        run: |
+          python3 -c 'import json; from pathlib import Path; Path("/tmp/hungarian-selection.json").write_text(json.dumps({"headers":["graph/hungarian.hpp"],"unit":["test/unit/hungarian.cpp"]}))'
+          python3 test/verify.py --unit-only --cxx g++ clang++ --selection /tmp/hungarian-selection.json
+          UBSAN_OPTIONS=halt_on_error=1 python3 test/verify.py --unit-only --sanitize --cxx clang++ --selection /tmp/hungarian-selection.json
+      - name: Verify Library Checker
+        if: inputs.verify
+        run: |
+          python3 -m pip install -r test/requirements.txt
+          oj-verify run --timeout 1200 --tle 10 -j 2 test/hungarian.test.cpp > benchmark-results/judge.log 2>&1
+          tail -n 25 benchmark-results/judge.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hungarian-linux-gcc-benchmark
+          path: benchmark-results
