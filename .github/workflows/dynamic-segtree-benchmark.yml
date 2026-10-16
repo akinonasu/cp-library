@@ -1,0 +1,81 @@
+name: dynamic segtree benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      benchmark:
+        description: Run performance comparisons
+        type: boolean
+        default: true
+      process:
+        description: Compare separate ABC403 G executables
+        type: boolean
+        default: true
+      focus:
+        description: Measure only new candidates and the baseline
+        type: boolean
+        default: false
+      test_variants:
+        description: Candidates requiring unit tests
+        type: string
+        default: branch leaf cover layout recursive block balanced combo_branch combo_leaf bucket4 bucket8 bucket16
+      verify:
+        description: Verify the current header on official cases
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Record environment
+        run: |
+          mkdir -p benchmark-results
+          { uname -a; lscpu; g++ --version; } > benchmark-results/environment.txt
+      - name: Generate candidates
+        run: python3 test/benchmark/dynamic_segtree_variants.py /tmp/dynamic-segtree-variants
+      - name: Check changed candidates
+        env:
+          CHECK_VARIANTS: ${{ inputs.test_variants }}
+        run: |
+          for variant in $CHECK_VARIANTS; do
+            g++ -std=c++23 -O2 -Wall -Wextra -Werror -I . -I /tmp/dynamic-segtree-variants /tmp/dynamic-segtree-variants/${variant}_test.cpp -o /tmp/dynamic-segtree-unit
+            /tmp/dynamic-segtree-unit
+          done
+      - name: Benchmark GCC
+        if: inputs.benchmark
+        env:
+          BENCH_FOCUS: ${{ inputs.focus && 'new' || 'all' }}
+        run: |
+          g++ -std=c++23 -O2 -Wall -Wextra -Werror -I . -I /tmp/dynamic-segtree-variants -I test/benchmark test/benchmark/dynamic_segtree_variants.cpp -o /tmp/dynamic-segtree-bench
+          /tmp/dynamic-segtree-bench 100000 100000 5 "$BENCH_FOCUS" > benchmark-results/assertions.csv
+          g++ -std=c++23 -O2 -DNDEBUG -Wall -Wextra -Werror -I . -I /tmp/dynamic-segtree-variants -I test/benchmark test/benchmark/dynamic_segtree_variants.cpp -o /tmp/dynamic-segtree-bench
+          /tmp/dynamic-segtree-bench 100000 100000 5 "$BENCH_FOCUS" > benchmark-results/release.csv
+      - name: Benchmark separate ABC403 G executables
+        if: inputs.process
+        run: python3 test/benchmark/dynamic_segtree_process.py /tmp/dynamic-segtree-variants benchmark-results 5
+      - name: Check current header
+        if: inputs.verify
+        run: python3 test/benchmark/verify_selected.py data_structure/dynamic_segtree.hpp test/unit/dynamic_segtree.cpp test/unit/standalone.cpp test/unit/rolling_hash_monoid.cpp
+      - name: Verify affected Library Checker problems
+        if: inputs.verify
+        run: |
+          python3 -m pip install -r test/requirements.txt
+          oj-verify run --timeout 1200 --tle 10 -j 2 test/dynamic_segtree_sum.test.cpp test/dynamic_segtree_composite.test.cpp test/hld_path_composite.test.cpp test/hld_path_sum.test.cpp test/hld_subtree_sum.test.cpp > benchmark-results/judge.log 2>&1
+          tail -n 25 benchmark-results/judge.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dynamic-segtree-linux-gcc-benchmark
+          path: benchmark-results

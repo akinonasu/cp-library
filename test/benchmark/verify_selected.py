@@ -8,12 +8,12 @@ import tempfile
 
 parser = argparse.ArgumentParser()
 parser.add_argument('header')
-parser.add_argument('unit')
+parser.add_argument('unit', nargs='+')
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[2]
 with tempfile.TemporaryDirectory(prefix='cp-benchmark-verify-') as directory:
     selection = Path(directory) / 'selection.json'
-    selection.write_text(json.dumps({'headers': [args.header], 'unit': [args.unit]}))
+    selection.write_text(json.dumps({'headers': [args.header], 'unit': args.unit}))
     command = [sys.executable, str(root / 'test/verify.py'), '--unit-only', '--selection', str(selection)]
     subprocess.run([*command, '--cxx', 'g++', 'clang++'], cwd=root, check=True)
     environment = os.environ.copy()

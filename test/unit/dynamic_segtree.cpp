@@ -1,6 +1,7 @@
 #include "data_structure/dynamic_segtree.hpp"
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <cassert>
 #include <cstdint>
 #include <limits>
@@ -28,6 +29,16 @@ long long counted_add(long long a, long long b) {
 	++calls;
 	return a + b;
 }
+
+struct OddSum { int64_t sum; unsigned parity; };
+OddSum odd_join(OddSum a, OddSum b) { return {a.sum + (a.parity ? -b.sum : b.sum), a.parity ^ b.parity}; }
+OddSum odd_zero() { return {0, 0}; }
+uint64_t packed_join(uint64_t a, uint64_t b) {
+	uint64_t value = b & ~uint64_t(1);
+	if (a & 1) value = -value;
+	return (a & ~uint64_t(1)) + value + ((a ^ b) & 1);
+}
+uint64_t packed_zero() { return 0; }
 
 int main() {
 	mt19937_64 rng(592367);
@@ -199,4 +210,27 @@ int main() {
 	calls = 0;
 	assert(clustered.max_right(int64_t(1) << 60, [](auto x) { return x <= 7000; }) == (int64_t(1) << 60) + 7000 && calls < 256);
 	assert(clustered.node_count() == 10000);
+	for (int pattern = 0; pattern < 4; ++pattern) {
+		DynamicSegtree<OddSum, odd_join, odd_zero> odd(1000000001);
+		DynamicSegtree<uint64_t, packed_join, packed_zero> packed(1000000001);
+		vector<int64_t> sorted;
+		int64_t answer = 0, total = 0;
+		for (int t = 0; t < 1000; ++t) {
+			int64_t x;
+			if (pattern == 0) x = (int64_t(rng() % 1000000000) + answer) % 1000000000 + 1;
+			else if (pattern == 1) x = int64_t(t + 1) * 1000000;
+			else if (pattern == 2) x = 1000000000 - int64_t(t) * 1000000;
+			else x = rng() % 16 + 1;
+			sorted.insert(lower_bound(sorted.begin(), sorted.end(), x), x);
+			total += x;
+			odd.multiply(x, {x, 1});
+			packed.multiply(x, (uint64_t(x) << 1) | 1);
+			int64_t expected = 0;
+			for (int i = 0; i <= t; i += 2) expected += sorted[i];
+			answer = (total + odd.all_prod().sum) / 2;
+			assert(answer == expected);
+			assert((total + (bit_cast<int64_t>(packed.all_prod()) >> 1)) / 2 == expected);
+		}
+	}
+
 }
