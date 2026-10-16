@@ -24,7 +24,7 @@ sources = ([root / path for path in selection[source_group]] if selection is not
            sorted((root / "test/unit").rglob("*.cpp")))
 with tempfile.TemporaryDirectory(prefix="kyopro-verify-") as directory:
     for compiler in args.cxx:
-        flags = ["-std=c++23", "-O2", "-Wall", "-Wextra", "-DDEBUG=1", "-I", str(root)]
+        flags = ["-std=c++2b", "-O2", "-Wall", "-Wextra", "-DDEBUG=1", "-I", str(root)]
         for header in ([] if args.sanitize else headers):
             source = Path(directory) / "header.cpp"
             name = header.relative_to(root).as_posix()
