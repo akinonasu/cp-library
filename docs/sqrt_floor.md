@@ -18,4 +18,4 @@ $$0 \le i < n$$ の $$(ai+b)\bmod m$$ を分割します。$$n,a,b \ge 0$$、$$m
 詳しいアルゴリズムについては以下の解説を参照してください：
 
 - [解説 $1$ ( $O(\sqrt{M})$ 個の等差数列に分解、$N<M$ を仮定)](https://atcoder.jp/contests/abc429/editorial/14242)
-- [解説 $1$ ( $O(\sqrt{N})$ 個の等差数列に分解)](https://atcoder.jp/contests/abc429/editorial/17143)
+- [解説 $2$ ( $O(\sqrt{N})$ 個の等差数列に分解)](https://atcoder.jp/contests/abc429/editorial/17143)
