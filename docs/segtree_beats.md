@@ -25,7 +25,7 @@ auto mx = seg.max(0, 4);
 | `chmin(l,r,x)` | 各要素を $$\min(a_i,x)$$ に更新 |
 | `chmax(l,r,x)` | 各要素を $$\max(a_i,x)$$ に更新 |
 | `add(l,r,x)` | 各要素に `x` を加算 |
-| `assign(l,r,x)` | 各要素を `x` に代入 |
+| `assign(l,r,x)` | 各要素に `x` を代入 |
 | `sum(l,r)`・`min(l,r)`・`max(l,r)` | 区間和・最小値・最大値 |
 | `all_sum()`・`all_min()`・`all_max()` | 全体の和・最小値・最大値 |
 | `get(p)`・`set(p,x)` | 1 点の取得・代入 |
