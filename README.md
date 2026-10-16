@@ -54,6 +54,7 @@
 | `string/lcs.hpp` | 最長共通部分列 | [使い方](docs/lcs.md) |
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
+| `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
 | `math/bigint.hpp` | 多倍長整数 | [使い方](docs/bigint.md) |
 | `math/mint.hpp` | modint998244353 | [使い方](docs/mint.md) |
 | `math/comb.hpp` | 階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
@@ -79,6 +80,7 @@
 | `components/dynamic_bit_vector.hpp` | Dynamic Bit Vector | [使い方](docs/dynamic_bit_vector.md) |
 | `components/quad_bit_vector.hpp` | Quad Bit Vector | [使い方](docs/quad_bit_vector.md) |
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |
+| `components/sequence_match.hpp` | 前方・後方の一致比較と Z algorithm | [使い方](docs/sequence_match.md) |
 | `components/montgomery.hpp` | Montgomery 64 | [使い方](docs/montgomery.md) |
 | `components/splitmix64.hpp` | SplitMix64 | [使い方](docs/splitmix64.md) |
 | `components/d_ary_heap.hpp` | D-ary Heap | [使い方](docs/d_ary_heap.md) |
