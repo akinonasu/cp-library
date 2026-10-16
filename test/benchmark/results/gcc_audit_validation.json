@@ -1,0 +1,117 @@
+{
+  "gcc": "15.2.0",
+  "clang": "21.1.8",
+  "standalone_headers": 65,
+  "unit_tests": 48,
+  "gcc_note": "Successful checks before the WSL update were retained; subsequent changes and unfinished targets were checked again.",
+  "sanitizer_unit_tests": 9,
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "arm64": {
+    "compiler": "GCC 15.2.0",
+    "runner": "QEMU 6.2",
+    "unit_tests": 9,
+    "status": "passed"
+  },
+  "macos": {
+    "status": "not executed locally",
+    "workflow": ".github/workflows/macos-portability.yml"
+  },
+  "official": [
+    {
+      "source": "test/convolution.test.cpp",
+      "cases_per_compiler": [
+        53,
+        53
+      ],
+      "status": "passed",
+      "reason": null
+    },
+    {
+      "source": "test/convolution_mod.test.cpp",
+      "cases_per_compiler": [
+        48,
+        48
+      ],
+      "status": "passed",
+      "reason": null
+    },
+    {
+      "source": "test/cyclic_convolution.test.cpp",
+      "cases_per_compiler": [],
+      "status": "unavailable",
+      "reason": "yukicoder login required"
+    },
+    {
+      "source": "test/gcd_convolution.test.cpp",
+      "cases_per_compiler": [
+        29,
+        29
+      ],
+      "status": "passed",
+      "reason": null
+    },
+    {
+      "source": "test/lcm_convolution.test.cpp",
+      "cases_per_compiler": [
+        29,
+        29
+      ],
+      "status": "passed",
+      "reason": null
+    },
+    {
+      "source": "test/multiplicative_convolution.test.cpp",
+      "cases_per_compiler": [
+        40,
+        40
+      ],
+      "status": "passed",
+      "reason": null
+    },
+    {
+      "source": "test/multivariate_convolution.test.cpp",
+      "cases_per_compiler": [
+        17,
+        17
+      ],
+      "status": "passed",
+      "reason": null
+    },
+    {
+      "source": "test/ordered_convolution.test.cpp",
+      "cases_per_compiler": [],
+      "status": "unavailable",
+      "reason": "yukicoder login required"
+    },
+    {
+      "source": "test/wavelet_matrix_freq.test.cpp",
+      "cases_per_compiler": [
+        11,
+        11
+      ],
+      "status": "passed",
+      "reason": null
+    },
+    {
+      "source": "test/wavelet_matrix_kth.test.cpp",
+      "cases_per_compiler": [
+        24,
+        24
+      ],
+      "status": "passed",
+      "reason": null
+    },
+    {
+      "source": "test/wavelet_matrix_sum.test.cpp",
+      "cases_per_compiler": [
+        10,
+        10
+      ],
+      "status": "passed",
+      "reason": null
+    }
+  ]
+}

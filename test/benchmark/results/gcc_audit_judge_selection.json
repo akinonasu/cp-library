@@ -1,0 +1,13 @@
+[
+  "test/convolution.test.cpp",
+  "test/convolution_mod.test.cpp",
+  "test/cyclic_convolution.test.cpp",
+  "test/gcd_convolution.test.cpp",
+  "test/lcm_convolution.test.cpp",
+  "test/multiplicative_convolution.test.cpp",
+  "test/multivariate_convolution.test.cpp",
+  "test/ordered_convolution.test.cpp",
+  "test/wavelet_matrix_freq.test.cpp",
+  "test/wavelet_matrix_kth.test.cpp",
+  "test/wavelet_matrix_sum.test.cpp"
+]

@@ -1,0 +1,10 @@
+clang++: components_number_theory.cpp
+clang++: convolution.cpp
+clang++: dynamic_wavelet_matrix.cpp
+clang++: fourier_transforms.cpp
+clang++: ntt_mod.cpp
+clang++: quad_bit_vector.cpp
+clang++: standalone.cpp
+clang++: transforms.cpp
+clang++: wavelet_matrix.cpp
+Verification passed

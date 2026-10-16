@@ -1,0 +1,29 @@
+{
+  "headers": [
+    "components/divisor_zeta.hpp",
+    "components/ntt_mod.hpp",
+    "components/quad_bit_vector.hpp",
+    "convolution/boolean_convolution.hpp",
+    "convolution/convolution.hpp",
+    "convolution/convolution_mod.hpp",
+    "convolution/cyclic_convolution.hpp",
+    "convolution/gcd_lcm_convolution.hpp",
+    "convolution/multiplicative_convolution.hpp",
+    "convolution/multivariate_convolution.hpp",
+    "convolution/ordered_convolution.hpp",
+    "data_structure/wavelet_matrix.hpp",
+    "math/prime_sieve.hpp"
+  ],
+  "unit": [
+    "test/unit/components_number_theory.cpp",
+    "test/unit/convolution.cpp",
+    "test/unit/dynamic_wavelet_matrix.cpp",
+    "test/unit/fourier_transforms.cpp",
+    "test/unit/ntt_mod.cpp",
+    "test/unit/quad_bit_vector.cpp",
+    "test/unit/standalone.cpp",
+    "test/unit/transforms.cpp",
+    "test/unit/wavelet_matrix.cpp",
+    "test/unit/weighted_union_find.cpp"
+  ]
+}

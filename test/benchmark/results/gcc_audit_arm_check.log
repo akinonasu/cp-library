@@ -1,0 +1,9 @@
+ARM64: components_number_theory.cpp
+ARM64: convolution.cpp
+ARM64: dynamic_wavelet_matrix.cpp
+ARM64: fourier_transforms.cpp
+ARM64: ntt_mod.cpp
+ARM64: quad_bit_vector.cpp
+ARM64: standalone.cpp
+ARM64: transforms.cpp
+ARM64: wavelet_matrix.cpp
