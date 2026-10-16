@@ -1,0 +1,60 @@
+name: partially retroactive priority queue benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      measure:
+        description: Run timing comparison
+        type: boolean
+        default: true
+      verify_judge:
+        description: Run Library Checker verification
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Record environment
+        run: |
+          mkdir -p benchmark-results
+          { uname -a; lscpu; g++ --version; } > benchmark-results/environment.txt
+      - name: Prepare comparison and check candidates
+        run: |
+          python3 test/benchmark/partially_retroactive_priority_queue_variants.py /tmp/partial-pq-variants
+          for variant in separate_incremental separate_bulk fused_bulk; do
+            g++ -std=c++23 -O2 -Wall -Wextra -Werror -I . -I /tmp/partial-pq-variants /tmp/partial-pq-variants/${variant}_test.cpp -o /tmp/partial-pq-unit
+            /tmp/partial-pq-unit
+          done
+      - name: Benchmark GCC
+        if: inputs.measure
+        run: |
+          g++ -std=c++23 -O2 -Wall -Wextra -Werror -I . -I /tmp/partial-pq-variants test/benchmark/partially_retroactive_priority_queue.cpp -o /tmp/partial-pq-bench
+          /tmp/partial-pq-bench 100000 10000 5 > benchmark-results/assertions.csv
+          g++ -std=c++23 -O2 -DNDEBUG -Wall -Wextra -Werror -I . -I /tmp/partial-pq-variants test/benchmark/partially_retroactive_priority_queue.cpp -o /tmp/partial-pq-bench
+          /tmp/partial-pq-bench 100000 10000 5 > benchmark-results/release.csv
+      - name: Check current library
+        run: python3 test/benchmark/verify_selected.py data_structure/partially_retroactive_priority_queue.hpp test/unit/partially_retroactive_priority_queue.cpp
+      - name: Verify Library Checker problem
+        if: inputs.verify_judge
+        run: |
+          python3 -m pip install -r test/requirements.txt
+          oj-verify run --timeout 1200 --tle 10 -j 2 test/partially_retroactive_priority_queue.test.cpp > benchmark-results/judge.log 2>&1
+          tail -n 20 benchmark-results/judge.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: partially-retroactive-priority-queue-linux-gcc-benchmark
+          path: benchmark-results
