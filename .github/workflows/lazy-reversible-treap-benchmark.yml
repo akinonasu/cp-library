@@ -1,0 +1,68 @@
+name: lazy reversible treap benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      benchmark:
+        description: Compare implementations
+        type: boolean
+        default: true
+      verify:
+        description: Check current library and official cases
+        type: boolean
+        default: true
+      variants:
+        description: Candidates requiring unit tests
+        type: string
+        default: standard priority64 split_reverse leaf packed
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Record environment
+        run: |
+          mkdir -p benchmark-results
+          { uname -a; lscpu; g++ --version; } > benchmark-results/environment.txt
+      - name: Prepare candidates
+        run: python3 test/benchmark/lazy_reversible_treap_variants.py /tmp/treap-variants
+      - name: Check changed candidates
+        env:
+          CHECK_VARIANTS: ${{ inputs.variants }}
+        run: |
+          for variant in $CHECK_VARIANTS; do
+            g++ -std=c++23 -O2 -Wall -Wextra -Werror -I . -I /tmp/treap-variants /tmp/treap-variants/${variant}_test.cpp -o /tmp/treap-unit
+            /tmp/treap-unit
+          done
+      - name: Benchmark GCC
+        if: inputs.benchmark
+        run: |
+          g++ -std=c++23 -O2 -Wall -Wextra -Werror -I . -I /tmp/treap-variants test/benchmark/lazy_reversible_treap.cpp -o /tmp/treap-bench
+          /tmp/treap-bench 100000 200000 5 > benchmark-results/assertions.csv
+          g++ -std=c++23 -O2 -DNDEBUG -Wall -Wextra -Werror -I . -I /tmp/treap-variants test/benchmark/lazy_reversible_treap.cpp -o /tmp/treap-bench
+          /tmp/treap-bench 100000 200000 5 > benchmark-results/release.csv
+      - name: Check current library
+        if: inputs.verify
+        run: python3 test/benchmark/verify_selected.py data_structure/lazy_reversible_treap.hpp test/unit/lazy_reversible_treap.cpp
+      - name: Check official problems
+        if: inputs.verify
+        run: |
+          python3 -m pip install -r test/requirements.txt
+          oj-verify run --timeout 1200 --tle 10 -j 2 test/lazy_reversible_treap_affine.test.cpp test/lazy_reversible_treap_reverse.test.cpp > benchmark-results/judge.log 2>&1
+          tail -n 25 benchmark-results/judge.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lazy-reversible-treap-linux-gcc-benchmark
+          path: benchmark-results

@@ -35,6 +35,7 @@
 | `data_structure/slope_trick.hpp` | Slope Trick | [使い方](docs/slope_trick.md) |
 | `data_structure/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
 | `data_structure/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
+| `data_structure/lazy_reversible_treap.hpp` | 遅延伝搬・反転可能な乱択平衡二分木 | [使い方](docs/lazy_reversible_treap.md) |
 | `data_structure/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
 | `data_structure/dynamic_connectivity.hpp` | Online Dynamic Connectivity | [使い方](docs/dynamic_connectivity.md) |
 | `data_structure/li_chao_tree.hpp` | Li Chao Tree | [使い方](docs/li_chao_tree.md) |
