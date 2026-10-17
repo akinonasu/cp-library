@@ -15,6 +15,21 @@ queue.set(10, 1);
 queue.erase(30);
 ```
 
+現在の要素集合の総和などは、変更通知を使って外部で管理できます。
+
+```cpp
+long long sum = 0;
+auto changed = [&](std::int64_t, const long long &value, bool added) {
+	sum += added ? value : -value;
+};
+PartiallyRetroactivePriorityQueue<long long> queue;
+queue.insert(10, 5, changed);     // sum = 5
+queue.insert(20, 2, changed);     // sum = 7
+queue.insert_pop(30, changed);   // sum = 5
+queue.set(10, 1, changed);       // sum = 2
+queue.erase(30, changed);        // sum = 3
+```
+
 `PartiallyRetroactivePriorityQueue<T, Compare = std::less<T>, Time = std::int64_t>` は、過去の操作を変更し、現在の状態を問い合わせる優先度付きキューです。`std::less<T>` では最小値、`std::greater<T>` では最大値を先頭にします。同順位の要素は挿入時刻順です。時刻は64 bit以下の整数で、各時刻に置ける操作は1つです。
 
 | 操作 | 内容・返り値 |
@@ -25,17 +40,30 @@ queue.erase(30);
 | `insert_pop(t)` | 時刻 `t` に先頭要素の削除を追加 |
 | `set(t,x)` | 既存の `push` の値を変更 |
 | `erase(t)` | 時刻 `t` の操作を取り消す |
+| `insert(t,x,f)` / `insert_pop(t,f)` | 操作を追加し、現在の集合の変化を `f` に通知 |
+| `set(t,x,f)` / `erase(t,f)` | 操作を変更・取消し、現在の集合の変化を `f` に通知 |
 | `top()` | 現在の先頭を `optional<T>` で取得。空なら `nullopt` |
 | `size()` / `empty()` | 現在の要素数／空判定 |
 | `contains_time(t)` / `operation_count()` | 時刻 `t` の操作の有無／操作数 |
 | `assign(updates)` | 操作履歴をまとめて設定。無効なら false を返して元の履歴を保つ |
+| `assign(updates,f)` | 履歴を設定し、旧集合の削除・新集合の追加を通知。無効なら通知しない |
 | `reserve(m)` / `clear()` | 領域予約／容量を残して履歴を初期化 |
+| `clear(f)` | 現在の全要素の削除を通知して初期化 |
+| `for_each(f)` | 現在の全要素について `f(挿入時刻,const T&)` を挿入時刻順に呼ぶ |
 | `memory_usage()` | 確保済み領域のバイト数 |
 | `swap(other)` | 内容・比較関数・乱数生成器の状態を交換 |
 | `top_ptr()` | 現在の先頭の `const T*`。空なら `nullptr`。次の変更操作まで有効 |
 
 履歴変更は成功時に `true` を返します。時刻の衝突、対象操作の不在、`set` の対象が `pop` の場合や、空キューへの削除が発生する変更は `false` を返し、履歴を保ちます。
 
+変更通知は `f(挿入時刻,const T&,bool added)` です。`added=true` は現在の集合への追加、`false` は現在の集合からの削除です。指定した操作の値ではなく、過去の変更の結果として現在の集合で増減する要素を通知します。同じ値も挿入時刻で区別でき、総和・XOR・頻度・外部の集合などを管理できます。コールバックは呼び出しごとに渡し、キューには保存しません。コピーできないコールバックにも対応します。
+
+`insert`・`insert_pop`・`erase` は成功時に 1 要素、`set` は削除・追加を各高々 1 要素通知します。`set` は削除を先に通知し、内部の一時的な追加と削除は通知しません。変更を拒否した場合は通知しません。`assign` は同じ要素でも旧集合から一度削除して新集合へ追加します。既存のキューから集計を始める場合は `for_each` で初期化できます。継続して集計する場合は、全ての変更に同じ通知処理を渡してください。`swap`・コピー・ムーブ・通知なしの変更は通知しません。
+
+通知中の参照はその呼び出し中だけ有効です。コールバックから同じキューを参照・変更したり、例外を投げたりしないでください。通知なしの API は従来どおり使えます。
+
+[ABC363 G](https://atcoder.jp/contests/abc363/tasks/abc363_g) の例は [検証コード](https://github.com/qandori/cp-library/blob/main/test/benchmark/retroactive_priority_queue_scheduling.cpp) と [実装](https://github.com/qandori/cp-library/blob/main/test/fixtures/retroactive_scheduling.hpp) にあります。日付を後ろから処理して最大報酬の仕事を pop する履歴を作り、`全報酬 - 現在残る報酬和` を答えにします。報酬 0 の予備要素を `N` 個入れると、仕事がない日の pop も有効になります。締切変更は旧時刻の取消と新時刻への挿入、報酬だけの変更は `set` で処理します。ライブラリ内部の変更は不要です。
+
 `updates` は `std::vector<Queue::update_type>` で、要素は `{時刻, std::optional<T>}`、`nullopt` は削除操作です。順不同で渡せます。`Queue(updates, compare = Compare{}, seed = 0)` による構築には有効な履歴を渡します。空列の構築は `Queue(compare = Compare{}, seed = 0)` です。`top_ptr()` の戻り値は次の変更操作まで使用できます。削除ノードは再利用し、`clear()` は確保容量を残します。
 
-操作数を $$m$$、過去の最大操作数を $$M$$ とします。履歴変更は償却期待 $$O(\log m)$$、`contains_time` は期待 $$O(\log m)$$、現在の問い合わせ・`operation_count`・`memory_usage` は $$O(1)$$、構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、`reserve`・`clear` は $$O(M)$$ です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。比較・値のコピーを $$O(1)$$ とします。
+操作数を $$m$$、過去の最大操作数を $$M$$ とします。履歴変更は償却期待 $$O(\log m)$$、`contains_time` は期待 $$O(\log m)$$、現在の問い合わせ・`operation_count`・`memory_usage` は $$O(1)$$、構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、`reserve`・`clear` は $$O(M)$$、`for_each` は $$O(m)$$ です。変更通知付きも通知処理が $$O(1)$$ なら同じ計算量です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。比較・値のコピーを $$O(1)$$ とします。ABC363 G の例は償却期待 $$O((N+Q)\log N)$$ 時間、$$O(N)$$ 空間です。

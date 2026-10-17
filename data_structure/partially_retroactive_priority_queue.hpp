@@ -16,6 +16,7 @@
 template <class T, class Compare = std::less<T>, class Time = std::int64_t>
 class PartiallyRetroactivePriorityQueue {
 	static_assert(std::is_integral_v<Time> && !std::is_same_v<Time, bool> && sizeof(Time) <= 8);
+	struct Ignore { void operator()(Time, const T &, bool) const {} };
 	struct Node {
 		Time time{};
 		std::optional<T> value;
@@ -120,25 +121,43 @@ class PartiallyRetroactivePriorityQueue {
 		return smaller(nodes[a].alive, key) == key ? Selection{b, key} : Selection{a, nodes[a].alive};
 	}
 	void change(Selection selected, int state) { change(selected.tree, selected.key, state); }
-	void insert_push(int a, int b, int x) {
+	int insert_push(int a, int b, int x) {
 		auto selected = promote(a, b);
+		int added = x;
 		if (selected.key && less(x, selected.key)) {
 			change(selected, 0); nodes[x].state = 1; pull(x);
+			added = selected.key;
 		}
 		root = merge(merge(a, x), b);
+		return added;
 	}
-	bool erase_at(int rank) {
+	template <class F> bool erase_at(int rank, F &&on_change) {
 		auto [a, tail] = split(root, rank);
 		auto [x, b] = split(tail, 1);
 		if (nodes[x].value && nodes[a].count + nodes[b].minimum_count < 0) {
 			root = merge(merge(a, x), b); return false;
 		}
-		if (nodes[x].state == -1) change(promote(a, b), 0);
-		else if (nodes[x].state == 1) change(demote(a, b, nodes[a].sum + 1), 1);
+		int changed = x;
+		bool added = nodes[x].state == -1;
+		if (added) {
+			auto selected = promote(a, b);
+			changed = selected.key; change(selected, 0);
+		} else if (nodes[x].state == 1) {
+			auto selected = demote(a, b, nodes[a].sum + 1);
+			changed = selected.key; change(selected, 1);
+		}
 		root = merge(a, b);
+		on_change(changed, added);
 		nodes[x].value.reset(); nodes[x].left = free; free = x;
 		return true;
 	}
+	template <class F> void visit(int x, F &f) const {
+		if (!nodes[x].alive) return;
+		visit(nodes[x].left, f);
+		if (nodes[x].value && nodes[x].state == 0) f(nodes[x].time, *nodes[x].value);
+		visit(nodes[x].right, f);
+	}
+	template <class F> void notify(int x, bool added, F &f) const { f(nodes[x].time, *nodes[x].value, added); }
 public:
 	using update_type = std::pair<Time, std::optional<T>>;
 	explicit PartiallyRetroactivePriorityQueue(Compare compare = Compare{}, std::uint64_t seed = 0) : compare(std::move(compare)), rng(seed) {}
@@ -158,35 +177,48 @@ public:
 		using std::swap;
 		nodes.swap(other.nodes); swap(compare, other.compare); swap(rng, other.rng); swap(root, other.root); swap(free, other.free);
 	}
-	bool insert(Time time, T value) {
+	bool insert(Time time, T value) { return insert(time, std::move(value), Ignore{}); }
+	template <class F> bool insert(Time time, T value, F &&on_change) {
 		auto [rank, found] = locate(time);
 		if (found) return false;
 		int x = make(time, std::move(value));
 		auto [a, b] = split(root, rank);
-		insert_push(a, b, x); return true;
+		int added = insert_push(a, b, x);
+		notify(added, true, on_change); return true;
 	}
-	bool insert_pop(Time time) {
+	bool insert_pop(Time time) { return insert_pop(time, Ignore{}); }
+	template <class F> bool insert_pop(Time time, F &&on_change) {
 		auto [rank, found] = locate(time);
 		if (found) return false;
 		auto [a, b] = split(root, rank);
 		if (nodes[a].count + nodes[b].minimum_count < 1) { root = merge(a, b); return false; }
-		change(demote(a, b, nodes[a].sum), 1);
+		auto selected = demote(a, b, nodes[a].sum);
+		change(selected, 1);
 		int x = make(time, std::nullopt);
-		root = merge(merge(a, x), b); return true;
+		root = merge(merge(a, x), b);
+		notify(selected.key, false, on_change); return true;
 	}
-	bool set(Time time, T value) {
+	bool set(Time time, T value) { return set(time, std::move(value), Ignore{}); }
+	template <class F> bool set(Time time, T value, F &&on_change) {
 		auto [rank, found] = locate(time);
 		if (!found || !nodes[found].value) return false;
 		int x = make(time, std::move(value));
 		auto [a, b] = split(root, rank);
-		insert_push(a, b, x);
-		[[maybe_unused]] bool ok = erase_at(rank + 1);
+		int added = insert_push(a, b, x);
+		bool canceled = false;
+		[[maybe_unused]] bool ok = erase_at(rank + 1, [&](int key, bool inserted) {
+			assert(!inserted); (void)inserted;
+			if (key == added) canceled = true;
+			else notify(key, false, on_change);
+		});
 		assert(ok);
+		if (!canceled) notify(added, true, on_change);
 		return true;
 	}
-	bool erase(Time time) {
+	bool erase(Time time) { return erase(time, Ignore{}); }
+	template <class F> bool erase(Time time, F &&on_change) {
 		auto [rank, found] = locate(time);
-		return found && erase_at(rank);
+		return found && erase_at(rank, [&](int key, bool added) { notify(key, added, on_change); });
 	}
 	bool contains_time(Time time) const { return locate(time).second != 0; }
 	const T *top_ptr() const { int x = nodes[root].alive; return x ? &*nodes[x].value : nullptr; }
@@ -196,8 +228,14 @@ public:
 	int operation_count() const { return nodes[root].size; }
 	void reserve(std::size_t capacity) { nodes.reserve(capacity + 1); }
 	void clear() { nodes.resize(1); root = free = 0; }
+	template <class F> void clear(F &&on_change) {
+		for_each([&](Time time, const T &value) { on_change(time, value, false); });
+		clear();
+	}
+	template <class F> void for_each(F &&f) const { visit(root, f); }
 	std::size_t memory_usage() const { return nodes.capacity() * sizeof(Node); }
-	bool assign(const std::vector<update_type> &updates) {
+	bool assign(const std::vector<update_type> &updates) { return assign(updates, Ignore{}); }
+	template <class F> bool assign(const std::vector<update_type> &updates, F &&on_change) {
 		auto sorted = updates;
 		std::sort(sorted.begin(), sorted.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
 		int count = 0;
@@ -230,6 +268,10 @@ public:
 			stack.push_back(x);
 		}
 		while (!stack.empty()) { next.root = stack.back(); next.pull(next.root); stack.pop_back(); }
+		if constexpr (!std::is_same_v<std::remove_cvref_t<F>, Ignore>) {
+			for_each([&](Time time, const T &value) { on_change(time, value, false); });
+			next.for_each([&](Time time, const T &value) { on_change(time, value, true); });
+		}
 		swap(next); return true;
 	}
 };

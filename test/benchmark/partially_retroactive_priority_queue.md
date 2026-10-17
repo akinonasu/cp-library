@@ -22,6 +22,8 @@
 
 ## 再現方法
 
+この比較候補の生成には、変更通知を追加する前の `2a4d721b9a8fc2ed25a7cf05ff7312782a162653` のヘッダーと単体テストを使う。変更通知の比較は [変更通知の測定](retroactive_priority_queue_changes.md) を参照。
+
 ```sh
 python3 test/benchmark/partially_retroactive_priority_queue_variants.py /tmp/partial-pq-variants
 g++ -std=c++23 -O2 -DNDEBUG -I . -I /tmp/partial-pq-variants test/benchmark/partially_retroactive_priority_queue.cpp -o /tmp/partial-pq-bench

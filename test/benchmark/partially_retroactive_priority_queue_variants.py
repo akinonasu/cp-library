@@ -1,11 +1,13 @@
 import sys
+import subprocess
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 out = Path(sys.argv[1])
 out.mkdir(parents=True, exist_ok=True)
-source = (root / 'data_structure/partially_retroactive_priority_queue.hpp').read_text().replace('"../components/splitmix64.hpp"', '"components/splitmix64.hpp"')
-unit = (root / 'test/unit/partially_retroactive_priority_queue.cpp').read_text()
+revision = '2a4d721b9a8fc2ed25a7cf05ff7312782a162653'
+source = subprocess.check_output(['git', 'show', revision + ':data_structure/partially_retroactive_priority_queue.hpp'], cwd=root, text=True).replace('"../components/splitmix64.hpp"', '"components/splitmix64.hpp"')
+unit = subprocess.check_output(['git', 'show', revision + ':test/unit/partially_retroactive_priority_queue.cpp'], cwd=root, text=True)
 separate_bridges = '''
 	int last_bridge(int x, int offset) const {
 		if (!x) { assert(offset == 0); return 0; }
