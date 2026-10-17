@@ -1,0 +1,28 @@
+{
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)",
+    "/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++": "x86_64-conda-linux-gnu-g++ (conda-forge gcc 13.4.0-20) 13.4.0"
+  },
+  "sha256": {
+    "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+    "data_structure/fast_set.hpp": "eea75f6b73aa2757aa7c058dc60b04765d077a27477f574b5697529ed04f5292",
+    "data_structure/sortable_segtree.hpp": "9827a50a595b0ede541a358181a220ab3c7342006e399c12cb0ac6f13ffe7c01",
+    "test/unit/predecessor_set.cpp": "20602e389f5082b6ba96987c38ee3c39735959a8af483258369c34717b7a933b",
+    "test/unit/fast_set.cpp": "9442f89fb6bca01e1620923ed059b3c545b27cc0d8ab265331113a0520a4c0b2",
+    "test/unit/sortable_segtree.cpp": "94a1b2907564a0ac25306fbc5efca445c3d4e29542b1300c34d5afe9c895d41f",
+    "test/fast_set.test.cpp": "2935e60a896da914d31d98100c7d12b72f38b486976eeed21cd58c8a58eb6e9a",
+    "test/sortable_segtree.test.cpp": "74eac81b9ecb94563352c3f2e874e3544e6968137f77adec6214a40b16020a81",
+    "docs/fast_set.md": "8c643828c8303a1b783319d044b25b402bf397d27353233342f24602b06e8802",
+    "docs/predecessor_set.md": "c37b6679833ab5b7fbe527879f62afeb72dc15c2448f1bba1feddcd086aaf150",
+    "docs/sortable_segtree.md": "0d0bb55268078852691acabc91cf4b7a59b5aef024dd64b8b8c4b345963f8860"
+  },
+  "checks": {
+    "standalone": "3 headers with GCC 15, Clang 21, GCC 13",
+    "units": "3 units with all three compilers",
+    "sanitize": "3 units with Clang ASan/UBSan",
+    "release": "3 units, 2 new/updated API examples, bundled driver with all 22 official cases under Clang NDEBUG -Werror",
+    "judge": "22 predecessor and 23 sortable cases with GCC and Clang",
+    "docs": "236 sources generated, 122 libraries checked, 3 affected bundles compiled, all API tables checked"
+  }
+}

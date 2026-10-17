@@ -1,0 +1,19 @@
+g++: standalone components/predecessor_set.hpp
+g++: standalone data_structure/fast_set.hpp
+g++: standalone data_structure/sortable_segtree.hpp
+g++: predecessor_set.cpp
+g++: fast_set.cpp
+g++: sortable_segtree.cpp
+clang++: standalone components/predecessor_set.hpp
+clang++: standalone data_structure/fast_set.hpp
+clang++: standalone data_structure/sortable_segtree.hpp
+clang++: predecessor_set.cpp
+clang++: fast_set.cpp
+clang++: sortable_segtree.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone components/predecessor_set.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone data_structure/fast_set.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone data_structure/sortable_segtree.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: predecessor_set.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: fast_set.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: sortable_segtree.cpp
+Verification passed

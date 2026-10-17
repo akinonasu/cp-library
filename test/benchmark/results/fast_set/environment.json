@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-17T17:34:35.336334+00:00",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero"
+  ],
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "affinity": [
+    2
+  ],
+  "before": "b584f748d67d38faf22229cb2c971ccd98ba7d6e",
+  "trials": 7,
+  "warmup": 1,
+  "seed": 403023,
+  "order_seed": 403023,
+  "sha256": {
+    "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+    "data_structure/fast_set.hpp": "eea75f6b73aa2757aa7c058dc60b04765d077a27477f574b5697529ed04f5292",
+    "data_structure/sortable_segtree.hpp": "9827a50a595b0ede541a358181a220ab3c7342006e399c12cb0ac6f13ffe7c01",
+    "components/fast_io.hpp": "d4a7e58d2a9373e675ddaed1a31ea3f1748b75a2af4201791ac63163b3af38b8",
+    "test/fast_set.test.cpp": "2935e60a896da914d31d98100c7d12b72f38b486976eeed21cd58c8a58eb6e9a",
+    "test/sortable_segtree.test.cpp": "74eac81b9ecb94563352c3f2e874e3544e6968137f77adec6214a40b16020a81",
+    "test/benchmark/fast_set.cpp": "8e1b09f6e5a95102b400590ee9a89d4a8b70f306df8e19c945e7f58947e7357d",
+    "test/benchmark/fast_set.py": "17df52069cbda8a140ef76792b89952befb74236614b6c85965dd9fbb33bbdb7"
+  },
+  "references": {
+    "403023": "59fd15abf763b5a59bb2069e1916e21ccfebbe291d116fb5240690cbce6357d7",
+    "278227": "ef5b067f04c7686cce6a75ccb1426686d0a152b4afe6599f3ddeaeb39a90219a"
+  },
+  "official_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "method": "Kernel excludes generation and I/O; judge uses fresh processes and regular files in Linux /tmp including I/O and exit; checker and SHA-256 outside timing",
+  "before_sha256": "90e6a13868d1d38889cdd420a73cc93b8aac97cd1e3c567431ba92bd06edc28d",
+  "generated_sha256": {
+    "old_sortable.cpp": "fa22f905a3794107b2e4ad1e764253e22d68a0f89aeb29b04c5acc96f81fea9b",
+    "old.hpp": "90e6a13868d1d38889cdd420a73cc93b8aac97cd1e3c567431ba92bd06edc28d",
+    "scalar.hpp": "1018b70ce61c7d56a26fa7e038b0ce05b6c6e7221ac7c6795b5e2a9e153c62ed",
+    "old_sortable.hpp": "af13b36ae0a8b7c143cb2ba95bac3afb9794b3d446da32f5ff760974dc2eb1e1",
+    "old.cpp": "06dc74a8a1ef5d5a74528f57d3d2026c8961ec9aeae9ca85da16738a17847e1b",
+    "before.hpp": "3d431c808ed5c22894bf1d2517f6607aeddfe05b76316fd523b47b31dbf0c46d",
+    "scalar.cpp": "422cc1282681ae45dcec4e8fa21f4b5031f949db8c1965fcea2fe18ec0b707a8"
+  }
+}

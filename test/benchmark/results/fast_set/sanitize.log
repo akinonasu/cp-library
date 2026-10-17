@@ -1,0 +1,4 @@
+clang++: predecessor_set.cpp
+clang++: fast_set.cpp
+clang++: sortable_segtree.cpp
+Verification passed

@@ -47,6 +47,7 @@
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `data_structure/sortable_segtree.hpp` | Sortable Segtree（区間ソート・区間集約） | [使い方](docs/sortable_segtree.md) |
+| `data_structure/fast_set.hpp` | Fast Set（64 分木） | [使い方](docs/fast_set.md) |
 | `data_structure/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `data_structure/wavelet_matrix.hpp` | Wavelet Matrix | [使い方](docs/wavelet_matrix.md) |
 | `data_structure/dynamic_wavelet_matrix.hpp` | Dynamic Wavelet Matrix | [使い方](docs/dynamic_wavelet_matrix.md) |
