@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: verify-${{ github.workflow }}-${{ github.ref }}
@@ -19,6 +20,8 @@ concurrency:
 
 jobs:
   verify:
+    outputs:
+      mode: ${{ steps.route.outputs.mode }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -26,16 +29,31 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Resolve explicit no-cache event
+        id: route
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .verify-helper/no_cache_route.py
       - uses: actions/setup-python@v5
+        if: steps.route.outputs.mode == 'normal'
         with:
           python-version: '3.12'
           cache: pip
           cache-dependency-path: test/requirements.txt
+      - uses: actions/setup-python@v5
+        if: steps.route.outputs.mode == 'no-cache'
+        with:
+          python-version: '3.12'
       - name: Install dependencies
+        if: steps.route.outputs.mode == 'normal'
         run: python -m pip install -r test/requirements.txt
+      - name: Install dependencies without cache
+        if: steps.route.outputs.mode == 'no-cache'
+        run: python -m pip install --no-cache-dir -r test/requirements.txt
       - name: Install Boost
         run: sudo apt-get update && sudo apt-get install -y libboost-dev
       - name: Restore successful verification results
+        if: steps.route.outputs.mode == 'normal'
         id: verification-cache
         uses: actions/cache/restore@v4
         with:
@@ -45,6 +63,7 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-${{ github.ref }}-
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-refs/heads/main-
       - name: Cache judge test cases and checkers
+        if: steps.route.outputs.mode == 'normal'
         uses: actions/cache@v4
         with:
           path: |
@@ -56,10 +75,18 @@ jobs:
       - name: Test incremental verification
         run: python -m unittest discover -s .verify-helper -p '*_test.py'
       - name: Select affected libraries and tests
+        if: steps.route.outputs.mode == 'normal'
         id: selection
         env:
           VERIFY_FULL: ${{ inputs.full == true }}
         run: python .verify-helper/ci.py plan
+      - name: Select exact-head affected scope without cache
+        if: steps.route.outputs.mode == 'no-cache'
+        env:
+          VERIFY_AFFECTED_BASE: ${{ steps.route.outputs.base }}
+          VERIFY_EXPECTED_HEAD: ${{ steps.route.outputs.head }}
+          VERIFY_EXPECTED_REF: ${{ steps.route.outputs.ref }}
+        run: python .verify-helper/ci.py plan --affected-base "$VERIFY_AFFECTED_BASE" --expected-head "$VERIFY_EXPECTED_HEAD" --expected-ref "$VERIFY_EXPECTED_REF"
       - name: Run unit tests with GCC and Clang
         run: |
           python test/verify.py --unit-only --cxx g++ clang++ --selection .verify-helper/selection.json
@@ -83,7 +110,7 @@ jobs:
           python .verify-helper/check-docs.py --selection .verify-helper/selection.json
           python .verify-helper/ci.py record --groups bundles
       - name: Save completed verification results
-        if: ${{ always() && steps.selection.outcome == 'success' }}
+        if: ${{ always() && steps.route.outputs.mode == 'normal' && steps.selection.outcome == 'success' }}
         uses: actions/cache/save@v4
         with:
           path: .verify-helper/verified-state.json
@@ -94,13 +121,28 @@ jobs:
           source: .verify-helper/markdown
           destination: .verify-helper/site
       - name: Upload library website
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        if: steps.route.outputs.mode == 'normal' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: .verify-helper/site
 
+  intrinsic:
+    needs: verify
+    if: needs.verify.result == 'success' && needs.verify.outputs.mode == 'no-cache'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check exact-head native and explicit scalar DWM paths
+        run: timeout --signal=TERM --kill-after=10s 18m python3 -B .verify-helper/intrinsic_gate.py
+
   deploy:
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: needs.verify.outputs.mode == 'normal' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: verify
     runs-on: ubuntu-24.04
     permissions:
