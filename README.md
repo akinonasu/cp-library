@@ -62,7 +62,6 @@
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
-| `math/bigint.hpp` | 多倍長整数 | [使い方](docs/bigint.md) |
 | `math/mint.hpp` | modint998244353 | [使い方](docs/mint.md) |
 | `math/mod_inv.hpp` | 定数時間 mod inv | [使い方](docs/mod_inv.md) |
 | `math/mod_pow.hpp` | 定数時間 mod pow・離散対数 | [使い方](docs/mod_pow.md) |
