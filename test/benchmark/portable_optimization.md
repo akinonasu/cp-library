@@ -7,7 +7,7 @@ The final changes were integrated on `1bb6151acbc2bf863c116009028dc46f6e977a55`;
 
 - [Prime sieve](prime_sieve.md): segmented odd sieve, periodic pre-sieve, word-wise enumeration.
 - [Bitwise transforms](bitwise_transforms.md): radix-4 stage fusion, cache blocking, scoped GCC optimization settings.
-- [Environment](results/portable_optimization/environment.json): local GCC 14.2.0, Linux x86_64, Intel Xeon Platinum 8573C. These are not AtCoder judge measurements.
+- Environment: local GCC 14.2.0, Linux x86_64, Intel Xeon Platinum 8573C. These are not AtCoder judge measurements.
 
 AtCoder's [official language list](https://img.atcoder.jp/file/language-update/2025-10/language-list.html) specifies GCC 15.2.0 and `-O2 -march=native -std=gnu++23 -ftrivial-auto-var-init=zero` among the current C++ flags. The [June 2026 notice](https://atcoder.jp/posts/language_update20260616_en) confirms the compiler update. No unverified judge CPU model is assumed. The benchmark reports retain AC/reference implementation links and comparison limitations.
 
@@ -26,13 +26,35 @@ The focused sieve extended mode additionally passed full boundary/random checks 
 Reproduce affected checks:
 
 ```sh
-python test/verify.py --unit-only --cxx g++ --selection test/benchmark/results/portable_optimization/selection.json
-ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1 python test/verify.py --unit-only --cxx g++ --sanitize --selection test/benchmark/results/portable_optimization/selection.json
+selection=$(mktemp)
+trap 'rm -f "$selection"' EXIT
+cat > "$selection" <<'JSON'
+{
+  "headers": [
+    "math/prime_sieve.hpp",
+    "components/divisor_zeta.hpp",
+    "convolution/gcd_lcm_convolution.hpp",
+    "components/bitwise_zeta.hpp",
+    "components/walsh_hadamard.hpp",
+    "convolution/bitwise_convolution.hpp",
+    "convolution/boolean_convolution.hpp"
+  ],
+  "unit": [
+    "test/unit/prime_sieve.cpp",
+    "test/unit/components_number_theory.cpp",
+    "test/unit/bitwise_transforms.cpp",
+    "test/unit/transforms.cpp",
+    "test/unit/convolution.cpp"
+  ]
+}
+JSON
+python test/verify.py --unit-only --cxx g++ --selection "$selection"
+ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1 python test/verify.py --unit-only --cxx g++ --sanitize --selection "$selection"
 ```
 
 The sandbox's LeakSanitizer exits with a ptrace incompatibility, so only leak detection was disabled for the successful sanitizer run. ASan and UBSan remained enabled. Clang, Apple Clang/macOS and online judge cases were not run locally; the repository's existing Linux verification and macOS portability workflows provide those checks after publication. No new architecture-specific instruction requirement is introduced.
 
-[Successful sanitizer log](results/portable_optimization/all-sanitize.log), [sieve GCC log](results/portable_optimization/sieve-gcc.log), [final default sieve test](results/portable_optimization/sieve-default-gcc.log), [transform GCC log](results/portable_optimization/transforms-gcc.log), [latest-main integration](results/portable_optimization/latest-main-integration.log).
+Generated logs, CSV measurements, reference metadata and selection/environment JSON are intentionally not committed. The curated summaries, benchmark sources, reference-fetch scripts and test reproduction commands remain versioned. Narrow `.gitignore` entries cover only outputs introduced by this optimization work; unrelated existing benchmark results are unchanged.
 
 ## Documentation-only base update
 

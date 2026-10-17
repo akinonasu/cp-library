@@ -29,7 +29,7 @@ g++ -std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -I . \
 
 2026-10-17、Linux x86_64、Intel Xeon Platinum 8573C、GCC 14.2.0。AtCoder の公開フラグから `-O2 -march=native -std=gnu++23 -ftrivial-auto-var-init=zero` を採用し、`NDEBUG` は定義しない。実機は AtCoder と異なり、GCC 15.2 / Zen 系 CPU / macOS の速度は未測定。クラウド環境では外部負荷による wall time のばらつきがあるため、別セッションで得た絶対時間同士は比較しない。
 
-他のローカル測定・コンパイルを止めた時間帯に、15 標本で計測した。結果の全 60 ケースは `bitwise_transforms_results.csv` に保存。主な結果は以下のとおり（ms）。
+他のローカル測定・コンパイルを止めた時間帯に、15 標本で計測した。全 60 ケースを確認し、主な結果を以下にまとめた（ms）。生ログや機械出力の CSV は commit しない。
 
 | 型・処理 | n = 2^18 旧 | 新 | 倍率 | n = 2^20 旧 | 新 | 倍率 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -41,7 +41,7 @@ g++ -std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -I . \
 | uint64 / Walsh | 2.881 | 1.391 | 2.07x | 14.260 | 6.894 | 2.07x |
 | double / Walsh | 2.499 | 1.189 | 2.10x | 19.872 | 8.833 | 2.25x |
 
-`n=64` と `n=1024` も確認した。最初の `n=1024` 測定では double の superset Möbius が 4.350 → 4.795 μs（9.3% 遅い）だった。31 標本、各 256 回で追加確認すると 5.339 → 2.977 μs（1.79x）となり、この退行は再現しなかった。追加測定も `bitwise_transforms_small_repeat.csv` にそのまま保存した。小サイズでは計時・呼び出しの固定費や環境負荷の影響が大きく、すべての型・サイズでの高速化は保証しない。
+`n=64` と `n=1024` も確認した。最初の `n=1024` 測定では double の superset Möbius が 4.350 → 4.795 μs（9.3% 遅い）だった。31 標本、各 256 回で追加確認すると 5.339 → 2.977 μs（1.79x）となり、この退行は再現しなかった。小サイズでは計時・呼び出しの固定費や環境負荷の影響が大きく、すべての型・サイズでの高速化は保証しない。
 
 ## Library Checker の AC 実装との比較
 
@@ -53,7 +53,7 @@ g++ -std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -I . \
 
 今回も stage fusion と cache locality の方向性を採った。一方、上記最速提出の mod 998244353 専用処理・Linux I/O・配列の再配置・畳み込み全体の融合は、汎用 `vector<T>` の in-place 変換 API にそのまま導入できない。提出時間は入出力込みの Library Checker の値であり、今回のカーネル測定とは比較しない。これらの提出そのものとのローカル速度比較や、新実装のオンライン提出は行っていない。
 
-最速 2 提出の live API 応答の AC 状態・提出情報・ソース SHA-256 は `bitwise_transforms_reference.json` に保存。ソースを再取得するには以下を使う。
+最速 2 提出は live API で AC 状態と提出情報を確認した。生成される参照 metadata は commit せず、ソースと metadata を再取得するには以下を使う。
 
 ```sh
 python3 test/benchmark/bitwise_transforms_reference.py /tmp/bitwise-reference \
@@ -72,4 +72,4 @@ g++ -std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -I . \
 /tmp/bitwise-transforms-test
 ```
 
-上記の focused test は成功。推移的な利用先 `test/unit/transforms.cpp` と `test/unit/convolution.cpp` も、通常ビルドと ASan / UBSan の aggregate 検証で成功した。検証ログは `results/portable_optimization/all-sanitize.log`。macOS / Clang の実行確認はこの環境では行っていない。
+上記の focused test は成功。推移的な利用先 `test/unit/transforms.cpp` と `test/unit/convolution.cpp` も、通常ビルドと ASan / UBSan の aggregate 検証で成功した。再現手順は [検証のまとめ](portable_optimization.md) を参照。macOS / Clang の実行確認はこの環境では行っていない。

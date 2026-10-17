@@ -33,7 +33,7 @@ g++ -std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -I . \
 
 引数は `n`、測定回数、1 測定あたりの反復回数。出力は `n,baseline_ms,optimized_ms,baseline_checksum,optimized_checksum`。4 番目の引数に `0` または `1` を付けると、その実装だけを 1 回実行して `n,kind,count,last_prime` を出す。プロセス単位のメモリ測定に利用できる。
 
-最終測定値は `prime_sieve_results.csv`。同時に他のテストが走っていた初回ログも `prime_sieve_results_shared_load.csv` に残す。共有ホストであるため個々の wall-clock 値には変動があり、別の CPU やジャッジで同じ倍率を保証するものではない。
+主な最終測定値を以下にまとめる。生ログや機械出力の CSV は commit しない。共有ホストであるため個々の wall-clock 値には変動があり、別の CPU やジャッジで同じ倍率を保証するものではない。
 
 メモリ測定は `python3 test/benchmark/prime_sieve_memory.py /tmp/prime-sieve-bench 100000000`。各実装を別プロセスで実行し、`wait4` の peak RSS を KiB で記録する。
 
@@ -54,9 +54,9 @@ g++ -std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -I . \
 | 10,000,000 | 59.859547 | 16.305658 | 3.67x |
 | 100,000,000 | 594.136829 | 153.188024 | 3.88x |
 
-`n=10^8` の peak RSS は 115988 KiB → 46592 KiB (約 59.8% 減)。両実装とも素数個数 5761455、末尾 99999989。`prime_sieve_memory.csv` に保存した。
+`n=10^8` の peak RSS は 115988 KiB → 46592 KiB (約 59.8% 減)。両実装とも素数個数 5761455、末尾 99999989。
 
-`n=5*10^8` は他の検証と同時実行した初回のみで、12920.889486 ms → 1950.117812 ms。負荷の大きい参考値として raw log に残し、上表の比較には混ぜていない。
+`n=5*10^8` は他の検証と同時実行した初回のみで、12920.889486 ms → 1950.117812 ms。負荷の大きい参考値であり、上表の比較には混ぜていない。
 
 ## 正しさ
 
@@ -72,7 +72,7 @@ g++ -std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -Wall -Wextra -W
 - seed `20261017` の 64 個 (extended は 300 個) の乱数入力と `n=5000000` を比較。
 - 比較相手は独立した全整数 `vector<bool>` Eratosthenes 篩で、返り値の全要素を一致確認。
 - `large` などの追加引数で extended に切り替わり、 `10^7`、`10^8`、`5*10^8` 以下の既知素数個数 (664579, 5761455, 26355867) と整列状態・上限も確認。
-- 最終コードで上記を通過した。標準ライブラリを読み込んでから `__BYTE_ORDER__` を undef したビルドでも、byte 走査 fallback の通常テストを通過した (実機 big-endian の検証ではない)。推移的依存は `divisor_zeta` と `gcd_lcm_convolution`。これらと最終の通常テストは GCC の全体検証でも通過。ASan/UBSan の全体検証は [all-sanitize.log](results/portable_optimization/all-sanitize.log) を参照 (`ASAN_OPTIONS=detect_leaks=0`)。
+- 最終コードで上記を通過した。標準ライブラリを読み込んでから `__BYTE_ORDER__` を undef したビルドでも、byte 走査 fallback の通常テストを通過した (実機 big-endian の検証ではない)。推移的依存は `divisor_zeta` と `gcd_lcm_convolution`。これらと最終の通常テストは GCC の全体検証でも通過。ASan/UBSan の全体検証も成功した (`ASAN_OPTIONS=detect_leaks=0`)。再現手順は [検証のまとめ](portable_optimization.md) を参照。
 
 ## Library Checker / AC 実装との比較
 
