@@ -5,12 +5,12 @@
 int main() {
 	FastInput in;
 	FastOutput out;
-	int n, m;
+	int n = 0, m = 0;
 	in.read(n);
 	in.read(m);
 	GeneralMatching g(n);
 	g.reserve(m);
-	for (int i = 0, u, v; i < m; ++i) {
+	for (int i = 0, u = 0, v = 0; i < m; ++i) {
 		in.read(u);
 		in.read(v);
 		g.add_edge(u, v);
