@@ -1,0 +1,12 @@
+clang++: power_projection.cpp
+clang++: fps_algorithms.cpp
+clang++: ntt_mod.cpp
+Verification passed
+clang++: convolution.cpp
+clang++: fourier_transforms.cpp
+clang++: fps.cpp
+clang++: multipoint_tree.cpp
+clang++: online_convolution.cpp
+clang++: ordered_convolution.cpp
+clang++: polynomial_gcd.cpp
+Verification passed

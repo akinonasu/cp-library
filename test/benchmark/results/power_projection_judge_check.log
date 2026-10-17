@@ -1,0 +1,1569 @@
+[32mINFO[0m:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}[0m
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/power_projection.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series_large[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ sleep 2[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj download --system -d .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test --silent https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series_large[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/qand/.local/share/online-judge-tools/cookie.jar
+git version 2.34.1
+[INFO] $ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+[INFO] $ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/info.toml
+[37m23:10:05 [INFO] Start compositional_inverse_of_formal_power_series_large[0m
+[37m23:10:05 [INFO] generate params.h[0m
+[37m23:10:05 [INFO] compile checker[0m
+[37m23:10:09 [INFO] compile solution[0m
+[37m23:10:09 [INFO] compile generators[0m
+[37m23:10:09 [INFO] compile example.in[0m
+[37m23:10:09 [INFO] compile identity.in[0m
+[37m23:10:09 [INFO] compile random.cpp[0m
+[37m23:10:10 [INFO] compile mid.cpp[0m
+[37m23:10:10 [INFO] compile max_random.cpp[0m
+[37m23:10:10 [INFO] compile max_identity.cpp[0m
+[37m23:10:11 [INFO] compile small_degree.cpp[0m
+[37m23:10:11 [INFO] clear input /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/in[0m
+[37m23:10:11 [INFO] gen example.in 1cases[0m
+[37m23:10:11 [INFO] gen identity.in 1cases[0m
+[37m23:10:11 [INFO] gen random.cpp 5cases[0m
+[37m23:10:11 [INFO] gen mid.cpp 5cases[0m
+[37m23:10:11 [INFO] gen max_random.cpp 5cases[0m
+[37m23:10:11 [INFO] gen max_identity.cpp 1cases[0m
+[37m23:10:11 [INFO] gen small_degree.cpp 10cases[0m
+[37m23:10:11 [INFO] clear output /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/out[0m
+[37m23:10:11 [INFO] ANS      0 msecs : example_00 : b''[0m
+[37m23:10:11 [INFO] ANS      0 msecs : identity_00 : b''[0m
+[37m23:10:12 [INFO] ANS    926 msecs : random_00 : b''[0m
+[37m23:10:13 [INFO] ANS    615 msecs : random_01 : b''[0m
+[37m23:10:13 [INFO] ANS    330 msecs : random_02 : b''[0m
+[37m23:10:13 [INFO] ANS    274 msecs : random_03 : b''[0m
+[37m23:10:13 [INFO] ANS     83 msecs : random_04 : b''[0m
+[37m23:10:13 [INFO] ANS     27 msecs : mid_00 : b''[0m
+[37m23:10:13 [INFO] ANS     27 msecs : mid_01 : b''[0m
+[37m23:10:13 [INFO] ANS     26 msecs : mid_02 : b''[0m
+[37m23:10:13 [INFO] ANS     15 msecs : mid_03 : b''[0m
+[37m23:10:13 [INFO] ANS     32 msecs : mid_04 : b''[0m
+[37m23:10:14 [INFO] ANS   1130 msecs : max_random_00 : b''[0m
+[37m23:10:16 [INFO] ANS   1132 msecs : max_random_01 : b''[0m
+[37m23:10:17 [INFO] ANS   1141 msecs : max_random_02 : b''[0m
+[37m23:10:18 [INFO] ANS   1155 msecs : max_random_03 : b''[0m
+[37m23:10:20 [INFO] ANS   1897 msecs : max_random_04 : b''[0m
+[37m23:10:21 [INFO] ANS   1098 msecs : max_identity_00 : b''[0m
+[37m23:10:21 [INFO] ANS      1 msecs : small_degree_00 : b''[0m
+[37m23:10:21 [INFO] ANS      1 msecs : small_degree_01 : b''[0m
+[37m23:10:21 [INFO] ANS      0 msecs : small_degree_02 : b''[0m
+[37m23:10:21 [INFO] ANS      1 msecs : small_degree_03 : b''[0m
+[37m23:10:21 [INFO] ANS      1 msecs : small_degree_04 : b''[0m
+[37m23:10:21 [INFO] ANS      0 msecs : small_degree_05 : b''[0m
+[37m23:10:21 [INFO] ANS      0 msecs : small_degree_06 : b''[0m
+[37m23:10:21 [INFO] ANS      0 msecs : small_degree_07 : b''[0m
+[37m23:10:21 [INFO] ANS      0 msecs : small_degree_08 : b''[0m
+[37m23:10:21 [INFO] ANS      1 msecs : small_degree_09 : b''[0m
+[INFO] save cookie to: /home/qand/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: example_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/example_00.in
+[INFO] output: example_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/example_00.out
+
+[INFO] sample 1
+[INFO] input: identity_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/identity_00.in
+[INFO] output: identity_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/identity_00.out
+
+[INFO] sample 2
+[INFO] input: max_identity_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_identity_00.in
+[INFO] output: max_identity_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_identity_00.out
+
+[INFO] sample 3
+[INFO] input: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_00.in
+[INFO] output: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_00.out
+
+[INFO] sample 4
+[INFO] input: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_01.in
+[INFO] output: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_01.out
+
+[INFO] sample 5
+[INFO] input: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_02.in
+[INFO] output: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_02.out
+
+[INFO] sample 6
+[INFO] input: max_random_03
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_03.in
+[INFO] output: max_random_03
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_03.out
+
+[INFO] sample 7
+[INFO] input: max_random_04
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_04.in
+[INFO] output: max_random_04
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_04.out
+
+[INFO] sample 8
+[INFO] input: mid_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_00.in
+[INFO] output: mid_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_00.out
+
+[INFO] sample 9
+[INFO] input: mid_01
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_01.in
+[INFO] output: mid_01
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_01.out
+
+[INFO] sample 10
+[INFO] input: mid_02
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_02.in
+[INFO] output: mid_02
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_02.out
+
+[INFO] sample 11
+[INFO] input: mid_03
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_03.in
+[INFO] output: mid_03
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_03.out
+
+[INFO] sample 12
+[INFO] input: mid_04
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_04.in
+[INFO] output: mid_04
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_04.out
+
+[INFO] sample 13
+[INFO] input: random_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_00.in
+[INFO] output: random_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_00.out
+
+[INFO] sample 14
+[INFO] input: random_01
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_01.in
+[INFO] output: random_01
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_01.out
+
+[INFO] sample 15
+[INFO] input: random_02
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_02.in
+[INFO] output: random_02
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_02.out
+
+[INFO] sample 16
+[INFO] input: random_03
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_03.in
+[INFO] output: random_03
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_03.out
+
+[INFO] sample 17
+[INFO] input: random_04
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_04.in
+[INFO] output: random_04
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_04.out
+
+[INFO] sample 18
+[INFO] input: small_degree_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_00.in
+[INFO] output: small_degree_00
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_00.out
+
+[INFO] sample 19
+[INFO] input: small_degree_01
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_01.in
+[INFO] output: small_degree_01
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_01.out
+
+[INFO] sample 20
+[INFO] input: small_degree_02
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_02.in
+[INFO] output: small_degree_02
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_02.out
+
+[INFO] sample 21
+[INFO] input: small_degree_03
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_03.in
+[INFO] output: small_degree_03
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_03.out
+
+[INFO] sample 22
+[INFO] input: small_degree_04
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_04.in
+[INFO] output: small_degree_04
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_04.out
+
+[INFO] sample 23
+[INFO] input: small_degree_05
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_05.in
+[INFO] output: small_degree_05
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_05.out
+
+[INFO] sample 24
+[INFO] input: small_degree_06
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_06.in
+[INFO] output: small_degree_06
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_06.out
+
+[INFO] sample 25
+[INFO] input: small_degree_07
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_07.in
+[INFO] output: small_degree_07
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_07.out
+
+[INFO] sample 26
+[INFO] input: small_degree_08
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_08.in
+[INFO] output: small_degree_08
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_08.out
+
+[INFO] sample 27
+[INFO] input: small_degree_09
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_09.in
+[INFO] output: small_degree_09
+[SUCCESS] saved to: .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_09.out
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/a.out test/power_projection.test.cpp[0m
+git version 2.34.1
+[32mINFO[0m:onlinejudge.service.library_checker:$ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull[0m
+Already up to date.
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/info.toml --compile-checker[0m
+[33m23:10:28 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m23:10:28 [INFO] Start compositional_inverse_of_formal_power_series_large[0m
+[37m23:10:28 [INFO] generate params.h[0m
+[37m23:10:28 [INFO] Test cases are already generated[0m
+[37m23:10:28 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/a.out -d .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 28 cases found
+
+[INFO] identity_00
+[INFO] time: 0.004039 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/identity_00.in /tmp/tmpr4codgy6/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/identity_00.out
+ok 2 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.005532 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/example_00.in /tmp/tmp1x9lu_yz/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/example_00.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_identity_00
+[INFO] time: 0.023213 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_identity_00.in /tmp/tmp9ted83ja/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_identity_00.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.076773 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_00.in /tmp/tmpn7gg0s9h/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_00.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.075670 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_01.in /tmp/tmp0qfk0b64/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_01.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.078261 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_02.in /tmp/tmpmr_r3if0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_02.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_03
+[INFO] time: 0.073883 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_03.in /tmp/tmp5t2n14wm/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_03.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_00
+[INFO] time: 0.007098 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_00.in /tmp/tmpkpxrrx53/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_00.out
+ok 4798 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_04
+[INFO] time: 0.080922 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_04.in /tmp/tmpuwpkxdue/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_04.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_01
+[INFO] time: 0.006999 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_01.in /tmp/tmpgkzxmm2z/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_01.out
+ok 4303 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_02
+[INFO] time: 0.008960 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_02.in /tmp/tmptlh67t4j/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_02.out
+ok 4193 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_03
+[INFO] time: 0.007993 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_03.in /tmp/tmp8mz0lxox/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_03.out
+ok 3274 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_04
+[INFO] time: 0.009874 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_04.in /tmp/tmpahiirf4t/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_04.out
+ok 6685 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.058833 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_01.in /tmp/tmp6m08php9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_01.out
+ok 69831 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.077096 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_00.in /tmp/tmphe2ia5l2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_00.out
+ok 127670 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.037882 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_02.in /tmp/tmp7suslsxk/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_02.out
+ok 53337 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.033378 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_03.in /tmp/tmpbx3zzqqc/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_03.out
+ok 36034 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.011587 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_04.in /tmp/tmpvfwt_ecv/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_04.out
+ok 14869 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_00
+[INFO] time: 0.005778 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_00.in /tmp/tmpj83riziq/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_00.out
+ok 2 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_01
+[INFO] time: 0.006338 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_01.in /tmp/tmpls6nhy0j/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_01.out
+ok 3 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_02
+[INFO] time: 0.005958 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_02.in /tmp/tmpyvf78yqs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_02.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_03
+[INFO] time: 0.006334 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_03.in /tmp/tmpzpybeq8k/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_03.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_04
+[INFO] time: 0.006362 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_04.in /tmp/tmpxgo15z6_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_04.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_05
+[INFO] time: 0.006568 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_05.in /tmp/tmpll23tt9f/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_05.out
+ok 7 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_06
+[INFO] time: 0.006185 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_06.in /tmp/tmpdofnclgf/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_06.out
+ok 8 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_07
+[INFO] time: 0.007117 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_07.in /tmp/tmphrfarxak/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_07.out
+ok 9 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_08
+[INFO] time: 0.005948 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_08.in /tmp/tmpns7gfseb/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_08.out
+ok 10 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_09
+[INFO] time: 0.006180 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_09.in /tmp/tmpc8xdqjej/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_09.out
+ok 11 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.080922 sec  (for max_random_04)
+[INFO] max memory: 12.448000 MB  (for max_random_02)
+[SUCCESS] test success: 28 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/a.out test/power_projection.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/info.toml --compile-checker[0m
+[33m23:10:33 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m23:10:33 [INFO] Start compositional_inverse_of_formal_power_series_large[0m
+[37m23:10:33 [INFO] generate params.h[0m
+[37m23:10:33 [INFO] Test cases are already generated[0m
+[37m23:10:33 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/a.out -d .verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 28 cases found
+
+[INFO] example_00
+[INFO] time: 0.005153 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/example_00.in /tmp/tmplt5r9qq5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/example_00.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] identity_00
+[INFO] time: 0.004100 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/identity_00.in /tmp/tmptxdh_e_i/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/identity_00.out
+ok 2 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_identity_00
+[INFO] time: 0.018772 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_identity_00.in /tmp/tmp8rjd3i2k/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_identity_00.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.072044 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_00.in /tmp/tmp_6ozbjvu/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_00.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.069763 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_01.in /tmp/tmphxumdk4i/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_01.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.076284 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_02.in /tmp/tmpkmkdb_uf/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_02.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_03
+[INFO] time: 0.071476 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_03.in /tmp/tmplh2nwqi7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_03.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_00
+[INFO] time: 0.006931 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_00.in /tmp/tmpq2eybged/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_00.out
+ok 4798 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_04
+[INFO] time: 0.078204 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_04.in /tmp/tmpc_m8_4dn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/max_random_04.out
+ok 131072 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_01
+[INFO] time: 0.007232 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_01.in /tmp/tmpjgu2wa73/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_01.out
+ok 4303 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_02
+[INFO] time: 0.012528 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_02.in /tmp/tmp_0odjuue/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_02.out
+ok 4193 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_03
+[INFO] time: 0.008690 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_03.in /tmp/tmpuveehjj6/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_03.out
+ok 3274 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] mid_04
+[INFO] time: 0.008608 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_04.in /tmp/tmppzlwzuxo/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/mid_04.out
+ok 6685 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.057560 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_01.in /tmp/tmp6ujtfbfw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_01.out
+ok 69831 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.075238 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_00.in /tmp/tmp3pc0obu4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_00.out
+ok 127670 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.036445 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_02.in /tmp/tmpoiw9tgj5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_02.out
+ok 53337 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.032333 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_03.in /tmp/tmpxh2m5o6m/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_03.out
+ok 36034 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.013670 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_04.in /tmp/tmp9sf8htg4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/random_04.out
+ok 14869 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_00
+[INFO] time: 0.005851 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_00.in /tmp/tmp1a1l1tu3/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_00.out
+ok 2 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_01
+[INFO] time: 0.006043 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_01.in /tmp/tmp67jhxnnq/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_01.out
+ok 3 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_02
+[INFO] time: 0.006158 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_02.in /tmp/tmpmornof36/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_02.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_03
+[INFO] time: 0.005773 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_03.in /tmp/tmpio3dz9yj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_03.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_04
+[INFO] time: 0.005940 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_04.in /tmp/tmpvctqa11u/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_04.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_05
+[INFO] time: 0.005576 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_05.in /tmp/tmpje410hku/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_05.out
+ok 7 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_06
+[INFO] time: 0.005553 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_06.in /tmp/tmp2mg7qik4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_06.out
+ok 8 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_07
+[INFO] time: 0.005744 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_07.in /tmp/tmp4r93hu18/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_07.out
+ok 9 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_08
+[INFO] time: 0.005348 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_08.in /tmp/tmpt6i6zy8s/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_08.out
+ok 10 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_09
+[INFO] time: 0.005279 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_09.in /tmp/tmpfe242ejk/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/a4ef3931da15cce0e83f99bd34005ae0/test/small_degree_09.out
+ok 11 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.078204 sec  (for max_random_04)
+[INFO] max memory: 12.260000 MB  (for max_random_04)
+[SUCCESS] test success: 28 cases
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/fps_compositional_inverse.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series[0m
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/a.out test/fps_compositional_inverse.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/info.toml --compile-checker[0m
+[33m23:10:41 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m23:10:41 [INFO] Start compositional_inverse_of_formal_power_series[0m
+[37m23:10:41 [INFO] generate params.h[0m
+[37m23:10:41 [INFO] Test cases are already generated[0m
+[37m23:10:41 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/a.out -d .verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 23 cases found
+
+[INFO] identity_00
+[INFO] time: 0.005940 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/identity_00.in /tmp/tmp5wtbhvpw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/identity_00.out
+ok 2 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.006640 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/example_00.in /tmp/tmpwqy6r2fs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/example_00.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_identity_00
+[INFO] time: 0.006124 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_identity_00.in /tmp/tmpwxoh1z68/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_identity_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.009580 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_00.in /tmp/tmpcymjnio_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.010223 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_01.in /tmp/tmpwoydj5wz/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_01.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.009679 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_02.in /tmp/tmp83f6fsp0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_02.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_03
+[INFO] time: 0.010089 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_03.in /tmp/tmphxt909mu/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_03.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_04
+[INFO] time: 0.009914 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_04.in /tmp/tmphfotaoc1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_04.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.008950 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_00.in /tmp/tmpsxlhh83s/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_00.out
+ok 4790 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.009559 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_01.in /tmp/tmp83rlqd_v/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_01.out
+ok 4295 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.009071 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_02.in /tmp/tmpdwoqhe3b/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_02.out
+ok 4185 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.007926 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_03.in /tmp/tmpp7dz5wi6/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_03.out
+ok 3266 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.009385 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_04.in /tmp/tmpuw_zt7a7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_04.out
+ok 6677 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_00
+[INFO] time: 0.005741 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_00.in /tmp/tmp4pp6mq75/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_00.out
+ok 2 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_01
+[INFO] time: 0.006336 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_01.in /tmp/tmpv3mv4ltr/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_01.out
+ok 3 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_02
+[INFO] time: 0.006135 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_02.in /tmp/tmpfyfbs5az/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_02.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_03
+[INFO] time: 0.006503 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_03.in /tmp/tmpm_g_uopl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_03.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_04
+[INFO] time: 0.006475 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_04.in /tmp/tmpeury_9_u/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_04.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_05
+[INFO] time: 0.006242 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_05.in /tmp/tmpq8ydf8f3/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_05.out
+ok 7 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_06
+[INFO] time: 0.006466 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_06.in /tmp/tmp1807tzum/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_06.out
+ok 8 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_07
+[INFO] time: 0.006724 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_07.in /tmp/tmpan9zptvy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_07.out
+ok 9 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_08
+[INFO] time: 0.006056 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_08.in /tmp/tmpetdwnid4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_08.out
+ok 10 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_09
+[INFO] time: 0.006031 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_09.in /tmp/tmp47rppkuy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_09.out
+ok 11 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.010223 sec  (for max_random_01)
+[INFO] max memory: 4.472000 MB  (for max_random_02)
+[SUCCESS] test success: 23 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/a.out test/fps_compositional_inverse.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/info.toml --compile-checker[0m
+[33m23:10:45 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m23:10:45 [INFO] Start compositional_inverse_of_formal_power_series[0m
+[37m23:10:45 [INFO] generate params.h[0m
+[37m23:10:45 [INFO] Test cases are already generated[0m
+[37m23:10:45 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/a.out -d .verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 23 cases found
+
+[INFO] identity_00
+[INFO] time: 0.003948 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/identity_00.in /tmp/tmpwsxql2zw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/identity_00.out
+ok 2 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.005252 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/example_00.in /tmp/tmpmkul0sm0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/example_00.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_identity_00
+[INFO] time: 0.005407 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_identity_00.in /tmp/tmp01gd2c0e/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_identity_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.009569 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_00.in /tmp/tmpeczur9wo/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.009291 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_01.in /tmp/tmp8paxd595/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_01.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.008728 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_02.in /tmp/tmp6582o39c/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_02.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_03
+[INFO] time: 0.009200 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_03.in /tmp/tmpepxy8mpq/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_03.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_04
+[INFO] time: 0.010195 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_04.in /tmp/tmpx8yxqj8q/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/max_random_04.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.008516 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_00.in /tmp/tmpwmcdltiy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_00.out
+ok 4790 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.008353 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_01.in /tmp/tmpsaibiddv/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_01.out
+ok 4295 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.008419 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_02.in /tmp/tmphzg_jc3a/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_02.out
+ok 4185 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.006945 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_03.in /tmp/tmphwyued37/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_03.out
+ok 3266 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.009602 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_04.in /tmp/tmp22i_uawm/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/random_04.out
+ok 6677 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_00
+[INFO] time: 0.005840 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_00.in /tmp/tmpys7oawyt/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_00.out
+ok 2 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_01
+[INFO] time: 0.005812 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_01.in /tmp/tmp_fexlxtx/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_01.out
+ok 3 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_02
+[INFO] time: 0.005461 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_02.in /tmp/tmpe5xcp0dd/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_02.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_03
+[INFO] time: 0.006361 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_03.in /tmp/tmp7jd_4lrj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_03.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_04
+[INFO] time: 0.005326 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_04.in /tmp/tmpvr0irdjs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_04.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_05
+[INFO] time: 0.005725 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_05.in /tmp/tmpy980849d/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_05.out
+ok 7 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_06
+[INFO] time: 0.005970 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_06.in /tmp/tmp5k4acnjk/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_06.out
+ok 8 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_07
+[INFO] time: 0.007002 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_07.in /tmp/tmph_z5itp7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_07.out
+ok 9 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_08
+[INFO] time: 0.006082 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_08.in /tmp/tmplrrsu9on/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_08.out
+ok 10 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_degree_09
+[INFO] time: 0.005842 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_09.in /tmp/tmpzl24jqab/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/310973e7f4c53c49c1fe6889bee0808d/test/small_degree_09.out
+ok 11 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.010195 sec  (for max_random_04)
+[INFO] max memory: 4.364000 MB  (for max_random_01)
+[SUCCESS] test success: 23 cases
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/fps_compose.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/composition_of_formal_power_series[0m
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/a.out test/fps_compose.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/info.toml --compile-checker[0m
+[33m23:10:51 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m23:10:51 [INFO] Start composition_of_formal_power_series[0m
+[37m23:10:51 [INFO] generate params.h[0m
+[37m23:10:51 [INFO] Test cases are already generated[0m
+[37m23:10:51 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/a.out -d .verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 27 cases found
+
+[INFO] example_00
+[INFO] time: 0.004660 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/example_00.in /tmp/tmpx75q7l0i/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/example_00.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack2_00
+[INFO] time: 0.012321 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_00.in /tmp/tmp4dmf9f9m/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack2_01
+[INFO] time: 0.012002 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_01.in /tmp/tmp70drbn8d/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_01.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack2_02
+[INFO] time: 0.012891 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_02.in /tmp/tmp0vk_6zbl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_02.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack_00
+[INFO] time: 0.011292 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_00.in /tmp/tmpzu48xyob/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack_01
+[INFO] time: 0.010660 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_01.in /tmp/tmpx7l7teln/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_01.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack_02
+[INFO] time: 0.011329 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_02.in /tmp/tmpv9b8rzxx/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_02.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.012115 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_00.in /tmp/tmpk63aqj3j/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.011983 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_01.in /tmp/tmpvslmhr5j/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_01.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.012565 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_02.in /tmp/tmphtmafc66/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_02.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_03
+[INFO] time: 0.012143 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_03.in /tmp/tmp4x02wx_a/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_03.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_04
+[INFO] time: 0.012129 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_04.in /tmp/tmpr9ciek7s/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_04.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.009690 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_00.in /tmp/tmpfuyl9ap7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_00.out
+ok 4789 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.010661 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_01.in /tmp/tmp8f0p6o_1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_01.out
+ok 4294 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.009939 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_02.in /tmp/tmpgln49xfs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_02.out
+ok 4184 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.007956 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_03.in /tmp/tmp2ze61_fz/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_03.out
+ok 3265 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.011275 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_04.in /tmp/tmpjlebx585/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_04.out
+ok 6676 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.005611 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_00.in /tmp/tmpw6k60gr9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_00.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.006061 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_01.in /tmp/tmpb5d4vjkn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_01.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.005817 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_02.in /tmp/tmpul0zxbji/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_02.out
+ok 8 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_03
+[INFO] time: 0.005605 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_03.in /tmp/tmpk96urt69/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_03.out
+ok "504915182"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_04
+[INFO] time: 0.006325 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_04.in /tmp/tmpy3ohzsch/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_04.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_05
+[INFO] time: 0.006003 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_05.in /tmp/tmp5e94g5m_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_05.out
+ok 10 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_06
+[INFO] time: 0.005489 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_06.in /tmp/tmp6os_l6tn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_06.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_07
+[INFO] time: 0.006431 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_07.in /tmp/tmpc_t88xnh/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_07.out
+ok 3 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_08
+[INFO] time: 0.005590 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_08.in /tmp/tmpkiw2itoi/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_08.out
+ok 7 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_09
+[INFO] time: 0.006081 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_09.in /tmp/tmpbph7po4e/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_09.out
+ok "290651129"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.012891 sec  (for hack2_02)
+[INFO] max memory: 5.532000 MB  (for max_random_02)
+[SUCCESS] test success: 27 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/a.out test/fps_compose.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/info.toml --compile-checker[0m
+[33m23:10:55 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m23:10:55 [INFO] Start composition_of_formal_power_series[0m
+[37m23:10:55 [INFO] generate params.h[0m
+[37m23:10:55 [INFO] Test cases are already generated[0m
+[37m23:10:55 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/a.out -d .verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 27 cases found
+
+[INFO] example_00
+[INFO] time: 0.005402 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/example_00.in /tmp/tmpk9ir4s48/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/example_00.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack2_00
+[INFO] time: 0.009881 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_00.in /tmp/tmpebwpg6pd/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack2_01
+[INFO] time: 0.011410 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_01.in /tmp/tmphppcl3vb/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_01.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack2_02
+[INFO] time: 0.010964 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_02.in /tmp/tmpxy78pulh/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack2_02.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack_00
+[INFO] time: 0.010534 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_00.in /tmp/tmpl073ujzb/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack_01
+[INFO] time: 0.010125 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_01.in /tmp/tmpwybdffq9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_01.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] hack_02
+[INFO] time: 0.009778 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_02.in /tmp/tmp_53e77of/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/hack_02.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.010928 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_00.in /tmp/tmp_90fi_qi/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_00.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.010591 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_01.in /tmp/tmpdhny6dij/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_01.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.011367 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_02.in /tmp/tmp45tka8qw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_02.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_03
+[INFO] time: 0.010731 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_03.in /tmp/tmpp7v1lsk5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_03.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_04
+[INFO] time: 0.011020 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_04.in /tmp/tmpzow2m0gg/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/max_random_04.out
+ok 8000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.008939 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_00.in /tmp/tmpwkizrg2z/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_00.out
+ok 4789 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.009387 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_01.in /tmp/tmptoga09sn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_01.out
+ok 4294 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.008943 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_02.in /tmp/tmp3mtfczpu/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_02.out
+ok 4184 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.007220 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_03.in /tmp/tmpz7d_1owr/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_03.out
+ok 3265 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.010329 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_04.in /tmp/tmph02n0fxr/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/random_04.out
+ok 6676 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.005433 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_00.in /tmp/tmpbtsw1nr3/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_00.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.005429 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_01.in /tmp/tmpug51c3jl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_01.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.005327 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_02.in /tmp/tmp2iy_zkwt/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_02.out
+ok 8 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_03
+[INFO] time: 0.004996 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_03.in /tmp/tmpodp14h7x/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_03.out
+ok "504915182"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_04
+[INFO] time: 0.004816 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_04.in /tmp/tmp84yobrjv/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_04.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_05
+[INFO] time: 0.005614 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_05.in /tmp/tmpgzdkf47_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_05.out
+ok 10 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_06
+[INFO] time: 0.007478 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_06.in /tmp/tmpsee8mj9p/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_06.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_07
+[INFO] time: 0.005353 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_07.in /tmp/tmpq71g3d_b/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_07.out
+ok 3 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_08
+[INFO] time: 0.005072 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_08.in /tmp/tmpnztf6ezx/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_08.out
+ok 7 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_09
+[INFO] time: 0.005406 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/polynomial/composition_of_formal_power_series/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_09.in /tmp/tmpa3bgyw2j/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/ad22cd3561f85092f80cd4bc7767604b/test/small_09.out
+ok "290651129"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.011410 sec  (for hack2_01)
+[INFO] max memory: 5.600000 MB  (for max_random_03)
+[SUCCESS] test success: 27 cases
+[32mINFO[0m:onlinejudge_verify.verify:all tests succeeded[0m

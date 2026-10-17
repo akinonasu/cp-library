@@ -818,7 +818,7 @@ struct NTT {
 		alignas(32) U lanes[16];
 		store8(lanes, p);
 		store8(lanes + 8, q);
-		for (auto x : lanes) assert(out(x) != 0);
+		for ([[maybe_unused]] auto x : lanes) assert(out(x) != 0);
 		I8 inverse = inverse8(p), other = inverse8(q);
 		for (int i = count - 16; i >= 16; i -= 16) {
 			store8(dst + i, mul8(inverse, load8(dst + i - 16)));
@@ -1921,7 +1921,7 @@ struct NTT {
 		cube_roots.swap(inverse_cube_roots);
 		cube_quotients.swap(inverse_cube_quotients);
 	}
-	U reversion_projection(U *p, U *q, int size) {
+	U reversion_projection(U *p, U *q, int size, const U *weights = nullptr) {
 		int levels = __builtin_ctz((unsigned int)size);
 		V saved(levels, one);
 		U q_one = one, p_one = one;
@@ -1941,10 +1941,21 @@ struct NTT {
 			q[2 * size + i] = sub(x, one);
 		}
 
-		for (int i = 0; i < size; ++i) {
-			U x = fixed_mul(sub(q[2 * i + 1], q[2 * i]), roots[i], root_quotients[i]);
-			p[i] = i < size / 2 ? x : sub(0, x);
-			p[size + i] = sub(0, p[i]);
+		if (weights) {
+			for (int i = 0; i < size; ++i) {
+				p[i] = p[size + i] = weights[i];
+			}
+			transpose_roots();
+			fft<false>(p, 2 * size, size);
+			transpose_roots();
+			for (int i = 0; i < 2 * size; ++i) p[2 * size + i] = sub(0, p[i]);
+			projection_dot(p, q, 2 * size);
+		} else {
+			for (int i = 0; i < size; ++i) {
+				U x = fixed_mul(sub(q[2 * i + 1], q[2 * i]), roots[i], root_quotients[i]);
+				p[i] = i < size / 2 ? x : sub(0, x);
+				p[size + i] = sub(0, p[i]);
+			}
 		}
 		q_one = one;
 		for (int columns = size / 2, rows = 2; columns > 1; columns >>= 1, rows <<= 1) {

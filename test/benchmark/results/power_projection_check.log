@@ -1,0 +1,81 @@
+g++: standalone fps/power_projection.hpp
+g++: standalone components/ntt.hpp
+g++: power_projection.cpp
+g++: fps_algorithms.cpp
+g++: ntt_mod.cpp
+g++: standalone.cpp
+clang++: standalone fps/power_projection.hpp
+clang++: standalone components/ntt.hpp
+clang++: power_projection.cpp
+clang++: fps_algorithms.cpp
+clang++: ntt_mod.cpp
+clang++: standalone.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/power_projection.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone components/ntt.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: power_projection.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: fps_algorithms.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: ntt_mod.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone.cpp
+Verification passed
+g++: standalone components/fps_direct_eval.hpp
+g++: standalone components/fps_operations.hpp
+g++: standalone components/fps_product_tree.hpp
+g++: standalone components/polynomial_half_gcd.hpp
+g++: standalone convolution/convolution.hpp
+g++: standalone convolution/cyclic_convolution.hpp
+g++: standalone convolution/max_min_convolution.hpp
+g++: standalone convolution/multiplicative_convolution.hpp
+g++: standalone convolution/multivariate_convolution.hpp
+g++: standalone convolution/online_convolution.hpp
+g++: standalone convolution/ordered_convolution.hpp
+g++: standalone fps/bostan_mori.hpp
+g++: standalone fps/compose.hpp
+g++: standalone fps/compositional_inverse.hpp
+g++: standalone fps/fps.hpp
+g++: standalone fps/interpolate.hpp
+g++: standalone fps/linear_recurrence.hpp
+g++: standalone fps/multipoint_eval.hpp
+g++: standalone fps/polynomial_gcd.hpp
+g++: standalone fps/taylor_shift.hpp
+g++: convolution.cpp
+g++: fourier_transforms.cpp
+g++: fps.cpp
+g++: multipoint_tree.cpp
+g++: online_convolution.cpp
+g++: ordered_convolution.cpp
+g++: polynomial_gcd.cpp
+clang++: standalone components/fps_direct_eval.hpp
+clang++: standalone components/fps_operations.hpp
+clang++: standalone components/fps_product_tree.hpp
+clang++: standalone components/polynomial_half_gcd.hpp
+clang++: standalone convolution/convolution.hpp
+clang++: standalone convolution/cyclic_convolution.hpp
+clang++: standalone convolution/max_min_convolution.hpp
+clang++: standalone convolution/multiplicative_convolution.hpp
+clang++: standalone convolution/multivariate_convolution.hpp
+clang++: standalone convolution/online_convolution.hpp
+clang++: standalone convolution/ordered_convolution.hpp
+clang++: standalone fps/bostan_mori.hpp
+clang++: standalone fps/compose.hpp
+clang++: standalone fps/compositional_inverse.hpp
+clang++: standalone fps/fps.hpp
+clang++: standalone fps/interpolate.hpp
+clang++: standalone fps/linear_recurrence.hpp
+clang++: standalone fps/multipoint_eval.hpp
+clang++: standalone fps/polynomial_gcd.hpp
+clang++: standalone fps/taylor_shift.hpp
+clang++: convolution.cpp
+clang++: fourier_transforms.cpp
+clang++: fps.cpp
+clang++: multipoint_tree.cpp
+clang++: online_convolution.cpp
+clang++: ordered_convolution.cpp
+clang++: polynomial_gcd.cpp
+Verification passed
+g++: standalone fps/power_projection.hpp
+g++: power_projection.cpp
+clang++: standalone fps/power_projection.hpp
+clang++: power_projection.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/power_projection.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: power_projection.cpp
+Verification passed

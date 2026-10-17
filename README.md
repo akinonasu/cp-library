@@ -86,6 +86,7 @@
 | `fps/bostan_mori.hpp` | Bostan–Mori | [使い方](docs/bostan_mori.md) |
 | `fps/linear_recurrence.hpp` | 線形漸化式の第 k 項 | [使い方](docs/linear_recurrence.md) |
 | `fps/compose.hpp` | 形式的冪級数の合成 | [使い方](docs/compose.md) |
+| `fps/power_projection.hpp` | Power Projection | [使い方](docs/power_projection.md) |
 | `fps/compositional_inverse.hpp` | 形式的冪級数の合成逆元 | [使い方](docs/compositional_inverse.md) |
 | `fps/multipoint_eval.hpp` | 多点評価 | [使い方](docs/multipoint_eval.md) |
 | `fps/interpolate.hpp` | 多項式補間 | [使い方](docs/interpolate.md) |
