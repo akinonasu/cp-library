@@ -1,0 +1,6 @@
+g++: advanced unit passed
+clang++: advanced unit passed
+g++ NDEBUG: advanced unit passed
+clang++ sanitizer: advanced unit passed
+test/unit/fps_algorithms.cpp: passed
+g++ final frozen headers: advanced unit passed

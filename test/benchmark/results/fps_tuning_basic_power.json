@@ -1,0 +1,358 @@
+{
+  "environment": {
+    "flags": [
+      "-std=c++23",
+      "-O2",
+      "-DNDEBUG",
+      "-march=native",
+      "-ftrivial-auto-var-init=zero"
+    ],
+    "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0",
+    "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+    "cpu_affinity": 2,
+    "trials": 9,
+    "source_sha256": {
+      "fps/fps.hpp": "6a02d8472c3b5f9fe63d331fa9809a83146a784c7396cd8d0645f8d94d60b9c0",
+      "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+      "components/ntt.hpp": "6e6b80e0c2d4ea87e90b6b761361d7cd58f1e62bd2d51b3740a99e9c51734fb9",
+      "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+    },
+    "seed": 731,
+    "variants": [
+      "before",
+      "windows",
+      "pow_unfused"
+    ],
+    "variant_header_sha256": {
+      "before": "b69f0eab0cdd168550d9d13e0f6b700b109826cc491e10ce1306ac806ab7a357",
+      "windows": "6a02d8472c3b5f9fe63d331fa9809a83146a784c7396cd8d0645f8d94d60b9c0",
+      "pow_unfused": "2c23edfafea174ab7f141e4281fc139cd8b8eb799f92e37e027f1644df4c6493"
+    }
+  },
+  "results": [
+    {
+      "size": 32768,
+      "operation": "pow",
+      "variant": "before",
+      "median": 0.001769934,
+      "samples": [
+        0.001885945,
+        0.001761908,
+        0.001748818,
+        0.001844521,
+        0.00181193,
+        0.001744736,
+        0.001834257,
+        0.001766251,
+        0.001769934
+      ],
+      "checksum": "18339831740919652226"
+    },
+    {
+      "size": 32768,
+      "operation": "pow",
+      "variant": "windows",
+      "median": 0.001732532,
+      "samples": [
+        0.00180943,
+        0.001732097,
+        0.001696711,
+        0.001686662,
+        0.001741844,
+        0.001691152,
+        0.00186881,
+        0.001732532,
+        0.001813547
+      ],
+      "checksum": "18339831740919652226"
+    },
+    {
+      "size": 32768,
+      "operation": "pow",
+      "variant": "pow_unfused",
+      "median": 0.001750344,
+      "samples": [
+        0.001781164,
+        0.00166813,
+        0.001789578,
+        0.001754134,
+        0.001750344,
+        0.001674423,
+        0.001701027,
+        0.001679008,
+        0.001774846
+      ],
+      "checksum": "18339831740919652226"
+    },
+    {
+      "size": 32768,
+      "operation": "exp",
+      "variant": "before",
+      "median": 0.000954922,
+      "samples": [
+        0.001026237,
+        0.000943644,
+        0.000954922,
+        0.001036864,
+        0.000920942,
+        0.001063749,
+        0.000970925,
+        0.000939326,
+        0.00090922
+      ],
+      "checksum": "1837120959152118695"
+    },
+    {
+      "size": 32768,
+      "operation": "exp",
+      "variant": "windows",
+      "median": 0.000931581,
+      "samples": [
+        0.001181579,
+        0.000931581,
+        0.000905172,
+        0.000935773,
+        0.000992382,
+        0.000903089,
+        0.000881319,
+        0.000930214,
+        0.000977446
+      ],
+      "checksum": "1837120959152118695"
+    },
+    {
+      "size": 32768,
+      "operation": "exp",
+      "variant": "pow_unfused",
+      "median": 0.000917633,
+      "samples": [
+        0.000927593,
+        0.000990502,
+        0.00092979,
+        0.000917633,
+        0.000914312,
+        0.000899534,
+        0.001134897,
+        0.000882111,
+        0.000892279
+      ],
+      "checksum": "1837120959152118695"
+    },
+    {
+      "size": 131073,
+      "operation": "pow",
+      "variant": "before",
+      "median": 0.007855381,
+      "samples": [
+        0.00767062,
+        0.007808449,
+        0.008137322,
+        0.008164111,
+        0.007882331,
+        0.007961665,
+        0.007855381,
+        0.007837627,
+        0.007805194
+      ],
+      "checksum": "9025018060276754506"
+    },
+    {
+      "size": 131073,
+      "operation": "pow",
+      "variant": "windows",
+      "median": 0.007690109,
+      "samples": [
+        0.007615415,
+        0.007598685,
+        0.007871561,
+        0.00770264,
+        0.008238908,
+        0.007546196,
+        0.007690109,
+        0.007612624,
+        0.007698806
+      ],
+      "checksum": "9025018060276754506"
+    },
+    {
+      "size": 131073,
+      "operation": "pow",
+      "variant": "pow_unfused",
+      "median": 0.007869531,
+      "samples": [
+        0.007777872,
+        0.008162794,
+        0.008343722,
+        0.007904142,
+        0.007769976,
+        0.007729742,
+        0.007654068,
+        0.007869531,
+        0.008212152
+      ],
+      "checksum": "9025018060276754506"
+    },
+    {
+      "size": 131073,
+      "operation": "exp",
+      "variant": "before",
+      "median": 0.004263954,
+      "samples": [
+        0.004492981,
+        0.004606424,
+        0.004592213,
+        0.004263954,
+        0.004230264,
+        0.004254121,
+        0.004229789,
+        0.004172068,
+        0.004285422
+      ],
+      "checksum": "12731854367312602159"
+    },
+    {
+      "size": 131073,
+      "operation": "exp",
+      "variant": "windows",
+      "median": 0.004298653,
+      "samples": [
+        0.00456883,
+        0.004647219,
+        0.004461222,
+        0.004298653,
+        0.004156453,
+        0.004423513,
+        0.00423241,
+        0.004211741,
+        0.004252993
+      ],
+      "checksum": "12731854367312602159"
+    },
+    {
+      "size": 131073,
+      "operation": "exp",
+      "variant": "pow_unfused",
+      "median": 0.004301112,
+      "samples": [
+        0.00451138,
+        0.004486172,
+        0.004458294,
+        0.004285749,
+        0.0046045,
+        0.004301112,
+        0.004200845,
+        0.004212365,
+        0.004174135
+      ],
+      "checksum": "12731854367312602159"
+    },
+    {
+      "size": 524288,
+      "operation": "pow",
+      "variant": "before",
+      "median": 0.034290167,
+      "samples": [
+        0.035363794,
+        0.035399026,
+        0.033509994,
+        0.03296726,
+        0.034290167,
+        0.0365885,
+        0.034296419,
+        0.032755895,
+        0.033076892
+      ],
+      "checksum": "13760547320171538304"
+    },
+    {
+      "size": 524288,
+      "operation": "pow",
+      "variant": "windows",
+      "median": 0.032647098,
+      "samples": [
+        0.033968028,
+        0.032647098,
+        0.031629482,
+        0.032468911,
+        0.031874452,
+        0.035597881,
+        0.033814497,
+        0.032320895,
+        0.032698017
+      ],
+      "checksum": "13760547320171538304"
+    },
+    {
+      "size": 524288,
+      "operation": "pow",
+      "variant": "pow_unfused",
+      "median": 0.033015859,
+      "samples": [
+        0.034259476,
+        0.033085277,
+        0.032791562,
+        0.033015859,
+        0.032710769,
+        0.033252734,
+        0.0346815,
+        0.032868048,
+        0.032623059
+      ],
+      "checksum": "13760547320171538304"
+    },
+    {
+      "size": 524288,
+      "operation": "exp",
+      "variant": "before",
+      "median": 0.018121741,
+      "samples": [
+        0.017595735,
+        0.017873711,
+        0.018121741,
+        0.018130418,
+        0.017761122,
+        0.019612495,
+        0.018109033,
+        0.018440882,
+        0.018236756
+      ],
+      "checksum": "165330221183074949"
+    },
+    {
+      "size": 524288,
+      "operation": "exp",
+      "variant": "windows",
+      "median": 0.018017003,
+      "samples": [
+        0.018091358,
+        0.018014075,
+        0.017970078,
+        0.018331389,
+        0.017852383,
+        0.019200929,
+        0.018017003,
+        0.019237942,
+        0.017287498
+      ],
+      "checksum": "165330221183074949"
+    },
+    {
+      "size": 524288,
+      "operation": "exp",
+      "variant": "pow_unfused",
+      "median": 0.018624712,
+      "samples": [
+        0.018689288,
+        0.017380701,
+        0.018742611,
+        0.017638462,
+        0.018159429,
+        0.018624712,
+        0.018833927,
+        0.01762602,
+        0.018634952
+      ],
+      "checksum": "165330221183074949"
+    }
+  ]
+}

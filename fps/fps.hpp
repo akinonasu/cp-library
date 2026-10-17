@@ -157,12 +157,13 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(!g.empty() && g[0] != T(0));
 		if (this->empty()) return F(deg);
 		if (deg <= 128 || g.size() < 64) {
-			F r = multiply(*this, g.inv(deg)).pre(deg);
+			F r = multiply(pre(deg), g.inv(deg)).pre(deg);
 			r.resize(deg);
 			return r;
 		}
 		int size = 1;
 		while (size < deg) size <<= 1;
+		if (deg < size - size / 4) size >>= 1;
 		const int block = size / 32, length = 2 * block, count = (deg + block - 1) / block;
 		F inverse = g.inv(block), r = multiply(pre(block), inverse).pre(block);
 		r.resize(deg);
@@ -172,41 +173,38 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		transform(1).scale(words(inverse), length, norm);
 		fps_detail::NTT::CompositionWords storage(new (std::align_val_t(64)) unsigned int[(2 * count - 1) * length]);
 		Word *denominator = storage.get(), *quotient = denominator + count * length;
-		const int first = std::min<int>(block, g.size());
-		std::copy_n(words(g), first, denominator);
-		std::fill(denominator + first, denominator + block, 0u);
-		ntt_half(denominator, length);
+		for (int i = 0; i < count; ++i) {
+			Word *h = denominator + i * length;
+			const int available = std::max(0, std::min<int>(block, static_cast<int>(g.size()) - i * block));
+			if (available) std::copy_n(words(g) + i * block, available, h);
+			std::fill(h + available, h + block, 0u);
+			ntt_half(h, length);
+		}
+		O::join_windows(denominator, length, count);
 		base error(length);
 		for (int i = 1; i < count; ++i) {
 			const int offset = i * block, n = std::min(block, deg - offset);
-			Word *h = denominator + i * length, *q = quotient + (i - 1) * length;
-			const int available = std::max(0, std::min<int>(block, static_cast<int>(g.size()) - offset));
-			if (available) std::copy_n(words(g) + offset, available, h);
-			std::fill(h + available, h + block, 0u);
-			ntt_half(h, length);
+			Word *q = quotient + (i - 1) * length;
 			std::copy_n(words(r) + offset - block, block, q);
 			ntt_half(q, length);
 			fps_detail::NTT::scale_normalize(q, length, norm);
 
-			for (int j = 0; j < i; j += 4) {
-				const Word *a[4], *b[4], *c[4];
-				int terms = std::min(4, i - j);
+			for (int j = 0; j < i; j += 7) {
+				const Word *a[7], *b[7];
+				int terms = std::min(7, i - j);
 				for (int k = 0; k < terms; ++k) {
 					a[k] = quotient + (j + k) * length;
 					b[k] = denominator + (i - j - k) * length;
-					c[k] = denominator + (i - j - k - 1) * length;
 				}
 				auto update = [&](auto number) {
 					constexpr int count = decltype(number)::value;
-					if (j == 0) {
-						fps_detail::NTT::template accumulate_wide<count, true, false>(words(error), a, b, c, block, false);
-						fps_detail::NTT::template accumulate_wide<count, true, false>(words(error) + block, a, b, c, block, true);
-					} else {
-						fps_detail::NTT::template accumulate_wide<count, false, false>(words(error), a, b, c, block, false);
-						fps_detail::NTT::template accumulate_wide<count, false, false>(words(error) + block, a, b, c, block, true);
-					}
+					if (j == 0) O::template accumulate_products<count, true>(words(error), a, b, length);
+					else O::template accumulate_products<count, false>(words(error), a, b, length);
 				};
-				if (terms == 4) update(std::integral_constant<int, 4>{});
+				if (terms == 7) update(std::integral_constant<int, 7>{});
+				else if (terms == 6) update(std::integral_constant<int, 6>{});
+				else if (terms == 5) update(std::integral_constant<int, 5>{});
+				else if (terms == 4) update(std::integral_constant<int, 4>{});
 				else if (terms == 3) update(std::integral_constant<int, 3>{});
 				else if (terms == 2) update(std::integral_constant<int, 2>{});
 				else update(std::integral_constant<int, 1>{});
@@ -349,6 +347,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if (target > 256) {
 			int size = 1;
 			while (size < target) size <<= 1;
+			if (target < size - size / 4) size >>= 1;
 			const int block = size / 32, length = 2 * block, count = (target + block - 1) / block;
 			g = f.pre(block).sqrt(block);
 			base inverse = g.inv(block);
@@ -498,154 +497,15 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] == T(1));
-		F derivative(std::min<int>(deg, this->size()));
-		if (derivative.size() > 1) fps_detail::NTT::weighted(words(derivative) + 1, words(*this) + 1, derivative.size() - 1, 1);
-		F r = derivative.div_series(*this, deg);
+		F r = log_derivative(deg);
 		const auto &inv = inverses(deg - 1);
 		fps_detail::NTT::product(words(r), words(r), words(inv), deg);
 		return r;
 	}
 
 	F exp(int deg = -1) const {
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) return export_work(import_work(*this).exp(deg));
-		if (deg < 0) deg = static_cast<int>(this->size());
-		assert(deg >= 0);
-		if (deg == 0) return {};
-		assert(this->empty() || (*this)[0] == T(0));
-		const auto &iv = inverses(deg);
-		auto terms = sparse_terms(deg, 64);
-		if (terms.size() <= 64) {
-			for (auto &[j, x] : terms) x *= T(j);
-			F g(deg);
-			g[0] = 1;
-			for (int i = 1; i < deg; ++i) {
-				for (auto [j, x] : terms) {
-					if (j > i) break;
-					g[i] += x * g[i - j];
-				}
-				g[i] *= iv[i];
-			}
-			return g;
-		}
-		const int initial = std::min(deg, 32);
-		F g(initial);
-		g[0] = 1;
-		for (int i = 1; i < initial; ++i) {
-			T sum = 0;
-			for (int j = 1; j <= i && j < static_cast<int>(this->size()); ++j)
-				sum += T(j) * (*this)[j] * g[i - j];
-			g[i] = sum * iv[i];
-		}
-		if (initial == deg) return g;
-		if (deg > 256) {
-			int size = 1;
-			while (size < deg) size <<= 1;
-			const int block = size / 32, length = 2 * block, count = (deg + block - 1) / block;
-			g = pre(block).exp(block);
-			base inverse = g.inv(block);
-			inverse.resize(length);
-			ntt_half(inverse);
-			const Word norm = T::mod() - (T::mod() - 1) / length;
-			transform(1).scale(words(inverse), length, norm);
-			fps_detail::NTT::CompositionWords storage(new (std::align_val_t(64)) unsigned int[(2 * count - 1) * length]);
-			Word *derivative = storage.get(), *cache = derivative + count * length;
-			std::fill(derivative, derivative + block, 0u);
-			base error(length);
-			const int initial_count = std::min<int>(block, this->size());
-			if (initial_count > 1) fps_detail::NTT::weighted(derivative + 1, words(*this) + 1, initial_count - 1, 1);
-			ntt_half(derivative, length);
-			g.resize(deg);
-			for (int i = 1; i < count; ++i) {
-				int offset = i * block, n = std::min(block, deg - offset);
-				Word *d = derivative + i * length;
-				const int derivative_count = std::max(0, std::min<int>(n, static_cast<int>(this->size()) - offset));
-				if (derivative_count) fps_detail::NTT::weighted(d, words(*this) + offset, derivative_count, offset);
-				std::fill(d + derivative_count, d + block, 0u);
-				ntt_half(d, length);
-				Word *q = cache + (i - 1) * length;
-				std::copy_n(words(g) + offset - block, block, q);
-				ntt_half(q, length);
-				fps_detail::NTT::scale_normalize(q, length, norm);
-				std::fill(error.begin(), error.end(), T(0));
-				for (int j = 0; j < i; j += 3) {
-					const Word *a[3], *b[3], *c[3];
-					int terms = std::min(3, i - j);
-					for (int k = 0; k < terms; ++k) {
-						a[k] = cache + (j + k) * length;
-						b[k] = derivative + (i - j - k) * length;
-						c[k] = derivative + (i - j - k - 1) * length;
-					}
-					auto update = [&](auto number) {
-						constexpr int count = decltype(number)::value;
-						fps_detail::NTT::template accumulate_batch<count>(words(error), a, b, c, block, false);
-						fps_detail::NTT::template accumulate_batch<count>(words(error) + block, a, b, c, block, true);
-					};
-					if (terms == 3) update(std::integral_constant<int, 3>{});
-					else if (terms == 2) update(std::integral_constant<int, 2>{});
-					else update(std::integral_constant<int, 1>{});
-				}
-				ntt_inverse(error);
-				std::fill(error.begin() + block, error.end(), T(0));
-				ntt_half(error);
-				pointwise(error, error, inverse, length);
-				ntt_inverse(error);
-				fps_detail::NTT::product(words(error), words(error), words(iv) + offset, n);
-				std::fill(error.begin() + n, error.end(), T(0));
-				ntt_half(error);
-				fps_detail::NTT::product(words(error), words(error), cache, length);
-				ntt_inverse(error);
-				std::copy_n(error.begin(), n, g.begin() + offset);
-			}
-			return g;
-		}
-		F h = g.pre(16).inv(16);
-		base cache = h;
-		cache.resize(32);
-		ntt(cache);
-		while (static_cast<int>(g.size()) < deg) {
-			const int m = static_cast<int>(g.size()), n = 2 * m;
-			if (deg - m <= 32) {
-				base derivative(std::min<int>(deg, this->size()));
-				for (int i = 1; i < static_cast<int>(derivative.size()); ++i) derivative[i] = T(i) * (*this)[i];
-				derivative.resize(std::max<int>(1, derivative.size()));
-				g.resize(deg);
-				for (int i = m; i < deg; ++i) {
-					const int count = std::min<int>(i, derivative.size() - 1);
-					g[i] = dot(derivative.data() + 1, g.data() + i - 1, count) * iv[i];
-				}
-				break;
-			}
-			assert(n <= (1 << 23));
-			const T im = T::raw(T::mod() - (T::mod() - 1) / m);
-			const T in = T::raw(T::mod() - (T::mod() - 1) / n);
-			base a = g, b(m), error(n);
-			a.resize(n);
-			ntt(a);
-			inverse_extend(h, a, cache);
-			cache = h;
-			cache.resize(n);
-			ntt(cache);
-			std::fill(b.begin(), b.end(), T(0));
-			for (int i = 1; i < m && i < static_cast<int>(this->size()); ++i) b[i - 1] = T(i) * (*this)[i];
-			ntt(b);
-			pointwise(b, b, a, m);
-			ntt_inverse(b);
-			error[m - 1] = b[m - 1] * im;
-			for (int i = 0; i < m - 1; ++i) error[m + i] = b[i] * im - T(i + 1) * g[i + 1];
-			ntt(error);
-			pointwise(error, error, cache, n);
-			ntt_inverse(error);
-			for (int i = (std::min(n, deg)) - 1; i >= m; --i)
-				error[i] = (i < static_cast<int>(this->size()) ? (*this)[i] : T(0)) + error[i - 1] * in * iv[i];
-			std::fill(error.begin(), error.begin() + m, T(0));
-			std::fill(error.begin() + std::min(n, deg), error.end(), T(0));
-			ntt(error);
-			pointwise(error, error, a, n);
-			ntt_inverse(error);
-			g.resize(std::min(n, deg));
-			for (int i = m; i < static_cast<int>(g.size()); ++i) g[i] = error[i] * in;
-		}
-		return g;
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) return exp_impl<false>(deg);
+		else return export_work(import_work(*this).exp(deg));
 	}
 
 	F pow(long long k) const {
@@ -671,10 +531,9 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		const T lead = (*this)[first];
 		F f(this->begin() + first, this->end());
 		f.resize(len);
-		f /= lead;
-		f = f.log(len);
+		f = f.log_derivative(len);
 		f *= T(k);
-		f = f.exp(len);
+		f = f.template exp_impl<true>(len);
 		f *= lead.pow(k);
 		F r(n);
 		for (int i = 0; i < len; ++i) r[shift + i] = f[i];
@@ -711,6 +570,25 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		F q = ra.pre(qn).div_series(rb, qn);
 		std::reverse(q.begin(), q.end());
 		std::reverse(rb.begin(), rb.end());
+		int cyclic = 1;
+		while (cyclic < std::max(m, qn)) cyclic <<= 1;
+		if (std::min(m - 1, qn) > 32 && cyclic < m + std::min(m - 1, qn) - 2) {
+			assert(cyclic <= (1 << 23));
+			F product = rb, quotient = q;
+			product.resize(cyclic);
+			quotient.resize(cyclic);
+			auto &t = transform(cyclic / 16);
+			t.convolution(words(product), words(quotient), cyclic);
+			t.scale(words(product), m - 1, T::mod() - (T::mod() - 1) / (cyclic / 8));
+			for (int i = 0; i < m - 1; ++i) {
+				a[i] -= product[i];
+				if (i + cyclic < static_cast<int>(a.size())) a[i] += a[i + cyclic];
+			}
+			a.resize(m - 1);
+			a.trim();
+			q.trim();
+			return {std::move(q), std::move(a)};
+		}
 		F product = multiply(rb.pre(m - 1), q.pre(m - 1));
 		a.resize(m - 1);
 		for (int i = 0; i < std::min<int>(a.size(), product.size()); ++i) a[i] -= product[i];
@@ -742,6 +620,160 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using O::inverses;
 
 	using Word = typename O::Word;
+
+	F log_derivative(int deg) const {
+		F derivative(std::min<int>(deg, this->size()));
+		if (derivative.size() > 1) fps_detail::NTT::weighted(words(derivative) + 1, words(*this) + 1, derivative.size() - 1, 1);
+		return derivative.div_series(*this, deg);
+	}
+
+	template <bool differentiated>
+	F exp_impl(int deg) const {
+		if (deg < 0) deg = static_cast<int>(this->size());
+		assert(deg >= 0);
+		if (deg == 0) return {};
+		assert(this->empty() || (*this)[0] == T(0));
+		const auto &iv = inverses(deg);
+		auto terms = sparse_terms(deg, 64);
+		if (terms.size() <= 64) {
+			if constexpr (!differentiated) for (auto &[j, x] : terms) x *= T(j);
+			F g(deg);
+			g[0] = 1;
+			for (int i = 1; i < deg; ++i) {
+				for (auto [j, x] : terms) {
+					if (j > i) break;
+					g[i] += x * g[i - j];
+				}
+				g[i] *= iv[i];
+			}
+			return g;
+		}
+		const int initial = std::min(deg, 32);
+		F g(initial);
+		g[0] = 1;
+		for (int i = 1; i < initial; ++i) {
+			T sum = 0;
+			for (int j = 1; j <= i && j < static_cast<int>(this->size()); ++j)
+				sum += (differentiated ? (*this)[j] : T(j) * (*this)[j]) * g[i - j];
+			g[i] = sum * iv[i];
+		}
+		if (initial == deg) return g;
+		if (deg > 256) {
+			int size = 1;
+			while (size < deg) size <<= 1;
+			if (deg < size - size / 4) size >>= 1;
+			const int block = size / 32, length = 2 * block, count = (deg + block - 1) / block;
+			g = pre(block).template exp_impl<differentiated>(block);
+			base inverse = g.inv(block);
+			inverse.resize(length);
+			ntt_half(inverse);
+			const Word norm = T::mod() - (T::mod() - 1) / length;
+			transform(1).scale(words(inverse), length, norm);
+			fps_detail::NTT::CompositionWords storage(new (std::align_val_t(64)) unsigned int[(2 * count - 1) * length]);
+			Word *derivative = storage.get(), *cache = derivative + count * length;
+			for (int i = 0; i < count; ++i) {
+				Word *d = derivative + i * length;
+				const int offset = i * block;
+				const int available = std::max(0, std::min<int>(block, std::min<int>(deg, this->size()) - offset));
+				if (available) {
+					if constexpr (differentiated) std::copy_n(words(*this) + offset, available, d);
+					else fps_detail::NTT::weighted(d, words(*this) + offset, available, offset);
+				}
+				std::fill(d + available, d + block, 0u);
+				ntt_half(d, length);
+			}
+			O::join_windows(derivative, length, count);
+			base error(length);
+			g.resize(deg);
+			for (int i = 1; i < count; ++i) {
+				int offset = i * block, n = std::min(block, deg - offset);
+				Word *q = cache + (i - 1) * length;
+				std::copy_n(words(g) + offset - block, block, q);
+				ntt_half(q, length);
+				fps_detail::NTT::scale_normalize(q, length, norm);
+				for (int j = 0; j < i; j += 7) {
+					const Word *a[7], *b[7];
+					int terms = std::min(7, i - j);
+					for (int k = 0; k < terms; ++k) {
+						a[k] = cache + (j + k) * length;
+						b[k] = derivative + (i - j - k) * length;
+					}
+					auto update = [&](auto number) {
+						constexpr int count = decltype(number)::value;
+						if (j == 0) O::template accumulate_products<count, true>(words(error), a, b, length);
+						else O::template accumulate_products<count, false>(words(error), a, b, length);
+					};
+					if (terms == 7) update(std::integral_constant<int, 7>{});
+					else if (terms == 6) update(std::integral_constant<int, 6>{});
+					else if (terms == 5) update(std::integral_constant<int, 5>{});
+					else if (terms == 4) update(std::integral_constant<int, 4>{});
+					else if (terms == 3) update(std::integral_constant<int, 3>{});
+					else if (terms == 2) update(std::integral_constant<int, 2>{});
+					else update(std::integral_constant<int, 1>{});
+				}
+				ntt_inverse(error);
+				std::fill(error.begin() + block, error.end(), T(0));
+				ntt_half(error);
+				pointwise(error, error, inverse, length);
+				ntt_inverse(error);
+				fps_detail::NTT::product(words(error), words(error), words(iv) + offset, n);
+				std::fill(error.begin() + n, error.end(), T(0));
+				ntt_half(error);
+				fps_detail::NTT::product(words(error), words(error), cache, length);
+				ntt_inverse(error);
+				std::copy_n(error.begin(), n, g.begin() + offset);
+			}
+			return g;
+		}
+		F h = g.pre(16).inv(16);
+		base cache = h;
+		cache.resize(32);
+		ntt(cache);
+		while (static_cast<int>(g.size()) < deg) {
+			const int m = static_cast<int>(g.size()), n = 2 * m;
+			if (deg - m <= 32) {
+				base derivative(std::min<int>(deg, this->size()));
+				for (int i = 1; i < static_cast<int>(derivative.size()); ++i) derivative[i] = differentiated ? (*this)[i] : T(i) * (*this)[i];
+				derivative.resize(std::max<int>(1, derivative.size()));
+				g.resize(deg);
+				for (int i = m; i < deg; ++i) {
+					const int count = std::min<int>(i, derivative.size() - 1);
+					g[i] = dot(derivative.data() + 1, g.data() + i - 1, count) * iv[i];
+				}
+				break;
+			}
+			assert(n <= (1 << 23));
+			const T im = T::raw(T::mod() - (T::mod() - 1) / m);
+			const T in = T::raw(T::mod() - (T::mod() - 1) / n);
+			base a = g, b(m), error(n);
+			a.resize(n);
+			ntt(a);
+			inverse_extend(h, a, cache);
+			cache = h;
+			cache.resize(n);
+			ntt(cache);
+			std::fill(b.begin(), b.end(), T(0));
+			for (int i = 1; i < m && i < static_cast<int>(this->size()); ++i) b[i - 1] = differentiated ? (*this)[i] : T(i) * (*this)[i];
+			ntt(b);
+			pointwise(b, b, a, m);
+			ntt_inverse(b);
+			error[m - 1] = b[m - 1] * im;
+			for (int i = 0; i < m - 1; ++i) error[m + i] = b[i] * im - T(i + 1) * g[i + 1];
+			ntt(error);
+			pointwise(error, error, cache, n);
+			ntt_inverse(error);
+			for (int i = (std::min(n, deg)) - 1; i >= m; --i)
+				error[i] = (i < static_cast<int>(this->size()) ? (*this)[i] * (differentiated ? iv[i] : T(1)) : T(0)) + error[i - 1] * in * iv[i];
+			std::fill(error.begin(), error.begin() + m, T(0));
+			std::fill(error.begin() + std::min(n, deg), error.end(), T(0));
+			ntt(error);
+			pointwise(error, error, a, n);
+			ntt_inverse(error);
+			g.resize(std::min(n, deg));
+			for (int i = m; i < static_cast<int>(g.size()); ++i) g[i] = error[i] * in;
+		}
+		return g;
+	}
 
 	std::vector<std::pair<int, T>> sparse_terms(int deg, int limit) const {
 		std::vector<std::pair<int, T>> terms;

@@ -2,6 +2,7 @@
 #define CP_FPS_COMPOSE_HPP
 
 #include "fps.hpp"
+#include <numeric>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -25,12 +26,34 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 	}
 	int first = 1;
 	while (g[first] == T(0)) ++first;
+	if (static_cast<int>(f.size()) > (deg - 1) / first + 1) {
+		f.resize((deg - 1) / first + 1);
+		O::trim(f);
+		if (f.size() <= 1) {
+			F result(deg);
+			if (!f.empty()) result[0] = f[0];
+			return result;
+		}
+	}
 	if (first + 1 == static_cast<int>(g.size())) {
 		F result(deg);
 		T power = 1;
 		for (int i = 0; i < static_cast<int>(f.size()) && (long long)i * first < deg; ++i)
 			result[i * first] = f[i] * power, power *= g[first];
 		return result;
+	}
+	if (first > 1) {
+		int stride = first;
+		for (int i = first + 1; i < static_cast<int>(g.size()) && stride > 1; ++i)
+			if (g[i] != T(0)) stride = std::gcd(stride, i);
+		if (stride > 1) {
+			F compressed((g.size() - 1) / stride + 1);
+			for (int i = 1; i < static_cast<int>(compressed.size()); ++i) compressed[i] = g[i * stride];
+			compressed = compose(f, compressed, (deg - 1) / stride + 1);
+			F result(deg);
+			for (int i = 0; i < static_cast<int>(compressed.size()); ++i) result[i * stride] = compressed[i];
+			return result;
+		}
 	}
 	if (deg <= 32 || f.size() <= 8) {
 		F result;

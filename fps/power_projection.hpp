@@ -2,6 +2,7 @@
 #define CP_FPS_POWER_PROJECTION_HPP
 
 #include "fps.hpp"
+#include <numeric>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -32,6 +33,17 @@ FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, const Forma
 			T value = weights[0];
 			for (auto &x : result) x = value, value *= c;
 			return result;
+		}
+		if (first > 1) {
+			int stride = first;
+			for (int i = first + 1; i < length && stride > 1; ++i)
+				if (f[i] != T(0)) stride = std::gcd(stride, i);
+			if (stride > 1) {
+				F compressed((length - 1) / stride + 1), w((n - 1) / stride + 1);
+				for (int i = 0; i < static_cast<int>(compressed.size()); ++i) compressed[i] = f[i * stride];
+				for (int i = 0; i < static_cast<int>(w.size()); ++i) w[i] = weights[i * stride];
+				return power_projection(compressed, w, deg);
+			}
 		}
 		int count = std::min(deg, (n - 1) / first + 1);
 		F result(count);

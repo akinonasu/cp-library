@@ -1,0 +1,457 @@
+{
+  "date": "2026-10-17T18:33:54.175016+00:00",
+  "reference": "https://judge.yosupo.jp/submission/409465",
+  "reference_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero"
+  ],
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu": "model name\t: 13th Gen Intel(R) Core(TM) i7-13700F",
+  "bulk_macros": {
+    "native": 0,
+    "transposed": 1
+  },
+  "affinity": [
+    2
+  ],
+  "trials": 7,
+  "warmup": 1,
+  "seed": 409465,
+  "adaptation": "extract original IO prefix, fields namespace and fixed_width/read_values; omit every convolution kernel and entry point",
+  "method": "in-process wall time; read includes Reader construction/destruction and destination resize allocation, excluding destination destruction; write excludes binary fixture loading, Mint setup and destination/Mint destruction, includes output object construction and flushing; checksum outside timing; regular files on Linux /tmp",
+  "source_sha256": {
+    "test/benchmark/fps_io_probe.cpp": "78960f4cd7c60f866479a9d5fdfe6af3181f372f7a64e768d8ff686061895b9a",
+    "test/benchmark/fps_io_probe.py": "cce69ef23e893e66b50f19c03aa75baeb49ae09b30cedfec16dcc67be6752b73",
+    "components/fast_io.hpp": "d4a7e58d2a9373e675ddaed1a31ea3f1748b75a2af4201791ac63163b3af38b8",
+    "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+  },
+  "workloads": [
+    {
+      "case": "all_same_00",
+      "operation": "read",
+      "input_sha256": "455e20ddf45cafc6f7a4977216025dd55dca6039bddba9b7cfe34cdf59a02169",
+      "answer_sha256": "53503a915b2a658f80d9785b11aac6db1868bd8080b039858a767724320712ce",
+      "checksum": "15978019203087926147",
+      "count": 1048576,
+      "input_digit_histogram": {
+        "1": 1048576
+      },
+      "milliseconds": {
+        "own_raw": [
+          2.684079,
+          2.689884,
+          2.669343,
+          2.782497,
+          2.730828,
+          2.700985,
+          2.808017
+        ],
+        "own_mint": [
+          3.104375,
+          3.120032,
+          3.071305,
+          3.16349,
+          3.274079,
+          3.071439,
+          3.098406
+        ],
+        "ref_scalar": [
+          3.130272,
+          3.079014,
+          3.21164,
+          3.237682,
+          3.174718,
+          3.085599,
+          3.129238
+        ],
+        "ref_bulk": [
+          1.723434,
+          1.838635,
+          1.754589,
+          1.716656,
+          1.804808,
+          1.773047,
+          1.722747
+        ],
+        "ref_fixed": [
+          1.069744,
+          0.970583,
+          1.154457,
+          1.083159,
+          1.204334,
+          0.988652,
+          0.986972
+        ],
+        "ref_transposed": [
+          1.879331,
+          1.772596,
+          1.811916,
+          1.920667,
+          1.972069,
+          1.795007,
+          2.158695
+        ]
+      },
+      "median_ms": {
+        "own_raw": 2.700985,
+        "own_mint": 3.104375,
+        "ref_scalar": 3.130272,
+        "ref_bulk": 1.754589,
+        "ref_fixed": 1.069744,
+        "ref_transposed": 1.879331
+      },
+      "output_sha256": {}
+    },
+    {
+      "case": "all_same_00",
+      "operation": "write",
+      "input_sha256": "455e20ddf45cafc6f7a4977216025dd55dca6039bddba9b7cfe34cdf59a02169",
+      "answer_sha256": "53503a915b2a658f80d9785b11aac6db1868bd8080b039858a767724320712ce",
+      "checksum": "15022142292417179377",
+      "count": 1048575,
+      "input_digit_histogram": {
+        "1": 1048576
+      },
+      "milliseconds": {
+        "own_raw": [
+          6.358521,
+          6.270759,
+          6.22943,
+          6.20178,
+          6.093673,
+          6.223415,
+          6.106288
+        ],
+        "own_mint": [
+          6.445881,
+          6.639409,
+          6.504153,
+          6.757564,
+          6.551227,
+          6.677041,
+          6.5328
+        ],
+        "ref_scalar": [
+          3.633036,
+          3.952921,
+          3.668807,
+          3.686974,
+          3.686991,
+          3.656322,
+          3.725966
+        ],
+        "ref_fields": [
+          2.106096,
+          2.161853,
+          2.134842,
+          2.143983,
+          2.155841,
+          2.105825,
+          2.496731
+        ]
+      },
+      "median_ms": {
+        "own_raw": 6.223415,
+        "own_mint": 6.551227,
+        "ref_scalar": 3.686974,
+        "ref_fields": 2.143983
+      },
+      "output_sha256": {
+        "ref_scalar": "079ad6d4d84a198648cb65cfc6c8b2793d8a74a28762d6e65594f2c151982fe5",
+        "ref_fields": "17d9082fd8148760cdea3d84fb941a9ff23d2034a3df41c2f86d60dc416c6c39",
+        "own_raw": "079ad6d4d84a198648cb65cfc6c8b2793d8a74a28762d6e65594f2c151982fe5",
+        "own_mint": "079ad6d4d84a198648cb65cfc6c8b2793d8a74a28762d6e65594f2c151982fe5"
+      }
+    },
+    {
+      "case": "all_same_01",
+      "operation": "read",
+      "input_sha256": "93c5ad2cca7967fc698d291a62ce3c7432655b7a47a64c56984841aa024391e8",
+      "answer_sha256": "a4eb76a3ff817616d6534bc1654daf63725b9dab81d10ef14de68be9aa66ad17",
+      "checksum": "6591856449566344067",
+      "count": 1048576,
+      "input_digit_histogram": {
+        "9": 1048576
+      },
+      "milliseconds": {
+        "own_raw": [
+          6.708535,
+          7.109238,
+          7.062437,
+          7.01543,
+          7.258863,
+          6.972132,
+          6.820102
+        ],
+        "own_mint": [
+          8.14492,
+          7.373852,
+          8.188757,
+          7.806268,
+          7.952508,
+          7.394423,
+          7.827205
+        ],
+        "ref_scalar": [
+          3.246236,
+          3.148748,
+          3.125486,
+          3.156258,
+          3.222956,
+          3.178319,
+          3.155867
+        ],
+        "ref_bulk": [
+          1.873368,
+          2.122795,
+          1.835642,
+          1.823298,
+          1.825845,
+          1.966451,
+          1.889431
+        ],
+        "ref_fixed": [
+          1.812896,
+          1.558614,
+          1.656467,
+          1.601321,
+          1.65509,
+          1.692575,
+          1.61957
+        ],
+        "ref_transposed": [
+          2.052453,
+          1.882504,
+          1.966489,
+          1.920645,
+          2.014954,
+          1.966628,
+          1.867964
+        ]
+      },
+      "median_ms": {
+        "own_raw": 7.01543,
+        "own_mint": 7.827205,
+        "ref_scalar": 3.156258,
+        "ref_bulk": 1.873368,
+        "ref_fixed": 1.65509,
+        "ref_transposed": 1.966489
+      },
+      "output_sha256": {}
+    },
+    {
+      "case": "all_same_01",
+      "operation": "write",
+      "input_sha256": "93c5ad2cca7967fc698d291a62ce3c7432655b7a47a64c56984841aa024391e8",
+      "answer_sha256": "a4eb76a3ff817616d6534bc1654daf63725b9dab81d10ef14de68be9aa66ad17",
+      "checksum": "13446607398228965736",
+      "count": 1048575,
+      "input_digit_histogram": {
+        "9": 1048576
+      },
+      "milliseconds": {
+        "own_raw": [
+          8.905187,
+          9.757566,
+          8.497394,
+          8.513435,
+          8.885639,
+          8.616396,
+          8.500214
+        ],
+        "own_mint": [
+          13.324177,
+          9.134441,
+          9.103116,
+          9.221941,
+          9.105585,
+          9.098892,
+          9.094975
+        ],
+        "ref_scalar": [
+          4.362445,
+          4.259202,
+          4.323728,
+          4.152473,
+          4.109874,
+          4.239384,
+          4.111346
+        ],
+        "ref_fields": [
+          3.520337,
+          2.285655,
+          2.062891,
+          2.073804,
+          2.090087,
+          2.096982,
+          2.20622
+        ]
+      },
+      "median_ms": {
+        "own_raw": 8.616396,
+        "own_mint": 9.105585,
+        "ref_scalar": 4.239384,
+        "ref_fields": 2.096982
+      },
+      "output_sha256": {
+        "own_raw": "72089f6d2398e9f9a50b6911cbc0148ebbe8aa9c3cd304ad50e857932a11dbd9",
+        "ref_fields": "eba8fdb1ebb32d9bbab47885f32b6fa401364dae4fb0505e091c419a037886bb",
+        "ref_scalar": "72089f6d2398e9f9a50b6911cbc0148ebbe8aa9c3cd304ad50e857932a11dbd9",
+        "own_mint": "72089f6d2398e9f9a50b6911cbc0148ebbe8aa9c3cd304ad50e857932a11dbd9"
+      }
+    },
+    {
+      "case": "max_random_00",
+      "operation": "read",
+      "input_sha256": "3bbe45c5ce2820f3961db9f5746dfad939c09cb78d62bb1f9729ff3ac83e4208",
+      "answer_sha256": "cc9c24649d26118ce95b106548050963fe7f029c8b4d9f2cdb567030c6f8be8a",
+      "checksum": "8792595426561315211",
+      "count": 1048576,
+      "input_digit_histogram": {
+        "9": 944275,
+        "7": 9263,
+        "8": 94040,
+        "6": 896,
+        "5": 95,
+        "4": 7
+      },
+      "milliseconds": {
+        "own_raw": [
+          7.547292,
+          7.530742,
+          7.687774,
+          7.680744,
+          7.44391,
+          7.475018,
+          7.832205
+        ],
+        "own_mint": [
+          8.46993,
+          8.246418,
+          8.234845,
+          8.225697,
+          8.284618,
+          8.104042,
+          8.302838
+        ],
+        "ref_scalar": [
+          3.347614,
+          3.393178,
+          3.185881,
+          3.412656,
+          3.231981,
+          3.208999,
+          3.352639
+        ],
+        "ref_bulk": [
+          1.823857,
+          1.944381,
+          1.918163,
+          1.801872,
+          1.789867,
+          1.977956,
+          1.929559
+        ],
+        "ref_fixed": [
+          1.795926,
+          1.891899,
+          1.825254,
+          1.884041,
+          1.908219,
+          1.809065,
+          1.86725
+        ],
+        "ref_transposed": [
+          1.91064,
+          1.956891,
+          1.864463,
+          2.210132,
+          1.886491,
+          1.8658,
+          1.947355
+        ]
+      },
+      "median_ms": {
+        "own_raw": 7.547292,
+        "own_mint": 8.246418,
+        "ref_scalar": 3.347614,
+        "ref_bulk": 1.918163,
+        "ref_fixed": 1.86725,
+        "ref_transposed": 1.91064
+      },
+      "output_sha256": {}
+    },
+    {
+      "case": "max_random_00",
+      "operation": "write",
+      "input_sha256": "3bbe45c5ce2820f3961db9f5746dfad939c09cb78d62bb1f9729ff3ac83e4208",
+      "answer_sha256": "cc9c24649d26118ce95b106548050963fe7f029c8b4d9f2cdb567030c6f8be8a",
+      "checksum": "8996945565931761541",
+      "count": 1048575,
+      "input_digit_histogram": {
+        "9": 944275,
+        "7": 9263,
+        "8": 94040,
+        "6": 896,
+        "5": 95,
+        "4": 7
+      },
+      "milliseconds": {
+        "own_raw": [
+          8.79415,
+          12.541394,
+          9.778506,
+          8.707226,
+          8.83889,
+          9.092903,
+          8.859616
+        ],
+        "own_mint": [
+          9.426698,
+          9.368885,
+          9.82392,
+          9.732826,
+          9.45968,
+          9.612622,
+          9.711437
+        ],
+        "ref_scalar": [
+          4.390885,
+          4.174967,
+          4.17125,
+          4.201462,
+          4.419529,
+          4.193332,
+          4.305228
+        ],
+        "ref_fields": [
+          2.000592,
+          2.120833,
+          2.042562,
+          2.061264,
+          2.103707,
+          2.083342,
+          2.07096
+        ]
+      },
+      "median_ms": {
+        "own_raw": 8.859616,
+        "own_mint": 9.612622,
+        "ref_scalar": 4.201462,
+        "ref_fields": 2.07096
+      },
+      "output_sha256": {
+        "ref_fields": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe",
+        "own_raw": "1ebd7f7966649acbee5741064295d6e4274046aa54fac64a7c83d78ae8efc815",
+        "own_mint": "1ebd7f7966649acbee5741064295d6e4274046aa54fac64a7c83d78ae8efc815",
+        "ref_scalar": "1ebd7f7966649acbee5741064295d6e4274046aa54fac64a7c83d78ae8efc815"
+      }
+    }
+  ],
+  "adapted_sha256": "fc1e1c1adeec20966b19d3ed16a47d6502b5f1ea2adb4acbee30da6e49af1dd4"
+}

@@ -1,17 +1,11 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/convolution_mod"
 #include "../convolution/convolution.hpp"
-#include <iostream>
-#include <tuple>
-
-using namespace std;
+#include "fps_io.hpp"
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
-	int n, m;
-	cin >> n >> m;
-	fps a(n), b(m);
-	for (auto &v : a) cin >> v;
-	for (auto &v : b) cin >> v;
-	for (const auto &value : convolution(a, b)) cout << value << ' ';
-	cout << '\n';
+	FastInput input;
+	FastOutput output;
+	int n = 0, m = 0; input.read(n); input.read(m);
+	auto a = read_fps(input, n), b = read_fps(input, m);
+	write_fps(output, convolution(a, b));
 }

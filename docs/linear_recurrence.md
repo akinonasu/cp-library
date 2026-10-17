@@ -16,4 +16,6 @@ auto value = linear_recurrence(initial, coefficients, 10);
 | --- | --- |
 | `linear_recurrence(initial,c,k)` | $$a_n=c_0a_{n-1}+\cdots+c_{d-1}a_{n-d}$$ の $$a_k$$。初期値・係数は各 $$d$$ 個、$$k\ge0$$。$$d=0$$ は `0` |
 
+係数末尾の零は内部で除き、その次数に対応する末尾の初期値を使います。指定済みの初期値と、漸化式を適用し始める位置は維持します。
+
 漸化式の次数を $$d$$ として、時間 $$O(d\log d\log k)$$、追加空間 $$O(d)$$ です。

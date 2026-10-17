@@ -1,19 +1,11 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/multipoint_evaluation"
 #include "../fps/multipoint_eval.hpp"
-#include <iostream>
-#include <tuple>
-#include <vector>
-
-using namespace std;
+#include "fps_io.hpp"
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
-	int n, m;
-	cin >> n >> m;
-	fps f(n);
-	vector<mint> xs(m);
-	for (auto &v : f) cin >> v;
-	for (auto &value : xs) cin >> value;
-	for (const auto &value : multipoint_eval(f, xs)) cout << value << ' ';
-	cout << '\n';
+	FastInput input;
+	FastOutput output;
+	int n = 0, m = 0; input.read(n); input.read(m);
+	auto f = read_fps(input, n), xs = read_fps(input, m);
+	write_fps(output, multipoint_eval(f, xs));
 }

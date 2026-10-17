@@ -1,0 +1,103 @@
+CHECK gcc ['test/unit/convolution.cpp', 'test/unit/fps.cpp', 'test/unit/multipoint_tree.cpp', 'test/unit/online_convolution.cpp', 'test/unit/ordered_convolution.cpp', 'test/unit/standalone.cpp']
+g++: standalone components/fps_factorials.hpp
+g++: standalone components/fps_operations.hpp
+g++: standalone components/fps_product_tree.hpp
+g++: standalone components/polynomial_half_gcd.hpp
+g++: standalone convolution/convolution.hpp
+g++: standalone convolution/cyclic_convolution.hpp
+g++: standalone convolution/max_min_convolution.hpp
+g++: standalone convolution/multiplicative_convolution.hpp
+g++: standalone convolution/multivariate_convolution.hpp
+g++: standalone convolution/ordered_convolution.hpp
+g++: standalone fps/bostan_mori.hpp
+g++: standalone fps/compose.hpp
+g++: standalone fps/compositional_inverse.hpp
+g++: standalone fps/fps.hpp
+g++: standalone fps/interpolate.hpp
+g++: standalone fps/linear_recurrence.hpp
+g++: standalone fps/multipoint_eval.hpp
+g++: standalone fps/polynomial_gcd.hpp
+g++: standalone fps/power_projection.hpp
+g++: standalone fps/taylor_shift.hpp
+g++: convolution.cpp
+g++: fps.cpp
+g++: multipoint_tree.cpp
+g++: online_convolution.cpp
+g++: ordered_convolution.cpp
+g++: standalone.cpp
+Verification passed
+CHECK clang ['test/unit/convolution.cpp', 'test/unit/fps.cpp', 'test/unit/fps_algorithms.cpp', 'test/unit/multipoint_tree.cpp', 'test/unit/online_convolution.cpp', 'test/unit/ordered_convolution.cpp', 'test/unit/polynomial_gcd.cpp', 'test/unit/power_projection.cpp', 'test/unit/standalone.cpp']
+clang++: standalone components/fps_factorials.hpp
+clang++: standalone components/fps_operations.hpp
+clang++: standalone components/fps_product_tree.hpp
+clang++: standalone components/polynomial_half_gcd.hpp
+clang++: standalone convolution/convolution.hpp
+clang++: standalone convolution/cyclic_convolution.hpp
+clang++: standalone convolution/max_min_convolution.hpp
+clang++: standalone convolution/multiplicative_convolution.hpp
+clang++: standalone convolution/multivariate_convolution.hpp
+clang++: standalone convolution/ordered_convolution.hpp
+clang++: standalone fps/bostan_mori.hpp
+clang++: standalone fps/compose.hpp
+clang++: standalone fps/compositional_inverse.hpp
+clang++: standalone fps/fps.hpp
+clang++: standalone fps/interpolate.hpp
+clang++: standalone fps/linear_recurrence.hpp
+clang++: standalone fps/multipoint_eval.hpp
+clang++: standalone fps/polynomial_gcd.hpp
+clang++: standalone fps/power_projection.hpp
+clang++: standalone fps/taylor_shift.hpp
+clang++: convolution.cpp
+clang++: fps.cpp
+clang++: fps_algorithms.cpp
+clang++: multipoint_tree.cpp
+clang++: online_convolution.cpp
+clang++: ordered_convolution.cpp
+clang++: polynomial_gcd.cpp
+clang++: power_projection.cpp
+clang++: standalone.cpp
+Verification passed
+CHECK gcc13 ['test/unit/convolution.cpp', 'test/unit/fps.cpp', 'test/unit/fps_algorithms.cpp', 'test/unit/fps_tuning_advanced.cpp', 'test/unit/fps_tuning_polynomial.cpp', 'test/unit/multipoint_tree.cpp', 'test/unit/online_convolution.cpp', 'test/unit/ordered_convolution.cpp', 'test/unit/polynomial_gcd.cpp', 'test/unit/power_projection.cpp', 'test/unit/standalone.cpp']
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone components/fps_factorials.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone components/fps_operations.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone components/fps_product_tree.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone components/polynomial_half_gcd.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone convolution/convolution.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone convolution/cyclic_convolution.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone convolution/max_min_convolution.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone convolution/multiplicative_convolution.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone convolution/multivariate_convolution.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone convolution/ordered_convolution.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/bostan_mori.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/compose.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/compositional_inverse.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/fps.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/interpolate.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/linear_recurrence.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/multipoint_eval.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/polynomial_gcd.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/power_projection.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone fps/taylor_shift.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: convolution.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: fps.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: fps_algorithms.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: fps_tuning_advanced.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: fps_tuning_polynomial.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: multipoint_tree.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: online_convolution.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: ordered_convolution.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: polynomial_gcd.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: power_projection.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone.cpp
+Verification passed
+CHECK sanitize ['test/unit/convolution.cpp', 'test/unit/fps.cpp', 'test/unit/fps_algorithms.cpp', 'test/unit/multipoint_tree.cpp', 'test/unit/online_convolution.cpp', 'test/unit/ordered_convolution.cpp', 'test/unit/power_projection.cpp', 'test/unit/standalone.cpp']
+clang++: convolution.cpp
+clang++: fps.cpp
+clang++: fps_algorithms.cpp
+clang++: multipoint_tree.cpp
+clang++: online_convolution.cpp
+clang++: ordered_convolution.cpp
+clang++: power_projection.cpp
+clang++: standalone.cpp
+Verification passed
+All root checks passed

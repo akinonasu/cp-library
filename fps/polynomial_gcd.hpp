@@ -24,14 +24,14 @@ FormalPowerSeries<T> polynomial_gcd(FormalPowerSeries<T> a, FormalPowerSeries<T>
 	else {
 		O::trim(a), O::trim(b);
 		if (a.size() < b.size()) a.swap(b);
-		while (!b.empty()) {
-			if (a.size() > b.size() && a.size() > 128) {
-				auto matrix = H::half(a, b);
-				H::apply(matrix, a, b);
-				if (b.empty()) break;
-			}
+		if (!b.empty() && a.size() == b.size()) {
 			auto r = a.divmod(b).second;
 			a = std::move(b), b = std::move(r);
+		}
+		if (!b.empty()) {
+			auto matrix = H::jump(a, b, int(a.size()) - 1, true);
+			if (matrix.shift == int(a.size()) - 1) return {T(1)};
+			a = H::apply_first(matrix, a, b);
 		}
 		if (!a.empty()) a /= a.back();
 		return a;
@@ -49,14 +49,14 @@ PolynomialExtendedGCD<T> polynomial_extended_gcd(FormalPowerSeries<T> a, FormalP
 		O::trim(a), O::trim(b);
 		if (a.empty() && b.empty()) return {};
 		typename H::Matrix matrix;
-		while (!b.empty()) {
-			if (a.size() > b.size() && a.size() > 128) {
-				auto part = H::half(a, b);
-				H::apply(part, a, b), matrix = H::multiply(part, matrix);
-				if (b.empty()) break;
-			}
+		while (!b.empty() && a.size() <= b.size()) {
 			auto [q, r] = a.divmod(b);
 			H::step(matrix, q), a = std::move(b), b = std::move(r);
+		}
+		if (!b.empty()) {
+			auto part = H::jump(a, b, int(a.size()) - 1, true);
+			a = H::apply_first(part, a, b);
+			matrix = H::multiply(part, matrix, true);
 		}
 		T inverse = a.back().inv();
 		a *= inverse, matrix.a[0] *= inverse, matrix.a[1] *= inverse;
@@ -78,20 +78,13 @@ std::optional<FormalPowerSeries<T>> polynomial_inv_mod(FormalPowerSeries<T> a, F
 	} else {
 		if (a.size() >= modulus.size()) a = a.divmod(modulus).second;
 		O::trim(a);
-		FormalPowerSeries<T> b = modulus;
-		typename H::Matrix matrix;
-		while (!b.empty()) {
-			if (a.size() > b.size() && a.size() > 128) {
-				auto part = H::half(a, b);
-				H::apply(part, a, b), matrix = H::multiply_column(part, matrix);
-				if (b.empty()) break;
-			}
-			auto [q, r] = a.divmod(b);
-			H::step_column(matrix, q), a = std::move(b), b = std::move(r);
-		}
-		if (a.size() != 1) return std::nullopt;
-		matrix.a[0] /= a.back();
-		return matrix.a[0].divmod(modulus).second;
+		if (a.empty()) return std::nullopt;
+		auto matrix = H::jump(modulus, a, int(modulus.size()) - 1, true);
+		if (matrix.shift != int(modulus.size()) - 1) return std::nullopt;
+		T constant = (matrix.a[0].empty() ? T(0) : matrix.a[0][0] * modulus[0]) +
+			(matrix.a[1].empty() ? T(0) : matrix.a[1][0] * a[0]);
+		matrix.a[1] /= constant;
+		return std::move(matrix.a[1]);
 	}
 }
 

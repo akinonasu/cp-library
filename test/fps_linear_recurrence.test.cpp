@@ -1,14 +1,11 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/kth_term_of_linearly_recurrent_sequence"
 #include "fps/linear_recurrence.hpp"
-#include <iostream>
-
-using namespace std;
+#include "fps_io.hpp"
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
-	int d; long long k; cin >> d >> k;
-	vector<mint> a(d), c(d);
-	for (auto &x : a) cin >> x;
-	for (auto &x : c) cin >> x;
-	cout << linear_recurrence(a, c, k) << '\n';
+	FastInput input;
+	FastOutput output;
+	int d = 0; long long k = 0; input.read(d); input.read(k);
+	auto a = read_fps(input, d), c = read_fps(input, d);
+	output.println(linear_recurrence<mint>(a, c, k).val());
 }

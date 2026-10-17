@@ -1,15 +1,11 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/polynomial_interpolation"
 #include "fps/interpolate.hpp"
-#include <iostream>
-
-using namespace std;
+#include "fps_io.hpp"
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
-	int n; cin >> n;
-	vector<mint> xs(n), ys(n);
-	for (auto &x : xs) cin >> x;
-	for (auto &y : ys) cin >> y;
-	for (auto x : interpolate(xs, ys)) cout << x << ' ';
-	cout << '\n';
+	FastInput input;
+	FastOutput output;
+	int n = 0; input.read(n);
+	auto xs = read_fps(input, n), ys = read_fps(input, n);
+	write_fps(output, interpolate(xs, ys));
 }

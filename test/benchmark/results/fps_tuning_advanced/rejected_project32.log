@@ -1,0 +1,9 @@
+compose 8192 {'before': 1.774781, 'current': 1.66317}
+compose 32768 {'before': 8.811181, 'current': 8.760234}
+compose 131072 {'before': 46.524641, 'current': 46.468605}
+inverse 8192 {'before': 1.717278, 'current': 1.664444}
+inverse 32768 {'before': 8.208014, 'current': 8.099117}
+inverse 131072 {'before': 40.749771, 'current': 40.665194}
+projection 8192 {'before': 1.368837, 'current': 1.342034}
+projection 32768 {'before': 6.691096, 'current': 6.802656}
+projection 131072 {'before': 33.638648, 'current': 34.399547}

@@ -1,0 +1,993 @@
+{
+  "measured_at": "2026-10-17T18:20:07.806531+00:00",
+  "before_public_headers": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+  "comparison": "identical frozen shared FPS/NTT implementation; baseline restores the three public headers from before_public_headers",
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "kernel": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "cpu": "model name\t: 13th Gen Intel(R) Core(TM) i7-13700F",
+  "cpu_affinity": [
+    2
+  ],
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero"
+  ],
+  "trials": 15,
+  "warmup": 1,
+  "input_seed": 731,
+  "schedule_seed": 731,
+  "binary_filesystem": "Linux /tmp",
+  "metric": "in-process wall time including public API copies, allocations and transform setup; excludes input generation, checksum and I/O",
+  "source_sha256": {
+    "test/benchmark/fps_tuning_advanced.cpp": "2172542c37bf8da783a2956709134b40e66b5e5f4aca926b91ef93926e047459",
+    "test/benchmark/fps_tuning_advanced.py": "35a24f6ef9cf7d578e1ca7c0f0404203e959c639c5513d450ba8fd9e69265c6a"
+  },
+  "frozen_headers_sha256": {
+    "current": {
+      "components/fast_io.hpp": "d4a7e58d2a9373e675ddaed1a31ea3f1748b75a2af4201791ac63163b3af38b8",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/matrix_arithmetic.hpp": "9173946654c088d0adf507ac86556ca83b6ae6f900e66dcb1038ce3123302604",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/dynamic_bit_vector.hpp": "6ccac3add8d0c35649ec0a2b50e03e1142502473c8e2b1fd453ffe77c32689e7",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/ntt.hpp": "439441a442bff69c3fcb2f586c002ef0a47700b8d7a5bb9a59fe70979af6aefd",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/matrix.hpp": "f79b70def9f73c1faf8db2d7b976f58b3fc4287cc1a93254966238da688b7104",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+      "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+      "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+      "fps/compositional_inverse.hpp": "24561e34893d2cd70f266afe1b87a212fce65a06bfe17ee4d95294dd28539991",
+      "fps/polynomial_gcd.hpp": "f4592e06895a244282167969da984ed3bb4f99823f62fa6f2be4276cd5a9df4c",
+      "fps/fps.hpp": "49aecaa66152548f54c36e40eb21af16297f125534f241b3594520ca26fcfc40",
+      "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+      "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+      "fps/multipoint_eval.hpp": "4cb93dd9d9d2b0bbbece729c7de93217a19cd4915cf9ace9aa797c0eefcb049e",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041"
+    },
+    "before": {
+      "advanced_baseline.hpp": "62f2fde4b642deba0345506ca6828c058d4cfd7767eb5ccb8e35a96bf307d3a6",
+      "power_projection_before.hpp": "6f5d16e96fd1adedf1e9fa654bc3c08ff73fb95077a24c5d9942dccd1eeb4612",
+      "compose_before.hpp": "5deb65523eb3fd5769b1136f7097662df71c653a2fc7d35edac886b1b06960e7",
+      "linear_recurrence_before.hpp": "f31d3b9cec14a8cdf8480930051a72f4055df34e0d6ba2a3822e5b84ce6e8bcd",
+      "compositional_inverse_before.hpp": "64f4177e16642fda13b8a950df110f6941e08f56cd245c1e3531ef42b2c7257b",
+      "components/fast_io.hpp": "d4a7e58d2a9373e675ddaed1a31ea3f1748b75a2af4201791ac63163b3af38b8",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/matrix_arithmetic.hpp": "9173946654c088d0adf507ac86556ca83b6ae6f900e66dcb1038ce3123302604",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/dynamic_bit_vector.hpp": "6ccac3add8d0c35649ec0a2b50e03e1142502473c8e2b1fd453ffe77c32689e7",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/ntt.hpp": "439441a442bff69c3fcb2f586c002ef0a47700b8d7a5bb9a59fe70979af6aefd",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/matrix.hpp": "f79b70def9f73c1faf8db2d7b976f58b3fc4287cc1a93254966238da688b7104",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+      "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+      "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+      "fps/compositional_inverse.hpp": "24561e34893d2cd70f266afe1b87a212fce65a06bfe17ee4d95294dd28539991",
+      "fps/polynomial_gcd.hpp": "f4592e06895a244282167969da984ed3bb4f99823f62fa6f2be4276cd5a9df4c",
+      "fps/fps.hpp": "49aecaa66152548f54c36e40eb21af16297f125534f241b3594520ca26fcfc40",
+      "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+      "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+      "fps/multipoint_eval.hpp": "4cb93dd9d9d2b0bbbece729c7de93217a19cd4915cf9ace9aa797c0eefcb049e",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041"
+    }
+  },
+  "workloads": [
+    {
+      "operation": "compose",
+      "size": 4096,
+      "milliseconds": {
+        "current": [
+          0.807299,
+          0.787053,
+          0.756788,
+          0.788847,
+          0.785374,
+          0.780778,
+          0.799426,
+          0.811316,
+          0.788263,
+          0.782822,
+          0.816815,
+          0.812839,
+          0.763974,
+          0.870302,
+          0.795623
+        ],
+        "before": [
+          0.810124,
+          0.804114,
+          0.763915,
+          0.804029,
+          0.853881,
+          0.776009,
+          0.905811,
+          0.927681,
+          0.844621,
+          0.767963,
+          0.835409,
+          0.773652,
+          0.757057,
+          0.824985,
+          0.804532
+        ]
+      },
+      "median_ms": {
+        "current": 0.788847,
+        "before": 0.804532
+      },
+      "checksum": "2150272186156657763"
+    },
+    {
+      "operation": "compose",
+      "size": 8000,
+      "milliseconds": {
+        "current": [
+          1.722194,
+          1.724925,
+          1.699657,
+          1.870519,
+          1.860268,
+          1.960966,
+          1.743785,
+          1.753634,
+          1.748222,
+          1.694171,
+          1.955945,
+          1.731515,
+          1.714474,
+          1.718735,
+          1.758921
+        ],
+        "before": [
+          1.76861,
+          1.719891,
+          1.712854,
+          1.764072,
+          2.009068,
+          1.760381,
+          1.805129,
+          1.708426,
+          1.724832,
+          1.731753,
+          1.715902,
+          1.713455,
+          1.733731,
+          1.944837,
+          1.732732
+        ]
+      },
+      "median_ms": {
+        "current": 1.743785,
+        "before": 1.732732
+      },
+      "checksum": "5871625612865481483"
+    },
+    {
+      "operation": "compose",
+      "size": 16384,
+      "milliseconds": {
+        "current": [
+          3.894755,
+          4.01129,
+          3.954947,
+          3.798066,
+          3.817245,
+          3.843284,
+          4.254761,
+          4.093526,
+          3.992694,
+          4.032271,
+          4.042581,
+          4.050669,
+          4.058922,
+          4.001409,
+          3.97765
+        ],
+        "before": [
+          4.292662,
+          4.07178,
+          3.852099,
+          3.831902,
+          3.918263,
+          4.23544,
+          4.055292,
+          4.174994,
+          4.109388,
+          4.442796,
+          4.05149,
+          4.126395,
+          4.016398,
+          4.057602,
+          4.050341
+        ]
+      },
+      "median_ms": {
+        "current": 4.001409,
+        "before": 4.057602
+      },
+      "checksum": "5379307161957398437"
+    },
+    {
+      "operation": "compose",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          48.365328,
+          46.104144,
+          47.865351,
+          46.559252,
+          46.630115,
+          45.178117,
+          47.495525,
+          45.31705,
+          48.265507,
+          47.438473,
+          47.679849,
+          45.488388,
+          46.673697,
+          46.345172,
+          47.463216
+        ],
+        "before": [
+          48.255778,
+          48.140722,
+          46.894918,
+          47.442127,
+          44.882412,
+          45.060207,
+          46.013582,
+          45.711817,
+          46.122435,
+          48.515331,
+          45.698752,
+          44.739995,
+          46.403841,
+          48.757679,
+          46.783462
+        ]
+      },
+      "median_ms": {
+        "current": 46.673697,
+        "before": 46.403841
+      },
+      "checksum": "5003325278892356314"
+    },
+    {
+      "operation": "inverse",
+      "size": 4096,
+      "milliseconds": {
+        "current": [
+          0.776626,
+          0.931005,
+          0.774913,
+          0.771266,
+          0.79257,
+          0.808848,
+          0.817475,
+          0.792541,
+          0.786257,
+          0.772451,
+          0.82946,
+          0.840164,
+          0.769598,
+          1.507482,
+          0.765843
+        ],
+        "before": [
+          0.780884,
+          0.764828,
+          0.812177,
+          0.774868,
+          0.76988,
+          0.789676,
+          0.930377,
+          0.799834,
+          0.801289,
+          0.773282,
+          1.02844,
+          0.810586,
+          0.76984,
+          0.76947,
+          0.797247
+        ]
+      },
+      "median_ms": {
+        "current": 0.792541,
+        "before": 0.789676
+      },
+      "checksum": "13076374286469685016"
+    },
+    {
+      "operation": "inverse",
+      "size": 8000,
+      "milliseconds": {
+        "current": [
+          1.715121,
+          1.682394,
+          1.65034,
+          1.659456,
+          1.689658,
+          1.682407,
+          1.650868,
+          1.943553,
+          1.654806,
+          1.667534,
+          1.750172,
+          1.655345,
+          1.678788,
+          1.63624,
+          1.68929
+        ],
+        "before": [
+          1.769628,
+          1.795904,
+          1.790258,
+          1.649104,
+          1.8185,
+          1.652582,
+          1.650828,
+          1.771291,
+          1.706638,
+          1.645685,
+          1.649135,
+          1.691949,
+          1.660236,
+          1.677159,
+          1.650046
+        ]
+      },
+      "median_ms": {
+        "current": 1.678788,
+        "before": 1.677159
+      },
+      "checksum": "10516489248568659793"
+    },
+    {
+      "operation": "inverse",
+      "size": 16384,
+      "milliseconds": {
+        "current": [
+          3.644579,
+          3.676604,
+          3.644184,
+          3.616131,
+          3.600731,
+          3.730995,
+          3.614491,
+          3.955685,
+          3.663948,
+          3.705433,
+          3.662495,
+          3.69213,
+          3.934563,
+          3.634043,
+          3.702684
+        ],
+        "before": [
+          3.676048,
+          3.685499,
+          3.6075,
+          3.644355,
+          3.963135,
+          3.898648,
+          3.812358,
+          3.753529,
+          3.671831,
+          3.673074,
+          3.626068,
+          3.615762,
+          3.612054,
+          3.716113,
+          3.661562
+        ]
+      },
+      "median_ms": {
+        "current": 3.663948,
+        "before": 3.673074
+      },
+      "checksum": "17502386596167401604"
+    },
+    {
+      "operation": "inverse",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          40.28099,
+          39.912433,
+          39.526605,
+          39.718968,
+          41.713343,
+          39.861911,
+          39.754166,
+          40.411659,
+          39.819533,
+          40.726433,
+          39.437148,
+          40.150277,
+          40.30848,
+          40.915742,
+          40.015909
+        ],
+        "before": [
+          39.660367,
+          41.329805,
+          40.197386,
+          39.189621,
+          39.912366,
+          39.244847,
+          39.873436,
+          39.878069,
+          40.918336,
+          40.553659,
+          39.754073,
+          39.913008,
+          40.998507,
+          41.087551,
+          40.084878
+        ]
+      },
+      "median_ms": {
+        "current": 40.015909,
+        "before": 39.913008
+      },
+      "checksum": "6246204047067189800"
+    },
+    {
+      "operation": "projection",
+      "size": 4096,
+      "milliseconds": {
+        "current": [
+          0.613414,
+          0.623113,
+          0.641224,
+          0.602908,
+          0.597335,
+          0.610838,
+          0.675254,
+          0.597087,
+          0.605469,
+          0.597458,
+          0.603823,
+          0.623727,
+          0.610624,
+          0.906972,
+          0.785883
+        ],
+        "before": [
+          0.624775,
+          0.610346,
+          0.594317,
+          0.602894,
+          0.598636,
+          0.605918,
+          0.59242,
+          0.710286,
+          0.593685,
+          0.629315,
+          0.592926,
+          0.611384,
+          0.60252,
+          0.631522,
+          0.601421
+        ]
+      },
+      "median_ms": {
+        "current": 0.610838,
+        "before": 0.602894
+      },
+      "checksum": "16151093282260543701"
+    },
+    {
+      "operation": "projection",
+      "size": 8000,
+      "milliseconds": {
+        "current": [
+          1.419218,
+          1.381912,
+          1.381833,
+          1.387814,
+          1.493762,
+          1.488282,
+          1.419435,
+          1.346681,
+          1.715826,
+          1.635736,
+          1.395793,
+          1.436498,
+          1.448111,
+          1.480977,
+          1.37019
+        ],
+        "before": [
+          1.36444,
+          1.384266,
+          1.49039,
+          1.338681,
+          1.345949,
+          1.358445,
+          1.364396,
+          1.373674,
+          1.451699,
+          1.374082,
+          1.336947,
+          1.416603,
+          1.375959,
+          1.375521,
+          1.376666
+        ]
+      },
+      "median_ms": {
+        "current": 1.419435,
+        "before": 1.374082
+      },
+      "checksum": "6201993256174710868"
+    },
+    {
+      "operation": "projection",
+      "size": 16384,
+      "milliseconds": {
+        "current": [
+          2.9802,
+          3.048581,
+          3.180923,
+          3.128016,
+          3.352697,
+          3.05269,
+          3.12759,
+          3.096841,
+          2.966762,
+          3.108145,
+          3.097839,
+          2.986057,
+          3.039291,
+          2.976866,
+          3.052803
+        ],
+        "before": [
+          2.950986,
+          3.123464,
+          3.017564,
+          3.13873,
+          3.062688,
+          3.065574,
+          3.048599,
+          3.025961,
+          3.024081,
+          2.992061,
+          2.990049,
+          3.038693,
+          3.042267,
+          3.206369,
+          3.012719
+        ]
+      },
+      "median_ms": {
+        "current": 3.052803,
+        "before": 3.038693
+      },
+      "checksum": "1635045549945139033"
+    },
+    {
+      "operation": "projection",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          37.072418,
+          33.789472,
+          33.616508,
+          32.975693,
+          34.056722,
+          33.497642,
+          33.04939,
+          33.048961,
+          33.091152,
+          33.05142,
+          33.187041,
+          33.370277,
+          33.582252,
+          32.622545,
+          32.979542
+        ],
+        "before": [
+          33.076143,
+          33.262247,
+          33.596363,
+          33.68622,
+          33.286548,
+          33.640409,
+          34.149253,
+          33.05709,
+          32.887065,
+          33.586876,
+          33.095253,
+          32.693754,
+          33.987796,
+          33.410062,
+          33.662093
+        ]
+      },
+      "median_ms": {
+        "current": 33.187041,
+        "before": 33.410062
+      },
+      "checksum": "7355666251011445489"
+    },
+    {
+      "operation": "compose_stride",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          9.757478,
+          9.682242,
+          9.038312,
+          9.839953,
+          9.063637,
+          10.129737,
+          9.601916,
+          9.416405,
+          9.74176,
+          9.606974,
+          9.726128,
+          9.728633,
+          9.586395,
+          9.17392,
+          9.621828
+        ],
+        "before": [
+          46.686335,
+          46.004468,
+          44.309371,
+          46.031568,
+          44.807413,
+          47.666206,
+          45.417833,
+          48.124482,
+          45.084171,
+          44.037568,
+          45.167339,
+          45.654857,
+          46.508423,
+          44.125052,
+          44.558255
+        ]
+      },
+      "median_ms": {
+        "current": 9.621828,
+        "before": 45.417833
+      },
+      "checksum": "6714960998817881791"
+    },
+    {
+      "operation": "compose_valuation",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          12.612211,
+          13.218202,
+          13.017302,
+          13.152977,
+          12.513707,
+          13.224699,
+          12.924379,
+          13.108343,
+          12.901331,
+          12.988629,
+          13.286618,
+          13.109628,
+          12.383503,
+          13.040303,
+          12.696531
+        ],
+        "before": [
+          46.185899,
+          45.063063,
+          46.632143,
+          45.678606,
+          44.207976,
+          45.993343,
+          44.691802,
+          47.720888,
+          45.048421,
+          46.279864,
+          45.290291,
+          45.56305,
+          45.187187,
+          44.601001,
+          45.316129
+        ]
+      },
+      "median_ms": {
+        "current": 13.017302,
+        "before": 45.316129
+      },
+      "checksum": "2730553904276534742"
+    },
+    {
+      "operation": "projection_weighted",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          33.140488,
+          33.13985,
+          33.675658,
+          33.162993,
+          33.818602,
+          32.796957,
+          35.602298,
+          34.205105,
+          33.219301,
+          33.318429,
+          33.080477,
+          33.211017,
+          33.297006,
+          33.548472,
+          32.888454
+        ],
+        "before": [
+          33.772584,
+          33.129885,
+          34.280154,
+          33.746789,
+          33.618725,
+          33.207087,
+          33.786616,
+          34.220562,
+          33.700191,
+          32.820947,
+          33.394215,
+          32.872893,
+          33.639973,
+          33.886197,
+          33.914332
+        ]
+      },
+      "median_ms": {
+        "current": 33.219301,
+        "before": 33.700191
+      },
+      "checksum": "11498567140814075224"
+    },
+    {
+      "operation": "projection_stride",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          7.188065,
+          7.218965,
+          7.334853,
+          7.641729,
+          7.108205,
+          7.268889,
+          7.083439,
+          7.52961,
+          7.155733,
+          7.529098,
+          7.29091,
+          7.182999,
+          7.058098,
+          7.233848,
+          7.103877
+        ],
+        "before": [
+          33.88938,
+          33.361283,
+          33.724127,
+          33.686464,
+          34.942269,
+          33.432263,
+          33.882032,
+          32.981168,
+          34.899589,
+          32.81941,
+          34.553994,
+          33.892193,
+          33.061023,
+          34.307283,
+          32.940187
+        ]
+      },
+      "median_ms": {
+        "current": 7.218965,
+        "before": 33.724127
+      },
+      "checksum": "1919395890223912017"
+    },
+    {
+      "operation": "recurrence",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          48.413282,
+          47.965691,
+          47.779945,
+          47.768097,
+          48.945213,
+          48.889829,
+          48.516804,
+          47.291117,
+          48.377666,
+          49.81657,
+          51.04829,
+          46.866152,
+          47.485258,
+          47.683314,
+          48.365679
+        ],
+        "before": [
+          46.857225,
+          53.243391,
+          48.167719,
+          47.462961,
+          49.320336,
+          47.49998,
+          49.172213,
+          48.188134,
+          47.120074,
+          46.230226,
+          49.967297,
+          49.07379,
+          48.198646,
+          48.83273,
+          49.101785
+        ]
+      },
+      "median_ms": {
+        "current": 48.365679,
+        "before": 48.198646
+      },
+      "checksum": "14522122648885082379"
+    },
+    {
+      "operation": "recurrence_tail",
+      "size": 131072,
+      "milliseconds": {
+        "current": [
+          0.068392,
+          0.071159,
+          0.075218,
+          0.067945,
+          0.069218,
+          0.061979,
+          0.073221,
+          0.068904,
+          0.065166,
+          0.063035,
+          0.065953,
+          0.069894,
+          0.074302,
+          0.079024,
+          0.07152
+        ],
+        "before": [
+          6.498817,
+          6.339858,
+          6.325545,
+          6.458977,
+          6.262647,
+          6.44138,
+          6.160137,
+          6.179881,
+          6.101941,
+          6.276634,
+          6.086551,
+          6.056492,
+          5.964527,
+          5.885857,
+          5.917719
+        ]
+      },
+      "median_ms": {
+        "current": 0.069218,
+        "before": 6.179881
+      },
+      "checksum": "7525290133339536177"
+    }
+  ]
+}

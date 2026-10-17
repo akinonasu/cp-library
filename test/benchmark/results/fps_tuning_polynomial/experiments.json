@@ -1,0 +1,2265 @@
+{
+  "direct-v1": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_operations.hpp": "03bec508671214aaaa61b3cf4fa4449a09659c38b1d04240db2ad6a91145c760",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/ntt.hpp": "bbd55c4f54ca633c767c5443d06f8f89e144729116dbf4167000f19592ef4f6a",
+        "components/polynomial_half_gcd.hpp": "c1a5a7391ce10d547d47599b41b9d4aa869477322b879ef524f03ece3bbf6d59",
+        "fps/bostan_mori.hpp": "cf43d633d299779a7c4a1e84d97f288bafd547902b5e99bf24d6024840119ad7",
+        "fps/compose.hpp": "dd55ad00206b42f1f33efed1321a20c1ace9e1bb4cbf535451079cb40daf3adb",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "b69f0eab0cdd168550d9d13e0f6b700b109826cc491e10ce1306ac806ab7a357",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "47a07e023dbe44af065cc155c88069b62b66ddc43e4c53cb6cdd95a2a8d5a5a2",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "7b442017db9fbfe24111bebc08034e6c747c091ecab1a07b92052be93acdb77e",
+        "fps/power_projection.hpp": "25a9dc93a975a11fe0d1ec71ca4c8d614a60bd2e54c6fd46bb046c2f84fd6eeb",
+        "fps/taylor_shift.hpp": "2d76ebe1bbe393551c4b0fa213ea5d3647a7f882e90edb3e774c0d175ed787e0",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 256,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.000122927,
+            0.000124801,
+            0.000122059,
+            0.000147214,
+            0.000155019
+          ],
+          "after": [
+            6.839E-05,
+            6.9121E-05,
+            0.000102014,
+            6.7894E-05,
+            6.784E-05
+          ]
+        },
+        "median_seconds": {
+          "before": 0.000124801,
+          "after": 6.839E-05
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.003086554,
+            0.00316568,
+            0.002978034,
+            0.003056627,
+            0.002998018
+          ],
+          "after": [
+            0.00165705,
+            0.001761534,
+            0.001562938,
+            0.001569296,
+            0.001689403
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003056627,
+          "after": 0.00165705
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 32768,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.030853902,
+            0.030991816,
+            0.032950368,
+            0.031935912,
+            0.031297135
+          ],
+          "after": [
+            0.019116189,
+            0.020632119,
+            0.019191024,
+            0.019219781,
+            0.018927827
+          ]
+        },
+        "median_seconds": {
+          "before": 0.031297135,
+          "after": 0.019191024
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.056629479,
+            0.057588132,
+            0.056714474,
+            0.058592063,
+            0.05634062
+          ],
+          "after": [
+            0.040571574,
+            0.041754547,
+            0.040431433,
+            0.043742398,
+            0.040600075
+          ]
+        },
+        "median_seconds": {
+          "before": 0.056714474,
+          "after": 0.040600075
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 256,
+        "checksum": "9111868955510235396",
+        "samples": {
+          "before": [
+            0.000223968,
+            0.000208564,
+            0.000235495,
+            0.000186092,
+            0.000196523
+          ],
+          "after": [
+            0.000143107,
+            0.000134062,
+            0.000135596,
+            0.000148141,
+            0.000159268
+          ]
+        },
+        "median_seconds": {
+          "before": 0.000208564,
+          "after": 0.000143107
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.004260735,
+            0.004000753,
+            0.004330477,
+            0.003991524,
+            0.003987317
+          ],
+          "after": [
+            0.002666053,
+            0.002697619,
+            0.002861615,
+            0.002645651,
+            0.002638123
+          ]
+        },
+        "median_seconds": {
+          "before": 0.004000753,
+          "after": 0.002666053
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 32768,
+        "checksum": "529348020158624209",
+        "samples": {
+          "before": [
+            0.041494115,
+            0.040999397,
+            0.040780168,
+            0.040897318,
+            0.041848153
+          ],
+          "after": [
+            0.032107263,
+            0.032680246,
+            0.032723962,
+            0.032222822,
+            0.031416826
+          ]
+        },
+        "median_seconds": {
+          "before": 0.040999397,
+          "after": 0.032222822
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.075767984,
+            0.077065029,
+            0.082415902,
+            0.077557407,
+            0.077897187
+          ],
+          "after": [
+            0.05876328,
+            0.058757296,
+            0.059070389,
+            0.057652947,
+            0.060890351
+          ]
+        },
+        "median_seconds": {
+          "before": 0.077557407,
+          "after": 0.05876328
+        }
+      }
+    ]
+  },
+  "cache-v1": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_operations.hpp": "03bec508671214aaaa61b3cf4fa4449a09659c38b1d04240db2ad6a91145c760",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/ntt.hpp": "7713a37cb2fa585f2e232dd8ce50b987e94b6b64283b7a576587c889272039f6",
+        "components/polynomial_half_gcd.hpp": "5f53904b147a33a7e3b750fcccc4c70c08b68a592578fdb3ce45eb164c477c51",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "dd55ad00206b42f1f33efed1321a20c1ace9e1bb4cbf535451079cb40daf3adb",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "b69f0eab0cdd168550d9d13e0f6b700b109826cc491e10ce1306ac806ab7a357",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "47a07e023dbe44af065cc155c88069b62b66ddc43e4c53cb6cdd95a2a8d5a5a2",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "7b442017db9fbfe24111bebc08034e6c747c091ecab1a07b92052be93acdb77e",
+        "fps/power_projection.hpp": "25a9dc93a975a11fe0d1ec71ca4c8d614a60bd2e54c6fd46bb046c2f84fd6eeb",
+        "fps/taylor_shift.hpp": "2d76ebe1bbe393551c4b0fa213ea5d3647a7f882e90edb3e774c0d175ed787e0",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.002953579,
+            0.002923892,
+            0.002932166,
+            0.003174501,
+            0.002978375
+          ],
+          "after": [
+            0.001458252,
+            0.001452885,
+            0.001431501,
+            0.001471703,
+            0.00147412
+          ]
+        },
+        "median_seconds": {
+          "before": 0.002953579,
+          "after": 0.001458252
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 32768,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.032713364,
+            0.03154347,
+            0.031748508,
+            0.031054503,
+            0.031410121
+          ],
+          "after": [
+            0.017070456,
+            0.018505286,
+            0.017731764,
+            0.01771248,
+            0.017427656
+          ]
+        },
+        "median_seconds": {
+          "before": 0.03154347,
+          "after": 0.01771248
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.057874464,
+            0.05564072,
+            0.056493165,
+            0.055755663,
+            0.056240213
+          ],
+          "after": [
+            0.036631926,
+            0.035284793,
+            0.036401087,
+            0.035267493,
+            0.036326365
+          ]
+        },
+        "median_seconds": {
+          "before": 0.056240213,
+          "after": 0.036326365
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.004202554,
+            0.004249747,
+            0.003916056,
+            0.004120321,
+            0.004025705
+          ],
+          "after": [
+            0.002406111,
+            0.002469878,
+            0.002401745,
+            0.002466382,
+            0.002434904
+          ]
+        },
+        "median_seconds": {
+          "before": 0.004120321,
+          "after": 0.002434904
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 32768,
+        "checksum": "529348020158624209",
+        "samples": {
+          "before": [
+            0.041778664,
+            0.042278377,
+            0.042442225,
+            0.043209031,
+            0.041314071
+          ],
+          "after": [
+            0.027205501,
+            0.027518746,
+            0.028375681,
+            0.027217324,
+            0.026593984
+          ]
+        },
+        "median_seconds": {
+          "before": 0.042278377,
+          "after": 0.027217324
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.075765673,
+            0.075494014,
+            0.075986366,
+            0.075224954,
+            0.077688783
+          ],
+          "after": [
+            0.0539737,
+            0.052679514,
+            0.053680045,
+            0.056381233,
+            0.055927837
+          ]
+        },
+        "median_seconds": {
+          "before": 0.075765673,
+          "after": 0.0539737
+        }
+      }
+    ]
+  },
+  "cache-step-v1": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_factorials.hpp": "8eb78634994600c95ab7737441dabbd4b12cc3b1f50cc4d4fea10f24af2f7f0d",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/ntt.hpp": "7713a37cb2fa585f2e232dd8ce50b987e94b6b64283b7a576587c889272039f6",
+        "components/polynomial_half_gcd.hpp": "933b2173c35192896b5b5686712e0b3afef74c22998e9a63e0af8f198fa8fb1a",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "dd55ad00206b42f1f33efed1321a20c1ace9e1bb4cbf535451079cb40daf3adb",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "c99537877e3b5de45a516b44f6fc657bf2b47cf76fcd942053925d54832a10cc",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "47a07e023dbe44af065cc155c88069b62b66ddc43e4c53cb6cdd95a2a8d5a5a2",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "7b442017db9fbfe24111bebc08034e6c747c091ecab1a07b92052be93acdb77e",
+        "fps/power_projection.hpp": "25a9dc93a975a11fe0d1ec71ca4c8d614a60bd2e54c6fd46bb046c2f84fd6eeb",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.002962375,
+            0.002985196,
+            0.003195795,
+            0.003138451,
+            0.003066685
+          ],
+          "after": [
+            0.001437244,
+            0.001481824,
+            0.00149549,
+            0.001424628,
+            0.001482492
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003066685,
+          "after": 0.001481824
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 32768,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.03034136,
+            0.0306828,
+            0.030841418,
+            0.031526053,
+            0.030660459
+          ],
+          "after": [
+            0.01647033,
+            0.016255441,
+            0.016691735,
+            0.017058549,
+            0.016848417
+          ]
+        },
+        "median_seconds": {
+          "before": 0.0306828,
+          "after": 0.016691735
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.058091278,
+            0.056489727,
+            0.057768019,
+            0.058879741,
+            0.057691593
+          ],
+          "after": [
+            0.036756159,
+            0.037134935,
+            0.036028448,
+            0.035588756,
+            0.035433894
+          ]
+        },
+        "median_seconds": {
+          "before": 0.057768019,
+          "after": 0.036028448
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.003979695,
+            0.003990466,
+            0.004066014,
+            0.003885593,
+            0.003851463
+          ],
+          "after": [
+            0.003502473,
+            0.003208738,
+            0.003135609,
+            0.003122967,
+            0.003225612
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003979695,
+          "after": 0.003208738
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 32768,
+        "checksum": "529348020158624209",
+        "samples": {
+          "before": [
+            0.041210773,
+            0.042896091,
+            0.04162464,
+            0.043387744,
+            0.042611446
+          ],
+          "after": [
+            0.033286118,
+            0.035268354,
+            0.034675686,
+            0.036422542,
+            0.03630537
+          ]
+        },
+        "median_seconds": {
+          "before": 0.042611446,
+          "after": 0.035268354
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.077601485,
+            0.077693208,
+            0.078502782,
+            0.075548631,
+            0.075972321
+          ],
+          "after": [
+            0.064686724,
+            0.063130797,
+            0.068699933,
+            0.063663398,
+            0.065067488
+          ]
+        },
+        "median_seconds": {
+          "before": 0.077601485,
+          "after": 0.064686724
+        }
+      }
+    ]
+  },
+  "cache-step-v2": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_factorials.hpp": "8eb78634994600c95ab7737441dabbd4b12cc3b1f50cc4d4fea10f24af2f7f0d",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/ntt.hpp": "ab0a781957d2d5fd3226215afe1f937a12e4d623d943651ae50534d98437990b",
+        "components/polynomial_half_gcd.hpp": "7bbf1fbc08df1591552cec060e4df5aabee1a6a7cc5e0fe1b2cf46c691e8a55c",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "dd55ad00206b42f1f33efed1321a20c1ace9e1bb4cbf535451079cb40daf3adb",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "c99537877e3b5de45a516b44f6fc657bf2b47cf76fcd942053925d54832a10cc",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "47a07e023dbe44af065cc155c88069b62b66ddc43e4c53cb6cdd95a2a8d5a5a2",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "7b442017db9fbfe24111bebc08034e6c747c091ecab1a07b92052be93acdb77e",
+        "fps/power_projection.hpp": "25a9dc93a975a11fe0d1ec71ca4c8d614a60bd2e54c6fd46bb046c2f84fd6eeb",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 32768,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.030518238,
+            0.031245253,
+            0.030902562,
+            0.030920765,
+            0.030453282
+          ],
+          "after": [
+            0.016329566,
+            0.01634969,
+            0.016587821,
+            0.016420101,
+            0.016302383
+          ]
+        },
+        "median_seconds": {
+          "before": 0.030902562,
+          "after": 0.01634969
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.057142029,
+            0.056884687,
+            0.057365542,
+            0.056160722,
+            0.058042603
+          ],
+          "after": [
+            0.035992198,
+            0.037009257,
+            0.03678238,
+            0.036141497,
+            0.036964555
+          ]
+        },
+        "median_seconds": {
+          "before": 0.057142029,
+          "after": 0.03678238
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 32768,
+        "checksum": "529348020158624209",
+        "samples": {
+          "before": [
+            0.04129345,
+            0.040550497,
+            0.042560633,
+            0.040998704,
+            0.042097018
+          ],
+          "after": [
+            0.026557807,
+            0.026304524,
+            0.026470038,
+            0.025910513,
+            0.025780563
+          ]
+        },
+        "median_seconds": {
+          "before": 0.04129345,
+          "after": 0.026304524
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.076801689,
+            0.078002414,
+            0.077298661,
+            0.075979754,
+            0.077222313
+          ],
+          "after": [
+            0.052642096,
+            0.052033692,
+            0.053556547,
+            0.055798963,
+            0.054592359
+          ]
+        },
+        "median_seconds": {
+          "before": 0.077222313,
+          "after": 0.053556547
+        }
+      }
+    ]
+  },
+  "jump-v1": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_factorials.hpp": "8eb78634994600c95ab7737441dabbd4b12cc3b1f50cc4d4fea10f24af2f7f0d",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/ntt.hpp": "6e6b80e0c2d4ea87e90b6b761361d7cd58f1e62bd2d51b3740a99e9c51734fb9",
+        "components/polynomial_half_gcd.hpp": "1e86076941045fee0154cabb1ffc570108cc106a60973ec3427b6ef97274fab4",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "dd55ad00206b42f1f33efed1321a20c1ace9e1bb4cbf535451079cb40daf3adb",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "6a02d8472c3b5f9fe63d331fa9809a83146a784c7396cd8d0645f8d94d60b9c0",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "47a07e023dbe44af065cc155c88069b62b66ddc43e4c53cb6cdd95a2a8d5a5a2",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "43d7582cff568d206d4e12e5c8c0a851d970ea2785b98853abe542e50ee8de73",
+        "fps/power_projection.hpp": "25a9dc93a975a11fe0d1ec71ca4c8d614a60bd2e54c6fd46bb046c2f84fd6eeb",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.003033133,
+            0.003087372,
+            0.002977598,
+            0.002981468,
+            0.003053388
+          ],
+          "after": [
+            0.001425455,
+            0.001461061,
+            0.001427325,
+            0.002008908,
+            0.00153226
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003033133,
+          "after": 0.001461061
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 32768,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.030343867,
+            0.030311792,
+            0.030469535,
+            0.03041416,
+            0.030661768
+          ],
+          "after": [
+            0.01654467,
+            0.016460706,
+            0.016524353,
+            0.016363444,
+            0.016576126
+          ]
+        },
+        "median_seconds": {
+          "before": 0.03041416,
+          "after": 0.016524353
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.056368776,
+            0.056988591,
+            0.056031817,
+            0.055662951,
+            0.055567491
+          ],
+          "after": [
+            0.036224705,
+            0.037032622,
+            0.03635967,
+            0.036777917,
+            0.035940541
+          ]
+        },
+        "median_seconds": {
+          "before": 0.056031817,
+          "after": 0.03635967
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.00396069,
+            0.004158189,
+            0.003928683,
+            0.003910264,
+            0.004103387
+          ],
+          "after": [
+            0.001567889,
+            0.001703356,
+            0.0015217,
+            0.001564329,
+            0.001522511
+          ]
+        },
+        "median_seconds": {
+          "before": 0.00396069,
+          "after": 0.001564329
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 32768,
+        "checksum": "529348020158624209",
+        "samples": {
+          "before": [
+            0.041079285,
+            0.041366858,
+            0.042634132,
+            0.041470875,
+            0.041102255
+          ],
+          "after": [
+            0.018120848,
+            0.017733393,
+            0.021482572,
+            0.018950752,
+            0.018129836
+          ]
+        },
+        "median_seconds": {
+          "before": 0.041366858,
+          "after": 0.018129836
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.078528791,
+            0.075611157,
+            0.075633248,
+            0.075313992,
+            0.076361422
+          ],
+          "after": [
+            0.032117094,
+            0.033515144,
+            0.034452696,
+            0.032929639,
+            0.033425417
+          ]
+        },
+        "median_seconds": {
+          "before": 0.075633248,
+          "after": 0.033425417
+        }
+      }
+    ]
+  },
+  "jump-row-v1": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_factorials.hpp": "8eb78634994600c95ab7737441dabbd4b12cc3b1f50cc4d4fea10f24af2f7f0d",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/ntt.hpp": "61d83d5c559516d22fddcc9a2366faa1cb8001c5b9807a437e8a0930326864d9",
+        "components/polynomial_half_gcd.hpp": "e37823c3634de1685aa0fc9f9502f0c91d10f12c5c08c8143f7c5a40b5d3b44a",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "dd55ad00206b42f1f33efed1321a20c1ace9e1bb4cbf535451079cb40daf3adb",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "6a02d8472c3b5f9fe63d331fa9809a83146a784c7396cd8d0645f8d94d60b9c0",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "47a07e023dbe44af065cc155c88069b62b66ddc43e4c53cb6cdd95a2a8d5a5a2",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "6f1f58e81e4acf30344a73a8dc1b2724841e04838f51b9dcc3aee13381ff8725",
+        "fps/power_projection.hpp": "25a9dc93a975a11fe0d1ec71ca4c8d614a60bd2e54c6fd46bb046c2f84fd6eeb",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.003988554,
+            0.00399624,
+            0.003900233,
+            0.003965758,
+            0.00396595
+          ],
+          "after": [
+            0.001583355,
+            0.001567451,
+            0.001468017,
+            0.001461926,
+            0.001467307
+          ]
+        },
+        "median_seconds": {
+          "before": 0.00396595,
+          "after": 0.001468017
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 32768,
+        "checksum": "529348020158624209",
+        "samples": {
+          "before": [
+            0.042304486,
+            0.040637004,
+            0.040667229,
+            0.04081181,
+            0.041569334
+          ],
+          "after": [
+            0.017261785,
+            0.017667033,
+            0.017401555,
+            0.017413257,
+            0.017632402
+          ]
+        },
+        "median_seconds": {
+          "before": 0.04081181,
+          "after": 0.017413257
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.075283419,
+            0.07647219,
+            0.075152541,
+            0.075517467,
+            0.077468269
+          ],
+          "after": [
+            0.03070854,
+            0.030731982,
+            0.031300613,
+            0.031499344,
+            0.03233682
+          ]
+        },
+        "median_seconds": {
+          "before": 0.075517467,
+          "after": 0.031300613
+        }
+      }
+    ]
+  },
+  "jump-all-v1": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_factorials.hpp": "09d46c1c8b97e187fcebd06a40df40fb71fc9846a35a81aaee56fdb7921b9519",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/fps_product_tree.hpp": "12a746ec0766b3665078a8f485cb4cd2fe753af48cc750619347caf0f7c09f9c",
+        "components/fps_simd.hpp": "c39fb9c7747d668a339f1a12b96f37c64073c8c2837dc481ee7d73a19b75931f",
+        "components/ntt.hpp": "61d83d5c559516d22fddcc9a2366faa1cb8001c5b9807a437e8a0930326864d9",
+        "components/polynomial_half_gcd.hpp": "0cb7600016da32eca9183b2ef8a3506b948d8a9ba857946fc62633cd1848f553",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "c1b3f2b300eeda3f60e1894e0bfc60803f630343d31d3462de7394626dcd256c",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+        "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.003361604,
+            0.002976804,
+            0.002970386,
+            0.003135945,
+            0.003045817
+          ],
+          "after": [
+            0.001513032,
+            0.001528233,
+            0.001527451,
+            0.001483624,
+            0.001461891
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003045817,
+          "after": 0.001513032
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 32768,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.030418744,
+            0.031569528,
+            0.031401666,
+            0.032166389,
+            0.030868217
+          ],
+          "after": [
+            0.017004748,
+            0.017109972,
+            0.017226612,
+            0.017628351,
+            0.016969406
+          ]
+        },
+        "median_seconds": {
+          "before": 0.031401666,
+          "after": 0.017109972
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.057106873,
+            0.056261552,
+            0.057779444,
+            0.056124749,
+            0.055210259
+          ],
+          "after": [
+            0.032721936,
+            0.031786589,
+            0.031549281,
+            0.031345996,
+            0.031345714
+          ]
+        },
+        "median_seconds": {
+          "before": 0.056261552,
+          "after": 0.031549281
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.003953537,
+            0.003958887,
+            0.003848907,
+            0.003965817,
+            0.003858106
+          ],
+          "after": [
+            0.00143403,
+            0.001445029,
+            0.001551194,
+            0.00145793,
+            0.001430531
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003953537,
+          "after": 0.001445029
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 32768,
+        "checksum": "529348020158624209",
+        "samples": {
+          "before": [
+            0.0409356,
+            0.041751402,
+            0.040831772,
+            0.041605507,
+            0.041249697
+          ],
+          "after": [
+            0.017136436,
+            0.01785286,
+            0.016929289,
+            0.017308113,
+            0.017434352
+          ]
+        },
+        "median_seconds": {
+          "before": 0.041249697,
+          "after": 0.017308113
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.073884502,
+            0.074381235,
+            0.075406843,
+            0.073086639,
+            0.073595301
+          ],
+          "after": [
+            0.031856123,
+            0.031441499,
+            0.032077996,
+            0.032454632,
+            0.031493395
+          ]
+        },
+        "median_seconds": {
+          "before": 0.073884502,
+          "after": 0.031856123
+        }
+      }
+    ]
+  },
+  "taylor-v1": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_factorials.hpp": "8eb78634994600c95ab7737441dabbd4b12cc3b1f50cc4d4fea10f24af2f7f0d",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/ntt.hpp": "6b86b05d8172217531679959b21250a64e68d98c055f72097d70a103e04d2ac9",
+        "components/polynomial_half_gcd.hpp": "5f53904b147a33a7e3b750fcccc4c70c08b68a592578fdb3ce45eb164c477c51",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "dd55ad00206b42f1f33efed1321a20c1ace9e1bb4cbf535451079cb40daf3adb",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "b69f0eab0cdd168550d9d13e0f6b700b109826cc491e10ce1306ac806ab7a357",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "47a07e023dbe44af065cc155c88069b62b66ddc43e4c53cb6cdd95a2a8d5a5a2",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "7b442017db9fbfe24111bebc08034e6c747c091ecab1a07b92052be93acdb77e",
+        "fps/power_projection.hpp": "25a9dc93a975a11fe0d1ec71ca4c8d614a60bd2e54c6fd46bb046c2f84fd6eeb",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "taylor",
+        "size": 256,
+        "checksum": "5717297425826983059",
+        "samples": {
+          "before": [
+            1.0018E-05,
+            9.677E-06,
+            9.566E-06,
+            1.0266E-05,
+            9.973E-06
+          ],
+          "after": [
+            1.3917E-05,
+            1.0035E-05,
+            9.334E-06,
+            2.1064E-05,
+            9.265E-06
+          ]
+        },
+        "median_seconds": {
+          "before": 9.973E-06,
+          "after": 1.0035E-05
+        }
+      },
+      {
+        "operation": "taylor",
+        "size": 4096,
+        "checksum": "16003130036973411264",
+        "samples": {
+          "before": [
+            9.5018E-05,
+            9.5176E-05,
+            0.000100374,
+            9.5054E-05,
+            9.6282E-05
+          ],
+          "after": [
+            8.2554E-05,
+            8.2021E-05,
+            8.5427E-05,
+            8.3314E-05,
+            8.8594E-05
+          ]
+        },
+        "median_seconds": {
+          "before": 9.5176E-05,
+          "after": 8.3314E-05
+        }
+      },
+      {
+        "operation": "taylor",
+        "size": 32768,
+        "checksum": "14347369363628485786",
+        "samples": {
+          "before": [
+            0.000860927,
+            0.000859307,
+            0.000921954,
+            0.000858232,
+            0.000857774
+          ],
+          "after": [
+            0.000861038,
+            0.000766501,
+            0.000910727,
+            0.000751925,
+            0.000747906
+          ]
+        },
+        "median_seconds": {
+          "before": 0.000859307,
+          "after": 0.000766501
+        }
+      },
+      {
+        "operation": "taylor",
+        "size": 262144,
+        "checksum": "15069170583454508753",
+        "samples": {
+          "before": [
+            0.008387013,
+            0.008266353,
+            0.008093898,
+            0.008137404,
+            0.008055403
+          ],
+          "after": [
+            0.007447705,
+            0.007191728,
+            0.007573901,
+            0.007228077,
+            0.006830145
+          ]
+        },
+        "median_seconds": {
+          "before": 0.008137404,
+          "after": 0.007228077
+        }
+      },
+      {
+        "operation": "taylor",
+        "size": 524288,
+        "checksum": "6044300780527226472",
+        "samples": {
+          "before": [
+            0.0168319,
+            0.016148903,
+            0.015932543,
+            0.016898171,
+            0.016492801
+          ],
+          "after": [
+            0.014725886,
+            0.01474234,
+            0.014723402,
+            0.014879519,
+            0.014730391
+          ]
+        },
+        "median_seconds": {
+          "before": 0.016492801,
+          "after": 0.014730391
+        }
+      }
+    ]
+  },
+  "leaves-v1": {
+    "environment": {
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121",
+        "components/fps_factorials.hpp": "09d46c1c8b97e187fcebd06a40df40fb71fc9846a35a81aaee56fdb7921b9519",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/fps_product_tree.hpp": "12a746ec0766b3665078a8f485cb4cd2fe753af48cc750619347caf0f7c09f9c",
+        "components/fps_simd.hpp": "c39fb9c7747d668a339f1a12b96f37c64073c8c2837dc481ee7d73a19b75931f",
+        "components/ntt.hpp": "61d83d5c559516d22fddcc9a2366faa1cb8001c5b9807a437e8a0930326864d9",
+        "components/polynomial_half_gcd.hpp": "e37823c3634de1685aa0fc9f9502f0c91d10f12c5c08c8143f7c5a40b5d3b44a",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "c1b3f2b300eeda3f60e1894e0bfc60803f630343d31d3462de7394626dcd256c",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "6f1f58e81e4acf30344a73a8dc1b2724841e04838f51b9dcc3aee13381ff8725",
+        "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      }
+    },
+    "results": [
+      {
+        "operation": "eval",
+        "size": 4096,
+        "checksum": "13567386553157322927",
+        "samples": {
+          "before": [
+            0.000584471,
+            0.000585421,
+            0.000575733,
+            0.000578457,
+            0.000587963
+          ],
+          "after": [
+            0.000606797,
+            0.000579459,
+            0.000584953,
+            0.000621866,
+            0.000638042
+          ]
+        },
+        "median_seconds": {
+          "before": 0.000584471,
+          "after": 0.000606797
+        }
+      },
+      {
+        "operation": "eval",
+        "size": 32768,
+        "checksum": "12862347047433628763",
+        "samples": {
+          "before": [
+            0.006088744,
+            0.006304537,
+            0.006579688,
+            0.006162169,
+            0.006098316
+          ],
+          "after": [
+            0.006050411,
+            0.005939567,
+            0.006206123,
+            0.00612262,
+            0.006186249
+          ]
+        },
+        "median_seconds": {
+          "before": 0.006162169,
+          "after": 0.00612262
+        }
+      },
+      {
+        "operation": "eval",
+        "size": 262144,
+        "checksum": "3075571165493296690",
+        "samples": {
+          "before": [
+            0.068325888,
+            0.069225421,
+            0.069064523,
+            0.068284902,
+            0.067966784
+          ],
+          "after": [
+            0.067095327,
+            0.067939991,
+            0.068996928,
+            0.06878594,
+            0.065308183
+          ]
+        },
+        "median_seconds": {
+          "before": 0.068325888,
+          "after": 0.067939991
+        }
+      },
+      {
+        "operation": "interpolate",
+        "size": 4096,
+        "checksum": "17862829055556629605",
+        "samples": {
+          "before": [
+            0.000832393,
+            0.000849643,
+            0.000839063,
+            0.000897644,
+            0.000868067
+          ],
+          "after": [
+            0.000845223,
+            0.000861771,
+            0.000844127,
+            0.00098765,
+            0.000836757
+          ]
+        },
+        "median_seconds": {
+          "before": 0.000849643,
+          "after": 0.000845223
+        }
+      },
+      {
+        "operation": "interpolate",
+        "size": 32768,
+        "checksum": "13145883659529005835",
+        "samples": {
+          "before": [
+            0.008564261,
+            0.008595061,
+            0.008538009,
+            0.008510014,
+            0.008945043
+          ],
+          "after": [
+            0.008838461,
+            0.008566636,
+            0.008544694,
+            0.00856123,
+            0.008510958
+          ]
+        },
+        "median_seconds": {
+          "before": 0.008564261,
+          "after": 0.00856123
+        }
+      },
+      {
+        "operation": "interpolate",
+        "size": 262144,
+        "checksum": "12796146635859157502",
+        "samples": {
+          "before": [
+            0.102369744,
+            0.099884579,
+            0.109862867,
+            0.098187304,
+            0.099093021
+          ],
+          "after": [
+            0.099664014,
+            0.098034543,
+            0.096374109,
+            0.098051116,
+            0.100289532
+          ]
+        },
+        "median_seconds": {
+          "before": 0.099884579,
+          "after": 0.098051116
+        }
+      }
+    ]
+  },
+  "limit-32": {
+    "environment": {
+      "created_at": "2026-10-18T03:16:10.517516+09:00",
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/ntt.hpp": "61d83d5c559516d22fddcc9a2366faa1cb8001c5b9807a437e8a0930326864d9",
+        "components/polynomial_half_gcd.hpp": "3fcbb86a0feda8d4d32c1f9518dbbe144acb45eaa98786c9231fe104d6e3b683",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "7e5dd454edb5ab99a4cab93e1d511c4c1387c5e1ae9970f2f24eac48911a488e",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+        "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      },
+      "driver_sha256": "ba6ee78cb4f167eaca9d186d721e13232e353b534ac7c85a86e1e13bc8ea5192",
+      "variant_sha256": {
+        "before": {
+          "components/polynomial_half_gcd.hpp": "2d952a68ba0542d2eee573e4eafe1111a115cc9054bf82ec013b2ea16ed8337d",
+          "fps/polynomial_gcd.hpp": "552f248c7639afc3976ddc135684ce96b3603e2cefc8d2e45f515b26cf621bd9",
+          "fps/multipoint_eval.hpp": "4cb93dd9d9d2b0bbbece729c7de93217a19cd4915cf9ace9aa797c0eefcb049e",
+          "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+          "fps/taylor_shift.hpp": "2d76ebe1bbe393551c4b0fa213ea5d3647a7f882e90edb3e774c0d175ed787e0",
+          "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+          "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380"
+        },
+        "after": {
+          "components/polynomial_half_gcd.hpp": "f6bd146f9975734bc0a9cdc4ac93a71b216e1d7d934cf612ecc449cb0ea890b1",
+          "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+          "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+          "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+          "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+          "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+          "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121"
+        }
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.003491204,
+            0.003162295,
+            0.003304216,
+            0.003046467,
+            0.00309974
+          ],
+          "after": [
+            0.001904926,
+            0.001760024,
+            0.001784178,
+            0.001832362,
+            0.001725227
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003162295,
+          "after": 0.001784178
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.056060694,
+            0.056923537,
+            0.056321463,
+            0.057878238,
+            0.05551595
+          ],
+          "after": [
+            0.033597778,
+            0.03362946,
+            0.033195706,
+            0.033785084,
+            0.033693641
+          ]
+        },
+        "median_seconds": {
+          "before": 0.056321463,
+          "after": 0.03362946
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.003976617,
+            0.003976146,
+            0.003892321,
+            0.003887524,
+            0.003937204
+          ],
+          "after": [
+            0.001729699,
+            0.001761315,
+            0.001684782,
+            0.001660243,
+            0.001639933
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003937204,
+          "after": 0.001684782
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.074013704,
+            0.073784888,
+            0.072859592,
+            0.073726162,
+            0.07276484
+          ],
+          "after": [
+            0.033542343,
+            0.033143424,
+            0.033284661,
+            0.033508777,
+            0.033459464
+          ]
+        },
+        "median_seconds": {
+          "before": 0.073726162,
+          "after": 0.033459464
+        }
+      }
+    ]
+  },
+  "limit-64": {
+    "environment": {
+      "created_at": "2026-10-18T03:16:24.395048+09:00",
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/ntt.hpp": "61d83d5c559516d22fddcc9a2366faa1cb8001c5b9807a437e8a0930326864d9",
+        "components/polynomial_half_gcd.hpp": "3fcbb86a0feda8d4d32c1f9518dbbe144acb45eaa98786c9231fe104d6e3b683",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "7e5dd454edb5ab99a4cab93e1d511c4c1387c5e1ae9970f2f24eac48911a488e",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+        "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      },
+      "driver_sha256": "ba6ee78cb4f167eaca9d186d721e13232e353b534ac7c85a86e1e13bc8ea5192",
+      "variant_sha256": {
+        "before": {
+          "components/polynomial_half_gcd.hpp": "2d952a68ba0542d2eee573e4eafe1111a115cc9054bf82ec013b2ea16ed8337d",
+          "fps/polynomial_gcd.hpp": "552f248c7639afc3976ddc135684ce96b3603e2cefc8d2e45f515b26cf621bd9",
+          "fps/multipoint_eval.hpp": "4cb93dd9d9d2b0bbbece729c7de93217a19cd4915cf9ace9aa797c0eefcb049e",
+          "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+          "fps/taylor_shift.hpp": "2d76ebe1bbe393551c4b0fa213ea5d3647a7f882e90edb3e774c0d175ed787e0",
+          "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+          "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380"
+        },
+        "after": {
+          "components/polynomial_half_gcd.hpp": "3fcbb86a0feda8d4d32c1f9518dbbe144acb45eaa98786c9231fe104d6e3b683",
+          "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+          "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+          "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+          "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+          "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+          "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121"
+        }
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.002985875,
+            0.003012797,
+            0.003036978,
+            0.003023797,
+            0.003017763
+          ],
+          "after": [
+            0.001466399,
+            0.001577074,
+            0.001478647,
+            0.001544719,
+            0.001459042
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003017763,
+          "after": 0.001478647
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.058330645,
+            0.057809073,
+            0.057927432,
+            0.056098136,
+            0.055779115
+          ],
+          "after": [
+            0.030966435,
+            0.031472559,
+            0.032262073,
+            0.031257884,
+            0.030667311
+          ]
+        },
+        "median_seconds": {
+          "before": 0.057809073,
+          "after": 0.031257884
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.003928205,
+            0.003966826,
+            0.003975357,
+            0.004086635,
+            0.003998454
+          ],
+          "after": [
+            0.001492902,
+            0.00148672,
+            0.001488991,
+            0.001566927,
+            0.001457318
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003975357,
+          "after": 0.001488991
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.07398825,
+            0.073388248,
+            0.073238708,
+            0.074061804,
+            0.072514571
+          ],
+          "after": [
+            0.03232366,
+            0.030777343,
+            0.03065892,
+            0.03154298,
+            0.030487882
+          ]
+        },
+        "median_seconds": {
+          "before": 0.073388248,
+          "after": 0.030777343
+        }
+      }
+    ]
+  },
+  "limit-128": {
+    "environment": {
+      "created_at": "2026-10-18T03:16:37.22226+09:00",
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/ntt.hpp": "61d83d5c559516d22fddcc9a2366faa1cb8001c5b9807a437e8a0930326864d9",
+        "components/polynomial_half_gcd.hpp": "3fcbb86a0feda8d4d32c1f9518dbbe144acb45eaa98786c9231fe104d6e3b683",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "7e5dd454edb5ab99a4cab93e1d511c4c1387c5e1ae9970f2f24eac48911a488e",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+        "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      },
+      "driver_sha256": "ba6ee78cb4f167eaca9d186d721e13232e353b534ac7c85a86e1e13bc8ea5192",
+      "variant_sha256": {
+        "before": {
+          "components/polynomial_half_gcd.hpp": "2d952a68ba0542d2eee573e4eafe1111a115cc9054bf82ec013b2ea16ed8337d",
+          "fps/polynomial_gcd.hpp": "552f248c7639afc3976ddc135684ce96b3603e2cefc8d2e45f515b26cf621bd9",
+          "fps/multipoint_eval.hpp": "4cb93dd9d9d2b0bbbece729c7de93217a19cd4915cf9ace9aa797c0eefcb049e",
+          "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+          "fps/taylor_shift.hpp": "2d76ebe1bbe393551c4b0fa213ea5d3647a7f882e90edb3e774c0d175ed787e0",
+          "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+          "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380"
+        },
+        "after": {
+          "components/polynomial_half_gcd.hpp": "8b2fbcb4e5251ddbd5f68eade4578d66b2730327f86b0c0858caf6761a86bc01",
+          "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+          "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+          "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+          "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+          "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+          "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121"
+        }
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.003068469,
+            0.003019421,
+            0.003021861,
+            0.002976791,
+            0.003050801
+          ],
+          "after": [
+            0.001443481,
+            0.001478078,
+            0.001434535,
+            0.001425203,
+            0.001412651
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003021861,
+          "after": 0.001434535
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.058316005,
+            0.058121818,
+            0.059638211,
+            0.056954143,
+            0.058019711
+          ],
+          "after": [
+            0.030857057,
+            0.031431073,
+            0.031404978,
+            0.030596737,
+            0.032711898
+          ]
+        },
+        "median_seconds": {
+          "before": 0.058121818,
+          "after": 0.031404978
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.004024486,
+            0.00416473,
+            0.004013746,
+            0.004198039,
+            0.004358678
+          ],
+          "after": [
+            0.001523969,
+            0.001445919,
+            0.001521639,
+            0.001491503,
+            0.001635416
+          ]
+        },
+        "median_seconds": {
+          "before": 0.00416473,
+          "after": 0.001521639
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.074729786,
+            0.074226808,
+            0.075145669,
+            0.075236332,
+            0.077057575
+          ],
+          "after": [
+            0.031419965,
+            0.031203662,
+            0.031117207,
+            0.031464681,
+            0.031894406
+          ]
+        },
+        "median_seconds": {
+          "before": 0.075145669,
+          "after": 0.031419965
+        }
+      }
+    ]
+  },
+  "limit-256": {
+    "environment": {
+      "created_at": "2026-10-18T03:17:01.303072+09:00",
+      "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero"
+      ],
+      "affinity": [
+        2
+      ],
+      "seed": 294384,
+      "trials": 5,
+      "repeat": 1,
+      "baseline": "fd41ae5df33960b93288ae98f9edac4e9fdb166f",
+      "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+      "sha256": {
+        "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+        "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+        "components/ntt.hpp": "61d83d5c559516d22fddcc9a2366faa1cb8001c5b9807a437e8a0930326864d9",
+        "components/polynomial_half_gcd.hpp": "db02b798ffa3af8b077676e00035299b61a56e83a58f23f945a41ce73531d9f3",
+        "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+        "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041",
+        "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+        "fps/fps.hpp": "7e5dd454edb5ab99a4cab93e1d511c4c1387c5e1ae9970f2f24eac48911a488e",
+        "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+        "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+        "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+        "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+        "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66"
+      },
+      "driver_sha256": "ba6ee78cb4f167eaca9d186d721e13232e353b534ac7c85a86e1e13bc8ea5192",
+      "variant_sha256": {
+        "before": {
+          "components/polynomial_half_gcd.hpp": "2d952a68ba0542d2eee573e4eafe1111a115cc9054bf82ec013b2ea16ed8337d",
+          "fps/polynomial_gcd.hpp": "552f248c7639afc3976ddc135684ce96b3603e2cefc8d2e45f515b26cf621bd9",
+          "fps/multipoint_eval.hpp": "4cb93dd9d9d2b0bbbece729c7de93217a19cd4915cf9ace9aa797c0eefcb049e",
+          "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+          "fps/taylor_shift.hpp": "2d76ebe1bbe393551c4b0fa213ea5d3647a7f882e90edb3e774c0d175ed787e0",
+          "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+          "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380"
+        },
+        "after": {
+          "components/polynomial_half_gcd.hpp": "a1ad1e6dabf5236caae38bf5f82966705864d80b28cdf3937556c4aa455b14b9",
+          "fps/polynomial_gcd.hpp": "4ef87a2762e780cbe2156bf5eef1b8ece2fb5ea5ba0065a6551ed3630faa5278",
+          "fps/multipoint_eval.hpp": "4c2eb112388f4c7a8032a24e8ab6608ba9a4b0575e34b51c022521ec6c4a900d",
+          "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+          "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+          "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+          "components/fps_direct_eval.hpp": "ea9ec5e4d4a17ced043ceaf24420950f5368b85da43b076c1fa54ff872f33121"
+        }
+      }
+    },
+    "results": [
+      {
+        "operation": "gcd",
+        "size": 4096,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.003025217,
+            0.003054547,
+            0.003008573,
+            0.003042288,
+            0.003079269
+          ],
+          "after": [
+            0.001635063,
+            0.001732766,
+            0.001646961,
+            0.001659047,
+            0.001629352
+          ]
+        },
+        "median_seconds": {
+          "before": 0.003042288,
+          "after": 0.001646961
+        }
+      },
+      {
+        "operation": "gcd",
+        "size": 50000,
+        "checksum": "11400714819323198485",
+        "samples": {
+          "before": [
+            0.056489105,
+            0.056643085,
+            0.056549371,
+            0.056288109,
+            0.055634698
+          ],
+          "after": [
+            0.033251918,
+            0.032638842,
+            0.033545712,
+            0.033098505,
+            0.032768547
+          ]
+        },
+        "median_seconds": {
+          "before": 0.056489105,
+          "after": 0.033098505
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 4096,
+        "checksum": "2726328465389984156",
+        "samples": {
+          "before": [
+            0.003962799,
+            0.003925147,
+            0.004057994,
+            0.004321984,
+            0.00413477
+          ],
+          "after": [
+            0.001640287,
+            0.001642561,
+            0.001719811,
+            0.00163832,
+            0.001649209
+          ]
+        },
+        "median_seconds": {
+          "before": 0.004057994,
+          "after": 0.001642561
+        }
+      },
+      {
+        "operation": "inverse",
+        "size": 50000,
+        "checksum": "3982695719430171842",
+        "samples": {
+          "before": [
+            0.07486366,
+            0.074310105,
+            0.075841888,
+            0.075798239,
+            0.075361981
+          ],
+          "after": [
+            0.032734707,
+            0.0335379,
+            0.033017471,
+            0.033712343,
+            0.033908564
+          ]
+        },
+        "median_seconds": {
+          "before": 0.075361981,
+          "after": 0.0335379
+        }
+      }
+    ]
+  }
+}

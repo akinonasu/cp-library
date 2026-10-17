@@ -1,0 +1,19 @@
+---
+title: "FPS の階乗・逆階乗生成"
+documentation_of: //components/fps_factorials.hpp
+---
+
+Taylor shift で使う内部処理です。通常は [Taylor Shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) を利用します。各ポインタは法 998244353 の内部 Montgomery ワード表現を使います。
+
+| 関数 | 内容・返り値 |
+| --- | --- |
+| `fps_detail::factorials(fact,invfact,n)` | `fact[i] = i!`、`invfact[i] = 1/i!` を先頭 `n` 要素へ書き込む |
+| `fps_detail::factorials8(fact,invfact,n)` | AVX2 版。`n >= 256` |
+| `fps_detail::factorial_chain<reverse>(out,chunk,value,factor)` | AVX2 の 8 レーンで積の列を生成。各レーンの `value` を書き、`factor` を掛けて進める |
+| `fps_detail::factorial_transpose(x)` | AVX2 の 8×8 個の 32 bit 要素を転置する |
+
+`factorials` の引数は $$0\le n<998244353$$ とし、出力先はそれぞれ `n` 要素を持つ重ならない領域にします。`n = 0` では書き込みません。256 要素以上の AVX2 対応 x86 では 32 本の積の列を並行して生成し、それ以外ではスカラー処理を使います。Mac ARM でも `factorials` を利用できます。
+
+末尾に `8` が付く関数と `factorial_chain`・`factorial_transpose` は x86 のみで定義され、AVX2 に対応する CPU から呼び出します。`factorial_chain` は `chunk` を正の 8 の倍数とし、`out` に `8 * chunk` 要素を用意します。第 `s` レーンの列は第 `s` 区間に置かれ、`reverse = true` のときは逆順で書き、乗数を 1 ずつ減らします。偽のときは順に書き、乗数を 1 ずつ増やします。
+
+`factorials`・`factorials8` は時間 $$O(n)$$、`factorial_chain` は時間 $$O(\mathrm{chunk})$$、`factorial_transpose` は時間 $$O(1)$$ です。出力領域を除く追加空間はいずれも $$O(1)$$ です。

@@ -1,0 +1,7 @@
+g++ [] test/unit/fps_tuning_polynomial.cpp
+g++ [] test/unit/polynomial_gcd.cpp
+g++ ['-DNDEBUG'] test/unit/fps_tuning_polynomial.cpp
+clang++ ['-g', '-fsanitize=address,undefined', '-fno-omit-frame-pointer'] test/unit/fps_tuning_polynomial.cpp
+clang++ ['-g', '-fsanitize=address,undefined', '-fno-omit-frame-pointer'] test/unit/polynomial_gcd.cpp
+g++ forced scalar test/unit/fps_tuning_polynomial.cpp
+all checks passed

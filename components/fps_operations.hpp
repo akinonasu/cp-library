@@ -99,6 +99,53 @@ struct Operations {
 		else
 			for (int i = 0; i < n; ++i) r[i] = a[i] * b[i];
 	}
+#if defined(__x86_64__) || defined(__i386__)
+	template <int count, bool first>
+	__attribute__((target("avx2"))) static void accumulate_products8(Word *dst, const Word *const *a, const Word *const *b, int n) {
+		using I8 = fps_detail::NTT::I8;
+		I8 p = _mm256_set1_epi32(T::mod()), pp = _mm256_set1_epi32(2 * T::mod()), ni = _mm256_set1_epi32(998244351);
+		for (int i = 0; i < n; i += 8) {
+			I8 even = _mm256_setzero_si256(), odd = even;
+#pragma GCC unroll 7
+			for (int k = 0; k < count; ++k) {
+				I8 x = fps_detail::NTT::load8(a[k] + i), y = fps_detail::NTT::load8(b[k] + i);
+				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
+				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
+			}
+			even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
+			I8 value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+			value = _mm256_min_epu32(value, _mm256_sub_epi32(value, pp));
+			if constexpr (count == 7) value = _mm256_min_epu32(value, _mm256_sub_epi32(value, pp));
+			if constexpr (!first) value = fps_detail::NTT::add8(fps_detail::NTT::load8(dst + i), value);
+			fps_detail::NTT::store8(dst + i, value);
+		}
+	}
+#endif
+	template <int count, bool first>
+	static void accumulate_products(Word *dst, const Word *const *a, const Word *const *b, int n) {
+		static_assert(count >= 1 && count <= 7);
+#if defined(__x86_64__) || defined(__i386__)
+		if (n >= 8 && fps_detail::NTT::vectorized()) {
+			accumulate_products8<count, first>(dst, a, b, n);
+			return;
+		}
+#endif
+		for (int i = 0; i < n; ++i) {
+			Word value = 0;
+			for (int k = 0; k < count; ++k) value = fps_detail::NTT::add(value, fps_detail::NTT::mul(a[k][i], b[k][i]));
+			if constexpr (!first) value = fps_detail::NTT::add(value, dst[i]);
+			dst[i] = value;
+		}
+	}
+	static void join_windows(Word *blocks, int length, int count) {
+		for (int i = count - 1; i > 0; --i) {
+			Word *a = blocks + i * length;
+			const Word *b = a - length;
+			for (int j = 0; j < length / 2; ++j) a[j] = fps_detail::NTT::add(a[j], b[j]);
+			for (int j = length / 2; j < length; ++j) a[j] = fps_detail::NTT::sub(a[j], b[j]);
+		}
+	}
 	static void inverse_extend(F &h, const base &a, const base &cache) {
 		const int m = static_cast<int>(cache.size());
 		const T im = T::raw(T::mod() - (T::mod() - 1) / m);

@@ -17,6 +17,9 @@ documentation_of: //components/fps_operations.hpp
 | `geometric_scale(a,first,step)` | 第 `i` 係数を `first * step^i` 倍 |
 | `batch_inverse(dst,src)` | 各非零要素の逆元を一括計算 |
 | `pointwise(r,a,b,n)` | 先頭 `n` 個の要素ごとの積 |
+| `accumulate_products<count,first>(dst,a,b,n)` | `count` 組の先頭 `n` 個の要素ごとの積を加算。`first` が真なら上書き、偽なら `dst` へ加算 |
+| `accumulate_products8<count,first>(dst,a,b,n)` | `accumulate_products` の AVX2 版 |
+| `join_windows(blocks,length,count)` | 連続する `count` 個の変換済みブロックを接続。前半に直前のブロックを加え、後半から引く |
 | `inverse_extend(h,a,cache)` | キャッシュした変換を使って逆数の精度を倍化 |
 | `dot(a,b,n)` | 逆向きの添字を使う内積 |
 | `mod_sqrt(a)` | 法 998244353 の平方根。非平方剰余は 0 |
@@ -24,4 +27,10 @@ documentation_of: //components/fps_operations.hpp
 | `inverses(n)` | 整数 0～`n` の逆元のキャッシュ。0 の項は 0 |
 | `trim(a)` | 末尾の零係数を除去 |
 
+`accumulate_products` は $$1\le\mathrm{count}\le7$$ とし、`a`・`b` は各 `count` 個の配列ポインタを渡します。各配列と `dst` に `n` 要素を用意し、内部 Montgomery ワードとして `a[k][i]` は $$[0,p)$$、`b[k][i]` は $$[0,2p)$$ に収めます。ここで $$p=998244353$$ です。`first = false` のときは元の `dst` も $$[0,2p)$$ にします。結果も $$[0,2p)$$ です。`n` が 8 以上なら 8 の倍数にします。`accumulate_products8` は x86 のみで定義され、`n` を 8 の倍数とし、AVX2 対応を確認してから呼び出します。
+
+`join_windows` は `length` を 2 以上の 2 冪、`count` を 1 以上とします。各ブロックは、前半に係数を置き、後半を 0 とした長さ `length` の NTT です。全ブロックで `count * length` 要素を用意します。接続前の直前のブロックを参照するため、処理は後ろから行います。
+
 係数数を $$n$$ として、変換・`inverse_extend` は $$O(n\log n)$$、その他の配列操作は $$O(n)$$ です。根・逆元のキャッシュ拡張は追加要素数に比例し、取得のみなら $$O(1)$$、`words` は $$O(1)$$ です。`mod_sqrt` は固定法に対して $$O(1)$$、追加空間・キャッシュは $$O(n)$$ です。
+
+`accumulate_products`・`accumulate_products8` は時間 $$O(n)$$、`join_windows` は時間 $$O(\mathrm{length}\cdot\mathrm{count})$$ です。これらの追加空間は $$O(1)$$ です。

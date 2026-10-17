@@ -1,14 +1,10 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/polynomial_taylor_shift"
 #include "fps/taylor_shift.hpp"
-#include <iostream>
-
-using namespace std;
+#include "fps_io.hpp"
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
-	int n; mint c; cin >> n >> c;
-	fps f(n);
-	for (auto &x : f) cin >> x;
-	for (auto x : taylor_shift(std::move(f), c)) cout << x << ' ';
-	cout << '\n';
+	FastInput input;
+	FastOutput output;
+	int n = 0; unsigned c = 0; input.read(n); input.read(c);
+	write_fps(output, taylor_shift(read_fps(input, n), mint::raw(c)));
 }

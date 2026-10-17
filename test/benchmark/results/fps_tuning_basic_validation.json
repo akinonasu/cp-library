@@ -1,0 +1,20 @@
+{
+  "completed_at": "2026-10-18T03:19:12+09:00",
+  "test": "test/unit/fps_tuning_basic.cpp",
+  "source_sha256": {
+    "fps/fps.hpp": "49aecaa66152548f54c36e40eb21af16297f125534f241b3594520ca26fcfc40",
+    "components/fps_operations.hpp": "aea3810caea8556ad4eacdfe1ffd4c9919f20c6f7017caa2dc8eda0e2bccdd30",
+    "components/ntt.hpp": "7713a37cb2fa585f2e232dd8ce50b987e94b6b64283b7a576587c889272039f6",
+    "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66",
+    "test/unit/fps_tuning_basic.cpp": "25bda697830b318fc14f368a3c90434078a2f428821d5dd412d59409f0aaa65e"
+  },
+  "common_flags": ["-std=c++2b", "-Wall", "-Wextra", "-Werror", "-I."],
+  "checks": [
+    {"compiler": "GCC 15.2.0", "flags": ["-O2", "-DNDEBUG"], "status": "PASS"},
+    {"compiler": "Clang 21.1.8", "flags": ["-O2"], "status": "PASS"},
+    {"compiler": "GCC 13.4.0", "flags": ["-O2"], "status": "PASS"},
+    {"compiler": "Clang 21.1.8", "flags": ["-O1", "-g", "-fsanitize=address,undefined", "-fno-omit-frame-pointer"], "environment": {"UBSAN_OPTIONS": "halt_on_error=1"}, "status": "PASS"}
+  ],
+  "cpu_affinity": 2,
+  "lock": "/tmp/cp-fps-tuning.lock"
+}
