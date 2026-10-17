@@ -1,0 +1,9 @@
+g++: standalone components/static_top_tree_structure.hpp
+g++: standalone graph/static_top_tree.hpp
+g++: static_top_tree.cpp
+g++: standalone.cpp
+clang++: standalone components/static_top_tree_structure.hpp
+clang++: standalone graph/static_top_tree.hpp
+clang++: static_top_tree.cpp
+clang++: standalone.cpp
+Verification passed

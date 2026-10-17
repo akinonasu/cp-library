@@ -54,6 +54,7 @@
 | `graph/dijkstra.hpp` | Dijkstra | [使い方](docs/dijkstra.md) |
 | `graph/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `graph/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
+| `graph/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
 | `graph/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
 | `graph/low_link.hpp` | Low-Link | [使い方](docs/low_link.md) |
 | `string/lcs.hpp` | 最長共通部分列 | [使い方](docs/lcs.md) |

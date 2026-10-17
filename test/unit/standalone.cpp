@@ -15,6 +15,7 @@
 #include "graph/max_flow.hpp"
 #include "graph/min_cost_flow.hpp"
 #include "graph/hld.hpp"
+#include "graph/static_top_tree.hpp"
 #include "graph/centroid_decomposition.hpp"
 #include "graph/lca.hpp"
 #include "graph/low_link.hpp"
@@ -48,6 +49,18 @@
 int vector = 0, min = 0;
 std::int64_t add(std::int64_t a, std::int64_t b) { return a + b; }
 std::int64_t zero() { return 0; }
+
+struct StaticTreeSum {
+	using Vertex = int;
+	using Point = int;
+	using Path = int;
+	static int point_identity() { return 0; }
+	static int path_identity() { return 0; }
+	static int rake(int a, int b) { return a + b; }
+	static int compress(int a, int b) { return a + b; }
+	static int add_edge(int a) { return a; }
+	static int add_vertex(int a, int v) { return a + v; }
+};
 
 int main() {
 	MaxFlow<> maximum(2);
@@ -112,6 +125,9 @@ int main() {
 	hld.add_edge(1, 2);
 	hld.build();
 	assert(hld.jump(2, 0, 1) == 1 && hld.subtree(1).second - hld.subtree(1).first == 2);
+	StaticTopTree<StaticTreeSum> static_tree(hld, {1, 2, 3});
+	static_tree.set(1, 4);
+	assert(static_tree.dp() == 8 && static_tree.subtree_prod(1) == 7);
 	CentroidDecomposition<> centroid(3);
 	centroid.add_edge(0, 1), centroid.add_edge(1, 2);
 	centroid.build();
