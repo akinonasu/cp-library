@@ -9,7 +9,9 @@ documentation_of: //data_structure/sortable_segtree.hpp
 long long op(long long a, long long b) { return a + b; }
 long long e() { return 0; }
 using Tree = SortableSegtree<int, long long, op, e, true>;
-Tree tree(std::vector<std::pair<int, long long>>{{3, 10}, {1, 20}, {2, 30}});
+Tree tree(std::vector<std::pair<int, long long>>{
+	{3, 10}, {1, 20}, {2, 30}
+});
 tree.sort(0, 3);
 auto first = tree.get(0); // {1,20}
 auto sum = tree.prod(0, 2); // 50
