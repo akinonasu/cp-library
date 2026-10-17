@@ -1,0 +1,6 @@
+{
+  "headers": ["components/undirected_csr.hpp", "graph/low_link.hpp", "graph/two_edge_connected_components.hpp"],
+  "unit": ["test/unit/undirected_csr.cpp", "test/unit/low_link.cpp", "test/unit/two_edge_connected_components.cpp", "test/unit/standalone.cpp"],
+  "sanitize": ["test/unit/undirected_csr.cpp", "test/unit/low_link.cpp", "test/unit/two_edge_connected_components.cpp", "test/unit/standalone.cpp"],
+  "bundles": ["components/undirected_csr.hpp", "graph/low_link.hpp", "graph/two_edge_connected_components.hpp"]
+}

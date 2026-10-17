@@ -1,0 +1,316 @@
+{
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "kernel": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "cpu": "model name\t: 13th Gen Intel(R) Core(TM) i7-13700F",
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "cpu_affinity": [
+    2
+  ],
+  "trials": 3,
+  "warmup": 1,
+  "stack_limit_bytes": 67108864,
+  "input_seed": 891333,
+  "schedule_seed": 368931,
+  "metric": "wall time including process startup, input, construction, output and exit",
+  "input_transport": "regular file for every program",
+  "sources": {
+    "library": "33542403d5220db15a36fdf0d71cd86d526e971d94ea2ac0197469301ba99b12",
+    "low_link_dsu": "33542403d5220db15a36fdf0d71cd86d526e971d94ea2ac0197469301ba99b12",
+    "305681": "8d1f261ba5e9ce310b9581a955d233e9a48574da98fa3e72963cfd8cf8d0bd7b",
+    "215566": "7a99b09074a63e671c07be1840884d58ae6658b1dcabdd0180cb20366de00c29"
+  },
+  "headers": {
+    "graph/two_edge_connected_components.hpp": "ad8ec455f02b5c204863753d4574158909e4c10900750f63c67c625bc9229c38",
+    "graph/low_link.hpp": "b576f131cce2b84806f874c16c2270bb7927d189d487c9f8c3de5b8658230cfd",
+    "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+    "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+    "components/fast_io.hpp": "d4a7e58d2a9373e675ddaed1a31ea3f1748b75a2af4201791ac63163b3af38b8",
+    "test/benchmark/two_edge_connected_components_baseline.hpp": "175c5a17e4f57c15b52f2b24e5e609c7bf837c7a1fa6833d83213a57d12ccc3d"
+  },
+  "workloads": {
+    "path": {
+      "n": 200000,
+      "m": 199999,
+      "input_sha256": "67d4df98edc1dfd179a68cbb141937516a64092799f372f06ae5cfde9ab53a80",
+      "partition_sha256": "324c21f58dd588c92e04d66bc60359ef7ad8e1bbfc19ed5360e1cc050496ca8c",
+      "peak_rss_kib": {
+        "library": 19472,
+        "low_link_dsu": 17760,
+        "305681": 20656,
+        "215566": 35272
+      },
+      "milliseconds": {
+        "library": [
+          18.025131,
+          19.798928,
+          19.882982
+        ],
+        "low_link_dsu": [
+          19.276415,
+          19.245615,
+          19.360243
+        ],
+        "305681": [
+          19.551903,
+          19.413106,
+          19.818909
+        ],
+        "215566": [
+          22.062118,
+          21.777219,
+          21.817606
+        ]
+      },
+      "median_ms": {
+        "library": 19.798928,
+        "low_link_dsu": 19.276415,
+        "305681": 19.551903,
+        "215566": 21.817606
+      }
+    },
+    "star": {
+      "n": 200000,
+      "m": 199999,
+      "input_sha256": "9cb5555db2c34b1de228d286296addd63e8c1d428efae958346664886caf448e",
+      "partition_sha256": "324c21f58dd588c92e04d66bc60359ef7ad8e1bbfc19ed5360e1cc050496ca8c",
+      "peak_rss_kib": {
+        "library": 16432,
+        "low_link_dsu": 14552,
+        "305681": 16872,
+        "215566": 14884
+      },
+      "milliseconds": {
+        "library": [
+          15.296413,
+          14.791898,
+          15.946818
+        ],
+        "low_link_dsu": [
+          16.140337,
+          19.1879,
+          16.08749
+        ],
+        "305681": [
+          15.341387,
+          15.260191,
+          15.317573
+        ],
+        "215566": [
+          15.113602,
+          15.339579,
+          12.969657
+        ]
+      },
+      "median_ms": {
+        "library": 15.296413,
+        "low_link_dsu": 16.140337,
+        "305681": 15.317573,
+        "215566": 15.113602
+      }
+    },
+    "cycle": {
+      "n": 200000,
+      "m": 200000,
+      "input_sha256": "9145e7d50b0569baef263d7098ee4f94bb82879411fbc1299cb5ac06c8bb2ae2",
+      "partition_sha256": "4145a0a81a1cbf3d59c1275b3b085ddc8b597f1d420b3775ebf0f88391de5630",
+      "peak_rss_kib": {
+        "library": 16588,
+        "low_link_dsu": 15400,
+        "305681": 19276,
+        "215566": 34748
+      },
+      "milliseconds": {
+        "library": [
+          17.139426,
+          40.178234,
+          18.511996
+        ],
+        "low_link_dsu": [
+          19.053239,
+          20.369007,
+          20.925381
+        ],
+        "305681": [
+          29.842963,
+          18.957542,
+          19.862166
+        ],
+        "215566": [
+          21.641127,
+          20.732373,
+          22.545035
+        ]
+      },
+      "median_ms": {
+        "library": 18.511996,
+        "low_link_dsu": 20.369007,
+        "305681": 19.862166,
+        "215566": 21.641127
+      }
+    },
+    "random": {
+      "n": 200000,
+      "m": 200000,
+      "input_sha256": "9b0714dff99d33106d0af6dfd56dc149e9f9b10b8799336a06404ccbb2f92f9b",
+      "partition_sha256": "0f5617ee4f4cc6e4f4c8284c5e8dc3a70e5aff414d59338563e6ff96cfa5849e",
+      "peak_rss_kib": {
+        "library": 16208,
+        "low_link_dsu": 14680,
+        "305681": 17588,
+        "215566": 20804
+      },
+      "milliseconds": {
+        "library": [
+          29.567388,
+          26.115276,
+          26.282119
+        ],
+        "low_link_dsu": [
+          29.86892,
+          30.454179,
+          30.089854
+        ],
+        "305681": [
+          29.157098,
+          29.133057,
+          27.206272
+        ],
+        "215566": [
+          26.819652,
+          26.483955,
+          27.146272
+        ]
+      },
+      "median_ms": {
+        "library": 26.282119,
+        "low_link_dsu": 30.089854,
+        "305681": 29.133057,
+        "215566": 26.819652
+      }
+    },
+    "triangles_chain": {
+      "n": 150000,
+      "m": 199999,
+      "input_sha256": "637070d4b78078e183b1080c3ee2d0718b238be1b69a2da20fa5c2acbd4f7b53",
+      "partition_sha256": "668f2a6ddad7846c52d3510afafa86c0d7f3a837719e7507b7587de2625b996f",
+      "peak_rss_kib": {
+        "library": 15940,
+        "low_link_dsu": 15060,
+        "305681": 17356,
+        "215566": 28920
+      },
+      "milliseconds": {
+        "library": [
+          18.038803,
+          59.849677,
+          17.11946
+        ],
+        "low_link_dsu": [
+          17.141026,
+          17.508533,
+          17.252775
+        ],
+        "305681": [
+          17.592001,
+          17.199346,
+          20.912365
+        ],
+        "215566": [
+          18.74109,
+          19.226347,
+          19.778421
+        ]
+      },
+      "median_ms": {
+        "library": 18.038803,
+        "low_link_dsu": 17.252775,
+        "305681": 17.592001,
+        "215566": 19.226347
+      }
+    },
+    "parallel": {
+      "n": 200000,
+      "m": 200000,
+      "input_sha256": "a441ea6ad70f0023087ed28c1d23c349a45931cdc5aa225e7996ae79f068ed2e",
+      "partition_sha256": "f9649bc69164df660d96bcb1eea075de54008d1143736bc3d44cdd3fdd7f4627",
+      "peak_rss_kib": {
+        "library": 15252,
+        "low_link_dsu": 13636,
+        "305681": 16488,
+        "215566": 15480
+      },
+      "milliseconds": {
+        "library": [
+          16.234122,
+          22.495791,
+          18.105863
+        ],
+        "low_link_dsu": [
+          17.122078,
+          17.378785,
+          16.79388
+        ],
+        "305681": [
+          18.050716,
+          18.240393,
+          18.220864
+        ],
+        "215566": [
+          43.716995,
+          15.505898,
+          15.580058
+        ]
+      },
+      "median_ms": {
+        "library": 18.105863,
+        "low_link_dsu": 17.122078,
+        "305681": 18.220864,
+        "215566": 15.580058
+      }
+    },
+    "loops": {
+      "n": 200000,
+      "m": 200000,
+      "input_sha256": "48037f3a67cd5cc82bd8a34e7ca37929686cd33cae12d6ca5cc64d896f76229d",
+      "partition_sha256": "324c21f58dd588c92e04d66bc60359ef7ad8e1bbfc19ed5360e1cc050496ca8c",
+      "peak_rss_kib": {
+        "library": 16020,
+        "low_link_dsu": 14444,
+        "305681": 16828,
+        "215566": 15856
+      },
+      "milliseconds": {
+        "library": [
+          18.517433,
+          16.192665,
+          41.119999
+        ],
+        "low_link_dsu": [
+          17.313493,
+          17.195658,
+          17.233822
+        ],
+        "305681": [
+          18.030382,
+          18.209981,
+          18.131714
+        ],
+        "215566": [
+          23.90111,
+          17.080992,
+          14.832371
+        ]
+      },
+      "median_ms": {
+        "library": 18.517433,
+        "low_link_dsu": 17.233822,
+        "305681": 18.131714,
+        "215566": 17.080992
+      }
+    }
+  }
+}

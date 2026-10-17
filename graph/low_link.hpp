@@ -1,6 +1,7 @@
 #ifndef LOW_LINK_HPP
 #define LOW_LINK_HPP
 
+#include "../components/undirected_csr.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -11,9 +12,7 @@
 #include <vector>
 
 struct LowLink {
-	struct Arc {
-		int to, id;
-	};
+	using Arc = UndirectedCSR::Arc;
 	struct Frame {
 		int v, parent, next;
 	};
@@ -30,19 +29,9 @@ struct LowLink {
 	}
 	void build() {
 		assert(n >= 0 && edges.size() <= std::size_t(std::numeric_limits<int>::max() / 2));
-		std::vector<int> start(std::size_t(n) + 1);
-		for (auto [u, v] : edges) {
-			assert(0 <= u && u < n && 0 <= v && v < n);
-			++start[u + 1], ++start[v + 1];
-		}
-		for (int v = 0; v < n; ++v) start[v + 1] += start[v];
-		std::unique_ptr<Arc[]> adj(new Arc[2 * edges.size()]);
-		low.assign(start.begin(), start.end() - 1);
-		for (int i = 0; i < static_cast<int>(edges.size()); ++i) {
-			auto [u, v] = edges[i];
-			adj[low[u]++] = {v, i};
-			adj[low[v]++] = {u, i};
-		}
+		UndirectedCSR graph(n, edges);
+		const auto &start = graph.start;
+		const auto &adj = graph.adj;
 		ord.assign(n, -1);
 		low.assign(n, -1);
 		articulation.clear();

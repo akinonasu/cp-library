@@ -1,0 +1,28 @@
+g++: standalone components/undirected_csr.hpp
+g++: standalone graph/low_link.hpp
+g++: standalone graph/two_edge_connected_components.hpp
+g++: undirected_csr.cpp
+g++: low_link.cpp
+g++: two_edge_connected_components.cpp
+clang++: standalone components/undirected_csr.hpp
+clang++: standalone graph/low_link.hpp
+clang++: standalone graph/two_edge_connected_components.hpp
+clang++: undirected_csr.cpp
+clang++: low_link.cpp
+clang++: two_edge_connected_components.cpp
+Verification passed
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone components/undirected_csr.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone graph/low_link.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone graph/two_edge_connected_components.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: undirected_csr.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: low_link.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: two_edge_connected_components.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone.cpp
+Verification passed
+g++: standalone graph/two_edge_connected_components.hpp
+g++: two_edge_connected_components.cpp
+g++: standalone.cpp
+clang++: standalone graph/two_edge_connected_components.hpp
+clang++: two_edge_connected_components.cpp
+clang++: standalone.cpp
+Verification passed
