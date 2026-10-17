@@ -10,6 +10,10 @@ redirect_from: /convolution/walsh_hadamard.hpp.html
 walsh_hadamard(a);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `walsh_hadamard(a)` | その場で非正規化の Walsh–Hadamard 変換 |
+
 長さは 2 の冪とします。同じ変換をもう一度適用し、各要素を長さで割ると逆変換になります。
 
 長さを $$n$$ として時間は $$O(n\log n)$$、追加空間は $$O(1)$$ です。要素の演算は $$O(1)$$ とします。

@@ -13,6 +13,15 @@ bits.build(a, 0);
 auto count = bits.rank(4, 3);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `QuadBitVector(n = 0)` | 長さを指定して領域を準備 |
+| `build(a,shift)` | 各要素の下から `shift` 番目と次の bit で構築 |
+| `rank(r,digit)` | $$[0,r)$$ の `digit` の個数 |
+| `below(r,digit)` | $$[0,r)$$ の `digit` 未満の個数 |
+| `ranks(r)` | $$[0,r)$$ の 0・1・2・3 の個数を配列で返す |
+| `mask(block,digit)` | 1 ブロック内で `digit` に一致する位置の 64 bit マスク |
+
 `build(a, shift)` は各要素の下から `shift` 番目と次のビットを取り出します。`a.size()` は構築時の長さと一致させ、`shift` は 0〜30 とします。
 
 x86 の AVX2 対応 CPU では、構築時に 8 要素ずつビットを取り出します。対応状況は実行時に判定し、その他の CPU や短い配列ではスカラー処理を使います。

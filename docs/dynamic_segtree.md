@@ -18,6 +18,20 @@ auto sum = seg.prod(0, 1000);
 auto r = seg.max_right(0, [](long long s) { return s <= 10; });
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `DynamicSegtree(n = 0)` / `DynamicSegtree(l,r)` | $$[0,n)$$／$$[l,r)$$ を単位元で初期化 |
+| `set(p,x)` | 座標 `p` に代入 |
+| `multiply(p,x)` | `op(現在値,x)` に更新 |
+| `get(p)` | 1 点の値。未更新なら `e()` |
+| `prod(l,r)` / `all_prod()` | $$[l,r)$$／全体の集約 |
+| `max_right(l,f)` / `min_left(r,f)` | 区間積が `f` を満たす最大の右端／最小の左端 |
+| `size()` / `left_bound()` / `right_bound()` | 座標範囲の長さ／左端／右端 |
+| `node_count()` | 更新済みの異なる座標数 |
+| `reserve(k)` / `clear()` | 領域予約／容量を残して全座標を単位元に戻す |
+| `memory_usage()` | 確保済みノード領域のバイト数 |
+| `swap(other)` | 内容と座標範囲を交換 |
+
 `op` は結合的な演算、`e()` は単位元です。非可換な演算にも対応します。未更新の座標の値は `e()` です。
 
 構築範囲は `DynamicSegtree(n)` が $$[0,n)$$、`DynamicSegtree(l,r)` が $$[l,r)$$ です。座標型は第 4 テンプレート引数で指定でき、既定は `std::int64_t` です。

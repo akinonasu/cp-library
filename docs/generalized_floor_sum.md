@@ -11,6 +11,11 @@ auto sums = generalized_floor_sum_moments<2>(n, m, a, b);
 auto weighted = sums[1][1];
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `generalized_floor_sum<P,Q,T = __int128_t>(n,m,a,b)` | $$\sum_{i=0}^{n-1}i^P\lfloor(ai+b)/m\rfloor^Q$$ を返す |
+| `generalized_floor_sum_moments<D,T = __int128_t>(n,m,a,b)` | $$p+q\le D$$ の和を `sums[p][q]` にまとめて返す |
+
 `generalized_floor_sum<P, Q, T = __int128_t>(n, m, a, b)` は次を返します。
 
 $$\sum_{i=0}^{n-1} i^P\left\lfloor\frac{ai+b}{m}\right\rfloor^Q$$

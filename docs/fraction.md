@@ -18,6 +18,24 @@ auto power = a.pow(3);
 double approximation = static_cast<double>(a);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `Fraction<>()` / `Fraction<>(n)` / `Fraction<>(n,d)` | 0／整数／分数から構築。`d != 0` |
+| `a.numerator()` / `a.denominator()` | 約分後の分子／正の分母 |
+| `+a` / `-a` / `abs(a)` | 単項符号／絶対値 |
+| `a + b` / `a - b` / `a * b` / `a / b` | 四則演算。整数を左右どちらにも置ける。除数は非零 |
+| `a += b` / `a -= b` / `a *= b` / `a /= b` | 四則演算の結果を代入 |
+| `++a` / `a++` / `--a` / `a--` | 1 を加算／減算 |
+| `a == b` / `a != b` / `a < b` / `a <= b` / `a > b` / `a >= b` | 正確な比較 |
+| `a.floor()` / `floor(a)` | 数学的な切り下げ |
+| `a.ceil()` / `ceil(a)` | 数学的な切り上げ |
+| `a.inv()` | 逆数。`a != 0` |
+| `a.pow(k)` / `pow(a,k)` | 非負整数乗。0 乗は 1 |
+| `static_cast<bool>(a)` | 0 でないか |
+| `static_cast<Int>(a)` | 0 方向への切り捨て |
+| `static_cast<F>(a)` | 浮動小数点型 `F` への変換 |
+| `in >> a` / `out << a` | 整数または分数の入力／`分子/分母` の出力 |
+
 `Fraction<Int = std::int64_t>` は有限の分数です。`Int` は64 bit以下の標準の符号付き整数型とします。
 `Fraction<>` の別名は `fraction`。常に約分し、分母は正、0 は `0/1` で保持します。
 コンストラクタの引数は `Int` 型です。整数1個からの変換もできます。

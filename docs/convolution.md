@@ -10,6 +10,10 @@ std::vector<mint> a{1, 2, 3}, b{4, 5};
 auto c = convolution(a, b);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `convolution(a,b)` | 通常の畳み込み $$c_k=\sum_{i+j=k}a_ib_j$$ を返す。係数型から実装を選ぶ |
+
 $$c_k = \sum_{i+j=k} a_i b_j$$ を返します。
 
 | 係数型 | 実装・条件 |

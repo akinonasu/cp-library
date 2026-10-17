@@ -12,6 +12,14 @@ DisjointSparseTable<int, op> table(std::vector<int>{4, 2, 7});
 auto value = table.prod(0, 2);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `DisjointSparseTable()` / `DisjointSparseTable(a)` | 空／配列から構築 |
+| `build(a)` | 配列で再構築 |
+| `prod(l,r)` / `all_prod()` | $$[l,r)$$／全体の集約。空区間には `e` の指定が必要 |
+| `operator[](i)` | 元の配列の要素を取得 |
+| `size()` / `empty()` | 要素数／空判定 |
+
 `op` は結合則を満たす演算です。`prod(l, r)` は $$[l,r)$$ の集約、`all_prod()` は全体の集約です。
 
 空区間も使う場合は単位元を返す関数 `e()` を定義し、`DisjointSparseTable<S, op, e>` とします。`build(a)` で再構築できます。

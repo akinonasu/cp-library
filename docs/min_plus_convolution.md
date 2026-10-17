@@ -14,9 +14,9 @@ min-plus は $$\min_{i+j=k}(a_i+b_j)$$、max-plus は $$\max_{i+j=k}(a_i+b_j)$$ 
 
 | 関数 | $$a$$ の条件 | 時間計算量 |
 | --- | --- | --- |
-| `min_plus_convolution_convex` | 隣接差が単調非減少 | $$O(L)$$ |
-| `max_plus_convolution_concave` | 隣接差が単調非増加 | $$O(L)$$ |
-| `min_plus_convolution_concave` | 隣接差が単調非増加 | $$O(L \log L)$$ |
-| `max_plus_convolution_convex` | 隣接差が単調非減少 | $$O(L \log L)$$ |
+| `min_plus_convolution_convex(a,b)` | 隣接差が単調非減少 | $$O(L)$$ |
+| `max_plus_convolution_concave(a,b)` | 隣接差が単調非増加 | $$O(L)$$ |
+| `min_plus_convolution_concave(a,b)` | 隣接差が単調非増加 | $$O(L \log L)$$ |
+| `max_plus_convolution_convex(a,b)` | 隣接差が単調非減少 | $$O(L \log L)$$ |
 
 $$b$$ は任意です。要素と和は有限で、係数型に収まるものとします。$$L = \lvert a\rvert + \lvert b\rvert$$ として、追加空間はいずれも $$O(L)$$ です。

@@ -13,6 +13,22 @@ int length = a.lcp(0, b, 0);
 auto joined = RollingHash::concat(a.get(0, 4), b.get(), b.size());
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `RollingHash()` / `RollingHash(s)` / `RollingHash(a)` | 空／文字列／整数配列から構築 |
+| `build(s)` / `build(a)` | 文字列／整数配列で再構築 |
+| `size()` / `empty()` | 要素数／空判定 |
+| `get()` / `get(l,r)` | 全体／$$[l,r)$$ のハッシュ |
+| `value()` / `value(l,r)` | 全体／$$[l,r)$$ を長さ付きの `Value` で取得 |
+| `lcp(l,other,j)` | 接尾辞同士の最長共通接頭辞長 |
+| `lcp(l,r,other,j,k)` | $$[l,r)$$ と相手の $$[j,k)$$ の最長共通接頭辞長 |
+| `RollingHash::concat(left,right,right_length)` | 生のハッシュ同士を連結 |
+| `RollingHash::reserve(n)` | 基数の累乗を長さ `n` まで準備 |
+| `RollingHash::single(x)` / `RollingHash::e()` | 1 要素／空列の `Value` |
+| `RollingHash::op(a,b)` | `Value` をこの順で連結 |
+| `RollingHash::base()` / `RollingHash::mod` | 共通の基数／法 |
+| `a == b` / `a != b` | `Value` のハッシュと長さを比較 |
+
 `get(l,r)` は $$[l,r)$$、`get()` は全体のハッシュです。`lcp(l,b,j)` は両接尾辞の LCP、`lcp(l,r,b,j,k)` は区間 $$[l,r)$$ と $$[j,k)$$ の LCP を返します。`concat(x,y,len)` は `x` の後ろに長さ `len` の `y` を連結します。
 
 `std::string_view`・整数の `std::vector<T>` から構築でき、`build(a)` で再構築できます。整数は法で正規化し、文字列の `char` は符号なし byte として扱います。`size()`・`empty()` も使えます。

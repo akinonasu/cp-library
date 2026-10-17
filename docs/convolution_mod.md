@@ -11,6 +11,11 @@ auto c = convolution_mod(a, b, 1000000007);
 auto exact = convolution_integer(a, b);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `convolution_mod(a,b,mod)` | 通常の畳み込みを指定法で計算し、`vector<uint32_t>` を返す |
+| `convolution_integer(a,b)` | 整数の通常の畳み込みを厳密計算し、入力と同じ係数型で返す |
+
 どちらも $$\sum_{i+j=k} a_i b_j$$ を計算します。入力は 64 bit 以下の整数型です。
 
 `convolution_mod` は $$1 \le \mathrm{mod} \le 2^{32}-1$$ とし、`std::vector<std::uint32_t>` を返します。`convolution_integer` は入力と同じ係数型を返し、結果がその型に収まる必要があります。出力長は $$2^{24}$$ 以下です。

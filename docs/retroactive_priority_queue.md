@@ -20,19 +20,23 @@ queue.erase(30);
 
 時刻は64 bit以下の整数で、各時刻に置ける操作は1つです。問い合わせは指定時刻の操作を実行した直後の状態で、引数なしでは履歴の末尾を参照します。比較上同順位の要素は、挿入時刻が早い方を優先します。
 
-| 操作 | 内容 |
+| 操作 | 内容・返り値 |
 | --- | --- |
-| `insert(t,x)` | 時刻 $$t$$ に `push(x)` を追加 |
-| `insert_pop(t)` | 時刻 $$t$$ に先頭要素の削除を追加 |
+| `RetroactivePriorityQueue(compare = {},seed = 0)` | 空の履歴を構築 |
+| `RetroactivePriorityQueue(updates,compare = {},seed = 0)` | 有効な操作履歴から構築 |
+| `insert(t,x)` | 時刻 `t` に `push(x)` を追加 |
+| `insert_pop(t)` | 時刻 `t` に先頭要素の削除を追加 |
 | `set(t,x)` | 既存の `push` の値を変更 |
-| `erase(t)` | 時刻 $$t$$ の操作を取り消す |
-| `top(t)`・`top()` | 指定時刻・現在の先頭を `std::optional<T>` で取得 |
-| `size(t)`・`empty(t)` | 指定時刻の要素数・空判定 |
-| `size()`・`empty()` | 現在の要素数・空判定 |
-| `contains_time(t)`・`operation_count()` | 操作の存在・操作数 |
-| `assign(updates)` | 操作履歴をまとめて設定 |
-| `reserve(m)`・`clear()` | 操作ノードを予約・履歴を初期化 |
+| `erase(t)` | 時刻 `t` の操作を取り消す |
+| `top()` | 現在の先頭を `optional<T>` で取得。空なら `nullopt` |
+| `size()` / `empty()` | 現在の要素数／空判定 |
+| `contains_time(t)` / `operation_count()` | 時刻 `t` の操作の有無／操作数 |
+| `assign(updates)` | 操作履歴をまとめて設定。無効なら false を返して元の履歴を保つ |
+| `reserve(m)` / `clear()` | 領域予約／容量を残して履歴を初期化 |
 | `memory_usage()` | 確保済み領域のバイト数 |
+| `swap(other)` | 内容・比較関数・乱数生成器の状態を交換 |
+| `top(t)` | 時刻 `t` の操作直後の先頭を `optional<T>` で取得 |
+| `size(t)` / `empty(t)` | 時刻 `t` の操作直後の要素数／空判定 |
 
 履歴変更は成功時に `true` を返します。時刻の衝突、対象操作の不在、`set` の対象が `pop` の場合や、変更後の履歴で空キューへの削除が発生する場合は `false` を返し、状態を保ちます。
 

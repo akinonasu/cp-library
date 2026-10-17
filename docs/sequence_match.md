@@ -12,6 +12,16 @@ int prefix = match.forward(0, 2, 3);  // 2
 int suffix = match.backward(2, 4, 2); // 2
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `sequence_match_detail::Matcher<T> match(s)` | 所有しない列の一致比較を準備 |
+| `match.forward(i,j,limit)` | 2 位置からの前方一致長 |
+| `match.backward(i,j,limit)` | 2 位置の直前からの後方一致長 |
+| `match.index_runs(n)` | 長さ `n` の同一要素区間を前計算 |
+| `match.forward_counted(i,j,limit)` / `match.backward_counted(i,j,limit)` | 前方／後方の `(一致長,比較量)`。同一要素区間を利用 |
+| `sequence_match_detail::z_table(n,z,match)` | `match(i,j,limit)` を用いて Z 配列を `z` に書き込む |
+| `sequence_match_detail::prefix_matches(n,m,z,match,emit)` | 長さ `m` の接頭辞の Z 配列を再利用し、対象の各位置で `emit(i,一致長)` を呼ぶ |
+
 列を所有しない内部部品です。元の列は比較中に有効である必要があります。`forward(i, j, limit)` は位置 `i, j` からの前方一致長、`backward(i, j, limit)` は位置 `i, j` の直前からの後方一致長です。比較する全要素が列の範囲内になる `limit >= 0` を指定します。
 
 一意な表現を持つ整数は 64 bit 単位で比較します。x86_64 では CPU の対応を確認して長い比較に AVX2 を使います。`Matcher<T, false>` で AVX2 を無効にできます。一般の要素は `==` で比較します。

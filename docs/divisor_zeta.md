@@ -11,6 +11,11 @@ divisor_zeta(a);
 divisor_zeta<true>(a);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `divisor_zeta<inverse = false,multiples = false>(a)` | 約数和で上書き。`multiples = true` は倍数和、`inverse = true` は逆変換 |
+| `divisor_zeta<inverse,multiples>(a,primes)` | 事前計算した `prime_sieve(a.size())` を再利用 |
+
 `divisor_zeta<inverse = false, multiples = false>(a)` は約数和、`multiples = true` なら倍数和を計算します。`inverse = true` は逆変換です。添字 0 は使いません。
 
 同じ長さで繰り返す場合は `prime_sieve(a.size())` の結果を第 2 引数に渡せます。

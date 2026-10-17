@@ -9,6 +9,10 @@ documentation_of: //math/monoid_floor_sum.hpp
 auto result = monoid_floor_sum<S, op, e>(n, m, a, b, x, y);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `monoid_floor_sum<S,op,e>(n,m,a,b,x,y)` | 下記の floor sum に対応する列を `op` で集約して返す |
+
 `op` は結合則を満たす演算、`e()` は単位元です。$$n,m,a,b$$ は `uint64_t`、$$m > 0$$ とします。
 
 $$h(i) = \left\lfloor\frac{ai+b}{m}\right\rfloor$$ として、次の列を左から `op` で集約します。累乗は同じ要素の繰り返しです。

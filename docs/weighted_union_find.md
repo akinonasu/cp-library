@@ -11,6 +11,15 @@ bool ok = uf.merge(0, 1, 5);
 auto value = uf.diff(0, 1);
 ```
 
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `WeightedUnionFind<T>(n)` | `n` 頂点を独立した成分として構築 |
+| `merge(x,y,w)` | $$\mathrm{potential}[y]-\mathrm{potential}[x]=w$$ を追加。矛盾時に false |
+| `same(x,y)` | 連結判定 |
+| `leader(x)` / `size(x)` | 代表元／連結成分の頂点数 |
+| `weight(x)` | 代表元を基準とする `x` のポテンシャル |
+| `diff(x,y)` | 連結な頂点間の $$\mathrm{potential}[y]-\mathrm{potential}[x]$$ |
+
 `merge(x, y, w)` は $$\mathrm{potential}[y]-\mathrm{potential}[x]=w$$ を追加し、矛盾する場合に `false` を返します。`diff(x, y)` は連結な頂点間の $$\mathrm{potential}[y]-\mathrm{potential}[x]$$ を返します。
 
 `same(x, y)` で連結判定、`leader(x)` で代表元、`size(x)` で連結成分の頂点数を取得できます。頂点番号は 0 始まりです。
