@@ -1,0 +1,7 @@
+g++: standalone graph/rerooting.hpp
+g++: rerooting.cpp
+clang++: standalone graph/rerooting.hpp
+clang++: rerooting.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone graph/rerooting.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: rerooting.cpp
+Verification passed

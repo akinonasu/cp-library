@@ -57,6 +57,7 @@
 | `graph/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
 | `graph/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
 | `graph/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
+| `graph/rerooting.hpp` | 全方位木 DP | [使い方](docs/rerooting.md) |
 | `graph/low_link.hpp` | Low-Link | [使い方](docs/low_link.md) |
 | `graph/two_edge_connected_components.hpp` | 二辺連結成分分解・橋の森 | [使い方](docs/two_edge_connected_components.md) |
 | `string/lcs.hpp` | 最長共通部分列 | [使い方](docs/lcs.md) |

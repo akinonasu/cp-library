@@ -1,0 +1,391 @@
+{
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "uname": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "cpu": "model name\t: 13th Gen Intel(R) Core(TM) i7-13700F",
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "affinity": [
+    2
+  ],
+  "trials": 7,
+  "warmup": 1,
+  "binary_filesystem": "Linux /tmp (WSL ext4)",
+  "schedule_seed": 771306,
+  "kernel_seed": 731605,
+  "end_to_end_seed": 941607,
+  "source_sha256": {
+    "graph/rerooting.hpp": "f7b2af0d128eb794a1342acc328becb82d1fd49075daa6db273d09dda308b828",
+    "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+    "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+    "components/fast_io.hpp": "d4a7e58d2a9373e675ddaed1a31ea3f1748b75a2af4201791ac63163b3af38b8",
+    "test/rerooting.test.cpp": "f7586c09904b2a429c50e91e86a9531d37f79c96737fb108a6332adfbb4da676",
+    "test/benchmark/rerooting.cpp": "76674e159145696545405429b672997d21004faa25f8339c7a194b9c36b73563",
+    "test/benchmark/rerooting.py": "44823f077c9162a71b00849854c531d140649d9a0215f23fc29d7bd786c7ee46"
+  },
+  "metric": {
+    "kernel": "in-process wall time including graph construction and DP; excludes generation, result checksum and I/O; library result destruction excluded, baseline work-vector destruction included",
+    "end_to_end": "process wall time including startup, graph construction, DP, input and output; excludes input generation and output validation"
+  },
+  "references": {
+    "346214": {
+      "source_sha256": "4751a21065bff70b441cc6407bb4c645c5fb3bb1d49868b1aa6b2e0129c21846",
+      "adaptation": "none"
+    },
+    "346138": {
+      "source_sha256": "c78da19facb0e28dc6d6a3cde10d9a34d4360f33259aab364a38cc5944d2a31d",
+      "adaptation": "none"
+    }
+  },
+  "kernel": [
+    {
+      "shape": "path",
+      "size": 200000,
+      "checksum": "12698525774012307939",
+      "milliseconds": {
+        "library": [
+          20.369223,
+          19.785739,
+          19.433627,
+          19.125952,
+          19.065347,
+          18.643376,
+          20.370073
+        ],
+        "baseline": [
+          60.047313,
+          62.63597,
+          63.130393,
+          60.542012,
+          63.926433,
+          64.513324,
+          59.933472
+        ]
+      },
+      "median_ms": {
+        "library": 19.433627,
+        "baseline": 62.63597
+      }
+    },
+    {
+      "shape": "star",
+      "size": 200000,
+      "checksum": "1309295462331313609",
+      "milliseconds": {
+        "library": [
+          14.671903,
+          13.790361,
+          13.007007,
+          13.146508,
+          13.114518,
+          15.272206,
+          12.294855
+        ],
+        "baseline": [
+          45.917285,
+          43.763763,
+          43.698148,
+          41.882144,
+          42.261651,
+          46.454368,
+          43.270822
+        ]
+      },
+      "median_ms": {
+        "library": 13.146508,
+        "baseline": 43.698148
+      }
+    },
+    {
+      "shape": "balanced",
+      "size": 200000,
+      "checksum": "1372384551524627185",
+      "milliseconds": {
+        "library": [
+          18.794264,
+          18.680786,
+          18.915802,
+          19.525369,
+          19.30933,
+          18.669992,
+          18.402342
+        ],
+        "baseline": [
+          65.833452,
+          63.702411,
+          60.233983,
+          63.031739,
+          59.603011,
+          66.600342,
+          60.092698
+        ]
+      },
+      "median_ms": {
+        "library": 18.794264,
+        "baseline": 63.031739
+      }
+    },
+    {
+      "shape": "broom",
+      "size": 200000,
+      "checksum": "2215695781248113507",
+      "milliseconds": {
+        "library": [
+          16.643255,
+          17.588608,
+          18.996544,
+          15.500058,
+          16.06877,
+          16.939733,
+          16.006073
+        ],
+        "baseline": [
+          62.107279,
+          57.898145,
+          58.612044,
+          59.832952,
+          58.381206,
+          60.63511,
+          56.257593
+        ]
+      },
+      "median_ms": {
+        "library": 16.643255,
+        "baseline": 58.612044
+      }
+    },
+    {
+      "shape": "random",
+      "size": 200000,
+      "checksum": "17902144671440959813",
+      "milliseconds": {
+        "library": [
+          21.5762,
+          19.8609,
+          21.455088,
+          20.624982,
+          21.284141,
+          22.758166,
+          21.466717
+        ],
+        "baseline": [
+          69.435986,
+          57.943322,
+          58.426629,
+          59.197685,
+          64.187769,
+          60.479742,
+          59.415109
+        ]
+      },
+      "median_ms": {
+        "library": 21.455088,
+        "baseline": 59.415109
+      }
+    }
+  ],
+  "end_to_end": [
+    {
+      "shape": "path",
+      "size": 200000,
+      "input_sha256": "3109f3539d5b78b7b1c5f8993be3ee1adec6a1f1fb5b7f7d790778bc6f119624",
+      "checksum_u32le": "c061ad33de90128ef07140d6870a3e16b8376bac2204a54b9c036a8a946eedae",
+      "milliseconds": {
+        "library": [
+          40.123005,
+          39.283072,
+          40.486405,
+          39.542353,
+          38.968011,
+          37.797401,
+          39.719833
+        ],
+        "346214": [
+          28.56321,
+          27.074066,
+          26.062714,
+          26.748564,
+          26.639165,
+          26.308772,
+          26.778812
+        ],
+        "346138": [
+          31.803795,
+          29.659053,
+          30.953067,
+          30.306988,
+          29.513092,
+          31.425486,
+          31.008399
+        ]
+      },
+      "median_ms": {
+        "library": 39.542353,
+        "346214": 26.748564,
+        "346138": 30.953067
+      }
+    },
+    {
+      "shape": "star",
+      "size": 200000,
+      "input_sha256": "a1d6b7833faa38c27a5a40f2a6d851cb8a38b854a24b7022816a294f3c7963e4",
+      "checksum_u32le": "9114a4edcb366584b558f281dd80991745e789fb9f382a25fb6598adc2811239",
+      "milliseconds": {
+        "library": [
+          27.30812,
+          26.368374,
+          26.270251,
+          27.799116,
+          26.996542,
+          26.716583,
+          27.167215
+        ],
+        "346214": [
+          20.457291,
+          20.444419,
+          21.704435,
+          21.392603,
+          20.366293,
+          20.782368,
+          20.139182
+        ],
+        "346138": [
+          22.334879,
+          21.648019,
+          22.244945,
+          22.770656,
+          21.680304,
+          21.682654,
+          21.776853
+        ]
+      },
+      "median_ms": {
+        "library": 26.996542,
+        "346214": 20.457291,
+        "346138": 21.776853
+      }
+    },
+    {
+      "shape": "balanced",
+      "size": 200000,
+      "input_sha256": "cb354c2568793b514f328a8e562c2ee141160d8ba459b6c4b94fa32cc2f548dc",
+      "checksum_u32le": "50b9916b6972815e32efa20e6f4df26bde093594e69ae5b2e61541341ea33112",
+      "milliseconds": {
+        "library": [
+          39.95905,
+          38.449986,
+          41.120046,
+          37.708794,
+          42.147683,
+          37.836909,
+          36.914084
+        ],
+        "346214": [
+          23.272704,
+          22.066075,
+          22.408147,
+          22.777447,
+          22.949067,
+          23.44647,
+          23.672121
+        ],
+        "346138": [
+          25.296134,
+          25.237174,
+          25.375829,
+          24.971084,
+          25.931155,
+          24.789212,
+          24.280587
+        ]
+      },
+      "median_ms": {
+        "library": 38.449986,
+        "346214": 22.949067,
+        "346138": 25.237174
+      }
+    },
+    {
+      "shape": "broom",
+      "size": 200000,
+      "input_sha256": "4e68208fa4b0afa67f9425a906f70ff2cead5cb180f72065bd41a6aa35417767",
+      "checksum_u32le": "822ff2785997dd0f89a221d7534a9041d5f5c6fd32f5124b45596dcaa3cdb376",
+      "milliseconds": {
+        "library": [
+          33.08176,
+          34.464693,
+          34.74553,
+          33.933574,
+          32.692949,
+          32.040019,
+          33.846936
+        ],
+        "346214": [
+          22.585007,
+          23.325695,
+          23.784725,
+          23.402314,
+          23.32385,
+          22.880466,
+          23.775278
+        ],
+        "346138": [
+          25.278567,
+          25.51361,
+          24.991351,
+          25.198247,
+          25.297777,
+          25.05534,
+          26.562694
+        ]
+      },
+      "median_ms": {
+        "library": 33.846936,
+        "346214": 23.325695,
+        "346138": 25.278567
+      }
+    },
+    {
+      "shape": "random",
+      "size": 200000,
+      "input_sha256": "ac7e7e456c0355fcdc82aefceb316b56aeb6dadd6f537a56619f6952c2785230",
+      "checksum_u32le": "789924f49475076c2fa1c831d15f1e4ec2b616edd9b9f4cb88209b632348ecce",
+      "milliseconds": {
+        "library": [
+          39.225478,
+          39.501508,
+          37.739871,
+          39.529268,
+          38.283278,
+          38.69053,
+          38.89841
+        ],
+        "346214": [
+          24.18991,
+          25.151048,
+          24.165928,
+          22.881077,
+          23.210521,
+          23.204832,
+          24.357176
+        ],
+        "346138": [
+          27.335221,
+          27.518242,
+          28.754439,
+          27.216449,
+          26.2233,
+          29.062758,
+          28.165192
+        ]
+      },
+      "median_ms": {
+        "library": 38.89841,
+        "346214": 24.165928,
+        "346138": 27.518242
+      }
+    }
+  ]
+}
