@@ -11,6 +11,9 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#if defined(__BMI2__) && defined(__x86_64__)
+#include <immintrin.h>
+#endif
 
 template <int BlockBits = 1024, int Branch = 8>
 class DynamicBitVector {
@@ -194,6 +197,9 @@ class DynamicBitVector {
 		return merge;
 	}
 	static int select_word(Word value, int k) {
+#if defined(__BMI2__) && defined(__x86_64__)
+		return std::countr_zero(_pdep_u64(Word(1) << k, value));
+#else
 		int result = 0;
 		for (int shift : {32, 16, 8}) {
 			int count = std::popcount(value & mask(shift));
@@ -202,6 +208,7 @@ class DynamicBitVector {
 		}
 		while (k--) value &= value - 1;
 		return result + std::countr_zero(value);
+#endif
 	}
 
   public:
