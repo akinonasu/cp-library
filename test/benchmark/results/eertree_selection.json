@@ -1,0 +1,6 @@
+{
+  "headers": ["string/eertree.hpp"],
+  "unit": ["test/unit/eertree.cpp"],
+  "sanitize": ["test/unit/eertree.cpp"],
+  "bundles": ["string/eertree.hpp"]
+}
