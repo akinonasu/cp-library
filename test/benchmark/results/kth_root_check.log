@@ -1,0 +1,8 @@
+g++: standalone math/kth_root.hpp
+g++: kth_root.cpp
+clang++: standalone math/kth_root.hpp
+clang++: kth_root.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone math/kth_root.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: kth_root.cpp
+Verification passed
+Release-check-passed
