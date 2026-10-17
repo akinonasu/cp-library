@@ -1,0 +1,452 @@
+[32mINFO[0m:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}[0m
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/xor_basis_intersection.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/intersection_of_f2_vector_spaces[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ sleep 2[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj download --system -d .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test --silent https://judge.yosupo.jp/problem/intersection_of_f2_vector_spaces[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/qand/.local/share/online-judge-tools/cookie.jar
+git version 2.34.1
+[INFO] $ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+[INFO] $ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/info.toml
+[37m14:43:52 [INFO] Start intersection_of_f2_vector_spaces[0m
+[37m14:43:52 [INFO] generate params.h[0m
+[37m14:43:52 [INFO] compile checker[0m
+[37m14:43:56 [INFO] compile solution[0m
+[37m14:43:56 [INFO] compile generators[0m
+[37m14:43:56 [INFO] compile example.in[0m
+[37m14:43:56 [INFO] compile max_random.cpp[0m
+[37m14:43:56 [INFO] compile max_minus_1_random.cpp[0m
+[37m14:43:57 [INFO] compile random.cpp[0m
+[37m14:43:57 [INFO] compile nmk_all.cpp[0m
+[37m14:43:57 [INFO] clear input /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/in[0m
+[37m14:43:57 [INFO] gen example.in 1cases[0m
+[37m14:43:57 [INFO] gen max_random.cpp 5cases[0m
+[37m14:43:59 [INFO] gen max_minus_1_random.cpp 5cases[0m
+[37m14:44:01 [INFO] gen random.cpp 5cases[0m
+[37m14:44:01 [INFO] gen nmk_all.cpp 1cases[0m
+[37m14:44:02 [INFO] clear output /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/out[0m
+[37m14:44:02 [INFO] ANS      1 msecs : example_00 : b''[0m
+[37m14:44:02 [INFO] ANS    474 msecs : max_random_00 : b''[0m
+[37m14:44:03 [INFO] ANS    474 msecs : max_random_01 : b''[0m
+[37m14:44:03 [INFO] ANS    481 msecs : max_random_02 : b''[0m
+[37m14:44:04 [INFO] ANS    481 msecs : max_random_03 : b''[0m
+[37m14:44:04 [INFO] ANS    487 msecs : max_random_04 : b''[0m
+[37m14:44:05 [INFO] ANS    466 msecs : max_minus_1_random_00 : b''[0m
+[37m14:44:05 [INFO] ANS    459 msecs : max_minus_1_random_01 : b''[0m
+[37m14:44:06 [INFO] ANS    455 msecs : max_minus_1_random_02 : b''[0m
+[37m14:44:06 [INFO] ANS    456 msecs : max_minus_1_random_03 : b''[0m
+[37m14:44:07 [INFO] ANS    490 msecs : max_minus_1_random_04 : b''[0m
+[37m14:44:07 [INFO] ANS    241 msecs : random_00 : b''[0m
+[37m14:44:07 [INFO] ANS    245 msecs : random_01 : b''[0m
+[37m14:44:07 [INFO] ANS    248 msecs : random_02 : b''[0m
+[37m14:44:08 [INFO] ANS    284 msecs : random_03 : b''[0m
+[37m14:44:08 [INFO] ANS    256 msecs : random_04 : b''[0m
+[37m14:44:08 [INFO] ANS    243 msecs : nmk_all_00 : b''[0m
+[INFO] save cookie to: /home/qand/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: example_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/example_00.in
+[INFO] output: example_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/example_00.out
+
+[INFO] sample 1
+[INFO] input: max_minus_1_random_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_00.in
+[INFO] output: max_minus_1_random_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_00.out
+
+[INFO] sample 2
+[INFO] input: max_minus_1_random_01
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_01.in
+[INFO] output: max_minus_1_random_01
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_01.out
+
+[INFO] sample 3
+[INFO] input: max_minus_1_random_02
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_02.in
+[INFO] output: max_minus_1_random_02
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_02.out
+
+[INFO] sample 4
+[INFO] input: max_minus_1_random_03
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_03.in
+[INFO] output: max_minus_1_random_03
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_03.out
+
+[INFO] sample 5
+[INFO] input: max_minus_1_random_04
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_04.in
+[INFO] output: max_minus_1_random_04
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_04.out
+
+[INFO] sample 6
+[INFO] input: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_00.in
+[INFO] output: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_00.out
+
+[INFO] sample 7
+[INFO] input: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_01.in
+[INFO] output: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_01.out
+
+[INFO] sample 8
+[INFO] input: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_02.in
+[INFO] output: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_02.out
+
+[INFO] sample 9
+[INFO] input: max_random_03
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_03.in
+[INFO] output: max_random_03
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_03.out
+
+[INFO] sample 10
+[INFO] input: max_random_04
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_04.in
+[INFO] output: max_random_04
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_04.out
+
+[INFO] sample 11
+[INFO] input: nmk_all_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/nmk_all_00.in
+[INFO] output: nmk_all_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/nmk_all_00.out
+
+[INFO] sample 12
+[INFO] input: random_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_00.in
+[INFO] output: random_00
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_00.out
+
+[INFO] sample 13
+[INFO] input: random_01
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_01.in
+[INFO] output: random_01
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_01.out
+
+[INFO] sample 14
+[INFO] input: random_02
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_02.in
+[INFO] output: random_02
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_02.out
+
+[INFO] sample 15
+[INFO] input: random_03
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_03.in
+[INFO] output: random_03
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_03.out
+
+[INFO] sample 16
+[INFO] input: random_04
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_04.in
+[INFO] output: random_04
+[SUCCESS] saved to: .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_04.out
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/a.out test/xor_basis_intersection.test.cpp[0m
+git version 2.34.1
+[32mINFO[0m:onlinejudge.service.library_checker:$ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull[0m
+Already up to date.
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/info.toml --compile-checker[0m
+[33m14:44:14 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m14:44:14 [INFO] Start intersection_of_f2_vector_spaces[0m
+[37m14:44:14 [INFO] generate params.h[0m
+[37m14:44:14 [INFO] Test cases are already generated[0m
+[37m14:44:14 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/a.out -d .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 17 cases found
+
+[INFO] example_00
+[INFO] time: 0.007074 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/example_00.in /tmp/tmp6n1y4_8k/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/example_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_00
+[INFO] time: 0.384773 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_00.in /tmp/tmp7z2frqv1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_01
+[INFO] time: 0.386222 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_01.in /tmp/tmpo3ft6lmz/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_02
+[INFO] time: 0.426199 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_02.in /tmp/tmpcp9bdi9c/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_03
+[INFO] time: 0.451734 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_03.in /tmp/tmpcu5eyfqf/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_04
+[INFO] time: 0.430823 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_04.in /tmp/tmp91ly1_lw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.401717 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_00.in /tmp/tmplhj3waqu/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.402406 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_01.in /tmp/tmppqucw6i8/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.349705 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_02.in /tmp/tmp0ru2g0_1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_03
+[INFO] time: 0.369679 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_03.in /tmp/tmp107ti1et/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_04
+[INFO] time: 0.390408 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_04.in /tmp/tmph08vmcfv/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] nmk_all_00
+[INFO] time: 0.207579 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/nmk_all_00.in /tmp/tmp1101seab/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/nmk_all_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.208883 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_00.in /tmp/tmpvopym6ex/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.188713 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_01.in /tmp/tmpf2jb7uau/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.195708 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_02.in /tmp/tmp46a1ko0w/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.208102 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_03.in /tmp/tmpb7fxg0l6/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.178606 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_04.in /tmp/tmp77iwafxs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.451734 sec  (for max_minus_1_random_03)
+[INFO] max memory: 62.352000 MB  (for max_random_04)
+[SUCCESS] test success: 17 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/a.out test/xor_basis_intersection.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/info.toml --compile-checker[0m
+[33m14:44:39 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m14:44:39 [INFO] Start intersection_of_f2_vector_spaces[0m
+[37m14:44:39 [INFO] generate params.h[0m
+[37m14:44:39 [INFO] Test cases are already generated[0m
+[37m14:44:39 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/a.out -d .verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 17 cases found
+
+[INFO] example_00
+[INFO] time: 0.004283 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/example_00.in /tmp/tmppvf04tbf/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/example_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_00
+[INFO] time: 0.412376 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_00.in /tmp/tmphynded5q/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_01
+[INFO] time: 0.422978 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_01.in /tmp/tmpweh3ebgf/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_02
+[INFO] time: 0.403971 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_02.in /tmp/tmpjx3f1psi/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_03
+[INFO] time: 0.382802 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_03.in /tmp/tmpp1khy1oj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_minus_1_random_04
+[INFO] time: 0.381974 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_04.in /tmp/tmphg146yd1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_minus_1_random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.338687 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_00.in /tmp/tmp0i3rek6h/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.328947 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_01.in /tmp/tmptoyppx6e/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.348684 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_02.in /tmp/tmpvgokge30/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_03
+[INFO] time: 0.420677 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_03.in /tmp/tmptg90fkdd/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_04
+[INFO] time: 0.393153 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_04.in /tmp/tmp9e3j73fg/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/max_random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] nmk_all_00
+[INFO] time: 0.189575 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/nmk_all_00.in /tmp/tmp_owd2mvx/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/nmk_all_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.191719 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_00.in /tmp/tmp_41e9tlg/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.188014 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_01.in /tmp/tmpif3sqhy6/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.193056 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_02.in /tmp/tmpm9pitoyh/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.193121 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_03.in /tmp/tmp6n8x04ja/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.167254 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/linear_algebra/intersection_of_f2_vector_spaces/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_04.in /tmp/tmpaddj2ylt/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2907766ee36225562fcfd5898c243ab5/test/random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.422978 sec  (for max_minus_1_random_01)
+[INFO] max memory: 62.348000 MB  (for max_random_04)
+[SUCCESS] test success: 17 cases
+[32mINFO[0m:onlinejudge_verify.verify:all tests succeeded[0m
