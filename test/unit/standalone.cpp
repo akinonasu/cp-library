@@ -12,6 +12,7 @@
 #include "data_structure/weighted_union_find.hpp"
 #include "graph/dijkstra.hpp"
 #include "graph/hld.hpp"
+#include "graph/centroid_decomposition.hpp"
 #include "graph/lca.hpp"
 #include "graph/low_link.hpp"
 #include "math/comb.hpp"
@@ -92,6 +93,10 @@ int main() {
 	hld.add_edge(1, 2);
 	hld.build();
 	assert(hld.jump(2, 0, 1) == 1 && hld.subtree(1).second - hld.subtree(1).first == 2);
+	CentroidDecomposition<> centroid(3);
+	centroid.add_edge(0, 1), centroid.add_edge(1, 2);
+	centroid.build();
+	assert(centroid.root == 1 && centroid.dist(0, 2) == 2 && centroid.ancestors(0).size() == 2);
 	LowLink low(3);
 	low.add_edge(0, 1);
 	low.add_edge(1, 2);

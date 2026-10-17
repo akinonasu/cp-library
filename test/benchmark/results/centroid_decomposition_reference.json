@@ -1,0 +1,92 @@
+{
+  "retrieved_at": "2026-10-17T07:16:21.190409+00:00",
+  "problems": {
+    "vertex_add_range_contour_sum_on_tree": {
+      "listing": {
+        "count": 235,
+        "submissions": [
+          {
+            "id": 403518,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 46022656,
+            "problem_name": "vertex_add_range_contour_sum_on_tree",
+            "problem_title": "Vertex Add Range Contour Sum on Tree",
+            "status": "AC",
+            "submission_time": "2026-09-18T06:28:24.859947Z",
+            "time": 0.121,
+            "user_name": "nandhagk"
+          },
+          {
+            "id": 403470,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 38793216,
+            "problem_name": "vertex_add_range_contour_sum_on_tree",
+            "problem_title": "Vertex Add Range Contour Sum on Tree",
+            "status": "AC",
+            "submission_time": "2026-09-18T01:55:48.352745Z",
+            "time": 0.122,
+            "user_name": "nandhagk"
+          },
+          {
+            "id": 405059,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 46022656,
+            "problem_name": "vertex_add_range_contour_sum_on_tree",
+            "problem_title": "Vertex Add Range Contour Sum on Tree",
+            "status": "AC",
+            "submission_time": "2026-09-22T09:33:14.612439Z",
+            "time": 0.123,
+            "user_name": "Rohan_Kapri"
+          }
+        ]
+      },
+      "references": [
+        {
+          "id": 403518,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 46022656,
+          "problem_name": "vertex_add_range_contour_sum_on_tree",
+          "problem_title": "Vertex Add Range Contour Sum on Tree",
+          "status": "AC",
+          "submission_time": "2026-09-18T06:28:24.859947Z",
+          "time": 0.121,
+          "user_name": "nandhagk",
+          "source_sha256": "d81bb29326978a98ef084313d4eacccc1b7083e82dacb5c56f1ae0f094811aec",
+          "url": "https://judge.yosupo.jp/submission/403518"
+        },
+        {
+          "id": 403470,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 38793216,
+          "problem_name": "vertex_add_range_contour_sum_on_tree",
+          "problem_title": "Vertex Add Range Contour Sum on Tree",
+          "status": "AC",
+          "submission_time": "2026-09-18T01:55:48.352745Z",
+          "time": 0.122,
+          "user_name": "nandhagk",
+          "source_sha256": "bec5601743bd353d5eb978707871b9c3a15609d7d1d6a11a90ab0d63dffe2ec6",
+          "url": "https://judge.yosupo.jp/submission/403470"
+        },
+        {
+          "id": 405059,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 46022656,
+          "problem_name": "vertex_add_range_contour_sum_on_tree",
+          "problem_title": "Vertex Add Range Contour Sum on Tree",
+          "status": "AC",
+          "submission_time": "2026-09-22T09:33:14.612439Z",
+          "time": 0.123,
+          "user_name": "Rohan_Kapri",
+          "source_sha256": "5c307494d28e0ead332d5b268e4f50cd07f72aebc5eab0e8e7fa0a58d6db4814",
+          "url": "https://judge.yosupo.jp/submission/405059"
+        }
+      ]
+    }
+  }
+}

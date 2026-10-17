@@ -1,0 +1,57 @@
+{
+  "recorded_at": "2026-10-17T07:23:44.070552+00:00",
+  "sha256": {
+    "graph/centroid_decomposition.hpp": "48248bac34f499c6919ad1cbee748789a230d516f244e1a8f1fd8d2f900d782d",
+    "test/unit/centroid_decomposition.cpp": "5ee71c5daf4cb8f693d681387d134c91455ee79aac4707b87b81ac21f6da9a81",
+    "test/unit/standalone.cpp": "2ccaba7fef420f83ecdd022559c64829391b7375e80cc4d0a8f6e14588fbaccb",
+    "test/centroid_decomposition_contour.test.cpp": "dd8dca555330cb174a1e6b1058fbac9f7308e6614ebb741b0866a4c0d02383d4"
+  },
+  "checks": {
+    "gcc_15_clang_21": {
+      "result": "passed",
+      "log": "centroid_decomposition_check.log"
+    },
+    "clang_21_asan_ubsan": {
+      "result": "passed",
+      "log": "centroid_decomposition_sanitize_check.log"
+    },
+    "gcc_13": {
+      "result": "passed",
+      "compiler": "x86_64-conda-linux-gnu-g++ (conda-forge gcc 13.4.0-20) 13.4.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++2b",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "source": "test/unit/centroid_decomposition.cpp"
+    },
+    "aarch64_qemu": {
+      "result": "passed",
+      "compiler": "aarch64-conda-linux-gnu-g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++2b",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-static"
+      ],
+      "source": "test/unit/centroid_decomposition.cpp"
+    },
+    "vertex_add_range_contour_sum_on_tree": {
+      "result": "passed",
+      "cases": 36,
+      "compilers": [
+        "g++",
+        "clang++"
+      ],
+      "log": "centroid_decomposition_judge_check.log"
+    },
+    "documentation": {
+      "result": "passed",
+      "log": "centroid_decomposition_docs_check.log"
+    }
+  }
+}
