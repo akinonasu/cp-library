@@ -31,7 +31,7 @@
   "sha256": {
     "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
     "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
-    "components/fast_io.hpp": "5a8dbaae52b753e577abaff8e170df7d4367e556583f60189fb5222ac450cd3b",
+    "components/fast_io.hpp": "e84d7dc37f3941f7f73ffb8b472dbbda0686008c87da127d4369ca949f247879",
     "test/xor_basis_intersection.test.cpp": "6564388ed0d5e3aefdc32684fddb33e06f718c04af366d36ec7e090899483e70",
     "test/benchmark/xor_basis_judge.py": "f0c8b39c3675310046dc97415103820764be5e87ff17a1ac3fa9f6cb26dc8179"
   },

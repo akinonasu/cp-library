@@ -75,5 +75,19 @@
     "reference": "https://judge.yosupo.jp/submission/407091",
     "reference_output_validation": "Every returned subspace compared against the known intersection of independently transformed coordinate subspaces"
   },
-  "temporary_branches_created": []
+  "temporary_branches_created": [],
+  "integration": {
+    "base_commit": "815bc8bf42f507360ccd6f11a91840055542be3a",
+    "compilers": [
+      "GCC 15.2.0",
+      "Clang 21.1.8",
+      "GCC 13.4.0"
+    ],
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "log": "test/benchmark/results/xor_basis_integration_check.log",
+    "exit_code": 0
+  }
 }
