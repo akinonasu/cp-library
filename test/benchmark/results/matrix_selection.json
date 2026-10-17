@@ -1,0 +1,7 @@
+{
+  "headers": ["components/matrix_arithmetic.hpp", "math/matrix.hpp"],
+  "unit": ["test/unit/matrix.cpp", "test/unit/standalone.cpp"],
+  "sanitize": ["test/unit/matrix.cpp", "test/unit/standalone.cpp"],
+  "verification": ["test/matrix_product.test.cpp", "test/matrix_det.test.cpp", "test/matrix_inverse.test.cpp", "test/matrix_rank.test.cpp", "test/matrix_solve.test.cpp", "test/matrix_pow.test.cpp", "test/matrix_characteristic_polynomial.test.cpp", "test/matrix_adjugate.test.cpp"],
+  "bundles": ["components/matrix_arithmetic.hpp", "math/matrix.hpp"]
+}

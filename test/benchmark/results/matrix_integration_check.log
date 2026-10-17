@@ -1,0 +1,5 @@
+g++: standalone.cpp
+clang++: standalone.cpp
+Verification passed
+clang++: standalone.cpp
+Verification passed

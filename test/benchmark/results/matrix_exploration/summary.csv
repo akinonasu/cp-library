@@ -1,0 +1,13 @@
+operation,kind,n,inner,m,variant,seconds
+product,dense,64,64,64,baseline,0.000298228
+product,dense,64,64,64,scalar,9.6438e-05
+product,dense,64,64,64,library,5.0591e-05
+product,dense,256,256,256,baseline,0.0176135
+product,dense,256,256,256,scalar,0.005609
+product,dense,256,256,256,library,0.00215363
+det,dense,256,0,256,baseline,0.00635898
+det,dense,256,0,256,scalar,0.00519887
+det,dense,256,0,256,library,0.00143346
+inverse,dense,128,0,128,baseline,0.00342515
+inverse,dense,128,0,128,scalar,0.00289466
+inverse,dense,128,0,128,library,0.000798678

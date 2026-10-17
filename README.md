@@ -58,6 +58,7 @@
 | `math/bigint.hpp` | 多倍長整数 | [使い方](docs/bigint.md) |
 | `math/mint.hpp` | modint998244353 | [使い方](docs/mint.md) |
 | `math/fraction.hpp` | 有理数の四則演算・正確な比較 | [使い方](docs/fraction.md) |
+| `math/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
 | `math/comb.hpp` | 階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 | `math/factorize.hpp` | 素因数分解・素数判定 | [使い方](docs/factorize.md) |
 | `math/generalized_floor_sum.hpp` | 一般化 floor sum | [使い方](docs/generalized_floor_sum.md) |
@@ -89,6 +90,7 @@
 | `components/RadixHeap.hpp` | Radix Heap | [使い方](docs/radix_heap.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
+| `components/matrix_arithmetic.hpp` | 行列の内部演算 | [使い方](docs/matrix_arithmetic.md) |
 
 ## 使い方
 

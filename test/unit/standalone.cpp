@@ -17,6 +17,7 @@
 #include "math/factorize.hpp"
 #include "math/fps.hpp"
 #include "math/fraction.hpp"
+#include "math/matrix.hpp"
 #include "math/min_of_mod_of_linear.hpp"
 #include "math/prefix_min_of_mod_of_linear.hpp"
 #include "math/monoid_floor_sum.hpp"
@@ -90,6 +91,9 @@ int main() {
 	Fraction<> rational(2, -6);
 	assert(rational + Fraction<>(5, 6) == Fraction<>(1, 2));
 	assert(rational < 0 && rational.floor() == -1);
+	Matrix<mint> matrix{{1, 2}, {3, 4}};
+	assert(matrix.det() == mint(-2));
+	assert(matrix * *matrix.inverse() == Matrix<mint>::identity(2));
 	assert(min_of_mod_of_linear(4, 13, 10, 11) == 2);
 	auto prefix_min = prefix_min_of_mod_of_linear(4, 13, 10, 11);
 	assert(prefix_min.size() == 1 && prefix_min[0].count == 4);

@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-17",
+  "sha256": {
+    "math/matrix.hpp": "aadcb4d387cf7dac90436aaa1330713ed27ab69020e89cfd221a74886ec56967",
+    "components/matrix_arithmetic.hpp": "4e2b24e986c226758ba4942fd5bd89fc82bd9c2a3c1f074b6f1869f3750cc6c3"
+  },
+  "unit": {
+    "compilers": [
+      "GCC 15.2.0",
+      "Clang 21.1.8"
+    ],
+    "selection": "test/benchmark/results/matrix_selection.json",
+    "log": "test/benchmark/results/matrix_unit_check.log",
+    "exit_code": 0
+  },
+  "sanitize": {
+    "compiler": "Clang 21.1.8",
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "log": "test/benchmark/results/matrix_sanitize_check.log",
+    "exit_code": 0
+  },
+  "scalar": {
+    "flags": [
+      "-std=c++2b",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-DMATRIX_DISABLE_AVX2"
+    ],
+    "log": "test/benchmark/results/matrix_scalar_check.log",
+    "exit_code": 0
+  },
+  "arm64": {
+    "compiler": "aarch64-conda-linux-gnu-g++ 15.2.0",
+    "execution": "qemu-aarch64; static binary; GCC -std=c++2b -O2 -Wall -Wextra -Werror",
+    "log": "test/benchmark/results/matrix_arm_check.log",
+    "exit_code": 0
+  },
+  "apple_clang": {
+    "executed_locally": false,
+    "workflow": ".github/workflows/macos-portability.yml"
+  },
+  "judge": {
+    "problems": {
+      "matrix_product": 22,
+      "matrix_det": 25,
+      "inverse_matrix": 26,
+      "matrix_rank": 36,
+      "system_of_linear_equations": 27,
+      "pow_of_matrix": 43,
+      "characteristic_polynomial": 28,
+      "adjugate_matrix": 44
+    },
+    "compilers": [
+      "GCC 15.2.0",
+      "Clang 21.1.8"
+    ],
+    "total_cases": 502,
+    "log": "test/benchmark/results/matrix_judge_check.log",
+    "exit_code": 0
+  },
+  "bundle": {
+    "log": "test/benchmark/results/matrix_bundle_check.log",
+    "exit_code": 0
+  },
+  "benchmark": {
+    "profiles": [
+      "generic",
+      "native"
+    ],
+    "trials": 7,
+    "case_count_per_profile": 12,
+    "small_case_count": 10,
+    "small_product_repetitions": 1000,
+    "reference_problems": 8,
+    "correctness": "Complete outputs compared on every invocation; reference system has a unique solution"
+  },
+  "integration": {
+    "base_commit": "2134de7",
+    "unit": "test/unit/standalone.cpp",
+    "compilers": ["GCC 15.2.0", "Clang 21.1.8"],
+    "sanitizers": ["address", "undefined"],
+    "log": "test/benchmark/results/matrix_integration_check.log",
+    "exit_code": 0
+  },
+  "temporary_branches_created": []
+}
