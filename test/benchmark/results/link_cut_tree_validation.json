@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-16",
+  "baseline_commit": "23a941fc6d336cfd7d1c7d41917b4192a6612ead",
+  "baseline_blob": "d0bb5ec1beed9ed02d6141c98c0a988bd85b3818",
+  "header_sha256": "8043f22bf6f03279dde56272f7e0e7028fb6ac7109fd3b9fc6498780ee009e42",
+  "unit": {
+    "compilers": ["GCC 15.2.0", "Clang 21.1.8"],
+    "selection": "test/benchmark/results/link_cut_tree_selection.json",
+    "log": "test/benchmark/results/link_cut_tree_unit_check.log",
+    "exit_code": 0
+  },
+  "sanitize": {
+    "compiler": "Clang 21.1.8",
+    "sanitizers": ["address", "undefined"],
+    "source": "test/unit/link_cut_tree.cpp",
+    "log": "test/benchmark/results/link_cut_tree_sanitize_check.log",
+    "exit_code": 0
+  },
+  "arm64": {
+    "compiler": "aarch64-conda-linux-gnu-g++ 15.2.0",
+    "compile_command": "aarch64-conda-linux-gnu-g++ -std=c++2b -O2 -Wall -Wextra -Werror -static -I . test/unit/link_cut_tree.cpp -o /var/tmp/cp-lct-arm",
+    "execute_command": "LD_LIBRARY_PATH=/var/tmp/cp-audit-tools/qemu/usr/lib/x86_64-linux-gnu /var/tmp/cp-audit-tools/qemu/usr/bin/qemu-aarch64 /var/tmp/cp-lct-arm",
+    "exit_code": 0,
+    "output": "ARM64_GCC_unit_passed"
+  },
+  "apple_clang": {
+    "executed": false,
+    "workflow": ".github/workflows/macos-portability.yml"
+  },
+  "judge": {
+    "command": "oj-verify run --timeout 1200 --tle 10 -j 2 test/link_cut_tree_sum.test.cpp test/link_cut_tree_composite.test.cpp",
+    "compilers": ["GCC 15.2.0", "Clang 21.1.8"],
+    "cases_per_compiler": {
+      "dynamic_tree_vertex_add_path_sum": 15,
+      "dynamic_tree_vertex_set_path_composite": 23
+    },
+    "total_cases": 76,
+    "log": "test/benchmark/results/link_cut_tree_judge_check.log",
+    "exit_code": 0
+  },
+  "variants_unit_passed": [
+    "baseline", "set", "fused", "set_fused", "signed", "set_signed",
+    "set_signed_fused", "directions", "set_directions", "baseline_o3",
+    "set_fused_o3", "set_signed_fused_o3", "set_directions_o3",
+    "lazy_root", "signed_lazy_root", "current"
+  ],
+  "benchmark_correctness": {
+    "exploration": "All query output arrays match the baseline, 30 cases, 13 variants, 3 trials",
+    "lazy_exploration": "All query output arrays match the baseline, 30 cases, 4 variants, 3 trials",
+    "generic": "All query output arrays match the baseline, 30 cases, 3 variants, 7 trials",
+    "native": "All query output arrays match the baseline, 30 cases, 2 variants, 7 trials",
+    "reference": "All outputs match official answers, 6 cases, 3 implementations, 7 trials"
+  },
+  "temporary_branches_created": []
+}

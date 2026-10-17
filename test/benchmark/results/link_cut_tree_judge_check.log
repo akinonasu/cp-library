@@ -1,0 +1,997 @@
+[32mINFO[0m:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}[0m
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/link_cut_tree_sum.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ sleep 2[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj download --system -d .verify-helper/cache/5622e63205a45c7a2397355b92103610/test --silent https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/qand/.local/share/online-judge-tools/cookie.jar
+git version 2.34.1
+[INFO] $ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+[INFO] $ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/info.toml
+[37m22:42:46 [INFO] Start dynamic_tree_vertex_add_path_sum[0m
+[37m22:42:46 [INFO] generate params.h[0m
+[37m22:42:46 [INFO] compile checker[0m
+[37m22:42:50 [INFO] compile solution[0m
+[37m22:42:50 [INFO] compile generators[0m
+[37m22:42:50 [INFO] compile example.in[0m
+[37m22:42:50 [INFO] compile almost_line.cpp[0m
+[37m22:42:50 [INFO] compile small.cpp[0m
+[37m22:42:51 [INFO] compile random.cpp[0m
+[37m22:42:52 [INFO] compile max_random.cpp[0m
+[37m22:42:52 [INFO] compile issue_1216.cpp[0m
+[37m22:42:52 [INFO] clear input /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/in[0m
+[37m22:42:52 [INFO] gen example.in 1cases[0m
+[37m22:42:52 [INFO] gen almost_line.cpp 2cases[0m
+[37m22:42:53 [INFO] gen small.cpp 3cases[0m
+[37m22:42:53 [INFO] gen random.cpp 5cases[0m
+[37m22:42:54 [INFO] gen max_random.cpp 3cases[0m
+[37m22:42:56 [INFO] gen issue_1216.cpp 1cases[0m
+[37m22:42:56 [INFO] clear output /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/out[0m
+[37m22:42:56 [INFO] ANS     46 msecs : example_00 : b''[0m
+[37m22:42:56 [INFO] ANS    515 msecs : almost_line_00 : b''[0m
+[37m22:42:57 [INFO] ANS    513 msecs : almost_line_01 : b''[0m
+[37m22:42:57 [INFO] ANS     39 msecs : small_00 : b''[0m
+[37m22:42:57 [INFO] ANS     38 msecs : small_01 : b''[0m
+[37m22:42:57 [INFO] ANS     40 msecs : small_02 : b''[0m
+[37m22:42:57 [INFO] ANS    472 msecs : random_00 : b''[0m
+[37m22:42:58 [INFO] ANS    509 msecs : random_01 : b''[0m
+[37m22:42:58 [INFO] ANS    249 msecs : random_02 : b''[0m
+[37m22:42:58 [INFO] ANS    306 msecs : random_03 : b''[0m
+[37m22:42:58 [INFO] ANS    129 msecs : random_04 : b''[0m
+[37m22:42:59 [INFO] ANS    756 msecs : max_random_00 : b''[0m
+[37m22:43:00 [INFO] ANS    725 msecs : max_random_01 : b''[0m
+[37m22:43:01 [INFO] ANS    756 msecs : max_random_02 : b''[0m
+[37m22:43:01 [INFO] ANS     81 msecs : issue_1216_00 : b''[0m
+[INFO] save cookie to: /home/qand/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: almost_line_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_00.in
+[INFO] output: almost_line_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_00.out
+
+[INFO] sample 1
+[INFO] input: almost_line_01
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_01.in
+[INFO] output: almost_line_01
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_01.out
+
+[INFO] sample 2
+[INFO] input: example_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/example_00.in
+[INFO] output: example_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/example_00.out
+
+[INFO] sample 3
+[INFO] input: issue_1216_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/issue_1216_00.in
+[INFO] output: issue_1216_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/issue_1216_00.out
+
+[INFO] sample 4
+[INFO] input: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_00.in
+[INFO] output: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_00.out
+
+[INFO] sample 5
+[INFO] input: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_01.in
+[INFO] output: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_01.out
+
+[INFO] sample 6
+[INFO] input: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_02.in
+[INFO] output: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_02.out
+
+[INFO] sample 7
+[INFO] input: random_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_00.in
+[INFO] output: random_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_00.out
+
+[INFO] sample 8
+[INFO] input: random_01
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_01.in
+[INFO] output: random_01
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_01.out
+
+[INFO] sample 9
+[INFO] input: random_02
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_02.in
+[INFO] output: random_02
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_02.out
+
+[INFO] sample 10
+[INFO] input: random_03
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_03.in
+[INFO] output: random_03
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_03.out
+
+[INFO] sample 11
+[INFO] input: random_04
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_04.in
+[INFO] output: random_04
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_04.out
+
+[INFO] sample 12
+[INFO] input: small_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_00.in
+[INFO] output: small_00
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_00.out
+
+[INFO] sample 13
+[INFO] input: small_01
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_01.in
+[INFO] output: small_01
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_01.out
+
+[INFO] sample 14
+[INFO] input: small_02
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_02.in
+[INFO] output: small_02
+[SUCCESS] saved to: .verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_02.out
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/5622e63205a45c7a2397355b92103610/a.out test/link_cut_tree_sum.test.cpp[0m
+git version 2.34.1
+[32mINFO[0m:onlinejudge.service.library_checker:$ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull[0m
+Already up to date.
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/info.toml --compile-checker[0m
+[33m22:43:03 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m22:43:03 [INFO] Start dynamic_tree_vertex_add_path_sum[0m
+[37m22:43:03 [INFO] generate params.h[0m
+[37m22:43:03 [INFO] Test cases are already generated[0m
+[37m22:43:03 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/5622e63205a45c7a2397355b92103610/a.out -d .verify-helper/cache/5622e63205a45c7a2397355b92103610/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 15 cases found
+
+[INFO] almost_line_00
+[INFO] time: 0.368342 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_00.in /tmp/tmpqvfwswfc/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_00.out
+ok 66532 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] almost_line_01
+[INFO] time: 0.371340 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_01.in /tmp/tmpttawfxpi/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_01.out
+ok 66362 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.005214 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/example_00.in /tmp/tmpf5ty9m5j/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/example_00.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1216_00
+[INFO] time: 0.111535 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/issue_1216_00.in /tmp/tmpyxnkvddy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/issue_1216_00.out
+ok 200000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.274685 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_00.in /tmp/tmpenmdg6to/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_00.out
+ok 66684 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.275119 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_01.in /tmp/tmpo1dcyu1n/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_01.out
+ok 66835 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.275717 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_02.in /tmp/tmp968ppohc/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_02.out
+ok 66724 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.180301 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_00.in /tmp/tmpzqwka03b/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_00.out
+ok 49647 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.111798 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_02.in /tmp/tmp3khnrtyi/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_02.out
+ok 39940 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.229814 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_01.in /tmp/tmpzzaqj5gw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_01.out
+ok 49776 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.060617 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_04.in /tmp/tmp6y9p344g/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_04.out
+ok 32784 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.003913 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_00.in /tmp/tmpngghy490/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_00.out
+ok 86 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.146891 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_03.in /tmp/tmpewvwj1he/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_03.out
+ok 8682 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.004378 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_01.in /tmp/tmp7o7feyjn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_01.out
+ok 77 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.004396 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_02.in /tmp/tmptgh56ny0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_02.out
+ok 140 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.371340 sec  (for almost_line_01)
+[INFO] max memory: 11.264000 MB  (for almost_line_01)
+[SUCCESS] test success: 15 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/5622e63205a45c7a2397355b92103610/a.out test/link_cut_tree_sum.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/info.toml --compile-checker[0m
+[33m22:43:06 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m22:43:06 [INFO] Start dynamic_tree_vertex_add_path_sum[0m
+[37m22:43:06 [INFO] generate params.h[0m
+[37m22:43:06 [INFO] Test cases are already generated[0m
+[37m22:43:06 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/5622e63205a45c7a2397355b92103610/a.out -d .verify-helper/cache/5622e63205a45c7a2397355b92103610/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 15 cases found
+
+[INFO] almost_line_01
+[INFO] time: 0.325690 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_01.in /tmp/tmpm_op55k1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_01.out
+ok 66362 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] almost_line_00
+[INFO] time: 0.332510 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_00.in /tmp/tmpf2agjozn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/almost_line_00.out
+ok 66532 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.004465 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/example_00.in /tmp/tmp__1bzgb9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/example_00.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1216_00
+[INFO] time: 0.114094 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/issue_1216_00.in /tmp/tmpspcrt67w/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/issue_1216_00.out
+ok 200000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.319118 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_00.in /tmp/tmpr9ilh8pf/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_00.out
+ok 66684 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.325007 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_01.in /tmp/tmpgi_xs4md/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_01.out
+ok 66835 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.291069 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_02.in /tmp/tmp0w1wp0me/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/max_random_02.out
+ok 66724 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.171543 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_00.in /tmp/tmp_eu9cmtz/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_00.out
+ok 49647 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.098053 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_02.in /tmp/tmpx8s1sbxw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_02.out
+ok 39940 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.210245 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_01.in /tmp/tmpy1whxp9u/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_01.out
+ok 49776 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.060360 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_04.in /tmp/tmpkaslelhs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_04.out
+ok 32784 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.005027 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_00.in /tmp/tmpq7or2coy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_00.out
+ok 86 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.147852 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_03.in /tmp/tmpdbbernpn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/random_03.out
+ok 8682 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.004120 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_01.in /tmp/tmp1ijjb2su/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_01.out
+ok 77 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.003920 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_add_path_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_02.in /tmp/tmpfs7kv1g8/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/5622e63205a45c7a2397355b92103610/test/small_02.out
+ok 140 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.332510 sec  (for almost_line_00)
+[INFO] max memory: 11.364000 MB  (for max_random_02)
+[SUCCESS] test success: 15 cases
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/link_cut_tree_composite.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ sleep 2[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj download --system -d .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test --silent https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/qand/.local/share/online-judge-tools/cookie.jar
+git version 2.34.1
+[INFO] $ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+[INFO] $ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/info.toml
+[37m22:43:11 [INFO] Start dynamic_tree_vertex_set_path_composite[0m
+[37m22:43:11 [INFO] generate params.h[0m
+[37m22:43:11 [INFO] compile checker[0m
+[37m22:43:14 [INFO] compile solution[0m
+[37m22:43:14 [INFO] compile generators[0m
+[37m22:43:14 [INFO] compile example.in[0m
+[37m22:43:14 [INFO] compile almost_line.cpp[0m
+[37m22:43:15 [INFO] compile small.cpp[0m
+[37m22:43:15 [INFO] compile medium.cpp[0m
+[37m22:43:16 [INFO] compile random.cpp[0m
+[37m22:43:17 [INFO] compile max_random.cpp[0m
+[37m22:43:17 [INFO] compile issue_1216.cpp[0m
+[37m22:43:18 [INFO] clear input /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/in[0m
+[37m22:43:18 [INFO] gen example.in 2cases[0m
+[37m22:43:18 [INFO] gen almost_line.cpp 2cases[0m
+[37m22:43:18 [INFO] gen small.cpp 5cases[0m
+[37m22:43:18 [INFO] gen medium.cpp 5cases[0m
+[37m22:43:18 [INFO] gen random.cpp 5cases[0m
+[37m22:43:19 [INFO] gen max_random.cpp 3cases[0m
+[37m22:43:21 [INFO] gen issue_1216.cpp 1cases[0m
+[37m22:43:21 [INFO] clear output /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/out[0m
+[37m22:43:21 [INFO] ANS      0 msecs : example_00 : b''[0m
+[37m22:43:21 [INFO] ANS      0 msecs : example_01 : b''[0m
+[37m22:43:22 [INFO] ANS    597 msecs : almost_line_00 : b''[0m
+[37m22:43:22 [INFO] ANS    577 msecs : almost_line_01 : b''[0m
+[37m22:43:22 [INFO] ANS      1 msecs : small_00 : b''[0m
+[37m22:43:22 [INFO] ANS      0 msecs : small_01 : b''[0m
+[37m22:43:22 [INFO] ANS      0 msecs : small_02 : b''[0m
+[37m22:43:22 [INFO] ANS      0 msecs : small_03 : b''[0m
+[37m22:43:22 [INFO] ANS      0 msecs : small_04 : b''[0m
+[37m22:43:22 [INFO] ANS      1 msecs : medium_00 : b''[0m
+[37m22:43:22 [INFO] ANS      1 msecs : medium_01 : b''[0m
+[37m22:43:22 [INFO] ANS      0 msecs : medium_02 : b''[0m
+[37m22:43:22 [INFO] ANS      0 msecs : medium_03 : b''[0m
+[37m22:43:22 [INFO] ANS      1 msecs : medium_04 : b''[0m
+[37m22:43:22 [INFO] ANS    181 msecs : random_00 : b''[0m
+[37m22:43:23 [INFO] ANS    196 msecs : random_01 : b''[0m
+[37m22:43:23 [INFO] ANS    115 msecs : random_02 : b''[0m
+[37m22:43:23 [INFO] ANS     74 msecs : random_03 : b''[0m
+[37m22:43:23 [INFO] ANS     75 msecs : random_04 : b''[0m
+[37m22:43:23 [INFO] ANS    269 msecs : max_random_00 : b''[0m
+[37m22:43:23 [INFO] ANS    274 msecs : max_random_01 : b''[0m
+[37m22:43:24 [INFO] ANS    292 msecs : max_random_02 : b''[0m
+[37m22:43:24 [INFO] ANS    119 msecs : issue_1216_00 : b''[0m
+[INFO] save cookie to: /home/qand/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: almost_line_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_00.in
+[INFO] output: almost_line_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_00.out
+
+[INFO] sample 1
+[INFO] input: almost_line_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_01.in
+[INFO] output: almost_line_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_01.out
+
+[INFO] sample 2
+[INFO] input: example_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_00.in
+[INFO] output: example_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_00.out
+
+[INFO] sample 3
+[INFO] input: example_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_01.in
+[INFO] output: example_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_01.out
+
+[INFO] sample 4
+[INFO] input: issue_1216_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/issue_1216_00.in
+[INFO] output: issue_1216_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/issue_1216_00.out
+
+[INFO] sample 5
+[INFO] input: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_00.in
+[INFO] output: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_00.out
+
+[INFO] sample 6
+[INFO] input: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_01.in
+[INFO] output: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_01.out
+
+[INFO] sample 7
+[INFO] input: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_02.in
+[INFO] output: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_02.out
+
+[INFO] sample 8
+[INFO] input: medium_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_00.in
+[INFO] output: medium_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_00.out
+
+[INFO] sample 9
+[INFO] input: medium_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_01.in
+[INFO] output: medium_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_01.out
+
+[INFO] sample 10
+[INFO] input: medium_02
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_02.in
+[INFO] output: medium_02
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_02.out
+
+[INFO] sample 11
+[INFO] input: medium_03
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_03.in
+[INFO] output: medium_03
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_03.out
+
+[INFO] sample 12
+[INFO] input: medium_04
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_04.in
+[INFO] output: medium_04
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_04.out
+
+[INFO] sample 13
+[INFO] input: random_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_00.in
+[INFO] output: random_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_00.out
+
+[INFO] sample 14
+[INFO] input: random_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_01.in
+[INFO] output: random_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_01.out
+
+[INFO] sample 15
+[INFO] input: random_02
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_02.in
+[INFO] output: random_02
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_02.out
+
+[INFO] sample 16
+[INFO] input: random_03
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_03.in
+[INFO] output: random_03
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_03.out
+
+[INFO] sample 17
+[INFO] input: random_04
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_04.in
+[INFO] output: random_04
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_04.out
+
+[INFO] sample 18
+[INFO] input: small_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_00.in
+[INFO] output: small_00
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_00.out
+
+[INFO] sample 19
+[INFO] input: small_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_01.in
+[INFO] output: small_01
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_01.out
+
+[INFO] sample 20
+[INFO] input: small_02
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_02.in
+[INFO] output: small_02
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_02.out
+
+[INFO] sample 21
+[INFO] input: small_03
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_03.in
+[INFO] output: small_03
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_03.out
+
+[INFO] sample 22
+[INFO] input: small_04
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_04.in
+[INFO] output: small_04
+[SUCCESS] saved to: .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_04.out
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/a.out test/link_cut_tree_composite.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/info.toml --compile-checker[0m
+[33m22:43:26 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m22:43:26 [INFO] Start dynamic_tree_vertex_set_path_composite[0m
+[37m22:43:26 [INFO] generate params.h[0m
+[37m22:43:26 [INFO] Test cases are already generated[0m
+[37m22:43:26 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/a.out -d .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 23 cases found
+
+[INFO] almost_line_01
+[INFO] time: 0.463098 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_01.in /tmp/tmpz4lrd2ny/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_01.out
+ok 66593 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] almost_line_00
+[INFO] time: 0.470879 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_00.in /tmp/tmp4dhste7k/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_00.out
+ok 66541 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.003498 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_00.in /tmp/tmpa1uesjda/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_00.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_01
+[INFO] time: 0.003778 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_01.in /tmp/tmpqvhizq4j/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_01.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1216_00
+[INFO] time: 0.210394 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/issue_1216_00.in /tmp/tmpdtytpklj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/issue_1216_00.out
+ok 200000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.452789 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_00.in /tmp/tmpw_s25kqh/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_00.out
+ok 67142 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.416748 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_01.in /tmp/tmplxszia6w/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_01.out
+ok 66514 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_00
+[INFO] time: 0.004412 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_00.in /tmp/tmp8ytw758u/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_00.out
+ok 109 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_01
+[INFO] time: 0.003858 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_01.in /tmp/tmp38z6ix9x/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_01.out
+ok 73 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_02
+[INFO] time: 0.003597 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_02.in /tmp/tmpfxfhbunb/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_02.out
+ok 125 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_03
+[INFO] time: 0.003998 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_03.in /tmp/tmpjia_yqrk/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_03.out
+ok 77 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_04
+[INFO] time: 0.004048 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_04.in /tmp/tmppib1abut/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_04.out
+ok 275 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.399194 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_02.in /tmp/tmpdww34_43/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_02.out
+ok 66592 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.256267 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_00.in /tmp/tmp4emxqx1t/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_00.out
+ok 49715 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.311660 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_01.in /tmp/tmp96tv_zle/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_01.out
+ok 49763 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.154555 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_02.in /tmp/tmpcxgwsowc/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_02.out
+ok 40162 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.092789 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_04.in /tmp/tmp9o1qiher/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_04.out
+ok 33093 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.003527 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_00.in /tmp/tmp56gj1lvw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_00.out
+ok 0 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.003655 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_01.in /tmp/tmpqpwk0wac/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_01.out
+ok "44"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.004013 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_02.in /tmp/tmp57dyxqv6/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_02.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_03
+[INFO] time: 0.003385 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_03.in /tmp/tmpctglhwtb/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_03.out
+ok "42"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.224216 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_03.in /tmp/tmp3jawnlcx/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_03.out
+ok 8522 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_04
+[INFO] time: 0.003826 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_04.in /tmp/tmpdnr6_cew/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_04.out
+ok "39"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.470879 sec  (for almost_line_00)
+[INFO] max memory: 12.780000 MB  (for almost_line_00)
+[SUCCESS] test success: 23 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/a.out test/link_cut_tree_composite.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/info.toml --compile-checker[0m
+[33m22:43:29 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m22:43:29 [INFO] Start dynamic_tree_vertex_set_path_composite[0m
+[37m22:43:29 [INFO] generate params.h[0m
+[37m22:43:29 [INFO] Test cases are already generated[0m
+[37m22:43:29 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/a.out -d .verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 23 cases found
+
+[INFO] almost_line_01
+[INFO] time: 0.465920 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_01.in /tmp/tmpo5fo37p5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_01.out
+ok 66593 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] almost_line_00
+[INFO] time: 0.483224 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_00.in /tmp/tmprt37pbbb/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/almost_line_00.out
+ok 66541 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.003930 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_00.in /tmp/tmp3q_xm34b/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_00.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_01
+[INFO] time: 0.003849 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_01.in /tmp/tmpjq0iimke/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/example_01.out
+ok 6 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1216_00
+[INFO] time: 0.176694 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/issue_1216_00.in /tmp/tmpqsrpzruk/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/issue_1216_00.out
+ok 200000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.397091 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_00.in /tmp/tmpjg5v5e8v/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_00.out
+ok 67142 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.391169 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_01.in /tmp/tmpqciarg71/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_01.out
+ok 66514 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_00
+[INFO] time: 0.003928 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_00.in /tmp/tmp68xsidl8/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_00.out
+ok 109 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_01
+[INFO] time: 0.003697 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_01.in /tmp/tmp_mcrhqj8/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_01.out
+ok 73 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_02
+[INFO] time: 0.003678 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_02.in /tmp/tmprtd3lp8w/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_02.out
+ok 125 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_03
+[INFO] time: 0.003458 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_03.in /tmp/tmpwv_xsyqb/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_03.out
+ok 77 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_04
+[INFO] time: 0.004492 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_04.in /tmp/tmp3yz_m3dl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/medium_04.out
+ok 275 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.386235 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_02.in /tmp/tmp_3bz7ygn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/max_random_02.out
+ok 66592 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.240387 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_00.in /tmp/tmpvigd08y4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_00.out
+ok 49715 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.280945 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_01.in /tmp/tmp9245i5k9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_01.out
+ok 49763 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.144563 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_02.in /tmp/tmp858bfbkd/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_02.out
+ok 40162 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.084145 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_04.in /tmp/tmpb6vd8d72/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_04.out
+ok 33093 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.004579 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_00.in /tmp/tmpk2lwdajr/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_00.out
+ok 0 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.004142 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_01.in /tmp/tmpxkd56mhp/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_01.out
+ok "44"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.003898 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_02.in /tmp/tmpxuc1la0m/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_02.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.209873 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_03.in /tmp/tmplbefykol/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/random_03.out
+ok 8522 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_03
+[INFO] time: 0.004581 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_03.in /tmp/tmpfvk7ehr1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_03.out
+ok "42"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_04
+[INFO] time: 0.004611 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_04.in /tmp/tmpi2uo6i79/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/49d73adf5dc0b76bdfef97432aa75be3/test/small_04.out
+ok "39"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.483224 sec  (for almost_line_00)
+[INFO] max memory: 12.904000 MB  (for max_random_02)
+[SUCCESS] test success: 23 cases
+[32mINFO[0m:onlinejudge_verify.verify:all tests succeeded[0m

@@ -38,10 +38,7 @@ class LinkCutTree {
 		assert(0 <= v && v < size());
 		return v + 1;
 	}
-	bool is_root(int x) const {
-		int p = t[x].parent;
-		return t[p].ch[0] != x && t[p].ch[1] != x;
-	}
+	bool is_root(int x) const { return t[x].parent <= 0; }
 	void pull(int x) {
 		auto &v = t[x];
 		int l = v.ch[0], r = v.ch[1];
@@ -71,7 +68,7 @@ class LinkCutTree {
 	void rotate(int x) {
 		int p = t[x].parent, g = t[p].parent;
 		int d = t[p].ch[1] == x, c = t[x].ch[d ^ 1];
-		if (!is_root(p)) t[g].ch[t[g].ch[1] == p] = x;
+		if (g > 0) t[g].ch[t[g].ch[1] == p] = x;
 		t[x].parent = g;
 		t[p].ch[d] = c;
 		t[c].parent = p;
@@ -79,7 +76,6 @@ class LinkCutTree {
 		t[p].parent = x;
 		pull(p);
 	}
-	template <bool update = true>
 	void splay(int x) {
 		if (is_root(x)) {
 			push(x);
@@ -94,19 +90,22 @@ class LinkCutTree {
 			if (!top) rotate((t[p].ch[0] == x) == (t[g].ch[0] == p) ? p : x);
 			rotate(x);
 		} while (!is_root(x));
-		if constexpr (update) pull(x);
 	}
 
-	template <bool update = true>
 	int access(int x) {
-		int last = 0;
-		for (int y = x; y; y = t[y].parent) {
-			splay<false>(y);
-			t[y].ch[1] = last;
-			pull(y);
-			last = y;
+		splay(x);
+		if (t[x].ch[1]) t[t[x].ch[1]].parent = -x;
+		t[x].ch[1] = 0;
+		int last = x;
+		while (t[x].parent) {
+			int p = -t[x].parent;
+			splay(p);
+			if (t[p].ch[1]) t[t[p].ch[1]].parent = -p;
+			t[p].ch[1] = x;
+			t[x].parent = p;
+			rotate(x);
+			last = p;
 		}
-		splay<update>(x);
 		return last;
 	}
 	void reroot(int x) {
@@ -135,9 +134,8 @@ class LinkCutTree {
 	S get(int v) const { return t[node(v)].value; }
 	void set(int v, S value) {
 		int x = node(v);
-		access<!scalar>(x);
+		splay(x);
 		t[x].value = std::move(value);
-		pull(x);
 	}
 	void make_root(int v) { reroot(node(v)); }
 	int root(int v) {
@@ -161,28 +159,30 @@ class LinkCutTree {
 		reroot(u);
 		access(v);
 		if (t[u].parent) return false;
-		t[u].parent = v;
+		t[u].parent = -v;
 		return true;
 	}
 	bool cut(int u, int v) {
 		u = node(u), v = node(v);
 		if (u == v) return false;
 		reroot(u);
-		access<!scalar>(v);
-		if (t[v].ch[0] != u || t[u].ch[1]) {
-			if constexpr (scalar) pull(v);
-			return false;
-		}
+		access(v);
+		if (t[v].ch[0] != u || t[u].ch[1]) return false;
 		t[v].ch[0] = t[u].parent = 0;
-		pull(v);
 		return true;
 	}
-	S prod(int u, int v) { return t[expose(u, v)].prod; }
-	int path_size(int u, int v) { return t[expose(u, v)].count; }
+	S prod(int u, int v) {
+		int x = expose(u, v), l = t[x].ch[0];
+		return l ? op(t[l].prod, t[x].value) : t[x].value;
+	}
+	int path_size(int u, int v) {
+		int x = expose(u, v);
+		return t[t[x].ch[0]].count + 1;
+	}
 	int distance(int u, int v) { return path_size(u, v) - 1; }
 	int jump(int u, int v, int k) {
 		int x = expose(u, v);
-		if (k < 0 || k >= int(t[x].count)) return -1;
+		if (k < 0 || k > int(t[t[x].ch[0]].count)) return -1;
 		for (;;) {
 			push(x);
 			int l = t[x].ch[0], count = t[l].count;

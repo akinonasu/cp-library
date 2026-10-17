@@ -1,0 +1,7 @@
+g++: standalone data_structure/link_cut_tree.hpp
+g++: link_cut_tree.cpp
+g++: standalone.cpp
+clang++: standalone data_structure/link_cut_tree.hpp
+clang++: link_cut_tree.cpp
+clang++: standalone.cpp
+Verification passed
