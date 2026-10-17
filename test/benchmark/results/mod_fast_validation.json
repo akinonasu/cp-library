@@ -1,0 +1,63 @@
+{
+  "recorded_at": "2026-10-17T07:43:00.448025+00:00",
+  "sha256": {
+    "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+    "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+    "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+    "components/splitmix64.hpp": "f74be6033b41f893dfa0550b99dca38b3da7eb565baeb2813c94cb7b5db3e566",
+    "components/montgomery.hpp": "9b6a7e928fc657032851e250610cbd03bc81291d35c869bb9bd582c3a9c3e666",
+    "math/is_prime.hpp": "371ada15c301411e2550d47827365ea0487b46c6c56ac94eb4255bd28d82a781",
+    "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66",
+    "test/unit/mod_fast.cpp": "d61ae9c68368ff2ffab6391bd790f3657211557206c026ec64151436db8bb090",
+    "test/unit/standalone.cpp": "63a579557214dfee7617caa638a79db8583ccffbb93f7c29b3711d7f148ba14e",
+    "test/mod_pow_log.test.cpp": "91a547e0b091236a938921a88836f02880c60ed45aa50d72a90edaa03a99cffb"
+  },
+  "checks": {
+    "gcc_15_clang_21": {
+      "result": "passed",
+      "log": "mod_fast_check.log"
+    },
+    "clang_21_asan_ubsan": {
+      "result": "passed",
+      "log": "mod_fast_sanitize_check.log"
+    },
+    "gcc_13": {
+      "result": "passed",
+      "compiler": "x86_64-conda-linux-gnu-g++ (conda-forge gcc 13.4.0-20) 13.4.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++2b",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "source": "test/unit/mod_fast.cpp"
+    },
+    "aarch64_qemu": {
+      "result": "passed",
+      "compiler": "aarch64-conda-linux-gnu-g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++2b",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-static"
+      ],
+      "source": "test/unit/mod_fast.cpp"
+    },
+    "discrete_logarithm_fixed_mod": {
+      "result": "passed",
+      "cases": 24,
+      "compilers": [
+        "g++",
+        "clang++"
+      ],
+      "log": "mod_fast_judge_check.log"
+    },
+    "documentation": {
+      "result": "passed",
+      "log": "mod_fast_docs_check.log"
+    }
+  }
+}

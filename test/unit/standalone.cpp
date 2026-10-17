@@ -16,6 +16,7 @@
 #include "graph/lca.hpp"
 #include "graph/low_link.hpp"
 #include "math/comb.hpp"
+#include "math/mod_pow.hpp"
 #include "math/factorize.hpp"
 #include "fps/fps.hpp"
 #include "fps/bostan_mori.hpp"
@@ -45,6 +46,8 @@ std::int64_t add(std::int64_t a, std::int64_t b) { return a + b; }
 std::int64_t zero() { return 0; }
 
 int main() {
+	ModPow modular(101);
+	assert(modular.pow(3, 7) == 66 && modular.inv(3) == 34 && modular.pow_root(modular.log(7)) == 7);
 	assert(vector == 0 && min == 0);
 	DynamicWaveletMatrix<int> dynamic(std::vector<int>{3, 1, 4});
 	dynamic.insert(1, -2);
