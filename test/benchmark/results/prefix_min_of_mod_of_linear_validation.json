@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-16",
+  "sha256": {
+    "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+    "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8"
+  },
+  "unit": {
+    "compilers": ["GCC 15.2.0", "Clang 21.1.8"],
+    "selection": "test/benchmark/results/prefix_min_of_mod_of_linear_selection.json",
+    "log": "test/benchmark/results/prefix_min_of_mod_of_linear_unit_check.log",
+    "exit_code": 0
+  },
+  "sanitize": {
+    "compiler": "Clang 21.1.8",
+    "sanitizers": ["address", "undefined"],
+    "log": "test/benchmark/results/prefix_min_of_mod_of_linear_sanitize_check.log",
+    "exit_code": 0
+  },
+  "arm64": {
+    "compiler": "aarch64-conda-linux-gnu-g++ 15.2.0",
+    "compile_command": "aarch64-conda-linux-gnu-g++ -std=c++2b -O2 -Wall -Wextra -Werror -static -I . test/unit/prefix_min_of_mod_of_linear.cpp -o /var/tmp/cp-prefix-min-arm",
+    "execute_command": "LD_LIBRARY_PATH=/var/tmp/cp-audit-tools/qemu/usr/lib/x86_64-linux-gnu /var/tmp/cp-audit-tools/qemu/usr/bin/qemu-aarch64 /var/tmp/cp-prefix-min-arm",
+    "exit_code": 0,
+    "observed_status": "ARM64_GCC_unit_passed"
+  },
+  "apple_clang": {
+    "executed": false,
+    "workflow": ".github/workflows/macos-portability.yml"
+  },
+  "judge": {
+    "command": "oj-verify run --timeout 1200 --tle 10 -j 2 test/prefix_min_of_mod_of_linear.test.cpp",
+    "compilers": ["GCC 15.2.0", "Clang 21.1.8"],
+    "cases_per_compiler": 17,
+    "total_cases": 34,
+    "log": "test/benchmark/results/prefix_min_of_mod_of_linear_judge_check.log",
+    "exit_code": 0
+  },
+  "bundle": {
+    "command": "oj-bundle math/prefix_min_of_mod_of_linear.hpp > /var/tmp/cp-prefix-min-bundle.cpp && g++ -std=c++2b -Wall -Wextra -Werror -fsyntax-only /var/tmp/cp-prefix-min-bundle.cpp",
+    "exit_code": 0
+  },
+  "benchmark": {
+    "complete_output_comparison_cases": 20000,
+    "input_kinds": 9,
+    "exploration_inputs": 100000,
+    "exploration_trials": 3,
+    "final_inputs": 300000,
+    "final_trials": 7,
+    "profiles": ["generic", "native"],
+    "final_comparison": "matching fingerprints and segment counts for baseline/vector/reserved/reuse/callback/inlined/inlined_callback"
+  },
+  "temporary_branches_created": []
+}

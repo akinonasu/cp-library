@@ -1,0 +1,450 @@
+[32mINFO[0m:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}[0m
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/prefix_min_of_mod_of_linear.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/min_of_mod_of_linear[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ sleep 2[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj download --system -d .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test --silent https://judge.yosupo.jp/problem/min_of_mod_of_linear[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/qand/.local/share/online-judge-tools/cookie.jar
+git version 2.34.1
+[INFO] $ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+[INFO] $ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/info.toml
+[37m23:12:43 [INFO] Start min_of_mod_of_linear[0m
+[37m23:12:43 [INFO] generate params.h[0m
+[37m23:12:43 [INFO] compile checker[0m
+[37m23:12:47 [INFO] compile solution[0m
+[37m23:12:47 [INFO] compile generators[0m
+[37m23:12:47 [INFO] compile example.in[0m
+[37m23:12:47 [INFO] compile small.cpp[0m
+[37m23:12:47 [INFO] compile small_n.cpp[0m
+[37m23:12:48 [INFO] compile random.cpp[0m
+[37m23:12:48 [INFO] clear input /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/in[0m
+[37m23:12:48 [INFO] gen example.in 1cases[0m
+[37m23:12:48 [INFO] gen small.cpp 10cases[0m
+[37m23:12:48 [INFO] gen small_n.cpp 1cases[0m
+[37m23:12:48 [INFO] gen random.cpp 5cases[0m
+[37m23:12:48 [INFO] clear output /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/out[0m
+[37m23:12:48 [INFO] ANS      0 msecs : example_00 : b''[0m
+[37m23:12:48 [INFO] ANS     18 msecs : small_00 : b''[0m
+[37m23:12:48 [INFO] ANS     17 msecs : small_01 : b''[0m
+[37m23:12:48 [INFO] ANS     18 msecs : small_02 : b''[0m
+[37m23:12:48 [INFO] ANS     17 msecs : small_03 : b''[0m
+[37m23:12:48 [INFO] ANS     18 msecs : small_04 : b''[0m
+[37m23:12:48 [INFO] ANS     17 msecs : small_05 : b''[0m
+[37m23:12:48 [INFO] ANS     17 msecs : small_06 : b''[0m
+[37m23:12:48 [INFO] ANS     18 msecs : small_07 : b''[0m
+[37m23:12:48 [INFO] ANS     17 msecs : small_08 : b''[0m
+[37m23:12:48 [INFO] ANS     18 msecs : small_09 : b''[0m
+[37m23:12:48 [INFO] ANS     45 msecs : small_n_00 : b''[0m
+[37m23:12:48 [INFO] ANS     46 msecs : random_00 : b''[0m
+[37m23:12:48 [INFO] ANS     45 msecs : random_01 : b''[0m
+[37m23:12:49 [INFO] ANS     46 msecs : random_02 : b''[0m
+[37m23:12:49 [INFO] ANS     45 msecs : random_03 : b''[0m
+[37m23:12:49 [INFO] ANS     45 msecs : random_04 : b''[0m
+[INFO] save cookie to: /home/qand/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: example_00
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/example_00.in
+[INFO] output: example_00
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/example_00.out
+
+[INFO] sample 1
+[INFO] input: random_00
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_00.in
+[INFO] output: random_00
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_00.out
+
+[INFO] sample 2
+[INFO] input: random_01
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_01.in
+[INFO] output: random_01
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_01.out
+
+[INFO] sample 3
+[INFO] input: random_02
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_02.in
+[INFO] output: random_02
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_02.out
+
+[INFO] sample 4
+[INFO] input: random_03
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_03.in
+[INFO] output: random_03
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_03.out
+
+[INFO] sample 5
+[INFO] input: random_04
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_04.in
+[INFO] output: random_04
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_04.out
+
+[INFO] sample 6
+[INFO] input: small_00
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_00.in
+[INFO] output: small_00
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_00.out
+
+[INFO] sample 7
+[INFO] input: small_01
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_01.in
+[INFO] output: small_01
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_01.out
+
+[INFO] sample 8
+[INFO] input: small_02
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_02.in
+[INFO] output: small_02
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_02.out
+
+[INFO] sample 9
+[INFO] input: small_03
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_03.in
+[INFO] output: small_03
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_03.out
+
+[INFO] sample 10
+[INFO] input: small_04
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_04.in
+[INFO] output: small_04
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_04.out
+
+[INFO] sample 11
+[INFO] input: small_05
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_05.in
+[INFO] output: small_05
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_05.out
+
+[INFO] sample 12
+[INFO] input: small_06
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_06.in
+[INFO] output: small_06
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_06.out
+
+[INFO] sample 13
+[INFO] input: small_07
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_07.in
+[INFO] output: small_07
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_07.out
+
+[INFO] sample 14
+[INFO] input: small_08
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_08.in
+[INFO] output: small_08
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_08.out
+
+[INFO] sample 15
+[INFO] input: small_09
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_09.in
+[INFO] output: small_09
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_09.out
+
+[INFO] sample 16
+[INFO] input: small_n_00
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_n_00.in
+[INFO] output: small_n_00
+[SUCCESS] saved to: .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_n_00.out
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/a.out test/prefix_min_of_mod_of_linear.test.cpp[0m
+git version 2.34.1
+[32mINFO[0m:onlinejudge.service.library_checker:$ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull[0m
+Already up to date.
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/info.toml --compile-checker[0m
+[33m23:12:50 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m23:12:50 [INFO] Start min_of_mod_of_linear[0m
+[37m23:12:50 [INFO] generate params.h[0m
+[37m23:12:50 [INFO] Test cases are already generated[0m
+[37m23:12:50 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/a.out -d .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 17 cases found
+
+[INFO] example_00
+[INFO] time: 0.003640 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/example_00.in /tmp/tmpiblxp1qr/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/example_00.out
+ok 14 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.072580 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_00.in /tmp/tmpm2vycr83/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_00.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.072552 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_01.in /tmp/tmp62t311y2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_01.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.071592 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_02.in /tmp/tmpliem3jl7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_02.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.070059 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_03.in /tmp/tmpjtqeifmm/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_03.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.023087 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_00.in /tmp/tmpegikl59u/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_00.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.078677 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_04.in /tmp/tmpyftrml2e/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_04.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.025320 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_01.in /tmp/tmpvoc2yf3o/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_01.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.024374 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_02.in /tmp/tmpzqsljy5k/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_02.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_03
+[INFO] time: 0.022875 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_03.in /tmp/tmp3o7tvaye/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_03.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_04
+[INFO] time: 0.027952 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_04.in /tmp/tmpokpk4wvn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_04.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_05
+[INFO] time: 0.026466 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_05.in /tmp/tmpjz26iv3m/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_05.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_06
+[INFO] time: 0.029302 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_06.in /tmp/tmpbm6x0s23/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_06.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_07
+[INFO] time: 0.028860 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_07.in /tmp/tmpejl9ja4l/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_07.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_08
+[INFO] time: 0.026635 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_08.in /tmp/tmp1c56cwxy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_08.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_09
+[INFO] time: 0.028159 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_09.in /tmp/tmpk50126pt/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_09.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_n_00
+[INFO] time: 0.068258 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_n_00.in /tmp/tmpc9dyuk0p/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_n_00.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.078677 sec  (for random_04)
+[INFO] max memory: 3.728000 MB  (for small_01)
+[SUCCESS] test success: 17 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/a.out test/prefix_min_of_mod_of_linear.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/info.toml --compile-checker[0m
+[33m23:12:52 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m23:12:52 [INFO] Start min_of_mod_of_linear[0m
+[37m23:12:52 [INFO] generate params.h[0m
+[37m23:12:52 [INFO] Test cases are already generated[0m
+[37m23:12:52 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/a.out -d .verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test --print-input --tle 10.0 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker -j 2[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 17 cases found
+
+[INFO] example_00
+[INFO] time: 0.004105 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/example_00.in /tmp/tmpuhj2clpf/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/example_00.out
+ok 14 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.072941 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_00.in /tmp/tmphp1nd8zc/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_00.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.070665 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_01.in /tmp/tmpgfbcic7r/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_01.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.069781 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_02.in /tmp/tmp1hba9ti0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_02.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_03
+[INFO] time: 0.070011 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_03.in /tmp/tmprvc23a5v/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_03.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.022498 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_00.in /tmp/tmpyxdj9x7p/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_00.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_04
+[INFO] time: 0.071951 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_04.in /tmp/tmprit6syv1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/random_04.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.022608 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_01.in /tmp/tmpds8v7vss/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_01.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.023009 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_02.in /tmp/tmpjl_wr8re/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_02.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_03
+[INFO] time: 0.022514 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_03.in /tmp/tmpxlc7serb/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_03.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_04
+[INFO] time: 0.025843 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_04.in /tmp/tmpf8hhvaxy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_04.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_05
+[INFO] time: 0.023523 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_05.in /tmp/tmprpldr2bg/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_05.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_06
+[INFO] time: 0.025441 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_06.in /tmp/tmpfqt5nur5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_06.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_07
+[INFO] time: 0.023350 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_07.in /tmp/tmpjt5rizwl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_07.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_08
+[INFO] time: 0.026339 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_08.in /tmp/tmpq15ywsfm/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_08.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_09
+[INFO] time: 0.029222 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_09.in /tmp/tmpaz96m_ff/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_09.out
+ok 88560 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_n_00
+[INFO] time: 0.067839 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/number_theory/min_of_mod_of_linear/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_n_00.in /tmp/tmpstyjcesh/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/9b6103b5a924bbe458efd2b3397c696c/test/small_n_00.out
+ok 100000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.072941 sec  (for random_00)
+[INFO] max memory: 3.728000 MB  (for small_00)
+[SUCCESS] test success: 17 cases
+[32mINFO[0m:onlinejudge_verify.verify:all tests succeeded[0m

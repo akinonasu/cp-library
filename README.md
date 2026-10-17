@@ -63,6 +63,7 @@
 | `math/generalized_floor_sum.hpp` | 一般化 floor sum | [使い方](docs/generalized_floor_sum.md) |
 | `math/monoid_floor_sum.hpp` | monoid floor sum | [使い方](docs/monoid_floor_sum.md) |
 | `math/min_of_mod_of_linear.hpp` | Mod of Linear の最小値 | [使い方](docs/min_of_mod_of_linear.md) |
+| `math/prefix_min_of_mod_of_linear.hpp` | Mod of Linear の prefix minimum の等差数列圧縮 | [使い方](docs/prefix_min_of_mod_of_linear.md) |
 | `math/fps.hpp` | 形式的冪級数 | [使い方](docs/fps.md) |
 | `math/sqrt_floor.hpp` | Mod of Linear の列の等差数列分割 | [使い方](docs/sqrt_floor.md) |
 | `data_structure/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
@@ -87,6 +88,7 @@
 | `components/d_ary_heap.hpp` | D-ary Heap | [使い方](docs/d_ary_heap.md) |
 | `components/RadixHeap.hpp` | Radix Heap | [使い方](docs/radix_heap.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
+| `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
 
 ## 使い方
 

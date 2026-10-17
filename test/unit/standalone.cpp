@@ -18,6 +18,7 @@
 #include "math/fps.hpp"
 #include "math/fraction.hpp"
 #include "math/min_of_mod_of_linear.hpp"
+#include "math/prefix_min_of_mod_of_linear.hpp"
 #include "math/monoid_floor_sum.hpp"
 #include "math/sqrt_floor.hpp"
 #include "string/edit_distance.hpp"
@@ -90,6 +91,9 @@ int main() {
 	assert(rational + Fraction<>(5, 6) == Fraction<>(1, 2));
 	assert(rational < 0 && rational.floor() == -1);
 	assert(min_of_mod_of_linear(4, 13, 10, 11) == 2);
+	auto prefix_min = prefix_min_of_mod_of_linear(4, 13, 10, 11);
+	assert(prefix_min.size() == 1 && prefix_min[0].count == 4);
+	assert(prefix_min[0].y - prefix_min[0].dy * 3 == 2);
 	assert(factorize(12) == std::vector<std::uint64_t>({2, 2, 3}));
 	fps f{1, 2, 3};
 	auto product = f * f.inv(16);
