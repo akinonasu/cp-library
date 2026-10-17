@@ -2,9 +2,11 @@
 #define MATRIX_ARITHMETIC_HPP
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -174,6 +176,34 @@ Elimination<Ops> eliminate(std::vector<typename Ops::V> &a, int h, int stride, i
 		}
 	}
 	return result;
+}
+
+template <class T>
+[[gnu::noinline]] T integer_determinant(const std::vector<T> &a, int n) {
+	static_assert(std::numeric_limits<T>::is_signed);
+	using W = __int128_t;
+	std::vector<W> work(a.begin(), a.end());
+	W previous = 1, sign = 1;
+	if (!n) return T(1);
+	for (int k = 0; k + 1 < n; ++k) {
+		int pivot = k;
+		while (pivot < n && work[std::size_t(pivot) * n + k] == 0) ++pivot;
+		if (pivot == n) return T(0);
+		if (pivot != k) { for (int j = 0; j < n; ++j) std::swap(work[std::size_t(k) * n + j], work[std::size_t(pivot) * n + j]); sign = -sign; }
+		W p = work[std::size_t(k) * n + k];
+		for (int i = k + 1; i < n; ++i) {
+			for (int j = k + 1; j < n; ++j) {
+				W value = work[std::size_t(i) * n + j] * p - work[std::size_t(i) * n + k] * work[std::size_t(k) * n + j];
+				assert(value % previous == 0);
+				work[std::size_t(i) * n + j] = value / previous;
+			}
+			work[std::size_t(i) * n + k] = 0;
+		}
+		previous = p;
+	}
+	W result = sign * work.back();
+	assert(result >= std::numeric_limits<T>::lowest() && result <= std::numeric_limits<T>::max());
+	return T(result);
 }
 
 template <std::uint32_t mod>
