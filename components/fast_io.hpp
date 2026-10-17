@@ -156,6 +156,17 @@ public:
 		return std::fflush(file) == 0;
 	}
 	void write(char c) { *reserve(1) = c; ++length; }
+	void write(__uint128_t value) {
+		char digits[40];
+		char *end = digits + sizeof(digits), *begin = end;
+		do { *--begin = char('0' + value % 10); value /= 10; } while (value);
+		write(std::string_view(begin, end - begin));
+	}
+	void write(__int128_t value) {
+		__uint128_t magnitude = __uint128_t(value);
+		if (value < 0) write('-'), magnitude = 0 - magnitude;
+		write(magnitude);
+	}
 	void write(std::string_view s) {
 		char *out = reserve(s.size());
 		if (!s.empty()) std::memcpy(out, s.data(), s.size());

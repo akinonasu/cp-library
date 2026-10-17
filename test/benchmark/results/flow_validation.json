@@ -1,0 +1,110 @@
+{
+  "recorded_at": "2026-10-17T08:46:00.502432+00:00",
+  "sha256": {
+    "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+    "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+    "components/min_cost_circulation.hpp": "b93a5a07b22f9029d585b2c7489e3bf4646a016182d73ca84a5ac39661af5d6f",
+    "components/fast_io.hpp": "d4a7e58d2a9373e675ddaed1a31ea3f1748b75a2af4201791ac63163b3af38b8",
+    "graph/max_flow.hpp": "f40590ace6a7bc77cbfe8914a8a44c2ddba5fc5860e47ec89c1670ec3886033c",
+    "graph/min_cost_flow.hpp": "3a7c754efcac8b30ec1c177f84a9fb67e0ec2c0f40da7eec553cd28b869423ec",
+    "graph/dijkstra.hpp": "4c7f0d2d526e7bcfa76c2155529caa2f6fd6aefc965c0d3c45eac8096a7916d8",
+    "math/bigint.hpp": "52defbb51a32061b7ec0fa0af463216cb354e13105ef6ba9d06c0cefd334c687",
+    "components/RadixHeap.hpp": "e7028eaea051c7f3fe49f4688bff26e20a47a0fb0981baadd0d5c050ea4007c3",
+    "components/d_ary_heap.hpp": "3cf253ffc1a3c732cd6bae621088f3552ce022a3cfb136e757de7c0135f7e097",
+    "components/ntt.hpp": "5adabf4cc8404b38c79383cad3850640082a9b3bd2fdb6e69af8171925fd4d26",
+    "components/limb_arithmetic.hpp": "2799e85949de79752535823965b348cdf9ab56b59d9353a13470aa9464bca73a",
+    "components/small_vector.hpp": "dbbd882ecdfa49eeb86cc446ae5d3b4a26e611ee262264e6a807a0636b033f50",
+    "test/unit/flow_capacity.cpp": "a71de6539627c0bd74a2007d980d23cf9238e3e5456079e8af0c5361368339f6",
+    "test/unit/max_flow.cpp": "73f69e12bc9e510c59656b85310972d9d7c662f96185a271e7eca4c8faa5f903",
+    "test/unit/min_cost_flow.cpp": "eb38e70c26073454d57381b6935be32c2e79551948946f5f636ecacf48ac7485",
+    "test/unit/fast_io.cpp": "81a1aa85cfc35e5104d21addb6d61404f5620e2b10a560ef90a79fe0c822506f",
+    "test/unit/fast_io_integer.cpp": "1f93b51f198fa668722d81c23c91abba16c67153857638e1e307f3025004c8be",
+    "test/unit/standalone.cpp": "3fe50dbc510fa43b026e1b523dcce1954eb8be06213af809ba9dda0e88273455",
+    "test/max_flow.test.cpp": "c7a4a9f0e23bb062589ee953896b4f02e81ab9db720524282fc928228a7ca985",
+    "test/max_flow_yuki.test.cpp": "4a890cdcef5aac1d19b17a92af4bc88340f028ffaae403e6e8626c9c229e70cc",
+    "test/min_cost_flow.test.cpp": "1b2a8dd1cfa3063c022fd10a254a988c354584086f1aa870340467cbfaa4ffc6",
+    "test/min_cost_b_flow.test.cpp": "b9afb6f8b3e87c55e7a64ceb2731f123d76157b1cd5682eda86c09208d0d350e",
+    "test/dijkstra_bigint_yuki.test.cpp": "911000815be9a61625356a5e88dc6f5b520b6e50918a83defc15af531c34c181"
+  },
+  "checks": {
+    "gcc_15_clang_21": {
+      "result": "passed",
+      "log": "flow_check.log"
+    },
+    "narrow_capacity_gcc_clang_asan_ubsan": {
+      "result": "passed",
+      "log": "flow_capacity_check.log"
+    },
+    "asan_ubsan": {
+      "result": "passed",
+      "log": "flow_sanitize_check.log"
+    },
+    "aoj_max_flow": {
+      "result": "passed",
+      "cases": 40,
+      "compilers": [
+        "g++",
+        "clang++"
+      ],
+      "log": "max_flow_judge_check.log"
+    },
+    "aoj_min_cost_flow": {
+      "result": "passed",
+      "cases": 32,
+      "compilers": [
+        "g++",
+        "clang++"
+      ],
+      "log": "flow_judge_check.log"
+    },
+    "lc_min_cost_b_flow": {
+      "result": "passed",
+      "cases": 54,
+      "compilers": [
+        "g++",
+        "clang++"
+      ],
+      "log": "flow_judge_check.log"
+    },
+    "yukicoder_samples": {
+      "result": "passed",
+      "problems": {
+        "3668": 3,
+        "3669": 2
+      },
+      "compilers": [
+        "g++",
+        "clang++"
+      ],
+      "fraction_oracle_cases": 60,
+      "log": "flow_sample_check.log"
+    },
+    "local_yukicoder_system_cases": {
+      "result": "not_run",
+      "reason": "YUKICODER_TOKEN is not set locally; GitHub CI uses the existing secret"
+    },
+    "documentation": {
+      "result": "passed",
+      "headers": 97,
+      "sources": 193,
+      "affected_bundles": 6,
+      "log": "flow_docs_check.log"
+    },
+    "benchmark": {
+      "result": "passed",
+      "profiles": [
+        "generic",
+        "native"
+      ],
+      "trials": 7,
+      "workloads": [
+        "max_random",
+        "max_ladder",
+        "max_layered",
+        "min_random",
+        "min_anti_ssp",
+        "dijkstra_bigint"
+      ]
+    }
+  }
+}

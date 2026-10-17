@@ -22,6 +22,22 @@ void input(FastInput &in, const std::string &long_value) {
 }
 
 int main() {
+	{
+		FILE *file = std::tmpfile();
+		assert(file);
+		{
+			FastOutput out(file);
+			out.println(__uint128_t(0));
+			out.println(std::numeric_limits<__uint128_t>::max());
+			out.println(std::numeric_limits<__int128_t>::min());
+			out.println(std::numeric_limits<__int128_t>::max());
+		}
+		std::rewind(file);
+		char data[256]{};
+		auto size = std::fread(data, 1, sizeof(data), file);
+		assert(std::string(data, size) == "0\n340282366920938463463374607431768211455\n-170141183460469231731687303715884105728\n170141183460469231731687303715884105727\n");
+		std::fclose(file);
+	}
 	std::string number(200003, '7');
 	std::string text = "\t -123\r\n-9223372036854775808 18446744073709551615 " + number + "\nend";
 	FastInput memory(text);

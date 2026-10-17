@@ -1,0 +1,340 @@
+[32mINFO[0m:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}[0m
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/max_flow.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_6_A[0m
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/f05785c6e4a2ac3a3038e7916f0fd364/a.out test/max_flow.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/f05785c6e4a2ac3a3038e7916f0fd364/a.out -d .verify-helper/cache/f05785c6e4a2ac3a3038e7916f0fd364/test --print-input --tle 60[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 40 cases found
+
+[INFO] 00_sample_00.in
+[INFO] time: 0.004808 sec
+[SUCCESS] AC
+
+[INFO] 01_small_00.in
+[INFO] time: 0.003798 sec
+[SUCCESS] AC
+
+[INFO] 01_small_01.in
+[INFO] time: 0.003962 sec
+[SUCCESS] AC
+
+[INFO] 01_small_02.in
+[INFO] time: 0.003871 sec
+[SUCCESS] AC
+
+[INFO] 01_small_03.in
+[INFO] time: 0.004111 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_00.in
+[INFO] time: 0.003834 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_01.in
+[INFO] time: 0.003849 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_02.in
+[INFO] time: 0.004217 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_03.in
+[INFO] time: 0.006723 sec
+[SUCCESS] AC
+
+[INFO] 03_random_00.in
+[INFO] time: 0.004059 sec
+[SUCCESS] AC
+
+[INFO] 03_random_01.in
+[INFO] time: 0.003797 sec
+[SUCCESS] AC
+
+[INFO] 03_random_02.in
+[INFO] time: 0.004088 sec
+[SUCCESS] AC
+
+[INFO] 03_random_03.in
+[INFO] time: 0.003807 sec
+[SUCCESS] AC
+
+[INFO] 03_random_04.in
+[INFO] time: 0.004046 sec
+[SUCCESS] AC
+
+[INFO] 03_random_05.in
+[INFO] time: 0.009184 sec
+[SUCCESS] AC
+
+[INFO] 03_random_06.in
+[INFO] time: 0.003865 sec
+[SUCCESS] AC
+
+[INFO] 03_random_07.in
+[INFO] time: 0.003630 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_00.in
+[INFO] time: 0.003867 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_01.in
+[INFO] time: 0.003823 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_02.in
+[INFO] time: 0.003539 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_03.in
+[INFO] time: 0.003436 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_04.in
+[INFO] time: 0.003332 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_05.in
+[INFO] time: 0.003333 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_06.in
+[INFO] time: 0.003973 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_07.in
+[INFO] time: 0.003874 sec
+[SUCCESS] AC
+
+[INFO] 05_large_00.in
+[INFO] time: 0.003599 sec
+[SUCCESS] AC
+
+[INFO] 05_large_01.in
+[INFO] time: 0.003199 sec
+[SUCCESS] AC
+
+[INFO] 05_large_02.in
+[INFO] time: 0.007193 sec
+[SUCCESS] AC
+
+[INFO] 05_large_03.in
+[INFO] time: 0.003827 sec
+[SUCCESS] AC
+
+[INFO] 05_large_04.in
+[INFO] time: 0.003394 sec
+[SUCCESS] AC
+
+[INFO] 05_large_05.in
+[INFO] time: 0.003534 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_00.in
+[INFO] time: 0.008821 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_01.in
+[INFO] time: 0.003305 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_02.in
+[INFO] time: 0.003819 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_03.in
+[INFO] time: 0.003185 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_04.in
+[INFO] time: 0.003724 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_05.in
+[INFO] time: 0.003255 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_06.in
+[INFO] time: 0.003581 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_07.in
+[INFO] time: 0.004414 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_08.in
+[INFO] time: 0.003872 sec
+[SUCCESS] AC
+
+[INFO] slowest: 0.009184 sec  (for 03_random_05.in)
+[INFO] max memory: 3.744000 MB  (for 02_corner_02.in)
+[SUCCESS] test success: 40 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/f05785c6e4a2ac3a3038e7916f0fd364/a.out test/max_flow.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/f05785c6e4a2ac3a3038e7916f0fd364/a.out -d .verify-helper/cache/f05785c6e4a2ac3a3038e7916f0fd364/test --print-input --tle 60[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 40 cases found
+
+[INFO] 00_sample_00.in
+[INFO] time: 0.003955 sec
+[SUCCESS] AC
+
+[INFO] 01_small_00.in
+[INFO] time: 0.003546 sec
+[SUCCESS] AC
+
+[INFO] 01_small_01.in
+[INFO] time: 0.004036 sec
+[SUCCESS] AC
+
+[INFO] 01_small_02.in
+[INFO] time: 0.003724 sec
+[SUCCESS] AC
+
+[INFO] 01_small_03.in
+[INFO] time: 0.003698 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_00.in
+[INFO] time: 0.003864 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_01.in
+[INFO] time: 0.004026 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_02.in
+[INFO] time: 0.004345 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_03.in
+[INFO] time: 0.003574 sec
+[SUCCESS] AC
+
+[INFO] 03_random_00.in
+[INFO] time: 0.003790 sec
+[SUCCESS] AC
+
+[INFO] 03_random_01.in
+[INFO] time: 0.003728 sec
+[SUCCESS] AC
+
+[INFO] 03_random_02.in
+[INFO] time: 0.003551 sec
+[SUCCESS] AC
+
+[INFO] 03_random_03.in
+[INFO] time: 0.003575 sec
+[SUCCESS] AC
+
+[INFO] 03_random_04.in
+[INFO] time: 0.004195 sec
+[SUCCESS] AC
+
+[INFO] 03_random_05.in
+[INFO] time: 0.003650 sec
+[SUCCESS] AC
+
+[INFO] 03_random_06.in
+[INFO] time: 0.003557 sec
+[SUCCESS] AC
+
+[INFO] 03_random_07.in
+[INFO] time: 0.003647 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_00.in
+[INFO] time: 0.003398 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_01.in
+[INFO] time: 0.003606 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_02.in
+[INFO] time: 0.003419 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_03.in
+[INFO] time: 0.015253 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_04.in
+[INFO] time: 0.003713 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_05.in
+[INFO] time: 0.003074 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_06.in
+[INFO] time: 0.004194 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_07.in
+[INFO] time: 0.003686 sec
+[SUCCESS] AC
+
+[INFO] 05_large_00.in
+[INFO] time: 0.003488 sec
+[SUCCESS] AC
+
+[INFO] 05_large_01.in
+[INFO] time: 0.003498 sec
+[SUCCESS] AC
+
+[INFO] 05_large_02.in
+[INFO] time: 0.003525 sec
+[SUCCESS] AC
+
+[INFO] 05_large_03.in
+[INFO] time: 0.003595 sec
+[SUCCESS] AC
+
+[INFO] 05_large_04.in
+[INFO] time: 0.003874 sec
+[SUCCESS] AC
+
+[INFO] 05_large_05.in
+[INFO] time: 0.006892 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_00.in
+[INFO] time: 0.005142 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_01.in
+[INFO] time: 0.008593 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_02.in
+[INFO] time: 0.004186 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_03.in
+[INFO] time: 0.004077 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_04.in
+[INFO] time: 0.004040 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_05.in
+[INFO] time: 0.003973 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_06.in
+[INFO] time: 0.003851 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_07.in
+[INFO] time: 0.004150 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_08.in
+[INFO] time: 0.004239 sec
+[SUCCESS] AC
+
+[INFO] slowest: 0.015253 sec  (for 04_rand_03.in)
+[INFO] max memory: 3.740000 MB  (for 04_rand_01.in)
+[SUCCESS] test success: 40 cases
+[32mINFO[0m:onlinejudge_verify.verify:all tests succeeded[0m

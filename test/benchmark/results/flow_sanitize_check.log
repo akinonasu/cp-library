@@ -1,0 +1,13 @@
+clang++: max_flow.cpp
+clang++: min_cost_flow.cpp
+clang++: standalone.cpp
+Verification passed
+clang++: min_cost_flow.cpp
+clang++: standalone.cpp
+clang++: fast_io.cpp
+clang++: fast_io_integer.cpp
+Verification passed
+clang++: max_flow.cpp
+clang++: min_cost_flow.cpp
+clang++: standalone.cpp
+Verification passed

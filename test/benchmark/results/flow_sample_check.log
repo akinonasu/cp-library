@@ -1,0 +1,6 @@
+g++ max_flow_yuki : 3 samples passed
+g++ dijkstra_bigint_yuki : 2 samples passed ; 60 Fraction oracle cases passed
+clang++ max_flow_yuki : 3 samples passed
+clang++ dijkstra_bigint_yuki : 2 samples passed ; 60 Fraction oracle cases passed
+g++ max_flow_yuki : 3 samples passed
+clang++ max_flow_yuki : 3 samples passed

@@ -1,0 +1,41 @@
+{
+  "headers": [
+    "components/flow_graph.hpp",
+    "components/min_cost_circulation.hpp",
+    "graph/max_flow.hpp",
+    "graph/min_cost_flow.hpp",
+    "components/fast_io.hpp",
+    "components/push_relabel.hpp"
+  ],
+  "unit": [
+    "test/unit/max_flow.cpp",
+    "test/unit/min_cost_flow.cpp",
+    "test/unit/standalone.cpp",
+    "test/unit/fast_io.cpp",
+    "test/unit/fast_io_integer.cpp",
+    "test/unit/flow_capacity.cpp"
+  ],
+  "sanitize": [
+    "test/unit/max_flow.cpp",
+    "test/unit/min_cost_flow.cpp",
+    "test/unit/standalone.cpp",
+    "test/unit/fast_io.cpp",
+    "test/unit/fast_io_integer.cpp",
+    "test/unit/flow_capacity.cpp"
+  ],
+  "verification": [
+    "test/max_flow.test.cpp",
+    "test/max_flow_yuki.test.cpp",
+    "test/min_cost_flow.test.cpp",
+    "test/min_cost_b_flow.test.cpp",
+    "test/dijkstra_bigint_yuki.test.cpp"
+  ],
+  "bundles": [
+    "components/flow_graph.hpp",
+    "components/min_cost_circulation.hpp",
+    "graph/max_flow.hpp",
+    "graph/min_cost_flow.hpp",
+    "components/fast_io.hpp",
+    "components/push_relabel.hpp"
+  ]
+}

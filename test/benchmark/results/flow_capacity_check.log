@@ -1,0 +1,9 @@
+g++: standalone graph/max_flow.hpp
+g++: standalone graph/min_cost_flow.hpp
+g++: flow_capacity.cpp
+clang++: standalone graph/max_flow.hpp
+clang++: standalone graph/min_cost_flow.hpp
+clang++: flow_capacity.cpp
+Verification passed
+clang++: flow_capacity.cpp
+Verification passed

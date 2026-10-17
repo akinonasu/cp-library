@@ -12,6 +12,8 @@
 #include "data_structure/wavelet_matrix.hpp"
 #include "data_structure/weighted_union_find.hpp"
 #include "graph/dijkstra.hpp"
+#include "graph/max_flow.hpp"
+#include "graph/min_cost_flow.hpp"
 #include "graph/hld.hpp"
 #include "graph/centroid_decomposition.hpp"
 #include "graph/lca.hpp"
@@ -48,6 +50,12 @@ std::int64_t add(std::int64_t a, std::int64_t b) { return a + b; }
 std::int64_t zero() { return 0; }
 
 int main() {
+	MaxFlow<> maximum(2);
+	maximum.add_edge(0, 1, 3);
+	assert(maximum.flow(0, 1) == 3);
+	MinCostFlow<> minimum(2);
+	minimum.add_edge(0, 1, 3, -2);
+	assert(minimum.flow(0, 1).second == -6);
 	BinomialPrefixSum<> prefix(50);
 	assert(prefix.query(50, 2) == mint(51) && prefix.prod(5, 1, 3) == mint(15));
 	assert(binomial_prefix_sum(std::vector<std::pair<int, int>>{{5, 3}, {4, 1}}) == std::vector<mint>({16, 1}));

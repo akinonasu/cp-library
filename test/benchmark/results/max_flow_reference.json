@@ -1,0 +1,67 @@
+{
+  "retrieved_at": "2026-10-17T08:26:05.433645+00:00",
+  "problem": "https://yukicoder.me/problems/no/3668",
+  "listing_url": "https://yukicoder.me/problems/no/3668/submissions?status=AC&sort_time=enabled",
+  "listing_sha256": "3a4a9d0887063f7988c6874a30511c04b5ec6e78175844a39b205e7d18e71a1f",
+  "columns": [
+    "id",
+    "date",
+    "filter",
+    "user",
+    "problem",
+    "language",
+    "status",
+    "time",
+    "length"
+  ],
+  "references": [
+    {
+      "id": 1174960,
+      "row": [
+        "1174960",
+        "2026-08-04 18:36:48",
+        "",
+        "👑 みうね",
+        "No.3668 Minimum Cut",
+        "C++23",
+        "AC",
+        "24 ms",
+        "42,528 bytes"
+      ],
+      "url": "https://yukicoder.me/submissions/1174960",
+      "source_sha256": "05dc32d505848b4d41aa0e656c8b90e680b46790f6464ba1d1c5f1ad47633e49"
+    },
+    {
+      "id": 1174927,
+      "row": [
+        "1174927",
+        "2026-08-04 04:17:04",
+        "",
+        "👑 みうね",
+        "No.3668 Minimum Cut",
+        "C++23",
+        "AC",
+        "31 ms",
+        "44,161 bytes"
+      ],
+      "url": "https://yukicoder.me/submissions/1174927",
+      "source_sha256": "e5949dddf67059c6ebbda877e06c4fc2db4d442c2309a67d0529303960ae7dbe"
+    },
+    {
+      "id": 1182754,
+      "row": [
+        "1182754",
+        "2026-09-05 00:23:57",
+        "",
+        "miie",
+        "No.3668 Minimum Cut",
+        "C++23",
+        "AC",
+        "33 ms",
+        "11,502 bytes"
+      ],
+      "url": "https://yukicoder.me/submissions/1182754",
+      "source_sha256": "c3dd72e0edc09ac636a22d83ffa3a273691e09f6deb94063ffa0f20ebd93bbfb"
+    }
+  ]
+}

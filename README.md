@@ -49,6 +49,8 @@
 | `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
 | `graph/general_matching.hpp` | General Matching（一般グラフ最大マッチング） | [使い方](docs/general_matching.md) |
 | `graph/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
+| `graph/max_flow.hpp` | 最大流・最小カット | [使い方](docs/max_flow.md) |
+| `graph/min_cost_flow.hpp` | 最小費用流・費用曲線 | [使い方](docs/min_cost_flow.md) |
 | `graph/dijkstra.hpp` | Dijkstra | [使い方](docs/dijkstra.md) |
 | `graph/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `graph/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
@@ -92,6 +94,9 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `components/binomial_prefix_core.hpp` | 二項係数の prefix sum の内部演算 | [使い方](docs/binomial_prefix_core.md) |
+| `components/flow_graph.hpp` | フローの残余グラフ | [使い方](docs/flow_graph.md) |
+| `components/push_relabel.hpp` | Push-Relabel の内部演算 | [使い方](docs/push_relabel.md) |
+| `components/min_cost_circulation.hpp` | 最小費用流の容量スケーリング | [使い方](docs/min_cost_circulation.md) |
 | `components/mo_order.hpp` | Mo 法の処理順 | [使い方](docs/mo_order.md) |
 | `components/small_vector.hpp` | Small Vector | [使い方](docs/small_vector.md) |
 | `components/limb_arithmetic.hpp` | Limb Arithmetic | [使い方](docs/limb_arithmetic.md) |

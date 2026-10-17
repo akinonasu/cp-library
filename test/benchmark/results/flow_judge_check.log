@@ -1,0 +1,1173 @@
+[32mINFO[0m:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}[0m
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/min_cost_flow.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_6_B[0m
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/14649d93e907b7c6ea6d101e28b8b7fe/a.out test/min_cost_flow.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/14649d93e907b7c6ea6d101e28b8b7fe/a.out -d .verify-helper/cache/14649d93e907b7c6ea6d101e28b8b7fe/test --print-input --tle 60[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 32 cases found
+
+[INFO] 00_sample_00.in
+[INFO] time: 0.004539 sec
+[SUCCESS] AC
+
+[INFO] 01_small_00.in
+[INFO] time: 0.004201 sec
+[SUCCESS] AC
+
+[INFO] 01_small_01.in
+[INFO] time: 0.004423 sec
+[SUCCESS] AC
+
+[INFO] 01_small_02.in
+[INFO] time: 0.004895 sec
+[SUCCESS] AC
+
+[INFO] 01_small_03.in
+[INFO] time: 0.004332 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_00.in
+[INFO] time: 0.003994 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_01.in
+[INFO] time: 0.004254 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_02.in
+[INFO] time: 0.005486 sec
+[SUCCESS] AC
+
+[INFO] 03_random_00.in
+[INFO] time: 0.004105 sec
+[SUCCESS] AC
+
+[INFO] 03_random_01.in
+[INFO] time: 0.004196 sec
+[SUCCESS] AC
+
+[INFO] 03_random_02.in
+[INFO] time: 0.004416 sec
+[SUCCESS] AC
+
+[INFO] 03_random_03.in
+[INFO] time: 0.004302 sec
+[SUCCESS] AC
+
+[INFO] 03_random_04.in
+[INFO] time: 0.004290 sec
+[SUCCESS] AC
+
+[INFO] 03_random_05.in
+[INFO] time: 0.004009 sec
+[SUCCESS] AC
+
+[INFO] 03_random_06.in
+[INFO] time: 0.003975 sec
+[SUCCESS] AC
+
+[INFO] 03_random_07.in
+[INFO] time: 0.004267 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_00.in
+[INFO] time: 0.003586 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_01.in
+[INFO] time: 0.004094 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_02.in
+[INFO] time: 0.003775 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_03.in
+[INFO] time: 0.005598 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_04.in
+[INFO] time: 0.003917 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_05.in
+[INFO] time: 0.003601 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_06.in
+[INFO] time: 0.003772 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_07.in
+[INFO] time: 0.004179 sec
+[SUCCESS] AC
+
+[INFO] 05_large_00.in
+[INFO] time: 0.003933 sec
+[SUCCESS] AC
+
+[INFO] 05_large_01.in
+[INFO] time: 0.003499 sec
+[SUCCESS] AC
+
+[INFO] 05_large_02.in
+[INFO] time: 0.003624 sec
+[SUCCESS] AC
+
+[INFO] 05_large_03.in
+[INFO] time: 0.003476 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_00.in
+[INFO] time: 0.003661 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_01.in
+[INFO] time: 0.003553 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_02.in
+[INFO] time: 0.007525 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_03.in
+[INFO] time: 0.003736 sec
+[SUCCESS] AC
+
+[INFO] slowest: 0.007525 sec  (for 06_biased_02.in)
+[INFO] max memory: 3.760000 MB  (for 02_corner_02.in)
+[SUCCESS] test success: 32 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/14649d93e907b7c6ea6d101e28b8b7fe/a.out test/min_cost_flow.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/14649d93e907b7c6ea6d101e28b8b7fe/a.out -d .verify-helper/cache/14649d93e907b7c6ea6d101e28b8b7fe/test --print-input --tle 60[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 32 cases found
+
+[INFO] 00_sample_00.in
+[INFO] time: 0.003780 sec
+[SUCCESS] AC
+
+[INFO] 01_small_00.in
+[INFO] time: 0.003788 sec
+[SUCCESS] AC
+
+[INFO] 01_small_01.in
+[INFO] time: 0.003730 sec
+[SUCCESS] AC
+
+[INFO] 01_small_02.in
+[INFO] time: 0.005315 sec
+[SUCCESS] AC
+
+[INFO] 01_small_03.in
+[INFO] time: 0.004208 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_00.in
+[INFO] time: 0.003709 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_01.in
+[INFO] time: 0.003650 sec
+[SUCCESS] AC
+
+[INFO] 02_corner_02.in
+[INFO] time: 0.003868 sec
+[SUCCESS] AC
+
+[INFO] 03_random_00.in
+[INFO] time: 0.003787 sec
+[SUCCESS] AC
+
+[INFO] 03_random_01.in
+[INFO] time: 0.004000 sec
+[SUCCESS] AC
+
+[INFO] 03_random_02.in
+[INFO] time: 0.004046 sec
+[SUCCESS] AC
+
+[INFO] 03_random_03.in
+[INFO] time: 0.004409 sec
+[SUCCESS] AC
+
+[INFO] 03_random_04.in
+[INFO] time: 0.004192 sec
+[SUCCESS] AC
+
+[INFO] 03_random_05.in
+[INFO] time: 0.003844 sec
+[SUCCESS] AC
+
+[INFO] 03_random_06.in
+[INFO] time: 0.003850 sec
+[SUCCESS] AC
+
+[INFO] 03_random_07.in
+[INFO] time: 0.003713 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_00.in
+[INFO] time: 0.003965 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_01.in
+[INFO] time: 0.003711 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_02.in
+[INFO] time: 0.003993 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_03.in
+[INFO] time: 0.003998 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_04.in
+[INFO] time: 0.006640 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_05.in
+[INFO] time: 0.004282 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_06.in
+[INFO] time: 0.004081 sec
+[SUCCESS] AC
+
+[INFO] 04_rand_07.in
+[INFO] time: 0.003869 sec
+[SUCCESS] AC
+
+[INFO] 05_large_00.in
+[INFO] time: 0.003418 sec
+[SUCCESS] AC
+
+[INFO] 05_large_01.in
+[INFO] time: 0.003547 sec
+[SUCCESS] AC
+
+[INFO] 05_large_02.in
+[INFO] time: 0.003896 sec
+[SUCCESS] AC
+
+[INFO] 05_large_03.in
+[INFO] time: 0.003554 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_00.in
+[INFO] time: 0.003943 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_01.in
+[INFO] time: 0.003767 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_02.in
+[INFO] time: 0.003562 sec
+[SUCCESS] AC
+
+[INFO] 06_biased_03.in
+[INFO] time: 0.003605 sec
+[SUCCESS] AC
+
+[INFO] slowest: 0.006640 sec  (for 04_rand_04.in)
+[INFO] max memory: 3.752000 MB  (for 04_rand_07.in)
+[SUCCESS] test success: 32 cases
+[32mINFO[0m:onlinejudge_verify.verify:verify: test/min_cost_b_flow.test.cpp[0m
+[32mINFO[0m:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/min_cost_b_flow[0m
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/a.out test/min_cost_b_flow.test.cpp[0m
+git version 2.34.1
+[32mINFO[0m:onlinejudge.service.library_checker:$ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull[0m
+Already up to date.
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/info.toml --compile-checker[0m
+[33m17:33:42 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m17:33:42 [INFO] Start min_cost_b_flow[0m
+[37m17:33:42 [INFO] generate params.h[0m
+[37m17:33:42 [INFO] Test cases are already generated[0m
+[37m17:33:42 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/a.out -d .verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test --print-input --tle 60 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 54 cases found
+
+[INFO] anti_ssp_00
+[INFO] time: 0.004499 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/anti_ssp_00.in /tmp/tmpoo_hdqim/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/anti_ssp_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] empty_00
+[INFO] time: 0.003697 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_00.in /tmp/tmpi3chsw4t/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] empty_01
+[INFO] time: 0.003623 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_01.in /tmp/tmprnbx2uox/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] empty_02
+[INFO] time: 0.004070 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_02.in /tmp/tmpezjf_jxq/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] empty_03
+[INFO] time: 0.003868 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_03.in /tmp/tmp7lafvp58/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.005698 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_00.in /tmp/tmpfu4k1iza/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_01
+[INFO] time: 0.003523 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_01.in /tmp/tmpr2nzw5m9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_02
+[INFO] time: 0.003746 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_02.in /tmp/tmp75ee8xyj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_00
+[INFO] time: 0.012361 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_00.in /tmp/tmp3o85t90h/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_01
+[INFO] time: 0.012962 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_01.in /tmp/tmpdeea51y9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_02
+[INFO] time: 0.015045 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_02.in /tmp/tmpvtc3uyea/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_03
+[INFO] time: 0.011375 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_03.in /tmp/tmpyk1w3ypy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_04
+[INFO] time: 0.011651 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_04.in /tmp/tmp3xn2a1z_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_05
+[INFO] time: 0.012954 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_05.in /tmp/tmppirzdjdr/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_05.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_06
+[INFO] time: 0.012418 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_06.in /tmp/tmpu_nphe_z/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_06.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_07
+[INFO] time: 0.009129 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_07.in /tmp/tmpc1ububc4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_07.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_08
+[INFO] time: 0.012368 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_08.in /tmp/tmp8ugf55wt/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_08.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_09
+[INFO] time: 0.010560 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_09.in /tmp/tmptcvbz4cm/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_09.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] handmade_00
+[INFO] time: 0.003730 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_00.in /tmp/tmpylttcp6v/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] handmade_01
+[INFO] time: 0.004164 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_01.in /tmp/tmpw_t_m0o4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] handmade_02
+[INFO] time: 0.003891 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_02.in /tmp/tmpv8sdq9xe/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] handmade_03
+[INFO] time: 0.004710 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_03.in /tmp/tmpycow994y/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_00
+[INFO] time: 0.014626 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_00.in /tmp/tmpzmse3m_x/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_01
+[INFO] time: 0.014186 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_01.in /tmp/tmpn6tc_p8g/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_02
+[INFO] time: 0.017360 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_02.in /tmp/tmp70jccqsm/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_03
+[INFO] time: 0.019555 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_03.in /tmp/tmplc8_rgss/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_04
+[INFO] time: 0.016720 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_04.in /tmp/tmplrxmerra/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_05
+[INFO] time: 0.017158 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_05.in /tmp/tmpnu8juyrp/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_05.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_06
+[INFO] time: 0.020535 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_06.in /tmp/tmpx7klr77g/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_06.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_07
+[INFO] time: 0.016379 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_07.in /tmp/tmpmx9wv490/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_07.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_08
+[INFO] time: 0.015942 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_08.in /tmp/tmp0hqtci1n/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_08.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_09
+[INFO] time: 0.017968 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_09.in /tmp/tmp0kb6lhf7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_09.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] near_maximum_00
+[INFO] time: 0.014578 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/near_maximum_00.in /tmp/tmphketfmwt/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/near_maximum_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] near_minimum_00
+[INFO] time: 0.008249 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/near_minimum_00.in /tmp/tmp5wbgermx/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/near_minimum_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_00
+[INFO] time: 0.003670 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_00.in /tmp/tmpief9dxwr/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_01
+[INFO] time: 0.003580 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_01.in /tmp/tmpbclv8px7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_02
+[INFO] time: 0.003580 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_02.in /tmp/tmp0aw1nqjj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_03
+[INFO] time: 0.004419 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_03.in /tmp/tmp3os1wc1w/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_04
+[INFO] time: 0.003598 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_04.in /tmp/tmpqdf75n3c/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_05
+[INFO] time: 0.003636 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_05.in /tmp/tmpzj3boapl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_05.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_06
+[INFO] time: 0.004006 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_06.in /tmp/tmplu5cm7nx/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_06.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_07
+[INFO] time: 0.004006 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_07.in /tmp/tmppzmldpfv/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_07.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_08
+[INFO] time: 0.003830 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_08.in /tmp/tmp_z3ow55f/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_08.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_09
+[INFO] time: 0.004556 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_09.in /tmp/tmpeujirmmq/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_09.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_00
+[INFO] time: 0.003813 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_00.in /tmp/tmpxjsldwqt/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_01
+[INFO] time: 0.003733 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_01.in /tmp/tmpza30mpn9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_02
+[INFO] time: 0.004145 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_02.in /tmp/tmphwy1ovom/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_03
+[INFO] time: 0.003932 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_03.in /tmp/tmp0c85y9gk/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_04
+[INFO] time: 0.004850 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_04.in /tmp/tmpdpcj1ebq/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_05
+[INFO] time: 0.003960 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_05.in /tmp/tmp3a01p_7a/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_05.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_06
+[INFO] time: 0.004109 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_06.in /tmp/tmpf6xuuzpe/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_06.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_07
+[INFO] time: 0.003972 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_07.in /tmp/tmp9m3lr6fy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_07.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_08
+[INFO] time: 0.003988 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_08.in /tmp/tmp431qgtbn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_08.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_09
+[INFO] time: 0.004092 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_09.in /tmp/tmprzlrzpi0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_09.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.020535 sec  (for large_random_06)
+[INFO] max memory: 3.952000 MB  (for large_random_00)
+[SUCCESS] test success: 54 cases
+[32mINFO[0m:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/a.out test/min_cost_b_flow.test.cpp[0m
+[32mINFO[0m:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/info.toml --compile-checker[0m
+[33m17:33:48 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m17:33:48 [INFO] Start min_cost_b_flow[0m
+[37m17:33:48 [INFO] generate params.h[0m
+[37m17:33:48 [INFO] Test cases are already generated[0m
+[37m17:33:48 [INFO] The checker is already compiled[0m
+[32mINFO[0m:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/a.out -d .verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test --print-input --tle 60 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker[0m
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 54 cases found
+
+[INFO] anti_ssp_00
+[INFO] time: 0.004423 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/anti_ssp_00.in /tmp/tmpcfs9wj9y/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/anti_ssp_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] empty_00
+[INFO] time: 0.003772 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_00.in /tmp/tmpwov8dlkj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] empty_01
+[INFO] time: 0.010704 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_01.in /tmp/tmpk0_1rya2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] empty_02
+[INFO] time: 0.003741 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_02.in /tmp/tmp3vq3f431/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] empty_03
+[INFO] time: 0.006178 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_03.in /tmp/tmpd9v506o1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/empty_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_00
+[INFO] time: 0.004042 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_00.in /tmp/tmpinynlg8v/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_01
+[INFO] time: 0.005038 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_01.in /tmp/tmp8l352_89/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] example_02
+[INFO] time: 0.003985 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_02.in /tmp/tmpq2lh1okd/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/example_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_00
+[INFO] time: 0.011891 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_00.in /tmp/tmp09ls9p76/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_01
+[INFO] time: 0.012834 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_01.in /tmp/tmpv7haxcji/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_02
+[INFO] time: 0.018105 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_02.in /tmp/tmp0uy4s49f/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_03
+[INFO] time: 0.011028 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_03.in /tmp/tmpspmc8er7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_04
+[INFO] time: 0.011294 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_04.in /tmp/tmp9fki0jux/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_05
+[INFO] time: 0.012657 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_05.in /tmp/tmphrpra3e_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_05.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_06
+[INFO] time: 0.011167 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_06.in /tmp/tmpu7hdeh7j/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_06.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_07
+[INFO] time: 0.009773 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_07.in /tmp/tmp8j3z53z7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_07.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_08
+[INFO] time: 0.011968 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_08.in /tmp/tmph5_xpso2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_08.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] goto_09
+[INFO] time: 0.009996 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_09.in /tmp/tmpbohmzsib/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/goto_09.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] handmade_00
+[INFO] time: 0.003719 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_00.in /tmp/tmpo8wach2v/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] handmade_01
+[INFO] time: 0.004065 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_01.in /tmp/tmp86m0dh54/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] handmade_02
+[INFO] time: 0.004219 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_02.in /tmp/tmp9r3ocmk9/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] handmade_03
+[INFO] time: 0.005083 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_03.in /tmp/tmptu5jqruy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/handmade_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_00
+[INFO] time: 0.013386 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_00.in /tmp/tmpeynrwwhs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_01
+[INFO] time: 0.013459 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_01.in /tmp/tmpsdr0azr2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_02
+[INFO] time: 0.016642 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_02.in /tmp/tmp99gsvef_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_03
+[INFO] time: 0.018928 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_03.in /tmp/tmp9fwtpqtk/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_04
+[INFO] time: 0.016303 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_04.in /tmp/tmpyh9msvjg/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_05
+[INFO] time: 0.016679 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_05.in /tmp/tmpjzisverv/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_05.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_06
+[INFO] time: 0.020646 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_06.in /tmp/tmpkonkg3ek/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_06.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_07
+[INFO] time: 0.014914 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_07.in /tmp/tmpcvh9lhp8/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_07.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_08
+[INFO] time: 0.015081 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_08.in /tmp/tmpwprm0ljr/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_08.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] large_random_09
+[INFO] time: 0.016703 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_09.in /tmp/tmpzgvf3i19/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/large_random_09.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] near_maximum_00
+[INFO] time: 0.014363 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/near_maximum_00.in /tmp/tmpikm0bl0f/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/near_maximum_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] near_minimum_00
+[INFO] time: 0.008209 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/near_minimum_00.in /tmp/tmp_p27olh6/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/near_minimum_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_00
+[INFO] time: 0.003813 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_00.in /tmp/tmpo530cgjl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_01
+[INFO] time: 0.004021 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_01.in /tmp/tmp2brjcmnd/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_02
+[INFO] time: 0.006073 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_02.in /tmp/tmpga_qlhi7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_03
+[INFO] time: 0.003906 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_03.in /tmp/tmp2ugflen5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_04
+[INFO] time: 0.003744 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_04.in /tmp/tmpylkgc9wy/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_05
+[INFO] time: 0.003616 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_05.in /tmp/tmpitsh31nl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_05.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_06
+[INFO] time: 0.005203 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_06.in /tmp/tmpnudrc7nc/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_06.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_07
+[INFO] time: 0.003990 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_07.in /tmp/tmp7yo6skln/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_07.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_08
+[INFO] time: 0.004016 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_08.in /tmp/tmpl91jirms/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_08.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_09
+[INFO] time: 0.004308 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_09.in /tmp/tmpw6s5hqp4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_09.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_00
+[INFO] time: 0.004259 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_00.in /tmp/tmp9_u_d8d_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_00.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_01
+[INFO] time: 0.004018 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_01.in /tmp/tmpurxdufy3/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_01.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_02
+[INFO] time: 0.004728 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_02.in /tmp/tmpg2p23qca/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_02.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_03
+[INFO] time: 0.004471 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_03.in /tmp/tmpg1_j482u/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_03.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_04
+[INFO] time: 0.006649 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_04.in /tmp/tmpfa85gxja/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_04.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_05
+[INFO] time: 0.004027 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_05.in /tmp/tmp8sq_ym24/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_05.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_06
+[INFO] time: 0.004050 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_06.in /tmp/tmpe6cudxcs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_06.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_07
+[INFO] time: 0.003820 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_07.in /tmp/tmpwgvdbjk_/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_07.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_08
+[INFO] time: 0.003628 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_08.in /tmp/tmpe6pbgxp3/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_08.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_random_possibly_infeasible_09
+[INFO] time: 0.003617 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/graph/min_cost_b_flow/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_09.in /tmp/tmpvd2wujne/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fde4f1d25a7bfd29d312403ba399d3f7/test/small_random_possibly_infeasible_09.out
+ok OK
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.020646 sec  (for large_random_06)
+[INFO] max memory: 3.936000 MB  (for large_random_05)
+[SUCCESS] test success: 54 cases
+[32mINFO[0m:onlinejudge_verify.verify:all tests succeeded[0m
