@@ -1,0 +1,8 @@
+g++: standalone components/bitwise_zeta.hpp
+g++: standalone components/walsh_hadamard.hpp
+g++: standalone convolution/bitwise_convolution.hpp
+g++: standalone convolution/boolean_convolution.hpp
+g++: bitwise_transforms.cpp
+g++: transforms.cpp
+g++: convolution.cpp
+Verification passed

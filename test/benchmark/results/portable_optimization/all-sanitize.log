@@ -1,0 +1,7 @@
+g++: prime_sieve.cpp
+prime_sieve: OK
+g++: components_number_theory.cpp
+g++: bitwise_transforms.cpp
+g++: transforms.cpp
+g++: convolution.cpp
+Verification passed

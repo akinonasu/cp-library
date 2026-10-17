@@ -1,0 +1,7 @@
+g++: standalone math/prime_sieve.hpp
+g++: standalone components/divisor_zeta.hpp
+g++: standalone convolution/gcd_lcm_convolution.hpp
+g++: prime_sieve.cpp
+prime_sieve: OK
+g++: components_number_theory.cpp
+Verification passed

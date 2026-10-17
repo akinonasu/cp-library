@@ -1,0 +1,16 @@
+type,operation,log2_n,baseline_ms,optimized_ms,speedup
+mint,walsh,10,0.020712,0.006374,3.249766
+mint,subset_zeta,10,0.020994,0.004858,4.321602
+mint,subset_mobius,10,0.018406,0.005091,3.615377
+mint,superset_zeta,10,0.012533,0.003264,3.839362
+mint,superset_mobius,10,0.014313,0.003043,4.703531
+uint64,walsh,10,0.007256,0.004937,1.469659
+uint64,subset_zeta,10,0.004725,0.003993,1.183152
+uint64,subset_mobius,10,0.004190,0.003632,1.153652
+uint64,superset_zeta,10,0.004832,0.003718,1.299695
+uint64,superset_mobius,10,0.004140,0.002908,1.423741
+double,walsh,10,0.006849,0.004587,1.493115
+double,subset_zeta,10,0.005075,0.003487,1.455712
+double,subset_mobius,10,0.005493,0.003761,1.460301
+double,superset_zeta,10,0.005061,0.002794,1.811546
+double,superset_mobius,10,0.005339,0.002977,1.793414
