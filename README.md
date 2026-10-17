@@ -84,7 +84,7 @@
 | `fps/multipoint_eval.hpp` | 多点評価 | [使い方](docs/multipoint_eval.md) |
 | `fps/interpolate.hpp` | 多項式補間 | [使い方](docs/interpolate.md) |
 | `fps/taylor_shift.hpp` | Taylor Shift | [使い方](docs/taylor_shift.md) |
-| `math/sqrt_floor.hpp` | Mod of Linear の列の等差数列分割 | [使い方](docs/sqrt_floor.md) |
+| `math/partition_mod_of_linear.hpp` | Mod of Linear の列の等差数列分割 | [使い方](docs/partition_mod_of_linear.md) |
 | `data_structure/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
 | `math/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
 | `math/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |

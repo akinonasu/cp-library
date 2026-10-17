@@ -1,0 +1,5 @@
+{
+  "headers": ["math/partition_mod_of_linear.hpp"],
+  "unit": ["test/unit/partition_mod_of_linear.cpp", "test/unit/standalone.cpp"],
+  "sanitize": ["test/unit/partition_mod_of_linear.cpp", "test/unit/standalone.cpp"]
+}

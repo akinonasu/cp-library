@@ -1,0 +1,7 @@
+g++: standalone math/partition_mod_of_linear.hpp
+g++: partition_mod_of_linear.cpp
+g++: standalone.cpp
+clang++: standalone math/partition_mod_of_linear.hpp
+clang++: partition_mod_of_linear.cpp
+clang++: standalone.cpp
+Verification passed

@@ -1,0 +1,10 @@
+small {'callback': 9.188, 'vector': 11.54, 'baseline': 12.559}
+medium {'callback': 7.56, 'vector': 12.962, 'baseline': 15.172}
+large {'callback': 16.177, 'vector': 54.35, 'baseline': 54.045}
+simple {'callback': 2.953, 'vector': 3.205, 'baseline': 21.36}
+uint64 {'callback': 2.994, 'vector': 2.946}
+small {'callback': 9.108, 'vector': 11.512, 'baseline': 12.317}
+medium {'callback': 7.902, 'vector': 13.375, 'baseline': 16.117}
+large {'callback': 16.181, 'vector': 55.111, 'baseline': 54.756}
+simple {'callback': 3.645, 'vector': 3.307, 'baseline': 22.014}
+uint64 {'callback': 3.054, 'vector': 3.049}

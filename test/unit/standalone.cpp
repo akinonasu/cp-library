@@ -38,7 +38,7 @@
 #include "math/min_of_mod_of_linear.hpp"
 #include "math/prefix_min_of_mod_of_linear.hpp"
 #include "math/monoid_floor_sum.hpp"
-#include "math/sqrt_floor.hpp"
+#include "math/partition_mod_of_linear.hpp"
 #include "string/edit_distance.hpp"
 #include "string/lcs.hpp"
 #include "string/rolling_hash.hpp"
@@ -173,9 +173,9 @@ int main() {
 	assert(product[0] == mint(1));
 	for (int i = 1; i < 16; ++i) assert(product[i] == mint(0));
 	assert((monoid_floor_sum<std::int64_t, add, zero>(3, 5, 2, 1, 1, 10) == 13));
-	auto [dx, dy, segments] = sqrt_floor(3, 5, 2, 1);
+	auto segments = partition_mod_of_linear(3, 5, 2, 1);
 	std::vector<std::int64_t> actual(3);
-	for (auto [x, y, length] : segments)
-		for (std::int64_t j = 0; j < length; ++j) actual[x + dx * j] = y + dy * j;
+	for (auto [x, y, dx, dy, count] : segments)
+		for (std::uint64_t j = 0; j < count; ++j) actual[x + dx * j] = __int128_t(y) + __int128_t(dy) * j;
 	assert(actual == std::vector<std::int64_t>({1, 3, 0}));
 }

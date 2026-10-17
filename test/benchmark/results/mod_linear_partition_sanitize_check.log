@@ -1,0 +1,3 @@
+clang++: partition_mod_of_linear.cpp
+clang++: standalone.cpp
+Verification passed
