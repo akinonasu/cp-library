@@ -85,6 +85,7 @@ bool lyndon_impl(std::span<const T> s, std::vector<Run> &runs, std::uint64_t bud
 			int j = stack[top];
 			stack[++top] = i;
 			if (j == n) continue;
+			if constexpr (!Indexed) if (s[i] != s[j]) continue;
 			int period = j - i;
 			int back = i && s[i - 1] == s[j - 1] ? extend(true, i, j, std::min(i, period)) : 0;
 			if (back < 0) return false;
