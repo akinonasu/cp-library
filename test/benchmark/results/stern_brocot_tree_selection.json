@@ -1,0 +1,4 @@
+{
+  "headers": ["components/stern_brocot_path.hpp", "math/stern_brocot_tree.hpp"],
+  "unit": ["test/unit/stern_brocot_tree.cpp", "test/unit/standalone.cpp"]
+}

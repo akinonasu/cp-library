@@ -34,6 +34,7 @@
 #include "fps/polynomial_gcd.hpp"
 #include "convolution/online_convolution.hpp"
 #include "math/fraction.hpp"
+#include "math/stern_brocot_tree.hpp"
 #include "math/matrix.hpp"
 #include "math/xor_basis.hpp"
 #include "math/min_of_mod_of_linear.hpp"
@@ -65,6 +66,8 @@ struct StaticTreeSum {
 };
 
 int main() {
+	SternBrocotTree<> rational_tree(5, 3);
+	assert((rational_tree.depth() == 3 && rational_tree.ancestor(2)->value() == std::pair<std::uint64_t, std::uint64_t>(3, 2)));
 	OnlineConvolution<> online(3);
 	assert(online.push(1, 3) == 3 && online.push(2, 4) == 10 && online.push(0, 0) == 8);
 	MaxFlow<> maximum(2);

@@ -67,6 +67,7 @@
 | `math/mod_inv.hpp` | 定数時間 mod inv | [使い方](docs/mod_inv.md) |
 | `math/mod_pow.hpp` | 定数時間 mod pow・離散対数 | [使い方](docs/mod_pow.md) |
 | `math/fraction.hpp` | 有理数の四則演算・正確な比較 | [使い方](docs/fraction.md) |
+| `math/stern_brocot_tree.hpp` | Stern–Brocot Tree・圧縮経路・祖先・LCA | [使い方](docs/stern_brocot_tree.md) |
 | `math/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
 | `math/xor_basis.hpp` | XOR 基底・順序統計・共通部分・復元・ロールバック・区間クエリ | [使い方](docs/xor_basis.md) |
 | `math/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
