@@ -144,7 +144,8 @@ public:
 	explicit PartiallyRetroactivePriorityQueue(Compare compare = Compare{}, std::uint64_t seed = 0) : compare(std::move(compare)), rng(seed) {}
 	PartiallyRetroactivePriorityQueue(const std::vector<update_type> &updates, Compare compare = Compare{}, std::uint64_t seed = 0)
 		: PartiallyRetroactivePriorityQueue(std::move(compare), seed) {
-		bool ok = assign(updates); assert(ok); (void)ok;
+		[[maybe_unused]] bool ok = assign(updates);
+		assert(ok);
 	}
 	PartiallyRetroactivePriorityQueue(const PartiallyRetroactivePriorityQueue &) = default;
 	PartiallyRetroactivePriorityQueue &operator=(const PartiallyRetroactivePriorityQueue &) = default;
@@ -179,7 +180,8 @@ public:
 		int x = make(time, std::move(value));
 		auto [a, b] = split(root, rank);
 		insert_push(a, b, x);
-		bool ok = erase_at(rank + 1); assert(ok); (void)ok;
+		[[maybe_unused]] bool ok = erase_at(rank + 1);
+		assert(ok);
 		return true;
 	}
 	bool erase(Time time) {
