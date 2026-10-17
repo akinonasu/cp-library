@@ -21,4 +21,6 @@ auto best = smawk(rows, columns, [&](int row, int old_col, int new_col) {
 
 `columns` は列数、または調べる列番号を順に並べた `std::vector<int>` です。後者ではその順序で完全単調とします。行がある場合は少なくとも 1 列必要です。
 
+各行の最良の列が単調でも、完全単調とは限りません。その場合は、同じ比較関数の形で使える [Monotone Minima](monotone_minima.md) を使います。
+
 行数を $$n$$、列数を $$m$$ として時間・空間は $$O(n+m)$$ です。比較は $$O(1)$$ とします。

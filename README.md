@@ -122,6 +122,7 @@
 | `components/d_ary_heap.hpp` | D-ary Heap | [使い方](docs/d_ary_heap.md) |
 | `components/RadixHeap.hpp` | Radix Heap | [使い方](docs/radix_heap.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
+| `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
 | `components/matrix_arithmetic.hpp` | 行列の内部演算 | [使い方](docs/matrix_arithmetic.md) |
 | `components/fps_operations.hpp` | FPS の内部演算 | [使い方](docs/fps_operations.md) |

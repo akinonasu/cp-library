@@ -1,0 +1,7 @@
+{
+  "headers": ["components/monotone_minima.hpp"],
+  "unit": ["test/unit/monotone_minima.cpp"],
+  "sanitize": ["test/unit/monotone_minima.cpp"],
+  "verification": ["test/monotone_minima.test.cpp"],
+  "bundles": ["components/monotone_minima.hpp"]
+}

@@ -1,0 +1,8 @@
+g++: standalone components/monotone_minima.hpp
+g++: monotone_minima.cpp
+clang++: standalone components/monotone_minima.hpp
+clang++: monotone_minima.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone components/monotone_minima.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: monotone_minima.cpp
+Verification passed
+Release-check-passed
