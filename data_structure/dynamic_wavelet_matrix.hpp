@@ -45,6 +45,15 @@ class DynamicWaveletMatrix {
 		}
 		return {l, r};
 	}
+	bool matches_suffix(int p, U key, int d) const {
+		for (; d < Bits; ++d) {
+			bool bit = (key >> (Bits - 1 - d)) & 1;
+			auto [rank, value] = bits[d].access_rank(p);
+			if (value != bit) return false;
+			p = bit ? middle[d] + rank : p - rank;
+		}
+		return true;
+	}
 
 	static std::tuple<int, bool, int> move_rank(BitVector &row, int from, int to, bool value) {
 		if constexpr (requires { row.move_rank(from, to, value); }) return row.move_rank(from, to, value);
@@ -173,9 +182,21 @@ class DynamicWaveletMatrix {
 	}
 	int count(int l, int r, T value) const {
 		check(l, r);
-		if (!contains(value)) return 0;
-		auto [a, b] = interval(l, r, encode(value));
-		return b - a;
+		if (l == r || !contains(value)) return 0;
+		U key = encode(value);
+		int d = 0;
+		for (; d < Bits; ++d) {
+			int zero = middle[d];
+			if (zero && zero != n) break;
+			if (bool((key >> (Bits - 1 - d)) & 1) != !zero) return 0;
+		}
+		if (r - l == 1) return matches_suffix(l, key, d);
+		for (; d < Bits && l < r; ++d) {
+			auto [a, b] = bits[d].rank1(l, r);
+			if ((key >> (Bits - 1 - d)) & 1) l = middle[d] + a, r = middle[d] + b;
+			else l -= a, r -= b;
+		}
+		return r - l;
 	}
 	int rank(T value, int r) const { return count(0, r, value); }
 	int range_freq(int l, int r, T upper) const {

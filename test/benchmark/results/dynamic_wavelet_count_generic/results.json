@@ -1,0 +1,389 @@
+{
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "kernel": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "cpu": "model name\t: 13th Gen Intel(R) Core(TM) i7-13700F",
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG"
+  ],
+  "cpu_affinity": [
+    2
+  ],
+  "trials": 7,
+  "warmup": 1,
+  "input_seed": 18106471,
+  "schedule_seed": 28063,
+  "metric": "in-process wall time for queries and interleaved updates; excludes generation, construction, final validation, I/O",
+  "baseline": "22c50c36e5066c07c2e6c34ab2c81a1896ce53ae",
+  "extra_flags": {
+    "before": [
+      "-DDYNAMIC_WAVELET_COUNT_HEADER=\"/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/dynamic-wavelet-count-benchmark/baseline/data_structure/dynamic_wavelet_matrix.hpp\""
+    ],
+    "after": []
+  },
+  "source_sha256": "3f718a04f547f0130170525bbd174942c1964080b17b5e4ae013f45b6e013e2c",
+  "headers": {
+    "data_structure/dynamic_wavelet_matrix.hpp": {
+      "before": "20ce66500a3b3528a5c728a1f8895bf3d4c2ec8564dcaa180c465a61496fc7fa",
+      "after": "a2af5a1addcd64377a290b1f5dd6ec7587f100d0132c8f6551649af4468ae33a"
+    },
+    "components/dynamic_bit_vector.hpp": {
+      "before": "6ccac3add8d0c35649ec0a2b50e03e1142502473c8e2b1fd453ffe77c32689e7",
+      "after": "6ccac3add8d0c35649ec0a2b50e03e1142502473c8e2b1fd453ffe77c32689e7"
+    }
+  },
+  "workloads": {
+    "random20": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "1790419671103619672",
+      "milliseconds": {
+        "before_count": [
+          58.992413,
+          58.858606,
+          62.708825,
+          59.552974,
+          60.032514,
+          59.07531,
+          59.519539
+        ],
+        "after_count": [
+          57.859082,
+          58.076129,
+          57.801636,
+          57.42133,
+          57.361977,
+          58.893449,
+          58.755681
+        ],
+        "range_freq": [
+          122.720261,
+          121.956731,
+          121.829051,
+          122.517517,
+          123.022202,
+          121.208946,
+          120.01152
+        ]
+      },
+      "median_ms": {
+        "before_count": 59.519539,
+        "after_count": 57.859082,
+        "range_freq": 121.956731
+      }
+    },
+    "short20": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "2860003828978785232",
+      "milliseconds": {
+        "before_count": [
+          28.840157,
+          29.227261,
+          28.352156,
+          28.188186,
+          28.547437,
+          29.936449,
+          28.910784
+        ],
+        "after_count": [
+          26.898191,
+          26.648794,
+          27.21709,
+          27.454929,
+          27.469711,
+          27.112746,
+          26.994572
+        ],
+        "range_freq": [
+          62.771971,
+          63.359929,
+          63.320654,
+          63.152509,
+          63.163257,
+          64.293764,
+          63.049833
+        ]
+      },
+      "median_ms": {
+        "before_count": 28.840157,
+        "after_count": 27.112746,
+        "range_freq": 63.163257
+      }
+    },
+    "single20": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "2860003828978785232",
+      "milliseconds": {
+        "before_count": [
+          24.967757,
+          25.480921,
+          25.206331,
+          24.703322,
+          25.040509,
+          25.69676,
+          25.311418
+        ],
+        "after_count": [
+          19.230466,
+          19.157137,
+          19.056548,
+          19.306746,
+          19.033984,
+          19.352768,
+          20.65331
+        ],
+        "range_freq": [
+          55.034087,
+          54.623166,
+          54.605052,
+          54.463931,
+          54.278226,
+          55.234775,
+          55.514321
+        ]
+      },
+      "median_ms": {
+        "before_count": 25.206331,
+        "after_count": 19.230466,
+        "range_freq": 54.623166
+      }
+    },
+    "full64": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "2860003828978785232",
+      "milliseconds": {
+        "before_count": [
+          119.203934,
+          116.330786,
+          121.500273,
+          122.11117,
+          118.311282,
+          119.159653,
+          118.864885
+        ],
+        "after_count": [
+          116.412627,
+          112.647984,
+          114.851518,
+          115.285311,
+          112.664987,
+          110.387895,
+          112.404339
+        ],
+        "range_freq": [
+          265.82692,
+          261.357762,
+          265.150698,
+          265.485304,
+          265.109684,
+          265.317261,
+          264.445474
+        ]
+      },
+      "median_ms": {
+        "before_count": 119.159653,
+        "after_count": 112.664987,
+        "range_freq": 265.150698
+      }
+    },
+    "missing64": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "0",
+      "milliseconds": {
+        "before_count": [
+          55.967968,
+          55.188231,
+          55.181304,
+          55.172396,
+          55.031022,
+          54.95547,
+          54.848126
+        ],
+        "after_count": [
+          57.605951,
+          54.379292,
+          53.156664,
+          55.301002,
+          53.51831,
+          53.74783,
+          53.740567
+        ],
+        "range_freq": [
+          116.356368,
+          112.983419,
+          115.000684,
+          113.650477,
+          115.683314,
+          113.858953,
+          114.93676
+        ]
+      },
+      "median_ms": {
+        "before_count": 55.172396,
+        "after_count": 53.74783,
+        "range_freq": 114.93676
+      }
+    },
+    "narrow64": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "1790419671103619672",
+      "milliseconds": {
+        "before_count": [
+          65.639697,
+          65.311167,
+          65.193116,
+          66.420091,
+          65.547299,
+          66.016193,
+          65.921766
+        ],
+        "after_count": [
+          61.117105,
+          59.534117,
+          60.047624,
+          60.900401,
+          60.251502,
+          60.22711,
+          61.239488
+        ],
+        "range_freq": [
+          136.844568,
+          135.713122,
+          137.790442,
+          138.454272,
+          136.989633,
+          136.409609,
+          138.900847
+        ]
+      },
+      "median_ms": {
+        "before_count": 65.639697,
+        "after_count": 60.251502,
+        "range_freq": 136.989633
+      }
+    },
+    "duplicates64": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "14118127825955112578",
+      "milliseconds": {
+        "before_count": [
+          27.089843,
+          27.112162,
+          27.047194,
+          27.56375,
+          27.03745,
+          27.337437,
+          27.086341
+        ],
+        "after_count": [
+          22.795049,
+          22.756929,
+          22.844805,
+          23.472301,
+          22.828014,
+          22.677346,
+          22.938143
+        ],
+        "range_freq": [
+          55.435696,
+          55.42051,
+          56.20694,
+          55.678701,
+          55.327198,
+          55.87172,
+          56.164768
+        ]
+      },
+      "median_ms": {
+        "before_count": 27.089843,
+        "after_count": 22.828014,
+        "range_freq": 55.678701
+      }
+    },
+    "uniform64": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "14531536852354127099",
+      "milliseconds": {
+        "before_count": [
+          9.487637,
+          9.390519,
+          9.310088,
+          9.331437,
+          9.463755,
+          9.46306,
+          9.698415
+        ],
+        "after_count": [
+          4.994642,
+          5.059325,
+          4.949307,
+          4.964711,
+          4.992008,
+          5.088389,
+          5.035189
+        ],
+        "range_freq": [
+          19.683812,
+          19.483572,
+          19.657078,
+          19.436935,
+          19.645031,
+          19.512281,
+          19.612649
+        ]
+      },
+      "median_ms": {
+        "before_count": 9.46306,
+        "after_count": 4.994642,
+        "range_freq": 19.612649
+      }
+    },
+    "mixed20": {
+      "initial_size": 100000,
+      "operations": 100000,
+      "checksum": "11320490229799197581",
+      "milliseconds": {
+        "before_count": [
+          87.889706,
+          86.313947,
+          88.448861,
+          88.054433,
+          88.029429,
+          87.127443,
+          85.763627
+        ],
+        "after_count": [
+          85.206083,
+          86.816108,
+          88.431693,
+          84.906885,
+          87.854873,
+          85.32556,
+          86.512032
+        ],
+        "range_freq": [
+          138.595019,
+          137.016933,
+          134.272164,
+          135.179503,
+          137.091473,
+          138.556262,
+          138.820542
+        ]
+      },
+      "median_ms": {
+        "before_count": 87.889706,
+        "after_count": 86.512032,
+        "range_freq": 137.091473
+      }
+    }
+  }
+}
