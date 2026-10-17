@@ -88,6 +88,10 @@ class LCA {
 		check(v);
 		return in[u] <= in[v] && in[v] < out[u];
 	}
+	std::pair<int, int> subtree(int v) const {
+		check(v);
+		return {in[v], out[v]};
+	}
 };
 
 #endif

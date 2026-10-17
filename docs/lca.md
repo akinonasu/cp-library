@@ -21,6 +21,7 @@ int v = tree.lca(0, 2);
 | `lca(u,v)` | 最小共通祖先 |
 | `dist(u,v)` | 経路の辺数 |
 | `is_ancestor(u,v)` | `u` が `v` の祖先か。自身も含む |
+| `subtree(v)` | DFS の行きがけ順での部分木の半開区間 `[l,r)`。`l` は `v` の位置 |
 | `parent[v]` / `depth[v]` | 親（根は -1）／根からの辺数 |
 | `n` / `edges[id]` | 全頂点数／辺の両端 |
 

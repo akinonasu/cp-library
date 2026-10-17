@@ -54,6 +54,7 @@
 | `graph/min_cost_flow.hpp` | 最小費用流・費用曲線 | [使い方](docs/min_cost_flow.md) |
 | `graph/dijkstra.hpp` | Dijkstra | [使い方](docs/dijkstra.md) |
 | `graph/lca.hpp` | LCA | [使い方](docs/lca.md) |
+| `graph/virtual_tree.hpp` | Virtual Tree | [使い方](docs/virtual_tree.md) |
 | `graph/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
 | `graph/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
 | `graph/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |

@@ -1,0 +1,8 @@
+clang++: lca.cpp
+clang++: virtual_tree.cpp
+Virtual Tree OK
+Verification passed
+clang++: virtual_tree.cpp
+Virtual Tree OK
+Verification passed
+Virtual Tree OK

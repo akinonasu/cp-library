@@ -1,0 +1,31 @@
+g++: standalone graph/lca.hpp
+g++: standalone graph/virtual_tree.hpp
+g++: lca.cpp
+g++: virtual_tree.cpp
+Virtual Tree OK
+g++: standalone.cpp
+clang++: standalone graph/lca.hpp
+clang++: standalone graph/virtual_tree.hpp
+clang++: lca.cpp
+clang++: virtual_tree.cpp
+Virtual Tree OK
+clang++: standalone.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone graph/lca.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone graph/virtual_tree.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: lca.cpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: virtual_tree.cpp
+Virtual Tree OK
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone.cpp
+Verification passed
+Virtual Tree OK
+g++: standalone graph/virtual_tree.hpp
+g++: virtual_tree.cpp
+Virtual Tree OK
+clang++: standalone graph/virtual_tree.hpp
+clang++: virtual_tree.cpp
+Virtual Tree OK
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone graph/virtual_tree.hpp
+/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: virtual_tree.cpp
+Virtual Tree OK
+Verification passed
+Virtual Tree OK

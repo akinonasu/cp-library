@@ -1,0 +1,289 @@
+{
+  "retrieved_at": "2026-10-17T15:08:31.352955+00:00",
+  "problem": "lca",
+  "listing": {
+    "count": 5671,
+    "submissions": [
+      {
+        "id": 278239,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16572416,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2025-04-09T06:18:37.43136Z",
+        "time": 0.024,
+        "user_name": "chaihf"
+      },
+      {
+        "id": 370969,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 18579456,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-05-07T10:03:00.266427Z",
+        "time": 0.027
+      },
+      {
+        "id": 370928,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 18599936,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-05-07T07:17:22.31807Z",
+        "time": 0.027
+      },
+      {
+        "id": 370926,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 19107840,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-05-07T07:14:38.515887Z",
+        "time": 0.027
+      },
+      {
+        "id": 362491,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16891904,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-03-26T12:25:07.394598Z",
+        "time": 0.027,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 362365,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16764928,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-03-25T23:55:55.413978Z",
+        "time": 0.027,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 269514,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16621568,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2025-02-24T07:07:32.902681Z",
+        "time": 0.027,
+        "user_name": "chaihf"
+      },
+      {
+        "id": 195957,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16764928,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2024-03-09T16:49:00.966475Z",
+        "time": 0.027,
+        "user_name": "andyli"
+      },
+      {
+        "id": 370955,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 18718720,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-05-07T08:32:59.146979Z",
+        "time": 0.028
+      },
+      {
+        "id": 370701,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 18632704,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-05-06T08:31:12.520957Z",
+        "time": 0.028
+      },
+      {
+        "id": 362359,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16887808,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-03-25T23:37:09.907294Z",
+        "time": 0.028,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 269431,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 17997824,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2025-02-23T22:43:48.991879Z",
+        "time": 0.028,
+        "user_name": "chaihf"
+      },
+      {
+        "id": 269304,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 17985536,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2025-02-23T09:33:59.314506Z",
+        "time": 0.028,
+        "user_name": "chaihf"
+      },
+      {
+        "id": 370967,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 18714624,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-05-07T09:59:39.963538Z",
+        "time": 0.029
+      },
+      {
+        "id": 362364,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16793600,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-03-25T23:53:59.128587Z",
+        "time": 0.029,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 354023,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 15060992,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-02-19T19:02:38.700808Z",
+        "time": 0.029,
+        "user_name": "2qbingxuan"
+      },
+      {
+        "id": 354020,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 14864384,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-02-19T18:53:40.193842Z",
+        "time": 0.029,
+        "user_name": "2qbingxuan"
+      },
+      {
+        "id": 362367,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16908288,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-03-26T00:07:07.979972Z",
+        "time": 0.03,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 354019,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16240640,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-02-19T18:51:15.742177Z",
+        "time": 0.03,
+        "user_name": "2qbingxuan"
+      },
+      {
+        "id": 354017,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 14929920,
+        "problem_name": "lca",
+        "problem_title": "Lowest Common Ancestor",
+        "status": "AC",
+        "submission_time": "2026-02-19T18:31:19.475152Z",
+        "time": 0.03,
+        "user_name": "2qbingxuan"
+      }
+    ]
+  },
+  "references": [
+    {
+      "id": 278239,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 16572416,
+      "problem_name": "lca",
+      "problem_title": "Lowest Common Ancestor",
+      "status": "AC",
+      "submission_time": "2025-04-09T06:18:37.43136Z",
+      "time": 0.024,
+      "user_name": "chaihf",
+      "source_sha256": "48bafc7dc3ffe2128ea495facb2625aeacb423d86af1575be71c8fa35b706e5d",
+      "url": "https://judge.yosupo.jp/submission/278239"
+    },
+    {
+      "id": 370969,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 18579456,
+      "problem_name": "lca",
+      "problem_title": "Lowest Common Ancestor",
+      "status": "AC",
+      "submission_time": "2026-05-07T10:03:00.266427Z",
+      "time": 0.027,
+      "source_sha256": "fcd34d54bcde3d93d0cee5b55ade2ada9ed01ebfa400c6ecb9cdac749bb2fda6",
+      "url": "https://judge.yosupo.jp/submission/370969"
+    },
+    {
+      "id": 370928,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 18599936,
+      "problem_name": "lca",
+      "problem_title": "Lowest Common Ancestor",
+      "status": "AC",
+      "submission_time": "2026-05-07T07:17:22.31807Z",
+      "time": 0.027,
+      "source_sha256": "8507f1eeeb2073e014ff49c1b88d6d51adb341d715f12d570aa513e2463aefa9",
+      "url": "https://judge.yosupo.jp/submission/370928"
+    }
+  ],
+  "virtual_tree_references": [
+    "https://atcoder.jp/contests/abc340/editorial/9249",
+    "https://atcoder.jp/contests/abc359/editorial/10259?lang=ja"
+  ]
+}
