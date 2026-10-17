@@ -4,6 +4,8 @@ title: "Segtree Beats の使い方一覧"
 
 [Segtree Beats](https://qandori.github.io/cp-library/data_structure/segtree_beats.hpp.html) は、次の更新と取得を任意に組み合わせて使えます。区間はすべて $$[l,r)$$ です。
 
+除算や bitwise AND/OR など、別の更新・集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/generic_segtree_beats.hpp.html) を使ってください。
+
 ```cpp
 #include "lib/data_structure/segtree_beats.hpp"
 

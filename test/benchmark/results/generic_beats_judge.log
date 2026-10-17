@@ -1,0 +1,829 @@
+INFO:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}
+INFO:onlinejudge_verify.verify:verify: test/generic_segtree_beats.test.cpp
+INFO:onlinejudge_verify.verify:problem: https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum
+INFO:onlinejudge_verify.verify:$ sleep 2
+INFO:onlinejudge_verify.verify:$ oj download --system -d .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test --silent https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/qand/.local/share/online-judge-tools/cookie.jar
+git version 2.34.1
+[INFO] $ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+[INFO] $ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/info.toml
+[37m00:36:46 [INFO] Start range_chmin_chmax_add_range_sum[0m
+[37m00:36:46 [INFO] generate params.h[0m
+[37m00:36:46 [INFO] compile checker[0m
+[37m00:36:50 [INFO] compile solution[0m
+[37m00:36:51 [INFO] compile generators[0m
+[37m00:36:51 [INFO] compile example.in[0m
+[37m00:36:51 [INFO] compile small.cpp[0m
+[37m00:36:51 [INFO] compile medium.cpp[0m
+[37m00:36:51 [INFO] compile random.cpp[0m
+[37m00:36:52 [INFO] compile random2.cpp[0m
+[37m00:36:52 [INFO] compile random3.cpp[0m
+[37m00:36:53 [INFO] compile max_random.cpp[0m
+[37m00:36:53 [INFO] compile small_absolute_values.cpp[0m
+[37m00:36:54 [INFO] compile issue_1369_log2.cpp[0m
+[37m00:36:54 [INFO] clear input /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/in[0m
+[37m00:36:54 [INFO] gen example.in 1cases[0m
+[37m00:36:54 [INFO] gen small.cpp 10cases[0m
+[37m00:36:54 [INFO] gen medium.cpp 3cases[0m
+[37m00:36:54 [INFO] gen random.cpp 3cases[0m
+[37m00:36:55 [INFO] gen random2.cpp 3cases[0m
+[37m00:36:55 [INFO] gen random3.cpp 3cases[0m
+[37m00:36:56 [INFO] gen max_random.cpp 3cases[0m
+[37m00:36:56 [INFO] gen small_absolute_values.cpp 3cases[0m
+[37m00:36:56 [INFO] gen issue_1369_log2.cpp 4cases[0m
+[37m00:36:56 [INFO] clear output /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/out[0m
+[37m00:36:56 [INFO] ANS      1 msecs : example_00 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_00 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_01 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_02 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_03 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_04 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_05 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_06 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_07 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_08 : b''[0m
+[37m00:36:56 [INFO] ANS      0 msecs : small_09 : b''[0m
+[37m00:36:56 [INFO] ANS      2 msecs : medium_00 : b''[0m
+[37m00:36:56 [INFO] ANS      1 msecs : medium_01 : b''[0m
+[37m00:36:56 [INFO] ANS      1 msecs : medium_02 : b''[0m
+[37m00:36:57 [INFO] ANS    287 msecs : random_00 : b''[0m
+[37m00:36:57 [INFO] ANS    316 msecs : random_01 : b''[0m
+[37m00:36:57 [INFO] ANS    207 msecs : random_02 : b''[0m
+[37m00:36:58 [INFO] ANS    518 msecs : random2_00 : b''[0m
+[37m00:36:58 [INFO] ANS    565 msecs : random2_01 : b''[0m
+[37m00:36:59 [INFO] ANS    527 msecs : random2_02 : b''[0m
+[37m00:36:59 [INFO] ANS    625 msecs : random3_00 : b''[0m
+[37m00:37:00 [INFO] ANS    624 msecs : random3_01 : b''[0m
+[37m00:37:01 [INFO] ANS    610 msecs : random3_02 : b''[0m
+[37m00:37:01 [INFO] ANS    432 msecs : max_random_00 : b''[0m
+[37m00:37:01 [INFO] ANS    425 msecs : max_random_01 : b''[0m
+[37m00:37:02 [INFO] ANS    436 msecs : max_random_02 : b''[0m
+[37m00:37:02 [INFO] ANS    284 msecs : small_absolute_values_00 : b''[0m
+[37m00:37:02 [INFO] ANS    302 msecs : small_absolute_values_01 : b''[0m
+[37m00:37:03 [INFO] ANS    186 msecs : small_absolute_values_02 : b''[0m
+[37m00:37:03 [INFO] ANS    360 msecs : issue_1369_log2_00 : b''[0m
+[37m00:37:03 [INFO] ANS    385 msecs : issue_1369_log2_01 : b''[0m
+[37m00:37:04 [INFO] ANS    383 msecs : issue_1369_log2_02 : b''[0m
+[37m00:37:04 [INFO] ANS    434 msecs : issue_1369_log2_03 : b''[0m
+[INFO] save cookie to: /home/qand/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: example_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/example_00.in
+[INFO] output: example_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/example_00.out
+
+[INFO] sample 1
+[INFO] input: issue_1369_log2_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_00.in
+[INFO] output: issue_1369_log2_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_00.out
+
+[INFO] sample 2
+[INFO] input: issue_1369_log2_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_01.in
+[INFO] output: issue_1369_log2_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_01.out
+
+[INFO] sample 3
+[INFO] input: issue_1369_log2_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_02.in
+[INFO] output: issue_1369_log2_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_02.out
+
+[INFO] sample 4
+[INFO] input: issue_1369_log2_03
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_03.in
+[INFO] output: issue_1369_log2_03
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_03.out
+
+[INFO] sample 5
+[INFO] input: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_00.in
+[INFO] output: max_random_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_00.out
+
+[INFO] sample 6
+[INFO] input: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_01.in
+[INFO] output: max_random_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_01.out
+
+[INFO] sample 7
+[INFO] input: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_02.in
+[INFO] output: max_random_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_02.out
+
+[INFO] sample 8
+[INFO] input: medium_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_00.in
+[INFO] output: medium_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_00.out
+
+[INFO] sample 9
+[INFO] input: medium_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_01.in
+[INFO] output: medium_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_01.out
+
+[INFO] sample 10
+[INFO] input: medium_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_02.in
+[INFO] output: medium_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_02.out
+
+[INFO] sample 11
+[INFO] input: random2_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_00.in
+[INFO] output: random2_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_00.out
+
+[INFO] sample 12
+[INFO] input: random2_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_01.in
+[INFO] output: random2_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_01.out
+
+[INFO] sample 13
+[INFO] input: random2_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_02.in
+[INFO] output: random2_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_02.out
+
+[INFO] sample 14
+[INFO] input: random3_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_00.in
+[INFO] output: random3_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_00.out
+
+[INFO] sample 15
+[INFO] input: random3_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_01.in
+[INFO] output: random3_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_01.out
+
+[INFO] sample 16
+[INFO] input: random3_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_02.in
+[INFO] output: random3_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_02.out
+
+[INFO] sample 17
+[INFO] input: random_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_00.in
+[INFO] output: random_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_00.out
+
+[INFO] sample 18
+[INFO] input: random_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_01.in
+[INFO] output: random_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_01.out
+
+[INFO] sample 19
+[INFO] input: random_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_02.in
+[INFO] output: random_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_02.out
+
+[INFO] sample 20
+[INFO] input: small_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_00.in
+[INFO] output: small_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_00.out
+
+[INFO] sample 21
+[INFO] input: small_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_01.in
+[INFO] output: small_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_01.out
+
+[INFO] sample 22
+[INFO] input: small_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_02.in
+[INFO] output: small_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_02.out
+
+[INFO] sample 23
+[INFO] input: small_03
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_03.in
+[INFO] output: small_03
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_03.out
+
+[INFO] sample 24
+[INFO] input: small_04
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_04.in
+[INFO] output: small_04
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_04.out
+
+[INFO] sample 25
+[INFO] input: small_05
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_05.in
+[INFO] output: small_05
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_05.out
+
+[INFO] sample 26
+[INFO] input: small_06
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_06.in
+[INFO] output: small_06
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_06.out
+
+[INFO] sample 27
+[INFO] input: small_07
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_07.in
+[INFO] output: small_07
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_07.out
+
+[INFO] sample 28
+[INFO] input: small_08
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_08.in
+[INFO] output: small_08
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_08.out
+
+[INFO] sample 29
+[INFO] input: small_09
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_09.in
+[INFO] output: small_09
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_09.out
+
+[INFO] sample 30
+[INFO] input: small_absolute_values_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_00.in
+[INFO] output: small_absolute_values_00
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_00.out
+
+[INFO] sample 31
+[INFO] input: small_absolute_values_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_01.in
+[INFO] output: small_absolute_values_01
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_01.out
+
+[INFO] sample 32
+[INFO] input: small_absolute_values_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_02.in
+[INFO] output: small_absolute_values_02
+[SUCCESS] saved to: .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_02.out
+INFO:onlinejudge_verify.languages.cplusplus:$ g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/db920b039be0977ed11e79b44730ea52/a.out test/generic_segtree_beats.test.cpp
+git version 2.34.1
+INFO:onlinejudge.service.library_checker:$ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+INFO:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/info.toml --compile-checker
+[33m00:37:07 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m00:37:07 [INFO] Start range_chmin_chmax_add_range_sum[0m
+[37m00:37:07 [INFO] generate params.h[0m
+[37m00:37:07 [INFO] Test cases are already generated[0m
+[37m00:37:07 [INFO] The checker is already compiled[0m
+INFO:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/db920b039be0977ed11e79b44730ea52/a.out -d .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test --print-input --tle 10 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker -j 2
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 33 cases found
+
+[INFO] example_00
+[INFO] time: 0.005219 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/example_00.in /tmp/tmp0ssfo0mi/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/example_00.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1369_log2_00
+[INFO] time: 0.133745 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_00.in /tmp/tmptx8eyvru/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_00.out
+ok 2000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1369_log2_01
+[INFO] time: 0.140954 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_01.in /tmp/tmphrdeon8s/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_01.out
+ok 2000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1369_log2_02
+[INFO] time: 0.136340 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_02.in /tmp/tmpors0wcuw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_02.out
+ok 2000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1369_log2_03
+[INFO] time: 0.164640 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_03.in /tmp/tmp_ladr7yv/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_03.out
+ok 2000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.269406 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_00.in /tmp/tmpvy9p4ha1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_00.out
+ok 50380 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.273349 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_01.in /tmp/tmpzpbha6de/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_01.out
+ok 49839 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_00
+[INFO] time: 0.004834 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_00.in /tmp/tmpzql4zzg5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_00.out
+ok 321 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_01
+[INFO] time: 0.004744 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_01.in /tmp/tmppmjbmeuh/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_01.out
+ok 329 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_02
+[INFO] time: 0.004808 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_02.in /tmp/tmp_27thbuh/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_02.out
+ok 358 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.272732 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_02.in /tmp/tmpk1ecafja/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_02.out
+ok 50353 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random2_00
+[INFO] time: 0.348295 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_00.in /tmp/tmpsy7symmj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_00.out
+ok 66900 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random2_01
+[INFO] time: 0.324041 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_01.in /tmp/tmpmtn7lasp/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_01.out
+ok 66734 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random2_02
+[INFO] time: 0.336373 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_02.in /tmp/tmpc9pf0sq2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_02.out
+ok 66900 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random3_00
+[INFO] time: 0.384452 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_00.in /tmp/tmpe8svzaxx/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_00.out
+ok "27591019373984"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random3_01
+[INFO] time: 0.378559 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_01.in /tmp/tmp3_tmhvs2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_01.out
+ok "913937777905"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random3_02
+[INFO] time: 0.411455 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_02.in /tmp/tmp15wzz19n/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_02.out
+ok "-2474931574590"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.228822 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_00.in /tmp/tmpauu2jha7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_00.out
+ok 37293 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.217421 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_01.in /tmp/tmpugbudsy0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_01.out
+ok 36765 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.149171 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_02.in /tmp/tmp9f3q5yi4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_02.out
+ok 29891 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.004522 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_00.in /tmp/tmpozczir65/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_00.out
+ok 7 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.008198 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_01.in /tmp/tmpdnsobj9l/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_01.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.009648 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_02.in /tmp/tmpe3fs6ejk/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_02.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_03
+[INFO] time: 0.004585 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_03.in /tmp/tmp8kxc36y5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_03.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_04
+[INFO] time: 0.004890 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_04.in /tmp/tmpmvowgzt6/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_04.out
+ok 3 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_05
+[INFO] time: 0.004742 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_05.in /tmp/tmp6qmafw97/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_05.out
+ok 8 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_06
+[INFO] time: 0.004673 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_06.in /tmp/tmputyuf8re/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_06.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_07
+[INFO] time: 0.004584 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_07.in /tmp/tmp2cy88ksz/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_07.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_08
+[INFO] time: 0.004324 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_08.in /tmp/tmp_l6bpx83/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_08.out
+ok 9 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_09
+[INFO] time: 0.004203 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_09.in /tmp/tmpmxy1cx3n/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_09.out
+ok "-1026572914941"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_absolute_values_00
+[INFO] time: 0.149305 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_00.in /tmp/tmpg02b6r7z/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_00.out
+ok 36921 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_absolute_values_01
+[INFO] time: 0.164831 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_01.in /tmp/tmptb5mj_q0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_01.out
+ok 36908 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_absolute_values_02
+[INFO] time: 0.093832 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_02.in /tmp/tmpk86mr10w/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_02.out
+ok 30190 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.411455 sec  (for random3_02)
+[INFO] max memory: 57.544000 MB  (for random3_02)
+[SUCCESS] test success: 33 cases
+INFO:onlinejudge_verify.languages.cplusplus:$ clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 -I /mnt/c/Users/yukiz/Desktop/cp-library -o .verify-helper/cache/db920b039be0977ed11e79b44730ea52/a.out test/generic_segtree_beats.test.cpp
+INFO:onlinejudge.service.library_checker:$ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/info.toml --compile-checker
+[33m00:37:12 [WARNING] --compile-checker is deprecated. Checker is compiled in default[0m
+[37m00:37:12 [INFO] Start range_chmin_chmax_add_range_sum[0m
+[37m00:37:12 [INFO] generate params.h[0m
+[37m00:37:12 [INFO] Test cases are already generated[0m
+[37m00:37:12 [INFO] The checker is already compiled[0m
+INFO:onlinejudge_verify.verify:$ oj test -c .verify-helper/cache/db920b039be0977ed11e79b44730ea52/a.out -d .verify-helper/cache/db920b039be0977ed11e79b44730ea52/test --print-input --tle 10 --judge-command /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker -j 2
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] 33 cases found
+
+[INFO] example_00
+[INFO] time: 0.004441 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/example_00.in /tmp/tmp7iqxgsds/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/example_00.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1369_log2_00
+[INFO] time: 0.136857 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_00.in /tmp/tmpu1j_rws7/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_00.out
+ok 2000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1369_log2_01
+[INFO] time: 0.152741 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_01.in /tmp/tmp3ztmv9ln/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_01.out
+ok 2000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1369_log2_02
+[INFO] time: 0.138212 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_02.in /tmp/tmp_dggbnnl/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_02.out
+ok 2000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] issue_1369_log2_03
+[INFO] time: 0.153589 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_03.in /tmp/tmpz3au90tj/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/issue_1369_log2_03.out
+ok 2000 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_00
+[INFO] time: 0.267115 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_00.in /tmp/tmpbawsml_4/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_00.out
+ok 50380 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_01
+[INFO] time: 0.265624 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_01.in /tmp/tmpfytl2sze/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_01.out
+ok 49839 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_00
+[INFO] time: 0.004403 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_00.in /tmp/tmprdsget3d/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_00.out
+ok 321 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_01
+[INFO] time: 0.004216 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_01.in /tmp/tmp43w4lshf/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_01.out
+ok 329 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] medium_02
+[INFO] time: 0.004649 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_02.in /tmp/tmpgu2m4vn2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/medium_02.out
+ok 358 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] max_random_02
+[INFO] time: 0.253989 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_02.in /tmp/tmptk1lcfih/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/max_random_02.out
+ok 50353 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random2_00
+[INFO] time: 0.341636 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_00.in /tmp/tmph31sbli0/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_00.out
+ok 66900 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random2_01
+[INFO] time: 0.345654 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_01.in /tmp/tmpzprntskw/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_01.out
+ok 66734 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random2_02
+[INFO] time: 0.344045 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_02.in /tmp/tmp54s5o429/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random2_02.out
+ok 66900 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random3_00
+[INFO] time: 0.394213 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_00.in /tmp/tmpf6s7369g/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_00.out
+ok "27591019373984"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random3_01
+[INFO] time: 0.383722 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_01.in /tmp/tmpn4u2ql85/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_01.out
+ok "913937777905"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_00
+[INFO] time: 0.165276 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_00.in /tmp/tmp27t2p08v/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_00.out
+ok 37293 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random3_02
+[INFO] time: 0.383459 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_02.in /tmp/tmpuqc65q12/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random3_02.out
+ok "-2474931574590"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_02
+[INFO] time: 0.135139 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_02.in /tmp/tmpja1ulmyt/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_02.out
+ok 29891 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_00
+[INFO] time: 0.004197 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_00.in /tmp/tmpl5b0oi0q/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_00.out
+ok 7 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] random_01
+[INFO] time: 0.201382 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_01.in /tmp/tmpnb052xi2/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/random_01.out
+ok 36765 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_01
+[INFO] time: 0.005508 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_01.in /tmp/tmpvfm8tv1u/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_01.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_02
+[INFO] time: 0.006004 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_02.in /tmp/tmp_ta4gfhs/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_02.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_03
+[INFO] time: 0.004609 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_03.in /tmp/tmpsz9mhcj5/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_03.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_04
+[INFO] time: 0.004408 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_04.in /tmp/tmpf6pmky21/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_04.out
+ok 3 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_05
+[INFO] time: 0.004522 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_05.in /tmp/tmpvybiuvqn/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_05.out
+ok 8 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_06
+[INFO] time: 0.005061 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_06.in /tmp/tmp5co2w4oz/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_06.out
+ok 4 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_07
+[INFO] time: 0.004534 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_07.in /tmp/tmpfnd_jfao/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_07.out
+ok 5 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_08
+[INFO] time: 0.004717 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_08.in /tmp/tmpx8nqlqn1/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_08.out
+ok 9 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_09
+[INFO] time: 0.004522 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_09.in /tmp/tmp23uyqgt8/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_09.out
+ok "-1026572914941"
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_absolute_values_00
+[INFO] time: 0.160600 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_00.in /tmp/tmpvk8pxbje/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_00.out
+ok 36921 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_absolute_values_01
+[INFO] time: 0.172882 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_01.in /tmp/tmpth2gp78o/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_01.out
+ok 36908 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] small_absolute_values_02
+[INFO] time: 0.097422 sec
+[INFO] $ /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_chmin_chmax_add_range_sum/checker /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_02.in /tmp/tmpm3sumdkq/actual.out /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/db920b039be0977ed11e79b44730ea52/test/small_absolute_values_02.out
+ok 30190 tokens
+judge's output:
+(empty)
+[SUCCESS] AC
+
+[INFO] slowest: 0.394213 sec  (for random3_00)
+[INFO] max memory: 57.532000 MB  (for random3_00)
+[SUCCESS] test success: 33 cases
+INFO:onlinejudge_verify.verify:all tests succeeded
+Judge tests: verified 1, reused 110
