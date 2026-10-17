@@ -66,6 +66,7 @@
 | `math/mod_inv.hpp` | 定数時間 mod inv | [使い方](docs/mod_inv.md) |
 | `math/mod_pow.hpp` | 定数時間 mod pow・離散対数 | [使い方](docs/mod_pow.md) |
 | `math/mod_sqrt.hpp` | 任意の素数 mod の平方根 | [使い方](docs/mod_sqrt.md) |
+| `math/discrete_log.hpp` | 合成数 mod にも対応する離散対数 | [使い方](docs/discrete_log.md) |
 | `math/fraction.hpp` | 有理数の四則演算・正確な比較 | [使い方](docs/fraction.md) |
 | `math/stern_brocot_tree.hpp` | Stern–Brocot Tree・圧縮経路・祖先・LCA | [使い方](docs/stern_brocot_tree.md) |
 | `math/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
@@ -97,6 +98,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `components/barrett32.hpp` | 32 bit Barrett 演算 | [使い方](docs/barrett32.md) |
 | `components/binomial_prefix_core.hpp` | 二項係数の prefix sum の内部演算 | [使い方](docs/binomial_prefix_core.md) |
 | `components/flow_graph.hpp` | フローの残余グラフ | [使い方](docs/flow_graph.md) |
 | `components/push_relabel.hpp` | Push-Relabel の内部演算 | [使い方](docs/push_relabel.md) |

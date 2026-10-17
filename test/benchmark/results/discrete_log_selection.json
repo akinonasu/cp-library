@@ -1,0 +1,6 @@
+{
+  "headers": ["components/barrett32.hpp", "math/discrete_log.hpp"],
+  "unit": ["test/unit/barrett32.cpp", "test/unit/discrete_log.cpp"],
+  "sanitize": ["test/unit/barrett32.cpp", "test/unit/discrete_log.cpp"],
+  "bundles": ["components/barrett32.hpp", "math/discrete_log.hpp"]
+}

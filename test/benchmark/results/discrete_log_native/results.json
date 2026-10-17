@@ -1,0 +1,264 @@
+{
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "kernel": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "cpu": "model name\t: 13th Gen Intel(R) Core(TM) i7-13700F",
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero"
+  ],
+  "cpu_affinity": [
+    2
+  ],
+  "trials": 7,
+  "warmup": 1,
+  "input_seed": 734762,
+  "schedule_seed": 482661,
+  "metric": "wall time including process startup, input, computation, output and exit",
+  "input_transport": "regular file for every program",
+  "stack_limit_bytes": 67108864,
+  "sources": {
+    "library": "d19145cb775de019185c544b7cf19e1e2620ac7cdb87457e6b83eb4b66a80960",
+    "unordered_map": "d19145cb775de019185c544b7cf19e1e2620ac7cdb87457e6b83eb4b66a80960",
+    "361590": "1ec0d0409fa3544c8f376a1585f4b73b2b727072044f564dde0464c44005ba6d",
+    "405763": "983fc2ce7ac2ed514b8ec33d5f213f506eb922944d5965fa5d478a2ede5b321a"
+  },
+  "headers": {
+    "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+    "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+    "components/fast_io.hpp": "d4a7e58d2a9373e675ddaed1a31ea3f1748b75a2af4201791ac63163b3af38b8",
+    "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+    "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+    "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+    "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239"
+  },
+  "workloads": {
+    "prime_yes": {
+      "queries": 600,
+      "input_sha256": "08106f6cfd1db39fd1ba3ce7c6ac516a819a60d9d3cb72d66d736b29aa8569c9",
+      "output_sha256": "e8810a50ab7dcefaf27993177ffc55158fe493b9380926d14fb83b25c7fe476f",
+      "milliseconds": {
+        "library": [
+          40.5108,
+          38.477236,
+          32.589475,
+          32.767772,
+          32.700927,
+          32.419961,
+          32.302187
+        ],
+        "unordered_map": [
+          550.300092,
+          554.70451,
+          568.439169,
+          553.304014,
+          556.951758,
+          554.200985,
+          549.636929
+        ],
+        "361590": [
+          121.785811,
+          125.136697,
+          130.917962,
+          113.380339,
+          123.130279,
+          146.276082,
+          122.180148
+        ],
+        "405763": [
+          117.903059,
+          112.298796,
+          113.766146,
+          144.100677,
+          118.794859,
+          121.498118,
+          115.433312
+        ]
+      },
+      "median_ms": {
+        "library": 32.700927,
+        "unordered_map": 554.200985,
+        "361590": 123.130279,
+        "405763": 117.903059
+      }
+    },
+    "composite_mixed": {
+      "queries": 600,
+      "input_sha256": "842318ba5e2bf2f58ddec0b10d91e4a038a659b1297e7c2f26b0b1b282cd4cf0",
+      "output_sha256": "e01c2190eb76785e0a864117870901a6a4a98c586d8c80a493452a278c08ef3a",
+      "milliseconds": {
+        "library": [
+          5.66517,
+          5.685051,
+          6.031316,
+          5.756456,
+          5.598333,
+          5.571778,
+          20.898384
+        ],
+        "unordered_map": [
+          320.361003,
+          321.763751,
+          320.762827,
+          319.069005,
+          327.293178,
+          320.452548,
+          323.044033
+        ],
+        "361590": [
+          42.71347,
+          38.119715,
+          37.977515,
+          38.904784,
+          36.61381,
+          37.110933,
+          50.218153
+        ],
+        "405763": [
+          44.782137,
+          35.787374,
+          36.312499,
+          36.619352,
+          36.2563,
+          35.657171,
+          52.036369
+        ]
+      },
+      "median_ms": {
+        "library": 5.685051,
+        "unordered_map": 320.762827,
+        "361590": 38.119715,
+        "405763": 36.312499
+      }
+    },
+    "short_order": {
+      "queries": 3000,
+      "input_sha256": "fb4ac1b0801136221a04d0476ae6db0fb05b7d388828157f1690b80dcac8b5d2",
+      "output_sha256": "34688b030fac89cba0c3f6e6fe3c6cd5fa24af07f2e1c5da76bdc7ff1f44e618",
+      "milliseconds": {
+        "library": [
+          2.99917,
+          2.945188,
+          4.137529,
+          3.760069,
+          3.908393,
+          3.780355,
+          3.41984
+        ],
+        "unordered_map": [
+          160.037213,
+          164.133972,
+          163.905358,
+          163.701955,
+          164.813963,
+          162.527001,
+          162.666295
+        ],
+        "361590": [
+          22.221296,
+          21.788627,
+          22.981708,
+          22.514515,
+          24.91604,
+          25.182263,
+          22.329738
+        ],
+        "405763": [
+          22.19241,
+          21.26908,
+          22.586113,
+          22.513769,
+          26.074862,
+          22.367653,
+          23.513089
+        ]
+      },
+      "median_ms": {
+        "library": 3.760069,
+        "unordered_map": 163.701955,
+        "361590": 22.514515,
+        "405763": 22.513769
+      }
+    },
+    "even_impossible": {
+      "queries": 3000,
+      "input_sha256": "773b50bc3233d2d7e0947ac48edbaed575b80f95ad762fbda9e91ff496a3b129",
+      "output_sha256": "42415cf91d0fd6d427e7aaa531ba49e7a0d8543c3d25eb7ff99bde7f16358454",
+      "milliseconds": {
+        "library": [
+          3.352326,
+          3.161357,
+          3.359804,
+          3.271797,
+          3.250913,
+          3.231232,
+          3.178622
+        ],
+        "unordered_map": [
+          3.197268,
+          3.062263,
+          3.131556,
+          3.263774,
+          3.097029,
+          3.093818,
+          3.048624
+        ],
+        "361590": [
+          6.270886,
+          6.226738,
+          6.508213,
+          6.313705,
+          6.30274,
+          6.373381,
+          6.248482
+        ],
+        "405763": [
+          6.357244,
+          6.346066,
+          6.511025,
+          6.214697,
+          6.360997,
+          6.37289,
+          6.34634
+        ]
+      },
+      "median_ms": {
+        "library": 3.250913,
+        "unordered_map": 3.097029,
+        "361590": 6.30274,
+        "405763": 6.357244
+      }
+    },
+    "full32": {
+      "queries": 300,
+      "input_sha256": "5b26d4cacf587b687812a0d4450e736016ee9b65f347aeefbec882c7877ef2ed",
+      "output_sha256": "c388844ffa18eda0acaeacdd280cb05a488d133fbe4b19b8e86f1587860d3aba",
+      "milliseconds": {
+        "library": [
+          4.719801,
+          5.064924,
+          5.153872,
+          4.92243,
+          14.472425,
+          4.950757,
+          5.172946
+        ],
+        "unordered_map": [
+          403.066805,
+          410.829672,
+          401.704855,
+          404.38421,
+          406.461895,
+          403.94765,
+          406.259237
+        ]
+      },
+      "median_ms": {
+        "library": 5.064924,
+        "unordered_map": 404.38421
+      }
+    }
+  }
+}
