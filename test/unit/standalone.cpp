@@ -5,6 +5,7 @@
 #include "data_structure/dynamic_segtree.hpp"
 #include "data_structure/dynamic_wavelet_matrix.hpp"
 #include "data_structure/li_chao_tree.hpp"
+#include "data_structure/dynamic_li_chao_tree.hpp"
 #include "data_structure/interval_set.hpp"
 #include "data_structure/link_cut_tree.hpp"
 #include "data_structure/slope_trick.hpp"
@@ -76,6 +77,9 @@ int main() {
 	LiChaoTree<> lines({0, 1, 2});
 	lines.add_line(2, 1);
 	assert(lines.query(2) == 5);
+	DynamicLiChaoTree<> online_lines(-3, 4);
+	online_lines.add_segment(-2, 3, 2, 1);
+	assert(online_lines.query(2) == 5 && !online_lines.query(3));
 	IntervalSet<> intervals;
 	intervals.insert(1, 4); intervals.erase(2);
 	assert(intervals.size() == 2 && intervals.mex(1) == 2 && intervals.next(2) == 3);
