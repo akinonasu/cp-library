@@ -102,6 +102,7 @@ Linux x86_64 / WSL2、Core i7-13700F、GCC 15.2、CPU 2 固定です。`-std=c++
 - 既存のランダムな挿入・削除・代入・全問い合わせ・copy/move/swap・再構築のテストを実行。
 - GCC 13.4・15.2、Clang 21.1.8、ASan・UBSan、ヘッダー単独 include、単独利用テスト、リリース時の `-Werror`。
 - Library Checker の Point Set Range Frequency 25 ケース、Range Kth Smallest 24 ケースを GCC・Clang で確認。
+- 新しい単体テストを依存先の期待値に加え、増分検証の 37 テストを確認。
 
 ## 再実行
 
