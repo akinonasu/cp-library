@@ -1,0 +1,92 @@
+{
+  "retrieved_at": "2026-10-17T06:09:44.918895+00:00",
+  "problems": {
+    "predecessor_problem": {
+      "listing": {
+        "count": 2672,
+        "submissions": [
+          {
+            "id": 403023,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 9191424,
+            "problem_name": "predecessor_problem",
+            "problem_title": "Predecessor Problem",
+            "status": "AC",
+            "submission_time": "2026-09-16T21:04:53.087244Z",
+            "time": 0.016,
+            "user_name": "nandhagk"
+          },
+          {
+            "id": 278227,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 11476992,
+            "problem_name": "predecessor_problem",
+            "problem_title": "Predecessor Problem",
+            "status": "AC",
+            "submission_time": "2025-04-09T06:03:49.810219Z",
+            "time": 0.02,
+            "user_name": "chaihf"
+          },
+          {
+            "id": 269275,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 11051008,
+            "problem_name": "predecessor_problem",
+            "problem_title": "Predecessor Problem",
+            "status": "AC",
+            "submission_time": "2025-02-23T07:08:55.650948Z",
+            "time": 0.02,
+            "user_name": "mukundan314"
+          }
+        ]
+      },
+      "references": [
+        {
+          "id": 403023,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 9191424,
+          "problem_name": "predecessor_problem",
+          "problem_title": "Predecessor Problem",
+          "status": "AC",
+          "submission_time": "2026-09-16T21:04:53.087244Z",
+          "time": 0.016,
+          "user_name": "nandhagk",
+          "source_sha256": "59fd15abf763b5a59bb2069e1916e21ccfebbe291d116fb5240690cbce6357d7",
+          "url": "https://judge.yosupo.jp/submission/403023"
+        },
+        {
+          "id": 278227,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 11476992,
+          "problem_name": "predecessor_problem",
+          "problem_title": "Predecessor Problem",
+          "status": "AC",
+          "submission_time": "2025-04-09T06:03:49.810219Z",
+          "time": 0.02,
+          "user_name": "chaihf",
+          "source_sha256": "ef5b067f04c7686cce6a75ccb1426686d0a152b4afe6599f3ddeaeb39a90219a",
+          "url": "https://judge.yosupo.jp/submission/278227"
+        },
+        {
+          "id": 269275,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 11051008,
+          "problem_name": "predecessor_problem",
+          "problem_title": "Predecessor Problem",
+          "status": "AC",
+          "submission_time": "2025-02-23T07:08:55.650948Z",
+          "time": 0.02,
+          "user_name": "mukundan314",
+          "source_sha256": "8e38c11d2530b0e7ba1d4fb7973b83e492a558c7e22c0f01854773a45b0e5c00",
+          "url": "https://judge.yosupo.jp/submission/269275"
+        }
+      ]
+    }
+  }
+}

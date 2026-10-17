@@ -1,0 +1,7 @@
+case,variant,seconds
+max_random_00,library,1.0563593369988666
+max_random_00,reference,0.06526894300077402
+max_all1_00,library,0.3459165700005542
+max_all1_00,reference,0.0849424669995642
+max_sparse_00,library,0.0866125259999535
+max_sparse_00,reference,0.058353948001240497

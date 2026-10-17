@@ -1,0 +1,13 @@
+workload,variant,seconds
+grow,baseline,0.071480334
+grow,library,0.036865727
+range,baseline,0.046466102
+range,library,0.028845648
+fragmented,baseline,0.06490978
+fragmented,library,0.059277189
+split,baseline,0.027135156
+split,library,0.011926668
+sliding,baseline,0.019438132
+sliding,library,0.007277427
+query,baseline,0.087172453
+query,library,0.088689516

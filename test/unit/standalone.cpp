@@ -5,6 +5,7 @@
 #include "data_structure/dynamic_segtree.hpp"
 #include "data_structure/dynamic_wavelet_matrix.hpp"
 #include "data_structure/li_chao_tree.hpp"
+#include "data_structure/interval_set.hpp"
 #include "data_structure/link_cut_tree.hpp"
 #include "data_structure/slope_trick.hpp"
 #include "data_structure/wavelet_matrix.hpp"
@@ -64,6 +65,9 @@ int main() {
 	LiChaoTree<> lines({0, 1, 2});
 	lines.add_line(2, 1);
 	assert(lines.query(2) == 5);
+	IntervalSet<> intervals;
+	intervals.insert(1, 4); intervals.erase(2);
+	assert(intervals.size() == 2 && intervals.mex(1) == 2 && intervals.next(2) == 3);
 	WaveletMatrix<std::int64_t> wm(values);
 	assert(wm.kth_smallest(0, 3, 1) == 2 && wm.sum_largest(0, 3, 2) == 5);
 	WeightedUnionFind<> uf(3);

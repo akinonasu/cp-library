@@ -1,0 +1,62 @@
+{
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG",
+    "-Wall",
+    "-Wextra",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero"
+  ],
+  "reference_flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG",
+    "-Wall",
+    "-Wextra",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-mavx2"
+  ],
+  "reference": {
+    "id": 403023,
+    "is_latest": true,
+    "lang": "cpp",
+    "memory": 9191424,
+    "problem_name": "predecessor_problem",
+    "problem_title": "Predecessor Problem",
+    "status": "AC",
+    "submission_time": "2026-09-16T21:04:53.087244Z",
+    "time": 0.016,
+    "user_name": "nandhagk",
+    "source_sha256": "59fd15abf763b5a59bb2069e1916e21ccfebbe291d116fb5240690cbce6357d7",
+    "url": "https://judge.yosupo.jp/submission/403023"
+  },
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "uname": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "affinity": [
+    2
+  ],
+  "trials": 7,
+  "cases": {
+    "max_random_00": {
+      "input_sha256": "c6d56958da63f939d0d5159ba6a1ca724d203a8a655efb5e72d5965c6cb1ca7a",
+      "canonical_output_sha256": "b35864ad52a14912974694d8added2b8578b6e2f482393ab2857ecb480697879"
+    },
+    "max_all1_00": {
+      "input_sha256": "78bd46a3d85b69a452e5640d2c38d9832535164bf4a7cd78547f666cf7b97f13",
+      "canonical_output_sha256": "f1b6f3d13123ec0b5a525a7d0d9deb297ccd2bfd59c76212ec4aa2bb37a8fda5"
+    },
+    "max_sparse_00": {
+      "input_sha256": "0563a79e087dc3c7611f5e82f80ceec2fd754101f5bedca0d29a46e1d78258d0",
+      "canonical_output_sha256": "521f509b5e7c4f1ae367a484d5cd418bbaeb4bb9cf5aba229676021fbe3c1a77"
+    }
+  },
+  "sha256": {
+    "data_structure/interval_set.hpp": "cb3aaa2681149c61befa9acbe05d4b308f8bc072bc76b21b85b5a053c3b1ce04",
+    "components/fast_io.hpp": "e84d7dc37f3941f7f73ffb8b472dbbda0686008c87da127d4369ca949f247879",
+    "test/interval_set_predecessor.test.cpp": "8de9a3524793b4e460945f5551c59d438f9328fbe785e1b94b4501e17402f406",
+    "test/benchmark/interval_set_judge.py": "d0ebbfffce177a398316860548c5541004bf290d7f9bd892d99c66b97733b83b"
+  }
+}

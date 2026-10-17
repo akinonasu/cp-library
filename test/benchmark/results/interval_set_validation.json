@@ -1,0 +1,58 @@
+{
+  "recorded_at": "2026-10-17T06:16:21.504820+00:00",
+  "sha256": {
+    "data_structure/interval_set.hpp": "cb3aaa2681149c61befa9acbe05d4b308f8bc072bc76b21b85b5a053c3b1ce04",
+    "test/unit/interval_set.cpp": "4e6004afddb398efad7a2a41af5f5e1ff9f86859681f084844019ed229373a61",
+    "test/unit/standalone.cpp": "2300f56e4f75cdbeae2c1d52caa12ae06fea6ef36b96d4c7705d219c168de918",
+    "test/interval_set_predecessor.test.cpp": "8de9a3524793b4e460945f5551c59d438f9328fbe785e1b94b4501e17402f406"
+  },
+  "checks": {
+    "gcc_15_clang_21": {
+      "result": "passed",
+      "log": "interval_set_check.log"
+    },
+    "clang_21_asan_ubsan": {
+      "result": "passed",
+      "log": "interval_set_sanitize_check.log",
+      "note": "The self-assignment warning in these original logs was removed by using an alias. The modified unit test then passed Clang with -Werror, ASan and UBSan."
+    },
+    "gcc_13": {
+      "result": "passed",
+      "compiler": "x86_64-conda-linux-gnu-g++ (conda-forge gcc 13.4.0-20) 13.4.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++2b",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "source": "test/unit/interval_set.cpp"
+    },
+    "aarch64_qemu": {
+      "result": "passed",
+      "compiler": "aarch64-conda-linux-gnu-g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "flags": [
+        "-std=c++2b",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-static"
+      ],
+      "source": "test/unit/interval_set.cpp"
+    },
+    "predecessor_problem": {
+      "result": "passed",
+      "cases": 22,
+      "compilers": [
+        "g++",
+        "clang++"
+      ],
+      "log": "interval_set_judge_check.log"
+    },
+    "documentation": {
+      "result": "passed",
+      "log": "interval_set_docs_check.log"
+    }
+  }
+}
