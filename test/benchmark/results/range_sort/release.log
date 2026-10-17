@@ -1,0 +1,5 @@
+predecessor_set NDEBUG passed
+sortable_segtree NDEBUG passed
+sortable_segtree documentation example passed
+predecessor_set documentation example passed
+Clang NDEBUG bundle: 23 official cases passed
