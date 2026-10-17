@@ -8,3 +8,11 @@ __pycache__/
 .verify-helper/markdown/
 .verify-helper/site/
 .sass-cache/
+
+/test/benchmark/results/portable_optimization/
+/test/benchmark/bitwise_transforms_reference.json
+/test/benchmark/bitwise_transforms_results.csv
+/test/benchmark/bitwise_transforms_small_repeat.csv
+/test/benchmark/prime_sieve_memory.csv
+/test/benchmark/prime_sieve_results.csv
+/test/benchmark/prime_sieve_results_shared_load.csv
