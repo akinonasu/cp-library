@@ -1,0 +1,42 @@
+{
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)",
+    "/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++": "x86_64-conda-linux-gnu-g++ (conda-forge gcc 13.4.0-20) 13.4.0"
+  },
+  "sha256": {
+    "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+    "graph/general_weighted_matching.hpp": "f635efd5314d62a5b7d444ab056660e337a95285508f1785b093cc7129a2e960",
+    "test/unit/general_weighted_matching.cpp": "adcf6567d0b59b9bf1270c194108fe666da9afe62c74058de781f4415dcbf24a",
+    "test/general_weighted_matching.test.cpp": "c4c7b37de221be37bbfe37450ddbd901840724816d11f58b24ae23ce622c984b",
+    "docs/general_weighted_matching.md": "a723acd4808faf74df6753381b5291341300a3bd328218b07505e4c1a42e4680",
+    "docs/weighted_blossom.md": "d66635e70fb8e2e7b248737537d92166d9134371b0975da1b1a44c86b9d1db43"
+  },
+  "selection": {
+    "headers": [
+      "components/weighted_blossom.hpp",
+      "graph/general_weighted_matching.hpp"
+    ],
+    "unit": [
+      "test/unit/general_weighted_matching.cpp"
+    ],
+    "sanitize": [
+      "test/unit/general_weighted_matching.cpp"
+    ],
+    "verification": [
+      "test/general_weighted_matching.test.cpp"
+    ],
+    "bundles": [
+      "components/weighted_blossom.hpp",
+      "graph/general_weighted_matching.hpp"
+    ]
+  },
+  "checks": {
+    "standalone": "2 headers with GCC 15, Clang 21, GCC 13",
+    "units": "1 unit with all three compilers",
+    "sanitize": "Clang ASan/UBSan",
+    "release": "Unit, documentation example and bundled driver with all 24 official cases under Clang NDEBUG -Werror",
+    "judge": "Initial driver passed all 24 official cases with GCC and Clang; final sources passed all 24 with GCC in benchmark and Clang in bundled release build",
+    "docs": "239 sources generated, 124 libraries checked, 2 affected bundles compiled, all API tables checked"
+  }
+}
