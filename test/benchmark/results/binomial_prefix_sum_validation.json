@@ -1,0 +1,94 @@
+{
+  "recorded_at": "2026-10-17T08:19:03.426136+00:00",
+  "sha256": {
+    "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+    "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+    "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+    "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66",
+    "components/fast_io.hpp": "e84d7dc37f3941f7f73ffb8b472dbbda0686008c87da127d4369ca949f247879",
+    "test/unit/binomial_prefix_sum.cpp": "b69c3f28da8787c60b11c9cc770cf297d630b4561a3e76197b3cc122ced838d4",
+    "test/unit/standalone.cpp": "e52bdf58d58dc54567fdc4677f4081684d4bd271a8835a9a9a22debb34ac4363",
+    "test/binomial_prefix_sum_online.test.cpp": "61e6f9466376fbf9c8c5ebcb1129526333d6e7b2ac527cf5ffb914bcb312daf6",
+    "test/binomial_prefix_sum_offline.test.cpp": "2af611f92853ec8f8f1d8f64b8cb46af285b0c77e48b45b81129e3f9bff70e9e"
+  },
+  "checks": {
+    "gcc_15_clang_21": {
+      "result": "passed",
+      "log": "binomial_prefix_sum_check.log"
+    },
+    "clang_21_asan_ubsan": {
+      "result": "passed",
+      "log": "binomial_prefix_sum_sanitize_check.log"
+    },
+    "gcc_13": {
+      "result": "passed",
+      "compiler": "GCC 13.4.0",
+      "source": "test/unit/binomial_prefix_sum.cpp",
+      "flags": [
+        "-std=c++2b",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ]
+    },
+    "aarch64_qemu": {
+      "result": "passed",
+      "compiler": "GCC 15.2.0",
+      "source": "test/unit/binomial_prefix_sum.cpp",
+      "flags": [
+        "-std=c++2b",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-static"
+      ]
+    },
+    "independent_enumeration_and_sample": {
+      "result": "passed",
+      "enumeration_cases": 136,
+      "public_samples": 1,
+      "compilers": [
+        "g++",
+        "clang++"
+      ],
+      "drivers": [
+        "online",
+        "offline"
+      ],
+      "log": "binomial_prefix_sum_sample_check.log"
+    },
+    "local_system_cases": {
+      "result": "not_run",
+      "reason": "YUKICODER_TOKEN is not set locally",
+      "log": "binomial_prefix_sum_judge_check.log"
+    },
+    "documentation": {
+      "result": "passed",
+      "sources": 183,
+      "headers": 92,
+      "affected_bundles": 3,
+      "log": "binomial_prefix_sum_docs_check.log"
+    },
+    "benchmark_output_comparison": {
+      "result": "passed",
+      "trials": 7,
+      "profiles": [
+        "generic",
+        "native"
+      ],
+      "workloads": [
+        "random",
+        "fixed_n",
+        "edges"
+      ],
+      "queries_per_workload": 200000,
+      "programs": [
+        "online",
+        "offline",
+        "reference_1110156"
+      ]
+    }
+  }
+}

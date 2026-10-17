@@ -17,6 +17,7 @@
 #include "graph/lca.hpp"
 #include "graph/low_link.hpp"
 #include "math/comb.hpp"
+#include "math/binomial_prefix_sum.hpp"
 #include "math/mod_pow.hpp"
 #include "math/factorize.hpp"
 #include "fps/fps.hpp"
@@ -47,6 +48,9 @@ std::int64_t add(std::int64_t a, std::int64_t b) { return a + b; }
 std::int64_t zero() { return 0; }
 
 int main() {
+	BinomialPrefixSum<> prefix(50);
+	assert(prefix.query(50, 2) == mint(51) && prefix.prod(5, 1, 3) == mint(15));
+	assert(binomial_prefix_sum(std::vector<std::pair<int, int>>{{5, 3}, {4, 1}}) == std::vector<mint>({16, 1}));
 	ModPow modular(101);
 	assert(modular.pow(3, 7) == 66 && modular.inv(3) == 34 && modular.pow_root(modular.log(7)) == 7);
 	assert(vector == 0 && min == 0);

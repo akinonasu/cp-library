@@ -65,6 +65,7 @@
 | `math/fraction.hpp` | 有理数の四則演算・正確な比較 | [使い方](docs/fraction.md) |
 | `math/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
 | `math/xor_basis.hpp` | XOR 基底・順序統計・共通部分・復元・ロールバック・区間クエリ | [使い方](docs/xor_basis.md) |
+| `math/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
 | `math/comb.hpp` | 階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 | `math/factorize.hpp` | 素因数分解・素数判定 | [使い方](docs/factorize.md) |
 | `math/generalized_floor_sum.hpp` | 一般化 floor sum | [使い方](docs/generalized_floor_sum.md) |
@@ -90,6 +91,8 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `components/binomial_prefix_core.hpp` | 二項係数の prefix sum の内部演算 | [使い方](docs/binomial_prefix_core.md) |
+| `components/mo_order.hpp` | Mo 法の処理順 | [使い方](docs/mo_order.md) |
 | `components/small_vector.hpp` | Small Vector | [使い方](docs/small_vector.md) |
 | `components/limb_arithmetic.hpp` | Limb Arithmetic | [使い方](docs/limb_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
