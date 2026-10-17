@@ -72,6 +72,18 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(len(plan["unit"]), 3)
         self.assertEqual(len(plan["verification"]), 2)
 
+    def test_fps_directory(self):
+        self.write("fps/fps.hpp", '#include "../math/mint.hpp"\n')
+        self.write("fps/bostan_mori.hpp", '#include "fps.hpp"\n')
+        self.write("test/bostan_mori.test.cpp", '#include "fps/bostan_mori.hpp"\n')
+        previous = self.plan()["state"]
+        self.assertIn("fps/fps.hpp", previous["targets"]["headers"])
+        self.assertIn("fps/bostan_mori.hpp", previous["targets"]["bundles"])
+        self.write("fps/fps.hpp", '#include "../math/mint.hpp"\nusing fps = int;\n')
+        plan = self.plan(previous)
+        self.assertEqual(plan["headers"], ["fps/bostan_mori.hpp", "fps/fps.hpp"])
+        self.assertEqual(plan["verification"], ["test/bostan_mori.test.cpp"])
+
     def test_unchanged_and_documentation_only(self):
         self.write("docs/comb.md", "Updated documentation\n")
         self.write("test/benchmark/result.md", "Updated benchmark\n")
@@ -379,7 +391,7 @@ class IncrementalVerification(unittest.TestCase):
         with patch.object(Path, "read_bytes", changed):
             plan = build_plan(ROOT, previous, environment="test")
         self.assertFalse(plan["full"])
-        self.assertIn("math/fps.hpp", plan["headers"])
+        self.assertIn("fps/fps.hpp", plan["headers"])
         self.assertIn("convolution/convolution.hpp", plan["headers"])
         self.assertIn("test/convolution.test.cpp", plan["verification"])
         self.assertIn("test/weighted_union_find.test.cpp", plan["verification"])

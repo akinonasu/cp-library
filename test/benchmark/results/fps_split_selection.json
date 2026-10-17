@@ -1,0 +1,69 @@
+{
+  "headers": [
+    "components/fps_operations.hpp",
+    "components/fps_product_tree.hpp",
+    "convolution/convolution.hpp",
+    "convolution/cyclic_convolution.hpp",
+    "convolution/max_min_convolution.hpp",
+    "convolution/multiplicative_convolution.hpp",
+    "convolution/multivariate_convolution.hpp",
+    "convolution/ordered_convolution.hpp",
+    "fps/bostan_mori.hpp",
+    "fps/compose.hpp",
+    "fps/compositional_inverse.hpp",
+    "fps/fps.hpp",
+    "fps/interpolate.hpp",
+    "fps/linear_recurrence.hpp",
+    "fps/multipoint_eval.hpp",
+    "fps/taylor_shift.hpp"
+  ],
+  "unit": [
+    "test/unit/convolution.cpp",
+    "test/unit/fps.cpp",
+    "test/unit/fps_algorithms.cpp",
+    "test/unit/ordered_convolution.cpp",
+    "test/unit/standalone.cpp"
+  ],
+  "verification": [
+    "test/convolution.test.cpp",
+    "test/cyclic_convolution.test.cpp",
+    "test/fps_bostan_mori.test.cpp",
+    "test/fps_compose.test.cpp",
+    "test/fps_compositional_inverse.test.cpp",
+    "test/fps_exp.test.cpp",
+    "test/fps_interpolate.test.cpp",
+    "test/fps_inv.test.cpp",
+    "test/fps_linear_recurrence.test.cpp",
+    "test/fps_log.test.cpp",
+    "test/fps_taylor_shift.test.cpp",
+    "test/multiplicative_convolution.test.cpp",
+    "test/multipoint_eval.test.cpp",
+    "test/multivariate_convolution.test.cpp",
+    "test/ordered_convolution.test.cpp"
+  ],
+  "sanitize": [
+    "test/unit/convolution.cpp",
+    "test/unit/fps.cpp",
+    "test/unit/fps_algorithms.cpp",
+    "test/unit/ordered_convolution.cpp",
+    "test/unit/standalone.cpp"
+  ],
+  "bundles": [
+    "components/fps_operations.hpp",
+    "components/fps_product_tree.hpp",
+    "convolution/convolution.hpp",
+    "convolution/cyclic_convolution.hpp",
+    "convolution/max_min_convolution.hpp",
+    "convolution/multiplicative_convolution.hpp",
+    "convolution/multivariate_convolution.hpp",
+    "convolution/ordered_convolution.hpp",
+    "fps/bostan_mori.hpp",
+    "fps/compose.hpp",
+    "fps/compositional_inverse.hpp",
+    "fps/fps.hpp",
+    "fps/interpolate.hpp",
+    "fps/linear_recurrence.hpp",
+    "fps/multipoint_eval.hpp",
+    "fps/taylor_shift.hpp"
+  ]
+}

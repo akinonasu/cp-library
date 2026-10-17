@@ -1,0 +1,43 @@
+g++: standalone components/fps_operations.hpp
+g++: standalone components/fps_product_tree.hpp
+g++: standalone convolution/convolution.hpp
+g++: standalone convolution/cyclic_convolution.hpp
+g++: standalone convolution/max_min_convolution.hpp
+g++: standalone convolution/multiplicative_convolution.hpp
+g++: standalone convolution/multivariate_convolution.hpp
+g++: standalone convolution/ordered_convolution.hpp
+g++: standalone fps/bostan_mori.hpp
+g++: standalone fps/compose.hpp
+g++: standalone fps/compositional_inverse.hpp
+g++: standalone fps/fps.hpp
+g++: standalone fps/interpolate.hpp
+g++: standalone fps/linear_recurrence.hpp
+g++: standalone fps/multipoint_eval.hpp
+g++: standalone fps/taylor_shift.hpp
+g++: convolution.cpp
+g++: fps.cpp
+g++: fps_algorithms.cpp
+g++: ordered_convolution.cpp
+g++: standalone.cpp
+clang++: standalone components/fps_operations.hpp
+clang++: standalone components/fps_product_tree.hpp
+clang++: standalone convolution/convolution.hpp
+clang++: standalone convolution/cyclic_convolution.hpp
+clang++: standalone convolution/max_min_convolution.hpp
+clang++: standalone convolution/multiplicative_convolution.hpp
+clang++: standalone convolution/multivariate_convolution.hpp
+clang++: standalone convolution/ordered_convolution.hpp
+clang++: standalone fps/bostan_mori.hpp
+clang++: standalone fps/compose.hpp
+clang++: standalone fps/compositional_inverse.hpp
+clang++: standalone fps/fps.hpp
+clang++: standalone fps/interpolate.hpp
+clang++: standalone fps/linear_recurrence.hpp
+clang++: standalone fps/multipoint_eval.hpp
+clang++: standalone fps/taylor_shift.hpp
+clang++: convolution.cpp
+clang++: fps.cpp
+clang++: fps_algorithms.cpp
+clang++: ordered_convolution.cpp
+clang++: standalone.cpp
+Verification passed

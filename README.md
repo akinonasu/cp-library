@@ -67,7 +67,14 @@
 | `math/monoid_floor_sum.hpp` | monoid floor sum | [使い方](docs/monoid_floor_sum.md) |
 | `math/min_of_mod_of_linear.hpp` | Mod of Linear の最小値 | [使い方](docs/min_of_mod_of_linear.md) |
 | `math/prefix_min_of_mod_of_linear.hpp` | Mod of Linear の prefix minimum の等差数列圧縮 | [使い方](docs/prefix_min_of_mod_of_linear.md) |
-| `math/fps.hpp` | 形式的冪級数 | [使い方](docs/fps.md) |
+| `fps/fps.hpp` | 形式的冪級数 | [使い方](docs/fps.md) |
+| `fps/bostan_mori.hpp` | Bostan–Mori | [使い方](docs/bostan_mori.md) |
+| `fps/linear_recurrence.hpp` | 線形漸化式の第 k 項 | [使い方](docs/linear_recurrence.md) |
+| `fps/compose.hpp` | 形式的冪級数の合成 | [使い方](docs/compose.md) |
+| `fps/compositional_inverse.hpp` | 形式的冪級数の合成逆元 | [使い方](docs/compositional_inverse.md) |
+| `fps/multipoint_eval.hpp` | 多点評価 | [使い方](docs/multipoint_eval.md) |
+| `fps/interpolate.hpp` | 多項式補間 | [使い方](docs/interpolate.md) |
+| `fps/taylor_shift.hpp` | Taylor Shift | [使い方](docs/taylor_shift.md) |
 | `math/sqrt_floor.hpp` | Mod of Linear の列の等差数列分割 | [使い方](docs/sqrt_floor.md) |
 | `data_structure/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
 | `math/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
@@ -93,6 +100,8 @@
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
 | `components/matrix_arithmetic.hpp` | 行列の内部演算 | [使い方](docs/matrix_arithmetic.md) |
+| `components/fps_operations.hpp` | FPS の内部演算 | [使い方](docs/fps_operations.md) |
+| `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
 | `components/xor_basis_core.hpp` | XOR 基底の内部演算 | [使い方](docs/xor_basis_core.md) |
 
 ## 使い方

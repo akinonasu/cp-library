@@ -16,7 +16,14 @@
 #include "graph/low_link.hpp"
 #include "math/comb.hpp"
 #include "math/factorize.hpp"
-#include "math/fps.hpp"
+#include "fps/fps.hpp"
+#include "fps/bostan_mori.hpp"
+#include "fps/linear_recurrence.hpp"
+#include "fps/compose.hpp"
+#include "fps/compositional_inverse.hpp"
+#include "fps/multipoint_eval.hpp"
+#include "fps/interpolate.hpp"
+#include "fps/taylor_shift.hpp"
 #include "math/fraction.hpp"
 #include "math/matrix.hpp"
 #include "math/xor_basis.hpp"
@@ -113,6 +120,13 @@ int main() {
 	assert(prefix_min[0].y - prefix_min[0].dy * 3 == 2);
 	assert(factorize(12) == std::vector<std::uint64_t>({2, 2, 3}));
 	fps f{1, 2, 3};
+	assert(bostan_mori(fps{1}, fps{1, -1}, 100) == mint(1));
+	assert(linear_recurrence(std::vector<mint>{0, 1}, std::vector<mint>{1, 1}, 10) == mint(55));
+	assert(compose(f, fps{0, 1}) == f);
+	assert(compositional_inverse(fps{0, 1}, 3) == fps({0, 1, 0}));
+	assert(multipoint_eval(f, std::vector<mint>{0, 1}) == std::vector<mint>({1, 6}));
+	assert(interpolate(std::vector<mint>{0, 1}, std::vector<mint>{1, 3}) == fps({1, 2}));
+	assert(taylor_shift(fps{1, 2}, 3) == fps({7, 2}));
 	auto product = f * f.inv(16);
 	assert(product[0] == mint(1));
 	for (int i = 1; i < 16; ++i) assert(product[i] == mint(0));

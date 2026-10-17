@@ -1,10 +1,10 @@
 ---
 title: "形式的冪級数"
-documentation_of: //math/fps.hpp
+documentation_of: //fps/fps.hpp
 ---
 
 ```cpp
-#include "lib/math/fps.hpp"
+#include "lib/fps/fps.hpp"
 
 fps f{1, 2, 3}, g{4, 5};
 fps product = f * g;
@@ -31,26 +31,17 @@ mod は 998244353、係数は定数項から順に格納します。`fps` は `s
 | `f.sqrt(deg = -1)` | 平方根。存在しなければ空配列 |
 | `f.pow(k)` | 非負整数乗。元のサイズで打ち切る |
 | `f.diff()` / `f.integral()` | 微分／定数項 0 の積分。元のサイズを保つ |
-| `f.compose(g,deg = -1)` | 合成 $$f(g(x))$$。$$g_0=0$$ |
-| `f.compositional_inverse(deg = -1)` | 合成逆元。$$f_0=0$$、$$f_1 \ne 0$$ |
 | `f.eval(x)` | 一点評価 |
-| `f.eval(xs)` / `f.multipoint_eval(xs)` | 多点評価 |
-| `fps::interpolate(xs,ys)` | 相異なる点からの補間 |
-| `f.shift(c)` | $$f(x+c)$$ に自身を書き換え、結果を返す |
 | `f.onemul(d,c)` / `f.onediv(d,c)` | $$1+cx^d$$ を掛ける／割る。`d >= 0`、自身のサイズを保つ。除算で `d = 0` なら `c != -1` |
-| `fps::bostan_mori(p,q,k)` | $$p/q$$ の $$x^k$$ の係数。$$q_0 \ne 0$$、$$k \ge 0$$ |
-| `fps::linear_recurrence(initial,c,k)` | $$a_n=c_0a_{n-1}+\cdots+c_{d-1}a_{n-d}$$ の $$a_k$$。初期値・係数は各 $$d$$ 個 |
 
-$$n$$ は入力・出力の最大係数数、$$m$$ は評価点数、$$d$$ は漸化式の次数（Bostan–Mori では $$\max(\lvert p\rvert,\lvert q\rvert)$$）とします。
+[Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html)、[線形漸化式](https://qandori.github.io/cp-library/fps/linear_recurrence.hpp.html)、[合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)、[合成逆元](https://qandori.github.io/cp-library/fps/compositional_inverse.hpp.html)、[多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html)、[補間](https://qandori.github.io/cp-library/fps/interpolate.hpp.html)、[Taylor shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) は専用ヘッダーの通常の関数として使います。本ヘッダーには含まれません。
+
+入力・出力の最大係数数を $$n$$ とします。
 
 | 操作 | 時間計算量 |
 | --- | --- |
 | 加減算・スカラー演算・`diff`・`integral`・`onemul`・`onediv`・一点評価 | $$O(n)$$ |
-| 乗算・級数除算・多項式除算・`inv`・`log`・`exp`・`sqrt`・`shift` | $$O(n \log n)$$ |
+| 乗算・級数除算・多項式除算・`inv`・`log`・`exp`・`sqrt` | $$O(n \log n)$$ |
 | `pow(k)` | $$O(n \log n + \log k)$$ |
-| `compose`・`compositional_inverse` | $$O(n \log^{2} n)$$ |
-| 多点評価 | $$O((n+m) \log^{2}(n+m))$$ |
-| `interpolate` | $$O(m \log^{2} m)$$ |
-| `bostan_mori`・`linear_recurrence` | $$O(d \log d \log k)$$ |
 
-追加空間は、合成・多点評価・補間が $$O(N \log N)$$、その他が $$O(N)$$ です（$$N=\max(n,m,d)$$）。
+追加空間は $$O(n)$$ です。

@@ -1,0 +1,44 @@
+#ifndef CP_FPS_MULTIPOINT_EVAL_HPP
+#define CP_FPS_MULTIPOINT_EVAL_HPP
+
+#include "fps.hpp"
+#include "../components/fps_product_tree.hpp"
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+template<class T>
+std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<T> &xs) {
+	using F = FormalPowerSeries<T>;
+	using W = FormalPowerSeries<fps_detail::Mint>;
+	using base = std::vector<T>;
+	using O = fps_detail::Operations<T>;
+	if constexpr (!std::is_same_v<T, fps_detail::Mint>) return O::export_work(W(multipoint_eval<fps_detail::Mint>(O::import_work(f), O::import_work(xs))));
+	if (xs.empty()) return {};
+	if (f.size() <= 32 || xs.size() <= 32) {
+		base r;
+		r.reserve(xs.size());
+		for (T x : xs) r.push_back(f.eval(x));
+		return r;
+	}
+	constexpr int block = 8;
+	int length = block;
+	while (length < (int)std::max(f.size(), xs.size())) length <<= 1;
+	assert(length <= (1 << 23));
+	int size = length / block;
+	std::vector<base> frequency;
+	auto tree = fps_detail::ProductTree<T>::build(xs, size, block, true, &frequency);
+	F root = f;
+	root.resize(length);
+	std::reverse(root.begin(), root.end());
+	root = root.div_series(tree[1], length);
+	return fps_detail::ProductTree<T>::evaluate(xs, tree, frequency, size, block, std::move(root), true);
+}
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
+
+#endif

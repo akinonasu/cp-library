@@ -9,7 +9,7 @@
 #include <numeric>
 #include <vector>
 
-#include "../math/fps.hpp"
+#include "../fps/fps.hpp"
 
 namespace max_min_convolution_detail {
 template <class T, class Compare>

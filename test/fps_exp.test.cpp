@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/exp_of_formal_power_series"
-#include "../math/fps.hpp"
+#include "../fps/fps.hpp"
 #include <iostream>
 #include <tuple>
 

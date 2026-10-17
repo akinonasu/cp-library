@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "../math/fps.hpp"
+#include "../fps/fps.hpp"
 #include "convolution_fft.hpp"
 #include "convolution_mod.hpp"
 #include "convolution_ring.hpp"

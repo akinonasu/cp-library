@@ -1,4 +1,4 @@
-#include "math/fps.hpp"
+#include "fps/multipoint_eval.hpp"
 #include <cassert>
 #include <random>
 #include <vector>
@@ -18,9 +18,22 @@ int main() {
 		assert(product[0] == mint(1));
 		for (int i = 1; i < n; ++i) assert(product[i] == mint(0));
 		assert(a.log(n).exp(n) == a);
+		auto square = (a * a).pre(n);
+		auto root = square.sqrt(n);
+		assert(root.size() == static_cast<std::size_t>(n) && (root * root).pre(n) == square);
+		fps power(n); power[0] = 1;
+		for (int k = 0; k <= 5; ++k) {
+			assert(a.pow(k) == power);
+			power = (power * a).pre(n);
+		}
+		auto [quotient, remainder] = (a * b).divmod(a);
+		assert(quotient == b && remainder.empty());
+		auto recovered = a.diff().integral();
+		recovered[0] = a[0];
+		assert(recovered == a);
 		vector<mint> xs(n);
 		for (int i = 0; i < n; ++i) xs[i] = random();
-		auto values = a.multipoint_eval(xs);
+		auto values = multipoint_eval(a, xs);
 		for (int i = 0; i < n; ++i) {
 			mint value = 0;
 			for (int j = (n)-1; j >= 0; --j) value = value * xs[i] + a[j];
