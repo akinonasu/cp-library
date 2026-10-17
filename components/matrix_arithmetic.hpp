@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <type_traits>
@@ -17,15 +16,18 @@ namespace matrix_detail {
 template <class T>
 inline constexpr bool integer = std::is_integral_v<T> || std::is_same_v<T, __int128_t> || std::is_same_v<T, __uint128_t>;
 
+template <class T, class = void>
+struct SmallModint : std::false_type {};
+
 template <class T>
-inline constexpr bool small_modint = [] {
-	if constexpr (requires(T x) {
-		typename std::integral_constant<std::uint32_t, T::mod()>;
-		{ x.val() } -> std::convertible_to<std::uint32_t>;
-		{ T::raw(std::uint32_t{}) } -> std::same_as<T>;
-	}) return T::mod() > 1 && T::mod() < (std::uint32_t(1) << 31);
-	else return false;
-}();
+struct SmallModint<T, std::void_t<decltype(std::integral_constant<std::uint32_t, T::mod()>{}),
+	decltype(std::declval<T>().val()), decltype(T::raw(std::uint32_t{}))>>
+	: std::bool_constant<(T::mod() > 1 && T::mod() < (std::uint32_t(1) << 31))
+		&& std::is_convertible_v<decltype(std::declval<T>().val()), std::uint32_t>
+		&& std::is_same_v<decltype(T::raw(std::uint32_t{})), T>> {};
+
+template <class T>
+inline constexpr bool small_modint = SmallModint<T>::value;
 
 inline bool avx2() {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(MATRIX_DISABLE_AVX2)
