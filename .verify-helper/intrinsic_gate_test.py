@@ -347,6 +347,216 @@ class MatrixIntrinsicGateTests(unittest.TestCase):
             emit.assert_called_once_with("gate_skipped", reason="normal event; no extra C++ commands")
 
 
+class EditDistanceIntrinsicGateTests(unittest.TestCase):
+    git = affected_test.AffectedVerification.git
+    write = affected_test.AffectedVerification.write
+    commit = affected_test.AffectedVerification.commit
+    push = no_cache_route_test.NoCacheRouteTests.push
+    merge = no_cache_route_test.NoCacheRouteTests.merge
+    pr = no_cache_route_test.NoCacheRouteTests.pr
+
+    def setUp(self):
+        no_cache_route_test.NoCacheRouteTests.setUp(self)
+        self.git("checkout", "--quiet", self.base)
+        self.write("string/edit_distance.hpp", "#pragma once\n")
+        self.write("test/unit/edit_distance.cpp", '#include "string/edit_distance.hpp"\n')
+        self.write("test/unit/standalone.cpp", '#include "data_structure/dynamic_wavelet_matrix.hpp"\n'
+                   '#include "string/edit_distance.hpp"\n')
+        self.base = self.commit("edit-distance baseline", bind=False)
+        self.write("string/edit_distance.hpp", "#pragma once\nusing edit_distance_changed = int;\n")
+        self.head = self.commit("edit-distance candidate\n\n" + route.TRAILER)
+
+    def test_exact_push_pr_and_main_select_header_and_both_units(self):
+        selected, plan = gate.selected(self.root, *self.push())
+        self.assertEqual(gate.scope_mode(plan), "edit_distance")
+        self.assertEqual(set(plan["unit"]), gate.EDIT_DISTANCE_REQUIRED_UNITS)
+        self.assertEqual(set(plan["headers"]), gate.EDIT_DISTANCE_PRODUCTS)
+        self.assertEqual(selected["source_head"], self.head)
+        self.assertEqual(gate.SCOPES["edit_distance"][2:], (1, 2))
+        merged = self.merge()
+        for event, context in (self.pr(merged), self.push(merged, route.MAIN_REF)):
+            selected, plan = gate.selected(self.root, event, context)
+            self.assertEqual(selected["head"], merged)
+            self.assertEqual(selected["source_head"], self.head)
+            self.assertEqual(gate.scope_mode(plan), "edit_distance")
+            self.assertEqual(set(plan["unit"]), gate.EDIT_DISTANCE_REQUIRED_UNITS)
+            self.assertEqual(set(plan["headers"]), gate.EDIT_DISTANCE_PRODUCTS)
+
+    def test_unknown_missing_extra_and_mixed_scope_fail_closed(self):
+        _, plan = gate.selected(self.root, *self.push())
+        variants = []
+        for group in ("headers", "unit"):
+            for target in plan[group]:
+                altered = copy.deepcopy(plan)
+                altered[group].remove(target)
+                variants.append(altered)
+            for extra in ([plan[group][0]], ["test/unit/extra.cpp" if group == "unit" else "string/extra.hpp"]):
+                altered = copy.deepcopy(plan)
+                altered[group].extend(extra)
+                variants.append(altered)
+        for field, values in (("changed_paths", []), ("changed_paths", ["string/unknown.hpp"]),
+                              ("changed_paths", plan["changed_paths"] + sorted(gate.PRODUCTS)),
+                              ("changed_paths", plan["changed_paths"] + sorted(gate.MATRIX_PRODUCTS)),
+                              ("headers", plan["headers"] + sorted(gate.PRODUCTS)),
+                              ("headers", plan["headers"] + sorted(gate.MATRIX_PRODUCTS))):
+            altered = copy.deepcopy(plan)
+            altered[field] = values
+            variants.append(altered)
+        for altered in variants:
+            with self.subTest(plan=altered), patch.object(gate, "build_affected_plan", return_value=altered):
+                with self.assertRaises(ValueError):
+                    gate.selected(self.root, *self.push())
+
+    def test_actual_missing_inputs_extra_dependents_and_mixed_changes_fail(self):
+        original = self.head
+        for name in sorted(gate.EDIT_DISTANCE_REQUIRED_UNITS | gate.EDIT_DISTANCE_PRODUCTS):
+            with self.subTest(missing=name):
+                self.git("checkout", "--quiet", original)
+                (self.root / name).unlink()
+                self.head = self.commit("remove edit-distance input\n\n" + route.TRAILER)
+                with self.assertRaisesRegex(ValueError, "(Required EDIT_DISTANCE units|Production EDIT_DISTANCE headers)"):
+                    gate.selected(self.root, *self.push())
+        for name in ("test/unit/edit_distance_extra.cpp", "string/edit_distance_extra.hpp"):
+            with self.subTest(extra=name):
+                self.git("checkout", "--quiet", original)
+                self.write(name, '#include "string/edit_distance.hpp"\n')
+                self.head = self.commit("extra dependent requires review\n\n" + route.TRAILER)
+                with self.assertRaisesRegex(ValueError, "exceeds reviewed gate budget"):
+                    gate.selected(self.root, *self.push())
+        for name in ("components/dynamic_bit_vector.hpp", "components/matrix_arithmetic.hpp"):
+            with self.subTest(mixed=name):
+                self.git("checkout", "--quiet", original)
+                self.write(name, "#pragma once\nusing mixed_changed = int;\n")
+                self.head = self.commit("mixed intrinsic changes\n\n" + route.TRAILER)
+                with self.assertRaisesRegex(ValueError, "exactly one reviewed intrinsic mode"):
+                    gate.selected(self.root, *self.push())
+
+    def test_dependencies_require_exact_current_header_for_every_target(self):
+        tree = SourceTree(self.root, self.head)
+        with tempfile.TemporaryDirectory(prefix="edit-distance-deps-") as directory:
+            depfile = Path(directory) / "unit.d"
+            for target in sorted(gate.EDIT_DISTANCE_REQUIRED_UNITS | gate.EDIT_DISTANCE_PRODUCTS):
+                generated = target in gate.EDIT_DISTANCE_PRODUCTS
+                source = Path(directory) / "header.cpp" if generated else self.root / target
+                if generated:
+                    source.write_text(gate.header_source(target))
+                names = {name for name in tree.closure(target) if tree.content(name) is not None}
+                paths = {str(source)} | {str(self.root / name) for name in names}
+                depfile.write_text("gate-output: " + " ".join(sorted(paths)) + "\n")
+                proof = gate.dependency_proof(self.root, tree, depfile, source, target, generated, "edit_distance")
+                self.assertEqual({item["project_path"] for item in proof["project_dependencies"]}, names)
+                self.assertEqual(set(proof["production_headers"]), gate.EDIT_DISTANCE_PRODUCTS)
+                paths.remove(str(self.root / "string/edit_distance.hpp"))
+                depfile.write_text("gate-output: " + " ".join(sorted(paths)) + "\n")
+                with self.subTest(target=target), self.assertRaisesRegex(ValueError, "current production EDIT_DISTANCE headers"):
+                    gate.dependency_proof(self.root, tree, depfile, source, target, generated, "edit_distance")
+
+    def test_external_unknown_missing_source_and_changed_dependencies_fail(self):
+        tree = SourceTree(self.root, self.head)
+        target = "test/unit/edit_distance.cpp"
+        source = self.root / target
+        with tempfile.TemporaryDirectory(prefix="edit-distance-baseline-") as directory:
+            depfile, old = Path(directory) / "unit.d", Path(directory) / "edit_distance.hpp"
+            old.write_bytes(tree.content("string/edit_distance.hpp"))
+            depfile.write_text(f"gate-output: {source} {old}\n")
+            with self.assertRaisesRegex(ValueError, "escaped production checkout"):
+                gate.dependency_proof(self.root, tree, depfile, source, target, family="edit_distance")
+            paths = {str(self.root / name) for name in {target} | gate.EDIT_DISTANCE_PRODUCTS}
+            depfile.write_text("gate-output: " + " ".join(sorted(paths | {str(self.root / 'math/unrelated.hpp')})) + "\n")
+            with self.assertRaisesRegex(ValueError, "not resolved by reviewed source selector"):
+                gate.dependency_proof(self.root, tree, depfile, source, target, family="edit_distance")
+            depfile.write_text("gate-output: " + " ".join(sorted(paths - {str(source)})) + "\n")
+            with self.assertRaisesRegex(ValueError, "actual source"):
+                gate.dependency_proof(self.root, tree, depfile, source, target, family="edit_distance")
+            depfile.write_text("gate-output: " + " ".join(sorted(paths)) + "\n")
+            self.write("string/edit_distance.hpp", "wrong source bytes\n")
+            with self.assertRaisesRegex(ValueError, "differ from exact head"):
+                gate.dependency_proof(self.root, tree, depfile, source, target, family="edit_distance")
+
+    def test_generic_target_keeps_runtime_dispatch_and_native_guards(self):
+        self.assertEqual(list(gate.family_modes("edit_distance")), ["native", "generic"])
+        self.assertEqual(gate.mode_flags("native", "edit_distance"), gate.COMMON + gate.MODES["native"])
+        self.assertEqual(gate.mode_flags("generic", "edit_distance"), gate.COMMON + [
+            "-march=x86-64", "-mtune=generic", "-mno-avx", "-mno-avx2", "-mno-avx512f", "-mno-bmi", "-mno-bmi2"])
+        for mode in ("native", "generic"):
+            self.assertEqual([flag for flag in gate.mode_flags(mode, "edit_distance") if flag.startswith("-D")],
+                             ["-DONLINE_JUDGE", "-DATCODER"])
+        self.assertEqual(gate.macro_proof(MACROS, "generic", "edit_distance")["isa"], {})
+        self.assertTrue(gate.macro_proof(NATIVE_MACROS, "native", "edit_distance")["assertions"])
+        for raw, mode in ((MACROS, "native"), (NATIVE_MACROS, "generic"), (MACROS, "scalar"),
+                          (MACROS + b"#define __AVX512F__ 1\n", "generic"),
+                          (MACROS + b"#define __BMI__ 1\n", "generic"),
+                          (MACROS + b"#define NDEBUG 1\n", "generic"),
+                          (MACROS.replace(b"__GNUC_MINOR__ 2", b"__GNUC_MINOR__ 3"), "generic"),
+                          (MACROS.replace(b"#define assert(expr) check(expr)\n", b""), "generic"),
+                          (NATIVE_MACROS.replace(b"#define __BMI2__ 1\n", b""), "native")):
+            with self.subTest(raw=raw, mode=mode), self.assertRaises(ValueError):
+                gate.macro_proof(raw, mode, "edit_distance")
+        for family, mode in (("edit_distance", "scalar"), ("dwm", "generic"),
+                             ("matrix", "generic"), ("unknown", "native")):
+            with self.subTest(family=family, mode=mode):
+                with self.assertRaisesRegex(ValueError, "Unknown intrinsic mode"):
+                    gate.mode_flags(mode, family)
+                with self.assertRaisesRegex(ValueError, "Unknown intrinsic mode"):
+                    gate.macro_proof(MACROS, mode, family)
+
+    def test_driver_runs_every_target_with_native_and_generic_flags(self):
+        selected, plan = gate.selected(self.root, *self.push())
+        tree = SourceTree(self.root, self.head)
+        with tempfile.TemporaryDirectory(prefix="edit-distance-driver-") as directory:
+            directory = Path(directory)
+            compiler, cc1 = directory / "g++-15", directory / "cc1plus"
+            compiler.write_bytes(b"compiler fixture")
+            cc1.write_bytes(b"cc1 fixture")
+            commands = gate.Commands(directory)
+            compiled, executed, probes = [], [], []
+
+            def run(command, *, source=b"", seconds=gate.COMMAND_SECONDS):
+                command = [str(value) for value in command]
+                commands.count += 1
+                if command == [str(compiler), "-dumpfullversion"]:
+                    return b"15.2.0\n"
+                if command == [str(compiler), "-print-prog-name=cc1plus"]:
+                    return str(cc1).encode() + b"\n"
+                if command[0] != str(compiler):
+                    self.assertEqual(len(command), 1)
+                    executed.append(command[0])
+                    return b""
+                mode = "native" if "-march=native" in command else "generic"
+                flags = gate.mode_flags(mode, "edit_distance")
+                self.assertEqual(command[1:1 + len(flags)], flags)
+                if "-dM" in command:
+                    self.assertEqual(source, b"#include <cassert>\n")
+                    probes.append(mode)
+                    return NATIVE_MACROS if mode == "native" else MACROS
+                self.assertEqual(command[1 + len(flags):3 + len(flags)], ["-I", str(self.root)])
+                source_path, binary = Path(command[-3]), Path(command[-1])
+                target = (source_path.relative_to(self.root).as_posix() if source_path.is_relative_to(self.root)
+                          else source_path.read_text().split('"')[1])
+                names = {name for name in tree.closure(target) if tree.content(name) is not None}
+                paths = {str(source_path)} | {str(self.root / name) for name in names}
+                depfile = Path(command[command.index("-MF") + 1])
+                depfile.write_text("gate-output: " + " ".join(sorted(paths)) + "\n")
+                binary.write_bytes(b"test binary fixture")
+                compiled.append((mode, target, str(binary)))
+                return b""
+
+            def fixture_path(value):
+                return compiler if value == "/usr/bin/g++-15" else Path(value)
+
+            with patch.object(gate, "Commands", return_value=commands), \
+                 patch.object(commands, "run", side_effect=run), \
+                 patch.object(gate, "Path", side_effect=fixture_path), patch.object(gate, "emit") as emit:
+                gate.execute(self.root, selected, plan, directory)
+            self.assertEqual(probes, ["native", "generic"])
+            self.assertEqual([(mode, target) for mode, target, _ in compiled],
+                             [(mode, target) for mode in ("native", "generic")
+                              for group in ("headers", "unit") for target in plan[group]])
+            self.assertEqual(executed, [binary for _, _, binary in compiled])
+            self.assertEqual(commands.count, 16)
+            self.assertEqual(emit.call_args.args, ("gate_completed",))
+
+
 class IntrinsicCommandTests(unittest.TestCase):
     def test_clean_environment_and_nonzero_exit_fail_closed(self):
         directory = Path("/tmp/intrinsic-command-fixture")

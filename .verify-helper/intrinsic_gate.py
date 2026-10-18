@@ -22,9 +22,12 @@ MATRIX_PRODUCTS = {"components/matrix_arithmetic.hpp", "math/matrix.hpp"}
 MATRIX_REQUIRED_UNITS = {"test/unit/" + name + ".cpp" for name in (
     "matrix", "matrix_characteristic", "standalone",
 )}
+EDIT_DISTANCE_PRODUCTS = {"string/edit_distance.hpp"}
+EDIT_DISTANCE_REQUIRED_UNITS = {"test/unit/edit_distance.cpp", "test/unit/standalone.cpp"}
 SCOPES = {
     "dwm": (PRODUCTS, REQUIRED_UNITS, 4, 8),
     "matrix": (MATRIX_PRODUCTS, MATRIX_REQUIRED_UNITS, 2, 3),
+    "edit_distance": (EDIT_DISTANCE_PRODUCTS, EDIT_DISTANCE_REQUIRED_UNITS, 1, 2),
 }
 COMMON = ["-O2", "-std=gnu++23", "-ftrivial-auto-var-init=zero", "-fmodules",
           "-DONLINE_JUDGE", "-DATCODER", "-fno-lto"]
@@ -33,6 +36,12 @@ MODES = {
     "scalar": ["-march=x86-64", "-mtune=generic", "-mno-avx", "-mno-avx2",
                "-mno-avx512f", "-mno-bmi", "-mno-bmi2",
                "-fno-tree-loop-vectorize", "-fno-tree-slp-vectorize"],
+}
+# Baseline compilation retains the public runtime AVX dispatch; it is not a scalar mode.
+EDIT_DISTANCE_MODES = {
+    "native": ["-march=native"],
+    "generic": ["-march=x86-64", "-mtune=generic", "-mno-avx", "-mno-avx2",
+                "-mno-avx512f", "-mno-bmi", "-mno-bmi2"],
 }
 MAX_COMMANDS, MAX_LOG_BYTES, COMMAND_SECONDS = 64, 1024 * 1024, 120
 JOB_SECONDS = 18 * 60
@@ -118,16 +127,22 @@ def scope_mode(plan):
     return family
 
 
+def family_modes(family):
+    require(family in SCOPES, "Unknown intrinsic mode")
+    return EDIT_DISTANCE_MODES if family == "edit_distance" else MODES
+
+
 def mode_flags(mode, family="dwm"):
-    require(family in SCOPES and mode in MODES, "Unknown intrinsic mode")
-    flags = COMMON + MODES[mode]
+    modes = family_modes(family)
+    require(mode in modes, "Unknown intrinsic mode")
+    flags = COMMON + modes[mode]
     if family == "matrix" and mode == "scalar":
         flags += ["-DMATRIX_DISABLE_AVX2"]
     return flags
 
 
 def macro_proof(raw, mode, family="dwm"):
-    require(family in SCOPES, "Unknown intrinsic mode")
+    require(mode in family_modes(family), "Unknown intrinsic mode")
     macros = dict(re.findall(rb"^#define (\S+)(?: ([^\n]*))?$", raw, re.MULTILINE))
     require(b"NDEBUG" not in macros and b"assert(expr)" in macros, "Assertions are not enabled")
     for name, value in ((b"ONLINE_JUDGE", b"1"), (b"ATCODER", b"1"),
@@ -139,6 +154,8 @@ def macro_proof(raw, mode, family="dwm"):
     if mode == "native":
         require(isa.get("__AVX2__") == "1" and isa.get("__BMI2__") == "1",
                 "Native runner must expose AVX2 and BMI2; do not retry or downgrade")
+    elif family == "edit_distance":
+        require(mode == "generic" and not isa, "Explicit generic AVX/BMI disables did not take effect")
     else:
         require(mode == "scalar" and not isa, "Explicit scalar AVX/BMI disables did not take effect")
     proof = {"sha256": digest(raw), "isa": isa, "assertions": True,
@@ -208,7 +225,7 @@ def execute(root, route, plan, directory):
              ".verify-helper/intrinsic_gate.py", ".verify-helper/intrinsic_gate_test.py",
              ".github/workflows/verify.yml")},
          max_commands=MAX_COMMANDS, max_seconds=JOB_SECONDS, max_log_bytes=MAX_LOG_BYTES)
-    for mode in MODES:
+    for mode in family_modes(family):
         flags = mode_flags(mode, family)
         raw = commands.run([compiler, *flags, "-dM", "-E", "-x", "c++", "-"],
                            source=b"#include <cassert>\n", seconds=30)

@@ -35,3 +35,34 @@ python3 test/verify_edit_distance_simd.py --simde /tmp/simde --cxx clang++ --san
 ```
 
 ビット並列法は [Myers の論文](https://www.gersteinlab.org/courses/452/09-spring/pdf/Myers.pdf)、編集回数ごとの探索は [wavefront alignment](https://github.com/smarco/WFA-paper) を参考にしています。
+
+## 共通端の除去のローカル比較
+
+2026-10-18 の Linux x86_64 / AMD EPYC 9V74 / GCC 14.2.0 で、`bce99d05caeea138a0598eab170f1110c1c6f786` の byte loop と、8 byte ごとの `memcpy` / XOR による prefix・suffix 除去を比較しました。API、wavefront の extend と budget、SIMD dispatch は変更していません。
+
+seed 1234、各入力で AB/BA/AB/BA の4組です。回数は測定前に固定し、再測定や閾値調整はしていません。CPU0 に固定し、`-std=c++23 -O2 -DNDEBUG` と、さらに `-march=native` を指定するビルドを分けました。generic でも既存の runtime AVX dispatch は有効です。入力生成・独立 DP・事前の正解確認1回を除き、API 全体と同じ wrapper・checksum の時間を含みます。別 translation unit の noinline/noclone wrapper を使い、LTO は使いません。
+
+数値は4組の baseline/candidate 比の中央値です。1より大きい場合に候補が速くなります。
+
+| 入力 | generic | native |
+| --- | ---: | ---: |
+| identical200k | 8.640 | 8.061 |
+| last_sub200k | 8.006 | 8.057 |
+| first_sub200k | 6.746 | 6.309 |
+| middle_sub200k | 7.287 | 7.156 |
+| prefix199999_200000 | 8.209 | 8.081 |
+| random26_4096 | 1.003 | 1.019 |
+| disjoint200k | 1.006 | 1.011 |
+| short_corpus | 1.083 | 1.051 |
+
+共通端の長い5入力では明確な改善があります。短い入力の合計は全組で改善しましたが、個々の長さや形の退行が合計で隠れる可能性はあります。random26 と disjoint はばらつきがあり、改善とは扱いません。長い入力は同じ1組を反復する warm-cache の API workload です。全体の編集距離の性能向上を示すものではありません。
+
+random26 は両端を異なる文字にした独立4096文字です。短い corpus は長さ0..17・63..65、view offset0..7、置換・長さ違い・NUL・上位byteを含む1344組です。これらは通常の DP、20万文字の例は既知の正解と照合し、全呼び出しを checksum に含めています。
+
+全試行・固定条件・集計・環境は遅かった組や揺れも含めてローカルに保存し、リポジトリには追加していません。random26 の4組の比は generic が1.093/0.960/1.045/0.937、native が0.973/1.030/1.008/1.039です。disjoint は generic が0.962/1.045/1.046/0.966、native が0.988/0.996/1.025/1.030です。
+
+既存 unit・standalone と UBSan は通過しました。別の境界検証では空 view、全256byte、offset0..7、保護ページの前後、prefix/suffix の正確な一致を828,387回確認しました。通常の ASan+UBSan は LSan の ptrace 非対応で失敗し、`detect_leaks=0` の別診断のみ通過しました。通常 sanitizer 成功や leak 検証とは扱いません。
+
+GCC15.2/C++23 の対象比較、実際の macOS、通常 sanitizer、judge/CI は未実施です。準備した `edit_distance.py` は同じ8入力・4組を generic/native で1回ずつ測り、正確な commit、GCC15.2.0、固定 corpus、全 checksum を検証します。対象 flags は `-O2 -std=gnu++23 -ftrivial-auto-var-init=zero -fmodules -DONLINE_JUDGE -DATCODER -fno-lto -Wall -Wextra -Werror` に generic の `-march=x86-64 -mtune=generic` または native の `-march=native` を加え、assertion を有効にします。両者に同じ候補側 driver を使い、比較する header だけを各 commit から取得します。
+
+AOJ DPL_1_E の上限は1000文字で、この20万文字の API 比較から judge 最速とは主張しません。直接対応する Yosupo のランキング比較は確認できていません。対象最新版の必要なテストと CI、Mac 互換性の確認前には採用しません。

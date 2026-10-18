@@ -1,10 +1,15 @@
 #include "string/edit_distance.hpp"
 #include <algorithm>
 #include <cassert>
+#include <cstdlib>
 #include <numeric>
 #include <random>
 #include <string>
 #include <vector>
+#if defined(__unix__) || defined(__APPLE__)
+#include <sys/mman.h>
+#include <unistd.h>
+#endif
 
 #if defined(EDIT_DISTANCE_EMULATE_SIMD)
 constexpr bool have_avx2 = true, have_avx512 = true;
@@ -46,6 +51,65 @@ void check(const std::string &s, const std::string &t, int expected = -1) {
 		}
 		assert(edit_distance_detail::wavefront(s, t, bound, 0) == (s.empty() && t.empty() ? 0 : -1));
 	}
+}
+
+void check_views() {
+	assert(edit_distance({}, {}) == 0);
+	assert(edit_distance({}, std::string_view("\0\x80\xff", 3)) == 3);
+	assert(edit_distance(std::string_view("\0\x80\xff", 3), {}) == 3);
+	std::vector<int> lengths;
+	for (int n = 0; n <= 17; ++n) lengths.push_back(n);
+	for (int n : {31, 32, 33, 63, 64, 65, 127, 128, 129}) lengths.push_back(n);
+	for (int n : lengths) for (int offset = 0; offset < 8; ++offset) for (int byte = 0; byte < 256; ++byte) {
+		std::string a(n + 16, char(byte)), b(n + 16, char(byte));
+		std::string_view s(a.data() + offset, n), t(b.data() + 7 - offset, n);
+		assert(edit_distance(s, t) == 0);
+		if (n) {
+			b[7 - offset + byte % n] = char(byte ^ 0x80);
+			assert(edit_distance(s, t) == 1);
+			assert(edit_distance(t, s) == 1);
+		}
+	}
+	std::mt19937_64 rng(1234);
+	for (int x = 0; x < 8; ++x) for (int y = 0; y < 8; ++y) for (int repeat = 0; repeat < 32; ++repeat) {
+		int n = rng() % 130, m = rng() % 130;
+		std::string a(n + 16, 0), b(m + 16, 0);
+		for (char &c : a) c = char(rng());
+		for (char &c : b) c = char(rng());
+		std::string_view s(a.data() + x, n), t(b.data() + y, m);
+		assert(edit_distance(s, t) == brute(s, t));
+	}
+#if defined(__unix__) || defined(__APPLE__)
+	long size = sysconf(_SC_PAGESIZE);
+	assert(size > 0);
+	std::size_t page = std::size_t(size);
+	char *a = static_cast<char *>(mmap(nullptr, 3 * page, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
+	char *b = static_cast<char *>(mmap(nullptr, 3 * page, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
+	assert(a != MAP_FAILED && b != MAP_FAILED);
+	assert(mprotect(a + page, page, PROT_READ | PROT_WRITE) == 0);
+	assert(mprotect(b + page, page, PROT_READ | PROT_WRITE) == 0);
+	for (bool end_a : {false, true}) for (bool end_b : {false, true}) {
+		for (int n : lengths) for (int m : lengths) {
+			char *x = a + page + (end_a ? page - n : 0), *y = b + page + (end_b ? page - m : 0);
+			for (int j = 0; j < n; ++j) x[j] = char(j * 37);
+			for (int j = 0; j < m; ++j) y[j] = char(j * 37);
+			assert(edit_distance({x, std::size_t(n)}, {y, std::size_t(m)}) == std::abs(n - m));
+			for (int j = 0; j < m; ++j) y[j] = char((j + n - m) * 37);
+			assert(edit_distance({x, std::size_t(n)}, {y, std::size_t(m)}) == std::abs(n - m));
+			if (n) x[n / 2] ^= char(0x80);
+			if (m) y[m / 2] ^= char(0x40);
+			assert(edit_distance({x, std::size_t(n)}, {y, std::size_t(m)}) == brute({x, std::size_t(n)}, {y, std::size_t(m)}));
+		}
+		for (int n = 1; n <= 80; ++n) for (int pos = 0; pos < n; ++pos) {
+			char *x = a + page + (end_a ? page - n : 0), *y = b + page + (end_b ? page - n : 0);
+			for (int j = 0; j < n; ++j) x[j] = y[j] = char((j * 251 + pos) & 255);
+			y[pos] ^= char(0xff);
+			assert(edit_distance({x, std::size_t(n)}, {y, std::size_t(n)}) == 1);
+		}
+	}
+	assert(munmap(a, 3 * page) == 0);
+	assert(munmap(b, 3 * page) == 0);
+#endif
 }
 
 void check_carries() {
@@ -95,6 +159,7 @@ void check_carries() {
 }
 
 int main() {
+	check_views();
 	check_carries();
 	check("", "", 0);
 	check("kitten", "sitting", 3);

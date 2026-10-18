@@ -95,6 +95,31 @@ class NoCacheRouteTests(unittest.TestCase):
         self.assertEqual(proof["unaffected_current_head_checks"], "not_run")
         self.assertEqual(len(proof["receipts"]), 2)
 
+    def test_edit_distance_source_ref_is_exact_and_old_bound_sources_fail_closed(self):
+        self.assertEqual(route.SOURCE_REF, "refs/heads/codex/edit-distance-trim-20261018")
+        self.assertEqual(self.selected()["ref"], route.SOURCE_REF)
+        for ref in ("refs/heads/codex/dwm-neighbor-20261017",
+                    "refs/heads/codex/matrix-backward-20261018"):
+            with self.subTest(ref=ref):
+                self.ref = ref
+                self.head = self.commit("other eligible binding is not this route\n\n" + route.TRAILER)
+                with self.assertRaisesRegex(ValueError, "reviewed production branch"):
+                    self.selected()
+
+    def test_edit_distance_control_files_are_bound_before_baseline_api(self):
+        paths = (".github/workflows/edit-distance-trim-final.yml",
+                 "test/benchmark/edit_distance_trim.cpp", "test/benchmark/edit_distance_trim_call.cpp",
+                 "test/benchmark/edit_distance.py")
+        original = self.head
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertEqual(route.CONTROL_PATHS.count(path), 1)
+                self.git("checkout", "--quiet", original)
+                self.write(path, "Changed comparison control.\n")
+                self.head = self.commit("changed edit-distance control\n\n" + route.TRAILER)
+                with self.assertRaisesRegex(ValueError, "CI control"):
+                    route.verify_baseline(self.root, self.selected(), "fixture-token", self.forbidden_api)
+
     def test_exact_pr_synthetic_merge_and_event_identity(self):
         merged = self.merge(marked=False)
         event, context = self.pr(merged)
