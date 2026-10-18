@@ -2,6 +2,7 @@
 #define BINOMIAL_PREFIX_CORE_HPP
 
 #include "../math/mint.hpp"
+#include "fps_factorials.hpp"
 #include <cassert>
 #include <cstdint>
 #include <limits>
@@ -16,10 +17,16 @@ template<class Mint> struct Table {
 	void build(int n) {
 		assert(0 <= n && n < std::numeric_limits<int>::max() && std::uint64_t(n) < Mint::mod() && Mint::mod() > 1);
 		factorial.resize(n + 1), inverse_factorial.resize(n + 1), power2.resize(n + 1);
-		factorial[0] = power2[0] = Mint(1);
-		for (int i = 1; i <= n; ++i) factorial[i] = factorial[i - 1] * Mint(i), power2[i] = power2[i - 1] + power2[i - 1];
-		inverse_factorial[n] = factorial[n].inv();
-		for (int i = n; i > 0; --i) inverse_factorial[i - 1] = inverse_factorial[i] * Mint(i);
+		if constexpr (std::is_same_v<Mint, fps_mint>) {
+			fps_detail::factorials(factorial.data(), inverse_factorial.data(), n + 1);
+			power2[0] = Mint(1);
+			for (int i = 1; i <= n; ++i) power2[i] = power2[i - 1] + power2[i - 1];
+		} else {
+			factorial[0] = power2[0] = Mint(1);
+			for (int i = 1; i <= n; ++i) factorial[i] = factorial[i - 1] * Mint(i), power2[i] = power2[i - 1] + power2[i - 1];
+			inverse_factorial[n] = factorial[n].inv();
+			for (int i = n; i > 0; --i) inverse_factorial[i - 1] = inverse_factorial[i] * Mint(i);
+		}
 		half = Mint((std::uint64_t(Mint::mod()) + 1) / 2);
 	}
 	Mint binom(int n, int k) const {

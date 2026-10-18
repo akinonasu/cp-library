@@ -1,0 +1,181 @@
+{
+  "retrieved_at": "2026-10-18T19:08:50.240961+00:00",
+  "problems": {
+    "binomial_coefficient_prime_mod": {
+      "listing_url": "https://v3.api.judge.yosupo.jp/submissions?problem=binomial_coefficient_prime_mod&status=AC&order=%2Btime&limit=3",
+      "listing": {
+        "count": 624,
+        "submissions": [
+          {
+            "id": 223248,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 91009024,
+            "problem_name": "binomial_coefficient_prime_mod",
+            "problem_title": "Binomial Coefficient (Prime Mod)",
+            "status": "AC",
+            "submission_time": "2024-07-25T11:02:45.365515Z",
+            "time": 0.182,
+            "user_name": "sortA0329"
+          },
+          {
+            "id": 196412,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 91271168,
+            "problem_name": "binomial_coefficient_prime_mod",
+            "problem_title": "Binomial Coefficient (Prime Mod)",
+            "status": "AC",
+            "submission_time": "2024-03-12T10:09:28.336608Z",
+            "time": 0.186,
+            "user_name": "sortA0329"
+          },
+          {
+            "id": 196634,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 91238400,
+            "problem_name": "binomial_coefficient_prime_mod",
+            "problem_title": "Binomial Coefficient (Prime Mod)",
+            "status": "AC",
+            "submission_time": "2024-03-13T12:30:48.999122Z",
+            "time": 0.187,
+            "user_name": "sortA0329"
+          }
+        ]
+      },
+      "references": [
+        {
+          "id": 223248,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 91009024,
+          "problem_name": "binomial_coefficient_prime_mod",
+          "problem_title": "Binomial Coefficient (Prime Mod)",
+          "status": "AC",
+          "submission_time": "2024-07-25T11:02:45.365515Z",
+          "time": 0.182,
+          "user_name": "sortA0329",
+          "source_sha256": "804cbf4839e6e42446673126c7301d3e4064b5b8c4b54e8353f305df74b4e3f5",
+          "url": "https://judge.yosupo.jp/submission/223248"
+        },
+        {
+          "id": 196412,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 91271168,
+          "problem_name": "binomial_coefficient_prime_mod",
+          "problem_title": "Binomial Coefficient (Prime Mod)",
+          "status": "AC",
+          "submission_time": "2024-03-12T10:09:28.336608Z",
+          "time": 0.186,
+          "user_name": "sortA0329",
+          "source_sha256": "a85cc68055513efc259992f5c82210947c057fa536f9d2da8e27461c10f40bcb",
+          "url": "https://judge.yosupo.jp/submission/196412"
+        },
+        {
+          "id": 196634,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 91238400,
+          "problem_name": "binomial_coefficient_prime_mod",
+          "problem_title": "Binomial Coefficient (Prime Mod)",
+          "status": "AC",
+          "submission_time": "2024-03-13T12:30:48.999122Z",
+          "time": 0.187,
+          "user_name": "sortA0329",
+          "source_sha256": "7d3e412b581451e9219149f6b85ed496d5da73210d2ee694388d32cd75c28f60",
+          "url": "https://judge.yosupo.jp/submission/196634"
+        }
+      ]
+    },
+    "polynomial_taylor_shift": {
+      "listing_url": "https://v3.api.judge.yosupo.jp/submissions?problem=polynomial_taylor_shift&status=AC&order=%2Btime&limit=3",
+      "listing": {
+        "count": 567,
+        "submissions": [
+          {
+            "id": 409534,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 16683008,
+            "problem_name": "polynomial_taylor_shift",
+            "problem_title": "Polynomial Taylor Shift",
+            "status": "AC",
+            "submission_time": "2026-10-10T08:38:48.817344Z",
+            "time": 0.01,
+            "user_name": "Aiyiyi"
+          },
+          {
+            "id": 409734,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 16564224,
+            "problem_name": "polynomial_taylor_shift",
+            "problem_title": "Polynomial Taylor Shift",
+            "status": "AC",
+            "submission_time": "2026-10-11T02:01:35.789615Z",
+            "time": 0.018,
+            "user_name": "Aiyiyi"
+          },
+          {
+            "id": 409733,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 16683008,
+            "problem_name": "polynomial_taylor_shift",
+            "problem_title": "Polynomial Taylor Shift",
+            "status": "AC",
+            "submission_time": "2026-10-11T02:00:26.605199Z",
+            "time": 0.018,
+            "user_name": "Aiyiyi"
+          }
+        ]
+      },
+      "references": [
+        {
+          "id": 409534,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16683008,
+          "problem_name": "polynomial_taylor_shift",
+          "problem_title": "Polynomial Taylor Shift",
+          "status": "AC",
+          "submission_time": "2026-10-10T08:38:48.817344Z",
+          "time": 0.01,
+          "user_name": "Aiyiyi",
+          "source_sha256": "5252bec9266ab7a0475526d06b587c54c2431d133842337317f01aa729ffb58b",
+          "url": "https://judge.yosupo.jp/submission/409534"
+        },
+        {
+          "id": 409734,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16564224,
+          "problem_name": "polynomial_taylor_shift",
+          "problem_title": "Polynomial Taylor Shift",
+          "status": "AC",
+          "submission_time": "2026-10-11T02:01:35.789615Z",
+          "time": 0.018,
+          "user_name": "Aiyiyi",
+          "source_sha256": "fa313b68cc8aff09267a1521509e0cfefcaaf08d7c76972ef3635ddabd43bc80",
+          "url": "https://judge.yosupo.jp/submission/409734"
+        },
+        {
+          "id": 409733,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16683008,
+          "problem_name": "polynomial_taylor_shift",
+          "problem_title": "Polynomial Taylor Shift",
+          "status": "AC",
+          "submission_time": "2026-10-11T02:00:26.605199Z",
+          "time": 0.018,
+          "user_name": "Aiyiyi",
+          "source_sha256": "fa313b68cc8aff09267a1521509e0cfefcaaf08d7c76972ef3635ddabd43bc80",
+          "url": "https://judge.yosupo.jp/submission/409733"
+        }
+      ]
+    }
+  }
+}

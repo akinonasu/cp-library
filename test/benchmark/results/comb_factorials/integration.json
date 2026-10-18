@@ -1,0 +1,12 @@
+{
+  "integrated_main": "f2906ffa0b76dc08f34890e2e2390d27b2a0befc",
+  "all_measured_sources_match": true,
+  "all_validation_sources_match": true,
+  "note": "Upstream FPS blocked input changes do not occur in the factorial benchmark dependency closure.",
+  "docs_sha256": {
+    "docs/comb.md": "516e44f54059be6e64f00fa6326075b040b3396778b2a78582b282b8a19828b4",
+    "docs/fps_factorials.md": "5161339ce92b002172658fef393d3fc1e1590756ca3f04ad9145c7dabd28a202",
+    "docs/binomial_prefix_core.md": "c2d8bb66c6e17340c883aaba0c62235762f1f129f5ea42d3124a2d56bdc0cc66",
+    "docs/binomial_prefix_sum.md": "7d916963d0cfc16fe02d6056c003a0f523cbff8ba58545e2dc12965a81696e05"
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "commands": [
+    [
+      "python3",
+      "test/verify.py",
+      "--unit-only",
+      "--selection",
+      "/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/comb-factorials/selection.json"
+    ],
+    [
+      "python3",
+      "test/verify.py",
+      "--unit-only",
+      "--sanitize",
+      "--cxx",
+      "clang++",
+      "--selection",
+      "/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/comb-factorials/selection.json"
+    ],
+    [
+      "g++",
+      "-std=gnu++23",
+      "-O2",
+      "-DNDEBUG",
+      "-fconstexpr-depth=1024",
+      "-fconstexpr-loop-limit=524288",
+      "-fconstexpr-ops-limit=2097152",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I.",
+      "test/unit/comb_factorials.cpp",
+      "-o",
+      "/tmp/comb-check-2_db6dq4/release"
+    ],
+    [
+      "/tmp/comb-check-2_db6dq4/release"
+    ],
+    [
+      "g++",
+      "-std=gnu++23",
+      "-O2",
+      "-I.",
+      "/tmp/comb-check-2_db6dq4/zero.cpp",
+      "-o",
+      "/tmp/comb-check-2_db6dq4/zero"
+    ],
+    [
+      "/tmp/comb-check-2_db6dq4/zero"
+    ],
+    [
+      "oj",
+      "download",
+      "-d",
+      "/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/comb-factorials/samples/2206",
+      "https://yukicoder.me/problems/no/2206"
+    ],
+    [
+      "oj",
+      "download",
+      "-d",
+      "/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/comb-factorials/samples/3172",
+      "https://yukicoder.me/problems/no/3172"
+    ],
+    [
+      "g++",
+      "-std=gnu++2b",
+      "-O2",
+      "-I.",
+      "test/comb.test.cpp",
+      "-o",
+      "/tmp/comb-check-2_db6dq4/comb.testg++"
+    ],
+    [
+      "clang++",
+      "-std=gnu++2b",
+      "-O2",
+      "-I.",
+      "test/comb.test.cpp",
+      "-o",
+      "/tmp/comb-check-2_db6dq4/comb.testclang++"
+    ],
+    [
+      "g++",
+      "-std=gnu++2b",
+      "-O2",
+      "-I.",
+      "test/binomial_prefix_sum_online.test.cpp",
+      "-o",
+      "/tmp/comb-check-2_db6dq4/binomial_prefix_sum_online.testg++"
+    ],
+    [
+      "clang++",
+      "-std=gnu++2b",
+      "-O2",
+      "-I.",
+      "test/binomial_prefix_sum_online.test.cpp",
+      "-o",
+      "/tmp/comb-check-2_db6dq4/binomial_prefix_sum_online.testclang++"
+    ],
+    [
+      "g++",
+      "-std=gnu++2b",
+      "-O2",
+      "-I.",
+      "test/binomial_prefix_sum_offline.test.cpp",
+      "-o",
+      "/tmp/comb-check-2_db6dq4/binomial_prefix_sum_offline.testg++"
+    ],
+    [
+      "clang++",
+      "-std=gnu++2b",
+      "-O2",
+      "-I.",
+      "test/binomial_prefix_sum_offline.test.cpp",
+      "-o",
+      "/tmp/comb-check-2_db6dq4/binomial_prefix_sum_offline.testclang++"
+    ]
+  ],
+  "source_sha256": {
+    "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+    "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+    "math/comb.hpp": "383f8b35f575b12cf481efe457be415d8c72e04294c40c9cf54c2e1a0339ba21",
+    "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+    "test/unit/comb.cpp": "0bcaf3bad0c2c751e6e3a48c73438d094eb975cfbfaf6c6948180ec89959b0bb",
+    "test/unit/comb_factorials.cpp": "7985799147d760fad6b21dbab422707c5b23e9c4142d0de817743e2d5498b8a2",
+    "test/unit/binomial_prefix_sum.cpp": "b69c3f28da8787c60b11c9cc770cf297d630b4561a3e76197b3cc122ced838d4",
+    "math/mint.hpp": "61bfbf891ee4b1eabb1298de9ff0f8127a1c503fdd6c5e609fe9b73b4803aa66",
+    "components/ntt.hpp": "327ab031fe0dded51e8a96f9cfc29d6ff2637e28cee766b16a322322b7b02a18"
+  },
+  "passed": true,
+  "system_judge": "Unavailable locally: YUKICODER_TOKEN is not set; public samples checked instead.",
+  "samples": [
+    {
+      "source": "test/comb.test.cpp",
+      "compiler": "g++",
+      "case": "sample-1.in",
+      "passed": true
+    },
+    {
+      "source": "test/comb.test.cpp",
+      "compiler": "g++",
+      "case": "sample-2.in",
+      "passed": true
+    },
+    {
+      "source": "test/comb.test.cpp",
+      "compiler": "g++",
+      "case": "sample-3.in",
+      "passed": true
+    },
+    {
+      "source": "test/comb.test.cpp",
+      "compiler": "g++",
+      "case": "sample-4.in",
+      "passed": true
+    },
+    {
+      "source": "test/comb.test.cpp",
+      "compiler": "clang++",
+      "case": "sample-1.in",
+      "passed": true
+    },
+    {
+      "source": "test/comb.test.cpp",
+      "compiler": "clang++",
+      "case": "sample-2.in",
+      "passed": true
+    },
+    {
+      "source": "test/comb.test.cpp",
+      "compiler": "clang++",
+      "case": "sample-3.in",
+      "passed": true
+    },
+    {
+      "source": "test/comb.test.cpp",
+      "compiler": "clang++",
+      "case": "sample-4.in",
+      "passed": true
+    },
+    {
+      "source": "test/binomial_prefix_sum_online.test.cpp",
+      "compiler": "g++",
+      "case": "sample-1.in",
+      "passed": true
+    },
+    {
+      "source": "test/binomial_prefix_sum_online.test.cpp",
+      "compiler": "clang++",
+      "case": "sample-1.in",
+      "passed": true
+    },
+    {
+      "source": "test/binomial_prefix_sum_offline.test.cpp",
+      "compiler": "g++",
+      "case": "sample-1.in",
+      "passed": true
+    },
+    {
+      "source": "test/binomial_prefix_sum_offline.test.cpp",
+      "compiler": "clang++",
+      "case": "sample-1.in",
+      "passed": true
+    }
+  ]
+}

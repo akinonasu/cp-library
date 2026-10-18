@@ -93,6 +93,19 @@ inline void factorials(NTT::U* fact, NTT::U* invfact, int n) {
 	for (int i = n - 1; i >= 0; --i) invfact[i] = value, value = NTT::mul(value, NTT::in(i));
 }
 
+template<class T> requires std::is_same_v<T, Mint>
+inline void factorials(T* fact, T* invfact, int n) {
+	assert(0 <= n && unsigned(n) <= Mint::mod());
+	static_assert(sizeof(Mint) == sizeof(NTT::U) && std::is_trivially_copyable_v<Mint>);
+	if (unsigned(n) == Mint::mod()) {
+		factorials(fact, invfact, n - 1);
+		fact[n - 1] = -fact[n - 2];
+		invfact[n - 1] = -invfact[n - 2];
+		return;
+	}
+	factorials(reinterpret_cast<NTT::U*>(fact), reinterpret_cast<NTT::U*>(invfact), n);
+}
+
 }
 
 #endif
