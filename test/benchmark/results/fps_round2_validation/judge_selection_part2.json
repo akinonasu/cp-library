@@ -1,0 +1,15 @@
+{
+  "source_selection": "selection.json",
+  "source_selection_sha256": "028da04f892428cb4b9d90602bc11c54bf943a32213fbddd2b1851ec47229870",
+  "part": 2,
+  "verification": [
+    "test/fps_bostan_mori.test.cpp",
+    "test/fps_compositional_inverse.test.cpp",
+    "test/fps_exp.test.cpp",
+    "test/fps_inv.test.cpp",
+    "test/fps_log.test.cpp",
+    "test/fps_taylor_shift.test.cpp",
+    "test/multivariate_convolution.test.cpp",
+    "test/power_projection.test.cpp"
+  ]
+}

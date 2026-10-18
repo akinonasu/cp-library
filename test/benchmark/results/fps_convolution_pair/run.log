@@ -1,0 +1,11 @@
+built base kernel
+built base whole
+built candidate kernel
+built candidate whole
+built reference
+kernel 8192 {'base': 0.098037, 'candidate': 0.09798599999999999}
+kernel 131072 {'base': 1.1663890000000001, 'candidate': 1.380599}
+kernel 500000 {'base': 5.280593, 'candidate': 5.950111}
+kernel 524288 {'base': 5.268034, 'candidate': 5.7712140000000005}
+whole max_random_00 {'base': 15.180912, 'candidate': 15.459697, 'reference': 11.572332}
+whole max_random_01 {'base': 14.792302, 'candidate': 15.055194, 'reference': 11.339505}

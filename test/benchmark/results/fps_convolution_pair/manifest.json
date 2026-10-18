@@ -1,0 +1,12 @@
+{
+  "bench.py": "844c88aa4dbbef44b6ceccd87358bbf07fa85731801556bd07127829180c5367",
+  "candidate.patch": "cfeb53aa0c18c3cf448c8695ca9dda8867a7bb55cd4fab5651a4567aa5e45601",
+  "metadata.json": "75bfd2560b0198395b01ec9486d2c998ca8cf5e0f61702b3d482208b33fae422",
+  "reconstruction.json": "bf631b8ba6eea52d201981c77a96654296269c87ce17ba3517cce51762e1ae9d",
+  "reproduce.py": "a4f44263b41b749e0765401c6a8838104bbc6ae02174646b472c39992e18e874",
+  "restore.log": "1e2b9994004b49bf406d5702da13bce84a29098d750f92be5ce1480a7c522bfc",
+  "results.json": "53e0338cffa9d1d8c2bd3e96e7d2d0a632e61368e331a8dfebb9b6555d0badbe",
+  "run.log": "3b96947e9b4b8bf39d23f209db18b088ded077781bc0e6ae58f7cda6f24181be",
+  "verify.cpp": "f88fdc4cb77b84390ab8691d5a0ddbd65f68b77304537ca05ff850d4c2a68fcc",
+  "../../fps_convolution_pair.md": "7b52f2415e89564fd890b73ab3f716dea72c08b2edb2da4452a6076f33957c14"
+}

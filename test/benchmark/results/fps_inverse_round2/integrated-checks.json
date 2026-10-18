@@ -1,0 +1,92 @@
+{
+  "baseline": "144ae32387675fa2a889ea3e8cd19b03ad5016bf",
+  "adopted": "scaled only; append_scaled unchanged",
+  "header_sha256": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+  "measured_header_matches": true,
+  "unit_sha256": "3eb06f72c996fd13f0861c268e8c1494ded5c173c1a9a2ab695eccfdbd055194",
+  "unit_patch_sha256": "6d18e1b73b7ae68d57208e9f3305ad9a0c137ca7ed70956077361ecc1628b5d3",
+  "unit_snapshot": "integrated-unit.cpp",
+  "documentation_sha256": "799f5b7d774d957aef87c63689888accd07a7b14a8eb8ed5aa27d2af33f1b868",
+  "normal": {
+    "status": "passed",
+    "compile_command": [
+      "flock",
+      "-s",
+      "/tmp/cp-fps-tuning.lock",
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I.",
+      "test/unit/fps_inverse_blocked.cpp",
+      "-o",
+      "/tmp/fps-round2-inverse-scaled/repo_unit"
+    ],
+    "run_command": [
+      "flock",
+      "-s",
+      "/tmp/cp-fps-tuning.lock",
+      "/tmp/fps-round2-inverse-scaled/repo_unit"
+    ],
+    "binary_sha256": "6f259b5b7fbf9a30e075a96e90265c24f82e178561b897d953d04f0a589d6dc1",
+    "exit_code": 0
+  },
+  "sanitizer": {
+    "status": "passed",
+    "compile_command": [
+      "flock",
+      "-s",
+      "/tmp/cp-fps-tuning.lock",
+      "g++",
+      "-std=c++23",
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-I.",
+      "test/unit/fps_inverse_blocked.cpp",
+      "-o",
+      "/tmp/fps-round2-inverse-scaled/repo_unit_sanitize"
+    ],
+    "run_command": [
+      "flock",
+      "-s",
+      "/tmp/cp-fps-tuning.lock",
+      "env",
+      "ASAN_OPTIONS=detect_leaks=0",
+      "UBSAN_OPTIONS=halt_on_error=1",
+      "/tmp/fps-round2-inverse-scaled/repo_unit_sanitize"
+    ],
+    "binary_sha256": "d087dc1bbbf175f75706d5733391af4ea7965d50abb8724da6b3dc2833573b45",
+    "exit_code": 0
+  },
+  "added_public_identity_cases": {
+    "n": [
+      511,
+      512,
+      513,
+      1023,
+      1024,
+      1025,
+      262144,
+      262145,
+      393217
+    ],
+    "input": [
+      "1",
+      "33",
+      "64",
+      "n/3+1",
+      "n+17"
+    ],
+    "constant": "random internal word in [2p-31,2p), always nonzero and not 1",
+    "checks": [
+      "result.size()==n",
+      "a * inverse(a) == 1 mod x^n",
+      "raw input v preserved"
+    ]
+  },
+  "native_guard_checks": "scaled-checks.json and fused_check.cpp retain prefix append, exact read-only extent, no padding, short input, n/8-lane/2-power boundaries, canonical output oracle, ASan/UBSan"
+}

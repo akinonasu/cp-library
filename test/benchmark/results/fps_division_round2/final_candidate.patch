@@ -1,0 +1,199 @@
+--- a/components/fps_division_blocked.hpp
++++ b/components/fps_division_blocked.hpp
+@@ -184,7 +184,15 @@
+ 	return _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
+ }
+ 
++inline std::uint32_t input_word(std::uint32_t x) { return x; }
++inline std::uint32_t input_word(Mint x) { return std::min(x.v, x.v - Mint::mod()); }
+ inline Vec load_any(const std::uint32_t* p) { return _mm256_loadu_si256(reinterpret_cast<const Vec*>(p)); }
++inline Vec load_any(const Mint* p) {
++	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
++	Vec value;
++	std::memcpy(&value, p, sizeof(value));
++	return reduce(value, kP);
++}
+ inline void store_any(std::uint32_t* p, Vec x) { _mm256_storeu_si256(reinterpret_cast<Vec*>(p), x); }
+ inline Vec reversed(Vec x) { return _mm256_permutevar8x32_epi32(x, _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0)); }
+ 
+@@ -202,18 +210,39 @@
+ 	for (; i < n; ++i) out.emplace_back(Mint::word(factor == 1 ? values[i] : blocked_ntt::detail::multiply_mod(values[i], factor)));
+ }
+ 
+-inline void subtract(const std::uint32_t* a, const std::uint32_t* b, std::uint32_t* out, std::size_t count) {
++inline void append_division_words(std::vector<Mint>& out, const std::uint32_t* values, std::size_t n, std::uint32_t factor = 1) {
++	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
++	const Factor scale(factor);
++	std::array<Mint, 64> batch;
++	std::size_t i = 0;
++	for (; i + 64 <= n; i += 64) {
++		if (factor == 1) std::memcpy(static_cast<void*>(batch.data()), values + i, sizeof(batch));
++		else {
++#pragma GCC unroll 8
++			for (std::size_t j = 0; j < 64; j += 8) {
++				const Vec word = times(load_any(values + i + j), scale);
++				std::memcpy(static_cast<void*>(batch.data() + j), &word, sizeof(word));
++			}
++		}
++		out.insert(out.end(), batch.begin(), batch.end());
++	}
++	if (i < n) append_words(out, values + i, n - i, factor);
++}
++
++template<class T>
++inline void subtract(const T* a, const std::uint32_t* b, std::uint32_t* out, std::size_t count) {
+ 	std::size_t i = 0;
+ 	for (; i + 8 <= count; i += 8) store_any(out + i, difference(load_any(a + i), load_any(b + i)));
+-	for (; i < count; ++i) out[i] = (a[i] + kP - b[i]) % kP;
+-}
+-
+-inline void reverse_difference(std::span<const std::uint32_t> a, std::ptrdiff_t top, std::uint32_t* out, std::size_t count,
++	for (; i < count; ++i) out[i] = (input_word(a[i]) + kP - b[i]) % kP;
++}
++
++template<class T>
++inline void reverse_difference(std::span<T> a, std::ptrdiff_t top, std::uint32_t* out, std::size_t count,
+ 							   const std::uint32_t* sub = nullptr) {
+ 	const std::ptrdiff_t size = std::ptrdiff_t(a.size());
+ 	const auto value = [&](std::size_t i) {
+ 		const std::ptrdiff_t p = top - std::ptrdiff_t(i);
+-		const std::uint32_t x = p >= 0 && p < size ? a[std::size_t(p)] : 0;
++		const std::uint32_t x = p >= 0 && p < size ? input_word(a[std::size_t(p)]) : 0;
+ 		return sub ? (x + kP - sub[i]) % kP : x;
+ 	};
+ 	std::size_t i = top >= size ? std::min(count, std::size_t(top - size + 1)) : 0;
+@@ -229,24 +258,27 @@
+ 	for (; i < count; ++i) out[i] = value(i);
+ }
+ 
+-inline void fold(std::span<const std::uint32_t> a, std::span<std::uint32_t> out) {
++template<class T>
++inline void fold(std::span<T> a, std::span<std::uint32_t> out) {
+ 	const std::size_t len = out.size();
+ 	std::fill(out.begin(), out.end(), 0);
+ 	for (std::size_t from = 0; from < a.size(); from += len) {
+ 		const std::size_t count = std::min(len, a.size() - from), full = count / 8 * 8;
+-		const std::uint32_t* x = a.data() + from;
++		const T* x = a.data() + from;
+ 		for (std::size_t j = 0; j < full; j += 8) {
+ 			store(out.data() + j, reduce(add(load(out.data() + j), load_any(x + j)), kP));
+ 		}
+-		for (std::size_t j = full; j < count; ++j) out[j] = (out[j] + x[j]) % kP;
+-	}
+-}
+-
+-inline void long_division(std::span<const std::uint32_t> f, std::span<const std::uint32_t> g, std::span<std::uint32_t> q,
++		for (std::size_t j = full; j < count; ++j) out[j] = (out[j] + input_word(x[j])) % kP;
++	}
++}
++
++template<class T>
++inline void long_division(std::span<const T> f, std::span<const std::uint32_t> g, std::span<std::uint32_t> q,
+ 						  std::span<std::uint32_t> r, std::span<std::uint32_t> rest) {
+ 	using blocked_ntt::detail::multiply_mod;
+ 	const std::size_t d = g.size() - 1;
+-	std::copy(f.begin(), f.end(), rest.begin());
++	if constexpr (std::is_same_v<T, std::uint32_t>) std::copy(f.begin(), f.end(), rest.begin());
++	else for (std::size_t i = 0; i < f.size(); ++i) rest[i] = input_word(f[i]);
+ 	const std::uint32_t lead = blocked_ntt::detail::power(g[d], kP - 2);
+ 	for (std::size_t i = q.size(); i-- > 0;) {
+ 		const std::uint32_t c = multiply_mod(rest[i + d], lead);
+@@ -256,7 +288,8 @@
+ 	std::copy_n(rest.begin(), r.size(), r.begin());
+ }
+ 
+-inline void remainder_direct(std::span<const std::uint32_t> f, std::span<const std::uint32_t> g,
++template<class T>
++inline void remainder_direct(std::span<const T> f, std::span<const std::uint32_t> g,
+ 							 std::span<const std::uint32_t> q, std::span<std::uint32_t> r) {
+ 	const std::size_t d = r.size(), k = q.size();
+ 	Vec factor[kDirectRemainder];
+@@ -264,7 +297,7 @@
+ 	const auto scalar = [&](std::size_t j) {
+ 		std::uint64_t sum = 0;
+ 		for (std::size_t i = 0; i <= std::min(j, k - 1); ++i) sum = (sum + std::uint64_t(q[i]) * g[j - i]) % kP;
+-		r[j] = std::uint32_t((f[j] + kP - sum) % kP);
++		r[j] = std::uint32_t((input_word(f[j]) + kP - sum) % kP);
+ 	};
+ 	std::size_t j = 0;
+ 	for (; j < std::min(d, k); ++j) scalar(j);
+@@ -284,7 +317,8 @@
+ 	for (; j < d; ++j) scalar(j);
+ }
+ 
+-inline void remainder_wrap(const Transform& t, std::span<const std::uint32_t> f, std::span<const std::uint32_t> g,
++template<class T>
++inline void remainder_wrap(const Transform& t, std::span<const T> f, std::span<const std::uint32_t> g,
+ 						   std::span<const std::uint32_t> q, std::span<std::uint32_t> r, std::span<std::uint32_t> a,
+ 						   std::span<std::uint32_t> b) {
+ 	const std::size_t len = a.size();
+@@ -305,7 +339,8 @@
+ 	subtract(a.data(), b.data(), r.data(), r.size());
+ }
+ 
+-inline void remainder_split(const Transform& t, std::span<const std::uint32_t> f, std::span<const std::uint32_t> g,
++template<class T>
++inline void remainder_split(const Transform& t, std::span<const T> f, std::span<const std::uint32_t> g,
+ 							std::span<const std::uint32_t> q, std::span<std::uint32_t> r, std::span<std::uint32_t> a,
+ 							std::span<std::uint32_t> b, std::span<std::uint32_t> c) {
+ 	const std::size_t len = a.size(), k = q.size(), e = r.size() - len;
+@@ -341,13 +376,15 @@
+ 	}
+ }
+ 
+-inline void subtract_reversed(const std::uint32_t* a, const std::uint32_t* b, std::uint32_t* out, std::size_t count) {
++template<class T>
++inline void subtract_reversed(const T* a, const std::uint32_t* b, std::uint32_t* out, std::size_t count) {
+ 	std::size_t j = 0;
+ 	for (; j + 8 <= count; j += 8) store_any(out + j, difference(load_any(a + j), reversed(load_any(b + count - 8 - j))));
+-	for (; j < count; ++j) out[j] = (a[j] + kP - b[count - 1 - j]) % kP;
+-}
+-
+-inline void divide_blocks(const Transform& t, const DivisionPlan& plan, std::span<const std::uint32_t> f,
++	for (; j < count; ++j) out[j] = (input_word(a[j]) + kP - b[count - 1 - j]) % kP;
++}
++
++template<class T>
++inline void divide_blocks(const Transform& t, const DivisionPlan& plan, std::span<const T> f,
+ 						  std::span<const std::uint32_t> g, std::span<std::uint32_t> q, std::span<std::uint32_t> r,
+ 						  std::span<std::uint32_t> scratch) {
+ 	const QuotientPlan& p = plan.quotient;
+@@ -404,7 +441,8 @@
+ 	if (plan.remainder.method == Remainder::kTail) subtract_reversed(f.data(), tail_product(p.blocks), r.data(), d);
+ }
+ 
+-inline void divide(Arena& arena, const DivisionPlan& plan, std::span<const std::uint32_t> f, std::span<const std::uint32_t> g,
++template<class T>
++inline void divide(Arena& arena, const DivisionPlan& plan, std::span<const T> f, std::span<const std::uint32_t> g,
+ 				   std::span<std::uint32_t> q, std::span<std::uint32_t> r) {
+ 	if (plan.long_division) return long_division(f, g, q, r, arena.take(f.size()));
+ 	const Transform t(arena, plan.lg);
+@@ -442,14 +480,14 @@
+ 						  std::vector<Mint>& quotient, std::vector<Mint>& remainder) {
+ 	const division_detail::DivisionPlan plan(n, m);
+ 	const std::size_t k = quotient_size(n, m), d = remainder_size(n, m);
+-	Arena arena(plan.words() + Arena::footprint(n) + Arena::footprint(m) + Arena::footprint(k) + Arena::footprint(d));
+-	auto f = arena.take(n), g = arena.take(m), q = arena.take(k), r = arena.take(d);
+-	for (std::size_t i = 0; i < n; ++i) f[i] = std::min(a[i].v, a[i].v - Mint::mod());
++	Arena arena(plan.words() + Arena::footprint(m) + Arena::footprint(k) + Arena::footprint(d));
++	const std::span<const Mint> f(a, n);
++	auto g = arena.take(m), q = arena.take(k), r = arena.take(d);
+ 	for (std::size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - Mint::mod());
+ 	division_detail::divide(arena, plan, f, g, q, r);
+ 	prepare_fps_output(quotient, k), prepare_fps_output(remainder, d);
+-	division_detail::append_words(quotient, q.data(), q.size(), blocked_ntt::detail::kR);
+-	division_detail::append_words(remainder, r.data(), r.size());
++	division_detail::append_division_words(quotient, q.data(), q.size(), blocked_ntt::detail::kR);
++	division_detail::append_division_words(remainder, r.data(), r.size());
+ }
+ 
+ inline void native_div_series(const Mint* a, std::size_t input, const Mint* b, std::size_t divisor,
+@@ -511,7 +549,7 @@
+ 		}
+ 		t.cyclic_product(block.first(s), 0, block, ht, Half::kLower);
+ 		if (plan.windows && j + 1 < plan.blocks) t.forward(block.first(s), 0, ring[j % plan.windows]);
+-		append_words(out, block.data(), std::min(s, n - from), blocked_ntt::detail::kR);
++		append_division_words(out, block.data(), std::min(s, n - from), blocked_ntt::detail::kR);
+ 	}
+ }
+ }

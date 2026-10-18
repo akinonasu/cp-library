@@ -1,0 +1,43 @@
+--- a/components/fps_inverse_blocked.hpp
++++ b/components/fps_inverse_blocked.hpp
+@@ -10,17 +10,20 @@
+ 
+ namespace fps_detail::blocked_poly {
+ inline void append_scaled(std::span<std::uint32_t> a, std::vector<Mint> &out, std::uint32_t scale) {
++	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
+ 	const detail::Factor factor(scale);
+ 	if (a.size() > out.max_size() - out.size()) throw std::length_error("fps output");
+ 	prepare_fps_output(out, out.size() + a.size());
+-	alignas(32) std::uint32_t values[64];
++	std::array<Mint, 64> batch;
+ 	for (std::size_t i = 0; i < a.size(); i += 64) {
+ 		const auto count = std::min<std::size_t>(64, a.size() - i);
+ 		std::size_t j = 0;
+-		for (; j + 8 <= count; j += 8)
+-			detail::store(values + j, detail::reduce(detail::times(detail::load_unaligned(a.data() + i + j), factor), Mint::mod()));
+-		for (; j < count; ++j) values[j] = blocked_ntt::detail::multiply_mod(a[i + j], scale);
+-		append_fps_words<true>(out, values, count);
++		for (; j + 8 <= count; j += 8) {
++			const auto x = detail::reduce(detail::times(detail::load_unaligned(a.data() + i + j), factor), Mint::mod());
++			std::memcpy(static_cast<void *>(batch.data() + j), &x, sizeof(x));
++		}
++		for (; j < count; ++j) batch[j] = Mint::word(blocked_ntt::detail::multiply_mod(a[i + j], scale));
++		out.insert(out.end(), batch.begin(), batch.begin() + std::ptrdiff_t(count));
+ 	}
+ }
+ 
+@@ -42,10 +45,12 @@
+ 		return;
+ 	}
+ 	inverse(t, f, g, scratch);
+-	inverse_step(t, f, g, a.subspan(k, n - k), scratch.first(len), a);
++	t.forward(g, 0, scratch.first(len));
++	t.cyclic_product(f.first(std::min(len, f.size())), 0, a, scratch.first(len), Half::kUpper);
++	t.cyclic_product(a.subspan(k), k, a, scratch.first(len), Half::kUpper, detail::kP - 932051910);
+ 	prepare_fps_output(out, n);
+ 	append_scaled(g, out, 932051910);
+-	append_scaled(a.subspan(k, n - k), out, 932051910);
++	append_fps_words<true>(out, a.data() + k, n - k);
+ }
+ }
+ 

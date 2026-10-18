@@ -1,0 +1,15 @@
+{
+  "source_selection": "selection.json",
+  "source_selection_sha256": "028da04f892428cb4b9d90602bc11c54bf943a32213fbddd2b1851ec47229870",
+  "part": 0,
+  "verification": [
+    "test/convolution.test.cpp",
+    "test/fps_compose.test.cpp",
+    "test/fps_compositional_inverse_large.test.cpp",
+    "test/fps_exp_sparse.test.cpp",
+    "test/fps_inv_sparse.test.cpp",
+    "test/fps_pow.test.cpp",
+    "test/multiplicative_convolution.test.cpp",
+    "test/ordered_convolution.test.cpp"
+  ]
+}

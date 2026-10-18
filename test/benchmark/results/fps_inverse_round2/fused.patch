@@ -1,0 +1,17 @@
+--- a/components/fps_inverse_blocked.hpp
++++ b/components/fps_inverse_blocked.hpp
+@@ -42,10 +42,12 @@
+ 		return;
+ 	}
+ 	inverse(t, f, g, scratch);
+-	inverse_step(t, f, g, a.subspan(k, n - k), scratch.first(len), a);
++	t.forward(g, 0, scratch.first(len));
++	t.cyclic_product(f.first(std::min(len, f.size())), 0, a, scratch.first(len), Half::kUpper);
++	t.cyclic_product(a.subspan(k), k, a, scratch.first(len), Half::kUpper, detail::kP - 932051910);
+ 	prepare_fps_output(out, n);
+ 	append_scaled(g, out, 932051910);
+-	append_scaled(a.subspan(k, n - k), out, 932051910);
++	append_fps_words<true>(out, a.data() + k, n - k);
+ }
+ }
+ 

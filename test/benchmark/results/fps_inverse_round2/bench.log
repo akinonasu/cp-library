@@ -1,0 +1,18 @@
+official checks inverse pass
+official checks sqrt pass
+waiting EX
+acquired EX
+append 65536 {'baseline': 0.175919469, 'candidate': 0.093827688}
+append 932051910 {'baseline': 0.174910781, 'candidate': 0.09336075}
+kernel inverse 262144 {'baseline': 3.448882, 'candidate': 3.436343, 'reference': 3.26683}
+kernel inverse 262145 {'baseline': 4.041545, 'candidate': 3.96371, 'reference': 6.959314}
+kernel inverse 393217 {'baseline': 7.210579, 'candidate': 7.19107, 'reference': 6.878184}
+kernel inverse 500000 {'baseline': 7.318771, 'candidate': 7.168527, 'reference': 6.903922}
+kernel sqrt 262144 {'baseline': 3.356114, 'candidate': 3.283135, 'reference': 3.133761}
+kernel sqrt 262145 {'baseline': 5.233813, 'candidate': 5.217529, 'reference': 5.008797}
+kernel sqrt 393217 {'baseline': 6.837874, 'candidate': 6.777674, 'reference': 6.334704}
+kernel sqrt 500000 {'baseline': 7.0025, 'candidate': 6.92901, 'reference': 6.364188}
+whole inverse max_random_00 {'baseline': 12.446716, 'candidate': 12.555058, 'reference': 10.663668}
+whole inverse near_262144_00 {'baseline': 7.024522, 'candidate': 6.78836, 'reference': 5.872596}
+whole sqrt max_random_00 {'baseline': 2.955437, 'candidate': 2.920985, 'reference': 2.449562}
+whole sqrt near_262144_00 {'baseline': 2.089706, 'candidate': 2.071278, 'reference': 1.664742}

@@ -1,0 +1,51 @@
+--- a/components/fps_exp_blocked.hpp
++++ b/components/fps_exp_blocked.hpp
+@@ -329,6 +329,26 @@
+ 
+ }
+ namespace blocked_poly {
++namespace detail {
++template <bool differentiated>
++[[gnu::noinline]] void import_exp_input(const Mint* in, std::size_t first, std::size_t count, std::uint32_t* to) {
++	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
++	std::size_t i = 0;
++	const Factor undo(blocked_ntt::detail::power(kR, kP - 2));
++	auto index = add(broadcast(std::uint32_t(first)), _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
++	for (; i + 8 <= count; i += 8, index = add(index, broadcast(8))) {
++		Vec value;
++		std::memcpy(&value, in + first + i, sizeof(value));
++		if constexpr (differentiated) store_unaligned(to + i, reduce(times(value, undo), kP));
++		else store_unaligned(to + i, reduce(montgomery(value, index), kP));
++	}
++	for (; i < count; ++i) {
++		if constexpr (differentiated) to[i] = in[first + i].val();
++		else to[i] = blocked_ntt::detail::multiply_mod(in[first + i].val(), first + i);
++	}
++}
++}
++
+ inline void native_exp(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, bool differentiated = false) {
+ 	const std::size_t m = detail::exp_length(n) / 2, size = std::min(input, n), below = std::min(size, m);
+ 	const int lg = exp_log(n);
+@@ -336,18 +356,9 @@
+ 	const Transform t(arena, lg);
+ 	auto g = arena.take(n), scratch = arena.take(exp_scratch(n));
+ 	auto lo = scratch.first(m);
+-	const detail::Factor undo(blocked_ntt::detail::power(detail::kR, detail::kP - 2));
+-	const auto import = [&](std::size_t first, std::size_t count, std::uint32_t *to) __attribute__((target("avx2"))) {
+-		std::size_t i = 0;
+-		detail::Indices index(first);
+-		for (; i + 8 <= count; i += 8, index.next()) {
+-			alignas(32) std::uint32_t words[8];
+-			for (int j = 0; j < 8; ++j) words[j] = in[first + i + j].v;
+-			auto v = detail::reduce(detail::times(detail::load(words), undo), detail::kP);
+-			if (!differentiated) v = detail::canonical(detail::montgomery(v, index.value()));
+-			detail::store_unaligned(to + i, v);
+-		}
+-		for (; i < count; ++i) to[i] = differentiated ? in[first + i].val() : blocked_ntt::detail::multiply_mod(in[first + i].val(), first + i);
++	const auto import = [&](std::size_t first, std::size_t count, std::uint32_t* to) {
++		if (differentiated) detail::import_exp_input<true>(in, first, count, to);
++		else detail::import_exp_input<false>(in, first, count, to);
+ 	};
+ 	import(0, below, lo.data());
+ 	std::fill(lo.begin() + below, lo.end(), 0u);

@@ -1,0 +1,19 @@
+diff --git a/test/unit/fps_inverse_blocked.cpp b/test/unit/fps_inverse_blocked.cpp
+index 22d544f..9737fdb 100644
+--- a/test/unit/fps_inverse_blocked.cpp
++++ b/test/unit/fps_inverse_blocked.cpp
+@@ -57,6 +57,14 @@ int main() {
+ 	a[0] = 1;
+ 	check_inverse(a, a.size());
+ 	check_root(a, a.size());
++	for (int n : {511, 512, 513, 1023, 1024, 1025, 262144, 262145, 393217}) {
++		for (int input : {1, 33, 64, n / 3 + 1, n + 17}) {
++			fps b(input);
++			for (auto &x : b) x = rng();
++			b[0] = fps_mint::word(2 * fps_mint::mod() - 1 - rng() % 31);
++			check_inverse(b, n);
++		}
++	}
+ 	for (int n : {0, 1, 255, 256, 257, 511, 512, 513, 4097}) {
+ 		require(fps{}.sqrt(n) == fps(n));
+ 		require(fps{0, 0, 4}.sqrt(n).size() == static_cast<unsigned>(n));

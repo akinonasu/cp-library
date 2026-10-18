@@ -1,0 +1,725 @@
+{
+  "retrieved_at": "2026-10-18T21:08:35.374902+00:00",
+  "problems": {
+    "convolution_mod": {
+      "top_cpp": [
+        {
+          "id": 409465,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 21602304,
+          "problem_name": "convolution_mod",
+          "problem_title": "Convolution",
+          "status": "AC",
+          "submission_time": "2026-10-10T05:53:37.818419Z",
+          "time": 0.012,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409433,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 21667840,
+          "problem_name": "convolution_mod",
+          "problem_title": "Convolution",
+          "status": "AC",
+          "submission_time": "2026-10-10T04:30:17.99098Z",
+          "time": 0.013,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409432,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 21864448,
+          "problem_name": "convolution_mod",
+          "problem_title": "Convolution",
+          "status": "AC",
+          "submission_time": "2026-10-10T04:28:39.819753Z",
+          "time": 0.013,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409465,
+        409433,
+        409432
+      ]
+    },
+    "inv_of_formal_power_series": {
+      "top_cpp": [
+        {
+          "id": 409370,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 12091392,
+          "problem_name": "inv_of_formal_power_series",
+          "problem_title": "Inv of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T02:11:09.403965Z",
+          "time": 0.011,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409242,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 15581184,
+          "problem_name": "inv_of_formal_power_series",
+          "problem_title": "Inv of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-09T20:10:38.898175Z",
+          "time": 0.013,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409369,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 11927552,
+          "problem_name": "inv_of_formal_power_series",
+          "problem_title": "Inv of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T02:10:16.829797Z",
+          "time": 0.018,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409370,
+        409242,
+        409369
+      ]
+    },
+    "log_of_formal_power_series": {
+      "top_cpp": [
+        {
+          "id": 409452,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 15474688,
+          "problem_name": "log_of_formal_power_series",
+          "problem_title": "Log of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T05:03:05.948735Z",
+          "time": 0.013,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409363,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 18100224,
+          "problem_name": "log_of_formal_power_series",
+          "problem_title": "Log of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T01:59:57.36938Z",
+          "time": 0.014,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409264,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 18206720,
+          "problem_name": "log_of_formal_power_series",
+          "problem_title": "Log of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-09T22:08:06.156265Z",
+          "time": 0.015,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409452,
+        409363,
+        409264
+      ]
+    },
+    "exp_of_formal_power_series": {
+      "top_cpp": [
+        {
+          "id": 409662,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 15740928,
+          "problem_name": "exp_of_formal_power_series",
+          "problem_title": "Exp of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T16:37:46.435994Z",
+          "time": 0.016,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409661,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16404480,
+          "problem_name": "exp_of_formal_power_series",
+          "problem_title": "Exp of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T16:10:10.19126Z",
+          "time": 0.016,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409402,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 17342464,
+          "problem_name": "exp_of_formal_power_series",
+          "problem_title": "Exp of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T03:25:57.30805Z",
+          "time": 0.016,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409662,
+        409661,
+        409402
+      ]
+    },
+    "pow_of_formal_power_series": {
+      "top_cpp": [
+        {
+          "id": 409718,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 18366464,
+          "problem_name": "pow_of_formal_power_series",
+          "problem_title": "Pow of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T23:36:25.180715Z",
+          "time": 0.023,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409358,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 20316160,
+          "problem_name": "pow_of_formal_power_series",
+          "problem_title": "Pow of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T01:58:15.719582Z",
+          "time": 0.026,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409715,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 18255872,
+          "problem_name": "pow_of_formal_power_series",
+          "problem_title": "Pow of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T23:33:25.409221Z",
+          "time": 0.028,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409718,
+        409358,
+        409715
+      ]
+    },
+    "sqrt_of_formal_power_series": {
+      "top_cpp": [
+        {
+          "id": 409728,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 11845632,
+          "problem_name": "sqrt_of_formal_power_series",
+          "problem_title": "Sqrt of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-11T01:18:40.045704Z",
+          "time": 0.012,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409316,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 14209024,
+          "problem_name": "sqrt_of_formal_power_series",
+          "problem_title": "Sqrt of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-09T23:24:24.444133Z",
+          "time": 0.016,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409361,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 13914112,
+          "problem_name": "sqrt_of_formal_power_series",
+          "problem_title": "Sqrt of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T01:58:47.879935Z",
+          "time": 0.02,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409728,
+        409316,
+        409361
+      ]
+    },
+    "division_of_polynomials": {
+      "top_cpp": [
+        {
+          "id": 409561,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16412672,
+          "problem_name": "division_of_polynomials",
+          "problem_title": "Division of Polynomials",
+          "status": "AC",
+          "submission_time": "2026-10-10T11:24:52.544273Z",
+          "time": 0.012,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 285073,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 14127104,
+          "problem_name": "division_of_polynomials",
+          "problem_title": "Division of Polynomials",
+          "status": "AC",
+          "submission_time": "2025-05-13T14:11:38.612889Z",
+          "time": 0.03
+        },
+        {
+          "id": 405999,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 14159872,
+          "problem_name": "division_of_polynomials",
+          "problem_title": "Division of Polynomials",
+          "status": "AC",
+          "submission_time": "2026-09-25T06:00:58.350646Z",
+          "time": 0.032,
+          "user_name": "Rohan_Kapri"
+        }
+      ],
+      "recorded_reference_ids": [
+        409561,
+        285073,
+        405999
+      ]
+    },
+    "kth_term_of_linearly_recurrent_sequence": {
+      "top_cpp": [
+        {
+          "id": 405848,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 9007104,
+          "problem_name": "kth_term_of_linearly_recurrent_sequence",
+          "problem_title": "Kth term of Linearly Recurrent Sequence",
+          "status": "AC",
+          "submission_time": "2026-09-24T15:43:47.24864Z",
+          "time": 0.068,
+          "user_name": "Rohan_Kapri"
+        },
+        {
+          "id": 400681,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 8974336,
+          "problem_name": "kth_term_of_linearly_recurrent_sequence",
+          "problem_title": "Kth term of Linearly Recurrent Sequence",
+          "status": "AC",
+          "submission_time": "2026-09-08T02:50:46.002795Z",
+          "time": 0.069,
+          "user_name": "QgQ"
+        },
+        {
+          "id": 400526,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 8957952,
+          "problem_name": "kth_term_of_linearly_recurrent_sequence",
+          "problem_title": "Kth term of Linearly Recurrent Sequence",
+          "status": "AC",
+          "submission_time": "2026-09-07T16:50:31.499751Z",
+          "time": 0.071,
+          "user_name": "QgQ"
+        }
+      ],
+      "recorded_reference_ids": [
+        405848,
+        400681,
+        400526
+      ]
+    },
+    "composition_of_formal_power_series": {
+      "top_cpp": [
+        {
+          "id": 409336,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 5021696,
+          "problem_name": "composition_of_formal_power_series",
+          "problem_title": "Composition of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T01:24:33.404041Z",
+          "time": 0.003,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 408165,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 2936832,
+          "problem_name": "composition_of_formal_power_series",
+          "problem_title": "Composition of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-05T19:45:34.327945Z",
+          "time": 0.009,
+          "user_name": "sounansya"
+        },
+        {
+          "id": 409332,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 5046272,
+          "problem_name": "composition_of_formal_power_series",
+          "problem_title": "Composition of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T01:03:53.206506Z",
+          "time": 0.011,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409336,
+        408165,
+        409332
+      ]
+    },
+    "composition_of_formal_power_series_large": {
+      "top_cpp": [
+        {
+          "id": 409535,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 41984000,
+          "problem_name": "composition_of_formal_power_series_large",
+          "problem_title": "Composition of Formal Power Series (Large)",
+          "status": "AC",
+          "submission_time": "2026-10-10T08:44:51.058085Z",
+          "time": 0.035,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409504,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 46010368,
+          "problem_name": "composition_of_formal_power_series_large",
+          "problem_title": "Composition of Formal Power Series (Large)",
+          "status": "AC",
+          "submission_time": "2026-10-10T07:21:16.085611Z",
+          "time": 0.039,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409517,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 46145536,
+          "problem_name": "composition_of_formal_power_series_large",
+          "problem_title": "Composition of Formal Power Series (Large)",
+          "status": "AC",
+          "submission_time": "2026-10-10T07:59:26.591849Z",
+          "time": 0.043,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409535,
+        409504,
+        409517
+      ]
+    },
+    "compositional_inverse_of_formal_power_series": {
+      "top_cpp": [
+        {
+          "id": 409399,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 2973696,
+          "problem_name": "compositional_inverse_of_formal_power_series",
+          "problem_title": "Compositional Inverse of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T03:19:35.943433Z",
+          "time": 0.003,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409398,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 2940928,
+          "problem_name": "compositional_inverse_of_formal_power_series",
+          "problem_title": "Compositional Inverse of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T03:19:08.031157Z",
+          "time": 0.009,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409373,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 2936832,
+          "problem_name": "compositional_inverse_of_formal_power_series",
+          "problem_title": "Compositional Inverse of Formal Power Series",
+          "status": "AC",
+          "submission_time": "2026-10-10T02:20:04.197773Z",
+          "time": 0.009,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409399,
+        409398,
+        409373
+      ]
+    },
+    "compositional_inverse_of_formal_power_series_large": {
+      "top_cpp": [
+        {
+          "id": 409549,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 10526720,
+          "problem_name": "compositional_inverse_of_formal_power_series_large",
+          "problem_title": "Compositional Inverse of Formal Power Series (Large)",
+          "status": "AC",
+          "submission_time": "2026-10-10T10:06:14.152816Z",
+          "time": 0.033,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409548,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 10371072,
+          "problem_name": "compositional_inverse_of_formal_power_series_large",
+          "problem_title": "Compositional Inverse of Formal Power Series (Large)",
+          "status": "AC",
+          "submission_time": "2026-10-10T10:05:31.759308Z",
+          "time": 0.042,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409541,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 10366976,
+          "problem_name": "compositional_inverse_of_formal_power_series_large",
+          "problem_title": "Compositional Inverse of Formal Power Series (Large)",
+          "status": "AC",
+          "submission_time": "2026-10-10T09:21:25.392255Z",
+          "time": 0.047,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409549,
+        409548,
+        409541
+      ]
+    },
+    "multipoint_evaluation": {
+      "top_cpp": [
+        {
+          "id": 409516,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 30167040,
+          "problem_name": "multipoint_evaluation",
+          "problem_title": "Multipoint Evaluation",
+          "status": "AC",
+          "submission_time": "2026-10-10T07:58:23.421112Z",
+          "time": 0.015,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 340010,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 23339008,
+          "problem_name": "multipoint_evaluation",
+          "problem_title": "Multipoint Evaluation",
+          "status": "AC",
+          "submission_time": "2025-12-24T11:38:29.263539Z",
+          "time": 0.039
+        },
+        {
+          "id": 261772,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 23416832,
+          "problem_name": "multipoint_evaluation",
+          "problem_title": "Multipoint Evaluation",
+          "status": "AC",
+          "submission_time": "2025-01-15T15:15:59.093431Z",
+          "time": 0.04
+        }
+      ],
+      "recorded_reference_ids": [
+        409516,
+        340010,
+        261772
+      ]
+    },
+    "polynomial_interpolation": {
+      "top_cpp": [
+        {
+          "id": 409545,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 28884992,
+          "problem_name": "polynomial_interpolation",
+          "problem_title": "Polynomial Interpolation",
+          "status": "AC",
+          "submission_time": "2026-10-10T09:35:56.43968Z",
+          "time": 0.02,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409544,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 29405184,
+          "problem_name": "polynomial_interpolation",
+          "problem_title": "Polynomial Interpolation",
+          "status": "AC",
+          "submission_time": "2026-10-10T09:35:08.007537Z",
+          "time": 0.028,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 261773,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 23875584,
+          "problem_name": "polynomial_interpolation",
+          "problem_title": "Polynomial Interpolation",
+          "status": "AC",
+          "submission_time": "2025-01-15T15:27:51.964108Z",
+          "time": 0.055
+        }
+      ],
+      "recorded_reference_ids": [
+        409545,
+        409544,
+        261773
+      ]
+    },
+    "polynomial_taylor_shift": {
+      "top_cpp": [
+        {
+          "id": 409534,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16683008,
+          "problem_name": "polynomial_taylor_shift",
+          "problem_title": "Polynomial Taylor Shift",
+          "status": "AC",
+          "submission_time": "2026-10-10T08:38:48.817344Z",
+          "time": 0.01,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409734,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16564224,
+          "problem_name": "polynomial_taylor_shift",
+          "problem_title": "Polynomial Taylor Shift",
+          "status": "AC",
+          "submission_time": "2026-10-11T02:01:35.789615Z",
+          "time": 0.018,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409733,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16683008,
+          "problem_name": "polynomial_taylor_shift",
+          "problem_title": "Polynomial Taylor Shift",
+          "status": "AC",
+          "submission_time": "2026-10-11T02:00:26.605199Z",
+          "time": 0.018,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409534,
+        409734,
+        409733
+      ]
+    },
+    "gcd_of_polynomials": {
+      "top_cpp": [],
+      "recorded_reference_ids": []
+    },
+    "inv_of_polynomials": {
+      "top_cpp": [
+        {
+          "id": 409589,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 11862016,
+          "problem_name": "inv_of_polynomials",
+          "problem_title": "Inv of Polynomials",
+          "status": "AC",
+          "submission_time": "2026-10-10T12:56:52.628371Z",
+          "time": 0.015,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409587,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 11538432,
+          "problem_name": "inv_of_polynomials",
+          "problem_title": "Inv of Polynomials",
+          "status": "AC",
+          "submission_time": "2026-10-10T12:56:06.129828Z",
+          "time": 0.023,
+          "user_name": "Aiyiyi"
+        },
+        {
+          "id": 409586,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 11395072,
+          "problem_name": "inv_of_polynomials",
+          "problem_title": "Inv of Polynomials",
+          "status": "AC",
+          "submission_time": "2026-10-10T12:55:14.656014Z",
+          "time": 0.024,
+          "user_name": "Aiyiyi"
+        }
+      ],
+      "recorded_reference_ids": [
+        409589,
+        409587,
+        409586
+      ]
+    }
+  }
+}

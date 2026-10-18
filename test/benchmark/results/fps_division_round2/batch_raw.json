@@ -1,0 +1,2605 @@
+{
+  "baseline": "144ae32387675fa2a889ea3e8cd19b03ad5016bf",
+  "baseline_tree": "/tmp/cp-fps-round2-base",
+  "candidate_tree": "/tmp/fps-division-round2/candidate",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "seed": 20261021,
+  "trials": 21,
+  "cpu_affinity": [
+    2
+  ],
+  "metric": "whole process wall milliseconds plus computation milliseconds reported separately by driver; computation includes API allocations and output result construction",
+  "harness_sha256": "d4286de0cbc48cbae7b9f5d73476df3514a81d9a5d64d9e18764d5ee59ac4460",
+  "sources": {
+    "baseline": {
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+      "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+      "components/fps_composition.hpp": "afa2066ed616e0310d33fa817ae12ead196cd781f9f4800d1822c1cd3764c13f",
+      "components/fps_convolution.hpp": "b0d675b0d0063baf7c64dab92e5368ae5b0fdaf208ffd1d0fa761a95869a7c61",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_division_blocked.hpp": "09e5ab71eeff3046043f35c2c25d61aaf7013050b77628aa477aedd1bde2e554",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fps_exp_blocked.hpp": "063a6e7c933c3eaa29b9ff9b6c366cc29f0fb4d8f7607ad6d4e467bbac6fb598",
+      "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/fps_inverse_blocked.hpp": "980af8d8bf5f90c95abe2f15afb84103549cf97d303c3877844ee6299c469c67",
+      "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+      "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "data_structure/disjoint_sparse_table.hpp": "4506c898e40a65343fc5157254714bd1d1ff3dd2c1e21a09e4f01ede13f25c5d",
+      "data_structure/dynamic_connectivity.hpp": "55b8f98c4ae154babc1381af13bce9d8ae8060a55ace8a1db5250e54c7c3c673",
+      "data_structure/dynamic_li_chao_tree.hpp": "cc7549e65e18dd282d595cdce7d8304264b174b1cf9897a79884c510f72bc96a",
+      "data_structure/dynamic_segtree.hpp": "1f526854b82302e39944b9a8d3b64c94b89b2791275e0bce87ad28e3c61b88ff",
+      "data_structure/dynamic_wavelet_matrix.hpp": "8683aa75c8b5011b9b3e9c06adde7f97b0f2c94cd4345baadc5b80eb3f577caf",
+      "data_structure/generic_segtree_beats.hpp": "51b5ca8efe45c0982df4a967cdc5cd0a82cd58e8dcb1a5c28798c100b950c81f",
+      "data_structure/interval_set.hpp": "cb3aaa2681149c61befa9acbe05d4b308f8bc072bc76b21b85b5a053c3b1ce04",
+      "data_structure/lazy_reversible_treap.hpp": "f9d1e97795f92fbbec6c8531d3496335fb390485fd4e6df4885b66ef0d1cd231",
+      "data_structure/li_chao_tree.hpp": "84f0ac941a24b2f292680531c43db1c442f663270b637ba5acb527945311fadc",
+      "data_structure/link_cut_tree.hpp": "af32cdb70a44aab214649cef14f8476796e5de87bbb3d07fd5e275888e95c833",
+      "data_structure/partially_retroactive_priority_queue.hpp": "7f4982a4348636cb096a5134da00be96533182e30fb64149ba6c48af06810a0e",
+      "data_structure/permutation_tree.hpp": "114140f2c8abb9ae06799bea977e221f45291aa82bed16659ad2bca8a5b52936",
+      "data_structure/point_set_wavelet_matrix.hpp": "6c1f94bf2138c8dd92afee50256f4f43708cb9bd45230a0c8489de471e2ecfe3",
+      "data_structure/retroactive_priority_queue.hpp": "3e06052d465be892c2281010f964c9cd1e5f5c67147a9de811252e314430c2f6",
+      "data_structure/segtree_beats.hpp": "8b7fbb411f2be9f22321afe6f90ca9848b35a534ca191ca08014b18bb4f80e7e",
+      "data_structure/slope_trick.hpp": "81cd59ebb299290402065b9b44a1221a3f502068029e9d607b8f07f8f51ca539",
+      "data_structure/sortable_segtree.hpp": "9827a50a595b0ede541a358181a220ab3c7342006e399c12cb0ac6f13ffe7c01",
+      "data_structure/sparse_table.hpp": "b9378b433210bd5bcba5c69280b25ef9c906b480b641297fa58efe6ebbd4f884",
+      "data_structure/wavelet_matrix.hpp": "389023db38a020bd3234266c1f281de80d4fa1b17955a62310b17e23ad09b945",
+      "data_structure/weighted_union_find.hpp": "1dd4fe325f5922b55c6854ad4445ef7cae5522e0f9419370daa073c34f463eff",
+      "data_structure/weighted_wavelet_matrix.hpp": "1312b9ae6e181bfede84dffdcf3d784857094bf48c2e89a2b16fc23c59ea12b2",
+      "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "graph/auxiliary_tree.hpp": "7090beef3b1c0eee6163ca90beb85e6a8803a1295f66c42815f6b3aad08fa31b",
+      "graph/centroid_decomposition.hpp": "48248bac34f499c6919ad1cbee748789a230d516f244e1a8f1fd8d2f900d782d",
+      "graph/dijkstra.hpp": "2ce6790121b8f0239a99190e421e59e92766eac8fb61d265951ab16a31282967",
+      "graph/general_matching.hpp": "62c215ab4bf9d24bcffc8da5defb9e5b187e69975276e78413d05f965e0007be",
+      "graph/general_weighted_matching.hpp": "f635efd5314d62a5b7d444ab056660e337a95285508f1785b093cc7129a2e960",
+      "graph/hld.hpp": "6d199cbd38699bd74e5f49ba382e05a5577ef40a11b30b40ecb62d3e0620519d",
+      "graph/hungarian.hpp": "4acb5ca3ba74c793aed5af3e7696575471eff662e4148f785703852ae6ea246c",
+      "graph/lca.hpp": "0cc2ff890d61a09d8974ba0ac2e23db82af3d55180eae74d2377b13602ffb64c",
+      "graph/low_link.hpp": "b576f131cce2b84806f874c16c2270bb7927d189d487c9f8c3de5b8658230cfd",
+      "graph/max_flow.hpp": "f40590ace6a7bc77cbfe8914a8a44c2ddba5fc5860e47ec89c1670ec3886033c",
+      "graph/min_cost_flow.hpp": "3a7c754efcac8b30ec1c177f84a9fb67e0ec2c0f40da7eec553cd28b869423ec",
+      "graph/rerooting.hpp": "f7b2af0d128eb794a1342acc328becb82d1fd49075daa6db273d09dda308b828",
+      "graph/static_top_tree.hpp": "fe99e28ce863ac6488cdd6a92a139a0a394aee075d9bd5d6d1b64e80fa7bd066",
+      "graph/two_edge_connected_components.hpp": "f9c9634ca99665376d3d7ff07f7d55f0761232f6aa6db82dfa4c9e2025a30e2f",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "string/edit_distance.hpp": "0ecb3409c0bf02770d7756343e9784fa3fa208961c0beb64eea3784da502c9ef",
+      "string/eertree.hpp": "0b261b2c37af32c12d624c9246be8085a58a29b6539694da0fc3bfc08f8e0787",
+      "string/lcs.hpp": "2a4313d5cdb7698c2d6e0909acdcd0533b6a83549d95d751d61e3e4b922d5f4d",
+      "string/rolling_hash.hpp": "ca48dbc8344472d686ce156eef7d1314a387b9c167c595cfa55761d5d4e441f5",
+      "string/run_enumerate.hpp": "47ec2c03e7533442bf34f954812bc39ad64c6b725d7b1bd289d24e5bff8a97d9",
+      "test/benchmark/bitwise_transforms_baseline.hpp": "f3481fe1532ae9a42784f6d2213e727d80c90117719845e56298219251a64a4e",
+      "test/benchmark/dynamic_connectivity_baseline.hpp": "0a261f0201efc0d83cb194bf8ea6ad6e38454144372b0d74a92362f15ddddfec",
+      "test/benchmark/dynamic_segtree_base.hpp": "19ae066138bd144eb4e01dbd47820c1225ccc83eab589dca06a15a945e0b8c8a",
+      "test/benchmark/dynamic_segtree_block.hpp": "9d5fb5133510e54cde1cfcde78e839245aeb55d1d7da7fc19d7bf4dd0216f145",
+      "test/benchmark/dynamic_segtree_bucket.hpp": "91f67446690e9ba7c335d7899dd48dcfdf6bdfcf1397cd5953fdc5bbdbd795cc",
+      "test/benchmark/eertree_baseline.hpp": "7d3dd37b6e97bf18b4d36b56b74047aa2cec8a8126fe9eca5a5d2155b9d6c5a9",
+      "test/benchmark/fast_io_integer_baseline.hpp": "6cc12635f1e1d774fcb42461e1e700dbb93bccc45a604d82910df719ef9a1a38",
+      "test/benchmark/fps_bostan_transform_candidate.hpp": "50520e9c7a8f9996500ca2ed20425790b2f5ff976aeb8ad862b8f5f1b9612a95",
+      "test/benchmark/fps_scalar_return/api.hpp": "0e78bf2a9c0e3af4a305b01e7520abc7f8284d5e673af80f2e022c0e7215bf97",
+      "test/benchmark/fraction_baseline.hpp": "b46befb67ba60ec4ce090b3f66c902d16d708fa7ca887e3fb4a2e9236eec5bf9",
+      "test/benchmark/general_matching_baseline.hpp": "66b5501ee0727acd4ab1d24db2aa0df3be85e14402431c6908456ccc41693608",
+      "test/benchmark/generalized_floor_sum_base.hpp": "2e813db20eb3b97fab79e9c470b7b00437513553364c72fe7af5768478170a33",
+      "test/benchmark/generalized_floor_sum_monoid.hpp": "0a36179d0552e41da0e873db829716425d13272879d317c3f7412353aeeb9fde",
+      "test/benchmark/generalized_floor_sum_quadratic.hpp": "fae368760ac0842b53dc36527da5ba10888e924383d0d11e18ff81bdafc5ba60",
+      "test/benchmark/hungarian_baseline.hpp": "7a4a8f87354c87cefcc542770fb594f410a409809bb3e6872901b31ba826fdac",
+      "test/benchmark/lazy_reversible_treap_base.hpp": "a12f23c22d5b2ae119974c4c5f738540258711486b43c96c556124088c5557da",
+      "test/benchmark/link_cut_tree_baseline.hpp": "dc2127c04de12b0da3e661d71e436ec5cb584686b9e6297ead7e24efe0ca8434",
+      "test/benchmark/mod_linear_partition_baseline.hpp": "ee8833fb548f1bdfdf766abe8f4fd730a5991e0b5573ca27de1118193d8637f6",
+      "test/benchmark/mod_sqrt_baseline.hpp": "fc8ccf9dd7e3a7bd55c7b6ddfdbedafb3730a1cd3e6392ddfc9edc40d9f39d85",
+      "test/benchmark/ordered_convolution_baseline.hpp": "4724ff4eabd882aba8b8ae6aeedb6d2b77dfb2e88b673ef90bebc10a972102cb",
+      "test/benchmark/prefix_min_of_mod_of_linear_baseline.hpp": "22648a93e9ebc97aa44b34d61deea88a9986683e1c7a7a52f72953389402540b",
+      "test/benchmark/primality_factorize_baseline.hpp": "c74eecb1ae7cd3a849c25ae543591074e815f3266bfe6b0f5c50696d23d6eb47",
+      "test/benchmark/results/fps_convolution_phases/profile.hpp": "72fbc5617c650b6eda239b64939f06698d5915f2ad273dc5208c379401b7beca",
+      "test/benchmark/subset_convolution_baseline.hpp": "dcfc6a12835ec6992e35f7ee3c4ad4022c6238dc918267a7c9bce67ff47a06d8",
+      "test/benchmark/two_edge_connected_components_baseline.hpp": "175c5a17e4f57c15b52f2b24e5e609c7bf837c7a1fa6833d83213a57d12ccc3d",
+      "test/fixtures/beats.hpp": "301ddef41fefaa51a748e724c6b8d5f736a9d7cdc200309b3d246cf596e675f7",
+      "test/fixtures/retroactive_scheduling.hpp": "71c48c1e45f41925ade7d11510302938b030f462ddf5e2cc0bfcd9d281933ed8",
+      "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235",
+      "test/matrix_common.hpp": "e822e432c00b27be95eed1f5409c62d1d3f02f29034affeee426734a9575c3a7",
+      "test/static_top_tree_dp.hpp": "d88a0f3fa8992ebc9cba72ecbfb05ad7255ea494c22ef1b1668d4bb0a6c8b65a"
+    },
+    "candidate": {
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+      "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+      "components/fps_composition.hpp": "afa2066ed616e0310d33fa817ae12ead196cd781f9f4800d1822c1cd3764c13f",
+      "components/fps_convolution.hpp": "b0d675b0d0063baf7c64dab92e5368ae5b0fdaf208ffd1d0fa761a95869a7c61",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_division_blocked.hpp": "e8acc8d14d25e9b3501730b6ba670d863b2d285c2772d71da383b320dce2a249",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fps_exp_blocked.hpp": "063a6e7c933c3eaa29b9ff9b6c366cc29f0fb4d8f7607ad6d4e467bbac6fb598",
+      "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/fps_inverse_blocked.hpp": "980af8d8bf5f90c95abe2f15afb84103549cf97d303c3877844ee6299c469c67",
+      "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+      "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "data_structure/disjoint_sparse_table.hpp": "4506c898e40a65343fc5157254714bd1d1ff3dd2c1e21a09e4f01ede13f25c5d",
+      "data_structure/dynamic_connectivity.hpp": "55b8f98c4ae154babc1381af13bce9d8ae8060a55ace8a1db5250e54c7c3c673",
+      "data_structure/dynamic_li_chao_tree.hpp": "cc7549e65e18dd282d595cdce7d8304264b174b1cf9897a79884c510f72bc96a",
+      "data_structure/dynamic_segtree.hpp": "1f526854b82302e39944b9a8d3b64c94b89b2791275e0bce87ad28e3c61b88ff",
+      "data_structure/dynamic_wavelet_matrix.hpp": "8683aa75c8b5011b9b3e9c06adde7f97b0f2c94cd4345baadc5b80eb3f577caf",
+      "data_structure/generic_segtree_beats.hpp": "51b5ca8efe45c0982df4a967cdc5cd0a82cd58e8dcb1a5c28798c100b950c81f",
+      "data_structure/interval_set.hpp": "cb3aaa2681149c61befa9acbe05d4b308f8bc072bc76b21b85b5a053c3b1ce04",
+      "data_structure/lazy_reversible_treap.hpp": "f9d1e97795f92fbbec6c8531d3496335fb390485fd4e6df4885b66ef0d1cd231",
+      "data_structure/li_chao_tree.hpp": "84f0ac941a24b2f292680531c43db1c442f663270b637ba5acb527945311fadc",
+      "data_structure/link_cut_tree.hpp": "af32cdb70a44aab214649cef14f8476796e5de87bbb3d07fd5e275888e95c833",
+      "data_structure/partially_retroactive_priority_queue.hpp": "7f4982a4348636cb096a5134da00be96533182e30fb64149ba6c48af06810a0e",
+      "data_structure/permutation_tree.hpp": "114140f2c8abb9ae06799bea977e221f45291aa82bed16659ad2bca8a5b52936",
+      "data_structure/point_set_wavelet_matrix.hpp": "6c1f94bf2138c8dd92afee50256f4f43708cb9bd45230a0c8489de471e2ecfe3",
+      "data_structure/retroactive_priority_queue.hpp": "3e06052d465be892c2281010f964c9cd1e5f5c67147a9de811252e314430c2f6",
+      "data_structure/segtree_beats.hpp": "8b7fbb411f2be9f22321afe6f90ca9848b35a534ca191ca08014b18bb4f80e7e",
+      "data_structure/slope_trick.hpp": "81cd59ebb299290402065b9b44a1221a3f502068029e9d607b8f07f8f51ca539",
+      "data_structure/sortable_segtree.hpp": "9827a50a595b0ede541a358181a220ab3c7342006e399c12cb0ac6f13ffe7c01",
+      "data_structure/sparse_table.hpp": "b9378b433210bd5bcba5c69280b25ef9c906b480b641297fa58efe6ebbd4f884",
+      "data_structure/wavelet_matrix.hpp": "389023db38a020bd3234266c1f281de80d4fa1b17955a62310b17e23ad09b945",
+      "data_structure/weighted_union_find.hpp": "1dd4fe325f5922b55c6854ad4445ef7cae5522e0f9419370daa073c34f463eff",
+      "data_structure/weighted_wavelet_matrix.hpp": "1312b9ae6e181bfede84dffdcf3d784857094bf48c2e89a2b16fc23c59ea12b2",
+      "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "graph/auxiliary_tree.hpp": "7090beef3b1c0eee6163ca90beb85e6a8803a1295f66c42815f6b3aad08fa31b",
+      "graph/centroid_decomposition.hpp": "48248bac34f499c6919ad1cbee748789a230d516f244e1a8f1fd8d2f900d782d",
+      "graph/dijkstra.hpp": "2ce6790121b8f0239a99190e421e59e92766eac8fb61d265951ab16a31282967",
+      "graph/general_matching.hpp": "62c215ab4bf9d24bcffc8da5defb9e5b187e69975276e78413d05f965e0007be",
+      "graph/general_weighted_matching.hpp": "f635efd5314d62a5b7d444ab056660e337a95285508f1785b093cc7129a2e960",
+      "graph/hld.hpp": "6d199cbd38699bd74e5f49ba382e05a5577ef40a11b30b40ecb62d3e0620519d",
+      "graph/hungarian.hpp": "4acb5ca3ba74c793aed5af3e7696575471eff662e4148f785703852ae6ea246c",
+      "graph/lca.hpp": "0cc2ff890d61a09d8974ba0ac2e23db82af3d55180eae74d2377b13602ffb64c",
+      "graph/low_link.hpp": "b576f131cce2b84806f874c16c2270bb7927d189d487c9f8c3de5b8658230cfd",
+      "graph/max_flow.hpp": "f40590ace6a7bc77cbfe8914a8a44c2ddba5fc5860e47ec89c1670ec3886033c",
+      "graph/min_cost_flow.hpp": "3a7c754efcac8b30ec1c177f84a9fb67e0ec2c0f40da7eec553cd28b869423ec",
+      "graph/rerooting.hpp": "f7b2af0d128eb794a1342acc328becb82d1fd49075daa6db273d09dda308b828",
+      "graph/static_top_tree.hpp": "fe99e28ce863ac6488cdd6a92a139a0a394aee075d9bd5d6d1b64e80fa7bd066",
+      "graph/two_edge_connected_components.hpp": "f9c9634ca99665376d3d7ff07f7d55f0761232f6aa6db82dfa4c9e2025a30e2f",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "string/edit_distance.hpp": "0ecb3409c0bf02770d7756343e9784fa3fa208961c0beb64eea3784da502c9ef",
+      "string/eertree.hpp": "0b261b2c37af32c12d624c9246be8085a58a29b6539694da0fc3bfc08f8e0787",
+      "string/lcs.hpp": "2a4313d5cdb7698c2d6e0909acdcd0533b6a83549d95d751d61e3e4b922d5f4d",
+      "string/rolling_hash.hpp": "ca48dbc8344472d686ce156eef7d1314a387b9c167c595cfa55761d5d4e441f5",
+      "string/run_enumerate.hpp": "47ec2c03e7533442bf34f954812bc39ad64c6b725d7b1bd289d24e5bff8a97d9",
+      "test/benchmark/bitwise_transforms_baseline.hpp": "f3481fe1532ae9a42784f6d2213e727d80c90117719845e56298219251a64a4e",
+      "test/benchmark/dynamic_connectivity_baseline.hpp": "0a261f0201efc0d83cb194bf8ea6ad6e38454144372b0d74a92362f15ddddfec",
+      "test/benchmark/dynamic_segtree_base.hpp": "19ae066138bd144eb4e01dbd47820c1225ccc83eab589dca06a15a945e0b8c8a",
+      "test/benchmark/dynamic_segtree_block.hpp": "9d5fb5133510e54cde1cfcde78e839245aeb55d1d7da7fc19d7bf4dd0216f145",
+      "test/benchmark/dynamic_segtree_bucket.hpp": "91f67446690e9ba7c335d7899dd48dcfdf6bdfcf1397cd5953fdc5bbdbd795cc",
+      "test/benchmark/eertree_baseline.hpp": "7d3dd37b6e97bf18b4d36b56b74047aa2cec8a8126fe9eca5a5d2155b9d6c5a9",
+      "test/benchmark/fast_io_integer_baseline.hpp": "6cc12635f1e1d774fcb42461e1e700dbb93bccc45a604d82910df719ef9a1a38",
+      "test/benchmark/fps_bostan_transform_candidate.hpp": "50520e9c7a8f9996500ca2ed20425790b2f5ff976aeb8ad862b8f5f1b9612a95",
+      "test/benchmark/fps_scalar_return/api.hpp": "0e78bf2a9c0e3af4a305b01e7520abc7f8284d5e673af80f2e022c0e7215bf97",
+      "test/benchmark/fraction_baseline.hpp": "b46befb67ba60ec4ce090b3f66c902d16d708fa7ca887e3fb4a2e9236eec5bf9",
+      "test/benchmark/general_matching_baseline.hpp": "66b5501ee0727acd4ab1d24db2aa0df3be85e14402431c6908456ccc41693608",
+      "test/benchmark/generalized_floor_sum_base.hpp": "2e813db20eb3b97fab79e9c470b7b00437513553364c72fe7af5768478170a33",
+      "test/benchmark/generalized_floor_sum_monoid.hpp": "0a36179d0552e41da0e873db829716425d13272879d317c3f7412353aeeb9fde",
+      "test/benchmark/generalized_floor_sum_quadratic.hpp": "fae368760ac0842b53dc36527da5ba10888e924383d0d11e18ff81bdafc5ba60",
+      "test/benchmark/hungarian_baseline.hpp": "7a4a8f87354c87cefcc542770fb594f410a409809bb3e6872901b31ba826fdac",
+      "test/benchmark/lazy_reversible_treap_base.hpp": "a12f23c22d5b2ae119974c4c5f738540258711486b43c96c556124088c5557da",
+      "test/benchmark/link_cut_tree_baseline.hpp": "dc2127c04de12b0da3e661d71e436ec5cb584686b9e6297ead7e24efe0ca8434",
+      "test/benchmark/mod_linear_partition_baseline.hpp": "ee8833fb548f1bdfdf766abe8f4fd730a5991e0b5573ca27de1118193d8637f6",
+      "test/benchmark/mod_sqrt_baseline.hpp": "fc8ccf9dd7e3a7bd55c7b6ddfdbedafb3730a1cd3e6392ddfc9edc40d9f39d85",
+      "test/benchmark/ordered_convolution_baseline.hpp": "4724ff4eabd882aba8b8ae6aeedb6d2b77dfb2e88b673ef90bebc10a972102cb",
+      "test/benchmark/prefix_min_of_mod_of_linear_baseline.hpp": "22648a93e9ebc97aa44b34d61deea88a9986683e1c7a7a52f72953389402540b",
+      "test/benchmark/primality_factorize_baseline.hpp": "c74eecb1ae7cd3a849c25ae543591074e815f3266bfe6b0f5c50696d23d6eb47",
+      "test/benchmark/results/fps_convolution_phases/profile.hpp": "72fbc5617c650b6eda239b64939f06698d5915f2ad273dc5208c379401b7beca",
+      "test/benchmark/subset_convolution_baseline.hpp": "dcfc6a12835ec6992e35f7ee3c4ad4022c6238dc918267a7c9bce67ff47a06d8",
+      "test/benchmark/two_edge_connected_components_baseline.hpp": "175c5a17e4f57c15b52f2b24e5e609c7bf837c7a1fa6833d83213a57d12ccc3d",
+      "test/fixtures/beats.hpp": "301ddef41fefaa51a748e724c6b8d5f736a9d7cdc200309b3d246cf596e675f7",
+      "test/fixtures/retroactive_scheduling.hpp": "71c48c1e45f41925ade7d11510302938b030f462ddf5e2cc0bfcd9d281933ed8",
+      "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235",
+      "test/matrix_common.hpp": "e822e432c00b27be95eed1f5409c62d1d3f02f29034affeee426734a9575c3a7",
+      "test/static_top_tree_dp.hpp": "d88a0f3fa8992ebc9cba72ecbfb05ad7255ea494c22ef1b1668d4bb0a6c8b65a"
+    }
+  },
+  "driver_sha256": "24363c628c0e6ed41a4bf6ff4f6471f190dd0624e87f46b8dc748095f7b26cb6",
+  "builds": {
+    "division_baseline": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-DMODE=0",
+        "-I",
+        "/tmp/cp-fps-round2-base",
+        "/tmp/fps-division-round2/driver.cpp",
+        "-o",
+        "/tmp/fps-division-round2/division_baseline"
+      ],
+      "source_sha256": "24363c628c0e6ed41a4bf6ff4f6471f190dd0624e87f46b8dc748095f7b26cb6",
+      "binary_sha256": "b19f3362b2bb7465885417e687168b6399efd8d871eb5b1d1e6af3cab7266fdc",
+      "compiler_output": "",
+      "seconds": 8.436511849002272
+    },
+    "inverse_mod_baseline": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-DMODE=1",
+        "-I",
+        "/tmp/cp-fps-round2-base",
+        "/tmp/fps-division-round2/driver.cpp",
+        "-o",
+        "/tmp/fps-division-round2/inverse_mod_baseline"
+      ],
+      "source_sha256": "24363c628c0e6ed41a4bf6ff4f6471f190dd0624e87f46b8dc748095f7b26cb6",
+      "binary_sha256": "0a31c3a37bd955434f31e95ee724b51be7ef1dc83c70ae473d65f0bb7d8dccba",
+      "compiler_output": "",
+      "seconds": 10.121349885994277
+    },
+    "gcd_baseline": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-DMODE=2",
+        "-I",
+        "/tmp/cp-fps-round2-base",
+        "/tmp/fps-division-round2/driver.cpp",
+        "-o",
+        "/tmp/fps-division-round2/gcd_baseline"
+      ],
+      "source_sha256": "24363c628c0e6ed41a4bf6ff4f6471f190dd0624e87f46b8dc748095f7b26cb6",
+      "binary_sha256": "11ab754ecb2c4deeb12f8fdcbb59a77dc934571e431864643c4275de07470d40",
+      "compiler_output": "",
+      "seconds": 21.209100388005027
+    },
+    "division_candidate": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-DMODE=0",
+        "-I",
+        "/tmp/fps-division-round2/candidate",
+        "/tmp/fps-division-round2/driver.cpp",
+        "-o",
+        "/tmp/fps-division-round2/division_candidate"
+      ],
+      "source_sha256": "24363c628c0e6ed41a4bf6ff4f6471f190dd0624e87f46b8dc748095f7b26cb6",
+      "binary_sha256": "40e5c1e62bd72d7fa2727ee6604163c50cd9903b8dc1cf12a8453500b9645a11",
+      "compiler_output": "",
+      "seconds": 9.47184702999948
+    },
+    "inverse_mod_candidate": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-DMODE=1",
+        "-I",
+        "/tmp/fps-division-round2/candidate",
+        "/tmp/fps-division-round2/driver.cpp",
+        "-o",
+        "/tmp/fps-division-round2/inverse_mod_candidate"
+      ],
+      "source_sha256": "24363c628c0e6ed41a4bf6ff4f6471f190dd0624e87f46b8dc748095f7b26cb6",
+      "binary_sha256": "e94e04575dac9a0ef76fa10f072b86003bc3dc04e5da7eaea1e6798f0a2d1cba",
+      "compiler_output": "",
+      "seconds": 34.31243538799754
+    },
+    "gcd_candidate": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-DMODE=2",
+        "-I",
+        "/tmp/fps-division-round2/candidate",
+        "/tmp/fps-division-round2/driver.cpp",
+        "-o",
+        "/tmp/fps-division-round2/gcd_candidate"
+      ],
+      "source_sha256": "24363c628c0e6ed41a4bf6ff4f6471f190dd0624e87f46b8dc748095f7b26cb6",
+      "binary_sha256": "8b2eb431aa2193b26494255eb53bdd0ed55ef0a823f8c27769508f1c346b83c0",
+      "compiler_output": "",
+      "seconds": 21.02108221600065
+    },
+    "division_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "/tmp/fps-reference/division_of_polynomials/409561.cpp",
+        "-o",
+        "/tmp/fps-division-round2/division_reference"
+      ],
+      "source_sha256": "fd06ec63bfe326a8f8c2b25292ecf38d77c4fd0114fbaa2565e4c667b8b4eeb1",
+      "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+      "compiler_output": "",
+      "seconds": 7.088528565000161
+    },
+    "inverse_mod_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "/tmp/fps-reference/inv_of_polynomials/409589.cpp",
+        "-o",
+        "/tmp/fps-division-round2/inverse_mod_reference"
+      ],
+      "source_sha256": "274d6c6107676bf6043aa5984e4b5788617ae7c8ff0ae1f157b6b0954e895306",
+      "binary_sha256": "da4747331ce08aedccddda1992e18747294c925bfdf43b8b9785ea71937b6dec",
+      "compiler_output": "",
+      "seconds": 6.067187222004577
+    }
+  },
+  "workloads": [
+    {
+      "name": "division_v_random_00",
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/v_random_00.in",
+      "input_header": "274010 248523",
+      "input_sha256": "45ae507db0f5698b79a2ab5407c40fa19d2967155fa42644b01ec6af97d7e8ef",
+      "answer_sha256": "ee0802fad1c0d70cba2bb31163cd470edbee4a0a47d8bc61449aae6b30c9a7c5",
+      "execution_orders_including_warmup": [
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ]
+      ],
+      "whole": {
+        "samples_ms": {
+          "baseline": [
+            8.842032,
+            7.886898,
+            7.965455,
+            7.321606,
+            7.124592,
+            6.919877,
+            8.061379,
+            6.870222,
+            7.414163,
+            7.851975,
+            7.49214,
+            7.499851,
+            7.6072,
+            7.021077,
+            5.947688,
+            6.755021,
+            7.300423,
+            7.309808,
+            8.756754,
+            6.758876,
+            7.270629
+          ],
+          "candidate": [
+            8.145123,
+            11.925699,
+            7.753829,
+            6.912816,
+            6.910673,
+            6.974348,
+            7.550957,
+            7.111061,
+            7.237841,
+            7.457187,
+            7.600681,
+            7.3378,
+            7.611908,
+            6.051592,
+            6.704445,
+            7.130811,
+            7.43835,
+            7.125953,
+            7.868901,
+            6.755731,
+            6.501192
+          ],
+          "reference": [
+            6.157469,
+            6.191089,
+            6.578858,
+            5.435714,
+            5.431206,
+            5.987376,
+            5.43954,
+            6.188797,
+            5.652087,
+            6.039083,
+            6.015918,
+            5.370737,
+            6.335255,
+            5.41914,
+            5.495664,
+            6.477597,
+            6.658767,
+            5.629843,
+            5.349355,
+            5.43325,
+            5.960366
+          ]
+        },
+        "median_ms": {
+          "baseline": 7.321606,
+          "candidate": 7.237841,
+          "reference": 5.960366
+        },
+        "paired_delta_ms": [
+          0.6969089999999998,
+          -4.038800999999999,
+          0.21162600000000076,
+          0.40878999999999976,
+          0.21391899999999975,
+          -0.05447100000000038,
+          0.5104220000000002,
+          -0.24083900000000025,
+          0.17632199999999987,
+          0.39478800000000014,
+          -0.10854099999999978,
+          0.16205099999999995,
+          -0.0047079999999999345,
+          0.9694849999999997,
+          -0.7567569999999995,
+          -0.3757899999999994,
+          -0.13792699999999947,
+          0.18385500000000032,
+          0.8878530000000007,
+          0.0031449999999999534,
+          0.7694369999999999
+        ],
+        "paired_median_saving_ms": 0.17632199999999987,
+        "candidate_wins": 13
+      },
+      "kernel": {
+        "samples_ms": {
+          "baseline": [
+            2.500087,
+            2.43487,
+            2.475861,
+            2.347049,
+            2.303885,
+            2.241953,
+            2.595049,
+            2.214121,
+            2.454799,
+            2.408361,
+            2.353288,
+            2.370484,
+            2.350524,
+            2.241001,
+            2.278187,
+            2.151918,
+            2.307861,
+            2.344115,
+            2.43521,
+            2.192238,
+            2.346057
+          ],
+          "candidate": [
+            2.539857,
+            2.304215,
+            2.315362,
+            2.210506,
+            2.172338,
+            2.191447,
+            2.252368,
+            2.263594,
+            2.295132,
+            2.369652,
+            2.299638,
+            2.217436,
+            2.293629,
+            2.27415,
+            2.121232,
+            2.19339,
+            2.280109,
+            2.28083,
+            2.822068,
+            2.158067,
+            2.091248
+          ]
+        },
+        "median_ms": {
+          "baseline": 2.347049,
+          "candidate": 2.27415
+        },
+        "paired_delta_ms": [
+          -0.03976999999999986,
+          0.13065499999999997,
+          0.16049900000000017,
+          0.13654300000000008,
+          0.1315470000000003,
+          0.05050599999999994,
+          0.3426809999999998,
+          -0.04947299999999988,
+          0.15966699999999978,
+          0.038709000000000326,
+          0.0536500000000002,
+          0.15304799999999963,
+          0.05689499999999992,
+          -0.03314900000000032,
+          0.15695499999999996,
+          -0.04147199999999973,
+          0.027752,
+          0.06328500000000004,
+          -0.3868579999999997,
+          0.03417100000000017,
+          0.25480899999999984
+        ],
+        "paired_median_saving_ms": 0.05689499999999992,
+        "candidate_wins": 16
+      }
+    },
+    {
+      "name": "division_v_random_01",
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/v_random_01.in",
+      "input_header": "463046 412907",
+      "input_sha256": "076860dd555d4ba783ff348eaa60e390b50c1576b0cee9fffeaa1d042a272059",
+      "answer_sha256": "eb8260012bb14babe3007dbcb251e12476504112cec84156adc2e6112280e24a",
+      "execution_orders_including_warmup": [
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ]
+      ],
+      "whole": {
+        "samples_ms": {
+          "baseline": [
+            11.238464,
+            10.876375,
+            10.506393,
+            10.675355,
+            10.71291,
+            10.239545,
+            10.057515,
+            10.328607,
+            10.077754,
+            10.587835,
+            10.463078,
+            10.48496,
+            10.182972,
+            10.724437,
+            10.406805,
+            10.833891,
+            10.333174,
+            10.53782,
+            9.910875,
+            11.142581,
+            11.367957
+          ],
+          "candidate": [
+            10.062631,
+            10.373494,
+            10.204622,
+            10.272854,
+            10.190642,
+            10.164813,
+            9.837626,
+            9.915071,
+            10.321837,
+            9.897756,
+            10.525932,
+            9.965217,
+            10.208589,
+            10.003543,
+            10.478601,
+            10.050342,
+            10.145616,
+            10.080127,
+            10.384021,
+            10.757157,
+            10.79248
+          ],
+          "reference": [
+            8.435947,
+            7.872496,
+            7.697615,
+            7.797915,
+            7.853387,
+            8.168217,
+            7.784926,
+            7.797554,
+            7.972115,
+            7.555533,
+            8.037412,
+            8.036992,
+            8.032224,
+            8.188917,
+            7.720119,
+            7.488264,
+            7.837689,
+            7.981599,
+            7.907197,
+            8.555825,
+            8.188558
+          ]
+        },
+        "median_ms": {
+          "baseline": 10.506393,
+          "candidate": 10.190642,
+          "reference": 7.907197
+        },
+        "paired_delta_ms": [
+          1.1758330000000008,
+          0.5028809999999986,
+          0.3017709999999987,
+          0.4025009999999991,
+          0.5222680000000004,
+          0.07473199999999913,
+          0.21988900000000022,
+          0.41353600000000057,
+          -0.24408299999999983,
+          0.6900790000000008,
+          -0.06285399999999974,
+          0.5197429999999983,
+          -0.025617000000000445,
+          0.7208939999999995,
+          -0.07179599999999908,
+          0.7835489999999989,
+          0.18755799999999923,
+          0.4576930000000008,
+          -0.47314599999999984,
+          0.38542400000000043,
+          0.5754770000000011
+        ],
+        "paired_median_saving_ms": 0.4025009999999991,
+        "candidate_wins": 16
+      },
+      "kernel": {
+        "samples_ms": {
+          "baseline": [
+            4.497946,
+            4.377517,
+            4.263505,
+            4.429343,
+            4.564195,
+            4.091029,
+            4.081555,
+            4.25327,
+            4.193832,
+            4.3059,
+            4.214914,
+            4.230086,
+            4.124279,
+            4.220422,
+            4.226592,
+            4.496844,
+            4.208143,
+            4.19884,
+            4.293741,
+            4.568521,
+            4.600278
+          ],
+          "candidate": [
+            4.068135,
+            4.096406,
+            4.08543,
+            4.176686,
+            4.101014,
+            4.014224,
+            3.897881,
+            3.93734,
+            3.970388,
+            3.947415,
+            4.108535,
+            3.956889,
+            4.017459,
+            4.040063,
+            4.111839,
+            3.982607,
+            4.034334,
+            4.030098,
+            4.05814,
+            4.150417,
+            4.190137
+          ]
+        },
+        "median_ms": {
+          "baseline": 4.25327,
+          "candidate": 4.040063
+        },
+        "paired_delta_ms": [
+          0.42981099999999994,
+          0.2811110000000001,
+          0.17807500000000065,
+          0.25265700000000013,
+          0.4631809999999996,
+          0.07680500000000023,
+          0.1836739999999999,
+          0.3159299999999998,
+          0.22344399999999975,
+          0.3584850000000004,
+          0.10637900000000045,
+          0.27319700000000013,
+          0.10681999999999992,
+          0.18035900000000016,
+          0.11475300000000033,
+          0.5142370000000005,
+          0.17380899999999944,
+          0.16874199999999995,
+          0.23560099999999995,
+          0.4181039999999996,
+          0.4101410000000003
+        ],
+        "paired_median_saving_ms": 0.23560099999999995,
+        "candidate_wins": 21
+      }
+    },
+    {
+      "name": "division_v_random_02",
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/v_random_02.in",
+      "input_header": "455174 92222",
+      "input_sha256": "7550ed2752c408a61b0f3a099e5043264c2a9412c1a26e633ed0f6944089065c",
+      "answer_sha256": "ae64eb944ac12e031635f14367f4c93a9660957955ff72fe2ad914664ea2e8ce",
+      "execution_orders_including_warmup": [
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ]
+      ],
+      "whole": {
+        "samples_ms": {
+          "baseline": [
+            13.449731,
+            13.647967,
+            13.008453,
+            13.390272,
+            12.95914,
+            13.563049,
+            13.674917,
+            13.538533,
+            13.409781,
+            13.681747,
+            13.552955,
+            13.701306,
+            13.430072,
+            13.185578,
+            13.825792,
+            13.709438,
+            13.401559,
+            22.582226,
+            13.239938,
+            13.373618,
+            13.526995
+          ],
+          "candidate": [
+            13.762116,
+            13.041082,
+            12.983626,
+            13.332776,
+            13.168601,
+            13.478573,
+            13.027962,
+            13.215151,
+            13.44204,
+            12.826432,
+            12.810188,
+            13.415761,
+            12.953371,
+            13.271105,
+            13.588058,
+            13.516731,
+            13.056745,
+            13.4153,
+            13.060261,
+            13.149834,
+            13.865881
+          ],
+          "reference": [
+            11.731669,
+            10.831237,
+            11.57087,
+            11.18121,
+            11.123653,
+            11.171294,
+            11.30959,
+            11.374508,
+            10.466353,
+            11.833543,
+            11.456219,
+            11.237923,
+            11.299135,
+            11.105226,
+            12.177935,
+            11.37637,
+            11.307607,
+            11.19543,
+            11.40984,
+            11.633894,
+            11.221568
+          ]
+        },
+        "median_ms": {
+          "baseline": 13.526995,
+          "candidate": 13.215151,
+          "reference": 11.307607
+        },
+        "paired_delta_ms": [
+          -0.3123850000000008,
+          0.6068850000000001,
+          0.024827000000000155,
+          0.05749599999999866,
+          -0.209461000000001,
+          0.08447599999999866,
+          0.6469550000000002,
+          0.3233819999999987,
+          -0.032258999999999816,
+          0.8553149999999992,
+          0.7427670000000006,
+          0.2855450000000008,
+          0.4767009999999985,
+          -0.0855270000000008,
+          0.23773399999999967,
+          0.1927070000000004,
+          0.3448140000000013,
+          9.166925999999998,
+          0.17967699999999986,
+          0.2237840000000002,
+          -0.33888600000000046
+        ],
+        "paired_median_saving_ms": 0.2237840000000002,
+        "candidate_wins": 16
+      },
+      "kernel": {
+        "samples_ms": {
+          "baseline": [
+            7.233954,
+            7.241926,
+            7.114966,
+            7.220414,
+            7.174286,
+            7.233895,
+            7.222638,
+            7.263248,
+            7.263379,
+            7.448665,
+            7.273874,
+            7.321465,
+            7.300163,
+            7.175037,
+            7.31189,
+            7.387352,
+            7.292492,
+            16.080542,
+            7.152913,
+            7.175497,
+            7.311881
+          ],
+          "candidate": [
+            7.371619,
+            6.938374,
+            6.913897,
+            6.994768,
+            6.983911,
+            7.025003,
+            6.927828,
+            7.075598,
+            7.106875,
+            6.858244,
+            6.86179,
+            7.04921,
+            6.956401,
+            6.917463,
+            7.061498,
+            6.997242,
+            6.838816,
+            7.034077,
+            6.96275,
+            7.00304,
+            7.093055
+          ]
+        },
+        "median_ms": {
+          "baseline": 7.263248,
+          "candidate": 6.994768
+        },
+        "paired_delta_ms": [
+          -0.13766500000000015,
+          0.3035520000000007,
+          0.2010689999999995,
+          0.22564600000000024,
+          0.1903750000000004,
+          0.20889200000000052,
+          0.29481,
+          0.18764999999999965,
+          0.15650399999999998,
+          0.5904210000000001,
+          0.4120840000000001,
+          0.27225499999999947,
+          0.3437620000000008,
+          0.25757399999999997,
+          0.2503919999999997,
+          0.39010999999999996,
+          0.45367600000000063,
+          9.046465000000001,
+          0.19016300000000008,
+          0.17245699999999964,
+          0.21882599999999996
+        ],
+        "paired_median_saving_ms": 0.2503919999999997,
+        "candidate_wins": 20
+      }
+    },
+    {
+      "name": "division_v_random_03",
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/v_random_03.in",
+      "input_header": "429249 25839",
+      "input_sha256": "b600696b3b0658fd218e20e515996cf0360edc1ef5e4391ffe259a9758bc9425",
+      "answer_sha256": "dc152f988639850d41c11265e145709861f8ee68f34a1e592f21a0f45f56644b",
+      "execution_orders_including_warmup": [
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ]
+      ],
+      "whole": {
+        "samples_ms": {
+          "baseline": [
+            11.465213,
+            12.299326,
+            11.166367,
+            12.071296,
+            11.560574,
+            13.545474,
+            11.374667,
+            10.331972,
+            11.918558,
+            11.80618,
+            12.739502,
+            11.420305,
+            11.437952,
+            11.339906,
+            10.916344,
+            11.70473,
+            11.485162,
+            11.435388,
+            11.198324,
+            11.048,
+            11.169491
+          ],
+          "candidate": [
+            11.542448,
+            11.900531,
+            11.176262,
+            11.607385,
+            14.62994,
+            13.418184,
+            11.092307,
+            11.434927,
+            11.071966,
+            11.469368,
+            13.808125,
+            11.704779,
+            11.085416,
+            11.145014,
+            10.681645,
+            10.210242,
+            10.766691,
+            11.909725,
+            11.118905,
+            11.127528,
+            11.086387
+          ],
+          "reference": [
+            9.530118,
+            9.440714,
+            9.42468,
+            10.026327,
+            8.972026,
+            10.270332,
+            9.649356,
+            9.629065,
+            9.425861,
+            9.972057,
+            12.018788,
+            9.503398,
+            9.290961,
+            9.435165,
+            9.305772,
+            9.36357,
+            11.488507,
+            8.565249,
+            9.34389,
+            9.135299,
+            9.575806
+          ]
+        },
+        "median_ms": {
+          "baseline": 11.437952,
+          "candidate": 11.176262,
+          "reference": 9.440714
+        },
+        "paired_delta_ms": [
+          -0.07723499999999994,
+          0.3987949999999998,
+          -0.00989500000000021,
+          0.4639109999999995,
+          -3.0693659999999987,
+          0.12729000000000035,
+          0.2823600000000006,
+          -1.1029549999999997,
+          0.8465920000000011,
+          0.3368120000000001,
+          -1.0686230000000005,
+          -0.28447399999999945,
+          0.35253599999999885,
+          0.1948919999999994,
+          0.23469900000000088,
+          1.4944880000000005,
+          0.718471000000001,
+          -0.47433700000000023,
+          0.07941899999999968,
+          -0.07952799999999982,
+          0.08310400000000051
+        ],
+        "paired_median_saving_ms": 0.12729000000000035,
+        "candidate_wins": 13
+      },
+      "kernel": {
+        "samples_ms": {
+          "baseline": [
+            5.716592,
+            6.21166,
+            5.59418,
+            6.058873,
+            6.072172,
+            6.789993,
+            5.754459,
+            5.713948,
+            5.974758,
+            5.725145,
+            5.950491,
+            5.665446,
+            5.531958,
+            5.693948,
+            5.528462,
+            5.669962,
+            5.727227,
+            5.722441,
+            5.622612,
+            5.544947,
+            5.619417
+          ],
+          "candidate": [
+            5.465258,
+            5.890522,
+            5.369865,
+            5.570655,
+            6.594471,
+            6.030901,
+            5.375644,
+            5.377327,
+            5.393641,
+            5.527359,
+            7.611998,
+            5.805835,
+            5.384126,
+            5.478998,
+            5.211149,
+            5.362925,
+            5.29933,
+            6.205242,
+            5.403625,
+            5.370306,
+            5.254924
+          ]
+        },
+        "median_ms": {
+          "baseline": 5.716592,
+          "candidate": 5.403625
+        },
+        "paired_delta_ms": [
+          0.25133399999999995,
+          0.32113800000000037,
+          0.22431499999999982,
+          0.4882179999999998,
+          -0.5222990000000003,
+          0.7590919999999999,
+          0.37881499999999946,
+          0.33662100000000006,
+          0.5811169999999999,
+          0.19778600000000068,
+          -1.6615069999999994,
+          -0.14038899999999988,
+          0.14783200000000019,
+          0.21494999999999997,
+          0.3173130000000004,
+          0.3070370000000002,
+          0.42789699999999975,
+          -0.48280100000000026,
+          0.21898700000000026,
+          0.17464099999999938,
+          0.3644930000000004
+        ],
+        "paired_median_saving_ms": 0.25133399999999995,
+        "candidate_wins": 17
+      }
+    },
+    {
+      "name": "division_n_max_00",
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/n_max_00.in",
+      "input_header": "500000 389813",
+      "input_sha256": "5b442a2f61bac1736766ddd2b63a2033ebda227f0783a07e6ceca70803889b83",
+      "answer_sha256": "6e5c4b3f407953496d5dcf6de06087a6e91c6c7f571ed5a743d7182b97fb7c15",
+      "execution_orders_including_warmup": [
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ]
+      ],
+      "whole": {
+        "samples_ms": {
+          "baseline": [
+            12.961263,
+            12.985779,
+            12.572653,
+            12.957276,
+            13.172066,
+            12.63131,
+            13.800764,
+            13.722848,
+            12.799902,
+            13.062524,
+            12.63118,
+            12.614365,
+            12.764119,
+            12.842846,
+            14.200469,
+            13.074191,
+            13.042384,
+            13.370072,
+            13.567326,
+            12.861925,
+            13.07352
+          ],
+          "candidate": [
+            13.052909,
+            12.608146,
+            12.766442,
+            12.774414,
+            12.340558,
+            15.638053,
+            12.850578,
+            12.73737,
+            11.399545,
+            13.247951,
+            13.027441,
+            12.506965,
+            12.893572,
+            12.837088,
+            13.271245,
+            13.308521,
+            13.057687,
+            12.696557,
+            13.127861,
+            12.593454,
+            12.752261
+          ],
+          "reference": [
+            17.817842,
+            10.101609,
+            10.130492,
+            10.476487,
+            9.974811,
+            10.440215,
+            10.059557,
+            10.459833,
+            10.023673,
+            10.297142,
+            11.064736,
+            10.759329,
+            9.925968,
+            10.314387,
+            10.406104,
+            10.207277,
+            10.29678,
+            10.082582,
+            10.317041,
+            10.232105,
+            10.979538
+          ]
+        },
+        "median_ms": {
+          "baseline": 12.985779,
+          "candidate": 12.837088,
+          "reference": 10.297142
+        },
+        "paired_delta_ms": [
+          -0.091645999999999,
+          0.3776330000000012,
+          -0.19378899999999888,
+          0.18286200000000008,
+          0.8315079999999995,
+          -3.006743,
+          0.9501859999999986,
+          0.9854780000000005,
+          1.4003569999999996,
+          -0.18542700000000067,
+          -0.3962609999999991,
+          0.10740000000000016,
+          -0.12945299999999982,
+          0.005758000000000152,
+          0.9292239999999996,
+          -0.23432999999999993,
+          -0.0153029999999994,
+          0.6735150000000001,
+          0.4394650000000002,
+          0.2684709999999999,
+          0.3212589999999995
+        ],
+        "paired_median_saving_ms": 0.18286200000000008,
+        "candidate_wins": 13
+      },
+      "kernel": {
+        "samples_ms": {
+          "baseline": [
+            5.229806,
+            5.529373,
+            5.133522,
+            5.197949,
+            5.208134,
+            5.129377,
+            5.209786,
+            5.246402,
+            5.288835,
+            5.216798,
+            5.108815,
+            5.230478,
+            5.205711,
+            5.186793,
+            5.910842,
+            5.197939,
+            5.245179,
+            5.241314,
+            5.362404,
+            5.209276,
+            5.203618
+          ],
+          "candidate": [
+            5.113052,
+            4.94317,
+            5.115837,
+            4.975087,
+            4.917051,
+            7.506861,
+            5.201665,
+            5.046103,
+            4.970671,
+            5.055637,
+            5.047826,
+            4.935598,
+            4.993975,
+            5.147314,
+            5.295765,
+            5.389785,
+            5.062728,
+            4.954586,
+            5.110279,
+            5.038581,
+            4.989489
+          ]
+        },
+        "median_ms": {
+          "baseline": 5.209786,
+          "candidate": 5.047826
+        },
+        "paired_delta_ms": [
+          0.11675400000000025,
+          0.5862029999999994,
+          0.017685000000000173,
+          0.22286200000000012,
+          0.2910830000000004,
+          -2.377484,
+          0.008121000000000045,
+          0.20029900000000023,
+          0.31816399999999945,
+          0.1611609999999999,
+          0.06098900000000018,
+          0.29488000000000003,
+          0.21173600000000015,
+          0.03947900000000004,
+          0.6150769999999994,
+          -0.19184599999999996,
+          0.18245100000000036,
+          0.2867280000000001,
+          0.2521249999999995,
+          0.17069500000000026,
+          0.2141289999999998
+        ],
+        "paired_median_saving_ms": 0.20029900000000023,
+        "candidate_wins": 19
+      }
+    },
+    {
+      "name": "inverse_max",
+      "input": "/tmp/library-checker-problems/polynomial/inv_of_polynomials/in/max_random_00.in",
+      "input_header": "50000 50000",
+      "input_sha256": "efba1fb7dbebf3c7dfb0d604bac31059254316186bce5a7d1c98fc5a3baf20af",
+      "answer_sha256": "a391be1c251f93b6f9b1668c994183e05a00fef160242dbb96a1c9860b0a5ad8",
+      "execution_orders_including_warmup": [
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ]
+      ],
+      "whole": {
+        "samples_ms": {
+          "baseline": [
+            16.558546,
+            16.274543,
+            16.246311,
+            16.445236,
+            16.511975,
+            17.278408,
+            17.515562,
+            15.782298,
+            17.310977,
+            16.489573,
+            16.948326,
+            16.452787,
+            17.157838,
+            17.123177,
+            17.847546,
+            16.682369,
+            17.421632,
+            16.660167,
+            16.429142,
+            16.794216,
+            16.433979
+          ],
+          "candidate": [
+            16.1859,
+            16.284888,
+            16.576362,
+            16.346309,
+            16.142836,
+            20.577391,
+            17.181664,
+            16.935346,
+            16.402673,
+            17.145971,
+            16.994895,
+            16.556963,
+            19.929651,
+            17.197778,
+            17.26586,
+            17.251709,
+            17.289064,
+            17.4682,
+            17.620618,
+            17.148645,
+            16.692555
+          ],
+          "reference": [
+            15.848117,
+            15.633757,
+            15.675929,
+            15.788347,
+            15.720125,
+            15.69711,
+            16.288633,
+            15.413598,
+            16.842974,
+            15.83753,
+            15.912452,
+            15.868566,
+            16.083557,
+            15.960313,
+            15.990658,
+            16.109545,
+            16.32027,
+            15.813824,
+            15.895196,
+            16.263485,
+            17.536993
+          ]
+        },
+        "median_ms": {
+          "baseline": 16.660167,
+          "candidate": 17.145971,
+          "reference": 15.895196
+        },
+        "paired_delta_ms": [
+          0.3726459999999996,
+          -0.010344999999997384,
+          -0.330051000000001,
+          0.09892699999999977,
+          0.36913900000000055,
+          -3.2989829999999998,
+          0.3338979999999978,
+          -1.1530479999999983,
+          0.9083040000000011,
+          -0.6563979999999994,
+          -0.046568999999998084,
+          -0.10417599999999894,
+          -2.771812999999998,
+          -0.07460100000000125,
+          0.5816860000000013,
+          -0.5693400000000004,
+          0.13256799999999913,
+          -0.8080329999999982,
+          -1.1914760000000015,
+          -0.35442899999999966,
+          -0.2585759999999979
+        ],
+        "paired_median_saving_ms": -0.10417599999999894,
+        "candidate_wins": 7
+      },
+      "kernel": {
+        "samples_ms": {
+          "baseline": [
+            13.34149,
+            13.217916,
+            13.239658,
+            13.267549,
+            13.24212,
+            13.644741,
+            13.881644,
+            13.484291,
+            14.094202,
+            13.465554,
+            13.780534,
+            13.427808,
+            13.582278,
+            13.572874,
+            14.456171,
+            13.431292,
+            13.876997,
+            13.450291,
+            13.289592,
+            13.52951,
+            13.324724
+          ],
+          "candidate": [
+            13.180489,
+            13.236103,
+            13.415479,
+            13.188701,
+            13.148972,
+            16.49176,
+            13.914403,
+            13.512454,
+            13.32194,
+            13.984938,
+            13.733413,
+            13.42934,
+            15.774165,
+            14.800774,
+            13.750609,
+            13.755927,
+            13.609488,
+            14.319707,
+            14.389833,
+            13.83227,
+            13.52301
+          ]
+        },
+        "median_ms": {
+          "baseline": 13.465554,
+          "candidate": 13.733413
+        },
+        "paired_delta_ms": [
+          0.16100100000000062,
+          -0.018186999999999287,
+          -0.17582099999999912,
+          0.0788480000000007,
+          0.09314799999999934,
+          -2.8470189999999995,
+          -0.03275900000000043,
+          -0.028162999999999272,
+          0.7722619999999996,
+          -0.5193840000000005,
+          0.04712099999999886,
+          -0.0015319999999992007,
+          -2.1918869999999995,
+          -1.2279,
+          0.7055619999999987,
+          -0.3246350000000007,
+          0.26750899999999866,
+          -0.8694159999999993,
+          -1.1002409999999987,
+          -0.30275999999999925,
+          -0.19828599999999952
+        ],
+        "paired_median_saving_ms": -0.03275900000000043,
+        "candidate_wins": 7
+      }
+    },
+    {
+      "name": "gcd_max",
+      "input": "/tmp/library-checker-problems/polynomial/inv_of_polynomials/in/max_random_00.in",
+      "input_header": "50000 50000",
+      "input_sha256": "efba1fb7dbebf3c7dfb0d604bac31059254316186bce5a7d1c98fc5a3baf20af",
+      "answer_sha256": null,
+      "execution_orders_including_warmup": [
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline"
+        ]
+      ],
+      "whole": {
+        "samples_ms": {
+          "baseline": [
+            17.178649,
+            17.232149,
+            16.928467,
+            16.86989,
+            16.783381,
+            16.792243,
+            16.942858,
+            16.651354,
+            17.435363,
+            16.628399,
+            16.477494,
+            17.069497,
+            16.435982,
+            16.76951,
+            17.072982,
+            17.288804,
+            16.433218,
+            18.569853,
+            17.421201,
+            16.643601,
+            17.080273
+          ],
+          "candidate": [
+            17.296856,
+            17.056437,
+            18.362875,
+            17.12579,
+            16.740045,
+            17.886615,
+            16.710602,
+            16.516542,
+            16.766925,
+            16.562681,
+            16.778824,
+            17.541811,
+            16.515752,
+            16.491905,
+            17.91018,
+            16.626736,
+            16.78349,
+            18.045181,
+            16.831181,
+            16.757833,
+            17.029277
+          ]
+        },
+        "median_ms": {
+          "baseline": 16.928467,
+          "candidate": 16.78349
+        },
+        "paired_delta_ms": [
+          -0.11820699999999817,
+          0.17571200000000076,
+          -1.4344079999999977,
+          -0.2558999999999969,
+          0.04333600000000004,
+          -1.094372,
+          0.23225599999999957,
+          0.13481200000000015,
+          0.6684379999999983,
+          0.06571800000000039,
+          -0.3013300000000001,
+          -0.4723140000000008,
+          -0.0797699999999999,
+          0.2776050000000012,
+          -0.8371980000000008,
+          0.6620679999999979,
+          -0.35027200000000036,
+          0.5246719999999989,
+          0.5900199999999991,
+          -0.11423200000000122,
+          0.05099599999999782
+        ],
+        "paired_median_saving_ms": 0.04333600000000004,
+        "candidate_wins": 11
+      },
+      "kernel": {
+        "samples_ms": {
+          "baseline": [
+            13.790108,
+            13.900943,
+            13.58407,
+            13.75124,
+            13.676048,
+            13.66419,
+            13.733763,
+            13.513746,
+            14.48942,
+            13.608807,
+            13.519425,
+            14.025919,
+            13.519264,
+            13.839592,
+            13.909606,
+            13.890608,
+            13.490371,
+            15.085739,
+            14.024267,
+            13.663769,
+            14.004728
+          ],
+          "candidate": [
+            13.877238,
+            13.709908,
+            14.950198,
+            13.854924,
+            13.723348,
+            14.746052,
+            13.563871,
+            13.493696,
+            13.753303,
+            13.407097,
+            13.816917,
+            14.495108,
+            13.474498,
+            13.558973,
+            14.704261,
+            13.479334,
+            13.72427,
+            14.89835,
+            13.742136,
+            13.701787,
+            13.997217
+          ]
+        },
+        "median_ms": {
+          "baseline": 13.75124,
+          "candidate": 13.742136
+        },
+        "paired_delta_ms": [
+          -0.08713000000000015,
+          0.1910349999999994,
+          -1.3661279999999998,
+          -0.10368400000000122,
+          -0.0472999999999999,
+          -1.081862000000001,
+          0.16989199999999904,
+          0.020049999999999457,
+          0.7361170000000001,
+          0.20171000000000028,
+          -0.2974920000000001,
+          -0.4691890000000001,
+          0.044765999999999195,
+          0.28061899999999973,
+          -0.7946550000000006,
+          0.4112740000000006,
+          -0.23389900000000097,
+          0.18738899999999958,
+          0.2821309999999997,
+          -0.03801799999999922,
+          0.007511000000000934
+        ],
+        "paired_median_saving_ms": 0.007511000000000934,
+        "candidate_wins": 11
+      }
+    }
+  ]
+}

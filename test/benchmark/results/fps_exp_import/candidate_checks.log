@@ -1,0 +1,111 @@
+{
+  "name": "standalone",
+  "compile_command": [
+    "g++",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-DDEBUG=1",
+    "-I",
+    "/tmp/fps-round2-exp/outlined",
+    "-fsyntax-only",
+    "/tmp/fps-round2-exp/standalone.cpp"
+  ],
+  "compile_exit_code": 0,
+  "compile_stdout": "",
+  "compile_stderr": "",
+  "passed": true,
+  "seconds": 3.4173214069960522
+}
+{
+  "name": "import_normal",
+  "compile_command": [
+    "g++",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-DDEBUG=1",
+    "-I",
+    "/tmp/fps-round2-exp/outlined",
+    "/tmp/fps-round2-exp/import_check.cpp",
+    "-o",
+    "/tmp/fps-round2-exp/import_outline"
+  ],
+  "compile_exit_code": 0,
+  "compile_stdout": "",
+  "compile_stderr": "",
+  "run_command": [
+    "/tmp/fps-round2-exp/import_outline"
+  ],
+  "runtime_exit_code": 0,
+  "stdout": "exp import derivative/lazy/tail/readonly checks passed\n",
+  "stderr": "",
+  "binary_sha256": "521c26429a2d6ca91c5b5f96c82e4a3fd1b4d2d3a77369b121be8a8165734db1",
+  "passed": true,
+  "seconds": 10.177547412997228
+}
+{
+  "name": "existing_unit",
+  "compile_command": [
+    "g++",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-DDEBUG=1",
+    "-I",
+    "/tmp/fps-round2-exp/outlined",
+    "/tmp/fps-round2-exp/outlined/test/unit/fps_exp_blocked.cpp",
+    "-o",
+    "/tmp/fps-round2-exp/unit_outline"
+  ],
+  "compile_exit_code": 0,
+  "compile_stdout": "",
+  "compile_stderr": "",
+  "run_command": [
+    "/tmp/fps-round2-exp/unit_outline"
+  ],
+  "runtime_exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "binary_sha256": "b70199152d417fb42e44678f07fb9af452c925df0eb43a2bf2ccd82095e2633b",
+  "passed": true,
+  "seconds": 14.121655967996048
+}
+{
+  "name": "import_sanitize",
+  "compile_command": [
+    "g++",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-DDEBUG=1",
+    "-I",
+    "/tmp/fps-round2-exp/outlined",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-g",
+    "/tmp/fps-round2-exp/import_check.cpp",
+    "-o",
+    "/tmp/fps-round2-exp/import_outline_sanitize"
+  ],
+  "compile_exit_code": 0,
+  "compile_stdout": "",
+  "compile_stderr": "",
+  "run_command": [
+    "/tmp/fps-round2-exp/import_outline_sanitize"
+  ],
+  "runtime_exit_code": 0,
+  "stdout": "exp import derivative/lazy/tail/readonly checks passed\n",
+  "stderr": "",
+  "binary_sha256": "b0fee015a19a65c80b17cad658abf95eaa7f50e6c4460e77f9580e58fec0e215",
+  "passed": true,
+  "seconds": 15.121303369996895
+}

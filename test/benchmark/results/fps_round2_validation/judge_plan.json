@@ -1,0 +1,189 @@
+{
+  "selection_sha256": "028da04f892428cb4b9d90602bc11c54bf943a32213fbddd2b1851ec47229870",
+  "verification": [
+    "test/convolution.test.cpp",
+    "test/cyclic_convolution.test.cpp",
+    "test/fps_bostan_mori.test.cpp",
+    "test/fps_compose.test.cpp",
+    "test/fps_compose_large.test.cpp",
+    "test/fps_compositional_inverse.test.cpp",
+    "test/fps_compositional_inverse_large.test.cpp",
+    "test/fps_divmod.test.cpp",
+    "test/fps_exp.test.cpp",
+    "test/fps_exp_sparse.test.cpp",
+    "test/fps_interpolate.test.cpp",
+    "test/fps_inv.test.cpp",
+    "test/fps_inv_sparse.test.cpp",
+    "test/fps_linear_recurrence.test.cpp",
+    "test/fps_log.test.cpp",
+    "test/fps_pow.test.cpp",
+    "test/fps_sqrt.test.cpp",
+    "test/fps_taylor_shift.test.cpp",
+    "test/multiplicative_convolution.test.cpp",
+    "test/multipoint_eval.test.cpp",
+    "test/multivariate_convolution.test.cpp",
+    "test/ordered_convolution.test.cpp",
+    "test/polynomial_inv_mod.test.cpp",
+    "test/power_projection.test.cpp"
+  ],
+  "parts": {
+    "judge_part0.json": [
+      "test/convolution.test.cpp",
+      "test/fps_compose.test.cpp",
+      "test/fps_compositional_inverse_large.test.cpp",
+      "test/fps_exp_sparse.test.cpp",
+      "test/fps_inv_sparse.test.cpp",
+      "test/fps_pow.test.cpp",
+      "test/multiplicative_convolution.test.cpp",
+      "test/ordered_convolution.test.cpp"
+    ],
+    "judge_part1.json": [
+      "test/cyclic_convolution.test.cpp",
+      "test/fps_compose_large.test.cpp",
+      "test/fps_divmod.test.cpp",
+      "test/fps_interpolate.test.cpp",
+      "test/fps_linear_recurrence.test.cpp",
+      "test/fps_sqrt.test.cpp",
+      "test/multipoint_eval.test.cpp",
+      "test/polynomial_inv_mod.test.cpp"
+    ],
+    "judge_part2.json": [
+      "test/fps_bostan_mori.test.cpp",
+      "test/fps_compositional_inverse.test.cpp",
+      "test/fps_exp.test.cpp",
+      "test/fps_inv.test.cpp",
+      "test/fps_log.test.cpp",
+      "test/fps_taylor_shift.test.cpp",
+      "test/multivariate_convolution.test.cpp",
+      "test/power_projection.test.cpp"
+    ]
+  },
+  "official": {
+    "test/convolution.test.cpp": {
+      "problem": "convolution_mod",
+      "cases": 53,
+      "input_bytes": 211547577
+    },
+    "test/fps_bostan_mori.test.cpp": {
+      "problem": "kth_term_of_linearly_recurrent_sequence",
+      "cases": 20,
+      "input_bytes": 12704783
+    },
+    "test/fps_compose.test.cpp": {
+      "problem": "composition_of_formal_power_series",
+      "cases": 27,
+      "input_bytes": 2130323
+    },
+    "test/fps_compose_large.test.cpp": {
+      "problem": "composition_of_formal_power_series_large",
+      "cases": 32,
+      "input_bytes": 33371392
+    },
+    "test/fps_compositional_inverse.test.cpp": {
+      "problem": "compositional_inverse_of_formal_power_series",
+      "cases": 23,
+      "input_bytes": 641718
+    },
+    "test/fps_compositional_inverse_large.test.cpp": {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "cases": 28,
+      "input_bytes": 9957322
+    },
+    "test/fps_divmod.test.cpp": {
+      "problem": "division_of_polynomials",
+      "cases": 35,
+      "input_bytes": 129236930
+    },
+    "test/fps_exp.test.cpp": {
+      "problem": "exp_of_formal_power_series",
+      "cases": 26,
+      "input_bytes": 54390432
+    },
+    "test/fps_exp_sparse.test.cpp": {
+      "problem": "exp_of_formal_power_series_sparse",
+      "cases": 25,
+      "input_bytes": 1911
+    },
+    "test/fps_interpolate.test.cpp": {
+      "problem": "polynomial_interpolation",
+      "cases": 9,
+      "input_bytes": 12738634
+    },
+    "test/fps_inv.test.cpp": {
+      "problem": "inv_of_formal_power_series",
+      "cases": 25,
+      "input_bytes": 53390543
+    },
+    "test/fps_inv_sparse.test.cpp": {
+      "problem": "inv_of_formal_power_series_sparse",
+      "cases": 24,
+      "input_bytes": 1744
+    },
+    "test/fps_linear_recurrence.test.cpp": {
+      "problem": "kth_term_of_linearly_recurrent_sequence",
+      "cases": 20,
+      "input_bytes": 12704783
+    },
+    "test/fps_log.test.cpp": {
+      "problem": "log_of_formal_power_series",
+      "cases": 25,
+      "input_bytes": 49445622
+    },
+    "test/fps_pow.test.cpp": {
+      "problem": "pow_of_formal_power_series",
+      "cases": 37,
+      "input_bytes": 88944797
+    },
+    "test/fps_sqrt.test.cpp": {
+      "problem": "sqrt_of_formal_power_series",
+      "cases": 35,
+      "input_bytes": 65084558
+    },
+    "test/fps_taylor_shift.test.cpp": {
+      "problem": "polynomial_taylor_shift",
+      "cases": 38,
+      "input_bytes": 71875011
+    },
+    "test/multiplicative_convolution.test.cpp": {
+      "problem": "mul_modp_convolution",
+      "cases": 40,
+      "input_bytes": 60961910
+    },
+    "test/multipoint_eval.test.cpp": {
+      "problem": "multipoint_evaluation",
+      "cases": 11,
+      "input_bytes": 14408715
+    },
+    "test/multivariate_convolution.test.cpp": {
+      "problem": "multivariate_convolution",
+      "cases": 17,
+      "input_bytes": 41428976
+    },
+    "test/polynomial_inv_mod.test.cpp": {
+      "problem": "inv_of_polynomials",
+      "cases": 18,
+      "input_bytes": 7004714
+    },
+    "test/power_projection.test.cpp": {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "cases": 28,
+      "input_bytes": 9957322
+    }
+  },
+  "external_skips": {
+    "test/cyclic_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/ordered_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    }
+  },
+  "checker_order": [
+    "input",
+    "actual_output",
+    "official_answer"
+  ],
+  "full_official_inputs": true
+}
