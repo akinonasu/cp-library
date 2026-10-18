@@ -189,7 +189,19 @@ def invalidate_selected(previous, plan):
         for group in GROUPS}}
 
 
+def affected_inventory(plan):
+    return (plan.get("mode", "").startswith("affected-")
+            or plan.get("state", {}).get("version") == "affected-inventory-only-v1"
+            or any(key in plan for key in ("base", "head", "binding", "expected_ref", "plan_sha256")))
+
+
+def no_cache_context():
+    return os.environ.get("VERIFY_NO_CACHE") == "true"
+
+
 def record_success(previous, plan, groups):
+    if affected_inventory(plan):
+        raise ValueError("An affected inventory is not successful verification cache state")
     if not set(groups) <= set(GROUPS):
         raise ValueError("Unknown verification group")
     targets = cached_targets(previous) or {}
@@ -199,12 +211,15 @@ def record_success(previous, plan, groups):
 
 
 def verify_selected(plan, marker, run):
+    if affected_inventory(plan) and plan.get("mode") != "affected-no-cache-v1":
+        raise ValueError("Affected provenance requires the exact affected mode")
     paths = set(plan["state"]["targets"]["verification"])
     selected = set(plan["verification"])
     for name in sorted(selected):
         marker.mark_failed(Path(name))
-    for name in sorted(paths - selected):
-        marker.mark_verified(Path(name))
+    if plan.get("mode") != "affected-no-cache-v1":
+        for name in sorted(paths - selected):
+            marker.mark_verified(Path(name))
     if selected:
         summary = run([Path(name) for name in sorted(selected)])
         summary.show()
@@ -213,7 +228,8 @@ def verify_selected(plan, marker, run):
         unfinished = [name for name in sorted(selected) if not marker.is_verified(Path(name))]
         if unfinished:
             raise RuntimeError("Verification did not finish: " + ", ".join(unfinished))
-    print(f"Judge tests: verified {len(selected)}, reused {len(paths - selected)}", flush=True)
+    other = "unaffected/not run" if plan.get("mode") == "affected-no-cache-v1" else "reused"
+    print(f"Judge tests: verified {len(selected)}, {other} {len(paths - selected)}", flush=True)
 
 
 def main():
@@ -223,14 +239,32 @@ def main():
     parser.add_argument("--selection", type=Path, default=Path(".verify-helper/selection.json"))
     parser.add_argument("--full", action="store_true")
     parser.add_argument("--groups", nargs="+", choices=GROUPS, default=GROUPS)
+    parser.add_argument("--affected-base")
+    parser.add_argument("--expected-head")
+    parser.add_argument("--expected-ref")
     args = parser.parse_args()
+    if bool(args.affected_base) != bool(args.expected_head):
+        parser.error("--affected-base and --expected-head are required together")
+    if bool(args.expected_ref) != bool(args.affected_base):
+        parser.error("--expected-ref and --affected-base are required together")
+    if args.command != "plan" and args.affected_base:
+        parser.error("Affected source options apply only to plan")
     os.chdir(ROOT)
     if args.command == "plan":
-        previous = read_json(args.state)
-        plan = build_plan(ROOT, previous, environment=environment_key(),
-                          force=args.full or os.environ.get("VERIFY_FULL") == "true")
+        if no_cache_context() and not args.affected_base:
+            parser.error("The explicit no-cache event requires explicit affected source options")
+        force = args.full or os.environ.get("VERIFY_FULL") == "true"
+        if args.affected_base:
+            from affected import build_affected_plan
+            plan = build_affected_plan(ROOT, args.affected_base, args.expected_head,
+                                       expected_ref=args.expected_ref, force=force)
+            print(json.dumps({key: value for key, value in plan.items() if key != "state"}, sort_keys=True), flush=True)
+        else:
+            previous = read_json(args.state)
+            plan = build_plan(ROOT, previous, environment=environment_key(), force=force)
         write_json(args.selection, plan)
-        write_json(args.state, invalidate_selected(previous, plan))
+        if not args.affected_base:
+            write_json(args.state, invalidate_selected(previous, plan))
         print(plan["reason"], flush=True)
         rows = ["| Check | Selected | Total |", "| --- | ---: | ---: |"]
         for group in GROUPS:
@@ -245,14 +279,27 @@ def main():
                 stream.write(plan["reason"] + "\n\n" + "\n".join(rows) + "\n")
     else:
         plan = json.loads(args.selection.read_text())
+        if no_cache_context() and plan.get("mode") != "affected-no-cache-v1":
+            parser.error("The explicit no-cache event requires an exact affected plan")
+        affected = affected_inventory(plan)
+        if affected:
+            from affected import record_affected_success, validate_affected_plan
+            validate_affected_plan(ROOT, plan)
         if args.command in ("record", "save"):
-            write_json(args.state, record_success(read_json(args.state), plan, args.groups))
+            if affected:
+                if args.command == "save":
+                    parser.error("An affected plan cannot be saved as verification cache")
+                print(json.dumps(record_affected_success(plan, args.groups), sort_keys=True), flush=True)
+            else:
+                write_json(args.state, record_success(read_json(args.state), plan, args.groups))
         elif args.command == "judge":
             import onlinejudge.service
             from onlinejudge_verify import verify
             from verification import get_marker
 
             logging.basicConfig(level=logging.INFO)
+            if affected and list((ROOT / ".verify-helper").glob("timestamps.*.json")):
+                parser.error("Affected judge mode requires fresh disposable marker state")
             verification = get_marker()
             with verification:
                 verify_selected(plan, verification, lambda paths: verify.main(

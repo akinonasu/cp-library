@@ -14,6 +14,9 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+#if defined(__AVX2__) && defined(__x86_64__)
+#include <immintrin.h>
+#endif
 
 template <class T = std::int64_t, int Bits = sizeof(T) * 8, class BitVector = DynamicBitVector<>>
 class DynamicWaveletMatrix {
@@ -28,6 +31,28 @@ class DynamicWaveletMatrix {
 	std::array<BitVector, Bits> bits;
 	std::array<int, Bits> middle{};
 	int n = 0;
+	static std::uint64_t pack_word(const U *values, int count, int shift) {
+		std::uint64_t result = 0;
+		int j = 0;
+#if defined(__AVX2__) && defined(__x86_64__)
+		if constexpr (sizeof(U) == 4 || sizeof(U) == 8) {
+			__m128i amount = _mm_cvtsi32_si128(width - 1 - shift);
+			if constexpr (sizeof(U) == 4) {
+				for (; j + 8 <= count; j += 8) {
+					__m256i value = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + j));
+					result |= std::uint64_t(_mm256_movemask_ps(_mm256_castsi256_ps(_mm256_sll_epi32(value, amount)))) << j;
+				}
+			} else {
+				for (; j + 4 <= count; j += 4) {
+					__m256i value = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + j));
+					result |= std::uint64_t(_mm256_movemask_pd(_mm256_castsi256_pd(_mm256_sll_epi64(value, amount)))) << j;
+				}
+			}
+		}
+#endif
+		for (; j < count; ++j) result |= std::uint64_t((values[j] >> shift) & 1) << j;
+		return result;
+	}
 	static bool contains(T value) { return minimum <= value && value <= maximum; }
 	static U encode(T value) { return (U(value) & mask) ^ sign; }
 	static T decode(U value) {
@@ -107,9 +132,8 @@ class DynamicWaveletMatrix {
 		for (int d = 0; d < Bits; ++d) {
 			int shift = Bits - 1 - d, zero = n;
 			for (int i = 0; i < n;) {
-				std::uint64_t word = 0;
 				int end = std::min(64, n - i);
-				for (int j = 0; j < end; ++j) word |= std::uint64_t((current[i + j] >> shift) & 1) << j;
+				std::uint64_t word = pack_word(current.data() + i, end, shift);
 				packed[i >> 6] = word;
 				zero -= std::popcount(word);
 				i += end;
@@ -216,7 +240,35 @@ class DynamicWaveletMatrix {
 	}
 	int range_freq(int l, int r, T lower, T upper) const {
 		check(l, r);
-		return lower < upper ? range_freq(l, r, upper) - range_freq(l, r, lower) : 0;
+		if (l == r || !(lower < upper)) return 0;
+		if (lower <= minimum) return range_freq(l, r, upper);
+		if (maximum < upper) return r - l - range_freq(l, r, lower);
+		U low = encode(lower), high = encode(upper);
+		int common = Bits - std::bit_width(U(low ^ high)), d = 0;
+		for (; d < common && l < r; ++d) {
+			auto [a, b] = bits[d].rank1(l, r);
+			if ((low >> (Bits - 1 - d)) & 1) l = middle[d] + a, r = middle[d] + b;
+			else l -= a, r -= b;
+		}
+		if (l == r) return 0;
+		auto [a, b] = bits[d].rank1(l, r);
+		int left = l - a, right = r - b, result = right - left;
+		for (int level = d + 1; level < Bits && left < right; ++level) {
+			auto [x, y] = bits[level].rank1(left, right);
+			if ((low >> (Bits - 1 - level)) & 1) {
+				result -= right - left - y + x;
+				left = middle[level] + x, right = middle[level] + y;
+			} else left -= x, right -= y;
+		}
+		left = middle[d] + a, right = middle[d] + b;
+		for (int level = d + 1; level < Bits && left < right; ++level) {
+			auto [x, y] = bits[level].rank1(left, right);
+			if ((high >> (Bits - 1 - level)) & 1) {
+				result += right - left - y + x;
+				left = middle[level] + x, right = middle[level] + y;
+			} else left -= x, right -= y;
+		}
+		return result;
 	}
 	T kth_smallest(int l, int r, int k) const {
 		check(l, r);
@@ -256,10 +308,21 @@ class DynamicWaveletMatrix {
 	int select(T value, int k) const {
 		if (k < 0 || !contains(value)) return -1;
 		U key = encode(value);
-		auto [l, r] = interval(0, n, key);
+		int l = 0, r = n, d = 0;
+		for (; d < Bits && l < r; ++d) {
+			if constexpr (requires { bits[d].access_rank(l); }) {
+				if (r - l == 1) {
+					if (k || !matches_suffix(l, key, d)) return -1;
+					break;
+				}
+			}
+			auto [a, b] = bits[d].rank1(l, r);
+			if ((key >> (Bits - 1 - d)) & 1) l = middle[d] + a, r = middle[d] + b;
+			else l -= a, r -= b;
+		}
 		if (k >= r - l) return -1;
 		int p = l + k;
-		for (int d = Bits - 1; d >= 0; --d) {
+		for (--d; d >= 0; --d) {
 			bool bit = (key >> (Bits - 1 - d)) & 1;
 			p = bits[d].select(bit, p - (bit ? middle[d] : 0));
 		}
