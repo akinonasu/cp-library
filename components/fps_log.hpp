@@ -80,8 +80,8 @@ struct LogTransform {
 		alignas(32) U initial[32];
 		for (int i = 0; i < 32; ++i) initial[i] = NTT::in(first + i);
 		const I8 lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7), limit = _mm256_set1_epi32(n);
-		auto mask = [&](int at) { return _mm256_cmpgt_epi32(limit, _mm256_add_epi32(_mm256_set1_epi32(at), lanes)); };
-		auto factor = [&](I8 a, int at) { return at + 8 <= n ? a : _mm256_blendv_epi8(onev, a, mask(at)); };
+		auto mask = [&](int at) __attribute__((target("avx2"))) { return _mm256_cmpgt_epi32(limit, _mm256_add_epi32(_mm256_set1_epi32(at), lanes)); };
+		auto factor = [&](I8 a, int at) __attribute__((target("avx2"))) { return at + 8 <= n ? a : _mm256_blendv_epi8(onev, a, mask(at)); };
 		for (int v = 0; v < 4; ++v) x[v] = NTT::load8(initial + 8 * v), prod[v] = factor(x[v], 8 * v);
 		for (int i = 32; i < n; i += 32)
 			for (int v = 0; v < 4; ++v) {
@@ -90,7 +90,7 @@ struct LogTransform {
 				prod[v] = NTT::mul8(prod[v], factor(x[v], i + 8 * v));
 			}
 		for (int v = 0; v < 4; ++v) inv[v] = NTT::inverse8(prod[v]);
-		auto put = [&](int at, I8 reciprocal) {
+		auto put = [&](int at, I8 reciprocal) __attribute__((target("avx2"))) {
 			if (at >= n) return;
 			I8 a = at + 8 <= n ? NTT::load8(src + at) : _mm256_maskload_epi32(reinterpret_cast<const int *>(src + at), mask(at));
 			I8 r = NTT::mul8(a, reciprocal);
@@ -111,7 +111,7 @@ struct LogTransform {
 	__attribute__((target("avx2"))) void toeplitz(U *dst, U *side, const U *w1, const U *w2, const U *q0, const U *q1, int n) const {
 		assert(n >= 64 && n % 64 == 0 && static_cast<int>(plan.roots.size()) >= n / 16);
 		I8 p = _mm256_set1_epi32(mod);
-		auto canonical = [&](I8 x) { return _mm256_min_epu32(x, _mm256_sub_epi32(x, p)); };
+		auto canonical = [&](I8 x) __attribute__((target("avx2"))) { return _mm256_min_epu32(x, _mm256_sub_epi32(x, p)); };
 		for (int i = 0; i < n; i += 64) {
 			alignas(32) U x[64], y[64], z[64];
 			U ws[8], qs[8];
