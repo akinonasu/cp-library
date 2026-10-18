@@ -1,0 +1,337 @@
+{
+  "started_at": "2026-10-18T18:24:59.816994+00:00",
+  "flags": [
+    "-std=gnu++23",
+    "-O2",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-DATCODER",
+    "-DONLINE_JUDGE",
+    "-I."
+  ],
+  "rustflags": [
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-cpu=native"
+  ],
+  "gcc": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "rust": "rustc 1.97.1 (8bab26f4f 2026-07-14)\n",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "affinity": [
+    2
+  ],
+  "trials": 9,
+  "warmup": 1,
+  "order_seed": 20261019,
+  "source_sha256": {
+    "data_structure/weighted_wavelet_matrix.hpp": "1312b9ae6e181bfede84dffdcf3d784857094bf48c2e89a2b16fc23c59ea12b2",
+    "data_structure/wavelet_matrix.hpp": "389023db38a020bd3234266c1f281de80d4fa1b17955a62310b17e23ad09b945",
+    "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+    "components/quad_bit_vector.hpp": "1c79494ff1040fd8cb0cea1a8e7367d8cb478c65a4b6bc4b7a86cb911e3a03b2",
+    "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+    "components/splitmix64.hpp": "f74be6033b41f893dfa0550b99dca38b3da7eb565baeb2813c94cb7b5db3e566",
+    "components/fast_io.hpp": "49d8c24846ede802ebb14c4d840faea760b207590fd3d1519540934d3a67d10c",
+    "test/weighted_wavelet_matrix_rectangle.test.cpp": "dd9007e1e28668ee03d519994a7f6a6cb9a9ee317785e565439b37d5a715999e",
+    "test/benchmark/weighted_wavelet_matrix_rectangle.py": "6a92212f2fae80707e8a2be244c9d0013c78391ed9a8d882adca985050b890af"
+  },
+  "reference_sha256": {
+    "401818": "f411a54f85c7156b63d410c2e83c8b258783c0fb0029a56f3f4675c179525b83",
+    "206958": "e8c7eb1bff6cb726990f92fa4477c93f4ff90c235ac55752abb28e7bda0090d4"
+  },
+  "correctness": [
+    {
+      "case": "example_00",
+      "input_sha256": "c9c4ab8a40cffe436000f270f1ce4289c00e259ca4a856aec8bd54ded7047edd",
+      "answer_sha256": "efd6b4e80feb4ba5c99760f00c9ea5103d58da3e8b7c8b87a1ca22c15cc515df",
+      "passed": true
+    },
+    {
+      "case": "many_points_00",
+      "input_sha256": "0867948ea9e8b6f134a396a59d07b50669e3b9951b2f500178c774d7ffa5ba1f",
+      "answer_sha256": "510b26b05cdfa97a29026d4fb5c04d336f9994595bee79336ae79010462a64d7",
+      "passed": true
+    },
+    {
+      "case": "many_queries_00",
+      "input_sha256": "0ec1e708603dc1ab4651286b6eeb6c54035ed0cc66c05c41de89ec1c37d21d9e",
+      "answer_sha256": "35ae8b0861fabd499eb07f5d96cee7b50f8f0d89a061fe19fa2a3f60098baf3b",
+      "passed": true
+    },
+    {
+      "case": "max_random_00",
+      "input_sha256": "8f9620e4108844cf4c157217250077ccfb92dc0ee59c486076093106d14a3049",
+      "answer_sha256": "d2a8ffa63c0ac282840b9ffd026e39102d0b0732572b425fe67b4abb7d9727db",
+      "passed": true
+    },
+    {
+      "case": "max_random_01",
+      "input_sha256": "3f28162b06e43df69d75674534a7c0914e6cec9d549e35aafbcd7dae7251aac4",
+      "answer_sha256": "25e3c8d87106502eb2baa29cf229c6bc7a600bbb79a4d3e1955230257f01fc71",
+      "passed": true
+    },
+    {
+      "case": "power_of_2_00",
+      "input_sha256": "1ed17607da90a3d91b418acdea10fc35ff19471bdc865e5b69f22a7886786d88",
+      "answer_sha256": "d5b2e7be9e5e7ba0c270697794cfbfc64186bc349da7a3a20967bf31b218ba84",
+      "passed": true
+    },
+    {
+      "case": "power_of_2_01",
+      "input_sha256": "d8d80cb691bebe94793b3a9a613833f99c14b22fc6c355aa1bb826c096e074cc",
+      "answer_sha256": "77bc9633d8a009ca1d876044d8847f3265dbc9004e0aa959da3e7e202ea676c9",
+      "passed": true
+    },
+    {
+      "case": "random_00",
+      "input_sha256": "15ad06a56580e20320a335cfc75ab47ada7554d4d0d161d4fe0eba1e574c7288",
+      "answer_sha256": "f3d7fcef6ce9b2871dcc82c6f7c0247d33502789078bbdf99cd1ba7d8554ff49",
+      "passed": true
+    },
+    {
+      "case": "random_01",
+      "input_sha256": "e6082f50848e57eecb95462898b979f01f9193de696e90bc8b668567fa60909a",
+      "answer_sha256": "15d888eda149af89706b140eb69e5d380c05ff779bed808547695d4714ced3ff",
+      "passed": true
+    },
+    {
+      "case": "random_02",
+      "input_sha256": "63542364583d347c287f792b22c598c6c2eff27d124ba17c8db5b43bdb0c0c99",
+      "answer_sha256": "adaf067ee5b375685c0a4f8d7d93a09cdfee3446382b2bef8dbd76fb8a8930a2",
+      "passed": true
+    },
+    {
+      "case": "small_00",
+      "input_sha256": "04c6e752589e4542d8703e58253bc4beb5d3f1ea60335b94622fd1a71f282236",
+      "answer_sha256": "e783b0843d80549af3e7bac1fbdb3f44deaa2d0f077c20139f74b84c850fcf82",
+      "passed": true
+    },
+    {
+      "case": "small_01",
+      "input_sha256": "3a5984269c8aee740b6f51f9bf444c50acca9803723f4acd6fe0f8c63a4a0dc9",
+      "answer_sha256": "4fee53a51acf0c3694cc71614669ab763a7ab95f6c2a1356ca440dc108b3a6ba",
+      "passed": true
+    },
+    {
+      "case": "small_02",
+      "input_sha256": "2f59fb858a7281e7ec35b391d10c56fe661aff6a4ef621431141b4cbd4479cc6",
+      "answer_sha256": "cbb41ff7c1a261cae48738c8b5cc32e9ea9bb3b848d14d08744831aba9900357",
+      "passed": true
+    },
+    {
+      "case": "small_03",
+      "input_sha256": "a8165cff9d66ef63787f218eb44d26cb24567fb79f97b7a7c968eb60820601f9",
+      "answer_sha256": "b268658569eac79dc39926fa4e6f4db88726ce657076aacdc681e605441db41e",
+      "passed": true
+    },
+    {
+      "case": "small_04",
+      "input_sha256": "834f103825ac44fdccb51020597cc961b02ea5519ecf93f733776e14385664d6",
+      "answer_sha256": "46c2f6fe90e86da5b09e7fe8188944fe2dfb58a109271e17f87985f3800f12ce",
+      "passed": true
+    },
+    {
+      "case": "xy_concentrate_00",
+      "input_sha256": "76d84392f3095d36dacca472eb2324a0ac33ef3e2a7f8d5c28691cecb2e2bba5",
+      "answer_sha256": "2c612324799a18d905958d90fa7da018b60c693d70591a1ce119b4b5d1a20a64",
+      "passed": true
+    },
+    {
+      "case": "xy_concentrate_01",
+      "input_sha256": "4568c7f0b34c96050db36d8434bb56478eea761f86390aec38cbbf64cd960c4d",
+      "answer_sha256": "11f094acf2b85c2b6d2eed70d4589fe5ade243a15b40e0828727a169ca0eb173",
+      "passed": true
+    },
+    {
+      "case": "xy_concentrate_02",
+      "input_sha256": "4ccf874869975937664bbf91a236fde142d25022a0df7ead7ae6dac794e8f237",
+      "answer_sha256": "e54cc13100da1595a0b7d786a2421031767743e1c00497cb620928add17c43d9",
+      "passed": true
+    }
+  ],
+  "results": [
+    {
+      "case": "max_random_00",
+      "input_sha256": "8f9620e4108844cf4c157217250077ccfb92dc0ee59c486076093106d14a3049",
+      "output_sha256": "d2a8ffa63c0ac282840b9ffd026e39102d0b0732572b425fe67b4abb7d9727db",
+      "samples_ms": {
+        "current": [
+          232.02325500000143,
+          244.98312399998667,
+          240.79994200002375,
+          242.50692099997195,
+          242.07349200003137,
+          245.14749899998378,
+          243.64353900000424,
+          243.42374100001507,
+          248.8880889999905
+        ],
+        "401818": [
+          69.36272299998336,
+          72.12346200003594,
+          74.68892299999652,
+          75.51846299998033,
+          74.75283400003718,
+          74.53998599999068,
+          72.6947320000022,
+          74.5439890000057,
+          72.8576460000454
+        ],
+        "206958": [
+          126.54954499998894,
+          123.6981490000062,
+          122.59020200002624,
+          124.70434700003352,
+          124.37258899996095,
+          120.84985899997491,
+          120.48687800000835,
+          122.99919500003398,
+          124.95949699996345
+        ]
+      },
+      "median_ms": {
+        "current": 243.42374100001507,
+        "401818": 74.53998599999068,
+        "206958": 123.6981490000062
+      }
+    },
+    {
+      "case": "many_points_00",
+      "input_sha256": "0867948ea9e8b6f134a396a59d07b50669e3b9951b2f500178c774d7ffa5ba1f",
+      "output_sha256": "510b26b05cdfa97a29026d4fb5c04d336f9994595bee79336ae79010462a64d7",
+      "samples_ms": {
+        "current": [
+          201.15666099997043,
+          201.05169200002138,
+          198.69921700001214,
+          198.86796200000845,
+          196.693329000027,
+          191.5834229999973,
+          187.88106800002424,
+          186.512270000037,
+          186.58170600002677
+        ],
+        "401818": [
+          66.72121599996217,
+          64.93233599996984,
+          68.27064600003041,
+          68.04945400000406,
+          67.9398809999725,
+          65.1054619999627,
+          62.13977799995973,
+          63.8970940000263,
+          66.97283800002651
+        ],
+        "206958": [
+          128.140119999955,
+          125.64109800001688,
+          122.92497900000399,
+          123.98043799998959,
+          120.79155999998648,
+          117.6602369999955,
+          116.44937199997685,
+          118.70523200002481,
+          116.39156800004002
+        ]
+      },
+      "median_ms": {
+        "current": 196.693329000027,
+        "401818": 66.72121599996217,
+        "206958": 120.79155999998648
+      }
+    },
+    {
+      "case": "many_queries_00",
+      "input_sha256": "0ec1e708603dc1ab4651286b6eeb6c54035ed0cc66c05c41de89ec1c37d21d9e",
+      "output_sha256": "35ae8b0861fabd499eb07f5d96cee7b50f8f0d89a061fe19fa2a3f60098baf3b",
+      "samples_ms": {
+        "current": [
+          254.92027699999653,
+          265.44956499998307,
+          260.43577900003356,
+          263.3624260000147,
+          263.27036999998654,
+          274.06740099996796,
+          267.2002749999933,
+          264.36074999998027,
+          261.0163389999798
+        ],
+        "401818": [
+          74.11761399998795,
+          73.76035999999431,
+          72.65540599996712,
+          71.83080600003677,
+          72.10863300002757,
+          71.89735399998654,
+          76.61091400001396,
+          74.43280600000435,
+          76.33736200000385
+        ],
+        "206958": [
+          111.55732500003523,
+          109.02047099995116,
+          114.0002719999984,
+          110.72758299997076,
+          109.58795199996985,
+          114.06826899997213,
+          115.41377800000419,
+          111.52756799998542,
+          109.56604499995137
+        ]
+      },
+      "median_ms": {
+        "current": 263.3624260000147,
+        "401818": 73.76035999999431,
+        "206958": 111.52756799998542
+      }
+    },
+    {
+      "case": "xy_concentrate_00",
+      "input_sha256": "76d84392f3095d36dacca472eb2324a0ac33ef3e2a7f8d5c28691cecb2e2bba5",
+      "output_sha256": "2c612324799a18d905958d90fa7da018b60c693d70591a1ce119b4b5d1a20a64",
+      "samples_ms": {
+        "current": [
+          135.79436099996656,
+          130.1093370000217,
+          139.42960000002813,
+          137.51359400004048,
+          135.49856000003047,
+          138.67296900002657,
+          135.95879299998614,
+          133.4856610000088,
+          127.965042000028
+        ],
+        "401818": [
+          41.290766000031454,
+          44.31648599995697,
+          43.89408299999786,
+          43.59567299997025,
+          41.99796400001787,
+          42.37301699998852,
+          43.04126799996766,
+          42.01115099999697,
+          41.045429000007516
+        ],
+        "206958": [
+          117.54329100000405,
+          115.31273700001066,
+          113.21553900000936,
+          115.043954999976,
+          116.15959299996348,
+          114.04512999996541,
+          113.5181980000084,
+          115.26945299999625,
+          114.72061000000622
+        ]
+      },
+      "median_ms": {
+        "current": 135.79436099996656,
+        "401818": 42.37301699998852,
+        "206958": 115.043954999976
+      }
+    }
+  ],
+  "completed": true,
+  "note": "Whole programs with their own I/O. Current retains both weight and key*weight sums using int128; references maintain weight sums only."
+}

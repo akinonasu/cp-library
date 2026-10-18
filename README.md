@@ -50,6 +50,8 @@
 | `components/predecessor_set.hpp` | Predecessor Set（64 分木） | [使い方](docs/predecessor_set.md) |
 | `data_structure/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `data_structure/wavelet_matrix.hpp` | Wavelet Matrix | [使い方](docs/wavelet_matrix.md) |
+| `data_structure/weighted_wavelet_matrix.hpp` | 重み更新 Wavelet Matrix | [使い方](docs/weighted_wavelet_matrix.md) |
+| `data_structure/point_set_wavelet_matrix.hpp` | 一点代入 Wavelet Matrix | [使い方](docs/point_set_wavelet_matrix.md) |
 | `data_structure/dynamic_wavelet_matrix.hpp` | Dynamic Wavelet Matrix | [使い方](docs/dynamic_wavelet_matrix.md) |
 | `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
 | `graph/general_matching.hpp` | General Matching（一般グラフ最大マッチング） | [使い方](docs/general_matching.md) |
@@ -122,6 +124,7 @@
 | `components/dynamic_bit_vector.hpp` | Dynamic Bit Vector | [使い方](docs/dynamic_bit_vector.md) |
 | `components/quad_bit_vector.hpp` | Quad Bit Vector | [使い方](docs/quad_bit_vector.md) |
 | `components/oct_bit_vector.hpp` | Oct Bit Vector | [使い方](docs/oct_bit_vector.md) |
+| `components/fenwick_sum.hpp` | Fenwick Sum | [使い方](docs/fenwick_sum.md) |
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |
 | `components/sequence_match.hpp` | 前方・後方の一致比較と Z algorithm | [使い方](docs/sequence_match.md) |
 | `components/static_range_min.hpp` | ブロック分割による静的 RMQ | [使い方](docs/static_range_min.md) |

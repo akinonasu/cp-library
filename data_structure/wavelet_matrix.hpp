@@ -19,6 +19,7 @@
 
 template <class T = std::int64_t, class Sum = std::conditional_t<std::is_integral_v<T>, std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>, T>>
 class WaveletMatrix {
+	template <class, class, class> friend class WeightedWaveletMatrix;
 	using BitVector = OctBitVector;
 	int n = 0, levels = 0, ordered = 0;
 	std::vector<T> values;
@@ -686,6 +687,72 @@ class WaveletMatrix {
 		return sum_smallest_impl_scalar(prefix, l, r, k);
 	}
 
+	template <bool Largest, bool Lower, class S>
+	int sum_bound(const std::vector<std::vector<S>> &prefix, int l, int r, Sum target) const {
+		Sum total = Sum(prefix[0][r]) - Sum(prefix[0][l]);
+		if constexpr (Lower) {
+			if (total < target) return -1;
+		} else if (total <= target) return r - l;
+		int answer = 0;
+		std::uint32_t x = 0;
+		auto choose = [&](Sum zero, int count) {
+			Sum preferred = Largest ? total - zero : zero;
+			int length = Largest ? r - l - count : count;
+			bool skip = Lower ? preferred < target : preferred <= target;
+			if (skip) target -= preferred, answer += length;
+			bool one = Largest != skip;
+			total = one ? total - zero : zero;
+			return one;
+		};
+		for (int d = 0; d < sum_levels; ++d) {
+			const auto &row = sum_bits[d];
+			int a = row.below(l, 2), b = row.below(r, 2), base = 3 * d + 1;
+			bool high = choose(Sum(prefix[base][b]) - Sum(prefix[base][a]), b - a);
+			int high_l = high ? l - a : a, high_r = high ? r - b : b;
+			int c = row.rank(l, 2 * high), e = row.rank(r, 2 * high);
+			l = high_l, r = high_r;
+			bool low = choose(Sum(prefix[base + 1 + high][e]) - Sum(prefix[base + 1 + high][c]), e - c);
+			int digit = 2 * high + low;
+			x = (x << 2) | digit;
+			l = sum_middle[d][digit] + (low ? high_l - c : c);
+			r = sum_middle[d][digit] + (low ? high_r - e : e);
+		}
+		Sum value = Sum(values[x]);
+		return answer + int(target / value) + (Lower && target % value != 0);
+	}
+	template <bool Largest, bool Lower>
+	int sum_bound(int l, int r, Sum target) const
+		requires (std::is_integral_v<T> && std::numeric_limits<Sum>::is_integer)
+	{
+		check(l, r);
+		if constexpr (Lower) {
+			if (target <= 0) return 0;
+		} else if (target < 0) return -1;
+		if (l == r) return Lower ? -1 : 0;
+		assert(values.front() >= 0);
+		if (!levels) {
+			Sum value = Sum(values[0]);
+			if constexpr (Lower) return value == 0 || value * (r - l) < target ? -1 : int(target / value) + (target % value != 0);
+			else return value == 0 || value * (r - l) <= target ? r - l : int(target / value);
+		}
+		prepare_sum();
+		if (ordered) {
+			Sum total = range_sum(l, r);
+			if constexpr (Lower) {
+				if (total < target) return -1;
+			} else if (total <= target) return r - l;
+			int lo = 0, hi = r - l;
+			while (hi - lo > 1) {
+				int k = lo + (hi - lo) / 2;
+				Sum s = Largest ? sum_largest(l, r, k) : sum_smallest(l, r, k);
+				if (Lower ? s < target : s <= target) lo = k;
+				else hi = k;
+			}
+			return Lower ? hi : lo;
+		}
+		if (narrow_sums) return sum_bound<Largest, Lower>(compact_prefix, l, r, target);
+		return sum_bound<Largest, Lower>(sum_prefix, l, r, target);
+	}
 	T kth_scalar(int l, int r, int k) const {
 		std::uint32_t x = 0;
 		for (int d = 0; d < levels; ++d) {
@@ -899,6 +966,18 @@ class WaveletMatrix {
 		}
 		return range_sum(l, r) - sum_smallest(l, r, r - l - k);
 	}
+	int min_count_smallest(int l, int r, Sum target) const
+		requires (std::is_integral_v<T> && std::numeric_limits<Sum>::is_integer)
+	{ return sum_bound<false, true>(l, r, target); }
+	int min_count_largest(int l, int r, Sum target) const
+		requires (std::is_integral_v<T> && std::numeric_limits<Sum>::is_integer)
+	{ return sum_bound<true, true>(l, r, target); }
+	int max_count_smallest(int l, int r, Sum budget) const
+		requires (std::is_integral_v<T> && std::numeric_limits<Sum>::is_integer)
+	{ return sum_bound<false, false>(l, r, budget); }
+	int max_count_largest(int l, int r, Sum budget) const
+		requires (std::is_integral_v<T> && std::numeric_limits<Sum>::is_integer)
+	{ return sum_bound<true, false>(l, r, budget); }
 	std::optional<T> prev_value(int l, int r, const T &upper) const {
 		check(l, r);
 		if (!levels) return l < r && values[0] < upper ? std::optional<T>(values[0]) : std::nullopt;

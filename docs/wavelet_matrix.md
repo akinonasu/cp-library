@@ -29,6 +29,8 @@ auto value = wm.kth_smallest(0, 5, 2);
 | `prepare_sum()` | 和の前処理。完了済みなら何もしない |
 | `range_sum(l,r)` | 区間和。未前処理なら初回に前処理 |
 | `sum_smallest(l,r,k)` / `sum_largest(l,r,k)` | 下位／上位 `k` 個の和。未前処理なら初回に前処理 |
+| `min_count_smallest(l,r,target)` / `min_count_largest(l,r,target)` | 小さい順／大きい順に加え、和が `target` 以上になる最小個数。届かなければ -1 |
+| `max_count_smallest(l,r,budget)` / `max_count_largest(l,r,budget)` | 小さい順／大きい順に加え、和が `budget` 以下の最大個数。空の選択も不可能なら -1 |
 
 和の前処理は必要時に行います。構築時に済ませる場合は `WaveletMatrix<T> wm(a, true)` とします。整数の和は 32 bit 型なら `std::int64_t`、64 bit 型なら `__int128_t` です。`WaveletMatrix<T, Sum>` で和の型を指定できます。
 
@@ -36,8 +38,14 @@ auto value = wm.kth_smallest(0, 5, 2);
 
 `count`・`rank`・`select` を繰り返す場合は、`wm.prepare_count()` で値検索用のハッシュ表を準備できます。64 bit 以下の整数型に対応し、値の種類が少ない場合や連続している場合は追加の表を作りません。その他の型では何もしません。`build` で前処理は破棄されます。
 
+`min_count_*`・`max_count_*` は非負整数列と整数の和の型で使います。`min_count_*` は `target <= 0` なら 0、`max_count_*` は `budget < 0` なら -1 を返します。和の準備は自動で行います。`sum_largest` などを個数について二分探索するより、索引を直接たどることで探索を一度に済ませます。
+
+一点代入と和の探索には [Point Set Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/point_set_wavelet_matrix.hpp.html)、固定した値の重み更新には [Weighted Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/weighted_wavelet_matrix.hpp.html) を使えます。
+
 要素数を $$n$$、異なる値の数を $$\sigma$$ として、整数型の構築は $$O(n \log \sigma)$$、その他の型は $$O(n \log n)$$ 時間です。`access` は $$O(1)$$、`select` は $$O(\log \sigma)$$、その他の問い合わせは $$O(\log \sigma)$$ です。
 
 和の前処理は時間・追加空間ともに $$O(n \log \sigma)$$ で、前処理後の `range_sum` は $$O(1)$$、上下位の和は $$O(\log \sigma)$$ です。和を使う最初の問い合わせには前処理時間が加わります。全体の空間は和を含めて $$O(n \log \sigma)$$ です。比較・算術演算は $$O(1)$$ とします。
 
 `prepare_count` は期待 $$O(\sigma)$$・最悪 $$O(\sigma^2)$$ 時間、$$O(\sigma)$$ 空間です。前処理後の値検索は期待 $$O(1)$$・最悪 $$O(\sigma)$$、出現位置の検索を含む `count`・`rank` は期待 $$O(\log \sigma)$$、`select` は期待 $$O(1)$$ です。
+
+和の準備後の `min_count_*`・`max_count_*` は通常 $$O(\log \sigma)$$、配列全体が昇順・降順の場合は $$O(\log n)$$ です。
