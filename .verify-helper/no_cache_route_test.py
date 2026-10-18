@@ -95,11 +95,12 @@ class NoCacheRouteTests(unittest.TestCase):
         self.assertEqual(proof["unaffected_current_head_checks"], "not_run")
         self.assertEqual(len(proof["receipts"]), 2)
 
-    def test_edit_distance_source_ref_is_exact_and_old_bound_sources_fail_closed(self):
-        self.assertEqual(route.SOURCE_REF, "refs/heads/codex/edit-distance-trim-20261018")
+    def test_fps_source_ref_is_exact_and_old_bound_sources_fail_closed(self):
+        self.assertEqual(route.SOURCE_REF, "refs/heads/codex/fps-scalar-return-20261018")
         self.assertEqual(self.selected()["ref"], route.SOURCE_REF)
         for ref in ("refs/heads/codex/dwm-neighbor-20261017",
-                    "refs/heads/codex/matrix-backward-20261018"):
+                    "refs/heads/codex/matrix-backward-20261018",
+                    "refs/heads/codex/edit-distance-trim-20261018"):
             with self.subTest(ref=ref):
                 self.ref = ref
                 self.head = self.commit("other eligible binding is not this route\n\n" + route.TRAILER)
@@ -117,6 +118,20 @@ class NoCacheRouteTests(unittest.TestCase):
                 self.git("checkout", "--quiet", original)
                 self.write(path, "Changed comparison control.\n")
                 self.head = self.commit("changed edit-distance control\n\n" + route.TRAILER)
+                with self.assertRaisesRegex(ValueError, "CI control"):
+                    route.verify_baseline(self.root, self.selected(), "fixture-token", self.forbidden_api)
+
+    def test_fps_control_files_are_bound_before_baseline_api(self):
+        paths = (".github/workflows/fps-scalar-return-final.yml",
+                 "test/benchmark/fps_scalar_return/api.hpp", "test/benchmark/fps_scalar_return/api.cpp",
+                 "test/benchmark/fps_scalar_return/bench.cpp", "test/benchmark/fps_scalar_return/run.py")
+        original = self.head
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertEqual(route.CONTROL_PATHS.count(path), 1)
+                self.git("checkout", "--quiet", original)
+                self.write(path, "Changed FPS comparison control.\n")
+                self.head = self.commit("changed FPS control\n\n" + route.TRAILER)
                 with self.assertRaisesRegex(ValueError, "CI control"):
                     route.verify_baseline(self.root, self.selected(), "fixture-token", self.forbidden_api)
 
@@ -402,6 +417,104 @@ class NoCacheWorkflowTests(unittest.TestCase):
         self.assertEqual(pairs, 4)
         self.assertEqual(len(driver["COMPARISON_SCOPES"]["product"][0]), 12)
         self.assertEqual(driver["COMPARISON_SCOPES"]["product"][1], 6)
+
+
+    def test_fps_comparison_uses_exact_read_only_fixed_source(self):
+        workflow = self.workflow("fps-scalar-return-final.yml")
+        self.assertEqual(workflow["permissions"], {"contents": "read"})
+        self.assertEqual(set(workflow["on"]), {"push"})
+        self.assertEqual(workflow["on"]["push"]["branches"], ["codex/fps-scalar-return-20261018"])
+        self.assertEqual(set(workflow["on"]["push"]["paths"]), {
+            "fps/fps.hpp", "components/fps_operations.hpp", "components/ntt.hpp", "math/mint.hpp",
+            "test/benchmark/fps_scalar_return/**", ".github/workflows/fps-scalar-return-final.yml",
+        })
+        self.assertEqual(set(workflow["jobs"]), {"compare"})
+        job = workflow["jobs"]["compare"]
+        self.assertIn("github.run_attempt == 1", job["if"])
+        self.assertIn("refs/heads/codex/fps-scalar-return-20261018", job["if"])
+        self.assertEqual(job["runs-on"], "ubuntu-26.04")
+        self.assertEqual(job["timeout-minutes"], "10")
+        self.assertEqual(len(job["steps"]), 2)
+        checkout, compare = job["steps"]
+        self.assertEqual(checkout, {"uses": "actions/checkout@v4", "with": {
+            "fetch-depth": "0", "persist-credentials": "false"}})
+        self.assertEqual(compare["timeout-minutes"], "8")
+        self.assertEqual(compare["run"].split(), [
+            "python3", "-B", "test/benchmark/fps_scalar_return/run.py", "--base-ref",
+            "1b8607587c164b013386423ada2298e05a9e4028", "--candidate-ref", '\"$GITHUB_SHA\"',
+        ])
+        self.assertNotIn("continue-on-error", compare)
+        import hashlib
+        import runpy
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1]
+        driver = runpy.run_path(str(root / "test/benchmark/fps_scalar_return/run.py"))
+        self.assertEqual(driver["BASE"], "1b8607587c164b013386423ada2298e05a9e4028")
+        self.assertEqual(driver["REF"], route.SOURCE_REF)
+        self.assertEqual(driver["CASES"], {"add": (32, 300000), "sub": (262144, 128),
+                                          "mul": (65536, 512), "div": (4096, 4096)})
+        self.assertEqual(driver["PAIRS"], ("AB", "BA", "AB", "BA"))
+        self.assertEqual((driver["MAX_COMMANDS"], driver["JOB_SECONDS"], driver["MAX_LOG_BYTES"]),
+                         (96, 420, 1024 * 1024))
+        self.assertEqual(set(driver["MODES"]), {"generic", "native"})
+        self.assertIn("-fno-lto", driver["COMMON"])
+        self.assertNotIn("-DNDEBUG", driver["COMMON"])
+        import intrinsic_gate
+        self.assertEqual(driver["COMMON"], intrinsic_gate.COMMON + [
+            "-Wall", "-Wextra", "-Werror", "-Wno-error=free-nonheap-object"])
+        self.assertFalse(any(flag.startswith("-Wno-") for flag in intrinsic_gate.COMMON))
+        for name, value in driver["FROZEN"].items():
+            self.assertEqual(hashlib.sha256((root / driver["SOURCE"] / name).read_bytes()).hexdigest(), value)
+            self.assertEqual(route.CONTROL_PATHS.count(driver["SOURCE"] + name), 1)
+
+    def test_fps_comparison_rejects_changed_schedule_context_and_checksums(self):
+        import runpy
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1]
+        driver = runpy.run_path(str(root / "test/benchmark/fps_scalar_return/run.py"))
+        checksums = {
+            "add": ("13886490060049436654", "13882659635403116537", "13082089982011685829"),
+            "sub": ("11207330850518936369", "11130598958178708230", "4508857342948613413"),
+            "mul": ("4568921047891222776", "7306674426695528431", "11662797323877304613"),
+            "div": ("1482039196620619456", "4719237234168918346", "16645246113738105637"),
+        }
+        self.assertEqual(driver["CHECKSUMS"], checksums)
+        samples = {}
+        for operation, (size, repeats) in driver["CASES"].items():
+            source, result, aggregate = checksums[operation]
+            row = {"type": "public", "operation": operation, "n": size, "repeats": repeats,
+                   "total_ns": repeats * 100, "ns_per_call": 100,
+                   "source_checksum": source, "result_checksum": result, "aggregate_checksum": aggregate}
+            self.assertEqual(driver["validate_row"](json.dumps(row).encode(), operation), row)
+            samples[operation] = row
+        row = samples["add"]
+        for key, value in (("n", 33), ("repeats", 300001), ("type", "internal"),
+                           ("operation", "sub"), ("source_checksum", "0"),
+                           ("result_checksum", "0"), ("aggregate_checksum", "0"),
+                           ("total_ns", 0), ("ns_per_call", float("nan")),
+                           ("ns_per_call", row["ns_per_call"] * 2)):
+            with self.subTest(key=key, value=value), self.assertRaises(ValueError):
+                driver["validate_row"](json.dumps({**row, key: value}).encode(), "add")
+        duplicate = (json.dumps(row)[:-1] + ', "n": 32}').encode()
+        with self.assertRaises(ValueError):
+            driver["validate_row"](duplicate, "add")
+        candidate = "a" * 40
+        context = {"GITHUB_EVENT_NAME": "push", "GITHUB_REPOSITORY": "qandori/cp-library",
+                   "GITHUB_REF": driver["REF"], "GITHUB_SHA": candidate, "GITHUB_RUN_ATTEMPT": "1"}
+        event = {"deleted": False, "ref": driver["REF"], "after": candidate,
+                 "repository": {"full_name": "qandori/cp-library"}}
+        driver["validate_context"](driver["BASE"], candidate, context, event)
+        for key, value in (("GITHUB_EVENT_NAME", "workflow_dispatch"), ("GITHUB_REPOSITORY", "fork/repo"),
+                           ("GITHUB_REF", driver["REF"] + "-other"), ("GITHUB_SHA", "b" * 40),
+                           ("GITHUB_RUN_ATTEMPT", "2")):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                driver["validate_context"](driver["BASE"], candidate, {**context, key: value}, event)
+        for changed in ({**event, "deleted": True}, {**event, "after": "b" * 40},
+                        {**event, "repository": {"full_name": "fork/repo"}}):
+            with self.assertRaises(ValueError):
+                driver["validate_context"](driver["BASE"], candidate, context, changed)
+        with self.assertRaises(ValueError):
+            driver["validate_context"]("b" * 40, candidate, context, event)
 
 
 

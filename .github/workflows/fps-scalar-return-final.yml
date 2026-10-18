@@ -1,0 +1,32 @@
+name: FPS scalar return finalist
+
+on:
+  push:
+    branches: [codex/fps-scalar-return-20261018]
+    paths:
+      - fps/fps.hpp
+      - components/fps_operations.hpp
+      - components/ntt.hpp
+      - math/mint.hpp
+      - test/benchmark/fps_scalar_return/**
+      - .github/workflows/fps-scalar-return-final.yml
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    if: github.repository == 'qandori/cp-library' && github.event_name == 'push' && github.ref == 'refs/heads/codex/fps-scalar-return-20261018' && github.run_attempt == 1
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Frozen FPS GCC 15.2 comparison
+        timeout-minutes: 8
+        run: >-
+          python3 -B test/benchmark/fps_scalar_return/run.py
+          --base-ref 1b8607587c164b013386423ada2298e05a9e4028
+          --candidate-ref "$GITHUB_SHA"
