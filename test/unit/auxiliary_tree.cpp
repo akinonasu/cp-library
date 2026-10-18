@@ -1,4 +1,4 @@
-#include "graph/virtual_tree.hpp"
+#include "graph/auxiliary_tree.hpp"
 #include "graph/lca.hpp"
 #include "graph/hld.hpp"
 #include <cstdlib>
@@ -20,7 +20,7 @@ int naive_lca(const std::vector<int> &parent, const std::vector<int> &depth, int
 }
 
 template<class Tree>
-void check(VirtualTree<Tree> &vt, const Tree &tree, const std::vector<int> &keys,
+void check(AuxiliaryTree<Tree> &vt, const Tree &tree, const std::vector<int> &keys,
 		   const std::vector<int> &parent, const std::vector<int> &depth) {
 	auto original = keys;
 	const auto &nodes = vt.build(keys);
@@ -74,10 +74,10 @@ void check(VirtualTree<Tree> &vt, const Tree &tree, const std::vector<int> &keys
 }
 
 int main() {
-	static_assert(!std::is_constructible_v<VirtualTree<LCA>, LCA &&>);
+	static_assert(!std::is_constructible_v<AuxiliaryTree<LCA>, LCA &&>);
 	LCA empty;
 	empty.build();
-	VirtualTree empty_vt(empty);
+	AuxiliaryTree empty_vt(empty);
 	require(empty_vt.build({}).empty() && empty_vt.root() == -1);
 	std::mt19937 rng(413708);
 	for (int n = 1; n <= 36; ++n) for (int trial = 0; trial < 8; ++trial) {
@@ -94,8 +94,8 @@ int main() {
 			lca.add_edge(u, v), hld.add_edge(u, v);
 			adj[u].push_back(v), adj[v].push_back(u);
 		}
-		VirtualTree a(lca);
-		VirtualTree b(hld);
+		AuxiliaryTree a(lca);
+		AuxiliaryTree b(hld);
 		for (int root : {labels[0], static_cast<int>(rng() % n)}) {
 			lca.build(root), hld.build(root);
 			std::vector<int> parent(n, -1), depth(n), queue{root};
@@ -137,7 +137,7 @@ int main() {
 		LCA tree(n);
 		for (int v = 1; v < n; ++v) tree.add_edge(shape == 0 ? v - 1 : shape == 1 ? 0 : (v - 1) / 2, v);
 		tree.build();
-		VirtualTree vt(tree);
+		AuxiliaryTree vt(tree);
 		std::vector<int> keys(n);
 		std::iota(keys.begin(), keys.end(), 0);
 		std::shuffle(keys.begin(), keys.end(), rng);
@@ -154,5 +154,5 @@ int main() {
 		vt.build({});
 		require(vt.empty());
 	}
-	std::cout << "Virtual Tree OK\n";
+	std::cout << "Auxiliary Tree OK\n";
 }

@@ -17,37 +17,37 @@ auto polynomial = a.characteristic_polynomial();
 
 `Matrix<T>` は行優先の連続領域に保存する可変サイズの行列です。添字は 0 始まり、区間は半開区間です。`bool` は使えません。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `Matrix<T>()` / `Matrix<T>(n)` | 0 行 0 列／0 初期化した正方行列 |
-| `Matrix<T>(n,m,value = T(0))` | `n` 行 `m` 列を同じ値で初期化 |
-| `Matrix<T>{ {...},{...} }` / `Matrix<T>(vector<vector<T>>)` | 係数列から構築。各行の長さは同じにする |
-| `rows()` / `cols()` / `empty()` | 行数／列数／行数または列数が 0 か |
-| `a[i][j]` / `a(i,j)` | 要素の参照。const 版も利用可 |
-| `a[i]` / `data()` | 行の `span`／行優先の先頭ポインタ |
-| `Matrix<T>::identity(n)` | 単位行列 |
-| `fill(x)` | 全要素を同じ値で上書き |
-| `swap(b)` | 行列を交換 |
-| `transpose()` | 転置した行列を返す |
-| `submatrix(row_l,row_r,col_l,col_r)` | 指定した行・列区間をコピー |
-| `-a` / `a + b` / `a - b` | 符号反転／同じ形の行列の加減算 |
-| `a * b` | 行列積。`a.cols() == b.rows()` |
-| `a * x` / `x * a` / `a / x` | スカラー倍／スカラー除算。除算は体の要素で非零のみ |
-| `a += b` / `a -= b` / `a *= b` | 行列演算の結果を代入 |
-| `a *= x` / `a /= x` | スカラー演算の結果を代入 |
-| `a == b` / `a != b` | 形と全要素を比較 |
-| `a * vector<T>` | 行列と列ベクトルの積。ベクトル長は列数 |
-| `pow(k)` | 正方行列の非負整数乗。`k` は `uint64_t`、0 乗は単位行列 |
-| `trace()` | 正方行列の対角成分の和 |
-| `det(eps = default_epsilon)` | 行列式。特異なら 0、0 行 0 列なら 1 |
-| `inverse(eps = default_epsilon)` | 逆行列を `optional<Matrix<T>>` で返す。特異なら `nullopt` |
-| `rank(eps = default_epsilon)` | 行列の rank |
-| `row_echelon(eps = default_epsilon)` | 行階段形とピボットの列番号の組。各ピボットは 1 |
-| `rref(eps = default_epsilon)` | 簡約行階段形とピボットの列番号の組 |
-| `solve(b,eps = default_epsilon)` | $$Ax=b$$ の解。解なしなら `nullopt` |
-| `kernel(eps = default_epsilon)` | $$Ax=0$$ の解空間の基底。各要素が列ベクトル |
-| `characteristic_polynomial(eps = default_epsilon)` | $$\det(xI-A)$$ の係数を定数項から返す |
-| `adjugate(eps = default_epsilon)` | 余因子行列の転置。特異行列にも対応 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `Matrix<T>()` / `Matrix<T>(n)` | 0 行 0 列／0 初期化した正方行列 | 空: $$O(1)$$、正方: $$O(n^2)$$ |
+| `Matrix<T>(n,m,value = T(0))` | `n` 行 `m` 列を同じ値で初期化 | $$O(nm)$$ |
+| `Matrix<T>{ {...},{...} }` / `Matrix<T>(vector<vector<T>>)` | 係数列から構築。各行の長さは同じにする | $$O(nm)$$ |
+| `rows()` / `cols()` / `empty()` | 行数／列数／行数または列数が 0 か | $$O(1)$$ |
+| `a[i][j]` / `a(i,j)` | 要素の参照。const 版も利用可 | $$O(1)$$ |
+| `a[i]` / `data()` | 行の `span`／行優先の先頭ポインタ | $$O(1)$$ |
+| `Matrix<T>::identity(n)` | 単位行列 | $$O(n^2)$$ |
+| `fill(x)` | 全要素を同じ値で上書き | $$O(nm)$$ |
+| `swap(b)` | 行列を交換 | $$O(1)$$ |
+| `transpose()` | 転置した行列を返す | $$O(nm)$$ |
+| `submatrix(row_l,row_r,col_l,col_r)` | 指定した行・列区間をコピー | 切り出す要素数に比例 |
+| `-a` / `a + b` / `a - b` | 符号反転／同じ形の行列の加減算 | $$O(nm)$$ |
+| `a * b` | 行列積。`a.cols() == b.rows()` | $$O(nkm)$$ |
+| `a * x` / `x * a` / `a / x` | スカラー倍／スカラー除算。除算は体の要素で非零のみ | $$O(nm)$$ |
+| `a += b` / `a -= b` / `a *= b` | 行列演算の結果を代入 | 加減算: $$O(nm)$$、積: $$O(nkm)$$ |
+| `a *= x` / `a /= x` | スカラー演算の結果を代入 | $$O(nm)$$ |
+| `a == b` / `a != b` | 形と全要素を比較 | $$O(nm)$$ |
+| `a * vector<T>` | 行列と列ベクトルの積。ベクトル長は列数 | $$O(nm)$$ |
+| `pow(k)` | 正方行列の非負整数乗。`k` は `uint64_t`、0 乗は単位行列 | $$O(n^3\log k)$$ |
+| `trace()` | 正方行列の対角成分の和 | $$O(n)$$ |
+| `det(eps = default_epsilon)` | 行列式。特異なら 0、0 行 0 列なら 1 | $$O(n^3)$$ |
+| `inverse(eps = default_epsilon)` | 逆行列を `optional<Matrix<T>>` で返す。特異なら `nullopt` | $$O(n^3)$$ |
+| `rank(eps = default_epsilon)` | 行列の rank | $$O(nm\min(n,m))$$ |
+| `row_echelon(eps = default_epsilon)` | 行階段形とピボットの列番号の組。各ピボットは 1 | $$O(nm\min(n,m))$$ |
+| `rref(eps = default_epsilon)` | 簡約行階段形とピボットの列番号の組 | $$O(nm\min(n,m))$$ |
+| `solve(b,eps = default_epsilon)` | $$Ax=b$$ の解。解なしなら `nullopt` | $$O(nm\min(n,m)+m^2)$$ |
+| `kernel(eps = default_epsilon)` | $$Ax=0$$ の解空間の基底。各要素が列ベクトル | $$O(nm\min(n,m)+m^2)$$ |
+| `characteristic_polynomial(eps = default_epsilon)` | $$\det(xI-A)$$ の係数を定数項から返す | $$O(n^3)$$ |
+| `adjugate(eps = default_epsilon)` | 余因子行列の転置。特異行列にも対応 | $$O(n^3)$$ |
 
 `solve` は `optional<LinearSolution<T>>` を返します。`b` の長さは行数とします。
 

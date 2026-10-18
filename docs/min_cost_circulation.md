@@ -5,9 +5,9 @@ documentation_of: //components/min_cost_circulation.hpp
 
 [最小費用流](https://qandori.github.io/cp-library/graph/min_cost_flow.hpp.html) の内部部品です。容量を上位 bit から復元し、負の reduced cost の辺を飽和させてから余剰流量を最短路で解消します。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `flow_detail::scaling_flow<Cap,Cost,Total>(graph,costs,s,t,limit)` | 残余グラフに追加した流量と費用を `pair<Cap,Total>` で返す |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `flow_detail::scaling_flow<Cap,Cost,Total>(graph,costs,s,t,limit)` | 残余グラフに追加した流量と費用を `pair<Cap,Total>` で返す | $$O(M(N+M\log N)\log U)$$ |
 
 `graph.build()` を済ませ、残余辺ごとの単位費用を `costs` に入れます。正辺・逆辺の費用は互いに符号反転した値です。公開ライブラリと同じ前提条件で使います。最短路と補助辺の費用は 128 bit、ヒープは 4 分木です。
 

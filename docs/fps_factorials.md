@@ -5,12 +5,12 @@ documentation_of: //components/fps_factorials.hpp
 
 FPS と二項係数の前計算で共有する内部処理です。通常は [階乗・逆階乗と二項係数](https://qandori.github.io/cp-library/math/comb.hpp.html) や [Taylor Shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) を利用します。`factorials` には `fps_mint*` または法 998244353 の内部 Montgomery ワードへのポインタを渡せます。
 
-| 関数 | 内容・返り値 |
-| --- | --- |
-| `fps_detail::factorials(fact,invfact,n)` | `fact[i] = i!`、`invfact[i] = 1/i!` を先頭 `n` 要素へ書き込む |
-| `fps_detail::factorials8(fact,invfact,n)` | AVX2 版。`n >= 256` |
-| `fps_detail::factorial_chain<reverse>(out,chunk,value,factor)` | AVX2 の 8 レーンで積の列を生成。各レーンの `value` を書き、`factor` を掛けて進める |
-| `fps_detail::factorial_transpose(x)` | AVX2 の 8×8 個の 32 bit 要素を転置する |
+| 関数 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `fps_detail::factorials(fact,invfact,n)` | `fact[i] = i!`、`invfact[i] = 1/i!` を先頭 `n` 要素へ書き込む | $$O(n)$$ |
+| `fps_detail::factorials8(fact,invfact,n)` | AVX2 版。`n >= 256` | $$O(n)$$ |
+| `fps_detail::factorial_chain<reverse>(out,chunk,value,factor)` | AVX2 の 8 レーンで積の列を生成。各レーンの `value` を書き、`factor` を掛けて進める | $$O(\mathrm{chunk})$$ |
+| `fps_detail::factorial_transpose(x)` | AVX2 の 8×8 個の 32 bit 要素を転置する | $$O(1)$$ |
 
 `factorials` の引数は内部ワード版では $$0\le n<998244353$$、`fps_mint*` 版では $$0\le n\le998244353$$ とし、出力先はそれぞれ `n` 要素を持つ重ならない領域にします。`n = 0` では書き込みません。256 要素以上の AVX2 対応 x86 では 32 本の積の列を並行して生成し、それ以外ではスカラー処理を使います。Mac ARM でも `factorials` を利用できます。
 

@@ -17,7 +17,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     variants = json.loads(args.variants.read_text())['variants']
-    source = (ROOT / 'test/benchmark/virtual_tree.cpp').read_text()
+    variants = {name: header.replace('VirtualTree', 'AuxiliaryTree').replace('VIRTUAL_TREE_HPP', 'AUXILIARY_TREE_HPP') for name, header in variants.items()}
+    source = (ROOT / 'test/benchmark/auxiliary_tree.cpp').read_text()
     os.sched_setaffinity(0, {2})
     flags = ['-std=c++2b', '-O2', '-DNDEBUG', '-march=native', '-ftrivial-auto-var-init=zero']
     result = {'compiler': subprocess.check_output(['g++', '--version'], text=True),
@@ -25,8 +26,8 @@ def main():
               'cpu': next(line for line in Path('/proc/cpuinfo').read_text().splitlines() if line.startswith('model name')),
               'flags': flags, 'affinity': [2], 'warmup': 1, 'trials': 7, 'schedule_seed': 118249,
               'input_seed': 612409, 'binary_filesystem': 'Linux /tmp (WSL ext4)',
-              'metric': 'in-process construction and checksum; same as virtual_tree.py',
-              'source_sha256': {'test/benchmark/virtual_tree.cpp': hashlib.sha256(source.encode()).hexdigest()},
+              'metric': 'in-process construction and checksum; same as auxiliary_tree.py',
+              'source_sha256': {'test/benchmark/auxiliary_tree.cpp': hashlib.sha256(source.encode()).hexdigest()},
               'variants': variants, 'cases': []}
     with tempfile.TemporaryDirectory(prefix='cp-virtual-tune-') as folder:
         folder = Path(folder)
@@ -35,7 +36,7 @@ def main():
             path = folder / (name + '.hpp')
             path.write_text(header)
             cpp = folder / (name + '.cpp')
-            cpp.write_text(source.replace('"graph/virtual_tree.hpp"', '"' + str(path) + '"'))
+            cpp.write_text(source.replace('"graph/auxiliary_tree.hpp"', '"' + str(path) + '"'))
             binary = folder / name
             subprocess.run(['g++', *flags, '-I', str(ROOT), str(cpp), '-o', str(binary)], check=True)
             binaries[name] = binary

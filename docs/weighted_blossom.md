@@ -5,10 +5,10 @@ documentation_of: //components/weighted_blossom.hpp
 
 一般グラフの最大重みマッチングを計算する内部部品です。通常は `graph/general_weighted_matching.hpp` の `GeneralWeightedMatching` を使います。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `weighted_matching_detail::Blossom<T>(n,weights,maximum)` | 重み行列をコピーして計算用の状態を作る |
-| `solve(mate)` | マッチングを計算し、相手の頂点を長さ `n` の `vector<int>` に書き込む。未マッチは -1 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `weighted_matching_detail::Blossom<T>(n,weights,maximum)` | 重み行列をコピーして計算用の状態を作る | $$O(n^2)$$ |
+| `solve(mate)` | マッチングを計算し、相手の頂点を長さ `n` の `vector<int>` に書き込む。未マッチは -1 | $$O(n^3)$$ |
 
 `weights` は長さ `n*n` の `span<const int64_t>` で、位置 `u*n+v` が無向辺の重みです。対称行列とし、対角成分は 0、存在しない辺は 0、有効な辺は正の重みとしてください。`maximum` は最大の辺重みで、`T` は符号付き整数型です。`4*(n+1)*maximum` が `T` に収まることを要求します。公開側のライブラリが型を選択します。
 

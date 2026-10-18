@@ -12,9 +12,9 @@ ntt_mod<998244353, 3>(a);
 ntt_mod<998244353, 3>(a, true);
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `ntt_mod<mod,root>(a,inverse = false)` | `vector<uint32_t>` を指定法で NTT。`true` は正規化済みの逆変換 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `ntt_mod<mod,root>(a,inverse = false)` | `vector<uint32_t>` を指定法で NTT。`true` は正規化済みの逆変換 | $$O(n\log n+\log n\log\mathrm{mod})$$ |
 
 法 `mod` は $$2 < \mathrm{mod} < 2^{31}$$ を満たす素数、`root` は原始根です。要素は法未満、長さ $$n$$ は $$\mathrm{mod}-1$$ を割り切る 2 の冪とします。逆変換には長さの逆数の乗算を含みます。
 

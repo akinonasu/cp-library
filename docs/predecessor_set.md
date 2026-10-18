@@ -19,29 +19,29 @@ set.for_each(0, 8, [](int x) { (void)x; });
 
 固定範囲 `[0,n)` の整数集合を 64 分木で管理します。各階層の 1 bit は、下位階層の対応する 64 bit 語が空でないかを表します。全階層を連続した配列で保持します。区間ソート木も同じ実装を使います。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `PredecessorSet(n = 0,filled = false)` | 範囲 `[0,n)` の空集合。`filled=true` なら全要素を入れる |
-| `PredecessorSet(bits)` | `string_view` の 0/1 列から構築。位置 `i` が `'1'` なら `i` を入れる |
-| `PredecessorSet(n,words)` | `span<const uint64_t>` のビット列から構築 |
-| `assign(n,filled = false)` | 範囲と内容を再設定 |
-| `assign(bits)` / `assign(n,words)` | 0/1 列／整数のビット列から再構築 |
-| `universe_size()` | 管理する範囲の長さ |
-| `size()` / `empty()` | 要素数／空判定 |
-| `contains(p)` | `p` が含まれるか |
-| `insert(p)` | 要素を追加。既に含まれる場合は false |
-| `erase(p)` | 要素を削除。含まれない場合は false |
-| `set(p,present)` | `present=true` なら追加、false なら削除。集合が変化した場合だけ true |
-| `next(p)` | `p` 以上の最小要素。なければ `n` |
-| `prev(p)` | `p` 以下の最大要素。なければ -1 |
-| `min()` / `max()` | 最小／最大要素。空ならそれぞれ `n`／-1 |
-| `for_each(l,r,f)` | `[l,r)` の要素について `f(int)` を昇順に呼ぶ |
-| `for_each(f)` | 全要素について `f(int)` を昇順に呼ぶ |
-| `to_vector()` | 全要素を昇順の `vector<int>` で返す |
-| `words()` | 最下層のビット列への読み取り専用 `span<const uint64_t>` |
-| `clear()` / `fill()` | 範囲と容量を保ち、空集合／全体集合にする |
-| `swap(other)` | 範囲と内容を交換 |
-| `memory_usage()` | 確保済みの動的領域のバイト数 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `PredecessorSet(n = 0,filled = false)` | 範囲 `[0,n)` の空集合。`filled=true` なら全要素を入れる | $$O(1+n/64)$$ |
+| `PredecessorSet(bits)` | `string_view` の 0/1 列から構築。位置 `i` が `'1'` なら `i` を入れる | $$O(n)$$ |
+| `PredecessorSet(n,words)` | `span<const uint64_t>` のビット列から構築 | $$O(1+n/64)$$ |
+| `assign(n,filled = false)` | 範囲と内容を再設定 | $$O(1+n/64)$$ |
+| `assign(bits)` / `assign(n,words)` | 0/1 列／整数のビット列から再構築 | bits: $$O(n)$$、words: $$O(1+n/64)$$ |
+| `universe_size()` | 管理する範囲の長さ | $$O(1)$$ |
+| `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
+| `contains(p)` | `p` が含まれるか | $$O(1)$$ |
+| `insert(p)` | 要素を追加。既に含まれる場合は false | $$O(\log_{64}n)$$ |
+| `erase(p)` | 要素を削除。含まれない場合は false | $$O(\log_{64}n)$$ |
+| `set(p,present)` | `present=true` なら追加、false なら削除。集合が変化した場合だけ true | $$O(\log_{64}n)$$ |
+| `next(p)` | `p` 以上の最小要素。なければ `n` | $$O(\log_{64}n)$$ |
+| `prev(p)` | `p` 以下の最大要素。なければ -1 | $$O(\log_{64}n)$$ |
+| `min()` / `max()` | 最小／最大要素。空ならそれぞれ `n`／-1 | $$O(\log_{64}n)$$ |
+| `for_each(l,r,f)` | `[l,r)` の要素について `f(int)` を昇順に呼ぶ | $$O((k+1)\log_{64}n)$$ |
+| `for_each(f)` | 全要素について `f(int)` を昇順に呼ぶ | $$O((k+1)\log_{64}n)$$ |
+| `to_vector()` | 全要素を昇順の `vector<int>` で返す | $$O((k+1)\log_{64}n)$$ |
+| `words()` | 最下層のビット列への読み取り専用 `span<const uint64_t>` | $$O(1)$$ |
+| `clear()` / `fill()` | 範囲と容量を保ち、空集合／全体集合にする | $$O(1+n/64)$$ |
+| `swap(other)` | 範囲と内容を交換 | $$O(1)$$ |
+| `memory_usage()` | 確保済みの動的領域のバイト数 | $$O(1)$$ |
 
 `n` は `0..INT_MAX`、挿入・削除・存在判定の対象は `[0,n)` としてください。`next`・`prev` の引数は範囲外でも使えます。列挙区間は `0 <= l <= r <= n` とし、コールバック中に同じ集合を変更しないでください。コールバックを保存・コピーしません。
 

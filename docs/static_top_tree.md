@@ -30,38 +30,38 @@ long long total = dp.dp();                  // 8
 long long subtree = dp.subtree_prod(1);     // 7
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `StaticTopTree<DP>()` | 空の木を作る |
-| `StaticTopTree<DP>(tree,values)` | 構築済みの HLD と頂点番号順の `vector<Vertex>` で構築 |
-| `build(tree,values)` | 木と値を置き換えて再構築 |
-| `size()` / `empty()` | 頂点数／空か |
-| `root()` | 構築時の根。空なら `-1` |
-| `parent(v)` | 元の木の親。根では `-1` |
-| `edge_vertex(e)` | HLD に追加した辺 ID `e` の子側の頂点 |
-| `get(v)` | 頂点 `v` の `const Vertex&` |
-| `set(v,value)` | 頂点の値を変更し、必要なクラスタを更新 |
-| `all_prod()` | 木全体の `Path`。境界のパスは構築時の根から heavy path の末尾まで |
-| `dp()` | `DP::add_edge(all_prod())` による木全体の `Point` |
-| `subtree_prod(v)` | 構築時の根に対する `v` の部分木の `Path`。境界のパスは `v` から heavy path の末尾まで |
-| `prod(v)` | 木全体を、構築時の根から `v` へのパスに沿って集約した `Path` |
-| `Vertex` / `Point` / `Path` | `DP` に指定した型の別名 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `StaticTopTree<DP>()` | 空の木を作る | $$O(1)$$ |
+| `StaticTopTree<DP>(tree,values)` | 構築済みの HLD と頂点番号順の `vector<Vertex>` で構築 | $$O(n\log n)$$ |
+| `build(tree,values)` | 木と値を置き換えて再構築 | $$O(n\log n)$$ |
+| `size()` / `empty()` | 頂点数／空か | $$O(1)$$ |
+| `root()` | 構築時の根。空なら `-1` | $$O(1)$$ |
+| `parent(v)` | 元の木の親。根では `-1` | $$O(1)$$ |
+| `edge_vertex(e)` | HLD に追加した辺 ID `e` の子側の頂点 | $$O(1)$$ |
+| `get(v)` | 頂点 `v` の `const Vertex&` | $$O(1)$$ |
+| `set(v,value)` | 頂点の値を変更し、必要なクラスタを更新 | $$O(\log n)$$ |
+| `all_prod()` | 木全体の `Path`。境界のパスは構築時の根から heavy path の末尾まで | $$O(1)$$ |
+| `dp()` | `DP::add_edge(all_prod())` による木全体の `Point` | $$O(1)$$ |
+| `subtree_prod(v)` | 構築時の根に対する `v` の部分木の `Path`。境界のパスは `v` から heavy path の末尾まで | $$O(\log n)$$ |
+| `prod(v)` | 木全体を、構築時の根から `v` へのパスに沿って集約した `Path` | $$O(\log n)$$ |
+| `Vertex` / `Point` / `Path` | `DP` に指定した型の別名 | —（型） |
 
 頂点は 0 始まりです。空の木・1 頂点の木も扱います。`values.size()` は頂点数と一致させます。構築時に必要な情報をコピーするため、元の HLD は構築後に破棄できます。辺の追加・削除には再構築が必要です。`get` の参照は再構築で無効になります。
 
 DP には次の型と static 関数を定義します。値はコピー・代入可能な型にします。
 
-| 型・関数 | 意味 |
-| --- | --- |
-| `DP::Vertex` | 頂点の情報。必要なら親辺の情報も含める |
-| `DP::Point` | 同じ親へ接続する枝の集約 |
-| `DP::Path` | 境界のパスを持つクラスタの集約 |
-| `DP::point_identity()` | 枝がない場合の `Point` |
-| `DP::path_identity()` | 空のパスの `Path` |
-| `DP::rake(a,b)` | 同じ親へ接続する枝を併合 |
-| `DP::compress(a,b)` | 上側のパス `a` と下側のパス `b` をこの順で連結 |
-| `DP::add_edge(path)` | パスクラスタを親へ接続する枝の `Point` に変換 |
-| `DP::add_vertex(point,vertex)` | 枝の集約に頂点を加え、長さ 1 の `Path` に変換 |
+| 型・関数 | 意味 | 計算量 |
+| --- | --- | --- |
+| `DP::Vertex` | 頂点の情報。必要なら親辺の情報も含める | —（型） |
+| `DP::Point` | 同じ親へ接続する枝の集約 | —（型） |
+| `DP::Path` | 境界のパスを持つクラスタの集約 | —（型） |
+| `DP::point_identity()` | 枝がない場合の `Point` | DP による（定数時間を仮定） |
+| `DP::path_identity()` | 空のパスの `Path` | DP による（定数時間を仮定） |
+| `DP::rake(a,b)` | 同じ親へ接続する枝を併合 | DP による（定数時間を仮定） |
+| `DP::compress(a,b)` | 上側のパス `a` と下側のパス `b` をこの順で連結 | DP による（定数時間を仮定） |
+| `DP::add_edge(path)` | パスクラスタを親へ接続する枝の `Point` に変換 | DP による（定数時間を仮定） |
+| `DP::add_vertex(point,vertex)` | 枝の集約に頂点を加え、長さ 1 の `Path` に変換 | DP による（定数時間を仮定） |
 
 `rake` は可換モノイド、`compress` はモノイドにします。`add_edge(path_identity()) == point_identity()` が必要です。クラスタの併合順序によらず同じ木 DP を表すように各演算を定義します。逆元は不要で、積が 0 になる DP も扱えます。
 

@@ -8,16 +8,20 @@ documentation_of: //math/comb.hpp
 #include "lib/math/comb.hpp"
 
 init_comb();
-auto value = comb(10, 3);
+auto value = comb(10, 3); // 120
+auto factorial = fact[5]; // 120
+auto one = fact[5] * finv[5]; // 1
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `init_comb()` | `fact`・`finv` を前計算。使用前に呼ぶ |
-| `comb(n,k)` | 二項係数。`k < 0` または `n < k` なら 0 |
-| `fact[n]` / `finv[n]` | 階乗／逆階乗の前計算値 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `init_comb()` | `fact`・`finv` を前計算。使用前に呼ぶ | $$O(N)$$ |
+| `comb(n,k)` | 二項係数。`k < 0` または `n < k` なら 0 | $$O(1)$$ |
+| `fact[n]` / `finv[n]` | 階乗／逆階乗の前計算値 | $$O(1)$$ |
 
 使用前に `init_comb()` を呼びます。`fact[n]` は $$n!$$、`finv[n]` はその逆数です。mod は 998244353 です。
+
+`init_comb()` を一度呼ぶと、上限までの `comb`・`fact`・`finv` を何度でも使えます。返り値は `mint` なので、通常の整数として取り出す場合は `comb(n,k).val()` とします。
 
 FPS と階乗・逆階乗の生成処理を共有します。256 要素以上の AVX2 対応 x86 では SIMD、それ以外ではスカラー処理を使います。呼び出し方と配列の型は変わりません。
 

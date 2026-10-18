@@ -7,16 +7,16 @@ Linux x86_64 / GCC 向けの内部部品です。呼び出し側で AVX2 の実�
 
 `fps_detail::composition_poly` の `Arena`・`Transform`・`Half` はブロック変換の部品を共有します。内部配列は Arena から確保し、利用者の入力に padding や整列を要求しません。確保失敗時には通常の整列配列へ戻り、それも失敗した場合は例外となります。
 
-| 内部 API | 内容 |
-| --- | --- |
-| `compose_log(n)`・`compose_scratch(n)` | 合成に必要な変換次数と作業領域のワード数 |
-| `compose(t,f,g,h,scratch)` | `h.size()` 項の $f(g)$。普通剰余の入力・出力、$g_0=0$。入力・出力は重ねない |
-| `projection_log(n)`・`projection_scratch(n)` | 係数射影に必要な変換次数と作業領域のワード数 |
-| `power_projection(t,g,a,scratch)` | $a_k=[x^{n-1}]g^k$、$n=\texttt{a.size()}$、$g_0=0$ |
-| `weighted_projection(t,g,w,a,scratch)` | $a_k=\sum_j w_j[x^j]g^k$、`w.size()==a.size()>32`、$g_0=0$ |
-| `native_compose(f,nf,g,ng,out,n)` | 内部 Montgomery 係数の入力から、長さ `n` の合成を空の `vector<Mint>` へ追加 |
-| `native_projection(g,ng,out,n)` | 内部 Montgomery 係数から、長さ `n` の係数射影を空の `vector<Mint>` へ追加 |
-| `native_weighted_projection(g,ng,w,out,n,count)` | `n` 個の重みによる射影の最初の `count` 項を空の `vector<Mint>` へ追加。$0<\texttt{count}\le n$ |
+| 内部 API | 内容 | 計算量 |
+| --- | --- | --- |
+| `compose_log(n)`・`compose_scratch(n)` | 合成に必要な変換次数と作業領域のワード数 | $$O(1)$$ |
+| `compose(t,f,g,h,scratch)` | `h.size()` 項の $f(g)$。普通剰余の入力・出力、$g_0=0$。入力・出力は重ねない | $$O(n\log^2 n)$$ |
+| `projection_log(n)`・`projection_scratch(n)` | 係数射影に必要な変換次数と作業領域のワード数 | $$O(1)$$ |
+| `power_projection(t,g,a,scratch)` | $a_k=[x^{n-1}]g^k$、$n=\texttt{a.size()}$、$g_0=0$ | $$O(n\log^2 n)$$ |
+| `weighted_projection(t,g,w,a,scratch)` | $a_k=\sum_j w_j[x^j]g^k$、`w.size()==a.size()>32`、$g_0=0$ | $$O(n\log^2 n)$$ |
+| `native_compose(f,nf,g,ng,out,n)` | 内部 Montgomery 係数の入力から、長さ `n` の合成を空の `vector<Mint>` へ追加 | $$O(n\log^2 n)$$ |
+| `native_projection(g,ng,out,n)` | 内部 Montgomery 係数から、長さ `n` の係数射影を空の `vector<Mint>` へ追加 | $$O(n\log^2 n)$$ |
+| `native_weighted_projection(g,ng,w,out,n,count)` | `n` 個の重みによる射影の最初の `count` 項を空の `vector<Mint>` へ追加。$0<\texttt{count}\le n$ | $$O(n\log^2 n)$$ |
 
 普通剰余の係数は $[0,p)$、Montgomery 係数の内部ワードは $[0,2p)$ です。入力長を超える係数は 0 とし、出力次数以降は読みません。raw API の作業領域は Arena と同じ整列・余白を持たせます。重み付き raw API は `projection_scratch(n) + Arena::footprint(6*detail::projection_length(n))` ワード、変換次数は `projection_log(n)+1` を使います。
 

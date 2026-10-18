@@ -9,12 +9,12 @@ documentation_of: //math/prefix_min_of_mod_of_linear.hpp
 auto parts = prefix_min_of_mod_of_linear(100, 100, 71, 85);
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `prefix_min_of_mod_of_linear(n,m,a,b)` | 最小値が更新される位置・値を圧縮した `vector<ModLinearPrefixMinSegment>` を返す |
-| `prefix_min_of_mod_of_linear(n,m,a,b,emit)` | 各区間に対して `emit(part)` を呼ぶ。出力配列を確保しない |
-| `part.x` / `part.y` / `part.dx` / `part.dy` / `part.count` | 最初の位置・値／位置の増分／値の減少幅／更新点数 |
-| `part == other` / `part != other` | 全フィールドの比較 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `prefix_min_of_mod_of_linear(n,m,a,b)` | 最小値が更新される位置・値を圧縮した `vector<ModLinearPrefixMinSegment>` を返す | $$O(1+\log m)$$ |
+| `prefix_min_of_mod_of_linear(n,m,a,b,emit)` | 各区間に対して `emit(part)` を呼ぶ。出力配列を確保しない | $$O(1+\log m)$$ |
+| `part.x` / `part.y` / `part.dx` / `part.dy` / `part.count` | 最初の位置・値／位置の増分／値の減少幅／更新点数 | $$O(1)$$ |
+| `part == other` / `part != other` | 全フィールドの比較 | $$O(1)$$ |
 
 $$f(x)=(ax+b)\bmod m$$ の $$0\le x<n$$ において、$$x=0$$ または $$f(x)<\min_{0\le i<x} f(i)$$ を満たす位置・値を等差数列に圧縮して返します。同じ最小値が再び現れる位置は含めません。
 
@@ -27,6 +27,19 @@ $$0\le j<\mathrm{count}$$ に対する位置・値 $$(x+\mathrm{dx}\,j,\ y-\math
 上の例では更新点は $$(0,85),(1,56),(2,27),(6,11),(13,8),(20,5),(27,2),(65,0)$$ です。
 任意の prefix の最小値は、その末尾以下の最後の更新点の値です。
 
+各更新点を取り出すには、上の `parts` に対して次のように走査します。`dy` は値の減少幅なので、値の計算では引き算にします。
+
+```cpp
+for (const auto &part : parts) {
+	for (std::uint64_t j = 0; j < part.count; ++j) {
+		auto position = part.x + part.dx * j;
+		auto minimum = part.y - part.dy * j;
+	}
+}
+```
+
+この列挙は圧縮を展開するため、時間は更新点の総数に比例します。圧縮したまま処理したい場合は、各 `part` を一つの等差数列として扱います。
+
 第5引数にコールバックを渡すと、動的確保せず各区間を順に渡します。
 バッファを繰り返し使う場合にも利用できます。
 
@@ -34,7 +47,7 @@ $$0\le j<\mathrm{count}$$ に対する位置・値 $$(x+\mathrm{dx}\,j,\ y-\math
 std::vector<ModLinearPrefixMinSegment> buffer;
 buffer.reserve(64);
 buffer.clear();
-prefix_min_of_mod_of_linear(n, m, a, b, [&](ModLinearPrefixMinSegment part) {
+prefix_min_of_mod_of_linear(100, 100, 71, 85, [&](ModLinearPrefixMinSegment part) {
 	buffer.push_back(part);
 });
 ```

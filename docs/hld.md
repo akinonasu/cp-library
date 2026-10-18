@@ -14,25 +14,27 @@ auto segments = tree.path(2, 0);
 auto [l, r] = tree.subtree(1);
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `HLD(n = 0)` | 頂点数を指定 |
-| `add_edge(u,v)` | 無向辺を追加し、辺 ID を返す |
-| `build(root = 0)` | 指定した根で木を分解 |
-| `lca(u,v)` / `dist(u,v)` | 最小共通祖先／経路の辺数 |
-| `is_ancestor(u,v)` | `u` が `v` の祖先か。自身も含む |
-| `ancestor(v,k)` | `k` 個上の祖先。範囲外は -1 |
-| `jump(u,v,k)` | `u` を 0 番目とする経路上の頂点。範囲外は -1 |
-| `subtree(v,edge = false)` | 部分木の添字区間。辺の場合は親への辺を除く |
-| `edge_vertex(id)` | 辺 ID の深い側の頂点 |
-| `path(u,v,edge = false)` | 経路順の `Segment{l,r,reversed}` の列 |
-| `for_each_path(u,v,f,edge = false)` | 経路順に `f(l,r,reversed)` を呼ぶ |
-| `parent[v]` / `depth[v]` / `size[v]` | 親／深さ／部分木の頂点数 |
-| `heavy[v]` / `head[v]` | 重い子／連鎖の先頭 |
-| `in[v]` / `out[v]` / `order[i]` | 部分木の左端／右端／添字に対応する頂点 |
-| `n` / `edges[id]` | 全頂点数／辺の両端 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `HLD(n = 0)` | 頂点数を指定 | $$O(n)$$ |
+| `add_edge(u,v)` | 無向辺を追加し、辺 ID を返す | 償却 $$O(1)$$ |
+| `build(root = 0)` | 指定した根で木を分解 | $$O(n)$$ |
+| `lca(u,v)` / `dist(u,v)` | 最小共通祖先／経路の辺数 | $$O(\log n)$$ |
+| `is_ancestor(u,v)` | `u` が `v` の祖先か。自身も含む | $$O(1)$$ |
+| `ancestor(v,k)` | `k` 個上の祖先。範囲外は -1 | $$O(\log n)$$ |
+| `jump(u,v,k)` | `u` を 0 番目とする経路上の頂点。範囲外は -1 | $$O(\log n)$$ |
+| `subtree(v,edge = false)` | 部分木の添字区間。辺の場合は親への辺を除く | $$O(1)$$ |
+| `edge_vertex(id)` | 辺 ID の深い側の頂点 | $$O(1)$$ |
+| `path(u,v,edge = false)` | 経路順の `Segment{l,r,reversed}` の列 | $$O(\log n)$$ |
+| `for_each_path(u,v,f,edge = false)` | 経路順に `f(l,r,reversed)` を呼ぶ | $$O(\log n)$$ |
+| `parent[v]` / `depth[v]` / `size[v]` | 親／深さ／部分木の頂点数 | $$O(1)$$ |
+| `heavy[v]` / `head[v]` | 重い子／連鎖の先頭 | $$O(1)$$ |
+| `in[v]` / `out[v]` / `order[i]` | 部分木の左端／右端／添字に対応する頂点 | $$O(1)$$ |
+| `n` / `edges[id]` | 全頂点数／辺の両端 | $$O(1)$$ |
 
 無向木を扱い、`build(root = 0)` で根を指定します。頂点値は Segtree などの `in[v]` に置きます。
+
+`in[v]` は木を分解した後の配列上の位置で、元の頂点番号 `v` とは別です。元の頂点値が `value[v]` なら、長さ `n` の配列に `a[tree.in[v]] = value[v]` と並べ替えてから Segtree を構築します。`subtree(v)` の `[l,r)` と `path` が返す区間は、この配列に対する範囲です。`tree.order[i]` で位置 `i` に対応する元の頂点番号へ戻せます。
 
 `path(u,v,edge = false)` は経路を `u` から `v` の順に並べた `Segment{l,r,reversed}` の列を返します。各区間は $$[l,r)$$ で、`reversed` が真なら降順に読みます。非可換な演算では、区間の正順・逆順の積を用意して使い分けます。`for_each_path(u,v,f,edge = false)` は同じ順序で `f(l,r,reversed)` を呼び、区間列のメモリ確保を省きます。
 

@@ -20,21 +20,21 @@ for (int v : tree.children(tree.root())) {
 
 区間 `[l,r)` に現れる値が連続する、つまり `max - min = r - l - 1` となる区間を共通区間と呼びます。木の頂点は、他の共通区間と部分的に重ならない共通区間（strong interval）に対応します。葉は各要素、根は順列全体です。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `PermutationTree()` | 空の木を作る |
-| `PermutationTree(p)` | 順列 `p` から構築 |
-| `build(p)` | 順列から再構築。空列にも対応 |
-| `size()` | 葉と内部頂点を合わせた頂点数 |
-| `length()` | 入力順列の長さ |
-| `empty()` | 入力順列が空か |
-| `root()` | 根の頂点 ID。空なら -1 |
-| `leaf(i)` | 入力位置 `i` に対応する葉の ID。`i` と等しい |
-| `operator[](v)` | 頂点 `v` の `Node` への const 参照 |
-| `nodes()` | 全頂点の `vector<Node>` への const 参照 |
-| `children(v)` | 子の ID を位置区間の左端順に並べた `span<const int>` |
-| `order()` | 根からの幅優先順の頂点 ID を返す `span<const int>` |
-| `count_intervals()` | 長さ 1 を含む全共通区間の個数を `int64_t` で返す。空なら 0 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `PermutationTree()` | 空の木を作る | $$O(1)$$ |
+| `PermutationTree(p)` | 順列 `p` から構築 | $$O(n+b\log b)$$ |
+| `build(p)` | 順列から再構築。空列にも対応 | $$O(n+b\log b)$$ |
+| `size()` | 葉と内部頂点を合わせた頂点数 | $$O(1)$$ |
+| `length()` | 入力順列の長さ | $$O(1)$$ |
+| `empty()` | 入力順列が空か | $$O(1)$$ |
+| `root()` | 根の頂点 ID。空なら -1 | $$O(1)$$ |
+| `leaf(i)` | 入力位置 `i` に対応する葉の ID。`i` と等しい | $$O(1)$$ |
+| `operator[](v)` | 頂点 `v` の `Node` への const 参照 | $$O(1)$$ |
+| `nodes()` | 全頂点の `vector<Node>` への const 参照 | $$O(1)$$ |
+| `children(v)` | 子の ID を位置区間の左端順に並べた `span<const int>` | $$O(1)$$ |
+| `order()` | 根からの幅優先順の頂点 ID を返す `span<const int>` | $$O(1)$$ |
+| `count_intervals()` | 長さ 1 を含む全共通区間の個数を `int64_t` で返す。空なら 0 | $$O(1)$$ |
 
 | `Node` の要素 | 内容 |
 | --- | --- |

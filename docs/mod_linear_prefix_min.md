@@ -3,9 +3,9 @@ title: "Mod of Linear の Prefix Minimum の内部走査"
 documentation_of: //components/mod_linear_prefix_min.hpp
 ---
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `mod_linear_detail::prefix_min<U>(n,m,a,b,emit)` | 更新点を圧縮し、各区間で `emit(x,y,dx,dy,count)` を呼ぶ |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `mod_linear_detail::prefix_min<U>(n,m,a,b,emit)` | 更新点を圧縮し、各区間で `emit(x,y,dx,dy,count)` を呼ぶ | $$O(1+\log m)$$ |
 
 `math/prefix_min_of_mod_of_linear.hpp` が使う、整数幅に応じた内部処理です。通常は公開側を使用します。
 

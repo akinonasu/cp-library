@@ -13,12 +13,12 @@ auto match = result.row_to_col;
 Hungarian maximum(a, true);
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `Hungarian(a,maximize = false)` | 費用行列から最小費用割当を計算。`true` は最大化 |
-| `Hungarian(n,m,a,stride = -1,maximize = false)` | 平坦な配列から計算。`stride` は行間隔、省略時は `m` |
-| `cost` | 割当の総費用 |
-| `row_to_col[i]` / `col_to_row[j]` | 行の割当先／列の割当元。未使用の列は -1 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `Hungarian(a,maximize = false)` | 費用行列から最小費用割当を計算。`true` は最大化 | $$O(n^2m)$$ |
+| `Hungarian(n,m,a,stride = -1,maximize = false)` | 平坦な配列から計算。`stride` は行間隔、省略時は `m` | $$O(n^2m)$$ |
+| `cost` | 割当の総費用 | $$O(1)$$ |
+| `row_to_col[i]` / `col_to_row[j]` | 行の割当先／列の割当元。未使用の列は -1 | $$O(1)$$ |
 
 $$n\le m$$ の費用行列について、各行を異なる列へ割り当てます。`cost` は最小費用、`row_to_col[i]` は行 `i` の割当先、`col_to_row[j]` は列 `j` の割当元（未使用は `-1`）です。第 2 引数を `true` にすると最大費用割当を求めます。
 

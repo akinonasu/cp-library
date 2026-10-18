@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/lca"
-#include "../graph/virtual_tree.hpp"
+#include "../graph/auxiliary_tree.hpp"
 #include "../graph/lca.hpp"
 #include "../components/fast_io.hpp"
 #include <array>
@@ -16,7 +16,7 @@ int main() {
 		tree.add_edge(p, v);
 	}
 	tree.build();
-	VirtualTree vt(tree);
+	AuxiliaryTree vt(tree);
 	while (q--) {
 		std::array<int, 2> keys{};
 		in.read(keys[0]), in.read(keys[1]);

@@ -13,20 +13,20 @@ auto flow = graph.flow(0, 2);
 auto cut = graph.min_cut(0);
 ```
 
-| 操作・型 | 内容・返り値 |
-| --- | --- |
-| `MaxFlow<Cap>(n=0)` | `n` 頂点で構築。`Cap` の既定は `std::int64_t` |
-| `size()` / `edge_count()` | 頂点数／追加した辺数 |
-| `reserve(m)` | 元の辺 `m` 本分の領域を確保 |
-| `add_edge(from,to,cap)` | 有向辺を追加し、0 始まりの辺番号を返す |
-| `flow(s,t)` | 最大流まで流し、今回追加した流量を返す。Highest Label Push-Relabel を使う |
-| `flow(s,t,limit)` | 今回の流量を `limit` 以下に制限し、追加した流量を返す。反復版 Dinic を使う |
-| `min_cut(s)` | 残余グラフで `s` から到達できるかを `vector<bool>` で返す |
-| `get_edge(i)` | 追加時の順番で辺の情報を返す |
-| `edges()` | 全ての辺の情報を `vector<Edge>` で返す |
-| `change_edge(i,cap,flow)` | 辺の容量と流量を変更。`0 <= flow <= cap` が必要 |
-| `reset_flow()` | 全ての流量を 0 に戻す。頂点と辺は残す |
-| `Edge` | `from`・`to`・`cap`・`flow` を持つ |
+| 操作・型 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `MaxFlow<Cap>(n=0)` | `n` 頂点で構築。`Cap` の既定は `std::int64_t` | $$O(N)$$ |
+| `size()` / `edge_count()` | 頂点数／追加した辺数 | $$O(1)$$ |
+| `reserve(m)` | 元の辺 `m` 本分の領域を確保 | $$O(M)$$ |
+| `add_edge(from,to,cap)` | 有向辺を追加し、0 始まりの辺番号を返す | 償却 $$O(1)$$ |
+| `flow(s,t)` | 最大流まで流し、今回追加した流量を返す。Highest Label Push-Relabel を使う | $$O(N^2M)$$、初回は別途 $$O(N+M)$$ |
+| `flow(s,t,limit)` | 今回の流量を `limit` 以下に制限し、追加した流量を返す。反復版 Dinic を使う | $$O(N^2M)$$、初回は別途 $$O(N+M)$$ |
+| `min_cut(s)` | 残余グラフで `s` から到達できるかを `vector<bool>` で返す | $$O(N+M)$$ |
+| `get_edge(i)` | 追加時の順番で辺の情報を返す | $$O(1)$$ |
+| `edges()` | 全ての辺の情報を `vector<Edge>` で返す | $$O(M)$$ |
+| `change_edge(i,cap,flow)` | 辺の容量と流量を変更。`0 <= flow <= cap` が必要 | $$O(1)$$ |
+| `reset_flow()` | 全ての流量を 0 に戻す。頂点と辺は残す | $$O(M)$$ |
+| `Edge` | `from`・`to`・`cap`・`flow` を持つ | —（型） |
 
 頂点は 0 始まりです。自己辺・多重辺・容量 0 に対応します。`Cap` は 64 bit 以下の標準整数型で、`bool` を除きます。容量・流量上限は非負、返す流量と各辺の容量は `Cap` に収めます。Push-Relabel の途中の余剰流量は 128 bit で持つため、始点から出る容量の総和が `Cap` を超える場合も扱えます。
 

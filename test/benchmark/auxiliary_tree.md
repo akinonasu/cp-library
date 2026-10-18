@@ -1,6 +1,8 @@
-# Virtual Tree
+# Auxiliary Tree
 
-`graph/virtual_tree.hpp` は、前処理済みの `LCA`・`HLD` を参照して補助木を構築します。頂点の重複・空入力に対応し、元の頂点番号、親の圧縮 ID、親までの辺数、指定頂点かどうかを返します。
+旧名称は Virtual Tree。改名時の変更は識別子とパスのみで、過去の測定結果は `results/virtual_tree*` に保存している。
+
+`graph/auxiliary_tree.hpp` は、前処理済みの `LCA`・`HLD` を参照して補助木を構築します。頂点の重複・空入力に対応し、元の頂点番号、親の圧縮 ID、親までの辺数、指定頂点かどうかを返します。
 
 ## 実装
 
@@ -16,7 +18,7 @@
 
 補助木の構築については [ABC340 G 公式解説](https://atcoder.jp/contests/abc340/editorial/9249)、利用例は [ABC359 G 公式解説](https://atcoder.jp/contests/abc359/editorial/10259?lang=ja) を確認しました。前者の「指定頂点と DFS 順で隣接する頂点の LCA からなる集合」を使います。公式解説の二回ソートする方式と、本実装の一回ソートしてスタックで構築する方式を比較します。
 
-Library Checker では補助木自体を出力する問題を確認できなかったため、関連する LCA の AC 一覧を時間順に取得しました。取得時刻・一覧・ソース SHA-256 は `results/virtual_tree_reference.json`、取得スクリプトは `virtual_tree_reference.py` に残しています。
+Library Checker では補助木自体を出力する問題を確認できなかったため、関連する LCA の AC 一覧を時間順に取得しました。取得時刻・一覧・ソース SHA-256 は `results/virtual_tree_reference.json`、取得スクリプトは `auxiliary_tree_reference.py` に残しています。
 
 | LCA の参考提出 | 取得時の時間 | 手法・比較 |
 | --- | ---: | --- |
@@ -35,7 +37,7 @@ WSL2 / Linux x86_64、Intel Core i7-13700F、GCC 15.2.0。CPU 2 に固定し、1
 
 元の頂点数は 200,000。パス・星・二分木・ランダム木の頂点番号と辺の順序をシャッフルします。指定頂点は一様乱数で選び、重複を含みます。入力列長とクエリ数は `(2,300000)`、`(32,20000)`、`(1024,1000)`、`(100000,10)` です。
 
-`virtual_tree.cpp` の比較元は、指定頂点のソート・重複除去、隣接 LCA の追加、二回目のソート・重複除去、祖先関係によるスタック構築を行います。指定フラグは整列済みの指定頂点列との線形走査で付け、全頂点分の初期化や二分探索は使いません。比較元も配列の容量を再利用し、本実装と同じ情報を返します。
+`auxiliary_tree.cpp` の比較元は、指定頂点のソート・重複除去、隣接 LCA の追加、二回目のソート・重複除去、祖先関係によるスタック構築を行います。指定フラグは整列済みの指定頂点列との線形走査で付け、全頂点分の初期化や二分探索は使いません。比較元も配列の容量を再利用し、本実装と同じ情報を返します。
 
 構築ループと全結果のチェックサムを測り、最初のメモリ確保を含めます。木の前処理、入力生成、ソート済み方式へ渡す前のソート、入出力、最後のオブジェクト破棄は測定外です。HLD についても同じ一回ソートの構築法を測定します。全試行・全方式で、元の頂点、親の元の頂点、辺数、指定フラグから得たチェックサムを照合します。
 
@@ -51,7 +53,7 @@ WSL2 / Linux x86_64、Intel Core i7-13700F、GCC 15.2.0。CPU 2 に固定し、1
 | 星・32・20,000 | 58.556 | 26.423 | 25.794 |
 | ランダム・1,024・1,000 | 115.889 | 79.430 | 78.945 |
 
-上表は native の ms です。直接構築を採用しました。`scalar` の追加の差は小さかったため、スタックの取り出し方は維持しています。各候補の完全なヘッダーと全試行は `results/virtual_tree_tuning.json`、再測定用スクリプトは `virtual_tree_tuning.py`、変更前の全ケースは `results/virtual_tree_initial_generic/results.json`・`results/virtual_tree_initial_native/results.json` にあります。
+上表は native の ms です。直接構築を採用しました。`scalar` の追加の差は小さかったため、スタックの取り出し方は維持しています。各候補の完全なヘッダーと全試行は `results/virtual_tree_tuning.json`、再測定用スクリプトは `auxiliary_tree_tuning.py`、変更前の全ケースは `results/virtual_tree_initial_generic/results.json`・`results/virtual_tree_initial_native/results.json` にあります。
 
 [Apple の対応表](https://developer.apple.com/xcode/cpp/) では集成体の括弧による初期化は Xcode 16 以降なので、旧 Apple Clang 向けの分岐を追加しました。この分岐の追加は測定後ですが、GCC の前処理後のコードが測定版と一致することを確認しています。測定版と最終版のハッシュ・一致の記録は各結果の `compatibility_update` と `results/virtual_tree_compatibility.json` に残しています。旧コンパイラ向けの分岐も強制して ASan/UBSan で確認しています。
 

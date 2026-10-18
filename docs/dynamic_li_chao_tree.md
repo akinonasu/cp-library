@@ -10,21 +10,26 @@ DynamicLiChaoTree<> tree(-1000000000LL, 1000000001LL);
 tree.add_line(2, 1);
 tree.add_segment(-3, 5, -1, 4);
 auto value = tree.query(0);
+if (value) {
+	long long answer = static_cast<long long>(*value); // 1
+}
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `DynamicLiChaoTree(lower,upper)` | 整数座標の範囲 `[lower,upper)` を指定。省略時は `T` の全範囲 |
-| `build(lower,upper)` | 座標範囲を変更し、全ての直線・線分を削除 |
-| `lower()` / `upper()` | 座標範囲の左端／右端を `bound_type` で返す |
-| `add_line(a,b)` | 座標範囲全体に直線 $$ax+b$$ を追加 |
-| `add_segment(l,r,a,b)` | 半開区間 $$[l,r)$$ に直線 $$ax+b$$ を追加。座標範囲外は切り詰め、空区間は無視 |
-| `query(x)` | 座標 `x` での最小値を `optional<value_type>` で返す。対象がなければ `nullopt` |
-| `empty()` | 直線・線分を含まないか |
-| `node_count()` | 使用中のノード数。線分追加用の中間ノードも含む |
-| `reserve(count)` | 指定数のノード領域を事前確保。直線・線分は変更しない |
-| `clear()` | 座標範囲と確保領域を残して全ての直線・線分を削除 |
-| `value_type` / `bound_type` | 評価値の型／区間端点の型 |
+例では直線 $$2x+1$$ と、$$-3\le x<5$$ にだけ有効な直線 $$-x+4$$ を追加しています。`query(0)` の答えは 1 です。返り値は `std::optional` なので、値があることを確認して `*value` で取り出します。対象の直線がない場合は `nullopt` です。例の整数への変換は、答えが `long long` に収まる場合に使います。
+
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `DynamicLiChaoTree(lower,upper)` | 整数座標の範囲 `[lower,upper)` を指定。省略時は `T` の全範囲 | $$O(1)$$ |
+| `build(lower,upper)` | 座標範囲を変更し、全ての直線・線分を削除 | $$O(N)$$ |
+| `lower()` / `upper()` | 座標範囲の左端／右端を `bound_type` で返す | $$O(1)$$ |
+| `add_line(a,b)` | 座標範囲全体に直線 $$ax+b$$ を追加 | 償却 $$O(\log C)$$ |
+| `add_segment(l,r,a,b)` | 半開区間 $$[l,r)$$ に直線 $$ax+b$$ を追加。座標範囲外は切り詰め、空区間は無視 | 償却 $$O(\log^2 C)$$ |
+| `query(x)` | 座標 `x` での最小値を `optional<value_type>` で返す。対象がなければ `nullopt` | $$O(\log C)$$ |
+| `empty()` | 直線・線分を含まないか | $$O(1)$$ |
+| `node_count()` | 使用中のノード数。線分追加用の中間ノードも含む | $$O(1)$$ |
+| `reserve(count)` | 指定数のノード領域を事前確保。直線・線分は変更しない | $$O(N)$$ |
+| `clear()` | 座標範囲と確保領域を残して全ての直線・線分を削除 | $$O(N)$$ |
+| `value_type` / `bound_type` | 評価値の型／区間端点の型 | —（型） |
 
 問い合わせ座標の事前登録は不要で、追加・問い合わせをオンラインで処理します。`query(x)` の `x` は指定した座標範囲内である必要があります。直線の削除は行いません。座標を全て先読みできる場合は [Li Chao Tree](https://qandori.github.io/cp-library/data_structure/li_chao_tree.hpp.html) も使えます。
 

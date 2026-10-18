@@ -13,10 +13,10 @@ auto best = monotone_minima(n, m, [&](int row, int old_col, int new_col) {
 });
 ```
 
-| 関数 | 内容・返り値 |
-| --- | --- |
-| `monotone_minima(rows,columns,better)` | 行数・列数を指定し、各行の最良の列番号を `vector<int>` で返す |
-| `monotone_minima(rows,column_ids,better)` | `vector<int>` に並べた列番号を対象にし、各行の最良の列番号を返す |
+| 関数 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `monotone_minima(rows,columns,better)` | 行数・列数を指定し、各行の最良の列番号を `vector<int>` で返す | $$O(n+m\log n)$$、1 行: $$O(m)$$ |
+| `monotone_minima(rows,column_ids,better)` | `vector<int>` に並べた列番号を対象にし、各行の最良の列番号を返す | $$O(n+m\log n)$$、1 行: $$O(m)$$ |
 
 `better(row,old_col,new_col)` は、その行で新しい列を選ぶときに `true` を返します。最小値なら `<`、最大値なら `>` で比較します。同値で `false` を返すと、同じ値を取る列のうち先の列を選びます。行列を保存せず、比較時に値を計算しても構いません。
 

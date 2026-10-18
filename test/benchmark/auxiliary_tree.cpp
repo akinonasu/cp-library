@@ -1,4 +1,4 @@
-#include "graph/virtual_tree.hpp"
+#include "graph/auxiliary_tree.hpp"
 #include "graph/lca.hpp"
 #include "graph/hld.hpp"
 #include <chrono>
@@ -14,7 +14,7 @@ template<class Tree> class Baseline {
 	std::vector<std::pair<int, int>> keys;
 	std::vector<int> stack;
 	std::vector<int> chosen;
-	using Node = typename VirtualTree<Tree>::Node;
+	using Node = typename AuxiliaryTree<Tree>::Node;
 	std::vector<Node> nodes;
   public:
 	explicit Baseline(const Tree &t) : tree(&t) {}
@@ -101,7 +101,7 @@ void solve(const std::string &shape, const std::string &method, int n, int k, in
 		Baseline builder(tree);
 		run(builder, queries, sorted);
 	} else {
-		VirtualTree builder(tree);
+		AuxiliaryTree builder(tree);
 		run(builder, queries, sorted);
 	}
 }

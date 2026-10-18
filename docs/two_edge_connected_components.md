@@ -17,21 +17,21 @@ auto members = graph.group(graph.component[0]);
 auto forest = graph.forest();
 ```
 
-| 関数・メンバ | 内容・返り値 |
-| --- | --- |
-| `TwoEdgeConnectedComponents(n = 0)` | 頂点数を指定して構築 |
-| `add_edge(u,v)` | 無向辺を追加し、0 始まりの辺 ID を返す |
-| `build()` | 二辺連結成分と橋を計算。辺を追加した後は再実行 |
-| `component_count()` | 成分数。空グラフでは 0 |
-| `component[v]` | 頂点 `v` が属する成分の ID |
-| `same(u,v)` | 2 頂点が同じ成分に属するか |
-| `group(c)` | 成分 `c` の頂点一覧を、コピーせず `span<const int>` で返す |
-| `groups()` | 全成分の頂点一覧を `vector<vector<int>>` にコピーして返す |
-| `bridges` | 橋の辺 ID の一覧 |
-| `is_bridge(id)` | 辺 `id` が橋か |
-| `forest()` | 各成分を縮約した橋の森を `vector<vector<Arc>>` で返す |
-| `Arc::to` / `Arc::id` | 森の隣接成分 ID／元のグラフの辺 ID |
-| `n` / `edges[id]` | 頂点数／辺の両端 |
+| 関数・メンバ | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `TwoEdgeConnectedComponents(n = 0)` | 頂点数を指定して構築 | $$O(1)$$ |
+| `add_edge(u,v)` | 無向辺を追加し、0 始まりの辺 ID を返す | 償却 $$O(1)$$ |
+| `build()` | 二辺連結成分と橋を計算。辺を追加した後は再実行 | $$O(n+m)$$ |
+| `component_count()` | 成分数。空グラフでは 0 | $$O(1)$$ |
+| `component[v]` | 頂点 `v` が属する成分の ID | $$O(1)$$ |
+| `same(u,v)` | 2 頂点が同じ成分に属するか | $$O(1)$$ |
+| `group(c)` | 成分 `c` の頂点一覧を、コピーせず `span<const int>` で返す | $$O(1)$$ |
+| `groups()` | 全成分の頂点一覧を `vector<vector<int>>` にコピーして返す | $$O(n+k)$$ |
+| `bridges` | 橋の辺 ID の一覧 | $$O(1)$$ |
+| `is_bridge(id)` | 辺 `id` が橋か | $$O(1)$$ |
+| `forest()` | 各成分を縮約した橋の森を `vector<vector<Arc>>` で返す | $$O(k+b)$$ |
+| `Arc::to` / `Arc::id` | 森の隣接成分 ID／元のグラフの辺 ID | $$O(1)$$ |
+| `n` / `edges[id]` | 頂点数／辺の両端 | $$O(1)$$ |
 
 無向グラフの橋を全て除いた連結成分を求めます。頂点番号は 0 始まりです。多重辺・自己ループ・非連結グラフ・孤立点・頂点数 0 に対応します。孤立点も 1 個の成分になります。
 

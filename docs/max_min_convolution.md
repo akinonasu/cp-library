@@ -7,14 +7,16 @@ documentation_of: //convolution/max_min_convolution.hpp
 #include "lib/convolution/max_min_convolution.hpp"
 
 std::vector<long long> a{3, 1, 4}, b{2, 5};
-auto c = max_min_convolution(a, b);
-auto d = min_max_convolution(a, b);
+auto c = max_min_convolution(a, b); // {2,3,2,4}
+auto d = min_max_convolution(a, b); // {3,2,4,5}
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `max_min_convolution(a,b)` | $$c_k=\max_{i+j=k}\min(a_i,b_j)$$ |
-| `min_max_convolution(a,b)` | $$c_k=\min_{i+j=k}\max(a_i,b_j)$$ |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `max_min_convolution(a,b)` | $$c_k=\max_{i+j=k}\min(a_i,b_j)$$ | $$O(L\sqrt{L\log L})$$ |
+| `min_max_convolution(a,b)` | $$c_k=\min_{i+j=k}\max(a_i,b_j)$$ | $$O(L\sqrt{L\log L})$$ |
+
+例えば `c[1]` は `max(min(a[0],b[1]),min(a[1],b[0])) = 3` です。返り値は入力と同じ型の配列で、両方が非空なら長さは `a.size()+b.size()-1`、どちらかが空なら空配列です。入力は変更しません。
 
 `max_min_convolution` は $$\max_{i+j=k} \min(a_i,b_j)$$、`min_max_convolution` は $$\min_{i+j=k} \max(a_i,b_j)$$ を計算します。係数には大小比較できる型を使えます。出力長は $$2^{23}$$ 以下です。
 

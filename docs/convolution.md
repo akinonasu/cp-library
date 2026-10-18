@@ -7,14 +7,16 @@ documentation_of: //convolution/convolution.hpp
 #include "lib/convolution/convolution.hpp"
 
 std::vector<mint> a{1, 2, 3}, b{4, 5};
-auto c = convolution(a, b);
+auto c = convolution(a, b); // {4,13,22,15}
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `convolution(a,b)` | 通常の畳み込み $$c_k=\sum_{i+j=k}a_ib_j$$ を返す。係数型から実装を選ぶ |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `convolution(a,b)` | 通常の畳み込み $$c_k=\sum_{i+j=k}a_ib_j$$ を返す。係数型から実装を選ぶ | NTT・CRT・FFT: $$O(L\log L)$$、一般の環: $$O(L^{\log_2 3})$$ |
 
 $$c_k = \sum_{i+j=k} a_i b_j$$ を返します。
+
+配列は定数項から順に多項式の係数を並べます。例は $$(1+2x+3x^2)(4+5x)$$ の係数です。返り値は入力と同じ係数型の `vector` で、両方が非空なら長さは `a.size()+b.size()-1`、どちらかが空なら空配列です。入力は変更しません。`mint` の結果を整数に直すには `c[i].val()` を使います。
 
 | 係数型 | 実装・条件 |
 | --- | --- |

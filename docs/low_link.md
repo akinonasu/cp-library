@@ -10,17 +10,19 @@ LowLink graph(3);
 int id = graph.add_edge(0, 1);
 graph.add_edge(1, 2);
 graph.build();
+bool bridge = graph.is_bridge(id); // true
+auto vertices = graph.articulation; // {1}
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `LowLink(n)` | 頂点数を指定 |
-| `add_edge(u,v)` | 無向辺を追加し、辺 ID を返す |
-| `build()` | 関節点・橋を計算。辺の追加後は再実行 |
-| `is_bridge(id)` | 辺 ID が橋か |
-| `articulation` / `bridges` | 関節点の一覧／橋の辺 ID の一覧 |
-| `ord[v]` / `low[v]` | DFS の訪問順／後退辺を使って到達できる最小の訪問順 |
-| `n` / `edges[id]` | 全頂点数／辺の両端 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `LowLink(n)` | 頂点数を指定 | $$O(1)$$ |
+| `add_edge(u,v)` | 無向辺を追加し、辺 ID を返す | 償却 $$O(1)$$ |
+| `build()` | 関節点・橋を計算。辺の追加後は再実行 | $$O(n+m)$$ |
+| `is_bridge(id)` | 辺 ID が橋か | $$O(1)$$ |
+| `articulation` / `bridges` | 関節点の一覧／橋の辺 ID の一覧 | $$O(1)$$ |
+| `ord[v]` / `low[v]` | DFS の訪問順／後退辺を使って到達できる最小の訪問順 | $$O(1)$$ |
+| `n` / `edges[id]` | 全頂点数／辺の両端 | $$O(1)$$ |
 
 無向グラフを扱います。頂点番号は 0 始まり、`add_edge(u, v)` は辺 ID を返します。
 

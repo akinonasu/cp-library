@@ -1,5 +1,5 @@
-#ifndef VIRTUAL_TREE_HPP
-#define VIRTUAL_TREE_HPP
+#ifndef AUXILIARY_TREE_HPP
+#define AUXILIARY_TREE_HPP
 
 #include <algorithm>
 #include <cassert>
@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-template <class Tree> class VirtualTree {
+template <class Tree> class AuxiliaryTree {
   public:
 	struct Node {
 		int vertex, parent, length;
@@ -84,8 +84,8 @@ template <class Tree> class VirtualTree {
 	}
 
   public:
-	explicit VirtualTree(const Tree &tree) : tree_(&tree) {}
-	VirtualTree(const Tree &&) = delete;
+	explicit AuxiliaryTree(const Tree &tree) : tree_(&tree) {}
+	AuxiliaryTree(const Tree &&) = delete;
 	int size() const { return static_cast<int>(nodes_.size()); }
 	bool empty() const { return nodes_.empty(); }
 	int root() const { return size() - 1; }

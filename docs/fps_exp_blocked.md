@@ -7,14 +7,14 @@ documentation_of: //components/fps_exp_blocked.hpp
 
 `fps_detail::blocked_poly` に次の関数を定義します。
 
-| 関数 | 内容 |
-| --- | --- |
-| `exp_log(n)` / `exp_scratch(n)` | 指数が必要とする変換プランの最大 log 長／作業領域の word 数 |
-| `exp(t,f,g,scratch)` | `g.size()` 項の $\exp(f)$。`f` の定数項は 0 |
-| `power_log(n)` / `power_scratch(n)` | 冪が必要とする最大 log 長／作業領域の word 数 |
-| `power(t,f,e,c,g,scratch)` | `g.size()` 項の $c\exp(e\log(f/f_0))$。$f_0\ne0$、`e,c` は $[0,p)$ |
-| `native_exp(in,input,out,n,differentiated=false)` | `input` 個の `Mint` 係数から指数を計算し、空の `vector<Mint>` である `out` へ $n$ 項を追加 |
-| `native_power(in,input,out,n,e,c)` | `Mint` 入力から $c\exp(e\log(f/f_0))$ の $n$ 項を `out` へ追加。`c` は `Mint` |
+| 関数 | 内容 | 計算量 |
+| --- | --- | --- |
+| `exp_log(n)` / `exp_scratch(n)` | 指数が必要とする変換プランの最大 log 長／作業領域の word 数 | $$O(1)$$ |
+| `exp(t,f,g,scratch)` | `g.size()` 項の $\exp(f)$。`f` の定数項は 0 | $$O(n\log n)$$ |
+| `power_log(n)` / `power_scratch(n)` | 冪が必要とする最大 log 長／作業領域の word 数 | $$O(1)$$ |
+| `power(t,f,e,c,g,scratch)` | `g.size()` 項の $c\exp(e\log(f/f_0))$。$f_0\ne0$、`e,c` は $[0,p)$ | $$O(n\log n)$$ |
+| `native_exp(in,input,out,n,differentiated=false)` | `input` 個の `Mint` 係数から指数を計算し、空の `vector<Mint>` である `out` へ $n$ 項を追加 | $$O(n\log n)$$ |
+| `native_power(in,input,out,n,e,c)` | `Mint` 入力から $c\exp(e\log(f/f_0))$ の $n$ 項を `out` へ追加。`c` は `Mint` | $$O(n\log n)$$ |
 
 raw の `f,g` はそれぞれ `span<const uint32_t>`・`span<uint32_t>` です。係数は $[0,p)$ の通常の剰余値です。`f` の範囲外は 0 として扱います。`f` と `g` は同じ先頭を持つインプレース処理が可能で、それ以外では重ねません。`g`・`scratch` は `Arena` から確保して 32 byte に整列し、作業領域を入力・出力と重ねません。`scratch` の長さは対応する `*_scratch(n)` 以上、`t.lg_max()` は `*_log(n)` 以上とします。`Arena::take()` の呼び出しごとに必要な `Arena::footprint()` の余白も、Arena 全体の確保に含めます。
 

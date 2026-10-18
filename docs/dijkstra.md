@@ -8,12 +8,12 @@ documentation_of: //graph/dijkstra.hpp
 
 std::vector<std::vector<std::pair<int, std::int64_t>>> g(3);
 g[0].emplace_back(1, 5);
-auto dist = dijkstra(g, 0);
+auto dist = dijkstra(g, 0); // {0,5,-1}
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `dijkstra(g,start)` / `dijkstra(g,start,inf)` | 非負重みの隣接リストから始点の最短距離列を返す。到達不能は -1 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `dijkstra(g,start)` / `dijkstra(g,start,inf)` | 非負重みの隣接リストから始点の最短距離列を返す。到達不能は -1 | 整数重み: $$O(n+mw)$$、その他: $$O(n+m\log m)$$ |
 
 辺は `{行き先, 重み}`、頂点番号は 0 始まりです。重みは非負とします。
 

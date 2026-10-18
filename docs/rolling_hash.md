@@ -13,21 +13,21 @@ int length = a.lcp(0, b, 0);
 auto joined = RollingHash::concat(a.get(0, 4), b.get(), b.size());
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `RollingHash()` / `RollingHash(s)` / `RollingHash(a)` | 空／文字列／整数配列から構築 |
-| `build(s)` / `build(a)` | 文字列／整数配列で再構築 |
-| `size()` / `empty()` | 要素数／空判定 |
-| `get()` / `get(l,r)` | 全体／$$[l,r)$$ のハッシュ |
-| `value()` / `value(l,r)` | 全体／$$[l,r)$$ を長さ付きの `Value` で取得 |
-| `lcp(l,other,j)` | 接尾辞同士の最長共通接頭辞長 |
-| `lcp(l,r,other,j,k)` | $$[l,r)$$ と相手の $$[j,k)$$ の最長共通接頭辞長 |
-| `RollingHash::concat(left,right,right_length)` | 生のハッシュ同士を連結 |
-| `RollingHash::reserve(n)` | 基数の累乗を長さ `n` まで準備 |
-| `RollingHash::single(x)` / `RollingHash::e()` | 1 要素／空列の `Value` |
-| `RollingHash::op(a,b)` | `Value` をこの順で連結 |
-| `RollingHash::base()` / `RollingHash::mod` | 共通の基数／法 |
-| `a == b` / `a != b` | `Value` のハッシュと長さを比較 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `RollingHash()` / `RollingHash(s)` / `RollingHash(a)` | 空／文字列／整数配列から構築 | 空: $$O(1)$$、配列: $$O(n)$$ |
+| `build(s)` / `build(a)` | 文字列／整数配列で再構築 | $$O(n)$$ |
+| `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
+| `get()` / `get(l,r)` | 全体／$$[l,r)$$ のハッシュ | $$O(1)$$ |
+| `value()` / `value(l,r)` | 全体／$$[l,r)$$ を長さ付きの `Value` で取得 | $$O(1)$$ |
+| `lcp(l,other,j)` | 接尾辞同士の最長共通接頭辞長 | $$O(\log k)$$ |
+| `lcp(l,r,other,j,k)` | $$[l,r)$$ と相手の $$[j,k)$$ の最長共通接頭辞長 | $$O(\log k)$$ |
+| `RollingHash::concat(left,right,right_length)` | 生のハッシュ同士を連結 | 準備済み: $$O(1)$$、累乗の拡張: 合計 $$O(N)$$ |
+| `RollingHash::reserve(n)` | 基数の累乗を長さ `n` まで準備 | 拡張分に比例 |
+| `RollingHash::single(x)` / `RollingHash::e()` | 1 要素／空列の `Value` | $$O(1)$$ |
+| `RollingHash::op(a,b)` | `Value` をこの順で連結 | 準備済み: $$O(1)$$、累乗の拡張: 合計 $$O(N)$$ |
+| `RollingHash::base()` / `RollingHash::mod` | 共通の基数／法 | $$O(1)$$ |
+| `a == b` / `a != b` | `Value` のハッシュと長さを比較 | $$O(1)$$ |
 
 `get(l,r)` は $$[l,r)$$、`get()` は全体のハッシュです。`lcp(l,b,j)` は両接尾辞の LCP、`lcp(l,r,b,j,k)` は区間 $$[l,r)$$ と $$[j,k)$$ の LCP を返します。`concat(x,y,len)` は `x` の後ろに長さ `len` の `y` を連結します。
 

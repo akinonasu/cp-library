@@ -7,24 +7,30 @@ documentation_of: //math/partition_mod_of_linear.hpp
 #include "lib/math/partition_mod_of_linear.hpp"
 
 auto parts = partition_mod_of_linear(4, 5, 2, 1);
-for (auto [x, y, dx, dy, count] : parts) {
-	// 添字 x+dx*j の値は y+dy*j
+std::vector<std::uint64_t> values(4);
+for (const auto &part : parts) {
+	for (std::uint64_t j = 0; j < part.count; ++j) {
+		values[part.x + part.dx * j] = std::uint64_t(
+			__int128_t(part.y) + __int128_t(part.dy) * j);
+	}
 }
+// values = {1,3,0,2}
 
-partition_mod_of_linear(n, m, a, b, [&](ModLinearSegment part) {
-	// 各区間を処理
+std::vector<ModLinearSegment> buffer;
+partition_mod_of_linear(4, 5, 2, 1, [&](ModLinearSegment part) {
+	buffer.push_back(part);
 });
 ```
 
-| 関数・型・メンバ | 内容・返り値 |
-| --- | --- |
-| `partition_mod_of_linear(n,m,a,b)` | $$(ai+b)\bmod m$$ の列を等差数列に分割し、`vector<ModLinearSegment>` を返す |
-| `partition_mod_of_linear(n,m,a,b,emit)` | 分割ごとに `emit(segment)` を呼ぶ。返り値は `void`、出力用の動的確保は不要 |
-| `ModLinearSegment` | 一つの等差数列。構造化束縛の順序は `x,y,dx,dy,count` |
-| `x` / `y` | 最初の添字／その値 |
-| `dx` / `dy` | 添字の刻み／値の公差。`dx > 0`、`dy` は負の場合もある |
-| `count` | 含まれる項数。常に正 |
-| `operator==` | 区間の全メンバを比較 |
+| 関数・型・メンバ | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `partition_mod_of_linear(n,m,a,b)` | $$(ai+b)\bmod m$$ の列を等差数列に分割し、`vector<ModLinearSegment>` を返す | $$O(\log m+k)$$ |
+| `partition_mod_of_linear(n,m,a,b,emit)` | 分割ごとに `emit(segment)` を呼ぶ。返り値は `void`、出力用の動的確保は不要 | $$O(\log m+k)$$ |
+| `ModLinearSegment` | 一つの等差数列。構造化束縛の順序は `x,y,dx,dy,count` | —（型） |
+| `x` / `y` | 最初の添字／その値 | $$O(1)$$ |
+| `dx` / `dy` | 添字の刻み／値の公差。`dx > 0`、`dy` は負の場合もある | $$O(1)$$ |
+| `count` | 含まれる項数。常に正 | $$O(1)$$ |
+| `operator==` | 区間の全メンバを比較 | $$O(1)$$ |
 
 $$0\le i<n$$ の添字と値を分割します。`n,m,a,b` と `x,y,dx,count` は `uint64_t`、`dy` は `int64_t` です。`m > 0` とし、それぞれの整数型の全域を扱えます。`a,b` は内部で `m` を法として正規化します。`n == 0` では空配列を返し、コールバックも呼びません。
 

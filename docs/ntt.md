@@ -12,9 +12,9 @@ ntt(a);
 ntt(a, true);
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `ntt(a,inverse = false)` | `vector<fps_mint>` をその場で NTT。`true` は正規化済みの逆変換 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `ntt(a,inverse = false)` | `vector<fps_mint>` をその場で NTT。`true` は正規化済みの逆変換 | $$O(n\log n)$$ |
 
 法 998244353・原始根 3 の NTT です。長さは $$2^{23}$$ 以下の 2 の冪とします。逆変換には長さの逆数の乗算を含みます。
 

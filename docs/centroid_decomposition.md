@@ -17,25 +17,25 @@ tree.for_each_ancestor(0, [&](int c, int d, int branch) {
 });
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `CentroidDecomposition<T = int>(n = 0)` | 頂点数と距離の型を指定 |
-| `add_edge(u,v,weight = 1)` | 重み付き無向辺を追加し、辺 ID を返す |
-| `build(distances = true)` | 重心分解を構築。`false` なら距離キャッシュを省く |
-| `has_distances()` | 構築済みの距離キャッシュを持つか |
-| `ancestors(v)` | 重心分解木の根から `v` までの `span<const Ancestor>` |
-| `for_each_ancestor(v,f)` | `v` から根の順に `f(c,d,branch)` を呼ぶ |
-| `is_ancestor(c,v)` | 重心分解木で `c` が `v` の祖先か。自身も含む |
-| `subtree(c)` | 重心分解木の部分木に対応する `order` の区間 `[in[c],out[c])` |
-| `centroid_lca(u,v)` | 重心分解木の最小共通祖先 |
-| `distance_to_ancestor(v,c)` | 元の木での `v` と重心祖先 `c` の距離 |
-| `dist(u,v)` | 元の木の経路上の辺重みの和 |
-| `Ancestor{centroid,branch,distance}` | 重心祖先／その祖先から `v` に向かう重心分解木の子／元の木での距離 |
-| `Edge{u,v,weight}` | 辺の両端と重み |
-| `root` | 重心分解木の根。空の木では `-1` |
-| `parent[v]` / `depth[v]` / `size[v]` | 重心分解木の親（根は `-1`）／深さ／部分木の頂点数 |
-| `in[v]` / `out[v]` / `order[i]` | 重心分解木の部分木の左端／右端／DFS 順の頂点 |
-| `n` / `edges[id]` | 全頂点数／入力した辺 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `CentroidDecomposition<T = int>(n = 0)` | 頂点数と距離の型を指定 | $$O(n)$$ |
+| `add_edge(u,v,weight = 1)` | 重み付き無向辺を追加し、辺 ID を返す | 償却 $$O(1)$$ |
+| `build(distances = true)` | 重心分解を構築。`false` なら距離キャッシュを省く | $$O(n\log n)$$ |
+| `has_distances()` | 構築済みの距離キャッシュを持つか | $$O(1)$$ |
+| `ancestors(v)` | 重心分解木の根から `v` までの `span<const Ancestor>` | $$O(1)$$ |
+| `for_each_ancestor(v,f)` | `v` から根の順に `f(c,d,branch)` を呼ぶ | $$O(\log n)$$ |
+| `is_ancestor(c,v)` | 重心分解木で `c` が `v` の祖先か。自身も含む | $$O(1)$$ |
+| `subtree(c)` | 重心分解木の部分木に対応する `order` の区間 `[in[c],out[c])` | $$O(1)$$ |
+| `centroid_lca(u,v)` | 重心分解木の最小共通祖先 | $$O(\log n)$$ |
+| `distance_to_ancestor(v,c)` | 元の木での `v` と重心祖先 `c` の距離 | $$O(1)$$ |
+| `dist(u,v)` | 元の木の経路上の辺重みの和 | $$O(\log n)$$ |
+| `Ancestor{centroid,branch,distance}` | 重心祖先／その祖先から `v` に向かう重心分解木の子／元の木での距離 | $$O(1)$$ |
+| `Edge{u,v,weight}` | 辺の両端と重み | $$O(1)$$ |
+| `root` | 重心分解木の根。空の木では `-1` | $$O(1)$$ |
+| `parent[v]` / `depth[v]` / `size[v]` | 重心分解木の親（根は `-1`）／深さ／部分木の頂点数 | $$O(1)$$ |
+| `in[v]` / `out[v]` / `order[i]` | 重心分解木の部分木の左端／右端／DFS 順の頂点 | $$O(1)$$ |
+| `n` / `edges[id]` | 全頂点数／入力した辺 | $$O(1)$$ |
 
 入力は頂点番号が 0 始まりの無向木です。空の木も扱えます。根は自動で決まり、辺重みには依存しません。`size[c]` は `c` を重心として選んだ時点の成分の頂点数でもあります。各走査は再帰を使いません。
 

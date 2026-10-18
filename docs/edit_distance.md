@@ -6,12 +6,12 @@ documentation_of: //string/edit_distance.hpp
 ```cpp
 #include "lib/string/edit_distance.hpp"
 
-int distance = edit_distance(s, t);
+int distance = edit_distance("kitten", "sitting"); // 3
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `edit_distance(s,t)` | 挿入・削除・置換のコストを各 1 とする編集距離 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `edit_distance(s,t)` | 挿入・削除・置換のコストを各 1 とする編集距離 | $$O(n\lceil m/64\rceil)$$ |
 
 `std::string_view` で 2 つの文字列を受け取り、挿入・削除・置換をそれぞれコスト 1 とする編集距離を返します。文字はバイト単位で扱います。
 

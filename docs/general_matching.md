@@ -6,22 +6,22 @@ documentation_of: //graph/general_matching.hpp
 ```cpp
 #include "lib/graph/general_matching.hpp"
 
-GeneralMatching g(n);
-g.reserve(m);
-g.add_edge(u, v);
-int size = g.build();
+GeneralMatching g(3);
+g.add_edge(0, 1);
+g.add_edge(1, 2);
+int size = g.build(); // 1
 auto pairs = g.edges();
-auto partner = g.mate[v];
+auto partner = g.mate[0];
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `GeneralMatching(n)` | `n` 頂点の空グラフを構築 |
-| `reserve(m)` | 入力辺の領域を予約 |
-| `add_edge(u,v)` | 無向辺を追加 |
-| `build()` | 最大マッチングを計算し、組数を返す |
-| `edges()` | マッチングの頂点対を返す |
-| `mate[v]` | `build` 後の相手の頂点。なければ -1 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `GeneralMatching(n)` | `n` 頂点の空グラフを構築 | $$O(n)$$ |
+| `reserve(m)` | 入力辺の領域を予約 | $$O(m)$$ |
+| `add_edge(u,v)` | 無向辺を追加 | 償却 $$O(1)$$ |
+| `build()` | 最大マッチングを計算し、組数を返す | $$O(n^3+nm)$$ |
+| `edges()` | マッチングの頂点対を返す | $$O(n)$$ |
+| `mate[v]` | `build` 後の相手の頂点。なければ -1 | $$O(1)$$ |
 
 Blossom 法で無向・重みなしグラフの最大マッチングを求めます。頂点は 0 始まりです。`build()` は組数、`edges()` は組の一覧を返し、`mate[v]` は相手の頂点（なければ `-1`）です。`reserve(m)` は辺の事前確保で、省略できます。
 

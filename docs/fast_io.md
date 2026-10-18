@@ -12,15 +12,15 @@ in.read(n);
 out.println(n);
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `FastInput(file = stdin)` / `FastInput(s)` | `FILE*`／`string_view` から入力を準備 |
-| `in.read(x)` | 整数・文字列・対応型を読み、成功時に true |
-| `in.token()` | 次の空白区切りトークンの `string_view`。EOF なら空 |
-| `FastOutput(file = stdout)` | 出力先を指定 |
-| `out.write(x)` | 文字・文字列・整数・対応型を区切りなしで出力 |
-| `out.println(x)` | 値に続けて改行を出力 |
-| `out.flush()` | バッファを書き出し、成功時に true。破棄時にも呼ばれる |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `FastInput(file = stdin)` / `FastInput(s)` | `FILE*`／`string_view` から入力を準備 | $$O(1)$$ |
+| `in.read(x)` | 整数・文字列・対応型を読み、成功時に true | 読み進めた文字数に比例 |
+| `in.token()` | 次の空白区切りトークンの `string_view`。EOF なら空 | 読み進めた文字数に比例 |
+| `FastOutput(file = stdout)` | 出力先を指定 | $$O(1)$$ |
+| `out.write(x)` | 文字・文字列・整数・対応型を区切りなしで出力 | 出力文字数に比例 |
+| `out.println(x)` | 値に続けて改行を出力 | 出力文字数に比例 |
+| `out.flush()` | バッファを書き出し、成功時に true。破棄時にも呼ばれる | バッファ内の文字数に比例 |
 
 `FastInput(FILE* = stdin)`・`FastOutput(FILE* = stdout)` は標準の整数型・文字列に対応します。`read(x)` は EOF で `false` を返します。`write(x)` は値だけ、`println(x)` は末尾に改行も出力します。`write(' ')` などで区切りを入れてください。出力は破棄時または `flush()` で書き出します。
 

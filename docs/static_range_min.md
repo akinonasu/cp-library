@@ -13,16 +13,16 @@ auto y = range.all_prod(); // 1
 
 更新のない列の区間最小値を求めます。32 要素ごとの単調スタックをビットマスクで持ち、ブロック間には Sparse Table を使います。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `StaticRangeMin<T>()` | 空の構造を作る。`T` の既定値は `int` |
-| `StaticRangeMin(values)` | `vector<T>` から構築。型は推論可能 |
-| `build(values)` | `vector<T>` から再構築 |
-| `size()` | 要素数 |
-| `empty()` | 空か |
-| `operator[](i)` | 元の要素への const 参照。`T=bool` は値で返す |
-| `prod(l,r)` | 非空の半開区間 `[l,r)` の最小値を返す |
-| `all_prod()` | 列全体の最小値。空列には呼べない |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `StaticRangeMin<T>()` | 空の構造を作る。`T` の既定値は `int` | $$O(1)$$ |
+| `StaticRangeMin(values)` | `vector<T>` から構築。型は推論可能 | $$O(n+b\log b)$$ |
+| `build(values)` | `vector<T>` から再構築 | $$O(n+b\log b)$$ |
+| `size()` | 要素数 | $$O(1)$$ |
+| `empty()` | 空か | $$O(1)$$ |
+| `operator[](i)` | 元の要素への const 参照。`T=bool` は値で返す | $$O(1)$$ |
+| `prod(l,r)` | 非空の半開区間 `[l,r)` の最小値を返す | $$O(1)$$ |
+| `all_prod()` | 列全体の最小値。空列には呼べない | $$O(1)$$ |
 
 `T` には `<` による順序比較とコピーが必要です。デフォルト構築できない型にも対応します。`values` は値渡しで受け取り、左辺値ならコピー、`std::move(values)` ならムーブして保持します。長さは `INT_MAX` 以下としてください。コピー・ムーブに対応します。
 

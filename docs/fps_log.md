@@ -6,13 +6,27 @@ documentation_of: //components/fps_log.hpp
 `fps_detail::LogTransform` は `fps/fps.hpp` の対数と冪が使う x86 / AVX2 用の内部部品です。通常は `fps::log()` から利用します。AVX2 が使えない環境では FPS 側が汎用の級数除算へ戻ります。
 
 ```cpp
+#include "lib/components/fps_log.hpp"
+
+#if defined(__x86_64__) || defined(__i386__)
 if (fps_detail::NTT::vectorized()) {
-    auto &plan = fps_detail::ntt_plan(64 / 16);
-    fps_detail::LogTransform transform{plan};
-    // 64 要素の内部 Montgomery ワードを部分変換する。
-    transform.forward(data, 64);
+	std::vector<fps_detail::NTT::U> data(64, 0);
+	auto &plan = fps_detail::ntt_plan(64 / 16);
+	fps_detail::LogTransform transform{plan};
+	transform.forward(data.data(), 64);
 }
+#endif
 ```
+
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `LogTransform{plan}` | 前処理済みの NTT プランを参照して作成 | $$O(1)$$ |
+| `forward(a,n,norm = 1,half = false)` | `a` を部分 NTT し、`norm` 倍を組み込む | $$O(n\log n)$$ |
+| `inverse(a,n)` | `a` を未正規化で逆変換 | $$O(n\log n)$$ |
+| `inverse_half<upper>(a,n)` | 指定した半分だけを逆変換 | $$O(n\log n)$$ |
+| `products(dst,a,b,terms,n,side = nullptr)` | `terms` 組の変換済み配列の環積の和を `dst` に格納 | $$O(n)$$ |
+| `toeplitz(dst,side,w1,w2,q0,q1,n)` | 二つの環積の和を `dst`・`side` に格納 | $$O(n)$$ |
+| `integrate(dst,src,prefix,first,n)` | `src[i] / (first+i)` を `dst[i]` に格納 | $$O(n)$$ |
 
 この型は x86 でのみ定義されます。各関数を呼ぶ前に AVX2 対応を確認します。保持する NTT プランの寿命は、この型より長くします。
 

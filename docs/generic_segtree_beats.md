@@ -50,22 +50,22 @@ long long sum = seg.prod(0, 3).sum;
 | `composition(f,g)` | `g` の後に `f` を適用する更新を返す |
 | `id()` | 何もしない更新 |
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `GenericSegtreeBeats()` | 空で作成 |
-| `GenericSegtreeBeats(n,value = e())` | 長さ `n`、各葉の値を `value` にして構築 |
-| `GenericSegtreeBeats(a)` | `vector<S>` から構築 |
-| `build(a)` | `vector<S>` で構築し直す |
-| `apply(l,r,f)` | 半開区間 `[l,r)` に更新 `f` を適用 |
-| `apply(p,f)` | 1 点に更新 `f` を適用 |
-| `set(p,value)` | 1 点の集約値を `value` に置き換える |
-| `get(p)` | 1 点の値を `S` で返す |
-| `prod(l,r)` | `[l,r)` の集約値。空なら `e()` |
-| `all_prod()` | 全体の集約値。空なら `e()` |
-| `max_right(l,predicate)` | `predicate(prod(l,r))` が true である最大の `r` |
-| `min_left(r,predicate)` | `predicate(prod(l,r))` が true である最小の `l` |
-| `values()` | 遅延を伝播し、全葉の値を `vector<S>` で返す |
-| `size()` / `empty()` | 要素数／空か |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `GenericSegtreeBeats()` | 空で作成 | $$O(1)$$ |
+| `GenericSegtreeBeats(n,value = e())` | 長さ `n`、各葉の値を `value` にして構築 | $$O(n)$$ |
+| `GenericSegtreeBeats(a)` | `vector<S>` から構築 | $$O(n)$$ |
+| `build(a)` | `vector<S>` で構築し直す | $$O(n)$$ |
+| `apply(l,r,f)` | 半開区間 `[l,r)` に更新 `f` を適用 | $$O(\log n+E_i)$$ |
+| `apply(p,f)` | 1 点に更新 `f` を適用 | $$O(\log n+E_i)$$ |
+| `set(p,value)` | 1 点の集約値を `value` に置き換える | $$O(\log n+E_i)$$ |
+| `get(p)` | 1 点の値を `S` で返す | $$O(\log n+E_i)$$ |
+| `prod(l,r)` | `[l,r)` の集約値。空なら `e()` | $$O(\log n+E_i)$$ |
+| `all_prod()` | 全体の集約値。空なら `e()` | $$O(1)$$ |
+| `max_right(l,predicate)` | `predicate(prod(l,r))` が true である最大の `r` | $$O(\log n+E_i)$$ |
+| `min_left(r,predicate)` | `predicate(prod(l,r))` が true である最小の `l` | $$O(\log n+E_i)$$ |
+| `values()` | 遅延を伝播し、全葉の値を `vector<S>` で返す | $$O(n+E_i)$$ |
+| `size()` / `empty()` | 要素数／空か | $$O(1)$$ |
 
 `S`・`F` はコピーと代入ができる型にします。デフォルト構築や `F` 同士の等値比較は不要です。`n` での構築は各葉に `e()` を置くので、例のように区間長を持つ場合は長さ 1 の初期値を明示してください。
 
@@ -75,4 +75,4 @@ long long sum = seg.prod(0, 3).sum;
 
 境界探索の述語は `e()` に対して true とし、区間を延ばしたとき true から false へ単調に変わるものを使います。副作用を持たせないでください。`all_prod`・`size`・`empty` 以外は、取得でも内部の遅延状態を変更します。
 
-関数・型のコピーが定数時間であるとします。構築・空間は $$O(n)$$、`all_prod`・`size`・`empty` は $$O(1)$$ です。区間操作・1 点操作・境界探索は、通常の $$O(\log n)$$ に、作用の失敗によって追加で訪問するノード数が加わります。全 $$q$$ 操作での追加訪問数を $$E$$ とすると合計 $$O(n+q\log n+E)$$ です。`values()` は $$O(n)$$ に追加訪問数を加えた時間です。$$E$$ の償却評価は、利用する更新に応じて必要です。
+関数・型のコピーが定数時間であるとします。構築・空間は $$O(n)$$、`all_prod`・`size`・`empty` は $$O(1)$$ です。区間操作・1 点操作・境界探索は、通常の $$O(\log n)$$ に、作用の失敗によって追加で訪問するノード数が加わります。表の $$E_i$$ はその操作での追加訪問数です。全 $$q$$ 操作での追加訪問数を $$E$$ とすると合計 $$O(n+q\log n+E)$$ です。`values()` は $$O(n)$$ に追加訪問数を加えた時間です。$$E$$ の償却評価は、利用する更新に応じて必要です。

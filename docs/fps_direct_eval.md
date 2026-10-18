@@ -5,9 +5,9 @@ documentation_of: //components/fps_direct_eval.hpp
 
 `fps_detail::evaluate_direct(dst,f,n,points,m)` は [多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html) が使う内部処理です。通常は `fps/multipoint_eval.hpp` を include して `multipoint_eval` を利用してください。
 
-| 関数 | 内容・返り値 |
-| --- | --- |
-| `fps_detail::evaluate_direct(dst,f,n,points,m)` | `f` の先頭 `n` 個を係数とする多項式を `points` の先頭 `m` 個で評価し、`dst` に書き込む |
+| 関数 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `fps_detail::evaluate_direct(dst,f,n,points,m)` | `f` の先頭 `n` 個を係数とする多項式を `points` の先頭 `m` 個で評価し、`dst` に書き込む | $$O(nm)$$ |
 
 `f` の先頭 `n` 個を係数として、`points` の先頭 `m` 個での評価値を `dst` に書き込みます。各配列は法 998244353 の内部 `Mint` ワード表現を使い、出力領域は入力領域と重ならないものとします。
 

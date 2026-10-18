@@ -31,17 +31,17 @@ auto from_zero = tree.edge_dp(0); // {2, 1}
 
 `T` は頂点の DP 値、`E` は辺を通した寄与の型です。`E` を省略すると `T` と同じ型になります。`Data::first` が距離和、`second` が頂点数です。辺重みや頂点の値は、コールバックから参照します。
 
-| 関数・型 | 内容・返り値 |
-| --- | --- |
-| `Rerooting<T,E = T>(n = 0)` | `n` 頂点の空の森を作る |
-| `add_edge(u,v)` | 無向辺を追加し、0 始まりの辺 ID を返す |
-| `build(unit,merge,add_vertex,lift,root = 0)` | 全方位木 DP を計算し、全頂点の答えを `const vector<T>&` で返す |
-| `tree[v]` | 頂点 `v` を根とした答えを `const T&` で返す |
-| `values()` | 全頂点の答えを `const vector<T>&` で返す |
-| `edge_dp(id,reverse = false)` | 辺を通した寄与を `const E&` で返す。`add_edge(u,v)` に対して `false` は `u → v`、`true` は `v → u` |
-| `edge(id)` | 入力した辺の両端 `(u,v)` を `const pair<int,int>&` で返す |
-| `size()` / `empty()` / `edge_count()` | 頂点数／頂点数が 0 か／辺数 |
-| `Vertex` / `Edge` | それぞれ `T` / `E` の型別名 |
+| 関数・型 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `Rerooting<T,E = T>(n = 0)` | `n` 頂点の空の森を作る | $$O(n)$$ |
+| `add_edge(u,v)` | 無向辺を追加し、0 始まりの辺 ID を返す | 償却 $$O(1)$$ |
+| `build(unit,merge,add_vertex,lift,root = 0)` | 全方位木 DP を計算し、全頂点の答えを `const vector<T>&` で返す | $$O(n)$$ |
+| `tree[v]` | 頂点 `v` を根とした答えを `const T&` で返す | $$O(1)$$ |
+| `values()` | 全頂点の答えを `const vector<T>&` で返す | $$O(1)$$ |
+| `edge_dp(id,reverse = false)` | 辺を通した寄与を `const E&` で返す。`add_edge(u,v)` に対して `false` は `u → v`、`true` は `v → u` | $$O(1)$$ |
+| `edge(id)` | 入力した辺の両端 `(u,v)` を `const pair<int,int>&` で返す | $$O(1)$$ |
+| `size()` / `empty()` / `edge_count()` | 頂点数／頂点数が 0 か／辺数 | $$O(1)$$ |
+| `Vertex` / `Edge` | それぞれ `T` / `E` の型別名 | $$O(1)$$ |
 
 | コールバック | 内容・返り値 |
 | --- | --- |

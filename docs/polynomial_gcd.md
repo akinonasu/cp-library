@@ -12,16 +12,17 @@ auto g = polynomial_gcd(a, b);              // x-1
 auto [d, u, v] = polynomial_extended_gcd(a, b);
 auto inverse = polynomial_inv_mod(fps{1, 1}, fps{1, 0, 1});
 if (inverse) {
-	// (1+x) * *inverse ≡ 1 mod (1+x^2)
+	fps h = *inverse;
+	auto remainder = (fps{1, 1} * h) % fps{1, 0, 1}; // {1}
 }
 ```
 
-| 関数・型 | 内容・返り値 |
-| --- | --- |
-| `polynomial_gcd(a,b)` | 最高次係数を 1 にした最大公約多項式 |
-| `polynomial_extended_gcd(a,b)` | `PolynomialExtendedGCD<T>{gcd,x,y}`。`a*x+b*y=gcd` を満たす |
-| `PolynomialExtendedGCD<T>` | `gcd`・`x`・`y` はいずれも `FormalPowerSeries<T>`。構造化束縛が可能 |
-| `polynomial_inv_mod(a,modulus)` | `a*h ≡ 1 mod modulus` を満たす次数最小の代表元 `h` を `optional<FormalPowerSeries<T>>` で返す。存在しなければ `nullopt` |
+| 関数・型 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `polynomial_gcd(a,b)` | 最高次係数を 1 にした最大公約多項式 | $$O(n\log^2 n)$$ |
+| `polynomial_extended_gcd(a,b)` | `PolynomialExtendedGCD<T>{gcd,x,y}`。`a*x+b*y=gcd` を満たす | $$O(n\log^2 n)$$ |
+| `PolynomialExtendedGCD<T>` | `gcd`・`x`・`y` はいずれも `FormalPowerSeries<T>`。構造化束縛が可能 | —（型） |
+| `polynomial_inv_mod(a,modulus)` | `a*h ≡ 1 mod modulus` を満たす次数最小の代表元 `h` を `optional<FormalPowerSeries<T>>` で返す。存在しなければ `nullopt` | $$O(n\log^2 n)$$ |
 
 引数は [FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) の `FormalPowerSeries<T>` で、係数は定数項から並べます。法は 998244353 です。既定の `fps`・`mint` に加え、同じ法で `val()`・`raw()` など FPS の要件を満たす別の modint 型も使えます。整数係数・浮動小数点係数の GCD には対応しません。
 

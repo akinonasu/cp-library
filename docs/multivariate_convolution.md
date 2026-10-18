@@ -7,12 +7,14 @@ documentation_of: //convolution/multivariate_convolution.hpp
 #include "lib/convolution/multivariate_convolution.hpp"
 
 std::vector<mint> a{1, 2, 3, 4, 5, 6}, b{7, 8, 9, 10, 11, 12};
-auto c = multivariate_convolution(a, b, {2, 3});
+auto c = multivariate_convolution(a, b, {2, 3}); // {7,22,30,80,73,182}
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `multivariate_convolution(a,b,dimensions)` | 各変数の次数上限を `dimensions` で指定して、切り捨てた積を返す |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `multivariate_convolution(a,b,dimensions)` | 各変数の次数上限を `dimensions` で指定して、切り捨てた積を返す | 998244353: $$O(K+DN\log N+D^2N)$$、その他: $$O(K+M(ND))$$ |
+
+例の `{2,3}` は、$$x$$ の指数を 0〜1、$$y$$ の指数を 0〜2 に制限する指定です。係数を $$1,x,y,xy,y^2,xy^2$$ の順に並べた長さ 6 の配列を渡し、同じ順序・長さで返します。積の $$x^2$$ 以上や $$y^3$$ 以上の項は捨てます。
 
 多項式の積を $$(x_0^{d_0},\ldots,x_s^{d_s})$$ で切り捨てます。各 $$d > 0$$、入力長は $$N = \prod_{j=0}^{s} d_j$$ とし、添字は $$i_0 + d_0 i_1 + d_0 d_1 i_2 + \cdots$$ の順です。
 

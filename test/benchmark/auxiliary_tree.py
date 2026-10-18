@@ -32,15 +32,15 @@ def main():
               'cpu': next(line for line in Path('/proc/cpuinfo').read_text().splitlines() if line.startswith('model name')),
               'flags': flags, 'affinity': [args.cpu], 'trials': args.trials, 'warmup': 1,
               'binary_filesystem': 'Linux /tmp (WSL ext4)', 'schedule_seed': 513709, 'input_seed': 612409,
-              'source_sha256': {p: digest(ROOT / p) for p in ('graph/virtual_tree.hpp', 'graph/lca.hpp',
-                  'graph/hld.hpp', 'data_structure/sparse_table.hpp', 'test/benchmark/virtual_tree.cpp',
-                  'test/benchmark/virtual_tree.py')},
+              'source_sha256': {p: digest(ROOT / p) for p in ('graph/auxiliary_tree.hpp', 'graph/lca.hpp',
+                  'graph/hld.hpp', 'data_structure/sparse_table.hpp', 'test/benchmark/auxiliary_tree.cpp',
+                  'test/benchmark/auxiliary_tree.py')},
               'metric': 'in-process construction and checksum of every result, including first allocations; excludes preprocessing, generation, presorting for sorted methods, I/O and final object destruction',
               'cases': []}
     rng = random.Random(513709)
     with tempfile.TemporaryDirectory(prefix='cp-virtual-tree-') as directory:
         binary = Path(directory) / 'kernel'
-        subprocess.run(['g++', *flags, '-I', str(ROOT), str(ROOT / 'test/benchmark/virtual_tree.cpp'), '-o', str(binary)], check=True)
+        subprocess.run(['g++', *flags, '-I', str(ROOT), str(ROOT / 'test/benchmark/auxiliary_tree.cpp'), '-o', str(binary)], check=True)
         for shape in ('path', 'star', 'balanced', 'random'):
             for k, q in ((2, 300000), (32, 20000), (1024, 1000), (100000, 10)):
                 samples = {name: [] for name in ('library', 'baseline', 'library_sorted', 'baseline_sorted', 'hld')}

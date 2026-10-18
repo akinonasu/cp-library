@@ -13,18 +13,18 @@ heap.push(1);
 auto x = heap.pop_value();
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `DaryHeap()` / `DaryHeap(compare)` / `DaryHeap(a,compare = {})` | 空／比較関数指定／配列から構築 |
-| `push(x)` | 要素を追加 |
-| `top()` | 先頭要素の const 参照。非空であること |
-| `pop()` / `pop_value()` | 先頭を削除／取得して削除。非空であること |
-| `replace_top(x)` | 先頭を置換し、元の値を返す。非空であること |
-| `push_pop(x)` | `x` を追加した場合の先頭を返し、残りを保持 |
-| `size()` / `empty()` | 要素数／空判定 |
-| `values()` | 内部配列の const 参照 |
-| `reserve(n)` / `clear()` | 領域予約／容量を残して空にする |
-| `swap(other)` | 内容と比較関数を交換 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `DaryHeap()` / `DaryHeap(compare)` / `DaryHeap(a,compare = {})` | 空／比較関数指定／配列から構築 | 空: $$O(1)$$、配列: $$O(n)$$ |
+| `push(x)` | 要素を追加 | 償却 $$O(\log n)$$ |
+| `top()` | 先頭要素の const 参照。非空であること | $$O(1)$$ |
+| `pop()` / `pop_value()` | 先頭を削除／取得して削除。非空であること | $$O(\log n)$$ |
+| `replace_top(x)` | 先頭を置換し、元の値を返す。非空であること | $$O(\log n)$$ |
+| `push_pop(x)` | `x` を追加した場合の先頭を返し、残りを保持 | $$O(\log n)$$ |
+| `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
+| `values()` | 内部配列の const 参照 | $$O(1)$$ |
+| `reserve(n)` / `clear()` | 領域予約／容量を残して空にする | reserve: $$O(n)$$、clear: 自明な型 $$O(1)$$、その他 $$O(n)$$ |
+| `swap(other)` | 内容と比較関数を交換 | $$O(1)$$ |
 
 `DaryHeap<T, Compare = std::less<T>, D = 2>` は最大ヒープです。最小ヒープは `Compare` に `std::greater<T>` を指定します。`D` は 2 以上です。`std::vector<T>` からも構築できます。
 

@@ -32,27 +32,27 @@ queue.erase(30, changed);        // sum = 3
 
 `PartiallyRetroactivePriorityQueue<T, Compare = std::less<T>, Time = std::int64_t>` は、過去の操作を変更し、現在の状態を問い合わせる優先度付きキューです。`std::less<T>` では最小値、`std::greater<T>` では最大値を先頭にします。同順位の要素は挿入時刻順です。時刻は64 bit以下の整数で、各時刻に置ける操作は1つです。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `PartiallyRetroactivePriorityQueue(compare = {},seed = 0)` | 空の履歴を構築 |
-| `PartiallyRetroactivePriorityQueue(updates,compare = {},seed = 0)` | 有効な操作履歴から構築 |
-| `insert(t,x)` | 時刻 `t` に `push(x)` を追加 |
-| `insert_pop(t)` | 時刻 `t` に先頭要素の削除を追加 |
-| `set(t,x)` | 既存の `push` の値を変更 |
-| `erase(t)` | 時刻 `t` の操作を取り消す |
-| `insert(t,x,f)` / `insert_pop(t,f)` | 操作を追加し、現在の集合の変化を `f` に通知 |
-| `set(t,x,f)` / `erase(t,f)` | 操作を変更・取消し、現在の集合の変化を `f` に通知 |
-| `top()` | 現在の先頭を `optional<T>` で取得。空なら `nullopt` |
-| `size()` / `empty()` | 現在の要素数／空判定 |
-| `contains_time(t)` / `operation_count()` | 時刻 `t` の操作の有無／操作数 |
-| `assign(updates)` | 操作履歴をまとめて設定。無効なら false を返して元の履歴を保つ |
-| `assign(updates,f)` | 履歴を設定し、旧集合の削除・新集合の追加を通知。無効なら通知しない |
-| `reserve(m)` / `clear()` | 領域予約／容量を残して履歴を初期化 |
-| `clear(f)` | 現在の全要素の削除を通知して初期化 |
-| `for_each(f)` | 現在の全要素について `f(挿入時刻,const T&)` を挿入時刻順に呼ぶ |
-| `memory_usage()` | 確保済み領域のバイト数 |
-| `swap(other)` | 内容・比較関数・乱数生成器の状態を交換 |
-| `top_ptr()` | 現在の先頭の `const T*`。空なら `nullptr`。次の変更操作まで有効 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `PartiallyRetroactivePriorityQueue(compare = {},seed = 0)` | 空の履歴を構築 | $$O(1)$$ |
+| `PartiallyRetroactivePriorityQueue(updates,compare = {},seed = 0)` | 有効な操作履歴から構築 | $$O(m\log m)$$ |
+| `insert(t,x)` | 時刻 `t` に `push(x)` を追加 | 償却期待 $$O(\log m)$$ |
+| `insert_pop(t)` | 時刻 `t` に先頭要素の削除を追加 | 償却期待 $$O(\log m)$$ |
+| `set(t,x)` | 既存の `push` の値を変更 | 償却期待 $$O(\log m)$$ |
+| `erase(t)` | 時刻 `t` の操作を取り消す | 償却期待 $$O(\log m)$$ |
+| `insert(t,x,f)` / `insert_pop(t,f)` | 操作を追加し、現在の集合の変化を `f` に通知 | 償却期待 $$O(\log m)$$ |
+| `set(t,x,f)` / `erase(t,f)` | 操作を変更・取消し、現在の集合の変化を `f` に通知 | 償却期待 $$O(\log m)$$ |
+| `top()` | 現在の先頭を `optional<T>` で取得。空なら `nullopt` | $$O(1)$$ |
+| `size()` / `empty()` | 現在の要素数／空判定 | $$O(1)$$ |
+| `contains_time(t)` / `operation_count()` | 時刻 `t` の操作の有無／操作数 | contains_time: 期待 $$O(\log m)$$、operation_count: $$O(1)$$ |
+| `assign(updates)` | 操作履歴をまとめて設定。無効なら false を返して元の履歴を保つ | $$O(M+m\log m)$$ |
+| `assign(updates,f)` | 履歴を設定し、旧集合の削除・新集合の追加を通知。無効なら通知しない | $$O(M+m\log m)$$ |
+| `reserve(m)` / `clear()` | 領域予約／容量を残して履歴を初期化 | $$O(M)$$ |
+| `clear(f)` | 現在の全要素の削除を通知して初期化 | $$O(M)$$ |
+| `for_each(f)` | 現在の全要素について `f(挿入時刻,const T&)` を挿入時刻順に呼ぶ | $$O(m)$$ |
+| `memory_usage()` | 確保済み領域のバイト数 | $$O(1)$$ |
+| `swap(other)` | 内容・比較関数・乱数生成器の状態を交換 | $$O(1)$$ |
+| `top_ptr()` | 現在の先頭の `const T*`。空なら `nullptr`。次の変更操作まで有効 | $$O(1)$$ |
 
 履歴変更は成功時に `true` を返します。時刻の衝突、対象操作の不在、`set` の対象が `pop` の場合や、空キューへの削除が発生する変更は `false` を返し、履歴を保ちます。
 

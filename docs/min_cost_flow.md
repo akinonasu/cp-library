@@ -12,20 +12,20 @@ graph.add_edge(1, 2, 3, 7);
 auto [flow, cost] = graph.flow(0, 2, 3);
 ```
 
-| 操作・型 | 内容・返り値 |
-| --- | --- |
-| `MinCostFlow<Cap,Cost,Total>(n=0)` | `n` 頂点で構築。既定は `Cap = std::int64_t`、`Cost = std::int64_t`、`Total = __int128_t` |
-| `size()` / `edge_count()` | 頂点数／追加した辺数 |
-| `reserve(m)` | 元の辺 `m` 本分の領域を確保 |
-| `add_edge(from,to,cap,cost)` | 容量と単位費用を指定して有向辺を追加し、0 始まりの辺番号を返す |
-| `flow(s,t,limit)` / `flow(s,t)` | `limit` 以下で可能な最大の流量と、その最小費用を `pair<Cap,Total>` で返す。省略時の上限は `Cap` の最大値 |
-| `slope(s,t,limit)` / `slope(s,t)` | 流量と最小費用の折れ線の頂点を `vector<pair<Cap,Total>>` で返す。最初は `(0,0)`、傾きが同じ区間は統合する |
-| `get_edge(i)` | 追加時の順番で辺の情報を返す |
-| `edges()` | 全ての辺の情報を `vector<Edge>` で返す |
-| `reset_flow()` | 全ての流量を 0 に戻す。頂点と辺は残す |
-| `potentials()` | 残余辺の reduced cost が非負となるポテンシャルを `const vector<Cost>&` で返す |
-| `Edge` | `from`・`to`・`cap`・`flow`・`cost` を持つ |
-| `total_type` | 費用合計の型 `Total` |
+| 操作・型 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `MinCostFlow<Cap,Cost,Total>(n=0)` | `n` 頂点で構築。既定は `Cap = std::int64_t`、`Cost = std::int64_t`、`Total = __int128_t` | $$O(N)$$ |
+| `size()` / `edge_count()` | 頂点数／追加した辺数 | $$O(1)$$ |
+| `reserve(m)` | 元の辺 `m` 本分の領域を確保 | $$O(M)$$ |
+| `add_edge(from,to,cap,cost)` | 容量と単位費用を指定して有向辺を追加し、0 始まりの辺番号を返す | 償却 $$O(1)$$ |
+| `flow(s,t,limit)` / `flow(s,t)` | `limit` 以下で可能な最大の流量と、その最小費用を `pair<Cap,Total>` で返す。省略時の上限は `Cap` の最大値 | 初期化＋ $$O(512(N+Mw)+M(N+M\log N)\log U)$$ |
+| `slope(s,t,limit)` / `slope(s,t)` | 流量と最小費用の折れ線の頂点を `vector<pair<Cap,Total>>` で返す。最初は `(0,0)`、傾きが同じ区間は統合する | 初期化＋ $$O(A(N+Mw))$$ |
+| `get_edge(i)` | 追加時の順番で辺の情報を返す | $$O(1)$$ |
+| `edges()` | 全ての辺の情報を `vector<Edge>` で返す | $$O(M)$$ |
+| `reset_flow()` | 全ての流量を 0 に戻す。頂点と辺は残す | $$O(M)$$ |
+| `potentials()` | 残余辺の reduced cost が非負となるポテンシャルを `const vector<Cost>&` で返す | 初期化が必要ならその時間、準備済み: $$O(1)$$ |
+| `Edge` | `from`・`to`・`cap`・`flow`・`cost` を持つ | —（型） |
+| `total_type` | 費用合計の型 `Total` | —（型） |
 
 頂点は 0 始まりです。自己辺・多重辺・負の費用に対応します。**各呼び出し前の残余グラフ全体に負閉路がないこと**が必要です。負の辺がある場合も、初期ポテンシャルを求めてから処理します。負閉路を含む一般の循環流は、検証用の最小費用 b-flow のように、負費用辺を上限まで流した状態から逆向きの非負費用辺へ変換して扱えます。
 

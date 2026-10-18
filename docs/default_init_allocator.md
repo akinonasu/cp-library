@@ -11,11 +11,11 @@ redirect_from: /data_structure/default_init_allocator.hpp.html
 std::vector<int, DefaultInitAllocator<int>> a(n);
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `DefaultInitAllocator<T>()` | `std::vector` などに渡すアロケータを構築 |
-| `construct(p)` | `p` の位置に要素をデフォルト初期化。通常はコンテナから呼ばれる |
-| `allocate(n)` / `deallocate(p,n)` | `std::allocator<T>` と同じ領域確保／解放 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `DefaultInitAllocator<T>()` | `std::vector` などに渡すアロケータを構築 | $$O(1)$$ |
+| `construct(p)` | `p` の位置に要素をデフォルト初期化。通常はコンテナから呼ばれる | T のデフォルト構築 1 回 |
+| `allocate(n)` / `deallocate(p,n)` | `std::allocator<T>` と同じ領域確保／解放 | メモリ確保・解放処理に依存 |
 
 要素を値初期化せずデフォルト初期化します。整数などの要素は読み出す前に代入してください。
 

@@ -30,7 +30,7 @@ def main():
                            'url': f'https://judge.yosupo.jp/submission/{identity}'})
     result = {'retrieved_at': datetime.now(timezone.utc).isoformat(), 'problem': 'lca',
               'listing': listing, 'references': references,
-              'virtual_tree_references': ['https://atcoder.jp/contests/abc340/editorial/9249',
+              'auxiliary_tree_references': ['https://atcoder.jp/contests/abc340/editorial/9249',
                                            'https://atcoder.jp/contests/abc359/editorial/10259?lang=ja']}
     args.output.write_text(json.dumps(result, indent=2) + '\n')
     print([(r['id'], r['time'], r['lang']) for r in references], flush=True)

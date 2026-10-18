@@ -5,7 +5,15 @@ documentation_of: //components/fps_workspace.hpp
 
 FPS 内部で使う、64 byte 以上に整列した `unsigned int` の作業領域です。
 
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `fps_detail::allocate_fps_words(n)` | n ワードの作業領域の所有権を返す | OS・アロケータに依存 |
+| `storage[i]` | i 番目のワードへの参照 | $$O(1)$$ |
+| `storage.get()` | 先頭ワードへのポインタ | $$O(1)$$ |
+
 ```cpp
+#include "lib/components/fps_workspace.hpp"
+
 auto storage = fps_detail::allocate_fps_words(1024);
 storage[0] = 1;
 ```

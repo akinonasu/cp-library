@@ -20,16 +20,16 @@ queries.emplace_back(4, 1);
 auto answers = binomial_prefix_sum(queries);
 ```
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `BinomialPrefixSum<Mint>(max_n,block_size=0)` | $$0\leq n\leq\text{max_n}$$ の問い合わせを前計算。`Mint` の既定は `mint`、`max_n` の既定は 0 |
-| `build(max_n,block_size=0)` | 範囲とブロック幅を変更して前計算を作り直す |
-| `query(n,k)` | $$S(n,k)$$ を `Mint` で返す。`k` は `std::int64_t` |
-| `prod(n,l,r)` | $$\sum_{i=l}^{r-1}\binom ni$$ を返す。`l <= r` が必要。範囲外の添字の項は 0 |
-| `max_n()` | 前計算した $$n$$ の上限 |
-| `block_size()` | 使用中のブロック幅 |
-| `table_size()` | ブロック境界の前計算に保存した `Mint` の個数。階乗などの配列は含まない |
-| `binomial_prefix_sum<Mint>(queries)` | `(n,k)` の列を一括処理し、入力順に $$S(n,k)$$ の `vector<Mint>` を返す。`Mint` は省略可能 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `BinomialPrefixSum<Mint>(max_n,block_size=0)` | $$0\leq n\leq\text{max_n}$$ の問い合わせを前計算。`Mint` の既定は `mint`、`max_n` の既定は 0 | $$O(N+N^2/B)$$ |
+| `build(max_n,block_size=0)` | 範囲とブロック幅を変更して前計算を作り直す | $$O(N+N^2/B)$$ |
+| `query(n,k)` | $$S(n,k)$$ を `Mint` で返す。`k` は `std::int64_t` | $$O(B)$$ |
+| `prod(n,l,r)` | $$\sum_{i=l}^{r-1}\binom ni$$ を返す。`l <= r` が必要。範囲外の添字の項は 0 | $$O(B)$$ |
+| `max_n()` | 前計算した $$n$$ の上限 | $$O(1)$$ |
+| `block_size()` | 使用中のブロック幅 | $$O(1)$$ |
+| `table_size()` | ブロック境界の前計算に保存した `Mint` の個数。階乗などの配列は含まない | $$O(1)$$ |
+| `binomial_prefix_sum<Mint>(queries)` | `(n,k)` の列を一括処理し、入力順に $$S(n,k)$$ の `vector<Mint>` を返す。`Mint` は省略可能 | $$O(N+Q\log Q+N\sqrt Q)$$ |
 
 オンライン版は平方分割、一括版は Mo 法です。問い合わせを全て先読みできる場合は、一括版を使うと前計算のメモリを抑えられます。どちらも対称性と中央の prefix を使います。
 

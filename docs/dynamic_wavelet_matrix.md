@@ -16,23 +16,23 @@ auto frequency = wm.count(0, wm.size(), 1);
 
 区間は $$[l,r)$$、添字と `kth_*`・`select` の順位は 0 始まりです。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `DynamicWaveletMatrix()` / `DynamicWaveletMatrix(a)` | 空／配列から構築 |
-| `build(a)` | 配列で再構築 |
-| `insert(i,x)` / `erase(i)` / `set(i,x)` | 挿入／削除／代入。`erase` は削除した値を返す |
-| `push_back(x)` / `pop_back()` | 末尾への挿入／削除。`pop_back` は削除した値を返す |
-| `access(i)` / `operator[](i)` | 要素の取得 |
-| `count(l,r,x)` / `rank(x,r)` | 区間／$$[0,r)$$ にある `x` の個数。値域外なら 0 |
-| `select(x,k)` | 0 始まり `k` 番目の `x` の位置。なければ -1 |
-| `kth_smallest(l,r,k)` / `kth_largest(l,r,k)` | 小さい順／大きい順の 0 始まり `k` 番目 |
-| `range_freq(l,r,upper)` | `upper` 未満の個数 |
-| `range_freq(l,r,lower,upper)` | `lower` 以上 `upper` 未満の個数 |
-| `prev_value(l,r,upper)` / `next_value(l,r,lower)` | `upper` 未満の最大値／`lower` 以上の最小値。なければ `nullopt` |
-| `size()` / `empty()` | 要素数／空判定 |
-| `reserve(n)` / `clear()` | 領域予約／容量を残して空にする |
-| `memory_usage()` | 確保済みノード領域のバイト数 |
-| `swap(other)` | 内容を交換 |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `DynamicWaveletMatrix()` / `DynamicWaveletMatrix(a)` | 空／配列から構築 | 空: $$O(1)$$、配列: $$O(Bn)$$ |
+| `build(a)` | 配列で再構築 | $$O(Bn)$$ |
+| `insert(i,x)` / `erase(i)` / `set(i,x)` | 挿入／削除／代入。`erase` は削除した値を返す | 挿入・代入: 償却 $$O(B\log n)$$、削除: $$O(B\log n)$$ |
+| `push_back(x)` / `pop_back()` | 末尾への挿入／削除。`pop_back` は削除した値を返す | 追加: 償却 $$O(B\log n)$$、削除: $$O(B\log n)$$ |
+| `access(i)` / `operator[](i)` | 要素の取得 | $$O(B\log n)$$ |
+| `count(l,r,x)` / `rank(x,r)` | 区間／$$[0,r)$$ にある `x` の個数。値域外なら 0 | $$O(B\log n)$$ |
+| `select(x,k)` | 0 始まり `k` 番目の `x` の位置。なければ -1 | $$O(B\log n)$$ |
+| `kth_smallest(l,r,k)` / `kth_largest(l,r,k)` | 小さい順／大きい順の 0 始まり `k` 番目 | $$O(B\log n)$$ |
+| `range_freq(l,r,upper)` | `upper` 未満の個数 | $$O(B\log n)$$ |
+| `range_freq(l,r,lower,upper)` | `lower` 以上 `upper` 未満の個数 | $$O(B\log n)$$ |
+| `prev_value(l,r,upper)` / `next_value(l,r,lower)` | `upper` 未満の最大値／`lower` 以上の最小値。なければ `nullopt` | $$O(B\log n)$$ |
+| `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
+| `reserve(n)` / `clear()` | 領域予約／容量を残して空にする | reserve: $$O(BN)$$、clear: $$O(B)$$ |
+| `memory_usage()` | 確保済みノード領域のバイト数 | $$O(1)$$ |
+| `swap(other)` | 内容を交換 | $$O(1)$$ |
 
 型 `T` は 64 bit 以下の整数型です。`DynamicWaveletMatrix<T,B>` で値の bit 数を指定でき、既定は `T` の bit 数です。符号付き型の値域は $$[-2^{B-1},2^{B-1})$$、符号なし型は $$[0,2^B)$$ です。
 
