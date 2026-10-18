@@ -459,6 +459,10 @@ class NoCacheWorkflowTests(unittest.TestCase):
         self.assertEqual(set(driver["MODES"]), {"generic", "native"})
         self.assertIn("-fno-lto", driver["COMMON"])
         self.assertNotIn("-DNDEBUG", driver["COMMON"])
+        import intrinsic_gate
+        self.assertEqual(driver["COMMON"], intrinsic_gate.COMMON + [
+            "-Wall", "-Wextra", "-Werror", "-Wno-error=free-nonheap-object"])
+        self.assertFalse(any(flag.startswith("-Wno-") for flag in intrinsic_gate.COMMON))
         for name, value in driver["FROZEN"].items():
             self.assertEqual(hashlib.sha256((root / driver["SOURCE"] / name).read_bytes()).hexdigest(), value)
             self.assertEqual(route.CONTROL_PATHS.count(driver["SOURCE"] + name), 1)

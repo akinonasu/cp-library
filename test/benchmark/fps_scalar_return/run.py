@@ -37,7 +37,8 @@ CHECKSUMS = {
 }
 PAIRS = ("AB", "BA", "AB", "BA")
 COMMON = ["-O2", "-std=gnu++23", "-ftrivial-auto-var-init=zero", "-fmodules",
-          "-DONLINE_JUDGE", "-DATCODER", "-fno-lto", "-Wall", "-Wextra", "-Werror"]
+          "-DONLINE_JUDGE", "-DATCODER", "-fno-lto", "-Wall", "-Wextra", "-Werror",
+          "-Wno-error=free-nonheap-object"]
 MODES = {
     "generic": ["-march=x86-64", "-mtune=generic", "-mno-avx", "-mno-avx2",
                 "-mno-avx512f", "-mno-bmi", "-mno-bmi2"],
