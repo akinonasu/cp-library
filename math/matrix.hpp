@@ -28,7 +28,7 @@ class Matrix {
 	std::pair<T, std::vector<int>> reduce(int columns, bool reduced, long double eps) {
 		assert(eps >= 0);
 		return matrix_detail::field(a, [&]<class Ops>(auto &work) {
-			auto result = matrix_detail::eliminate<Ops>(work, h, w, columns, reduced, eps);
+			auto result = matrix_detail::eliminate<Ops, matrix_detail::small_modint<T>>(work, h, w, columns, reduced, eps);
 			return std::pair{T(result.determinant), std::move(result.pivots)};
 		});
 	}

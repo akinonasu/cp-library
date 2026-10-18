@@ -276,7 +276,103 @@ void centered_multiplication_edges() {
 	}
 }
 
+template <class T>
+std::pair<Matrix<T>, std::vector<int>> elementary_rref(Matrix<T> a, int columns) {
+	std::vector<int> pivots;
+	for (int col = 0, rank = 0; col < columns && rank < a.rows(); ++col) {
+		int p = rank;
+		while (p < a.rows() && a(p, col) == T(0)) ++p;
+		if (p == a.rows()) continue;
+		for (int j = 0; j < a.cols(); ++j) std::swap(a(rank, j), a(p, j));
+		T inverse = T(1) / a(rank, col);
+		for (int j = 0; j < a.cols(); ++j) a(rank, j) *= inverse;
+		for (int i = 0; i < a.rows(); ++i) if (i != rank) {
+			T factor = a(i, col);
+			for (int j = 0; j < a.cols(); ++j) a(i, j) -= factor * a(rank, j);
+		}
+		pivots.push_back(col);
+		++rank;
+	}
+	return {std::move(a), std::move(pivots)};
+}
+
+template <class T>
+void backward_elimination_edges() {
+	std::mt19937_64 random(15427);
+	for (const auto &[n, m] : {std::array{0, 0}, std::array{0, 4}, std::array{4, 0},
+		std::array{1, 1}, std::array{2, 3}, std::array{3, 2}, std::array{4, 4},
+		std::array{17, 9}, std::array{9, 17}, std::array{17, 17}, std::array{33, 33}})
+		for (int kind = 0; kind < 4; ++kind) {
+			Matrix<T> a(n, m);
+			for (int i = 0; i < n; ++i) for (int j = 0; j < m; ++j) a(i, j) = T(random() % 7);
+			if (kind == 1) {
+				for (int i = 0; i < n; ++i) for (int j = 0; j < std::min(n, m); ++j)
+					if (i >= j) a(i, j) = T(i == j);
+				if (n > 1) for (int j = 0; j < m; ++j) std::swap(a(0, j), a(n - 1, j));
+			}
+			if (kind == 2 && m) for (int i = 0; i < n; ++i) a(i, 0) = T(0);
+			if (kind == 3 && n) for (int j = 0; j < m; ++j) a(n - 1, j) = n > 1 ? a(0, j) : T(0);
+			auto original = a;
+			auto expected = elementary_rref(a, m);
+			assert(a.rref() == expected);
+			assert(a.rank() == int(expected.second.size()));
+			auto alias = a;
+			alias = alias.rref().first;
+			assert(alias == expected.first);
+			for (int consistent = 0; consistent < 2; ++consistent) {
+				std::vector<T> rhs(n), solution(m);
+				for (auto &x : solution) x = T(random() % 7);
+				for (int i = 0; i < n; ++i) {
+					if (!consistent) rhs[i] = T(random() % 7);
+					else for (int j = 0; j < m; ++j) rhs[i] += a(i, j) * solution[j];
+				}
+				Matrix<T> aug(n, m + 1);
+				for (int i = 0; i < n; ++i) {
+					for (int j = 0; j < m; ++j) aug(i, j) = a(i, j);
+					aug(i, m) = rhs[i];
+				}
+				auto [r, pivots] = elementary_rref(aug, m);
+				bool possible = true;
+				for (int i = int(pivots.size()); i < n; ++i) possible &= r(i, m) == T(0);
+				auto actual = a.solve(rhs);
+				assert(bool(actual) == possible);
+				if (!possible) continue;
+				std::vector<T> particular(m);
+				for (int i = 0; i < int(pivots.size()); ++i) particular[pivots[i]] = r(i, m);
+				assert(actual->particular == particular);
+				std::vector<std::vector<T>> basis;
+				for (int col = 0; col < m; ++col) if (std::find(pivots.begin(), pivots.end(), col) == pivots.end()) {
+					std::vector<T> v(m);
+					v[col] = T(1);
+					for (int i = 0; i < int(pivots.size()); ++i) v[pivots[i]] = -r(i, col);
+					basis.push_back(std::move(v));
+				}
+				assert(actual->basis == basis);
+			}
+			if (n == m) {
+				Matrix<T> aug(n, 2 * n);
+				for (int i = 0; i < n; ++i) {
+					for (int j = 0; j < n; ++j) aug(i, j) = a(i, j);
+					aug(i, n + i) = T(1);
+				}
+				auto [r, pivots] = elementary_rref(aug, n);
+				auto inverse = a.inverse();
+				assert(bool(inverse) == (int(pivots.size()) == n));
+				if (inverse) {
+					assert(*inverse == r.submatrix(0, n, n, 2 * n));
+					alias = a;
+					alias = *alias.inverse();
+					assert(alias == *inverse);
+				}
+			}
+			assert(a == original);
+		}
+}
+
 int main() {
+	backward_elimination_edges<mint>();
+	backward_elimination_edges<Mod<2>>();
+	backward_elimination_edges<Mod<2147483647>>();
 	centered_multiplication_edges<2, 32>();
 	centered_multiplication_edges<6, 32>();
 	centered_multiplication_edges<998244353, 32>();

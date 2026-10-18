@@ -340,6 +340,45 @@ class NoCacheWorkflowTests(unittest.TestCase):
         self.assertNotIn("continue-on-error", compare)
         self.assertIn(".github/workflows/matrix-centered-final.yml", route.CONTROL_PATHS)
 
+    def test_backward_comparison_uses_existing_fixed_driver(self):
+        workflow = self.workflow("matrix-backward-final.yml")
+        self.assertEqual(workflow["permissions"], {"contents": "read"})
+        self.assertEqual(set(workflow["on"]), {"push"})
+        self.assertEqual(workflow["on"]["push"]["branches"], ["codex/matrix-backward-20261018"])
+        self.assertEqual(set(workflow["on"]["push"]["paths"]), {
+            "components/matrix_arithmetic.hpp", "math/matrix.hpp", "math/mint.hpp",
+            "test/benchmark/matrix.cpp", "test/benchmark/matrix.py",
+            ".github/workflows/matrix-backward-final.yml",
+        })
+        self.assertEqual(set(workflow["jobs"]), {"compare"})
+        job = workflow["jobs"]["compare"]
+        self.assertEqual(job["runs-on"], "ubuntu-26.04")
+        self.assertEqual(job["timeout-minutes"], "10")
+        self.assertEqual(len(job["steps"]), 2)
+        checkout, compare = job["steps"]
+        self.assertEqual(checkout, {"uses": "actions/checkout@v4", "with": {
+            "fetch-depth": "0", "persist-credentials": "false"}})
+        self.assertEqual(compare["timeout-minutes"], "8")
+        self.assertEqual(compare["run"].split(), [
+            "python3", "-B", "test/benchmark/matrix.py", "--base-ref",
+            "8d0babd9e56d88ea1ff332ded0c6b60f76680444", "--candidate-ref", '"$GITHUB_SHA"', "--comparison-scope", "backward",
+        ])
+        self.assertNotIn("continue-on-error", compare)
+        self.assertIn(".github/workflows/matrix-backward-final.yml", route.CONTROL_PATHS)
+        import runpy
+        from pathlib import Path
+        driver = runpy.run_path(str(Path(__file__).resolve().parents[1] / "test/benchmark/matrix.py"))
+        cases, pairs, _ = driver["COMPARISON_SCOPES"]["backward"]
+        self.assertEqual(cases, [
+            ('inverse', 'dense', 64, 0, 64), ('inverse', 'dense', 384, 0, 384),
+            ('inverse', 'dense', 512, 0, 512), ('inverse', 'singular', 384, 0, 384),
+            ('solve', 'dense', 384, 0, 384), ('det', 'dense', 512, 0, 512),
+        ])
+        self.assertEqual(pairs, 4)
+        self.assertEqual(len(driver["COMPARISON_SCOPES"]["product"][0]), 12)
+        self.assertEqual(driver["COMPARISON_SCOPES"]["product"][1], 6)
+
+
 
 if __name__ == "__main__":
     unittest.main()

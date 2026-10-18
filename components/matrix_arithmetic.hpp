@@ -144,7 +144,7 @@ struct Elimination {
 	typename Ops::V determinant = 1;
 };
 
-template <class Ops>
+template <class Ops, bool exact = false>
 Elimination<Ops> eliminate(std::vector<typename Ops::V> &a, int h, int stride, int columns, bool reduced, long double eps) {
 	using V = typename Ops::V;
 	Elimination<Ops> result;
@@ -174,13 +174,14 @@ Elimination<Ops> eliminate(std::vector<typename Ops::V> &a, int h, int stride, i
 		result.pivots.push_back(col);
 		++rank;
 	}
+	bool full = exact && rank == columns;
 	if (reduced) for (int k = rank - 1; k >= 0; --k) {
-		int col = result.pivots[k];
+		int col = result.pivots[k], start = full ? columns : col + 1;
 		const V *row = a.data() + std::size_t(k) * stride;
 		for (int i = 0; i < k; ++i) {
 			V *dst = a.data() + std::size_t(i) * stride;
 			V x = dst[col];
-			if (!Ops::zero(x, eps)) Ops::axpy(dst + col + 1, row + col + 1, stride - col - 1, Ops::neg(x));
+			if (!Ops::zero(x, eps) && (!full || start < stride)) Ops::axpy(dst + start, row + start, stride - start, Ops::neg(x));
 			dst[col] = V(0);
 		}
 	}
