@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ci import GROUPS, ROOT, VERSION, build_plan, invalidate_selected, read_json, record_success, verify_selected, write_json
+from ci import GROUPS, ROOT, VERSION, build_plan, checkpoint_success, invalidate_selected, read_json, record_success, verify_selected, write_json
 from documentation import source_paths
 
 
@@ -303,6 +303,44 @@ class IncrementalVerification(unittest.TestCase):
         completed = record_success(completed, plan, ["sanitize", "verification", "bundles"])
         for group in GROUPS:
             self.assertEqual(self.plan(completed)[group], [])
+
+    def test_individual_judge_progress_survives_failure(self):
+        plan = self.plan(force=True)
+        state = invalidate_selected(self.previous, plan)
+        marker = Marker()
+        def run(paths):
+            if paths[0] == Path("test/comb.test.cpp"):
+                marker.mark_verified(paths[0])
+                return Summary()
+            return Summary(False)
+        def completed(name):
+            nonlocal state
+            state = checkpoint_success(state, plan, "verification", [name])
+        with self.assertRaisesRegex(RuntimeError, "verification failed"):
+            verify_selected(plan, marker, run, completed)
+        retry = self.plan(state)
+        self.assertEqual(retry["verification"], ["test/lca.test.cpp"])
+        self.assertEqual(retry["unit"], plan["unit"])
+        with self.assertRaises(ValueError):
+            checkpoint_success(state, plan, "verification", ["unknown.cpp"])
+        with self.assertRaises(ValueError):
+            checkpoint_success(state, {**plan, "mode": "affected-no-cache-v1"}, "verification", [])
+
+    def test_completed_target_survives_interruption(self):
+        plan = self.plan(force=True)
+        state = invalidate_selected(self.previous, plan)
+        marker = Marker()
+        def run(paths):
+            if paths[0] == Path("test/lca.test.cpp"):
+                raise TimeoutError("interrupted")
+            marker.mark_verified(paths[0])
+            return Summary()
+        def completed(name):
+            nonlocal state
+            state = checkpoint_success(state, plan, "verification", [name])
+        with self.assertRaises(TimeoutError):
+            verify_selected(plan, marker, run, completed)
+        self.assertEqual(self.plan(state)["verification"], ["test/lca.test.cpp"])
 
     def test_forced_failed_checks_cannot_reuse_old_success(self):
         plan = self.plan(self.previous, force=True)

@@ -210,7 +210,20 @@ def record_success(previous, plan, groups):
         for group in GROUPS}}
 
 
-def verify_selected(plan, marker, run):
+def checkpoint_success(previous, plan, group, names):
+    if affected_inventory(plan):
+        raise ValueError("Affected inventories cannot populate successful cache state")
+    if group not in GROUPS or not set(names) <= set(plan[group]):
+        raise ValueError("Invalid completed targets")
+    targets = cached_targets(previous) or {}
+    result = {"version": VERSION, "targets": {
+        key: dict(targets.get(key, {})) for key in GROUPS}}
+    for name in names:
+        result["targets"][group][name] = plan["state"]["targets"][group][name]
+    return result
+
+
+def verify_selected(plan, marker, run, completed=None, starting=None):
     if affected_inventory(plan) and plan.get("mode") != "affected-no-cache-v1":
         raise ValueError("Affected provenance requires the exact affected mode")
     paths = set(plan["state"]["targets"]["verification"])
@@ -220,7 +233,8 @@ def verify_selected(plan, marker, run):
     if plan.get("mode") != "affected-no-cache-v1":
         for name in sorted(paths - selected):
             marker.mark_verified(Path(name))
-    if selected:
+    failed = []
+    if selected and completed is None and starting is None:
         summary = run([Path(name) for name in sorted(selected)])
         summary.show()
         if not summary.succeeded():
@@ -228,6 +242,20 @@ def verify_selected(plan, marker, run):
         unfinished = [name for name in sorted(selected) if not marker.is_verified(Path(name))]
         if unfinished:
             raise RuntimeError("Verification did not finish: " + ", ".join(unfinished))
+    else:
+        for name in sorted(selected):
+            if starting:
+                starting(name)
+            summary = run([Path(name)])
+            summary.show()
+            if not summary.succeeded():
+                failed.append(name)
+            elif not marker.is_verified(Path(name)):
+                raise RuntimeError("Verification did not finish: " + name)
+            elif completed:
+                completed(name)
+    if failed:
+        raise RuntimeError("Judge verification failed: " + ", ".join(failed))
     other = "unaffected/not run" if plan.get("mode") == "affected-no-cache-v1" else "reused"
     print(f"Judge tests: verified {len(selected)}, {other} {len(paths - selected)}", flush=True)
 
@@ -300,10 +328,20 @@ def main():
             logging.basicConfig(level=logging.INFO)
             if affected and list((ROOT / ".verify-helper").glob("timestamps.*.json")):
                 parser.error("Affected judge mode requires fresh disposable marker state")
+            def starting(name):
+                if os.environ.get("VERIFY_JUDGE_CACHE"):
+                    from judge_data import prepare_selected
+                    prepare_selected(ROOT, plan, Path(os.environ["VERIFY_JUDGE_CACHE"]), drivers=[name])
             verification = get_marker()
+            def completed(name):
+                write_json(args.state, checkpoint_success(read_json(args.state), plan, "verification", [name]))
+                if os.environ.get("VERIFY_JUDGE_CACHE"):
+                    from judge_data import mark_ready
+                    mark_ready(Path(os.environ["VERIFY_JUDGE_CACHE"]), name)
             with verification:
                 verify_selected(plan, verification, lambda paths: verify.main(
-                    paths, marker=verification, timeout=3000, tle=10, jobs=2))
+                    paths, marker=verification, timeout=3000, tle=10, jobs=2),
+                    completed=None if affected else completed, starting=None if affected else starting)
         else:
             from documentation import generate
             generate(plan)

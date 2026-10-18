@@ -1,0 +1,12 @@
+name: Cache selected judge data
+description: Restore or save only selected problems
+inputs:
+  operation:
+    required: true
+    description: restore or save
+  manifest:
+    required: true
+    description: Selected problem manifest
+runs:
+  using: node24
+  main: judge_cache.cjs
