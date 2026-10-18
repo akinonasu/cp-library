@@ -22,6 +22,18 @@ COMPARISON_CASES = [
 ]
 
 
+BACKWARD_COMPARISON_CASES = [
+    ('inverse', 'dense', 64, 0, 64), ('inverse', 'dense', 384, 0, 384),
+    ('inverse', 'dense', 512, 0, 512), ('inverse', 'singular', 384, 0, 384),
+    ('solve', 'dense', 384, 0, 384), ('det', 'dense', 512, 0, 512),
+]
+COMPARISON_SCOPES = {
+    'product': (COMPARISON_CASES, 6, 'allocation, val conversion, packing, multiplication, raw output conversion'),
+    'backward': (BACKWARD_COMPARISON_CASES, 4,
+                 'allocation, val conversion, forward/backward elimination, raw output conversion, result extraction'),
+}
+
+
 def compare_revisions(args):
     import math
     import re
@@ -30,6 +42,7 @@ def compare_revisions(args):
     def git(*command):
         return subprocess.check_output(['git', '-C', str(ROOT), *command], timeout=30)
 
+    cases, pairs, core_scope = COMPARISON_SCOPES[args.comparison_scope]
     refs = {'baseline': args.base_ref, 'candidate': args.candidate_ref}
     for ref in refs.values():
         if not ref or not re.fullmatch('[0-9a-f]{40}', ref):
@@ -81,14 +94,14 @@ def compare_revisions(args):
               'trees': {name: git('rev-parse', ref + '^{tree}').decode().strip() for name, ref in refs.items()},
               'compiler': compiler, 'version': '15.2.0', 'flags': flags, 'cpu': cpu,
               'cpu_model': next(line.split(':', 1)[1].strip() for line in Path('/proc/cpuinfo').read_text().splitlines() if line.startswith('model name')),
-              'uname': list(os.uname()), 'seed': 713, 'pairs_per_case': 6,
-              'case_count': len(COMPARISON_CASES), 'source_sha256': source_hashes,
+              'uname': list(os.uname()), 'seed': 713, 'pairs_per_case': pairs,
+              'comparison_scope': args.comparison_scope, 'case_count': len(cases), 'source_sha256': source_hashes,
               'binary_sha256': {name: hashlib.sha256(binary.read_bytes()).hexdigest() for name, binary in binaries.items()},
-              'core_scope': 'allocation, val conversion, packing, multiplication, raw output conversion',
+              'core_scope': core_scope,
               'process_scope': 'startup, generated input, core, complete text output to memory'}, sort_keys=True), flush=True)
-        for operation, kind, n, inner, m in COMPARISON_CASES:
+        for operation, kind, n, inner, m in cases:
             expected, samples = None, []
-            for pair in range(6):
+            for pair in range(pairs):
                 order = ['baseline', 'candidate'] if pair % 2 == 0 else ['candidate', 'baseline']
                 for name in order:
                     begin = time.perf_counter()
@@ -115,7 +128,7 @@ def compare_revisions(args):
                   'result_sha256': hashlib.sha256(expected).hexdigest(), 'result_bytes': len(expected),
                   'full_outputs_equal': True}, sort_keys=True), flush=True)
         print(json.dumps({'event': 'matrix_comparison_completed', 'refs': refs,
-              'cases': len(COMPARISON_CASES), 'pairs': 6 * len(COMPARISON_CASES),
+              'comparison_scope': args.comparison_scope, 'cases': len(cases), 'pairs': pairs * len(cases),
               'full_outputs_equal': True, 'artifacts_uploaded': False, 'cache_written': False}, sort_keys=True), flush=True)
 
 
@@ -128,10 +141,13 @@ def main():
     parser.add_argument('--cpu', type=int)
     parser.add_argument('--base-ref')
     parser.add_argument('--candidate-ref')
+    parser.add_argument('--comparison-scope', choices=COMPARISON_SCOPES, default='product')
     args = parser.parse_args()
     if args.base_ref or args.candidate_ref:
         compare_revisions(args)
         return
+    if args.comparison_scope != 'product':
+        parser.error('--comparison-scope requires exact --base-ref and --candidate-ref')
     if args.output is None:
         parser.error('--output is required outside exact-revision comparison')
     if args.cpu is None:

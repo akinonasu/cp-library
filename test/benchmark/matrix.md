@@ -174,3 +174,33 @@ SIMD は符号付き乗算を使い、奇数レーンの論理シフト後も下
 ```sh
 python3 -B test/benchmark/matrix.py --base-ref 36e2dcc732f89d7b0b3c4e47cb95155f5a41893d --candidate-ref "$EXACT_CANDIDATE_SHA"
 ```
+
+
+## 後退消去の比較候補
+
+中央表現をマージした main `8d0babd9e56d88ea1ff332ded0c6b60f76680444` に対する候補。固定法の `small_modint` で、前進消去後の rank が係数列数に一致する場合だけ、後退消去の更新開始列を係数列の末尾へ進める。公開 API、前進消去、ピボット選択、ISA、汎用・有理数・浮動小数点の経路は変えない。内部 `eliminate<Ops>` の既存呼び出しは既定値により従来の処理を保つ。
+
+全係数列にピボットがあるので `pivots[k] == k` となる。降順の後退消去で k 番目を処理するとき、k より右の係数列は、ピボット行とそれより上の行ですでに厳密な零である。その区間への加算を省き、`dst[col] = 0` は残す。逆行列では併合した単位行列側、方程式では右辺だけを更新する。併合列のない full-column-rank の rref では axpy を省く。自由列や rank 不足がある場合は従来の更新範囲を使う。背の高い行列と零次元もこの条件で扱う。
+
+2026-10-18 05:43 UTC に [公式の AC 時間順一覧](https://v3.api.judge.yosupo.jp/submissions?problem=inverse_matrix&status=AC&order=%2Btime&limit=3) を再確認した。inverse_matrix の先頭は引き続き [408951 / adamant](https://judge.yosupo.jp/submission/408951)、C++、表示16 msで、次は17 msと18 msだった。[公式ソース](https://v3.api.judge.yosupo.jp/submissions/408951) の SHA256 は `fcde151f67c3b68e2ff0c8039ff01f2eb06f70da5ccfae060b63473ba73f65d3`。112次以上の Schur complement 再帰、packed Strassen–Winograd、ピボット付き LU のフォールバックを読み取りで確認した。フォールバックの後退代入は、非零区間を追跡し、係数ブロックではなく逆行列・右辺側だけを更新する。今回も零と証明できる仕事を省くが、アルゴリズム全体は同一ではない。参照コードはコンパイル・実行しておらず、表示時間を今回の比較結果や Mac 互換性の根拠にはしない。
+
+内部比較の基準はマージ前の `60ce8204420533aa82fbbfdb702c1c62f5870967` で、上記 main と tree `11a04cd58a2e34d7cdc8d08d6a727d8876f08a8f` が一致する。GCC 14.2 / AMD EPYC 9V74、CPU 2固定で、事前に固定した6ケースを各4組、AB/BA/AB/BA の順で1回だけ比較した。両方で既存 `matrix.cpp`、通常法998244353、seed713、`-std=c++20 -O2 -march=native -ftrivial-auto-var-init=zero -Wall -Wextra -Werror -fno-lto`、assert有効を使った。48出力すべてを全要素で照合し一致した。演算時間は領域確保・変換・前進/後退消去・出力表現への変換・結果の切り出しを含む。プロセス時間は起動・入力生成・全出力を追加で含む。単位は ms、比は基準/候補で、1より小さい値は遅い。
+
+| ケース | 基準 演算中央値 | 候補 演算中央値 | 演算比 | 基準 プロセス中央値 | 候補 プロセス中央値 | プロセス比 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| inverse dense 64 | 0.138712 | 0.125252 | 1.107 | 2.735613 | 2.791687 | 0.980 |
+| inverse dense 384 | 19.171250 | 17.384900 | 1.103 | 30.526603 | 28.688852 | 1.064 |
+| inverse dense 512 | 44.343350 | 40.133750 | 1.105 | 61.586799 | 57.325355 | 1.074 |
+| inverse singular 384 | 18.266700 | 17.817500 | 1.025 | 22.492486 | 22.152023 | 1.015 |
+| solve dense 384 | 7.264305 | 5.348830 | 1.358 | 11.518551 | 9.506137 | 1.212 |
+| det dense 512 | 10.229250 | 10.827650 | 0.945 | 14.994996 | 15.424137 | 0.972 |
+
+inverse512 の最後の組には演算0.764倍・プロセス0.812倍の不利な値がある。inverse64 のプロセス中央値と、後退消去を使わない determinant512 の対照も遅かった。singular inverse384 は従来の rank 不足経路で、組ごとの比は改善と悪化が混在する。これらを除外・再測定しておらず、ばらつきだと断定しない。良い値だけによる合格判定はしない。
+
+既存の matrix と追加した独立な素朴 Gauss–Jordan 比較は native・AVX2無効・UBSan で確認した。特性多項式、standalone unit、単独ヘッダーの通常検査も成功した。追加比較は法2・998244353・2147483647、行交換、縦長/横長、full rank/rank 不足、零次元、rref・解の特解/基底・逆行列の全要素、自己代入を含む。既存の Fraction・浮動小数点の検査も成功した。通常 ASan+UBSan は LeakSanitizer の ptrace 制約で終了1となった記録を残し、`detect_leaks=0` の診断だけ別に成功している。通常 sanitizer 全合格とは扱わない。実 Mac・対象 GCC・judge・最新版 CI は、この内部比較では未確認。
+
+対象 GCC 15.2 の最終比較では、既存の `-O2 -std=gnu++23 -ftrivial-auto-var-init=zero -fmodules -DONLINE_JUDGE -DATCODER -fno-lto -march=native -Wall -Wextra -Werror` を変えず、比較器に `backward` の明示的な範囲を指定する。GCC 14.2 / C++20 の内部探索とは別の確認である。6ケース・各4組は上記から変更しない。既存の product 範囲は12形状・各6組のまま残す。ソース・結果の照合、全標本の通常ログ出力、領域確保と変換を含む条件は共通で、新しい監査基盤や参照コードの実行は追加しない。最終比較と最新版 CI の結果は PR に記録し、基準 main と候補の必要な確認が揃ってから採否を判断する。
+
+```sh
+python3 -B test/benchmark/matrix.py --base-ref 8d0babd9e56d88ea1ff332ded0c6b60f76680444 --candidate-ref "$EXACT_CANDIDATE_SHA" --comparison-scope backward
+```
