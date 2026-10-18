@@ -8,7 +8,7 @@ documentation_of: //components/mo_order.hpp
 ```cpp
 #include "lib/components/mo_order.hpp"
 
-std::vector<std::pair<int,int>> ranges{{0,3}, {2,5}, {0,1}};
+std::vector<std::pair<int,int>> ranges{ {0,3}, {2,5}, {0,1} };
 auto order = mo_order(ranges);
 for (int id : order) {
 	auto [l,r] = ranges[id];
