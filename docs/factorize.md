@@ -7,7 +7,7 @@ documentation_of: //math/factorize.hpp
 #include "lib/math/factorize.hpp"
 
 auto factors = factorize(360); // {2,2,2,3,3,5}
-auto counts = factorize_count(360); // {{2,3},{3,2},{5,1}}
+auto counts = factorize_count(360); // { {2,3},{3,2},{5,1} }
 bool prime = is_prime(998244353); // true
 ```
 
