@@ -231,7 +231,61 @@ void modular() {
 	assert(from == Matrix<T>(2, 2, T(7)) && moved == a);
 }
 
+template <std::uint32_t P, int step>
+void centered_multiplication_edges() {
+	using T = Mod<P>;
+	constexpr std::uint32_t low = (P + 1) / 2, high = (P - 1) / 2;
+	const std::array<std::uint32_t, 5> values{0, 1, P - 1, low, high};
+	auto check = [&](const Matrix<T> &a, const Matrix<T> &b) {
+		auto c = a * b;
+		for (int i = 0; i < a.rows(); ++i) for (int j = 0; j < b.cols(); ++j) {
+			std::uint64_t expected = 0;
+			for (int k = 0; k < a.cols(); ++k)
+				expected = (expected + std::uint64_t(a(i, k).val()) * b(k, j).val()) % P;
+			assert(c(i, j).val() == expected);
+		}
+		return c;
+	};
+	for (int n : {4, 5, 6, 7, 8, 9}) for (int m : {8, 9, 15, 16, 17})
+		for (int inner : {15, 16, 17, step - 1, step, step + 1, 2 * step - 1, 2 * step, 2 * step + 1, 65})
+			for (int kind = 0; kind < 5; ++kind) {
+				Matrix<T> a(n, inner), b(inner, m);
+				for (int i = 0; i < n; ++i) for (int k = 0; k < inner; ++k) {
+					std::uint32_t v = low;
+					if (kind == 2) v = P - 1;
+					if (kind == 3 && k < step) v = k == 0 ? 1 : 0;
+					if (kind == 4) v = values[(i * 3 + k) % values.size()];
+					a(i, k) = T::raw(v);
+				}
+				for (int k = 0; k < inner; ++k) for (int j = 0; j < m; ++j) {
+					std::uint32_t v = kind == 1 ? high : low;
+					if (kind == 2) v = 1;
+					if (kind == 3 && k < step) v = P - 1;
+					if (kind == 4) v = values[(k * 2 + j * 3) % values.size()];
+					b(k, j) = T::raw(v);
+				}
+				check(a, b);
+			}
+	for (int n : {16, 17, 31, 32, 33, 65}) {
+		Matrix<T> a(n);
+		for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
+			a(i, j) = T::raw(values[(i * 3 + j) % values.size()]);
+		auto expected = check(a, a);
+		a *= a;
+		assert(a == expected);
+	}
+}
+
 int main() {
+	centered_multiplication_edges<2, 32>();
+	centered_multiplication_edges<6, 32>();
+	centered_multiplication_edges<998244353, 32>();
+	centered_multiplication_edges<1000000007, 32>();
+	centered_multiplication_edges<1073741823, 32>();
+	centered_multiplication_edges<1073741824, 31>();
+	centered_multiplication_edges<1073741825, 31>();
+	centered_multiplication_edges<2147483646, 8>();
+	centered_multiplication_edges<2147483647, 8>();
 	multiplication_edges<mint>();
 	multiplication_edges<Mod<1>>();
 	multiplication_edges<Mod<2>>();

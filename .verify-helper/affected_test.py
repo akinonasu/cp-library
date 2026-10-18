@@ -271,7 +271,7 @@ class AffectedVerification(unittest.TestCase):
                 self.assertEqual(len(result["unit"]), 5)
 
     def test_matrix_prefix_keeps_exact_binding_validation(self):
-        self.ref = "refs/heads/codex/matrix-packed-20261018"
+        self.ref = "refs/heads/codex/matrix-centered-20261018"
         self.change_bits()
         self.assertEqual(self.plan()["expected_ref"], self.ref)
         binding = read_binding(SourceTree(self.root, self.git("rev-parse", "HEAD").decode().strip()))
