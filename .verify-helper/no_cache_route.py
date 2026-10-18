@@ -11,7 +11,7 @@ from affected import (BINDING_PATH, SourceTree, canonical, checked_source, diges
 
 
 REPOSITORY = "qandori/cp-library"
-SOURCE_REF = "refs/heads/codex/dwm-psar-20261017"
+SOURCE_REF = "refs/heads/codex/dwm-avx-update-20261018"
 MAIN_REF = "refs/heads/main"
 TRAILER = "Verify-Mode: no-cache"
 EVIDENCE_PATH = ".verify-helper/no-cache-baseline.json"
@@ -21,6 +21,12 @@ CONTROL_PATHS = (
     ".verify-helper/ci.py", ".verify-helper/ci_test.py",
     ".verify-helper/no_cache_route.py", ".verify-helper/no_cache_route_test.py",
     ".verify-helper/intrinsic_gate.py", ".verify-helper/intrinsic_gate_test.py",
+    '.github/workflows/dwm-avx-final.yml',
+    'test/benchmark/dwm_avx_final/bench.cpp',
+    'test/benchmark/dwm_avx_final/caller.cpp',
+    'test/benchmark/dwm_avx_final/escape.cpp',
+    'test/benchmark/dwm_avx_final/run.py',
+    'test/benchmark/dwm_avx_final/vector_oracle.cpp',
 )
 BASELINE_INPUTS = (
     ".github/workflows/verify.yml", ".github/workflows/macos-portability.yml",
@@ -31,13 +37,13 @@ BASELINE_INPUTS = (
 )
 BASELINE_JOBS = {
     ".github/workflows/verify.yml": ("verify", (
-        "Test incremental verification", "Select affected libraries and tests",
+        "Test incremental verification", "Select exact-head affected scope without cache",
         "Run unit tests with GCC and Clang", "Run ASan and UBSan tests",
         "Run affected judge tests", "Generate documentation",
         "Check bundled documentation", "Build library website",
     )),
     ".github/workflows/macos-portability.yml": ("portable", (
-        "Select affected headers and unit tests", "Check Apple Clang",
+        "Select exact-head affected scope without cache", "Check Apple Clang",
     )),
 }
 

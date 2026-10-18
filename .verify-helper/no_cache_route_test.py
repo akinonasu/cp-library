@@ -305,8 +305,12 @@ class NoCacheWorkflowTests(unittest.TestCase):
         steps = workflow["jobs"]["verify"]["steps"]
         for name in route.BASELINE_JOBS[".github/workflows/verify.yml"][1]:
             step = next(step for step in steps if step.get("name") == name)
-            if name != "Select affected libraries and tests":
+            if name == "Select exact-head affected scope without cache":
+                self.assertEqual(step["if"], "steps.route.outputs.mode == 'no-cache'")
+            else:
                 self.assertNotIn("if", step)
+        normal_selector = next(step for step in steps if step.get("name") == "Select affected libraries and tests")
+        self.assertEqual(normal_selector["if"], "steps.route.outputs.mode == 'normal'")
         self.assertIn("needs.verify.outputs.mode == 'normal'", workflow["jobs"]["deploy"]["if"])
         self.assertTrue(any("--no-cache-dir" in step.get("run", "") for step in steps))
 

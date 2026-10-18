@@ -90,7 +90,33 @@ void random_test() {
 	}
 }
 
+template <int Block>
+void move_boundaries() {
+	std::mt19937 random(Block);
+	for (int size : {Block + 1, Block * 7 + 1, Block * 8 + 1, Block * 20 + 1})
+		for (bool bulk : {false, true}) {
+			std::vector<unsigned char> a(size);
+			for (auto &x : a) x = random() & 1;
+			DynamicBitVector<Block, 8> bits;
+			if (bulk) bits.build(std::vector<bool>(a.begin(), a.end()));
+			else for (bool value : a) bits.push_back(value);
+			for (int i = 0; i < 96; ++i) {
+				int from = i % 3 == 0 ? 0 : i % 3 == 1 ? size - 1 : random() % size;
+				int to = i % 3 == 0 ? size - 1 : i % 3 == 1 ? 0 : random() % size;
+				bool old = a[from], value = (i & 1) ? old : !old;
+				int before = std::accumulate(a.begin(), a.begin() + from, 0);
+				a.erase(a.begin() + from);
+				int next = std::accumulate(a.begin(), a.begin() + to, 0);
+				a.insert(a.begin() + to, value);
+				assert(bits.move_rank(from, to, value) == std::tuple(before, old, next));
+				if (i % 32 == 31) check(bits, a);
+			}
+		}
+}
+
 int main() {
+	move_boundaries<128>();
+	move_boundaries<1024>();
 	for (int size = 1; size <= 8; ++size)
 		for (unsigned mask = 0; mask < (1U << size); ++mask) {
 			std::vector<bool> a(size);
