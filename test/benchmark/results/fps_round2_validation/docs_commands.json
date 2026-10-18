@@ -1,0 +1,36 @@
+{
+  "started_utc": "2026-10-18T21:24:50.156677+00:00",
+  "cwd": "/workspace/cp-library",
+  "lock": "flock -s /tmp/cp-fps-tuning.lock",
+  "path_prefix": "/tmp/cp-fps-docs-bin",
+  "path_preparation": "mkdir -p /tmp/cp-fps-docs-bin && ln -sfn /tmp/fps-clang/toolchain/usr/bin/clang++-19 /tmp/cp-fps-docs-bin/clang++",
+  "clang_compiler": "Debian clang version 19.1.7 (3+b1)",
+  "commands": [
+    [
+      "/tmp/fps-venv/bin/python",
+      ".verify-helper/ci.py",
+      "docs",
+      "--selection",
+      "test/benchmark/results/fps_round2_validation/selection.json"
+    ],
+    [
+      "/tmp/fps-venv/bin/python",
+      ".verify-helper/check-docs.py",
+      "--selection",
+      "test/benchmark/results/fps_round2_validation/selection.json"
+    ]
+  ],
+  "python": "Python 3.12.14",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "verify_helper_version": "5.6.0",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "git_head": "144ae32387675fa2a889ea3e8cd19b03ad5016bf",
+  "selection_sha256": "028da04f892428cb4b9d90602bc11c54bf943a32213fbddd2b1851ec47229870",
+  "source_hash_scope": "All 144 library headers, docs/**/*.md, README/AGENTS, judge and unit C++ sources, verification scripts/config/templates, and selection.json. Generated markdown and changing benchmark result files excluded.",
+  "liquid_scan": "Scan all generated .md bodies after line-delimited YAML front matter. C++ bundledCode in YAML is data, not Liquid template source. Static _includes/_layouts intentionally use Liquid; no Jekyll site build is claimed.",
+  "nonfatal_generator_metadata_warning": {
+    "source": "test/dijkstra_bigint_yuki.test.cpp",
+    "reason": "System Boost headers absent; generator catches the unrelated judge metadata exception and continues. This source is outside all 25 affected FPS bundles. All 144 library pages and their metadata were checked by check-docs.py."
+  },
+  "final_validation": "Require exactly this one unrelated missing-Boost metadata warning, both commands returning 0, all 144 library metadata checked, 25 bundle compiles, generated body scan without {{, and unchanged 569 source hashes."
+}

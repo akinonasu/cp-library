@@ -1,0 +1,39 @@
+{
+  "baseline": "144ae32387675fa2a889ea3e8cd19b03ad5016bf",
+  "baseline_tree": "/tmp/cp-fps-round2-base",
+  "changed_units": [
+    "test/unit/fps_composition_blocked.cpp",
+    "test/unit/fps_composition_tables.cpp",
+    "test/unit/fps_division_blocked.cpp",
+    "test/unit/fps_exp_import.cpp",
+    "test/unit/fps_inverse_blocked.cpp"
+  ],
+  "commands": [],
+  "compilers": {
+    "clang19": {
+      "path": "/tmp/fps-clang/toolchain/usr/bin/clang++-19",
+      "sha256": "0a3c55936ac43954fbe4914e6e73b577ca9e35e75d89ef13d3e28c187f41ca1a"
+    },
+    "gcc14": {
+      "path": "/usr/bin/g++",
+      "sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d"
+    }
+  },
+  "current": "/workspace/cp-library",
+  "dependency_commands": [],
+  "environment": "{\"compiler_paths\": {\"clang19\": \"/tmp/fps-clang/toolchain/usr/bin/clang++-19\", \"gcc14\": \"/usr/bin/g++\"}, \"compilers\": {\"clang19\": \"Debian clang version 19.1.7 (3+b1)\\nTarget: x86_64-pc-linux-gnu\\nThread model: posix\\nInstalledDir: /tmp/fps-clang/toolchain/usr/lib/llvm-19/bin\\n\", \"gcc14\": \"g++ (Debian 14.2.0-19) 14.2.0\\nCopyright (C) 2024 Free Software Foundation, Inc.\\nThis is free software; see the source for copying conditions.  There is NO\\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\\n\\n\"}, \"scope\": \"fps-round2-validation\"}",
+  "harness_sha256": "1ab33eaf93c7eda6c7779f2b278ef37810188b66c6c2882584ae7b7d87dbeb2b",
+  "selected_counts": {
+    "bundles": 25,
+    "headers": 25,
+    "sanitize": 5,
+    "unit": 25,
+    "verification": 24
+  },
+  "started": "2026-10-18T21:14:06.849756+00:00",
+  "status": "prepared",
+  "versions": {
+    "clang19": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /tmp/fps-clang/toolchain/usr/lib/llvm-19/bin\n",
+    "gcc14": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+  }
+}

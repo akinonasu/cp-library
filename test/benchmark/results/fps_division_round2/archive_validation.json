@@ -1,0 +1,21 @@
+{
+  "batch_harness.py": "matched recorded harness SHA256",
+  "batch_repeat.py": "matched recorded harness SHA256",
+  "inverse_fusion_build.py": "matched recorded harness SHA256",
+  "inverse_fusion_harness.py": "matched recorded harness SHA256",
+  "inverse_combined_build.py": "matched recorded harness SHA256",
+  "inverse_combined_harness.py": "matched recorded harness SHA256",
+  "batch_scoped_inverse_harness.py": "matched recorded harness SHA256",
+  "dividend_build.py": "matched recorded harness SHA256",
+  "dividend_harness.py": "matched recorded harness SHA256",
+  "final_check_harness.py": "matched recorded harness SHA256",
+  "final_harness.py": "matched recorded harness SHA256",
+  "gcc13_check_harness.py": "matched recorded harness SHA256",
+  "assembly_review.py": "matched recorded harness SHA256",
+  "all Python artifacts": "AST parse passed",
+  "final official cases": 53,
+  "frozen production header/unit": "matched recorded validated snapshot",
+  "driver and unit sources": "matched recorded SHA256",
+  "baseline alias behavior": "passed old and new snapshots",
+  "final preparation": "174 baseline and candidate headers restored and SHA256 matched"
+}

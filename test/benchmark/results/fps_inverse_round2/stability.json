@@ -1,0 +1,113 @@
+{
+  "method": "For each shuffled trial, baseline elapsed minus candidate elapsed; exact distribution-free 95% median interval from binomial order statistics; trials kept in original order before pairing. No resampling or new timing.",
+  "whole": {
+    "inverse": {
+      "max_random_00": {
+        "candidate": {
+          "trials": 99,
+          "baseline_median_ms": 12.803688,
+          "candidate_median_ms": 12.731701,
+          "change_percent": -0.5622364431248195,
+          "paired_median_improvement_ms": 0.05895800000000051,
+          "paired_median_interval_95_ms": [
+            -0.014511999999999858,
+            0.13494099999999953
+          ],
+          "faster_trials": 58,
+          "interval_order_statistics_1_based": [
+            40,
+            60
+          ]
+        },
+        "scaled": {
+          "trials": 99,
+          "baseline_median_ms": 12.803688,
+          "candidate_median_ms": 12.677419,
+          "change_percent": -0.9861924158101831,
+          "paired_median_improvement_ms": 0.1007599999999993,
+          "paired_median_interval_95_ms": [
+            0.04243300000000083,
+            0.2209090000000007
+          ],
+          "faster_trials": 64,
+          "interval_order_statistics_1_based": [
+            40,
+            60
+          ]
+        }
+      },
+      "max_random_01": {
+        "candidate": {
+          "trials": 99,
+          "baseline_median_ms": 13.138057,
+          "candidate_median_ms": 13.031918,
+          "change_percent": -0.8078744063905408,
+          "paired_median_improvement_ms": 0.20727899999999977,
+          "paired_median_interval_95_ms": [
+            0.07281899999999908,
+            0.31982599999999906
+          ],
+          "faster_trials": 65,
+          "interval_order_statistics_1_based": [
+            40,
+            60
+          ]
+        },
+        "scaled": {
+          "trials": 99,
+          "baseline_median_ms": 13.138057,
+          "candidate_median_ms": 12.930367,
+          "change_percent": -1.580827362828452,
+          "paired_median_improvement_ms": 0.1981560000000009,
+          "paired_median_interval_95_ms": [
+            0.017655999999998784,
+            0.3264969999999998
+          ],
+          "faster_trials": 61,
+          "interval_order_statistics_1_based": [
+            40,
+            60
+          ]
+        }
+      }
+    },
+    "sqrt": {
+      "max_random_01": {
+        "candidate": {
+          "trials": 99,
+          "baseline_median_ms": 13.015614,
+          "candidate_median_ms": 12.95913,
+          "change_percent": -0.43397107504877797,
+          "paired_median_improvement_ms": 0.022663999999998907,
+          "paired_median_interval_95_ms": [
+            -0.10751999999999917,
+            0.09433100000000039
+          ],
+          "faster_trials": 53,
+          "interval_order_statistics_1_based": [
+            40,
+            60
+          ]
+        }
+      },
+      "max_random_02": {
+        "candidate": {
+          "trials": 99,
+          "baseline_median_ms": 12.958208,
+          "candidate_median_ms": 12.755126,
+          "change_percent": -1.5672074410288839,
+          "paired_median_improvement_ms": 0.2203489999999988,
+          "paired_median_interval_95_ms": [
+            0.12412599999999863,
+            0.31086299999999945
+          ],
+          "faster_trials": 67,
+          "interval_order_statistics_1_based": [
+            40,
+            60
+          ]
+        }
+      }
+    }
+  }
+}

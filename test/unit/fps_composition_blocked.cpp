@@ -10,7 +10,7 @@ void require(bool ok) {
 
 int main() {
 	std::mt19937 random(20261019);
-	for (int n : {33, 63, 64, 65, 127, 128, 129, 255, 256, 257, 511, 512, 513, 1025, 4097}) {
+	for (int n : {33, 63, 64, 65, 127, 128, 129, 255, 256, 257, 511, 512, 513, 1025, 4097, 16385}) {
 		require(power_projection(fps{}, n - 1) == fps(n));
 		for (int size : {3, 9, n - 1, n}) {
 			fps f(n), g(size), weights(n), identity(n);

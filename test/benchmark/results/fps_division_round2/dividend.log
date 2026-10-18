@@ -1,0 +1,5 @@
+v_random_00 {'baseline': 6.538107, 'candidate': 6.502754, 'batch64': 6.566639, 'reference': 5.083459} {'baseline': 2.479156, 'candidate': 2.445586, 'batch64': 2.408431} paired -0.009193999999999924 wins 10
+v_random_01 {'baseline': 9.553354, 'candidate': 9.154999, 'batch64': 9.435126, 'reference': 7.162099} {'baseline': 4.4127, 'candidate': 3.978852, 'batch64': 4.209576} paired 0.3974519999999995 wins 16
+v_random_02 {'baseline': 12.349831, 'candidate': 11.909796, 'batch64': 12.12731, 'reference': 10.366514} {'baseline': 7.3585, 'candidate': 6.855481, 'batch64': 7.061278} paired 0.5248709999999992 wins 16
+v_random_03 {'baseline': 9.94688, 'candidate': 9.604208, 'batch64': 9.652241, 'reference': 8.111613} {'baseline': 5.59353, 'candidate': 5.162397, 'batch64': 5.322776} paired 0.45799199999999907 wins 17
+n_max_00 {'baseline': 12.339626, 'candidate': 11.439254, 'batch64': 11.864999, 'reference': 9.184754} {'baseline': 5.389505, 'candidate': 4.84934, 'batch64': 5.129778} paired 0.8332820000000005 wins 17

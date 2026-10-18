@@ -1,0 +1,3 @@
+max_random_00 {'baseline': 15.513659, 'candidate': 15.432298, 'fused8': 15.40121, 'batch64': 15.549562, 'reference': 15.056427} {'baseline': 13.385556, 'candidate': 13.377914, 'fused8': 13.291556, 'batch64': 13.4348} paired 0.14425600000000038 wins 11
+max_random_01 {'baseline': 15.489803, 'candidate': 15.662771, 'fused8': 15.405647, 'batch64': 15.84971, 'reference': 14.835548} {'baseline': 13.378936, 'candidate': 13.426127, 'fused8': 13.346698, 'batch64': 13.504503} paired -0.08532699999999949 wins 8
+max_random_02 {'baseline': 15.362373, 'candidate': 15.503423, 'fused8': 15.468321, 'batch64': 15.675891, 'reference': 14.81055} {'baseline': 13.300148, 'candidate': 13.405025, 'fused8': 13.36771, 'batch64': 13.534257} paired -0.15813500000000147 wins 6

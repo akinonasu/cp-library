@@ -1,0 +1,15 @@
+official checks fused pass
+official checks combined pass
+waiting EX
+acquired EX
+kernel 262144 {'baseline': 3.457625, 'candidate': 3.384055, 'fused': 3.423584, 'combined': 3.382242, 'reference': 3.259049}
+kernel 262145 {'baseline': 3.802589, 'candidate': 3.779264, 'fused': 3.794807, 'combined': 3.778213, 'reference': 6.793969}
+kernel 393217 {'baseline': 7.05622, 'candidate': 6.972344, 'fused': 7.019374, 'combined': 6.974628, 'reference': 6.735402}
+kernel 500000 {'baseline': 7.218491, 'candidate': 7.084722, 'fused': 7.157321, 'combined': 7.073956, 'reference': 6.761521}
+whole inverse max_random_00 {'baseline': 13.04012, 'candidate': 12.508067, 'fused': 12.850568, 'combined': 12.669018, 'reference': 10.874852}
+whole inverse max_random_01 {'baseline': 12.862035, 'candidate': 12.669308, 'fused': 12.825351, 'combined': 12.658421, 'reference': 10.894731}
+whole inverse near_262144_02 {'baseline': 7.276218, 'candidate': 7.200004, 'fused': 7.327494, 'combined': 7.29842, 'reference': 9.454665}
+whole sqrt max_random_01 {'baseline': 12.821365, 'candidate': 12.673474, 'reference': 10.922122}
+whole sqrt max_random_02 {'baseline': 12.876196, 'candidate': 12.734836, 'reference': 10.82007}
+whole sqrt near_262144_01 {'baseline': 7.281536, 'candidate': 7.278661, 'reference': 6.154866}
+whole sqrt near_262144_02 {'baseline': 9.394786, 'candidate': 9.230361, 'reference': 8.261316}

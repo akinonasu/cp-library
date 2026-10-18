@@ -1,0 +1,29 @@
+--- a/components/fps_io.hpp
++++ b/components/fps_io.hpp
+@@ -125,6 +125,18 @@
+ 		return parsed;
+ 	}
+ 
++	static void prepare(FastInput &in, std::size_t n) {
++#if defined(MADV_POPULATE_READ)
++		if (n < 131072 || !in.mapping) return;
++		const auto available = std::size_t(in.end - in.current);
++		const auto bytes = n < available / 11 ? 11 * n : available;
++		if (bytes < (1u << 22)) return;
++		const auto first = reinterpret_cast<std::uintptr_t>(in.current);
++		const auto lo = (first + 4095) & ~std::uintptr_t(4095), hi = (first + bytes) & ~std::uintptr_t(4095);
++		if (lo < hi) static_cast<void>(madvise(reinterpret_cast<void *>(lo), hi - lo, MADV_POPULATE_READ));
++#endif
++	}
++
+ 	static void read(FastInput &in, unsigned *out, std::size_t count) {
+ 		std::unique_ptr<unsigned[]> scratch;
+ 		std::size_t done = 0;
+@@ -317,6 +329,7 @@
+ 	if (!n) return;
+ 	if (n > out.max_size() - out.size()) throw std::length_error("fps input");
+ 	prepare_fps_output(out, out.size() + n);
++	fast_io_detail::BulkInput::prepare(input, n);
+ 	auto values = std::make_unique_for_overwrite<unsigned[]>(std::min<std::size_t>(32768, n));
+ 	for (std::size_t i = 0; i < n; i += 32768) {
+ 		const auto count = std::min<std::size_t>(32768, n - i);

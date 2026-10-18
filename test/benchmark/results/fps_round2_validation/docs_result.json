@@ -1,0 +1,41 @@
+{
+  "started_utc": "2026-10-18T21:24:50.156677+00:00",
+  "finished_utc": "2026-10-18T21:26:46.128757+00:00",
+  "commands": [
+    {
+      "command": [
+        "/tmp/fps-venv/bin/python",
+        ".verify-helper/ci.py",
+        "docs",
+        "--selection",
+        "test/benchmark/results/fps_round2_validation/selection.json"
+      ],
+      "seconds": 57.989971717004664,
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/tmp/fps-venv/bin/python",
+        ".verify-helper/check-docs.py",
+        "--selection",
+        "test/benchmark/results/fps_round2_validation/selection.json"
+      ],
+      "seconds": 40.468601198001124,
+      "returncode": 0
+    }
+  ],
+  "source_count": 569,
+  "source_hashes_unchanged": true,
+  "changed_sources": [],
+  "success": true,
+  "generated_library_count": 144,
+  "generated_judge_count": 123,
+  "compiled_affected_bundles": 25,
+  "generated_markdown_bodies_scanned": 391,
+  "body_double_open_brace_occurrences": 0,
+  "nonfatal_generator_metadata_warning": {
+    "source": "test/dijkstra_bigint_yuki.test.cpp",
+    "reason": "System Boost headers absent; generator catches the unrelated judge metadata exception and continues. This source is outside all 25 affected FPS bundles. All 144 library pages and their metadata were checked by check-docs.py."
+  },
+  "note": "The initial strict no-diagnostics orchestration assertion was narrowed to the documented unrelated metadata warning; no compilation or source check failed."
+}

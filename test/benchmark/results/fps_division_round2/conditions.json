@@ -1,0 +1,20 @@
+{
+  "baseline": "144ae32387675fa2a889ea3e8cd19b03ad5016bf",
+  "official_repository_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "production_header_sha256": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+  "production_unit_sha256": "0d5a16e9f3c6022484d74c2fe85b25d90ee32dea9cf4020f114145f18447b355",
+  "restoration_header_counts": {
+    "baseline": 174,
+    "candidate": 174
+  },
+  "reference_urls": {
+    "division": "https://judge.yosupo.jp/submission/409561",
+    "inverse_mod": "https://judge.yosupo.jp/submission/409589"
+  },
+  "raw_assembly_binaries": {
+    "baseline": "0a31c3a37bd955434f31e95ee724b51be7ef1dc83c70ae473d65f0bb7d8dccba",
+    "candidate": "1639038b402612552b7687664c45fcad7be1fac128639400f72fa11d5c74b845"
+  },
+  "full_replay_executed": false,
+  "prepare_only_restoration_passed": true
+}

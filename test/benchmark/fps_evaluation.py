@@ -27,6 +27,8 @@ def sha(path):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--baseline', default='ce81108')
+    parser.add_argument('--baseline-tree', type=Path)
+    parser.add_argument('--candidate-root', type=Path, default=ROOT)
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--cpu', default=2, type=int)
     parser.add_argument('--trials', default=11, type=int)
@@ -49,16 +51,19 @@ def main():
         for tree in [before, current]:
             if tree.exists():
                 shutil.rmtree(tree)
-        data = subprocess.check_output(['git', 'archive', baseline, 'fps', 'components', 'math', 'convolution', 'test'], cwd=ROOT)
-        with tarfile.open(fileobj=io.BytesIO(data)) as archive:
-            archive.extractall(before, filter='data')
+        if args.baseline_tree:
+            shutil.copytree(args.baseline_tree, before)
+        else:
+            data = subprocess.check_output(['git', 'archive', baseline, 'fps', 'components', 'math', 'convolution', 'test'], cwd=ROOT)
+            with tarfile.open(fileobj=io.BytesIO(data)) as archive:
+                archive.extractall(before, filter='data')
         for folder in ['fps', 'components', 'math', 'convolution']:
-            shutil.copytree(ROOT / folder, current / folder)
+            shutil.copytree(args.candidate_root / folder, current / folder)
         (current / 'test').mkdir()
-        shutil.copy2(ROOT / 'test/fps_io.hpp', current / 'test/fps_io.hpp')
+        shutil.copy2(args.candidate_root / 'test/fps_io.hpp', current / 'test/fps_io.hpp')
         for op in args.operations:
             driver = PROBLEMS[op][1]
-            shutil.copy2(ROOT / 'test' / driver, current / 'test' / driver)
+            shutil.copy2(args.candidate_root / 'test' / driver, current / 'test' / driver)
         fcntl.flock(lock, fcntl.LOCK_UN)
         for variant, tree in [('before', before), ('current', current)]:
             result['sources'][variant] = {p.relative_to(tree).as_posix(): sha(p) for p in tree.rglob('*.hpp')}

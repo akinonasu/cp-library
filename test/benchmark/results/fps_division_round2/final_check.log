@@ -1,0 +1,16 @@
+build division_final 0 7.761292943003355 
+build inverse_mod_final 0 9.276741588000732 
+build gcd_final 0 9.566268335998757 
+build series_final 0 6.375398010997742 
+build standalone_final 0 1.3446852639972349 
+build division_unit_final 0 7.9578987560016685 
+build gcd_unit_final 0 10.435372326996003 
+build division_sanitize_final 0 28.461211318004644 
+build division_baseline_alias 0 7.938676239995402 
+run division_unit_final 0  
+run gcd_unit_final 0  
+run division_sanitize_final 0  
+run reused division_baseline_alias
+official all passed division_of_polynomials
+official all passed inv_of_polynomials
+final validation passed

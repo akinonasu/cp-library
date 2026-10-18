@@ -36,16 +36,27 @@ inline void native_inverse(const Mint *in, std::size_t input, std::vector<Mint> 
 		a[i] = std::min(v, v - Mint::mod());
 	}
 	const std::span<const std::uint32_t> f = a.first(c);
-	if (n <= k) {
-		inverse(t, f, g.first(n), scratch);
-		append_scaled(g.first(n), out, 932051910);
-		return;
+	const auto extend = [&](std::span<const std::uint32_t> current, std::span<std::uint32_t> to,
+							std::span<std::uint32_t> transformed, std::span<std::uint32_t> work) {
+		const std::size_t count = current.size();
+		t.forward(current, 0, transformed);
+		t.cyclic_product(f.first(std::min(2 * count, f.size())), 0, work, transformed, Half::kUpper);
+		t.cyclic_product(work.subspan(count), count, work, transformed, Half::kUpper, 53925088);
+		if (to.data() != work.data() + count) std::copy_n(work.begin() + std::ptrdiff_t(count), to.size(), to.begin());
+	};
+	const std::size_t target = std::min(n, k), base = std::min(target, detail::kInverseBase);
+	detail::inverse_direct(f, g.first(base));
+	for (std::size_t i = 0; i < base; ++i) g[i] = blocked_ntt::detail::multiply_mod(g[i], 932051910);
+	for (std::size_t count = base; count < target; count *= 2) {
+		const std::size_t size = 2 * count;
+		extend(g.first(count), g.subspan(count, std::min(count, target - count)), scratch.first(size),
+				scratch.subspan(Arena::footprint(size), size));
 	}
-	inverse(t, f, g, scratch);
-	inverse_step(t, f, g, a.subspan(k, n - k), scratch.first(len), a);
+	if (n <= k) return append_fps_words<true>(out, g.data(), n);
+	extend(g, a.subspan(k, n - k), scratch.first(len), a);
 	prepare_fps_output(out, n);
-	append_scaled(g, out, 932051910);
-	append_scaled(a.subspan(k, n - k), out, 932051910);
+	append_fps_words<true>(out, g.data(), k);
+	append_fps_words<true>(out, a.data() + k, n - k);
 }
 }
 

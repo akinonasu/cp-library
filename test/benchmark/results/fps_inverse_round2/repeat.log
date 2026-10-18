@@ -1,0 +1,11 @@
+official checks scaled pass
+waiting EX
+acquired EX
+kernel 262144 {'baseline': 3.497985, 'candidate': 3.453678, 'scaled': 3.473629, 'reference': 3.317285}
+kernel 262145 {'baseline': 3.913654, 'candidate': 3.874386, 'scaled': 3.84391, 'reference': 6.889421}
+kernel 393217 {'baseline': 7.161116, 'candidate': 7.028138, 'scaled': 7.109218, 'reference': 6.884614}
+kernel 500000 {'baseline': 7.299983, 'candidate': 7.172873, 'scaled': 7.208206, 'reference': 6.874048}
+whole inverse max_random_00 {'baseline': 12.803688, 'candidate': 12.731701, 'scaled': 12.677419}
+whole inverse max_random_01 {'baseline': 13.138057, 'candidate': 13.031918, 'scaled': 12.930367}
+whole sqrt max_random_01 {'baseline': 13.015614, 'candidate': 12.95913}
+whole sqrt max_random_02 {'baseline': 12.958208, 'candidate': 12.755126}
