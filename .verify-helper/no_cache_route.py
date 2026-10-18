@@ -37,13 +37,13 @@ BASELINE_INPUTS = (
 )
 BASELINE_JOBS = {
     ".github/workflows/verify.yml": ("verify", (
-        "Test incremental verification", "Select affected libraries and tests",
+        "Test incremental verification", "Select exact-head affected scope without cache",
         "Run unit tests with GCC and Clang", "Run ASan and UBSan tests",
         "Run affected judge tests", "Generate documentation",
         "Check bundled documentation", "Build library website",
     )),
     ".github/workflows/macos-portability.yml": ("portable", (
-        "Select affected headers and unit tests", "Check Apple Clang",
+        "Select exact-head affected scope without cache", "Check Apple Clang",
     )),
 }
 

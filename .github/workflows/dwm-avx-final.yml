@@ -3,6 +3,11 @@ name: Dynamic wavelet matrix finalist
 on:
   push:
     branches: [codex/dwm-avx-update-20261018]
+    paths:
+      - components/dynamic_bit_vector.hpp
+      - data_structure/dynamic_wavelet_matrix.hpp
+      - test/benchmark/dwm_avx_final/*.cpp
+      - test/benchmark/dwm_avx_final/run.py
 
 permissions:
   contents: read
