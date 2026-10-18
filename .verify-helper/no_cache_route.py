@@ -11,7 +11,7 @@ from affected import (BINDING_PATH, SourceTree, canonical, checked_source, diges
 
 
 REPOSITORY = "qandori/cp-library"
-SOURCE_REF = "refs/heads/codex/dwm-avx-update-20261018"
+SOURCE_REF = "refs/heads/codex/matrix-packed-20261018"
 MAIN_REF = "refs/heads/main"
 TRAILER = "Verify-Mode: no-cache"
 EVIDENCE_PATH = ".verify-helper/no-cache-baseline.json"
@@ -27,6 +27,8 @@ CONTROL_PATHS = (
     'test/benchmark/dwm_avx_final/escape.cpp',
     'test/benchmark/dwm_avx_final/run.py',
     'test/benchmark/dwm_avx_final/vector_oracle.cpp',
+    ".github/workflows/matrix-packed-final.yml",
+    "test/benchmark/matrix.cpp", "test/benchmark/matrix.py",
 )
 BASELINE_INPUTS = (
     ".github/workflows/verify.yml", ".github/workflows/macos-portability.yml",

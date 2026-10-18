@@ -1,4 +1,4 @@
-"""Fresh exact-head DWM checks. No benchmarks, caches, artifacts, or network."""
+"""Fresh exact-head intrinsic checks. No benchmarks, caches, artifacts, or network."""
 
 import json
 import os
@@ -18,6 +18,14 @@ REQUIRED_UNITS = {"test/unit/" + name + ".cpp" for name in (
     "dynamic_bit_vector", "dynamic_wavelet_core", "dynamic_wavelet_count",
     "dynamic_wavelet_matrix", "standalone",
 )}
+MATRIX_PRODUCTS = {"components/matrix_arithmetic.hpp", "math/matrix.hpp"}
+MATRIX_REQUIRED_UNITS = {"test/unit/" + name + ".cpp" for name in (
+    "matrix", "matrix_characteristic", "standalone",
+)}
+SCOPES = {
+    "dwm": (PRODUCTS, REQUIRED_UNITS, 4, 8),
+    "matrix": (MATRIX_PRODUCTS, MATRIX_REQUIRED_UNITS, 2, 3),
+}
 COMMON = ["-O2", "-std=gnu++23", "-ftrivial-auto-var-init=zero", "-fmodules",
           "-DONLINE_JUDGE", "-DATCODER", "-fno-lto"]
 MODES = {
@@ -90,14 +98,36 @@ def selected(root, event, context):
     if route["mode"] == "normal":
         return route, None
     plan = build_affected_plan(root, route["base"], route["head"], expected_ref=route["ref"])
-    require(REQUIRED_UNITS <= set(plan["unit"]), "Required DWM units absent from affected scope")
-    require(PRODUCTS <= set(plan["headers"]), "Production DWM headers absent from affected scope")
-    require(len(plan["unit"]) <= 8 and len(plan["headers"]) <= 4,
-            "Affected scope exceeds reviewed gate budget; review before expanding")
+    scope_mode(plan)
     return route, plan
 
 
-def macro_proof(raw, mode):
+def scope_mode(plan):
+    changed = set(plan["changed_paths"])
+    matched = [family for family, (products, _, _, _) in SCOPES.items() if products & changed]
+    require(len(matched) == 1, "Production changes must select exactly one reviewed intrinsic mode")
+    family = matched[0]
+    products, required, max_headers, max_units = SCOPES[family]
+    require(all(not (other_products & set(plan["headers"]))
+                for other, (other_products, _, _, _) in SCOPES.items() if other != family),
+            "Mixed production intrinsic scopes require separate review")
+    require(required <= set(plan["unit"]), "Required " + family.upper() + " units absent from affected scope")
+    require(products <= set(plan["headers"]), "Production " + family.upper() + " headers absent from affected scope")
+    require(len(plan["unit"]) <= max_units and len(plan["headers"]) <= max_headers,
+            "Affected scope exceeds reviewed gate budget; review before expanding")
+    return family
+
+
+def mode_flags(mode, family="dwm"):
+    require(family in SCOPES and mode in MODES, "Unknown intrinsic mode")
+    flags = COMMON + MODES[mode]
+    if family == "matrix" and mode == "scalar":
+        flags += ["-DMATRIX_DISABLE_AVX2"]
+    return flags
+
+
+def macro_proof(raw, mode, family="dwm"):
+    require(family in SCOPES, "Unknown intrinsic mode")
     macros = dict(re.findall(rb"^#define (\S+)(?: ([^\n]*))?$", raw, re.MULTILINE))
     require(b"NDEBUG" not in macros and b"assert(expr)" in macros, "Assertions are not enabled")
     for name, value in ((b"ONLINE_JUDGE", b"1"), (b"ATCODER", b"1"),
@@ -111,11 +141,19 @@ def macro_proof(raw, mode):
                 "Native runner must expose AVX2 and BMI2; do not retry or downgrade")
     else:
         require(mode == "scalar" and not isa, "Explicit scalar AVX/BMI disables did not take effect")
-    return {"sha256": digest(raw), "isa": isa, "assertions": True,
-            "ONLINE_JUDGE": "1", "ATCODER": "1", "gcc": "15.2.0"}
+    proof = {"sha256": digest(raw), "isa": isa, "assertions": True,
+             "ONLINE_JUDGE": "1", "ATCODER": "1", "gcc": "15.2.0"}
+    if family == "matrix":
+        disabled = macros.get(b"MATRIX_DISABLE_AVX2")
+        require(disabled == b"1" if mode == "scalar" else disabled is None,
+                "Matrix runtime AVX2 dispatch does not match the selected mode")
+        proof["MATRIX_DISABLE_AVX2"] = "1" if mode == "scalar" else None
+    return proof
 
 
-def dependency_proof(root, tree, depfile, source, target, generated=False):
+def dependency_proof(root, tree, depfile, source, target, generated=False, family="dwm"):
+    require(family in SCOPES, "Unknown intrinsic mode")
+    products, required, _, _ = SCOPES[family]
     raw = depfile.read_bytes()
     text = raw.decode().replace("\\\n", " ")
     require(text.startswith("gate-output: "), "Unexpected dependency rule")
@@ -125,9 +163,9 @@ def dependency_proof(root, tree, depfile, source, target, generated=False):
     paths = {Path(item).resolve(strict=True) for item in tokens}
     require(source.resolve() in paths, "Compiler did not report the actual source")
     closure = tree.closure(target)
-    expected_products = PRODUCTS & closure
-    if target in REQUIRED_UNITS:
-        expected_products = PRODUCTS if not target.endswith("/dynamic_bit_vector.cpp") else {
+    expected_products = products & closure
+    if target in required:
+        expected_products = products if not target.endswith("/dynamic_bit_vector.cpp") else {
             "components/dynamic_bit_vector.hpp"}
     found, project = set(), []
     for path in sorted(paths):
@@ -139,7 +177,8 @@ def dependency_proof(root, tree, depfile, source, target, generated=False):
         require(path.read_bytes() == tree.content(name), "Dependency bytes differ from exact head: " + name)
         found.add(name)
         project.append({"project_path": name, **file_proof(path)})
-    require(expected_products <= found, "Compilation did not consume the current production DWM headers")
+    require(expected_products <= found,
+            "Compilation did not consume the current production " + family.upper() + " headers")
     return {"depfile": file_proof(depfile), "source": file_proof(source),
             "project_dependencies": project, "production_headers": sorted(expected_products),
             "system_headers": "excluded by -MMD"}
@@ -154,6 +193,7 @@ def header_source(name):
 
 
 def execute(root, route, plan, directory):
+    family = scope_mode(plan)
     commands = Commands(directory)
     compiler = Path("/usr/bin/g++-15").resolve(strict=True)
     require(commands.run([compiler, "-dumpfullversion"], seconds=30).strip() == b"15.2.0",
@@ -163,16 +203,16 @@ def execute(root, route, plan, directory):
     emit("compiler", compiler=file_proof(compiler), cc1plus=file_proof(cc1.resolve(strict=True)),
          environment=commands.environment, lto=False, assertions=True)
     tree = SourceTree(root, route["head"])
-    emit("scope", route=route, plan_sha256=plan["plan_sha256"], headers=plan["headers"],
+    emit("scope", family=family, route=route, plan_sha256=plan["plan_sha256"], headers=plan["headers"],
          units=plan["unit"], source_controls={name: digest(tree.content(name)) for name in (
              ".verify-helper/intrinsic_gate.py", ".verify-helper/intrinsic_gate_test.py",
              ".github/workflows/verify.yml")},
          max_commands=MAX_COMMANDS, max_seconds=JOB_SECONDS, max_log_bytes=MAX_LOG_BYTES)
-    for mode, extra in MODES.items():
-        flags = COMMON + extra
+    for mode in MODES:
+        flags = mode_flags(mode, family)
         raw = commands.run([compiler, *flags, "-dM", "-E", "-x", "c++", "-"],
                            source=b"#include <cassert>\n", seconds=30)
-        emit("macro_proof", mode=mode, flags=flags, **macro_proof(raw, mode))
+        emit("macro_proof", family=family, mode=mode, flags=flags, **macro_proof(raw, mode, family))
         for group in ("headers", "unit"):
             for index, target in enumerate(plan[group]):
                 stem = directory / (mode + "-" + group + "-" + str(index))
@@ -183,13 +223,13 @@ def execute(root, route, plan, directory):
                 depfile, binary = stem.with_suffix(".d"), stem.with_suffix(".bin")
                 commands.run([compiler, *flags, "-I", root, "-MMD", "-MF", depfile,
                               "-MT", "gate-output", source, "-o", binary])
-                proof = dependency_proof(root, tree, depfile, source, target, group == "headers")
+                proof = dependency_proof(root, tree, depfile, source, target, group == "headers", family)
                 binary_before = file_proof(binary)
                 emit("binary", mode=mode, group=group, target=target,
                      binary=binary_before, dependencies=proof)
                 commands.run([binary])
                 require(file_proof(binary) == binary_before, "Test binary changed during execution")
-                require(dependency_proof(root, tree, depfile, source, target, group == "headers") == proof,
+                require(dependency_proof(root, tree, depfile, source, target, group == "headers", family) == proof,
                         "Source dependency changed during execution")
         emit("mode_completed", mode=mode, unit_count=len(plan["unit"]), header_count=len(plan["headers"]))
     checked_source(root, route["base"], route["head"])
@@ -206,7 +246,7 @@ def main():
     if plan is None:
         emit("gate_skipped", reason="normal event; no extra C++ commands")
         return
-    with tempfile.TemporaryDirectory(prefix="dwm-intrinsic-") as directory:
+    with tempfile.TemporaryDirectory(prefix="intrinsic-gate-") as directory:
         execute(root, route, plan, Path(directory).resolve())
 
 

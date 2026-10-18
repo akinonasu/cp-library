@@ -2,6 +2,7 @@
 #include "math/mint.hpp"
 #include "math/fraction.hpp"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <cmath>
 #include <cstdint>
@@ -53,6 +54,37 @@ Matrix<T> brute_product(const Matrix<T> &a, const Matrix<T> &b) {
 	for (int i = 0; i < a.rows(); ++i) for (int j = 0; j < b.cols(); ++j)
 		for (int k = 0; k < a.cols(); ++k) c(i, j) += a(i, k) * b(k, j);
 	return c;
+}
+
+template <class T>
+void multiplication_edges() {
+	std::mt19937_64 random(719);
+	auto check = [&](int n, int inner, int m) {
+		Matrix<T> a(n, inner), b(inner, m);
+		for (int i = 0; i < n; ++i) for (int k = 0; k < inner; ++k) a(i, k) = T(random() % T::mod());
+		for (int k = 0; k < inner; ++k) for (int j = 0; j < m; ++j) b(k, j) = T(random() % T::mod());
+		assert(a * b == brute_product(a, b));
+		a.fill(T(T::mod() - 1));
+		b.fill(T(T::mod() - 1));
+		assert(a * b == Matrix<T>(n, m, T(inner)));
+	};
+	for (const auto &[n, inner, m] : {
+		std::array{0, 0, 0}, std::array{0, 16, 8}, std::array{4, 0, 9}, std::array{4, 16, 0},
+		std::array{0, 0, 9}, std::array{4, 0, 0}, std::array{1, 1, 127}, std::array{1, 1, 128},
+		std::array{1, 1, 129}, std::array{1, 127, 1}, std::array{1, 128, 1}, std::array{1, 129, 1},
+		std::array{127, 1, 1}, std::array{128, 1, 1}, std::array{129, 1, 1}, std::array{2, 8, 8},
+		std::array{2, 9, 8}, std::array{17, 65, 9}, std::array{65, 17, 33}, std::array{33, 65, 17}
+	}) check(n, inner, m);
+	for (int n = 1; n <= 9; ++n) for (int inner : {15, 16, 17, 31, 32, 33})
+		for (int m : {7, 8, 9, 16, 17, 31, 32, 33}) check(n, inner, m);
+	for (int m = 8; m < 16; ++m) check(5, 33, m);
+	for (int n : {0, 1, 3, 4, 5, 15, 16, 17, 31, 32, 33}) {
+		Matrix<T> a(n);
+		for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j) a(i, j) = T(random() % T::mod());
+		auto expected = brute_product(a, a);
+		a *= a;
+		assert(a == expected);
+	}
 }
 
 template <class T>
@@ -200,6 +232,16 @@ void modular() {
 }
 
 int main() {
+	multiplication_edges<mint>();
+	multiplication_edges<Mod<1>>();
+	multiplication_edges<Mod<2>>();
+	multiplication_edges<Mod<6>>();
+	multiplication_edges<Mod<998244353>>();
+	multiplication_edges<Mod<1000000007>>();
+	multiplication_edges<Mod<1073741824>>();
+	multiplication_edges<Mod<1073741825>>();
+	multiplication_edges<Mod<2147483647>>();
+	multiplication_edges<Mod<2147483648u>>();
 	modular<mint>();
 	modular<Mod<1000000007>>();
 	modular<Mod<2147483647>>();
