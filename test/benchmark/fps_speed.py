@@ -35,6 +35,7 @@ def main():
     parser.add_argument('--operations', nargs='+', default=['inv', 'log', 'exp', 'sqrt', 'pow', 'div_series', 'divmod', 'square', 'multiply',
                                                          'inv:1:1', 'inv:12:1', 'inv:32:1', 'exp:1:1', 'exp:24:1', 'exp:64:1', 'inv:32:1024', 'exp:64:1024'])
     parser.add_argument('--candidates', action='store_true')
+    parser.add_argument('--workspace-candidates', action='store_true')
     parser.add_argument('--official-root', type=Path)
     parser.add_argument('--references', type=Path)
     args = parser.parse_args()
@@ -46,6 +47,9 @@ def main():
                                    hardware=subprocess.check_output(['lscpu'], text=True), seed=20261018,
                                    harness_sha256=sha(Path(__file__)), driver_sha256=sha(ROOT / 'test/benchmark/fps_tuning_basic.cpp')),
                   sources={}, kernel=[], judge=[])
+    thp = Path('/sys/kernel/mm/transparent_hugepage')
+    result['environment']['transparent_hugepages'] = {
+        name: (thp / name).read_text().strip() for name in ['enabled', 'defrag'] if (thp / name).is_file()}
     args.output.parent.mkdir(parents=True, exist_ok=True)
 
     def save():
@@ -61,6 +65,19 @@ def main():
         for folder in ['fps', 'components', 'math', 'convolution']:
             shutil.copytree(ROOT / folder, current / folder)
         trees = dict(before=before, current=current)
+        if args.workspace_candidates:
+            for name in ['padding_only', 'pages_only']:
+                tree = work / name
+                shutil.copytree(current, tree)
+                if name == 'padding_only':
+                    header = tree / 'components/fps_workspace.hpp'
+                    s = header.read_text().replace('#if defined(__linux__) && defined(MADV_HUGEPAGE)',
+                                                  '#if defined(__linux__) && defined(MADV_HUGEPAGE) && 0')
+                else:
+                    header = tree / 'fps/fps.hpp'
+                    s = header.read_text().replace('pitch = length + 16', 'pitch = length')
+                header.write_text(s)
+                trees[name] = tree
         if args.candidates:
             for count in [1, 2, 4]:
                 tree = work / f'group{count}'
