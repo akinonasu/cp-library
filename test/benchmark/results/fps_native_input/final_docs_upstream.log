@@ -1,0 +1,45 @@
+Started upstream documentation verification: 2026-10-18T19:07:46.836614+00:00
+Git HEAD: d93652c7c406271fab765614979e3f049f2bd52c
+Compiler: g++ (Debian 14.2.0-19) 14.2.0
+Generation: all 144 library headers and 24 FPS judge sources
+Selected bundles depending on FastIO: ['components/fast_io.hpp', 'components/fps_io.hpp']
+/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/documentation/build.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+Generated documentation for 168 library and judge sources
+Reused successful bundle after SHA-256 equality: components/fps_blocked.hpp 9175a147b13068ba407dcebba1d357ed2f231d38d13256946b9b502825c8cfbe
+Reused successful bundle after SHA-256 equality: components/fps_composition.hpp 27e2ebb42af7c8da2dff1606c0159effa400ed096f3a51433201b514a2af4a3a
+Reused successful bundle after SHA-256 equality: components/fps_convolution.hpp c7b38c37c26d235df624c30f03f67427493eeadd5c68669b693fd349ef553b45
+Reused successful bundle after SHA-256 equality: components/fps_division_blocked.hpp 26e26fdeb0f447da9b7d4a86cc49f806a34af3e1391d73d209ea4429e0e83410
+Reused successful bundle after SHA-256 equality: components/fps_evaluation.hpp 53712cfee84b2f438c780581e1fe2fa9798db89cee24778dba57ce605c0d1088
+Reused successful bundle after SHA-256 equality: components/fps_exp_blocked.hpp ad3457fad118bfc02c2d7e248248383f1fb22aaed2f8e8ee9dec857d0ebc8ac3
+Reused successful bundle after SHA-256 equality: components/fps_horner.hpp 223623760de01ae011c42b181909bbf9dfe1242f1e839c7c763d24b33d0525ff
+Reused successful bundle after SHA-256 equality: components/fps_inverse_blocked.hpp 3fea675abd02a16c4aadb998662f0785ffd522c8fba042b178b5e238f81483b7
+Reused successful bundle after SHA-256 equality: components/fps_output.hpp c9c1337dd0c8b127c10948254dbcfee0cd26b636dea327030ad82c3c9b251063
+Reused successful bundle after SHA-256 equality: components/fps_product_tree.hpp 66f9403f1c9c90be4cac493a28aa0326ece8afdd71e23b2559ace61d756f43cf
+Reused successful bundle after SHA-256 equality: components/fps_reversion.hpp 6181cedd4dd8b2c068f8c356832825671c17c420c5a935675357f6db501483ca
+Reused successful bundle after SHA-256 equality: components/fps_sqrt_blocked.hpp 47eb013d22abb79dc9801c0f3d933306ad49a4483f9772a5d01ba219ae125f75
+Reused successful bundle after SHA-256 equality: components/fps_taylor_blocked.hpp 33608d804c1da45f7adb44afb84fee671e5d1898342af54f513ab8b5a481a55f
+Reused successful bundle after SHA-256 equality: components/polynomial_gcd_blocked.hpp d8ef1e551516c3e244feec028b18403a7711cf03b42bca06f40cda8cfeb3eef0
+Reused successful bundle after SHA-256 equality: components/polynomial_half_gcd.hpp a797330282e386ec2d0b0d6a30915bf8809614127eedea756c78e0c453231335
+Reused successful bundle after SHA-256 equality: convolution/convolution.hpp 5ebbc588221b965f7ac54feb1e2a72efbf3fe0a60fb9935e16a03cb502a6ff6e
+Reused successful bundle after SHA-256 equality: convolution/cyclic_convolution.hpp 3dc23cc9491d2ec9104028d36717710b465ea7047b272af992ee46808f4e6704
+Reused successful bundle after SHA-256 equality: convolution/max_min_convolution.hpp c6179188f4d800cc69a835d4386f00745bfbf02f2ed3cba43f63c44c461c103d
+Reused successful bundle after SHA-256 equality: convolution/multiplicative_convolution.hpp f088eba3bf06c27f69d603264db632fc890609da9a757791480dad5c3c71e533
+Reused successful bundle after SHA-256 equality: convolution/multivariate_convolution.hpp 2774d41a59e6377bde76e600cbe3ca0f8145fc3c30d4cce9efa7aca3337846be
+Reused successful bundle after SHA-256 equality: convolution/ordered_convolution.hpp 8d17b776f165bc4253356ed85267d250bc2a6d791f8c8ef921a3262b292454ed
+Reused successful bundle after SHA-256 equality: fps/bostan_mori.hpp b19377fff6c0707af5b202b9819403b3979f65e6571ae4c3b2d16dae2463b1ba
+Reused successful bundle after SHA-256 equality: fps/compose.hpp e4b9c90822690ddba420cec7c4da8976972186157686c621beee44f08d3c8072
+Reused successful bundle after SHA-256 equality: fps/compositional_inverse.hpp e9d8db437a29989b35db20813fc5833ca23fc6bc325210c6d4d527c03e13d86e
+Reused successful bundle after SHA-256 equality: fps/fps.hpp e033ba1fc2ec10e66831f3ade8a5646566c111447824ed93c51f53e1590ae37e
+Reused successful bundle after SHA-256 equality: fps/interpolate.hpp 89d003612dd9d71bb4abd39303d9bd77e44d7389a39dafe8bbe128421f09b3d1
+Reused successful bundle after SHA-256 equality: fps/linear_recurrence.hpp 2080a8c223e658e56d2fdbaf102462039fa6aaa224d812f16caf496bf487dbe6
+Reused successful bundle after SHA-256 equality: fps/multipoint_eval.hpp 20ef6601f3c2187a5383cd6be2d1c1a0d5d13b72b4485ca3bab8802cf8351d95
+Reused successful bundle after SHA-256 equality: fps/polynomial_gcd.hpp 9100cf881b36fe3ea8b9e44f7f2e217e7799889f6d19fe701cbc86556b780a6e
+Reused successful bundle after SHA-256 equality: fps/power_projection.hpp f42e409dbda708d241430aff4ca7195358003d92a6bdadabbf63e42afbdaed46
+Reused successful bundle after SHA-256 equality: fps/taylor_shift.hpp 1a985e5c173daf9f04826c07fc6099bb1576e269cb0489bf221bab23fb90b487
+Command: ['/tmp/fps-venv/bin/python', '/workspace/cp-library/.verify-helper/check-docs.py', '--selection', '/tmp/fps-native-input-docs-upstream/selection.json']
+Checked documentation for 144 libraries; compiled 2 affected bundles
+Changed bundle bodies: ['components/fast_io.hpp', 'components/fps_io.hpp']
+Recompiled 2 FastIO-dependent bundles; reused 31 unchanged successful bundles.
+All source header hashes remained unchanged; corrected pointset initializer retained.
+Finished: 2026-10-18T19:08:39.008143+00:00

@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | 積・二乗 | 2 本の変換と積・逆変換を同じ部分木で実行。2 群の葉を融合し、半分が零の最上段をまとめる | [409465](https://judge.yosupo.jp/submission/409465) |
 | `inv` | 最終 Newton 更新の作業領域を再利用。2 冪を僅かに超える場合は内積で末尾を補完 | [409370](https://judge.yosupo.jp/submission/409370) |
-| `log` | 前回導入した 4 ブロック更新に、最上段 radix 8・倍率表・一括結果生成を追加 | [409452](https://judge.yosupo.jp/submission/409452) |
+| `log` | 前回導入した 4 ブロック更新に、最上段 radix 8・倍率表・一括結果生成を追加。26 万項から入力の正規化を最上段・微分へ融合 | [409452](https://judge.yosupo.jp/submission/409452) |
 | `exp` | Newton 更新と最後の 2 ブロックを専用化し、変換を保持 | [409662](https://judge.yosupo.jp/submission/409662) |
 | `pow` | 対数微分から指数まで変換済み配列と Arena を共有 | [409718](https://judge.yosupo.jp/submission/409718) |
 | `sqrt` | 葉の二乗、最終の分割更新、必要な半分の積を融合 | [409728](https://judge.yosupo.jp/submission/409728) |
@@ -34,45 +34,46 @@ Yosupo 上の順位表示とローカルの時間を直接比較せず、公開�
 
 | 処理 | 比較元 ms | 変更後 ms | 最速原本 ms |
 | --- | ---: | ---: | ---: |
-| 積 | 24.840 | 15.127 | 11.508 |
-| 逆数 | 15.996 | 12.878 | 10.793 |
-| 対数 | 16.868 | 15.355 | 13.393 |
-| 指数 | 25.689 | 17.229 | 15.178 |
-| 冪 | 37.996 | 25.282 | 23.010 |
-| 平方根 | 19.264 | 13.205 | 11.079 |
-| 多項式除算 | 10.276 | 7.040 | 5.430 |
-| 線形漸化式 | 59.291 | 56.516 | 58.736 |
-| 合成（通常） | 3.720 | 3.068 | 3.081 |
-| 合成（large） | 56.050 | 33.731 | 33.010 |
-| 合成逆元（通常） | 3.287 | 2.579 | 2.603 |
-| 合成逆元（large） | 51.446 | 30.851 | 30.421 |
-| 多点評価 | 52.307 | 16.676 | 15.895 |
-| 補間 | 74.847 | 20.439 | 19.773 |
-| Taylor shift | 24.479 | 11.673 | 9.359 |
-| 多項式逆元 | 47.481 | 15.317 | 14.975 |
+| 積 | 24.693 | 14.837 | 11.463 |
+| 逆数 | 15.904 | 12.590 | 10.850 |
+| 対数 | 16.796 | 14.776 | 13.002 |
+| 指数 | 25.890 | 16.990 | 15.578 |
+| 冪 | 37.847 | 25.198 | 23.179 |
+| 平方根 | 18.778 | 12.933 | 10.910 |
+| 多項式除算 | 10.380 | 6.776 | 4.972 |
+| 線形漸化式 | 59.169 | 56.211 | 57.864 |
+| 合成（通常） | 3.469 | 2.953 | 2.922 |
+| 合成（large） | 55.530 | 33.839 | 32.713 |
+| 合成逆元（通常） | 3.321 | 2.623 | 2.630 |
+| 合成逆元（large） | 50.989 | 31.213 | 30.567 |
+| 多点評価 | 48.809 | 15.445 | 14.795 |
+| 補間 | 71.392 | 19.738 | 19.098 |
+| Taylor shift | 23.475 | 10.756 | 9.132 |
+| 多項式逆元 | 48.325 | 15.806 | 15.383 |
 
-線形漸化式と通常サイズの合成・合成逆元は原本と同等以上の中央値だった。large の合成・合成逆元、評価・補間は近づいたが、全関数で最速原本と同等には達していない。積・逆数・対数・指数・冪・平方根には約 2〜4 ms の差が残る。原本は入出力と同じ生配列を破壊的に更新するため、非破壊の公開 API に必要な係数配列・コピーも差になる。
+線形漸化式は原本より速い中央値で、通常サイズの合成・合成逆元も原本との差は 1.1% 以内だった。large の合成・合成逆元、評価・補間は近づいたが、全関数で最速原本と同等には達していない。積・逆数・対数・指数・冪・平方根には約 1.4〜3.4 ms の差が残る。原本は入出力と同じ生配列を破壊的に更新するため、非破壊の公開 API に必要な係数配列・コピーも差になるが、残差の全額が不可避な費用とは確認していない。
 
-通常の合成は短いプロセスの時間変動が大きかったため、同じバイナリを使い 21 試行へ増やした。全試行と再確認理由は `results/fps_all_compose_recheck.json`、正式な 16 問の値は `results/fps_all_speed.json` にある。順位はローカルの同条件比較であり、実際の judge での最速獲得を断定しない。
+通常の合成・合成逆元は短いプロセスの時間変動が大きいため、同じバイナリを使い両方を 21 試行へ増やした。全試行と再確認理由は `results/fps_all_small_input_fusion.json`、正式な 16 問の値は `results/fps_all_speed_input_fusion.json` にある。最初の 9 試行も `results/fps_all_speed_input_fusion_initial.json` に残した。順位はローカルの同条件比較であり、実際の judge での最速獲得を断定しない。入力融合前の総合測定は `results/fps_all_speed.json` と `results/fps_all_compose_recheck.json` にある。
+
+追加の入力融合は対数だけを採用した。50 万項の計算は 8.846→8.714 ms、全体 99 試行の中央値は 15.438→15.337 ms だった。小さい次数は既存経路を維持する。[対数・冪の候補](fps_native_input.md)、[畳み込みの不採用候補](fps_convolution_input.md)、[根表初期化の不採用候補](fps_root_initialization.md) に原票と再現手順を残した。全体時間の小さい差を、計算の差だけで説明しない。
 
 計算部分の補助測定と候補の採否は、[exp/pow](fps_exp_backend.md)、[逆数・平方根](fps_inverse_sqrt.md)、[除算・GCD](fps_division.md)、[合成・射影](fps_composition_speed.md)、[評価・補間・Taylor shift](fps_evaluation.md)、[線形漸化式](fps_bostan_speed.md)、[一点評価](fps_horner.md) を参照。
 
 ```sh
 python3 test/benchmark/fps_all_speed.py --baseline ce81108 \
-  --output test/benchmark/results/fps_all_speed.json
-python3 test/benchmark/fps_tuning_selection.py --baseline ce81108 \
-  --output test/benchmark/results/fps_all_selection.json
-python3 test/benchmark/fps_tuning_selection.py --baseline ce81108 \
-  --ignore-access-declarations \
-  --output test/benchmark/results/fps_all_judge_selection.json
+  --output test/benchmark/results/fps_all_speed_input_fusion.json
+python3 test/benchmark/fps_tuning_selection.py --baseline d93652c \
+  --output test/benchmark/results/fps_native_input/final_selection.json
 python3 test/benchmark/fps_speed_verify.py \
   --official-root /tmp/library-checker-problems \
-  --selection test/benchmark/results/fps_all_judge_selection.json \
-  --output test/benchmark/results/fps_all_judge.json
+  --selection test/benchmark/results/fps_native_input/final_selection.json \
+  --output test/benchmark/results/fps_native_input/final_judge.json
 ```
 
 参照ソースは `fps_tuning_reference.py --cache /tmp/fps-reference --output reference.json` で取得できる。使用した提出 ID とソースハッシュの原票は `results/fps_speed_reference.json` にある。GCD 単独の問題名を指定していた従来の取得候補は修正し、上位 C++ 提出だけを取得するようにした。
 
-`fast_io.hpp` 自体の差分は BulkOutput の前方宣言と friend 宣言のみで、既存の整数入出力の実装・型の配置は変えていない。全依存先の一覧は `fps_all_selection.json` に保存し、既存 I/O の単体も実行した。公式問題の選択では、宣言を取り除けば比較元と完全一致することをスクリプトで検査してから、動作変更のある FPS 側の依存先を選ぶ。
+入力融合後も GCC 14 の 33 ヘッダー・26 単体、公式 22 ドライバー・596 ケース、GCC 13 と Clang 19 の対数、対数・指数・冪の ASan/UBSan を確認した。追補の条件と依存ハッシュは `results/fps_native_input/final_validation.json`、各実行原票は同じディレクトリにある。文書 144 件と影響する 33 bundle も確認した。
+
+今回の FPS 高速化が `fast_io.hpp` へ加えた変更は BulkOutput の前方宣言と friend 宣言のみで、既存の整数入出力の実装・型の配置は変えていない。初回の全依存先は `fps_all_selection.json` に保存し、宣言を取り除けば比較元と完全一致することを検査して FPS の公式問題を選んだ。その後 main に入った `d93652c` は、出力の定数表を同じ値のまま少ない定数評価で生成する変更である。追補の選択はそのコミットを基準にし、最終 16 問の実行バイナリを再ビルドして全体の SHA-256 一致を確認した。統合の記録は `results/fps_native_input/upstream_integration.json` にある。
 
 最終の出力は 64 係数単位で生成し、新規の大きな vector 領域の完全所有ページだけを Linux に準備させる。50 万語の cold 出力は 0.424→0.267 ms、1,048,575 語は HUGEPAGE 併用で 1.076→0.483 ms。syscall・確保・破棄込みの新規プロセス 21 試行で確認した。条件と失敗時の通常動作は [内部 API](../../docs/fps_output.md)、原票は `results/fps_output_pages.json` を参照。

@@ -1,0 +1,16 @@
+Clang 19 updated FPS log portable-path compatibility check
+Started UTC: 2026-10-18T18:59:05.658958+00:00
+Git HEAD: 520e97212aa2fb7f277accbcd0b764213dce5d93
+Lock: flock -s /tmp/cp-fps-tuning.lock
+[compiler_version] $ /tmp/fps-clang/toolchain/usr/bin/clang++-19 --version
+Debian clang version 19.1.7 (3+b1)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /tmp/fps-clang/toolchain/usr/lib/llvm-19/bin
+[compiler_version] exit=0 elapsed_seconds=0.035537
+[fps_log_Werror_compile] $ /tmp/fps-clang/toolchain/usr/bin/clang++-19 -std=c++23 -O2 -Wall -Wextra -Werror -I. /workspace/cp-library/test/unit/fps_log.cpp -o /tmp/fps-native-input-clang-pka9lk45/fps_log
+[fps_log_Werror_compile] exit=0 elapsed_seconds=3.138503
+[fps_log_run] $ /tmp/fps-native-input-clang-pka9lk45/fps_log
+[fps_log_run] exit=0 elapsed_seconds=0.481374
+Dependencies: 16; unchanged: True
+Result: passed

@@ -1,0 +1,7 @@
+built kernel
+built whole
+kernel 131073 {'before': 2.136676, 'after': 2.292528, 'after_layout': 2.082385}
+kernel 500000 {'before': 9.038296, 'after': 8.866841, 'after_layout': 9.018917}
+kernel 524288 {'before': 9.103528, 'after': 9.064389, 'after_layout': 9.154954}
+max_random_00 {'before': 15.006286, 'after': 14.643606, 'after_layout': 14.850404}
+max_random_01 {'before': 14.842464, 'after': 14.766309, 'after_layout': 14.824105}

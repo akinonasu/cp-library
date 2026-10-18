@@ -1,0 +1,25 @@
+Started 2026-10-18T18:54:15.088394+00:00
+g++ (Debian 14.2.0-19) 14.2.0
+Shared flock; ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1
+
+normal test/unit/fps_exp_blocked.cpp
+g++ -std=c++2b -O2 -Wall -Wextra -Werror -DDEBUG=1 -I /workspace/cp-library /workspace/cp-library/test/unit/fps_exp_blocked.cpp -o /tmp/fps-native-exp-check/fps_exp_blocked_normal
+/tmp/fps-native-exp-check/fps_exp_blocked_normal
+{"test": "test/unit/fps_exp_blocked.cpp", "mode": "normal", "seconds": 17.14005756300321, "dependencies_unchanged": true, "passed": true}
+
+normal test/unit/fps_tuning_basic.cpp
+g++ -std=c++2b -O2 -Wall -Wextra -Werror -DDEBUG=1 -I /workspace/cp-library /workspace/cp-library/test/unit/fps_tuning_basic.cpp -o /tmp/fps-native-exp-check/fps_tuning_basic_normal
+/tmp/fps-native-exp-check/fps_tuning_basic_normal
+{"test": "test/unit/fps_tuning_basic.cpp", "mode": "normal", "seconds": 28.655518093000865, "dependencies_unchanged": true, "passed": true}
+
+sanitize test/unit/fps_exp_blocked.cpp
+g++ -std=c++2b -O2 -Wall -Wextra -Werror -DDEBUG=1 -I /workspace/cp-library -fsanitize=address,undefined -fno-omit-frame-pointer -g /workspace/cp-library/test/unit/fps_exp_blocked.cpp -o /tmp/fps-native-exp-check/fps_exp_blocked_sanitize
+/tmp/fps-native-exp-check/fps_exp_blocked_sanitize
+{"test": "test/unit/fps_exp_blocked.cpp", "mode": "sanitize", "seconds": 84.0012041000009, "dependencies_unchanged": true, "passed": true}
+
+sanitize test/unit/fps_tuning_basic.cpp
+g++ -std=c++2b -O2 -Wall -Wextra -Werror -DDEBUG=1 -I /workspace/cp-library -fsanitize=address,undefined -fno-omit-frame-pointer -g /workspace/cp-library/test/unit/fps_tuning_basic.cpp -o /tmp/fps-native-exp-check/fps_tuning_basic_sanitize
+/tmp/fps-native-exp-check/fps_tuning_basic_sanitize
+{"test": "test/unit/fps_tuning_basic.cpp", "mode": "sanitize", "seconds": 125.04583926699706, "dependencies_unchanged": true, "passed": true}
+
+{"passed": true, "sources_unchanged": true, "completed_utc": "2026-10-18T18:58:30.650820+00:00"}

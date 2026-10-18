@@ -1,0 +1,14 @@
+{
+  "baseline": "4765ceb5f995801d27b23840392c9c354ecdecb9",
+  "repository": "/tmp/fps-root-initialization-clone",
+  "archive_manifest": "passed",
+  "original_harness": "passed",
+  "safety_source": "passed",
+  "headers": {
+    "baseline": 104,
+    "candidate": 104
+  },
+  "kernel_drivers": 2,
+  "whole_drivers": 10,
+  "restoration": "passed"
+}

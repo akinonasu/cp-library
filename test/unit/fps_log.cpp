@@ -2,6 +2,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <random>
+#include <new>
+#if defined(__linux__)
+#include <sys/mman.h>
+#include <unistd.h>
+#endif
 
 static void require(bool value, int line = __builtin_LINE()) {
 	if (!value) {
@@ -59,12 +64,47 @@ static void check_transform() {
 }
 #endif
 
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+static void check_native_boundary() {
+	using Mint = fps_mint;
+	const std::size_t page = std::size_t(sysconf(_SC_PAGESIZE));
+	for (int n : {262143, 262144, 262145, 393217}) {
+		for (int input : {1, 33, 64, 65, n / 3, n + 17}) {
+			const std::size_t bytes = std::size_t(input) * sizeof(Mint), readable = (bytes + page - 1) / page * page;
+			void *mapping = mmap(nullptr, readable + page, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+			require(mapping != MAP_FAILED);
+			auto *guard = static_cast<char *>(mapping) + readable;
+			require(mprotect(guard, page, PROT_NONE) == 0);
+			auto *values = ::new (guard - bytes) Mint[input];
+			std::vector<unsigned> saved(input);
+			for (int i = 0; i < input; ++i) {
+				values[i] = Mint::word(2 * Mint::mod() - 1 - i % 7);
+				if (!i) values[i] = 1;
+				saved[i] = values[i].v;
+			}
+			require(mprotect(mapping, readable, PROT_READ) == 0);
+			fps logarithm, derivative;
+			fps_detail::blocked_poly::native_log(values, input, logarithm, n, true);
+			fps_detail::blocked_poly::native_log(values, input, derivative, n, false);
+			require(logarithm.size() == unsigned(n) && derivative.size() == unsigned(n));
+			require(logarithm[0] == Mint(0) && derivative[0] == Mint(0));
+			for (int i = 1; i < n; ++i) require(logarithm[i] * Mint(i) == derivative[i]);
+			for (int i = 0; i < input; ++i) require(values[i].v == saved[i]);
+			require(munmap(mapping, readable + page) == 0);
+		}
+	}
+}
+#endif
+
 int main() {
 #if defined(__x86_64__) || defined(__i386__)
 	if (fps_detail::NTT::vectorized()) check_transform();
 #endif
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (fps_detail::NTT::vectorized()) check_native_boundary();
+#endif
 	std::mt19937 rng(20261018);
-	for (int n : {255, 256, 257, 258, 385, 386, 511, 512, 513, 514, 769, 770, 1023, 1024, 1025, 1026, 1537, 1538, 4097, 16386, 500000})
+	for (int n : {255, 256, 257, 258, 385, 386, 511, 512, 513, 514, 769, 770, 1023, 1024, 1025, 1026, 1537, 1538, 4097, 16386, 262143, 262144, 262145, 393217, 500000})
 		for (int input : {1, 37, 63, 64, 65, n / 3, n + 17}) {
 			fps a(input);
 			for (auto &x : a) x = fps_mint::word(fps_detail::NTT::twice - 1 - rng() % 7);

@@ -1,0 +1,155 @@
+{
+  "prepare_command": [
+    "python3",
+    "/workspace/cp-library/test/benchmark/results/fps_native_input/log/prepare.py",
+    "/workspace/cp-library",
+    "/tmp/fps-log-pack-readonly-review"
+  ],
+  "prepare_pass": true,
+  "compile_performed": false,
+  "repository_edited": false,
+  "recorded_checks": {
+    "baseline": "4765ceb5f995801d27b23840392c9c354ecdecb9",
+    "headers": {
+      "results.json:before": 103,
+      "results.json:after": 103,
+      "layout.json:before": 103,
+      "layout.json:after": 103,
+      "layout.json:after_layout": 103,
+      "shared.json:before": 103,
+      "shared.json:after_shared": 103
+    },
+    "source_hashes": {
+      "kernel.cpp": "397f3282fb6e2840e940e3f64858590b8296328018411ab45e6bb81179592a73",
+      "log-boundary-unit.cpp": "da348ec3832eb90818cbd485f3d313ddfd991467d61e2e6af6b18cf6b38724fb",
+      "bench.py": "8a818e24f63955f0b8400729f1d45198f7bc33dc7d8cfa6d82561424c1fb64db",
+      "layout.py": "1e96af8d900dcbec57bb154ad157de44d5604db8e91018a9936164e8c3ddc001",
+      "shared_bench.py": "5cf481627ce3c6c8dbd475d8b38e60eefc338d0e38f2229b9c78482e04b0c1f1",
+      "repeat.py": "34452dac78a537b8bdfcd37c17428332c0da78dcef8ae95c942e85fda175f17b",
+      "reference409452.cpp": "86ef3c3b4a4707ef5e7515e5229b2564f2a5f46bd830bb6cbe64b506a95675b6",
+      "official:max_random_00": "71cb0227a5a1e40ece225e19cd9d2633dfd4f07f25d39f01719bc2376e1d4ac8",
+      "official:max_random_01": "4e02bda31a47036fe451d93878205f7bb9529753bef1ec480984ab4625719d2d"
+    }
+  },
+  "full_headers": {
+    "before": {
+      "original_count": 170,
+      "reconstructed_count": 170,
+      "mismatches": [],
+      "pass": true
+    },
+    "after": {
+      "original_count": 170,
+      "reconstructed_count": 170,
+      "mismatches": [],
+      "pass": true
+    },
+    "after_layout": {
+      "original_count": 170,
+      "reconstructed_count": 170,
+      "mismatches": [],
+      "pass": true
+    },
+    "after_shared": {
+      "original_count": 170,
+      "reconstructed_count": 170,
+      "mismatches": [],
+      "pass": true
+    }
+  },
+  "harness_hashes": {
+    "bench.py": {
+      "expected": "8a818e24f63955f0b8400729f1d45198f7bc33dc7d8cfa6d82561424c1fb64db",
+      "actual": "8a818e24f63955f0b8400729f1d45198f7bc33dc7d8cfa6d82561424c1fb64db",
+      "pass": true
+    },
+    "share.py": {
+      "expected": "124d4a9566e734189f2265c8d3233ae78001226fc76bf8fae28ddede4aa89aec",
+      "actual": "124d4a9566e734189f2265c8d3233ae78001226fc76bf8fae28ddede4aa89aec",
+      "pass": true
+    },
+    "shared_bench.py": {
+      "expected": "5cf481627ce3c6c8dbd475d8b38e60eefc338d0e38f2229b9c78482e04b0c1f1",
+      "actual": "5cf481627ce3c6c8dbd475d8b38e60eefc338d0e38f2229b9c78482e04b0c1f1",
+      "pass": true
+    },
+    "make.py": {
+      "expected": "1e608e2bb4355c4e5e03c2c6818ce1903d7d44dee83e30ee497239893867a310",
+      "actual": "1e608e2bb4355c4e5e03c2c6818ce1903d7d44dee83e30ee497239893867a310",
+      "pass": true
+    },
+    "repeat.py": {
+      "expected": "34452dac78a537b8bdfcd37c17428332c0da78dcef8ae95c942e85fda175f17b",
+      "actual": "34452dac78a537b8bdfcd37c17428332c0da78dcef8ae95c942e85fda175f17b",
+      "pass": true
+    },
+    "layout.py": {
+      "expected": "1e96af8d900dcbec57bb154ad157de44d5604db8e91018a9936164e8c3ddc001",
+      "actual": "1e96af8d900dcbec57bb154ad157de44d5604db8e91018a9936164e8c3ddc001",
+      "pass": true
+    }
+  },
+  "python_ast": {
+    "/workspace/cp-library/test/benchmark/results/fps_native_input/log/bench.py": true,
+    "/workspace/cp-library/test/benchmark/results/fps_native_input/log/share.py": true,
+    "/workspace/cp-library/test/benchmark/results/fps_native_input/log/shared_bench.py": true,
+    "/workspace/cp-library/test/benchmark/results/fps_native_input/log/make.py": true,
+    "/workspace/cp-library/test/benchmark/results/fps_native_input/log/repeat.py": true,
+    "/workspace/cp-library/test/benchmark/results/fps_native_input/log/prepare.py": true,
+    "/workspace/cp-library/test/benchmark/results/fps_native_input/log/layout.py": true,
+    "/tmp/fps-log-pack-readonly-review/repeat_local.py": true,
+    "/tmp/fps-log-pack-readonly-review/shared_bench_local.py": true,
+    "/tmp/fps-log-pack-readonly-review/layout_local.py": true,
+    "/tmp/fps-log-pack-readonly-review/bench_local.py": true
+  },
+  "issues": [
+    {
+      "severity": "documentation",
+      "file": "README.txt",
+      "detail": "Current Step 5 uses archived candidate/test/unit/fps_log.cpp without log-boundaries.patch, omitting bundled guard-page boundary unit. README should document prepare.py and directly compile log-boundary-unit.cpp or apply the boundary patch first. Parent notified."
+    }
+  ],
+  "candidate_header_check": {
+    "expected": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+    "actual": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1"
+  },
+  "repeat_binary_consistency": {
+    "before": true,
+    "after_shared": true
+  },
+  "unit_snapshot_sha256": "da348ec3832eb90818cbd485f3d313ddfd991467d61e2e6af6b18cf6b38724fb",
+  "unit_matches_repository_test_source": true,
+  "unit_before_patch_sha256": "eba86082b99b8c0e00bf8d725d64d5be7e19ed7a732de785bb1bda3163176c26",
+  "unit_patch_reproduces_snapshot": true,
+  "status": "source reproduction passed; README update needed",
+  "generated_boundary_input_hashes": {
+    "262144": {
+      "expected": "49205c34b1ea63ef0d4d7e4512b7aca35508b59f7a873af0727aedd87c85d596",
+      "actual": "49205c34b1ea63ef0d4d7e4512b7aca35508b59f7a873af0727aedd87c85d596",
+      "pass": true
+    },
+    "262145": {
+      "expected": "73b366f5c6bc7670a59e2fb9bbe647e0b45963d8e72a3f4e397ce29ebf1d1fb8",
+      "actual": "73b366f5c6bc7670a59e2fb9bbe647e0b45963d8e72a3f4e397ce29ebf1d1fb8",
+      "pass": true
+    },
+    "393217": {
+      "expected": "8c1660f0e2da5fb1cd08afad574075d5aaaf3e44abe834faff1412aa34c4d4a4",
+      "actual": "8c1660f0e2da5fb1cd08afad574075d5aaaf3e44abe834faff1412aa34c4d4a4",
+      "pass": true
+    },
+    "500000": {
+      "expected": "71cb0227a5a1e40ece225e19cd9d2633dfd4f07f25d39f01719bc2376e1d4ac8",
+      "actual": "71cb0227a5a1e40ece225e19cd9d2633dfd4f07f25d39f01719bc2376e1d4ac8",
+      "pass": true
+    }
+  },
+  "kernel_source_hash_match": true,
+  "whole_source_hash_match": true,
+  "local_scripts_relocated": {
+    "repeat_local.py": true,
+    "shared_bench_local.py": true,
+    "layout_local.py": true,
+    "bench_local.py": true
+  }
+}

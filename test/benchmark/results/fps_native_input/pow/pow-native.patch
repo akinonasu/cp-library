@@ -1,0 +1,72 @@
+--- a/components/fps_exp_blocked.hpp
++++ b/components/fps_exp_blocked.hpp
+@@ -327,6 +327,50 @@
+ 	if (n > kExpBase) exp_newton(t, lo, g, rest, QTransforms{qt, q2t});
+ }
+ 
++inline void power_native(const Transform& t, std::span<const Mint> f, std::uint32_t e, std::uint32_t c,
++				  std::span<std::uint32_t> g, std::span<std::uint32_t> scratch, std::span<const std::uint32_t> prefix) {
++	using namespace detail;
++	const std::size_t n = g.size(), m = exp_length(n) / 2, k = m / 2, stride = Arena::footprint(m);
++	if (f.empty() || mint_scalar(f[0]) == 0) std::abort();
++	const std::span<std::uint32_t> lo = scratch.first(m), rest = scratch.subspan(3 * stride);
++	const auto q = [&](std::size_t i) __attribute__((target("avx2"))) { return i < m ? lo.data() + i : g.data() + i; };
++	const Factor factor(e);
++
++	const bool reuse = m >= 128 && log_block(n) == k && log_blocks(n) >= 3;
++	const bool block2 = reuse && log_blocks(n) == 4 && n - m > k;
++	const std::span<std::uint32_t> qt = scratch.subspan(stride, reuse ? m : 0);
++	const std::span<std::uint32_t> q2t = scratch.subspan(2 * stride, block2 ? m : 0);
++	const std::uint32_t* d0t = nullptr;
++	lo[0] = 0;
++	if (n >= 2)
++		mint_log_derivative(
++			t, f, n, rest, prefix,
++			[&](std::size_t first, std::span<const std::uint32_t> d) __attribute__((target("avx2"))) {
++				std::size_t i = 0;
++				for (; i + 8 <= d.size(); i += 8) {
++					const std::size_t at = first + 1 + i;
++					const Vec x = reduce(times(load(d.data() + i), factor), kP);
++					if (at + 8 <= m || at >= m) {
++						store_unaligned(q(at), x);
++					} else {
++						alignas(32) std::uint32_t words[8];
++						store(words, x);
++						for (std::size_t j = 0; j < 8; ++j) *q(at + j) = words[j];
++					}
++				}
++				for (; i < d.size(); ++i) *q(first + 1 + i) = blocked_ntt::detail::multiply_mod(d[i], e);
++			},
++			[&](std::size_t j, std::span<const std::uint32_t> dt) __attribute__((target("avx2"))) {
++				if (j == 0) d0t = dt.data();
++				if (j == 1 && reuse) times_x<true>(t.roots(), d0t, dt.data(), e, kP - *q(m), 0, qt);
++				if (j == 2 && block2) times_x<false>(t.roots(), dt.data(), nullptr, e, *q(m), kP - *q(m + k), q2t);
++			});
++	const std::span<std::uint32_t> start = g.first(std::min(n, kExpBase));
++	exp_direct(lo, start);
++	for (std::uint32_t& x : start) x = blocked_ntt::detail::multiply_mod(x, c);
++	if (n > kExpBase) exp_newton(t, lo, g, rest, QTransforms{qt, q2t});
++}
++
+ }
+ namespace blocked_poly {
+ inline void native_exp(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, bool differentiated = false) {
+@@ -361,15 +405,15 @@
+ 
+ inline void native_power(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, std::uint32_t e, Mint c) {
+ 	const int lg = power_log(n);
+-	const std::size_t size = std::min(input, n);
++	const std::size_t size = std::min(input, n), prefix = std::min(size, detail::log_block(n));
+ 	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(power_scratch(n)));
+ 	const Transform t(arena, lg);
+ 	auto g = arena.take(n), scratch = arena.take(power_scratch(n));
+-	for (std::size_t i = 0; i < size; ++i) {
++	for (std::size_t i = 0; i < prefix; ++i) {
+ 		const auto x = in[i].v;
+ 		g[i] = std::min(x, x - Mint::mod());
+ 	}
+-	power(t, g.first(size), e, std::min(c.v, c.v - Mint::mod()), g, scratch);
++	power_native(t, {in, size}, e, std::min(c.v, c.v - Mint::mod()), g, scratch, g.first(prefix));
+ 	append_fps_words<true>(out, g.data(), n);
+ }
+ }

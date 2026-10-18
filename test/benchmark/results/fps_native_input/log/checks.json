@@ -1,0 +1,92 @@
+{
+  "baseline": "4765ceb5f995801d27b23840392c9c354ecdecb9",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "normal_fps_log": "passed",
+  "sanitized_fps_log": "passed",
+  "sanitizer_flags": [
+    "-std=c++23",
+    "-O1",
+    "-g",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer"
+  ],
+  "sanitizer_env": {
+    "ASAN_OPTIONS": "detect_leaks=0",
+    "UBSAN_OPTIONS": "halt_on_error=1"
+  },
+  "candidate_header_sha256": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+  "normal_binary_sha256": "2ff952a8666df2a3315f60273497d9a78e6c6ad32c377d589c31b956f527b41b",
+  "sanitizer_binary_sha256": "5882f3183c1f5a392e75cef3fc394c3793a0bb5014b0e85010b9cf26dd4f233e",
+  "harness_hashes": {
+    "bench.py": "8a818e24f63955f0b8400729f1d45198f7bc33dc7d8cfa6d82561424c1fb64db",
+    "share.py": "124d4a9566e734189f2265c8d3233ae78001226fc76bf8fae28ddede4aa89aec",
+    "shared_bench.py": "5cf481627ce3c6c8dbd475d8b38e60eefc338d0e38f2229b9c78482e04b0c1f1",
+    "make.py": "1e608e2bb4355c4e5e03c2c6818ce1903d7d44dee83e30ee497239893867a310",
+    "repeat.py": "34452dac78a537b8bdfcd37c17428332c0da78dcef8ae95c942e85fda175f17b",
+    "layout.py": "1e96af8d900dcbec57bb154ad157de44d5604db8e91018a9936164e8c3ddc001"
+  },
+  "expanded_repository_unit": {
+    "source": "test/unit/fps_log.cpp",
+    "source_sha256": "da348ec3832eb90818cbd485f3d313ddfd991467d61e2e6af6b18cf6b38724fb",
+    "snapshot_sha256": "da348ec3832eb90818cbd485f3d313ddfd991467d61e2e6af6b18cf6b38724fb",
+    "header_sha256": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+    "normal": "passed",
+    "normal_binary_sha256": "091af7343baad465eba7769f3b092ef277317d3c2f5417d486f37a8208b66e82",
+    "sanitized": "passed",
+    "sanitizer_binary_sha256": "e5b6a51b565c843861457bdfcbb74f83a6769c84de79e5c077141f10aa5c3bb1",
+    "sanitizer_compile_command": [
+      "flock",
+      "-s",
+      "/tmp/cp-fps-tuning.lock",
+      "g++",
+      "-std=c++23",
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-I.",
+      "test/unit/fps_log.cpp",
+      "-o",
+      "/tmp/fps-native-source/repo_log_sanitize"
+    ],
+    "sanitizer_run_command": [
+      "flock",
+      "-s",
+      "/tmp/cp-fps-tuning.lock",
+      "env",
+      "ASAN_OPTIONS=detect_leaks=0",
+      "UBSAN_OPTIONS=halt_on_error=1",
+      "/tmp/fps-native-source/repo_log_sanitize"
+    ],
+    "cases": {
+      "threshold_n": [
+        262143,
+        262144,
+        262145,
+        393217
+      ],
+      "guard_page_input_lengths": [
+        "1",
+        "33",
+        "64",
+        "65",
+        "n/3",
+        "n+17"
+      ],
+      "input_protection": "readonly, exact extent ending at PROT_NONE",
+      "integrate": [
+        true,
+        false
+      ],
+      "input_words": "near 2p with constant 1",
+      "input_preservation": "raw v compared",
+      "identity": "f * log(f)' = f' in existing public loop; logarithm[i] * i = derivative[i] in guarded native loop"
+    }
+  },
+  "reconstruction_review": "reconstruction-check.json",
+  "reconstruction_readme_issue_resolution": {
+    "resolved": true,
+    "readme_sha256": "226233b89822435b78f2334d2a9fecfb7a27a78611b2759ac7ca46c846c7b034",
+    "detail": "Added prepare.py, relocated scripts, direct expanded-unit compile/sanitizer instructions, and old archived-unit distinction."
+  }
+}

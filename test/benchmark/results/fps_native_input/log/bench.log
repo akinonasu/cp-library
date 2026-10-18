@@ -1,0 +1,10 @@
+built before kernel
+built before whole
+built after kernel
+built after whole
+kernel 32768 {'before': 0.572584, 'after': 0.552884}
+kernel 131073 {'before': 2.138247, 'after': 2.293349}
+kernel 500000 {'before': 9.212274, 'after': 8.859689}
+kernel 524288 {'before': 9.413394, 'after': 9.187286}
+max_random_00 {'before': 15.681659, 'after': 15.395631, 'reference': 13.882757}
+max_random_01 {'before': 14.649149, 'after': 14.333569, 'reference': 13.029314}

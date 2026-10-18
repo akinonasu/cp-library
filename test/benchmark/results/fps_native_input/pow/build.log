@@ -1,0 +1,8 @@
+built baseline kernel
+built baseline whole
+built candidate kernel
+built candidate whole
+built reference kernel
+built reference whole
+passed fps_exp_blocked
+passed fps_algorithms

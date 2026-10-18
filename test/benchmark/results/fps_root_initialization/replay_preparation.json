@@ -1,0 +1,8 @@
+{
+  "baseline": "4765ceb5f995801d27b23840392c9c354ecdecb9",
+  "original_harness_sha256": "b69d04ac41013341af4652191a103614d7db236bb537caba8735f0e370d6b03d",
+  "replay_harness_sha256": "d669cce9a61bbf38773f3a9e365f23288505de2c8dada0422c12cf9ea99f0195",
+  "changes": "paths and baseline full SHA only; flags, candidate patch, seed, trials and measurements unchanged",
+  "prepared": true,
+  "measured": false
+}

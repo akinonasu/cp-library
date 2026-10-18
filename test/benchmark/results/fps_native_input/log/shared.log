@@ -1,0 +1,12 @@
+built kernel
+built whole
+kernel 131073 {'before': 2.018089, 'after_shared': 2.042475}
+kernel 262144 {'before': 4.257868, 'after_shared': 4.157789}
+kernel 262145 {'before': 4.201684, 'after_shared': 4.111479}
+kernel 393217 {'before': 6.6405, 'after_shared': 6.55979}
+kernel 500000 {'before': 8.846398, 'after_shared': 8.714412}
+kernel 524288 {'before': 8.840781, 'after_shared': 8.694432}
+whole 262144 {'before': 7.739139, 'after_shared': 7.5451}
+whole 262145 {'before': 7.940129, 'after_shared': 7.736355}
+whole 393217 {'before': 11.578193, 'after_shared': 11.350543}
+whole 500000 {'before': 14.392929, 'after_shared': 14.207342}

@@ -1,0 +1,16 @@
+{
+  "algorithm": "SHA-256",
+  "files": {
+    "baseline_equivalence.json": "314782369d92b45874f072a22c0013f3b5c97b032609698eb3ad1b12bda6f35b",
+    "candidate.patch": "bf752146e9c07c4738af68081ce96c532deae4081164a8568abab7b72fc1ba7f",
+    "clone.log": "da303960775bceab024c28b74f02077c47ea73298128f8abb6a135d58bd9fe93",
+    "original_harness.py": "b69d04ac41013341af4652191a103614d7db236bb537caba8735f0e370d6b03d",
+    "raw.json": "269ba64b3f5c7314d532d2e8e080210850128cc0f9a905be05b869009b718bca",
+    "replay.py": "2f693f084db7438f6e67d6b3f20ac7ddd84895b8571b824d32c438427944c7e2",
+    "replay_preparation.json": "07ca724778d9d6a5b406c4809caed6536e943a95ad2f9e72da244a65c005e9be",
+    "restoration.json": "9b04ca140282a5528770b1067d94b85ebf9528f0445da21691d48c519ee87479",
+    "restore.py": "55b8a4d15cfa06e32518261162ee314fa043fae403d8c88c5c1f2b03bd41a506",
+    "run.log": "433da52af712f4ec8632d7bff4cccd53130bccd4f636e8c849e8af20a64001ec",
+    "safety.cpp": "5aacaf0ccfade9e4f629bebd7bcdcf883dad92d39b897fe62f029ace6aa1bcb3"
+  }
+}

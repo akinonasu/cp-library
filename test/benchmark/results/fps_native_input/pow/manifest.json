@@ -1,0 +1,13 @@
+{
+  "metadata.json": "bca7fe6c2c6aafafc2817374a566592725fe372e7f911226399957d6672e6079",
+  "results.json": "e0ada3cb992ec3494deb40f2c30d34c13c0e1a80fd8d3e0e5fd78d5e686c0066",
+  "checks.json": "4aa6b009bca602f7e329cd72115b89ac28b3c16150ccc3b488f893a781d2e078",
+  "pow-native.patch": "7e38c26b4667d6324af3935e3b4e16c013e850487f8d8f19902b76b3e8aa2fd2",
+  "report.txt": "121cdc3a68c4710cad41f468a6890511fe3b1b61c55fe322229477a7bd2c9d70",
+  "safety.cpp": "a148c162dfb6362a80f50ea25f1324e3babdf9f70d3a007af090069eb74d9a31",
+  "kernel.cpp": "b1d20e8367f54e6fb7df5fc6dd612767232119edbf8b57ceaab5996e1719adf8",
+  "reference_kernel.cpp": "84f01ab9927dd2cc644d40610d1cd53725791ad790000244017ca0bedcbf4a2c",
+  "build.py": "2acf3f1bf12af988890d365c8dc31e732e7fffaa2c2f7133c061e72582a0918c",
+  "check.py": "58ca38bb3668154fc83df9efea24072a72d3af4b5646f3c7d5db7e73bd9af5cf",
+  "bench.py": "8cefbfc8b4d22c95cf14be307c33934b568ebb76494e34b5bee49c9e9ca8e6a4"
+}
