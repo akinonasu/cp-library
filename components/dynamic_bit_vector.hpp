@@ -11,7 +11,7 @@
 #include <tuple>
 #include <utility>
 #include <vector>
-#if defined(__BMI2__) && defined(__x86_64__)
+#if (defined(__BMI2__) || defined(__AVX2__)) && defined(__x86_64__)
 #include <immintrin.h>
 #endif
 
@@ -99,6 +99,32 @@ class DynamicBitVector {
 				else l = m + 1;
 			}
 			return l;
+		}
+	}
+	static void add_range(Node &node, int first, int last, int size_delta, int sum_delta) {
+#if defined(__AVX2__) && defined(__x86_64__)
+		if constexpr (Branch == 8) {
+			if (first == last) return;
+			const __m256i index = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+			const __m256i active = _mm256_and_si256(
+				_mm256_cmpgt_epi32(index, _mm256_set1_epi32(first - 1)),
+				_mm256_cmpgt_epi32(_mm256_set1_epi32(last), index));
+			if (size_delta) {
+				auto *p = reinterpret_cast<__m256i *>(node.sizes.data() + 1);
+				_mm256_storeu_si256(p, _mm256_add_epi32(_mm256_loadu_si256(p),
+					_mm256_and_si256(active, _mm256_set1_epi32(size_delta))));
+			}
+			if (sum_delta) {
+				auto *p = reinterpret_cast<__m256i *>(node.sums.data() + 1);
+				_mm256_storeu_si256(p, _mm256_add_epi32(_mm256_loadu_si256(p),
+					_mm256_and_si256(active, _mm256_set1_epi32(sum_delta))));
+			}
+			return;
+		}
+#endif
+		for (int i = first; i < last; ++i) {
+			node.sizes[i + 1] += size_delta;
+			node.sums[i + 1] += sum_delta;
 		}
 	}
 	static int rank_leaf(const Leaf &leaf, int p) {
@@ -510,21 +536,18 @@ class DynamicBitVector {
 			auto &node = nodes[left_path[common] >> 1];
 			int l = left_slots[common], r = right_slots[common];
 			int delta = int(value) - int(old);
-			for (int i = std::min(l, r); i < std::max(l, r); ++i) {
-				node.sizes[i + 1] += l < r ? -1 : 1;
-				node.sums[i + 1] += l < r ? -int(old) : int(value);
-			}
-			if (delta)
-				for (int i = std::max(l, r); i < node.count; ++i) node.sums[i + 1] += delta;
+			add_range(node, std::min(l, r), std::max(l, r), l < r ? -1 : 1,
+				l < r ? -int(old) : int(value));
+			if (delta) add_range(node, std::max(l, r), node.count, 0, delta);
 			++common;
 		}
 		for (int d = common; d < left_depth; ++d) {
 			auto &node = nodes[left_path[d] >> 1];
-			for (int i = left_slots[d]; i < node.count; ++i) --node.sizes[i + 1], node.sums[i + 1] -= old;
+			add_range(node, left_slots[d], node.count, -1, -int(old));
 		}
 		for (int d = common; d < right_depth; ++d) {
 			auto &node = nodes[right_path[d] >> 1];
-			for (int i = right_slots[d]; i < node.count; ++i) ++node.sizes[i + 1], node.sums[i + 1] += value;
+			add_range(node, right_slots[d], node.count, 1, int(value));
 		}
 		return {x, old, y};
 	}
