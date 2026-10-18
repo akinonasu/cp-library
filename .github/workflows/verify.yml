@@ -62,16 +62,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-${{ github.ref }}-
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-refs/heads/main-
-      - name: Cache judge test cases and checkers
-        if: steps.route.outputs.mode == 'normal'
-        uses: actions/cache@v4
-        with:
-          path: |
-            .verify-helper/cache/*/test
-            ~/.cache/online-judge-tools/library-checker-problems
-          key: ${{ runner.os }}-${{ runner.arch }}-checker-v1-${{ hashFiles('test/requirements.txt', 'test/**/*.test.cpp') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-checker-v1-
       - name: Test incremental verification
         run: python -m unittest discover -s .verify-helper -p '*_test.py'
       - name: Select affected libraries and tests
@@ -87,6 +77,19 @@ jobs:
           VERIFY_EXPECTED_HEAD: ${{ steps.route.outputs.head }}
           VERIFY_EXPECTED_REF: ${{ steps.route.outputs.ref }}
         run: python .verify-helper/ci.py plan --affected-base "$VERIFY_AFFECTED_BASE" --expected-head "$VERIFY_EXPECTED_HEAD" --expected-ref "$VERIFY_EXPECTED_REF"
+      - name: Select judge data caches
+        if: steps.route.outputs.mode == 'normal'
+        id: judge-data
+        run: python .verify-helper/judge_data.py
+      - name: Install cache client
+        if: steps.judge-data.outputs.needed == 'true'
+        run: npm ci --ignore-scripts --no-audit --no-fund --prefix .verify-helper/cache-tool
+      - name: Restore selected judge data
+        if: steps.judge-data.outputs.needed == 'true'
+        uses: ./.verify-helper
+        with:
+          operation: restore
+          manifest: .verify-helper/judge-cache.json
       - name: Run unit tests with GCC and Clang
         run: |
           python test/verify.py --unit-only --cxx g++ clang++ --selection .verify-helper/selection.json
@@ -103,6 +106,12 @@ jobs:
         run: |
           python .verify-helper/ci.py judge
           python .verify-helper/ci.py record --groups verification
+      - name: Save selected judge data
+        if: ${{ always() && steps.judge-data.outputs.needed == 'true' }}
+        uses: ./.verify-helper
+        with:
+          operation: save
+          manifest: .verify-helper/judge-cache.json
       - name: Generate documentation
         run: python .verify-helper/ci.py docs
       - name: Check bundled documentation
