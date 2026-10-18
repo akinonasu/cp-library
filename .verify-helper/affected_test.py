@@ -299,6 +299,23 @@ class AffectedVerification(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "exact temporary branch"):
                     read_binding(SourceTree(self.root, head))
 
+    def test_fps_scalar_return_exact_ref_keeps_binding_validation_narrow(self):
+        self.ref = "refs/heads/codex/fps-scalar-return-20261018"
+        self.change_bits()
+        self.assertEqual(self.plan()["expected_ref"], self.ref)
+        binding = read_binding(SourceTree(self.root, self.git("rev-parse", "HEAD").decode().strip()))
+        for ref in ("refs/heads/codex/fps-scalar-return-20261019",
+                    "refs/heads/codex/fps-scalar-other-20261018",
+                    "refs/heads/codex/fps-scalar-return-20261018-extra",
+                    "refs/heads/codex/fps-scalar-return-20261018/child",
+                    "refs/heads/codex/fps-scalar-return-20261018..x",
+                    "refs/tags/codex/fps-scalar-return-20261018"):
+            with self.subTest(ref=ref):
+                self.write(BINDING_PATH, (canonical({**binding, "ref": ref}) + b"\n").decode())
+                head = self.commit("invalid exact FPS ref", bind=False)
+                with self.assertRaisesRegex(ValueError, "exact temporary branch"):
+                    read_binding(SourceTree(self.root, head))
+
     def test_no_state_read_write_and_record_is_selected_only(self):
         head = self.change_bits()
         state = self.root / ".verify-helper/verified-state.json"

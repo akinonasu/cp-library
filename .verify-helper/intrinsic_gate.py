@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import time
 
-from affected import SourceTree, build_affected_plan, checked_source, digest, require
+from affected import LIBRARIES, SourceTree, build_affected_plan, checked_source, digest, require
 from no_cache_route import select_event
 
 
@@ -24,10 +24,26 @@ MATRIX_REQUIRED_UNITS = {"test/unit/" + name + ".cpp" for name in (
 )}
 EDIT_DISTANCE_PRODUCTS = {"string/edit_distance.hpp"}
 EDIT_DISTANCE_REQUIRED_UNITS = {"test/unit/edit_distance.cpp", "test/unit/standalone.cpp"}
+FPS_PRODUCTS = {"fps/fps.hpp"}
+FPS_REQUIRED_HEADERS = {
+    "components/fps_product_tree.hpp", "components/polynomial_half_gcd.hpp",
+    "convolution/convolution.hpp", "convolution/cyclic_convolution.hpp",
+    "convolution/max_min_convolution.hpp", "convolution/multiplicative_convolution.hpp",
+    "convolution/multivariate_convolution.hpp", "convolution/ordered_convolution.hpp",
+    "fps/bostan_mori.hpp", "fps/compose.hpp", "fps/compositional_inverse.hpp", "fps/fps.hpp",
+    "fps/interpolate.hpp", "fps/linear_recurrence.hpp", "fps/multipoint_eval.hpp",
+    "fps/polynomial_gcd.hpp", "fps/power_projection.hpp", "fps/taylor_shift.hpp",
+}
+FPS_REQUIRED_UNITS = {"test/unit/" + name + ".cpp" for name in (
+    "convolution", "fps", "fps_algorithms", "fps_tuning_advanced", "fps_tuning_basic",
+    "fps_tuning_polynomial", "multipoint_tree", "online_convolution", "ordered_convolution",
+    "polynomial_gcd", "power_projection", "standalone",
+)}
 SCOPES = {
     "dwm": (PRODUCTS, REQUIRED_UNITS, 4, 8),
     "matrix": (MATRIX_PRODUCTS, MATRIX_REQUIRED_UNITS, 2, 3),
     "edit_distance": (EDIT_DISTANCE_PRODUCTS, EDIT_DISTANCE_REQUIRED_UNITS, 1, 2),
+    "fps_scalar_return": (FPS_PRODUCTS, FPS_REQUIRED_UNITS, 18, 12),
 }
 COMMON = ["-O2", "-std=gnu++23", "-ftrivial-auto-var-init=zero", "-fmodules",
           "-DONLINE_JUDGE", "-DATCODER", "-fno-lto"]
@@ -37,13 +53,14 @@ MODES = {
                "-mno-avx512f", "-mno-bmi", "-mno-bmi2",
                "-fno-tree-loop-vectorize", "-fno-tree-slp-vectorize"],
 }
-# Baseline compilation retains the public runtime AVX dispatch; it is not a scalar mode.
+# Baseline compilation retains runtime SIMD dispatch; it is not a scalar mode.
 EDIT_DISTANCE_MODES = {
     "native": ["-march=native"],
     "generic": ["-march=x86-64", "-mtune=generic", "-mno-avx", "-mno-avx2",
                 "-mno-avx512f", "-mno-bmi", "-mno-bmi2"],
 }
 MAX_COMMANDS, MAX_LOG_BYTES, COMMAND_SECONDS = 64, 1024 * 1024, 120
+FPS_MAX_COMMANDS = 124
 JOB_SECONDS = 18 * 60
 LOG_BYTES = 0
 
@@ -62,15 +79,17 @@ def file_proof(path):
 
 
 class Commands:
-    def __init__(self, directory):
+    def __init__(self, directory, *, max_commands=MAX_COMMANDS):
+        require(max_commands in (MAX_COMMANDS, FPS_MAX_COMMANDS), "Unreviewed command budget")
         self.directory, self.count = directory, 0
+        self.max_commands = max_commands
         self.deadline = time.monotonic() + JOB_SECONDS
         self.environment = {"PATH": "/usr/bin:/bin", "HOME": str(directory),
                             "TMPDIR": str(directory), "LC_ALL": "C", "TZ": "UTC"}
 
     def run(self, command, *, source=b"", seconds=COMMAND_SECONDS):
         self.count += 1
-        require(self.count <= MAX_COMMANDS, "Command budget exceeded")
+        require(self.count <= self.max_commands, "Command budget exceeded")
         timeout = min(seconds, self.deadline - time.monotonic())
         require(timeout > 0, "Total runtime budget exceeded")
         command = [str(value) for value in command]
@@ -117,6 +136,13 @@ def scope_mode(plan):
     require(len(matched) == 1, "Production changes must select exactly one reviewed intrinsic mode")
     family = matched[0]
     products, required, max_headers, max_units = SCOPES[family]
+    if family == "fps_scalar_return":
+        changed_headers = {name for name in changed
+                           if name.split("/", 1)[0] in LIBRARIES and name.endswith(".hpp")}
+        require(changed_headers == FPS_PRODUCTS, "FPS scalar-return may change only fps/fps.hpp")
+        for group, expected in (("headers", FPS_REQUIRED_HEADERS), ("unit", FPS_REQUIRED_UNITS)):
+            require(set(plan[group]) == expected and len(plan[group]) == len(expected),
+                    "FPS scalar-return requires the exact unique reviewed " + group + " set")
     require(all(not (other_products & set(plan["headers"]))
                 for other, (other_products, _, _, _) in SCOPES.items() if other != family),
             "Mixed production intrinsic scopes require separate review")
@@ -129,7 +155,7 @@ def scope_mode(plan):
 
 def family_modes(family):
     require(family in SCOPES, "Unknown intrinsic mode")
-    return EDIT_DISTANCE_MODES if family == "edit_distance" else MODES
+    return EDIT_DISTANCE_MODES if family in ("edit_distance", "fps_scalar_return") else MODES
 
 
 def mode_flags(mode, family="dwm"):
@@ -154,7 +180,7 @@ def macro_proof(raw, mode, family="dwm"):
     if mode == "native":
         require(isa.get("__AVX2__") == "1" and isa.get("__BMI2__") == "1",
                 "Native runner must expose AVX2 and BMI2; do not retry or downgrade")
-    elif family == "edit_distance":
+    elif family in ("edit_distance", "fps_scalar_return"):
         require(mode == "generic" and not isa, "Explicit generic AVX/BMI disables did not take effect")
     else:
         require(mode == "scalar" and not isa, "Explicit scalar AVX/BMI disables did not take effect")
@@ -165,6 +191,8 @@ def macro_proof(raw, mode, family="dwm"):
         require(disabled == b"1" if mode == "scalar" else disabled is None,
                 "Matrix runtime AVX2 dispatch does not match the selected mode")
         proof["MATRIX_DISABLE_AVX2"] = "1" if mode == "scalar" else None
+    if family == "fps_scalar_return":
+        proof["runtime_ntt_simd"] = "unchanged; may execute in native and generic modes"
     return proof
 
 
@@ -211,7 +239,8 @@ def header_source(name):
 
 def execute(root, route, plan, directory):
     family = scope_mode(plan)
-    commands = Commands(directory)
+    max_commands = FPS_MAX_COMMANDS if family == "fps_scalar_return" else MAX_COMMANDS
+    commands = Commands(directory, max_commands=max_commands)
     compiler = Path("/usr/bin/g++-15").resolve(strict=True)
     require(commands.run([compiler, "-dumpfullversion"], seconds=30).strip() == b"15.2.0",
             "Exact GCC 15.2.0 is required; do not substitute or install another toolchain")
@@ -224,7 +253,7 @@ def execute(root, route, plan, directory):
          units=plan["unit"], source_controls={name: digest(tree.content(name)) for name in (
              ".verify-helper/intrinsic_gate.py", ".verify-helper/intrinsic_gate_test.py",
              ".github/workflows/verify.yml")},
-         max_commands=MAX_COMMANDS, max_seconds=JOB_SECONDS, max_log_bytes=MAX_LOG_BYTES)
+         max_commands=commands.max_commands, max_seconds=JOB_SECONDS, max_log_bytes=MAX_LOG_BYTES)
     for mode in family_modes(family):
         flags = mode_flags(mode, family)
         raw = commands.run([compiler, *flags, "-dM", "-E", "-x", "c++", "-"],
