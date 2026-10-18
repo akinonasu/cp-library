@@ -57,13 +57,13 @@ Yosupo 上の順位表示とローカルの時間を直接比較せず、公開�
 
 追加の入力融合は対数だけを採用した。50 万項の計算は 8.846→8.714 ms、全体 99 試行の中央値は 15.438→15.337 ms だった。小さい次数は既存経路を維持する。[対数・冪の候補](fps_native_input.md)、[畳み込みの不採用候補](fps_convolution_input.md)、[根表初期化の不採用候補](fps_root_initialization.md) に原票と再現手順を残した。全体時間の小さい差を、計算の差だけで説明しない。
 
+[畳み込みの段階別監査](fps_convolution_phases.md) では、各試行の Plan 確保・初期化と計算を合算した中央値が現行 4.312 / 原本 4.299 ms だった。公開入力の確保・生成、内部コピー、結果 vector、変換と解放に追加区間がある。分析用コピーは計時でコード配置が変わるため、正式な無計測バイナリの厳密な内訳や、API の不可避な下限とは扱わない。
+
 計算部分の補助測定と候補の採否は、[exp/pow](fps_exp_backend.md)、[逆数・平方根](fps_inverse_sqrt.md)、[除算・GCD](fps_division.md)、[合成・射影](fps_composition_speed.md)、[評価・補間・Taylor shift](fps_evaluation.md)、[線形漸化式](fps_bostan_speed.md)、[一点評価](fps_horner.md) を参照。
 
 ```sh
 python3 test/benchmark/fps_all_speed.py --baseline ce81108 \
   --output test/benchmark/results/fps_all_speed_input_fusion.json
-python3 test/benchmark/fps_tuning_selection.py --baseline d93652c \
-  --output test/benchmark/results/fps_native_input/final_selection.json
 python3 test/benchmark/fps_speed_verify.py \
   --official-root /tmp/library-checker-problems \
   --selection test/benchmark/results/fps_native_input/final_selection.json \
@@ -75,5 +75,7 @@ python3 test/benchmark/fps_speed_verify.py \
 入力融合後も GCC 14 の 33 ヘッダー・26 単体、公式 22 ドライバー・596 ケース、GCC 13 と Clang 19 の対数、対数・指数・冪の ASan/UBSan を確認した。追補の条件と依存ハッシュは `results/fps_native_input/final_validation.json`、各実行原票は同じディレクトリにある。文書 144 件と影響する 33 bundle も確認した。
 
 今回の FPS 高速化が `fast_io.hpp` へ加えた変更は BulkOutput の前方宣言と friend 宣言のみで、既存の整数入出力の実装・型の配置は変えていない。初回の全依存先は `fps_all_selection.json` に保存し、宣言を取り除けば比較元と完全一致することを検査して FPS の公式問題を選んだ。その後 main に入った `d93652c` は、出力の定数表を同じ値のまま少ない定数評価で生成する変更である。追補の選択はそのコミットを基準にし、最終 16 問の実行バイナリを再ビルドして全体の SHA-256 一致を確認した。統合の記録は `results/fps_native_input/upstream_integration.json` にある。
+
+続く `ddcb3a7` の階乗生成の共有化も保持した。既存 FPS の raw 呼び出し先は変わらず、再ビルドした 16 問すべてのバイナリも測定時と完全一致した。記録は `results/fps_convolution_phases/upstream_integration.json` にある。上記の検証コマンドは、FPS 追補で記録した選択ファイルをそのまま使う。
 
 最終の出力は 64 係数単位で生成し、新規の大きな vector 領域の完全所有ページだけを Linux に準備させる。50 万語の cold 出力は 0.424→0.267 ms、1,048,575 語は HUGEPAGE 併用で 1.076→0.483 ms。syscall・確保・破棄込みの新規プロセス 21 試行で確認した。条件と失敗時の通常動作は [内部 API](../../docs/fps_output.md)、原票は `results/fps_output_pages.json` を参照。

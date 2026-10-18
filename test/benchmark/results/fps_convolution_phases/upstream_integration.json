@@ -1,0 +1,333 @@
+{
+  "started_at": "2026-10-18T19:25:41.632538+00:00",
+  "upstream_commit": "ddcb3a74c3500f85163a98c43940474771349103",
+  "formal_measurements": "../fps_all_speed_input_fusion.json",
+  "changed_measured_headers": {
+    "components/binomial_prefix_core.hpp": {
+      "measured_sha256": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+      "integrated_sha256": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496"
+    },
+    "components/fast_io.hpp": {
+      "measured_sha256": "d471dcdf978eb5a0878b084ee9b6ffa385f461c24f59974e1e49914229843984",
+      "integrated_sha256": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    },
+    "components/fps_factorials.hpp": {
+      "measured_sha256": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+      "integrated_sha256": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33"
+    },
+    "math/comb.hpp": {
+      "measured_sha256": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+      "integrated_sha256": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986"
+    }
+  },
+  "earlier_fast_io_integration": "../fps_native_input/upstream_integration.json",
+  "shared_lock": "/tmp/cp-fps-tuning.lock",
+  "binaries": {
+    "convolution_mod_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/convolution.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/convolution_mod_current"
+      ],
+      "measured_sha256": "97c4eade8e0dc0bb2cc4d3e0907495dca49c675fdb037b1a852d358f036f3a86",
+      "rebuilt_sha256": "97c4eade8e0dc0bb2cc4d3e0907495dca49c675fdb037b1a852d358f036f3a86",
+      "identical": true
+    },
+    "inv_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_inv.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/inv_of_formal_power_series_current"
+      ],
+      "measured_sha256": "e1f3515041b95fe4312f4566bcb6535d6649ca79e0b40c2445e4b029b224ce0a",
+      "rebuilt_sha256": "e1f3515041b95fe4312f4566bcb6535d6649ca79e0b40c2445e4b029b224ce0a",
+      "identical": true
+    },
+    "log_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_log.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/log_of_formal_power_series_current"
+      ],
+      "measured_sha256": "cd7babf59d6d270f7e639fbacc6fe9f90938a05e83ebfa27b227b5fc9a135334",
+      "rebuilt_sha256": "cd7babf59d6d270f7e639fbacc6fe9f90938a05e83ebfa27b227b5fc9a135334",
+      "identical": true
+    },
+    "exp_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_exp.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/exp_of_formal_power_series_current"
+      ],
+      "measured_sha256": "2e1e48e7fb8ca65157aa9b5de38cea5219694be342f4babed676d921e2b6723b",
+      "rebuilt_sha256": "2e1e48e7fb8ca65157aa9b5de38cea5219694be342f4babed676d921e2b6723b",
+      "identical": true
+    },
+    "pow_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_pow.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/pow_of_formal_power_series_current"
+      ],
+      "measured_sha256": "161cbd19223971f3345030173560f21343c760a219a9a7ebbea796579813d989",
+      "rebuilt_sha256": "161cbd19223971f3345030173560f21343c760a219a9a7ebbea796579813d989",
+      "identical": true
+    },
+    "sqrt_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_sqrt.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/sqrt_of_formal_power_series_current"
+      ],
+      "measured_sha256": "50a0671ae374da51acddf998bc03183251584238c21cdcc48ad3d5d60c537478",
+      "rebuilt_sha256": "50a0671ae374da51acddf998bc03183251584238c21cdcc48ad3d5d60c537478",
+      "identical": true
+    },
+    "division_of_polynomials_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_divmod.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/division_of_polynomials_current"
+      ],
+      "measured_sha256": "48cbba441128bb6f4e0149ff5804acb698e078f0cb028d4df8f875b576591389",
+      "rebuilt_sha256": "48cbba441128bb6f4e0149ff5804acb698e078f0cb028d4df8f875b576591389",
+      "identical": true
+    },
+    "kth_term_of_linearly_recurrent_sequence_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_bostan_mori.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/kth_term_of_linearly_recurrent_sequence_current"
+      ],
+      "measured_sha256": "175fba4075c9c57c606fcca526ff3a49b21b4e4bf600869f7b9768d0a40ae9ef",
+      "rebuilt_sha256": "175fba4075c9c57c606fcca526ff3a49b21b4e4bf600869f7b9768d0a40ae9ef",
+      "identical": true
+    },
+    "composition_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_compose.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/composition_of_formal_power_series_current"
+      ],
+      "measured_sha256": "507f1cdba046d17e98444177178570ea42613f9774fda3b5b7a1a95d3f5e1175",
+      "rebuilt_sha256": "507f1cdba046d17e98444177178570ea42613f9774fda3b5b7a1a95d3f5e1175",
+      "identical": true
+    },
+    "composition_of_formal_power_series_large_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_compose_large.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/composition_of_formal_power_series_large_current"
+      ],
+      "measured_sha256": "60ee7d145f43521b46fa0dd296c4505dce7fb782115003a90a27186fa73bb36b",
+      "rebuilt_sha256": "60ee7d145f43521b46fa0dd296c4505dce7fb782115003a90a27186fa73bb36b",
+      "identical": true
+    },
+    "compositional_inverse_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_compositional_inverse.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/compositional_inverse_of_formal_power_series_current"
+      ],
+      "measured_sha256": "d383b31bb6ed2a188f7dcf1e6c579277c758b42c0f7d0fc39607decea47ad562",
+      "rebuilt_sha256": "d383b31bb6ed2a188f7dcf1e6c579277c758b42c0f7d0fc39607decea47ad562",
+      "identical": true
+    },
+    "compositional_inverse_of_formal_power_series_large_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_compositional_inverse_large.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/compositional_inverse_of_formal_power_series_large_current"
+      ],
+      "measured_sha256": "f0374a837bacdda99b3fbc9b39015d151fc7f7e819e9ea082ac8b5ceb52d6e2f",
+      "rebuilt_sha256": "f0374a837bacdda99b3fbc9b39015d151fc7f7e819e9ea082ac8b5ceb52d6e2f",
+      "identical": true
+    },
+    "multipoint_evaluation_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/multipoint_eval.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/multipoint_evaluation_current"
+      ],
+      "measured_sha256": "d9486783bf8bb98012f504547ffc1f6e4d1dfd1031f6810a937d6f140f2b0c56",
+      "rebuilt_sha256": "d9486783bf8bb98012f504547ffc1f6e4d1dfd1031f6810a937d6f140f2b0c56",
+      "identical": true
+    },
+    "polynomial_interpolation_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_interpolate.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/polynomial_interpolation_current"
+      ],
+      "measured_sha256": "ae5f2a27efb41feace8c6dd097b3855be84f2e6629aa8dae3bd0581368e82af3",
+      "rebuilt_sha256": "ae5f2a27efb41feace8c6dd097b3855be84f2e6629aa8dae3bd0581368e82af3",
+      "identical": true
+    },
+    "polynomial_taylor_shift_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/fps_taylor_shift.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/polynomial_taylor_shift_current"
+      ],
+      "measured_sha256": "f826f3dbed45959d35962920691447f9fb4504809f000f85a4b1afeab3beefe2",
+      "rebuilt_sha256": "f826f3dbed45959d35962920691447f9fb4504809f000f85a4b1afeab3beefe2",
+      "identical": true
+    },
+    "inv_of_polynomials_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-input-final-speed/current",
+        "/tmp/fps-input-final-speed/current/test/polynomial_inv_mod.test.cpp",
+        "-o",
+        "/tmp/fps-input-final-speed/inv_of_polynomials_current"
+      ],
+      "measured_sha256": "55d73fdf27d7fb336c46d508e985c9c8e9c65ae062a9381ed8d266eba99d8aad",
+      "rebuilt_sha256": "55d73fdf27d7fb336c46d508e985c9c8e9c65ae062a9381ed8d266eba99d8aad",
+      "identical": true
+    }
+  },
+  "all_identical": true,
+  "finished_at": "2026-10-18T19:26:29.383821+00:00"
+}
