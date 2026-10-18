@@ -1,0 +1,1125 @@
+{
+  "baseline": "ce81108fe8e4f3a93d816c94e475d02ef0329608",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "hardware": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "cpu": 2,
+  "trials": 9,
+  "harness_sha256": "264b4487ec9289374bf64a1fafb1f95a473d2cbcb403a53a92b9a12a2298b8b0",
+  "kernel": [
+    {
+      "operation": "compose",
+      "n": 4096,
+      "variants": {
+        "before": {
+          "median_ms": 0.915635,
+          "samples_ms": [
+            1.267019,
+            0.907823,
+            0.95252,
+            0.90573,
+            0.927943,
+            0.913803,
+            0.915635,
+            0.938028,
+            0.910077
+          ],
+          "checksum": "2150272186156657763"
+        },
+        "current": {
+          "median_ms": 0.639283,
+          "samples_ms": [
+            0.68407,
+            0.718301,
+            0.624411,
+            0.639283,
+            0.638401,
+            0.699273,
+            0.625713,
+            0.63091,
+            0.645472
+          ],
+          "checksum": "2150272186156657763"
+        }
+      }
+    },
+    {
+      "operation": "compose",
+      "n": 32768,
+      "variants": {
+        "before": {
+          "median_ms": 10.688774,
+          "samples_ms": [
+            10.308607,
+            10.933019,
+            10.702436,
+            10.688774,
+            10.604989,
+            10.540384,
+            10.585131,
+            10.840641,
+            11.316641
+          ],
+          "checksum": "5305698144665107965"
+        },
+        "current": {
+          "median_ms": 6.152381,
+          "samples_ms": [
+            5.976991,
+            6.29134,
+            6.152381,
+            5.790112,
+            6.203458,
+            6.15135,
+            6.554231,
+            6.00993,
+            6.672648
+          ],
+          "checksum": "5305698144665107965"
+        }
+      }
+    },
+    {
+      "operation": "compose",
+      "n": 131072,
+      "variants": {
+        "before": {
+          "median_ms": 52.948404,
+          "samples_ms": [
+            52.934453,
+            52.440788,
+            52.591442,
+            52.948404,
+            52.334158,
+            53.299618,
+            53.302542,
+            54.224076,
+            53.007813
+          ],
+          "checksum": "5003325278892356314"
+        },
+        "current": {
+          "median_ms": 31.25917,
+          "samples_ms": [
+            31.427862,
+            31.334563,
+            31.25917,
+            30.974757,
+            30.712716,
+            31.492348,
+            30.696672,
+            31.331469,
+            31.03811
+          ],
+          "checksum": "5003325278892356314"
+        }
+      }
+    },
+    {
+      "operation": "inverse",
+      "n": 4096,
+      "variants": {
+        "before": {
+          "median_ms": 0.967983,
+          "samples_ms": [
+            1.139298,
+            0.967983,
+            0.950376,
+            1.089244,
+            1.034032,
+            0.950897,
+            0.950727,
+            0.947944,
+            1.028192
+          ],
+          "checksum": "13076374286469685016"
+        },
+        "current": {
+          "median_ms": 0.606474,
+          "samples_ms": [
+            0.595708,
+            0.621476,
+            0.605943,
+            0.593054,
+            0.613174,
+            0.606474,
+            0.586734,
+            0.719362,
+            0.668457
+          ],
+          "checksum": "13076374286469685016"
+        }
+      }
+    },
+    {
+      "operation": "inverse",
+      "n": 32768,
+      "variants": {
+        "before": {
+          "median_ms": 9.823183,
+          "samples_ms": [
+            9.651709,
+            9.926448,
+            10.353264,
+            10.231233,
+            9.695163,
+            9.823183,
+            9.661494,
+            9.835223,
+            9.75368
+          ],
+          "checksum": "1661060950066948448"
+        },
+        "current": {
+          "median_ms": 6.101266,
+          "samples_ms": [
+            6.05774,
+            6.101266,
+            6.180665,
+            6.872586,
+            6.058583,
+            6.114676,
+            6.037059,
+            5.952684,
+            6.527491
+          ],
+          "checksum": "1661060950066948448"
+        }
+      }
+    },
+    {
+      "operation": "inverse",
+      "n": 131072,
+      "variants": {
+        "before": {
+          "median_ms": 48.313084,
+          "samples_ms": [
+            48.313084,
+            46.847599,
+            48.663116,
+            49.36322,
+            48.322007,
+            47.915381,
+            48.245554,
+            47.774392,
+            49.218835
+          ],
+          "checksum": "6246204047067189800"
+        },
+        "current": {
+          "median_ms": 28.481329,
+          "samples_ms": [
+            28.599927,
+            28.481329,
+            29.577083,
+            28.328781,
+            28.508821,
+            27.823148,
+            28.907715,
+            28.213259,
+            28.220731
+          ],
+          "checksum": "6246204047067189800"
+        }
+      }
+    },
+    {
+      "operation": "projection",
+      "n": 4096,
+      "variants": {
+        "before": {
+          "median_ms": 0.788926,
+          "samples_ms": [
+            0.749858,
+            0.762787,
+            0.788926,
+            0.761385,
+            0.808796,
+            0.844429,
+            0.829877,
+            0.759782,
+            0.819051
+          ],
+          "checksum": "16151093282260543701"
+        },
+        "current": {
+          "median_ms": 0.48308,
+          "samples_ms": [
+            0.467187,
+            0.463,
+            0.463732,
+            0.501998,
+            0.48308,
+            0.504852,
+            0.484573,
+            0.665803,
+            0.460927
+          ],
+          "checksum": "16151093282260543701"
+        }
+      }
+    },
+    {
+      "operation": "projection",
+      "n": 32768,
+      "variants": {
+        "before": {
+          "median_ms": 8.229117,
+          "samples_ms": [
+            8.136859,
+            8.198242,
+            8.256398,
+            8.076911,
+            8.726069,
+            8.234496,
+            8.104843,
+            8.239324,
+            8.229117
+          ],
+          "checksum": "6524882374590408888"
+        },
+        "current": {
+          "median_ms": 5.005602,
+          "samples_ms": [
+            5.114905,
+            5.005602,
+            4.998181,
+            4.99083,
+            5.090119,
+            5.062316,
+            4.984841,
+            4.971652,
+            5.053823
+          ],
+          "checksum": "6524882374590408888"
+        }
+      }
+    },
+    {
+      "operation": "projection",
+      "n": 131072,
+      "variants": {
+        "before": {
+          "median_ms": 40.815548,
+          "samples_ms": [
+            41.36049,
+            40.416442,
+            40.815548,
+            41.265808,
+            40.043897,
+            40.464695,
+            41.129375,
+            39.511633,
+            40.967003
+          ],
+          "checksum": "7355666251011445489"
+        },
+        "current": {
+          "median_ms": 24.306606,
+          "samples_ms": [
+            23.423039,
+            24.275589,
+            24.414406,
+            25.013149,
+            24.740132,
+            23.995783,
+            24.306606,
+            24.961201,
+            24.070454
+          ],
+          "checksum": "7355666251011445489"
+        }
+      }
+    },
+    {
+      "operation": "projection_weighted",
+      "n": 4096,
+      "variants": {
+        "before": {
+          "median_ms": 0.767424,
+          "samples_ms": [
+            0.859342,
+            0.767424,
+            0.740965,
+            0.852051,
+            0.777589,
+            0.755586,
+            1.028713,
+            0.7578,
+            0.753143
+          ],
+          "checksum": "1821795034902294872"
+        },
+        "current": {
+          "median_ms": 0.568177,
+          "samples_ms": [
+            0.558012,
+            0.643339,
+            0.57005,
+            0.549269,
+            0.545113,
+            0.584632,
+            0.560485,
+            0.568177,
+            0.689267
+          ],
+          "checksum": "1821795034902294872"
+        }
+      }
+    },
+    {
+      "operation": "projection_weighted",
+      "n": 32768,
+      "variants": {
+        "before": {
+          "median_ms": 8.228997,
+          "samples_ms": [
+            8.181156,
+            8.228997,
+            8.684987,
+            8.202649,
+            8.591238,
+            8.279072,
+            8.062429,
+            8.175328,
+            8.826118
+          ],
+          "checksum": "6249142979114965673"
+        },
+        "current": {
+          "median_ms": 5.506859,
+          "samples_ms": [
+            5.62147,
+            5.355143,
+            5.967336,
+            5.41961,
+            5.506859,
+            5.562163,
+            5.420741,
+            5.531607,
+            5.490655
+          ],
+          "checksum": "6249142979114965673"
+        }
+      }
+    },
+    {
+      "operation": "projection_weighted",
+      "n": 131072,
+      "variants": {
+        "before": {
+          "median_ms": 41.229084,
+          "samples_ms": [
+            41.192299,
+            41.475671,
+            41.229084,
+            41.578474,
+            40.379617,
+            40.666835,
+            41.879614,
+            41.550313,
+            40.231106
+          ],
+          "checksum": "11498567140814075224"
+        },
+        "current": {
+          "median_ms": 28.076545,
+          "samples_ms": [
+            28.755589,
+            27.466918,
+            28.339388,
+            28.076545,
+            28.32822,
+            27.416051,
+            27.304164,
+            27.809989,
+            28.684242
+          ],
+          "checksum": "11498567140814075224"
+        }
+      }
+    }
+  ],
+  "judge": [
+    {
+      "problem": "composition_of_formal_power_series",
+      "input_sha256": "510b6685010b93506c9cc54b06ff6c9e3072b618a4c4c6b08a3de2e9146570a1",
+      "answer_sha256": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5",
+      "variants": {
+        "before": {
+          "median_ms": 3.411256,
+          "samples_ms": [
+            3.672856,
+            3.411256,
+            3.443404,
+            3.573548,
+            3.298327,
+            3.329273,
+            3.512637,
+            3.341862,
+            3.382332
+          ]
+        },
+        "current": {
+          "median_ms": 2.802738,
+          "samples_ms": [
+            2.799704,
+            2.802738,
+            2.86471,
+            2.702007,
+            2.929758,
+            2.854977,
+            2.865532,
+            2.758662,
+            2.764231
+          ]
+        },
+        "reference": {
+          "median_ms": 2.824451,
+          "samples_ms": [
+            2.824451,
+            2.839112,
+            2.770931,
+            2.823369,
+            2.93176,
+            2.745833,
+            2.735457,
+            3.034654,
+            2.879683
+          ]
+        }
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series_large",
+      "input_sha256": "9404320bd03fe869c53cbe50511a45d262f037388dd5d2e41074db1c8a6fffa6",
+      "answer_sha256": "2e032a16bc09a8e289e7a2470ec8f70b71904ec433c60df30da260a2fb6fd7dd",
+      "variants": {
+        "before": {
+          "median_ms": 54.969648,
+          "samples_ms": [
+            54.558365,
+            55.190017,
+            54.969648,
+            55.351256,
+            54.546457,
+            56.385519,
+            55.298488,
+            54.943378,
+            54.504363
+          ]
+        },
+        "current": {
+          "median_ms": 34.590146,
+          "samples_ms": [
+            34.602785,
+            34.336488,
+            34.037883,
+            34.532921,
+            34.653281,
+            34.591358,
+            34.472401,
+            34.590146,
+            34.799579
+          ]
+        },
+        "reference": {
+          "median_ms": 32.599829,
+          "samples_ms": [
+            32.850203,
+            32.356357,
+            32.722372,
+            32.669954,
+            32.552039,
+            32.599829,
+            33.130371,
+            32.548884,
+            32.304108
+          ]
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series",
+      "input_sha256": "4791f4a020aedfa791e7f5c3d342b8e51c13d7a8a4c282025a4feb890cd54349",
+      "answer_sha256": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8",
+      "variants": {
+        "before": {
+          "median_ms": 3.285128,
+          "samples_ms": [
+            3.227021,
+            3.316624,
+            3.303194,
+            3.22638,
+            3.235905,
+            3.286319,
+            3.26675,
+            3.530604,
+            3.285128
+          ]
+        },
+        "current": {
+          "median_ms": 2.543842,
+          "samples_ms": [
+            2.543842,
+            2.767366,
+            2.527157,
+            2.527068,
+            2.762468,
+            2.517052,
+            2.486017,
+            2.56924,
+            2.600106
+          ]
+        },
+        "reference": {
+          "median_ms": 2.503522,
+          "samples_ms": [
+            2.611003,
+            2.47567,
+            2.503522,
+            2.472065,
+            2.567067,
+            2.587808,
+            2.516051,
+            2.480549,
+            2.438926
+          ]
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "input_sha256": "591e42b783095d264cc8d523a94fd53a2b0fd069f0cc7b21bfced85f46c30e55",
+      "answer_sha256": "28a86d08c657c50919c1274634a352be8bfb3fcf6ab9b903923725340bfc4009",
+      "variants": {
+        "before": {
+          "median_ms": 49.392458,
+          "samples_ms": [
+            50.642072,
+            49.312238,
+            48.727025,
+            49.197046,
+            50.19919,
+            48.97847,
+            49.392458,
+            49.613347,
+            49.830752
+          ]
+        },
+        "current": {
+          "median_ms": 31.025796,
+          "samples_ms": [
+            30.466993,
+            31.025796,
+            31.067258,
+            30.883824,
+            31.240355,
+            30.842803,
+            30.582525,
+            31.313354,
+            32.466514
+          ]
+        },
+        "reference": {
+          "median_ms": 29.743164,
+          "samples_ms": [
+            29.560901,
+            29.499069,
+            30.08983,
+            29.743164,
+            29.738357,
+            30.046536,
+            30.168707,
+            29.590566,
+            30.05665
+          ]
+        }
+      }
+    }
+  ],
+  "sources": {
+    "before_headers": {
+      "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+      "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+      "fps/polynomial_gcd.hpp": "f4592e06895a244282167969da984ed3bb4f99823f62fa6f2be4276cd5a9df4c",
+      "fps/multipoint_eval.hpp": "4cb93dd9d9d2b0bbbece729c7de93217a19cd4915cf9ace9aa797c0eefcb049e",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+      "fps/fps.hpp": "2e1ba6ce1c7bbfe9a9258ba9f87b1272e720e0cdb3633f6beee2ff766f25d0f5",
+      "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+      "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041",
+      "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_io.hpp": "9e726bfafae24d4df309f8e98682826b36840acebae75b3afaffd93a0e802061",
+      "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_blocked.hpp": "f2ceef5a60be36f8e785184fb5e67ef97e2e0914f162e817548ccbd5543b0d9f",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/fast_io.hpp": "bbaafa871b43a2f83b6fe2825014c86dce0db44d3bcc999c4eacddb4bcb073fd",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/comb.hpp": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution.hpp": "c140eab3f37df554de4763658c9f6cf03a5e5c46e063c4470139f383e5537645",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4"
+    },
+    "kernel_before": {
+      "source_sha256": "2172542c37bf8da783a2956709134b40e66b5e5f4aca926b91ef93926e047459",
+      "binary_sha256": "8480cb64bd4fc83942e55a6cd09e5a1583f6a2e2f795ea2420e2bce6d5e1bde0",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/before",
+        "-I",
+        "/tmp/fps-composition-speed/before/test",
+        "/tmp/fps-composition-speed/kernel_before.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/kernel_before"
+      ]
+    },
+    "current_headers": {
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "874ec0c4214fbdf2117988cd50126563b03db88e8aba9cc12ca182913000dcb2",
+      "fps/bostan_mori.hpp": "5b6bad4870e994710c5ee9b4637572c97605fa0f7202bab4d303bc1025abdf7c",
+      "fps/power_projection.hpp": "f9deba0cfc7f9959093dbbe35a8b2f7aad182c18780d8a3cb12728873f786af1",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/fps.hpp": "c88a7bf9190b49100f6d02e4bca5fc768056545a8975ec7fe0575d3bdc861491",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "fps/compose.hpp": "4619100364885ea6ae46f7c7dc493d8c7c544033385d1397c3113e22c9b76516",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/fps_reversion.hpp": "0deb2e9314185157811c7b4e72edd268b7d651e38ddcf20fe9176662c33f11a6",
+      "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/fps_taylor_blocked.hpp": "fcb6cbe46c2d4305bd6774d88723edb20535b86e4eaf7780238c1be27d8e4dcd",
+      "components/fps_evaluation.hpp": "1bcd8a2ae1169ea99a2f1daf63c463e422f7d6646d523a35c747aba708501f36",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/fps_division_blocked.hpp": "ebb44aa1ef047b55eafec337fdb02ac970742af8a7ed571d1bec650faf804ebc",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/fast_io.hpp": "bbaafa871b43a2f83b6fe2825014c86dce0db44d3bcc999c4eacddb4bcb073fd",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+      "components/fps_io.hpp": "9e726bfafae24d4df309f8e98682826b36840acebae75b3afaffd93a0e802061",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fps_exp_blocked.hpp": "fd86534b0f902045399cbfb82527f7107bcc6e4d9334d482b97bcdeeffca5467",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/fps_blocked.hpp": "f2ceef5a60be36f8e785184fb5e67ef97e2e0914f162e817548ccbd5543b0d9f",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/polynomial_gcd_blocked.hpp": "8472403a2bb62b98c578adb312b13344daad029db0065ad50f641ef292196981",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/fps_convolution.hpp": "d86aa86134323f453d0b297b2f3d6d83dfbc131723deea2e19bbf3047b6c9e41",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/fps_bostan_transform.hpp": "50520e9c7a8f9996500ca2ed20425790b2f5ff976aeb8ad862b8f5f1b9612a95",
+      "components/fps_sqrt_blocked.hpp": "56be806b66c919bfd970be5372930eb6ed652aacd1d96e8617e1dbc9b5518ee4",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/fps_composition.hpp": "5e1f2a326590f7b2ccbd97149d3771850841211db62d3e76f4c4c891d1bd2180",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_inverse_blocked.hpp": "1958543472e53a7060f1e6719d06ef6aa2c5ae36333e099eb866d3b98ef42a89",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/comb.hpp": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5"
+    },
+    "kernel_current": {
+      "source_sha256": "2172542c37bf8da783a2956709134b40e66b5e5f4aca926b91ef93926e047459",
+      "binary_sha256": "95f87bb6d08c9cc486a8d42d11b924f7c1310c6471fbd68653b1d9f0ee6d9ab3",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/kernel_current.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/kernel_current"
+      ]
+    },
+    "compose_before": {
+      "source_sha256": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+      "binary_sha256": "1a7da5b9553d391cf75c7fe1cac4edff2efd971e59db4bb626dde7c4d8bc5924",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/before",
+        "-I",
+        "/tmp/fps-composition-speed/before/test",
+        "/tmp/fps-composition-speed/compose_before.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/compose_before"
+      ]
+    },
+    "compose_current": {
+      "source_sha256": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+      "binary_sha256": "2772e5f71bfb4e85f371cac49c1386efa07f14cbfd15ab7e8f8d42eeaa85ac27",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/compose_current.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/compose_current"
+      ]
+    },
+    "compose_reference": {
+      "source_sha256": "766d2101d5e2c619f9fa3d73e57099871f112b91345f463fa2e17fb6c6bb6188",
+      "binary_sha256": "d25a23b995fee1f58bd9f73bce1908fa80fa1c104d1ed43b80aa3cb6e9ce9747",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/compose_reference.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/compose_reference"
+      ]
+    },
+    "compose_large_before": {
+      "source_sha256": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+      "binary_sha256": "448881766be34f9bc63d9e073333ab679cad344f1db3039103602cc68c91088c",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/before",
+        "-I",
+        "/tmp/fps-composition-speed/before/test",
+        "/tmp/fps-composition-speed/compose_large_before.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/compose_large_before"
+      ]
+    },
+    "compose_large_current": {
+      "source_sha256": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+      "binary_sha256": "a8200d965d6440a625012073fca68dc837b887cdb79b0cc69563ee443d9c6cc6",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/compose_large_current.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/compose_large_current"
+      ]
+    },
+    "compose_large_reference": {
+      "source_sha256": "1829103fcfeb5f979b111354a58a95caeedb5b44615eb24197e111fc10b126c9",
+      "binary_sha256": "1b8f935e697f9cfb231d6ec9ea6aacc4ad87b971db35ba813557f6edc4968149",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/compose_large_reference.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/compose_large_reference"
+      ]
+    },
+    "inverse_before": {
+      "source_sha256": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+      "binary_sha256": "fb10ae7be282b00c3e54faa2ac9293fa70fb218ba8e5b515815ac15eae96ffc2",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/before",
+        "-I",
+        "/tmp/fps-composition-speed/before/test",
+        "/tmp/fps-composition-speed/inverse_before.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/inverse_before"
+      ]
+    },
+    "inverse_current": {
+      "source_sha256": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+      "binary_sha256": "82237da22a3bd07b6fb43dab6914fe4c55f2fcce427159bb474533b3373fffd3",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/inverse_current.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/inverse_current"
+      ]
+    },
+    "inverse_reference": {
+      "source_sha256": "51f5819987ba31df921f041d640216b404593ad5b293732aa519ecf9e9b19145",
+      "binary_sha256": "73417f0f795d6541b22ed6ff753edc0b59f30432549368deb3aa9fabb57b493e",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/inverse_reference.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/inverse_reference"
+      ]
+    },
+    "inverse_large_before": {
+      "source_sha256": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+      "binary_sha256": "9dc24af652d3b4aa42a6caec8205febec81f039dfa20f02e18d8030e1484f7fa",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/before",
+        "-I",
+        "/tmp/fps-composition-speed/before/test",
+        "/tmp/fps-composition-speed/inverse_large_before.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/inverse_large_before"
+      ]
+    },
+    "inverse_large_current": {
+      "source_sha256": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+      "binary_sha256": "3e6553a4d6a1c0ac395ed5399c76b015750fcb7d41c23ca4d212cad6fb15ecd2",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/inverse_large_current.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/inverse_large_current"
+      ]
+    },
+    "inverse_large_reference": {
+      "source_sha256": "266ebfa429c5413f815d504684bb4ec69fcbf8bf743a777873b76486f82f5edf",
+      "binary_sha256": "98ac0063382cb48e503b61352364b7ce18c1609b5e50f90f989e64439f4c81bd",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-speed/current",
+        "-I",
+        "/tmp/fps-composition-speed/current/test",
+        "/tmp/fps-composition-speed/inverse_large_reference.cpp",
+        "-o",
+        "/tmp/fps-composition-speed/inverse_large_reference"
+      ]
+    }
+  }
+}

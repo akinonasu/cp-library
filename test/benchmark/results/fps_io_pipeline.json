@@ -1,0 +1,326 @@
+{
+  "baseline": "ce81108fe8e4f3a93d816c94e475d02ef0329608",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "hardware": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "cpu": 2,
+  "trials": 11,
+  "harness_sha256": "4da0b5a54be47a3dc210caf0ff4c256c3db9553474f71625b813c876016c3703",
+  "sources": {
+    "old_io": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-io-pipeline/current",
+        "-include",
+        "/tmp/fps-io-pipeline/old_io.hpp",
+        "/tmp/fps-io-pipeline/driver.cpp",
+        "-o",
+        "/tmp/fps-io-pipeline/old_io"
+      ],
+      "header_sha256": "0801e6705c7c22f8e4e46d6322275303e69a93ff61ac4def55718a8f32b78ef9",
+      "driver_sha256": "6ba3c912ec87ea1d4494d020c4fcf42a41bbfe64cac9b7b0868ab523d43826b0",
+      "binary_sha256": "8e9100008db9a206d6ac2d9b68874dd44b3396392131548207cb48e961ab5ff1"
+    },
+    "current_io": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-io-pipeline/current",
+        "-include",
+        "/tmp/fps-io-pipeline/current/components/fps_io.hpp",
+        "/tmp/fps-io-pipeline/driver.cpp",
+        "-o",
+        "/tmp/fps-io-pipeline/current_io"
+      ],
+      "header_sha256": "6e2548817d06a93f21bc41dab642e0d9262d344ade526ed82d0c5decbe2c7ae5",
+      "driver_sha256": "6ba3c912ec87ea1d4494d020c4fcf42a41bbfe64cac9b7b0868ab523d43826b0",
+      "binary_sha256": "a53638c4048a079c8e102d016da8c4b2d30ee3a36d93e8240ad40cca1b165f2e"
+    }
+  },
+  "variants": {
+    "old_io": {
+      "samples_ms": [
+        [
+          2.949688,
+          9.721212,
+          1.815747,
+          16.688069
+        ],
+        [
+          2.900464,
+          9.542637,
+          1.775607,
+          16.278629
+        ],
+        [
+          2.746064,
+          9.527524,
+          1.605934,
+          15.95052
+        ],
+        [
+          2.843849,
+          9.988422,
+          1.622098,
+          16.577314
+        ],
+        [
+          2.822458,
+          9.549576,
+          1.630161,
+          16.057458
+        ],
+        [
+          2.839984,
+          9.561895,
+          1.746594,
+          16.332529
+        ],
+        [
+          2.784862,
+          9.553042,
+          1.681847,
+          16.056658
+        ],
+        [
+          2.864781,
+          9.587594,
+          1.863147,
+          16.634409
+        ],
+        [
+          2.829649,
+          9.541144,
+          1.722347,
+          16.296234
+        ],
+        [
+          2.838542,
+          9.607934,
+          1.578954,
+          16.024159
+        ],
+        [
+          2.859383,
+          9.698388,
+          1.752072,
+          16.598346
+        ]
+      ],
+      "median_ms": [
+        2.839984,
+        9.561895,
+        1.722347,
+        16.296234
+      ]
+    },
+    "current_io": {
+      "samples_ms": [
+        [
+          1.765973,
+          9.556056,
+          1.41512,
+          14.860144
+        ],
+        [
+          1.900934,
+          9.696375,
+          1.709189,
+          15.657473
+        ],
+        [
+          1.987753,
+          9.839809,
+          1.629109,
+          15.900124
+        ],
+        [
+          1.869047,
+          9.826579,
+          1.602349,
+          15.511885
+        ],
+        [
+          1.859682,
+          9.597398,
+          1.554598,
+          15.106842
+        ],
+        [
+          1.852963,
+          9.704487,
+          1.565414,
+          15.269594
+        ],
+        [
+          1.883438,
+          9.597077,
+          1.472225,
+          15.048695
+        ],
+        [
+          1.93173,
+          9.737497,
+          1.857539,
+          15.869139
+        ],
+        [
+          1.846763,
+          9.503458,
+          1.474909,
+          14.954604
+        ],
+        [
+          1.832071,
+          9.503438,
+          1.413597,
+          14.788908
+        ],
+        [
+          1.808557,
+          9.557668,
+          1.397374,
+          14.810129
+        ]
+      ],
+      "median_ms": [
+        1.859682,
+        9.597398,
+        1.554598,
+        15.106842
+      ]
+    }
+  },
+  "input_sha256": "71cb0227a5a1e40ece225e19cd9d2633dfd4f07f25d39f01719bc2376e1d4ac8",
+  "answer_sha256": "c031f72a4eb2eacfaacce3a4f427b5f2d296b0fa9ecbd96d7dca445a38cbbd93",
+  "headers": {
+    "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+    "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+    "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+    "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+    "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+    "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+    "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+    "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+    "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+    "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+    "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+    "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+    "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+    "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+    "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+    "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+    "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+    "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+    "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+    "math/comb.hpp": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+    "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+    "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+    "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+    "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+    "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+    "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+    "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+    "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+    "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+    "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+    "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+    "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+    "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+    "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+    "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+    "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+    "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+    "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+    "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+    "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+    "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+    "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+    "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+    "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+    "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+    "components/fps_reversion.hpp": "0deb2e9314185157811c7b4e72edd268b7d651e38ddcf20fe9176662c33f11a6",
+    "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+    "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+    "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+    "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+    "components/fps_evaluation.hpp": "2df74d35ce78b314882a0e3aad3724ee1cf691cc1a01b0c128da1554c30922d4",
+    "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+    "components/fps_division_blocked.hpp": "695de137fc75e0acd9c2f5fc7cf05679a7560171acebdbdbc52cf5284af15cc1",
+    "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+    "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+    "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+    "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+    "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+    "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+    "components/fast_io.hpp": "d471dcdf978eb5a0878b084ee9b6ffa385f461c24f59974e1e49914229843984",
+    "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+    "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+    "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+    "components/fps_io.hpp": "6e2548817d06a93f21bc41dab642e0d9262d344ade526ed82d0c5decbe2c7ae5",
+    "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+    "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+    "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+    "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+    "components/fps_exp_blocked.hpp": "063a6e7c933c3eaa29b9ff9b6c366cc29f0fb4d8f7607ad6d4e467bbac6fb598",
+    "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+    "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+    "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+    "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+    "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+    "components/fps_blocked.hpp": "9e0567e71ca78f1b47b7947224c27ab5ff47cb1a80c53e21b3e8d019e2398f48",
+    "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+    "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+    "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+    "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+    "components/polynomial_gcd_blocked.hpp": "e11f5e3af3ad8acfc4153dd84339355b0a637f7f76035b4ad132c41b21e89c73",
+    "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+    "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+    "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+    "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+    "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+    "components/fps_convolution.hpp": "d215bcbe4fc8ca257dccbc684ae9eff14a2ab585f80dd632288f1a6a032eb5de",
+    "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+    "components/fps_output.hpp": "fa4e14b99c52e926322f5061c7d1dc69789c95a3d5843c885d018af8243f602b",
+    "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+    "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+    "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+    "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+    "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+    "components/fps_composition.hpp": "db8272027bf74c19bf5dc3d1e8bd5a41df71eef2d3b4bf0162f820ffffa7eb16",
+    "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+    "components/fps_inverse_blocked.hpp": "f72aeab66c53da57bf5e3b8ab033e7acc53925b92960bf705ca8c1fd7ec45b31",
+    "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+    "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de"
+  },
+  "columns": [
+    "input_ms",
+    "kernel_ms",
+    "output_ms",
+    "whole_ms"
+  ]
+}

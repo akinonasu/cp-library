@@ -16,4 +16,6 @@ auto value = bostan_mori(p, q, 10);
 | --- | --- |
 | `bostan_mori(p,q,k)` | $$[x^k]p(x)/q(x)$$。$$q_0\ne0$$、$$k\ge0$$。分子の次数が分母以上でも可 |
 
+内部の NTT 用作業配列は 64 バイト境界に整列して確保します。Linux の大きな作業配列では huge page を要求し、利用できない環境では通常の整列確保へ切り替えます。
+
 $$d=\max(\lvert p\rvert,\lvert q\rvert)$$ として、時間 $$O(d\log d\log k)$$、追加空間 $$O(d)$$ です。

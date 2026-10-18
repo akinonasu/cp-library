@@ -2,10 +2,16 @@
 #define FPS_998244353_HPP
 
 #include "../components/fps_operations.hpp"
+#include "../components/fps_horner.hpp"
 #include "../components/fps_factorials.hpp"
 #include "../components/fps_workspace.hpp"
 #include "../components/fps_log.hpp"
 #include "../components/fps_blocked.hpp"
+#include "../components/fps_exp_blocked.hpp"
+#include "../components/fps_inverse_blocked.hpp"
+#include "../components/fps_sqrt_blocked.hpp"
+#include "../components/fps_convolution.hpp"
+#include "../components/fps_division_blocked.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -61,6 +67,11 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		int n = 1, size = a.size() + b.size() - 1;
 		while (n < size) n <<= 1;
 		assert(n <= (1 << 23));
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if (fps_detail::NTT::vectorized()) return F(fps_detail::multiply_detail::multiply(a, b));
+		}
+#endif
 		F x = a, y;
 		x.resize(n);
 		if (&a != &b) {
@@ -176,6 +187,15 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if (!deg) return {};
 		assert(!g.empty() && g[0] != T(0));
 		if (this->empty()) return F(deg);
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if (deg >= 129 && deg <= (1 << 23) && g.size() >= 64 && fps_detail::NTT::vectorized()) {
+				F r;
+				fps_detail::blocked_poly::native_div_series(this->data(), this->size(), g.data(), g.size(), r, deg);
+				return r;
+			}
+		}
+#endif
 		if (deg <= 128 || g.size() < 64) {
 			F r = multiply(pre(deg), g.inv(deg)).pre(deg);
 			r.resize(deg);
@@ -259,6 +279,24 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return g;
 		}
 
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if (deg >= 512 && deg <= (1 << 23) && fps_detail::NTT::vectorized()) {
+				F result;
+				const int block = 1 << (std::bit_width(static_cast<unsigned>(deg)) - 1), tail = deg - block;
+				if (tail > 0 && tail <= 96) {
+					fps_detail::blocked_poly::native_inverse(this->data(), this->size(), result, block);
+					result.resize(deg);
+					for (int i = block; i < deg; ++i)
+						result[i] = -result[0] * dot(this->data() + 1, result.data() + i - 1, std::min<int>(i, this->size() - 1));
+					return result;
+				}
+				fps_detail::blocked_poly::native_inverse(this->data(), this->size(), result, deg);
+				return result;
+			}
+		}
+#endif
+
 		if (deg > 256 && this->size() >= 64) {
 #if defined(__x86_64__) || defined(__i386__)
 			if (deg < 1024 || !fps_detail::NTT::vectorized()) return F{1}.div_series(*this, deg);
@@ -332,21 +370,30 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if constexpr (!std::is_same_v<T, fps_detail::Mint>) return export_work(import_work(*this).sqrt(deg));
 		if (deg < 0) deg = static_cast<int>(this->size());
 		assert(deg >= 0);
-		F f = pre(deg);
-		f.trim();
-		int first = 0;
-		while (first < static_cast<int>(f.size()) && f[first] == T(0)) ++first;
-		if (first == static_cast<int>(f.size())) return F(deg);
+		int last = static_cast<int>(std::min<std::size_t>(deg, this->size())), first = 0;
+		while (first < last && (*this)[first] == T(0)) ++first;
+		if (first == last) return F(deg);
 		if (first & 1) return {};
-		const T constant = mod_sqrt(f[first]);
+		const T constant = mod_sqrt((*this)[first]);
 		if (constant == T(0)) return {};
-		if (first + 1 == static_cast<int>(f.size())) {
+		while ((*this)[last - 1] == T(0)) --last;
+		if (first + 1 == last) {
 			F result(deg);
 			result[first / 2] = constant;
 			return result;
 		}
 		const int shift = first / 2, target = deg - shift;
-		f.erase(f.begin(), f.begin() + first);
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if (target >= 256 && target <= (1 << 23) && fps_detail::NTT::vectorized()) {
+				F result;
+				fps_detail::blocked_poly::native_sqrt(this->data() + first, last - first, result, target, constant);
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
+#endif
+		F f(this->begin() + first, this->begin() + last);
 		f.resize(target);
 		const T half = T(2).inv(), scale = half / constant;
 		F g(std::min(target, 32));
@@ -460,6 +507,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	T eval(T x) const {
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) return fps_detail::horner(this->data(), this->size(), x);
 		T ans = 0;
 		for (auto it = this->rbegin(); it != this->rend(); ++it) ans = ans * x + *it;
 		return ans;
@@ -538,6 +586,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		const int shift = first * k;
 		const int len = n - shift;
 		const T lead = (*this)[first];
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if (len >= 256 && len <= (1 << 24) && fps_detail::NTT::vectorized()) {
+				F r;
+				fps_detail::blocked_poly::native_power(this->data() + first, this->size() - first, r, len, T(k).val(), lead.pow(k));
+				r.insert(r.begin(), shift, T(0));
+				return r;
+			}
+		}
+#endif
 		F f(this->begin() + first, this->end());
 		f.resize(len);
 		f = f.log_derivative(len);
@@ -554,13 +612,24 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			auto [q, r] = import_work(*this).divmod(import_work(divisor));
 			return {export_work(q), export_work(r)};
 		}
-		F a = *this;
-		a.trim();
-		int m = static_cast<int>(divisor.size());
+		int n = static_cast<int>(this->size()), m = static_cast<int>(divisor.size());
+		while (n && (*this)[n - 1] == T(0)) --n;
 		while (m && divisor[m - 1] == T(0)) --m;
 		assert(m);
-		if (static_cast<int>(a.size()) < m) return {{}, std::move(a)};
-		const int qn = static_cast<int>(a.size()) - m + 1;
+		if (n < m) return {{}, pre(n)};
+		const int qn = n - m + 1;
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if (m > 2 && (std::size_t)m * qn > 4096 && n <= (1 << 23) && fps_detail::NTT::vectorized()) {
+				F q, r;
+				fps_detail::blocked_poly::native_divide(this->data(), n, divisor.data(), m, q, r);
+				q.trim(), r.trim();
+				return {std::move(q), std::move(r)};
+			}
+		}
+#endif
+		F a = pre(n);
 		if (m <= 2 || (std::size_t)m * qn <= 4096) {
 			F q(qn);
 			const T inv = divisor[m - 1].inv();
@@ -735,6 +804,15 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			for (long long i = stride; i < deg; i += stride) g[i] = sparse_dot(terms, g, static_cast<int>(i)) * iv[i / stride];
 			return g;
 		}
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if (deg >= 256 && deg <= (1 << 24) && fps_detail::NTT::vectorized()) {
+				F r;
+				fps_detail::blocked_poly::native_exp(this->data(), this->size(), r, deg, differentiated);
+				return r;
+			}
+		}
+#endif
 		const auto &iv = inverses(deg);
 		const int initial = std::min(deg, 32);
 		F g(initial);

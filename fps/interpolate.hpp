@@ -3,6 +3,7 @@
 
 #include "fps.hpp"
 #include "../components/fps_product_tree.hpp"
+#include "../components/fps_evaluation.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -18,6 +19,13 @@ FormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> 
 	assert(xs.size() == ys.size());
 	const int n = static_cast<int>(xs.size());
 	if (n == 0) return {};
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if (n >= 64 && n <= (1 << 23) && fps_detail::NTT::vectorized())
+			return F(fps_detail::evaluation_poly::native_interpolate(xs, ys));
+	}
+#endif
+
 	constexpr int block = 8;
 	int size = 1;
 	std::vector<base> frequency;

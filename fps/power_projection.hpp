@@ -2,6 +2,7 @@
 #define CP_FPS_POWER_PROJECTION_HPP
 
 #include "fps.hpp"
+#include "../components/fps_composition.hpp"
 #include <numeric>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
@@ -46,13 +47,15 @@ FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, const Forma
 			}
 		}
 		int count = std::min(deg, (n - 1) / first + 1);
-		F result(count);
+		F result;
 		int last = length - 1;
 		while (f[last] == T(0)) --last;
 		if (first == last) {
+			result.resize(count);
 			T value = 1;
 			for (int i = 0; i < count; ++i) result[i] = weights[i * first] * value, value *= f[first];
 		} else if (n <= 32 || count <= 8) {
+			result.resize(count);
 			F h(f.begin(), f.begin() + last + 1), power{T(1)};
 			h[0] = 0;
 			for (int i = 0; i < count; ++i) {
@@ -64,7 +67,14 @@ FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, const Forma
 					if (static_cast<int>(power.size()) > n) power.resize(n);
 				}
 			}
-		} else {
+		} else
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if (n <= (1 << 21) && fps_detail::NTT::vectorized()) {
+			fps_detail::composition_poly::native_weighted_projection(f.data(), length, weights.data(), result, n, count);
+		} else
+#endif
+		{
+			result.resize(count);
 			int size = 1;
 			while (size < n) size <<= 1;
 			assert(size <= (1 << 21));
@@ -107,6 +117,20 @@ FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, const Forma
 template<class T>
 FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, int n, int deg = -1) {
 	assert(n >= 0 && n < (1 << 21));
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if (n >= 64 && f.size() > 2 && f[0] == T(0) && f[1] != T(0) && f[2] != T(0) &&
+			fps_detail::NTT::vectorized()) {
+			const int count = deg < 0 ? n + 1 : deg;
+			assert(count >= 0 && count <= (1 << 22));
+			if (count == 0) return {};
+			FormalPowerSeries<T> result;
+			fps_detail::composition_poly::native_projection(f.data(), f.size(), result, n + 1);
+			result.resize(count);
+			return result;
+		}
+	}
+#endif
 	FormalPowerSeries<T> weights(n + 1);
 	weights[n] = 1;
 	return power_projection(f, weights, deg);

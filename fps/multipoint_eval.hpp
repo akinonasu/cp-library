@@ -4,6 +4,7 @@
 #include "fps.hpp"
 #include "../components/fps_product_tree.hpp"
 #include "../components/fps_direct_eval.hpp"
+#include "../components/fps_evaluation.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -34,6 +35,13 @@ std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<
 		for (T x : xs) r.push_back(f.eval(x));
 		return r;
 	}
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if (f.size() * xs.size() > (std::size_t(1) << 22) && std::max(f.size(), xs.size()) <= (1 << 23) && fps_detail::NTT::vectorized())
+			return fps_detail::evaluation_poly::native_evaluate(f, xs);
+	}
+#endif
+
 	constexpr int block = 8;
 	int length = block;
 	while (length < (int)std::max(f.size(), xs.size())) length <<= 1;

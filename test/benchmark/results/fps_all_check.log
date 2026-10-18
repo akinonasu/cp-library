@@ -1,0 +1,76 @@
+[worker 1] command: ['flock', '-s', '/tmp/cp-fps-tuning.lock', 'python3', 'test/verify.py', '--unit-only', '--cxx', 'g++', '--selection', '/tmp/fps-frozen-normal-check/part1.json']
+[worker 1] compiler: /usr/bin/g++ -Werror
+[worker 2] command: ['flock', '-s', '/tmp/cp-fps-tuning.lock', 'python3', 'test/verify.py', '--unit-only', '--cxx', 'g++', '--selection', '/tmp/fps-frozen-normal-check/part2.json']
+[worker 2] compiler: /usr/bin/g++ -Werror
+[worker 0] command: ['flock', '-s', '/tmp/cp-fps-tuning.lock', 'python3', 'test/verify.py', '--unit-only', '--cxx', 'g++', '--selection', '/tmp/fps-frozen-normal-check/part0.json']
+[worker 0] compiler: /usr/bin/g++ -Werror
+[worker 1] g++: standalone components/fps_blocked.hpp
+[worker 0] g++: standalone components/fast_io.hpp
+[worker 2] g++: standalone components/fps_composition.hpp
+[worker 0] g++: standalone components/fps_convolution.hpp
+[worker 2] g++: standalone components/fps_evaluation.hpp
+[worker 1] g++: standalone components/fps_division_blocked.hpp
+[worker 0] g++: standalone components/fps_exp_blocked.hpp
+[worker 2] g++: standalone components/fps_inverse_blocked.hpp
+[worker 1] g++: standalone components/fps_horner.hpp
+[worker 0] g++: standalone components/fps_io.hpp
+[worker 1] g++: standalone components/fps_output.hpp
+[worker 2] g++: standalone components/fps_product_tree.hpp
+[worker 1] g++: standalone components/fps_sqrt_blocked.hpp
+[worker 2] g++: standalone components/fps_taylor_blocked.hpp
+[worker 0] g++: standalone components/fps_reversion.hpp
+[worker 1] g++: standalone components/polynomial_half_gcd.hpp
+[worker 2] g++: standalone convolution/convolution.hpp
+[worker 0] g++: standalone components/polynomial_gcd_blocked.hpp
+[worker 1] g++: standalone convolution/max_min_convolution.hpp
+[worker 0] g++: standalone convolution/cyclic_convolution.hpp
+[worker 2] g++: standalone convolution/multiplicative_convolution.hpp
+[worker 1] g++: standalone convolution/ordered_convolution.hpp
+[worker 0] g++: standalone convolution/multivariate_convolution.hpp
+[worker 2] g++: standalone fps/bostan_mori.hpp
+[worker 1] g++: standalone fps/compositional_inverse.hpp
+[worker 0] g++: standalone fps/compose.hpp
+[worker 2] g++: standalone fps/fps.hpp
+[worker 1] g++: standalone fps/linear_recurrence.hpp
+[worker 0] g++: standalone fps/interpolate.hpp
+[worker 2] g++: standalone fps/multipoint_eval.hpp
+[worker 1] g++: standalone fps/power_projection.hpp
+[worker 0] g++: standalone fps/polynomial_gcd.hpp
+[worker 2] g++: standalone fps/taylor_shift.hpp
+[worker 1] g++: fast_io.cpp
+[worker 0] g++: convolution.cpp
+[worker 2] g++: fast_io_integer.cpp
+[worker 1] g++: fps_algorithms.cpp
+[worker 2] g++: fps_bostan_workspace.cpp
+[worker 0] g++: fps.cpp
+[worker 2] g++: fps_division_blocked.cpp
+[worker 2] g++: fps_horner.cpp
+[worker 2] g++: fps_log.cpp
+[worker 1] g++: fps_convolution.cpp
+[worker 1] g++: fps_exp_blocked.cpp
+[worker 0] fps_mint: scalar_cases=960 division_cases=192 adjacent_cases=666
+[worker 0] NontrivialMint: scalar_cases=960 division_cases=192 adjacent_cases=666
+[worker 0] PASS scalar checks=1037502
+[worker 0] g++: fps_composition_blocked.cpp
+[worker 2] g++: fps_tuning_advanced.cpp
+[worker 1] g++: fps_io.cpp
+[worker 1] g++: fps_speed_io.cpp
+[worker 1] g++: fps_tuning_polynomial.cpp
+[worker 0] g++: fps_evaluation.cpp
+[worker 2] g++: multipoint_tree.cpp
+[worker 1] g++: ordered_convolution.cpp
+[worker 1] g++: standalone.cpp
+[worker 0] g++: fps_inverse_blocked.cpp
+[worker 2] g++: polynomial_gcd.cpp
+[worker 0] g++: fps_speed.cpp
+[worker 2] Verification passed
+[worker 2] exit 0
+[worker 0] g++: fps_tuning_basic.cpp
+[worker 1] Verification passed
+[worker 1] exit 0
+[worker 0] g++: online_convolution.cpp
+[worker 0] g++: power_projection.cpp
+[worker 0] Verification passed
+[worker 0] exit 0
+Verification passed for all 33 headers and 26 unit tests with -Werror
+Headers and unit sources unchanged during verification

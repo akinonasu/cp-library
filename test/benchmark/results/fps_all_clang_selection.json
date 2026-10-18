@@ -1,0 +1,38 @@
+{
+  "headers": [
+    "components/fast_io.hpp",
+    "components/fps_blocked.hpp",
+    "components/fps_composition.hpp",
+    "components/fps_convolution.hpp",
+    "components/fps_division_blocked.hpp",
+    "components/fps_evaluation.hpp",
+    "components/fps_exp_blocked.hpp",
+    "components/fps_horner.hpp",
+    "components/fps_inverse_blocked.hpp",
+    "components/fps_io.hpp",
+    "components/fps_output.hpp",
+    "components/fps_reversion.hpp",
+    "components/fps_sqrt_blocked.hpp",
+    "components/fps_taylor_blocked.hpp",
+    "components/polynomial_gcd_blocked.hpp",
+    "fps/fps.hpp",
+    "fps/polynomial_gcd.hpp",
+    "fps/compose.hpp",
+    "fps/compositional_inverse.hpp",
+    "fps/multipoint_eval.hpp",
+    "fps/interpolate.hpp",
+    "fps/taylor_shift.hpp"
+  ],
+  "unit": [
+    "test/unit/fps_algorithms.cpp",
+    "test/unit/polynomial_gcd.cpp",
+    "test/unit/multipoint_tree.cpp",
+    "test/unit/fps_horner.cpp"
+  ],
+  "sanitize": [
+    "test/unit/fps_algorithms.cpp",
+    "test/unit/polynomial_gcd.cpp",
+    "test/unit/multipoint_tree.cpp",
+    "test/unit/fps_horner.cpp"
+  ]
+}

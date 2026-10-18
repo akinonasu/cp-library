@@ -1,0 +1,11 @@
+{
+  "headers": [],
+  "unit": [
+    "test/unit/fps_exp_blocked.cpp",
+    "test/unit/fps_log.cpp"
+  ],
+  "sanitize": [
+    "test/unit/fps_exp_blocked.cpp",
+    "test/unit/fps_log.cpp"
+  ]
+}

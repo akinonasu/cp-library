@@ -1,0 +1,64 @@
+{
+  "source": "test/unit/fps_exp_blocked.cpp",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-I",
+    "/workspace/cp-library"
+  ],
+  "environment": {
+    "ASAN_OPTIONS": "detect_leaks=0",
+    "UBSAN_OPTIONS": "halt_on_error=1"
+  },
+  "checks": [
+    {
+      "sanitize": false,
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/fps_exp_blocked.cpp",
+        "-o",
+        "/tmp/fps-pagefault/unit"
+      ],
+      "binary_sha256": "cadcbb437c4cd7380c94173166bd2aa5572be5792657c371f0496cc2c46b4777",
+      "success": true
+    },
+    {
+      "sanitize": true,
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-g",
+        "/workspace/cp-library/test/unit/fps_exp_blocked.cpp",
+        "-o",
+        "/tmp/fps-pagefault/unit_sanitize"
+      ],
+      "binary_sha256": "34be2540e50b01520bdf7f4f09b439fcd81b91196712d724a54df89929ab16b1",
+      "success": true
+    }
+  ],
+  "sources": {
+    "test/unit/fps_exp_blocked.cpp": "eb16d54fb8407b90d06e83e1327056a964e9265efc89a0a0868c3dc955603603",
+    "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+    "components/fps_blocked.hpp": "e7cc55f89a4cae388a9666c8db05669547525549bfa8f0e7090743b15f5d4c1b",
+    "components/fps_exp_blocked.hpp": "063a6e7c933c3eaa29b9ff9b6c366cc29f0fb4d8f7607ad6d4e467bbac6fb598",
+    "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171"
+  }
+}

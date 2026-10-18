@@ -1,0 +1,81 @@
+{
+  "command": [
+    "python3",
+    "test/verify.py",
+    "--unit-only",
+    "--sanitize",
+    "--cxx",
+    "g++",
+    "--selection",
+    "/workspace/cp-library/test/benchmark/results/fps_all_exp_sanitize_selection.json"
+  ],
+  "ASAN_OPTIONS": "detect_leaks=0",
+  "UBSAN_OPTIONS": "halt_on_error=1",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-DDEBUG=1",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-g"
+  ],
+  "started_utc": "2026-10-18T17:46:46.468890+00:00",
+  "selection": {
+    "headers": [],
+    "unit": [
+      "test/unit/fps_exp_blocked.cpp",
+      "test/unit/fps_log.cpp"
+    ],
+    "sanitize": [
+      "test/unit/fps_exp_blocked.cpp",
+      "test/unit/fps_log.cpp"
+    ]
+  },
+  "sources_before": {
+    "components/fps_blocked.hpp": "9e0567e71ca78f1b47b7947224c27ab5ff47cb1a80c53e21b3e8d019e2398f48",
+    "components/fps_convolution.hpp": "d215bcbe4fc8ca257dccbc684ae9eff14a2ab585f80dd632288f1a6a032eb5de",
+    "components/fps_division_blocked.hpp": "695de137fc75e0acd9c2f5fc7cf05679a7560171acebdbdbc52cf5284af15cc1",
+    "components/fps_exp_blocked.hpp": "063a6e7c933c3eaa29b9ff9b6c366cc29f0fb4d8f7607ad6d4e467bbac6fb598",
+    "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+    "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+    "components/fps_inverse_blocked.hpp": "1958543472e53a7060f1e6719d06ef6aa2c5ae36333e099eb866d3b98ef42a89",
+    "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/fps_output.hpp": "fa4e14b99c52e926322f5061c7d1dc69789c95a3d5843c885d018af8243f602b",
+    "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+    "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+    "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+    "test/unit/fps_exp_blocked.cpp": "e0a5617ce0b770783f0256280152c0493741952e7ee02a65ab9b332fb0e1db94",
+    "test/unit/fps_log.cpp": "eba86082b99b8c0e00bf8d725d64d5be7e19ed7a732de785bb1bda3163176c26",
+    "test/verify.py": "933e411f8eb03efbb62e2d8e3595e205a955def156b7c6fbdb4a3da1be996dff"
+  },
+  "seconds": 81.62857263799378,
+  "exit_code": 0,
+  "sources_after": {
+    "components/fps_blocked.hpp": "9e0567e71ca78f1b47b7947224c27ab5ff47cb1a80c53e21b3e8d019e2398f48",
+    "components/fps_convolution.hpp": "d215bcbe4fc8ca257dccbc684ae9eff14a2ab585f80dd632288f1a6a032eb5de",
+    "components/fps_division_blocked.hpp": "695de137fc75e0acd9c2f5fc7cf05679a7560171acebdbdbc52cf5284af15cc1",
+    "components/fps_exp_blocked.hpp": "063a6e7c933c3eaa29b9ff9b6c366cc29f0fb4d8f7607ad6d4e467bbac6fb598",
+    "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+    "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+    "components/fps_inverse_blocked.hpp": "f72aeab66c53da57bf5e3b8ab033e7acc53925b92960bf705ca8c1fd7ec45b31",
+    "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/fps_output.hpp": "fa4e14b99c52e926322f5061c7d1dc69789c95a3d5843c885d018af8243f602b",
+    "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+    "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+    "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+    "test/unit/fps_exp_blocked.cpp": "e0a5617ce0b770783f0256280152c0493741952e7ee02a65ab9b332fb0e1db94",
+    "test/unit/fps_log.cpp": "eba86082b99b8c0e00bf8d725d64d5be7e19ed7a732de785bb1bda3163176c26",
+    "test/verify.py": "933e411f8eb03efbb62e2d8e3595e205a955def156b7c6fbdb4a3da1be996dff"
+  },
+  "sources_unchanged": false,
+  "completed_utc": "2026-10-18T17:48:08.109268+00:00"
+}

@@ -1,0 +1,2248 @@
+{
+  "baseline": "ce81108fe8e4f3a93d816c94e475d02ef0329608",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "hardware": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "cpu": 2,
+  "trials": 9,
+  "official_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "harness_sha256": "187a437f2aeb9c521fb04bd5e535dd0b43558ba499d3561cddd9137b1f896801",
+  "sources": {
+    "before": {
+      "fps/taylor_shift.hpp": "04928bd6ff0e313d6880ee4c7d78ad0dab189ea18c0cd64aa6cb4997fcfaedaf",
+      "fps/power_projection.hpp": "1ca47acbf95ed443c71c2e04e1e711986c8776f56533aed4915ac8a56090a73d",
+      "fps/polynomial_gcd.hpp": "f4592e06895a244282167969da984ed3bb4f99823f62fa6f2be4276cd5a9df4c",
+      "fps/multipoint_eval.hpp": "4cb93dd9d9d2b0bbbece729c7de93217a19cd4915cf9ace9aa797c0eefcb049e",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/interpolate.hpp": "2ee8bf3dc503e6f88d7fb0857c6cff99e8f2e4fea73e6af05a66301ada962e0d",
+      "fps/fps.hpp": "2e1ba6ce1c7bbfe9a9258ba9f87b1272e720e0cdb3633f6beee2ff766f25d0f5",
+      "fps/compositional_inverse.hpp": "a8edc10649d670b3dd1b2f02f89f923099e07ea19420242ee3251d20b10e443c",
+      "fps/compose.hpp": "08b85c447a05aa421637ef80e5697a4501fbcf4859d1fedd91222bda651b1041",
+      "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_io.hpp": "9e726bfafae24d4df309f8e98682826b36840acebae75b3afaffd93a0e802061",
+      "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_blocked.hpp": "f2ceef5a60be36f8e785184fb5e67ef97e2e0914f162e817548ccbd5543b0d9f",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/fast_io.hpp": "bbaafa871b43a2f83b6fe2825014c86dce0db44d3bcc999c4eacddb4bcb073fd",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/comb.hpp": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution.hpp": "c140eab3f37df554de4763658c9f6cf03a5e5c46e063c4470139f383e5537645",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235"
+    },
+    "current": {
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+      "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/fps_division_blocked.hpp": "09e5ab71eeff3046043f35c2c25d61aaf7013050b77628aa477aedd1bde2e554",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/fast_io.hpp": "d471dcdf978eb5a0878b084ee9b6ffa385f461c24f59974e1e49914229843984",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+      "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fps_exp_blocked.hpp": "063a6e7c933c3eaa29b9ff9b6c366cc29f0fb4d8f7607ad6d4e467bbac6fb598",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/fps_blocked.hpp": "e7cc55f89a4cae388a9666c8db05669547525549bfa8f0e7090743b15f5d4c1b",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/fps_convolution.hpp": "b0d675b0d0063baf7c64dab92e5368ae5b0fdaf208ffd1d0fa761a95869a7c61",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/fps_composition.hpp": "afa2066ed616e0310d33fa817ae12ead196cd781f9f4800d1822c1cd3764c13f",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_inverse_blocked.hpp": "980af8d8bf5f90c95abe2f15afb84103549cf97d303c3877844ee6299c469c67",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/comb.hpp": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235"
+    },
+    "convolution_mod_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/convolution.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/convolution_mod_before"
+      ],
+      "source_sha256": "51e8bb757f35275e6632f3ea4f521f9959aea7e1baa5ad4895b5e3294fc1c043",
+      "binary_sha256": "0eea711b6d2c5cd29bcb577b3269fae56ef7af16beda9f2cd7a68ee471d52b0c",
+      "cached": true
+    },
+    "convolution_mod_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/convolution.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/convolution_mod_current"
+      ],
+      "source_sha256": "51e8bb757f35275e6632f3ea4f521f9959aea7e1baa5ad4895b5e3294fc1c043",
+      "binary_sha256": "f71cf09563fce12280b8366804c1a7b723bdc093d01ec9793f52e1bf0bedf4a5",
+      "cached": false
+    },
+    "convolution_mod_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/convolution_mod/409465.cpp",
+        "-o",
+        "/tmp/fps-all-speed/convolution_mod_reference"
+      ],
+      "source_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+      "binary_sha256": "d24b5bede99f29f20f2f3fa055c704b1c0e9b21eb436ad8f9a2579ea688a4097",
+      "cached": true
+    },
+    "inv_of_formal_power_series_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_inv.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/inv_of_formal_power_series_before"
+      ],
+      "source_sha256": "bc1e05a137fc4284b6e90df99afa0d7ab16005f4f4bcabed2178f9bc748b56d6",
+      "binary_sha256": "bbf604fde1335494391da38bae318b26251467f2807ea9f399d7342305d71b7e",
+      "cached": true
+    },
+    "inv_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_inv.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/inv_of_formal_power_series_current"
+      ],
+      "source_sha256": "bc1e05a137fc4284b6e90df99afa0d7ab16005f4f4bcabed2178f9bc748b56d6",
+      "binary_sha256": "2d644b6a57096384fd5b7430fbfccfe5fe9a72262579a86c5d49ba93b1c965d1",
+      "cached": false
+    },
+    "inv_of_formal_power_series_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/inv_of_formal_power_series/409370.cpp",
+        "-o",
+        "/tmp/fps-all-speed/inv_of_formal_power_series_reference"
+      ],
+      "source_sha256": "611eaf933f4187e567c90214aa5fc93f6bce7d139a122f68d11b769deeaabe66",
+      "binary_sha256": "ebc33df30b4544826b4dac9f510ec0ed30392dbe82edbdab16bff7a141fb80fa",
+      "cached": true
+    },
+    "log_of_formal_power_series_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_log.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/log_of_formal_power_series_before"
+      ],
+      "source_sha256": "a232adf2929cadb631c5f1d0a8d7269bdc3ca118f5432f01034b13408ce51512",
+      "binary_sha256": "6b19fc22914210314f6e679044cf769bc95ecd88843efa0e54d4d617e92ffb42",
+      "cached": true
+    },
+    "log_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_log.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/log_of_formal_power_series_current"
+      ],
+      "source_sha256": "a232adf2929cadb631c5f1d0a8d7269bdc3ca118f5432f01034b13408ce51512",
+      "binary_sha256": "3b93b368c7dccbc2001e74ed833003d86145c1257fb820bb3d1fc72e1cb9dc21",
+      "cached": false
+    },
+    "log_of_formal_power_series_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/log_of_formal_power_series/409452.cpp",
+        "-o",
+        "/tmp/fps-all-speed/log_of_formal_power_series_reference"
+      ],
+      "source_sha256": "86ef3c3b4a4707ef5e7515e5229b2564f2a5f46bd830bb6cbe64b506a95675b6",
+      "binary_sha256": "695bacba76d4974619a2a7bf8d96e4780f6a481eafbe208a73ac4ae9d7ae65e4",
+      "cached": true
+    },
+    "exp_of_formal_power_series_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_exp.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/exp_of_formal_power_series_before"
+      ],
+      "source_sha256": "539ae3bf7a1cad3142df2efd43059fbcd9594fd87331ac7f9bd5a5e50f15df75",
+      "binary_sha256": "2519d4401f7bf410dd1979ffe1b4ce5908c1f50647e2db53975423165b68e28f",
+      "cached": true
+    },
+    "exp_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_exp.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/exp_of_formal_power_series_current"
+      ],
+      "source_sha256": "539ae3bf7a1cad3142df2efd43059fbcd9594fd87331ac7f9bd5a5e50f15df75",
+      "binary_sha256": "56cd5faeff8a343d504ef322f5f6a08357fe1261bb3570f5721b14f9fc53468d",
+      "cached": false
+    },
+    "exp_of_formal_power_series_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/exp_of_formal_power_series/409662.cpp",
+        "-o",
+        "/tmp/fps-all-speed/exp_of_formal_power_series_reference"
+      ],
+      "source_sha256": "ed6a6a427359ce548106dddc7dacb0a7de7bb9bbe5f1db1442799d5ed6998031",
+      "binary_sha256": "f4f9aa72e0acc3fe8bd31716bc85d9339ecab5a7485196f31b2ea0ec6677a09b",
+      "cached": true
+    },
+    "pow_of_formal_power_series_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_pow.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/pow_of_formal_power_series_before"
+      ],
+      "source_sha256": "e7128041c69640a19d988c531ab51ca0db789d7b8c316b0f8223c0c8c337c482",
+      "binary_sha256": "6cf071ab0e2f188bf38bed6448f9483925e370ecc1f4c746430ce0424c211efa",
+      "cached": true
+    },
+    "pow_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_pow.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/pow_of_formal_power_series_current"
+      ],
+      "source_sha256": "e7128041c69640a19d988c531ab51ca0db789d7b8c316b0f8223c0c8c337c482",
+      "binary_sha256": "10e893a461ca600c1e7e3310998dd76626a98cb49ab7be996543346b1d84dd30",
+      "cached": false
+    },
+    "pow_of_formal_power_series_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/pow_of_formal_power_series/409718.cpp",
+        "-o",
+        "/tmp/fps-all-speed/pow_of_formal_power_series_reference"
+      ],
+      "source_sha256": "c11e38eb1639af2738f64482ce505c823801b6f2dadcbd72f4ded9a3c4199757",
+      "binary_sha256": "dd79810b2ea8e43613800966bf848494a03b74b87a3481b0f8310e721084bfee",
+      "cached": true
+    },
+    "sqrt_of_formal_power_series_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_sqrt.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/sqrt_of_formal_power_series_before"
+      ],
+      "source_sha256": "44cf003ff7729fc563c904aa62134cb706d1bcc99f56eed7a9858d8e191dafbf",
+      "binary_sha256": "0bf43507293593fe5364c7f85d2707462c5626d7a2e7b23753f4ea55e7aafa1b",
+      "cached": true
+    },
+    "sqrt_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_sqrt.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/sqrt_of_formal_power_series_current"
+      ],
+      "source_sha256": "44cf003ff7729fc563c904aa62134cb706d1bcc99f56eed7a9858d8e191dafbf",
+      "binary_sha256": "256d996d2b6bb5b74d698269575e60cf767d1be3353a17ab18fe60ce356f23f5",
+      "cached": false
+    },
+    "sqrt_of_formal_power_series_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/sqrt_of_formal_power_series/409728.cpp",
+        "-o",
+        "/tmp/fps-all-speed/sqrt_of_formal_power_series_reference"
+      ],
+      "source_sha256": "aa66b9de0c8361c9e9b46024c39231d50419f95335cfcce59cef7491e014dfbc",
+      "binary_sha256": "51a782b016a740f5025dd995e1375cad704bfc0adfe4e25cd49a5590ce31dd1a",
+      "cached": true
+    },
+    "division_of_polynomials_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_divmod.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/division_of_polynomials_before"
+      ],
+      "source_sha256": "a78f990ad682790a86acf29a92ce53eda1f2bed119b3dfd392a0ab8d98093cbc",
+      "binary_sha256": "2eae2aa4af9cfed8b5f99d87c07534243cc7a9ee381487879545d5fda30e9df8",
+      "cached": true
+    },
+    "division_of_polynomials_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_divmod.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/division_of_polynomials_current"
+      ],
+      "source_sha256": "a78f990ad682790a86acf29a92ce53eda1f2bed119b3dfd392a0ab8d98093cbc",
+      "binary_sha256": "1ef404aa87a611462633a5f58b55b841601615ef3d9e1ff0decd6b86f0587a8d",
+      "cached": false
+    },
+    "division_of_polynomials_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/division_of_polynomials/409561.cpp",
+        "-o",
+        "/tmp/fps-all-speed/division_of_polynomials_reference"
+      ],
+      "source_sha256": "fd06ec63bfe326a8f8c2b25292ecf38d77c4fd0114fbaa2565e4c667b8b4eeb1",
+      "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+      "cached": true
+    },
+    "kth_term_of_linearly_recurrent_sequence_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_bostan_mori.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/kth_term_of_linearly_recurrent_sequence_before"
+      ],
+      "source_sha256": "7a8464feb82f0ad2a7fecbe684f0af0f13a715d1ef9f61c3819ae0e8bd20a624",
+      "binary_sha256": "c91085e1c9ef53eeaccf41177a48ac25fc920718529f020062fdc5a749347173",
+      "cached": true
+    },
+    "kth_term_of_linearly_recurrent_sequence_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_bostan_mori.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/kth_term_of_linearly_recurrent_sequence_current"
+      ],
+      "source_sha256": "7a8464feb82f0ad2a7fecbe684f0af0f13a715d1ef9f61c3819ae0e8bd20a624",
+      "binary_sha256": "c7e81d201ba0740cb07d709db3cdc80bf8505a534fbd4c2b3a6c6a4f308e7c7f",
+      "cached": false
+    },
+    "kth_term_of_linearly_recurrent_sequence_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/kth_term_of_linearly_recurrent_sequence/405848.cpp",
+        "-o",
+        "/tmp/fps-all-speed/kth_term_of_linearly_recurrent_sequence_reference"
+      ],
+      "source_sha256": "f6d088ba82caad15a517bffc2396f4a1d81dd75ea98ed0992226c4fa0b847ff2",
+      "binary_sha256": "3eeb2c31c0e06a993b5348615672f0ffa8bf1ec821c845031c5f6a875cc7d5ca",
+      "cached": true
+    },
+    "composition_of_formal_power_series_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_compose.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/composition_of_formal_power_series_before"
+      ],
+      "source_sha256": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+      "binary_sha256": "a940e4b6e4d323471ac241d122f81c559c14d936ae0006759263f8391bf749ad",
+      "cached": true
+    },
+    "composition_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_compose.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/composition_of_formal_power_series_current"
+      ],
+      "source_sha256": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+      "binary_sha256": "995ba5d504c9fb85a72a19f1c714330201dfd5d0bf95b95bbcfc8e02e47d659a",
+      "cached": false
+    },
+    "composition_of_formal_power_series_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/composition_of_formal_power_series/409336.cpp",
+        "-o",
+        "/tmp/fps-all-speed/composition_of_formal_power_series_reference"
+      ],
+      "source_sha256": "766d2101d5e2c619f9fa3d73e57099871f112b91345f463fa2e17fb6c6bb6188",
+      "binary_sha256": "e6e23ad2e7ecc6e2743393bc9b0c81134e782c976a7dc648564dfcf8d289dd1f",
+      "cached": true
+    },
+    "composition_of_formal_power_series_large_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_compose_large.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/composition_of_formal_power_series_large_before"
+      ],
+      "source_sha256": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+      "binary_sha256": "4224fb12aa5372fb0dd54a2c50f2c6bb50036d3fe3b9f1d925412181c69d6eb6",
+      "cached": true
+    },
+    "composition_of_formal_power_series_large_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_compose_large.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/composition_of_formal_power_series_large_current"
+      ],
+      "source_sha256": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+      "binary_sha256": "ff5e074cc1fff9f06ee2544a90ddf4534c911c1f5f41e3fd21f7c56035aa5198",
+      "cached": false
+    },
+    "composition_of_formal_power_series_large_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/composition_of_formal_power_series_large/409535.cpp",
+        "-o",
+        "/tmp/fps-all-speed/composition_of_formal_power_series_large_reference"
+      ],
+      "source_sha256": "1829103fcfeb5f979b111354a58a95caeedb5b44615eb24197e111fc10b126c9",
+      "binary_sha256": "60d51cd7d318ff55eee343b205ba5e5021d02b6fcfcc45cc5f4e2bc96a335579",
+      "cached": true
+    },
+    "compositional_inverse_of_formal_power_series_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_compositional_inverse.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/compositional_inverse_of_formal_power_series_before"
+      ],
+      "source_sha256": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+      "binary_sha256": "b0ddc2723b8f38a181de9b6bb21be6df4553e673e18241e16a765670d24eba85",
+      "cached": true
+    },
+    "compositional_inverse_of_formal_power_series_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_compositional_inverse.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/compositional_inverse_of_formal_power_series_current"
+      ],
+      "source_sha256": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+      "binary_sha256": "e2e6961e8afccc58a54d3f70de09627bb572809ce56fc72cbca3c447d4cfc5ce",
+      "cached": false
+    },
+    "compositional_inverse_of_formal_power_series_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/compositional_inverse_of_formal_power_series/409399.cpp",
+        "-o",
+        "/tmp/fps-all-speed/compositional_inverse_of_formal_power_series_reference"
+      ],
+      "source_sha256": "51f5819987ba31df921f041d640216b404593ad5b293732aa519ecf9e9b19145",
+      "binary_sha256": "349c8f6a26f9d796a47d3d310792e3223bb59fa31b151c78dba0d248c718b076",
+      "cached": true
+    },
+    "compositional_inverse_of_formal_power_series_large_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_compositional_inverse_large.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/compositional_inverse_of_formal_power_series_large_before"
+      ],
+      "source_sha256": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+      "binary_sha256": "0666ca0568c706b259a2f23ea27f2d276e27e1691aec556eccf3ed609cd5f89e",
+      "cached": true
+    },
+    "compositional_inverse_of_formal_power_series_large_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_compositional_inverse_large.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/compositional_inverse_of_formal_power_series_large_current"
+      ],
+      "source_sha256": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+      "binary_sha256": "f128f9d87adbc46ab716a4710d331ce6bcfe2a46fbcbbc2c0700339ef40cf915",
+      "cached": false
+    },
+    "compositional_inverse_of_formal_power_series_large_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/compositional_inverse_of_formal_power_series_large/409549.cpp",
+        "-o",
+        "/tmp/fps-all-speed/compositional_inverse_of_formal_power_series_large_reference"
+      ],
+      "source_sha256": "266ebfa429c5413f815d504684bb4ec69fcbf8bf743a777873b76486f82f5edf",
+      "binary_sha256": "d4c7076faf2000d6cd5b0a55e4f4376416fdf5bdd25d0037c3aa273f6b1f9c02",
+      "cached": true
+    },
+    "multipoint_evaluation_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/multipoint_eval.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/multipoint_evaluation_before"
+      ],
+      "source_sha256": "8469d66654aace27c9f70256216d8423b17e9f6cff01f91f71ff4eb08de38ab7",
+      "binary_sha256": "ce9e78c2292ca00249605fcbdc91f27e4b4b31fd1f94d1a08523392520de20d4",
+      "cached": true
+    },
+    "multipoint_evaluation_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/multipoint_eval.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/multipoint_evaluation_current"
+      ],
+      "source_sha256": "8469d66654aace27c9f70256216d8423b17e9f6cff01f91f71ff4eb08de38ab7",
+      "binary_sha256": "c8f2624cbf049ad04da69a194183b3712a9348b93d48c0ee78a33d98944e5b69",
+      "cached": false
+    },
+    "multipoint_evaluation_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/multipoint_evaluation/409516.cpp",
+        "-o",
+        "/tmp/fps-all-speed/multipoint_evaluation_reference"
+      ],
+      "source_sha256": "bcba5d9515f79dda9970e8d324aa38cb496466fc86f6be9a81c7b2427cd3c165",
+      "binary_sha256": "6fbddd29e97b1b6a8f62cef2ee2402688cec36d2e40fd49f447ca051fbfe5a95",
+      "cached": true
+    },
+    "polynomial_interpolation_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_interpolate.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/polynomial_interpolation_before"
+      ],
+      "source_sha256": "ecaa85688202af4ffef77861e0ac51c5ad033b4d187f609705fcdfdba806d55a",
+      "binary_sha256": "6d47696e5289c632eb25da80de838cb02eb43ff9bc8a00c05fdfb88b34d960d8",
+      "cached": true
+    },
+    "polynomial_interpolation_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_interpolate.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/polynomial_interpolation_current"
+      ],
+      "source_sha256": "ecaa85688202af4ffef77861e0ac51c5ad033b4d187f609705fcdfdba806d55a",
+      "binary_sha256": "31a24abf2ada8c253d5097a5a20cf3e30894d2b5331d9ad45da2f6a237f51834",
+      "cached": false
+    },
+    "polynomial_interpolation_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/polynomial_interpolation/409545.cpp",
+        "-o",
+        "/tmp/fps-all-speed/polynomial_interpolation_reference"
+      ],
+      "source_sha256": "5f74824b262ffc33fd8aa4dfb9744a476d08ed922f7dd9d9351088f084253de9",
+      "binary_sha256": "49275001e0d1a5668e3cc084bc8bbdc4d0e00f9879c4b5c4139ca5b1fdeb5517",
+      "cached": true
+    },
+    "polynomial_taylor_shift_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/fps_taylor_shift.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/polynomial_taylor_shift_before"
+      ],
+      "source_sha256": "b9394bb97305e6b6ada35724f401fdd0f64eaa59986b09ae460197c0dbf29787",
+      "binary_sha256": "38efa0a3fd60eb8bc3f0c69ff9295276adcdfd520ca04f7c514cec22257fa76e",
+      "cached": true
+    },
+    "polynomial_taylor_shift_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/fps_taylor_shift.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/polynomial_taylor_shift_current"
+      ],
+      "source_sha256": "b9394bb97305e6b6ada35724f401fdd0f64eaa59986b09ae460197c0dbf29787",
+      "binary_sha256": "10453490b236c0bc6ca7efb502b07d59d24d37d1818ac7f68a8da8c1e4de1acc",
+      "cached": false
+    },
+    "polynomial_taylor_shift_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/polynomial_taylor_shift/409534.cpp",
+        "-o",
+        "/tmp/fps-all-speed/polynomial_taylor_shift_reference"
+      ],
+      "source_sha256": "5252bec9266ab7a0475526d06b587c54c2431d133842337317f01aa729ffb58b",
+      "binary_sha256": "93a45c77fe090e0017cad162cfde2cd7d408ba2f49e9f7a6027cd94d4da8840f",
+      "cached": true
+    },
+    "inv_of_polynomials_before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/before",
+        "/tmp/fps-all-speed/before/test/polynomial_inv_mod.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/inv_of_polynomials_before"
+      ],
+      "source_sha256": "70360b7756b57c9f13671c77b6f2b0a8f8b8583d4c7ac965bef8b19217b71c34",
+      "binary_sha256": "0cf8646e368e1da8449baa68a4a588a8fb52e825537a30f743da4025b2a569e0",
+      "cached": true
+    },
+    "inv_of_polynomials_current": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-all-speed/current/test/polynomial_inv_mod.test.cpp",
+        "-o",
+        "/tmp/fps-all-speed/inv_of_polynomials_current"
+      ],
+      "source_sha256": "6f4c81be491bcc6eea1753e5ea78ec33559237cc19c37849d5a6aab8ea1689b0",
+      "binary_sha256": "e1d33fc21fd761d280abfd503da8506c120bbc8dfa5e2010a832dc5d03086414",
+      "cached": false
+    },
+    "inv_of_polynomials_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-all-speed/current",
+        "/tmp/fps-reference/inv_of_polynomials/409589.cpp",
+        "-o",
+        "/tmp/fps-all-speed/inv_of_polynomials_reference"
+      ],
+      "source_sha256": "274d6c6107676bf6043aa5984e4b5788617ae7c8ff0ae1f157b6b0954e895306",
+      "binary_sha256": "da4747331ce08aedccddda1992e18747294c925bfdf43b8b9785ea71937b6dec",
+      "cached": true
+    }
+  },
+  "judge": [
+    {
+      "problem": "convolution_mod",
+      "input": "max_random_00.in",
+      "input_sha256": "3bbe45c5ce2820f3961db9f5746dfad939c09cb78d62bb1f9729ff3ac83e4208",
+      "answer_sha256": "cc9c24649d26118ce95b106548050963fe7f029c8b4d9f2cdb567030c6f8be8a",
+      "reference": {
+        "id": 409465,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 21602304,
+        "problem_name": "convolution_mod",
+        "problem_title": "Convolution",
+        "status": "AC",
+        "submission_time": "2026-10-10T05:53:37.818419Z",
+        "time": 0.012,
+        "user_name": "Aiyiyi",
+        "source_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+        "url": "https://judge.yosupo.jp/submission/409465"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 24.83965,
+          "samples_ms": [
+            24.777679,
+            26.755097,
+            25.322842,
+            24.835946,
+            25.600706,
+            24.504221,
+            24.467997,
+            25.0206,
+            24.83965
+          ],
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe"
+        },
+        "current": {
+          "median_ms": 15.127212,
+          "samples_ms": [
+            15.182124,
+            15.09879,
+            15.167973,
+            14.700976,
+            15.127212,
+            15.142255,
+            14.890899,
+            18.714459,
+            14.765112
+          ],
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe"
+        },
+        "reference": {
+          "median_ms": 11.507676,
+          "samples_ms": [
+            11.623529,
+            11.296822,
+            11.59097,
+            11.527055,
+            11.762435,
+            11.245214,
+            11.507676,
+            11.505362,
+            11.111976
+          ],
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe"
+        }
+      }
+    },
+    {
+      "problem": "inv_of_formal_power_series",
+      "input": "max_random_00.in",
+      "input_sha256": "52b3f657383765daeb3b3926e7ce94ef072b4021f82d49b0cf01978f10777f36",
+      "answer_sha256": "3eb0472ab025cad587bce8999b2035391d75f15fffe5cf4b9b85b797cc93db17",
+      "reference": {
+        "id": 409370,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 12091392,
+        "problem_name": "inv_of_formal_power_series",
+        "problem_title": "Inv of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T02:11:09.403965Z",
+        "time": 0.011,
+        "user_name": "Aiyiyi",
+        "source_sha256": "611eaf933f4187e567c90214aa5fc93f6bce7d139a122f68d11b769deeaabe66",
+        "url": "https://judge.yosupo.jp/submission/409370"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 15.995717,
+          "samples_ms": [
+            15.288613,
+            19.77747,
+            18.051681,
+            15.77644,
+            16.741628,
+            15.593016,
+            15.572496,
+            15.995717,
+            16.322273
+          ],
+          "output_sha256": "50944ee585848fe356ec84fd45deae34e728a9956573f826b240391ade312d82"
+        },
+        "current": {
+          "median_ms": 12.877668,
+          "samples_ms": [
+            12.309031,
+            13.644512,
+            12.98002,
+            13.517983,
+            14.199689,
+            12.877668,
+            12.635727,
+            12.866302,
+            12.775096
+          ],
+          "output_sha256": "50944ee585848fe356ec84fd45deae34e728a9956573f826b240391ade312d82"
+        },
+        "reference": {
+          "median_ms": 10.793281,
+          "samples_ms": [
+            10.316119,
+            10.827411,
+            12.612072,
+            10.883004,
+            10.793281,
+            10.421507,
+            10.917786,
+            10.358623,
+            10.530659
+          ],
+          "output_sha256": "208dff7f43bc62623418b41ec032255606e7f3df13aad51953df588db7936e50"
+        }
+      }
+    },
+    {
+      "problem": "log_of_formal_power_series",
+      "input": "max_random_00.in",
+      "input_sha256": "71cb0227a5a1e40ece225e19cd9d2633dfd4f07f25d39f01719bc2376e1d4ac8",
+      "answer_sha256": "c031f72a4eb2eacfaacce3a4f427b5f2d296b0fa9ecbd96d7dca445a38cbbd93",
+      "reference": {
+        "id": 409452,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 15474688,
+        "problem_name": "log_of_formal_power_series",
+        "problem_title": "Log of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T05:03:05.948735Z",
+        "time": 0.013,
+        "user_name": "Aiyiyi",
+        "source_sha256": "86ef3c3b4a4707ef5e7515e5229b2564f2a5f46bd830bb6cbe64b506a95675b6",
+        "url": "https://judge.yosupo.jp/submission/409452"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 16.867726,
+          "samples_ms": [
+            16.867726,
+            17.499619,
+            16.598966,
+            18.95682,
+            16.519137,
+            17.01734,
+            16.664944,
+            18.175306,
+            16.677663
+          ],
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9"
+        },
+        "current": {
+          "median_ms": 15.355421,
+          "samples_ms": [
+            14.879592,
+            15.98506,
+            15.815728,
+            14.592365,
+            15.355421,
+            14.803059,
+            15.113441,
+            21.231462,
+            15.712484
+          ],
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9"
+        },
+        "reference": {
+          "median_ms": 13.393396,
+          "samples_ms": [
+            13.46261,
+            13.393396,
+            13.246197,
+            13.320518,
+            13.178957,
+            13.395329,
+            12.924077,
+            13.522129,
+            13.464192
+          ],
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9"
+        }
+      }
+    },
+    {
+      "problem": "exp_of_formal_power_series",
+      "input": "max_random_00.in",
+      "input_sha256": "9b12be7a72b0dcf2e8c1b5e661cffef8092fc8b6db5eb4bc507049dd10ffd1cd",
+      "answer_sha256": "1d9d614be7839c1edb76083ff62d4febd7f7a771fb22d0cfc1943dd4f078267c",
+      "reference": {
+        "id": 409662,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 15740928,
+        "problem_name": "exp_of_formal_power_series",
+        "problem_title": "Exp of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T16:37:46.435994Z",
+        "time": 0.016,
+        "user_name": "Aiyiyi",
+        "source_sha256": "ed6a6a427359ce548106dddc7dacb0a7de7bb9bbe5f1db1442799d5ed6998031",
+        "url": "https://judge.yosupo.jp/submission/409662"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 25.688868,
+          "samples_ms": [
+            25.489119,
+            25.835356,
+            25.12041,
+            25.859552,
+            25.498223,
+            25.688868,
+            25.572333,
+            26.373207,
+            26.455189
+          ],
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5"
+        },
+        "current": {
+          "median_ms": 17.228765,
+          "samples_ms": [
+            16.815959,
+            17.603063,
+            17.298839,
+            17.228765,
+            18.399892,
+            17.347552,
+            16.744503,
+            17.014215,
+            17.182466
+          ],
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5"
+        },
+        "reference": {
+          "median_ms": 15.177517,
+          "samples_ms": [
+            15.272578,
+            15.108744,
+            15.177517,
+            15.156526,
+            15.16661,
+            15.225068,
+            14.999812,
+            15.643151,
+            17.323757
+          ],
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5"
+        }
+      }
+    },
+    {
+      "problem": "pow_of_formal_power_series",
+      "input": "max_random_00.in",
+      "input_sha256": "dab0e293a02d521e66e436a9958f4e66858285c50f31472d2ec5bd4b5d876d21",
+      "answer_sha256": "4c0efffb2e685286c16144370e8f979fa140c9cf563a29ff53853a341a9815df",
+      "reference": {
+        "id": 409718,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 18366464,
+        "problem_name": "pow_of_formal_power_series",
+        "problem_title": "Pow of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T23:36:25.180715Z",
+        "time": 0.023,
+        "user_name": "Aiyiyi",
+        "source_sha256": "c11e38eb1639af2738f64482ce505c823801b6f2dadcbd72f4ded9a3c4199757",
+        "url": "https://judge.yosupo.jp/submission/409718"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 37.995574,
+          "samples_ms": [
+            36.982183,
+            37.732651,
+            37.750358,
+            39.894284,
+            39.728377,
+            37.995574,
+            38.358174,
+            37.989795,
+            38.433717
+          ],
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210"
+        },
+        "current": {
+          "median_ms": 25.28194,
+          "samples_ms": [
+            24.554436,
+            25.078627,
+            25.096243,
+            25.730979,
+            26.900032,
+            25.314469,
+            25.28194,
+            25.050315,
+            25.406055
+          ],
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210"
+        },
+        "reference": {
+          "median_ms": 23.009983,
+          "samples_ms": [
+            22.624989,
+            22.916253,
+            23.178344,
+            24.156181,
+            23.34979,
+            23.2025,
+            23.009983,
+            22.886129,
+            22.809504
+          ],
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210"
+        }
+      }
+    },
+    {
+      "problem": "sqrt_of_formal_power_series",
+      "input": "max_random_01.in",
+      "input_sha256": "23bba4b0457d6a0df2c70b75d0c357ea9741c4a13fe27ef0fce1c6cf7346449b",
+      "answer_sha256": "e11fd5c51d46fcfcc8e1f6377afc26a08c5ab47c7fa6c1ba9404a33c4fd56829",
+      "reference": {
+        "id": 409728,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11845632,
+        "problem_name": "sqrt_of_formal_power_series",
+        "problem_title": "Sqrt of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-11T01:18:40.045704Z",
+        "time": 0.012,
+        "user_name": "Aiyiyi",
+        "source_sha256": "aa66b9de0c8361c9e9b46024c39231d50419f95335cfcce59cef7491e014dfbc",
+        "url": "https://judge.yosupo.jp/submission/409728"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 19.263959,
+          "samples_ms": [
+            19.263959,
+            19.208246,
+            19.331499,
+            21.374085,
+            19.649905,
+            19.253684,
+            18.861409,
+            19.576184,
+            19.031913
+          ],
+          "output_sha256": "973a604fef1c74a7443dd99b9e547a6ddea7d68c388389ba0335d9d97e143ce9"
+        },
+        "current": {
+          "median_ms": 13.205467,
+          "samples_ms": [
+            14.114481,
+            13.168051,
+            13.071436,
+            13.205467,
+            13.293277,
+            13.060741,
+            13.339046,
+            14.061693,
+            13.132618
+          ],
+          "output_sha256": "973a604fef1c74a7443dd99b9e547a6ddea7d68c388389ba0335d9d97e143ce9"
+        },
+        "reference": {
+          "median_ms": 11.078836,
+          "samples_ms": [
+            11.17482,
+            11.548126,
+            10.867462,
+            13.246157,
+            11.043323,
+            11.760733,
+            11.078836,
+            10.864547,
+            10.909663
+          ],
+          "output_sha256": "d3250df0c7ad169cf60f1bac45f15d4b5d13dbea12c4ddd3635f534b65f50010"
+        }
+      }
+    },
+    {
+      "problem": "division_of_polynomials",
+      "input": "max_random_00.in",
+      "input_sha256": "df7ce432dda8321a191fd5480e751c1adb0886011875af11980b75609545adec",
+      "answer_sha256": "005c4376839fb231384761cb44124ec81e0693f619b7886709261e9d491069dd",
+      "reference": {
+        "id": 409561,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16412672,
+        "problem_name": "division_of_polynomials",
+        "problem_title": "Division of Polynomials",
+        "status": "AC",
+        "submission_time": "2026-10-10T11:24:52.544273Z",
+        "time": 0.012,
+        "user_name": "Aiyiyi",
+        "source_sha256": "fd06ec63bfe326a8f8c2b25292ecf38d77c4fd0114fbaa2565e4c667b8b4eeb1",
+        "url": "https://judge.yosupo.jp/submission/409561"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 10.27609,
+          "samples_ms": [
+            9.930424,
+            10.27609,
+            10.441727,
+            10.708534,
+            10.259756,
+            12.300989,
+            10.547184,
+            10.224463,
+            10.191574
+          ],
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344"
+        },
+        "current": {
+          "median_ms": 7.039705,
+          "samples_ms": [
+            6.843992,
+            9.394996,
+            6.590235,
+            7.207014,
+            7.039705,
+            7.259103,
+            6.537626,
+            8.303439,
+            6.862211
+          ],
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344"
+        },
+        "reference": {
+          "median_ms": 5.430245,
+          "samples_ms": [
+            5.030891,
+            5.932244,
+            5.347852,
+            5.361523,
+            5.546218,
+            5.430245,
+            5.660288,
+            5.865254,
+            5.210488
+          ],
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344"
+        }
+      }
+    },
+    {
+      "problem": "kth_term_of_linearly_recurrent_sequence",
+      "input": "max_random_00.in",
+      "input_sha256": "024236a62dcb0f9a788c18997a92e730722a408314618cd4e1c556c974c3f8c6",
+      "answer_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+      "reference": {
+        "id": 405848,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 9007104,
+        "problem_name": "kth_term_of_linearly_recurrent_sequence",
+        "problem_title": "Kth term of Linearly Recurrent Sequence",
+        "status": "AC",
+        "submission_time": "2026-09-24T15:43:47.24864Z",
+        "time": 0.068,
+        "user_name": "Rohan_Kapri",
+        "source_sha256": "f6d088ba82caad15a517bffc2396f4a1d81dd75ea98ed0992226c4fa0b847ff2",
+        "url": "https://judge.yosupo.jp/submission/405848"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 59.291482,
+          "samples_ms": [
+            58.804416,
+            61.231034,
+            58.677557,
+            60.092447,
+            59.080467,
+            59.303651,
+            59.291482,
+            59.076722,
+            59.56546
+          ],
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        "current": {
+          "median_ms": 56.515994,
+          "samples_ms": [
+            56.693359,
+            57.490748,
+            56.108948,
+            56.515994,
+            58.522405,
+            56.375435,
+            56.312571,
+            57.855872,
+            56.365119
+          ],
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        "reference": {
+          "median_ms": 58.736075,
+          "samples_ms": [
+            58.854721,
+            60.467154,
+            58.736075,
+            59.155339,
+            57.888982,
+            58.085724,
+            57.963332,
+            59.716525,
+            58.728853
+          ],
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        }
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series",
+      "input": "max_random_00.in",
+      "input_sha256": "510b6685010b93506c9cc54b06ff6c9e3072b618a4c4c6b08a3de2e9146570a1",
+      "answer_sha256": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5",
+      "reference": {
+        "id": 409336,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 5021696,
+        "problem_name": "composition_of_formal_power_series",
+        "problem_title": "Composition of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T01:24:33.404041Z",
+        "time": 0.003,
+        "user_name": "Aiyiyi",
+        "source_sha256": "766d2101d5e2c619f9fa3d73e57099871f112b91345f463fa2e17fb6c6bb6188",
+        "url": "https://judge.yosupo.jp/submission/409336"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 3.72031,
+          "samples_ms": [
+            3.575995,
+            3.389967,
+            3.365942,
+            3.52574,
+            3.882841,
+            3.370739,
+            5.836232,
+            4.144852,
+            3.884575,
+            3.568814,
+            4.294996,
+            3.72031,
+            3.62579,
+            3.999906,
+            3.597868,
+            3.544167,
+            3.804606,
+            3.415265,
+            3.849282,
+            4.07004,
+            3.766849
+          ],
+          "output_sha256": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac"
+        },
+        "current": {
+          "median_ms": 3.067818,
+          "samples_ms": [
+            2.926618,
+            3.473493,
+            2.885947,
+            2.952367,
+            2.903014,
+            2.931996,
+            2.898987,
+            3.08869,
+            2.960278,
+            2.966248,
+            3.198623,
+            3.338061,
+            3.592269,
+            3.790995,
+            3.138773,
+            3.000699,
+            3.079235,
+            2.861001,
+            3.628864,
+            3.689605,
+            3.067818
+          ],
+          "output_sha256": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac"
+        },
+        "reference": {
+          "median_ms": 3.080978,
+          "samples_ms": [
+            2.839788,
+            8.873043,
+            3.080978,
+            2.788562,
+            2.984915,
+            3.091003,
+            2.949322,
+            3.464268,
+            3.106506,
+            3.172985,
+            3.053568,
+            3.125765,
+            3.091063,
+            3.018726,
+            3.049421,
+            2.954079,
+            3.170571,
+            3.121068,
+            2.979487,
+            3.298983,
+            3.05571
+          ],
+          "output_sha256": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5"
+        }
+      },
+      "trials": 21,
+      "recheck_reason": "Short-process timing variation in the first run; extended to 21 shuffled trials."
+    },
+    {
+      "problem": "composition_of_formal_power_series_large",
+      "input": "max_random_00.in",
+      "input_sha256": "9404320bd03fe869c53cbe50511a45d262f037388dd5d2e41074db1c8a6fffa6",
+      "answer_sha256": "2e032a16bc09a8e289e7a2470ec8f70b71904ec433c60df30da260a2fb6fd7dd",
+      "reference": {
+        "id": 409535,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 41984000,
+        "problem_name": "composition_of_formal_power_series_large",
+        "problem_title": "Composition of Formal Power Series (Large)",
+        "status": "AC",
+        "submission_time": "2026-10-10T08:44:51.058085Z",
+        "time": 0.035,
+        "user_name": "Aiyiyi",
+        "source_sha256": "1829103fcfeb5f979b111354a58a95caeedb5b44615eb24197e111fc10b126c9",
+        "url": "https://judge.yosupo.jp/submission/409535"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 56.05033,
+          "samples_ms": [
+            58.51877,
+            65.091438,
+            56.05033,
+            56.925976,
+            55.195626,
+            55.608101,
+            56.948108,
+            55.189197,
+            55.343266
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        },
+        "current": {
+          "median_ms": 33.730906,
+          "samples_ms": [
+            34.508215,
+            36.485723,
+            33.655354,
+            33.80691,
+            33.730906,
+            33.717857,
+            33.702543,
+            34.485321,
+            33.226625
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        },
+        "reference": {
+          "median_ms": 33.009881,
+          "samples_ms": [
+            33.257461,
+            33.009881,
+            32.429767,
+            32.394263,
+            33.178893,
+            33.356418,
+            32.81449,
+            43.972434,
+            32.922802
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series",
+      "input": "max_random_00.in",
+      "input_sha256": "4791f4a020aedfa791e7f5c3d342b8e51c13d7a8a4c282025a4feb890cd54349",
+      "answer_sha256": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8",
+      "reference": {
+        "id": 409399,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 2973696,
+        "problem_name": "compositional_inverse_of_formal_power_series",
+        "problem_title": "Compositional Inverse of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T03:19:35.943433Z",
+        "time": 0.003,
+        "user_name": "Aiyiyi",
+        "source_sha256": "51f5819987ba31df921f041d640216b404593ad5b293732aa519ecf9e9b19145",
+        "url": "https://judge.yosupo.jp/submission/409399"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 3.286549,
+          "samples_ms": [
+            3.279059,
+            3.284967,
+            3.321942,
+            3.643122,
+            3.352528,
+            3.286549,
+            3.274171,
+            3.351457,
+            3.286539
+          ],
+          "output_sha256": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd"
+        },
+        "current": {
+          "median_ms": 2.579486,
+          "samples_ms": [
+            2.641919,
+            2.494539,
+            2.539546,
+            2.653476,
+            2.937819,
+            2.579486,
+            2.548339,
+            2.697702,
+            2.500428
+          ],
+          "output_sha256": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd"
+        },
+        "reference": {
+          "median_ms": 2.602951,
+          "samples_ms": [
+            2.627918,
+            2.506166,
+            2.543241,
+            2.766364,
+            2.602951,
+            2.607888,
+            2.652685,
+            2.490033,
+            2.520017
+          ],
+          "output_sha256": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8"
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "input": "max_random_00.in",
+      "input_sha256": "591e42b783095d264cc8d523a94fd53a2b0fd069f0cc7b21bfced85f46c30e55",
+      "answer_sha256": "28a86d08c657c50919c1274634a352be8bfb3fcf6ab9b903923725340bfc4009",
+      "reference": {
+        "id": 409549,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 10526720,
+        "problem_name": "compositional_inverse_of_formal_power_series_large",
+        "problem_title": "Compositional Inverse of Formal Power Series (Large)",
+        "status": "AC",
+        "submission_time": "2026-10-10T10:06:14.152816Z",
+        "time": 0.033,
+        "user_name": "Aiyiyi",
+        "source_sha256": "266ebfa429c5413f815d504684bb4ec69fcbf8bf743a777873b76486f82f5edf",
+        "url": "https://judge.yosupo.jp/submission/409549"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 51.446267,
+          "samples_ms": [
+            51.076995,
+            59.073367,
+            50.644651,
+            48.871057,
+            50.707996,
+            51.446267,
+            51.779833,
+            51.493557,
+            52.04568
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        },
+        "current": {
+          "median_ms": 30.850783,
+          "samples_ms": [
+            31.107475,
+            32.252943,
+            30.400631,
+            31.249277,
+            31.780168,
+            30.588491,
+            30.850783,
+            30.650374,
+            30.586859
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        },
+        "reference": {
+          "median_ms": 30.421263,
+          "samples_ms": [
+            31.178391,
+            30.242226,
+            30.539419,
+            30.23879,
+            31.18444,
+            30.168426,
+            30.421263,
+            30.975869,
+            29.892764
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        }
+      }
+    },
+    {
+      "problem": "multipoint_evaluation",
+      "input": "max_random_00.in",
+      "input_sha256": "bd75a638e1008099cf0a1366a652c8584e18f3c096473bdb8a464142673ee6ae",
+      "answer_sha256": "de294de44c13cbc69e3d40c78af307493a90ee539d0acc5ed8b70946fb0c211f",
+      "reference": {
+        "id": 409516,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30167040,
+        "problem_name": "multipoint_evaluation",
+        "problem_title": "Multipoint Evaluation",
+        "status": "AC",
+        "submission_time": "2026-10-10T07:58:23.421112Z",
+        "time": 0.015,
+        "user_name": "Aiyiyi",
+        "source_sha256": "bcba5d9515f79dda9970e8d324aa38cb496466fc86f6be9a81c7b2427cd3c165",
+        "url": "https://judge.yosupo.jp/submission/409516"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 52.306789,
+          "samples_ms": [
+            52.110306,
+            52.87068,
+            54.550855,
+            56.457818,
+            50.207118,
+            50.582098,
+            55.977852,
+            52.306789,
+            51.451114
+          ],
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324"
+        },
+        "current": {
+          "median_ms": 16.6757,
+          "samples_ms": [
+            15.68267,
+            15.980444,
+            16.828197,
+            16.684393,
+            16.6757,
+            16.899333,
+            17.394632,
+            16.048876,
+            16.103067
+          ],
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324"
+        },
+        "reference": {
+          "median_ms": 15.894886,
+          "samples_ms": [
+            14.912122,
+            15.927585,
+            15.762068,
+            16.859524,
+            15.894886,
+            15.935506,
+            15.355902,
+            15.342422,
+            16.037408
+          ],
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324"
+        }
+      }
+    },
+    {
+      "problem": "polynomial_interpolation",
+      "input": "max_random_00.in",
+      "input_sha256": "7362fa638f2b680748e1da459cc4a6b7d06573f9b8d43e761b07553f55e84566",
+      "answer_sha256": "1433597bd42ff9eeddd5c38448d1d4cf442534d74062ea4d95836fcdde00113a",
+      "reference": {
+        "id": 409545,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 28884992,
+        "problem_name": "polynomial_interpolation",
+        "problem_title": "Polynomial Interpolation",
+        "status": "AC",
+        "submission_time": "2026-10-10T09:35:56.43968Z",
+        "time": 0.02,
+        "user_name": "Aiyiyi",
+        "source_sha256": "5f74824b262ffc33fd8aa4dfb9744a476d08ed922f7dd9d9351088f084253de9",
+        "url": "https://judge.yosupo.jp/submission/409545"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 74.847213,
+          "samples_ms": [
+            74.847213,
+            75.718302,
+            76.199219,
+            73.471642,
+            71.594634,
+            75.869237,
+            76.483522,
+            74.548527,
+            73.096343
+          ],
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d"
+        },
+        "current": {
+          "median_ms": 20.438701,
+          "samples_ms": [
+            20.429236,
+            20.969581,
+            21.034037,
+            20.415556,
+            20.438701,
+            20.627792,
+            20.857184,
+            20.146915,
+            20.040577
+          ],
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d"
+        },
+        "reference": {
+          "median_ms": 19.773408,
+          "samples_ms": [
+            19.773408,
+            20.542845,
+            21.056591,
+            19.218872,
+            19.934438,
+            19.333142,
+            19.802161,
+            19.139053,
+            19.458139
+          ],
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d"
+        }
+      }
+    },
+    {
+      "problem": "polynomial_taylor_shift",
+      "input": "max_random_00.in",
+      "input_sha256": "ff5f733d78186d7592779ef5635863e86b305d3df77384ac3cda7eca84b27e32",
+      "answer_sha256": "1db2c633136ee617f67bcd74cc2c137ebd534094c9ed29518f3ff60cfa00f22f",
+      "reference": {
+        "id": 409534,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16683008,
+        "problem_name": "polynomial_taylor_shift",
+        "problem_title": "Polynomial Taylor Shift",
+        "status": "AC",
+        "submission_time": "2026-10-10T08:38:48.817344Z",
+        "time": 0.01,
+        "user_name": "Aiyiyi",
+        "source_sha256": "5252bec9266ab7a0475526d06b587c54c2431d133842337317f01aa729ffb58b",
+        "url": "https://judge.yosupo.jp/submission/409534"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 24.478913,
+          "samples_ms": [
+            23.454025,
+            23.50389,
+            24.520415,
+            23.63151,
+            25.202313,
+            24.914383,
+            24.478913,
+            24.37576,
+            24.780924
+          ],
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6"
+        },
+        "current": {
+          "median_ms": 11.672532,
+          "samples_ms": [
+            11.672532,
+            10.747092,
+            11.167469,
+            13.392446,
+            11.79185,
+            11.287167,
+            11.917416,
+            11.940391,
+            11.248349
+          ],
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6"
+        },
+        "reference": {
+          "median_ms": 9.358812,
+          "samples_ms": [
+            9.366153,
+            9.685099,
+            9.358812,
+            9.354336,
+            9.301447,
+            10.440314,
+            9.314646,
+            10.467445,
+            9.242639
+          ],
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6"
+        }
+      }
+    },
+    {
+      "problem": "inv_of_polynomials",
+      "input": "max_random_00.in",
+      "input_sha256": "efba1fb7dbebf3c7dfb0d604bac31059254316186bce5a7d1c98fc5a3baf20af",
+      "answer_sha256": "a391be1c251f93b6f9b1668c994183e05a00fef160242dbb96a1c9860b0a5ad8",
+      "reference": {
+        "id": 409589,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11862016,
+        "problem_name": "inv_of_polynomials",
+        "problem_title": "Inv of Polynomials",
+        "status": "AC",
+        "submission_time": "2026-10-10T12:56:52.628371Z",
+        "time": 0.015,
+        "user_name": "Aiyiyi",
+        "source_sha256": "274d6c6107676bf6043aa5984e4b5788617ae7c8ff0ae1f157b6b0954e895306",
+        "url": "https://judge.yosupo.jp/submission/409589"
+      },
+      "variants": {
+        "before": {
+          "median_ms": 47.480524,
+          "samples_ms": [
+            48.017936,
+            46.350039,
+            46.86028,
+            47.480524,
+            47.769335,
+            48.920261,
+            46.66542,
+            48.157614,
+            46.578299
+          ],
+          "output_sha256": "a391be1c251f93b6f9b1668c994183e05a00fef160242dbb96a1c9860b0a5ad8"
+        },
+        "current": {
+          "median_ms": 15.317086,
+          "samples_ms": [
+            15.255153,
+            16.42753,
+            15.312337,
+            15.317086,
+            16.471115,
+            15.567909,
+            15.283985,
+            15.423103,
+            15.020673
+          ],
+          "output_sha256": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa"
+        },
+        "reference": {
+          "median_ms": 14.974805,
+          "samples_ms": [
+            14.974805,
+            14.937479,
+            15.264537,
+            16.573136,
+            14.759424,
+            14.625062,
+            15.159259,
+            14.97156,
+            15.024219
+          ],
+          "output_sha256": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa"
+        }
+      }
+    }
+  ],
+  "rechecks": [
+    "fps_all_compose_recheck.json"
+  ],
+  "measurement_harness": "fps_all_measurement_harness.py",
+  "metadata_notes": [
+    "test/fps_io.hpp hashes added after measurement; this helper was unchanged between the baseline and final workspace."
+  ]
+}

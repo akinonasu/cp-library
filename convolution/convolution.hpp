@@ -23,6 +23,10 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
 		if constexpr (T::mod() == 998244353) {
 			if constexpr (std::is_same_v<T, fps_mint>) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+				if (std::min(a.size(), b.size()) > 32 && fps_detail::NTT::vectorized())
+					return fps_detail::multiply_detail::multiply(a, b);
+#endif
 				fps x(a);
 				if (&a == &b) return fps::multiply(x, x);
 				return fps::multiply(x, fps(b));

@@ -141,6 +141,19 @@
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
 | `components/fps_log.hpp` | FPS の対数の内部変換 | [使い方](docs/fps_log.md) |
 | `components/fps_blocked.hpp` | FPS のブロック変換 | [使い方](docs/fps_blocked.md) |
+| `components/fps_horner.hpp` | FPS の一点評価 | [使い方](docs/fps_horner.md) |
+| `components/polynomial_gcd_blocked.hpp` | 多項式 Half-GCD の専用変換 | [使い方](docs/polynomial_gcd_blocked.md) |
+| `components/fps_composition.hpp` | FPS の合成・射影の内部処理 | [使い方](docs/fps_composition.md) |
+| `components/fps_convolution.hpp` | FPS の融合畳み込み | [使い方](docs/fps_convolution.md) |
+| `components/fps_direct_eval.hpp` | 多点評価の内部直接計算 | [使い方](docs/fps_direct_eval.md) |
+| `components/fps_division_blocked.hpp` | FPS と多項式除算の内部変換 | [使い方](docs/fps_division_blocked.md) |
+| `components/fps_evaluation.hpp` | 多点評価・補間の SIMD 木 | [使い方](docs/fps_evaluation.md) |
+| `components/fps_exp_blocked.hpp` | FPS の指数・冪の内部変換 | [使い方](docs/fps_exp_blocked.md) |
+| `components/fps_inverse_blocked.hpp` | FPS 逆数のブロック変換 | [使い方](docs/fps_inverse_blocked.md) |
+| `components/fps_output.hpp` | FPS の結果配列への一括変換 | [使い方](docs/fps_output.md) |
+| `components/fps_reversion.hpp` | FPS の合成逆元の内部処理 | [使い方](docs/fps_reversion.md) |
+| `components/fps_sqrt_blocked.hpp` | FPS 平方根のブロック変換 | [使い方](docs/fps_sqrt_blocked.md) |
+| `components/fps_taylor_blocked.hpp` | Taylor Shift の中間積 | [使い方](docs/fps_taylor_blocked.md) |
 | `components/fps_io.hpp` | FPS の一括入出力 | [使い方](docs/fps_io.md) |
 | `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
 | `components/xor_basis_core.hpp` | XOR 基底の内部演算 | [使い方](docs/xor_basis_core.md) |

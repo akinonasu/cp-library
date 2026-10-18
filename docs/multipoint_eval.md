@@ -17,4 +17,6 @@ auto values = multipoint_eval(f, xs);
 | --- | --- |
 | `multipoint_eval(f,xs)` | `xs` の順に多項式の値を返す。返り値は `vector<T>`。空の点列は空配列 |
 
+Linux x86_64 / GCC で AVX2 を利用できる大きな入力では、8 本の lane 木と変換を保持した降下を使います。
+
 係数数を $$n$$、点数を $$m$$ として、時間 $$O((n+m)\log^2(n+m))$$、追加空間 $$O((n+m)\log(n+m))$$ です。

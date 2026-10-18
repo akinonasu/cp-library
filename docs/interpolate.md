@@ -16,4 +16,6 @@ auto f = interpolate(xs, ys);
 | --- | --- |
 | `interpolate(xs,ys)` | $$f(x_i)=y_i$$ を満たす次数 $$n$$ 未満の多項式を `FormalPowerSeries<T>` で返す。空の入力は空配列 |
 
+Linux x86_64 / GCC で AVX2 を利用できる大きな入力では、多点評価と共通の lane 木を使い、降下と補間の上昇をまとめて処理します。
+
 点数を $$n$$ として、時間 $$O(n\log^2 n)$$、追加空間 $$O(n\log n)$$ です。

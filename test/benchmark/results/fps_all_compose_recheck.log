@@ -1,0 +1,4 @@
+built composition_of_formal_power_series before
+built composition_of_formal_power_series current
+built composition_of_formal_power_series reference
+composition_of_formal_power_series {'before': 3.72031, 'current': 3.067818, 'reference': 3.080978}

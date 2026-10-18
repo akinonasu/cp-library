@@ -3,12 +3,34 @@
 
 #include "fps.hpp"
 #include "../components/polynomial_half_gcd.hpp"
+#include "../components/polynomial_gcd_blocked.hpp"
 #include <optional>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
+
+namespace fps_detail {
+inline PolynomialHalfGCD::Matrix polynomial_gcd_jump(const PolynomialHalfGCD::F& a, const PolynomialHalfGCD::F& b) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (a.size() >= 129 && a.size() <= (1u << 23) && NTT::vectorized()) {
+		PolynomialHalfGCD::Matrix out;
+		blocked_poly::native_gcd_matrix(a.data(), a.size(), b.data(), b.size(), 3,
+			[&out](const blocked_poly::gcd_detail::Matrix& matrix) {
+				out.shift = int(matrix.progress), out.identity = matrix.progress == 0;
+				for (int j = 0; j < 2; ++j) {
+					out.a[j].clear();
+					out.a[j].reserve(matrix.size[j]);
+					blocked_poly::division_detail::append_words(out.a[j], matrix.entry[j], matrix.size[j], blocked_ntt::detail::kR);
+				}
+			});
+		return out;
+	}
+#endif
+	return PolynomialHalfGCD::jump(a, b, int(a.size()) - 1, true);
+}
+}
 
 template<class T>
 struct PolynomialExtendedGCD {
@@ -29,7 +51,7 @@ FormalPowerSeries<T> polynomial_gcd(FormalPowerSeries<T> a, FormalPowerSeries<T>
 			a = std::move(b), b = std::move(r);
 		}
 		if (!b.empty()) {
-			auto matrix = H::jump(a, b, int(a.size()) - 1, true);
+			auto matrix = fps_detail::polynomial_gcd_jump(a, b);
 			if (matrix.shift == int(a.size()) - 1) return {T(1)};
 			a = H::apply_first(matrix, a, b);
 		}
@@ -54,7 +76,7 @@ PolynomialExtendedGCD<T> polynomial_extended_gcd(FormalPowerSeries<T> a, FormalP
 			H::step(matrix, q), a = std::move(b), b = std::move(r);
 		}
 		if (!b.empty()) {
-			auto part = H::jump(a, b, int(a.size()) - 1, true);
+			auto part = fps_detail::polynomial_gcd_jump(a, b);
 			a = H::apply_first(part, a, b);
 			matrix = H::multiply(part, matrix, true);
 		}
@@ -76,6 +98,13 @@ std::optional<FormalPowerSeries<T>> polynomial_inv_mod(FormalPowerSeries<T> a, F
 		if (!result) return std::nullopt;
 		return O::export_work(*result);
 	} else {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if (modulus.size() >= 129 && modulus.size() <= (1u << 23) && a.size() <= (1u << 23) && fps_detail::NTT::vectorized()) {
+			FormalPowerSeries<T> out;
+			if (!fps_detail::blocked_poly::native_inv_mod(a.data(), a.size(), modulus.data(), modulus.size(), out)) return std::nullopt;
+			return out;
+		}
+#endif
 		if (a.size() >= modulus.size()) a = a.divmod(modulus).second;
 		O::trim(a);
 		if (a.empty()) return std::nullopt;

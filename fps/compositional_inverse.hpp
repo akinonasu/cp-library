@@ -2,6 +2,7 @@
 #define CP_FPS_COMPOSITIONAL_INVERSE_HPP
 
 #include "fps.hpp"
+#include "../components/fps_reversion.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -29,6 +30,13 @@ FormalPowerSeries<T> compositional_inverse(const FormalPowerSeries<T> &f, int de
 			result[1] = w;
 			return result;
 		}
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+		if (deg >= 64 && deg <= (1 << 21) && fps_detail::NTT::vectorized()) {
+			F result;
+			fps_detail::composition_poly::native_reversion(f.data(), f.size(), result, deg);
+			return result;
+		}
+#endif
 		int size = 1;
 		while (size < deg) size <<= 1;
 		assert(size <= (1 << 21));

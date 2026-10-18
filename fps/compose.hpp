@@ -2,6 +2,7 @@
 #define CP_FPS_COMPOSE_HPP
 
 #include "fps.hpp"
+#include "../components/fps_composition.hpp"
 #include <numeric>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
@@ -16,6 +17,17 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 	if (deg < 0) deg = static_cast<int>(outer.size());
 	assert(deg >= 0 && (inner.empty() || inner[0] == T(0)));
 	if (deg == 0) return {};
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if (deg >= 64 && deg <= (1 << 21) && outer.size() > 8 && inner.size() > 2 &&
+			outer[std::min(outer.size(), std::size_t(deg)) - 1] != T(0) &&
+			inner[1] != T(0) && inner[2] != T(0) && fps_detail::NTT::vectorized()) {
+			F result;
+			fps_detail::composition_poly::native_compose(outer.data(), outer.size(), inner.data(), inner.size(), result, deg);
+			return result;
+		}
+	}
+#endif
 	F f = outer.pre(deg), g = inner.pre(deg);
 	O::trim(f);
 	O::trim(g);
@@ -64,6 +76,15 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 		result.resize(deg);
 		return result;
 	}
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if (fps_detail::NTT::vectorized() && deg <= (1 << 21)) {
+			F result;
+			fps_detail::composition_poly::native_compose(f.data(), f.size(), g.data(), g.size(), result, deg);
+			return result;
+		}
+	}
+#endif
 	int size = 1;
 	while (size < deg) size <<= 1;
 	assert(size <= (1 << 22));

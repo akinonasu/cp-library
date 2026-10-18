@@ -1,6 +1,7 @@
 #ifndef CP_COMPONENTS_FPS_IO_HPP
 #define CP_COMPONENTS_FPS_IO_HPP
 #include "fast_io.hpp"
+#include "fps_output.hpp"
 #include "../math/mint.hpp"
 #include <vector>
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -10,41 +11,166 @@ _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
 namespace fast_io_detail {
 struct BulkInput {
-	alignas(32) static inline constexpr auto rows=[] {
-		std::array<std::array<unsigned char,16>,11> r{};
-		for(int n=0;n<=10;++n)for(int i=0;i<16;++i)r[n][i]=i<16-n?128:i-(16-n);
+	alignas(32) static inline constexpr auto rows = [] {
+		std::array<std::array<unsigned char, 16>, 11> r{};
+		for (int n = 0; n <= 10; ++n)
+			for (int i = 0; i < 16; ++i) r[n][i] = i < 16 - n ? 128 : i - (16 - n);
 		return r;
 	}();
-	static void read(FastInput &in,unsigned *out,std::size_t count) {
-		std::size_t done=0;
-		const char *p=in.current;
-		while(done+2<=count && in.end-p>=32) {
-			while(p!=in.end && static_cast<unsigned char>(*p)<=' ')++p;
-			if(in.end-p<32)break;
-			const auto bytes=_mm256_loadu_si256(reinterpret_cast<const __m256i*>(p));
-			const auto spaces=_mm256_cmpeq_epi8(_mm256_max_epu8(bytes,_mm256_set1_epi8(' ')),_mm256_set1_epi8(' '));
-			const unsigned sep=_mm256_movemask_epi8(spaces);
-			const unsigned a=std::countr_zero(sep),b=std::countr_zero(sep & (sep-1));
-			if(a<1 || a>10 || b<=a+1 || b-a-1>10)break;
-			const auto window=_mm256_inserti128_si256(bytes,_mm_loadu_si128(reinterpret_cast<const __m128i*>(p+a+1)),1);
-			const auto control=_mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i*>(rows[b-a-1].data())),_mm_loadu_si128(reinterpret_cast<const __m128i*>(rows[a].data())));
-			const auto digits=_mm256_shuffle_epi8(_mm256_sub_epi8(window,_mm256_set1_epi8('0')),control);
-			const auto invalid=_mm256_subs_epu8(digits,_mm256_set1_epi8(9));
-			if(!_mm256_testz_si256(invalid,invalid))break;
-			const auto groups=_mm256_madd_epi16(_mm256_maddubs_epi16(digits,_mm256_set1_epi16(0x010a)),_mm256_set1_epi32(0x00010064));
-			const auto halves=_mm256_madd_epi16(_mm256_packus_epi32(groups,groups),_mm256_set1_epi32(0x00012710));
-			const auto value=_mm256_add_epi32(_mm256_mullo_epi32(halves,_mm256_set1_epi32(100000000)),_mm256_srli_si256(halves,4));
-			if (a == 10 || b - a - 1 == 10) {
+	static constexpr std::size_t kChunk = 1 << 17, kCapacity = kChunk / 4 + 66;
+
+	static unsigned separators(__m256i bytes) {
+		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
+	}
+
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
+		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
+		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+			invalid = _mm256_set1_epi32(-1);
+			p += std::min(b + 1, 32u);
+			return _mm256_setzero_si256();
+		}
+		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
+		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
+		p += b + 1;
+		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
+	}
+
+	static std::uint32_t one(const char *&p, bool &bad) {
+		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
+		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
+		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
+		if (n < 1 || n > 10) [[unlikely]] {
+			bad = true;
+			p += std::min(n + 1, 16u);
+			return 0;
+		}
+		const auto digits = _mm_shuffle_epi8(_mm_sub_epi8(bytes, _mm_set1_epi8('0')),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[n].data())));
+		const auto invalid = _mm_subs_epu8(digits, _mm_set1_epi8(9));
+		bad |= !_mm_testz_si128(invalid, invalid);
+		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
+		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
+		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
+		bad |= value > 0xffffffffULL;
+		p += n + 1;
+		return std::uint32_t(value);
+	}
+
+	static const char *after_separator(const char *p) {
+		const unsigned mask = separators(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(p)));
+		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
+	}
+
+	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
+		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
+		std::size_t done = 0;
+		for (;;) {
+			std::ptrdiff_t left = end[0] - p[0];
+			for (int k = 1; k < 4; ++k) left = std::min(left, end[k] - p[k]);
+			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
+			if (steps <= 0) break;
+			for (auto j = steps; j; --j, done += 2) {
+				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				const auto k = _mm256_set1_epi32(0x00012710);
+				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
+				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
+				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
+				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				invalid = _mm256_or_si256(invalid, overflow);
+				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
+				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
+				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
+				_mm_storeh_pd(reinterpret_cast<double *>(out[1] + done), _mm_castsi128_pd(q01));
+				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[2] + done), q23);
+				_mm_storeh_pd(reinterpret_cast<double *>(out[3] + done), _mm_castsi128_pd(q23));
+			}
+		}
+		for (int k = 0; k < 4; ++k) streams[k] = p[k];
+		return done;
+	}
+
+	static std::size_t chunk(const char *&p, const char *limit, unsigned *dst, std::size_t count, unsigned *scratch) {
+		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
+		const std::size_t stream = bytes / 4;
+		const char *p1 = after_separator(p + stream), *p2 = after_separator(p + 2 * stream);
+		const char *p3 = after_separator(p + 3 * stream), *last = after_separator(p + bytes);
+		if (!p1 || !p2 || !p3 || !last) return 0;
+		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
+		unsigned *const out[4] = {dst, scratch, scratch + kCapacity, scratch + 2 * kCapacity};
+		auto invalid = _mm256_setzero_si256();
+		const auto done = lockstep(s, end, out, invalid);
+		bool bad = !_mm256_testz_si256(invalid, invalid);
+		std::size_t n[4];
+		for (int k = 0; k < 4; ++k) {
+			n[k] = done;
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			bad |= s[k] != end[k];
+		}
+		const auto parsed = n[0] + n[1] + n[2] + n[3];
+		if (bad || parsed > count) return 0;
+		auto *next = dst + n[0];
+		for (int k = 1; k < 4; ++k) {
+			std::memcpy(next, out[k], n[k] * sizeof(unsigned));
+			next += n[k];
+		}
+		p = last;
+		return parsed;
+	}
+
+	static void read(FastInput &in, unsigned *out, std::size_t count) {
+		std::unique_ptr<unsigned[]> scratch;
+		std::size_t done = 0;
+		while (done < count) {
+			const char *p = in.current;
+			while (p != in.end && static_cast<unsigned char>(*p) <= ' ') ++p;
+			while (count - done >= 1024 && in.end - p >= 1088) {
+				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(3 * kCapacity);
+				const auto parsed = chunk(p, in.end, out + done, count - done, scratch.get());
+				if (!parsed) break;
+				done += parsed;
+			}
+			while (done + 2 <= count && in.end - p >= 32) {
+				const char *next = p;
+				auto invalid = _mm256_setzero_si256();
+				const auto groups = two(next, invalid);
+				if (!_mm256_testz_si256(invalid, invalid)) break;
+				const auto halves = _mm256_madd_epi16(_mm256_packus_epi32(groups, groups), _mm256_set1_epi32(0x00012710));
 				const unsigned h0 = _mm256_extract_epi32(halves, 0), l0 = _mm256_extract_epi32(halves, 1);
 				const unsigned h1 = _mm256_extract_epi32(halves, 4), l1 = _mm256_extract_epi32(halves, 5);
 				if (h0 > 42 || (h0 == 42 && l0 > 94967295) || h1 > 42 || (h1 == 42 && l1 > 94967295)) break;
+				out[done++] = h0 * 100000000 + l0;
+				out[done++] = h1 * 100000000 + l1;
+				p = next;
 			}
-			out[done++]=unsigned(_mm256_extract_epi32(value,0));out[done++]=unsigned(_mm256_extract_epi32(value,4));p+=b+1;
+			in.current = p;
+			if (done < count) {
+				out[done] = 0;
+				in.read(out[done++]);
+			}
 		}
-		in.current=p;
-		for(;done<count;++done){out[done]=0;in.read(out[done]);}
 	}
 };
+struct BulkOutput {
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
 }
 namespace fps_io_fields {
 
@@ -177,23 +303,41 @@ inline constexpr std::size_t kTextBytes = 10 * kBlock;
 }
 
 namespace fps_detail {
+[[gnu::always_inline]] inline __m256i io_values(__m256i x) {
+	const auto p = _mm256_set1_epi32(Mint::mod()), ni = _mm256_set1_epi32(998244351);
+	auto even = _mm256_and_si256(x, _mm256_set1_epi64x(0xffffffffULL));
+	auto odd = _mm256_srli_epi64(x, 32);
+	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
+	const auto value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+	return _mm256_min_epu32(value, _mm256_sub_epi32(value, p));
+}
+
 inline void read_coefficients(FastInput &input, std::vector<Mint> &out, std::size_t n) {
-	out.reserve(n);
-	alignas(32) unsigned values[1024];
-	for (std::size_t i = 0; i < n; i += 1024) {
-		const auto count = std::min<std::size_t>(1024, n - i);
-		fast_io_detail::BulkInput::read(input, values, count);
-		for (std::size_t j = 0; j < count; ++j) out.emplace_back(Mint::raw(values[j]));
+	if (!n) return;
+	if (n > out.max_size() - out.size()) throw std::length_error("fps input");
+	prepare_fps_output(out, out.size() + n);
+	auto values = std::make_unique_for_overwrite<unsigned[]>(std::min<std::size_t>(32768, n));
+	for (std::size_t i = 0; i < n; i += 32768) {
+		const auto count = std::min<std::size_t>(32768, n - i);
+		fast_io_detail::BulkInput::read(input, values.get(), count);
+		append_fps_words<false>(out, values.get(), count);
 	}
 }
 
 inline void write_coefficients(FastOutput &output, const Mint *in, std::size_t n) {
-	alignas(32) unsigned values[4096];
-	alignas(32) char text[40960];
+	alignas(32) unsigned values[25600];
+	alignas(32) char text[256000];
 	const auto &k = fps_io_fields::detail::kConstants;
-	for (std::size_t i = 0; i < n; i += 4096) {
-		const auto count = std::min<std::size_t>(4096, n - i), full = count / 16 * 16;
-		for (std::size_t j = 0; j < count; ++j) values[j] = in[i + j].val();
+	for (std::size_t i = 0; i < n; i += 25600) {
+		const auto count = std::min<std::size_t>(25600, n - i), full = count / 16 * 16;
+		std::size_t j = 0;
+		for (; j + 8 <= count; j += 8) {
+			alignas(32) unsigned words[8];
+			std::memcpy(words, in + i + j, sizeof(words));
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(values + j), io_values(_mm256_load_si256(reinterpret_cast<const __m256i *>(words))));
+		}
+		for (; j < count; ++j) values[j] = in[i + j].val();
 		if (full) fps_io_fields::detail::format(text, values, full, k);
 		if (full < count) {
 			alignas(32) unsigned rest[16] = {};
@@ -203,7 +347,7 @@ inline void write_coefficients(FastOutput &output, const Mint *in, std::size_t n
 			std::memcpy(text + 10 * full, last, 10 * (count - full));
 		}
 		if (i + count == n) text[10 * count - 1] = '\n';
-		output.write(std::string_view(text, 10 * count));
+		fast_io_detail::BulkOutput::write(output, std::string_view(text, 10 * count));
 	}
 	if (!n) output.write('\n');
 }

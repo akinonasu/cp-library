@@ -21,7 +21,7 @@
 #include <unistd.h>
 #endif
 
-namespace fast_io_detail { struct BulkInput; }
+namespace fast_io_detail { struct BulkInput; struct BulkOutput; }
 
 class FastInput {
 	friend struct fast_io_detail::BulkInput;
@@ -146,6 +146,7 @@ public:
 };
 
 class FastOutput {
+	friend struct fast_io_detail::BulkOutput;
 	inline static constexpr auto quads = [] {
 		std::array<std::array<char, 4>, 10000> table{};
 		for (int i = 0; i < 10000; ++i) {

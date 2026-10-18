@@ -3,6 +3,7 @@
 
 #include "fps.hpp"
 #include "../components/fps_factorials.hpp"
+#include "../components/fps_taylor_blocked.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -18,6 +19,15 @@ FormalPowerSeries<T> taylor_shift(FormalPowerSeries<T> f, std::type_identity_t<T
 	const int n = static_cast<int>(f.size());
 	if (n <= 1 || c == T(0)) return f;
 	assert(unsigned(n) < unsigned(T::mod()));
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if (n >= 256 && n <= (1 << 19) && fps_detail::NTT::vectorized()) {
+			fps_detail::taylor_detail::shift(f, c);
+			return f;
+		}
+	}
+#endif
+
 	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
 		F a(n), b(n), weights;
 		fps_detail::factorials(O::words(a), O::words(b), n);

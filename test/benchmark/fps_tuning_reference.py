@@ -13,7 +13,7 @@ PROBLEMS = ['convolution_mod', 'inv_of_formal_power_series', 'log_of_formal_powe
             'composition_of_formal_power_series', 'composition_of_formal_power_series_large',
             'compositional_inverse_of_formal_power_series', 'compositional_inverse_of_formal_power_series_large',
             'multipoint_evaluation', 'polynomial_interpolation', 'polynomial_taylor_shift',
-            'gcd_of_polynomials', 'inv_of_polynomials']
+            'inv_of_polynomials']
 
 
 def get(url):
@@ -35,7 +35,7 @@ def main():
             refs = []
             target = args.cache / problem
             target.mkdir(exist_ok=True)
-            for row in listing['submissions']:
+            for row in [row for row in listing['submissions'] if row['lang'] == 'cpp'][:args.limit]:
                 detail = get(api + '/submissions/' + str(row['id']))
                 source = detail['source'].encode()
                 (target / (str(row['id']) + '.cpp')).write_bytes(source)

@@ -1,0 +1,837 @@
+{
+  "baseline": "ce81108",
+  "flags": {
+    "division_baseline": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I/tmp/fps-division/baseline",
+      "-DMODE=0",
+      "/tmp/fps-division/driver.cpp",
+      "-o",
+      "/tmp/fps-division/division_baseline"
+    ],
+    "inverse_mod_baseline": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I/tmp/fps-division/baseline",
+      "-DMODE=1",
+      "/tmp/fps-division/driver.cpp",
+      "-o",
+      "/tmp/fps-division/inverse_mod_baseline"
+    ],
+    "gcd_baseline": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I/tmp/fps-division/baseline",
+      "-DMODE=2",
+      "/tmp/fps-division/driver.cpp",
+      "-o",
+      "/tmp/fps-division/gcd_baseline"
+    ],
+    "series_baseline": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I/tmp/fps-division/baseline",
+      "-DMODE=3",
+      "/tmp/fps-division/driver.cpp",
+      "-o",
+      "/tmp/fps-division/series_baseline"
+    ],
+    "division_current": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I/tmp/fps-division/current",
+      "-DMODE=0",
+      "-DNATIVE",
+      "/tmp/fps-division/driver.cpp",
+      "-o",
+      "/tmp/fps-division/division_current"
+    ],
+    "inverse_mod_current": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I/tmp/fps-division/current",
+      "-DMODE=1",
+      "/tmp/fps-division/driver.cpp",
+      "-o",
+      "/tmp/fps-division/inverse_mod_current"
+    ],
+    "gcd_current": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I/tmp/fps-division/current",
+      "-DMODE=2",
+      "/tmp/fps-division/driver.cpp",
+      "-o",
+      "/tmp/fps-division/gcd_current"
+    ],
+    "series_current": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I/tmp/fps-division/current",
+      "-DMODE=3",
+      "-DNATIVE",
+      "/tmp/fps-division/driver.cpp",
+      "-o",
+      "/tmp/fps-division/series_current"
+    ],
+    "division_reference": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "/tmp/fps-reference/division_of_polynomials/409561.cpp",
+      "-o",
+      "/tmp/fps-division/division_reference"
+    ],
+    "inverse_mod_reference": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "/tmp/fps-reference/inv_of_polynomials/409589.cpp",
+      "-o",
+      "/tmp/fps-division/inverse_mod_reference"
+    ]
+  },
+  "cpu": "\t: AMD EPYC 9V74 80-Core Processor",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "cpu_affinity": [
+    2
+  ],
+  "seed": 20261019,
+  "trials": 9,
+  "metric": "whole process wall milliseconds; computation with allocations reported separately by driver",
+  "driver_sha256": "24363c628c0e6ed41a4bf6ff4f6471f190dd0624e87f46b8dc748095f7b26cb6",
+  "harness_sha256": "927e3edd70fce2a362af51bf51f5cc59ac091ca9f0410ff73f8044db1487403c",
+  "headers": {
+    "fps/bostan_mori.hpp": "8d3e89e20add5124dff1100f3a8282fa67a7937133b68a051232368ae2fe63fe",
+    "fps/compose.hpp": "4619100364885ea6ae46f7c7dc493d8c7c544033385d1397c3113e22c9b76516",
+    "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+    "fps/fps.hpp": "1216740533b6703d084dffd5974443efa174abe107fe789c7180835862d961b8",
+    "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+    "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+    "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+    "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+    "fps/power_projection.hpp": "0623abd7edac767ea7dcd46a506ec1667985fd36c2cbe56421af5d253b451b33",
+    "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+    "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+    "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+    "components/binomial_prefix_core.hpp": "3b619188ae67835b073cbf27562b1f675c8ab10a65b60b28539bcd6ba30958c3",
+    "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+    "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+    "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+    "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+    "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+    "components/fast_io.hpp": "bbaafa871b43a2f83b6fe2825014c86dce0db44d3bcc999c4eacddb4bcb073fd",
+    "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+    "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+    "components/fps_blocked.hpp": "85e3177aba7f605d55f355daa712b9a57d9bd99e8b27b1b98110a26a849374b4",
+    "components/fps_composition.hpp": "0d36340b2ffe02b116ae07b151d04d3afc6aa5f4908e55ae3a148f8747f84922",
+    "components/fps_convolution.hpp": "d86aa86134323f453d0b297b2f3d6d83dfbc131723deea2e19bbf3047b6c9e41",
+    "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+    "components/fps_division_blocked.hpp": "74f9b2580ef60c5674e70801b66133d23e499a7ff715f533a70daba55f72bbcc",
+    "components/fps_evaluation.hpp": "339be1e9b79d5af86e4a00556829cbf8f841db3cad088a73187fe9a0a8cdb103",
+    "components/fps_exp_blocked.hpp": "759ec65017a97a7cb0b4ff8538e07bf288dce4f482bdf2f82c131e8eb14596cf",
+    "components/fps_factorials.hpp": "d6719de093bbe4d95542a0b51b84e0401e35928abd311b599abd149807596ddb",
+    "components/fps_inverse_blocked.hpp": "1958543472e53a7060f1e6719d06ef6aa2c5ae36333e099eb866d3b98ef42a89",
+    "components/fps_io.hpp": "9dbcb47fcbdbb8be6ddb19c040c43c62f368ebdf11b0b0cecb09bce179026546",
+    "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+    "components/fps_reversion.hpp": "0deb2e9314185157811c7b4e72edd268b7d651e38ddcf20fe9176662c33f11a6",
+    "components/fps_sqrt_blocked.hpp": "6d62cfb61e4d2c0aee0dbbac9a7bcb7d11915b3af39835b9932bb54b1a86c98b",
+    "components/fps_taylor_blocked.hpp": "fcb6cbe46c2d4305bd6774d88723edb20535b86e4eaf7780238c1be27d8e4dcd",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+    "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+    "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+    "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+    "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+    "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+    "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+    "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+    "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+    "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+    "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+    "components/polynomial_gcd_blocked.hpp": "e11f5e3af3ad8acfc4153dd84339355b0a637f7f76035b4ad132c41b21e89c73",
+    "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+    "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+    "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+    "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+    "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+    "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+    "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+    "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+    "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+    "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+    "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+    "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+    "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+    "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+    "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+    "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+    "math/comb.hpp": "64ca05ffc38b2bc2df305adeafc12e4a7449155a2ca2e8a03862f0387becf3a1",
+    "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+    "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+    "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+    "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+    "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+    "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+    "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+    "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+    "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+    "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+    "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+    "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+    "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+    "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+    "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+    "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+    "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+    "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058"
+  },
+  "reference_sha256": {
+    "409561.cpp": "fd06ec63bfe326a8f8c2b25292ecf38d77c4fd0114fbaa2565e4c667b8b4eeb1",
+    "409589.cpp": "274d6c6107676bf6043aa5984e4b5788617ae7c8ff0ae1f157b6b0954e895306"
+  },
+  "workloads": {
+    "division_v_random_00": {
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/v_random_00.in",
+      "input_header": "274010 248523",
+      "input_sha256": "45ae507db0f5698b79a2ab5407c40fa19d2967155fa42644b01ec6af97d7e8ef",
+      "binaries": {
+        "division_baseline": {
+          "binary_sha256": "f2bb5db3887cea18a56ff8720cc413670cb9b9b6521b5677244891774a5543ef",
+          "whole_ms": [
+            11.763477,
+            11.357252,
+            10.862183,
+            15.563952,
+            15.115674,
+            16.480078,
+            11.962453,
+            12.046619,
+            12.500586
+          ],
+          "median_ms": 12.046619,
+          "computation_ms": [
+            5.350627,
+            5.024901,
+            4.88996,
+            5.764753,
+            6.765296,
+            8.791987,
+            5.331679,
+            5.812815,
+            5.691095
+          ],
+          "compute_median_ms": 5.691095
+        },
+        "division_current": {
+          "binary_sha256": "a7bd79c2ea61755f76d189c7528402d871a3f4ce6510591b3dd425759e2c4608",
+          "whole_ms": [
+            10.351082,
+            11.234669,
+            10.040419,
+            9.496527,
+            9.378101,
+            9.29707,
+            9.349118,
+            10.759109,
+            9.351351
+          ],
+          "median_ms": 9.496527,
+          "computation_ms": [
+            2.654397,
+            2.86421,
+            2.640377,
+            2.484784,
+            2.474459,
+            2.525675,
+            2.408431,
+            2.821887,
+            2.459226
+          ],
+          "compute_median_ms": 2.525675
+        },
+        "division_reference": {
+          "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+          "whole_ms": [
+            6.250278,
+            5.758394,
+            5.756422,
+            5.913847,
+            5.97011,
+            6.739958,
+            6.735711,
+            7.611157,
+            6.504306
+          ],
+          "median_ms": 6.250278,
+          "computation_ms": [],
+          "compute_median_ms": null
+        }
+      }
+    },
+    "division_v_random_01": {
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/v_random_01.in",
+      "input_header": "463046 412907",
+      "input_sha256": "076860dd555d4ba783ff348eaa60e390b50c1576b0cee9fffeaa1d042a272059",
+      "binaries": {
+        "division_baseline": {
+          "binary_sha256": "f2bb5db3887cea18a56ff8720cc413670cb9b9b6521b5677244891774a5543ef",
+          "whole_ms": [
+            18.288004,
+            18.306381,
+            18.146032,
+            19.141407,
+            18.908479,
+            18.479108,
+            18.553089,
+            18.15774,
+            18.369065
+          ],
+          "median_ms": 18.369065,
+          "computation_ms": [
+            10.098205,
+            10.160067,
+            10.02876,
+            10.4576,
+            10.287577,
+            10.137703,
+            10.294457,
+            10.07483,
+            10.167238
+          ],
+          "compute_median_ms": 10.160067
+        },
+        "division_current": {
+          "binary_sha256": "a7bd79c2ea61755f76d189c7528402d871a3f4ce6510591b3dd425759e2c4608",
+          "whole_ms": [
+            13.720824,
+            14.36141,
+            14.204486,
+            14.145658,
+            13.587517,
+            13.761496,
+            13.230404,
+            13.481298,
+            13.473647
+          ],
+          "median_ms": 13.720824,
+          "computation_ms": [
+            4.590323,
+            4.536994,
+            4.536112,
+            4.473369,
+            4.406278,
+            4.417076,
+            4.1989,
+            4.438156,
+            4.450685
+          ],
+          "compute_median_ms": 4.450685
+        },
+        "division_reference": {
+          "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+          "whole_ms": [
+            8.604888,
+            8.311912,
+            8.36435,
+            7.753719,
+            7.943633,
+            8.011634,
+            7.62659,
+            7.966586,
+            7.54655
+          ],
+          "median_ms": 7.966586,
+          "computation_ms": [],
+          "compute_median_ms": null
+        }
+      }
+    },
+    "division_v_random_02": {
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/v_random_02.in",
+      "input_header": "455174 92222",
+      "input_sha256": "7550ed2752c408a61b0f3a099e5043264c2a9412c1a26e633ed0f6944089065c",
+      "binaries": {
+        "division_baseline": {
+          "binary_sha256": "f2bb5db3887cea18a56ff8720cc413670cb9b9b6521b5677244891774a5543ef",
+          "whole_ms": [
+            22.401676,
+            22.344892,
+            24.052407,
+            22.838708,
+            23.218805,
+            21.718659,
+            22.861992,
+            22.365813,
+            22.356219
+          ],
+          "median_ms": 22.401676,
+          "computation_ms": [
+            14.731382,
+            14.963948,
+            15.471215,
+            14.977839,
+            15.246229,
+            14.983648,
+            15.006381,
+            14.761818,
+            14.833775
+          ],
+          "compute_median_ms": 14.977839
+        },
+        "division_current": {
+          "binary_sha256": "a7bd79c2ea61755f76d189c7528402d871a3f4ce6510591b3dd425759e2c4608",
+          "whole_ms": [
+            15.100091,
+            15.60233,
+            15.446137,
+            16.141554,
+            16.309986,
+            15.931351,
+            16.270726,
+            15.475761,
+            15.397225
+          ],
+          "median_ms": 15.60233,
+          "computation_ms": [
+            7.173475,
+            7.346952,
+            7.279162,
+            7.40577,
+            7.407133,
+            7.563646,
+            7.692579,
+            7.300252,
+            7.23115
+          ],
+          "compute_median_ms": 7.346952
+        },
+        "division_reference": {
+          "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+          "whole_ms": [
+            12.10739,
+            11.626512,
+            11.236491,
+            10.191934,
+            11.353556,
+            12.092768,
+            11.729617,
+            11.614785,
+            11.792961
+          ],
+          "median_ms": 11.626512,
+          "computation_ms": [],
+          "compute_median_ms": null
+        }
+      }
+    },
+    "division_v_random_03": {
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/v_random_03.in",
+      "input_header": "429249 25839",
+      "input_sha256": "b600696b3b0658fd218e20e515996cf0360edc1ef5e4391ffe259a9758bc9425",
+      "binaries": {
+        "division_baseline": {
+          "binary_sha256": "f2bb5db3887cea18a56ff8720cc413670cb9b9b6521b5677244891774a5543ef",
+          "whole_ms": [
+            20.67307,
+            20.271161,
+            19.943201,
+            20.102319,
+            20.596515,
+            20.468965,
+            20.078603,
+            20.023221,
+            20.022639
+          ],
+          "median_ms": 20.102319,
+          "computation_ms": [
+            13.525344,
+            13.353808,
+            13.122794,
+            13.20737,
+            13.400577,
+            13.446797,
+            13.234821,
+            13.206779,
+            13.183604
+          ],
+          "compute_median_ms": 13.234821
+        },
+        "division_current": {
+          "binary_sha256": "a7bd79c2ea61755f76d189c7528402d871a3f4ce6510591b3dd425759e2c4608",
+          "whole_ms": [
+            13.241631,
+            12.929536,
+            13.116124,
+            13.069684,
+            12.733814,
+            12.98624,
+            12.787673,
+            13.25439,
+            12.824698
+          ],
+          "median_ms": 12.98624,
+          "computation_ms": [
+            5.689732,
+            5.602252,
+            5.658386,
+            5.623894,
+            5.598246,
+            5.622832,
+            5.610504,
+            5.698906,
+            5.614029
+          ],
+          "compute_median_ms": 5.622832
+        },
+        "division_reference": {
+          "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+          "whole_ms": [
+            9.599761,
+            9.566722,
+            9.178394,
+            9.352223,
+            9.503278,
+            9.49167,
+            9.605931,
+            9.462166,
+            9.536828
+          ],
+          "median_ms": 9.503278,
+          "computation_ms": [],
+          "compute_median_ms": null
+        }
+      }
+    },
+    "division_u_eq_0_00": {
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/u_eq_0_00.in",
+      "input_header": "389813 410923",
+      "input_sha256": "e6e90d98a8759c234c7df62065d92cd54931bff22b461b2ccb24583bbdeef80e",
+      "binaries": {
+        "division_baseline": {
+          "binary_sha256": "f2bb5db3887cea18a56ff8720cc413670cb9b9b6521b5677244891774a5543ef",
+          "whole_ms": [
+            9.190782,
+            9.769535,
+            9.279173,
+            9.052666,
+            9.201037,
+            9.541114,
+            10.360165,
+            9.335256,
+            9.095629
+          ],
+          "median_ms": 9.279173,
+          "computation_ms": [
+            0.527536,
+            0.581186,
+            0.50303,
+            0.504392,
+            0.549059,
+            0.523881,
+            0.63054,
+            0.533966,
+            0.48297
+          ],
+          "compute_median_ms": 0.527536
+        },
+        "division_current": {
+          "binary_sha256": "a7bd79c2ea61755f76d189c7528402d871a3f4ce6510591b3dd425759e2c4608",
+          "whole_ms": [
+            10.667813,
+            9.859268,
+            11.295229,
+            9.844977,
+            10.901893,
+            10.4842,
+            10.226606,
+            9.844836,
+            10.346935
+          ],
+          "median_ms": 10.346935,
+          "computation_ms": [
+            0.611722,
+            0.531032,
+            0.679604,
+            0.514848,
+            0.65756,
+            0.581447,
+            0.600065,
+            0.526395,
+            0.597671
+          ],
+          "compute_median_ms": 0.597671
+        },
+        "division_reference": {
+          "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+          "whole_ms": [
+            5.710473,
+            5.998392,
+            5.371597,
+            5.701038,
+            6.070359,
+            5.865184,
+            5.396555,
+            5.559548,
+            5.295074
+          ],
+          "median_ms": 5.701038,
+          "computation_ms": [],
+          "compute_median_ms": null
+        }
+      }
+    },
+    "inverse_max": {
+      "input": "/tmp/library-checker-problems/polynomial/inv_of_polynomials/in/max_random_00.in",
+      "input_header": "50000 50000",
+      "input_sha256": "efba1fb7dbebf3c7dfb0d604bac31059254316186bce5a7d1c98fc5a3baf20af",
+      "binaries": {
+        "inverse_mod_baseline": {
+          "binary_sha256": "e1e2f3dc63f6ae58d951b7ea3357d7d833cd18bab69cf0c5e90b77141815849e",
+          "whole_ms": [
+            48.214448,
+            48.193736,
+            48.442342,
+            47.654613,
+            47.49813,
+            47.869723,
+            47.374676,
+            48.562126,
+            48.650918
+          ],
+          "median_ms": 48.193736,
+          "computation_ms": [
+            43.649082,
+            44.562973,
+            44.512013,
+            44.124421,
+            43.962228,
+            44.229487,
+            43.783001,
+            44.864453,
+            44.675221
+          ],
+          "compute_median_ms": 44.229487
+        },
+        "inverse_mod_current": {
+          "binary_sha256": "2e5c006afbe0a18da390e34ac25a50dca6e6deacbd8088e7154cee15297e5f9a",
+          "whole_ms": [
+            16.591024,
+            16.814157,
+            16.402572,
+            16.485246,
+            16.591635,
+            17.002217,
+            17.16534,
+            17.096948,
+            17.292629
+          ],
+          "median_ms": 16.814157,
+          "computation_ms": [
+            13.236143,
+            13.451864,
+            13.183595,
+            13.128472,
+            13.264945,
+            13.609519,
+            13.759353,
+            13.713414,
+            13.769708
+          ],
+          "compute_median_ms": 13.451864
+        },
+        "inverse_mod_reference": {
+          "binary_sha256": "da4747331ce08aedccddda1992e18747294c925bfdf43b8b9785ea71937b6dec",
+          "whole_ms": [
+            15.977819,
+            15.74362,
+            16.049386,
+            15.880966,
+            16.733997,
+            16.822199,
+            16.061935,
+            16.736811,
+            17.037539
+          ],
+          "median_ms": 16.061935,
+          "computation_ms": [],
+          "compute_median_ms": null
+        }
+      }
+    },
+    "gcd_max": {
+      "input": "/tmp/library-checker-problems/polynomial/inv_of_polynomials/in/max_random_00.in",
+      "input_header": "50000 50000",
+      "input_sha256": "efba1fb7dbebf3c7dfb0d604bac31059254316186bce5a7d1c98fc5a3baf20af",
+      "binaries": {
+        "gcd_baseline": {
+          "binary_sha256": "7aa5cd1f94111719eca2820a5264043701b474be2272562399eafe2492140032",
+          "whole_ms": [
+            47.150541,
+            47.90032,
+            47.383899,
+            47.858076,
+            49.312119,
+            49.522407,
+            49.559683,
+            49.324763,
+            49.452854
+          ],
+          "median_ms": 49.312119,
+          "computation_ms": [
+            43.702441,
+            44.17837,
+            43.926535,
+            44.018853,
+            46.42821,
+            45.847819,
+            45.617225,
+            45.875021,
+            45.856883
+          ],
+          "compute_median_ms": 45.617225
+        },
+        "gcd_current": {
+          "binary_sha256": "095b2be3373092cc2ad4b5210b430cc1dc3c68f484ae1ef9e309aaa6ad226fec",
+          "whole_ms": [
+            17.403555,
+            16.83688,
+            18.023469,
+            17.753557,
+            17.824443,
+            17.820817,
+            19.21768,
+            18.825044,
+            17.923289
+          ],
+          "median_ms": 17.824443,
+          "computation_ms": [
+            13.931509,
+            13.596309,
+            14.550471,
+            14.242623,
+            14.123255,
+            14.071528,
+            15.538635,
+            15.126681,
+            14.340349
+          ],
+          "compute_median_ms": 14.242623
+        }
+      }
+    },
+    "series_max": {
+      "input": "/tmp/fps-division/series.in",
+      "input_header": "500000 500000",
+      "input_sha256": "a51e7c1ba4dec010fa23f29a6371299f03ee78f2d85c9ecc7ecf0ac91f53380b",
+      "binaries": {
+        "series_baseline": {
+          "binary_sha256": "a43ae381d1c2b077e103b5ede8e4dc10c5848678de0f60e2d97c3eb5413177ef",
+          "whole_ms": [
+            25.459154,
+            25.875935,
+            25.994432,
+            26.934263,
+            25.082642,
+            24.796957,
+            25.772121,
+            26.981924,
+            24.958869
+          ],
+          "median_ms": 25.772121,
+          "computation_ms": [
+            14.606365,
+            14.312507,
+            14.58947,
+            15.011259,
+            14.14682,
+            13.956036,
+            14.658083,
+            14.384585,
+            13.987502
+          ],
+          "compute_median_ms": 14.384585
+        },
+        "series_current": {
+          "binary_sha256": "5728ebb07a758b7156158bea6a93130bdddfdf9b61674c29827c1afd6ab33e8e",
+          "whole_ms": [
+            23.348497,
+            21.648944,
+            23.085576,
+            24.702026,
+            22.341557,
+            22.791067,
+            22.603438,
+            23.375909,
+            22.238624
+          ],
+          "median_ms": 22.791067,
+          "computation_ms": [
+            10.986028,
+            10.490259,
+            10.529858,
+            12.520526,
+            10.329389,
+            10.931526,
+            10.829685,
+            11.026709,
+            10.438902
+          ],
+          "compute_median_ms": 10.829685
+        }
+      }
+    }
+  }
+}

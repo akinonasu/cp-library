@@ -8,11 +8,20 @@ import subprocess
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--ignore-access-declarations', action='store_true')
     parser.add_argument('--baseline', default='fd41ae5df33960b93288ae98f9edac4e9fdb166f')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
     changed = set(subprocess.check_output(['git', '-c', 'core.autocrlf=true', '-c', 'core.safecrlf=false', 'diff', '--name-only', args.baseline], cwd=root, text=True).splitlines())
     changed.update(subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'], cwd=root, text=True).splitlines())
+    if args.ignore_access_declarations:
+        name = 'components/fast_io.hpp'
+        before = subprocess.check_output(['git', 'show', args.baseline + ':' + name], cwd=root, text=True)
+        after = (root / name).read_text()
+        restored = after.replace('struct BulkInput; struct BulkOutput;', 'struct BulkInput;').replace('\tfriend struct fast_io_detail::BulkOutput;\n', '')
+        if restored != before:
+            raise RuntimeError('fast_io.hpp has changes beyond the BulkOutput friendship declarations')
+        changed.discard(name)
     cache = {}
 
     def dependencies(name):
