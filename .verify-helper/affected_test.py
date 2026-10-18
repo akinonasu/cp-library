@@ -270,6 +270,18 @@ class AffectedVerification(unittest.TestCase):
                 self.assertTrue(result["full"])
                 self.assertEqual(len(result["unit"]), 5)
 
+    def test_matrix_prefix_keeps_exact_binding_validation(self):
+        self.ref = "refs/heads/codex/matrix-packed-20261018"
+        self.change_bits()
+        self.assertEqual(self.plan()["expected_ref"], self.ref)
+        binding = read_binding(SourceTree(self.root, self.git("rev-parse", "HEAD").decode().strip()))
+        for ref in ("refs/heads/codex/other-task", "refs/heads/codex/matrix-",
+                    "refs/heads/codex/matrix-a..b", "refs/heads/codex/matrix-a/b"):
+            self.write(BINDING_PATH, (canonical({**binding, "ref": ref}) + b"\n").decode())
+            head = self.commit("invalid binding prefix", bind=False)
+            with self.assertRaises(ValueError):
+                read_binding(SourceTree(self.root, head))
+
     def test_no_state_read_write_and_record_is_selected_only(self):
         head = self.change_bits()
         state = self.root / ".verify-helper/verified-state.json"
