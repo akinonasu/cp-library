@@ -4,6 +4,7 @@
 #include "../components/fps_operations.hpp"
 #include "../components/fps_factorials.hpp"
 #include "../components/fps_workspace.hpp"
+#include "../components/fps_log.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -507,10 +508,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] == T(1));
-		F r = log_derivative(deg);
-		const auto &inv = inverses(deg - 1);
-		fps_detail::NTT::product(words(r), words(r), words(inv), deg);
-		return r;
+		return log_derivative(deg, true);
 	}
 
 	F exp(int deg = -1) const {
@@ -633,10 +631,73 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	using Word = typename O::Word;
 
-	F log_derivative(int deg) const {
+	F log_derivative(int deg, bool integrate = false) const {
+#if defined(__x86_64__) || defined(__i386__)
+		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if (deg >= 256 && deg <= (1 << 24) && this->size() >= 64 && fps_detail::NTT::vectorized()) {
+				int k = 32;
+				while (k * 4 < deg - 1) k *= 2;
+				const int n = 2 * k, count = (deg - 1 + k - 1) / k, pitch = n + 16;
+				F h = inv(k), r(deg);
+				fps_detail::LogTransform t{transform(n / 16)};
+				auto memory = fps_detail::allocate_fps_words((count + 2) * pitch);
+				Word *ht = memory.get(), *window = ht + pitch, *q = window + (count - 1) * pitch, *work = q + pitch;
+				std::copy_n(words(h), k, ht);
+				const Word norm = T::mod() - (T::mod() - 1) / (n / 8);
+				t.forward(ht, n, norm, true);
+				for (int j = 1; j < count; ++j) {
+					Word *w = window + (j - 1) * pitch;
+					const int first = (j - 1) * k, c = std::max(0, std::min<int>(n, static_cast<int>(this->size()) - first));
+					if (c) std::copy_n(words(*this) + first, c, w);
+					std::fill(w + c, w + n, 0u);
+					t.forward(w, n);
+				}
+				for (int j = 0; j < count; ++j) {
+					const int first = j * k, c = std::min(k, deg - 1 - first);
+					if (j) {
+						const Word *aa[] = {window + (j - 1) * pitch, window}, *bb[] = {q, work};
+						if (count == 4 && j == 2)
+							t.toeplitz(work, window + 2 * pitch, window, window + pitch, q, work, n);
+						else if (count == 4 && j == 3) {
+							const Word *a[] = {window}, *b[] = {work};
+							t.products(work, a, b, 1, n, window + 2 * pitch);
+						} else {
+							t.products(work, aa, bb, j, n);
+						}
+						t.inverse(work, n);
+					}
+					const int available = std::max(0, std::min<int>(c, static_cast<int>(this->size()) - first - 1));
+					if (available) fps_detail::NTT::weighted(work, words(*this) + first + 1, available, first + 1);
+					std::fill(work + available, work + k, 0u);
+					if (j)
+						for (int i = 0; i < k; ++i) work[i] = fps_detail::NTT::sub(work[i], work[k + i]);
+					t.forward(work, n, 1, true);
+					const Word *aa[] = {work}, *bb[] = {ht};
+					t.products(work, aa, bb, 1, n);
+					t.inverse(work, n);
+					if (integrate)
+						fps_detail::LogTransform::integrate(words(r) + first + 1, work, work + k, first + 1, c);
+					else
+						std::copy_n(work, c, words(r) + first + 1);
+					if (j + 1 < count) {
+						Word *cache = j == 0 ? q : work;
+						if (j == 0) std::copy_n(work, k, cache);
+						t.forward(cache, n, norm, true);
+					}
+				}
+				return r;
+			}
+		}
+#endif
+
 		F derivative(std::min<int>(deg, this->size()));
 		if (derivative.size() > 1) fps_detail::NTT::weighted(words(derivative) + 1, words(*this) + 1, derivative.size() - 1, 1);
-		return derivative.div_series(*this, deg);
+		F r = derivative.div_series(*this, deg);
+		if (integrate) {
+			const auto &iv = inverses(deg - 1);
+			fps_detail::NTT::product(words(r), words(r), words(iv), deg);
+		}
+		return r;
 	}
 
 	template <bool differentiated>

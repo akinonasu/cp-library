@@ -36,6 +36,7 @@ def main():
                                                          'inv:1:1', 'inv:12:1', 'inv:32:1', 'exp:1:1', 'exp:24:1', 'exp:64:1', 'inv:32:1024', 'exp:64:1024'])
     parser.add_argument('--candidates', action='store_true')
     parser.add_argument('--workspace-candidates', action='store_true')
+    parser.add_argument('--log-candidates', action='store_true')
     parser.add_argument('--official-root', type=Path)
     parser.add_argument('--references', type=Path)
     args = parser.parse_args()
@@ -65,6 +66,36 @@ def main():
         for folder in ['fps', 'components', 'math', 'convolution']:
             shutil.copytree(ROOT / folder, current / folder)
         trees = dict(before=before, current=current)
+        if args.log_candidates:
+            for name in ['log_separate_integral', 'log_without_toeplitz', 'log_half_inverse', 'log_blocks2', 'log_blocks8']:
+                tree = work / name
+                shutil.copytree(current, tree)
+                header = tree / 'fps/fps.hpp'
+                s = header.read_text()
+                if name == 'log_separate_integral':
+                    s = s.replace('return log_derivative(deg, true);', '''F r = log_derivative(deg);
+        const auto &iv = inverses(deg - 1);
+        fps_detail::NTT::product(words(r), words(r), words(iv), deg);
+        return r;''')
+                if name in ['log_without_toeplitz', 'log_blocks2', 'log_blocks8']:
+                    s = s.replace('(count + 2) * pitch', '(2 * count + 1) * pitch').replace('*work = q + pitch', '*work = q + count * pitch')
+                    begin = s.index('\n\t\t\t\t\t\tconst Word *aa[] = {window + (j - 1) * pitch')
+                    end = s.index('\n\t\t\t\t\t\tt.inverse(work, n)', begin)
+                    s = s[:begin] + '''
+                        const Word *a[8], *b[8];
+                        for (int i = 0; i < j; ++i) a[i] = window + (j - i - 1) * pitch, b[i] = q + i * pitch;
+                        t.products(work, a, b, j, n);''' + s[end:]
+                    s = s.replace('Word *cache = j == 0 ? q : work;', 'Word *cache = q + j * pitch;').replace('if (j == 0) std::copy_n(work, k, cache);', 'std::copy_n(work, k, cache);')
+                    if name.startswith('log_blocks'):
+                        count = int(name.removeprefix('log_blocks'))
+                        s = s.replace('while (k * 4 < deg - 1)', f'while (k * {count} < deg - 1)')
+                if name == 'log_half_inverse':
+                    s = s.replace('t.inverse(work, n);', 't.template inverse_half<true>(work, n);', 1)
+                    s = s.replace('t.inverse(work, n);', 't.template inverse_half<false>(work, n);', 1)
+                header.write_text(s)
+                header = tree / 'components/fps_log.hpp'
+                header.write_text(header.read_text().replace('terms <= 2', 'terms <= 8'))
+                trees[name] = tree
         if args.workspace_candidates:
             for name in ['padding_only', 'pages_only']:
                 tree = work / name
