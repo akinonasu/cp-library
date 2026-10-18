@@ -1,0 +1,24 @@
+$ python3 .verify-helper/fast_io_test.py
+.
+----------------------------------------------------------------------
+Ran 1 test in 1.274s
+
+OK
+$ python3 test/verify.py --unit-only --selection /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fastio_constexpr/selection.json
+g++: standalone components/fast_io.hpp
+g++: fast_io.cpp
+g++: fps_speed_io.cpp
+g++: fps_io.cpp
+clang++: standalone components/fast_io.hpp
+clang++: fast_io.cpp
+clang++: fps_speed_io.cpp
+clang++: fps_io.cpp
+Verification passed
+$ g++ -std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -DATCODER -DONLINE_JUDGE -fconstexpr-depth=1024 -fconstexpr-loop-limit=524288 -fconstexpr-ops-limit=2097152 -I. test/benchmark/abc467_g.cpp -o /tmp/fastio-check-go44pkya/g++
+$ clang++ -std=gnu++2b -O2 -fconstexpr-depth=1024 -fconstexpr-steps=524288 -I. test/benchmark/abc467_g.cpp -o /tmp/fastio-check-go44pkya/clang++
+$ python3 .verify-helper/fast_io_test.py
+.
+----------------------------------------------------------------------
+Ran 1 test in 1.485s
+
+OK

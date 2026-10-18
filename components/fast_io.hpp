@@ -149,10 +149,8 @@ class FastOutput {
 	friend struct fast_io_detail::BulkOutput;
 	inline static constexpr auto quads = [] {
 		std::array<std::array<char, 4>, 10000> table{};
-		for (int i = 0; i < 10000; ++i) {
-			int value = i;
-			for (int j = 3; j >= 0; --j) table[i][j] = char('0' + value % 10), value /= 10;
-		}
+		for (int i = 0; i < 10000; ++i)
+			table[i] = {char('0' + i / 1000), char('0' + i / 100 % 10), char('0' + i / 10 % 10), char('0' + i % 10)};
 		return table;
 	}();
 	FILE *file;

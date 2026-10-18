@@ -1,0 +1,166 @@
+{
+  "reference": "https://img.atcoder.jp/file/language-update/2025-10/language-list.html",
+  "gcc": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "clang": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)\nTarget: x86_64-conda-linux-gnu\nThread model: posix\nInstalledDir: /var/tmp/cp-audit-tools/env/bin\nConfiguration file: /var/tmp/cp-audit-tools/env/bin/x86_64-conda-linux-gnu-clang++.cfg\n",
+  "gccflags": [
+    "-std=gnu++23",
+    "-O2",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-DATCODER",
+    "-DONLINE_JUDGE",
+    "-fconstexpr-depth=1024",
+    "-fconstexpr-loop-limit=524288",
+    "-fconstexpr-ops-limit=2097152",
+    "-I."
+  ],
+  "clangflags": [
+    "-std=gnu++2b",
+    "-O2",
+    "-fconstexpr-depth=1024",
+    "-fconstexpr-steps=524288",
+    "-I."
+  ],
+  "source_sha256": {
+    "components/fast_io.hpp": "906d9e8a7b83d1bb0ef2c3f8894efd025931b0856bbfd9b641faec27b2a66abc",
+    ".verify-helper/fast_io_test.py": "f13a026ae4844da7bce3230881a4f389786f222c2d7850a2f11a54f50a07dcff",
+    "test/benchmark/abc467_g.cpp": "2beed67f1547b479358a498aebd73f134c6bc333eecf807fce1f4adb248f5646",
+    "test/unit/fast_io.cpp": "4d4600a472a3806ae6ced32cf6a151d0bb57591f43e7d9ab24b9a472b1653532",
+    "test/unit/fps_speed_io.cpp": "6512629c4ab041fcf3cd60db444b74076f1bf2892a26d13c4b5eb36aa9e4cf22",
+    "test/unit/fps_io.cpp": "9b16fe88926626ad88b2ef2f91709468c8e64c6d953a6f454c9d8cfb54858a1c"
+  },
+  "commands": [
+    [
+      "python3",
+      ".verify-helper/fast_io_test.py"
+    ],
+    [
+      "python3",
+      "test/verify.py",
+      "--unit-only",
+      "--selection",
+      "/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/fastio_constexpr/selection.json"
+    ],
+    [
+      "g++",
+      "-std=gnu++23",
+      "-O2",
+      "-march=native",
+      "-ftrivial-auto-var-init=zero",
+      "-DATCODER",
+      "-DONLINE_JUDGE",
+      "-fconstexpr-depth=1024",
+      "-fconstexpr-loop-limit=524288",
+      "-fconstexpr-ops-limit=2097152",
+      "-I.",
+      "test/benchmark/abc467_g.cpp",
+      "-o",
+      "/tmp/fastio-check-go44pkya/g++"
+    ],
+    [
+      "clang++",
+      "-std=gnu++2b",
+      "-O2",
+      "-fconstexpr-depth=1024",
+      "-fconstexpr-steps=524288",
+      "-I.",
+      "test/benchmark/abc467_g.cpp",
+      "-o",
+      "/tmp/fastio-check-go44pkya/clang++"
+    ],
+    [
+      "python3",
+      ".verify-helper/fast_io_test.py"
+    ]
+  ],
+  "cases": [
+    {
+      "case": "00_sample_00.txt",
+      "input_sha256": "665b292d48c945ce72825ae0453deaa47a5aa2e8c94cb54b8215d9d7bc5282cd",
+      "output_sha256": "2b3fe429d71f84ff7cbb2b04a63b3e00560d7ec80c28be7a71c4245551be72ae",
+      "passed": true
+    },
+    {
+      "case": "00_sample_01.txt",
+      "input_sha256": "016263fbf57ac5f0ec4f37f63778819daeabd5c3fc36f363d36a67eaf342e920",
+      "output_sha256": "7fb968540f3729555fb7c73320f87abf794da7289474b59e48759cf15d1baae0",
+      "passed": true
+    },
+    {
+      "case": "01_random_00.txt",
+      "input_sha256": "2366a89f068349223e0dffcccf725a77536d8b3d4f347cea1414de87ca469b4b",
+      "output_sha256": "763d612c4c365c022b562aa3c45d9c3dbadda6a7da40dc2b9de07d3bc1e6322e",
+      "passed": true
+    },
+    {
+      "case": "01_random_01.txt",
+      "input_sha256": "1be3dbc9c9517ff7118bfc327cdcef63c6d5b2a660d6f3d123d3b6ee1bfefabf",
+      "output_sha256": "aabacf4a84e2442906c69b461500d7d516cd5ecee122ab2ee1636a3572cba6ef",
+      "passed": true
+    },
+    {
+      "case": "01_random_02.txt",
+      "input_sha256": "c57ade8e12a705030c13f4cd7d127e404642499aea543fb427b2e2281919fb3a",
+      "output_sha256": "7c4a6c1a02ef8eb492cb24828bdd96517013f930d95f03cd77e50604635c7b50",
+      "passed": true
+    },
+    {
+      "case": "01_random_03.txt",
+      "input_sha256": "231c0f3276dae7c794eb4d9b9357e318748bc65588d871fdfa637e87517acbba",
+      "output_sha256": "b02ee27f85fba9dfae9fd4f343ed7547c7c6b20cc76c55e06ed5dd1fff1c0588",
+      "passed": true
+    },
+    {
+      "case": "01_random_04.txt",
+      "input_sha256": "513df92f21d875c305356da1bb837fb44517b27bcd49bbeac960a22d65586137",
+      "output_sha256": "33203da94521137c7abc6b38c42d82a81bd59421dc5e64def92e970b8170eda1",
+      "passed": true
+    },
+    {
+      "case": "01_random_05.txt",
+      "input_sha256": "fcea2b9973fc2f547a3855a223988de69b6fcd58156db7e35b203c6d638e18a7",
+      "output_sha256": "90faa1904702dee87a827ab01657e1e0972d796509cfba6ab98cbd0df72b0b84",
+      "passed": true
+    },
+    {
+      "case": "01_random_06.txt",
+      "input_sha256": "fee5256a1098e3feb1ff684dabb21f927bae03c8c496b7c4fcab2be2f6dccdc9",
+      "output_sha256": "273d83ec8cbe79c8616c85da4c4a8aca571f32c508b6d28c80e6f1bb2322a974",
+      "passed": true
+    },
+    {
+      "case": "01_random_07.txt",
+      "input_sha256": "222278d40cd83802d6bd7ffd0ad5d3055f0943c159e31156b593bc0cdaf3861e",
+      "output_sha256": "cb5558ec6f0d7c50d5f8acef08d88c93659c4873d70c9718e448647b97efdbb9",
+      "passed": true
+    },
+    {
+      "case": "01_random_08.txt",
+      "input_sha256": "68508d7e19d67357b8bac3115d07d644f71dc78443dc95c1897b3c36840604f7",
+      "output_sha256": "6a53a40f9a8d9c429759a3179e8e0fd0719957d73d9bc66b7ad57c73e6fbccc9",
+      "passed": true
+    },
+    {
+      "case": "01_random_09.txt",
+      "input_sha256": "fbb79f0582851f24b01203054d33bde4081adf34dca288e977b7d056bf9d8be6",
+      "output_sha256": "f239462799d3607786f81e0957a6a38ffb72ad1376ce32d3deaf08fae1b9b541",
+      "passed": true
+    },
+    {
+      "case": "01_random_10.txt",
+      "input_sha256": "6bc8855ce766b1ddab21836a72c0ca63c6d1f6cad065a21c9d93025b2759e191",
+      "output_sha256": "7b5e7d6f7bb25f9798851ab114499c216aefbd42721ae4b3ea4ba8fd416ddf31",
+      "passed": true
+    },
+    {
+      "case": "01_random_11.txt",
+      "input_sha256": "fb797560e3f8b118ee57ca1e15d4d4bc6b2a79742ff35c6c1ddb57d2a880089d",
+      "output_sha256": "ee37686920a43c417b7756d783eb0162d2cf1a8f1dfde592af7025a8cbd52ed3",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "previous_gcc_binary_sha256": "b89b1c5f16f695c90237b6672efaf6349a9602e6292bd57d0a98898655fda8bf",
+  "fixed_gcc_binary_sha256": "b89b1c5f16f695c90237b6672efaf6349a9602e6292bd57d0a98898655fda8bf",
+  "gcc_binary_identical": true
+}
