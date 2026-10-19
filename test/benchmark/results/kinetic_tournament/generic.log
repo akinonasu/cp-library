@@ -1,0 +1,5 @@
+{'case': 'random', 'reference_ms': 13.142778, 'library_ms': 11.107854, 'library64_ms': 8.393181}
+{'case': 'envelope', 'reference_ms': 7.606052, 'library_ms': 11.088878, 'library64_ms': 9.409822}
+{'case': 'same_slope', 'reference_ms': 13.990688, 'library_ms': 14.380281, 'library64_ms': 8.001236}
+{'case': 'jump', 'reference_ms': 0.384674, 'library_ms': 0.407381, 'library64_ms': 0.309176}
+{'case': 'concurrent', 'reference_ms': 0.393234, 'library_ms': 0.399669, 'library64_ms': 0.328575}

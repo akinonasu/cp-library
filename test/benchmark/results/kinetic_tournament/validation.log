@@ -1,0 +1,4 @@
+check.log passed
+sanitize.log passed
+g++ 15 official cases, bundles and example passed
+clang++ 15 official cases, bundles and example passed

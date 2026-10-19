@@ -118,6 +118,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `data_structure/segment_tree/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
+| `data_structure/segment_tree/kinetic_tournament.hpp` | Kinetic Tournament (時刻単調・整数) | [使い方](docs/kinetic_tournament.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
 | `data_structure/segment_tree/generic_segtree_beats.hpp` | 汎用 Segtree Beats | [使い方](docs/generic_segtree_beats.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
