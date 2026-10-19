@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <random>
 
-static void require(bool value, int line = __builtin_LINE()) {
+[[maybe_unused]] static void require(bool value, int line = __builtin_LINE()) {
 	if (!value) {
 		std::fprintf(stderr, "line %d\n", line);
 		std::abort();
