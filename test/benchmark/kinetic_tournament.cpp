@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/kinetic_tournament.hpp"
+#include "data_structure/advanced/kinetic_tournament.hpp"
 #include "reference.hpp"
 #include <chrono>
 #include <iostream>

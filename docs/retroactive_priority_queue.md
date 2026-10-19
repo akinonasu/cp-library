@@ -1,12 +1,13 @@
 ---
 title: Fully Retroactive Priority Queue
-documentation_of: //data_structure/priority_queue/retroactive_priority_queue.hpp
+documentation_of: //data_structure/advanced/retroactive_priority_queue.hpp
 redirect_from:
 - /data_structure/retroactive_priority_queue.hpp.html
+- /data_structure/priority_queue/retroactive_priority_queue.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/priority_queue/retroactive_priority_queue.hpp"
+#include "lib/data_structure/advanced/retroactive_priority_queue.hpp"
 
 RetroactivePriorityQueue<long long> queue;
 queue.insert(10, 5);

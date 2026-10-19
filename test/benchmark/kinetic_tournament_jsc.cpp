@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/kinetic_tournament.hpp"
+#include "data_structure/advanced/kinetic_tournament.hpp"
 #include "components/fast_io.hpp"
 
 std::int64_t solve(const std::vector<std::int64_t> &a) {

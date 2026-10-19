@@ -1,5 +1,5 @@
 #include "../fixtures/beats.hpp"
-#include "data_structure/segment_tree/segtree_beats.hpp"
+#include "data_structure/advanced/segtree_beats.hpp"
 #include <cstdlib>
 #include <numeric>
 #include <random>

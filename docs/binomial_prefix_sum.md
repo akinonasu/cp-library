@@ -7,6 +7,8 @@ redirect_from:
 
 $$S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ を素数 mod で計算します。右端を含みません。$$k\leq0$$ なら 0、$$k\geq n+1$$ なら $$2^n$$ です。
 
+直前の問い合わせとの差分で更新する場合は [差分更新版](binomial_prefix_sum_incremental.hpp.html) を使えます。
+
 既定の `mint` では FPS と階乗・逆階乗の生成を共有し、AVX2 に対応していれば SIMD を使います。他の modint も従来どおり利用できます。
 
 ```cpp

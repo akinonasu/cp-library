@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/range_add_range_min"
-#include "../data_structure/segment_tree/kinetic_tournament.hpp"
+#include "../data_structure/advanced/kinetic_tournament.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

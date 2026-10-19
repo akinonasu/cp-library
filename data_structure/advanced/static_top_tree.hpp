@@ -4,7 +4,7 @@
 #include <cassert>
 #include <utility>
 #include <vector>
-#include "../components/static_top_tree_structure.hpp"
+#include "../../components/static_top_tree_structure.hpp"
 
 template <class DP>
 class StaticTopTree {

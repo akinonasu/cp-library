@@ -1,7 +1,7 @@
 #ifndef TEST_BEATS_HPP
 #define TEST_BEATS_HPP
 
-#include "../../data_structure/segment_tree/generic_segtree_beats.hpp"
+#include "../../data_structure/advanced/generic_segtree_beats.hpp"
 #include <cstdint>
 
 namespace division_beats {

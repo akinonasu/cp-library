@@ -1,18 +1,25 @@
 <div class="library-search">
-  <label for="library-search">{% if page.components %}補助部品{% else %}ライブラリ{% endif %}を検索</label>
-  <input id="library-search" type="search" placeholder="{% if page.components %}例: Bit Vector / allocator / rank{% else %}例: LCA / FFT / 素因数分解{% endif %}" autocomplete="off" aria-controls="library-list">
+  <label for="library-search">{% if page.components %}補助部品{% elsif page.advanced %}応用ライブラリ{% else %}ライブラリ{% endif %}を検索</label>
+  <input id="library-search" type="search" placeholder="{% if page.components %}例: Bit Vector / allocator / rank{% elsif page.advanced %}例: HLD / Beats / Retroactive{% else %}例: LCA / FFT / 素因数分解{% endif %}" autocomplete="off" aria-controls="library-list">
   <p id="search-status" role="status" aria-live="polite"></p>
 </div>
 <div id="library-list">
+  {% for advanced_pass in (0..1) %}
   {% for category in page.data.libraryCategories %}
   {% assign folder = category.name | split: '/' | first %}
+  {% assign advanced = false %}
+  {% if category.name == site.advanced_directory %}{% assign advanced = true %}{% endif %}
+  {% if advanced_pass == 0 and advanced %}{% continue %}{% endif %}
+  {% if advanced_pass == 1 and advanced != true %}{% continue %}{% endif %}
   {% capture entries %}
       {% for item in category.pages %}
       {% assign auxiliary = false %}
       {% if folder == 'components' %}
         {% unless site.main_libraries contains item.path %}{% assign auxiliary = true %}{% endunless %}
       {% endif %}
-      {% if page.components %}
+      {% if page.advanced %}
+        {% unless advanced %}{% continue %}{% endunless %}
+      {% elsif page.components %}
         {% unless auxiliary %}{% continue %}{% endunless %}
       {% elsif auxiliary %}
         {% continue %}
@@ -26,14 +33,15 @@
   {% assign visible_entries = entries | strip %}
   {% if visible_entries != '' %}
   <section class="library-category">
-    <h2>{% if folder == 'components' and page.components != true %}変換{% else %}{{ category.name | escape }}{% endif %}</h2>
+    <h2>{% if advanced %}応用ライブラリ{% elsif folder == 'components' and page.components != true %}変換{% else %}{{ category.name | escape }}{% endif %}</h2>
     <ul class="library-entries">{{ entries }}</ul>
   </section>
   {% endif %}
   {% endfor %}
+  {% endfor %}
 </div>
 <p id="search-empty" hidden>一致するライブラリがありません。</p>
-{% unless page.components %}
+{% unless page.components or page.advanced %}
 <details class="verification-list">
   <summary>検証コード</summary>
   {% for category in page.data.verificationCategories %}

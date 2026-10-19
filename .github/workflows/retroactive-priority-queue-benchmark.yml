@@ -41,7 +41,7 @@ jobs:
           g++ -std=c++23 -O2 -DNDEBUG -Wall -Wextra -Werror -I . -I /tmp/retro-pq-variants test/benchmark/retroactive_priority_queue.cpp -o /tmp/retro-pq-bench
           /tmp/retro-pq-bench 100000 5000 5 > benchmark-results/release.csv
       - name: Check current library
-        run: python3 test/benchmark/verify_selected.py data_structure/priority_queue/retroactive_priority_queue.hpp test/unit/retroactive_priority_queue.cpp
+        run: python3 test/benchmark/verify_selected.py data_structure/advanced/retroactive_priority_queue.hpp test/unit/retroactive_priority_queue.cpp
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -94,4 +94,4 @@ for name in ('separate_incremental', 'separate_bulk', 'fused_bulk'):
     cls = 'Queue_' + name
     candidate = candidate.replace('PARTIALLY_RETROACTIVE_PRIORITY_QUEUE_HPP', name.upper() + '_PRPQ_HPP').replace('PartiallyRetroactivePriorityQueue', cls)
     (out / (name + '.hpp')).write_text(candidate)
-    (out / (name + '_test.cpp')).write_text(unit.replace('"data_structure/priority_queue/partially_retroactive_priority_queue.hpp"', '"' + name + '.hpp"').replace('PartiallyRetroactivePriorityQueue', cls))
+    (out / (name + '_test.cpp')).write_text(unit.replace('"data_structure/advanced/partially_retroactive_priority_queue.hpp"', '"' + name + '.hpp"').replace('PartiallyRetroactivePriorityQueue', cls))

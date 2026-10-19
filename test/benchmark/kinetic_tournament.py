@@ -28,8 +28,8 @@ def main():
     flags = ['-std=c++2b', '-O2', '-DNDEBUG', '-Wall', '-Wextra', '-Werror', '-I', str(root)]
     if args.native:
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
-    names = ['data_structure/segment_tree/kinetic_tournament.hpp', 'components/kinetic_tournament_monoid.hpp',
-             'data_structure/segment_tree/generic_segtree_beats.hpp', 'test/benchmark/kinetic_tournament.cpp',
+    names = ['data_structure/advanced/kinetic_tournament.hpp', 'components/kinetic_tournament_monoid.hpp',
+             'data_structure/advanced/generic_segtree_beats.hpp', 'test/benchmark/kinetic_tournament.cpp',
              'test/benchmark/kinetic_tournament_jsc.cpp']
     environment = {'flags': flags, 'compiler': subprocess.check_output(['g++', '--version'], text=True),
                    'cpu': subprocess.check_output(['lscpu'], text=True), 'affinity': [2], 'rounds': args.rounds,
