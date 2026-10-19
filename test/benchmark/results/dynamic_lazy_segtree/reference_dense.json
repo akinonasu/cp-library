@@ -1,0 +1,94 @@
+{
+  "retrieved_at": "2026-10-19T17:49:42.879992+00:00",
+  "listing": {
+    "count": 4099,
+    "submissions": [
+      {
+        "id": 402323,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 13762560,
+        "problem_name": "range_affine_range_sum",
+        "problem_title": "Range Affine Range Sum",
+        "status": "AC",
+        "submission_time": "2026-09-14T12:17:16.174528Z",
+        "time": 0.082,
+        "user_name": "nandhagk"
+      },
+      {
+        "id": 408770,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 15785984,
+        "problem_name": "range_affine_range_sum",
+        "problem_title": "Range Affine Range Sum",
+        "status": "AC",
+        "submission_time": "2026-10-08T04:48:56.069022Z",
+        "time": 0.088,
+        "user_name": "nandhagk"
+      },
+      {
+        "id": 402233,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 13770752,
+        "problem_name": "range_affine_range_sum",
+        "problem_title": "Range Affine Range Sum",
+        "status": "AC",
+        "submission_time": "2026-09-14T03:59:07.104513Z",
+        "time": 0.09,
+        "user_name": "nandhagk"
+      }
+    ]
+  },
+  "references": [
+    {
+      "overview": {
+        "id": 402323,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 13762560,
+        "problem_name": "range_affine_range_sum",
+        "problem_title": "Range Affine Range Sum",
+        "status": "AC",
+        "submission_time": "2026-09-14T12:17:16.174528Z",
+        "time": 0.082,
+        "user_name": "nandhagk"
+      },
+      "sha256": "81b287c6b19fed9aca71ef1cfdb48fa7d0f7a9d0229e7ab1d45072213540cee1",
+      "url": "https://judge.yosupo.jp/submission/402323"
+    },
+    {
+      "overview": {
+        "id": 408770,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 15785984,
+        "problem_name": "range_affine_range_sum",
+        "problem_title": "Range Affine Range Sum",
+        "status": "AC",
+        "submission_time": "2026-10-08T04:48:56.069022Z",
+        "time": 0.088,
+        "user_name": "nandhagk"
+      },
+      "sha256": "8748f891e06ed2f38660e45e86d0d38ee1f363183f8e24f31981c9bd1e95136c",
+      "url": "https://judge.yosupo.jp/submission/408770"
+    },
+    {
+      "overview": {
+        "id": 402233,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 13770752,
+        "problem_name": "range_affine_range_sum",
+        "problem_title": "Range Affine Range Sum",
+        "status": "AC",
+        "submission_time": "2026-09-14T03:59:07.104513Z",
+        "time": 0.09,
+        "user_name": "nandhagk"
+      },
+      "sha256": "d34c389c23e5cae5f09164363b91739e109567d5f1f0fc050f8ae3663644d8d3",
+      "url": "https://judge.yosupo.jp/submission/402233"
+    }
+  ]
+}

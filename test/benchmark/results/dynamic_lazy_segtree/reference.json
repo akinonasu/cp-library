@@ -1,0 +1,94 @@
+{
+  "retrieved_at": "2026-10-19T17:50:34.227757+00:00",
+  "listing": {
+    "count": 232,
+    "submissions": [
+      {
+        "id": 405491,
+        "is_latest": true,
+        "lang": "rust",
+        "memory": 14131200,
+        "problem_name": "range_affine_range_sum_large_array",
+        "problem_title": "Range Affine Range Sum (Large Array)",
+        "status": "AC",
+        "submission_time": "2026-09-23T11:28:23.907987Z",
+        "time": 0.077,
+        "user_name": "toomer"
+      },
+      {
+        "id": 372144,
+        "is_latest": true,
+        "lang": "rust",
+        "memory": 16031744,
+        "problem_name": "range_affine_range_sum_large_array",
+        "problem_title": "Range Affine Range Sum (Large Array)",
+        "status": "AC",
+        "submission_time": "2026-05-13T04:11:19.743956Z",
+        "time": 0.088,
+        "user_name": "qdot3"
+      },
+      {
+        "id": 393925,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 13758464,
+        "problem_name": "range_affine_range_sum_large_array",
+        "problem_title": "Range Affine Range Sum (Large Array)",
+        "status": "AC",
+        "submission_time": "2026-08-16T13:10:15.370324Z",
+        "time": 0.109,
+        "user_name": "chaihf"
+      }
+    ]
+  },
+  "references": [
+    {
+      "overview": {
+        "id": 405491,
+        "is_latest": true,
+        "lang": "rust",
+        "memory": 14131200,
+        "problem_name": "range_affine_range_sum_large_array",
+        "problem_title": "Range Affine Range Sum (Large Array)",
+        "status": "AC",
+        "submission_time": "2026-09-23T11:28:23.907987Z",
+        "time": 0.077,
+        "user_name": "toomer"
+      },
+      "sha256": "adf55488c7eb675db21aea74e4f8cb7a8e3cbff64733f4ea9117e13af9d22294",
+      "url": "https://judge.yosupo.jp/submission/405491"
+    },
+    {
+      "overview": {
+        "id": 372144,
+        "is_latest": true,
+        "lang": "rust",
+        "memory": 16031744,
+        "problem_name": "range_affine_range_sum_large_array",
+        "problem_title": "Range Affine Range Sum (Large Array)",
+        "status": "AC",
+        "submission_time": "2026-05-13T04:11:19.743956Z",
+        "time": 0.088,
+        "user_name": "qdot3"
+      },
+      "sha256": "e91b47d65144c585a5d37f6b5c5e49590ec01a2a03b4aea1efe4e42f2e6d9353",
+      "url": "https://judge.yosupo.jp/submission/372144"
+    },
+    {
+      "overview": {
+        "id": 393925,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 13758464,
+        "problem_name": "range_affine_range_sum_large_array",
+        "problem_title": "Range Affine Range Sum (Large Array)",
+        "status": "AC",
+        "submission_time": "2026-08-16T13:10:15.370324Z",
+        "time": 0.109,
+        "user_name": "chaihf"
+      },
+      "sha256": "8a044fc8e42e3ca3cce5595fa4027d59934fd97aa8fdf5a34ed0a862e92ede5e",
+      "url": "https://judge.yosupo.jp/submission/393925"
+    }
+  ]
+}
