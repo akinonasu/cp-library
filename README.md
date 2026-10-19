@@ -121,7 +121,7 @@
 | `components/small_vector.hpp` | Small Vector | [使い方](docs/small_vector.md) |
 | `components/limb_arithmetic.hpp` | Limb Arithmetic | [使い方](docs/limb_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
-| `components/fast_io_bulk.hpp` | 非負整数の一括入力 | [使い方](docs/fast_io_bulk.md) |
+| `components/fast_io_bulk.hpp` | 非負整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
 | `components/dynamic_bit_vector.hpp` | Dynamic Bit Vector | [使い方](docs/dynamic_bit_vector.md) |
 | `components/quad_bit_vector.hpp` | Quad Bit Vector | [使い方](docs/quad_bit_vector.md) |
 | `components/oct_bit_vector.hpp` | Oct Bit Vector | [使い方](docs/oct_bit_vector.md) |
@@ -138,6 +138,7 @@
 | `components/RadixHeap.hpp` | Radix Heap | [使い方](docs/radix_heap.md) |
 | `components/dijkstra_queue.hpp` | Dijkstra の内部キュー | [使い方](docs/dijkstra_queue.md) |
 | `components/dijkstra_topological.hpp` | Dijkstra のトポロジカル前処理 | [使い方](docs/dijkstra_topological.md) |
+| `components/dijkstra_unique.hpp` | Dijkstra の一意経路の探索 | [使い方](docs/dijkstra_unique.md) |
 | `components/directed_csr.hpp` | 重み付き有向グラフの CSR | [使い方](docs/directed_csr.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
 | `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
