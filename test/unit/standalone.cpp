@@ -180,6 +180,7 @@ int main() {
 	assert(prefix_min.size() == 1 && prefix_min[0].count == 4);
 	assert(prefix_min[0].y - prefix_min[0].dy * 3 == 2);
 	assert(factorize(12) == std::vector<std::uint64_t>({2, 2, 3}));
+	assert(divisors(12) == std::vector<std::uint64_t>({1, 2, 3, 4, 6, 12}));
 	fps f{1, 2, 3};
 	assert(polynomial_gcd(fps{mint(-1), 0, 1}, fps{mint(-1), 1}) == fps({mint(-1), 1}));
 	assert(bostan_mori(fps{1}, fps{1, -1}, 100) == mint(1));
