@@ -11,7 +11,8 @@ template<class T>
 void boundaries() {
 	using Set = IntervalSet<T>;
 	const T lo = (std::numeric_limits<T>::min)(), hi = (std::numeric_limits<T>::max)();
-	const auto length = static_cast<std::uint64_t>(hi) - static_cast<std::uint64_t>(lo);
+	using Size = typename Set::size_type;
+	const Size length = static_cast<Size>(hi) - static_cast<Size>(lo);
 	Set s;
 	assert(s.insert(lo, hi) == length);
 	assert(s.size() == length && s.interval_count() == 1);
@@ -98,6 +99,10 @@ int main() {
 	boundaries<std::int8_t>(); boundaries<std::uint8_t>();
 	boundaries<int>(); boundaries<std::uint32_t>();
 	boundaries<std::int64_t>(); boundaries<std::uint64_t>();
+	boundaries<__int128_t>(); boundaries<__uint128_t>();
+	static_assert(std::is_same_v<IntervalSet<>::size_type, std::uint64_t>);
+	static_assert(std::is_same_v<IntervalSet<__int128_t>::size_type, __uint128_t>);
+	static_assert(std::is_same_v<IntervalSet<__uint128_t>::size_type, __uint128_t>);
 	IntervalSet<> s;
 	assert(s.empty() && !s.min() && !s.max() && s.mex() == 0);
 	assert(s.contains(3, 3) && !s.intersects(3, 3) && s.count(3, 3) == 0);
