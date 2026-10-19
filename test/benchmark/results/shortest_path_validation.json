@@ -1,0 +1,101 @@
+{
+  "recorded_at": "2026-10-19T04:18:03.807886+00:00",
+  "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)"
+  },
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror"
+  ],
+  "source_sha256": {
+    "test/benchmark/flow_check.py": "a266609b7dadbf7885184301ce6bd25d576b317ac9f501ba085b457458b58c33",
+    "test/dijkstra_bigint_yuki.test.cpp": "c5eeccef60dbe12af1fa3cf0896b86ba812da41b7a9a7341f395610286bfebe7",
+    "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+    "graph/dijkstra.hpp": "53a87ced7e7203dda0d97f3fa5d2dfc5d2f7dbaea024470214d1edf146eaac50",
+    "components/dijkstra_queue.hpp": "63c93fb0336e689df0d7cbaec695e682498d5b7ea9d5a4a666d64b0843529444",
+    "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+    "test/dijkstra_path.test.cpp": "ee9f0fbf16114f1f0ffb4ce60f6b1ddc960e8ad45aadaedb714346da180289eb",
+    "test/dijkstra.test.cpp": "0ccb8827eccc8c821f2834f4171685544abfeee149e69c78c4f85a21e5355071"
+  },
+  "shortest_path_cases": [
+    "almost_line_00",
+    "almost_line_01",
+    "almost_line_02",
+    "example_00",
+    "example_01",
+    "grid_random_00",
+    "grid_swirl_00",
+    "line_00",
+    "max_dense_long_00",
+    "max_dense_random_00",
+    "max_dense_random_01",
+    "max_dense_zero_00",
+    "max_sparse_random_00",
+    "max_sparse_random_01",
+    "max_sparse_random_02",
+    "max_star_00",
+    "max_star_01",
+    "small_00",
+    "small_01",
+    "small_02",
+    "small_03",
+    "small_04",
+    "sparse_random_00",
+    "sparse_random_01",
+    "sparse_random_02",
+    "spfa_killer_00",
+    "wrong_dijkstra_handmade_00",
+    "wrong_dijkstra_killer_00",
+    "wrong_dijkstra_killer_01"
+  ],
+  "checks": {
+    "g++_dijkstra_library_checker": {
+      "result": "passed",
+      "cases": 29,
+      "checker": "official shortest_path checker"
+    },
+    "g++_dijkstra_path_library_checker": {
+      "result": "passed",
+      "cases": 29,
+      "checker": "official shortest_path checker"
+    },
+    "clang++_dijkstra_library_checker": {
+      "result": "passed",
+      "cases": 29,
+      "checker": "official shortest_path checker"
+    },
+    "clang++_dijkstra_path_library_checker": {
+      "result": "passed",
+      "cases": 29,
+      "checker": "official shortest_path checker"
+    },
+    "g++_dijkstra_bigint_yuki": {
+      "result": "passed",
+      "public_samples": 2,
+      "fraction_oracle_cases": 60,
+      "boost": "boost::multiprecision::cpp_int"
+    },
+    "clang++_dijkstra_bigint_yuki": {
+      "result": "passed",
+      "public_samples": 2,
+      "fraction_oracle_cases": 60,
+      "boost": "boost::multiprecision::cpp_int"
+    }
+  },
+  "sources_unchanged_during_validation": true,
+  "current_source_sha256": {
+    "test/benchmark/flow_check.py": "a266609b7dadbf7885184301ce6bd25d576b317ac9f501ba085b457458b58c33",
+    "test/dijkstra_bigint_yuki.test.cpp": "c5eeccef60dbe12af1fa3cf0896b86ba812da41b7a9a7341f395610286bfebe7",
+    "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+    "graph/dijkstra.hpp": "53a87ced7e7203dda0d97f3fa5d2dfc5d2f7dbaea024470214d1edf146eaac50",
+    "components/dijkstra_queue.hpp": "63c93fb0336e689df0d7cbaec695e682498d5b7ea9d5a4a666d64b0843529444",
+    "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+    "test/dijkstra_path.test.cpp": "ee9f0fbf16114f1f0ffb4ce60f6b1ddc960e8ad45aadaedb714346da180289eb",
+    "test/dijkstra.test.cpp": "0ccb8827eccc8c821f2834f4171685544abfeee149e69c78c4f85a21e5355071"
+  }
+}

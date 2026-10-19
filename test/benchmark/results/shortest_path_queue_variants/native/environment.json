@@ -1,0 +1,49 @@
+{
+  "measured_at": "2026-10-19T04:19:58.690294+00:00",
+  "baseline": "91a7388afe28532d7dd8c175ddda718c42f428c2",
+  "flags": [
+    "-std=gnu++23",
+    "-O2",
+    "-DNDEBUG",
+    "-DATCODER",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=native"
+  ],
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "kernel": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "affinity": [
+    2
+  ],
+  "trials": 3,
+  "warmup": 1,
+  "order_seed": 20261019,
+  "sources": {
+    "baseline": {
+      "graph/dijkstra.hpp": "2ce6790121b8f0239a99190e421e59e92766eac8fb61d265951ab16a31282967",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e"
+    },
+    "current": {
+      "graph/dijkstra.hpp": "53a87ced7e7203dda0d97f3fa5d2dfc5d2f7dbaea024470214d1edf146eaac50",
+      "components/dijkstra_queue.hpp": "63c93fb0336e689df0d7cbaec695e682498d5b7ea9d5a4a666d64b0843529444",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e"
+    },
+    "queue16": {
+      "graph/dijkstra.hpp": "53a87ced7e7203dda0d97f3fa5d2dfc5d2f7dbaea024470214d1edf146eaac50",
+      "components/dijkstra_queue.hpp": "6bd0babbda2c854ed91ad07f672ce9fff89076cb57733da78f826acfa23c653f",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e"
+    },
+    "queue_zero": {
+      "graph/dijkstra.hpp": "53a87ced7e7203dda0d97f3fa5d2dfc5d2f7dbaea024470214d1edf146eaac50",
+      "components/dijkstra_queue.hpp": "bdcbf5cde9694f17c9fbb929b7d50375ea5e96835b5000f506858c454e32482d",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e"
+    }
+  },
+  "driver_sha256": "7b368f0b4326a5591584122a0682b72610a1ecc5132e24ad2c921557f76de501",
+  "io_sha256": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+  "target_variants": [],
+  "topological_variants": [],
+  "references": {},
+  "method": "shared exclusive /tmp/cp-wm-opt.lock; CPU affinity; one warmup; fresh processes; randomized order; binaries and regular-file input/output on Linux /tmp; solve excludes parsing, graph construction, separate BFS recovery, checksum, path validation and output; target solve includes parent recovery in dijkstra_path; whole includes process startup/exit, parsing, construction, solve, recovery, output and checksum; output checker is outside timing"
+}
