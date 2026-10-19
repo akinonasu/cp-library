@@ -2,6 +2,7 @@
 #include "../graph/dijkstra.hpp"
 #include "../components/fast_io_bulk.hpp"
 #include <cstdint>
+#include <array>
 #include <utility>
 #include <vector>
 
@@ -24,7 +25,8 @@ int main() {
 	if (distance == -1) out.println(-1);
 	else {
 		out.write(distance), out.write(' '), out.println(path.size() - 1);
-		for (std::size_t i = 1; i < path.size(); ++i)
-			out.write(std::uint32_t(path[i - 1])), out.write(' '), out.println(std::uint32_t(path[i]));
+		write_unsigned_records<2>(out, path.size() - 1, [&](std::size_t i) {
+			return std::array{std::uint32_t(path[i]), std::uint32_t(path[i + 1])};
+		});
 	}
 }

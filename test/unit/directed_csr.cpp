@@ -19,16 +19,30 @@ void check_graph(const DirectedCSR<T> &graph, const vector<vector<pair<int, T>>>
 	assert(graph.size() == int(expected.size()));
 	assert(graph.empty() == expected.empty());
 	size_t count = 0;
+	vector<unsigned> incoming(expected.size());
+	bool unique_incoming = true;
 	const typename DirectedCSR<T>::Arc *base = nullptr;
 	for (int v = 0; v < graph.size(); ++v) {
 		auto row = graph[v];
 		assert(row.size() == expected[v].size());
 		assert(equal(row.begin(), row.end(), expected[v].begin()));
+		for (const auto &arc : expected[v]) if (++incoming[arc.first] > 1) unique_incoming = false;
 		if (!row.empty() && !base) base = row.data();
 		if (base) assert(row.data() == base + count);
 		count += row.size();
 	}
 	assert(graph.edge_count() == count);
+	assert(directed_csr_detail::Access::unique_incoming(graph) == unique_incoming);
+	if (directed_csr_detail::Access::has_single_edge_layout(graph)) {
+		auto direct = directed_csr_detail::Access::single_edge_view(graph);
+		assert(direct.size() == graph.size());
+		assert(count <= expected.size() && expected.size() - count <= 1);
+		for (int v = 0; v < graph.size(); ++v) {
+			assert(expected[v].size() <= 1);
+			assert(equal(direct[v].begin(), direct[v].end(), expected[v].begin(), expected[v].end()));
+			if (!direct[v].empty()) assert(direct[v].data() == graph[v].data());
+		}
+	}
 }
 
 template<class T>
@@ -162,6 +176,56 @@ int main() {
 		emit(DirectedCSR<string>::Edge{0, 1, "one"});
 	});
 	check_graph(text, {{{1, "one"}}, {{0, "two"}}});
+	for (int n = 0; n <= 40; ++n) {
+		for (int gap = -1; gap < n; ++gap) {
+			vector<Graph::Edge> single_edges;
+			vector<vector<pair<int, int>>> single_expected(n);
+			for (int v = 0; v < n; ++v) if (v != gap) {
+				int to = (v * 7 + 3) % n;
+				single_edges.push_back({v, to, v - 5});
+				single_expected[v].emplace_back(to, v - 5);
+			}
+			reverse(single_edges.begin(), single_edges.end());
+			graph.build(n, single_edges);
+			assert(directed_csr_detail::Access::has_single_edge_layout(graph));
+			check_graph(graph, single_expected);
+			produced.build(n, single_edges.size(), [&](auto emit) { for (const auto &edge : single_edges) emit(edge); });
+			assert(directed_csr_detail::Access::has_single_edge_layout(produced));
+			check_graph(produced, single_expected);
+			copied = graph;
+			Graph moved_graph = std::move(copied);
+			assert(!directed_csr_detail::Access::has_single_edge_layout(copied));
+			check_graph(moved_graph, single_expected);
+			copied.build(4, edges);
+			assert(!directed_csr_detail::Access::has_single_edge_layout(copied));
+		}
+	}
+	vector<Graph::Edge> unique_edges = {{0, 63, 1}, {0, 64, 2}, {1, 127, 3}, {129, 0, 4}, {65, 65, 5}};
+	vector<vector<pair<int, int>>> unique_expected(130);
+	for (const auto &edge : unique_edges) unique_expected[edge.from].emplace_back(edge.to, edge.weight);
+	graph.build(130, unique_edges);
+	assert(directed_csr_detail::Access::unique_incoming(graph));
+	check_graph(graph, unique_expected);
+	unique_edges.push_back({2, 64, -7});
+	unique_expected[2].emplace_back(64, -7);
+	produced.build(130, unique_edges.size(), [&](auto emit) { for (const auto &edge : unique_edges) emit(edge); });
+	assert(!directed_csr_detail::Access::unique_incoming(produced));
+	check_graph(produced, unique_expected);
+	copied = produced;
+	assert(!directed_csr_detail::Access::unique_incoming(copied));
+	Graph moved_duplicate = std::move(copied);
+	check_graph(moved_duplicate, unique_expected);
+	check_graph(copied, {});
+	try {
+		produced.build(130, 3, [](auto emit) {
+			emit(Graph::Edge{0, 64, 0});
+			emit(Graph::Edge{1, 64, 0});
+			throw runtime_error("producer");
+		});
+	} catch (const runtime_error &) {}
+	check_graph(produced, vector<vector<pair<int, int>>>(130));
+	produced.build(130, std::span<const Graph::Edge>(unique_edges).first(5));
+	assert(directed_csr_detail::Access::unique_incoming(produced));
 	mt19937_64 random(982731);
 	random_graphs<int>(random);
 	random_graphs<uint32_t>(random);
