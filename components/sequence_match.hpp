@@ -1,6 +1,7 @@
 #ifndef SEQUENCE_MATCH_HPP
 #define SEQUENCE_MATCH_HPP
 
+#include "sequence_compare.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -11,35 +12,11 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#if defined(__x86_64__)
-#include <immintrin.h>
-#endif
 
 namespace sequence_match_detail {
 #if defined(__x86_64__)
-__attribute__((target("avx2"))) inline std::size_t forward_avx2(const unsigned char *a, const unsigned char *b, std::size_t size) {
-	std::size_t i = 0;
-	for (; size - i >= 32; i += 32) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
-		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
-		auto difference = ~std::uint32_t(_mm256_movemask_epi8(_mm256_cmpeq_epi8(x, y)));
-		if (difference) return i + std::countr_zero(difference);
-	}
-	while (i < size && a[i] == b[i]) ++i;
-	return i;
-}
-
-__attribute__((target("avx2"))) inline std::size_t backward_avx2(const unsigned char *a, const unsigned char *b, std::size_t size) {
-	std::size_t i = 0;
-	for (; size - i >= 32; i += 32) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a - i - 32));
-		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b - i - 32));
-		auto difference = ~std::uint32_t(_mm256_movemask_epi8(_mm256_cmpeq_epi8(x, y)));
-		if (difference) return i + std::countl_zero(difference);
-	}
-	while (i < size && a[-std::ptrdiff_t(i) - 1] == b[-std::ptrdiff_t(i) - 1]) ++i;
-	return i;
-}
+using sequence_compare_detail::forward_avx2;
+using sequence_compare_detail::backward_avx2;
 #endif
 
 template <class T, bool Vectorize = true>

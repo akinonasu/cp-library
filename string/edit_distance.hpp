@@ -1,6 +1,7 @@
 #ifndef EDIT_DISTANCE_HPP
 #define EDIT_DISTANCE_HPP
 
+#include "../components/sequence_compare.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -215,37 +216,12 @@ inline int wavefront(std::string_view s, std::string_view t, int cap, int budget
 
 inline int edit_distance(std::string_view s, std::string_view t) {
 	assert(s.size() <= std::size_t(std::numeric_limits<int>::max()) && t.size() <= std::size_t(std::numeric_limits<int>::max()));
-	std::size_t prefix = 0, limit = std::min(s.size(), t.size());
-	while (limit - prefix >= 8) {
-		edit_distance_detail::Word a, b;
-		std::memcpy(&a, s.data() + prefix, 8);
-		std::memcpy(&b, t.data() + prefix, 8);
-		edit_distance_detail::Word diff = a ^ b;
-		if (diff) {
-			if constexpr (std::endian::native == std::endian::little) prefix += std::countr_zero(diff) / 8;
-			else prefix += std::countl_zero(diff) / 8;
-			break;
-		}
-		prefix += 8;
-	}
-	while (prefix < limit && s[prefix] == t[prefix]) ++prefix;
+	std::size_t limit = std::min(s.size(), t.size());
+	std::size_t prefix = sequence_compare_detail::prefix(s.data(), t.data(), int(limit));
 	s.remove_prefix(prefix);
 	t.remove_prefix(prefix);
-	std::size_t suffix = 0;
 	limit -= prefix;
-	while (limit - suffix >= 8) {
-		edit_distance_detail::Word a, b;
-		std::memcpy(&a, s.data() + s.size() - suffix - 8, 8);
-		std::memcpy(&b, t.data() + t.size() - suffix - 8, 8);
-		edit_distance_detail::Word diff = a ^ b;
-		if (diff) {
-			if constexpr (std::endian::native == std::endian::little) suffix += std::countl_zero(diff) / 8;
-			else suffix += std::countr_zero(diff) / 8;
-			break;
-		}
-		suffix += 8;
-	}
-	while (suffix < limit && s[s.size() - 1 - suffix] == t[t.size() - 1 - suffix]) ++suffix;
+	std::size_t suffix = limit ? sequence_compare_detail::suffix(s.data() + s.size(), t.data() + t.size(), int(limit)) : 0;
 	s.remove_suffix(suffix);
 	t.remove_suffix(suffix);
 	if (s.size() < t.size()) std::swap(s, t);
