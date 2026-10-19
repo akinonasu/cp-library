@@ -101,11 +101,16 @@ void check_divisors() {
 	}
 }
 
-template <int index, bool dual>
-void check_boolean_case(const vector<uint64_t> &a, const vector<uint64_t> &b) {
+template <int index, bool dual, class T>
+void check_boolean_case(const vector<T> &a, const vector<T> &b) {
+	if (a.empty() || b.empty()) {
+		assert((boolean_convolution_detail::multiply<index, dual>(a, b).empty()));
+		return;
+	}
 	size_t n = max(a.size(), b.size());
 	if constexpr (index < 3 || index == 5) n = bit_ceil(n);
-	vector<uint64_t> expected(n, dual ? ~uint64_t(0) : 0);
+	using U = make_unsigned_t<conditional_t<is_same_v<T, bool>, unsigned char, T>>;
+	vector<T> expected(n, dual ? T(~U(0)) : T(0));
 	for (size_t i = index == 3 || index == 4; i < a.size(); ++i)
 		for (size_t j = index == 3 || index == 4; j < b.size(); ++j) {
 			size_t k;
@@ -119,11 +124,33 @@ void check_boolean_case(const vector<uint64_t> &a, const vector<uint64_t> &b) {
 				k = i | j;
 			}
 			if (k >= n) continue;
-			if constexpr (dual) expected[k] &= a[i] | b[j];
-			else expected[k] |= a[i] & b[j];
+			if constexpr (dual) expected[k] = T(U(expected[k]) & (U(a[i]) | U(b[j])));
+			else expected[k] = T(U(expected[k]) | (U(a[i]) & U(b[j])));
 		}
 	if constexpr (index == 3 || index == 4) expected[0] = 0;
 	assert((boolean_convolution_detail::multiply<index, dual>(a, b) == expected));
+}
+
+template <class T>
+void check_boolean_cases(const vector<T> &a, const vector<T> &b) {
+	check_boolean_case<0, false>(a, b);
+	check_boolean_case<0, true>(a, b);
+	check_boolean_case<1, false>(a, b);
+	check_boolean_case<1, true>(a, b);
+	check_boolean_case<2, false>(a, b);
+	check_boolean_case<2, true>(a, b);
+	check_boolean_case<3, false>(a, b);
+	check_boolean_case<3, true>(a, b);
+	check_boolean_case<4, false>(a, b);
+	check_boolean_case<4, true>(a, b);
+	check_boolean_case<5, false>(a, b);
+	check_boolean_case<5, true>(a, b);
+}
+
+template <class T>
+void check_boolean_neutral() {
+	check_boolean_cases(vector<T>(3, T(0)), vector<T>(1, T(0)));
+	check_boolean_cases(vector<T>(3, T(-1)), vector<T>(1, T(-1)));
 }
 
 void check_boolean() {
@@ -131,19 +158,25 @@ void check_boolean() {
 		vector<uint64_t> a(1 + random_engine() % 20), b(1 + random_engine() % 20);
 		for (auto &x : a) x = random_engine();
 		for (auto &x : b) x = random_engine();
-		check_boolean_case<0, false>(a, b);
-		check_boolean_case<0, true>(a, b);
-		check_boolean_case<1, false>(a, b);
-		check_boolean_case<1, true>(a, b);
-		check_boolean_case<2, false>(a, b);
-		check_boolean_case<2, true>(a, b);
-		check_boolean_case<3, false>(a, b);
-		check_boolean_case<3, true>(a, b);
-		check_boolean_case<4, false>(a, b);
-		check_boolean_case<4, true>(a, b);
-		check_boolean_case<5, false>(a, b);
-		check_boolean_case<5, true>(a, b);
+		check_boolean_cases(a, b);
 	}
+	uint64_t high = uint64_t(1) << 63;
+	for (auto [a, b] : vector<pair<vector<uint64_t>, vector<uint64_t>>>{
+		{{}, {}}, {{}, {high}}, {{high}, {}},
+		{{0, 0, 0}, {0}}, {{high, 0, 0}, {high}},
+		{{0, high, 0, 1, high | 1}, {0, high, 2}},
+		{{0, 1, 4}, {2, 8}}, {{0, high, 1}, {0, 0}}}) {
+		check_boolean_cases(a, b);
+		for (auto &x : a) x = ~x;
+		for (auto &x : b) x = ~x;
+		check_boolean_cases(a, b);
+	}
+	check_boolean_neutral<bool>();
+	check_boolean_neutral<uint8_t>();
+	check_boolean_neutral<int8_t>();
+	check_boolean_cases(vector<bool>{false, true}, vector<bool>{true, false, true});
+	check_boolean_cases(vector<uint8_t>{0, 1, 128, 255}, vector<uint8_t>{254, 127});
+	check_boolean_cases(vector<int8_t>{0, 1, -128, -1}, vector<int8_t>{-2, 127});
 	assert(and_or_convolution(vector<bool>{false, true}, vector<bool>{true, false}) == vector<bool>({true, false}));
 	assert(or_and_convolution(vector<bool>{false, true}, vector<bool>{true, false}) == vector<bool>({true, false}));
 	assert(xor_or_convolution(vector<unsigned>{}, vector<unsigned>{1}).empty());

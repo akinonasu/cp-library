@@ -22,9 +22,19 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b) {
 	std::size_t n = std::max(a.size(), b.size());
 	if constexpr (index < 3 || index == 5) n = std::bit_ceil(n);
 	assert(n <= std::size_t(1) << 30);
-	constexpr int width = std::is_same_v<T, bool> ? 1 : std::numeric_limits<U>::digits;
+	constexpr U full = std::is_same_v<T, bool> ? U(1) : U(~U(0));
+	U mask = 0, active = 0;
+	for (std::size_t i = index == 3 || index == 4; i < a.size() && mask != full; ++i) {
+		U value = U(a[i]);
+		mask |= U(dual ? ~value : value) & full;
+	}
+	for (std::size_t i = index == 3 || index == 4; i < b.size() && active != mask; ++i) {
+		U value = U(b[i]);
+		active |= U(dual ? ~value : value) & mask;
+	}
 	std::vector<T> result(n, dual ? T(~U(0)) : T(0));
-	for (int bit = 0; bit < width; ++bit) {
+	for (; active; active &= active - 1) {
+		int bit = std::countr_zero(active);
 		std::vector<__int128_t> x(n), y(n);
 		for (std::size_t i = index == 3 || index == 4; i < a.size(); ++i) x[i] = ((U(a[i]) >> bit) & 1) ^ dual;
 		for (std::size_t i = index == 3 || index == 4; i < b.size(); ++i) y[i] = ((U(b[i]) >> bit) & 1) ^ dual;
