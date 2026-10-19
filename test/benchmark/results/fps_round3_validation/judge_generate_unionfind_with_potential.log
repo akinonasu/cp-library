@@ -1,0 +1,36 @@
+/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py:566: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  logger.warn('Please install colorlog: pip3 install colorlog')
+04:22:09 [WARNING] Please install colorlog: pip3 install colorlog
+04:22:09 [INFO] Start unionfind_with_potential
+04:22:09 [INFO] generate params.h
+04:22:09 [INFO] compile checker
+04:22:12 [INFO] compile solution
+04:22:13 [INFO] compile generators
+04:22:13 [INFO] compile example.in
+04:22:13 [INFO] compile random.cpp
+04:22:13 [INFO] compile max_random.cpp
+04:22:13 [INFO] compile path.cpp
+04:22:14 [INFO] clear input /workspace/cp-fps-scratch-round3/library-checker-problems/data_structure/unionfind_with_potential/in
+04:22:14 [INFO] gen example.in 1cases
+04:22:14 [INFO] gen random.cpp 10cases
+04:22:14 [INFO] gen max_random.cpp 3cases
+04:22:14 [INFO] gen path.cpp 4cases
+04:22:14 [INFO] clear output /workspace/cp-fps-scratch-round3/library-checker-problems/data_structure/unionfind_with_potential/out
+04:22:14 [INFO] ANS      2 msecs : example_00 : b''
+04:22:14 [INFO] ANS     33 msecs : random_00 : b''
+04:22:14 [INFO] ANS     37 msecs : random_01 : b''
+04:22:14 [INFO] ANS     25 msecs : random_02 : b''
+04:22:14 [INFO] ANS      9 msecs : random_03 : b''
+04:22:14 [INFO] ANS     19 msecs : random_04 : b''
+04:22:14 [INFO] ANS     30 msecs : random_05 : b''
+04:22:14 [INFO] ANS     24 msecs : random_06 : b''
+04:22:14 [INFO] ANS      4 msecs : random_07 : b''
+04:22:14 [INFO] ANS     10 msecs : random_08 : b''
+04:22:14 [INFO] ANS     41 msecs : random_09 : b''
+04:22:14 [INFO] ANS     43 msecs : max_random_00 : b''
+04:22:14 [INFO] ANS     43 msecs : max_random_01 : b''
+04:22:15 [INFO] ANS     40 msecs : max_random_02 : b''
+04:22:15 [INFO] ANS     41 msecs : path_00 : b''
+04:22:15 [INFO] ANS     42 msecs : path_01 : b''
+04:22:15 [INFO] ANS     47 msecs : path_02 : b''
+04:22:15 [INFO] ANS     46 msecs : path_03 : b''

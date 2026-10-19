@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/link_cut_tree_composite.test.cpp"
+  ]
+}

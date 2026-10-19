@@ -1,0 +1,36 @@
+{
+  "utc": "2026-10-19T04:34:30.792700+00:00",
+  "scope": "Final read-only audit of all changed/new benchmark Markdown after the main report official counts were finalized. No docs generation, compilation, or source edits. Local explicit Markdown targets and own-site hpp.html targets checked; remote URLs, anchors and reference-style links not fetched/validated.",
+  "benchmark_markdown_count": 17,
+  "source_sha256": {
+    "test/benchmark/fps_all.md": "54965bbba681828d474c1697d4939b1cfd9dcd488e3d844f90e854843bc1237d",
+    "test/benchmark/fps_avx512_leaf_ifma.md": "ad2dce81471c0d8679458f56c95a992a669aadb6c814ac4061bf54e9ebb62ca9",
+    "test/benchmark/fps_composition_round3.md": "d4643e973342e9981c2e16fbe210568ef12d33355bfc69a89e3fc93370af9019",
+    "test/benchmark/fps_convolution_borrow_round3.md": "8e59a5f4533a5d96e1816a0bfa18188a80403a6bd80a13ce6f80a058e36981bb",
+    "test/benchmark/fps_division_round3.md": "dd0db6441a55cc65fe5483bb18ea10dd79864028bce33c59fafe9fc37b55db8c",
+    "test/benchmark/fps_evaluation_round3.md": "bb5d841100bf2500acc09a3ca7ab0583e4ad4b3caaafcfafe7a7ebb8ce383375",
+    "test/benchmark/fps_exp_round3.md": "e94d5f11d40e11281fa2b43278cdcda7bd9151bfa8417d8c78b70e70480c65e8",
+    "test/benchmark/fps_io_round3.md": "cf3aadd179b4fc23b6b6148d2f48f71f2c3a929ffc901e7e90c79c6d470444e4",
+    "test/benchmark/fps_mint_inline_round3.md": "3bacedf2091405b10e874e37ff450d05c2c82bcd07a4e4caef3892ad443c8bca",
+    "test/benchmark/fps_ntt_round3.md": "5c660a164f6761d69e7c261c599c7a8b2f2af5c5dbe14f5b5465ba8c6a67851b",
+    "test/benchmark/fps_round3.md": "457fb8c31da9eae974c1a3b2f891980dc6c4cfc137fbe60316c43e0bae8995c3",
+    "test/benchmark/results/fps_mint_inline_round3/independent_review.md": "59984d9199fe8dcaca3730b55d6e92c2eba3d42a597c81f5ad7afde443193159",
+    "test/benchmark/results/fps_round3_exp_boundary/README.md": "5cca0399c43cb17399cacf4e88aa36af111337bba218b26bde8600d3836ba449",
+    "test/benchmark/results/fps_round3_sqrt_recheck/README.md": "8024168fd32531b144272dd5c2ac8bedfe0f43e0fc0be023f4bd09c004f9206b",
+    "test/benchmark/results/fps_round3_validation/README.md": "da305de63a13df91ae646c5b1a345829dccae565ea0d4c859f6fdba75fe0b7a9",
+    "test/benchmark/results/fps_round3_validation/bostan_pragma_normalization.md": "3022544c94a946d1dc6584c424d4a15960ac59f165a3ea45f4d08c49780fbe00",
+    "test/benchmark/results/fps_round3_validation/independent_review.md": "2d8f9edf2228463397c2de061eded53902050fa113021552db20fd423082229f"
+  },
+  "source_hashes_unchanged_during_audit": true,
+  "unresolved_local_links": [],
+  "liquid_source_occurrences": [],
+  "historical_docs_audit_sha256": "f03f806876abc7747d6b63d58260e06f71596e8d04d621ee1cec54791121354e",
+  "benchmark_files_changed_since_historical_docs_audit": [
+    "test/benchmark/fps_round3.md",
+    "test/benchmark/results/fps_round3_exp_boundary/README.md",
+    "test/benchmark/results/fps_round3_sqrt_recheck/README.md",
+    "test/benchmark/results/fps_round3_validation/README.md",
+    "test/benchmark/results/fps_round3_validation/bostan_pragma_normalization.md"
+  ],
+  "success": true
+}

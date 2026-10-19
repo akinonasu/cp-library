@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/bitwise_xor_convolution.test.cpp"
+  ]
+}

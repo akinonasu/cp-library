@@ -1,0 +1,10 @@
+built before
+built borrow32_color
+built borrow2m_color
+built reference
+checked borrow32_color 53
+checked borrow2m_color 53
+max_random_00 {'before': 15.10012, 'borrow32_color': 16.120512, 'borrow2m_color': 16.998581, 'reference': 11.407095} {'borrow32_color': -1.0091140000000003, 'borrow2m_color': -1.9070820000000008} {'borrow32_color': 2, 'borrow2m_color': 0}
+max_random_01 {'before': 14.850929, 'borrow32_color': 15.816419, 'borrow2m_color': 16.964861, 'reference': 11.383471} {'borrow32_color': -0.810689, 'borrow2m_color': -1.940543} {'borrow32_color': 1, 'borrow2m_color': 0}
+small_and_large_03 {'before': 10.887511, 'borrow32_color': 12.272937, 'borrow2m_color': 13.044517, 'reference': 9.040028} {'borrow32_color': -1.4338490000000004, 'borrow2m_color': -2.096634999999999} {'borrow32_color': 0, 'borrow2m_color': 0}
+medium_02 {'before': 1.499215, 'borrow32_color': 1.50258, 'borrow2m_color': 1.512615, 'reference': 1.176955} {'borrow32_color': -0.026448999999999945, 'borrow2m_color': -0.02028999999999992} {'borrow32_color': 9, 'borrow2m_color': 9}

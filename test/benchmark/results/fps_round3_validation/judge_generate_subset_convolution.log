@@ -1,0 +1,31 @@
+/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py:566: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  logger.warn('Please install colorlog: pip3 install colorlog')
+04:21:41 [WARNING] Please install colorlog: pip3 install colorlog
+04:21:41 [INFO] Start subset_convolution
+04:21:41 [INFO] generate params.h
+04:21:41 [INFO] compile checker
+04:21:45 [INFO] compile solution
+04:21:45 [INFO] compile generators
+04:21:45 [INFO] compile example.in
+04:21:45 [INFO] compile small.cpp
+04:21:46 [INFO] compile random.cpp
+04:21:46 [INFO] compile max_random.cpp
+04:21:46 [INFO] compile hack01.cpp
+04:21:47 [INFO] clear input /workspace/cp-fps-scratch-round3/library-checker-problems/set_power_series/subset_convolution/in
+04:21:47 [INFO] gen example.in 1cases
+04:21:47 [INFO] gen small.cpp 3cases
+04:21:47 [INFO] gen random.cpp 3cases
+04:21:47 [INFO] gen max_random.cpp 3cases
+04:21:47 [INFO] gen hack01.cpp 1cases
+04:21:47 [INFO] clear output /workspace/cp-fps-scratch-round3/library-checker-problems/set_power_series/subset_convolution/out
+04:21:47 [INFO] ANS      1 msecs : example_00 : b''
+04:21:47 [INFO] ANS      1 msecs : small_00 : b''
+04:21:47 [INFO] ANS      1 msecs : small_01 : b''
+04:21:47 [INFO] ANS      1 msecs : small_02 : b''
+04:21:48 [INFO] ANS   1089 msecs : random_00 : b''
+04:21:48 [INFO] ANS      1 msecs : random_01 : b''
+04:21:48 [INFO] ANS      1 msecs : random_02 : b''
+04:21:50 [INFO] ANS   1087 msecs : max_random_00 : b''
+04:21:51 [INFO] ANS   1091 msecs : max_random_01 : b''
+04:21:52 [INFO] ANS   1082 msecs : max_random_02 : b''
+04:21:53 [INFO] ANS   1062 msecs : hack01_00 : b''

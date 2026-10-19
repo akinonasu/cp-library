@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/lazy_reversible_treap_affine.test.cpp"
+  ]
+}

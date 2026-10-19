@@ -1,0 +1,602 @@
+{
+  "baseline": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "cpu": 2,
+  "trials": 15,
+  "shuffle_seed": 20261101,
+  "reference": 409718,
+  "measurements": [
+    {
+      "case": "max_random_00",
+      "input_sha256": "dab0e293a02d521e66e436a9958f4e66858285c50f31472d2ec5bd4b5d876d21",
+      "answer_sha256": "4c0efffb2e685286c16144370e8f979fa140c9cf563a29ff53853a341a9815df",
+      "orders": [
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "scaled_derivative"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "scaled_derivative",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ]
+      ],
+      "samples_ms": {
+        "baseline": [
+          27.529502,
+          25.775257,
+          26.740405,
+          25.191947,
+          25.36134,
+          25.877509,
+          26.344976,
+          25.158357,
+          24.535949,
+          25.05981,
+          25.196114,
+          25.400469,
+          26.478656,
+          25.136925,
+          25.386298
+        ],
+        "scaled_derivative": [
+          25.590201,
+          26.613286,
+          25.497352,
+          24.963105,
+          26.9917,
+          25.412216,
+          25.34162,
+          26.161612,
+          25.307469,
+          26.28108,
+          25.369522,
+          24.634116,
+          26.03854,
+          25.073041,
+          26.381522
+        ],
+        "reference": [
+          22.690368,
+          23.147138,
+          23.683848,
+          22.542477,
+          24.117815,
+          22.775615,
+          24.375299,
+          23.463119,
+          22.962533,
+          24.510742,
+          24.042073,
+          22.718639,
+          28.989,
+          23.975634,
+          23.951679
+        ]
+      },
+      "median_ms": {
+        "baseline": 25.386298,
+        "scaled_derivative": 25.497352,
+        "reference": 23.683848
+      }
+    },
+    {
+      "case": "max_random_02",
+      "input_sha256": "923e81f29ceee7a8b8b4d91ef0e3a4af336b8f8ddf1d7973ed0acb98564d96c1",
+      "answer_sha256": "0393ab7db7a86d3b84e3bf6412a278a6ef972c81597d4f7b0ba264b168953588",
+      "orders": [
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "scaled_derivative"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "scaled_derivative",
+          "reference"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "scaled_derivative",
+          "reference"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "scaled_derivative"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ]
+      ],
+      "samples_ms": {
+        "baseline": [
+          24.821355,
+          24.095983,
+          24.671502,
+          24.917668,
+          27.199101,
+          24.334659,
+          24.264916,
+          24.809548,
+          23.967863,
+          24.363092,
+          23.930147,
+          24.981895,
+          24.951889,
+          24.9585,
+          24.257604
+        ],
+        "scaled_derivative": [
+          24.636069,
+          25.089134,
+          24.187561,
+          24.333428,
+          24.219959,
+          24.19395,
+          24.506816,
+          24.297063,
+          23.953371,
+          24.209312,
+          23.958579,
+          25.072309,
+          25.272678,
+          24.824229,
+          25.048604
+        ],
+        "reference": [
+          22.691488,
+          23.593675,
+          23.067039,
+          23.568737,
+          24.029384,
+          22.81318,
+          22.391571,
+          22.565421,
+          22.616287,
+          23.21531,
+          22.355359,
+          24.497823,
+          24.118297,
+          22.408718,
+          22.493434
+        ]
+      },
+      "median_ms": {
+        "baseline": 24.671502,
+        "scaled_derivative": 24.333428,
+        "reference": 22.81318
+      }
+    },
+    {
+      "case": "binary_exp_max_00",
+      "input_sha256": "3567cb0064f22498ad3a019cd448c8388dcef5aa85dff8f59ad649087085316f",
+      "answer_sha256": "dcb0530175af61e22424d4ceab030b8a1d34783645cac8dc3883869cf4d3e41b",
+      "orders": [
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "scaled_derivative",
+          "reference"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "scaled_derivative"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "baseline",
+          "scaled_derivative",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ]
+      ],
+      "samples_ms": {
+        "baseline": [
+          24.258365,
+          24.312486,
+          24.584092,
+          24.622209,
+          24.855356,
+          25.272778,
+          25.305588,
+          24.392937,
+          24.251706,
+          25.82108,
+          24.650784,
+          24.242095,
+          24.319071,
+          24.84198,
+          26.038594
+        ],
+        "scaled_derivative": [
+          24.380257,
+          24.744521,
+          24.32832,
+          24.701376,
+          24.275791,
+          25.001443,
+          24.232167,
+          24.064046,
+          24.099569,
+          24.00377,
+          24.625017,
+          24.096088,
+          24.360362,
+          24.26482,
+          24.255706
+        ],
+        "reference": [
+          22.445103,
+          23.510861,
+          22.395268,
+          22.420736,
+          22.894603,
+          22.469379,
+          22.924087,
+          22.456219,
+          22.338744,
+          22.656927,
+          22.405747,
+          22.83659,
+          22.712825,
+          22.35445,
+          36.871962
+        ]
+      },
+      "median_ms": {
+        "baseline": 24.622209,
+        "scaled_derivative": 24.275791,
+        "reference": 22.469379
+      }
+    },
+    {
+      "case": "random_02",
+      "input_sha256": "2de0eb7f534d7cb96e1e684fa891e66042624005f798245611b2c8b03d4f1e18",
+      "answer_sha256": "2fc902e05d6901491f29d86118da6eb7dad93b4c52da4d6a1e2d0c98726d001d",
+      "orders": [
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "scaled_derivative",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "scaled_derivative",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ],
+        [
+          "reference",
+          "scaled_derivative",
+          "baseline"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "scaled_derivative",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "scaled_derivative"
+        ]
+      ],
+      "samples_ms": {
+        "baseline": [
+          4.0311,
+          3.880516,
+          4.804934,
+          4.026734,
+          4.436905,
+          4.422835,
+          4.261123,
+          4.198981,
+          4.23873,
+          4.071581,
+          4.448582,
+          4.362525,
+          4.294954,
+          4.329605,
+          4.504997
+        ],
+        "scaled_derivative": [
+          3.896069,
+          3.885122,
+          3.924471,
+          4.271098,
+          4.034456,
+          4.128135,
+          4.657284,
+          4.590415,
+          4.19168,
+          3.905293,
+          4.228334,
+          4.201665,
+          4.127193,
+          3.945162,
+          4.287242
+        ],
+        "reference": [
+          3.379588,
+          3.325619,
+          3.825324,
+          3.686166,
+          3.315394,
+          3.515071,
+          3.907506,
+          3.443474,
+          3.606437,
+          3.433259,
+          3.490594,
+          3.486528,
+          3.482552,
+          3.510695,
+          3.314082
+        ]
+      },
+      "median_ms": {
+        "baseline": 4.294954,
+        "scaled_derivative": 4.128135,
+        "reference": 3.486528
+      }
+    }
+  ],
+  "binaries": {
+    "baseline": "958e64927773fa20c4025e590053925bbf08012fd092223bd3fe2bbcb67dc110",
+    "scaled_derivative": "52162a34480e1202810592998341a5b54501ee3e0584af30fd8c53a19276f645",
+    "reference": "dd79810b2ea8e43613800966bf848494a03b74b87a3481b0f8310e721084bfee"
+  }
+}

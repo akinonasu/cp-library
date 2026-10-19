@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/fps_exp_sparse.test.cpp"
+  ]
+}

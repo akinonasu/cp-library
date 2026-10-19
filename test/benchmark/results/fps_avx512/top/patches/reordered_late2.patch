@@ -1,0 +1,28 @@
+--- a/components/fps_blocked.hpp
++++ b/components/fps_blocked.hpp
+@@ -3226,18 +3226,16 @@
+ }
+ 
+ inline void inverse_top4(Vec* f, std::size_t h, Half output, const std::uint32_t* inverse_roots, const Factor& s) {
+-	if (output == Half::kBoth) return blocked_ntt::detail::inverse_radix4(f, h, inverse_roots, s);
+-	const Factor z(inverse_roots[1], inverse_roots[9]);
+-	const auto scale = [&s](Vec x) __attribute__((target("avx2"))) { return reduce(times(x, s), kP); };
++	const Factor zs(blocked_ntt::detail::multiply_mod(std::uint32_t(_mm256_cvtsi256_si32(s.w)), inverse_roots[1]));
+ 	for (std::size_t j = 0; j < h; ++j) {
+ 		const Vec p0 = f[j], p1 = f[j + h], p2 = f[j + 2 * h], p3 = f[j + 3 * h];
+ 		const Vec ab = low(add(p0, p1)), cd = low(add(p2, p3));
+-		const Vec amb = low(diff(p0, p1)), cmd = times(diff(p2, p3), z);
+-		if (output == Half::kLower) {
+-			f[j] = scale(add(ab, cd)), f[j + h] = scale(add(amb, cmd));
+-		} else {
+-			f[j + 2 * h] = scale(diff(ab, cd)), f[j + 3 * h] = scale(diff(amb, cmd));
+-		}
++		const Vec amb = diff(p0, p1), cmd = diff(p2, p3);
++		if (output != Half::kUpper) f[j] = reduce(times(add(ab, cd), s), kP);
++		if (output != Half::kLower) f[j + 2 * h] = reduce(times(diff(ab, cd), s), kP);
++		const Vec odd_a = times(amb, s), odd_b = times(cmd, zs);
++		if (output != Half::kUpper) f[j + h] = canonical(add(odd_a, odd_b));
++		if (output != Half::kLower) f[j + 3 * h] = canonical(diff(odd_a, odd_b));
+ 	}
+ }
+ 

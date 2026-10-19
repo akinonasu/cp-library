@@ -1,0 +1,93 @@
+{
+  "baseline": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
+  "decision": "No production change: no stable whole-process improvement.",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "hardware": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "official_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "reference_sources": {
+    "convolution_mod": {
+      "id": 409465,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 21602304,
+      "problem_name": "convolution_mod",
+      "problem_title": "Convolution",
+      "status": "AC",
+      "submission_time": "2026-10-10T05:53:37.818419Z",
+      "time": 0.012,
+      "user_name": "Aiyiyi",
+      "source_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+      "url": "https://judge.yosupo.jp/submission/409465",
+      "compressed_path": "references/convolution_mod_409465.cpp.gz",
+      "compressed_sha256": "1fb5fe87d09a2b2da57c62c580ce61c3c691c17a04c7e88b3c357a1b1f44420a"
+    },
+    "inv_of_formal_power_series": {
+      "id": 409370,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 12091392,
+      "problem_name": "inv_of_formal_power_series",
+      "problem_title": "Inv of Formal Power Series",
+      "status": "AC",
+      "submission_time": "2026-10-10T02:11:09.403965Z",
+      "time": 0.011,
+      "user_name": "Aiyiyi",
+      "source_sha256": "611eaf933f4187e567c90214aa5fc93f6bce7d139a122f68d11b769deeaabe66",
+      "url": "https://judge.yosupo.jp/submission/409370",
+      "compressed_path": "references/inv_of_formal_power_series_409370.cpp.gz",
+      "compressed_sha256": "f2c1a040f9e3467efd0c2506e6d922df152da3d72207f879823c1e89049d0108"
+    },
+    "sqrt_of_formal_power_series": {
+      "id": 409728,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 11845632,
+      "problem_name": "sqrt_of_formal_power_series",
+      "problem_title": "Sqrt of Formal Power Series",
+      "status": "AC",
+      "submission_time": "2026-10-11T01:18:40.045704Z",
+      "time": 0.012,
+      "user_name": "Aiyiyi",
+      "source_sha256": "aa66b9de0c8361c9e9b46024c39231d50419f95335cfcce59cef7491e014dfbc",
+      "url": "https://judge.yosupo.jp/submission/409728",
+      "compressed_path": "references/sqrt_of_formal_power_series_409728.cpp.gz",
+      "compressed_sha256": "a9175119cd9ad2c33720894b0efe2c366b70241c2ca1d1cf9e562b292ba58fe5"
+    },
+    "log_of_formal_power_series": {
+      "id": 409452,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 15474688,
+      "problem_name": "log_of_formal_power_series",
+      "problem_title": "Log of Formal Power Series",
+      "status": "AC",
+      "submission_time": "2026-10-10T05:03:05.948735Z",
+      "time": 0.013,
+      "user_name": "Aiyiyi",
+      "source_sha256": "86ef3c3b4a4707ef5e7515e5229b2564f2a5f46bd830bb6cbe64b506a95675b6",
+      "url": "https://judge.yosupo.jp/submission/409452",
+      "compressed_path": "references/log_of_formal_power_series_409452.cpp.gz",
+      "compressed_sha256": "f7b66839bebd89549e0d12aae3ff5a8aa64a3f3e3ad5e223dd39060a1f36ef18"
+    }
+  },
+  "header_counts": {
+    "evex": 175,
+    "reordered": 175,
+    "reordered_late": 175,
+    "reordered_late2": 175,
+    "wide": 175,
+    "window32": 175,
+    "window16": 175,
+    "wide_kernel": 175
+  },
+  "seeds": {
+    "kernel": 20261023,
+    "kernel_wide": 20261023,
+    "kernel_window32": 20261024,
+    "whole_wide": 20261025,
+    "kernel_window16": 20261026,
+    "kernel_late2": 20261027,
+    "whole_late2": 20261028,
+    "whole_late2_sqrt01": 20261029
+  }
+}
