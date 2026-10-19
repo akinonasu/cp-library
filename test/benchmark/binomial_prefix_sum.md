@@ -1,5 +1,7 @@
 # 二項係数の prefix sum
 
+以下は Mo 法を使っていた時点の測定記録です。現在の offline 版と記事の多項式方式の比較は [新しい測定記録](binomial_prefix_sum_polynomial.md) を参照してください。
+
 `math/binomial_prefix_sum.hpp` は半開区間の和 `S(n,k)` を計算する。オンライン版は平方分割、一括版は Mo 法。
 
 ## 参考提出・資料

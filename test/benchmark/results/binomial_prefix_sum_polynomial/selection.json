@@ -1,0 +1,22 @@
+{
+  "headers": [
+    "components/binomial_prefix_polynomial.hpp",
+    "math/combinatorics/binomial_prefix_sum.hpp"
+  ],
+  "unit": [
+    "test/unit/binomial_prefix_sum.cpp",
+    "test/unit/standalone.cpp"
+  ],
+  "sanitize": [
+    "test/unit/binomial_prefix_sum.cpp",
+    "test/unit/standalone.cpp"
+  ],
+  "verification": [
+    "test/binomial_prefix_sum_offline.test.cpp",
+    "test/binomial_prefix_sum_online.test.cpp"
+  ],
+  "bundles": [
+    "components/binomial_prefix_polynomial.hpp",
+    "math/combinatorics/binomial_prefix_sum.hpp"
+  ]
+}
