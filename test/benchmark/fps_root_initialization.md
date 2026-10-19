@@ -16,7 +16,7 @@ if (!arena.zero_initialized()) std::fill_n(roots_, 2 * table, 0u);
 
 通常の整列した `new[]` や mmap 失敗時は `zero_initialized()` が偽になり、従来の `fill_n` を実行する。呼び出し側の入力・出力の整列、padding、API に前提を追加しない。根表以外の初期化、係数変換、入出力、計算手順は変えていない。[候補パッチ](results/fps_root_initialization/candidate.patch)と、比較元・候補の全ヘッダーハッシュを保存した。異なるヘッダーはこの 1 件だけである。
 
-安全性の検査では、一つの Arena に `0xdeadbeef` で埋めた領域を置いてから、長さ $2^6$・$2^8$・$2^{18}$・$2^{20}$ の Transform を順に作る。両方の根表の全ワードを、別途明示的にゼロ化して構築した表と比較し、未使用部分の一致と既存領域の保存も確認する。小さい `new[]` の領域も調べる。
+安全性の検査では、一つの Arena に `0xdeadbeef` で埋めた領域を置いてから、長さ $$2^6$$・$$2^8$$・$$2^{18}$$・$$2^{20}$$ の Transform を順に作る。両方の根表の全ワードを、別途明示的にゼロ化して構築した表と比較し、未使用部分の一致と既存領域の保存も確認する。小さい `new[]` の領域も調べる。
 
 mmap を `MAP_FAILED` に置き換えた一時テストで大きい配列の fallback も確認した。比較元・候補 × 通常 mmap・強制 fallback × 通常・ASan/UBSan の 8 実行が成功した。`ASAN_OPTIONS=detect_leaks=0`、`UBSAN_OPTIONS=halt_on_error=1` を使う。LeakSanitizer の無効化は既存環境の ptrace 制約による。テストの原本は [safety.cpp](results/fps_root_initialization/safety.cpp)、コンパイル条件・出力は原票の `builds.safety_*` にある。
 

@@ -10,7 +10,7 @@ std::vector<unsigned> a{1, 2, 3, 4}, b{5, 6, 7, 8};
 auto c = and_or_convolution(a, b); // {7,6,7,0}
 ```
 
-`*_or_convolution` は $$c_k = \bigvee_{i\circ j=k}(a_i \land b_j)$$、`*_and_convolution` は $$c_k = \bigwedge_{i\circ j=k}(a_i \lor b_j)$$ です。各 bit を独立に計算します。
+`*_or_convolution` は $$\displaystyle c_k = \bigvee_{i\circ j=k}(a_i \land b_j)$$、`*_and_convolution` は $$\displaystyle c_k = \bigwedge_{i\circ j=k}(a_i \lor b_j)$$ です。各 bit を独立に計算します。
 
 | 添字 $$\circ$$ | OR で集約 | AND で集約 | 計算量 |
 | --- | --- | --- | --- |
