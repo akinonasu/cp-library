@@ -1,0 +1,94 @@
+{
+  "retrieved_at": "2026-10-19T10:40:04.992753+00:00",
+  "listing": {
+    "count": 794,
+    "submissions": [
+      {
+        "id": 409050,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 6590464,
+        "problem_name": "range_affine_point_get",
+        "problem_title": "Range Affine Point Get",
+        "status": "AC",
+        "submission_time": "2026-10-09T02:01:07.699691Z",
+        "time": 0.052,
+        "user_name": "nandhagk"
+      },
+      {
+        "id": 269952,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 21176320,
+        "problem_name": "range_affine_point_get",
+        "problem_title": "Range Affine Point Get",
+        "status": "AC",
+        "submission_time": "2025-02-26T16:35:25.575228Z",
+        "time": 0.055,
+        "user_name": "mukundan314"
+      },
+      {
+        "id": 269948,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 8900608,
+        "problem_name": "range_affine_point_get",
+        "problem_title": "Range Affine Point Get",
+        "status": "AC",
+        "submission_time": "2025-02-26T15:57:34.317976Z",
+        "time": 0.055,
+        "user_name": "mukundan314"
+      }
+    ]
+  },
+  "references": [
+    {
+      "overview": {
+        "id": 409050,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 6590464,
+        "problem_name": "range_affine_point_get",
+        "problem_title": "Range Affine Point Get",
+        "status": "AC",
+        "submission_time": "2026-10-09T02:01:07.699691Z",
+        "time": 0.052,
+        "user_name": "nandhagk"
+      },
+      "sha256": "a28f41e8aaa7bf0e11971afd68cc0be36a307dc650df498ff2ddaee86ee3ce8e",
+      "url": "https://judge.yosupo.jp/submission/409050"
+    },
+    {
+      "overview": {
+        "id": 269952,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 21176320,
+        "problem_name": "range_affine_point_get",
+        "problem_title": "Range Affine Point Get",
+        "status": "AC",
+        "submission_time": "2025-02-26T16:35:25.575228Z",
+        "time": 0.055,
+        "user_name": "mukundan314"
+      },
+      "sha256": "e022a50a8089a720612e06bb0fb8441dd38ef02ada98b6d3e858fc86162b9793",
+      "url": "https://judge.yosupo.jp/submission/269952"
+    },
+    {
+      "overview": {
+        "id": 269948,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 8900608,
+        "problem_name": "range_affine_point_get",
+        "problem_title": "Range Affine Point Get",
+        "status": "AC",
+        "submission_time": "2025-02-26T15:57:34.317976Z",
+        "time": 0.055,
+        "user_name": "mukundan314"
+      },
+      "sha256": "b4bc5793e9ed329d2578489842d3cd352b08fdd07b987284f369b5b9d6dc1152",
+      "url": "https://judge.yosupo.jp/submission/269948"
+    }
+  ]
+}

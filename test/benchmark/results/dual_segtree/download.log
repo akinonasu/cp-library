@@ -1,0 +1,157 @@
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/qand/.local/share/online-judge-tools/cookie.jar
+git version 2.34.1
+[INFO] $ git -C /home/qand/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+[INFO] $ /usr/bin/python3 /home/qand/.cache/online-judge-tools/library-checker-problems/generate.py /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_affine_point_get/info.toml
+[37m19:46:51 [INFO] Start range_affine_point_get[0m
+[37m19:46:51 [INFO] generate params.h[0m
+[37m19:46:51 [INFO] compile checker[0m
+[37m19:46:55 [INFO] compile solution[0m
+[37m19:46:55 [INFO] compile generators[0m
+[37m19:46:55 [INFO] compile example.in[0m
+[37m19:46:55 [INFO] compile small_random.cpp[0m
+[37m19:46:55 [INFO] compile small.cpp[0m
+[37m19:46:56 [INFO] compile random.cpp[0m
+[37m19:46:56 [INFO] compile max_random.cpp[0m
+[37m19:46:56 [INFO] clear input /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_affine_point_get/in[0m
+[37m19:46:56 [INFO] gen example.in 1cases[0m
+[37m19:46:56 [INFO] gen small_random.cpp 2cases[0m
+[37m19:46:56 [INFO] gen small.cpp 10cases[0m
+[37m19:46:56 [INFO] gen random.cpp 3cases[0m
+[37m19:46:56 [INFO] gen max_random.cpp 3cases[0m
+[37m19:46:56 [INFO] clear output /home/qand/.cache/online-judge-tools/library-checker-problems/data_structure/range_affine_point_get/out[0m
+[37m19:46:56 [INFO] ANS      0 msecs : example_00 : b''[0m
+[37m19:46:56 [INFO] ANS      1 msecs : small_random_00 : b''[0m
+[37m19:46:56 [INFO] ANS      1 msecs : small_random_01 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_00 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_01 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_02 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_03 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_04 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_05 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_06 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_07 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_08 : b''[0m
+[37m19:46:56 [INFO] ANS      0 msecs : small_09 : b''[0m
+[37m19:46:57 [INFO] ANS    244 msecs : random_00 : b''[0m
+[37m19:46:57 [INFO] ANS    260 msecs : random_01 : b''[0m
+[37m19:46:57 [INFO] ANS    144 msecs : random_02 : b''[0m
+[37m19:46:57 [INFO] ANS    329 msecs : max_random_00 : b''[0m
+[37m19:46:58 [INFO] ANS    315 msecs : max_random_01 : b''[0m
+[37m19:46:58 [INFO] ANS    307 msecs : max_random_02 : b''[0m
+[INFO] save cookie to: /home/qand/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: example_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/example_00.in
+[INFO] output: example_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/example_00.out
+
+[INFO] sample 1
+[INFO] input: max_random_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/max_random_00.in
+[INFO] output: max_random_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/max_random_00.out
+
+[INFO] sample 2
+[INFO] input: max_random_01
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/max_random_01.in
+[INFO] output: max_random_01
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/max_random_01.out
+
+[INFO] sample 3
+[INFO] input: max_random_02
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/max_random_02.in
+[INFO] output: max_random_02
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/max_random_02.out
+
+[INFO] sample 4
+[INFO] input: random_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/random_00.in
+[INFO] output: random_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/random_00.out
+
+[INFO] sample 5
+[INFO] input: random_01
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/random_01.in
+[INFO] output: random_01
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/random_01.out
+
+[INFO] sample 6
+[INFO] input: random_02
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/random_02.in
+[INFO] output: random_02
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/random_02.out
+
+[INFO] sample 7
+[INFO] input: small_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_00.in
+[INFO] output: small_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_00.out
+
+[INFO] sample 8
+[INFO] input: small_01
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_01.in
+[INFO] output: small_01
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_01.out
+
+[INFO] sample 9
+[INFO] input: small_02
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_02.in
+[INFO] output: small_02
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_02.out
+
+[INFO] sample 10
+[INFO] input: small_03
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_03.in
+[INFO] output: small_03
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_03.out
+
+[INFO] sample 11
+[INFO] input: small_04
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_04.in
+[INFO] output: small_04
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_04.out
+
+[INFO] sample 12
+[INFO] input: small_05
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_05.in
+[INFO] output: small_05
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_05.out
+
+[INFO] sample 13
+[INFO] input: small_06
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_06.in
+[INFO] output: small_06
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_06.out
+
+[INFO] sample 14
+[INFO] input: small_07
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_07.in
+[INFO] output: small_07
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_07.out
+
+[INFO] sample 15
+[INFO] input: small_08
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_08.in
+[INFO] output: small_08
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_08.out
+
+[INFO] sample 16
+[INFO] input: small_09
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_09.in
+[INFO] output: small_09
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_09.out
+
+[INFO] sample 17
+[INFO] input: small_random_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_random_00.in
+[INFO] output: small_random_00
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_random_00.out
+
+[INFO] sample 18
+[INFO] input: small_random_01
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_random_01.in
+[INFO] output: small_random_01
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/68ef6dcf19eb47d996ec4a9959567d97/test/small_random_01.out
