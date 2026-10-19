@@ -1,0 +1,19 @@
+g++: standalone math/number_theory/discrete_log.hpp
+g++: standalone math/number_theory/factorize.hpp
+g++: standalone convolution/multiplicative_convolution.hpp
+g++: convolution.cpp
+g++: discrete_log.cpp
+g++: divisors.cpp
+g++: factorize.cpp
+g++: primality_arithmetic.cpp
+g++: standalone.cpp
+clang++: standalone math/number_theory/discrete_log.hpp
+clang++: standalone math/number_theory/factorize.hpp
+clang++: standalone convolution/multiplicative_convolution.hpp
+clang++: convolution.cpp
+clang++: discrete_log.cpp
+clang++: divisors.cpp
+clang++: factorize.cpp
+clang++: primality_arithmetic.cpp
+clang++: standalone.cpp
+Verification passed

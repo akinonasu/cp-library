@@ -176,7 +176,7 @@
 | `math/number_theory/kth_root.hpp` | 64 bit 整数の厳密な k 乗根 | [使い方](docs/kth_root.md) |
 | `math/number_theory/discrete_log.hpp` | 合成数 mod にも対応する離散対数 | [使い方](docs/discrete_log.md) |
 | `math/number_theory/stern_brocot_tree.hpp` | Stern–Brocot Tree・圧縮経路・祖先・LCA | [使い方](docs/stern_brocot_tree.md) |
-| `math/number_theory/factorize.hpp` | 素因数分解・素数判定 | [使い方](docs/factorize.md) |
+| `math/number_theory/factorize.hpp` | 素因数分解・素数判定・約数列挙 | [使い方](docs/factorize.md) |
 | `math/number_theory/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
 | `math/number_theory/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
 

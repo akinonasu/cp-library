@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdint>
+#include <limits>
 #include <numeric>
 #include <utility>
 #include <vector>
@@ -94,6 +95,34 @@ inline std::vector<std::pair<std::uint64_t, int>> factorize_count(std::uint64_t 
 		else ++result.back().second;
 	}
 	return result;
+}
+
+inline std::vector<std::uint64_t> divisors(const std::vector<std::pair<std::uint64_t, int>> &factors, bool sorted = true) {
+	std::size_t count = 1;
+	for (auto [p, e] : factors) {
+		assert(p >= 2 && e > 0);
+		count *= std::size_t(e) + 1;
+	}
+	std::vector<std::uint64_t> result{1};
+	result.reserve(count);
+	for (auto [p, e] : factors) {
+		std::size_t size = result.size();
+		std::uint64_t power = 1;
+		for (int i = 0; i < e; ++i) {
+			assert(power <= std::numeric_limits<std::uint64_t>::max() / p);
+			power *= p;
+			for (std::size_t j = 0; j < size; ++j) {
+				assert(result[j] <= std::numeric_limits<std::uint64_t>::max() / power);
+				result.push_back(result[j] * power);
+			}
+		}
+	}
+	if (sorted) std::sort(result.begin(), result.end());
+	return result;
+}
+
+inline std::vector<std::uint64_t> divisors(std::uint64_t n, bool sorted = true) {
+	return divisors(factorize_count(n), sorted);
 }
 
 #endif
