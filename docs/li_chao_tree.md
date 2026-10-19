@@ -1,5 +1,5 @@
 ---
-title: "Li Chao Tree"
+title: "Li Chao Tree (クエリ先読み)"
 documentation_of: //data_structure/li_chao_tree.hpp
 ---
 
@@ -30,7 +30,7 @@ if (value) {
 | `size()` | 重複除去後の登録座標数 | $$O(1)$$ |
 | `clear()` | 座標列を残して全ての直線・線分を削除 | $$O(n)$$ |
 
-クエリ座標は構築時に全て登録します。`query(x)`・`index(x)` には登録済みの座標を渡します。添字はソート・重複除去後の 0 始まりです。
+構築前にクエリを先読みし、問い合わせる座標を全て登録します。座標の候補が最初から分かっていれば、その候補を登録するだけで使えます。追加する直線・線分の先読みは不要です。`query(x)`・`index(x)` には登録済みの座標を渡します。添字はソート・重複除去後の 0 始まりです。問い合わせ座標を事前に集められない場合は [Dynamic Li Chao Tree](https://qandori.github.io/cp-library/data_structure/dynamic_li_chao_tree.hpp.html) を使えます。
 
 `LiChaoTree<T, true>` では `query`・`query_index` が最大値を返します。既定の `T` は `std::int64_t`、整数の計算・返り値は 32 bit 型なら `std::int64_t`、64 bit 型なら `__int128_t` です。第 3 テンプレート引数で計算型を指定できます。
 
