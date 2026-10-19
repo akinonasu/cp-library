@@ -1,4 +1,4 @@
-#include "math/factorize.hpp"
+#include "math/number_theory/factorize.hpp"
 #include <cassert>
 #include <cstdint>
 #include <limits>

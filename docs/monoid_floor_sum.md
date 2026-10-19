@@ -1,10 +1,12 @@
 ---
-title: "monoid floor sum"
-documentation_of: //math/monoid_floor_sum.hpp
+title: monoid floor sum
+documentation_of: //math/floor_sum/monoid_floor_sum.hpp
+redirect_from:
+- /math/monoid_floor_sum.hpp.html
 ---
 
 ```cpp
-#include "lib/math/monoid_floor_sum.hpp"
+#include "lib/math/floor_sum/monoid_floor_sum.hpp"
 #include <string>
 
 std::string op(std::string a, std::string b) { return a + b; }

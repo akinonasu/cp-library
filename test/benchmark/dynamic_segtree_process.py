@@ -16,14 +16,14 @@ with tempfile.TemporaryDirectory(prefix='dynamic-segtree-process-') as directory
     work = Path(directory)
     trees = {
         'base': ('base.hpp', 'DynamicSegtree_base'),
-        'current': ('data_structure/dynamic_segtree.hpp', 'DynamicSegtree'),
+        'current': ('data_structure/segment_tree/dynamic_segtree.hpp', 'DynamicSegtree'),
         'combo_branch': ('combo_branch.hpp', 'DynamicSegtree_combo_branch'),
         'combo_leaf': ('combo_leaf.hpp', 'DynamicSegtree_combo_leaf'),
         'bucket8': ('test/benchmark/dynamic_segtree_bucket.hpp', 'DynamicSegtreeBucket'),
     }
     paths = {}
     for name, (header, tree) in trees.items():
-        text = source.replace('"data_structure/dynamic_segtree.hpp"', '"' + header + '"').replace('DynamicSegtree<Value', tree + '<Value')
+        text = source.replace('"data_structure/segment_tree/dynamic_segtree.hpp"', '"' + header + '"').replace('DynamicSegtree<Value', tree + '<Value')
         path = work / (name + '.cpp')
         path.write_text(text)
         for packed in [False, True]:

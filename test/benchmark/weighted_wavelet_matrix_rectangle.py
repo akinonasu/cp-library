@@ -31,7 +31,7 @@ def main():
     flags = ['-std=gnu++23', '-O2', '-march=native', '-ftrivial-auto-var-init=zero', '-DATCODER', '-DONLINE_JUDGE', '-I.']
     rust = '/home/qand/.cargo/bin/rustc'
     rustflags = ['--edition=2021', '-C', 'opt-level=3', '-C', 'target-cpu=native']
-    files = ['data_structure/weighted_wavelet_matrix.hpp', 'data_structure/wavelet_matrix.hpp', 'components/fenwick_sum.hpp',
+    files = ['data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp', 'data_structure/wavelet_matrix/wavelet_matrix.hpp', 'components/fenwick_sum.hpp',
              'components/quad_bit_vector.hpp', 'components/oct_bit_vector.hpp', 'components/splitmix64.hpp', 'components/fast_io.hpp',
              'test/weighted_wavelet_matrix_rectangle.test.cpp', 'test/benchmark/weighted_wavelet_matrix_rectangle.py']
     frozen = {p: sha(root / p) for p in files}

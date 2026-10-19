@@ -5,7 +5,7 @@ on:
     branches: [codex/dwm-avx-update-20261018]
     paths:
       - components/dynamic_bit_vector.hpp
-      - data_structure/dynamic_wavelet_matrix.hpp
+      - data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp
       - test/benchmark/dwm_avx_final/*.cpp
       - test/benchmark/dwm_avx_final/run.py
 

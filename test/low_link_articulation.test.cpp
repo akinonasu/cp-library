@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_3_A"
-#include "../graph/low_link.hpp"
+#include "../graph/connectivity/low_link.hpp"
 #include <iostream>
 #include <tuple>
 

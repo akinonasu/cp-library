@@ -3,7 +3,7 @@ title: "行列の内部演算"
 documentation_of: //components/matrix_arithmetic.hpp
 ---
 
-`math/matrix.hpp` が使う連続配列の行列積・消去処理です。通常は公開側の `Matrix<T>` を使います。
+`math/linear_algebra/matrix.hpp` が使う連続配列の行列積・消去処理です。通常は公開側の `Matrix<T>` を使います。
 
 | 操作 | 内容 | 計算量 |
 | --- | --- | --- |

@@ -1,10 +1,12 @@
 ---
-title: "General Weighted Matching（一般グラフ最大重みマッチング）"
-documentation_of: //graph/general_weighted_matching.hpp
+title: General Weighted Matching（一般グラフ最大重みマッチング）
+documentation_of: //graph/matching/general_weighted_matching.hpp
+redirect_from:
+- /graph/general_weighted_matching.hpp.html
 ---
 
 ```cpp
-#include "lib/graph/general_weighted_matching.hpp"
+#include "lib/graph/matching/general_weighted_matching.hpp"
 
 GeneralWeightedMatching graph(4);
 graph.add_edge(0, 1, 1);

@@ -1,4 +1,4 @@
-#include "math/monoid_floor_sum.hpp"
+#include "math/floor_sum/monoid_floor_sum.hpp"
 #include <algorithm>
 #include <array>
 #include <cassert>

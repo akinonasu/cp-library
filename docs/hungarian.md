@@ -1,10 +1,12 @@
 ---
-title: "Hungarian Algorithm（ハンガリアン法）"
-documentation_of: //graph/hungarian.hpp
+title: Hungarian Algorithm（ハンガリアン法）
+documentation_of: //graph/matching/hungarian.hpp
+redirect_from:
+- /graph/hungarian.hpp.html
 ---
 
 ```cpp
-#include "lib/graph/hungarian.hpp"
+#include "lib/graph/matching/hungarian.hpp"
 
 std::vector<std::vector<int>> a = { {4, 1, 3}, {2, 0, 5} };
 Hungarian result(a);

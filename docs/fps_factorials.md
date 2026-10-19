@@ -3,7 +3,7 @@ title: "階乗・逆階乗生成"
 documentation_of: //components/fps_factorials.hpp
 ---
 
-FPS と二項係数の前計算で共有する内部処理です。通常は [階乗・逆階乗と二項係数](https://qandori.github.io/cp-library/math/comb.hpp.html) や [Taylor Shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) を利用します。`factorials` には `fps_mint*` または法 998244353 の内部 Montgomery ワードへのポインタを渡せます。
+FPS と二項係数の前計算で共有する内部処理です。通常は [階乗・逆階乗と二項係数](https://qandori.github.io/cp-library/math/combinatorics/comb.hpp.html) や [Taylor Shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) を利用します。`factorials` には `fps_mint*` または法 998244353 の内部 Montgomery ワードへのポインタを渡せます。
 
 | 関数 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

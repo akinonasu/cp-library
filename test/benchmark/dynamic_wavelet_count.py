@@ -31,7 +31,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     cache = ROOT / '.verify-helper/cache/dynamic-wavelet-count-benchmark'
     cache.mkdir(parents=True, exist_ok=True)
-    headers = ['data_structure/dynamic_wavelet_matrix.hpp', 'components/dynamic_bit_vector.hpp']
+    headers = ['data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp', 'components/dynamic_bit_vector.hpp']
     for name in headers:
         path = cache / 'baseline' / name
         path.parent.mkdir(parents=True, exist_ok=True)

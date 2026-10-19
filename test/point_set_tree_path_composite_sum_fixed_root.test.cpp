@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/point_set_tree_path_composite_sum_fixed_root"
-#include "graph/static_top_tree.hpp"
+#include "tree/static_top_tree.hpp"
 #include "components/fast_io.hpp"
 #include "test/static_top_tree_dp.hpp"
 

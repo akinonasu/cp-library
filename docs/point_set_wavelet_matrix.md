@@ -1,10 +1,12 @@
 ---
-title: "Point Set Wavelet Matrix"
-documentation_of: //data_structure/point_set_wavelet_matrix.hpp
+title: Point Set Wavelet Matrix
+documentation_of: //data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp
+redirect_from:
+- /data_structure/point_set_wavelet_matrix.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/point_set_wavelet_matrix.hpp"
+#include "lib/data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp"
 
 std::vector<int> a{3, 1, 4, 1, 5};
 std::vector<std::pair<int, int>> candidates{ {0, 10}, {2, 7} };

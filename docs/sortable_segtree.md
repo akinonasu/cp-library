@@ -1,10 +1,12 @@
 ---
-title: "Sortable Segtree"
-documentation_of: //data_structure/sortable_segtree.hpp
+title: Sortable Segtree
+documentation_of: //data_structure/segment_tree/sortable_segtree.hpp
+redirect_from:
+- /data_structure/sortable_segtree.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/sortable_segtree.hpp"
+#include "lib/data_structure/segment_tree/sortable_segtree.hpp"
 
 long long op(long long a, long long b) { return a + b; }
 long long e() { return 0; }

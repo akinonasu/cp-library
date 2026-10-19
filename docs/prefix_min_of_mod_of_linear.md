@@ -1,10 +1,12 @@
 ---
-title: "Mod of Linear の Prefix Minimum"
-documentation_of: //math/prefix_min_of_mod_of_linear.hpp
+title: Mod of Linear の Prefix Minimum
+documentation_of: //math/floor_sum/prefix_min_of_mod_of_linear.hpp
+redirect_from:
+- /math/prefix_min_of_mod_of_linear.hpp.html
 ---
 
 ```cpp
-#include "lib/math/prefix_min_of_mod_of_linear.hpp"
+#include "lib/math/floor_sum/prefix_min_of_mod_of_linear.hpp"
 
 auto parts = prefix_min_of_mod_of_linear(100, 100, 71, 85);
 ```

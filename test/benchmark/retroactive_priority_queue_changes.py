@@ -32,7 +32,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     os.sched_setaffinity(0, {args.cpu})
     flags = ['-std=c++23', '-O2', '-DEVAL', '-DONLINE_JUDGE', '-march=native', '-ftrivial-auto-var-init=zero']
-    sources = ['data_structure/partially_retroactive_priority_queue.hpp', 'components/splitmix64.hpp',
+    sources = ['data_structure/priority_queue/partially_retroactive_priority_queue.hpp', 'components/splitmix64.hpp',
                'components/fast_io.hpp', 'test/fixtures/retroactive_scheduling.hpp',
                'test/benchmark/retroactive_priority_queue_scheduling.cpp',
                'test/benchmark/retroactive_priority_queue_changes.cpp', 'test/benchmark/retroactive_priority_queue_changes.py']

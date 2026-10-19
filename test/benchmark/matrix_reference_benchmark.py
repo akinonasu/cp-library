@@ -33,7 +33,7 @@ def main():
     env = {'compiler': subprocess.check_output(['g++', '--version'], text=True), 'flags': flags, 'trials': args.trials,
            'size': args.size, 'cpu': subprocess.check_output(['lscpu'], text=True), 'uname': subprocess.check_output(['uname', '-a'], text=True),
            'affinity': [args.cpu], 'seed': 713, 'cases': []}
-    paths = ['components/matrix_arithmetic.hpp', 'math/matrix.hpp', 'math/mint.hpp', 'components/fast_io.hpp', 'test/matrix_common.hpp', 'test/benchmark/matrix_reference_benchmark.py']
+    paths = ['components/matrix_arithmetic.hpp', 'math/linear_algebra/matrix.hpp', 'math/mint.hpp', 'components/fast_io.hpp', 'test/matrix_common.hpp', 'test/benchmark/matrix_reference_benchmark.py']
     paths += [f'test/matrix_{driver}.test.cpp' for driver in DRIVERS.values()]
     env['sha256'] = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in paths}
     with tempfile.TemporaryDirectory(prefix='cp-matrix-reference-') as temporary:

@@ -1,4 +1,4 @@
-#include "graph/lca.hpp"
+#include "tree/lca.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>

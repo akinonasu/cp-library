@@ -24,7 +24,7 @@ def main():
     flags = ['-std=c++2b', '-O2', '-DNDEBUG', '-Wall', '-Wextra', '-Werror']
     if args.native:
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
-    paths = ['graph/centroid_decomposition.hpp', 'test/benchmark/centroid_decomposition.cpp',
+    paths = ['tree/centroid_decomposition.hpp', 'test/benchmark/centroid_decomposition.cpp',
              'test/benchmark/centroid_decomposition.py']
     env = {'compiler': subprocess.check_output(['g++', '--version'], text=True), 'flags': flags,
            'cpu': subprocess.check_output(['lscpu'], text=True), 'uname': subprocess.check_output(['uname', '-a'], text=True),

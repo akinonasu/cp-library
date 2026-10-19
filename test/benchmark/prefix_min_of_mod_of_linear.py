@@ -31,7 +31,7 @@ def main():
     flags = ['-std=c++2b', '-O2', '-DNDEBUG', '-Wall', '-Wextra', '-Werror']
     if args.native:
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
-    paths = ['components/mod_linear_prefix_min.hpp', 'math/prefix_min_of_mod_of_linear.hpp',
+    paths = ['components/mod_linear_prefix_min.hpp', 'math/floor_sum/prefix_min_of_mod_of_linear.hpp',
              'test/benchmark/prefix_min_of_mod_of_linear_baseline.hpp',
              'test/benchmark/prefix_min_of_mod_of_linear.cpp', 'test/benchmark/prefix_min_of_mod_of_linear.py']
     environment = {'compiler': subprocess.check_output([args.cxx, '--version'], text=True),
@@ -57,7 +57,7 @@ def main():
         component = component.replace('mod_linear_detail', 'mod_linear_inlined_detail')
         component = component.replace('void prefix_min(', '[[gnu::always_inline]] inline void prefix_min(')
         (directory / 'inlined_component.hpp').write_text(component)
-        inlined = (ROOT / 'math/prefix_min_of_mod_of_linear.hpp').read_text()
+        inlined = (ROOT / 'math/floor_sum/prefix_min_of_mod_of_linear.hpp').read_text()
         inlined = inlined.replace('PREFIX_MIN_OF_MOD_OF_LINEAR_HPP', 'PREFIX_MIN_INLINED_HPP')
         inlined = inlined.replace('../components/mod_linear_prefix_min.hpp', 'inlined_component.hpp')
         inlined = inlined.replace('mod_linear_detail', 'mod_linear_inlined_detail')

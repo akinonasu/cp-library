@@ -14,7 +14,7 @@ import tempfile
 import time
 
 BASE = "986b5b17c622a2c999ec20e2bf5dfb1c8ecd0cb9"
-HEADERS = ("data_structure/dynamic_wavelet_matrix.hpp", "components/dynamic_bit_vector.hpp")
+HEADERS = ("data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp", "components/dynamic_bit_vector.hpp")
 COMMON = ["-O2", "-std=gnu++23", "-fmodules", "-ftrivial-auto-var-init=zero",
           "-DONLINE_JUDGE", "-DATCODER", "-UNDEBUG", "-fno-lto"]
 TRACKS = {"native": ["-march=native"], "scalar": ["-march=x86-64", "-mtune=generic",

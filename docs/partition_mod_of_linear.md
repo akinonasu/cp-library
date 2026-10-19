@@ -1,10 +1,12 @@
 ---
-title: "Mod of Linear の等差数列分割"
-documentation_of: //math/partition_mod_of_linear.hpp
+title: Mod of Linear の等差数列分割
+documentation_of: //math/floor_sum/partition_mod_of_linear.hpp
+redirect_from:
+- /math/partition_mod_of_linear.hpp.html
 ---
 
 ```cpp
-#include "lib/math/partition_mod_of_linear.hpp"
+#include "lib/math/floor_sum/partition_mod_of_linear.hpp"
 
 auto parts = partition_mod_of_linear(4, 5, 2, 1);
 std::vector<std::uint64_t> values(4);

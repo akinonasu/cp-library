@@ -1,4 +1,4 @@
-#include "graph/hld.hpp"
+#include "tree/hld.hpp"
 #include "string/rolling_hash.hpp"
 #include <algorithm>
 #include <cassert>

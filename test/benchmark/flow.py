@@ -83,7 +83,7 @@ def main():
               'flags': flags, 'cpu_affinity': [2], 'trials': 7, 'seed': 36683669,
               'metric': 'wall time including startup, input, construction, computation, output and exit',
               'sources': {name: sha(path) for name,path in sources.items()},
-              'headers': {name: sha(ROOT/name) for name in ['graph/max_flow.hpp','graph/min_cost_flow.hpp','components/flow_graph.hpp',
+              'headers': {name: sha(ROOT/name) for name in ['graph/flow/max_flow.hpp','graph/flow/min_cost_flow.hpp','components/flow_graph.hpp',
                   'components/push_relabel.hpp','components/min_cost_circulation.hpp','components/RadixHeap.hpp',
                   'components/d_ary_heap.hpp','components/fast_io.hpp','graph/dijkstra.hpp']}, 'workloads': {}}
     for name, data in cases.items():

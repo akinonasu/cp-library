@@ -1,10 +1,12 @@
 ---
-title: "素数 mod の平方根"
-documentation_of: //math/mod_sqrt.hpp
+title: 素数 mod の平方根
+documentation_of: //math/number_theory/mod_sqrt.hpp
+redirect_from:
+- /math/mod_sqrt.hpp.html
 ---
 
 ```cpp
-#include "lib/math/mod_sqrt.hpp"
+#include "lib/math/number_theory/mod_sqrt.hpp"
 #include <iostream>
 
 auto root = mod_sqrt(10, 13);

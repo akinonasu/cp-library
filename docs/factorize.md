@@ -1,10 +1,12 @@
 ---
-title: "素因数分解・素数判定"
-documentation_of: //math/factorize.hpp
+title: 素因数分解・素数判定
+documentation_of: //math/number_theory/factorize.hpp
+redirect_from:
+- /math/factorize.hpp.html
 ---
 
 ```cpp
-#include "lib/math/factorize.hpp"
+#include "lib/math/number_theory/factorize.hpp"
 
 auto factors = factorize(360); // {2,2,2,3,3,5}
 auto counts = factorize_count(360); // { {2,3},{3,2},{5,1} }

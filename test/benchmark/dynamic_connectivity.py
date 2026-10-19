@@ -31,7 +31,7 @@ def main():
     flags = ['-std=gnu++23', '-O2', '-Wall', '-Wextra', '-Werror']
     if args.native:
         flags += ['-march=native', '-ftrivial-auto-var-init=zero', '-DATCODER', '-DONLINE_JUDGE']
-    paths = ['data_structure/dynamic_connectivity.hpp', 'components/splitmix64.hpp',
+    paths = ['graph/connectivity/dynamic_connectivity.hpp', 'components/splitmix64.hpp',
              'test/benchmark/dynamic_connectivity_baseline.hpp', 'test/benchmark/dynamic_connectivity.cpp',
              'test/benchmark/dynamic_connectivity_variants.py', 'test/benchmark/dynamic_connectivity.py']
     environment = {'compiler': subprocess.check_output(['g++', '--version'], text=True), 'flags': flags,

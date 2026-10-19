@@ -1,10 +1,12 @@
 ---
-title: "定数時間 mod inv"
-documentation_of: //math/mod_inv.hpp
+title: 定数時間 mod inv
+documentation_of: //math/number_theory/mod_inv.hpp
+redirect_from:
+- /math/mod_inv.hpp.html
 ---
 
 ```cpp
-#include "lib/math/mod_inv.hpp"
+#include "lib/math/number_theory/mod_inv.hpp"
 
 ModInv inverse(17);
 auto x = inverse.inv(3); // 6
@@ -20,6 +22,6 @@ auto x = inverse.inv(3); // 6
 
 返り値 `y = inverse.inv(x)` は $$xy\equiv1\pmod p$$ を満たします。上の例は $$3\cdot6\equiv1\pmod{17}$$ です。コンストラクタで前計算するため、問い合わせのたびにオブジェクトを作る必要はありません。
 
-小さい分子・分母による有理数表現と逆元表を前計算するため、問い合わせ時に Euclid の互除法や繰り返し二乗法を行いません。累乗も必要なら、逆元機能を含む [ModPow](https://qandori.github.io/cp-library/math/mod_pow.hpp.html) を使います。
+小さい分子・分母による有理数表現と逆元表を前計算するため、問い合わせ時に Euclid の互除法や繰り返し二乗法を行いません。累乗も必要なら、逆元機能を含む [ModPow](https://qandori.github.io/cp-library/math/number_theory/mod_pow.hpp.html) を使います。
 
 前計算は $$O(p^{2/3})$$ 時間・空間、`mod`・`inv` は $$O(1)$$ 時間です。

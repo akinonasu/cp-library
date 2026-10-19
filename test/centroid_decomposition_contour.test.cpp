@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_range_contour_sum_on_tree"
-#include "graph/centroid_decomposition.hpp"
+#include "tree/centroid_decomposition.hpp"
 #include <cstdint>
 #include <iostream>
 

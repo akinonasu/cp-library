@@ -1,4 +1,4 @@
-#include "graph/rerooting.hpp"
+#include "tree/rerooting.hpp"
 #include <chrono>
 #include <cstdlib>
 #include <iomanip>

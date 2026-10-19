@@ -1,4 +1,4 @@
-#include "math/stern_brocot_tree.hpp"
+#include "math/number_theory/stern_brocot_tree.hpp"
 #include "math/fraction.hpp"
 #include <array>
 #include <cassert>

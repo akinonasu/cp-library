@@ -1,5 +1,5 @@
 #ifndef COMB_HEADER
-#define COMB_HEADER "math/comb.hpp"
+#define COMB_HEADER "math/combinatorics/comb.hpp"
 #endif
 #ifndef PREFIX_HEADER
 #define PREFIX_HEADER "components/binomial_prefix_core.hpp"

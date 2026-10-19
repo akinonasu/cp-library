@@ -1,10 +1,12 @@
 ---
-title: "Min of Mod of Linear"
-documentation_of: //math/min_of_mod_of_linear.hpp
+title: Min of Mod of Linear
+documentation_of: //math/floor_sum/min_of_mod_of_linear.hpp
+redirect_from:
+- /math/min_of_mod_of_linear.hpp.html
 ---
 
 ```cpp
-#include "lib/math/min_of_mod_of_linear.hpp"
+#include "lib/math/floor_sum/min_of_mod_of_linear.hpp"
 
 auto value = min_of_mod_of_linear(4, 5, 2, 1); // 0
 ```

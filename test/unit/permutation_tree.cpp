@@ -1,4 +1,4 @@
-#include "../../data_structure/permutation_tree.hpp"
+#include "../../tree/permutation_tree.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <numeric>

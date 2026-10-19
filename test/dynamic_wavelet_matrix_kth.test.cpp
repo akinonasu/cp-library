@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/range_kth_smallest"
-#include "../data_structure/dynamic_wavelet_matrix.hpp"
+#include "../data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
 #include <iostream>
 #include <vector>
 

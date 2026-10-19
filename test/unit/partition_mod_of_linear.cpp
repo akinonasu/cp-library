@@ -1,4 +1,4 @@
-#include "math/partition_mod_of_linear.hpp"
+#include "math/floor_sum/partition_mod_of_linear.hpp"
 #include "test/benchmark/mod_linear_partition_baseline.hpp"
 #include <array>
 #include <cassert>

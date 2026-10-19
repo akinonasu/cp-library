@@ -1,4 +1,4 @@
-#include "graph/max_flow.hpp"
+#include "graph/flow/max_flow.hpp"
 #include "components/fast_io.hpp"
 #include <string_view>
 

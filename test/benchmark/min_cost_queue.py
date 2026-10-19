@@ -12,7 +12,7 @@ import tarfile
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
-HEADERS = ['graph/min_cost_flow.hpp', 'components/flow_graph.hpp',
+HEADERS = ['graph/flow/min_cost_flow.hpp', 'components/flow_graph.hpp',
            'components/min_cost_circulation.hpp', 'components/d_ary_heap.hpp',
            'components/RadixHeap.hpp']
 NAMES = ['random_positive', 'zero_90_percent', 'all_zero', 'cost_0_to_3', 'dag', 'parallel_two_vertices']
@@ -74,7 +74,7 @@ def main():
         for config, options in flags.items():
             binary = temporary / config
             command = [args.cxx, *options, '-I', str(ROOT),
-                       '-DBASELINE_MIN_COST_FLOW_HEADER=' + json.dumps(str(baseline / 'graph/min_cost_flow.hpp')),
+                       '-DBASELINE_MIN_COST_FLOW_HEADER=' + json.dumps(str(baseline / 'graph/flow/min_cost_flow.hpp')),
                        str(source), '-o', str(binary)]
             subprocess.run(command, check=True)
             binaries[config] = binary

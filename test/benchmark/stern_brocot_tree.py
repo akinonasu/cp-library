@@ -100,7 +100,7 @@ def main():
               'source_hash_normalization': 'CRLF to LF',
               'metric': 'wall time including startup, input, queries, output and exit',
               'sources': {name: sha(ROOT / name) for name in ['test/stern_brocot_tree.test.cpp',
-                  'math/stern_brocot_tree.hpp', 'components/stern_brocot_path.hpp', 'components/fast_io.hpp']},
+                  'math/number_theory/stern_brocot_tree.hpp', 'components/stern_brocot_path.hpp', 'components/fast_io.hpp']},
               'references': {name: sha(cpp) for name, (cpp, _) in programs.items() if name.startswith('reference_')},
               'workloads': {}}
     for name, data in workloads.items():
