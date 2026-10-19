@@ -277,6 +277,10 @@
 
 提出には [oj-bundle](https://github.com/online-judge-tools/verification-helper) の利用を想定しています。
 
+| 提出用ツール | 説明 |
+| --- | --- |
+| [tools/compact_fps.py](tools/compact_fps.py) | FPS の結合ソースの短縮（[使い方](docs/fps.md)） |
+
 例えば
 
 ```sh

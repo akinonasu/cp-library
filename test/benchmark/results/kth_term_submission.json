@@ -1,8 +1,5 @@
 {
-  "recorded_at": "2026-10-19T07:13:27.600482+00:00",
   "source": "submissions/kth_term_of_linearly_recurrent_sequence.cpp",
-  "source_sha256": "f64de28d6a23200ef6637a869f5e81e42e60bb35de9f1aaa10ea445c0503b050",
-  "source_bytes": 402426,
   "generated_from": "test/fps_linear_recurrence.test.cpp",
   "generation": [
     "oj-bundle",
@@ -10,8 +7,6 @@
     ".",
     "test/fps_linear_recurrence.test.cpp"
   ],
-  "library_revision": "20dc176bba528a2177c22847da29e409bb693e4e",
-  "identical_to_source_size_verification_bundle": false,
   "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
   "compiler_sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
   "flags": [
@@ -169,17 +164,36 @@
   "checker_sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
   "result": "passed",
   "cases_passed": 20,
-  "source_unchanged": true,
   "judge_submission_performed": false,
   "judge_fastest_confirmed": false,
-  "bundle_sha256_before_normalization": "e747728c941cfd78c9ee3d93ae8df16a6abfd03876731af5ea30035328ce1182",
-  "normalization": {
-    "command": [
-      "sed",
-      "s/^[[:blank:]]*$//"
-    ],
-    "only_whitespace_on_empty_lines": true,
-    "line_count_unchanged": true,
-    "whole_executable_sha256_matches_20_case_verification": true
+  "recorded_at": "2026-10-19T12:13:22.039198+00:00",
+  "source_sha256": "370a76efc0dee0442b3a612095b433440715a49f647da0879024aeaca0ebb853",
+  "source_bytes": 248530,
+  "library_revision": "8fff4f8d938b38768e029b974c8f1cc35f0733fa",
+  "compression": [
+    "python3",
+    "tools/compact_fps.py",
+    "--limit",
+    "262144"
+  ],
+  "compression_tool_sha256": "ed9dfc1114fffb7b9bd39963138b52695ca0e99a7e162779fb1f0e5678c370bf",
+  "build_command": [
+    "/usr/bin/g++",
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell",
+    "/workspace/cp-library/submissions/kth_term_of_linearly_recurrent_sequence.cpp",
+    "-o",
+    "/workspace/cp-fps-256/submission-main"
+  ],
+  "source_unchanged": true,
+  "official_case_evidence_reused": {
+    "record": "fps_compact/previous_submission.json",
+    "record_sha256": "cbc6fd69a8c66a618f3e7b02b24c2348ee7fdeea39b045cc1298e69abf39ff6f",
+    "whole_executable_identical": true,
+    "compiler_checker_inputs_answers_hashes_match": true
   }
 }
