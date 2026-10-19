@@ -1,0 +1,15 @@
+--- a/components/dijkstra_queue.hpp
++++ b/components/dijkstra_queue.hpp
+@@ -94,12 +94,6 @@
+ 			last_ += std::uint32_t(minimum_[index] - std::uint32_t(last_));
+ 			minimum_[index] = std::numeric_limits<std::uint32_t>::max();
+ 			occupied_ &= occupied_ - 1;
+-			if (buckets_[index].size() == 1) {
+-				auto state = buckets_[index].back();
+-				buckets_[index].clear();
+-				--count_;
+-				return {T(last_), int(std::uint32_t(state))};
+-			}
+ 			for (auto state : buckets_[index]) put(state);
+ 			buckets_[index].clear();
+ 		}

@@ -96,6 +96,66 @@ void random_graphs(mt19937_64 &random) {
 	}
 }
 
+template<class T>
+void sparse_graphs() {
+	using Graph = DirectedCSR<T>;
+	constexpr int n = 65536;
+	Graph produced;
+	for (int m : {0, 31, 32, 33, 65, 4099, 16385}) {
+		for (int mode = 0; mode < 4; ++mode) {
+			vector<typename Graph::Edge> edges;
+			vector<vector<pair<int, T>>> expected(n);
+			for (int i = 0; i < m; ++i) {
+				const array<int, 5> starts = {0, n - 1, n / 2, 1, n - 2};
+				int from = mode == 0 ? 0 : mode == 1 ? n - 1 : starts[i % starts.size()];
+				if (mode == 3) from = i % 4 == 0 ? 0 : i + 1;
+				int to = i % 7 == 0 ? n - 1 : (i * 7919 + 13) % n;
+				T weight;
+				if constexpr (is_same_v<T, string>) weight = to_string(i) + string(40, char('a' + i % 26));
+				else weight = i % 2 ? -i : i;
+				edges.push_back({from, to, weight});
+				expected[from].emplace_back(to, weight);
+			}
+			Graph graph(n, edges);
+			check_graph(graph, expected);
+			int calls = 0;
+			produced.build(n, edges.size(), [&](auto emit) {
+				++calls;
+				for (const auto &edge : edges) emit(edge);
+			});
+			assert(calls == 1);
+			check_graph(produced, expected);
+			Graph copied = graph;
+			Graph moved = std::move(copied);
+			check_graph(moved, expected);
+			check_graph(copied, {});
+			copied = produced;
+			check_graph(copied, expected);
+			moved = std::move(copied);
+			check_graph(moved, expected);
+			copied.build(2, {});
+			check_graph(copied, vector<vector<pair<int, T>>>(2));
+			copied.build(n, edges);
+			check_graph(copied, expected);
+			edges.clear();
+			edges.shrink_to_fit();
+			check_graph(graph, expected);
+			check_graph(produced, expected);
+		}
+	}
+	bool failed = false;
+	try {
+		produced.build(n, 65, [&](auto emit) {
+			for (int i = 0; i < 33; ++i) emit(typename Graph::Edge{i % 2 ? 0 : n - 1, n - 1, T{}});
+			throw runtime_error("producer");
+		});
+	} catch (const runtime_error &) { failed = true; }
+	assert(failed);
+	check_graph(produced, vector<vector<pair<int, T>>>(n));
+	produced.build(0, 0, [](auto) {});
+	check_graph(produced, {});
+}
+
 int main() {
 	static_assert(is_same_v<DirectedCSR<uint32_t>::weight_type, uint32_t>);
 	static_assert(is_same_v<DirectedCSR<uint32_t>::distance_type, int64_t>);
@@ -231,4 +291,6 @@ int main() {
 	random_graphs<uint32_t>(random);
 	random_graphs<uint64_t>(random);
 	random_graphs<double>(random);
+	sparse_graphs<int>();
+	sparse_graphs<string>();
 }

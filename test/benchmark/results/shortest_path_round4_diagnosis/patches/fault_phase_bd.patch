@@ -1,0 +1,25 @@
+--- bd29f70/components/directed_csr.hpp
++++ diagnostic/components/directed_csr.hpp
+@@ -13,6 +13,8 @@
+ #include <vector>
+ 
+ namespace directed_csr_detail { struct Access; }
++
++namespace reproduce { inline std::uintptr_t offset, arcs, edges; }
+ 
+ template<class T>
+ class DirectedCSR {
+@@ -47,11 +49,13 @@
+ 			if (edges.size() != n) single_gap_ = int(std::find(offset_.begin(), offset_.end() - 1, 0) - offset_.begin());
+ 			for (std::size_t v = 0; v <= n; ++v) offset_[v] = v - (single_gap_ >= 0 && v > std::size_t(single_gap_));
+ 			arcs_.resize(edges.size());
++		reproduce::offset = reinterpret_cast<std::uintptr_t>(offset_.data()); reproduce::arcs = reinterpret_cast<std::uintptr_t>(arcs_.data()); reproduce::edges = reinterpret_cast<std::uintptr_t>(edges.data());
+ 			for (const auto &edge : edges) arcs_[edge.from - (single_gap_ >= 0 && edge.from > single_gap_)] = {edge.to, edge.weight};
+ 			return;
+ 		}
+ 		for (std::size_t v = 1; v < offset_.size(); ++v) offset_[v] += offset_[v - 1];
+ 		arcs_.resize(edges.size());
++		reproduce::offset = reinterpret_cast<std::uintptr_t>(offset_.data()); reproduce::arcs = reinterpret_cast<std::uintptr_t>(arcs_.data()); reproduce::edges = reinterpret_cast<std::uintptr_t>(edges.data());
+ 		for (std::size_t i = edges.size(); i; --i) {
+ 			const auto &edge = edges[i - 1];
+ 			arcs_[--offset_[edge.from]] = {edge.to, edge.weight};
