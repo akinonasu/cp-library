@@ -120,6 +120,7 @@
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
 | `data_structure/segment_tree/generic_segtree_beats.hpp` | 汎用 Segtree Beats | [使い方](docs/generic_segtree_beats.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
+| `data_structure/segment_tree/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
 | `data_structure/segment_tree/sortable_segtree.hpp` | Sortable Segtree（区間ソート・区間集約） | [使い方](docs/sortable_segtree.md) |
 
 ### Wavelet Matrix

@@ -4,6 +4,7 @@
 #include "graph/connectivity/dynamic_connectivity.hpp"
 #include "data_structure/segment_tree/dynamic_segtree.hpp"
 #include "data_structure/segment_tree/dual_segtree.hpp"
+#include "data_structure/segment_tree/dynamic_lazy_segtree.hpp"
 #include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
 #include "data_structure/li_chao_tree.hpp"
 #include "data_structure/dynamic_li_chao_tree.hpp"
