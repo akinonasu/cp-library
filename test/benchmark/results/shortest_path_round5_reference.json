@@ -1,0 +1,789 @@
+{
+  "retrieved_at": "2026-10-19T06:12:48.737403+00:00",
+  "problem": "shortest_path",
+  "ranking": "All AC submissions ordered by +time; users are not deduplicated",
+  "listing_url": "https://v3.api.judge.yosupo.jp/submissions?problem=shortest_path&status=AC&order=%2Btime&limit=20",
+  "listing": {
+    "count": 3143,
+    "submissions": [
+      {
+        "id": 407097,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30457856,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-30T01:41:41.808768Z",
+        "time": 0.038
+      },
+      {
+        "id": 404592,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 20021248,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-21T09:44:36.551045Z",
+        "time": 0.04,
+        "user_name": "Rohan_Kapri"
+      },
+      {
+        "id": 403027,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 19984384,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-16T21:59:05.829603Z",
+        "time": 0.04,
+        "user_name": "nandhagk"
+      },
+      {
+        "id": 410532,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30162944,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-10-15T03:04:59.460423Z",
+        "time": 0.044,
+        "user_name": "twins_fuyu"
+      },
+      {
+        "id": 386103,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 34902016,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-07-18T02:54:39.769536Z",
+        "time": 0.05,
+        "user_name": "twins_fuyu"
+      },
+      {
+        "id": 410434,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 32276480,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-10-14T16:28:28.44013Z",
+        "time": 0.052,
+        "user_name": "twins_fuyu"
+      },
+      {
+        "id": 410523,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 32256000,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-10-15T02:42:37.178777Z",
+        "time": 0.053,
+        "user_name": "twins_fuyu"
+      },
+      {
+        "id": 410522,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 36184064,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-10-15T02:36:57.498732Z",
+        "time": 0.057,
+        "user_name": "twins_fuyu"
+      },
+      {
+        "id": 386101,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30466048,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-07-18T02:16:40.647423Z",
+        "time": 0.057,
+        "user_name": "twins_fuyu"
+      },
+      {
+        "id": 410428,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 37294080,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-10-14T16:01:06.503402Z",
+        "time": 0.06,
+        "user_name": "twins_fuyu"
+      },
+      {
+        "id": 373581,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24080384,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-05-20T02:14:05.796036Z",
+        "time": 0.061,
+        "user_name": "sigma"
+      },
+      {
+        "id": 373573,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 23601152,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-05-20T01:15:20.092888Z",
+        "time": 0.061
+      },
+      {
+        "id": 410431,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 38322176,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-10-14T16:19:20.654069Z",
+        "time": 0.062,
+        "user_name": "twins_fuyu"
+      },
+      {
+        "id": 210465,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 20660224,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2024-05-21T10:52:08.821291Z",
+        "time": 0.062,
+        "user_name": "Yuezheng_Ling_fans"
+      },
+      {
+        "id": 372228,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 20701184,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-05-13T13:02:55.596548Z",
+        "time": 0.063
+      },
+      {
+        "id": 305673,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30388224,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2025-08-08T03:03:44.520043Z",
+        "time": 0.063,
+        "user_name": "Kiffaz11"
+      },
+      {
+        "id": 327722,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30396416,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2025-11-10T05:28:24.362108Z",
+        "time": 0.064,
+        "user_name": "Kiffaz11"
+      },
+      {
+        "id": 305668,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30806016,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2025-08-08T02:55:21.37039Z",
+        "time": 0.064,
+        "user_name": "Kiffaz11"
+      },
+      {
+        "id": 291460,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 23683072,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2025-06-07T06:12:50.830254Z",
+        "time": 0.064,
+        "user_name": "Kiffaz11"
+      },
+      {
+        "id": 336438,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 20697088,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2025-12-13T06:00:33.620653Z",
+        "time": 0.065,
+        "user_name": "lehuyduc"
+      }
+    ]
+  },
+  "references": [
+    {
+      "id": 407097,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 30457856,
+      "problem_name": "shortest_path",
+      "problem_title": "Shortest Path",
+      "status": "AC",
+      "submission_time": "2026-09-30T01:41:41.808768Z",
+      "time": 0.038,
+      "rank": 1,
+      "source_sha256": "c9ef396d351cdab68d78374e4620e92203b6a96abf1303125f3ca2b77d95a159",
+      "source_bytes": 10954,
+      "classification": {
+        "algorithm": "Dijkstra with a circular 32-bit radix heap; full 64-bit fallback",
+        "separate_methods": [
+          "Topological relaxation of the zero-indegree removable part",
+          "Deterministic walk when all outdegrees or all indegrees are at most one"
+        ],
+        "queue": [
+          "Inline array for at most 32 records",
+          "Cached minimum per nonzero radix bucket",
+          "Packed low 32-bit distance and 32-bit vertex in each 64-bit record",
+          "64-bit reconstructed extraction floor",
+          "64-bit radix fallback if initial topological frontier spans more than 1e9"
+        ],
+        "constraints": [
+          "Input weights are at most 1e9",
+          "The circular queue requires live keys within floor..floor+1e9"
+        ],
+        "target_optimizations": [
+          "The target is not inserted into the queue",
+          "Stop when the minimum queued key is at least the discovered target distance",
+          "Non-target sinks are disabled"
+        ],
+        "graph": "CSR",
+        "source_ranges": {
+          "queue": [
+            99,
+            206
+          ],
+          "search": [
+            208,
+            295
+          ]
+        }
+      },
+      "case_results": [
+        {
+          "case": "example_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 565248,
+          "status": "AC",
+          "time": 0
+        },
+        {
+          "case": "example_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 790528,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "small_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 667648,
+          "status": "AC",
+          "time": 0.009
+        },
+        {
+          "case": "small_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 552960,
+          "status": "AC",
+          "time": 0
+        },
+        {
+          "case": "small_02",
+          "checker_out": "b2sgT0sK",
+          "memory": 786432,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "small_03",
+          "checker_out": "b2sgT0sK",
+          "memory": 557056,
+          "status": "AC",
+          "time": 0
+        },
+        {
+          "case": "small_04",
+          "checker_out": "b2sgT0sK",
+          "memory": 831488,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "max_sparse_random_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 16773120,
+          "status": "AC",
+          "time": 0.022
+        },
+        {
+          "case": "max_sparse_random_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 17793024,
+          "status": "AC",
+          "time": 0.029
+        },
+        {
+          "case": "max_sparse_random_02",
+          "checker_out": "b2sgT0sK",
+          "memory": 18481152,
+          "status": "AC",
+          "time": 0.033
+        },
+        {
+          "case": "sparse_random_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 18358272,
+          "status": "AC",
+          "time": 0.023
+        },
+        {
+          "case": "sparse_random_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 20193280,
+          "status": "AC",
+          "time": 0.024
+        },
+        {
+          "case": "sparse_random_02",
+          "checker_out": "b2sgT0sK",
+          "memory": 10481664,
+          "status": "AC",
+          "time": 0.014
+        },
+        {
+          "case": "max_star_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 14692352,
+          "status": "AC",
+          "time": 0.015
+        },
+        {
+          "case": "max_star_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 14716928,
+          "status": "AC",
+          "time": 0.016
+        },
+        {
+          "case": "max_dense_random_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 9891840,
+          "status": "AC",
+          "time": 0.012
+        },
+        {
+          "case": "max_dense_random_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 9449472,
+          "status": "AC",
+          "time": 0.02
+        },
+        {
+          "case": "max_dense_long_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 10018816,
+          "status": "AC",
+          "time": 0.012
+        },
+        {
+          "case": "max_dense_zero_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 10764288,
+          "status": "AC",
+          "time": 0.011
+        },
+        {
+          "case": "almost_line_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 21536768,
+          "status": "AC",
+          "time": 0.035
+        },
+        {
+          "case": "almost_line_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 19771392,
+          "status": "AC",
+          "time": 0.038
+        },
+        {
+          "case": "almost_line_02",
+          "checker_out": "b2sgT0sK",
+          "memory": 20262912,
+          "status": "AC",
+          "time": 0.032
+        },
+        {
+          "case": "line_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 30457856,
+          "status": "AC",
+          "time": 0.033
+        },
+        {
+          "case": "grid_swirl_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 16834560,
+          "status": "AC",
+          "time": 0.025
+        },
+        {
+          "case": "grid_random_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 13639680,
+          "status": "AC",
+          "time": 0.017
+        },
+        {
+          "case": "wrong_dijkstra_killer_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 16797696,
+          "status": "AC",
+          "time": 0.021
+        },
+        {
+          "case": "wrong_dijkstra_killer_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 26124288,
+          "status": "AC",
+          "time": 0.038
+        },
+        {
+          "case": "spfa_killer_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 22847488,
+          "status": "AC",
+          "time": 0.031
+        },
+        {
+          "case": "wrong_dijkstra_handmade_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 565248,
+          "status": "AC",
+          "time": 0
+        }
+      ],
+      "url": "https://judge.yosupo.jp/submission/407097"
+    },
+    {
+      "id": 404592,
+      "is_latest": true,
+      "lang": "cpp",
+      "memory": 20021248,
+      "problem_name": "shortest_path",
+      "problem_title": "Shortest Path",
+      "status": "AC",
+      "submission_time": "2026-09-21T09:44:36.551045Z",
+      "time": 0.04,
+      "user_name": "Rohan_Kapri",
+      "rank": 2,
+      "source_sha256": "ed2e29063256e08660176ff510672db36db03af15909dd2433566d026f62a294",
+      "source_bytes": 141948,
+      "classification": {
+        "algorithm": "Dijkstra with a 64-bit monotone radix heap",
+        "separate_methods": [
+          "Deterministic walk when all outdegrees or all indegrees are at most one"
+        ],
+        "queue": [
+          "Inline array for at most 32 records",
+          "Bucket zero stores only vertex IDs",
+          "Occupied-bucket bitmask",
+          "Singleton nonzero bucket is returned directly",
+          "AVX2 minimum reduction for buckets containing at least 8 records",
+          "uint64 key and uint32 vertex use a 16-byte record"
+        ],
+        "target_optimizations": [
+          "The target is not inserted into the queue",
+          "Stop when the minimum queued key is at least the discovered target distance",
+          "Non-target sinks are disabled"
+        ],
+        "graph": "CSR",
+        "source_ranges": {
+          "minimum": [
+            2591,
+            2679
+          ],
+          "queue": [
+            2894,
+            3095
+          ],
+          "search": [
+            3210,
+            3259
+          ]
+        }
+      },
+      "case_results": [
+        {
+          "case": "example_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 569344,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "example_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 565248,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "small_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 831488,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "small_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 872448,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "small_02",
+          "checker_out": "b2sgT0sK",
+          "memory": 589824,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "small_03",
+          "checker_out": "b2sgT0sK",
+          "memory": 552960,
+          "status": "AC",
+          "time": 0.001
+        },
+        {
+          "case": "small_04",
+          "checker_out": "b2sgT0sK",
+          "memory": 532480,
+          "status": "AC",
+          "time": 0
+        },
+        {
+          "case": "max_sparse_random_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 11841536,
+          "status": "AC",
+          "time": 0.016
+        },
+        {
+          "case": "max_sparse_random_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 11837440,
+          "status": "AC",
+          "time": 0.032
+        },
+        {
+          "case": "max_sparse_random_02",
+          "checker_out": "b2sgT0sK",
+          "memory": 12378112,
+          "status": "AC",
+          "time": 0.028
+        },
+        {
+          "case": "sparse_random_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 10698752,
+          "status": "AC",
+          "time": 0.013
+        },
+        {
+          "case": "sparse_random_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 11055104,
+          "status": "AC",
+          "time": 0.014
+        },
+        {
+          "case": "sparse_random_02",
+          "checker_out": "b2sgT0sK",
+          "memory": 8704000,
+          "status": "AC",
+          "time": 0.013
+        },
+        {
+          "case": "max_star_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 12890112,
+          "status": "AC",
+          "time": 0.013
+        },
+        {
+          "case": "max_star_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 12890112,
+          "status": "AC",
+          "time": 0.015
+        },
+        {
+          "case": "max_dense_random_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 10514432,
+          "status": "AC",
+          "time": 0.011
+        },
+        {
+          "case": "max_dense_random_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 10633216,
+          "status": "AC",
+          "time": 0.012
+        },
+        {
+          "case": "max_dense_long_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 9478144,
+          "status": "AC",
+          "time": 0.012
+        },
+        {
+          "case": "max_dense_zero_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 9437184,
+          "status": "AC",
+          "time": 0.01
+        },
+        {
+          "case": "almost_line_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 11862016,
+          "status": "AC",
+          "time": 0.034
+        },
+        {
+          "case": "almost_line_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 12615680,
+          "status": "AC",
+          "time": 0.035
+        },
+        {
+          "case": "almost_line_02",
+          "checker_out": "b2sgT0sK",
+          "memory": 11812864,
+          "status": "AC",
+          "time": 0.034
+        },
+        {
+          "case": "line_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 14950400,
+          "status": "AC",
+          "time": 0.029
+        },
+        {
+          "case": "grid_swirl_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 11644928,
+          "status": "AC",
+          "time": 0.022
+        },
+        {
+          "case": "grid_random_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 11141120,
+          "status": "AC",
+          "time": 0.015
+        },
+        {
+          "case": "wrong_dijkstra_killer_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 20021248,
+          "status": "AC",
+          "time": 0.033
+        },
+        {
+          "case": "wrong_dijkstra_killer_01",
+          "checker_out": "b2sgT0sK",
+          "memory": 16805888,
+          "status": "AC",
+          "time": 0.04
+        },
+        {
+          "case": "spfa_killer_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 14999552,
+          "status": "AC",
+          "time": 0.035
+        },
+        {
+          "case": "wrong_dijkstra_handmade_00",
+          "checker_out": "b2sgT0sK",
+          "memory": 815104,
+          "status": "AC",
+          "time": 0.01
+        }
+      ],
+      "url": "https://judge.yosupo.jp/submission/404592"
+    }
+  ],
+  "comparison": {
+    "scope": "The general-graph search in every inspected top-20 submission is Dijkstra. Some have separate special-case algorithms.",
+    "reusable_candidates": [
+      "Small-queue linear minimum before radix migration",
+      "Bucket-zero vertex-only storage",
+      "Direct extraction from a singleton bucket",
+      "Occupied-bucket bitmask",
+      "Cached minima versus SIMD minimum scans",
+      "CSR graph storage",
+      "Single-target upper-bound termination"
+    ],
+    "queue_tradeoffs": {
+      "cached_minimum": "407097 updates one minimum during insertion and redistribution, avoiding a separate minimum scan at refill.",
+      "simd_scan": "404592 scans record keys at refill, uses scalar reduction below 8 records and AVX2 otherwise.",
+      "circular_32bit": "407097 packs key and vertex into 8 bytes. Correct ordering depends on a bounded live-key window; its topological initial frontier can require a 64-bit fallback.",
+      "general_64bit": "404592 accepts monotone unsigned 64-bit keys without a maximum-edge bound. Its key/vertex records occupy 16 bytes and bucket zero stores only vertices.",
+      "inline": "All three use a linear minimum for at most 32 pending records and migrate permanently once that limit is crossed."
+    },
+    "target_contract": [
+      "A finite tentative target distance is an upper bound on the optimal target distance.",
+      "If every queued key is at least that bound, nonnegative edges cannot improve it.",
+      "The target need not enter the queue.",
+      "Suppressing other sinks and stopping early do not preserve final distances to all vertices.",
+      "Apply these optimizations only to an explicitly single-target API, preserving the all-distances contract."
+    ],
+    "separate_algorithm_policy": "Keep the Dijkstra API. Skip queue work on a forced source prefix and when every vertex has at most one incoming edge; use direct CSR indexing when every row has one edge except for at most one empty row. Topological preprocessing remains explicit through dijkstra<true> and dijkstra_path<true>. No BFS branch is included.",
+    "measurement_caveat": "API times include parsing, graph construction, path output, and special-case branches; they do not isolate the Dijkstra kernel.",
+    "judge_environment": "The public submission API returns lang=cpp and case timings, but does not identify the historical compiler version, flags, or CPU. Do not infer local performance from API rank.",
+    "license": "No explicit license grant was found in the inspected submission sources. Sources remain in the ignored reference cache; compare algorithmic ideas and independently implement repository code."
+  }
+}

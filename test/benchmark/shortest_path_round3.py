@@ -88,7 +88,7 @@ def freeze_reference(destination, source, revision=None):
     return translation, copied, manifest
 
 
-def main(baseline=BASELINE, driver_path=DRIVER, cache_name='round3', entrypoint=None):
+def main(baseline=BASELINE, driver_path=DRIVER, cache_name='round3', entrypoint=None, synthetic_factory=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--problem', type=Path, default=Path.home() / '.cache/online-judge-tools/library-checker-problems/graph/shortest_path')
@@ -216,7 +216,7 @@ def main(baseline=BASELINE, driver_path=DRIVER, cache_name='round3', entrypoint=
     cases = [] if args.synthetic_only else sorted((args.problem / 'in').glob('*.in'))
     if not args.official_only:
         with exclusive():
-            cases += synthetic_cases(cache / 'inputs')
+            cases += (synthetic_factory or synthetic_cases)(cache / 'inputs')
     if args.only:
         cases = [case for case in cases if case.stem in args.only]
     if not cases:
@@ -263,6 +263,7 @@ def main(baseline=BASELINE, driver_path=DRIVER, cache_name='round3', entrypoint=
     assert sha(ROOT / driver_path) == environment['driver_sha256']
     assert sha(Path(entrypoint or __file__)) == environment['runner_sha256']
     assert sha(Path(__file__)) == environment['helper_sha256']
+    assert sha(ROOT / 'test/benchmark/shortest_path.py') == environment['utility_sha256']
     assert all(sha(ROOT / key) == digest for key, digest in live_sources.items())
     assert all(sha(output / path) == digest for path, digest in environment['archived_sources'].items())
     environment['completed_at'] = datetime.now(timezone.utc).isoformat()

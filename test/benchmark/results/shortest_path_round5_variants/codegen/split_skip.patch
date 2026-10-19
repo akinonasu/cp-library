@@ -1,0 +1,60 @@
+--- a/components/directed_csr.hpp
++++ b/components/directed_csr.hpp
+@@ -50,29 +50,45 @@
+ 			for (const auto &edge : edges) arcs_[edge.from - (single_gap_ >= 0 && edge.from > single_gap_)] = {edge.to, edge.weight};
+ 			return;
+ 		}
+-		std::size_t active = offset_[0] != 0;
+-		for (std::size_t v = 1; v < offset_.size(); ++v) {
+-			active += offset_[v] != 0;
+-			offset_[v] += offset_[v - 1];
++		std::size_t active = 0;
++		if (n >= 8192) {
++			active = offset_[0] != 0;
++			for (std::size_t v = 1; v < offset_.size(); ++v) {
++				active += offset_[v] != 0;
++				offset_[v] += offset_[v - 1];
++			}
++		} else {
++			for (std::size_t v = 1; v < offset_.size(); ++v) offset_[v] += offset_[v - 1];
+ 		}
+ 		arcs_.resize(edges.size());
+-		std::size_t i = edges.size();
+ #if defined(__GNUC__) || defined(__clang__)
+ 		if (active >= 8192) {
+-			for (; i > 32; --i) {
+-				const auto from = edges[i - 33].from;
+-				__builtin_prefetch(&offset_[from], 1, 3);
+-				__builtin_prefetch(&arcs_[offset_[from] - 1], 1, 3);
+-				const auto &edge = edges[i - 1];
+-				arcs_[--offset_[edge.from]] = {edge.to, edge.weight};
+-			}
++			scatter_prefetched(edges);
++			return;
+ 		}
+ #endif
++		for (std::size_t i = edges.size(); i; --i) {
++			const auto &edge = edges[i - 1];
++			arcs_[--offset_[edge.from]] = {edge.to, edge.weight};
++		}
++	}
++#if defined(__GNUC__) || defined(__clang__)
++	void scatter_prefetched(std::span<const Edge> edges) {
++		std::size_t i = edges.size();
++		for (; i > 32; --i) {
++			const auto from = edges[i - 33].from;
++			__builtin_prefetch(&offset_[from], 1, 3);
++			__builtin_prefetch(&arcs_[offset_[from] - 1], 1, 3);
++			const auto &edge = edges[i - 1];
++			arcs_[--offset_[edge.from]] = {edge.to, edge.weight};
++		}
+ 		for (; i; --i) {
+ 			const auto &edge = edges[i - 1];
+ 			arcs_[--offset_[edge.from]] = {edge.to, edge.weight};
+ 		}
+ 	}
++#endif
++
+ 	void clear_edges() {
+ 		single_gap_ = -2;
+ 		unique_incoming_ = true;

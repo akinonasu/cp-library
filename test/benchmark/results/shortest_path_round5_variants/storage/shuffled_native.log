@@ -1,0 +1,10 @@
+compiled current_phase
+compiled current_actual
+compiled overwrite_phase
+compiled overwrite_actual
+max_dense_random_00_shuffled {'current_phase': 6.924, 'overwrite_phase': 6.912, 'overwrite_actual': 6.931, 'current_actual': 6.373}
+max_dense_random_01_shuffled {'current_actual': 6.423, 'current_phase': 6.551, 'overwrite_actual': 6.23, 'overwrite_phase': 6.304}
+max_sparse_random_01_shuffled {'overwrite_actual': 12.529, 'current_phase': 12.779, 'current_actual': 12.753, 'overwrite_phase': 12.774}
+max_star_00_shuffled {'overwrite_actual': 8.466, 'overwrite_phase': 8.753, 'current_phase': 8.766, 'current_actual': 8.723}
+line_00_shuffled {'overwrite_phase': 21.807, 'overwrite_actual': 21.519, 'current_phase': 21.983, 'current_actual': 21.81}
+grid_random_00_shuffled {'current_actual': 8.25, 'current_phase': 8.116, 'overwrite_phase': 8.015, 'overwrite_actual': 7.882}

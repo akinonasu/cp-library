@@ -1,0 +1,73 @@
+{
+  "audited_at": "2026-10-19T06:24:01.944440+00:00",
+  "destination": "/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/shortest-path/round5/codegen-replay",
+  "source_manifest_sha256": "525918dbc2820bb5ee768e3963bd9f2bd602a81d6c0c14a243ac6756ad8ee84a",
+  "replay_sha256": "a8baa24739f326e4c79899613bcc776164cd84617887e12f870320bd36a1e3d1",
+  "variants": {
+    "old": {
+      "revision": "bd29f70c70e24e27770b9e9a3777b6cf85664b63",
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "current": {
+      "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "skip": {
+      "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "split": {
+      "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "split_skip": {
+      "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "pointer": {
+      "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "pointer_all": {
+      "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "destination": {
+      "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "destination_local": {
+      "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+      "files": 10,
+      "all_source_hashes_match": true
+    }
+  },
+  "measurements": {
+    "screen_native.json": {
+      "cases": 8,
+      "trials": 9,
+      "frozen_source_hashes_match": true,
+      "all_trial_counts_match": true
+    },
+    "pointer_native.json": {
+      "cases": 8,
+      "trials": 17,
+      "frozen_source_hashes_match": true,
+      "all_trial_counts_match": true
+    },
+    "destination_native.json": {
+      "cases": 8,
+      "trials": 17,
+      "frozen_source_hashes_match": true,
+      "all_trial_counts_match": true
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "baseline": "c075fb7",
+  "source_hashes": {
+    "current": {
+      "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3",
+      "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+      "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+      "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+      "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    },
+    "all": {
+      "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3",
+      "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+      "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+      "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+      "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    },
+    "sorted": {
+      "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3",
+      "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+      "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+      "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+      "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    },
+    "sample64": {
+      "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3",
+      "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+      "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+      "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+      "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    },
+    "sample128": {
+      "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3",
+      "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+      "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+      "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+      "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    },
+    "emplace": {
+      "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3",
+      "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+      "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+      "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+      "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    }
+  }
+}
