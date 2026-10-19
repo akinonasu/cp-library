@@ -1,0 +1,98 @@
+{
+  "retrieved_at": "2026-10-19T21:15:24.927127+00:00",
+  "listing": {
+    "count": 2089,
+    "submissions": [
+      {
+        "id": 362191,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24797184,
+        "problem_name": "line_add_get_min",
+        "problem_title": "Line Add Get Min",
+        "status": "AC",
+        "submission_time": "2026-03-24T23:20:38.282851Z",
+        "time": 0.057,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 357336,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24854528,
+        "problem_name": "line_add_get_min",
+        "problem_title": "Line Add Get Min",
+        "status": "AC",
+        "submission_time": "2026-03-03T11:24:04.329731Z",
+        "time": 0.058,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 357321,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24850432,
+        "problem_name": "line_add_get_min",
+        "problem_title": "Line Add Get Min",
+        "status": "AC",
+        "submission_time": "2026-03-03T11:04:21.158858Z",
+        "time": 0.058,
+        "user_name": "IceKylin"
+      }
+    ]
+  },
+  "references": [
+    {
+      "overview": {
+        "id": 362191,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24797184,
+        "problem_name": "line_add_get_min",
+        "problem_title": "Line Add Get Min",
+        "status": "AC",
+        "submission_time": "2026-03-24T23:20:38.282851Z",
+        "time": 0.057,
+        "user_name": "IceKylin"
+      },
+      "sha256": "d0721414299255528a55f6e64501647b8270e185a3f869470b7b23d4904f57a8",
+      "url": "https://judge.yosupo.jp/submission/362191"
+    },
+    {
+      "overview": {
+        "id": 357336,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24854528,
+        "problem_name": "line_add_get_min",
+        "problem_title": "Line Add Get Min",
+        "status": "AC",
+        "submission_time": "2026-03-03T11:24:04.329731Z",
+        "time": 0.058,
+        "user_name": "IceKylin"
+      },
+      "sha256": "de000107f2be5d61540548fb066e18d81e876c760bb9ba03ac25ec40fba68beb",
+      "url": "https://judge.yosupo.jp/submission/357336"
+    },
+    {
+      "overview": {
+        "id": 357321,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24850432,
+        "problem_name": "line_add_get_min",
+        "problem_title": "Line Add Get Min",
+        "status": "AC",
+        "submission_time": "2026-03-03T11:04:21.158858Z",
+        "time": 0.058,
+        "user_name": "IceKylin"
+      },
+      "sha256": "4573d73694db7a0625b40b5f0452bd42f75e6d74e8c295242f5ce1ea8a8fe029",
+      "url": "https://judge.yosupo.jp/submission/357321"
+    }
+  ],
+  "kinetic": {
+    "url": "https://raw.githubusercontent.com/ekzhang/library/f553dd59b9f5635351478d6f45a9283fe603c840/kinetic_tournament.cpp",
+    "sha256": "5246af20c90e7cc22df792ab7f8ae9209f1f6426409f340a69cd4b9f8789f23c"
+  }
+}

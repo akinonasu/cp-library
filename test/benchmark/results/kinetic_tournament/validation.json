@@ -1,0 +1,92 @@
+{
+  "result": "passed",
+  "checks": [
+    {
+      "compiler": "g++",
+      "official_cases": 15,
+      "seconds": {
+        "example_00.in": 0.003410481999999604,
+        "half_00.in": 0.033312572000006924,
+        "hand_max_00.in": 0.2526477010000008,
+        "max_random_00.in": 0.13144284399999862,
+        "max_random_01.in": 0.1355250020000014,
+        "max_random_02.in": 0.13119868000000423,
+        "no_output_00.in": 0.04558935600000069,
+        "parabola_random_00.in": 0.3215032060000027,
+        "parabola_random_01.in": 0.3240476699999988,
+        "parabola_random_02.in": 0.3243946950000023,
+        "random_00.in": 0.0798531209999993,
+        "random_01.in": 0.08735257499999705,
+        "random_02.in": 0.050392800000004456,
+        "small_00.in": 0.0026189549999955375,
+        "small_01.in": 0.002307920999996327
+      },
+      "bundles": "passed",
+      "example": "compiled and executed"
+    },
+    {
+      "compiler": "clang++",
+      "official_cases": 15,
+      "seconds": {
+        "example_00.in": 0.0026551220000001763,
+        "half_00.in": 0.03019526399999961,
+        "hand_max_00.in": 0.27640613700000216,
+        "max_random_00.in": 0.1338184220000045,
+        "max_random_01.in": 0.14084468699999775,
+        "max_random_02.in": 0.1323447480000013,
+        "no_output_00.in": 0.05568800300000021,
+        "parabola_random_00.in": 0.3627470919999993,
+        "parabola_random_01.in": 0.35904527900000005,
+        "parabola_random_02.in": 0.35532699800000245,
+        "random_00.in": 0.0920300869999977,
+        "random_01.in": 0.09027061700000161,
+        "random_02.in": 0.050503753000000984,
+        "small_00.in": 0.002509400000000994,
+        "small_01.in": 0.002241303000005246
+      },
+      "bundles": "passed",
+      "example": "compiled and executed"
+    }
+  ],
+  "selection": {
+    "headers": [
+      "data_structure/segment_tree/kinetic_tournament.hpp"
+    ],
+    "unit": [
+      "test/unit/kinetic_tournament.cpp",
+      "test/unit/standalone.cpp"
+    ],
+    "sanitize": [
+      "test/unit/kinetic_tournament.cpp"
+    ]
+  },
+  "cases": {
+    "example_00.in": "24eea89347c3b08dcaa8d74a65e7f2feea810ff2d546a4edd7e0b6d16cfff2ff",
+    "half_00.in": "30e5445a622a5752ab391df23c240d2ab39a0caa1434deb307098f633babfa43",
+    "hand_max_00.in": "0f5b13278b218b019c2b84c7e892054ebb5703da5218bc6374cd6de8f18a5faf",
+    "max_random_00.in": "37156c6414750a0ae9829e229e49fc1ebb393c8604f0edceb87d9b627e0709b6",
+    "max_random_01.in": "edbb5852fb9818e053937330feff889b9961851dba60dc6e10a42140d3cfabdd",
+    "max_random_02.in": "bcac6c14e44ebe5f4caef8efda48ed09cb22bb8634b19df718414c8ec091dd57",
+    "no_output_00.in": "1824b919923fecd5dd3a7162594b36957f499140efaad3c5300ae42ea5713508",
+    "parabola_random_00.in": "36a13fae1373661dad1e2a50012d00974e0954bdebcfafeb6b041a2d78ec7d7a",
+    "parabola_random_01.in": "0f610aa63ac4f3703de42328183bc26f85b2acbecd6d8ca3646fa59e67ce5d1d",
+    "parabola_random_02.in": "5d82f76a6b04860a217bb460d7b9e872102113f3a224eb13c9c862bcbf1e6b17",
+    "random_00.in": "8009f625838307dd01bb8111150b003bedd5686921d94ed396b84a5971ca18eb",
+    "random_01.in": "787c9fb69607de58637169a9b65212be1af6687e6a659915a61f96e5dd5e96c4",
+    "random_02.in": "f81286ae54b1876df464b426a0198ba715ee5a2f9718a160e2fab32c40df4dab",
+    "small_00.in": "7189d39852340cbbbd4f5c64c0253ff54dddab34f761da0480946a626c7c999f",
+    "small_01.in": "77d40535af738c8ee68c35a7d95033e1025e2ca98ffe47066ae32362546e74ef"
+  },
+  "sources": {
+    "test/kinetic_tournament.test.cpp": "5ef93b341cd2f2dff5822e84205580abc8d4428438e56ed58a13714420dc1586",
+    "data_structure/segment_tree/kinetic_tournament.hpp": "a1dfb7f3d313744401441365e434c84e9a47579a84bd9b5ddfec6751ba51b53f",
+    "docs/kinetic_tournament.md": "454caa79dfa62e5a2bb6dc3056d65b8c06bfe3f3447b900e78b63d5695881884",
+    "test/unit/kinetic_tournament.cpp": "21ad3a7997f33e912639eaa036c61db2bd9a617bad5b162ff2fd9af613e63ddc",
+    "test/unit/standalone.cpp": "db758badddf4715ea6dc4c8595a89c828afaed77e7b677ad2521772d5517f656",
+    "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+  },
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)\nTarget: x86_64-conda-linux-gnu\nThread model: posix\nInstalledDir: /var/tmp/cp-audit-tools/env/bin\nConfiguration file: /var/tmp/cp-audit-tools/env/bin/x86_64-conda-linux-gnu-clang++.cfg\n"
+  }
+}
