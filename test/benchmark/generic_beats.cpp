@@ -1,5 +1,5 @@
 #include "../fixtures/beats.hpp"
-#include "../../data_structure/segtree_beats.hpp"
+#include "../../data_structure/segment_tree/segtree_beats.hpp"
 #include "reference.hpp"
 #include <chrono>
 #include <iomanip>

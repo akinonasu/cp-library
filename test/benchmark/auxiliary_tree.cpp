@@ -1,6 +1,6 @@
-#include "graph/auxiliary_tree.hpp"
-#include "graph/lca.hpp"
-#include "graph/hld.hpp"
+#include "tree/auxiliary_tree.hpp"
+#include "tree/lca.hpp"
+#include "tree/hld.hpp"
 #include <chrono>
 #include <cstdint>
 #include <iomanip>

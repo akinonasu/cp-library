@@ -1,4 +1,4 @@
-#include "graph/centroid_decomposition.hpp"
+#include "tree/centroid_decomposition.hpp"
 #include <cstdint>
 #include <random>
 

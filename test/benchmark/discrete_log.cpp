@@ -1,4 +1,4 @@
-#include "math/discrete_log.hpp"
+#include "math/number_theory/discrete_log.hpp"
 #include "components/fast_io.hpp"
 #if DISCRETE_LOG_BASELINE
 #include <unordered_map>

@@ -29,7 +29,7 @@ def split_front(text):
 def sources(selection):
     paths = {ROOT / 'README.md', ROOT / 'AGENTS.md', ROOT / 'test/verify.py',
              ROOT / 'test/requirements.txt', selection, Path(__file__).resolve()}
-    for folder in ['components', 'convolution', 'fps', 'data_structure', 'graph', 'math', 'string']:
+    for folder in ['components', 'convolution', 'fps', 'data_structure', 'graph', 'tree', 'math', 'string']:
         paths.update((ROOT / folder).rglob('*.hpp'))
     paths.update((ROOT / 'docs').rglob('*.md'))
     paths.update((ROOT / 'test').glob('*.test.cpp'))
@@ -96,7 +96,7 @@ def audit(plan):
                 metadata_errors.append(dict(header=name, reason='invalid bundle'))
             bundle_hashes[name] = hashlib.sha256(code.encode()).hexdigest()
     readme = (ROOT / 'README.md').read_text()
-    entries = set(re.findall(r'`((?:components|convolution|fps|data_structure|graph|math|string)/[^`]+\.hpp)`', readme))
+    entries = set(re.findall(r'`((?:components|convolution|fps|data_structure|graph|tree|math|string)/[^`]+\.hpp)`', readme))
     previous_readme = subprocess.check_output(['git', 'show', 'HEAD:README.md'], cwd=ROOT, text=True)
     omissions = sorted(headers - entries)
     preexisting_omissions = all(name not in previous_readme for name in omissions)

@@ -2,7 +2,7 @@
 #define STATIC_RANGE_MIN_HPP
 
 #include "default_init_allocator.hpp"
-#include "../data_structure/sparse_table.hpp"
+#include "../data_structure/range_query/sparse_table.hpp"
 #include <algorithm>
 #include <bit>
 #include <cassert>

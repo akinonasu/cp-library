@@ -25,8 +25,8 @@ if args.native:
 environment = {'compiler': subprocess.check_output([args.cxx, '--version'], text=True),
                'flags': flags, 'base': args.base, 'trials': args.trials,
                'affinity': sorted(os.sched_getaffinity(0)) if hasattr(os, 'sched_getaffinity') else None}
-inputs = ['components/ntt_mod.hpp', 'components/quad_bit_vector.hpp', 'math/prime_sieve.hpp',
-          'convolution/convolution_mod.hpp', 'data_structure/wavelet_matrix.hpp',
+inputs = ['components/ntt_mod.hpp', 'components/quad_bit_vector.hpp', 'math/number_theory/prime_sieve.hpp',
+          'convolution/convolution_mod.hpp', 'data_structure/wavelet_matrix/wavelet_matrix.hpp',
           'test/benchmark/gcc_audit.cpp']
 environment['sha256'] = {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in inputs}
 for name, command in [('uname', ['uname', '-a']), ('cpu', ['lscpu'])]:
@@ -35,8 +35,8 @@ for name, command in [('uname', ['uname', '-a']), ('cpu', ['lscpu'])]:
 with tempfile.TemporaryDirectory(prefix='cp-gcc-audit-') as directory:
     directory = Path(directory)
     baseline = directory / 'baseline'
-    for name in ['components/ntt_mod.hpp', 'math/prime_sieve.hpp', 'convolution/convolution_mod.hpp',
-                 'components/quad_bit_vector.hpp', 'data_structure/wavelet_matrix.hpp']:
+    for name in ['components/ntt_mod.hpp', 'math/number_theory/prime_sieve.hpp', 'convolution/convolution_mod.hpp',
+                 'components/quad_bit_vector.hpp', 'data_structure/wavelet_matrix/wavelet_matrix.hpp']:
         target = baseline / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(subprocess.check_output(['git', 'show', f'{args.base}:{name}'], cwd=ROOT))

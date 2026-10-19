@@ -1,4 +1,4 @@
-#include "data_structure/link_cut_tree.hpp"
+#include "tree/link_cut_tree.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>

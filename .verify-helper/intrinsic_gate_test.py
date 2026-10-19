@@ -31,7 +31,7 @@ class IntrinsicGateTests(unittest.TestCase):
 
     def setUp(self):
         no_cache_route_test.NoCacheRouteTests.setUp(self)
-        self.write("test/unit/dynamic_wavelet_core.cpp", '#include "data_structure/dynamic_wavelet_matrix.hpp"\n')
+        self.write("test/unit/dynamic_wavelet_core.cpp", '#include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"\n')
         self.head = self.commit("intrinsic fixture\n\n" + route.TRAILER)
 
     def test_exact_push_pr_and_main_select_all_five_units(self):
@@ -133,12 +133,12 @@ class MatrixIntrinsicGateTests(unittest.TestCase):
         no_cache_route_test.NoCacheRouteTests.setUp(self)
         self.git("checkout", "--quiet", self.base)
         self.write("components/matrix_arithmetic.hpp", "#pragma once\n")
-        self.write("math/matrix.hpp", '#include "../components/matrix_arithmetic.hpp"\n')
+        self.write("math/linear_algebra/matrix.hpp", '#include "../../components/matrix_arithmetic.hpp"\n')
         self.write("math/mint.hpp", "#pragma once\n")
         for name in ("matrix", "matrix_characteristic"):
-            self.write("test/unit/" + name + ".cpp", '#include "math/matrix.hpp"\n#include "math/mint.hpp"\n')
-        self.write("test/unit/standalone.cpp", '#include "data_structure/dynamic_wavelet_matrix.hpp"\n'
-                   '#include "math/matrix.hpp"\n')
+            self.write("test/unit/" + name + ".cpp", '#include "math/linear_algebra/matrix.hpp"\n#include "math/mint.hpp"\n')
+        self.write("test/unit/standalone.cpp", '#include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"\n'
+                   '#include "math/linear_algebra/matrix.hpp"\n')
         self.base = self.commit("matrix baseline", bind=False)
         tree = SourceTree(self.root, self.base)
         evidence = {
@@ -202,7 +202,7 @@ class MatrixIntrinsicGateTests(unittest.TestCase):
                     gate.selected(self.root, *self.push())
 
     def test_actual_extra_dependent_is_rejected_not_removed(self):
-        self.write("test/unit/matrix_extra.cpp", '#include "math/matrix.hpp"\n')
+        self.write("test/unit/matrix_extra.cpp", '#include "math/linear_algebra/matrix.hpp"\n')
         self.head = self.commit("new dependent requires review\n\n" + route.TRAILER)
         with self.assertRaisesRegex(ValueError, "exceeds reviewed gate budget"):
             gate.selected(self.root, *self.push())
@@ -360,7 +360,7 @@ class EditDistanceIntrinsicGateTests(unittest.TestCase):
         self.git("checkout", "--quiet", self.base)
         self.write("string/edit_distance.hpp", "#pragma once\n")
         self.write("test/unit/edit_distance.cpp", '#include "string/edit_distance.hpp"\n')
-        self.write("test/unit/standalone.cpp", '#include "data_structure/dynamic_wavelet_matrix.hpp"\n'
+        self.write("test/unit/standalone.cpp", '#include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"\n'
                    '#include "string/edit_distance.hpp"\n')
         self.base = self.commit("edit-distance baseline", bind=False)
         self.write("string/edit_distance.hpp", "#pragma once\nusing edit_distance_changed = int;\n")

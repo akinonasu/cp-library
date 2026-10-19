@@ -28,7 +28,7 @@ def save(path, value):
 
 def source_guard(selection):
     paths = {ROOT / name for name in selection['verification']}
-    for folder in ['components', 'convolution', 'fps', 'data_structure', 'graph', 'math', 'string']:
+    for folder in ['components', 'convolution', 'fps', 'data_structure', 'graph', 'tree', 'math', 'string']:
         paths.update((ROOT / folder).rglob('*.hpp'))
     paths.update(ROOT.glob('*.hpp'))
     paths.update((ROOT / 'test').glob('*.hpp'))

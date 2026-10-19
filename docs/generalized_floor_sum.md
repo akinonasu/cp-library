@@ -1,10 +1,12 @@
 ---
-title: "Generalized Floor Sum（一般化 floor sum）"
-documentation_of: //math/generalized_floor_sum.hpp
+title: Generalized Floor Sum（一般化 floor sum）
+documentation_of: //math/floor_sum/generalized_floor_sum.hpp
+redirect_from:
+- /math/generalized_floor_sum.hpp.html
 ---
 
 ```cpp
-#include "lib/math/generalized_floor_sum.hpp"
+#include "lib/math/floor_sum/generalized_floor_sum.hpp"
 
 auto value = generalized_floor_sum<1, 2>(4, 5, 2, 1); // 5
 auto sums = generalized_floor_sum_moments<2>(4, 5, 2, 1);

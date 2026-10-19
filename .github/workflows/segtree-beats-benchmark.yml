@@ -55,7 +55,7 @@ jobs:
       - name: Check current header with GCC and Clang
         if: inputs.verify
         run: |
-          python3 -c 'import json; from pathlib import Path; Path("/tmp/beats-selection.json").write_text(json.dumps({"headers":["data_structure/segtree_beats.hpp"],"unit":["test/unit/segtree_beats.cpp"]}))'
+          python3 -c 'import json; from pathlib import Path; Path("/tmp/beats-selection.json").write_text(json.dumps({"headers":["data_structure/segment_tree/segtree_beats.hpp"],"unit":["test/unit/segtree_beats.cpp"]}))'
           python3 test/verify.py --unit-only --cxx g++ clang++ --selection /tmp/beats-selection.json
           UBSAN_OPTIONS=halt_on_error=1 python3 test/verify.py --unit-only --sanitize --cxx clang++ --selection /tmp/beats-selection.json
       - name: Verify Library Checker

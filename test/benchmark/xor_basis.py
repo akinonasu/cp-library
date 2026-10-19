@@ -24,7 +24,7 @@ def main():
     flags = ['-std=c++2b', '-O2', '-DNDEBUG', '-Wall', '-Wextra', '-Werror']
     if args.native:
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
-    paths = ['math/xor_basis.hpp', 'components/xor_basis_core.hpp', 'test/benchmark/xor_basis.cpp', 'test/benchmark/xor_basis.py']
+    paths = ['math/linear_algebra/xor_basis.hpp', 'components/xor_basis_core.hpp', 'test/benchmark/xor_basis.cpp', 'test/benchmark/xor_basis.py']
     env = {'compiler': subprocess.check_output(['g++', '--version'], text=True), 'flags': flags,
            'cpu': subprocess.check_output(['lscpu'], text=True), 'uname': subprocess.check_output(['uname', '-a'], text=True),
            'seed': 713, 'trials': args.trials, 'affinity': [args.cpu],

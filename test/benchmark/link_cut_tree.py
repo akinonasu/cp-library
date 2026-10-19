@@ -39,7 +39,7 @@ def main():
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
     if args.ndebug:
         flags += ['-DNDEBUG']
-    paths = ['data_structure/link_cut_tree.hpp', 'math/mint.hpp',
+    paths = ['tree/link_cut_tree.hpp', 'math/mint.hpp',
              'test/benchmark/link_cut_tree_baseline.hpp', 'test/benchmark/link_cut_tree.cpp',
              'test/benchmark/link_cut_tree_variants.py', 'test/benchmark/link_cut_tree.py']
     environment = {'compiler': subprocess.check_output([args.cxx, '--version'], text=True),

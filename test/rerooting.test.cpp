@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/tree_path_composite_sum"
-#include "graph/rerooting.hpp"
+#include "tree/rerooting.hpp"
 #include "components/fast_io.hpp"
 #include "math/mint.hpp"
 

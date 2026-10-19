@@ -63,7 +63,7 @@ def compare_revisions(args):
     os.sched_setaffinity(0, {cpu})
     flags = ['-O2', '-std=gnu++23', '-ftrivial-auto-var-init=zero', '-fmodules',
              '-DONLINE_JUDGE', '-DATCODER', '-fno-lto', '-march=native', '-Wall', '-Wextra', '-Werror']
-    paths = ['components/matrix_arithmetic.hpp', 'math/matrix.hpp', 'math/mint.hpp',
+    paths = ['components/matrix_arithmetic.hpp', 'math/linear_algebra/matrix.hpp', 'math/mint.hpp',
              'test/benchmark/matrix.cpp']
     source_hashes, binaries = {}, {}
     with tempfile.TemporaryDirectory(prefix='cp-matrix-compare-') as directory:
@@ -157,7 +157,7 @@ def main():
     flags = ['-std=c++2b', '-O2', '-DNDEBUG', '-Wall', '-Wextra', '-Werror']
     if args.native:
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
-    paths = ['components/matrix_arithmetic.hpp', 'math/matrix.hpp', 'math/mint.hpp', 'test/benchmark/matrix.cpp', 'test/benchmark/matrix.py']
+    paths = ['components/matrix_arithmetic.hpp', 'math/linear_algebra/matrix.hpp', 'math/mint.hpp', 'test/benchmark/matrix.cpp', 'test/benchmark/matrix.py']
     env = {'compiler': subprocess.check_output(['g++', '--version'], text=True), 'flags': flags, 'seed': 713,
            'cpu': subprocess.check_output(['lscpu'], text=True), 'uname': subprocess.check_output(['uname', '-a'], text=True),
            'affinity': [args.cpu], 'trials': args.trials, 'sha256': {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in paths}}

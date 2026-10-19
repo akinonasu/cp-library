@@ -1,4 +1,4 @@
-#include "data_structure/wavelet_matrix.hpp"
+#include "data_structure/wavelet_matrix/wavelet_matrix.hpp"
 #include <algorithm>
 #include <cstdint>
 #include <cstdio>

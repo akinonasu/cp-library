@@ -49,8 +49,8 @@ def main():
               'source_hash_normalization': 'CRLF to LF',
               'metric': 'wall time including startup, input, partition, allocation, checksum, output and exit',
               'sources': {name: sha(ROOT/name) for name in ['test/benchmark/mod_linear_partition.cpp',
-                  'test/benchmark/mod_linear_partition_baseline.hpp', 'math/partition_mod_of_linear.hpp',
-                  'math/prefix_min_of_mod_of_linear.hpp', 'components/mod_linear_prefix_min.hpp',
+                  'test/benchmark/mod_linear_partition_baseline.hpp', 'math/floor_sum/partition_mod_of_linear.hpp',
+                  'math/floor_sum/prefix_min_of_mod_of_linear.hpp', 'components/mod_linear_prefix_min.hpp',
                   'components/fast_io.hpp']}, 'workloads': {}}
     for name, cases in workloads.items():
         data = (str(len(cases)) + '\n' + ''.join(' '.join(map(str, case)) + '\n' for case in cases)).encode()

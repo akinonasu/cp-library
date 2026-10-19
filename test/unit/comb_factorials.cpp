@@ -1,5 +1,5 @@
 #define COMB_MAX 70000
-#include "math/comb.hpp"
+#include "math/combinatorics/comb.hpp"
 #include <cstdint>
 #include <cstdlib>
 #include <vector>

@@ -1,10 +1,12 @@
 ---
-title: "Link Cut Tree"
-documentation_of: //data_structure/link_cut_tree.hpp
+title: Link Cut Tree
+documentation_of: //tree/link_cut_tree.hpp
+redirect_from:
+- /data_structure/link_cut_tree.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/link_cut_tree.hpp"
+#include "lib/tree/link_cut_tree.hpp"
 
 std::int64_t op(std::int64_t a, std::int64_t b) { return a + b; }
 std::int64_t e() { return 0; }

@@ -36,7 +36,7 @@ def main():
             path = folder / (name + '.hpp')
             path.write_text(header)
             cpp = folder / (name + '.cpp')
-            cpp.write_text(source.replace('"graph/auxiliary_tree.hpp"', '"' + str(path) + '"'))
+            cpp.write_text(source.replace('"tree/auxiliary_tree.hpp"', '"' + str(path) + '"'))
             binary = folder / name
             subprocess.run(['g++', *flags, '-I', str(ROOT), str(cpp), '-o', str(binary)], check=True)
             binaries[name] = binary

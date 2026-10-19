@@ -1,4 +1,4 @@
-#include "graph/two_edge_connected_components.hpp"
+#include "graph/connectivity/two_edge_connected_components.hpp"
 #include "components/fast_io.hpp"
 #include "two_edge_connected_components_baseline.hpp"
 

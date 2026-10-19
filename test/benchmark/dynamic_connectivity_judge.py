@@ -27,7 +27,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     flags = ['-std=gnu++23', '-O2', '-march=native', '-ftrivial-auto-var-init=zero', '-DATCODER', '-DONLINE_JUDGE']
     reference = args.reference_cache / '402761.cpp'
-    paths = ['data_structure/dynamic_connectivity.hpp', 'components/splitmix64.hpp',
+    paths = ['graph/connectivity/dynamic_connectivity.hpp', 'components/splitmix64.hpp',
              'test/dynamic_connectivity.test.cpp', 'test/benchmark/dynamic_connectivity_baseline.hpp',
              'test/benchmark/dynamic_connectivity_variants.py', 'test/benchmark/dynamic_connectivity_judge.py']
     environment = {'compiler': subprocess.check_output(['g++', '--version'], text=True), 'flags': flags,
@@ -48,7 +48,7 @@ def main():
                 source = reference
             else:
                 text = (ROOT / 'test/dynamic_connectivity.test.cpp').read_text()
-                text = text.replace('../data_structure/dynamic_connectivity.hpp', name + '.hpp')
+                text = text.replace('../graph/connectivity/dynamic_connectivity.hpp', name + '.hpp')
                 text = text.replace('DynamicConnectivity<', f'DynamicConnectivity_{name}<')
                 text = text.replace('int main() {', 'int main(int argc, char **argv) {\n\tif (argc > 1) dynamic_connectivity_benchmark_seed = std::stoull(argv[1]);')
                 text = '#include <cstdint>\n#include <string>\ninline std::uint64_t dynamic_connectivity_benchmark_seed = 713;\n' + text

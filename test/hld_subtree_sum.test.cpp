@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_subtree_sum"
-#include "../data_structure/dynamic_segtree.hpp"
-#include "../graph/hld.hpp"
+#include "../data_structure/segment_tree/dynamic_segtree.hpp"
+#include "../tree/hld.hpp"
 #include <iostream>
 #include <vector>
 

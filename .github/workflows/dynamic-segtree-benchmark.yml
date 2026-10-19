@@ -67,7 +67,7 @@ jobs:
         run: python3 test/benchmark/dynamic_segtree_process.py /tmp/dynamic-segtree-variants benchmark-results 5
       - name: Check current header
         if: inputs.verify
-        run: python3 test/benchmark/verify_selected.py data_structure/dynamic_segtree.hpp test/unit/dynamic_segtree.cpp test/unit/standalone.cpp test/unit/rolling_hash_monoid.cpp
+        run: python3 test/benchmark/verify_selected.py data_structure/segment_tree/dynamic_segtree.hpp test/unit/dynamic_segtree.cpp test/unit/standalone.cpp test/unit/rolling_hash_monoid.cpp
       - name: Verify affected Library Checker problems
         if: inputs.verify
         run: |

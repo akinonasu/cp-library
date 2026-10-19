@@ -40,7 +40,7 @@ jobs:
           /tmp/hld-bench 500000 500000 5 > benchmark-results/release.csv
       - name: Check current header with GCC and Clang
         run: |
-          python3 -c 'import json; from pathlib import Path; Path("/tmp/hld-selection.json").write_text(json.dumps({"headers":["graph/hld.hpp"],"unit":["test/unit/hld.cpp"]}))'
+          python3 -c 'import json; from pathlib import Path; Path("/tmp/hld-selection.json").write_text(json.dumps({"headers":["tree/hld.hpp"],"unit":["test/unit/hld.cpp"]}))'
           python3 test/verify.py --unit-only --cxx g++ clang++ --selection /tmp/hld-selection.json
           UBSAN_OPTIONS=halt_on_error=1 python3 test/verify.py --unit-only --sanitize --cxx clang++ --selection /tmp/hld-selection.json
       - name: Verify affected Library Checker problems

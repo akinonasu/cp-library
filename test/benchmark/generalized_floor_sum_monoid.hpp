@@ -1,7 +1,7 @@
 #ifndef GENERALIZED_FLOOR_SUM_MONOID_HPP
 #define GENERALIZED_FLOOR_SUM_MONOID_HPP
-#include "math/generalized_floor_sum.hpp"
-#include "math/monoid_floor_sum.hpp"
+#include "math/floor_sum/generalized_floor_sum.hpp"
+#include "math/floor_sum/monoid_floor_sum.hpp"
 
 namespace generalized_floor_sum_benchmark {
 template <int D, class T>

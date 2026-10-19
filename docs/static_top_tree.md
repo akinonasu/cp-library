@@ -1,12 +1,14 @@
 ---
-title: "Static Top Tree"
-documentation_of: //graph/static_top_tree.hpp
+title: Static Top Tree
+documentation_of: //tree/static_top_tree.hpp
+redirect_from:
+- /graph/static_top_tree.hpp.html
 ---
 
-木の形を固定したまま、頂点・辺の値の変更に合わせて木 DP を更新します。構築済みの [HLD](https://qandori.github.io/cp-library/graph/hld.hpp.html) と、DP の型・演算を渡します。
+木の形を固定したまま、頂点・辺の値の変更に合わせて木 DP を更新します。構築済みの [HLD](https://qandori.github.io/cp-library/tree/hld.hpp.html) と、DP の型・演算を渡します。
 
 ```cpp
-#include "lib/graph/static_top_tree.hpp"
+#include "lib/tree/static_top_tree.hpp"
 
 struct SumDP {
 	using Vertex = long long;

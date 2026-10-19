@@ -1,14 +1,16 @@
 ---
-title: "Auxiliary Tree"
-documentation_of: //graph/auxiliary_tree.hpp
-redirect_from: /graph/virtual_tree.hpp.html
+title: Auxiliary Tree
+documentation_of: //tree/auxiliary_tree.hpp
+redirect_from:
+- /graph/virtual_tree.hpp.html
+- /graph/auxiliary_tree.hpp.html
 ---
 
 大きな木から、指定した頂点と、それらをつなぐために必要な LCA だけを残した小さな木を作ります。通常は、元の木を `build()` してから `AuxiliaryTree` を作り、`vt.build(vertices)` に使いたい頂点番号を渡します。入力の順番を気にする必要はありません。
 
 ```cpp
-#include "lib/graph/lca.hpp"
-#include "lib/graph/auxiliary_tree.hpp"
+#include "lib/tree/lca.hpp"
+#include "lib/tree/auxiliary_tree.hpp"
 #include <iostream>
 
 int main() {
@@ -33,7 +35,7 @@ int main() {
 
 出力は `4 1 2`、`2 1 1` の 2 行です。各行は「元の頂点番号、補助木での親の元の頂点番号、親までの元の辺数」です。頂点 2 と 4 に加え、LCA の頂点 1 が残ります。元の木の頂点 3 は辺の途中にまとめられ、根だった頂点 0 も補助木には入りません。
 
-[LCA](https://qandori.github.io/cp-library/graph/lca.hpp.html) または [HLD](https://qandori.github.io/cp-library/graph/hld.hpp.html) を先に `build` してください。その根に基づく LCA を使い、補助木の根は指定頂点全体の LCA になります。
+[LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) または [HLD](https://qandori.github.io/cp-library/tree/hld.hpp.html) を先に `build` してください。その根に基づく LCA を使い、補助木の根は指定頂点全体の LCA になります。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

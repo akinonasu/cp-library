@@ -1,5 +1,5 @@
 #ifndef POINT_WM_HEADER
-#define POINT_WM_HEADER "data_structure/point_set_wavelet_matrix.hpp"
+#define POINT_WM_HEADER "data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp"
 #endif
 #include POINT_WM_HEADER
 #include "components/fast_io.hpp"

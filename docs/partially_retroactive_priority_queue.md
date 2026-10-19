@@ -1,10 +1,12 @@
 ---
-title: "Partially Retroactive Priority Queue"
-documentation_of: //data_structure/partially_retroactive_priority_queue.hpp
+title: Partially Retroactive Priority Queue
+documentation_of: //data_structure/priority_queue/partially_retroactive_priority_queue.hpp
+redirect_from:
+- /data_structure/partially_retroactive_priority_queue.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/partially_retroactive_priority_queue.hpp"
+#include "lib/data_structure/priority_queue/partially_retroactive_priority_queue.hpp"
 
 PartiallyRetroactivePriorityQueue<long long> queue;
 queue.insert(10, 5);

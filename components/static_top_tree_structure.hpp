@@ -7,7 +7,7 @@
 #include <limits>
 #include <utility>
 #include <vector>
-#include "../graph/hld.hpp"
+#include "../tree/hld.hpp"
 
 namespace static_top_tree_detail {
 struct Structure {

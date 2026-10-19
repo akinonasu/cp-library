@@ -1,5 +1,5 @@
-#include "math/prefix_min_of_mod_of_linear.hpp"
-#include "math/min_of_mod_of_linear.hpp"
+#include "math/floor_sum/prefix_min_of_mod_of_linear.hpp"
+#include "math/floor_sum/min_of_mod_of_linear.hpp"
 #include "baseline.hpp"
 #include "reference.hpp"
 #include "inlined.hpp"

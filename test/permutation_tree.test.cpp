@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/common_interval_decomposition_tree"
-#include "../data_structure/permutation_tree.hpp"
+#include "../tree/permutation_tree.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

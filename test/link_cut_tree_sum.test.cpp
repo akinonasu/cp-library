@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum"
-#include "../data_structure/link_cut_tree.hpp"
+#include "../tree/link_cut_tree.hpp"
 #include <cstdint>
 #include <iostream>
 #include <set>

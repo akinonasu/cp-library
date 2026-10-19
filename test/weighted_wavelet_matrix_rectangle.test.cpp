@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/point_add_rectangle_sum"
-#include "../data_structure/weighted_wavelet_matrix.hpp"
+#include "../data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

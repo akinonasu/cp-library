@@ -1,5 +1,5 @@
 #define COMB_MAX 200
-#include "math/comb.hpp"
+#include "math/combinatorics/comb.hpp"
 #include <algorithm>
 #include <cassert>
 #include <type_traits>

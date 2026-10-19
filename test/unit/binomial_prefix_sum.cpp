@@ -1,4 +1,4 @@
-#include "math/binomial_prefix_sum.hpp"
+#include "math/combinatorics/binomial_prefix_sum.hpp"
 #include <random>
 
 template<unsigned P> struct Field {

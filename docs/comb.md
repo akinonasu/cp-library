@@ -1,11 +1,13 @@
 ---
-title: "階乗・逆階乗と二項係数"
-documentation_of: //math/comb.hpp
+title: 階乗・逆階乗と二項係数
+documentation_of: //math/combinatorics/comb.hpp
+redirect_from:
+- /math/comb.hpp.html
 ---
 
 ```cpp
 #define COMB_MAX 500000
-#include "lib/math/comb.hpp"
+#include "lib/math/combinatorics/comb.hpp"
 
 init_comb();
 auto value = comb(10, 3); // 120

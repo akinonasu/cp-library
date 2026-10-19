@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_6_B"
-#include "graph/min_cost_flow.hpp"
+#include "graph/flow/min_cost_flow.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

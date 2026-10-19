@@ -3,7 +3,7 @@ title: "Push-Relabel の内部演算"
 documentation_of: //components/push_relabel.hpp
 ---
 
-[最大流](https://qandori.github.io/cp-library/graph/max_flow.hpp.html) の内部部品です。Highest Label、Gap、Global Relabel を使います。余剰流量は 128 bit で保持します。
+[最大流](https://qandori.github.io/cp-library/graph/flow/max_flow.hpp.html) の内部部品です。Highest Label、Gap、Global Relabel を使います。余剰流量は 128 bit で保持します。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

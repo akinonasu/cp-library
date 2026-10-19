@@ -15,7 +15,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE = '2be6469cbc4f7864e7920c98ac1a38450f0770eb'
-HEADER = 'data_structure/dynamic_connectivity.hpp'
+HEADER = 'graph/connectivity/dynamic_connectivity.hpp'
 DRIVER = 'test/dynamic_connectivity.test.cpp'
 KERNEL = 'test/benchmark/dynamic_connectivity_linkcut.cpp'
 
@@ -91,7 +91,7 @@ def main():
             if args.kernel_only:
                 continue
             for io, driver in [('stdio', old_driver), ('fastio', fast_driver)]:
-                driver = driver.replace('../data_structure/dynamic_connectivity.hpp', str(path))
+                driver = driver.replace('../graph/connectivity/dynamic_connectivity.hpp', str(path))
                 driver = driver.replace('../components/fast_io.hpp', 'components/fast_io.hpp')
                 driver = driver.replace('int main() {', 'int main(int argc, char **argv) {\n\tif (argc > 1) dc_benchmark_seed = std::stoull(argv[1]);')
                 driver = '#include <cstdint>\n#include <string>\ninline std::uint64_t dc_benchmark_seed=713;\n' + driver

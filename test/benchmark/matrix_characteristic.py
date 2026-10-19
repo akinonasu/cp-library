@@ -20,7 +20,7 @@ def main():
     args = parser.parse_args()
     os.sched_setaffinity(0, {args.cpu})
     args.output.mkdir(parents=True, exist_ok=True)
-    paths = ['math/matrix.hpp', 'components/matrix_arithmetic.hpp', 'math/mint.hpp',
+    paths = ['math/linear_algebra/matrix.hpp', 'components/matrix_arithmetic.hpp', 'math/mint.hpp',
              'test/benchmark/matrix_characteristic.cpp', 'test/benchmark/matrix_characteristic.py']
     metadata = {'baseline': str(args.baseline.resolve()), 'compiler': subprocess.check_output(['g++', '--version'], text=True),
                 'cpu': Path('/proc/cpuinfo').read_text(), 'affinity': [args.cpu], 'trials': args.trials,
@@ -40,7 +40,7 @@ def main():
         if mode == 'native':
             flags += ['-march=native', '-ftrivial-auto-var-init=zero']
         command = ['g++', *flags, '-I', str(ROOT),
-                   '-DMATRIX_BASELINE_HEADER="' + str(args.baseline.resolve() / 'math/matrix.hpp') + '"',
+                   '-DMATRIX_BASELINE_HEADER="' + str(args.baseline.resolve() / 'math/linear_algebra/matrix.hpp') + '"',
                    str(ROOT / 'test/benchmark/matrix_characteristic.cpp'), '-o', str(binary)]
         subprocess.run(command, check=True)
         metadata[mode + '_flags'] = flags

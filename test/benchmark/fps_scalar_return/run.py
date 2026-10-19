@@ -21,7 +21,7 @@ REF = "refs/heads/codex/fps-scalar-return-20261018"
 SOURCE = "test/benchmark/fps_scalar_return/"
 HEADER = "fps/fps.hpp"
 DEPENDENCIES = ("components/fps_operations.hpp", "components/ntt.hpp", HEADER, "math/mint.hpp")
-LIBRARIES = ("components", "convolution", "fps", "data_structure", "graph", "math", "string")
+LIBRARIES = ("components", "convolution", "fps", "data_structure", "graph", "tree", "math", "string")
 FROZEN = {
     "api.hpp": "0e78bf2a9c0e3af4a305b01e7520abc7f8284d5e673af80f2e022c0e7215bf97",
     "api.cpp": "4638d224c3da30e0200b0183f2599bda90a266b80892962ef8a7cb64c0d327d2",

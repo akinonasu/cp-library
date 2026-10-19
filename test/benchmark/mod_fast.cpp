@@ -1,4 +1,4 @@
-#include "math/mod_pow.hpp"
+#include "math/number_theory/mod_pow.hpp"
 #include "math/mint.hpp"
 #include <chrono>
 #include <cstdlib>

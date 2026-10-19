@@ -12,7 +12,7 @@
 #undef MIN_COST_FLOW_HPP
 #undef RADIX_HEAP_HPP
 #undef D_ARY_HEAP_HPP
-#include "graph/min_cost_flow.hpp"
+#include "graph/flow/min_cost_flow.hpp"
 #include <chrono>
 #include <ctime>
 #include <iomanip>

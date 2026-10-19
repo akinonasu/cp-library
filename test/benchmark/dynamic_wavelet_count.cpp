@@ -1,5 +1,5 @@
 #ifndef DYNAMIC_WAVELET_COUNT_HEADER
-#define DYNAMIC_WAVELET_COUNT_HEADER "data_structure/dynamic_wavelet_matrix.hpp"
+#define DYNAMIC_WAVELET_COUNT_HEADER "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
 #endif
 #include DYNAMIC_WAVELET_COUNT_HEADER
 #include <chrono>

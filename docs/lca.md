@@ -1,12 +1,14 @@
 ---
-title: "LCA"
-documentation_of: //graph/lca.hpp
+title: LCA
+documentation_of: //tree/lca.hpp
+redirect_from:
+- /graph/lca.hpp.html
 ---
 
 根付き木の 2 頂点に対し、両方の祖先で最も深い頂点を求めます。`add_edge` で木の辺を全て追加し、`build` を 1 回呼んでから問い合わせます。
 
 ```cpp
-#include "lib/graph/lca.hpp"
+#include "lib/tree/lca.hpp"
 
 LCA tree(3);
 tree.add_edge(0, 1);
