@@ -98,6 +98,41 @@ std::pair<T, std::vector<int>> path(const G &g, int st, int target, T inf) {
 	assert(target >= 0 && static_cast<std::size_t>(target) < n);
 	assert(inf > 0);
 	if (st == target) return {T(0), {st}};
+	if (g[st].size() == 1) {
+		using Weight = std::remove_cvref_t<decltype(g[st][0].second)>;
+		std::vector<int> direct{st};
+		T cost = 0;
+		int v = st, checkpoint = st;
+		std::size_t power = 1, length = 0;
+		while (g[v].size() == 1) {
+			const auto &[to, weight] = g[v][0];
+			assert(to >= 0 && static_cast<std::size_t>(to) < n);
+			assert(weight >= 0);
+			if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
+						  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
+				using Compare = std::common_type_t<Weight, T>;
+				if (Compare(weight) >= Compare(inf - cost)) return {T(-1), {}};
+			} else if (weight >= inf - cost) return {T(-1), {}};
+			cost += weight;
+			v = to;
+			direct.push_back(v);
+			if (v == target) return {std::move(cost), std::move(direct)};
+			if (v == checkpoint) return {T(-1), {}};
+			if (++length == power) {
+				checkpoint = v;
+				power *= 2;
+				length = 0;
+			}
+		}
+		if (g[v].empty()) return {T(-1), {}};
+		if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
+			auto suffix = shortest_path_detail::path<Topological>(g, v, target, T(inf - cost));
+			if (suffix.first == T(-1)) return {T(-1), {}};
+			direct.pop_back();
+			direct.insert(direct.end(), suffix.second.begin(), suffix.second.end());
+			return {cost + suffix.first, std::move(direct)};
+		}
+	}
 	std::vector<int> parent(g.size(), -1);
 	auto d = [&] {
 		if constexpr (Topological) return topological_run<true>(g, st, target, inf, parent);

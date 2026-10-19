@@ -1,0 +1,30 @@
+{
+  "checks": [
+    {
+      "compiler": "g++",
+      "flags": [],
+      "passed": true
+    },
+    {
+      "compiler": "clang++",
+      "flags": [],
+      "passed": true
+    },
+    {
+      "compiler": "g++",
+      "flags": [
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-O1"
+      ],
+      "passed": true
+    },
+    {
+      "ndebug_wrong_count_sanitizer": true
+    }
+  ],
+  "sha256": {
+    "components/directed_csr.hpp": "35be0ba32a0dcfaea0998c172904e755fcac2162f8d5aed9eff839158aa18154",
+    "test/unit/directed_csr.cpp": "e3eac89c866e6eb9fb1e4c9c9af4c8eafdf30c2f2c945234f1385e58bb31710c"
+  }
+}
