@@ -11,4 +11,4 @@
 
 `shortest_path.cpp` はファイル全体を C++23 として提出します。再生成は `oj-bundle test/dijkstra_path.test.cpp > submissions/shortest_path.cpp` です。
 
-`kth_term_of_linearly_recurrent_sequence.cpp` もファイル全体を C++23 として提出します。再生成は `oj-bundle -I . test/fps_linear_recurrence.test.cpp > submissions/kth_term_of_linearly_recurrent_sequence.cpp` です。[検証記録](../test/benchmark/results/kth_term_submission.json)と[既存の速度比較](../test/benchmark/fps_round4.md)があります。judge 上の順位は未確認です。
+`kth_term_of_linearly_recurrent_sequence.cpp` もファイル全体を C++23 として提出します。再生成は `oj-bundle -I . test/fps_linear_recurrence.test.cpp | sed 's/^[[:blank:]]*$//' > submissions/kth_term_of_linearly_recurrent_sequence.cpp` です。[検証記録](../test/benchmark/results/kth_term_submission.json)と[既存の速度比較](../test/benchmark/fps_round4.md)があります。judge 上の順位は未確認です。

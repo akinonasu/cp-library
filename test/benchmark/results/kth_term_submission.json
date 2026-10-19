@@ -1,8 +1,8 @@
 {
   "recorded_at": "2026-10-19T07:13:27.600482+00:00",
   "source": "submissions/kth_term_of_linearly_recurrent_sequence.cpp",
-  "source_sha256": "e747728c941cfd78c9ee3d93ae8df16a6abfd03876731af5ea30035328ce1182",
-  "source_bytes": 402434,
+  "source_sha256": "f64de28d6a23200ef6637a869f5e81e42e60bb35de9f1aaa10ea445c0503b050",
+  "source_bytes": 402426,
   "generated_from": "test/fps_linear_recurrence.test.cpp",
   "generation": [
     "oj-bundle",
@@ -11,7 +11,7 @@
     "test/fps_linear_recurrence.test.cpp"
   ],
   "library_revision": "20dc176bba528a2177c22847da29e409bb693e4e",
-  "identical_to_source_size_verification_bundle": true,
+  "identical_to_source_size_verification_bundle": false,
   "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
   "compiler_sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
   "flags": [
@@ -171,5 +171,15 @@
   "cases_passed": 20,
   "source_unchanged": true,
   "judge_submission_performed": false,
-  "judge_fastest_confirmed": false
+  "judge_fastest_confirmed": false,
+  "bundle_sha256_before_normalization": "e747728c941cfd78c9ee3d93ae8df16a6abfd03876731af5ea30035328ce1182",
+  "normalization": {
+    "command": [
+      "sed",
+      "s/^[[:blank:]]*$//"
+    ],
+    "only_whitespace_on_empty_lines": true,
+    "line_count_unchanged": true,
+    "whole_executable_sha256_matches_20_case_verification": true
+  }
 }
