@@ -1,0 +1,37 @@
+{
+  "note": "The archived driver omits .test to avoid automatic judge test discovery. File content is unchanged.",
+  "files": {
+    "test/dijkstra_path.test.cpp": {
+      "path": "sources/test/dijkstra_path.cpp",
+      "sha256": "ced50143050fbfc58be35a516378f3a9bf67f983e4f743c95041514e8eb0baf0"
+    },
+    "graph/dijkstra.hpp": {
+      "path": "sources/graph/dijkstra.hpp",
+      "sha256": "6d95845308459144bdb8c715693f95c54f468b0de8df4723442924182b3ff11d"
+    },
+    "components/dijkstra_queue.hpp": {
+      "path": "sources/components/dijkstra_queue.hpp",
+      "sha256": "63c93fb0336e689df0d7cbaec695e682498d5b7ea9d5a4a666d64b0843529444"
+    },
+    "components/RadixHeap.hpp": {
+      "path": "sources/components/RadixHeap.hpp",
+      "sha256": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e"
+    },
+    "components/dijkstra_topological.hpp": {
+      "path": "sources/components/dijkstra_topological.hpp",
+      "sha256": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161"
+    },
+    "components/directed_csr.hpp": {
+      "path": "sources/components/directed_csr.hpp",
+      "sha256": "35be0ba32a0dcfaea0998c172904e755fcac2162f8d5aed9eff839158aa18154"
+    },
+    "components/fast_io_bulk.hpp": {
+      "path": "sources/components/fast_io_bulk.hpp",
+      "sha256": "6ec128d4bdb81ccbfda82cf12ad934dc90a9d0155e3e6223e28c721b4fb51e4f"
+    },
+    "components/fast_io.hpp": {
+      "path": "sources/components/fast_io.hpp",
+      "sha256": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    }
+  }
+}

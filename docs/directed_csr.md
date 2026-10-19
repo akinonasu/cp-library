@@ -28,7 +28,9 @@ int main() {
 | --- | --- | --- |
 | `DirectedCSR<T>(n=0)` | `n` 頂点・辺なしで構築 | $$O(n)$$ |
 | `DirectedCSR<T>(n,edges)` | `std::span<const Edge>` から構築。`std::vector<Edge>` も渡せる | $$O(n+m)$$ |
+| `DirectedCSR<T>(n,m,produce)` | `produce(emit)` を呼び、`emit(Edge)` で渡された `m` 本の辺から構築 | $$O(n+m)$$ と `produce` の実行 |
 | `build(n,edges)` | 頂点数と辺を指定して再構築 | $$O(n+m)$$ と旧辺の破棄 |
+| `build(n,m,produce)` | 辺を生成する関数を指定して再構築 | $$O(n+m)$$ と `produce` の実行・旧辺の破棄 |
 | `size()` | 頂点数を `int` で返す | $$O(1)$$ |
 | `empty()` | 頂点数が 0 なら `true` | $$O(1)$$ |
 | `edge_count()` | 辺数を `std::size_t` で返す | $$O(1)$$ |
@@ -39,6 +41,20 @@ int main() {
 | `distance_type` | 最短経路で既定の距離型として使う型 | —（型） |
 
 `distance_type` は、8 byte 未満の整数型では `std::int64_t`、それ以外では `T` です。例えば `DirectedCSR<std::uint32_t>` は辺を 32 bit で保存し、`dijkstra` の距離を 64 bit で計算します。64 bit 整数・浮動小数点型の距離型は変わりません。
+
+辺を読みながら構築する場合は、次のように `produce` を渡します。`produce` は 1 回呼ばれ、受け取った `emit` を `m` 回呼んで辺を渡します。辺を受け取る処理と出次数の集計をまとめるため、辺配列を別に用意して走査する必要がありません。
+
+```cpp
+Graph g(n, m, [&](auto emit) {
+	for (int i = 0; i < m; ++i) {
+		Graph::Edge edge;
+		std::cin >> edge.from >> edge.to >> edge.weight;
+		emit(edge);
+	}
+});
+```
+
+この例では `<iostream>` を include します。`emit` の呼び出し順が辺の入力順です。辺数が `m` と異なる場合は `std::length_error` を送出します。`produce`・辺の格納中に例外が出た場合は、指定した頂点数の辺なしグラフに戻して例外を送出します。`emit` は `produce` の呼び出し中だけ使い、保存しないでください。一時的に $$O(m)$$ の辺配列を内部で確保し、構築後に解放します。
 
 入力の辺はコピーするため、構築後に入力配列を変更・破棄してもグラフは変わりません。辺の追加・変更には `build` で再構築します。`g[v]` の返す範囲やその要素への参照は辺配列を参照します。`build`・代入・移動の後は取得し直し、グラフの破棄後には使わないでください。
 
