@@ -1,0 +1,1404 @@
+{
+  "flags": [
+    "-std=gnu++23",
+    "-O2",
+    "-DNDEBUG",
+    "-DATCODER",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=native"
+  ],
+  "cpu": 2,
+  "trials": 5,
+  "base_hashes": {
+    "components/fast_io_bulk.hpp": "6ec128d4bdb81ccbfda82cf12ad934dc90a9d0155e3e6223e28c721b4fb51e4f",
+    "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+    "graph/dijkstra.hpp": "aa93ca5486f1d74c0e13cb6941cb8df01955d951fc3c219e024bf93e90196ab3",
+    "components/directed_csr.hpp": "35be0ba32a0dcfaea0998c172904e755fcac2162f8d5aed9eff839158aa18154",
+    "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+    "components/dijkstra_queue.hpp": "63c93fb0336e689df0d7cbaec695e682498d5b7ea9d5a4a666d64b0843529444",
+    "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e"
+  },
+  "results": {
+    "max_star_00": {
+      "samples": {
+        "base": [
+          {
+            "parse_ms": 4.691584,
+            "build_ms": 1.758451,
+            "solve_ms": 5.950351,
+            "output_ms": 0.021411,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 13.625310000008994
+          },
+          {
+            "parse_ms": 4.439332,
+            "build_ms": 1.525594,
+            "solve_ms": 5.994199,
+            "output_ms": 0.015342,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 12.997396000002936
+          },
+          {
+            "parse_ms": 4.4933,
+            "build_ms": 1.762519,
+            "solve_ms": 7.296762,
+            "output_ms": 0.035766,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 14.754387999971641
+          },
+          {
+            "parse_ms": 4.63787,
+            "build_ms": 1.612989,
+            "solve_ms": 5.920472,
+            "output_ms": 0.030506,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 13.301976999969156
+          },
+          {
+            "parse_ms": 4.600027,
+            "build_ms": 1.622317,
+            "solve_ms": 5.92783,
+            "output_ms": 0.016994,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 13.215791999982685
+          }
+        ],
+        "unique_dfs_reserve": [
+          {
+            "parse_ms": 4.80651,
+            "build_ms": 1.590317,
+            "solve_ms": 1.204846,
+            "output_ms": 0.016822,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 8.645024000031754
+          },
+          {
+            "parse_ms": 4.924638,
+            "build_ms": 1.559268,
+            "solve_ms": 1.235719,
+            "output_ms": 0.017804,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 8.848582999974042
+          },
+          {
+            "parse_ms": 4.799834,
+            "build_ms": 1.500205,
+            "solve_ms": 1.240223,
+            "output_ms": 0.015243,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 8.551054000008662
+          },
+          {
+            "parse_ms": 4.870853,
+            "build_ms": 1.748526,
+            "solve_ms": 1.413697,
+            "output_ms": 0.018421,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 9.035379000010835
+          },
+          {
+            "parse_ms": 5.029771,
+            "build_ms": 1.657151,
+            "solve_ms": 1.283186,
+            "output_ms": 0.01844,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 9.021076999999877
+          }
+        ],
+        "unique_chain": [
+          {
+            "parse_ms": 4.753634,
+            "build_ms": 1.786475,
+            "solve_ms": 1.713871,
+            "output_ms": 0.022622,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 9.421550000013212
+          },
+          {
+            "parse_ms": 4.876529,
+            "build_ms": 1.684812,
+            "solve_ms": 1.352328,
+            "output_ms": 0.019113,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 8.99782000004734
+          },
+          {
+            "parse_ms": 4.958277,
+            "build_ms": 1.657047,
+            "solve_ms": 1.364007,
+            "output_ms": 0.016564,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 9.120602999985294
+          },
+          {
+            "parse_ms": 4.801147,
+            "build_ms": 1.557711,
+            "solve_ms": 1.307256,
+            "output_ms": 0.014781,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 8.784774999980982
+          },
+          {
+            "parse_ms": 4.810423,
+            "build_ms": 1.516517,
+            "solve_ms": 1.78902,
+            "output_ms": 0.023369,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 9.309840000014447
+          }
+        ],
+        "unique_chain_small": [
+          {
+            "parse_ms": 4.844052,
+            "build_ms": 1.690514,
+            "solve_ms": 1.308352,
+            "output_ms": 0.018764,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 8.912720000012087
+          },
+          {
+            "parse_ms": 4.9965,
+            "build_ms": 1.6726,
+            "solve_ms": 1.369586,
+            "output_ms": 0.019128,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 9.03216399996154
+          },
+          {
+            "parse_ms": 4.920153,
+            "build_ms": 1.675246,
+            "solve_ms": 1.476962,
+            "output_ms": 0.021069,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 9.088883999993413
+          },
+          {
+            "parse_ms": 4.849095,
+            "build_ms": 1.54716,
+            "solve_ms": 1.333125,
+            "output_ms": 0.016798,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 8.78897299998016
+          },
+          {
+            "parse_ms": 4.803082,
+            "build_ms": 1.622974,
+            "solve_ms": 1.477499,
+            "output_ms": 0.022469,
+            "distance": 2440542791,
+            "path_edges": 5,
+            "whole_ms": 8.966256000007888
+          }
+        ]
+      },
+      "medians": {
+        "base": {
+          "parse_ms": 4.600027,
+          "build_ms": 1.622317,
+          "solve_ms": 5.950351,
+          "output_ms": 0.021411,
+          "distance": 2440542791,
+          "path_edges": 5,
+          "whole_ms": 13.301976999969156
+        },
+        "unique_dfs_reserve": {
+          "parse_ms": 4.870853,
+          "build_ms": 1.590317,
+          "solve_ms": 1.240223,
+          "output_ms": 0.017804,
+          "distance": 2440542791,
+          "path_edges": 5,
+          "whole_ms": 8.848582999974042
+        },
+        "unique_chain": {
+          "parse_ms": 4.810423,
+          "build_ms": 1.657047,
+          "solve_ms": 1.364007,
+          "output_ms": 0.019113,
+          "distance": 2440542791,
+          "path_edges": 5,
+          "whole_ms": 9.120602999985294
+        },
+        "unique_chain_small": {
+          "parse_ms": 4.849095,
+          "build_ms": 1.6726,
+          "solve_ms": 1.369586,
+          "output_ms": 0.019128,
+          "distance": 2440542791,
+          "path_edges": 5,
+          "whole_ms": 8.966256000007888
+        }
+      }
+    },
+    "max_star_01": {
+      "samples": {
+        "base": [
+          {
+            "parse_ms": 5.338992,
+            "build_ms": 2.139777,
+            "solve_ms": 8.315342,
+            "output_ms": 0.245945,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 17.281910999997763
+          },
+          {
+            "parse_ms": 4.909844,
+            "build_ms": 2.474129,
+            "solve_ms": 9.240436,
+            "output_ms": 0.033565,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 17.984744999978375
+          },
+          {
+            "parse_ms": 5.386401,
+            "build_ms": 1.980885,
+            "solve_ms": 8.712934,
+            "output_ms": 0.030071,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 17.284535999976924
+          },
+          {
+            "parse_ms": 4.836292,
+            "build_ms": 1.998986,
+            "solve_ms": 8.362718,
+            "output_ms": 0.025678,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 16.347141999972337
+          },
+          {
+            "parse_ms": 4.860808,
+            "build_ms": 1.974368,
+            "solve_ms": 9.383669,
+            "output_ms": 0.023024,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 17.45771999998169
+          }
+        ],
+        "unique_dfs_reserve": [
+          {
+            "parse_ms": 5.88065,
+            "build_ms": 2.150356,
+            "solve_ms": 3.41392,
+            "output_ms": 0.018907,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 12.447968999993009
+          },
+          {
+            "parse_ms": 5.294901,
+            "build_ms": 2.758176,
+            "solve_ms": 3.689055,
+            "output_ms": 0.030194,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 12.844215999962216
+          },
+          {
+            "parse_ms": 5.567466,
+            "build_ms": 2.157564,
+            "solve_ms": 3.567149,
+            "output_ms": 0.022822,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 12.40476899999976
+          },
+          {
+            "parse_ms": 6.124798,
+            "build_ms": 2.044761,
+            "solve_ms": 3.454131,
+            "output_ms": 0.020587,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 12.697915000046578
+          },
+          {
+            "parse_ms": 5.77226,
+            "build_ms": 2.961963,
+            "solve_ms": 3.745373,
+            "output_ms": 0.023278,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 13.573598999983005
+          }
+        ],
+        "unique_chain": [
+          {
+            "parse_ms": 5.691925,
+            "build_ms": 2.078528,
+            "solve_ms": 0.552314,
+            "output_ms": 0.018277,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 9.343516999990698
+          },
+          {
+            "parse_ms": 6.139669,
+            "build_ms": 2.057415,
+            "solve_ms": 0.588965,
+            "output_ms": 0.020301,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 9.984408000036638
+          },
+          {
+            "parse_ms": 5.257237,
+            "build_ms": 1.986984,
+            "solve_ms": 0.594341,
+            "output_ms": 0.025883,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 8.95466200000783
+          },
+          {
+            "parse_ms": 6.38619,
+            "build_ms": 2.045636,
+            "solve_ms": 0.52504,
+            "output_ms": 0.015944,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 10.021818000041094
+          },
+          {
+            "parse_ms": 5.777886,
+            "build_ms": 2.086488,
+            "solve_ms": 0.543351,
+            "output_ms": 0.050148,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 9.801449999997658
+          }
+        ],
+        "unique_chain_small": [
+          {
+            "parse_ms": 6.817698,
+            "build_ms": 2.182226,
+            "solve_ms": 0.550285,
+            "output_ms": 0.022336,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 11.317088999987845
+          },
+          {
+            "parse_ms": 5.287432,
+            "build_ms": 1.995857,
+            "solve_ms": 0.517851,
+            "output_ms": 0.018407,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 8.814752000034787
+          },
+          {
+            "parse_ms": 5.319037,
+            "build_ms": 1.980097,
+            "solve_ms": 0.551639,
+            "output_ms": 0.017129,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 9.088367999993352
+          },
+          {
+            "parse_ms": 6.361609,
+            "build_ms": 1.998321,
+            "solve_ms": 0.515014,
+            "output_ms": 0.019054,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 9.948223999970196
+          },
+          {
+            "parse_ms": 5.69536,
+            "build_ms": 1.970329,
+            "solve_ms": 0.517097,
+            "output_ms": 0.017188,
+            "distance": 385703343,
+            "path_edges": 2,
+            "whole_ms": 9.24191499996141
+          }
+        ]
+      },
+      "medians": {
+        "base": {
+          "parse_ms": 4.909844,
+          "build_ms": 1.998986,
+          "solve_ms": 8.712934,
+          "output_ms": 0.030071,
+          "distance": 385703343,
+          "path_edges": 2,
+          "whole_ms": 17.284535999976924
+        },
+        "unique_dfs_reserve": {
+          "parse_ms": 5.77226,
+          "build_ms": 2.157564,
+          "solve_ms": 3.567149,
+          "output_ms": 0.022822,
+          "distance": 385703343,
+          "path_edges": 2,
+          "whole_ms": 12.697915000046578
+        },
+        "unique_chain": {
+          "parse_ms": 5.777886,
+          "build_ms": 2.057415,
+          "solve_ms": 0.552314,
+          "output_ms": 0.020301,
+          "distance": 385703343,
+          "path_edges": 2,
+          "whole_ms": 9.801449999997658
+        },
+        "unique_chain_small": {
+          "parse_ms": 5.69536,
+          "build_ms": 1.995857,
+          "solve_ms": 0.517851,
+          "output_ms": 0.018407,
+          "distance": 385703343,
+          "path_edges": 2,
+          "whole_ms": 9.24191499996141
+        }
+      }
+    },
+    "line_00": {
+      "samples": {
+        "base": [
+          {
+            "parse_ms": 6.081465,
+            "build_ms": 3.621924,
+            "solve_ms": 15.57331,
+            "output_ms": 4.945923,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 31.50743200001216
+          },
+          {
+            "parse_ms": 6.475608,
+            "build_ms": 3.295316,
+            "solve_ms": 17.661907,
+            "output_ms": 4.908263,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 33.703075000005356
+          },
+          {
+            "parse_ms": 6.136073,
+            "build_ms": 6.490333,
+            "solve_ms": 15.564379,
+            "output_ms": 4.938992,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 34.54340900003672
+          },
+          {
+            "parse_ms": 6.649339,
+            "build_ms": 6.561851,
+            "solve_ms": 15.947375,
+            "output_ms": 5.194595,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 35.96949000001359
+          },
+          {
+            "parse_ms": 6.428957,
+            "build_ms": 3.2315,
+            "solve_ms": 15.8629,
+            "output_ms": 4.864458,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 31.740899999988414
+          }
+        ],
+        "unique_dfs_reserve": [
+          {
+            "parse_ms": 6.975847,
+            "build_ms": 3.175022,
+            "solve_ms": 15.083165,
+            "output_ms": 4.89119,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 31.382961999952386
+          },
+          {
+            "parse_ms": 7.114566,
+            "build_ms": 3.245388,
+            "solve_ms": 15.983885,
+            "output_ms": 4.936519,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 32.61527799998021
+          },
+          {
+            "parse_ms": 7.243045,
+            "build_ms": 3.274062,
+            "solve_ms": 15.516788,
+            "output_ms": 4.967058,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 32.297251000045435
+          },
+          {
+            "parse_ms": 7.876728,
+            "build_ms": 3.305184,
+            "solve_ms": 16.767899,
+            "output_ms": 5.143826,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 34.69914599997992
+          },
+          {
+            "parse_ms": 10.17408,
+            "build_ms": 3.364453,
+            "solve_ms": 17.574863,
+            "output_ms": 4.970119,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 37.48911100001351
+          }
+        ],
+        "unique_chain": [
+          {
+            "parse_ms": 6.68746,
+            "build_ms": 3.242582,
+            "solve_ms": 15.272699,
+            "output_ms": 4.875656,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 31.38181600002099
+          },
+          {
+            "parse_ms": 7.612133,
+            "build_ms": 3.290488,
+            "solve_ms": 15.853961,
+            "output_ms": 4.981392,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 33.05081899998186
+          },
+          {
+            "parse_ms": 7.154977,
+            "build_ms": 3.279916,
+            "solve_ms": 16.73293,
+            "output_ms": 4.955028,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 33.454092999988916
+          },
+          {
+            "parse_ms": 7.281677,
+            "build_ms": 3.22757,
+            "solve_ms": 16.336441,
+            "output_ms": 5.071893,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 33.209833999990224
+          },
+          {
+            "parse_ms": 7.369162,
+            "build_ms": 3.254596,
+            "solve_ms": 17.37166,
+            "output_ms": 5.18635,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 34.59572699995306
+          }
+        ],
+        "unique_chain_small": [
+          {
+            "parse_ms": 6.781852,
+            "build_ms": 3.165265,
+            "solve_ms": 15.821489,
+            "output_ms": 4.953157,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 32.04892899998413
+          },
+          {
+            "parse_ms": 7.388639,
+            "build_ms": 3.234698,
+            "solve_ms": 15.893882,
+            "output_ms": 4.989345,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 32.870581999986825
+          },
+          {
+            "parse_ms": 7.408877,
+            "build_ms": 3.224916,
+            "solve_ms": 16.246217,
+            "output_ms": 5.186124,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 33.44077899998865
+          },
+          {
+            "parse_ms": 7.684441,
+            "build_ms": 3.265253,
+            "solve_ms": 17.587354,
+            "output_ms": 4.981754,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 34.86594699995749
+          },
+          {
+            "parse_ms": 7.132352,
+            "build_ms": 3.265501,
+            "solve_ms": 16.083787,
+            "output_ms": 4.9966,
+            "distance": 499999000000000,
+            "path_edges": 499999,
+            "whole_ms": 32.798686999967686
+          }
+        ]
+      },
+      "medians": {
+        "base": {
+          "parse_ms": 6.428957,
+          "build_ms": 3.621924,
+          "solve_ms": 15.8629,
+          "output_ms": 4.938992,
+          "distance": 499999000000000,
+          "path_edges": 499999,
+          "whole_ms": 33.703075000005356
+        },
+        "unique_dfs_reserve": {
+          "parse_ms": 7.243045,
+          "build_ms": 3.274062,
+          "solve_ms": 15.983885,
+          "output_ms": 4.967058,
+          "distance": 499999000000000,
+          "path_edges": 499999,
+          "whole_ms": 32.61527799998021
+        },
+        "unique_chain": {
+          "parse_ms": 7.281677,
+          "build_ms": 3.254596,
+          "solve_ms": 16.336441,
+          "output_ms": 4.981392,
+          "distance": 499999000000000,
+          "path_edges": 499999,
+          "whole_ms": 33.209833999990224
+        },
+        "unique_chain_small": {
+          "parse_ms": 7.388639,
+          "build_ms": 3.234698,
+          "solve_ms": 16.083787,
+          "output_ms": 4.989345,
+          "distance": 499999000000000,
+          "path_edges": 499999,
+          "whole_ms": 32.870581999986825
+        }
+      }
+    },
+    "almost_line_00": {
+      "samples": {
+        "base": [
+          {
+            "parse_ms": 4.969092,
+            "build_ms": 2.953402,
+            "solve_ms": 10.848129,
+            "output_ms": 1.659951,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.536938999986432
+          },
+          {
+            "parse_ms": 5.124552,
+            "build_ms": 6.049592,
+            "solve_ms": 11.59284,
+            "output_ms": 1.731942,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 25.766333999968083
+          },
+          {
+            "parse_ms": 5.132374,
+            "build_ms": 3.225275,
+            "solve_ms": 11.147006,
+            "output_ms": 1.75674,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 22.628602999986924
+          },
+          {
+            "parse_ms": 4.639746,
+            "build_ms": 3.008489,
+            "solve_ms": 10.741786,
+            "output_ms": 1.66676,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.17241900003819
+          },
+          {
+            "parse_ms": 5.04528,
+            "build_ms": 3.003544,
+            "solve_ms": 10.635403,
+            "output_ms": 1.666175,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.475917999964622
+          }
+        ],
+        "unique_dfs_reserve": [
+          {
+            "parse_ms": 5.059249,
+            "build_ms": 3.01458,
+            "solve_ms": 11.094783,
+            "output_ms": 1.673703,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 22.03087000003734
+          },
+          {
+            "parse_ms": 4.860559,
+            "build_ms": 3.150916,
+            "solve_ms": 11.101876,
+            "output_ms": 1.663169,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.88288399997873
+          },
+          {
+            "parse_ms": 4.943906,
+            "build_ms": 3.059033,
+            "solve_ms": 10.471117,
+            "output_ms": 1.699006,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.435097999983554
+          },
+          {
+            "parse_ms": 5.177039,
+            "build_ms": 3.163655,
+            "solve_ms": 11.074052,
+            "output_ms": 1.757874,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 22.37221600000794
+          },
+          {
+            "parse_ms": 4.90679,
+            "build_ms": 3.05135,
+            "solve_ms": 10.550539,
+            "output_ms": 1.854416,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.53474700003244
+          }
+        ],
+        "unique_chain": [
+          {
+            "parse_ms": 5.11559,
+            "build_ms": 3.001157,
+            "solve_ms": 10.597784,
+            "output_ms": 1.684518,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.481832000006307
+          },
+          {
+            "parse_ms": 4.788496,
+            "build_ms": 2.985758,
+            "solve_ms": 10.79839,
+            "output_ms": 1.7932,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.512636000011298
+          },
+          {
+            "parse_ms": 4.623481,
+            "build_ms": 2.989563,
+            "solve_ms": 10.769693,
+            "output_ms": 1.675608,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.16715199997543
+          },
+          {
+            "parse_ms": 4.60946,
+            "build_ms": 4.86226,
+            "solve_ms": 12.080554,
+            "output_ms": 1.813819,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 24.6875070000101
+          },
+          {
+            "parse_ms": 4.531379,
+            "build_ms": 3.130628,
+            "solve_ms": 10.583049,
+            "output_ms": 1.737263,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.087275000013506
+          }
+        ],
+        "unique_chain_small": [
+          {
+            "parse_ms": 4.790818,
+            "build_ms": 2.991721,
+            "solve_ms": 10.874761,
+            "output_ms": 1.731649,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.51184599995304
+          },
+          {
+            "parse_ms": 4.881528,
+            "build_ms": 5.996818,
+            "solve_ms": 10.55739,
+            "output_ms": 1.70762,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 24.27910499994823
+          },
+          {
+            "parse_ms": 4.646398,
+            "build_ms": 2.953345,
+            "solve_ms": 11.181518,
+            "output_ms": 1.747046,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 21.632716999988588
+          },
+          {
+            "parse_ms": 5.631843,
+            "build_ms": 3.008766,
+            "solve_ms": 10.725971,
+            "output_ms": 1.684668,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 22.355911000033757
+          },
+          {
+            "parse_ms": 4.885834,
+            "build_ms": 3.004241,
+            "solve_ms": 11.618289,
+            "output_ms": 1.685012,
+            "distance": 65923255630464,
+            "path_edges": 155117,
+            "whole_ms": 22.4100859999794
+          }
+        ]
+      },
+      "medians": {
+        "base": {
+          "parse_ms": 5.04528,
+          "build_ms": 3.008489,
+          "solve_ms": 10.848129,
+          "output_ms": 1.66676,
+          "distance": 65923255630464,
+          "path_edges": 155117,
+          "whole_ms": 21.536938999986432
+        },
+        "unique_dfs_reserve": {
+          "parse_ms": 4.943906,
+          "build_ms": 3.059033,
+          "solve_ms": 11.074052,
+          "output_ms": 1.699006,
+          "distance": 65923255630464,
+          "path_edges": 155117,
+          "whole_ms": 21.88288399997873
+        },
+        "unique_chain": {
+          "parse_ms": 4.623481,
+          "build_ms": 3.001157,
+          "solve_ms": 10.769693,
+          "output_ms": 1.737263,
+          "distance": 65923255630464,
+          "path_edges": 155117,
+          "whole_ms": 21.481832000006307
+        },
+        "unique_chain_small": {
+          "parse_ms": 4.881528,
+          "build_ms": 3.004241,
+          "solve_ms": 10.874761,
+          "output_ms": 1.70762,
+          "distance": 65923255630464,
+          "path_edges": 155117,
+          "whole_ms": 22.355911000033757
+        }
+      }
+    },
+    "grid_swirl_00": {
+      "samples": {
+        "base": [
+          {
+            "parse_ms": 4.367786,
+            "build_ms": 5.984343,
+            "solve_ms": 6.883766,
+            "output_ms": 0.929622,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 19.18723
+          },
+          {
+            "parse_ms": 4.407724,
+            "build_ms": 3.131801,
+            "solve_ms": 6.99312,
+            "output_ms": 0.945765,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.522340999983953
+          },
+          {
+            "parse_ms": 4.370697,
+            "build_ms": 3.147799,
+            "solve_ms": 6.945832,
+            "output_ms": 0.943515,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.483096999991176
+          },
+          {
+            "parse_ms": 4.24327,
+            "build_ms": 2.801397,
+            "solve_ms": 6.822801,
+            "output_ms": 0.948779,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 15.965399000037905
+          },
+          {
+            "parse_ms": 4.215808,
+            "build_ms": 2.873653,
+            "solve_ms": 6.700392,
+            "output_ms": 0.992039,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 15.805663999969966
+          }
+        ],
+        "unique_dfs_reserve": [
+          {
+            "parse_ms": 4.206548,
+            "build_ms": 5.158642,
+            "solve_ms": 6.945214,
+            "output_ms": 0.954821,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 18.347786999981963
+          },
+          {
+            "parse_ms": 5.145541,
+            "build_ms": 2.958503,
+            "solve_ms": 6.966599,
+            "output_ms": 0.9982,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 17.20605999997815
+          },
+          {
+            "parse_ms": 4.517517,
+            "build_ms": 2.998546,
+            "solve_ms": 6.904038,
+            "output_ms": 1.083181,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.72773299998198
+          },
+          {
+            "parse_ms": 4.233341,
+            "build_ms": 2.920913,
+            "solve_ms": 6.920035,
+            "output_ms": 0.959749,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.21295000001055
+          },
+          {
+            "parse_ms": 4.164682,
+            "build_ms": 2.900192,
+            "solve_ms": 6.979426,
+            "output_ms": 0.972347,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.12249600003679
+          }
+        ],
+        "unique_chain": [
+          {
+            "parse_ms": 4.214338,
+            "build_ms": 3.943974,
+            "solve_ms": 6.922454,
+            "output_ms": 0.981184,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 17.260736999958226
+          },
+          {
+            "parse_ms": 4.304881,
+            "build_ms": 2.975894,
+            "solve_ms": 6.939259,
+            "output_ms": 0.956436,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.3692990000186
+          },
+          {
+            "parse_ms": 4.277027,
+            "build_ms": 3.094,
+            "solve_ms": 6.966055,
+            "output_ms": 0.962947,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.404249000004256
+          },
+          {
+            "parse_ms": 4.133057,
+            "build_ms": 2.838864,
+            "solve_ms": 6.879178,
+            "output_ms": 1.00777,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 15.95052699997268
+          },
+          {
+            "parse_ms": 4.308445,
+            "build_ms": 2.874513,
+            "solve_ms": 6.881221,
+            "output_ms": 0.938979,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.048522000005505
+          }
+        ],
+        "unique_chain_small": [
+          {
+            "parse_ms": 4.847751,
+            "build_ms": 3.138808,
+            "solve_ms": 7.084418,
+            "output_ms": 0.966816,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 17.22115699999449
+          },
+          {
+            "parse_ms": 4.271346,
+            "build_ms": 4.253371,
+            "solve_ms": 6.973641,
+            "output_ms": 0.996732,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 17.583763999994062
+          },
+          {
+            "parse_ms": 4.236927,
+            "build_ms": 2.935652,
+            "solve_ms": 6.820682,
+            "output_ms": 0.975903,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 15.998029000002134
+          },
+          {
+            "parse_ms": 4.259537,
+            "build_ms": 2.812546,
+            "solve_ms": 7.102492,
+            "output_ms": 0.964595,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.199945000039406
+          },
+          {
+            "parse_ms": 4.23967,
+            "build_ms": 3.060243,
+            "solve_ms": 6.791478,
+            "output_ms": 0.940415,
+            "distance": 620680,
+            "path_edges": 123903,
+            "whole_ms": 16.060176999985742
+          }
+        ]
+      },
+      "medians": {
+        "base": {
+          "parse_ms": 4.367786,
+          "build_ms": 3.131801,
+          "solve_ms": 6.883766,
+          "output_ms": 0.945765,
+          "distance": 620680,
+          "path_edges": 123903,
+          "whole_ms": 16.483096999991176
+        },
+        "unique_dfs_reserve": {
+          "parse_ms": 4.233341,
+          "build_ms": 2.958503,
+          "solve_ms": 6.945214,
+          "output_ms": 0.972347,
+          "distance": 620680,
+          "path_edges": 123903,
+          "whole_ms": 16.72773299998198
+        },
+        "unique_chain": {
+          "parse_ms": 4.277027,
+          "build_ms": 2.975894,
+          "solve_ms": 6.922454,
+          "output_ms": 0.962947,
+          "distance": 620680,
+          "path_edges": 123903,
+          "whole_ms": 16.3692990000186
+        },
+        "unique_chain_small": {
+          "parse_ms": 4.259537,
+          "build_ms": 3.060243,
+          "solve_ms": 6.973641,
+          "output_ms": 0.966816,
+          "distance": 620680,
+          "path_edges": 123903,
+          "whole_ms": 16.199945000039406
+        }
+      }
+    },
+    "max_sparse_random_01": {
+      "samples": {
+        "base": [
+          {
+            "parse_ms": 4.472502,
+            "build_ms": 3.037427,
+            "solve_ms": 5.185748,
+            "output_ms": 0.020075,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.847013000031438
+          },
+          {
+            "parse_ms": 4.947377,
+            "build_ms": 2.923067,
+            "solve_ms": 5.268075,
+            "output_ms": 0.019259,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 14.172191999989536
+          },
+          {
+            "parse_ms": 4.554968,
+            "build_ms": 2.960569,
+            "solve_ms": 5.715127,
+            "output_ms": 0.021732,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 14.317472999948677
+          },
+          {
+            "parse_ms": 4.538968,
+            "build_ms": 5.979634,
+            "solve_ms": 5.146042,
+            "output_ms": 0.021897,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 16.772350999985974
+          },
+          {
+            "parse_ms": 4.806947,
+            "build_ms": 6.515013,
+            "solve_ms": 5.245423,
+            "output_ms": 0.023907,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 17.66717699996434
+          }
+        ],
+        "unique_dfs_reserve": [
+          {
+            "parse_ms": 5.170994,
+            "build_ms": 3.710286,
+            "solve_ms": 5.498389,
+            "output_ms": 0.024319,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 15.57565500002056
+          },
+          {
+            "parse_ms": 4.47772,
+            "build_ms": 3.052234,
+            "solve_ms": 5.163159,
+            "output_ms": 0.020775,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.746875000038017
+          },
+          {
+            "parse_ms": 4.456319,
+            "build_ms": 2.979187,
+            "solve_ms": 5.596504,
+            "output_ms": 0.026084,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 14.185022999981811
+          },
+          {
+            "parse_ms": 4.474788,
+            "build_ms": 3.052298,
+            "solve_ms": 5.718429,
+            "output_ms": 0.038705,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 14.405504000023939
+          },
+          {
+            "parse_ms": 4.746581,
+            "build_ms": 3.140022,
+            "solve_ms": 5.401644,
+            "output_ms": 0.021606,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 14.394887000037215
+          }
+        ],
+        "unique_chain": [
+          {
+            "parse_ms": 4.467106,
+            "build_ms": 2.997483,
+            "solve_ms": 5.199769,
+            "output_ms": 0.01943,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.837559999956284
+          },
+          {
+            "parse_ms": 4.464259,
+            "build_ms": 2.973836,
+            "solve_ms": 5.150681,
+            "output_ms": 0.018846,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.633158000004642
+          },
+          {
+            "parse_ms": 4.660948,
+            "build_ms": 3.111727,
+            "solve_ms": 5.133277,
+            "output_ms": 0.018833,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.959189999980026
+          },
+          {
+            "parse_ms": 4.437538,
+            "build_ms": 2.9316,
+            "solve_ms": 5.232197,
+            "output_ms": 0.033324,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.695035000012012
+          },
+          {
+            "parse_ms": 4.681101,
+            "build_ms": 6.106698,
+            "solve_ms": 5.21246,
+            "output_ms": 0.017695,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 17.20982200004073
+          }
+        ],
+        "unique_chain_small": [
+          {
+            "parse_ms": 4.51548,
+            "build_ms": 2.980132,
+            "solve_ms": 5.203131,
+            "output_ms": 0.02058,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.732392999997955
+          },
+          {
+            "parse_ms": 4.469994,
+            "build_ms": 3.500593,
+            "solve_ms": 5.181631,
+            "output_ms": 0.018626,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 14.199184999995396
+          },
+          {
+            "parse_ms": 4.727363,
+            "build_ms": 2.944127,
+            "solve_ms": 5.16442,
+            "output_ms": 0.02048,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.924683000027471
+          },
+          {
+            "parse_ms": 5.234141,
+            "build_ms": 3.499523,
+            "solve_ms": 5.523833,
+            "output_ms": 0.025481,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 15.51575700000285
+          },
+          {
+            "parse_ms": 4.477401,
+            "build_ms": 3.024032,
+            "solve_ms": 5.340119,
+            "output_ms": 0.022225,
+            "distance": 7192454848,
+            "path_edges": 14,
+            "whole_ms": 13.96555299999136
+          }
+        ]
+      },
+      "medians": {
+        "base": {
+          "parse_ms": 4.554968,
+          "build_ms": 3.037427,
+          "solve_ms": 5.245423,
+          "output_ms": 0.021732,
+          "distance": 7192454848,
+          "path_edges": 14,
+          "whole_ms": 14.317472999948677
+        },
+        "unique_dfs_reserve": {
+          "parse_ms": 4.47772,
+          "build_ms": 3.052298,
+          "solve_ms": 5.498389,
+          "output_ms": 0.024319,
+          "distance": 7192454848,
+          "path_edges": 14,
+          "whole_ms": 14.394887000037215
+        },
+        "unique_chain": {
+          "parse_ms": 4.467106,
+          "build_ms": 2.997483,
+          "solve_ms": 5.199769,
+          "output_ms": 0.018846,
+          "distance": 7192454848,
+          "path_edges": 14,
+          "whole_ms": 13.837559999956284
+        },
+        "unique_chain_small": {
+          "parse_ms": 4.51548,
+          "build_ms": 3.024032,
+          "solve_ms": 5.203131,
+          "output_ms": 0.02058,
+          "distance": 7192454848,
+          "path_edges": 14,
+          "whole_ms": 13.96555299999136
+        }
+      }
+    }
+  }
+}
