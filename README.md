@@ -148,6 +148,7 @@
 | `components/fps_factorials.hpp` | 階乗・逆階乗生成 | [使い方](docs/fps_factorials.md) |
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
 | `components/fps_log.hpp` | FPS の対数の内部変換 | [使い方](docs/fps_log.md) |
+| `components/fps_asm.hpp` | FPS の命令文字列 | [使い方](docs/fps_asm.md) |
 | `components/fps_blocked.hpp` | FPS のブロック変換 | [使い方](docs/fps_blocked.md) |
 | `components/fps_bostan.hpp` | Bostan–Mori の倍長化 | [使い方](docs/fps_bostan.md) |
 | `components/fps_horner.hpp` | FPS の一点評価 | [使い方](docs/fps_horner.md) |
