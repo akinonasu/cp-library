@@ -19,7 +19,7 @@
 | `math/linear_algebra/` | 行列、XOR 基底 |
 | `convolution/` | 畳み込み |
 | `fps/` | 形式的冪級数、多項式 |
-| `string/` | 文字列、Eertree |
+| `string/` | 列・文字列、LIS、LCS、Eertree |
 | `components/` | 変換と共有する内部部品 |
 
 include には新しいパスを使います。型名と関数名は変わりません。

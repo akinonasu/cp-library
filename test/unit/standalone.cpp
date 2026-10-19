@@ -45,6 +45,7 @@
 #include "math/floor_sum/partition_mod_of_linear.hpp"
 #include "string/edit_distance.hpp"
 #include "string/lcs.hpp"
+#include "string/lis.hpp"
 #include "string/rolling_hash.hpp"
 
 #if defined(TEMPLATE_HPP) || defined(rep) || defined(per) || defined(vec) || defined(all) || defined(sz) || defined(uint)
@@ -68,6 +69,9 @@ struct StaticTreeSum {
 };
 
 int main() {
+	const std::vector<int> sequence{3, 1, 2, 2, 4};
+	assert(lis_length(sequence) == 3 && lis_length<false>(sequence) == 4);
+	assert(lis(sequence).size() == 3);
 	DualSegtree<std::int64_t, std::int64_t, add, add, zero, true> dual(3, 1);
 	dual.apply(0, 3, 4);
 	dual.set(1, 7);
