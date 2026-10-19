@@ -150,3 +150,5 @@ g++ -std=c++23 -O2 -DNDEBUG -I . -I test/benchmark -I /tmp/floor-variants test/b
 ```
 
 `.github/workflows/generalized-floor-sum-benchmark.yml` でも同じ比較と公式ケース検証を実行できる。`benchmark`・`verify` で測定と検証を個別に切り替えられる。単体検証は `verify_selected.py` から既存の検証スクリプトを呼び出し、測定用ワークフローの追加が通常 CI の既存キャッシュを無効化しないことも確認した。API キーは既存の GitHub Secret `YUKICODER_TOKEN` からのみ渡す。
+
+2026-10-20 に負の係数対応と No.2996 の検証を追加した。変更内容・参考提出・検証・非負入力の測定は [負の係数の資料](generalized_floor_sum_signed.md) を参照。

@@ -44,13 +44,13 @@ jobs:
         if: inputs.verify
         run: |
           python3 test/benchmark/verify_selected.py math/floor_sum/generalized_floor_sum.hpp test/unit/generalized_floor_sum.cpp
-      - name: Verify yukicoder No.2362
+      - name: Verify yukicoder No.2362 and No.2996
         if: inputs.verify
         env:
           YUKICODER_TOKEN: ${{ secrets.YUKICODER_TOKEN }}
         run: |
           python3 -m pip install -r test/requirements.txt
-          oj-verify run --timeout 1200 --tle 2 -j 2 test/generalized_floor_sum.test.cpp > benchmark-results/judge.log 2>&1
+          oj-verify run --timeout 1200 --tle 2 -j 2 test/generalized_floor_sum.test.cpp test/generalized_floor_sum_yuki.test.cpp > benchmark-results/judge.log 2>&1
           tail -n 25 benchmark-results/judge.log
       - uses: actions/upload-artifact@v4
         if: always()

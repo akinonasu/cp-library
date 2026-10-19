@@ -56,6 +56,25 @@ const Coefficients<D, T> &coefficients() {
 	return value;
 }
 
+template <int D, class T, class A, class B>
+[[gnu::always_inline]] inline void translate(Table<D, T> &result, const Coefficients<D, T> &c, A a, B b,
+	std::array<T, D + 1> &ak, std::array<T, D + 1> &bk) {
+	if (a != A(0)) {
+		ak[0] = T(1);
+		for (int i = 1; i <= D; ++i) ak[i] = ak[i - 1] * T(a);
+		for (int q = D; q >= 1; --q)
+			for (int p = 0; p + q <= D; ++p)
+				for (int j = 0; j < q; ++j) result[p][q] += c.choose[q][j] * ak[q - j] * result[p + q - j][j];
+	}
+	if (b != B(0)) {
+		bk[0] = T(1);
+		for (int i = 1; i <= D; ++i) bk[i] = bk[i - 1] * T(b);
+		for (int q = D; q >= 1; --q)
+			for (int p = 0; p + q <= D; ++p)
+				for (int j = 0; j < q; ++j) result[p][q] += c.choose[q][j] * bk[q - j] * result[p][j];
+	}
+}
+
 template <int D, class T>
 Table<D, T> euclidean(U n, U m, U a, U b) {
 	Table<D, T> result{};
@@ -100,21 +119,28 @@ Table<D, T> euclidean(U n, U m, U a, U b) {
 		}
 	}
 	for (int p = 0; p <= D; ++p) result[p][0] = sums[p];
-	if (u) {
-		ak[0] = T(1);
-		for (int i = 1; i <= D; ++i) ak[i] = ak[i - 1] * T(u);
-		for (int q = D; q >= 1; --q)
-			for (int p = 0; p + q <= D; ++p)
-				for (int j = 0; j < q; ++j) result[p][q] += c.choose[q][j] * ak[q - j] * result[p + q - j][j];
-	}
-	if (v) {
-		bk[0] = T(1);
-		for (int i = 1; i <= D; ++i) bk[i] = bk[i - 1] * T(v);
-		for (int q = D; q >= 1; --q)
-			for (int p = 0; p + q <= D; ++p)
-				for (int j = 0; j < q; ++j) result[p][q] += c.choose[q][j] * bk[q - j] * result[p][j];
-	}
+	translate<D>(result, c, u, v, ak, bk);
 	return result;
+}
+
+template <class A, class B>
+using Signed = std::enable_if_t<std::is_integral_v<A> && std::is_integral_v<B> &&
+	(std::is_signed_v<A> || std::is_signed_v<B>), int>;
+
+template <class A>
+bool negative(A value) {
+	if constexpr (std::is_signed_v<A>) return value < 0;
+	else return false;
+}
+
+template <class T, class A>
+std::pair<U, T> normalize(A value, U m) {
+	U x = static_cast<U>(value);
+	if (!negative(value)) return {x % m, T(x / m)};
+	x = U(0) - x;
+	U r = x % m, q = x / m + (r != 0);
+	if constexpr (integer<T>) return {r ? m - r : 0, T(-__int128_t(q))};
+	else return {r ? m - r : 0, -T(q)};
 }
 
 template <class T, bool Full = false>
@@ -204,5 +230,41 @@ T generalized_floor_sum(std::uint64_t n, std::uint64_t m, std::uint64_t a, std::
 		}
 	} else if constexpr (P == 0 && Q == 1) return generalized_floor_sum_detail::linear<T>(n, m, a, b);
 	else return generalized_floor_sum_moments<P + Q, T>(n, m, a, b)[P][Q];
+}
+
+template <int D, class T = __int128_t, class A, class B, generalized_floor_sum_detail::Signed<A, B> = 0>
+auto generalized_floor_sum_moments(std::uint64_t n, std::uint64_t m, A a, B b) {
+	using namespace generalized_floor_sum_detail;
+	static_assert(D >= 0);
+	assert(m > 0);
+	if (!negative(a) && !negative(b)) return generalized_floor_sum_moments<D, T>(n, m, U(a), U(b));
+	if constexpr (D == 0) return generalized_floor_sum_moments<0, T>(n, m, U(0), U(0));
+	else {
+		if (!n) return Table<D, T>{};
+		auto [rb, v] = normalize<T>(b, m);
+		if (n == 1) {
+			Table<D, T> result{};
+			result[0][0] = T(1);
+			for (int q = 1; q <= D; ++q) result[0][q] = result[0][q - 1] * v;
+			return result;
+		}
+		auto [ra, u] = normalize<T>(a, m);
+		auto result = generalized_floor_sum_moments<D, T>(n, m, ra, rb);
+		std::array<T, D + 1> ak{}, bk{};
+		translate<D>(result, coefficients<D, T>(), u, v, ak, bk);
+		return result;
+	}
+}
+
+template <int P, int Q, class T = __int128_t, class A, class B, generalized_floor_sum_detail::Signed<A, B> = 0>
+T generalized_floor_sum(std::uint64_t n, std::uint64_t m, A a, B b) {
+	using namespace generalized_floor_sum_detail;
+	static_assert(P >= 0 && Q >= 0);
+	assert(m > 0);
+	if constexpr (Q == 0) return generalized_floor_sum<P, Q, T>(n, m, U(0), U(0));
+	else {
+		if (!negative(a) && !negative(b)) return generalized_floor_sum<P, Q, T>(n, m, U(a), U(b));
+		return generalized_floor_sum_moments<P + Q, T>(n, m, a, b)[P][Q];
+	}
 }
 #endif

@@ -1,0 +1,5 @@
+{
+  "headers": ["math/floor_sum/generalized_floor_sum.hpp"],
+  "unit": ["test/unit/generalized_floor_sum.cpp"],
+  "sanitize": ["test/unit/generalized_floor_sum.cpp"]
+}
