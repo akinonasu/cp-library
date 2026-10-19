@@ -15,11 +15,11 @@
 #include <utility>
 #include <vector>
 
-inline constexpr std::int64_t DIJKSTRA_INF = 1'000'000'000'000'000'000;
+inline constexpr std::int64_t DIJKSTRA_INF = 4'000'000'000'000'000'000;
 
 namespace shortest_path_detail {
 template<class T> T infinity() {
-	if constexpr (std::numeric_limits<T>::is_bounded && std::numeric_limits<T>::is_integer && std::numeric_limits<T>::digits < 60)
+	if constexpr (std::numeric_limits<T>::is_bounded && std::numeric_limits<T>::is_integer && std::numeric_limits<T>::digits < 62)
 		return std::numeric_limits<T>::max();
 	else return T(DIJKSTRA_INF);
 }
