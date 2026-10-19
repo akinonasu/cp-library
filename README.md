@@ -145,11 +145,12 @@
 | `data_structure/range_query/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
 | `data_structure/range_query/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
 
-### 文字列
+### 列・文字列
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `string/lcs.hpp` | 最長共通部分列 | [使い方](docs/lcs.md) |
+| `string/lis.hpp` | 最長増加部分列（長さ・復元） | [使い方](docs/lis.md) |
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
@@ -207,6 +208,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `components/barrett32.hpp` | 32 bit Barrett 演算 | [使い方](docs/barrett32.md) |
+| `components/binary_search.hpp` | 単調な述語の境界探索 | [使い方](docs/binary_search.md) |
 | `components/binomial_prefix_core.hpp` | 二項係数の prefix sum の内部演算 | [使い方](docs/binomial_prefix_core.md) |
 | `components/flow_graph.hpp` | フローの残余グラフ | [使い方](docs/flow_graph.md) |
 | `components/undirected_csr.hpp` | 無向グラフの CSR | [使い方](docs/undirected_csr.md) |

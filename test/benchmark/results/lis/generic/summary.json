@@ -1,0 +1,107 @@
+[
+  {
+    "operation": "length",
+    "case": "random",
+    "standard_ms": 48.997248,
+    "append_ms": 48.055408,
+    "library_ms": 15.803799
+  },
+  {
+    "operation": "length",
+    "case": "increasing",
+    "standard_ms": 16.107824,
+    "append_ms": 2.968972,
+    "library_ms": 3.233208
+  },
+  {
+    "operation": "length",
+    "case": "decreasing",
+    "standard_ms": 1.247903,
+    "append_ms": 1.526829,
+    "library_ms": 0.907223
+  },
+  {
+    "operation": "length",
+    "case": "equal",
+    "standard_ms": 1.238803,
+    "append_ms": 1.517145,
+    "library_ms": 0.901768
+  },
+  {
+    "operation": "length",
+    "case": "few",
+    "standard_ms": 19.506713,
+    "append_ms": 18.816134,
+    "library_ms": 12.857994
+  },
+  {
+    "operation": "length",
+    "case": "alternating",
+    "standard_ms": 22.541886,
+    "append_ms": 15.487236,
+    "library_ms": 16.517748
+  },
+  {
+    "operation": "restore",
+    "case": "random",
+    "standard_ms": 51.158941,
+    "append_ms": 49.250764,
+    "library_ms": 17.731605
+  },
+  {
+    "operation": "restore",
+    "case": "increasing",
+    "standard_ms": 19.816107,
+    "append_ms": 6.482339,
+    "library_ms": 5.212656
+  },
+  {
+    "operation": "restore",
+    "case": "decreasing",
+    "standard_ms": 2.585662,
+    "append_ms": 2.794693,
+    "library_ms": 2.280731
+  },
+  {
+    "operation": "restore",
+    "case": "equal",
+    "standard_ms": 2.563397,
+    "append_ms": 2.76799,
+    "library_ms": 2.208489
+  },
+  {
+    "operation": "restore",
+    "case": "few",
+    "standard_ms": 21.275044,
+    "append_ms": 20.423335,
+    "library_ms": 14.086712
+  },
+  {
+    "operation": "restore",
+    "case": "alternating",
+    "standard_ms": 25.261748,
+    "append_ms": 17.695784,
+    "library_ms": 18.29632
+  },
+  {
+    "operation": "weak",
+    "case": "random",
+    "standard_ms": 47.722237,
+    "append_ms": 48.85888,
+    "library_ms": 15.79513
+  },
+  {
+    "operation": "weak",
+    "case": "equal",
+    "standard_ms": 16.276602,
+    "append_ms": 3.15793,
+    "library_ms": 3.374547
+  },
+  {
+    "operation": "weak",
+    "case": "few",
+    "standard_ms": 41.998514,
+    "append_ms": 42.647826,
+    "library_ms": 20.898682
+  }
+]
