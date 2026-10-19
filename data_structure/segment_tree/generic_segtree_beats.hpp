@@ -98,6 +98,7 @@ class GenericSegtreeBeats {
 		}
 		return op(std::move(left), std::move(right));
 	}
+	void apply(const F &f) { if (n_) all_apply(1, f); }
 	void apply(int p, const F &f) {
 		assert(0 <= p && p < n_);
 		int k = p + base_;

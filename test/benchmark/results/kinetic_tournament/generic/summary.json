@@ -1,32 +1,51 @@
 [
   {
+    "group": "tree",
     "case": "random",
-    "reference_ms": 13.142778,
-    "library_ms": 11.107854,
-    "library64_ms": 8.393181
+    "library_ms": 58.200118,
+    "reference_ms": 41.860022
   },
   {
+    "group": "tree",
+    "case": "partial",
+    "library_ms": 64.858941,
+    "reference_ms": 43.832961
+  },
+  {
+    "group": "tree",
     "case": "envelope",
-    "reference_ms": 7.606052,
-    "library_ms": 11.088878,
-    "library64_ms": 9.409822
+    "library_ms": 24.688774,
+    "reference_ms": 9.758163
   },
   {
-    "case": "same_slope",
-    "reference_ms": 13.990688,
-    "library_ms": 14.380281,
-    "library64_ms": 8.001236
-  },
-  {
+    "group": "tree",
     "case": "jump",
-    "reference_ms": 0.384674,
-    "library_ms": 0.407381,
-    "library64_ms": 0.309176
+    "library_ms": 1.003578,
+    "reference_ms": 0.508206
   },
   {
-    "case": "concurrent",
-    "reference_ms": 0.393234,
-    "library_ms": 0.399669,
-    "library64_ms": 0.328575
+    "group": "jsc",
+    "case": "equal",
+    "jsc_ms": 19.520619
+  },
+  {
+    "group": "jsc",
+    "case": "ascending",
+    "jsc_ms": 554.907887
+  },
+  {
+    "group": "jsc",
+    "case": "descending",
+    "jsc_ms": 171.658433
+  },
+  {
+    "group": "jsc",
+    "case": "alternating",
+    "jsc_ms": 544.743261
+  },
+  {
+    "group": "jsc",
+    "case": "random",
+    "jsc_ms": 899.768977
   }
 ]

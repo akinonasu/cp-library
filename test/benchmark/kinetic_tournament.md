@@ -1,93 +1,91 @@
 # Kinetic Tournament
 
-2026-10-20。整数時刻の単調な進行、直線の一点変更・削除、区間の最小値・最大値と添字を扱うライブラリを追加した。
-
-## 参考実装
-
-[Eric K. Zhang の実装](https://github.com/ekzhang/library/blob/f553dd59b9f5635351478d6f45a9283fe603c840/kinetic_tournament.cpp)を確認した。各内部頂点に子の勝者と、部分木内の証明が最初に失効する時刻を保持する。時刻を進める際に、失効した部分だけをまとめて再計算する。浮動小数点やイベントの優先度付きキューは不要。この方式を採用した。
-
-直接対応する Library Checker 問題はないため、関連する Line Add Get Min の AC を公式 API の時間順で取得した。
-
-| 提出 | 取得時の時間 | 確認した手法 |
-| --- | ---: | --- |
-| [362191 / IceKylin](https://judge.yosupo.jp/submission/362191) | 57 ms | 座標を先読みした Li Chao Tree、radix sort による座標圧縮、連続配列 |
-| [357336 / IceKylin](https://judge.yosupo.jp/submission/357336) | 58 ms | 同系統の Li Chao Tree、座標配列と葉の値の分離 |
-| [357321 / IceKylin](https://judge.yosupo.jp/submission/357321) | 58 ms | 同系統の Li Chao Tree、反復による追加・問い合わせ |
-
-最速提出は Kinetic Tournament ではなく、削除や添字区間の問い合わせも扱わない。時刻を戻せる点では Li Chao Tree が適している。今回は指定された時刻単調の API と点変更・削除・区間問い合わせを優先し、先読みをライブラリの条件にしない。これらの提出との時間比較やジャッジ上の最速性は主張しない。
-
-取得日時・一覧・ソースの SHA-256 は `results/kinetic_tournament/reference.json`、取得スクリプトは `kinetic_tournament_reference.py` に保存した。
+2026-10-20。全体の絶対時刻を進める旧実装・説明・テスト・測定資料を削除し、[JSC2024 決勝 D の公式解説](https://atcoder.jp/contests/jsc2024-final/editorial/10766)に対応する区間更新版へ置き換えた。同じヘッダー名を使うが API は異なる。
 
 ## 実装
 
-- 直線は葉の添字ごとに 1 個だけ保持し、内部頂点は勝者の添字と失効時刻を連続配列に持つ。
-- 区間問い合わせは通常の反復セグメント木と同じ分解を行い、候補の直線を現在時刻で評価する。
-- 非活性の葉を `-1` とし、値の番兵を直線として扱わない。係数・時刻は符号付き型の全域を使える。
-- 同値なら小さい添字を選ぶ。交差点が整数かどうかと添字の優先順から、次に勝者が変わる最初の整数時刻を求める。
-- 評価値の差は取らない。係数の差を符号と符号なしの絶対値で保持し、64 bit の商・余りを使って交差時刻を求める。係数の差が符号付き 64 bit を超える場合にも対応する。
-- 失効時刻は符号付き時刻を順序を保って符号なし 64 bit へ写したもの。0 はイベントなしに使う。構築・更新時の時刻より後にしかイベントはないため、最小時刻に対応する 0 は将来のイベントにならない。最大時刻のイベントは正しく表現する。
-- `advance` はイベントを一つずつ処理せず、現在時刻で必要な部分を再計算する。大量の同時交差も 1 回の再帰でまとめて処理する。
+固定した昇順の係数列 `V` に対して、区間内の有効な値に `a*V[i]+b` を加える。`a >= 0`、`b` は符号付き。最大値版が既定で、最小値版も用意する。点での値の設定・無効化・再有効化に対応する。係数は変更しない。
 
-## 検証
+`GenericSegtreeBeats` を共有し、集約値・勝者・部分木の証明が失効するまでの残りステップ数を保持する。更新が証明を破る場合だけ子へ降りる。浮動小数点や優先度付きキューは使わない。最大値の同値時は右、最小値は左を選び、交差時刻で将来有利になる側を選ぶ。
 
-- GCC 15.2 / Clang 21.1.8 のヘッダー単独コンパイル、既存ライブラリとの同時 include。
-- 係数 -2～2 の 2 直線の全 625 組を、時刻 -5～5 で直接比較。次のイベントも整数時刻の全探索と比較。
-- `INT64_MIN`・`INT64_MAX` とその近傍など 9 値からなる 2 直線の全 6,561 組を、最小・最大の両方で時刻の端から端まで照合。
-- 評価値自体は 128 bit に収まるが差は収まらない入力、最小時刻の直後の交差、最大時刻ちょうどの交差、32 bit 時刻の最大値。
-- 中間の積が返り値の型を超えても加算後は収まる入力と、係数型より狭い返り値の型。中間値は係数型に合わせた拡張型で計算する。
-- 5 種類の型・最小／最大設定、11 種類の長さで計 110,000 回の操作。点設定・削除・空き位置への追加・同時刻・イベント時刻への進行・区間問い合わせ・全体問い合わせ・空区間・全削除を直接走査と比較。
-- コピー・ムーブ・再構築・リセット。ムーブ元の空の状態も検査。
-- 20 万直線をまとめて構築して大きく時刻を進めるケース。
-- Clang ASan / UBSan。
-- Line Add Get Min の公式 15 ケースを GCC・Clang で照合。
-- ヘッダーと提出コードの Bundle、ドキュメントの使用例を両コンパイラでコンパイル・実行。
+証明には最初の交差時刻でなく、安全に進められる最大の整数ステップ数を保存する。正の値の差 `gap` と係数の差 `d` に対して `(gap-1)/d` を使う。係数・値が符号付き 64 bit 全域でも正の差は `uint64_t` に収まるため、符号なし減算と 64 bit 除算で正確に求められる。「交差なし」の番兵 `UINT64_MAX` と有限の証明が衝突しない。値の評価と遅延更新の累積には符号付き 128 bit を使う。
 
-Line Add Get Min の検証コードは、全直線を追加順の添字に置き、各問い合わせに「その時点までに追加された直線数」を記録する。問い合わせを x の昇順に並べ、時刻を進めてその長さの prefix の最小値を求める。元の順序で出力する。この先読みは任意順の x を持つ問題を検証するための変換で、ライブラリの API 自体には不要。点変更・削除は独立した単体テストで検証する。
+係数の昇順と非負の更新係数により、全体更新だけでは勝者が将来不利な側へ戻らない。部分区間更新や点更新が切る節点を数えると、`q` 操作の合計は `O(n log n + q log² n)`。更新 1 回の最悪時間は `O(n)`。任意の符号の `a` を受け付けるものではない。
 
-結果は `check.log`・`sanitize.log`・`validation.log`・`validation.json` に保存した。オンライン提出は行っていない。Mac 実機はローカルでは未検証で、macOS CI の対象。
+## 参考資料・提出
+
+- [公式解説](https://atcoder.jp/contests/jsc2024-final/editorial/10766)の区間 add・重み付き加算・区間 max を基にした。[解説の回答例](https://atcoder.jp/contests/jsc2024-final/submissions/56754335)の HTML 取得は HTTP 403 となったため、回答例のソースは調査・速度比較に使っていない。
+- 関連する Library Checker の [Range Linear Add Range Min](https://judge.yosupo.jp/problem/range_linear_add_range_min) の AC を公式 API の実行時間順で取得した。[393894](https://judge.yosupo.jp/submission/393894)（102 ms）、[382268](https://judge.yosupo.jp/submission/382268)（120 ms）は正負両方向の証明を持つ Kinetic Segment Tree。[371003](https://judge.yosupo.jp/submission/371003)（212 ms）は凸包情報を使う方式。最速の `KineticRangeLinearAddMinTree` 本体を抽出し、同じ非負の操作列で比較した。この問題の負の更新係数を含む全仕様に、新実装が対応するわけではない。
+- 一様加算の検証に使う [Range Add Range Min](https://judge.yosupo.jp/problem/range_add_range_min) も調査した。[409052](https://judge.yosupo.jp/submission/409052)（50 ms）、[402318](https://judge.yosupo.jp/submission/402318)（51 ms）、[408981](https://judge.yosupo.jp/submission/408981)（55 ms）。幅の広い木や正規化した最小値の表現を使う。一様加算だけの問題であり、重み付き加算まで扱う今回のライブラリとの直接の速度比較は行わない。
+
+取得日時・一覧・URL・ソースの SHA-256 は `results/kinetic_tournament/reference.json`。外部ソースは `.verify-helper/cache/kinetic_range_references` に保存し、リポジトリには含めない。最速性は主張しない。
 
 ## 測定条件
 
-- WSL2 / Linux x86_64、Intel Core i7-13700F、GCC 15.2.0、CPU 2 に固定。
-- generic: `-std=c++2b -O2 -DNDEBUG -Wall -Wextra -Werror`。
-- native: 上記に `-march=native -ftrivial-auto-var-init=zero` を追加。
-- 検証・コンパイル・他の測定とは同時に実行しない。
-- 長さ 100,000、seed `20261020`。全位置の初期設定・入力生成・破棄・入出力を除き、操作と checksum を測る。初期状態は全方式で同じ。
-- `reference` は commit ID で固定した Eric K. Zhang の実装をそのまま使用。`library` は既定の 128 bit 評価、`library64` は 64 bit 評価を指定する。後者と参考実装で全ての積・和・差が収まる入力を使う。
-- 参考実装の同値時の優先順は傾き、本実装は添字。比較する返り値は最小値のみで、全試行の checksum が一致することを確認した。
-- 順序を seed で入れ替え、各 7 回実行した中央値。AtCoder・Library Checker 実機、Mac 実機での速度は未測定。
-
-| 入力 | 操作 |
-| --- | --- |
-| random | 非負のランダムな傾き・切片。100,000 操作を点変更・時刻の進行・区間問い合わせで交互に実行 |
-| envelope | 傾き `n-1-i`、切片 `i*(i+1)/2`。100,000 回、時刻を 1 ずつ進めて全体の最小値を求める |
-| same_slope | 傾き 7、ランダムな切片。100,000 回、時刻を 1 ずつ進めてランダムな区間の最小値を求める |
-| jump | envelope と同じ直線で、一度だけ時刻 n へ進めて全体の最小値を求める |
-| concurrent | 傾き i、切片 `(n-1-i)*n`。全てが時刻 n で交差し、一度だけその時刻へ進めて全体の最小値を求める |
+- WSL2 / Linux x86_64、Intel Core i7-13700F、GCC 15.2.0、CPU 2 に固定。他の測定・テストとは共通のロックで直列実行。
+- generic は `-std=c++2b -O2 -DNDEBUG -Wall -Wextra -Werror`。native はさらに `-march=native -ftrivial-auto-var-init=zero`。
+- 5 試行の中央値。実装の順序は固定 seed でシャッフル。木の比較では構築・入力生成・入出力を除外し、操作と checksum を計測する。
+- 本体の比較は長さ 100,000、係数 `V[i]=i`、100,000 反復。参考実装もこの固定係数を使う。返り値は最小値のみ比較し、同値時の添字は比較しない。全試行の checksum が一致。
+- `random` は初期値を ±10¹² の乱数にし、部分区間の非負の重み付き加算・符号付き一様加算・区間最小値を交互に実行する。`partial` はさらに左半分への一様加算を挟む。
+- `envelope` の初期値は `(n-1-i)*(n-i)/2`。全体に係数分を 1 回ずつ加算し、全体最小値を毎回取得する。`jump` は同じ初期値から一度だけ `n*V[i]` を加える。
+- JSC の測定は長さ 500,000。`kinetic_tournament_jsc.cpp` の `solve` 全体を測り、係数列のソート・重複除去・木の構築も含む。入出力と入力生成は除外する。
+- AtCoder・Library Checker の実機での速度、Mac の速度は未測定。
 
 ## 結果
 
-単位は ms。各行は上記の操作全体の合計時間。
+単位は ms。
 
-| 入力 | generic reference / library / library64 | native reference / library / library64 |
+| 操作列 | generic 新実装 / 参考 | native 新実装 / 参考 |
 | --- | ---: | ---: |
-| random | 13.143 / 11.108 / 8.393 | 13.636 / 11.266 / 8.381 |
-| envelope | 7.606 / 11.089 / 9.410 | 7.516 / 11.091 / 9.536 |
-| same_slope | 13.991 / 14.380 / 8.001 | 14.111 / 14.075 / 7.995 |
-| jump | 0.385 / 0.407 / 0.309 | 0.378 / 0.420 / 0.308 |
-| concurrent | 0.393 / 0.400 / 0.329 | 0.387 / 0.424 / 0.331 |
+| random | 58.200 / 41.860 | 61.866 / 44.897 |
+| partial | 64.859 / 43.833 | 68.329 / 46.207 |
+| envelope | 24.689 / 9.758 | 24.251 / 11.154 |
+| jump | 1.004 / 0.508 | 0.922 / 0.604 |
 
-乱数の混合操作では既定版も短い時間になった。一方、envelope は既定版で約 46～48%、64 bit 指定でも約 24～27% 遅い。全ケースでの速度優位性は主張しない。既定版は評価幅が異なり、64 bit 全域・添字の優先順・空の結果・削除も扱うため、参考実装と条件の差がある。
+今回の全ケースで参考実装の方が速い。新実装は、任意の昇順係数・点設定・無効化・最大値・添字を扱い、64 bit 全域の差と広い累積更新に対応する。一方、参考実装は添字を係数として固定し、64 bit 演算と専用の再帰木を使う。汎用の Beats を使う新実装との差は残っている。
 
-条件とソースの SHA-256 は各 `environment.json`、全試行は `samples.csv`、中央値は `summary.json` に保存した。
+| JSC2024 D、500,000 要素 | generic | native |
+| --- | ---: | ---: |
+| 全て 10⁹ | 19.521 | 22.966 |
+| 昇順 `1..n` | 554.908 | 559.033 |
+| 降順 `n..1` | 171.658 | 169.985 |
+| 小さい値と大きい値の交互列 | 544.743 | 558.629 |
+| `1..10⁹` の乱数列 | 899.769 | 955.716 |
 
-## 再現
+## 試行した改善
+
+最初は全体への更新・取得も通常の区間操作で処理していた。`GenericSegtreeBeats::apply(f)` を追加し、全体の操作を根へ直接適用するようにした。大きさが 2 の冪でない場合も、末尾の無効な葉を含む根を利用できる。
+
+| 版 | envelope generic / native | JSC 降順 generic / native |
+| --- | ---: | ---: |
+| 初期版 | 40.831 / 44.410 | 279.857 / 260.265 |
+| 全体操作を根で処理 | 24.885 / 25.039 | 193.342 / 176.736 |
+| 証明の除算も 64 bit 化 | 24.689 / 24.251 | 171.658 / 169.985 |
+
+全体操作の経路の短縮が envelope に有効だった。除算の変更は、差が非負かつ `uint64_t` に収まることを使い、対象の値域を狭めずに行った。測定のばらつきもあるため、各差を全て変更の効果とは断定しない。
+
+初期版と全体操作を改善した版のソースは `initial_sources.tar.gz`・`root_sources.tar.gz`、結果は `initial_generic`・`initial_native`・`root_generic`・`root_native`。最終版は `generic`・`native`。各ディレクトリにソースの SHA-256 と条件、全試行、中央値を保存した。
+
+## 検証
+
+- GCC・Clang でヘッダーの単独 include、既存ヘッダーとの併用、コピー・ムーブ・全体更新の後の部分区間更新を検証。
+- 32 bit / 64 bit の最大値・最小値版で合計 384,000 回のランダム操作を素朴な配列と照合。負の係数・同一係数・空区間・全位置無効・再有効化を含む。
+- `INT64_MIN`・`INT64_MAX` の係数と値、64 bit 符号付きの範囲を超える交差までの増分、遅延更新の広い累積、積と加算の相殺を検証。
+- JSC2024 D の値 `1..4`、長さ `0..7` の全列に対し、部分列への全分配を列挙した解と一致。公開 API だけで解くドライバーを用意した。
+- JSC2024 D の全 4 サンプルと、最大長 500,000 の同一値列を検証。
+- Library Checker Range Add Range Min の公式 23 ケースを GCC・Clang ともに通過。
+- 全体更新を追加した汎用 Beats の非可換作用・伝播中の失敗・非冪長・空配列を検証し、Range Chmin Chmax Add Range Sum の公式 33 ケースも両コンパイラで通過。
+- Clang ASan/UBSan、ヘッダー・両ドライバーの `oj-bundle`、説明内コードを検証。
+
+汎用 Beats の変更を検証した後、証明の除算だけを変更した際は、ソース・コンパイラ・入力が同じ汎用 Beats の結果を再利用し、Kinetic Tournament に影響する範囲を再実行した。対象は `selection.json`・`policy_selection.json`、結果は `generic_check.log`・`generic_sanitize.log`・`check.log`・`sanitize.log`・`validation.json` に保存した。JSC2024 D のオンライン提出や全公式入力の実行は行っていない。Apple Clang は既存の macOS CI の対象。
+
+## 再実行
 
 ```sh
-python3 test/benchmark/kinetic_tournament_reference.py --cache .verify-helper/cache/kinetic_tournament_references --output test/benchmark/results/kinetic_tournament/reference.json
+python3 test/benchmark/kinetic_tournament_reference.py --cache .verify-helper/cache/kinetic_range_references --output test/benchmark/results/kinetic_tournament/reference.json
 flock /tmp/cp-wm-opt.lock python3 test/benchmark/kinetic_tournament_check.py
 flock /tmp/cp-wm-opt.lock python3 test/benchmark/kinetic_tournament.py --output test/benchmark/results/kinetic_tournament/reproduced_generic
 flock /tmp/cp-wm-opt.lock python3 test/benchmark/kinetic_tournament.py --native --output test/benchmark/results/kinetic_tournament/reproduced_native
 ```
 
-測定だけを再現する場合は `reference.json` を更新せず、固定したソースを使う。
+公式入力は `.verify-helper/cache` 内の各問題 URL の MD5 に対応する `test` ディレクトリを使う。未取得なら先に `oj download --system` で保存する。

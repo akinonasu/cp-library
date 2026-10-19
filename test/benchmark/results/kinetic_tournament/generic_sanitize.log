@@ -1,0 +1,4 @@
+clang++: kinetic_tournament.cpp
+Kinetic tournament passed
+clang++: generic_segtree_beats.cpp
+Verification passed
