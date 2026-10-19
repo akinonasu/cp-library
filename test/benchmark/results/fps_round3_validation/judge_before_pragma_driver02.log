@@ -1,0 +1,8 @@
+test/bitwise_and_convolution.test.cpp 13 passed
+dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/bitwise_and_convolution.test.cpp
+bitwise_and_convolution.test.o: \
+ /workspace/cp-library/test/bitwise_and_convolution.test.cpp \
+ /workspace/cp-library/test/../convolution/bitwise_convolution.hpp \
+ /workspace/cp-library/test/../convolution/../components/bitwise_zeta.hpp \
+ /workspace/cp-library/test/../convolution/../components/walsh_hadamard.hpp \
+ /workspace/cp-library/test/../math/mint.hpp

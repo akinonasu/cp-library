@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/fps_linear_recurrence.test.cpp"
+  ]
+}

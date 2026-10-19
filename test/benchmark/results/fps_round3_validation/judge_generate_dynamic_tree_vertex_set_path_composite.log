@@ -1,0 +1,47 @@
+/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py:566: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  logger.warn('Please install colorlog: pip3 install colorlog')
+04:17:40 [WARNING] Please install colorlog: pip3 install colorlog
+04:17:40 [INFO] Start dynamic_tree_vertex_set_path_composite
+04:17:40 [INFO] generate params.h
+04:17:40 [INFO] compile checker
+04:17:44 [INFO] compile solution
+04:17:44 [INFO] compile generators
+04:17:44 [INFO] compile example.in
+04:17:44 [INFO] compile almost_line.cpp
+04:17:45 [INFO] compile small.cpp
+04:17:45 [INFO] compile medium.cpp
+04:17:46 [INFO] compile random.cpp
+04:17:47 [INFO] compile max_random.cpp
+04:17:48 [INFO] compile issue_1216.cpp
+04:17:48 [INFO] clear input /workspace/cp-fps-scratch-round3/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/in
+04:17:48 [INFO] gen example.in 2cases
+04:17:48 [INFO] gen almost_line.cpp 2cases
+04:17:49 [INFO] gen small.cpp 5cases
+04:17:49 [INFO] gen medium.cpp 5cases
+04:17:49 [INFO] gen random.cpp 5cases
+04:17:51 [INFO] gen max_random.cpp 3cases
+04:17:55 [INFO] gen issue_1216.cpp 1cases
+04:17:55 [INFO] clear output /workspace/cp-fps-scratch-round3/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/out
+04:17:55 [INFO] ANS      2 msecs : example_00 : b''
+04:17:55 [INFO] ANS      1 msecs : example_01 : b''
+04:17:56 [INFO] ANS   1011 msecs : almost_line_00 : b''
+04:17:57 [INFO] ANS   1001 msecs : almost_line_01 : b''
+04:17:57 [INFO] ANS      2 msecs : small_00 : b''
+04:17:57 [INFO] ANS      1 msecs : small_01 : b''
+04:17:57 [INFO] ANS      1 msecs : small_02 : b''
+04:17:57 [INFO] ANS      1 msecs : small_03 : b''
+04:17:57 [INFO] ANS      1 msecs : small_04 : b''
+04:17:57 [INFO] ANS      1 msecs : medium_00 : b''
+04:17:57 [INFO] ANS      1 msecs : medium_01 : b''
+04:17:57 [INFO] ANS      1 msecs : medium_02 : b''
+04:17:57 [INFO] ANS      3 msecs : medium_03 : b''
+04:17:57 [INFO] ANS      2 msecs : medium_04 : b''
+04:17:57 [INFO] ANS    336 msecs : random_00 : b''
+04:17:57 [INFO] ANS    354 msecs : random_01 : b''
+04:17:58 [INFO] ANS    197 msecs : random_02 : b''
+04:17:58 [INFO] ANS    144 msecs : random_03 : b''
+04:17:58 [INFO] ANS    122 msecs : random_04 : b''
+04:17:58 [INFO] ANS    486 msecs : max_random_00 : b''
+04:17:59 [INFO] ANS    517 msecs : max_random_01 : b''
+04:17:59 [INFO] ANS    487 msecs : max_random_02 : b''
+04:17:59 [INFO] ANS    141 msecs : issue_1216_00 : b''

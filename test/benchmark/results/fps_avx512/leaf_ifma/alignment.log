@@ -1,0 +1,1 @@
+pass trials=10000 lanes=80000 alignof_window=32 actual_window_mod64=32 max_input=998244353 max_sum=7971934297386909696 max_mont=2692530178 max_output=1975396830 max_lo=31752860910977938 max_hi=1768 lo_carry52=7 guard_b=8words

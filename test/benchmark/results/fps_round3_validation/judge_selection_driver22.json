@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/fps_pow.test.cpp"
+  ]
+}

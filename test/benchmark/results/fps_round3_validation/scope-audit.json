@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "selection_sha256": "b2e965770fdc2e3709af7ff4cab6356f5b06e600997fc83d465a1e681bfc3e37",
+  "selection_groups_match_contract": true,
+  "full_log_coverage": {
+    "gcc14": {
+      "expected": 86,
+      "observed": 86,
+      "exact_order": true
+    },
+    "clang19": {
+      "expected": 86,
+      "observed": 86,
+      "exact_order": true
+    },
+    "gcc14-sanitize": {
+      "expected": 5,
+      "observed": 5,
+      "exact_order": true
+    }
+  },
+  "dependency_files": 188,
+  "historical_runner_status": "failed",
+  "historical_dependency_hashes_match": false,
+  "historical_plan_fingerprints_match": false,
+  "current_dependencies_match": true,
+  "allowed_normalization": {
+    "file": "components/fps_bostan.hpp",
+    "original_sha256": "bbe4528ee226bcf0ea90d143f0b5832ef6f69b2162b448ec845d249349bc7be3",
+    "canonical_sha256": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258",
+    "change": "GCC target directive spelling only",
+    "current_plan_matches_after": true,
+    "original_content_plan_matches_selection": true,
+    "preprocessing_evidence_sha256": "73d5495338714e07c55361d5c1427e8bfea294dc6d6ccf4f2d5cdc5830d7dc74",
+    "codegen_evidence_sha256": "d084497aa7b5b718bf2ffcb44e103c03cff32f085baa0e2ce12ecbd0b1824995",
+    "changed_plan_targets": {
+      "headers": [
+        "components/fps_bostan.hpp",
+        "fps/bostan_mori.hpp",
+        "fps/linear_recurrence.hpp"
+      ],
+      "unit": [
+        "test/unit/fps_algorithms.cpp",
+        "test/unit/fps_bostan.cpp",
+        "test/unit/fps_bostan_workspace.cpp",
+        "test/unit/fps_tuning_advanced.cpp",
+        "test/unit/standalone.cpp"
+      ],
+      "sanitize": [
+        "test/unit/fps_algorithms.cpp",
+        "test/unit/fps_bostan.cpp",
+        "test/unit/fps_bostan_workspace.cpp",
+        "test/unit/fps_tuning_advanced.cpp",
+        "test/unit/standalone.cpp"
+      ],
+      "verification": [
+        "test/fps_bostan_mori.test.cpp",
+        "test/fps_linear_recurrence.test.cpp"
+      ],
+      "bundles": [
+        "components/fps_bostan.hpp",
+        "fps/bostan_mori.hpp",
+        "fps/linear_recurrence.hpp"
+      ]
+    }
+  },
+  "contract_sha256": "b5cc36164c0f232d587e869cbf7b48c64ef5cd39898cd31eef1d3ea6785fc110",
+  "result_sha256": "4b8b1c08f524f2e22f03bd02bae8df45eac51eded558358280ec160644d0b312",
+  "harness_sha256": "8de1f030c9acd58b7f42228199e8ce7779e1c4a7daf11eb977de8ff094d772e2"
+}

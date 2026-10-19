@@ -1,0 +1,2878 @@
+{
+  "baseline": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "label": "zero_inverse",
+  "hardware": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "cpu": 2,
+  "trials": 21,
+  "seed": 20261032,
+  "metric": "whole process perf_counter_ns wall milliseconds; file input/output; warmup 1; checker outside timed region",
+  "harness_sha256": "e95fce12bd2ea02a0bcb72910132b2061ddac89a7fc7a512065b0427d6afc3a1",
+  "controls_manifest_sha256": "4b76c6a6547c8ea2b6e627e78bfc259c580eb1f4527e02c973252a8b784f8b7b",
+  "sources": {
+    "baseline_headers": {
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+      "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+      "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+      "components/fps_exp_blocked.hpp": "5aa5bbfa6552463c6ec69074e383efd3e30eaf93009138da65b7c3f51d67a3f2",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_convolution.hpp": "b0d675b0d0063baf7c64dab92e5368ae5b0fdaf208ffd1d0fa761a95869a7c61",
+      "components/fps_composition.hpp": "a032ade49c86615bd0effea7718f1816e7437a5df8de7481774582ec0e28d2a1",
+      "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "test/static_top_tree_dp.hpp": "d88a0f3fa8992ebc9cba72ecbfb05ad7255ea494c22ef1b1668d4bb0a6c8b65a",
+      "test/matrix_common.hpp": "e822e432c00b27be95eed1f5409c62d1d3f02f29034affeee426734a9575c3a7",
+      "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235"
+    },
+    "candidate_headers": {
+      "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+      "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+      "components/fps_composition.hpp": "220274d2eaf04df06e77f61143544bbec372964fabf94aeeb5b6f882d198b5b7",
+      "components/fps_convolution.hpp": "b0d675b0d0063baf7c64dab92e5368ae5b0fdaf208ffd1d0fa761a95869a7c61",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fps_exp_blocked.hpp": "5aa5bbfa6552463c6ec69074e383efd3e30eaf93009138da65b7c3f51d67a3f2",
+      "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+      "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_reversion.hpp": "b16b563ec8410c2761496695187f8bc86ac8f49e64a9e3a8b7b40e17a5c7d377",
+      "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235",
+      "test/matrix_common.hpp": "e822e432c00b27be95eed1f5409c62d1d3f02f29034affeee426734a9575c3a7",
+      "test/static_top_tree_dp.hpp": "d88a0f3fa8992ebc9cba72ecbfb05ad7255ea494c22ef1b1668d4bb0a6c8b65a"
+    },
+    "compose_baseline": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-round2-all-speed/current",
+        "/tmp/fps-round2-all-speed/current/test/fps_compose.test.cpp",
+        "-o",
+        "/tmp/fps-round2-all-speed/composition_of_formal_power_series_current"
+      ],
+      "source_sha256": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+      "binary_sha256": "370f7686937d88bf8ca76110e26ac515c5a593d0f27fe19b0cb23d62ee546ec8",
+      "cached": false
+    },
+    "compose_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-round2-all-speed/current",
+        "/tmp/fps-reference/composition_of_formal_power_series/409336.cpp",
+        "-o",
+        "/tmp/fps-round2-all-speed/composition_of_formal_power_series_reference"
+      ],
+      "source_sha256": "766d2101d5e2c619f9fa3d73e57099871f112b91345f463fa2e17fb6c6bb6188",
+      "binary_sha256": "e6e23ad2e7ecc6e2743393bc9b0c81134e782c976a7dc648564dfcf8d289dd1f",
+      "cached": false
+    },
+    "compose_large_baseline": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-round2-all-speed/current",
+        "/tmp/fps-round2-all-speed/current/test/fps_compose_large.test.cpp",
+        "-o",
+        "/tmp/fps-round2-all-speed/composition_of_formal_power_series_large_current"
+      ],
+      "source_sha256": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+      "binary_sha256": "0314944d92ed37e23aba6be5c2448c21e14b0f18705330e8e399a27636173025",
+      "cached": false
+    },
+    "compose_large_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-round2-all-speed/current",
+        "/tmp/fps-reference/composition_of_formal_power_series_large/409535.cpp",
+        "-o",
+        "/tmp/fps-round2-all-speed/composition_of_formal_power_series_large_reference"
+      ],
+      "source_sha256": "1829103fcfeb5f979b111354a58a95caeedb5b44615eb24197e111fc10b126c9",
+      "binary_sha256": "60d51cd7d318ff55eee343b205ba5e5021d02b6fcfcc45cc5f4e2bc96a335579",
+      "cached": false
+    },
+    "inverse_baseline": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-round2-all-speed/current",
+        "/tmp/fps-round2-all-speed/current/test/fps_compositional_inverse.test.cpp",
+        "-o",
+        "/tmp/fps-round2-all-speed/compositional_inverse_of_formal_power_series_current"
+      ],
+      "source_sha256": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+      "binary_sha256": "8e3ebac9e71fe8c2e5592433bd0e7226ffcb14b892c2723452c2bea82c3a482e",
+      "cached": false
+    },
+    "inverse_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-round2-all-speed/current",
+        "/tmp/fps-reference/compositional_inverse_of_formal_power_series/409399.cpp",
+        "-o",
+        "/tmp/fps-round2-all-speed/compositional_inverse_of_formal_power_series_reference"
+      ],
+      "source_sha256": "51f5819987ba31df921f041d640216b404593ad5b293732aa519ecf9e9b19145",
+      "binary_sha256": "349c8f6a26f9d796a47d3d310792e3223bb59fa31b151c78dba0d248c718b076",
+      "cached": false
+    },
+    "inverse_large_baseline": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-round2-all-speed/current",
+        "/tmp/fps-round2-all-speed/current/test/fps_compositional_inverse_large.test.cpp",
+        "-o",
+        "/tmp/fps-round2-all-speed/compositional_inverse_of_formal_power_series_large_current"
+      ],
+      "source_sha256": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+      "binary_sha256": "eebfd51b17fd850f1e7d6d88ec95b3eced10ab70b99e9387b5f286b3e1764d9d",
+      "cached": false
+    },
+    "inverse_large_reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-round2-all-speed/current",
+        "/tmp/fps-reference/compositional_inverse_of_formal_power_series_large/409549.cpp",
+        "-o",
+        "/tmp/fps-round2-all-speed/compositional_inverse_of_formal_power_series_large_reference"
+      ],
+      "source_sha256": "266ebfa429c5413f815d504684bb4ec69fcbf8bf743a777873b76486f82f5edf",
+      "binary_sha256": "d4c7076faf2000d6cd5b0a55e4f4376416fdf5bdd25d0037c3aa273f6b1f9c02",
+      "cached": false
+    },
+    "compose_candidate": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-round3-zero_inverse/candidate",
+        "/tmp/fps-composition-round3-zero_inverse/candidate/test/fps_compose.test.cpp",
+        "-o",
+        "/tmp/fps-composition-round3-zero_inverse/compose_candidate"
+      ],
+      "source_sha256": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+      "binary_sha256": "b6e96efd71c735535c207d25829edd9b96ba70311ebc57b3a2d54c1401bf3335"
+    },
+    "compose_large_candidate": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-round3-zero_inverse/candidate",
+        "/tmp/fps-composition-round3-zero_inverse/candidate/test/fps_compose_large.test.cpp",
+        "-o",
+        "/tmp/fps-composition-round3-zero_inverse/compose_large_candidate"
+      ],
+      "source_sha256": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+      "binary_sha256": "1c7f776d1347239ce7024000357f574095dbd5cb07cd3644b7a43f0e26a48557"
+    },
+    "inverse_candidate": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-round3-zero_inverse/candidate",
+        "/tmp/fps-composition-round3-zero_inverse/candidate/test/fps_compositional_inverse.test.cpp",
+        "-o",
+        "/tmp/fps-composition-round3-zero_inverse/inverse_candidate"
+      ],
+      "source_sha256": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+      "binary_sha256": "da87572affa3c7ccc360c54800da66471a105ae98b6c6074ad14d1885d6e5c9d"
+    },
+    "inverse_large_candidate": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/tmp/fps-composition-round3-zero_inverse/candidate",
+        "/tmp/fps-composition-round3-zero_inverse/candidate/test/fps_compositional_inverse_large.test.cpp",
+        "-o",
+        "/tmp/fps-composition-round3-zero_inverse/inverse_large_candidate"
+      ],
+      "source_sha256": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+      "binary_sha256": "e4c2568223b9fc29854ed8b954be35679bf5817b15800607c535fb771513282a"
+    }
+  },
+  "judge": [
+    {
+      "problem": "composition_of_formal_power_series",
+      "case": "max_random_00",
+      "input_sha256": "510b6685010b93506c9cc54b06ff6c9e3072b618a4c4c6b08a3de2e9146570a1",
+      "answer_sha256": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5",
+      "orders": [
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 2.713355,
+          "samples_ms": [
+            2.865653,
+            2.824532,
+            2.801847,
+            2.72966,
+            2.755749,
+            2.835427,
+            2.672665,
+            2.708428,
+            2.744021,
+            2.685775,
+            2.693686,
+            2.713355,
+            2.769799,
+            2.663471,
+            2.683981,
+            2.66928,
+            2.701007,
+            2.763601,
+            2.711934,
+            2.681278,
+            2.769049
+          ],
+          "output_sha256": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac"
+        },
+        "candidate": {
+          "median_ms": 2.701919,
+          "samples_ms": [
+            2.940174,
+            2.7701,
+            2.744352,
+            2.778642,
+            2.737752,
+            2.686926,
+            2.754978,
+            2.730061,
+            2.701919,
+            2.654768,
+            2.697953,
+            2.73624,
+            2.764202,
+            2.68317,
+            2.681508,
+            2.747496,
+            2.688268,
+            2.678633,
+            2.667067,
+            2.665845,
+            2.66886
+          ],
+          "output_sha256": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac"
+        },
+        "reference": {
+          "median_ms": 2.677371,
+          "samples_ms": [
+            3.153962,
+            2.764852,
+            2.617853,
+            2.909718,
+            2.746695,
+            2.816138,
+            2.808037,
+            2.618825,
+            2.604413,
+            2.630282,
+            2.631804,
+            2.590653,
+            2.560458,
+            2.763981,
+            2.611824,
+            2.621498,
+            2.685023,
+            2.585405,
+            2.687387,
+            2.677371,
+            2.713666
+          ],
+          "output_sha256": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5"
+        }
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series",
+      "case": "max_random_01",
+      "input_sha256": "0127e879ac54a3850cbf55f5c3923a2aa87761d3624ae192a36f7ce8c1283ac1",
+      "answer_sha256": "c99fa5c7cde95342dd8d224a15f0cb1ac2028176e30e2daad7e10577300658d4",
+      "orders": [
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 2.737001,
+          "samples_ms": [
+            2.685985,
+            2.7168,
+            2.690542,
+            2.965772,
+            2.699124,
+            2.699905,
+            2.742098,
+            2.772554,
+            2.828097,
+            2.688138,
+            2.776009,
+            2.737001,
+            2.720006,
+            2.737943,
+            2.781708,
+            2.734607,
+            2.786564,
+            2.666285,
+            2.836559,
+            2.668458,
+            2.758462
+          ],
+          "output_sha256": "ccb6d5cd27ed289f87a8d3439a62c84fce6c9aed958a62bd93ef12ddcdc08688"
+        },
+        "candidate": {
+          "median_ms": 2.721016,
+          "samples_ms": [
+            2.800775,
+            2.700937,
+            2.710441,
+            2.671142,
+            2.692474,
+            2.636811,
+            2.786925,
+            2.7434,
+            2.997799,
+            2.758012,
+            3.170477,
+            2.721016,
+            2.717422,
+            2.813195,
+            2.836919,
+            2.725614,
+            2.720346,
+            2.665855,
+            2.75696,
+            2.660487,
+            2.708988
+          ],
+          "output_sha256": "ccb6d5cd27ed289f87a8d3439a62c84fce6c9aed958a62bd93ef12ddcdc08688"
+        },
+        "reference": {
+          "median_ms": 2.672575,
+          "samples_ms": [
+            2.652925,
+            2.56191,
+            2.645705,
+            2.791582,
+            2.652324,
+            2.74351,
+            2.987384,
+            2.957339,
+            2.933674,
+            2.839934,
+            2.889488,
+            2.69612,
+            2.609681,
+            2.534769,
+            2.787696,
+            2.672575,
+            2.619867,
+            2.589111,
+            2.666365,
+            2.665474,
+            2.707707
+          ],
+          "output_sha256": "c99fa5c7cde95342dd8d224a15f0cb1ac2028176e30e2daad7e10577300658d4"
+        }
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series",
+      "case": "max_random_02",
+      "input_sha256": "6626e067d65cd8ea450a933c28054f0ee6e3ca58a049ac4ceaf9fc066d090b18",
+      "answer_sha256": "e8a2045298f95843e1b6366daf9e25fde3b3ebc2fc7533771e652dd0c07864f0",
+      "orders": [
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 2.733746,
+          "samples_ms": [
+            2.754166,
+            2.7569,
+            2.822948,
+            2.717081,
+            2.740657,
+            2.733746,
+            2.759334,
+            2.722038,
+            2.701247,
+            2.697562,
+            2.733085,
+            2.803821,
+            2.738242,
+            2.758993,
+            2.776249,
+            2.66956,
+            2.730501,
+            2.754177,
+            2.725714,
+            2.707187,
+            2.700907
+          ],
+          "output_sha256": "3f3c2ca6d1eed44418e9aef1e3258454167dcfe6b2361bef1ca99ded7f7cc159"
+        },
+        "candidate": {
+          "median_ms": 2.721788,
+          "samples_ms": [
+            2.733075,
+            2.764892,
+            2.702159,
+            2.659265,
+            2.748909,
+            2.68897,
+            2.729179,
+            2.643972,
+            2.693977,
+            2.706345,
+            2.843349,
+            2.751713,
+            2.798002,
+            2.705694,
+            2.697232,
+            2.68921,
+            2.717422,
+            2.721788,
+            3.065821,
+            2.767146,
+            2.800476
+          ],
+          "output_sha256": "3f3c2ca6d1eed44418e9aef1e3258454167dcfe6b2361bef1ca99ded7f7cc159"
+        },
+        "reference": {
+          "median_ms": 2.680036,
+          "samples_ms": [
+            2.906473,
+            2.592496,
+            2.623752,
+            2.678864,
+            2.692775,
+            2.618584,
+            2.668499,
+            2.735048,
+            2.739314,
+            2.848737,
+            2.748659,
+            2.597202,
+            2.749229,
+            2.896469,
+            2.659155,
+            2.768538,
+            2.612635,
+            2.62262,
+            2.680036,
+            2.648749,
+            2.741819
+          ],
+          "output_sha256": "e8a2045298f95843e1b6366daf9e25fde3b3ebc2fc7533771e652dd0c07864f0"
+        }
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series_large",
+      "case": "max_random_00",
+      "input_sha256": "9404320bd03fe869c53cbe50511a45d262f037388dd5d2e41074db1c8a6fffa6",
+      "answer_sha256": "2e032a16bc09a8e289e7a2470ec8f70b71904ec433c60df30da260a2fb6fd7dd",
+      "orders": [
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 33.557213,
+          "samples_ms": [
+            33.134212,
+            32.96559,
+            33.158539,
+            33.076186,
+            33.369733,
+            33.344125,
+            33.053251,
+            33.658474,
+            33.869317,
+            33.557213,
+            33.912913,
+            33.92478,
+            33.700567,
+            34.284036,
+            33.983489,
+            33.837885,
+            34.114508,
+            33.594054,
+            33.17389,
+            33.191976,
+            33.370312
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        },
+        "candidate": {
+          "median_ms": 33.527626,
+          "samples_ms": [
+            32.998821,
+            33.185738,
+            33.469001,
+            33.212569,
+            33.39414,
+            33.473367,
+            33.38109,
+            33.408421,
+            33.779254,
+            33.687967,
+            33.902618,
+            34.034345,
+            33.894365,
+            33.989017,
+            34.187863,
+            34.368442,
+            33.887509,
+            33.682226,
+            33.511131,
+            33.446875,
+            33.527626
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        },
+        "reference": {
+          "median_ms": 32.646436,
+          "samples_ms": [
+            32.283454,
+            32.29404,
+            32.179719,
+            32.165928,
+            32.215002,
+            32.661998,
+            33.866034,
+            32.590532,
+            33.296284,
+            32.964719,
+            32.769308,
+            32.94516,
+            32.887334,
+            33.010717,
+            32.956076,
+            32.578624,
+            32.762388,
+            32.456732,
+            32.428931,
+            32.391095,
+            32.646436
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        }
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series_large",
+      "case": "max_random_01",
+      "input_sha256": "6329c2e34e70c85d0d57734d742937361bbcb5a3cb36d1f85b919c8544877593",
+      "answer_sha256": "361d7ebd0178a95f236eb33f27fbcc192deb7daba88779ed646454876b12f909",
+      "orders": [
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 33.378677,
+          "samples_ms": [
+            33.61641,
+            34.444406,
+            33.348772,
+            33.091478,
+            33.594488,
+            33.091188,
+            33.259169,
+            33.248333,
+            33.297746,
+            33.437725,
+            33.538474,
+            33.296804,
+            33.130707,
+            33.378617,
+            33.554469,
+            33.768017,
+            33.610682,
+            33.886203,
+            33.281852,
+            33.378677,
+            33.9846
+          ],
+          "output_sha256": "cecc390ae21aaf470d43aaf95feb2d3da0faf70e7173c8e36097e7cacc815e8c"
+        },
+        "candidate": {
+          "median_ms": 33.336143,
+          "samples_ms": [
+            33.225807,
+            33.271298,
+            33.202915,
+            34.13251,
+            33.130477,
+            33.444966,
+            33.198458,
+            33.2674,
+            33.489101,
+            33.469471,
+            33.200621,
+            33.745834,
+            33.235584,
+            33.456273,
+            33.808438,
+            33.210186,
+            33.651424,
+            33.271487,
+            33.336143,
+            33.516943,
+            33.712895
+          ],
+          "output_sha256": "cecc390ae21aaf470d43aaf95feb2d3da0faf70e7173c8e36097e7cacc815e8c"
+        },
+        "reference": {
+          "median_ms": 32.350003,
+          "samples_ms": [
+            32.460919,
+            32.666986,
+            32.380293,
+            32.28083,
+            32.680015,
+            32.283714,
+            32.202503,
+            33.237817,
+            32.06692,
+            32.254491,
+            32.241761,
+            32.350003,
+            36.495534,
+            32.266098,
+            32.248933,
+            32.685292,
+            32.735779,
+            32.194821,
+            32.726114,
+            32.300709,
+            32.597332
+          ],
+          "output_sha256": "cecc390ae21aaf470d43aaf95feb2d3da0faf70e7173c8e36097e7cacc815e8c"
+        }
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series_large",
+      "case": "max_random_02",
+      "input_sha256": "a50c6b629a04643cc4001ab6b33792975097316f395791fa13576a25e36f8275",
+      "answer_sha256": "211146427e5f5c43f315e3bb21cd9d586d539b9df164ec48fe56ed77e985896c",
+      "orders": [
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 33.486097,
+          "samples_ms": [
+            33.372478,
+            35.080394,
+            33.486097,
+            33.413368,
+            33.614217,
+            33.471045,
+            33.408681,
+            33.321091,
+            33.919974,
+            32.948906,
+            34.206751,
+            33.938271,
+            33.806244,
+            33.12632,
+            33.806194,
+            34.261783,
+            33.546847,
+            33.361962,
+            33.905072,
+            33.42827,
+            33.292328
+          ],
+          "output_sha256": "b18338a224175f45daf72f752c874593a0919ce961987ff3b5e779f390e117b4"
+        },
+        "candidate": {
+          "median_ms": 33.784381,
+          "samples_ms": [
+            33.193731,
+            34.74206,
+            34.504546,
+            33.641328,
+            34.25936,
+            33.144398,
+            33.784381,
+            34.009277,
+            34.102275,
+            33.948676,
+            34.46755,
+            33.408331,
+            33.551524,
+            33.328021,
+            34.168715,
+            33.241102,
+            33.857981,
+            33.93774,
+            33.324325,
+            33.630683,
+            33.031509
+          ],
+          "output_sha256": "b18338a224175f45daf72f752c874593a0919ce961987ff3b5e779f390e117b4"
+        },
+        "reference": {
+          "median_ms": 32.534107,
+          "samples_ms": [
+            32.268531,
+            32.675738,
+            33.141062,
+            32.757941,
+            32.707336,
+            32.550252,
+            33.727377,
+            32.313428,
+            32.177216,
+            32.528479,
+            32.401249,
+            34.027073,
+            32.759293,
+            32.534107,
+            32.341711,
+            32.834205,
+            32.352857,
+            33.190346,
+            32.263574,
+            32.162423,
+            32.269213
+          ],
+          "output_sha256": "b18338a224175f45daf72f752c874593a0919ce961987ff3b5e779f390e117b4"
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series",
+      "case": "max_random_00",
+      "input_sha256": "4791f4a020aedfa791e7f5c3d342b8e51c13d7a8a4c282025a4feb890cd54349",
+      "answer_sha256": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8",
+      "orders": [
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 2.562981,
+          "samples_ms": [
+            2.627618,
+            2.581599,
+            2.650322,
+            2.52896,
+            2.580547,
+            2.566386,
+            2.53558,
+            2.541879,
+            2.538485,
+            2.562981,
+            2.535079,
+            2.650843,
+            2.666876,
+            2.610663,
+            2.545175,
+            2.574568,
+            2.535751,
+            2.502991,
+            2.537783,
+            2.558375,
+            2.68312
+          ],
+          "output_sha256": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd"
+        },
+        "candidate": {
+          "median_ms": 2.572956,
+          "samples_ms": [
+            2.628298,
+            2.592184,
+            2.595179,
+            2.537183,
+            2.552735,
+            2.624433,
+            2.57507,
+            2.577463,
+            2.571214,
+            2.665965,
+            2.56182,
+            2.536412,
+            2.572956,
+            2.656911,
+            2.56851,
+            2.52203,
+            2.608909,
+            2.543082,
+            2.513658,
+            2.603522,
+            2.550472
+          ],
+          "output_sha256": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd"
+        },
+        "reference": {
+          "median_ms": 2.490263,
+          "samples_ms": [
+            2.542671,
+            2.467849,
+            2.549021,
+            2.474078,
+            2.613968,
+            2.479687,
+            2.54857,
+            2.565445,
+            2.496803,
+            2.574498,
+            2.479567,
+            2.465846,
+            2.506948,
+            2.425927,
+            2.639304,
+            2.530202,
+            2.395872,
+            2.447199,
+            2.490263,
+            2.476693,
+            2.479477
+          ],
+          "output_sha256": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8"
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series",
+      "case": "max_random_01",
+      "input_sha256": "34f30fd597ab8ad176b383cdec0b63d64908c612e8cc463e312cfe0634be3508",
+      "answer_sha256": "e34aefd8f6942ed8b5dd7d5d9b8b86759f1a8ca01f11a3172de1af5291b35c11",
+      "orders": [
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 2.567968,
+          "samples_ms": [
+            2.48851,
+            2.532916,
+            2.572536,
+            2.56886,
+            2.543222,
+            2.559696,
+            2.540678,
+            2.661298,
+            2.592115,
+            2.572736,
+            2.528229,
+            2.564463,
+            2.611734,
+            2.659195,
+            2.617383,
+            2.623051,
+            2.58254,
+            2.498174,
+            2.552426,
+            2.567968,
+            2.553487
+          ],
+          "output_sha256": "3ea160e4b82cab5c3cdb6e33a1ba16f919d099a646ecb5ccded923099ff89f06"
+        },
+        "candidate": {
+          "median_ms": 2.578324,
+          "samples_ms": [
+            2.604933,
+            2.582531,
+            2.553747,
+            2.689109,
+            2.495841,
+            2.707146,
+            2.565235,
+            2.672675,
+            2.522451,
+            2.60214,
+            2.576351,
+            2.661989,
+            2.574969,
+            2.561509,
+            2.551805,
+            2.584333,
+            2.599325,
+            2.578324,
+            2.605635,
+            2.564083,
+            2.534979
+          ],
+          "output_sha256": "3ea160e4b82cab5c3cdb6e33a1ba16f919d099a646ecb5ccded923099ff89f06"
+        },
+        "reference": {
+          "median_ms": 2.514799,
+          "samples_ms": [
+            2.411645,
+            2.456663,
+            2.451706,
+            2.514799,
+            2.586977,
+            2.52198,
+            2.544043,
+            2.586206,
+            2.618533,
+            2.620828,
+            2.456132,
+            2.496482,
+            2.479888,
+            2.433117,
+            2.509872,
+            2.529362,
+            2.486858,
+            2.442782,
+            2.516912,
+            2.522691,
+            2.573427
+          ],
+          "output_sha256": "e34aefd8f6942ed8b5dd7d5d9b8b86759f1a8ca01f11a3172de1af5291b35c11"
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series",
+      "case": "max_random_02",
+      "input_sha256": "edd95a9392602e878cdefbaeae9028cdbe079ac44fb5e3de1bd1ac98acd22896",
+      "answer_sha256": "464f4e36b77ce318676ffebf5f82964c8240ae98e3e082ad64729b37191cbc88",
+      "orders": [
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 2.563262,
+          "samples_ms": [
+            2.506186,
+            2.56179,
+            2.623192,
+            2.557112,
+            2.546697,
+            2.485406,
+            2.597933,
+            2.502901,
+            2.597062,
+            2.592896,
+            2.60296,
+            2.60902,
+            2.616841,
+            2.507568,
+            2.536422,
+            2.563262,
+            2.57514,
+            2.531304,
+            2.635259,
+            2.569511,
+            2.531614
+          ],
+          "output_sha256": "f8a1e83ca3f28e104a267089bc9b07132578f7bd7390e6141af3a0e2d8459dcd"
+        },
+        "candidate": {
+          "median_ms": 2.561379,
+          "samples_ms": [
+            2.604313,
+            2.509221,
+            2.681258,
+            2.633286,
+            2.654778,
+            2.507539,
+            2.535009,
+            2.549771,
+            2.561379,
+            2.512066,
+            2.600397,
+            2.522812,
+            2.512405,
+            2.529812,
+            2.685464,
+            2.523583,
+            2.610012,
+            2.555991,
+            2.597082,
+            2.647357,
+            2.639795
+          ],
+          "output_sha256": "f8a1e83ca3f28e104a267089bc9b07132578f7bd7390e6141af3a0e2d8459dcd"
+        },
+        "reference": {
+          "median_ms": 2.510253,
+          "samples_ms": [
+            2.457003,
+            2.585875,
+            2.446417,
+            2.42745,
+            2.570652,
+            2.553477,
+            2.665024,
+            2.510253,
+            2.457914,
+            2.498435,
+            2.477323,
+            2.40108,
+            2.584404,
+            2.463623,
+            2.529321,
+            2.672054,
+            2.470313,
+            2.471475,
+            2.533257,
+            2.559506,
+            2.58185
+          ],
+          "output_sha256": "464f4e36b77ce318676ffebf5f82964c8240ae98e3e082ad64729b37191cbc88"
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "case": "max_random_00",
+      "input_sha256": "591e42b783095d264cc8d523a94fd53a2b0fd069f0cc7b21bfced85f46c30e55",
+      "answer_sha256": "28a86d08c657c50919c1274634a352be8bfb3fcf6ab9b903923725340bfc4009",
+      "orders": [
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 31.044093,
+          "samples_ms": [
+            29.963603,
+            30.05592,
+            30.718859,
+            30.609706,
+            30.809504,
+            31.776586,
+            30.9954,
+            31.015221,
+            34.748948,
+            32.746422,
+            31.177122,
+            30.928161,
+            30.634984,
+            30.924155,
+            32.465032,
+            31.574615,
+            32.561426,
+            44.05461,
+            31.279534,
+            31.349599,
+            31.044093
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        },
+        "candidate": {
+          "median_ms": 31.75936,
+          "samples_ms": [
+            29.731196,
+            29.804235,
+            58.311983,
+            31.061179,
+            31.974611,
+            32.789997,
+            31.75936,
+            30.988041,
+            31.401006,
+            31.240997,
+            36.156256,
+            32.080479,
+            31.292925,
+            30.697847,
+            31.939348,
+            41.185815,
+            32.635436,
+            32.124444,
+            32.361838,
+            31.15547,
+            31.408527
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        },
+        "reference": {
+          "median_ms": 30.888902,
+          "samples_ms": [
+            29.17016,
+            29.437259,
+            47.433208,
+            30.512712,
+            30.381655,
+            30.846859,
+            30.593101,
+            30.046977,
+            30.295158,
+            30.313505,
+            30.962442,
+            30.888902,
+            30.950214,
+            31.002792,
+            32.877197,
+            31.984366,
+            32.995643,
+            34.68365,
+            33.13466,
+            30.173906,
+            33.856567
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "case": "max_random_01",
+      "input_sha256": "07fd365ddf38b9f4dc1bbcc1c2dcad6ce81331058a5459fc4947fe60ad1d9566",
+      "answer_sha256": "85c50b0db5a84ed5275b31dc1f402f2149919e7e7d05c1b6cb616596a9617310",
+      "orders": [
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 30.86727,
+          "samples_ms": [
+            31.24287,
+            32.497219,
+            31.505482,
+            30.589496,
+            30.86727,
+            31.113678,
+            30.456547,
+            30.801471,
+            30.702275,
+            39.98231,
+            33.519544,
+            35.552685,
+            37.315915,
+            36.781023,
+            33.002073,
+            30.49837,
+            30.344911,
+            30.523899,
+            30.281677,
+            30.315318,
+            30.306805
+          ],
+          "output_sha256": "bfc4b8b66106bc76b281a93ea9f3f8876e84e3386ee55a6538e9772a683f4a7b"
+        },
+        "candidate": {
+          "median_ms": 30.915432,
+          "samples_ms": [
+            30.576517,
+            31.132345,
+            30.600032,
+            30.706401,
+            30.634523,
+            30.854031,
+            30.306744,
+            30.915432,
+            31.595946,
+            31.469839,
+            41.07568,
+            33.165187,
+            35.532566,
+            31.516087,
+            39.568122,
+            34.802317,
+            30.261167,
+            30.883985,
+            30.63888,
+            30.67287,
+            32.378283
+          ],
+          "output_sha256": "bfc4b8b66106bc76b281a93ea9f3f8876e84e3386ee55a6538e9772a683f4a7b"
+        },
+        "reference": {
+          "median_ms": 30.065765,
+          "samples_ms": [
+            30.024303,
+            30.065765,
+            29.936593,
+            30.01513,
+            29.861742,
+            30.393314,
+            30.038595,
+            30.019275,
+            30.417049,
+            37.113457,
+            32.291213,
+            37.378818,
+            30.833019,
+            38.239346,
+            37.279349,
+            41.257445,
+            29.543347,
+            29.801251,
+            29.919598,
+            29.423969,
+            30.2564
+          ],
+          "output_sha256": "bfc4b8b66106bc76b281a93ea9f3f8876e84e3386ee55a6538e9772a683f4a7b"
+        }
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "case": "max_random_02",
+      "input_sha256": "4c6bb6fee655441928f39f12c70a16567e543641a94e882fdec5ddfdd2ebb899",
+      "answer_sha256": "ad7501c1d1e24debf1e934998bcbca415c6feb5ba3fdade8ffa8a253cdf41109",
+      "orders": [
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "baseline",
+          "candidate",
+          "reference"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "reference",
+          "baseline",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "reference",
+          "candidate"
+        ],
+        [
+          "candidate",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "candidate",
+          "baseline"
+        ]
+      ],
+      "variants": {
+        "baseline": {
+          "median_ms": 31.659464,
+          "samples_ms": [
+            31.067438,
+            31.397735,
+            31.979702,
+            31.095373,
+            31.297615,
+            31.659464,
+            34.35312,
+            41.714944,
+            35.634961,
+            38.528483,
+            39.234426,
+            32.263605,
+            31.144357,
+            40.505972,
+            35.52017,
+            33.092892,
+            30.351524,
+            30.791668,
+            31.107108,
+            30.647053,
+            31.544741
+          ],
+          "output_sha256": "cb4ee952690ea56f71c3ae93576fd6d56a567eb8d33a72ac3f00b61562312c01"
+        },
+        "candidate": {
+          "median_ms": 32.292506,
+          "samples_ms": [
+            31.289253,
+            31.311196,
+            30.994373,
+            31.245167,
+            31.867936,
+            33.801347,
+            33.266109,
+            39.916534,
+            38.949843,
+            32.787697,
+            38.071062,
+            31.481529,
+            33.630633,
+            33.522603,
+            35.594811,
+            31.116115,
+            29.89888,
+            30.324652,
+            30.826079,
+            35.260265,
+            32.292506
+          ],
+          "output_sha256": "cb4ee952690ea56f71c3ae93576fd6d56a567eb8d33a72ac3f00b61562312c01"
+        },
+        "reference": {
+          "median_ms": 31.470102,
+          "samples_ms": [
+            31.057679,
+            30.963968,
+            30.488589,
+            30.867464,
+            30.564132,
+            31.600386,
+            34.302655,
+            35.011081,
+            33.78253,
+            33.104298,
+            31.55611,
+            32.563713,
+            32.090157,
+            32.834265,
+            31.470102,
+            30.784821,
+            29.849957,
+            30.276841,
+            31.395779,
+            32.927862,
+            30.121939
+          ],
+          "output_sha256": "cb4ee952690ea56f71c3ae93576fd6d56a567eb8d33a72ac3f00b61562312c01"
+        }
+      }
+    }
+  ]
+}

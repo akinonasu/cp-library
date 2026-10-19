@@ -1,0 +1,75 @@
+--- a/components/fps_convolution.hpp
++++ b/components/fps_convolution.hpp
+@@ -3746,14 +3746,17 @@
+ 		return lg % 2 == 0 && lg >= 10 && 2 * std::max(n, m) <= std::size_t(1) << lg;
+ 	}
+ 
+-	Product(std::size_t n, std::size_t m) : lg_(log_length(n, m)) {
+-		const std::size_t len = length(), words = 2 * (len + kPadding) + 2 * ntt::detail::table_words(lg_);
++	Product(std::size_t n, std::size_t m) : Product(n, m, nullptr) {}
++	Product(std::size_t n, std::size_t m, std::uint32_t* borrowed_a) : lg_(log_length(n, m)) {
++		const std::size_t len = length(), tables = ntt::detail::table_words(lg_);
++		const std::size_t words = (borrowed_a ? 1 : 2) * (len + kPadding) + 2 * tables + (borrowed_a ? 1024 : 0);
+ 		storage_ = allocate_fps_words(words);
+-		a_ = storage_.get();
+-		b_ = a_ + len + kPadding;
++		a_ = borrowed_a ? borrowed_a : storage_.get();
++		const std::size_t color = ((reinterpret_cast<std::uintptr_t>(a_) >> 6) - (reinterpret_cast<std::uintptr_t>(storage_.get()) >> 6) + 1) & 63;
++		b_ = storage_.get() + (borrowed_a ? 16 * color : len + kPadding);
+ 		roots_ = b_ + len + kPadding;
+-		inverse_roots_ = roots_ + ntt::detail::table_words(lg_);
+-		std::fill(roots_, inverse_roots_ + ntt::detail::table_words(lg_), 0);
++		inverse_roots_ = roots_ + tables;
++		std::fill(roots_, inverse_roots_ + tables, 0);
+ 	}
+ 
+ 	Product(const Product&) = delete;
+@@ -3810,6 +3813,39 @@
+ 	for (; i < in.size(); ++i) out[i] = std::min(in[i].v, in[i].v - Mint::mod());
+ 	std::fill(out + i, out + (i <= len / 2 ? len / 2 : len), 0);
+ 	std::fill(out + len, out + len + 16, 0);
++}
++
++
++inline void copy_input_mint(const std::vector<Mint>& in, Mint* out) {
++	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
++	std::size_t i = 0;
++	const auto p = _mm256_set1_epi32(Mint::mod());
++	for (; i + 8 <= in.size(); i += 8) {
++		__m256i x;
++		std::memcpy(&x, in.data() + i, sizeof(x));
++		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
++		std::memcpy(static_cast<void*>(out + i), &x, sizeof(x));
++	}
++	for (; i < in.size(); ++i) out[i] = Mint::word(std::min(in[i].v, in[i].v - Mint::mod()));
++}
++
++inline std::vector<Mint> run_borrowed(const std::vector<Mint>& a, const std::vector<Mint>& b) {
++	const std::size_t len = std::size_t(1) << std::max(6, int(std::bit_width(a.size() + b.size() - 2)));
++	constexpr std::size_t alignment = 32;
++	const std::size_t words = len + 16 + alignment / sizeof(Mint) - 1, size = a.size() + b.size() - 1;
++	std::vector<Mint> result;
++	prepare_fps_output(result, words);
++	result.assign(words, Mint::word(0));
++	const auto address = reinterpret_cast<std::uintptr_t>(result.data());
++	const std::size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(Mint);
++	Mint* const to = result.data() + offset;
++	Product plan(a.size(), b.size(), reinterpret_cast<std::uint32_t*>(to));
++	copy_input_mint(a, to);
++	copy_input(b, plan.b(), len);
++	plan.multiply();
++	if (offset) std::memmove(static_cast<void*>(result.data()), to, size * sizeof(Mint));
++	result.resize(size);
++	return result;
+ }
+ 
+ template <class Plan>
+@@ -3828,7 +3864,7 @@
+ 
+ inline std::vector<Mint> multiply(const std::vector<Mint> &a, const std::vector<Mint> &b) {
+ 	assert(!a.empty() && !b.empty() && a.size() + b.size() - 1 <= (1 << 23));
+-	if (Product::fits(a.size(), b.size())) return run<Product>(a, b);
++	if (Product::fits(a.size(), b.size())) return run_borrowed(a, b);
+ 	return run<ntt::Convolution>(a, b);
+ }
+ 

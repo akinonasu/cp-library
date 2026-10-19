@@ -1,0 +1,26 @@
+[
+  {
+    "case": "max_random_00",
+    "statistic": "paired median baseline minus candidate milliseconds",
+    "seed": 1,
+    "bootstrap": 10000,
+    "median_ms": 0.1853069999999999,
+    "ci95_ms": [
+      -0.06715100000000085,
+      0.49879299999999915
+    ],
+    "candidate_wins": 14
+  },
+  {
+    "case": "max_random_01",
+    "statistic": "paired median baseline minus candidate milliseconds",
+    "seed": 1,
+    "bootstrap": 10000,
+    "median_ms": 0.0014609999999990464,
+    "ci95_ms": [
+      -0.12974499999999978,
+      0.3590789999999995
+    ],
+    "candidate_wins": 11
+  }
+]

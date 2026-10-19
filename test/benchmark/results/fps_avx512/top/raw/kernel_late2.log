@@ -1,0 +1,14 @@
+built base
+built reordered_late2
+waiting EX
+EX acquired
+inv 262144 {'base': 3.482522, 'reordered_late2': 3.519457}
+inv 500000 {'base': 7.542597, 'reordered_late2': 7.531549999999999}
+sqrt 262144 {'base': 3.540139, 'reordered_late2': 3.395744}
+sqrt 500000 {'base': 7.4583, 'reordered_late2': 7.442943}
+log 262144 {'base': 4.311959, 'reordered_late2': 4.283988}
+log 500000 {'base': 8.989414, 'reordered_late2': 9.032558}
+exp 262144 {'base': 5.703943000000001, 'reordered_late2': 6.087436}
+exp 500000 {'base': 11.814072999999999, 'reordered_late2': 11.768965}
+pow 262144 {'base': 9.136511, 'reordered_late2': 9.139336}
+pow 500000 {'base': 19.71376, 'reordered_late2': 19.641422}

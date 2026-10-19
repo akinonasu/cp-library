@@ -1,0 +1,388 @@
+{
+  "selection_sha256": "b2e965770fdc2e3709af7ff4cab6356f5b06e600997fc83d465a1e681bfc3e37",
+  "freeze_sha256": "b79c137408fd359e1e8adb4cef1ff46431e59dbd4815c37a7f78f252a70b1eee",
+  "verification": [
+    "test/binomial_prefix_sum_offline.test.cpp",
+    "test/binomial_prefix_sum_online.test.cpp",
+    "test/bitwise_and_convolution.test.cpp",
+    "test/bitwise_xor_convolution.test.cpp",
+    "test/comb.test.cpp",
+    "test/convolution.test.cpp",
+    "test/cyclic_convolution.test.cpp",
+    "test/disjoint_sparse_table_affine.test.cpp",
+    "test/dynamic_segtree_composite.test.cpp",
+    "test/fps_bostan_mori.test.cpp",
+    "test/fps_compose.test.cpp",
+    "test/fps_compose_large.test.cpp",
+    "test/fps_compositional_inverse.test.cpp",
+    "test/fps_compositional_inverse_large.test.cpp",
+    "test/fps_divmod.test.cpp",
+    "test/fps_exp.test.cpp",
+    "test/fps_exp_sparse.test.cpp",
+    "test/fps_interpolate.test.cpp",
+    "test/fps_inv.test.cpp",
+    "test/fps_inv_sparse.test.cpp",
+    "test/fps_linear_recurrence.test.cpp",
+    "test/fps_log.test.cpp",
+    "test/fps_pow.test.cpp",
+    "test/fps_sqrt.test.cpp",
+    "test/fps_taylor_shift.test.cpp",
+    "test/gcd_convolution.test.cpp",
+    "test/hld_path_composite.test.cpp",
+    "test/lazy_reversible_treap_affine.test.cpp",
+    "test/lcm_convolution.test.cpp",
+    "test/link_cut_tree_composite.test.cpp",
+    "test/matrix_adjugate.test.cpp",
+    "test/matrix_characteristic_polynomial.test.cpp",
+    "test/matrix_det.test.cpp",
+    "test/matrix_inverse.test.cpp",
+    "test/matrix_pow.test.cpp",
+    "test/matrix_product.test.cpp",
+    "test/matrix_rank.test.cpp",
+    "test/matrix_solve.test.cpp",
+    "test/multiplicative_convolution.test.cpp",
+    "test/multipoint_eval.test.cpp",
+    "test/multivariate_convolution.test.cpp",
+    "test/ntt.test.cpp",
+    "test/online_convolution.test.cpp",
+    "test/online_convolution_exp.test.cpp",
+    "test/online_convolution_inv.test.cpp",
+    "test/ordered_convolution.test.cpp",
+    "test/point_set_tree_path_composite_sum.test.cpp",
+    "test/point_set_tree_path_composite_sum_fixed_root.test.cpp",
+    "test/polynomial_inv_mod.test.cpp",
+    "test/power_projection.test.cpp",
+    "test/rerooting.test.cpp",
+    "test/subset_convolution.test.cpp",
+    "test/weighted_union_find.test.cpp"
+  ],
+  "official": {
+    "test/bitwise_and_convolution.test.cpp": "bitwise_and_convolution",
+    "test/bitwise_xor_convolution.test.cpp": "bitwise_xor_convolution",
+    "test/convolution.test.cpp": "convolution_mod",
+    "test/disjoint_sparse_table_affine.test.cpp": "queue_operate_all_composite",
+    "test/dynamic_segtree_composite.test.cpp": "point_set_range_composite",
+    "test/fps_bostan_mori.test.cpp": "kth_term_of_linearly_recurrent_sequence",
+    "test/fps_compose.test.cpp": "composition_of_formal_power_series",
+    "test/fps_compose_large.test.cpp": "composition_of_formal_power_series_large",
+    "test/fps_compositional_inverse.test.cpp": "compositional_inverse_of_formal_power_series",
+    "test/fps_compositional_inverse_large.test.cpp": "compositional_inverse_of_formal_power_series_large",
+    "test/fps_divmod.test.cpp": "division_of_polynomials",
+    "test/fps_exp.test.cpp": "exp_of_formal_power_series",
+    "test/fps_exp_sparse.test.cpp": "exp_of_formal_power_series_sparse",
+    "test/fps_interpolate.test.cpp": "polynomial_interpolation",
+    "test/fps_inv.test.cpp": "inv_of_formal_power_series",
+    "test/fps_inv_sparse.test.cpp": "inv_of_formal_power_series_sparse",
+    "test/fps_linear_recurrence.test.cpp": "kth_term_of_linearly_recurrent_sequence",
+    "test/fps_log.test.cpp": "log_of_formal_power_series",
+    "test/fps_pow.test.cpp": "pow_of_formal_power_series",
+    "test/fps_sqrt.test.cpp": "sqrt_of_formal_power_series",
+    "test/fps_taylor_shift.test.cpp": "polynomial_taylor_shift",
+    "test/gcd_convolution.test.cpp": "gcd_convolution",
+    "test/hld_path_composite.test.cpp": "vertex_set_path_composite",
+    "test/lazy_reversible_treap_affine.test.cpp": "dynamic_sequence_range_affine_range_sum",
+    "test/lcm_convolution.test.cpp": "lcm_convolution",
+    "test/link_cut_tree_composite.test.cpp": "dynamic_tree_vertex_set_path_composite",
+    "test/matrix_adjugate.test.cpp": "adjugate_matrix",
+    "test/matrix_characteristic_polynomial.test.cpp": "characteristic_polynomial",
+    "test/matrix_det.test.cpp": "matrix_det",
+    "test/matrix_inverse.test.cpp": "inverse_matrix",
+    "test/matrix_pow.test.cpp": "pow_of_matrix",
+    "test/matrix_product.test.cpp": "matrix_product",
+    "test/matrix_rank.test.cpp": "matrix_rank",
+    "test/matrix_solve.test.cpp": "system_of_linear_equations",
+    "test/multiplicative_convolution.test.cpp": "mul_modp_convolution",
+    "test/multipoint_eval.test.cpp": "multipoint_evaluation",
+    "test/multivariate_convolution.test.cpp": "multivariate_convolution",
+    "test/ntt.test.cpp": "convolution_mod",
+    "test/online_convolution.test.cpp": "convolution_mod",
+    "test/online_convolution_exp.test.cpp": "exp_of_formal_power_series",
+    "test/online_convolution_inv.test.cpp": "inv_of_formal_power_series",
+    "test/point_set_tree_path_composite_sum.test.cpp": "point_set_tree_path_composite_sum",
+    "test/point_set_tree_path_composite_sum_fixed_root.test.cpp": "point_set_tree_path_composite_sum_fixed_root",
+    "test/polynomial_inv_mod.test.cpp": "inv_of_polynomials",
+    "test/power_projection.test.cpp": "compositional_inverse_of_formal_power_series_large",
+    "test/rerooting.test.cpp": "tree_path_composite_sum",
+    "test/subset_convolution.test.cpp": "subset_convolution",
+    "test/weighted_union_find.test.cpp": "unionfind_with_potential"
+  },
+  "external_skips": {
+    "test/binomial_prefix_sum_offline.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/2206",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/binomial_prefix_sum_online.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/2206",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/comb.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/3172",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/cyclic_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/ordered_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    }
+  },
+  "parts": {
+    "0": [
+      "test/binomial_prefix_sum_offline.test.cpp",
+      "test/bitwise_xor_convolution.test.cpp",
+      "test/cyclic_convolution.test.cpp",
+      "test/fps_bostan_mori.test.cpp",
+      "test/fps_compositional_inverse.test.cpp",
+      "test/fps_exp.test.cpp",
+      "test/fps_inv.test.cpp",
+      "test/fps_log.test.cpp",
+      "test/fps_taylor_shift.test.cpp",
+      "test/lazy_reversible_treap_affine.test.cpp",
+      "test/matrix_adjugate.test.cpp",
+      "test/matrix_inverse.test.cpp",
+      "test/matrix_rank.test.cpp",
+      "test/multipoint_eval.test.cpp",
+      "test/online_convolution.test.cpp",
+      "test/ordered_convolution.test.cpp",
+      "test/polynomial_inv_mod.test.cpp",
+      "test/subset_convolution.test.cpp"
+    ],
+    "1": [
+      "test/binomial_prefix_sum_online.test.cpp",
+      "test/comb.test.cpp",
+      "test/disjoint_sparse_table_affine.test.cpp",
+      "test/fps_compose.test.cpp",
+      "test/fps_compositional_inverse_large.test.cpp",
+      "test/fps_exp_sparse.test.cpp",
+      "test/fps_inv_sparse.test.cpp",
+      "test/fps_pow.test.cpp",
+      "test/gcd_convolution.test.cpp",
+      "test/lcm_convolution.test.cpp",
+      "test/matrix_characteristic_polynomial.test.cpp",
+      "test/matrix_pow.test.cpp",
+      "test/matrix_solve.test.cpp",
+      "test/multivariate_convolution.test.cpp",
+      "test/online_convolution_exp.test.cpp",
+      "test/point_set_tree_path_composite_sum.test.cpp",
+      "test/power_projection.test.cpp",
+      "test/weighted_union_find.test.cpp"
+    ],
+    "2": [
+      "test/bitwise_and_convolution.test.cpp",
+      "test/convolution.test.cpp",
+      "test/dynamic_segtree_composite.test.cpp",
+      "test/fps_compose_large.test.cpp",
+      "test/fps_divmod.test.cpp",
+      "test/fps_interpolate.test.cpp",
+      "test/fps_linear_recurrence.test.cpp",
+      "test/fps_sqrt.test.cpp",
+      "test/hld_path_composite.test.cpp",
+      "test/link_cut_tree_composite.test.cpp",
+      "test/matrix_det.test.cpp",
+      "test/matrix_product.test.cpp",
+      "test/multiplicative_convolution.test.cpp",
+      "test/ntt.test.cpp",
+      "test/online_convolution_inv.test.cpp",
+      "test/point_set_tree_path_composite_sum_fixed_root.test.cpp",
+      "test/rerooting.test.cpp"
+    ]
+  },
+  "checker_order": [
+    "input",
+    "actual_output",
+    "official_answer"
+  ],
+  "all_official_cases": true,
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "compiler_sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-I",
+    "/workspace/cp-library"
+  ],
+  "harness_sha256": "58b1b3727a832d78bf548823f8eee4e762e7c0d781d232ae99e80cd4771dce61",
+  "runner_sha256": "cabafdf32e7719c3ea5fd11d3efe6306dda1352b3e3a6b813582f80e21736e27",
+  "work": "/workspace/cp-fps-scratch-round3/final-judge",
+  "official_root": "/workspace/cp-fps-scratch-round3/library-checker-problems",
+  "lock": "/tmp/cp-fps-tuning.lock",
+  "shared_lock_scope": "one dependency scan and one complete driver compile/check; released between drivers",
+  "status": "prepared",
+  "started": "2026-10-19T04:15:52.392916+00:00",
+  "generation": [
+    {
+      "problem": "adjugate_matrix",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/adjugate_matrix/info.toml"
+      ],
+      "seconds": 42.48724017800123,
+      "returncode": 0,
+      "log_sha256": "34c540b649e3b600aacddab5f7064277b4136d45e5f195b9a7573f65bfc84c67"
+    },
+    {
+      "problem": "bitwise_and_convolution",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/convolution/bitwise_and_convolution/info.toml"
+      ],
+      "seconds": 6.81207089900272,
+      "returncode": 0,
+      "log_sha256": "4b5cf5f0c21597006c73c49ecc3e06cefd707a51ed103e9cb6fd12710f4efe68"
+    },
+    {
+      "problem": "bitwise_xor_convolution",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/convolution/bitwise_xor_convolution/info.toml"
+      ],
+      "seconds": 6.827035729002091,
+      "returncode": 0,
+      "log_sha256": "5e11f762abbba890513bc9d7a5297068d9883732769a9ba909817f9e93abafd1"
+    },
+    {
+      "problem": "characteristic_polynomial",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/characteristic_polynomial/info.toml"
+      ],
+      "seconds": 18.42608576398925,
+      "returncode": 0,
+      "log_sha256": "a375ef84c0e97c49452eb53ce00b5c72700803842ea57cc9da351c73c1777239"
+    },
+    {
+      "problem": "dynamic_sequence_range_affine_range_sum",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/data_structure/dynamic_sequence_range_affine_range_sum/info.toml"
+      ],
+      "seconds": 33.19148592700367,
+      "returncode": 0,
+      "log_sha256": "dffb7999a451d88a2ac734dc7cd8c612ebe89075fbc424df3f6504b2df2f72ea"
+    },
+    {
+      "problem": "dynamic_tree_vertex_set_path_composite",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/tree/dynamic_tree_vertex_set_path_composite/info.toml"
+      ],
+      "seconds": 19.93087294200086,
+      "returncode": 0,
+      "log_sha256": "8835fa2281067dfe3ead8fd885494fd9d204d257ec98c681781274a52c372dd1"
+    },
+    {
+      "problem": "gcd_convolution",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/convolution/gcd_convolution/info.toml"
+      ],
+      "seconds": 10.022177828010172,
+      "returncode": 0,
+      "log_sha256": "fd7af284d2dba9ffb02f3d2c155381011d9276ab944fedf1bef674e0a082bfd6"
+    },
+    {
+      "problem": "inverse_matrix",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/inverse_matrix/info.toml"
+      ],
+      "seconds": 10.17630523299158,
+      "returncode": 0,
+      "log_sha256": "3f30dae3765e09c71e2496bd1c745883a10719fb50786a9e52f629ef6261d6cf"
+    },
+    {
+      "problem": "lcm_convolution",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/convolution/lcm_convolution/info.toml"
+      ],
+      "seconds": 9.65239955400466,
+      "returncode": 0,
+      "log_sha256": "45e64a0bb49f0db4bc5fe8ca839fdf77fde43ed2d00bae5dd7689e3e09842644"
+    },
+    {
+      "problem": "matrix_det",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/matrix_det/info.toml"
+      ],
+      "seconds": 8.197481624010834,
+      "returncode": 0,
+      "log_sha256": "bf215b6974fb98e4342da9f180329cc5e381b956ed00631ac09f425c531e9e22"
+    },
+    {
+      "problem": "matrix_product",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/matrix_product/info.toml"
+      ],
+      "seconds": 14.43855339998845,
+      "returncode": 0,
+      "log_sha256": "25465c775d86e2fc6368016f23590ec68156aad854573834c3c6c1457b877a97"
+    },
+    {
+      "problem": "matrix_rank",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/matrix_rank/info.toml"
+      ],
+      "seconds": 7.723892777008587,
+      "returncode": 0,
+      "log_sha256": "8114987c79b9b39892fa0b7720093e6b1ae928b0bfd5602d30ce4380e73813dd"
+    },
+    {
+      "problem": "point_set_range_composite",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/data_structure/point_set_range_composite/info.toml"
+      ],
+      "seconds": 9.63029887501034,
+      "returncode": 0,
+      "log_sha256": "11a3ee8eea9ee2481b691e107b64ce9ff0a9c5ab504fe8d440b9c5626bcd6324"
+    },
+    {
+      "problem": "point_set_tree_path_composite_sum",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/tree/point_set_tree_path_composite_sum/info.toml"
+      ],
+      "seconds": 39.63136509800097,
+      "returncode": 0,
+      "log_sha256": "ac95b072ea602987aa9f16f83796d3d4ceba17af2ee2ac9b79b84b578aae74be"
+    },
+    {
+      "problem": "point_set_tree_path_composite_sum_fixed_root",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py",
+        "/workspace/cp-fps-scratch-round3/library-checker-problems/tree/point_set_tree_path_composite_sum_fixed_root/info.toml"
+      ],
+      "seconds": 9.718804821008234,
+      "returncode": 1,
+      "log_sha256": "5d8ca34753932091654a1830340948b8e6a64572216dd79ae1994c7838e5dae1"
+    }
+  ],
+  "dependencies": {},
+  "tests": {},
+  "skipped": {}
+}

@@ -1,0 +1,81 @@
+{
+  "started_utc": "2026-10-19T04:14:56.908592+00:00",
+  "cwd": "/workspace/cp-library",
+  "lock": "flock -s /tmp/cp-fps-tuning.lock",
+  "commands": [
+    [
+      "/tmp/fps-venv/bin/python",
+      ".verify-helper/ci.py",
+      "docs",
+      "--selection",
+      "test/benchmark/results/fps_round3_validation/selection.json"
+    ],
+    [
+      "/tmp/fps-venv/bin/python",
+      ".verify-helper/check-docs.py",
+      "--selection",
+      "test/benchmark/results/fps_round3_validation/selection.json"
+    ]
+  ],
+  "expected_library_count": 145,
+  "expected_selected_bundle_count": 43,
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "clang": "Debian clang version 19.1.7 (3+b1)",
+  "python": "Python 3.12.14",
+  "verify_helper_version": "5.6.0",
+  "path_prefix": "/tmp/cp-fps-docs-bin",
+  "path_symlink": {
+    "clang++": "/tmp/fps-clang/toolchain/usr/lib/llvm-19/bin/clang"
+  },
+  "selection_sha256": "b2e965770fdc2e3709af7ff4cab6356f5b06e600997fc83d465a1e681bfc3e37",
+  "freeze_sha256": "b79c137408fd359e1e8adb4cef1ff46431e59dbd4815c37a7f78f252a70b1eee",
+  "freeze_file_count": 10,
+  "git_head": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
+  "source_scope": "All library headers, docs/**/*.md, README/AGENTS, judge/unit C++ sources, verification scripts/config/templates, selection, and the final freeze manifest. Generated pages, mutable marker JSON and changing benchmark results are excluded.",
+  "allowed_nonfatal_generator_metadata_warning": "Only test/dijkstra_bigint_yuki.test.cpp may lack system Boost. All library metadata and affected bundles must pass.",
+  "liquid_scope": "All generated Markdown bodies, excluding line-delimited YAML front matter; bundledCode is data. Static HTML intentionally contains Liquid. No Jekyll rendering test is claimed."
+}
+
+COMMAND ["/tmp/fps-venv/bin/python", ".verify-helper/ci.py", "docs", "--selection", "test/benchmark/results/fps_round3_validation/selection.json"]
+/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/documentation/build.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+/workspace/cp-library/test/dijkstra_bigint_yuki.test.cpp:4:10: fatal error: boost/multiprecision/cpp_int.hpp: No such file or directory
+    4 | #include <boost/multiprecision/cpp_int.hpp>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+failed to list attributes of test/dijkstra_bigint_yuki.test.cpp: Command '['g++', '-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1', '-I', '/workspace/cp-library', '-dM', '-E', '/workspace/cp-library/test/dijkstra_bigint_yuki.test.cpp']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/documentation/configure.py", line 152, in _get_source_code_stat
+    attributes = language.list_attributes(path, basedir=basedir)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/languages/cplusplus.py", line 152, in list_attributes
+    macros = _cplusplus_list_defined_macros(path.resolve(), CXX=env.CXX, joined_CXXFLAGS=joined_CXXFLAGS)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/languages/cplusplus.py", line 62, in _cplusplus_list_defined_macros
+    data = subprocess.check_output(command)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['g++', '-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1', '-I', '/workspace/cp-library', '-dM', '-E', '/workspace/cp-library/test/dijkstra_bigint_yuki.test.cpp']' returned non-zero exit status 1.
+failed to bundle: components/fps_bostan.hpp
+failed to bundle: fps/bostan_mori.hpp
+failed to bundle: fps/linear_recurrence.hpp
+failed to bundle: test/fps_bostan_mori.test.cpp
+failed to bundle: test/fps_linear_recurrence.test.cpp
+Generated documentation for 268 library and judge sources
+
+RESULT {"command": ["/tmp/fps-venv/bin/python", ".verify-helper/ci.py", "docs", "--selection", "test/benchmark/results/fps_round3_validation/selection.json"], "seconds": 80.90943085600156, "returncode": 0}
+
+COMMAND ["/tmp/fps-venv/bin/python", ".verify-helper/check-docs.py", "--selection", "test/benchmark/results/fps_round3_validation/selection.json"]
+Traceback (most recent call last):
+  File "/workspace/cp-library/.verify-helper/check-docs.py", line 24, in <module>
+    assert 'Traceback (most recent call last)' not in code, f'{path}: bundle failed'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: components/fps_bostan.hpp: bundle failed
+
+RESULT {"command": ["/tmp/fps-venv/bin/python", ".verify-helper/check-docs.py", "--selection", "test/benchmark/results/fps_round3_validation/selection.json"], "seconds": 3.390680862008594, "returncode": 1}
+
+FINAL_RESULT {"started_utc": "2026-10-19T04:14:56.908592+00:00", "finished_utc": "2026-10-19T04:16:21.384637+00:00", "commands": [{"command": ["/tmp/fps-venv/bin/python", ".verify-helper/ci.py", "docs", "--selection", "test/benchmark/results/fps_round3_validation/selection.json"], "seconds": 80.90943085600156, "returncode": 0}, {"command": ["/tmp/fps-venv/bin/python", ".verify-helper/check-docs.py", "--selection", "test/benchmark/results/fps_round3_validation/selection.json"], "seconds": 3.390680862008594, "returncode": 1}], "source_count": 575, "source_hashes_unchanged": false, "changed_sources": ["docs/fps_convolution.md"], "root_freeze_hashes_match": true, "generated_library_count": 145, "compiled_affected_bundles": 43, "nonfatal_generator_metadata_warning_sources": [], "error": "Documentation command failed", "success": false}
