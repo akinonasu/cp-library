@@ -1,0 +1,8 @@
+uniform {'baseline': 296.858, 'polynomial': 259.077}
+rectangle {'baseline': 272.044, 'polynomial': 272.47}
+independent {'baseline': 197.464, 'polynomial': 152.699}
+narrow_n {'baseline': 69.485, 'polynomial': 275.391}
+edges {'baseline': 10.625, 'polynomial': 16.242}
+duplicates {'baseline': 71.778, 'polynomial': 32.6}
+small_rows {'baseline': 28.612, 'polynomial': 25.796}
+PASS identical outputs and bound source/compiler/binary/dependency hashes

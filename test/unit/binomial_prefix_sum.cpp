@@ -1,7 +1,8 @@
 #include "math/combinatorics/binomial_prefix_sum.hpp"
+#include "test/benchmark/binomial_prefix_sum_comparison.hpp"
 #include <random>
 
-template<unsigned P> struct Field {
+template<unsigned P, bool Comparable = true> struct Field {
 	unsigned v = 0;
 	static constexpr unsigned mod() { return P; }
 	Field() = default;
@@ -12,8 +13,8 @@ template<unsigned P> struct Field {
 	Field operator+(Field x) const { return Field(*this) += x; }
 	Field operator-(Field x) const { return Field(*this) -= x; }
 	Field operator*(Field x) const { return Field(*this) *= x; }
-	bool operator==(Field x) const { return v == x.v; }
-	Field inv() const {
+	bool operator==(Field x) const requires Comparable { return v == x.v; }
+	Field inv() {
 		assert(v);
 		Field a = *this, result(1);
 		for (unsigned e = P - 2; e; e >>= 1, a *= a) if (e & 1) result *= a;
@@ -52,7 +53,50 @@ template<class Mint> void exhaustive(int limit) {
 	}
 }
 
+void polynomial_cases() {
+	constexpr int n = 10000;
+	binomial_prefix_detail::Table<mint> table(n);
+	for (int count : {1, 16, 17, 32, 33, 64, 65, 257}) {
+		std::vector<std::pair<int, int>> points;
+		std::vector<std::uint32_t> ids;
+		std::vector<mint> expected(count), actual(count);
+		for (int i = 0; i < count; ++i) {
+			int row = n - i % 7, m = i % 3 == 0 ? 0 : 1 + (i * 193 + 731) % 4900;
+			points.emplace_back(m, row);
+			ids.push_back((std::uint32_t(i) << 1) | (i & 1));
+			mint value = table.range(row, 0, m);
+			expected[i] = i & 1 ? table.power2[row] - value : value;
+		}
+		binomial_prefix_detail::Polynomial(table, points, ids, actual);
+		assert(actual == expected);
+	}
+	std::vector<std::pair<int, std::int64_t>> queries;
+	std::vector<std::pair<int, int>> points;
+	std::mt19937 rng(20261020);
+	constexpr int limit = 200000;
+	for (int i = 0; i < 200000; ++i) {
+		int row = rng() % (limit + 1), k = rng() % (limit + 1);
+		queries.emplace_back(row, k);
+		if (k <= 0 || k > row) continue;
+		int m = std::min(k, row + 1 - k);
+		if (m != 1 && m != (row + 1) / 2) points.emplace_back(m, row);
+	}
+	queries.emplace_back(limit, std::numeric_limits<std::int64_t>::min());
+	queries.emplace_back(limit, std::numeric_limits<std::int64_t>::max());
+	const auto original = queries;
+	auto actual = binomial_prefix_sum(queries);
+	auto expected = binomial_prefix_sum_baseline(queries);
+	for (std::size_t i = 0; i < queries.size(); ++i) assert(actual[i] == expected[i]);
+	assert(queries == original);
+	queries.resize(4000);
+	for (auto& [row, k] : queries) row %= 2049, k %= 2050;
+	auto generic = binomial_prefix_sum<Field<998244353, false>>(queries);
+	auto reference = binomial_prefix_sum_baseline(queries);
+	for (std::size_t i = 0; i < queries.size(); ++i) assert(generic[i].v == reference[i].val());
+}
+
 int main() {
+	polynomial_cases();
 	exhaustive<mint>(320);
 	exhaustive<Field<2>>(1);
 	exhaustive<Field<3>>(2);

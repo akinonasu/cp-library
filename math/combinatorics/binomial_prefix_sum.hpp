@@ -1,8 +1,8 @@
 #ifndef BINOMIAL_PREFIX_SUM_HPP
 #define BINOMIAL_PREFIX_SUM_HPP
-
+#include <cmath>
 #include "../../components/binomial_prefix_core.hpp"
-#include "../../components/mo_order.hpp"
+#include "../../components/binomial_prefix_polynomial.hpp"
 #include <cstddef>
 
 template<class Mint = mint> class BinomialPrefixSum {
@@ -87,19 +87,7 @@ std::vector<Mint> binomial_prefix_sum(const std::vector<std::pair<int, K>>& quer
 			result[i] = reflect ? table.power2[n] - value : value;
 		} else points.emplace_back(m, n), ids.push_back((std::uint32_t(i) << 1) | reflect);
 	}
-	auto order = mo_order(points);
-	if (order.empty()) return result;
-	int n = points[order[0]].second, m = points[order[0]].first;
-	Mint value = table.range(n, 0, m);
-	for (int i : order) {
-		auto [mm, nn] = points[i];
-		while (n < nn) value = value + value - table.binom(n++, m - 1);
-		while (m < mm) value += table.binom(n, m++);
-		while (m > mm) value -= table.binom(n, --m);
-		while (n > nn) value = (value + table.binom(--n, m - 1)) * table.half;
-		auto id = ids[i];
-		result[id >> 1] = id & 1 ? table.power2[n] - value : value;
-	}
+	if (!points.empty()) binomial_prefix_detail::Polynomial<Mint>(table, points, ids, result);
 	return result;
 }
 
