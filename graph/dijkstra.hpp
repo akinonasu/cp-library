@@ -1,7 +1,9 @@
 #ifndef DIJKSTRA_HPP
 #define DIJKSTRA_HPP
 
-#include "../components/RadixHeap.hpp"
+#include "../components/dijkstra_queue.hpp"
+#include "../components/dijkstra_topological.hpp"
+#include "../components/directed_csr.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -14,18 +16,26 @@
 
 inline constexpr std::int64_t DIJKSTRA_INF = 1'000'000'000'000'000'000;
 
-template <class T>
-std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, T>>> &g, int st, T inf = static_cast<T>(std::min<std::int64_t>(DIJKSTRA_INF, std::numeric_limits<T>::max()))) {
-	assert(g.size() <= static_cast<std::size_t>(std::numeric_limits<int>::max()));
-	assert(st >= 0 && static_cast<std::size_t>(st) < g.size());
+namespace shortest_path_detail {
+template<class T> T infinity() {
+	if constexpr (std::numeric_limits<T>::is_bounded && std::numeric_limits<T>::is_integer && std::numeric_limits<T>::digits < 60)
+		return std::numeric_limits<T>::max();
+	else return T(DIJKSTRA_INF);
+}
+
+template<bool Path, class G, class T>
+std::vector<T> run(const G &g, int st, int target, T inf, std::vector<int> &parent) {
+	const auto n = static_cast<std::size_t>(g.size());
+	assert(n <= static_cast<std::size_t>(std::numeric_limits<int>::max()));
+	assert(st >= 0 && static_cast<std::size_t>(st) < n);
 	assert(inf > 0);
-	std::vector<T> d(g.size(), inf);
+	std::vector<T> d(n, inf);
 	d[st] = 0;
 	using State = std::pair<T, int>;
 	constexpr bool radix = std::is_integral_v<T> && sizeof(T) <= 8;
-	std::conditional_t<radix, RadixHeap<T>, std::vector<State>> pq;
+	std::conditional_t<radix, RadixQueue<T>, std::vector<State>> pq;
 	auto push = [&](T cost, int v) {
-		if constexpr (radix) pq.push({cost, v});
+		if constexpr (radix) pq.push(cost, v);
 		else {
 			pq.emplace_back(std::move(cost), v);
 			std::push_heap(pq.begin(), pq.end(), std::greater<State>());
@@ -34,7 +44,7 @@ std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, T>>> &g, in
 	push(0, st);
 	while (!pq.empty()) {
 		const auto [cost, v] = [&] {
-			if constexpr (radix) return pq.pop_value();
+			if constexpr (radix) return pq.pop();
 			else {
 				std::pop_heap(pq.begin(), pq.end(), std::greater<State>());
 				State s = std::move(pq.back());
@@ -43,18 +53,103 @@ std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, T>>> &g, in
 			}
 		}();
 		if (d[v] != cost) continue;
+		if constexpr (Path) if (cost >= d[target]) break;
 		T allowance = inf - cost;
 		for (const auto &[to, c] : g[v]) {
-			assert(to >= 0 && static_cast<std::size_t>(to) < g.size());
+			assert(to >= 0 && static_cast<std::size_t>(to) < n);
 			assert(c >= 0);
-			if (c >= allowance) continue;
+			using Weight = std::remove_cvref_t<decltype(c)>;
+			if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
+						  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
+				using Compare = std::common_type_t<Weight, T>;
+				if (Compare(c) >= Compare(allowance)) continue;
+			} else if (c >= allowance) continue;
 			T next = cost + c;
-			if (next < d[to]) d[to] = next, push(std::move(next), to);
+			if (next >= d[to]) continue;
+			if constexpr (Path) {
+				if (next >= d[target]) continue;
+				parent[to] = v;
+			}
+			d[to] = next;
+			if constexpr (Path) if (to == target) continue;
+			if (!g[to].empty()) push(std::move(next), to);
 		}
 	}
+	return d;
+}
+
+template<bool Topological, class G, class T>
+std::vector<T> distances(const G &g, int st, T inf) {
+	std::vector<int> parent;
+	auto d = [&] {
+		if constexpr (Topological) return topological_run<false>(g, st, -1, inf, parent);
+		else return run<false>(g, st, -1, inf, parent);
+	}();
 	for (T &val : d)
 		if (val == inf) val = -1;
 	return d;
+}
+
+template<bool Topological, class G, class T>
+std::pair<T, std::vector<int>> path(const G &g, int st, int target, T inf) {
+	const auto n = static_cast<std::size_t>(g.size());
+	assert(n <= static_cast<std::size_t>(std::numeric_limits<int>::max()));
+	assert(st >= 0 && static_cast<std::size_t>(st) < n);
+	assert(target >= 0 && static_cast<std::size_t>(target) < n);
+	assert(inf > 0);
+	if (st == target) return {T(0), {st}};
+	std::vector<int> parent(g.size(), -1);
+	auto d = [&] {
+		if constexpr (Topological) return topological_run<true>(g, st, target, inf, parent);
+		else return run<true>(g, st, target, inf, parent);
+	}();
+	if (d[target] == inf) return {T(-1), {}};
+	std::vector<int> path;
+	for (int v = target; v != st; v = parent[v]) path.push_back(v);
+	path.push_back(st);
+	std::reverse(path.begin(), path.end());
+	return {std::move(d[target]), std::move(path)};
+}
+}
+
+template<bool Topological, class T>
+std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, T>>> &g, int st, T inf = shortest_path_detail::infinity<T>()) {
+	return shortest_path_detail::distances<Topological>(g, st, inf);
+}
+
+template<class T>
+std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, T>>> &g, int st, T inf = shortest_path_detail::infinity<T>()) {
+	return dijkstra<false>(g, st, inf);
+}
+
+template<bool Topological, class T>
+std::pair<T, std::vector<int>> dijkstra_path(const std::vector<std::vector<std::pair<int, T>>> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
+	return shortest_path_detail::path<Topological>(g, st, target, inf);
+}
+
+template<class T>
+std::pair<T, std::vector<int>> dijkstra_path(const std::vector<std::vector<std::pair<int, T>>> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
+	return dijkstra_path<false>(g, st, target, inf);
+}
+
+template<bool Topological, class W, class T = typename DirectedCSR<W>::distance_type>
+std::vector<T> dijkstra(const DirectedCSR<W> &g, int st, T inf = shortest_path_detail::infinity<T>()) {
+	return shortest_path_detail::distances<Topological>(g, st, inf);
+}
+
+template<class W, class T = typename DirectedCSR<W>::distance_type>
+std::vector<T> dijkstra(const DirectedCSR<W> &g, int st, T inf = shortest_path_detail::infinity<T>()) {
+	return dijkstra<false>(g, st, inf);
+}
+
+template<bool Topological, class W, class T = typename DirectedCSR<W>::distance_type>
+std::pair<T, std::vector<int>> dijkstra_path(const DirectedCSR<W> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
+	return shortest_path_detail::path<Topological>(g, st, target, inf);
+}
+
+template<class W, class T = typename DirectedCSR<W>::distance_type>
+std::pair<T, std::vector<int>> dijkstra_path(const DirectedCSR<W> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
+	return dijkstra_path<false>(g, st, target, inf);
 }
 
 #endif
