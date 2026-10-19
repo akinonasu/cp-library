@@ -1,0 +1,3 @@
+g++ O2 and bundle passed
+clang++ O2 and bundle passed
+clang++ ASan/UBSan passed
