@@ -2,12 +2,12 @@
 title: "Segtree Beats の使い方一覧"
 ---
 
-[Segtree Beats](https://qandori.github.io/cp-library/data_structure/segment_tree/segtree_beats.hpp.html) は、次の更新と取得を任意に組み合わせて使えます。区間はすべて $$[l,r)$$ です。
+[Segtree Beats](https://qandori.github.io/cp-library/data_structure/advanced/segtree_beats.hpp.html) は、次の更新と取得を任意に組み合わせて使えます。区間はすべて $$[l,r)$$ です。
 
-除算や bitwise AND/OR など、別の更新・集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segment_tree/generic_segtree_beats.hpp.html) を使ってください。
+除算や bitwise AND/OR など、別の更新・集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/advanced/generic_segtree_beats.hpp.html) を使ってください。
 
 ```cpp
-#include "lib/data_structure/segment_tree/segtree_beats.hpp"
+#include "lib/data_structure/advanced/segtree_beats.hpp"
 
 SegtreeBeats seg(std::vector<long long>{1, 4, 2, 8});
 ```

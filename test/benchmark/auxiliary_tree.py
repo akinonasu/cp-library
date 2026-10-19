@@ -33,7 +33,7 @@ def main():
               'flags': flags, 'affinity': [args.cpu], 'trials': args.trials, 'warmup': 1,
               'binary_filesystem': 'Linux /tmp (WSL ext4)', 'schedule_seed': 513709, 'input_seed': 612409,
               'source_sha256': {p: digest(ROOT / p) for p in ('tree/auxiliary_tree.hpp', 'tree/lca.hpp',
-                  'tree/hld.hpp', 'data_structure/range_query/sparse_table.hpp', 'test/benchmark/auxiliary_tree.cpp',
+                  'data_structure/advanced/hld.hpp', 'data_structure/range_query/sparse_table.hpp', 'test/benchmark/auxiliary_tree.cpp',
                   'test/benchmark/auxiliary_tree.py')},
               'metric': 'in-process construction and checksum of every result, including first allocations; excludes preprocessing, generation, presorting for sorted methods, I/O and final object destruction',
               'cases': []}

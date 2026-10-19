@@ -67,9 +67,6 @@
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `tree/auxiliary_tree.hpp` | Auxiliary Tree | [使い方](docs/auxiliary_tree.md) |
-| `tree/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
-| `tree/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
-| `tree/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
 | `tree/rerooting.hpp` | 全方位木 DP | [使い方](docs/rerooting.md) |
 
 ### 最短経路
@@ -117,10 +114,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/segment_tree/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
-| `data_structure/segment_tree/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負) | [使い方](docs/kinetic_tournament.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
-| `data_structure/segment_tree/generic_segtree_beats.hpp` | 汎用 Segtree Beats | [使い方](docs/generic_segtree_beats.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
 | `data_structure/segment_tree/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
 | `data_structure/segment_tree/sortable_segtree.hpp` | Sortable Segtree（区間ソート・区間集約） | [使い方](docs/sortable_segtree.md) |
@@ -133,13 +127,6 @@
 | `data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp` | 重み更新 Wavelet Matrix | [使い方](docs/weighted_wavelet_matrix.md) |
 | `data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp` | 一点代入 Wavelet Matrix (クエリ先読み) | [使い方](docs/point_set_wavelet_matrix.md) |
 | `data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp` | Dynamic Wavelet Matrix | [使い方](docs/dynamic_wavelet_matrix.md) |
-
-### 優先度付きキュー
-
-| ファイル | 内容 | 使い方 |
-| --- | --- | --- |
-| `data_structure/priority_queue/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue | [使い方](docs/partially_retroactive_priority_queue.md) |
-| `data_structure/priority_queue/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue | [使い方](docs/retroactive_priority_queue.md) |
 
 ### 静的な区間クエリ
 
@@ -187,6 +174,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `math/combinatorics/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
+| `math/combinatorics/binomial_prefix_sum_incremental.hpp` | 二項係数の prefix sum（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
 | `math/combinatorics/comb.hpp` | 階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 
 ### Floor Sum
@@ -299,3 +287,16 @@ oj-bundle a.cpp | pbcopy
 ## ライセンス
 
 [CC0 1.0 Universal](LICENSE) を採用しています。著作権表示なしで利用・変更・再配布・商用利用できます。
+
+### 応用ライブラリ
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `data_structure/advanced/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
+| `data_structure/advanced/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
+| `data_structure/advanced/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
+| `data_structure/advanced/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
+| `data_structure/advanced/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負) | [使い方](docs/kinetic_tournament.md) |
+| `data_structure/advanced/generic_segtree_beats.hpp` | 汎用 Segtree Beats | [使い方](docs/generic_segtree_beats.md) |
+| `data_structure/advanced/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue | [使い方](docs/partially_retroactive_priority_queue.md) |
+| `data_structure/advanced/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue | [使い方](docs/retroactive_priority_queue.md) |

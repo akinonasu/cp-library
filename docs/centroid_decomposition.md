@@ -1,12 +1,13 @@
 ---
 title: 重心分解
-documentation_of: //tree/centroid_decomposition.hpp
+documentation_of: //data_structure/advanced/centroid_decomposition.hpp
 redirect_from:
 - /graph/centroid_decomposition.hpp.html
+- /tree/centroid_decomposition.hpp.html
 ---
 
 ```cpp
-#include "lib/tree/centroid_decomposition.hpp"
+#include "lib/data_structure/advanced/centroid_decomposition.hpp"
 
 CentroidDecomposition<> tree(3);
 tree.add_edge(0, 1);

@@ -4,6 +4,7 @@ url: https://qandori.github.io
 baseurl: /cp-library
 repository: qandori/cp-library
 lang: ja
+advanced_directory: data_structure/advanced
 main_libraries:
   - components/bitwise_zeta.hpp
   - components/divisor_zeta.hpp

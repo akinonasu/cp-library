@@ -1,0 +1,5 @@
+{
+  "headers": ["math/combinatorics/binomial_prefix_sum_incremental.hpp"],
+  "unit": ["test/unit/binomial_prefix_sum_incremental.cpp"],
+  "bundles": ["math/combinatorics/binomial_prefix_sum_incremental.hpp"]
+}

@@ -20,7 +20,7 @@ def main():
     selection = output / ('policy_selection.json' if args.policy_only else 'selection.json')
     previous = json.loads((output / 'validation.json').read_text()) if args.policy_only else None
     if args.policy_only:
-        for name in ['data_structure/segment_tree/generic_segtree_beats.hpp', 'test/unit/generic_segtree_beats.cpp',
+        for name in ['data_structure/advanced/generic_segtree_beats.hpp', 'test/unit/generic_segtree_beats.cpp',
                      'test/generic_segtree_beats.test.cpp', 'test/fixtures/beats.hpp']:
             assert hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest() == previous['sources'][name]
 
@@ -52,7 +52,7 @@ def main():
         for compiler in ['g++', 'clang++']:
             assert previous['compilers'][compiler] == subprocess.check_output([compiler, '--version'], text=True)
     source = 'test/kinetic_tournament.test.cpp'
-    header = 'data_structure/segment_tree/kinetic_tournament.hpp'
+    header = 'data_structure/advanced/kinetic_tournament.hpp'
     text = (root / 'docs/kinetic_tournament.md').read_text()
     assert yaml.safe_load(text.split('---', 2)[1])['documentation_of'] == '//' + header
     assert '`' + header + '`' in (root / 'README.md').read_text()
@@ -97,7 +97,7 @@ def main():
             checks[-1]['generic_beats_official_cases'] = len(generic_inputs)
             checks[-1]['generic_beats_reused'] = args.policy_only
             print(compiler, 'generic beats', len(generic_inputs), 'official cases ' + ('unchanged' if args.policy_only else 'passed'), flush=True)
-    names = [source, header, 'components/kinetic_tournament_monoid.hpp', 'data_structure/segment_tree/generic_segtree_beats.hpp',
+    names = [source, header, 'components/kinetic_tournament_monoid.hpp', 'data_structure/advanced/generic_segtree_beats.hpp',
              'docs/kinetic_tournament.md', 'test/unit/kinetic_tournament.cpp', 'test/unit/standalone.cpp',
              'test/benchmark/kinetic_tournament_jsc.cpp', 'components/fast_io.hpp', 'docs/generic_segtree_beats.md',
              'test/unit/generic_segtree_beats.cpp', 'test/generic_segtree_beats.test.cpp', 'test/fixtures/beats.hpp']

@@ -1,7 +1,7 @@
 #ifndef TEST_RETROACTIVE_SCHEDULING_HPP
 #define TEST_RETROACTIVE_SCHEDULING_HPP
 
-#include "../../data_structure/priority_queue/partially_retroactive_priority_queue.hpp"
+#include "../../data_structure/advanced/partially_retroactive_priority_queue.hpp"
 
 class RetroactiveScheduling {
 	using Queue = PartiallyRetroactivePriorityQueue<long long, std::greater<long long>>;
