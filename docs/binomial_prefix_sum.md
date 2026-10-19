@@ -1,5 +1,5 @@
 ---
-title: 二項係数の prefix sum
+title: 二項係数の prefix sum (一括版はクエリ先読み)
 documentation_of: //math/combinatorics/binomial_prefix_sum.hpp
 redirect_from:
 - /math/binomial_prefix_sum.hpp.html
@@ -33,7 +33,7 @@ auto answers = binomial_prefix_sum(queries);
 | `table_size()` | ブロック境界の前計算に保存した `Mint` の個数。階乗などの配列は含まない | $$O(1)$$ |
 | `binomial_prefix_sum<Mint>(queries)` | `(n,k)` の列を一括処理し、入力順に $$S(n,k)$$ の `vector<Mint>` を返す。`Mint` は省略可能 | $$O(N+Q\log Q+N\sqrt Q)$$ |
 
-オンライン版は平方分割、一括版は Mo 法です。問い合わせを全て先読みできる場合は、一括版を使うと前計算のメモリを抑えられます。どちらも対称性と中央の prefix を使います。
+`BinomialPrefixSum` の `query`・`prod` はオンラインで使え、クエリの先読みは不要です。一括版の `binomial_prefix_sum(queries)` は全クエリを先読みして渡します。オンライン版は平方分割、一括版は Mo 法で、一括版は前計算のメモリを抑えられます。どちらも対称性と中央の prefix を使います。
 
 `max_n` は非負で `INT_MAX` 未満、法より小さい必要があります。`block_size` は非負で、0 の場合は $$\max(1,\lfloor\sqrt{\text{max_n}+1}\rfloor)$$ を使います。大きくすると前計算の保存量が減り、問い合わせ時に直接足す項が増えます。`query`・`prod` の `n` は前計算の範囲内で指定します。
 

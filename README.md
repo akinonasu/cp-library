@@ -108,7 +108,7 @@
 | --- | --- | --- |
 | `data_structure/slope_trick.hpp` | Slope Trick | [使い方](docs/slope_trick.md) |
 | `data_structure/lazy_reversible_treap.hpp` | 遅延伝搬・反転可能な乱択平衡二分木 | [使い方](docs/lazy_reversible_treap.md) |
-| `data_structure/li_chao_tree.hpp` | Li Chao Tree | [使い方](docs/li_chao_tree.md) |
+| `data_structure/li_chao_tree.hpp` | Li Chao Tree (クエリ先読み) | [使い方](docs/li_chao_tree.md) |
 | `data_structure/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
@@ -130,7 +130,7 @@
 | --- | --- | --- |
 | `data_structure/wavelet_matrix/wavelet_matrix.hpp` | Wavelet Matrix | [使い方](docs/wavelet_matrix.md) |
 | `data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp` | 重み更新 Wavelet Matrix | [使い方](docs/weighted_wavelet_matrix.md) |
-| `data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp` | 一点代入 Wavelet Matrix | [使い方](docs/point_set_wavelet_matrix.md) |
+| `data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp` | 一点代入 Wavelet Matrix (クエリ先読み) | [使い方](docs/point_set_wavelet_matrix.md) |
 | `data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp` | Dynamic Wavelet Matrix | [使い方](docs/dynamic_wavelet_matrix.md) |
 
 ### 優先度付きキュー
@@ -183,7 +183,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/combinatorics/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
+| `math/combinatorics/binomial_prefix_sum.hpp` | 二項係数の prefix sum (一括版はクエリ先読み) | [使い方](docs/binomial_prefix_sum.md) |
 | `math/combinatorics/comb.hpp` | 階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 
 ### Floor Sum
@@ -216,7 +216,7 @@
 | `components/undirected_csr.hpp` | 無向グラフの CSR | [使い方](docs/undirected_csr.md) |
 | `components/push_relabel.hpp` | Push-Relabel の内部演算 | [使い方](docs/push_relabel.md) |
 | `components/min_cost_circulation.hpp` | 最小費用流の容量スケーリング | [使い方](docs/min_cost_circulation.md) |
-| `components/mo_order.hpp` | Mo 法の処理順 | [使い方](docs/mo_order.md) |
+| `components/mo_order.hpp` | Mo 法の処理順 (クエリ先読み) | [使い方](docs/mo_order.md) |
 | `components/small_vector.hpp` | Small Vector | [使い方](docs/small_vector.md) |
 | `components/limb_arithmetic.hpp` | Limb Arithmetic | [使い方](docs/limb_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
