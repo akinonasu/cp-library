@@ -154,6 +154,8 @@
 | `components/polynomial_gcd_blocked.hpp` | 多項式 Half-GCD の専用変換 | [使い方](docs/polynomial_gcd_blocked.md) |
 | `components/fps_composition.hpp` | FPS の合成・射影の内部処理 | [使い方](docs/fps_composition.md) |
 | `components/fps_convolution.hpp` | FPS の融合畳み込み | [使い方](docs/fps_convolution.md) |
+| `components/fps_convolution_unbalanced.hpp` | FPS の非対称畳み込み | [使い方](docs/fps_convolution_unbalanced.md) |
+| `components/fps_convolution_constant.hpp` | FPS の定数係数畳み込み | [使い方](docs/fps_convolution_constant.md) |
 | `components/fps_direct_eval.hpp` | 多点評価の内部直接計算 | [使い方](docs/fps_direct_eval.md) |
 | `components/fps_division_blocked.hpp` | FPS と多項式除算の内部変換 | [使い方](docs/fps_division_blocked.md) |
 | `components/fps_evaluation.hpp` | 多点評価・補間の SIMD 木 | [使い方](docs/fps_evaluation.md) |
