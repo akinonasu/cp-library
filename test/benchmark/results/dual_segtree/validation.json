@@ -1,0 +1,53 @@
+{
+  "result": "passed",
+  "official": [
+    {
+      "compiler": "g++",
+      "cases": 19
+    },
+    {
+      "compiler": "clang++",
+      "cases": 19
+    }
+  ],
+  "docs": [
+    {
+      "compiler": "g++",
+      "bundle": "passed",
+      "examples": 2
+    },
+    {
+      "compiler": "clang++",
+      "bundle": "passed",
+      "examples": 2
+    }
+  ],
+  "cases": {
+    "example_00.in": "fe7e26235e6c47a95249a5320150e1b6b39e2e6d4ac977910dc07be07a1b8c34",
+    "max_random_00.in": "820bf92f9ea324c24f50f356affdc2e0e813d395628ae47cc6d7bd64a0cf70c3",
+    "max_random_01.in": "b20a995786eba31ae4d1ddfcaacf68a2cf11207d03d8084135eec4a4e67080d8",
+    "max_random_02.in": "e9fcd0f9c7e0e26ee273f5b1a668918ddad829df0dd79affd2fba0bf9e4ef3fe",
+    "random_00.in": "ba1024b3576ed2fb8a9bc6134e4955b74c58cb2fa1bc5c557108d749f7d49a76",
+    "random_01.in": "30154c2591b90e5f705f02379a218475eb012a8e70e8e4e08c2daa3f49739181",
+    "random_02.in": "bb1a1bd609bd3b252115ff5d75fe91541085e663640bfe60ca049f839648ee7c",
+    "small_00.in": "dd584a2adbb5a6b99bb112281ca0f2ed27ca2f935587597781874d6557da9e61",
+    "small_01.in": "aab6f40c8a5df91969a947c75c4f3a680bb3a7167d4d30f328191aa1fbfcf31d",
+    "small_02.in": "df5e049e49413144cfadb0bb1785771546f62575dc0d51d4757a345b28139547",
+    "small_03.in": "4a2cabcc8f32ad0017dfb82cbd0e646bd00a1f5d0010b2d128c4b26ad31dc4a0",
+    "small_04.in": "0fcc332b0ac4b94182adf65bb866971edac1a35aa1269954d7dfc933e5b95327",
+    "small_05.in": "7ab4fd60a3ff641bc6d92bc0b333824151c2112fb441d3f11f00a7baf00d629c",
+    "small_06.in": "53646ccf3fa5c3f3e764407c2b599dfa2aff478317847983b0e24e22e0674590",
+    "small_07.in": "cb38f1fb4d47538360fdb3c969d3c21e0c1f34bbe0e20dca19f39bf5055a77cb",
+    "small_08.in": "f06dde0359dbf0a17007bad0f6a9a83b6ae91606f75b2624c7a6ea89a16d6bda",
+    "small_09.in": "cacdcfa9806bb7f72816d626f1c7556860a05ad35246b3116a9e7db583b72dcd",
+    "small_random_00.in": "409448bda6292c1adfcc60728343dc5b0d5a4415ef7d6aa11b8732b00a77284d",
+    "small_random_01.in": "3770ae6823fd5ea90e676bb11cab62679a411db7de744bc039438efc5424ad39"
+  },
+  "sources": {
+    "data_structure/segment_tree/dual_segtree.hpp": "e0d87598d9d8f300ef290277edad682afa71573fe4b67b41bca2b76a4f5b78ee",
+    "test/unit/dual_segtree.cpp": "0626fcc196445c25653ea5b801d612ba0ee5f48551794695d98f73c8393512b5",
+    "test/unit/standalone.cpp": "c2b85b2cb968db6e0dc3fe57b827cd36e1f98d33fc0774c939af33ebe55e3ec3",
+    "test/dual_segtree.test.cpp": "2e5251cc4bfa94d7c1470999e9ae3cb5f4bf45850e0a42a7bde927cad259e6f7",
+    "docs/dual_segtree.md": "d8085ba97040dfc08df0331763267e151d2b9e89ad8e019b80a6205bd09277fc"
+  }
+}

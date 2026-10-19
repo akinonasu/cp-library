@@ -1,0 +1,38 @@
+[
+  {
+    "case": "random",
+    "baseline_ms": 67.974898,
+    "library_ms": 57.858719
+  },
+  {
+    "case": "full",
+    "baseline_ms": 43.093662,
+    "library_ms": 3.580316
+  },
+  {
+    "case": "point",
+    "baseline_ms": 4.956542,
+    "library_ms": 3.120978
+  },
+  {
+    "case": "prefix",
+    "baseline_ms": 57.989483,
+    "library_ms": 37.959643
+  },
+  {
+    "case": "query_heavy",
+    "baseline_ms": 35.859821,
+    "library_ms": 24.935161
+  },
+  {
+    "case": "hot",
+    "baseline_ms": 4.662229,
+    "library_ms": 2.394925
+  },
+  {
+    "case": "add",
+    "baseline_ms": 67.350283,
+    "library_ms": 58.054016,
+    "commutative_ms": 24.192698
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "headers": ["data_structure/segment_tree/dual_segtree.hpp"],
+  "unit": ["test/unit/dual_segtree.cpp", "test/unit/standalone.cpp"],
+  "sanitize": ["test/unit/dual_segtree.cpp"]
+}

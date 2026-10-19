@@ -3,6 +3,7 @@
 #include "components/dynamic_bit_vector.hpp"
 #include "graph/connectivity/dynamic_connectivity.hpp"
 #include "data_structure/segment_tree/dynamic_segtree.hpp"
+#include "data_structure/segment_tree/dual_segtree.hpp"
 #include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
 #include "data_structure/li_chao_tree.hpp"
 #include "data_structure/dynamic_li_chao_tree.hpp"
@@ -67,6 +68,10 @@ struct StaticTreeSum {
 };
 
 int main() {
+	DualSegtree<std::int64_t, std::int64_t, add, add, zero, true> dual(3, 1);
+	dual.apply(0, 3, 4);
+	dual.set(1, 7);
+	assert(dual.get(0) == 5 && dual.get(1) == 7);
 	assert(mod_sqrt(10, 13) == 6 && !mod_sqrt(2, 13));
 	SternBrocotTree<> rational_tree(5, 3);
 	assert((rational_tree.depth() == 3 && rational_tree.ancestor(2)->value() == std::pair<std::uint64_t, std::uint64_t>(3, 2)));
