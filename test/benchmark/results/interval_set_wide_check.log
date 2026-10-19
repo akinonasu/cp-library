@@ -1,0 +1,9 @@
+g++: standalone data_structure/interval_set.hpp
+g++: interval_set.cpp
+g++: interval_set_wide.cpp
+g++: standalone.cpp
+clang++: standalone data_structure/interval_set.hpp
+clang++: interval_set.cpp
+clang++: interval_set_wide.cpp
+clang++: standalone.cpp
+Verification passed

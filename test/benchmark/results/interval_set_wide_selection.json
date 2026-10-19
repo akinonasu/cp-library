@@ -1,0 +1,12 @@
+{
+  "headers": ["data_structure/interval_set.hpp"],
+  "unit": [
+    "test/unit/interval_set.cpp",
+    "test/unit/interval_set_wide.cpp",
+    "test/unit/standalone.cpp"
+  ],
+  "sanitize": [
+    "test/unit/interval_set.cpp",
+    "test/unit/interval_set_wide.cpp"
+  ]
+}
