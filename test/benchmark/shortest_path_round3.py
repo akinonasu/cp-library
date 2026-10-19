@@ -88,7 +88,7 @@ def freeze_reference(destination, source, revision=None):
     return translation, copied, manifest
 
 
-def main():
+def main(baseline=BASELINE, driver_path=DRIVER, cache_name='round3', entrypoint=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--problem', type=Path, default=Path.home() / '.cache/online-judge-tools/library-checker-problems/graph/shortest_path')
@@ -108,7 +108,7 @@ def main():
     os.sched_setaffinity(0, {args.cpu})
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    cache = ROOT / '.verify-helper/cache/shortest-path/round3'
+    cache = ROOT / '.verify-helper/cache/shortest-path' / cache_name
     cache.mkdir(parents=True, exist_ok=True)
     temporary = tempfile.TemporaryDirectory(prefix='cp-shortest-round3-')
     work = Path(temporary.name)
@@ -129,10 +129,10 @@ def main():
     for item in args.option:
         name, option = item.split('=', 1)
         extra_options.setdefault(name, []).append(option)
-    driver = (ROOT / DRIVER).read_text()
-    variants = [('baseline', ROOT, BASELINE), ('current', ROOT, None)]
+    driver = (ROOT / driver_path).read_text()
+    variants = [('baseline', ROOT, baseline), ('current', ROOT, None)]
     if args.topological:
-        variants += [('baseline_topo', ROOT, BASELINE), ('current_topo', ROOT, None)]
+        variants += [('baseline_topo', ROOT, baseline), ('current_topo', ROOT, None)]
     for item in args.variant:
         name, directory = item.split('=', 1)
         variants.append((name, Path(directory).resolve(), None))
@@ -160,7 +160,7 @@ def main():
         binaries[name] = binary
     reference_settings = []
     if args.submissions:
-        reference_settings += [('own_baseline', ROOT / 'test/dijkstra_path.test.cpp', BASELINE),
+        reference_settings += [('own_baseline', ROOT / 'test/dijkstra_path.test.cpp', baseline),
                                ('own_path', ROOT / 'test/dijkstra_path.test.cpp', None),
                                ('own_topo', ROOT / 'test/dijkstra_topological.test.cpp', None)]
     for item in args.reference:
@@ -196,11 +196,12 @@ def main():
                 assert key not in live_sources or live_sources[key] == digest
                 live_sources[key] = digest
     assert all(sha(ROOT / key) == digest for key, digest in live_sources.items())
-    environment = dict(measured_at=datetime.now(timezone.utc).isoformat(), baseline=BASELINE,
+    environment = dict(measured_at=datetime.now(timezone.utc).isoformat(), baseline=baseline,
         flags=flags, extra_options=extra_options, compiler=subprocess.check_output(['g++', '--version'], text=True),
         cpu=subprocess.check_output(['lscpu'], text=True), kernel=subprocess.check_output(['uname', '-a'], text=True),
         affinity=[args.cpu], trials=args.trials, warmup=1, order_seed=SEED, sources=sources,
-        driver_sha256=sha(ROOT / DRIVER), runner_sha256=sha(Path(__file__)), references=references,
+        driver_sha256=sha(ROOT / driver_path), runner_sha256=sha(Path(entrypoint or __file__)),
+        helper_sha256=sha(Path(__file__)), references=references,
         utility_sha256=sha(ROOT / 'test/benchmark/shortest_path.py'),
         live_sources=live_sources,
         archived_sources={str(path.relative_to(output)): sha(path) for path in (output / 'sources').rglob('*') if path.is_file()},
@@ -259,9 +260,15 @@ def main():
         results[case.stem] = record
         (output / 'results.json').write_text(json.dumps(results, indent=2) + '\n')
         print(case.stem, {name: round(row['whole_ms'], 3) for name, row in record['median_ms'].items()}, flush=True)
-    assert sha(ROOT / DRIVER) == environment['driver_sha256']
+    assert sha(ROOT / driver_path) == environment['driver_sha256']
+    assert sha(Path(entrypoint or __file__)) == environment['runner_sha256']
+    assert sha(Path(__file__)) == environment['helper_sha256']
     assert all(sha(ROOT / key) == digest for key, digest in live_sources.items())
     assert all(sha(output / path) == digest for path, digest in environment['archived_sources'].items())
+    environment['completed_at'] = datetime.now(timezone.utc).isoformat()
+    environment['validation'] = dict(cases=len(results), distances='passed', warmup_paths='passed',
+                                     live_sources_unchanged=True, archived_sources_unchanged=True)
+    (output / 'environment.json').write_text(json.dumps(environment, indent=2) + '\n')
     print('All distances and paths passed', flush=True)
 
 
