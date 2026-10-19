@@ -25,6 +25,8 @@ auto [distance, path] = dijkstra_path(g, 0, 1); // 5, {0,1}
 
 `dijkstra_path` は見つけた目的地への距離を上界とし、それより短い経路が残っていない時点で終了します。緩和時に親を保存するため、全頂点の探索や経路の再走査を省けます。
 
+始点から出辺が 1 本の間は、進む先が一意なのでキューを使わずにたどります。途中で目的地や行き止まりに着いた場合は、その時点で返します。閉路は定数個の変数で検出します。分岐に着いた後は通常の探索へ移り、固定幅の整数距離では、たどった区間を再探索せずに経路をつなぎます。
+
 `<true>` を付けると、入次数 0 の頂点から距離を確定し、残った部分だけを Dijkstra 法で探索します。有向閉路があっても使え、DAG なら線形時間です。グラフ全体の入次数を数えるので、無向グラフや始点から近い範囲だけを調べたい場合は通常版が適しています。省略時は前処理を行いません。[前処理の説明](https://qandori.github.io/cp-library/components/dijkstra_topological.hpp.html)もあります。
 
 静的な大きいグラフでは、[Directed CSR](https://qandori.github.io/cp-library/components/directed_csr.hpp.html) も同じ関数へ渡せます。各頂点の隣接辺を一つの配列へまとめ、頂点ごとの領域確保を省きます。
@@ -38,6 +40,25 @@ auto [cost, vertices] = dijkstra_path<true>(graph, 0, 2);
 ```
 
 CSR の 32 bit 以下の整数重みは、距離を `std::int64_t` で計算します。64 bit 整数・浮動小数点などでは重みと同じ型です。明示した `inf` の型で距離型を指定することもできます。浮動小数点重みには同じ型の `inf` を渡します（`double` なら `100.0` など）。隣接リスト版では従来どおり重みと距離が同じ型です。CSR は構築後に辺を変えず、`build` で再構築します。
+
+入力から直接構築する場合は、CSR のコールバックと[一括入力](https://qandori.github.io/cp-library/components/fast_io_bulk.hpp.html)を組み合わせられます。次の例では `m` 本の辺を入力順に読みます。各行の形式は `始点 終点 重み` です。
+
+```cpp
+#include "lib/components/fast_io_bulk.hpp"
+
+FastInput in;
+int n, m, s, t;
+in.read(n); in.read(m); in.read(s); in.read(t);
+using Graph = DirectedCSR<std::uint32_t>;
+Graph g(n, m, [&](auto emit) {
+	read_unsigned_records<3>(in, m, [&](auto from, auto to, auto weight) {
+		emit(Graph::Edge{int(from), int(to), weight});
+	});
+});
+auto [distance, path] = dijkstra_path(g, s, t);
+```
+
+辺を受け取るときに次数を数えるため、入力後の次数計算と、そのための辺の再走査を省けます。整数は `uint32_t` の範囲とし、頂点番号は `int` の範囲に収めてください。Linux x86_64 / GCC では対応 CPU の AVX2 を使い、それ以外では通常の入力処理を使います。
 
 `dijkstra(g, start, inf)` は始点からの距離を返し、到達不能は `-1` です。`inf` は扱う距離より大きい値を指定します。既定値は $$\min(10^{18},\text{距離型の最大値})$$ です。
 
