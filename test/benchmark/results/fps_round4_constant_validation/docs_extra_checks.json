@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-19T06:12:44.425531+00:00",
+  "previous_validation_records_unchanged": true,
+  "previous_validation_mismatches": [],
+  "new_doc_benchmark_url": "https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_convolution_constant_round4.md",
+  "new_doc_benchmark_url_present": true,
+  "new_doc_benchmark_target_exists": true,
+  "new_doc_benchmark_target_sha256": "e9f71d1db4adf72e9715fdee73bb69be92503727cba8394209cb339470bc86f4",
+  "claim_scope": "Benchmark report existence/hash checked only; benchmark report full link and result audit is owned by root.",
+  "success": true
+}

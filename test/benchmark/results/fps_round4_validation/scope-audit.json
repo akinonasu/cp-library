@@ -1,0 +1,47 @@
+{
+  "baseline": "bd29f70c70e24e27770b9e9a3777b6cf85664b63",
+  "coverage": {
+    "clang19": {
+      "exact_order": true,
+      "expected": 48,
+      "log_sha256_matches": true,
+      "observed": 48,
+      "verification_passed": true
+    },
+    "gcc14": {
+      "exact_order": true,
+      "expected": 48,
+      "log_sha256_matches": true,
+      "observed": 48,
+      "verification_passed": true
+    },
+    "gcc14-sanitize": {
+      "exact_order": true,
+      "expected": 4,
+      "log_sha256_matches": true,
+      "observed": 4,
+      "verification_passed": true
+    }
+  },
+  "dependency_files": 173,
+  "gates": {
+    "compiler_hashes_match": true,
+    "contract_hash_matches": true,
+    "dependency_hashes_match": true,
+    "dependency_scan_hashes_match": true,
+    "plan_fingerprints_match": false,
+    "selection_hash_matches": true
+  },
+  "harness_sha256": "bec17ed18ca234558fea7c464b292cd041ae5bc16ef3e15a3dde953258021c51",
+  "normalization_exceptions": [],
+  "result_sha256": "2771186c451fdaafa1eb7e54d2492c587124d7a8505372c8fedce261d1ced3a3",
+  "selected_counts": {
+    "bundles": 21,
+    "headers": 21,
+    "sanitize": 4,
+    "unit": 27,
+    "verification": 25
+  },
+  "selection_sha256": "a817ab9fecb5e31c875c85521408e015219ce4f2c7b1c9b3e830a1cbee1af0a0",
+  "status": "failed"
+}

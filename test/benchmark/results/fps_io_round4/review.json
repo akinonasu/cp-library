@@ -1,0 +1,5 @@
+{
+  "reviewer": "/root/compose_reversion/profile_scope_review",
+  "scope": "Read-only independent review of parser_tile4 BulkInput::lockstep; no editing, build or timing.",
+  "result": "No boundary/order issue found. Four 64-bit elements of each parse result are each stream consecutive two values. unpacklo/hi followed by 0x20/0x31 produce each stream eight values in original order. j>=4 and steps<=(kCapacity-done)/2 bound 32-byte stores to [done,done+8). Remainder 1..3 steps uses old stores. two call order, pointer updates, invalid/overflow OR, final streams update and 33-byte read allowance per step are unchanged. Four caller scratch sections have kCapacity words and are disjoint."
+}

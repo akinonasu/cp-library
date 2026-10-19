@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/fps_bostan_mori.test.cpp"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-19T06:12:44.426197+00:00",
+  "success": true,
+  "source_hashes_unchanged": true,
+  "selection_sha256": "85e3ddd751ae5d2bc587773e760d348a46856ae1a7a7974d33a490f5254c60fd",
+  "records": {
+    "docs.log": "d6ac4e35284a5069241eb62dc0ecc5e5f8b9ed5e9716a9070bc39ab05c42d75e",
+    "docs_audit.json": "52fe3940af22d0d9a1f2fbd511391b83f5d99dae4f76f83f140d09762a4d3d25",
+    "docs_commands.json": "eef09adcee98ec229551ddff450b0f687256b1d0112a8991a80b5fa81747cd86",
+    "docs_driver.log": "8e9abd4787ca4464626c3c35f28d6cb3e648694f389b5ed3a03863df42470466",
+    "docs_extra_checks.json": "48885060a10c33df75760560c8c6e788a8bfd500d85640e5ec5e26d848ba9320",
+    "docs_result.json": "223b815894ff33fa462833a385be5fdbe2ad73b6dff8150f181710ba06329c6f",
+    "docs_scope_comparison.json": "bad2282837bee7222ee9e5aefa53a775a12ac8ca3198e7633c6d0df12e526e63",
+    "docs_sources_after.json": "8e8542baedf4f9827091fa08fc144a651ee22099104125db660364953e102d96",
+    "docs_sources_before.json": "8e8542baedf4f9827091fa08fc144a651ee22099104125db660364953e102d96"
+  },
+  "harness": {
+    "path": "test/benchmark/fps_round4_constant_docs.py",
+    "sha256": "d1299e2a263c52423c693f4782585d1dda9a4378cc41e8e13f379b310342d22d"
+  }
+}

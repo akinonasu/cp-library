@@ -1,0 +1,45 @@
+{
+  "selection_sha256": "04844928ae69a702212181f3ad9f229aefc381fad60143c4f15e4f718281fb7c",
+  "baseline": "bd29f70c70e24e27770b9e9a3777b6cf85664b63",
+  "selected_drivers": 24,
+  "passed_drivers": 22,
+  "passed_cases": 596,
+  "skipped_drivers": 2,
+  "skip_reasons": {
+    "test/cyclic_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/ordered_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    }
+  },
+  "executed_drivers": 22,
+  "coverage_matches_final_selection": true,
+  "full_official_cases": true,
+  "source_hashes_unchanged": true,
+  "official_hashes_unchanged": true,
+  "actual_dependencies_unchanged": true,
+  "source_files_checked": 180,
+  "official_files_checked": 1158,
+  "checker_order": [
+    "input",
+    "actual_output",
+    "official_answer"
+  ],
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "compiler_sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-I",
+    "/workspace/cp-library"
+  ],
+  "harness_sha256": "38346291afb2a884357d829402a141a9885d9ea0b2068e1303ea6cff01a290ed",
+  "runner_sha256": "cabafdf32e7719c3ea5fd11d3efe6306dda1352b3e3a6b813582f80e21736e27"
+}

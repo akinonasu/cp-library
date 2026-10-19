@@ -1,0 +1,8 @@
+built before
+built batch_construct
+built tail_store
+built reference
+max_random_00 {'before': 12.383712, 'batch_construct': 12.145187, 'tail_store': 12.043023, 'reference': 9.816123} {'batch_construct': 0.21411799999999914, 'tail_store': 0.3753700000000002} {'batch_construct': 6, 'tail_store': 7}
+max_random_01 {'before': 11.802134, 'batch_construct': 11.915574, 'tail_store': 11.939429, 'reference': 9.592932} {'batch_construct': -0.17436000000000007, 'tail_store': -0.08418499999999973} {'batch_construct': 3, 'tail_store': 3}
+small_and_large_03 {'before': 9.589837, 'batch_construct': 9.418672, 'tail_store': 9.512471, 'reference': 8.165293} {'batch_construct': 0.19237799999999972, 'tail_store': -0.0031370000000006115} {'batch_construct': 5, 'tail_store': 4}
+medium_02 {'before': 1.399076, 'batch_construct': 1.438614, 'tail_store': 1.421769, 'reference': 1.207881} {'batch_construct': -0.020321000000000033, 'tail_store': -0.012558999999999987} {'batch_construct': 3, 'tail_store': 4}

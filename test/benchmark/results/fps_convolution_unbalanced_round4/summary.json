@@ -1,0 +1,38 @@
+[
+  {
+    "case": "small_and_large_00",
+    "before_median_ns": 10693612,
+    "current_median_ns": 7046736,
+    "reference_median_ns": 9103171,
+    "paired_before_current_median_ns": 3776059,
+    "wins": 20,
+    "trials": 21
+  },
+  {
+    "case": "small_and_large_01",
+    "before_median_ns": 10691179,
+    "current_median_ns": 7335195,
+    "reference_median_ns": 9121198,
+    "paired_before_current_median_ns": 3469933,
+    "wins": 20,
+    "trials": 21
+  },
+  {
+    "case": "small_and_large_02",
+    "before_median_ns": 10737838,
+    "current_median_ns": 6892115,
+    "reference_median_ns": 8967209,
+    "paired_before_current_median_ns": 3776991,
+    "wins": 21,
+    "trials": 21
+  },
+  {
+    "case": "small_and_large_03",
+    "before_median_ns": 10873340,
+    "current_median_ns": 7184321,
+    "reference_median_ns": 9095410,
+    "paired_before_current_median_ns": 3504215,
+    "wins": 20,
+    "trials": 21
+  }
+]

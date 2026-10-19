@@ -1,0 +1,16 @@
+{
+  "python_syntax_checked": [
+    "measure_v1.py",
+    "measure.py",
+    "reproduce.py",
+    "memory.py"
+  ],
+  "unresolved_report_local_links": [],
+  "unescaped_double_open_brace_count": 0,
+  "checker_calls_counted_from_samples": 2604,
+  "all_checker_pass_flags": true,
+  "recorded_harness_hashes_match": true,
+  "all_30_reconstructed_headers_match": true,
+  "production_edits_by_this_task": false,
+  "success": true
+}

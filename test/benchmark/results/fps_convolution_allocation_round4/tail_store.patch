@@ -1,0 +1,227 @@
+--- a/components/fps_convolution.hpp
++++ b/components/fps_convolution.hpp
+@@ -3636,6 +3636,191 @@
+ 		: "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15", "memory", "cc");
+ }
+ 
++inline void inverse_top_to(Vec* a, std::size_t q, const Vec* w, void* target, std::size_t output_q, std::size_t count) {
++	Vec* b = a + 4 * q;
++	Vec* const end = a + count;
++	char* out = static_cast<char*>(target);
++	char* other = out + 128 * output_q;
++	asm volatile(
++		"vpbroadcastd %[P], %%ymm15\n\t"
++		"vpbroadcastd %[P2], %%ymm14\n\t"
++		".p2align 5\n\t"
++		"1:\n\t"
++		"vmovdqa (%[b]), %%ymm0\n\t"
++		"vmovdqa (%[b],%[h],2), %%ymm1\n\t"
++		"vmovdqa (%[a]), %%ymm2\n\t"
++		"vmovdqa (%[a],%[h],2), %%ymm3\n\t"
++		"vpaddd %%ymm14, %%ymm0, %%ymm4\n\t"
++		"vpaddd (%[b],%[h]), %%ymm0, %%ymm0\n\t"
++		"vpsubd (%[b],%[h]), %%ymm4, %%ymm4\n\t"
++		"vpaddd %%ymm14, %%ymm1, %%ymm5\n\t"
++		"vpsubd %%ymm14, %%ymm0, %%ymm6\n\t"
++		"vpaddd (%[b],%[h3]), %%ymm1, %%ymm1\n\t"
++		"vpsrlq $32, %%ymm4, %%ymm7\n\t"
++		"vpmuludq 160(%[w]), %%ymm4, %%ymm8\n\t"
++		"vpsubd (%[b],%[h3]), %%ymm5, %%ymm5\n\t"
++		"vpaddd %%ymm14, %%ymm2, %%ymm9\n\t"
++		"vpmuludq 160(%[w]), %%ymm7, %%ymm7\n\t"
++		"vpsrlq $32, %%ymm5, %%ymm10\n\t"
++		"vpmuludq 224(%[w]), %%ymm5, %%ymm11\n\t"
++		"vpaddd %%ymm14, %%ymm3, %%ymm12\n\t"
++		"vpmuludq 224(%[w]), %%ymm10, %%ymm10\n\t"
++		"vpmulld 128(%[w]), %%ymm4, %%ymm4\n\t"
++		"vpminud %%ymm6, %%ymm0, %%ymm6\n\t"
++		"vpsubd %%ymm14, %%ymm1, %%ymm0\n\t"
++		"vpsrlq $32, %%ymm8, %%ymm8\n\t"
++		"vpaddd (%[a],%[h]), %%ymm2, %%ymm2\n\t"
++		"vpsubd (%[a],%[h]), %%ymm9, %%ymm9\n\t"
++		"vpminud %%ymm0, %%ymm1, %%ymm0\n\t"
++		"vpblendd $170, %%ymm7, %%ymm8, %%ymm7\n\t"
++		"vpsrlq $32, %%ymm11, %%ymm11\n\t"
++		"vpaddd (%[a],%[h3]), %%ymm3, %%ymm3\n\t"
++		"vpsubd (%[a],%[h3]), %%ymm12, %%ymm12\n\t"
++		"vpmulld %%ymm15, %%ymm7, %%ymm7\n\t"
++		"vpblendd $170, %%ymm10, %%ymm11, %%ymm10\n\t"
++		"vpmulld 192(%[w]), %%ymm5, %%ymm5\n\t"
++		"vpsrlq $32, %%ymm2, %%ymm11\n\t"
++		"vpmulld %%ymm15, %%ymm10, %%ymm10\n\t"
++		"vpmuludq 32(%[w]), %%ymm2, %%ymm8\n\t"
++		"vpsrlq $32, %%ymm9, %%ymm1\n\t"
++		"vpsrlq $32, %%ymm3, %%ymm13\n\t"
++		"vpmuludq 32(%[w]), %%ymm11, %%ymm11\n\t"
++		"vpmuludq 32(%[w]), %%ymm1, %%ymm1\n\t"
++		"vpmuludq 32(%[w]), %%ymm13, %%ymm13\n\t"
++		"vpsubd %%ymm7, %%ymm4, %%ymm7\n\t"
++		"vpmulld (%[w]), %%ymm2, %%ymm2\n\t"
++		"vpsrlq $32, %%ymm12, %%ymm4\n\t"
++		"vpmuludq 96(%[w]), %%ymm4, %%ymm4\n\t"
++		"vpsubd %%ymm10, %%ymm5, %%ymm10\n\t"
++		"vpsrlq $32, %%ymm8, %%ymm8\n\t"
++		"vpmuludq 32(%[w]), %%ymm9, %%ymm5\n\t"
++		"vpblendd $170, %%ymm11, %%ymm8, %%ymm11\n\t"
++		"vpmulld (%[w]), %%ymm9, %%ymm9\n\t"
++		"vpmuludq 32(%[w]), %%ymm3, %%ymm8\n\t"
++		"vpmulld %%ymm15, %%ymm11, %%ymm11\n\t"
++		"vpmulld (%[w]), %%ymm3, %%ymm3\n\t"
++		"vpsrlq $32, %%ymm5, %%ymm5\n\t"
++		"vpsrlq $32, %%ymm8, %%ymm8\n\t"
++		"vpblendd $170, %%ymm1, %%ymm5, %%ymm1\n\t"
++		"vpmuludq 96(%[w]), %%ymm12, %%ymm5\n\t"
++		"vpmulld 64(%[w]), %%ymm12, %%ymm12\n\t"
++		"vpblendd $170, %%ymm13, %%ymm8, %%ymm13\n\t"
++		"vpmulld %%ymm15, %%ymm1, %%ymm1\n\t"
++		"vpsubd %%ymm11, %%ymm2, %%ymm11\n\t"
++		"vpaddd %%ymm14, %%ymm6, %%ymm2\n\t"
++		"vpaddd %%ymm14, %%ymm7, %%ymm8\n\t"
++		"vpaddd %%ymm0, %%ymm6, %%ymm6\n\t"
++		"vpsubd %%ymm0, %%ymm2, %%ymm0\n\t"
++		"vpmulld %%ymm15, %%ymm13, %%ymm13\n\t"
++		"vpsrlq $32, %%ymm5, %%ymm5\n\t"
++		"vpsubd %%ymm10, %%ymm8, %%ymm8\n\t"
++		"vpsrlq $32, %%ymm6, %%ymm2\n\t"
++		"vpaddd %%ymm10, %%ymm7, %%ymm10\n\t"
++		"vpblendd $170, %%ymm4, %%ymm5, %%ymm4\n\t"
++		"vpmuludq 32(%[w]), %%ymm6, %%ymm5\n\t"
++		"vpsrlq $32, %%ymm0, %%ymm7\n\t"
++		"vpmuludq 32(%[w]), %%ymm2, %%ymm2\n\t"
++		"vpmulld %%ymm15, %%ymm4, %%ymm4\n\t"
++		"vpmuludq 288(%[w]), %%ymm7, %%ymm7\n\t"
++		"vpsubd %%ymm1, %%ymm9, %%ymm1\n\t"
++		"vpsubd %%ymm13, %%ymm3, %%ymm13\n\t"
++		"vpmuludq 288(%[w]), %%ymm0, %%ymm3\n\t"
++		"vpsrlq $32, %%ymm8, %%ymm9\n\t"
++		"vpmulld (%[w]), %%ymm6, %%ymm6\n\t"
++		"vpmuludq 352(%[w]), %%ymm9, %%ymm9\n\t"
++		"vpsrlq $32, %%ymm5, %%ymm5\n\t"
++		"vpmulld 256(%[w]), %%ymm0, %%ymm0\n\t"
++		"vpsubd %%ymm4, %%ymm12, %%ymm4\n\t"
++		"vpblendd $170, %%ymm2, %%ymm5, %%ymm2\n\t"
++		"vpmuludq 352(%[w]), %%ymm8, %%ymm5\n\t"
++		"vpaddd %%ymm13, %%ymm11, %%ymm12\n\t"
++		"vpsrlq $32, %%ymm3, %%ymm3\n\t"
++		"vpsubd %%ymm13, %%ymm11, %%ymm13\n\t"
++		"vpmulld %%ymm15, %%ymm2, %%ymm2\n\t"
++		"vpmulld 320(%[w]), %%ymm8, %%ymm8\n\t"
++		"vpblendd $170, %%ymm7, %%ymm3, %%ymm7\n\t"
++		"vpaddd %%ymm4, %%ymm1, %%ymm3\n\t"
++		"vpsubd %%ymm4, %%ymm1, %%ymm4\n\t"
++		"vpsubd %%ymm14, %%ymm12, %%ymm1\n\t"
++		"vpsrlq $32, %%ymm5, %%ymm5\n\t"
++		"vpmulld %%ymm15, %%ymm7, %%ymm7\n\t"
++		"vpsubd %%ymm14, %%ymm3, %%ymm11\n\t"
++		"vpminud %%ymm1, %%ymm12, %%ymm1\n\t"
++		"vpblendd $170, %%ymm9, %%ymm5, %%ymm9\n\t"
++		"vpaddd %%ymm14, %%ymm13, %%ymm5\n\t"
++		"vpaddd %%ymm14, %%ymm4, %%ymm12\n\t"
++		"vpminud %%ymm11, %%ymm3, %%ymm11\n\t"
++		"vpmulld %%ymm15, %%ymm9, %%ymm9\n\t"
++		"vpminud %%ymm5, %%ymm13, %%ymm5\n\t"
++		"vpminud %%ymm12, %%ymm4, %%ymm12\n\t"
++		"vpsubd %%ymm14, %%ymm10, %%ymm4\n\t"
++		"vpsubd %%ymm2, %%ymm6, %%ymm2\n\t"
++		"vpminud %%ymm4, %%ymm10, %%ymm4\n\t"
++		"vpsubd %%ymm7, %%ymm0, %%ymm7\n\t"
++		"vpaddd %%ymm14, %%ymm1, %%ymm0\n\t"
++		"vpaddd %%ymm14, %%ymm11, %%ymm10\n\t"
++		"vpaddd %%ymm14, %%ymm5, %%ymm6\n\t"
++		"vpaddd %%ymm14, %%ymm12, %%ymm13\n\t"
++		"vpaddd %%ymm2, %%ymm1, %%ymm1\n\t"
++		"vpsubd %%ymm9, %%ymm8, %%ymm9\n\t"
++		"vpsubd %%ymm2, %%ymm0, %%ymm2\n\t"
++		"vpaddd %%ymm4, %%ymm11, %%ymm11\n\t"
++		"vpsubd %%ymm4, %%ymm10, %%ymm4\n\t"
++		"vpaddd %%ymm7, %%ymm5, %%ymm5\n\t"
++		"vpsubd %%ymm7, %%ymm6, %%ymm7\n\t"
++		"vpaddd %%ymm9, %%ymm12, %%ymm12\n\t"
++		"vpsubd %%ymm9, %%ymm13, %%ymm9\n\t"
++		"vpsubd %%ymm14, %%ymm1, %%ymm13\n\t"
++		"vpsubd %%ymm14, %%ymm2, %%ymm6\n\t"
++		"vpsubd %%ymm14, %%ymm11, %%ymm10\n\t"
++		"vpsubd %%ymm14, %%ymm4, %%ymm0\n\t"
++		"vpsubd %%ymm14, %%ymm5, %%ymm8\n\t"
++		"vpsubd %%ymm14, %%ymm7, %%ymm3\n\t"
++		"vpminud %%ymm13, %%ymm1, %%ymm13\n\t"
++		"vpminud %%ymm6, %%ymm2, %%ymm6\n\t"
++		"vpsubd %%ymm14, %%ymm12, %%ymm2\n\t"
++		"vpsubd %%ymm14, %%ymm9, %%ymm1\n\t"
++		"vpminud %%ymm10, %%ymm11, %%ymm10\n\t"
++		"vpminud %%ymm0, %%ymm4, %%ymm0\n\t"
++		"vpminud %%ymm8, %%ymm5, %%ymm8\n\t"
++		"vpminud %%ymm3, %%ymm7, %%ymm3\n\t"
++		"vpminud %%ymm2, %%ymm12, %%ymm2\n\t"
++		"vpminud %%ymm1, %%ymm9, %%ymm1\n\t"
++		"vpsubd %%ymm15, %%ymm13, %%ymm9\n\t"
++		"vpsubd %%ymm15, %%ymm6, %%ymm12\n\t"
++		"vpsubd %%ymm15, %%ymm10, %%ymm7\n\t"
++		"vpsubd %%ymm15, %%ymm0, %%ymm5\n\t"
++		"vpsubd %%ymm15, %%ymm8, %%ymm4\n\t"
++		"vpsubd %%ymm15, %%ymm3, %%ymm11\n\t"
++		"vpminud %%ymm9, %%ymm13, %%ymm9\n\t"
++		"vpminud %%ymm12, %%ymm6, %%ymm12\n\t"
++		"vpsubd %%ymm15, %%ymm2, %%ymm6\n\t"
++		"vpsubd %%ymm15, %%ymm1, %%ymm13\n\t"
++		"vpminud %%ymm7, %%ymm10, %%ymm7\n\t"
++		"vpminud %%ymm5, %%ymm0, %%ymm5\n\t"
++		"vmovdqu %%ymm9, (%[out])\n\t"
++		"vpminud %%ymm4, %%ymm8, %%ymm4\n\t"
++		"vpminud %%ymm11, %%ymm3, %%ymm11\n\t"
++		"vpminud %%ymm6, %%ymm2, %%ymm6\n\t"
++		"vpminud %%ymm13, %%ymm1, %%ymm13\n\t"
++		"vmovdqu %%ymm12, (%[other])\n\t"
++		"vmovdqu %%ymm7, (%[out],%[oh])\n\t"
++		"vmovdqu %%ymm5, (%[other],%[oh])\n\t"
++		"vmovdqu %%ymm4, (%[out],%[oh],2)\n\t"
++		"vmovdqu %%ymm11, (%[other],%[oh],2)\n\t"
++		"vmovdqu %%ymm6, (%[out],%[oh3])\n\t"
++		"vmovdqu %%ymm13, (%[other],%[oh3])\n\t"
++		"add $32, %[a]\n\t"
++		"add $32, %[b]\n\t"
++		"add $32, %[out]\n\t"
++		"add $32, %[other]\n\t"
++		"cmp %[end], %[a]\n\t"
++		"jne 1b\n\t"
++		: [a] "+r"(a), [b] "+r"(b), [out] "+r"(out), [other] "+r"(other)
++		: [end] "r"(end), [h] "r"(32 * q), [h3] "r"(96 * q), [oh] "r"(32 * output_q), [oh3] "r"(96 * output_q), [w] "r"(w), [P] "m"(kP), [P2] "m"(k2P)
++		: "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15", "memory", "cc");
++}
++
+ }
+ 
+ using ntt::detail::add;
+@@ -3767,7 +3952,7 @@
+ 
+ 
+ 	
+-	const std::uint32_t* multiply() {
++	const std::uint32_t* multiply(Mint* output = nullptr) {
+ 		using namespace ntt::detail;
+ 		const std::size_t len = length(), nv = len / 8, q = nv / 8;
+ 		build_table(roots_, len / 16, kRoots[0]);
+@@ -3785,7 +3970,12 @@
+ 										   multiply_mod(s, *x1), *x1};
+ 		alignas(32) Vec w[12];
+ 		for (int i = 0; i < 6; ++i) w[2 * i] = broadcast(twiddles[i]), w[2 * i + 1] = broadcast(quotient(twiddles[i]));
+-		top_kernels::inverse_top(a, q, w);
++		if (output && reinterpret_cast<void*>(output) != reinterpret_cast<void*>(a)) {
++			alignas(32) Vec heads[8];
++			for (std::size_t group = 0; group < 8; ++group) heads[group] = a[group * q];
++			if (q > 1) top_kernels::inverse_top_to(a + 1, q, w, output + 8, q, q - 1);
++			top_kernels::inverse_top_to(heads, 1, w, output, q, 1);
++		} else top_kernels::inverse_top(a, q, w);
+ 		return a_;
+ 	}
+ 
+@@ -3842,8 +4032,7 @@
+ 	Product plan(a.size(), b.size(), reinterpret_cast<std::uint32_t*>(to));
+ 	copy_input_mint(a, to);
+ 	copy_input(b, plan.b(), len);
+-	plan.multiply();
+-	if (offset) std::memmove(static_cast<void*>(result.data()), to, size * sizeof(Mint));
++	plan.multiply(result.data());
+ 	result.resize(size);
+ 	return result;
+ }
