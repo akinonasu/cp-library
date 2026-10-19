@@ -159,6 +159,7 @@
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
 | `string/eertree.hpp` | Eertree（回文木）・回文の出現回数 | [使い方](docs/eertree.md) |
 | `string/suffix_tree.hpp` | Suffix Tree（静的文字列） | [使い方](docs/suffix_tree.md) |
+| `string/dynamic_pattern_matching.hpp` | Dynamic Pattern Matching（固定本文） | [使い方](docs/dynamic_pattern_matching.md) |
 
 ### 数値型
 
