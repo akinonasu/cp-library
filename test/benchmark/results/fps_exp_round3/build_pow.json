@@ -1,0 +1,60 @@
+[
+  {
+    "variant": "baseline",
+    "command": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I",
+      "/tmp/fps-exp-round3/baseline",
+      "/tmp/fps-exp-round3/baseline/test/fps_pow.test.cpp",
+      "-o",
+      "/tmp/fps-exp-round3/pow_baseline"
+    ],
+    "returncode": 0,
+    "seconds": 16.347561043003225,
+    "stderr": ""
+  },
+  {
+    "variant": "scaled_derivative",
+    "command": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I",
+      "/tmp/fps-exp-round3/scaled_derivative",
+      "/tmp/fps-exp-round3/scaled_derivative/test/fps_pow.test.cpp",
+      "-o",
+      "/tmp/fps-exp-round3/pow_scaled_derivative"
+    ],
+    "returncode": 0,
+    "seconds": 12.861559175988077,
+    "stderr": ""
+  },
+  {
+    "variant": "reference",
+    "command": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "/tmp/fps-reference/pow_of_formal_power_series/409718.cpp",
+      "-o",
+      "/tmp/fps-exp-round3/pow_reference"
+    ],
+    "returncode": 0,
+    "seconds": 3.0692075150000164,
+    "stderr": ""
+  }
+]

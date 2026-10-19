@@ -1,0 +1,390 @@
+{
+  "selection_sha256": "b2e965770fdc2e3709af7ff4cab6356f5b06e600997fc83d465a1e681bfc3e37",
+  "freeze_sha256": "7f14d6c7e1c2fab6e9405ece92fa0946479e7df7a241826a3d9c3929ec6c576f",
+  "selected_drivers": 53,
+  "passed_drivers": 48,
+  "passed_cases": 1296,
+  "skipped_drivers": 5,
+  "skip_reasons": {
+    "test/binomial_prefix_sum_offline.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/2206",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/binomial_prefix_sum_online.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/2206",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/comb.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/3172",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/cyclic_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/ordered_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    }
+  },
+  "reused_drivers": 14,
+  "executed_drivers": 34,
+  "coverage_matches_final_selection": true,
+  "full_official_cases": true,
+  "source_hashes_unchanged": true,
+  "official_hashes_unchanged": true,
+  "actual_dependencies_unchanged": true,
+  "source_files_checked": 203,
+  "official_files_checked": 2310,
+  "checker_order": [
+    "input",
+    "actual_output",
+    "official_answer"
+  ],
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-I",
+    "/workspace/cp-library"
+  ],
+  "harness_sha256": "8bef17af7491f2079c3651d493c4564fec29a379bf2d0ac303f73a73b6d6c1bf",
+  "freeze_files_match": true,
+  "official_case_inventory_matches_info_toml": true,
+  "official_problem_case_counts": {
+    "adjugate_matrix": 44,
+    "bitwise_and_convolution": 13,
+    "bitwise_xor_convolution": 13,
+    "characteristic_polynomial": 28,
+    "composition_of_formal_power_series": 27,
+    "composition_of_formal_power_series_large": 32,
+    "compositional_inverse_of_formal_power_series": 23,
+    "compositional_inverse_of_formal_power_series_large": 28,
+    "convolution_mod": 53,
+    "division_of_polynomials": 35,
+    "dynamic_sequence_range_affine_range_sum": 33,
+    "dynamic_tree_vertex_set_path_composite": 23,
+    "exp_of_formal_power_series": 26,
+    "exp_of_formal_power_series_sparse": 25,
+    "gcd_convolution": 29,
+    "inv_of_formal_power_series": 25,
+    "inv_of_formal_power_series_sparse": 24,
+    "inv_of_polynomials": 18,
+    "inverse_matrix": 26,
+    "kth_term_of_linearly_recurrent_sequence": 20,
+    "lcm_convolution": 29,
+    "log_of_formal_power_series": 25,
+    "matrix_det": 25,
+    "matrix_product": 22,
+    "matrix_rank": 36,
+    "mul_modp_convolution": 40,
+    "multipoint_evaluation": 11,
+    "multivariate_convolution": 17,
+    "point_set_range_composite": 16,
+    "point_set_tree_path_composite_sum": 26,
+    "point_set_tree_path_composite_sum_fixed_root": 26,
+    "polynomial_interpolation": 9,
+    "polynomial_taylor_shift": 38,
+    "pow_of_formal_power_series": 37,
+    "pow_of_matrix": 43,
+    "queue_operate_all_composite": 19,
+    "sqrt_of_formal_power_series": 35,
+    "subset_convolution": 11,
+    "system_of_linear_equations": 27,
+    "tree_path_composite_sum": 16,
+    "unionfind_with_potential": 18,
+    "vertex_set_path_composite": 20
+  },
+  "official_registered_case_hashes_match": true,
+  "official_hash_json_matches_commit": true,
+  "official_hash_json_sha256": {
+    "adjugate_matrix": "61bcb915097b58709f1365e77df8b426e7ef79141a5dde1888186cc1ac463c83",
+    "bitwise_and_convolution": "49ab0ba333a8f44b1038392141e5ecd28155f57c6278ae526ea65b5a11c8f5e8",
+    "bitwise_xor_convolution": "934e072fd9d211132af30f6b4c430914987cc4ac17d000ef93220f636aa03c37",
+    "characteristic_polynomial": "10ee5279526976ce091eb0b9d66f7cd52df94e195c36d04951870f688b7ebfd4",
+    "composition_of_formal_power_series": "f84b15be4c1c9365e505d2e03adda8cd9cb489c244021007f71089174dc70112",
+    "composition_of_formal_power_series_large": "1cc79f46694bbd7f4041b6127ec7e4ceef1ad90ea92d5e485c9b3deafa5ce61d",
+    "compositional_inverse_of_formal_power_series": "a4659a51a87df3872681a3bff36cf6967ef9ea254db1f44cfd61c7ff8258cbaf",
+    "compositional_inverse_of_formal_power_series_large": "d5bab33952270b934b3643d33bc08e44d90ae8ae1ea42e973abb42e57a293b77",
+    "convolution_mod": "0a58a569700305a0d7ed202807fb1e8abeeb0c6adb9b20f636b7740fdcc837d5",
+    "division_of_polynomials": "26c954731e63d7e6091613cdbb28fe8521669856653c7033953940991081b991",
+    "dynamic_sequence_range_affine_range_sum": "52efaaeca0ec38d99a87f877749aa73c5635c85cf8f7f72a33e6eb0f0c82541e",
+    "dynamic_tree_vertex_set_path_composite": "2b8cebf35043906d7244dc22e3802f0c9a67e6151464e7880e6d3e06170dffe8",
+    "exp_of_formal_power_series": "c1d52cabdc34a8240c7246d2eeeb7922d8af18f31882d4cdda2394543bd8f96e",
+    "exp_of_formal_power_series_sparse": "d4e518e57d1d28cd48996d966b1d427487c757efae6a4812aad7b0790ecf24ce",
+    "gcd_convolution": "14a0f6980144be47a2baf438d889186ed9a228fa99e82f1c54d34a1fa856ed4a",
+    "inv_of_formal_power_series": "900312e5cf0824d9e7b55cc5dc3e3a5eb131a040d39f0f5a637e8557cfc80a81",
+    "inv_of_formal_power_series_sparse": "77f195a5a5f79a98a2a646627b86cb17ee606aa62b578dbe453019c1a8876ac7",
+    "inv_of_polynomials": "3e15c5ee382b5efe19fe2b3d6f4e63be59bcbebc9a641b6a1955a51287f0fb45",
+    "inverse_matrix": "9a85824179db73c570d3929a37cee4e9bcb7efba439736481ea8d5b8fa99609f",
+    "kth_term_of_linearly_recurrent_sequence": "0a7578d147780cd7e94042035d25d7f6c83c60c236cfcaf21ea9e7a6d37ad9fc",
+    "lcm_convolution": "8c765dc894ea9859ad5348ae5f3293abad26e9e34ad2ef8631d9e0b1a4b6c6d0",
+    "log_of_formal_power_series": "06cd16b608f04073a9b1325ad4cc2eed589aa433b4621988228b889450a21043",
+    "matrix_det": "080101055bbc036bd8753123dc675d0485f4b1d9cd5bd4d269a2f092a355bf18",
+    "matrix_product": "a46a71da572915c25517397033f682cccae6b59d79f907a095a8fe13dd5f761e",
+    "matrix_rank": "6776fce54b2ad6e9a40854e91456df469aa3769269e7f52f55ad7c411b8080d6",
+    "mul_modp_convolution": "ae9c70f444f215ed097675bc0c0908373b726ba52e0bbcb9285d6255e51b9c46",
+    "multipoint_evaluation": "c56e9e50fcffbe12ce09f9d72b8366858eaaad09aaead6f1451afe3793bc5429",
+    "multivariate_convolution": "d56a59ea03fc82d6b56cac90a79413f884a6b70cf1669aa9759579b404c95ba1",
+    "point_set_range_composite": "bc511864f72e001979cbe7aa0761c962f1f074f760e7cf4b86ec6dbfd040a08c",
+    "point_set_tree_path_composite_sum": "bd9069b65d2fb8c384c9d787bc0f634a149c44165a00b2d143741c90587b0d56",
+    "point_set_tree_path_composite_sum_fixed_root": "293d74655e797e1950ae24c4b666dcf566dbd1583d6ae6a922f00fc964b519ff",
+    "polynomial_interpolation": "d5d907b9a85c4a5fc33398b05c386acd5368adaa40e7a8ee39600fcfb2735cec",
+    "polynomial_taylor_shift": "ebeeffdba81a69450ba0ee1c850914a7b9ff87ccef9f0c8740ea31960266aedc",
+    "pow_of_formal_power_series": "649dc2d04d219653953af6949b1ef9462cf95df365d531848bf052352dc0fdcb",
+    "pow_of_matrix": "7172c611b5a410188edb7b2688b2ab959140db799dd8b0d92eae1dc7186787f2",
+    "queue_operate_all_composite": "f2b8f375ae1010f1e4da76655ef2566197b6c554969dbea5c9556d1477fd7592",
+    "sqrt_of_formal_power_series": "160a4c8015d4301bcf674ab09124de531ae5274ce1bcc79fc10524e87c80293e",
+    "subset_convolution": "3381005fd05dcb22c9726a3475ce32b17add55b762e4a572e814cd39b0bd2e04",
+    "system_of_linear_equations": "141597b1bd1fe3ab3a0a254b1a77a26d02623aa8e931e6abba955d391bebde83",
+    "tree_path_composite_sum": "3ff108f46a06c5de3a2ae83f2f7bf6f925b3c973761f641bb3e561754756e584",
+    "unionfind_with_potential": "383975a71290429ae510e5e50e9e9de367b29a8907c4eb5febf199f0ac97326a",
+    "vertex_set_path_composite": "20a2d49cd63e9819dbbc3ec0319a380aab6efee614147f524835a0caedffc4f4"
+  },
+  "changed_actual_dependencies_since_previous_success": {
+    "test/bitwise_and_convolution.test.cpp": [
+      "math/mint.hpp",
+      "test/bitwise_and_convolution.test.cpp"
+    ],
+    "test/bitwise_xor_convolution.test.cpp": [
+      "math/mint.hpp",
+      "test/bitwise_xor_convolution.test.cpp"
+    ],
+    "test/convolution.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/disjoint_sparse_table_affine.test.cpp": [
+      "math/mint.hpp",
+      "test/disjoint_sparse_table_affine.test.cpp"
+    ],
+    "test/dynamic_segtree_composite.test.cpp": [
+      "math/mint.hpp",
+      "test/dynamic_segtree_composite.test.cpp"
+    ],
+    "test/fps_bostan_mori.test.cpp": [
+      "components/fps_bostan.hpp",
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "fps/bostan_mori.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_compose.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_compose_large.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_compositional_inverse.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_compositional_inverse_large.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_divmod.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_exp.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_exp_sparse.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_interpolate.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_inv.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_inv_sparse.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_linear_recurrence.test.cpp": [
+      "components/fps_bostan.hpp",
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "fps/bostan_mori.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_log.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_pow.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_sqrt.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/fps_taylor_shift.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/gcd_convolution.test.cpp": [
+      "math/mint.hpp",
+      "test/gcd_convolution.test.cpp"
+    ],
+    "test/hld_path_composite.test.cpp": [
+      "math/mint.hpp",
+      "test/hld_path_composite.test.cpp"
+    ],
+    "test/lazy_reversible_treap_affine.test.cpp": [
+      "math/mint.hpp",
+      "test/lazy_reversible_treap_affine.test.cpp"
+    ],
+    "test/lcm_convolution.test.cpp": [
+      "math/mint.hpp",
+      "test/lcm_convolution.test.cpp"
+    ],
+    "test/link_cut_tree_composite.test.cpp": [
+      "math/mint.hpp",
+      "test/link_cut_tree_composite.test.cpp"
+    ],
+    "test/matrix_adjugate.test.cpp": [
+      "math/mint.hpp",
+      "test/matrix_adjugate.test.cpp"
+    ],
+    "test/matrix_characteristic_polynomial.test.cpp": [
+      "math/mint.hpp",
+      "test/matrix_characteristic_polynomial.test.cpp"
+    ],
+    "test/matrix_det.test.cpp": [
+      "math/mint.hpp",
+      "test/matrix_det.test.cpp"
+    ],
+    "test/matrix_inverse.test.cpp": [
+      "math/mint.hpp",
+      "test/matrix_inverse.test.cpp"
+    ],
+    "test/matrix_pow.test.cpp": [
+      "math/mint.hpp",
+      "test/matrix_pow.test.cpp"
+    ],
+    "test/matrix_product.test.cpp": [
+      "math/mint.hpp",
+      "test/matrix_product.test.cpp"
+    ],
+    "test/matrix_rank.test.cpp": [
+      "math/mint.hpp",
+      "test/matrix_rank.test.cpp"
+    ],
+    "test/matrix_solve.test.cpp": [
+      "math/mint.hpp",
+      "test/matrix_solve.test.cpp"
+    ],
+    "test/multiplicative_convolution.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "math/mint.hpp"
+    ],
+    "test/multipoint_eval.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/multivariate_convolution.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "math/mint.hpp"
+    ],
+    "test/ntt.test.cpp": [
+      "math/mint.hpp",
+      "test/ntt.test.cpp"
+    ],
+    "test/online_convolution.test.cpp": [
+      "math/mint.hpp",
+      "test/online_convolution.test.cpp"
+    ],
+    "test/online_convolution_exp.test.cpp": [
+      "math/mint.hpp",
+      "test/online_convolution_exp.test.cpp"
+    ],
+    "test/online_convolution_inv.test.cpp": [
+      "math/mint.hpp",
+      "test/online_convolution_inv.test.cpp"
+    ],
+    "test/point_set_tree_path_composite_sum.test.cpp": [
+      "math/mint.hpp",
+      "test/point_set_tree_path_composite_sum.test.cpp"
+    ],
+    "test/point_set_tree_path_composite_sum_fixed_root.test.cpp": [
+      "math/mint.hpp",
+      "test/point_set_tree_path_composite_sum_fixed_root.test.cpp"
+    ],
+    "test/polynomial_inv_mod.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/power_projection.test.cpp": [
+      "components/fps_convolution.hpp",
+      "components/fps_exp_blocked.hpp",
+      "components/fps_io.hpp",
+      "math/mint.hpp"
+    ],
+    "test/rerooting.test.cpp": [
+      "math/mint.hpp",
+      "test/rerooting.test.cpp"
+    ],
+    "test/subset_convolution.test.cpp": [
+      "math/mint.hpp",
+      "test/subset_convolution.test.cpp"
+    ],
+    "test/weighted_union_find.test.cpp": [
+      "math/mint.hpp",
+      "test/weighted_union_find.test.cpp"
+    ]
+  },
+  "all_executed_drivers_have_changed_dependencies": true,
+  "finalize_harness_sha256": "9520e33c872e2c43f73a6125bc7d4b891edaa850f107d3c5f14c220fafcd68a0"
+}

@@ -1,0 +1,21 @@
+from pathlib import Path
+p=Path('/tmp/fps-avx512-top/reordered/components/fps_blocked.hpp');s=p.read_text();start=s.index('inline void inverse_top4(Vec*');end=s.index('\ninline void inverse_top2',start)
+s=s[:start]+'''inline void inverse_top4(Vec* f, std::size_t h, Half output, const std::uint32_t* inverse_roots, const Factor& s) {
+	const Factor zs(blocked_ntt::detail::multiply_mod(std::uint32_t(_mm256_cvtsi256_si32(s.w)), inverse_roots[1]));
+	for (std::size_t j = 0; j < h; ++j) {
+		const Vec p0 = f[j], p1 = f[j + h], p2 = f[j + 2 * h], p3 = f[j + 3 * h];
+		const Vec ab = low(add(p0, p1)), cd = low(add(p2, p3));
+		const Vec amb = low(diff(p0, p1)), cmd = diff(p2, p3);
+		const Vec odd_a = times(amb, s), odd_b = times(cmd, zs);
+		if (output == Half::kBoth) {
+			const Vec even_a = times(ab, s), even_b = times(cd, s);
+			f[j] = canonical(add(even_a, even_b)), f[j + h] = canonical(add(odd_a, odd_b));
+			f[j + 2 * h] = canonical(diff(even_a, even_b)), f[j + 3 * h] = canonical(diff(odd_a, odd_b));
+		} else if (output == Half::kLower) {
+			f[j] = reduce(times(add(ab, cd), s), kP), f[j + h] = canonical(add(odd_a, odd_b));
+		} else {
+			f[j + 2 * h] = reduce(times(diff(ab, cd), s), kP), f[j + 3 * h] = canonical(diff(odd_a, odd_b));
+		}
+	}
+}
+''' + s[end:];p.write_text(s)

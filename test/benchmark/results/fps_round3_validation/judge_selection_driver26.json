@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/hld_path_composite.test.cpp"
+  ]
+}

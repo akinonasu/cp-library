@@ -1,0 +1,52 @@
+/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py:566: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  logger.warn('Please install colorlog: pip3 install colorlog')
+04:18:10 [WARNING] Please install colorlog: pip3 install colorlog
+04:18:10 [INFO] Start inverse_matrix
+04:18:10 [INFO] generate params.h
+04:18:10 [INFO] compile checker
+04:18:14 [INFO] compile solution
+04:18:14 [INFO] compile generators
+04:18:14 [INFO] compile example.in
+04:18:14 [INFO] compile random.cpp
+04:18:14 [INFO] compile max_random.cpp
+04:18:15 [INFO] compile lowrank_max_random.cpp
+04:18:15 [INFO] compile perm_max_random.cpp
+04:18:16 [INFO] compile anti55588.in
+04:18:16 [INFO] compile signed_overflow.cpp
+04:18:16 [INFO] compile unsigned_overflow.cpp
+04:18:17 [INFO] clear input /workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/inverse_matrix/in
+04:18:17 [INFO] gen example.in 3cases
+04:18:17 [INFO] gen random.cpp 5cases
+04:18:17 [INFO] gen max_random.cpp 5cases
+04:18:17 [INFO] gen lowrank_max_random.cpp 5cases
+04:18:17 [INFO] gen perm_max_random.cpp 5cases
+04:18:17 [INFO] gen anti55588.in 1cases
+04:18:17 [INFO] gen signed_overflow.cpp 1cases
+04:18:17 [INFO] gen unsigned_overflow.cpp 1cases
+04:18:17 [INFO] clear output /workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/inverse_matrix/out
+04:18:17 [INFO] ANS      1 msecs : example_00 : b''
+04:18:17 [INFO] ANS      1 msecs : example_01 : b''
+04:18:17 [INFO] ANS      1 msecs : example_02 : b''
+04:18:17 [INFO] ANS     24 msecs : random_00 : b''
+04:18:17 [INFO] ANS     26 msecs : random_01 : b''
+04:18:17 [INFO] ANS      6 msecs : random_02 : b''
+04:18:17 [INFO] ANS     24 msecs : random_03 : b''
+04:18:17 [INFO] ANS      1 msecs : random_04 : b''
+04:18:17 [INFO] ANS    346 msecs : max_random_00 : b''
+04:18:18 [INFO] ANS    326 msecs : max_random_01 : b''
+04:18:18 [INFO] ANS    321 msecs : max_random_02 : b''
+04:18:18 [INFO] ANS    320 msecs : max_random_03 : b''
+04:18:19 [INFO] ANS    319 msecs : max_random_04 : b''
+04:18:19 [INFO] ANS    204 msecs : lowrank_max_random_00 : b''
+04:18:19 [INFO] ANS    194 msecs : lowrank_max_random_01 : b''
+04:18:19 [INFO] ANS    256 msecs : lowrank_max_random_02 : b''
+04:18:19 [INFO] ANS    173 msecs : lowrank_max_random_03 : b''
+04:18:20 [INFO] ANS    207 msecs : lowrank_max_random_04 : b''
+04:18:20 [INFO] ANS     22 msecs : perm_max_random_00 : b''
+04:18:20 [INFO] ANS     21 msecs : perm_max_random_01 : b''
+04:18:20 [INFO] ANS     20 msecs : perm_max_random_02 : b''
+04:18:20 [INFO] ANS     20 msecs : perm_max_random_03 : b''
+04:18:20 [INFO] ANS     21 msecs : perm_max_random_04 : b''
+04:18:20 [INFO] ANS      1 msecs : anti55588_00 : b''
+04:18:20 [INFO] ANS      1 msecs : signed_overflow_00 : b''
+04:18:20 [INFO] ANS      1 msecs : unsigned_overflow_00 : b''

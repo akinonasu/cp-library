@@ -1,0 +1,84 @@
+--- a/components/fps_composition.hpp
++++ b/components/fps_composition.hpp
+@@ -2066,38 +2066,37 @@
+ 	nf = std::min(nf, n);
+ 	ng = std::min(ng, n);
+ 	const int lg = compose_log(n) + (n > detail::kComposeBase);
+-	Arena arena(Transform::words(lg) + Arena::footprint(nf) + Arena::footprint(ng) +
+-				Arena::footprint(n) + Arena::footprint(compose_scratch(n)));
++	Arena arena(Transform::words(lg) + Arena::footprint(nf) + Arena::footprint(n) +
++				Arena::footprint(compose_scratch(n)));
+ 	const Transform t(arena, lg);
+-	auto a = arena.take(nf), b = arena.take(ng), c = arena.take(n);
++	auto a = arena.take(nf), b = arena.take(n);
+ 	for (std::size_t i = 0; i < nf; ++i) a[i] = std::min(f[i].v, f[i].v - Mint::mod());
+ 	for (std::size_t i = 0; i < ng; ++i) b[i] = coefficient_value(g[i]);
+-	compose_imported(t, std::span<const std::uint32_t>(a), b, c, arena.take(compose_scratch(n)), &t);
+-	append_fps_words<true>(out, c.data(), c.size());
++	compose_imported(t, std::span<const std::uint32_t>(a), b.first(ng), b, arena.take(compose_scratch(n)), &t);
++	append_fps_words<true>(out, b.data(), b.size());
+ }
+ inline void native_weighted_projection(const Mint *g, std::size_t ng, const Mint *weights,
+ 		std::vector<Mint> &out, std::size_t n, std::size_t count) {
+ 	ng = std::min(ng, n);
+ 	const int lg = projection_log(n) + 1;
+ 	const std::size_t scratch_words = projection_scratch(n) + Arena::footprint(6 * detail::projection_length(n));
+-	Arena arena(Transform::words(lg) + Arena::footprint(ng) + 2 * Arena::footprint(n) + Arena::footprint(scratch_words));
++	Arena arena(Transform::words(lg) + Arena::footprint(ng) + Arena::footprint(n) + Arena::footprint(scratch_words));
+ 	const Transform t(arena, lg);
+-	auto a = arena.take(ng), b = arena.take(n), w = arena.take(n);
++	auto a = arena.take(ng), w = arena.take(n);
+ 	for (std::size_t i = 0; i < ng; ++i) a[i] = i ? coefficient_value(g[i]) : 0;
+ 	for (std::size_t i = 0; i < n; ++i) w[i] = std::min(weights[i].v, weights[i].v - Mint::mod());
+-	weighted_projection(t, a, w, b, arena.take(scratch_words));
+-	append_fps_words<true>(out, b.data(), count);
++	weighted_projection(t, a, w, w, arena.take(scratch_words));
++	append_fps_words<true>(out, w.data(), count);
+ }
+ inline void native_projection(const Mint *g, std::size_t ng, std::vector<Mint> &out, std::size_t n) {
+ 	ng = std::min(ng, n);
+ 	const int lg = projection_log(n);
+-	Arena arena(Transform::words(lg) + Arena::footprint(ng) + Arena::footprint(n) +
+-				Arena::footprint(projection_scratch(n)));
++	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(projection_scratch(n)));
+ 	const Transform t(arena, lg);
+-	auto a = arena.take(ng), b = arena.take(n);
++	auto a = arena.take(n);
+ 	for (std::size_t i = 0; i < ng; ++i) a[i] = coefficient_value(g[i]);
+-	power_projection(t, a, b, arena.take(projection_scratch(n)));
+-	append_fps_words<false>(out, b.data(), b.size());
++	power_projection(t, a.first(ng), a, arena.take(projection_scratch(n)));
++	append_fps_words<false>(out, a.data(), a.size());
+ }
+ }
+ 
+--- a/components/fps_reversion.hpp
++++ b/components/fps_reversion.hpp
+@@ -14,21 +14,21 @@
+ 	input = std::min(input, n);
+ 	const int lg = std::max(projection_log(n), blocked_poly::power_log(n - 1));
+ 	const std::size_t rest = std::max(projection_scratch(n), Arena::footprint(n - 1) + blocked_poly::power_scratch(n - 1));
+-	Arena arena(Transform::words(lg) + Arena::footprint(input) + 2 * Arena::footprint(n) + Arena::footprint(rest));
++	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(rest));
+ 	const Transform t(arena, lg);
+-	auto f = arena.take(input), g = arena.take(n), a = arena.take(n), scratch = arena.take(rest);
+-	for (std::size_t i = 0; i < input; ++i) f[i] = coefficient_value(in[i]);
+-	power_projection(t, f, a, scratch.first(projection_scratch(n)));
++	auto a = arena.take(n), scratch = arena.take(rest);
++	for (std::size_t i = 0; i < input; ++i) a[i] = coefficient_value(in[i]);
++	power_projection(t, a.first(input), a, scratch.first(projection_scratch(n)));
+ 	auto h = scratch.first(n - 1);
+ 	blocked_poly::divide_by_index(a.subspan(1), 1, h);
+ 	std::reverse(h.begin(), h.end());
+ 	const auto e = kModulus - blocked_ntt::detail::power(std::uint32_t(n - 1), kModulus - 2);
+ 	const auto c = in[1].inv();
+-	blocked_poly::power(t, h, e, std::min(c.v, c.v - Mint::mod()), g.subspan(1),
++	blocked_poly::power(t, h, e, std::min(c.v, c.v - Mint::mod()), a.subspan(1),
+ 						scratch.subspan(Arena::footprint(n - 1), blocked_poly::power_scratch(n - 1)));
+ 	prepare_fps_output(out, n);
+ 	out.emplace_back(0);
+-	append_fps_words<true>(out, g.data() + 1, g.size() - 1);
++	append_fps_words<true>(out, a.data() + 1, a.size() - 1);
+ }
+ }
+ #pragma GCC pop_options

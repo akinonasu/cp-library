@@ -17,4 +17,10 @@ Linux x86_64 / GCC の `fps::multiply` と `convolution(vector<mint>,vector<mint
 
 `Subtrees`・`forward_radix8` は Taylor shift の middle product でも共有します。作業配列・root 表は RAII で管理し、assembly が読む末尾の余白を含めて初期化します。
 
+専用 `Product` が使える長さでは、返す `vector<Mint>` 内に変換長と末尾 16 係数の領域を確保し、32 byte 境界から作業配列 A として使います。全係数の生存期間を開始して零で埋めてから入力をコピーし、変換後は先頭へ移動して公開サイズに縮めます。別の結果配列へのコピーを省き、返す配列の容量には変換用の余白が残ることがあります。
+
+内部の `Product(n,m,borrowed_a)` は A を借用し、B と root 表だけを所有します。`borrowed_a` は 32 byte alignment、`length()+16` 個以上の生存中の 4 byte 係数、零初期化済みの末尾を必要とします。呼び出し側が入力を正規化してコピーし、`Product` の利用中は領域を維持します。`Product(n,m)` は従来どおり A も所有し、借用のない raw 配列用の経路を維持します。
+
+借用領域への入力コピーは `Mint` と `memcpy` を使います。変換中の SIMD アクセスは GCC の alias 対応 vector 型を使い、公開入力の `const` 領域には書き込みません。最終係数は正規化した Montgomery 表現です。
+
 出力長を $n$ として、時間は $O(n\log n)$、追加空間は $O(n)$ です。

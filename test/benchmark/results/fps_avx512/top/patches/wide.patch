@@ -1,0 +1,70 @@
+--- a/components/fps_blocked.hpp
++++ b/components/fps_blocked.hpp
+@@ -3225,7 +3225,59 @@
+ 	recursion.visit(a + 8 * h, h, 1);
+ }
+ 
++inline bool avx512_top_supported() {
++	return __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512dq") && __builtin_cpu_supports("avx512vl");
++}
++#pragma GCC push_options
++_Pragma("GCC target(\"avx512f,avx512dq,avx512vl\")")
++namespace wide_top {
++using Wide = __m512i;
++inline Wide broadcast(std::uint32_t x) { return _mm512_set1_epi32(int(x)); }
++inline Wide add(Wide x, Wide y) { return _mm512_add_epi32(x, y); }
++inline Wide diff(Wide x, Wide y) { return _mm512_sub_epi32(add(x, broadcast(2 * kP)), y); }
++inline Wide reduce(Wide x, std::uint32_t bound) { return _mm512_min_epu32(x, _mm512_sub_epi32(x, broadcast(bound))); }
++inline Wide load(const Vec* p) { return _mm512_loadu_si512(p); }
++inline void store(Vec* p, Wide x) { _mm512_storeu_si512(p, x); }
++struct Multiplier {
++	Wide w, q;
++	explicit Multiplier(const Factor& f) : w(_mm512_broadcast_i64x4(f.w)), q(_mm512_broadcast_i64x4(f.q)) {}
++	Multiplier(std::uint32_t value, std::uint32_t quotient) : w(broadcast(value)), q(broadcast(quotient)) {}
++};
++inline Wide times(Wide x, const Multiplier& f) {
++	const Wide even = _mm512_srli_epi64(_mm512_mul_epu32(x, f.q), 32);
++	const Wide odd = _mm512_mul_epu32(_mm512_srli_epi64(x, 32), f.q);
++	const Wide q = _mm512_mask_blend_epi32(0xAAAA, even, odd);
++	return _mm512_sub_epi32(_mm512_mullo_epi32(x, f.w), _mm512_mullo_epi32(q, broadcast(kP)));
++}
++[[gnu::noinline]] inline void inverse4(Vec* f, std::size_t h, Half output, const std::uint32_t* roots, const Factor& scale) {
++	const Multiplier z(roots[1], roots[9]), s(scale);
++	for (std::size_t j = 0; j < h; j += 2) {
++		const Wide p0 = load(f + j), p1 = load(f + j + h), p2 = load(f + j + 2 * h), p3 = load(f + j + 3 * h);
++		const Wide ab = reduce(add(p0, p1), 2 * kP), cd = reduce(add(p2, p3), 2 * kP);
++		const Wide amb = reduce(diff(p0, p1), 2 * kP), cmd = times(diff(p2, p3), z);
++		if (output != Half::kUpper) {
++			store(f + j, reduce(times(add(ab, cd), s), kP));
++			store(f + j + h, reduce(times(add(amb, cmd), s), kP));
++		}
++		if (output != Half::kLower) {
++			store(f + j + 2 * h, reduce(times(diff(ab, cd), s), kP));
++			store(f + j + 3 * h, reduce(times(diff(amb, cmd), s), kP));
++		}
++	}
++}
++[[gnu::noinline]] inline void inverse2(Vec* f, std::size_t h, Half output, std::uint32_t scale) {
++	const Multiplier s(scale, blocked_ntt::detail::quotient(scale));
++	for (std::size_t j = 0; j < h; j += 2) {
++		const Wide a = load(f + j), b = load(f + j + h);
++		if (output != Half::kUpper) store(f + j, reduce(times(add(a, b), s), kP));
++		if (output != Half::kLower) store(f + j + h, reduce(times(diff(a, b), s), kP));
++	}
++}
++}
++#pragma GCC pop_options
++
+ inline void inverse_top4(Vec* f, std::size_t h, Half output, const std::uint32_t* inverse_roots, const Factor& s) {
++	if (h >= 32 && h % 2 == 0 && avx512_top_supported()) return wide_top::inverse4(f, h, output, inverse_roots, s);
+ 	if (output == Half::kBoth) return blocked_ntt::detail::inverse_radix4(f, h, inverse_roots, s);
+ 	const Factor z(inverse_roots[1], inverse_roots[9]);
+ 	const auto scale = [&s](Vec x) __attribute__((target("avx2"))) { return reduce(times(x, s), kP); };
+@@ -3242,6 +3294,7 @@
+ }
+ 
+ inline void inverse_top2(Vec* f, std::size_t h, Half output, std::uint32_t scale) {
++	if (h >= 32 && h % 2 == 0 && avx512_top_supported()) return wide_top::inverse2(f, h, output, scale);
+ 	if (output == Half::kBoth) {
+ 		alignas(32) std::uint32_t s[16] = {};
+ 		s[1] = scale;

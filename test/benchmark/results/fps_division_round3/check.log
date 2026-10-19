@@ -1,0 +1,20 @@
+Waiting check SH
+standalone 0 1.5556103650014848 
+unit 0 3.3849555060005514 
+algorithms 0 23.889230624001357 
+unit_san 0 3.0129522499919403 
+algorithms_san 0 136.28808201999345 
+gcc13_standalone 0 0.9001122049958212 
+gcc13_unit 0 1.4232386730000144 
+clang_standalone 0 1.3920813809963875 
+clang_algorithms 0 5.800375406004605 
+run standalone 0 
+run unit 0 
+run algorithms 0 
+run unit_san 0 
+run algorithms_san 0 
+run gcc13_standalone 0 
+run gcc13_unit 0 
+run clang_standalone 0 
+run clang_algorithms 0 
+All checks passed 20 official cases

@@ -1,0 +1,25 @@
+{
+  "authoritative_gate": "scope-audit.json",
+  "historical_raw_result": "result.json",
+  "files": {
+    "README.md": "da305de63a13df91ae646c5b1a345829dccae565ea0d4c859f6fdba75fe0b7a9",
+    "baseline-plan.json": "199e3f76de23a6c73aea0700b93a73e92a5be0c77969ebd48ef7fdefe1673c42",
+    "selection.json": "b2e965770fdc2e3709af7ff4cab6356f5b06e600997fc83d465a1e681bfc3e37",
+    "conditions.json": "7c699185998515267811a9856907e67e00574388de606de872409063c82c652d",
+    "result.json": "4b8b1c08f524f2e22f03bd02bae8df45eac51eded558358280ec160644d0b312",
+    "dependencies-before.json": "27cb85b79c22779dc96ebb4a56a846671aa2b395cd6cb703ac678ad1f2071b2a",
+    "dependencies-after.json": "e27cfaa5e9c4ca34d9029e3f42670cf6ead8b921af28a8bf95adf0df63606348",
+    "after-plan.json": "26b5f0642e3fc255716a9804cb4ac29985aaf54fc91b5471a683ab91d59145e7",
+    "run.log": "08f299966900204640be4ede5a0f18afc45f9805f3988c2a38e8821460e5fce4",
+    "gcc14.log": "3398c490823bd5a39f68c63da0daa204e0048f989bda9d3a7f6228c4c9c0db3e",
+    "clang19.log": "2765886aba106fea4763933817d23aef5a8e81f14ee6e1ca10963940de277c4f",
+    "gcc14-sanitize.log": "0aafa58801b5f3a3a04ff3646a5178dcec866a38d0423b84b1236636ddf4f639",
+    "scope-contract.json": "b5cc36164c0f232d587e869cbf7b48c64ef5cd39898cd31eef1d3ea6785fc110",
+    "scope-audit.json": "b10bc0cbb68df7175c94a9a524063ca19580711d3650d879d687761431c36d2b",
+    "scope-audit.log": "b10bc0cbb68df7175c94a9a524063ca19580711d3650d879d687761431c36d2b",
+    "docs_pragma_preprocessing.json": "73d5495338714e07c55361d5c1427e8bfea294dc6d6ccf4f2d5cdc5830d7dc74",
+    "docs_pragma_codegen.json": "d084497aa7b5b718bf2ffcb44e103c03cff32f085baa0e2ce12ecbd0b1824995"
+  },
+  "runner_sha256": "5ff8c186c046b067c80d2584f14642a98d02e9226e9768b532ccbe21ecbcc384",
+  "scope_auditor_sha256": "8de1f030c9acd58b7f42228199e8ce7779e1c4a7daf11eb977de8ff094d772e2"
+}

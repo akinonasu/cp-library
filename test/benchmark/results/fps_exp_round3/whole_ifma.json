@@ -1,0 +1,602 @@
+{
+  "baseline": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "cpu": 2,
+  "trials": 15,
+  "shuffle_seed": 20261031,
+  "reference": 409662,
+  "measurements": [
+    {
+      "case": "max_random_00",
+      "input_sha256": "9b12be7a72b0dcf2e8c1b5e661cffef8092fc8b6db5eb4bc507049dd10ffd1cd",
+      "answer_sha256": "1d9d614be7839c1edb76083ff62d4febd7f7a771fb22d0cfc1943dd4f078267c",
+      "orders": [
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ]
+      ],
+      "samples_ms": {
+        "baseline": [
+          17.244128,
+          17.263417,
+          17.207083,
+          16.833496,
+          17.955428,
+          18.314784,
+          19.209027,
+          17.35307,
+          18.484737,
+          18.006695,
+          17.278389,
+          17.090009,
+          17.86953,
+          16.808719,
+          18.363296
+        ],
+        "ifma64": [
+          17.351838,
+          17.469574,
+          17.459989,
+          16.817642,
+          16.936169,
+          16.953284,
+          17.46747,
+          17.283397,
+          17.439008,
+          17.238309,
+          17.8426,
+          17.471657,
+          16.841678,
+          16.801518,
+          19.611517
+        ],
+        "reference": [
+          15.297926,
+          15.654848,
+          15.615499,
+          15.493118,
+          15.651343,
+          16.975067,
+          16.029187,
+          15.234743,
+          16.117668,
+          15.379358,
+          15.580618,
+          15.858081,
+          15.41425,
+          15.543473,
+          15.993593
+        ]
+      },
+      "median_ms": {
+        "baseline": 17.35307,
+        "ifma64": 17.351838,
+        "reference": 15.615499
+      }
+    },
+    {
+      "case": "max_random_04",
+      "input_sha256": "dd4cdf528e2d7c0e60d1e1f6e56c4cdd67cd1310c35448f87fc958ef40a20547",
+      "answer_sha256": "5454a94060a0586af320dd5ae7952096532e550b1d3852b5892b461c9074006e",
+      "orders": [
+        [
+          "baseline",
+          "reference",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "reference",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "reference",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "reference",
+          "ifma64"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ]
+      ],
+      "samples_ms": {
+        "baseline": [
+          16.776951,
+          16.921236,
+          16.83597,
+          16.944562,
+          16.712926,
+          17.28532,
+          17.45316,
+          17.45389,
+          17.105141,
+          17.106073,
+          17.349726,
+          17.085131,
+          17.146313,
+          17.956219,
+          17.09739
+        ],
+        "ifma64": [
+          18.544487,
+          17.182366,
+          17.72222,
+          18.31887,
+          16.82242,
+          17.347101,
+          17.501933,
+          16.929269,
+          16.860346,
+          17.351999,
+          17.921819,
+          17.878874,
+          17.394943,
+          17.438908,
+          17.418989
+        ],
+        "reference": [
+          15.30044,
+          16.041044,
+          15.007874,
+          15.335823,
+          16.055666,
+          15.520378,
+          15.725544,
+          15.047183,
+          15.035456,
+          15.190417,
+          15.157718,
+          15.608249,
+          15.772285,
+          15.282483,
+          15.093322
+        ]
+      },
+      "median_ms": {
+        "baseline": 17.105141,
+        "ifma64": 17.418989,
+        "reference": 15.30044
+      }
+    },
+    {
+      "case": "near_262144_00",
+      "input_sha256": "9d842162cfc92c0d10c0fbdadee67d1603d9b926a2e193589f4b5af7466236a1",
+      "answer_sha256": "f31a21f69969bbfc8d2ff9c0635b4a5b2df223b1afc9f010a8abcb53c4b0c011",
+      "orders": [
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ]
+      ],
+      "samples_ms": {
+        "baseline": [
+          9.032466,
+          9.079045,
+          8.964304,
+          8.843193,
+          8.609786,
+          8.803414,
+          9.138223,
+          8.826248,
+          9.206195,
+          8.65223,
+          9.661223,
+          8.865186,
+          8.865156,
+          8.75287,
+          8.817054
+        ],
+        "ifma64": [
+          9.1634,
+          9.106977,
+          9.136271,
+          8.953078,
+          9.300976,
+          8.584057,
+          8.933998,
+          9.19557,
+          8.765748,
+          8.832978,
+          8.777426,
+          9.050353,
+          9.047478,
+          9.440844,
+          8.835142
+        ],
+        "reference": [
+          7.9756,
+          8.003041,
+          7.799768,
+          7.583335,
+          7.859457,
+          9.143922,
+          8.2978,
+          10.181719,
+          8.249279,
+          7.656915,
+          7.949492,
+          8.553201,
+          7.764526,
+          7.877043,
+          7.773849
+        ]
+      },
+      "median_ms": {
+        "baseline": 8.865156,
+        "ifma64": 9.047478,
+        "reference": 7.949492
+      }
+    },
+    {
+      "case": "near_262144_02",
+      "input_sha256": "6cd565e6acae9c7a05ea02a02def41e8ac0227a772678f84760180802afdf568",
+      "answer_sha256": "e8efcd3df65426308f17eaabf28c664ce315ca57e6f05d1241e589e0f201f027",
+      "orders": [
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "ifma64"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "ifma64",
+          "reference",
+          "baseline"
+        ],
+        [
+          "ifma64",
+          "baseline",
+          "reference"
+        ],
+        [
+          "baseline",
+          "ifma64",
+          "reference"
+        ],
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ],
+        [
+          "baseline",
+          "reference",
+          "ifma64"
+        ],
+        [
+          "reference",
+          "baseline",
+          "ifma64"
+        ],
+        [
+          "reference",
+          "ifma64",
+          "baseline"
+        ]
+      ],
+      "samples_ms": {
+        "baseline": [
+          12.00748,
+          11.908614,
+          12.306798,
+          12.010204,
+          11.961091,
+          12.581446,
+          12.209493,
+          12.841243,
+          12.01353,
+          12.344754,
+          12.069723,
+          12.417382,
+          12.374307,
+          12.272005,
+          12.097344
+        ],
+        "ifma64": [
+          12.10057,
+          11.903175,
+          11.920631,
+          12.810869,
+          12.038007,
+          12.753903,
+          12.405354,
+          12.705712,
+          12.518112,
+          12.286036,
+          12.134951,
+          12.135712,
+          12.507055,
+          12.408789,
+          12.678993
+        ],
+        "reference": [
+          11.090333,
+          10.888894,
+          10.826991,
+          11.023754,
+          11.16158,
+          11.031586,
+          11.372543,
+          11.283912,
+          11.174879,
+          11.093338,
+          11.413075,
+          10.724979,
+          10.846671,
+          11.505353,
+          10.986248
+        ]
+      },
+      "median_ms": {
+        "baseline": 12.209493,
+        "ifma64": 12.405354,
+        "reference": 11.090333
+      }
+    }
+  ],
+  "binaries": {
+    "baseline": "59d27e12908701622e71c8d9f937dfba4d36a8f4439cc1942d5d51d9f4c51ccd",
+    "ifma64": "dafae6ed935b61d155b0ac46d3de07ada9c25ce66af7d2a08db8940dd25a2400",
+    "reference": "f4f9aa72e0acc3fe8bd31716bc85d9339ecab5a7485196f31b2ea0ec6677a09b"
+  }
+}

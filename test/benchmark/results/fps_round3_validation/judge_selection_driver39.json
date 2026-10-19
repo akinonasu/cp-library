@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/multipoint_eval.test.cpp"
+  ]
+}

@@ -1,0 +1,10 @@
+test/point_set_tree_path_composite_sum.test.cpp 26 passed
+dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/point_set_tree_path_composite_sum.test.cpp
+point_set_tree_path_composite_sum.test.o: \
+ /workspace/cp-library/test/point_set_tree_path_composite_sum.test.cpp \
+ /workspace/cp-library/graph/static_top_tree.hpp \
+ /workspace/cp-library/graph/../components/static_top_tree_structure.hpp \
+ /workspace/cp-library/graph/../components/../graph/hld.hpp \
+ /workspace/cp-library/components/fast_io.hpp \
+ /workspace/cp-library/test/static_top_tree_dp.hpp \
+ /workspace/cp-library/math/mint.hpp

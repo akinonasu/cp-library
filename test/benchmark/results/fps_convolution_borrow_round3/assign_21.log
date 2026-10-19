@@ -1,0 +1,10 @@
+built before
+built borrow32_assign
+built borrow2m_assign
+built reference
+checked borrow32_assign 53
+checked borrow2m_assign 53
+max_random_00 {'before': 14.87135, 'borrow32_assign': 14.593476, 'borrow2m_assign': 14.818492, 'reference': 11.472403} {'borrow32_assign': 0.47786299999999926, 'borrow2m_assign': 0.05131699999999917} {'borrow32_assign': 16, 'borrow2m_assign': 11}
+max_random_01 {'before': 14.732644, 'borrow32_assign': 14.225487, 'borrow2m_assign': 14.411345, 'reference': 11.206688} {'borrow32_assign': 0.543118999999999, 'borrow2m_assign': 0.1500439999999994} {'borrow32_assign': 16, 'borrow2m_assign': 16}
+small_and_large_03 {'before': 10.971196, 'borrow32_assign': 10.664158, 'borrow2m_assign': 11.227157, 'reference': 9.008109} {'borrow32_assign': 0.4411279999999991, 'borrow2m_assign': -0.2923449999999992} {'borrow32_assign': 16, 'borrow2m_assign': 7}
+medium_02 {'before': 1.397784, 'borrow32_assign': 1.399486, 'borrow2m_assign': 1.401699, 'reference': 1.139729} {'borrow32_assign': -0.011306999999999956, 'borrow2m_assign': -0.013630999999999949} {'borrow32_assign': 9, 'borrow2m_assign': 9}

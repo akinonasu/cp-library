@@ -1,0 +1,3 @@
+Waiting for completed formal timing and Bostan normalization equivalence artifact
+Waiting exclusive sqrt follow-up timing lock after official judge shared lock
+max_random_01 {'before': 13.467505, 'current': 13.239099, 'reference': 11.198106} paired 0.19372000000000078 wins 18 all 66 checker calls passed

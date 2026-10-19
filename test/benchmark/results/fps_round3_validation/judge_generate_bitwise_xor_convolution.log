@@ -1,0 +1,33 @@
+/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py:566: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  logger.warn('Please install colorlog: pip3 install colorlog')
+04:16:41 [WARNING] Please install colorlog: pip3 install colorlog
+04:16:41 [INFO] Start bitwise_xor_convolution
+04:16:41 [INFO] generate params.h
+04:16:41 [INFO] compile checker
+04:16:45 [INFO] compile solution
+04:16:45 [INFO] compile generators
+04:16:45 [INFO] compile example.in
+04:16:45 [INFO] compile tiny.cpp
+04:16:46 [INFO] compile small.cpp
+04:16:46 [INFO] compile large.cpp
+04:16:47 [INFO] compile max_random.cpp
+04:16:47 [INFO] clear input /workspace/cp-fps-scratch-round3/library-checker-problems/convolution/bitwise_xor_convolution/in
+04:16:47 [INFO] gen example.in 1cases
+04:16:47 [INFO] gen tiny.cpp 3cases
+04:16:47 [INFO] gen small.cpp 3cases
+04:16:47 [INFO] gen large.cpp 3cases
+04:16:47 [INFO] gen max_random.cpp 3cases
+04:16:47 [INFO] clear output /workspace/cp-fps-scratch-round3/library-checker-problems/convolution/bitwise_xor_convolution/out
+04:16:47 [INFO] ANS      1 msecs : example_00 : b''
+04:16:47 [INFO] ANS      1 msecs : tiny_00 : b''
+04:16:47 [INFO] ANS      1 msecs : tiny_01 : b''
+04:16:47 [INFO] ANS      1 msecs : tiny_02 : b''
+04:16:47 [INFO] ANS      1 msecs : small_00 : b''
+04:16:47 [INFO] ANS      1 msecs : small_01 : b''
+04:16:47 [INFO] ANS      1 msecs : small_02 : b''
+04:16:47 [INFO] ANS      5 msecs : large_00 : b''
+04:16:47 [INFO] ANS     10 msecs : large_01 : b''
+04:16:47 [INFO] ANS     38 msecs : large_02 : b''
+04:16:48 [INFO] ANS    148 msecs : max_random_00 : b''
+04:16:48 [INFO] ANS    148 msecs : max_random_01 : b''
+04:16:48 [INFO] ANS    168 msecs : max_random_02 : b''

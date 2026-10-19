@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/polynomial_inv_mod.test.cpp"
+  ]
+}
