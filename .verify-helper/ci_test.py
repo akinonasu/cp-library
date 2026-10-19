@@ -5,11 +5,12 @@ from importlib.util import find_spec
 from pathlib import Path
 import runpy
 import sys
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from ci import GROUPS, ROOT, VERSION, build_plan, checkpoint_success, invalidate_selected, read_json, record_success, verify_selected, write_json
+from ci import GROUPS, ROOT, VERSION, boost_identity, build_plan, checkpoint_success, invalidate_selected, read_json, record_success, verify_selected, write_json
 from documentation import source_paths
 
 
@@ -40,6 +41,9 @@ class Summary:
 
 class IncrementalVerification(unittest.TestCase):
     def setUp(self):
+        boost = patch("ci.boost_identity", return_value=[("libboost-dev", "1.83"), ("libboost1.83-dev", "1.83-1")])
+        self.boost = boost.start()
+        self.addCleanup(boost.stop)
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
@@ -224,10 +228,55 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(self.plan(successful)["verification"], [])
 
     def test_auxiliary_scripts_do_not_invalidate_tests(self):
-        for name in (".verify-helper/ci.py", ".verify-helper/ci_test.py", "test/verify_edit_distance_simd.py", ".gitignore"):
+        for name in (".verify-helper/ci_test.py", "test/verify_edit_distance_simd.py", ".gitignore"):
             self.write(name, "Updated auxiliary file\n")
         for group in GROUPS:
             self.assertEqual(self.plan(self.previous)[group], [])
+
+    def test_judge_engines_invalidate_only_their_groups(self):
+        for name in ("ci.py", "verification.py", "judge_data.py"):
+            with self.subTest(name=name):
+                previous = self.plan()["state"]
+                self.write(".verify-helper/" + name, "changed engine\n")
+                plan = self.plan(previous)
+                for group in GROUPS:
+                    changed = group == "verification" or (name == "verification.py" and group == "bundles")
+                    self.assertEqual(plan[group], self.plan()[group] if changed else [])
+
+    def test_boost_identity_only_affects_transitive_consumers(self):
+        self.write("math/mint.hpp", '#include <boost/multiprecision/cpp_int.hpp>\n')
+        previous = self.plan()["state"]
+        for identity in ([('libboost-dev', '1.84'), ('libboost1.83-dev', '1.83-1')],
+                         [('libboost-dev', '1.83'), ('libboost1.83-dev', '1.83-2')], None):
+            with self.subTest(identity=identity):
+                self.boost.return_value = identity
+                plan = self.plan(previous)
+                for group in GROUPS:
+                    expected = sorted(name for name in previous["targets"][group] if "lca" not in name)
+                    self.assertEqual(plan[group], expected)
+                    for name in previous["targets"][group]:
+                        if "lca" in name:
+                            self.assertEqual(plan["state"]["targets"][group][name], previous["targets"][group][name])
+                retry = self.plan(plan["state"])
+                for group in GROUPS:
+                    self.assertEqual(retry[group], plan[group] if identity is None else [])
+
+    def test_quoted_boost_and_local_shadowing(self):
+        self.write("math/mint.hpp", '#include "boost/version.hpp"\n')
+        self.boost.return_value = None
+        previous = self.plan()["state"]
+        self.assertIn("test/comb.test.cpp", self.plan(previous)["verification"])
+        self.write("math/boost/version.hpp", "#pragma once\n")
+        previous = self.plan()["state"]
+        self.boost.reset_mock()
+        for group in GROUPS:
+            self.assertEqual(self.plan(previous)[group], [])
+        self.boost.assert_not_called()
+
+    def test_non_boost_targets_do_not_probe_packages(self):
+        self.boost.reset_mock()
+        self.plan(self.previous)
+        self.boost.assert_not_called()
 
     @unittest.skipUnless(find_spec("yaml"), "Workflow parsing requires PyYAML from test/requirements.txt")
     def test_unrelated_workflow_does_not_invalidate_tests(self):
@@ -449,6 +498,27 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(plan["unit"], ["test/unit/dynamic_bit_vector.cpp", "test/unit/dynamic_wavelet_core.cpp", "test/unit/dynamic_wavelet_count.cpp", "test/unit/dynamic_wavelet_matrix.cpp", "test/unit/standalone.cpp"])
         self.assertEqual(plan["sanitize"], plan["unit"])
         self.assertEqual(plan["verification"], ["test/dynamic_wavelet_matrix_freq.test.cpp", "test/dynamic_wavelet_matrix_kth.test.cpp"])
+
+
+class BoostIdentityTests(unittest.TestCase):
+    def test_installed_meta_and_resolved_header_versions(self):
+        with patch("ci.platform.system", return_value="Linux"), patch("ci.subprocess.check_output", side_effect=[
+                "installed\t1.83.0.1\tlibboost1.83-dev (= 1.83.0-1)", "installed\t1.83.0-1\t"] ) as query:
+            self.assertEqual(boost_identity(), [("libboost-dev", "1.83.0.1"), ("libboost1.83-dev", "1.83.0-1")])
+            self.assertEqual(query.call_args_list[1].args[0][-1], "libboost1.83-dev")
+
+    def test_missing_ambiguous_and_unsupported_identity(self):
+        for response in ("", "not-installed\t1\tlibboost1.83-dev", "installed\t1\t",
+                         "installed\t1\tlibboost1.83-dev, libboost1.84-dev"):
+            with self.subTest(response=response), patch("ci.platform.system", return_value="Linux"), \
+                    patch("ci.subprocess.check_output", return_value=response):
+                self.assertIsNone(boost_identity())
+        for error in (FileNotFoundError(), subprocess.CalledProcessError(1, "dpkg-query"), subprocess.TimeoutExpired("dpkg-query", 10)):
+            with patch("ci.platform.system", return_value="Linux"), patch("ci.subprocess.check_output", side_effect=error):
+                self.assertIsNone(boost_identity())
+        with patch("ci.platform.system", return_value="Darwin"), patch("ci.subprocess.check_output") as query:
+            self.assertIsNone(boost_identity())
+            query.assert_not_called()
 
 
 if __name__ == "__main__":
