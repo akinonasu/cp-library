@@ -1,0 +1,5 @@
+{
+  "headers": ["components/suffix_array.hpp", "string/suffix_tree.hpp"],
+  "unit": ["test/unit/suffix_tree.cpp", "test/unit/standalone.cpp"],
+  "sanitize": ["test/unit/suffix_tree.cpp"]
+}

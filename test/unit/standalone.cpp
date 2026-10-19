@@ -48,6 +48,7 @@
 #include "string/edit_distance.hpp"
 #include "string/lcs.hpp"
 #include "string/lis.hpp"
+#include "string/suffix_tree.hpp"
 #include "string/rolling_hash.hpp"
 
 #if defined(TEMPLATE_HPP) || defined(rep) || defined(per) || defined(vec) || defined(all) || defined(sz) || defined(uint)

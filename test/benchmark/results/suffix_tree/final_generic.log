@@ -1,0 +1,10 @@
+{'case': 'binary', 'operation': 'build', 'acl_ms': 22.8644, 'induced_ms': 19.608207, 'base_ms': 42.902518, 'tree_ms': 44.904637}
+{'case': 'binary', 'operation': 'query', 'binary_search_ms': 5.287555, 'base_find_ms': 12.552946, 'find_ms': 11.848903}
+{'case': 'letters', 'operation': 'build', 'acl_ms': 22.526694, 'induced_ms': 16.853212, 'base_ms': 34.581449, 'tree_ms': 36.290193}
+{'case': 'letters', 'operation': 'query', 'binary_search_ms': 5.06798, 'base_find_ms': 7.381893, 'find_ms': 5.772873}
+{'case': 'bytes', 'operation': 'build', 'acl_ms': 23.148736, 'induced_ms': 17.150981, 'base_ms': 33.423627, 'tree_ms': 35.930495}
+{'case': 'bytes', 'operation': 'query', 'binary_search_ms': 5.065899, 'base_find_ms': 5.442273, 'find_ms': 4.795732}
+{'case': 'equal', 'operation': 'build', 'acl_ms': 7.185713, 'induced_ms': 4.827929, 'base_ms': 13.304219, 'tree_ms': 14.476311}
+{'case': 'equal', 'operation': 'query', 'binary_search_ms': 2.198534, 'base_find_ms': 5.85773, 'find_ms': 0.309551}
+{'case': 'periodic', 'operation': 'build', 'acl_ms': 10.140151, 'induced_ms': 7.537018, 'base_ms': 18.597841, 'tree_ms': 20.25051}
+{'case': 'periodic', 'operation': 'query', 'binary_search_ms': 2.619692, 'base_find_ms': 1.239686, 'find_ms': 0.680865}
