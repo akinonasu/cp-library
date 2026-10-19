@@ -1,0 +1,41 @@
+{
+  "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+  "drivers": {
+    "phase.cpp": "aad2634cd563421177d9641813273ff2e4f23544ae3fd7c3344af6b951adbb25",
+    "actual.cpp": "f551d8650b06389b20d5d168ab76b33a2f84dd5a81e18cd94e7fb23534f18fc9"
+  },
+  "variants": {
+    "current": {
+      "files": {
+        "actual.cpp": "f551d8650b06389b20d5d168ab76b33a2f84dd5a81e18cd94e7fb23534f18fc9",
+        "phase.cpp": "aad2634cd563421177d9641813273ff2e4f23544ae3fd7c3344af6b951adbb25",
+        "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+        "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+        "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+        "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+        "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+        "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+        "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+        "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3"
+      }
+    },
+    "overwrite": {
+      "files": {
+        "actual.cpp": "f551d8650b06389b20d5d168ab76b33a2f84dd5a81e18cd94e7fb23534f18fc9",
+        "phase.cpp": "aad2634cd563421177d9641813273ff2e4f23544ae3fd7c3344af6b951adbb25",
+        "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+        "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+        "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+        "components/directed_csr.hpp": "2fc416e414d6a9d35381520fbd98758db8c53af2758b7911e8ff02725910f8b4",
+        "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+        "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+        "components/overwrite_array.hpp": "3e01cb1672d03138981543aebe6278a070a57504f33bc884e282a10950ea335b",
+        "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+        "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3"
+      },
+      "patch": "overwrite.patch",
+      "patch_sha256": "e592b2e2e7f05e6242a5174363889ced56662d2e96b269c8fd4f64826a4e9f64"
+    }
+  },
+  "source_normalization": "LF; frozen .hpp/.cpp only; this is the prototype before the final no_unique_address and zero-size copy guard changes"
+}

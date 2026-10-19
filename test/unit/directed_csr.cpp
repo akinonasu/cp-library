@@ -14,6 +14,36 @@
 
 using namespace std;
 
+struct alignas(128) AlignedWeight {
+	uint64_t value;
+	bool operator==(const AlignedWeight &) const = default;
+};
+
+struct TrackedWeight {
+	static inline int live = 0, copies = -1;
+	int value = 0;
+	TrackedWeight() { ++live; }
+	explicit TrackedWeight(int x) : value(x) { ++live; }
+	TrackedWeight(const TrackedWeight &other) : value(other.value) {
+		if (copies == 0) throw runtime_error("weight copy");
+		if (copies > 0) --copies;
+		++live;
+	}
+	TrackedWeight(TrackedWeight &&other) noexcept : value(other.value) { ++live; }
+	TrackedWeight &operator=(const TrackedWeight &other) {
+		if (copies == 0) throw runtime_error("weight copy");
+		if (copies > 0) --copies;
+		value = other.value;
+		return *this;
+	}
+	TrackedWeight &operator=(TrackedWeight &&other) noexcept {
+		value = other.value;
+		return *this;
+	}
+	~TrackedWeight() { --live; }
+	bool operator==(const TrackedWeight &) const = default;
+};
+
 template<class T>
 void check_graph(const DirectedCSR<T> &graph, const vector<vector<pair<int, T>>> &expected) {
 	assert(graph.size() == int(expected.size()));
@@ -156,6 +186,85 @@ void sparse_graphs() {
 	check_graph(produced, {});
 }
 
+void aligned_weights() {
+	static_assert(is_trivial_v<AlignedWeight>);
+	using Graph = DirectedCSR<AlignedWeight>;
+	constexpr int n = 8193;
+	vector<Graph::Edge> edges;
+	vector<vector<pair<int, AlignedWeight>>> expected(n);
+	for (int i = 0; i <= n; ++i) {
+		int from = (i * 7919 + 23) % n, to = (i * 31 + 7) % n;
+		edges.push_back({from, to, {uint64_t(i) * 999983}});
+		expected[from].emplace_back(to, edges.back().weight);
+	}
+	Graph graph(n, edges);
+	check_graph(graph, expected);
+	for (int v = 0; v < n; ++v)
+		assert(reinterpret_cast<uintptr_t>(graph[v].data()) % alignof(Graph::Arc) == 0);
+	Graph copied = graph;
+	Graph moved = std::move(copied);
+	check_graph(moved, expected);
+	check_graph(copied, {});
+	const array<Graph::Edge, 3> small = { Graph::Edge{2, 0, {31}}, Graph::Edge{0, 1, {17}}, Graph::Edge{1, 2, {19}} };
+	graph.build(3, small.size(), [&](auto emit) { for (const auto &edge : small) emit(edge); });
+	check_graph(graph, { {{1, {17}}}, {{2, {19}}}, {{0, {31}}} });
+	graph.build(0, {});
+	check_graph(graph, {});
+	graph.build(n, edges.size(), [&](auto emit) { for (const auto &edge : edges) emit(edge); });
+	check_graph(graph, expected);
+	copied = graph;
+	check_graph(copied, expected);
+}
+
+void throwing_weights() {
+	static_assert(!is_trivial_v<TrackedWeight>);
+	static_assert(!is_nothrow_copy_constructible_v<TrackedWeight>);
+	assert(TrackedWeight::live == 0);
+	for (bool single : {false, true}) {
+		using Graph = DirectedCSR<TrackedWeight>;
+		vector<Graph::Edge> edges;
+		const array<pair<int, int>, 5> general = { pair{2, 2}, pair{0, 1}, pair{0, 0}, pair{2, 1}, pair{0, 1} };
+		const array<pair<int, int>, 3> direct = { pair{3, 1}, pair{0, 2}, pair{2, 3} };
+		for (int i = 0; i < (single ? 3 : 5); ++i) {
+			auto [from, to] = single ? direct[i] : general[i];
+			edges.push_back({from, to, TrackedWeight(i + 7)});
+		}
+		vector<vector<pair<int, TrackedWeight>>> expected(4);
+		for (const auto &edge : edges) expected[edge.from].emplace_back(edge.to, edge.weight);
+		Graph graph(4, edges);
+		check_graph(graph, expected);
+		int before = TrackedWeight::live;
+		bool failed = false;
+		TrackedWeight::copies = 1;
+		try { Graph copied(graph); }
+		catch (const runtime_error &) { failed = true; }
+		TrackedWeight::copies = -1;
+		assert(failed && TrackedWeight::live == before);
+		check_graph(graph, expected);
+		for (bool producer : {false, true}) {
+			graph.build(4, edges);
+			before = TrackedWeight::live - int(graph.edge_count());
+			failed = false;
+			try {
+				if (producer) graph.build(4, edges.size(), [&](auto emit) {
+					for (const auto &edge : edges) emit(edge);
+					TrackedWeight::copies = 1;
+				});
+				else {
+					TrackedWeight::copies = 1;
+					graph.build(4, edges);
+				}
+			} catch (const runtime_error &) { failed = true; }
+			TrackedWeight::copies = -1;
+			assert(failed && TrackedWeight::live == before);
+			check_graph(graph, vector<vector<pair<int, TrackedWeight>>>(4));
+			graph.build(4, edges);
+			check_graph(graph, expected);
+		}
+	}
+	assert(TrackedWeight::live == 0);
+}
+
 int main() {
 	static_assert(is_same_v<DirectedCSR<uint32_t>::weight_type, uint32_t>);
 	static_assert(is_same_v<DirectedCSR<uint32_t>::distance_type, int64_t>);
@@ -293,4 +402,6 @@ int main() {
 	random_graphs<double>(random);
 	sparse_graphs<int>();
 	sparse_graphs<string>();
+	aligned_weights();
+	throwing_weights();
 }

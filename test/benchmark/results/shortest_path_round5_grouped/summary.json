@@ -1,0 +1,541 @@
+{
+  "grouped_native.json": {
+    "max_dense_random_00": {
+      "current": {
+        "actual_ms": 6.245862000014313,
+        "build_ms": 1.325844,
+        "phase_ms": 6.105807000039931
+      },
+      "all": {
+        "actual_ms": 6.047635000015816,
+        "build_ms": 1.204092,
+        "phase_ms": 6.114206999995986
+      },
+      "sorted": {
+        "actual_ms": 6.244211999955951,
+        "build_ms": 1.360616,
+        "phase_ms": 6.22015599998349
+      },
+      "sample64": {
+        "actual_ms": 6.129548999979306,
+        "build_ms": 1.22422,
+        "phase_ms": 6.181271000002653
+      },
+      "sample128": {
+        "actual_ms": 6.227336999984345,
+        "build_ms": 1.227263,
+        "phase_ms": 6.074851999983366
+      }
+    },
+    "max_dense_random_01": {
+      "current": {
+        "actual_ms": 6.20701400004009,
+        "build_ms": 1.408979,
+        "phase_ms": 6.368629000007786
+      },
+      "all": {
+        "actual_ms": 6.137432999992143,
+        "build_ms": 1.26066,
+        "phase_ms": 6.17703799997571
+      },
+      "sorted": {
+        "actual_ms": 6.317806000026849,
+        "build_ms": 1.420657,
+        "phase_ms": 6.433317999949395
+      },
+      "sample64": {
+        "actual_ms": 6.121733999975731,
+        "build_ms": 1.204936,
+        "phase_ms": 6.124429000010423
+      },
+      "sample128": {
+        "actual_ms": 6.06490100000201,
+        "build_ms": 1.23157,
+        "phase_ms": 6.160405999992236
+      }
+    },
+    "max_dense_zero_00": {
+      "current": {
+        "actual_ms": 5.916647999981706,
+        "build_ms": 1.374688,
+        "phase_ms": 5.831729000021824
+      },
+      "all": {
+        "actual_ms": 5.607746999999108,
+        "build_ms": 1.156928,
+        "phase_ms": 5.676316000005954
+      },
+      "sorted": {
+        "actual_ms": 5.786897999996654,
+        "build_ms": 1.316824,
+        "phase_ms": 5.932723000000806
+      },
+      "sample64": {
+        "actual_ms": 5.6268950000344375,
+        "build_ms": 1.160709,
+        "phase_ms": 5.662949999987177
+      },
+      "sample128": {
+        "actual_ms": 5.697760999964885,
+        "build_ms": 1.180024,
+        "phase_ms": 5.71540499998946
+      }
+    },
+    "max_dense_long_00": {
+      "current": {
+        "actual_ms": 6.370091999997385,
+        "build_ms": 1.303663,
+        "phase_ms": 6.321200999991561
+      },
+      "all": {
+        "actual_ms": 6.1110510000048635,
+        "build_ms": 1.192352,
+        "phase_ms": 6.286697999996704
+      },
+      "sorted": {
+        "actual_ms": 6.279141999982585,
+        "build_ms": 1.34688,
+        "phase_ms": 6.282849000001534
+      },
+      "sample64": {
+        "actual_ms": 6.135406999987936,
+        "build_ms": 1.174584,
+        "phase_ms": 6.2314950000086355
+      },
+      "sample128": {
+        "actual_ms": 6.225846999996065,
+        "build_ms": 1.202758,
+        "phase_ms": 6.155806999970537
+      }
+    },
+    "synthetic_dense": {
+      "current": {
+        "actual_ms": 6.243203999986235,
+        "build_ms": 1.297279,
+        "phase_ms": 6.271811000033267
+      },
+      "all": {
+        "actual_ms": 6.081364000010581,
+        "build_ms": 1.140296,
+        "phase_ms": 6.081779999988157
+      },
+      "sorted": {
+        "actual_ms": 6.281028999978844,
+        "build_ms": 1.317786,
+        "phase_ms": 6.252834999997958
+      },
+      "sample64": {
+        "actual_ms": 6.1206380000271565,
+        "build_ms": 1.175968,
+        "phase_ms": 6.183845999998994
+      },
+      "sample128": {
+        "actual_ms": 6.110884999998234,
+        "build_ms": 1.152502,
+        "phase_ms": 6.134270999950786
+      }
+    },
+    "max_sparse_random_01": {
+      "current": {
+        "actual_ms": 12.85446399998591,
+        "build_ms": 2.226105,
+        "phase_ms": 12.867556000003333
+      },
+      "all": {
+        "actual_ms": 12.82490700003791,
+        "build_ms": 2.23588,
+        "phase_ms": 13.198698999985936
+      },
+      "sorted": {
+        "actual_ms": 13.020572000016273,
+        "build_ms": 2.200287,
+        "phase_ms": 13.036460000023453
+      },
+      "sample64": {
+        "actual_ms": 13.069619000020793,
+        "build_ms": 2.195884,
+        "phase_ms": 12.994909000042298
+      },
+      "sample128": {
+        "actual_ms": 12.847166000028665,
+        "build_ms": 2.176612,
+        "phase_ms": 13.043861999960882
+      }
+    },
+    "max_star_00": {
+      "current": {
+        "actual_ms": 9.296204999998281,
+        "build_ms": 1.585779,
+        "phase_ms": 9.197281000012936
+      },
+      "all": {
+        "actual_ms": 9.042434999969373,
+        "build_ms": 1.507423,
+        "phase_ms": 9.231347999957507
+      },
+      "sorted": {
+        "actual_ms": 9.158783999964726,
+        "build_ms": 1.568375,
+        "phase_ms": 9.07887299996446
+      },
+      "sample64": {
+        "actual_ms": 8.90283400002545,
+        "build_ms": 1.501376,
+        "phase_ms": 9.044119999998657
+      },
+      "sample128": {
+        "actual_ms": 9.053345000040736,
+        "build_ms": 1.496594,
+        "phase_ms": 9.045077999985551
+      }
+    },
+    "line_00": {
+      "current": {
+        "actual_ms": 22.20711899997241,
+        "build_ms": 2.432733,
+        "phase_ms": 22.34341099995163
+      },
+      "all": {
+        "actual_ms": 22.261503999970955,
+        "build_ms": 2.439067,
+        "phase_ms": 22.597701999984565
+      },
+      "sorted": {
+        "actual_ms": 22.33580200004326,
+        "build_ms": 2.390176,
+        "phase_ms": 22.285736000071665
+      },
+      "sample64": {
+        "actual_ms": 22.135879999950703,
+        "build_ms": 2.384167,
+        "phase_ms": 22.46493199993438
+      },
+      "sample128": {
+        "actual_ms": 22.123888000010083,
+        "build_ms": 2.423485,
+        "phase_ms": 22.61507100001836
+      }
+    },
+    "grid_swirl_00": {
+      "current": {
+        "actual_ms": 14.631929000074706,
+        "build_ms": 2.070323,
+        "phase_ms": 14.892351999947095
+      },
+      "all": {
+        "actual_ms": 14.582410999992135,
+        "build_ms": 2.123688,
+        "phase_ms": 14.578545000063059
+      },
+      "sorted": {
+        "actual_ms": 14.606429999957982,
+        "build_ms": 2.054351,
+        "phase_ms": 14.613816999940354
+      },
+      "sample64": {
+        "actual_ms": 14.657575999990513,
+        "build_ms": 2.087355,
+        "phase_ms": 14.726106000011896
+      },
+      "sample128": {
+        "actual_ms": 14.467322999962562,
+        "build_ms": 2.085015,
+        "phase_ms": 14.475721999929192
+      }
+    }
+  },
+  "grouped_generic.json": {
+    "max_dense_random_00": {
+      "current": {
+        "actual_ms": 6.307289000005767,
+        "build_ms": 1.42174,
+        "phase_ms": 6.274447000009786
+      },
+      "all": {
+        "actual_ms": 6.0216430000537,
+        "build_ms": 1.177621,
+        "phase_ms": 5.989772000020821
+      },
+      "sample64": {
+        "actual_ms": 6.041203999984646,
+        "build_ms": 1.189231,
+        "phase_ms": 6.054746000017985
+      }
+    },
+    "max_dense_random_01": {
+      "current": {
+        "actual_ms": 6.144870000071023,
+        "build_ms": 1.341882,
+        "phase_ms": 6.21207200003937
+      },
+      "all": {
+        "actual_ms": 6.1499770000637,
+        "build_ms": 1.193461,
+        "phase_ms": 6.070420000014565
+      },
+      "sample64": {
+        "actual_ms": 6.026412999972308,
+        "build_ms": 1.2062,
+        "phase_ms": 6.085643999995227
+      }
+    },
+    "max_dense_zero_00": {
+      "current": {
+        "actual_ms": 5.901259000097525,
+        "build_ms": 1.290055,
+        "phase_ms": 5.826522000006662
+      },
+      "all": {
+        "actual_ms": 5.73356799998237,
+        "build_ms": 1.199441,
+        "phase_ms": 5.75337199995829
+      },
+      "sample64": {
+        "actual_ms": 5.688529999929415,
+        "build_ms": 1.14521,
+        "phase_ms": 5.685295000034785
+      }
+    },
+    "max_dense_long_00": {
+      "current": {
+        "actual_ms": 6.473182000036104,
+        "build_ms": 1.31655,
+        "phase_ms": 6.282081999984257
+      },
+      "all": {
+        "actual_ms": 6.252118000020346,
+        "build_ms": 1.241037,
+        "phase_ms": 6.4005769999084805
+      },
+      "sample64": {
+        "actual_ms": 6.263118999981998,
+        "build_ms": 1.207234,
+        "phase_ms": 6.294464999996308
+      }
+    },
+    "synthetic_dense": {
+      "current": {
+        "actual_ms": 6.500898000012967,
+        "build_ms": 1.349586,
+        "phase_ms": 6.431388999999399
+      },
+      "all": {
+        "actual_ms": 6.33073799997419,
+        "build_ms": 1.191362,
+        "phase_ms": 6.317394999996395
+      },
+      "sample64": {
+        "actual_ms": 6.32644799998161,
+        "build_ms": 1.171404,
+        "phase_ms": 6.318716000009772
+      }
+    },
+    "max_sparse_random_01": {
+      "current": {
+        "actual_ms": 13.181059999965328,
+        "build_ms": 2.18013,
+        "phase_ms": 12.937730999965424
+      },
+      "all": {
+        "actual_ms": 13.010413999950288,
+        "build_ms": 2.172398,
+        "phase_ms": 12.88357900000392
+      },
+      "sample64": {
+        "actual_ms": 13.000996000073428,
+        "build_ms": 2.246141,
+        "phase_ms": 13.049367000007805
+      }
+    },
+    "max_star_00": {
+      "current": {
+        "actual_ms": 8.932815999969534,
+        "build_ms": 1.536764,
+        "phase_ms": 8.952066999995623
+      },
+      "all": {
+        "actual_ms": 8.937349999996513,
+        "build_ms": 1.480321,
+        "phase_ms": 8.887232999995831
+      },
+      "sample64": {
+        "actual_ms": 8.807045999901675,
+        "build_ms": 1.457533,
+        "phase_ms": 8.95691200003057
+      }
+    },
+    "line_00": {
+      "current": {
+        "actual_ms": 20.914292000043133,
+        "build_ms": 2.280047,
+        "phase_ms": 21.120401999951355
+      },
+      "all": {
+        "actual_ms": 21.04109700007939,
+        "build_ms": 2.294139,
+        "phase_ms": 21.187276000091515
+      },
+      "sample64": {
+        "actual_ms": 21.02592900007494,
+        "build_ms": 2.265353,
+        "phase_ms": 21.59251500006576
+      }
+    },
+    "grid_swirl_00": {
+      "current": {
+        "actual_ms": 14.969878999977482,
+        "build_ms": 2.117786,
+        "phase_ms": 14.88672800007862
+      },
+      "all": {
+        "actual_ms": 14.883408999935455,
+        "build_ms": 2.097788,
+        "phase_ms": 14.812432000098852
+      },
+      "sample64": {
+        "actual_ms": 14.780967999968198,
+        "build_ms": 2.144336,
+        "phase_ms": 14.84571700007109
+      }
+    }
+  },
+  "shuffled_native.json": {
+    "synthetic_dense_shuffled": {
+      "current": {
+        "actual_ms": 6.624710999972194,
+        "build_ms": 1.693345,
+        "phase_ms": 6.709129999990182
+      },
+      "all": {
+        "actual_ms": 6.793231999949967,
+        "build_ms": 1.689927,
+        "phase_ms": 6.809950000047138
+      },
+      "sample64": {
+        "actual_ms": 6.595219000018915,
+        "build_ms": 1.739031,
+        "phase_ms": 6.802597999922
+      },
+      "sample128": {
+        "actual_ms": 6.75471399995331,
+        "build_ms": 1.668667,
+        "phase_ms": 6.658776999984184
+      },
+      "emplace": {
+        "actual_ms": 6.772223000098165,
+        "build_ms": 1.67234,
+        "phase_ms": 6.688878000090881
+      }
+    }
+  },
+  "emplace_native.json": {
+    "max_dense_random_00": {
+      "current": {
+        "actual_ms": 6.29279999998289,
+        "build_ms": 1.403183,
+        "phase_ms": 6.295565000073111
+      },
+      "emplace": {
+        "actual_ms": 6.292814000062208,
+        "build_ms": 1.408276,
+        "phase_ms": 6.252263000078528
+      }
+    },
+    "max_dense_random_01": {
+      "current": {
+        "actual_ms": 6.060393999973712,
+        "build_ms": 1.328472,
+        "phase_ms": 6.121810999957233
+      },
+      "emplace": {
+        "actual_ms": 6.091158000003816,
+        "build_ms": 1.300547,
+        "phase_ms": 6.201841000006425
+      }
+    },
+    "max_dense_zero_00": {
+      "current": {
+        "actual_ms": 5.940596000073128,
+        "build_ms": 1.377326,
+        "phase_ms": 5.915748000006715
+      },
+      "emplace": {
+        "actual_ms": 5.94747799993911,
+        "build_ms": 1.389814,
+        "phase_ms": 6.0225999999374835
+      }
+    },
+    "max_dense_long_00": {
+      "current": {
+        "actual_ms": 6.4742150000256515,
+        "build_ms": 1.367973,
+        "phase_ms": 6.576666999990266
+      },
+      "emplace": {
+        "actual_ms": 6.443574999934754,
+        "build_ms": 1.414957,
+        "phase_ms": 6.448222000017267
+      }
+    },
+    "synthetic_dense": {
+      "current": {
+        "actual_ms": 6.238263999989613,
+        "build_ms": 1.312826,
+        "phase_ms": 6.2416030000349565
+      },
+      "emplace": {
+        "actual_ms": 6.364944999972977,
+        "build_ms": 1.308449,
+        "phase_ms": 6.3024480000422045
+      }
+    },
+    "max_sparse_random_01": {
+      "current": {
+        "actual_ms": 13.33578099990973,
+        "build_ms": 2.222763,
+        "phase_ms": 13.195367000093938
+      },
+      "emplace": {
+        "actual_ms": 13.305518000038319,
+        "build_ms": 2.258471,
+        "phase_ms": 13.27972100000352
+      }
+    },
+    "max_star_00": {
+      "current": {
+        "actual_ms": 9.567869999955292,
+        "build_ms": 1.730809,
+        "phase_ms": 9.565879999968274
+      },
+      "emplace": {
+        "actual_ms": 9.454602999994677,
+        "build_ms": 1.762794,
+        "phase_ms": 9.568645999934233
+      }
+    },
+    "line_00": {
+      "current": {
+        "actual_ms": 21.346708999999464,
+        "build_ms": 2.295596,
+        "phase_ms": 21.595090000005257
+      },
+      "emplace": {
+        "actual_ms": 21.67776099997809,
+        "build_ms": 2.254938,
+        "phase_ms": 21.81145800000195
+      }
+    },
+    "grid_swirl_00": {
+      "current": {
+        "actual_ms": 14.793355000051633,
+        "build_ms": 2.106725,
+        "phase_ms": 14.636182000003828
+      },
+      "emplace": {
+        "actual_ms": 14.797251999993932,
+        "build_ms": 2.047586,
+        "phase_ms": 14.68893100002333
+      }
+    }
+  }
+}
