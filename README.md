@@ -183,7 +183,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/combinatorics/binomial_prefix_sum.hpp` | 二項係数の prefix sum (一括版はクエリ先読み) | [使い方](docs/binomial_prefix_sum.md) |
+| `math/combinatorics/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
 | `math/combinatorics/comb.hpp` | 階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 
 ### Floor Sum

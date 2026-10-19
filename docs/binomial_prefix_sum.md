@@ -1,5 +1,5 @@
 ---
-title: 二項係数の prefix sum (一括版はクエリ先読み)
+title: 二項係数の prefix sum
 documentation_of: //math/combinatorics/binomial_prefix_sum.hpp
 redirect_from:
 - /math/binomial_prefix_sum.hpp.html
