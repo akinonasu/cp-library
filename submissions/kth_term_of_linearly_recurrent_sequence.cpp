@@ -9250,7 +9250,7 @@ public:
 	}
 
 private:
-	
+
 	template <std::size_t NV>
 	[[gnu::noinline]] void tile(Vec* a, Vec* b, std::size_t k) const {
 		for (std::size_t h = NV / 4; h >= 4; h /= 4)
@@ -9288,7 +9288,7 @@ private:
 		w[4] = y[8], w[5] = ~y[8], w[6] = y[9], w[7] = ~y[9];
 	}
 
-	
+
 	void bottom(Vec* a, Vec* b, std::size_t nv, std::size_t first) const {
 		Leaves leaves[2]{};
 		alignas(32) std::uint32_t w[2][8];
@@ -11595,12 +11595,12 @@ inline void forward_radix8(Vec* f, std::size_t q, const std::uint32_t* roots) {
 	const Factor i(roots[1], roots[9]), y(roots[2], roots[10]), z(roots[3], roots[11]);
 	for (std::size_t j = 0; j < q; ++j) {
 		const Vec f0 = f[j], f1 = f[j + q], f2 = f[j + 2 * q], f3 = f[j + 3 * q];
-		
+
 		const Vec g0 = add(f0, f2), g1 = add(f1, f3);
 		const Vec h0 = diff_canonical(f0, f2), ih1 = times(diff_canonical(f1, f3), i);
 		f[j] = add(g0, g1), f[j + q] = diff(g0, g1);
 		f[j + 2 * q] = add(h0, ih1), f[j + 3 * q] = diff(h0, ih1);
-		
+
 		const Vec if2 = times(f2, i), if3 = times(f3, i);
 		const Vec u0 = reduce(add(f0, if2), 2 * kP), v0 = reduce(diff(f0, if2), 2 * kP);
 		const Vec yu1 = times(add(f1, if3), y), zv1 = times(diff(f1, if3), z);
@@ -11659,7 +11659,7 @@ private:
 		std::uint32_t coefficients[4][8];
 	};
 
-	
+
 	void bottom(Vec* a, Vec* b, std::size_t nv, std::size_t first) const {
 		Leaves leaves[2][2]{};
 		bottom_kernels::first(a, b, leaves[0], r_ + slot(first), r_ + slot(2 * first));
@@ -11703,7 +11703,7 @@ public:
 	std::uint32_t* b() { return b_; }
 
 
-	
+
 	const std::uint32_t* multiply() {
 		using namespace ntt::detail;
 		const std::size_t len = length(), nv = len / 8, q = nv / 8;
