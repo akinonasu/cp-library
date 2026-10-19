@@ -59,7 +59,7 @@
 | `graph/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
 | `graph/max_flow.hpp` | 最大流・最小カット | [使い方](docs/max_flow.md) |
 | `graph/min_cost_flow.hpp` | 最小費用流・費用曲線 | [使い方](docs/min_cost_flow.md) |
-| `graph/dijkstra.hpp` | Dijkstra | [使い方](docs/dijkstra.md) |
+| `graph/dijkstra.hpp` | Dijkstra・最短経路の復元 | [使い方](docs/dijkstra.md) |
 | `graph/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `graph/auxiliary_tree.hpp` | Auxiliary Tree | [使い方](docs/auxiliary_tree.md) |
 | `graph/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
@@ -135,6 +135,9 @@
 | `components/splitmix64.hpp` | SplitMix64 | [使い方](docs/splitmix64.md) |
 | `components/d_ary_heap.hpp` | D-ary Heap | [使い方](docs/d_ary_heap.md) |
 | `components/RadixHeap.hpp` | Radix Heap | [使い方](docs/radix_heap.md) |
+| `components/dijkstra_queue.hpp` | Dijkstra の内部キュー | [使い方](docs/dijkstra_queue.md) |
+| `components/dijkstra_topological.hpp` | Dijkstra のトポロジカル前処理 | [使い方](docs/dijkstra_topological.md) |
+| `components/directed_csr.hpp` | 重み付き有向グラフの CSR | [使い方](docs/directed_csr.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
 | `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
@@ -144,6 +147,7 @@
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
 | `components/fps_log.hpp` | FPS の対数の内部変換 | [使い方](docs/fps_log.md) |
 | `components/fps_blocked.hpp` | FPS のブロック変換 | [使い方](docs/fps_blocked.md) |
+| `components/fps_bostan.hpp` | Bostan–Mori の倍長化 | [使い方](docs/fps_bostan.md) |
 | `components/fps_horner.hpp` | FPS の一点評価 | [使い方](docs/fps_horner.md) |
 | `components/polynomial_gcd_blocked.hpp` | 多項式 Half-GCD の専用変換 | [使い方](docs/polynomial_gcd_blocked.md) |
 | `components/fps_composition.hpp` | FPS の合成・射影の内部処理 | [使い方](docs/fps_composition.md) |

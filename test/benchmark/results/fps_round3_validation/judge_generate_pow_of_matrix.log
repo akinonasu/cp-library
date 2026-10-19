@@ -1,0 +1,75 @@
+/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py:566: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  logger.warn('Please install colorlog: pip3 install colorlog')
+04:21:15 [WARNING] Please install colorlog: pip3 install colorlog
+04:21:15 [INFO] Start pow_of_matrix
+04:21:15 [INFO] generate params.h
+04:21:15 [INFO] compile checker
+04:21:19 [INFO] compile solution
+04:21:19 [INFO] compile generators
+04:21:19 [INFO] compile example.in
+04:21:19 [INFO] compile random.cpp
+04:21:19 [INFO] compile small.cpp
+04:21:20 [INFO] compile max_random.cpp
+04:21:20 [INFO] compile max_random_worst.cpp
+04:21:21 [INFO] compile lowrank_max_random.cpp
+04:21:21 [INFO] compile perm_max_random.cpp
+04:21:22 [INFO] compile signed_overflow.cpp
+04:21:22 [INFO] compile unsigned_overflow.cpp
+04:21:23 [INFO] compile nontrivial_frobenius_form.cpp
+04:21:23 [INFO] compile frobenius_hack.in
+04:21:23 [INFO] clear input /workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/pow_of_matrix/in
+04:21:23 [INFO] gen example.in 3cases
+04:21:23 [INFO] gen random.cpp 3cases
+04:21:23 [INFO] gen small.cpp 12cases
+04:21:24 [INFO] gen max_random.cpp 4cases
+04:21:24 [INFO] gen max_random_worst.cpp 4cases
+04:21:24 [INFO] gen lowrank_max_random.cpp 2cases
+04:21:24 [INFO] gen perm_max_random.cpp 2cases
+04:21:24 [INFO] gen signed_overflow.cpp 1cases
+04:21:24 [INFO] gen unsigned_overflow.cpp 1cases
+04:21:24 [INFO] gen nontrivial_frobenius_form.cpp 10cases
+04:21:24 [INFO] gen frobenius_hack.in 1cases
+04:21:24 [INFO] clear output /workspace/cp-fps-scratch-round3/library-checker-problems/linear_algebra/pow_of_matrix/out
+04:21:24 [INFO] ANS      2 msecs : example_00 : b''
+04:21:24 [INFO] ANS      1 msecs : example_01 : b''
+04:21:24 [INFO] ANS      1 msecs : example_02 : b''
+04:21:24 [INFO] ANS    276 msecs : random_00 : b''
+04:21:25 [INFO] ANS    328 msecs : random_01 : b''
+04:21:25 [INFO] ANS     46 msecs : random_02 : b''
+04:21:25 [INFO] ANS      2 msecs : small_00 : b''
+04:21:25 [INFO] ANS      1 msecs : small_01 : b''
+04:21:25 [INFO] ANS      1 msecs : small_02 : b''
+04:21:25 [INFO] ANS      1 msecs : small_03 : b''
+04:21:25 [INFO] ANS      1 msecs : small_04 : b''
+04:21:25 [INFO] ANS      2 msecs : small_05 : b''
+04:21:25 [INFO] ANS      1 msecs : small_06 : b''
+04:21:25 [INFO] ANS      2 msecs : small_07 : b''
+04:21:25 [INFO] ANS      1 msecs : small_08 : b''
+04:21:25 [INFO] ANS      1 msecs : small_09 : b''
+04:21:25 [INFO] ANS      1 msecs : small_10 : b''
+04:21:25 [INFO] ANS      1 msecs : small_11 : b''
+04:21:25 [INFO] ANS    348 msecs : max_random_00 : b''
+04:21:25 [INFO] ANS    335 msecs : max_random_01 : b''
+04:21:26 [INFO] ANS    378 msecs : max_random_02 : b''
+04:21:26 [INFO] ANS    335 msecs : max_random_03 : b''
+04:21:27 [INFO] ANS    449 msecs : max_random_worst_00 : b''
+04:21:27 [INFO] ANS    455 msecs : max_random_worst_01 : b''
+04:21:27 [INFO] ANS    463 msecs : max_random_worst_02 : b''
+04:21:28 [INFO] ANS    462 msecs : max_random_worst_03 : b''
+04:21:28 [INFO] ANS    356 msecs : lowrank_max_random_00 : b''
+04:21:29 [INFO] ANS    359 msecs : lowrank_max_random_01 : b''
+04:21:29 [INFO] ANS    327 msecs : perm_max_random_00 : b''
+04:21:29 [INFO] ANS    291 msecs : perm_max_random_01 : b''
+04:21:29 [INFO] ANS      5 msecs : signed_overflow_00 : b''
+04:21:29 [INFO] ANS      1 msecs : unsigned_overflow_00 : b''
+04:21:30 [INFO] ANS    329 msecs : nontrivial_frobenius_form_00 : b''
+04:21:30 [INFO] ANS    404 msecs : nontrivial_frobenius_form_01 : b''
+04:21:30 [INFO] ANS    357 msecs : nontrivial_frobenius_form_02 : b''
+04:21:31 [INFO] ANS    357 msecs : nontrivial_frobenius_form_03 : b''
+04:21:31 [INFO] ANS    310 msecs : nontrivial_frobenius_form_04 : b''
+04:21:31 [INFO] ANS    343 msecs : nontrivial_frobenius_form_05 : b''
+04:21:32 [INFO] ANS    341 msecs : nontrivial_frobenius_form_06 : b''
+04:21:32 [INFO] ANS    326 msecs : nontrivial_frobenius_form_07 : b''
+04:21:32 [INFO] ANS    362 msecs : nontrivial_frobenius_form_08 : b''
+04:21:33 [INFO] ANS    353 msecs : nontrivial_frobenius_form_09 : b''
+04:21:33 [INFO] ANS      2 msecs : frobenius_hack_00 : b''

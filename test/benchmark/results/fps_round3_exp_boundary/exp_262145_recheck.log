@@ -1,0 +1,3 @@
+Waiting for completed formal timing and Bostan normalization equivalence artifact
+Waiting exclusive exp boundary timing lock
+near_262144_02 {'before': 13.566695, 'current': 10.235058, 'reference': 12.352805} paired 3.3043060000000004 wins 21 all 66 checker calls passed

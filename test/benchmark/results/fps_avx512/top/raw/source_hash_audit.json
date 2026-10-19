@@ -1,0 +1,29 @@
+{
+  "kernel": {
+    "base": true,
+    "evex": true,
+    "reordered": true
+  },
+  "kernel_wide": {
+    "base": true,
+    "wide": true,
+    "reordered_late": true
+  },
+  "kernel_window32": {
+    "base": true,
+    "window32": true
+  },
+  "kernel_window16": {
+    "base": true,
+    "window16": true
+  },
+  "kernel_late2": {
+    "base": true,
+    "reordered_late2": true
+  },
+  "whole_wide": {
+    "base": true,
+    "wide": true
+  },
+  "whole_late2_scope_unchanged": true
+}

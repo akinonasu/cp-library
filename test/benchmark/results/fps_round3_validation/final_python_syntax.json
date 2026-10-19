@@ -1,0 +1,13 @@
+{
+  "purpose": "Syntax-check new or modified helper files since the earlier 04:18 syntax pass; unchanged successful files are not repeated",
+  "status": "passed",
+  "files": {
+    "test/benchmark/fps_round3_judge.py": "8bef17af7491f2079c3651d493c4564fec29a379bf2d0ac303f73a73b6d6c1bf",
+    "test/benchmark/fps_round3_judge_finalize.py": "9520e33c872e2c43f73a6125bc7d4b891edaa850f107d3c5f14c220fafcd68a0",
+    "test/benchmark/fps_round3_validation_audit.py": "8de1f030c9acd58b7f42228199e8ce7779e1c4a7daf11eb977de8ff094d772e2",
+    "test/benchmark/results/fps_round3_exp_boundary/exp_262145_recheck.py": "a55b32bb8c8f35d871b8719ad29c4eaeb5e8b384f0c5c0d24d7274a09d105f5f",
+    "test/benchmark/results/fps_round3_sqrt_recheck/sqrt_max_random01_recheck.py": "61eba031683a766f375de94592734763e6afbb586a34ebc1feb7b2ae9e180a57",
+    "test/benchmark/results/fps_round3_validation/bostan_pragma_normalization.py": "25317aed2f1975bc9b36d2232c7c57c9987ee4e77b657cd0c57a6491c9154850"
+  },
+  "count": 6
+}

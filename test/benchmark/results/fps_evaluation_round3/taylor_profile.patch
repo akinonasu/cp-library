@@ -1,0 +1,39 @@
+--- a/components/fps_taylor_blocked.hpp
++++ b/components/fps_taylor_blocked.hpp
+@@ -3,6 +3,8 @@
+ 
+ #include "fps_convolution.hpp"
+ #include <array>
++#include <time.h>
++#include <cstdio>
+ 
+ #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+ #pragma GCC push_options
+@@ -169,11 +171,16 @@
+ 	std::uint32_t* coefficients() { return a_; }
+ 	const std::uint32_t* shift(std::uint32_t c) {
+ 		using namespace ntt::detail;
++		const auto stamp = [] { timespec t; clock_gettime(CLOCK_MONOTONIC_RAW, &t); return 1000000000ULL * t.tv_sec + t.tv_nsec; };
++		const auto profile0 = stamp();
+ 		const std::size_t len = length(), q = len / 64;
+ 		build_table(roots_, len / 16, kRoots[0]);
+ 		build_table(inverse_roots_, len / 16, kRoots[1]);
++		const auto profile1 = stamp();
+ 		lane_factorials();
++		const auto profile2 = stamp();
+ 		weights(c);
++		const auto profile3 = stamp();
+ 		auto* av = reinterpret_cast<Vec*>(a_);
+ 		auto* bv = reinterpret_cast<Vec*>(b_);
+ 		multiply_detail::forward_radix8(av, q, roots_);
+@@ -187,7 +194,10 @@
+ 		ntt::kernels::inverse_identity(av, q, inverse_roots_);
+ 		for (std::size_t t = 4; t < 8; ++t) subtrees.visit(av + t * q, bv + t * q, q, t);
+ 		ntt::kernels::inverse(av + 4 * q, q, inverse_roots_ + slot(1), inverse_roots_ + slot(2));
++		const auto profile4 = stamp();
+ 		output();
++		const auto profile5 = stamp();
++		std::fprintf(stderr, "tables=%llu factorial=%llu weights=%llu ntt=%llu output=%llu\n", profile1-profile0,profile2-profile1,profile3-profile2,profile4-profile3,profile5-profile4);
+ 		return b_;
+ 	}
+ private:

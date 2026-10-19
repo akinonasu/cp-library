@@ -2,6 +2,7 @@
 #define CP_FPS_BOSTAN_MORI_HPP
 
 #include "fps.hpp"
+#include "../components/fps_bostan.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -59,10 +60,18 @@ T bostan_mori(FormalPowerSeries<T> p, FormalPowerSeries<T> q, long long k) {
 		plan.template fft<false>(b, 2 * n);
 		auto doubling = [&](Word *v, T leading) {
 			Word *odd = v + n;
-			std::copy_n(v, n, odd);
-			plan.template fft<true>(odd, n);
-			odd[0] = fps_detail::NTT::sub(odd[0], (T(2 * n) * leading).v);
-			fps_detail::NTT::product(odd, odd, O::words(powers), n);
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+			if (n >= 8 && fps_detail::NTT::vectorized()) {
+				fps_detail::bostan_detail::inverse_twisted(plan, v, odd, O::words(powers), n);
+				odd[0] = fps_detail::NTT::sub(odd[0], (T(2) * leading).v);
+			} else
+#endif
+			{
+				std::copy_n(v, n, odd);
+				plan.template fft<true>(odd, n);
+				odd[0] = fps_detail::NTT::sub(odd[0], (T(2 * n) * leading).v);
+				fps_detail::NTT::product(odd, odd, O::words(powers), n);
+			}
 			plan.template fft<false>(odd, n);
 		};
 		while (k) {

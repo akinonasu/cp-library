@@ -1,0 +1,13 @@
+built base
+built evex
+built reordered
+waiting EX
+EX acquired
+inv 262144 {'base': 3.448261, 'evex': 3.615951, 'reordered': 3.53512}
+inv 500000 {'base': 7.902121, 'evex': 7.8521860000000006, 'reordered': 7.70641}
+sqrt 262144 {'base': 3.532596, 'evex': 3.426087, 'reordered': 3.572787}
+sqrt 500000 {'base': 7.549025, 'evex': 7.489456000000001, 'reordered': 7.443137}
+log 262144 {'base': 4.305329, 'evex': 4.429354, 'reordered': 4.410405}
+log 500000 {'base': 9.271723000000001, 'evex': 9.145504, 'reordered': 9.42426}
+exp 262144 {'base': 5.475142, 'evex': 5.672947000000001, 'reordered': 5.495082}
+exp 500000 {'base': 11.788685000000001, 'evex': 12.051215000000001, 'reordered': 11.956374}
