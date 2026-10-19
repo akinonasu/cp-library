@@ -12,6 +12,8 @@
 #include <utility>
 #include <vector>
 
+namespace directed_csr_detail { struct Access; }
+
 template<class T>
 class DirectedCSR {
   public:
@@ -21,9 +23,33 @@ class DirectedCSR {
 	using distance_type = std::conditional_t<std::is_integral_v<T> && sizeof(T) < 8, std::int64_t, T>;
 
   private:
+	friend struct directed_csr_detail::Access;
 	std::vector<std::size_t> offset_;
 	std::vector<Arc> arcs_;
+	int single_gap_ = -2;
+	bool unique_incoming_ = true;
+	void count_edge(const Edge &edge, std::vector<std::uint64_t> &seen) {
+		assert(0 <= edge.from && edge.from < size() && 0 <= edge.to && edge.to < size());
+		++offset_[edge.from];
+		if (unique_incoming_) {
+			auto mask = std::uint64_t(1) << (edge.to % 64);
+			auto &word = seen[edge.to / 64];
+			unique_incoming_ = !(word & mask);
+			word |= mask;
+		}
+	}
 	void finish(std::span<const Edge> edges) {
+		const auto n = offset_.size() - 1;
+		single_gap_ = -2;
+		if (edges.size() >= n - (n != 0) && edges.size() <= n &&
+			std::all_of(offset_.begin(), offset_.end() - 1, [](std::size_t x) { return x <= 1; })) {
+			single_gap_ = -1;
+			if (edges.size() != n) single_gap_ = int(std::find(offset_.begin(), offset_.end() - 1, 0) - offset_.begin());
+			for (std::size_t v = 0; v <= n; ++v) offset_[v] = v - (single_gap_ >= 0 && v > std::size_t(single_gap_));
+			arcs_.resize(edges.size());
+			for (const auto &edge : edges) arcs_[edge.from - (single_gap_ >= 0 && edge.from > single_gap_)] = {edge.to, edge.weight};
+			return;
+		}
 		for (std::size_t v = 1; v < offset_.size(); ++v) offset_[v] += offset_[v - 1];
 		arcs_.resize(edges.size());
 		for (std::size_t i = edges.size(); i; --i) {
@@ -32,6 +58,8 @@ class DirectedCSR {
 		}
 	}
 	void clear_edges() {
+		single_gap_ = -2;
+		unique_incoming_ = true;
 		std::fill(offset_.begin(), offset_.end(), 0);
 		arcs_.clear();
 	}
@@ -47,24 +75,28 @@ class DirectedCSR {
 	void build(int n, std::span<const Edge> edges) {
 		assert(n >= 0);
 		offset_.assign(std::size_t(n) + 1, 0);
-		for (const auto &edge : edges) {
-			assert(0 <= edge.from && edge.from < n && 0 <= edge.to && edge.to < n);
-			++offset_[edge.from];
+		single_gap_ = -2;
+		unique_incoming_ = edges.size() <= std::size_t(n);
+		try {
+			std::vector<std::uint64_t> seen(unique_incoming_ ? (std::size_t(n) + 63) / 64 : 0);
+			for (const auto &edge : edges) count_edge(edge, seen);
+			finish(edges);
 		}
-		try { finish(edges); }
 		catch (...) { clear_edges(); throw; }
 	}
 	template<class Producer>
 	void build(int n, std::size_t m, Producer &&produce) {
 		assert(n >= 0);
 		offset_.assign(std::size_t(n) + 1, 0);
+		single_gap_ = -2;
+		unique_incoming_ = m <= std::size_t(n);
 		try {
+			std::vector<std::uint64_t> seen(unique_incoming_ ? (std::size_t(n) + 63) / 64 : 0);
 			auto edges = std::make_unique_for_overwrite<Edge[]>(m);
 			std::size_t count = 0;
 			auto emit = [&](Edge edge) {
 				if (count == m) throw std::length_error("DirectedCSR edge count");
-				assert(0 <= edge.from && edge.from < n && 0 <= edge.to && edge.to < n);
-				++offset_[edge.from];
+				count_edge(edge, seen);
 				edges[count++] = std::move(edge);
 			};
 			std::forward<Producer>(produce)(emit);
@@ -80,5 +112,27 @@ class DirectedCSR {
 		return std::span<const Arc>(arcs_).subspan(offset_[v], offset_[v + 1] - offset_[v]);
 	}
 };
+
+namespace directed_csr_detail {
+template<class T>
+struct SingleEdgeView {
+	std::span<const typename DirectedCSR<T>::Arc> arcs;
+	int n, gap;
+	int size() const { return n; }
+	std::span<const typename DirectedCSR<T>::Arc> operator[](int v) const {
+		if (v == gap) return {};
+		return arcs.subspan(v - (gap >= 0 && v > gap), 1);
+	}
+};
+
+struct Access {
+	template<class T>
+	static bool unique_incoming(const DirectedCSR<T> &g) { return g.offset_.empty() || g.unique_incoming_; }
+	template<class T>
+	static bool has_single_edge_layout(const DirectedCSR<T> &g) { return !g.offset_.empty() && g.single_gap_ >= -1; }
+	template<class T>
+	static SingleEdgeView<T> single_edge_view(const DirectedCSR<T> &g) { return {g.arcs_, g.size(), g.single_gap_}; }
+};
+}
 
 #endif

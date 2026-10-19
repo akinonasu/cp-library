@@ -3,6 +3,7 @@
 
 #include "../components/dijkstra_queue.hpp"
 #include "../components/dijkstra_topological.hpp"
+#include "../components/dijkstra_unique.hpp"
 #include "../components/directed_csr.hpp"
 #include <algorithm>
 #include <cassert>
@@ -98,6 +99,7 @@ std::pair<T, std::vector<int>> path(const G &g, int st, int target, T inf) {
 	assert(target >= 0 && static_cast<std::size_t>(target) < n);
 	assert(inf > 0);
 	if (st == target) return {T(0), {st}};
+	if (g[st].empty()) return {T(-1), {}};
 	if (g[st].size() == 1) {
 		using Weight = std::remove_cvref_t<decltype(g[st][0].second)>;
 		std::vector<int> direct{st};
@@ -134,6 +136,8 @@ std::pair<T, std::vector<int>> path(const G &g, int st, int target, T inf) {
 		}
 	}
 	std::vector<int> parent(g.size(), -1);
+	if constexpr (requires { directed_csr_detail::Access::unique_incoming(g); })
+		if (directed_csr_detail::Access::unique_incoming(g)) return unique_path(g, st, target, inf, parent);
 	auto d = [&] {
 		if constexpr (Topological) return topological_run<true>(g, st, target, inf, parent);
 		else return run<true>(g, st, target, inf, parent);
@@ -179,6 +183,8 @@ std::vector<T> dijkstra(const DirectedCSR<W> &g, int st, T inf = shortest_path_d
 
 template<bool Topological, class W, class T = typename DirectedCSR<W>::distance_type>
 std::pair<T, std::vector<int>> dijkstra_path(const DirectedCSR<W> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
+	if (directed_csr_detail::Access::has_single_edge_layout(g))
+		return shortest_path_detail::path<Topological>(directed_csr_detail::Access::single_edge_view(g), st, target, inf);
 	return shortest_path_detail::path<Topological>(g, st, target, inf);
 }
 
