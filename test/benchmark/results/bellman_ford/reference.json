@@ -1,0 +1,130 @@
+{
+  "retrieved_at": "2026-10-19T19:51:03.835344+00:00",
+  "nonnegative_listing": {
+    "count": 3144,
+    "submissions": [
+      {
+        "id": 407097,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30457856,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-30T01:41:41.808768Z",
+        "time": 0.038
+      },
+      {
+        "id": 404592,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 20021248,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-21T09:44:36.551045Z",
+        "time": 0.04,
+        "user_name": "Rohan_Kapri"
+      },
+      {
+        "id": 403027,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 19984384,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-16T21:59:05.829603Z",
+        "time": 0.04,
+        "user_name": "nandhagk"
+      }
+    ]
+  },
+  "nonnegative_references": [
+    {
+      "overview": {
+        "id": 407097,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30457856,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-30T01:41:41.808768Z",
+        "time": 0.038
+      },
+      "sha256": "c9ef396d351cdab68d78374e4620e92203b6a96abf1303125f3ca2b77d95a159",
+      "url": "https://judge.yosupo.jp/submission/407097"
+    },
+    {
+      "overview": {
+        "id": 404592,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 20021248,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-21T09:44:36.551045Z",
+        "time": 0.04,
+        "user_name": "Rohan_Kapri"
+      },
+      "sha256": "ed2e29063256e08660176ff510672db36db03af15909dd2433566d026f62a294",
+      "url": "https://judge.yosupo.jp/submission/404592"
+    },
+    {
+      "overview": {
+        "id": 403027,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 19984384,
+        "problem_name": "shortest_path",
+        "problem_title": "Shortest Path",
+        "status": "AC",
+        "submission_time": "2026-09-16T21:59:05.829603Z",
+        "time": 0.04,
+        "user_name": "nandhagk"
+      },
+      "sha256": "260ecbb105b7896ecae311a68ce074b5dd7f8aa197c974e3d759b68b4a2419b5",
+      "url": "https://judge.yosupo.jp/submission/403027"
+    }
+  ],
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/networkx/networkx/abf2feda2252ee4e0d5a66964addf179225dfe76/networkx/algorithms/shortest_paths/weighted.py",
+      "commit": "abf2feda2252ee4e0d5a66964addf179225dfe76",
+      "sha256": "da0e0636110e356f79b0dca01a3a2e7b09d78da4f06867dcb6ebaab6a956904d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/PaoloLRinaldi/negative_weight_SSSP/27baa3002ec275fbda68a26d6c90ac51d2e0aee9/data/experiments/bcf_gor.csv",
+      "commit": "27baa3002ec275fbda68a26d6c90ac51d2e0aee9",
+      "sha256": "ae8ba981e2c4e02191c2a9b8c5ebbb67c02c1944e39a58cd1374c81ec4f59ccb"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/PaoloLRinaldi/negative_weight_SSSP/27baa3002ec275fbda68a26d6c90ac51d2e0aee9/data/experiments/shift_gor.csv",
+      "commit": "27baa3002ec275fbda68a26d6c90ac51d2e0aee9",
+      "sha256": "79cab1bad76b9e6b55584e0c2c3f34001131f5ec427c4592b27833edb05474af"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/PaoloLRinaldi/negative_weight_SSSP/27baa3002ec275fbda68a26d6c90ac51d2e0aee9/src/gor.c",
+      "commit": "27baa3002ec275fbda68a26d6c90ac51d2e0aee9",
+      "sha256": "bee4a87ae176e21c415b393ceb60c65b1b430d2e9e1355e5dba72b8242a99d3d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/PaoloLRinaldi/negative_weight_SSSP/27baa3002ec275fbda68a26d6c90ac51d2e0aee9/src/gor.cpp",
+      "commit": "27baa3002ec275fbda68a26d6c90ac51d2e0aee9",
+      "sha256": "38ab979de0013d37c99fae5d5aaad742040890463afc4cd95b864686b1a7adc5"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/PaoloLRinaldi/negative_weight_SSSP/27baa3002ec275fbda68a26d6c90ac51d2e0aee9/src/gor.h",
+      "commit": "27baa3002ec275fbda68a26d6c90ac51d2e0aee9",
+      "sha256": "0d9daafe3196e58acc2d9c1351f31735c8d7b594b07ca6dfc1fcd562be3b61a7"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/PaoloLRinaldi/negative_weight_SSSP/27baa3002ec275fbda68a26d6c90ac51d2e0aee9/src/types_gor.h",
+      "commit": "27baa3002ec275fbda68a26d6c90ac51d2e0aee9",
+      "sha256": "e3f8b209794a5170ba810759bcd4abf46e1be96aa13d374cb010a449ab9ce65f"
+    }
+  ],
+  "paper": "https://doi.org/10.4230/LIPIcs.SEA.2025.10"
+}

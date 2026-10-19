@@ -1,0 +1,405 @@
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/qand/.local/share/online-judge-tools/cookie.jar
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/header
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/1/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/1/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/2/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/2/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/3/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/3/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/4/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/4/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/5/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/5/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/6/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/6/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/7/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/7/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/8/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/8/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/9/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/9/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/10/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/10/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/11/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/11/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/12/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/12/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/13/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/13/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/14/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/14/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/15/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/15/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/16/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/16/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/17/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/17/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/18/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/18/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/19/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/19/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/20/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/20/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/21/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/21/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/22/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/22/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/23/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/23/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/24/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/24/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/25/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/25/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/26/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/26/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/27/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/27/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/28/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/28/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/29/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/29/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/30/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/30/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/31/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/31/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/32/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/32/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/33/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/33/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/34/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/34/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/35/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/35/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/36/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/36/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/37/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/37/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/38/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/38/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/39/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/39/out
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/40/in
+[NETWORK] 200 OK
+[NETWORK] GET: https://judgedat.u-aizu.ac.jp/testcases/GRL_1_B/40/out
+[NETWORK] 200 OK
+[INFO] save cookie to: /home/qand/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: 00_sample_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/00_sample_00.in.in
+[INFO] output: 00_sample_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/00_sample_00.in.out
+
+[INFO] sample 1
+[INFO] input: 00_sample_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/00_sample_01.in.in
+[INFO] output: 00_sample_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/00_sample_01.in.out
+
+[INFO] sample 2
+[INFO] input: 00_sample_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/00_sample_02.in.in
+[INFO] output: 00_sample_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/00_sample_02.in.out
+
+[INFO] sample 3
+[INFO] input: 01_small_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/01_small_00.in.in
+[INFO] output: 01_small_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/01_small_00.in.out
+
+[INFO] sample 4
+[INFO] input: 01_small_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/01_small_01.in.in
+[INFO] output: 01_small_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/01_small_01.in.out
+
+[INFO] sample 5
+[INFO] input: 02_corner_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_00.in.in
+[INFO] output: 02_corner_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_00.in.out
+
+[INFO] sample 6
+[INFO] input: 02_corner_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_01.in.in
+[INFO] output: 02_corner_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_01.in.out
+
+[INFO] sample 7
+[INFO] input: 02_corner_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_02.in.in
+[INFO] output: 02_corner_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_02.in.out
+
+[INFO] sample 8
+[INFO] input: 02_corner_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_03.in.in
+[INFO] output: 02_corner_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_03.in.out
+
+[INFO] sample 9
+[INFO] input: 02_corner_04.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_04.in.in
+[INFO] output: 02_corner_04.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_04.in.out
+
+[INFO] sample 10
+[INFO] input: 02_corner_05.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_05.in.in
+[INFO] output: 02_corner_05.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_05.in.out
+
+[INFO] sample 11
+[INFO] input: 02_corner_06.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_06.in.in
+[INFO] output: 02_corner_06.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/02_corner_06.in.out
+
+[INFO] sample 12
+[INFO] input: 03_medium_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/03_medium_00.in.in
+[INFO] output: 03_medium_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/03_medium_00.in.out
+
+[INFO] sample 13
+[INFO] input: 03_medium_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/03_medium_01.in.in
+[INFO] output: 03_medium_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/03_medium_01.in.out
+
+[INFO] sample 14
+[INFO] input: 03_medium_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/03_medium_02.in.in
+[INFO] output: 03_medium_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/03_medium_02.in.out
+
+[INFO] sample 15
+[INFO] input: 03_medium_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/03_medium_03.in.in
+[INFO] output: 03_medium_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/03_medium_03.in.out
+
+[INFO] sample 16
+[INFO] input: 04_rand_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_00.in.in
+[INFO] output: 04_rand_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_00.in.out
+
+[INFO] sample 17
+[INFO] input: 04_rand_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_01.in.in
+[INFO] output: 04_rand_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_01.in.out
+
+[INFO] sample 18
+[INFO] input: 04_rand_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_02.in.in
+[INFO] output: 04_rand_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_02.in.out
+
+[INFO] sample 19
+[INFO] input: 04_rand_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_03.in.in
+[INFO] output: 04_rand_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_03.in.out
+
+[INFO] sample 20
+[INFO] input: 04_rand_04.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_04.in.in
+[INFO] output: 04_rand_04.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_04.in.out
+
+[INFO] sample 21
+[INFO] input: 04_rand_05.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_05.in.in
+[INFO] output: 04_rand_05.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_05.in.out
+
+[INFO] sample 22
+[INFO] input: 04_rand_06.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_06.in.in
+[INFO] output: 04_rand_06.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_06.in.out
+
+[INFO] sample 23
+[INFO] input: 04_rand_07.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_07.in.in
+[INFO] output: 04_rand_07.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/04_rand_07.in.out
+
+[INFO] sample 24
+[INFO] input: 05_dag_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/05_dag_00.in.in
+[INFO] output: 05_dag_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/05_dag_00.in.out
+
+[INFO] sample 25
+[INFO] input: 05_dag_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/05_dag_01.in.in
+[INFO] output: 05_dag_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/05_dag_01.in.out
+
+[INFO] sample 26
+[INFO] input: 05_dag_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/05_dag_02.in.in
+[INFO] output: 05_dag_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/05_dag_02.in.out
+
+[INFO] sample 27
+[INFO] input: 05_dag_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/05_dag_03.in.in
+[INFO] output: 05_dag_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/05_dag_03.in.out
+
+[INFO] sample 28
+[INFO] input: 06_ring_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/06_ring_00.in.in
+[INFO] output: 06_ring_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/06_ring_00.in.out
+
+[INFO] sample 29
+[INFO] input: 06_ring_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/06_ring_01.in.in
+[INFO] output: 06_ring_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/06_ring_01.in.out
+
+[INFO] sample 30
+[INFO] input: 06_ring_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/06_ring_02.in.in
+[INFO] output: 06_ring_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/06_ring_02.in.out
+
+[INFO] sample 31
+[INFO] input: 06_ring_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/06_ring_03.in.in
+[INFO] output: 06_ring_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/06_ring_03.in.out
+
+[INFO] sample 32
+[INFO] input: 07_large_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/07_large_00.in.in
+[INFO] output: 07_large_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/07_large_00.in.out
+
+[INFO] sample 33
+[INFO] input: 07_large_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/07_large_01.in.in
+[INFO] output: 07_large_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/07_large_01.in.out
+
+[INFO] sample 34
+[INFO] input: 07_large_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/07_large_02.in.in
+[INFO] output: 07_large_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/07_large_02.in.out
+
+[INFO] sample 35
+[INFO] input: 07_large_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/07_large_03.in.in
+[INFO] output: 07_large_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/07_large_03.in.out
+
+[INFO] sample 36
+[INFO] input: 08_maximum_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/08_maximum_00.in.in
+[INFO] output: 08_maximum_00.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/08_maximum_00.in.out
+
+[INFO] sample 37
+[INFO] input: 08_maximum_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/08_maximum_01.in.in
+[INFO] output: 08_maximum_01.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/08_maximum_01.in.out
+
+[INFO] sample 38
+[INFO] input: 08_maximum_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/08_maximum_02.in.in
+[INFO] output: 08_maximum_02.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/08_maximum_02.in.out
+
+[INFO] sample 39
+[INFO] input: 08_maximum_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/08_maximum_03.in.in
+[INFO] output: 08_maximum_03.in
+[SUCCESS] saved to: /mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/2ad313f4f85f64f48ba8194efb298848/test/08_maximum_03.in.out
