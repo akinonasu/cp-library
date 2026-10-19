@@ -1,0 +1,49 @@
+adopted_check passed
+adopted_sanitize passed
+<stdin>: In function 'int main()':
+<stdin>:6:5: warning: unused variable 'prefix' [-Wunused-variable]
+<stdin>:7:5: warning: unused variable 'suffix' [-Wunused-variable]
+<stdin>: In function 'int main()':
+<stdin>:6:5: warning: unused variable 'prefix' [-Wunused-variable]
+<stdin>:7:5: warning: unused variable 'suffix' [-Wunused-variable]
+<stdin>: In function 'int main()':
+<stdin>:4:5: warning: unused variable 'length' [-Wunused-variable]
+<stdin>: In function 'int main()':
+<stdin>:4:5: warning: unused variable 'distance' [-Wunused-variable]
+<stdin>: In function 'int main()':
+<stdin>:5:11: warning: structured binding declaration set but not used [-Wunused-but-set-variable]
+g++ test/run_enumerate.test.cpp 24 cases passed
+g++ test/lcs.test.cpp 6 cases passed
+g++ test/lcs_restore.test.cpp 6 cases passed
+g++ test/edit_distance.test.cpp 50 cases passed
+<stdin>:6:5: warning: unused variable 'prefix' [-Wunused-variable]
+    6 | int prefix = sequence_compare_detail::prefix(a.data(), b.data(), 5); // 3
+      |     ^~~~~~
+<stdin>:7:5: warning: unused variable 'suffix' [-Wunused-variable]
+    7 | int suffix = sequence_compare_detail::suffix(a.data() + a.size(),
+      |     ^~~~~~
+2 warnings generated.
+<stdin>:6:5: warning: unused variable 'prefix' [-Wunused-variable]
+    6 | int prefix = match.forward(0, 2, 3);  // 2
+      |     ^~~~~~
+<stdin>:7:5: warning: unused variable 'suffix' [-Wunused-variable]
+    7 | int suffix = match.backward(2, 4, 2); // 2
+      |     ^~~~~~
+2 warnings generated.
+<stdin>:4:5: warning: unused variable 'length' [-Wunused-variable]
+    4 | int length = lcs_length("abcde", "ace"); // 3
+      |     ^~~~~~
+1 warning generated.
+<stdin>:4:5: warning: unused variable 'distance' [-Wunused-variable]
+    4 | int distance = edit_distance("kitten", "sitting"); // 3
+      |     ^~~~~~~~
+1 warning generated.
+<stdin>:5:11: warning: unused variable '[period, l, r]' [-Wunused-variable]
+    5 | for (auto [period, l, r] : runs) {
+      |           ^
+1 warning generated.
+clang++ test/run_enumerate.test.cpp 24 cases passed
+clang++ test/lcs.test.cpp 6 cases passed
+clang++ test/lcs_restore.test.cpp 6 cases passed
+clang++ test/edit_distance.test.cpp 50 cases passed
+All shared optimization checks passed
