@@ -93,7 +93,7 @@ std::vector<T> distances(const G &g, int st, T inf) {
 
 template<bool Topological, class G, class T>
 std::pair<T, std::vector<int>> path(const G &g, int st, int target, T inf) {
-	const auto n = static_cast<std::size_t>(g.size());
+	[[maybe_unused]] const auto n = static_cast<std::size_t>(g.size());
 	assert(n <= static_cast<std::size_t>(std::numeric_limits<int>::max()));
 	assert(st >= 0 && static_cast<std::size_t>(st) < n);
 	assert(target >= 0 && static_cast<std::size_t>(target) < n);
