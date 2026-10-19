@@ -14,7 +14,7 @@ GCC 14.2、Linux x86_64、CPU 2 固定、`-std=c++23 -O2 -DEVAL -DONLINE_JUDGE -
 
 最初の三入力はこの変更の対象となる汎用経路。最大二入力は既存の `Product` 経路を通る control であり、そこに見える変動を汎用借用の効果とは扱わない。中央値の差と paired 中央値も異なる統計量である。確認測定では対象三入力がいずれも改善したため借用版を採用した。比較した split 版の値も原票に残し、採用版へ置き換えていない。
 
-追加コンストラクタは A を所有せず、B と二つの根表だけを確保する。32 byte 境界から `len+16` 個以上の生存中の `Mint` を借り、既存と同じ GCC may-alias SIMD、assembly、`memcpy` で処理する。公開入力は const のままコピーし、予約容量への生存期間外の書き込みや、`Mint` 配列への scalar `uint32_t` 参照を追加しない。返す係数は正規化した Montgomery 表現で、時間 $O(N\log N)$、追加空間 $O(N)$ は変わらない。
+追加コンストラクタは A を所有せず、B と二つの根表だけを確保する。32 byte 境界から `len+16` 個以上の生存中の `Mint` を借り、既存と同じ GCC may-alias SIMD、assembly、`memcpy` で処理する。公開入力は const のままコピーし、予約容量への生存期間外の書き込みや、`Mint` 配列への scalar `uint32_t` 参照を追加しない。返す係数は正規化した Montgomery 表現で、時間 $$O(N\log N)$$、追加空間 $$O(N)$$ は変わらない。
 
 独立レビューと拡張 unit は、最小変換長 64、奇数・偶数 log、両辺 sparse、片辺 dense、入力交換・同一入力・零・遅延 Montgomery 値、0 / 32 mod 64 の借用先、末尾 guard / canary と入力 read-only を確認した。GCC 14 Werror、ASan / UBSan、GCC 13 Werror が成功した。既存の全 53 公式入力成功記録についても、private 候補の全 109 source、driver、binary の SHA-256 が一致することを確認して再利用した。
 

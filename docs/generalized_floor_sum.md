@@ -16,12 +16,12 @@ auto signed_sum = generalized_floor_sum<1, 1>(6, 6, -2, 9); // -4
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `generalized_floor_sum<P,Q,T = __int128_t>(n,m,a,b)` | $$\sum_{i=0}^{n-1}i^P\lfloor(ai+b)/m\rfloor^Q$$ を返す | $$O(D^3\log m)$$、初回は別途 $$O(D^3)$$ |
+| `generalized_floor_sum<P,Q,T = __int128_t>(n,m,a,b)` | $$\displaystyle \sum_{i=0}^{n-1}i^P\lfloor(ai+b)/m\rfloor^Q$$ を返す | $$O(D^3\log m)$$、初回は別途 $$O(D^3)$$ |
 | `generalized_floor_sum_moments<D,T = __int128_t>(n,m,a,b)` | $$p+q\le D$$ の和を `sums[p][q]` にまとめて返す | $$O(D^3\log m)$$、初回は別途 $$O(D^3)$$ |
 
 `generalized_floor_sum<P, Q, T = __int128_t>(n, m, a, b)` は次を返します。
 
-$$\sum_{i=0}^{n-1} i^P\left\lfloor\frac{ai+b}{m}\right\rfloor^Q$$
+$$\displaystyle \sum_{i=0}^{n-1} i^P\left\lfloor\frac{ai+b}{m}\right\rfloor^Q$$
 
 `generalized_floor_sum_moments<D, T = __int128_t>` は $$p+q\le D$$ の和を `sums[p][q]` にまとめて返します。
 

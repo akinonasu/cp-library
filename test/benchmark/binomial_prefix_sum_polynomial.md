@@ -7,19 +7,19 @@ offline 版 `binomial_prefix_sum(queries)` を、記事の多項式分割統治�
 - [zhoukangyang「组合数前缀和」](https://www.cnblogs.com/zkyJuruo/p/16995141.html)、2022-12-20。取得情報は [article_source.json](results/binomial_prefix_sum_polynomial/article_source.json)。記事には実装コードがなく、記載された分割統治と剰余木の考え方から実装した。
 - 直接対応する Library Checker 問題は確認できなかった。同じ prefix sum を使う [yukicoder No.2206](https://yukicoder.me/problems/no/2206) の AC 一覧を再取得した。[1110156](https://yukicoder.me/submissions/1110156) は 307 ms、[1110155](https://yukicoder.me/submissions/1110155) は 308 ms、[1110477](https://yukicoder.me/submissions/1110477) は 320 ms で、いずれも Mo 法だった。取得記録とソースのハッシュは [reference.json](results/binomial_prefix_sum_polynomial/reference.json)。公開ジャッジ時間と今回のローカル時間は直接比較しない。
 
-記事の和は右端を含むが、公開 API は従来どおり $$S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ とする。記事の $$n\leq10^{18}$$ への対応は追加せず、従来の非負 `int`、法未満という入力条件で比較した。
+記事の和は右端を含むが、公開 API は従来どおり $$\displaystyle S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ とする。記事の $$n\leq10^{18}$$ への対応は追加せず、従来の非負 `int`、法未満という入力条件で比較した。
 
 ## アルゴリズム
 
 対称性で $$m=\min(k,n+1-k)$$ に折り返し、
 
-$$P_{a,b}(x)=\prod_{j=a}^{b-1}(x-j),\qquad H_{a,b}(x)=\sum_{i=a}^{b-1}\frac{1}{i!}\prod_{j=a}^{i-1}(x-j)$$
+$$\displaystyle P_{a,b}(x)=\prod_{j=a}^{b-1}(x-j),\qquad H_{a,b}(x)=\sum_{i=a}^{b-1}\frac{1}{i!}\prod_{j=a}^{i-1}(x-j)$$
 
 を使う。$$H_{0,m}(n)=S(n,m)$$ であり、境界 $$c$$ で
 
 $$P_{a,b}=P_{a,c}P_{c,b},\qquad H_{a,b}=H_{a,c}+P_{a,c}H_{c,b}$$
 
-と合成できる。問い合わせを $$m$$ 順に並べ、子へ渡す prefix と降階乗積を、その子の問い合わせに対応する $$\prod(x-n)$$ で剰余化する。部分問題ごとに独立した多点評価を繰り返さず、剰余を木に沿って伝播させる。
+と合成できる。問い合わせを $$m$$ 順に並べ、子へ渡す prefix と降階乗積を、その子の問い合わせに対応する $$\displaystyle \prod(x-n)$$ で剰余化する。部分問題ごとに独立した多点評価を繰り返さず、剰余を木に沿って伝播させる。
 
 同じ $$(m,n)$$ はまとめる。根で不要な基底と剰余多項式、右端の経路で不要な基底は構築しない。葉は最大 16 点とし、Horner 法と残りの短い降階乗和を直接評価する。空・全体・端・中央の処理と反転は従来どおり行う。
 

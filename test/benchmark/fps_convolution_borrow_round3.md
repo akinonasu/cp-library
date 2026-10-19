@@ -46,7 +46,7 @@ B は A の次の 64 byte cache set から始めるよう、owned 領域内の�
 | 32 byte + fill insert | 約 5.4–5.6 ms 遅い | [不採用](results/fps_convolution_borrow_round3/fill_insert_21.json) |
 | 2 MB + assign | 大きい二入力の改善が小さく、非対称入力は遅い | [不採用](results/fps_convolution_borrow_round3/assign_21.json) |
 
-2 MB alignment は追加確保・初期化の費用を含めて測定した。小さい入力も 2 MB に揃える初期案は特に遅いため、後続候補では変換長 $2^{19}$ 以上だけ 2 MB にした。各候補の patch と元の生成・測定 script は [保存先](results/fps_convolution_borrow_round3/metadata.json) に hash 付きで残した。
+2 MB alignment は追加確保・初期化の費用を含めて測定した。小さい入力も 2 MB に揃える初期案は特に遅いため、後続候補では変換長 $$2^{19}$$ 以上だけ 2 MB にした。各候補の patch と元の生成・測定 script は [保存先](results/fps_convolution_borrow_round3/metadata.json) に hash 付きで残した。
 
 ## 再現
 

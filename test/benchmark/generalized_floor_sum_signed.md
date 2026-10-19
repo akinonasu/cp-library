@@ -14,7 +14,7 @@ $$a=u_am+r_a,\quad b=u_bm+r_b,\quad 0\le r_a,r_b<m$$
 
 とすると、床関数は次のように分解できる。
 
-$$\left\lfloor\frac{ai+b}{m}\right\rfloor=u_ai+u_b+\left\lfloor\frac{r_ai+r_b}{m}\right\rfloor$$
+$$\displaystyle \left\lfloor\frac{ai+b}{m}\right\rfloor=u_ai+u_b+\left\lfloor\frac{r_ai+r_b}{m}\right\rfloor$$
 
 余りの部分を既存の非負版で計算し、`u_a*i` と `u_b` の加算を二項展開でモーメント表へ反映する。この処理は既存のユークリッド縮約で使う平行移動と共通化した。負でない入力は直接従来の経路へ渡す。整数の最小値をその型のまま符号反転せず、符号なしの絶対値で商と余りを計算する。
 

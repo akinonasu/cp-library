@@ -32,11 +32,11 @@
 
 ### 実装上の確認
 
-SIMD 候補は元の手書き AVX2 asm と同じ列だけを読み書きする。AVX-512 では runtime 判定を置き、AVX2 intrinsic 版とともに非整列 load/store を使った。[wide primitive](results/fps_composition_round3/wide_primitive.cpp)・[narrow primitive](results/fps_composition_round3/narrow_primitive.cpp) で順変換入力 $<4p$、逆変換入力 $<2p$、複数の根と列幅に対し元 asm と全 word の一致を確認した。
+SIMD 候補は元の手書き AVX2 asm と同じ列だけを読み書きする。AVX-512 では runtime 判定を置き、AVX2 intrinsic 版とともに非整列 load/store を使った。[wide primitive](results/fps_composition_round3/wide_primitive.cpp)・[narrow primitive](results/fps_composition_round3/narrow_primitive.cpp) で順変換入力 $$<4p$$、逆変換入力 $$<2p$$、複数の根と列幅に対し元 asm と全 word の一致を確認した。
 
-射影と除算の融合では、最終係数 $a_k$ を逆順に読み、分母 $p-n+1+j$ と倍率 $p-1$ を使って $a_{n-1-j}/(n-1-j)$ を直接生成する。射影の最終変換が終わってから古い Tables 領域を出力へ転用し、生成元の product・r3 とは重ならない。既存の `fps_composition_blocked` はこの候補と buffer 再利用候補で成功した。buffer 再利用を再検討する場合、直接法が入力を再読する小さい native 次数では別 buffer を保つ必要がある。今回測った公開経路の次数では直接法を使わないが、試作をそのまま一般化しない。
+射影と除算の融合では、最終係数 $$a_k$$ を逆順に読み、分母 $$p-n+1+j$$ と倍率 $$p-1$$ を使って $$a_{n-1-j}/(n-1-j)$$ を直接生成する。射影の最終変換が終わってから古い Tables 領域を出力へ転用し、生成元の product・r3 とは重ならない。既存の `fps_composition_blocked` はこの候補と buffer 再利用候補で成功した。buffer 再利用を再検討する場合、直接法が入力を再読する小さい native 次数では別 buffer を保つ必要がある。今回測った公開経路の次数では直接法を使わないが、試作をそのまま一般化しない。
 
-根 1 の候補は、$k=0$ で `wx=wy=1` となる Shoup 積 3 回を `reduce(2p)` に置き換え、残る $w_z=i$ の積だけを実行する。lazy 表現は元の asm と異なることがあるが、mod $p$ で一致し、順変換出力 $<4p$・逆変換出力 $<2p$ を維持する。[primitive](results/fps_composition_round3/zero_primitive.cpp) は 0、上限直前、乱数の係数、列幅 1 を含む複数の幅と $4\le h\le8192$ を使い、合同性・lazy 上限・対象外列の完全一致を確認した。数学・読み境界・scratch の寿命は別担当の読み取りレビューでも確認した。
+根 1 の候補は、$$k=0$$ で `wx=wy=1` となる Shoup 積 3 回を `reduce(2p)` に置き換え、残る $$w_z=i$$ の積だけを実行する。lazy 表現は元の asm と異なることがあるが、mod $$p$$ で一致し、順変換出力 $$<4p$$・逆変換出力 $$<2p$$ を維持する。[primitive](results/fps_composition_round3/zero_primitive.cpp) は 0、上限直前、乱数の係数、列幅 1 を含む複数の幅と $$4\le h\le8192$$ を使い、合同性・lazy 上限・対象外列の完全一致を確認した。数学・読み境界・scratch の寿命は別担当の読み取りレビューでも確認した。
 
 prototype の通常 GCC `-Wall -Wextra -Werror` 検証結果と binary/header hash は [artifacts.json](results/fps_composition_round3/artifacts.json) にある。不採用候補のため ASan/UBSan や本番用 unit の追加は行っていない。既存の成功済み検証を今回の採用実装の証拠に流用するものでもない。
 
