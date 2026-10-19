@@ -1,0 +1,59 @@
+--- a/components/fps_convolution.hpp
++++ b/components/fps_convolution.hpp
+@@ -3654,13 +3654,15 @@
+ 
+ 
+ 
++template <bool normalize = false>
+ inline void forward_radix8(Vec* f, std::size_t q, const std::uint32_t* roots) {
+ 	const Factor i(roots[1], roots[9]), y(roots[2], roots[10]), z(roots[3], roots[11]);
+ 	for (std::size_t j = 0; j < q; ++j) {
+ 		const Vec f0 = f[j], f1 = f[j + q], f2 = f[j + 2 * q], f3 = f[j + 3 * q];
+-		
+-		const Vec g0 = add(f0, f2), g1 = add(f1, f3);
+-		const Vec h0 = diff_canonical(f0, f2), ih1 = times(diff_canonical(f1, f3), i);
++		const Vec g0 = normalize ? reduce(add(f0, f2), 2 * kP) : add(f0, f2);
++		const Vec g1 = normalize ? reduce(add(f1, f3), 2 * kP) : add(f1, f3);
++		const Vec h0 = normalize ? reduce(diff(f0, f2), 2 * kP) : diff_canonical(f0, f2);
++		const Vec ih1 = times(normalize ? diff(f1, f3) : diff_canonical(f1, f3), i);
+ 		f[j] = add(g0, g1), f[j + q] = diff(g0, g1);
+ 		f[j + 2 * q] = add(h0, ih1), f[j + 3 * q] = diff(h0, ih1);
+ 		
+@@ -3767,6 +3769,9 @@
+ 
+ 
+ 	
++	const std::uint32_t* multiply() { return multiply<false>(); }
++
++	template <bool normalize_a>
+ 	const std::uint32_t* multiply() {
+ 		using namespace ntt::detail;
+ 		const std::size_t len = length(), nv = len / 8, q = nv / 8;
+@@ -3774,7 +3779,7 @@
+ 		build_table(inverse_roots_, len / 16, kRoots[1]);
+ 		auto* a = reinterpret_cast<Vec*>(a_);
+ 		auto* b = reinterpret_cast<Vec*>(b_);
+-		forward_radix8(a, q, roots_);
++		forward_radix8<normalize_a>(a, q, roots_);
+ 		forward_radix8(b, q, roots_);
+ 
+ 		const Subtrees subtrees(roots_, inverse_roots_);
+@@ -3835,14 +3840,15 @@
+ 	const std::size_t words = len + 16 + alignment / sizeof(Mint) - 1, size = a.size() + b.size() - 1;
+ 	std::vector<Mint> result;
+ 	prepare_fps_output(result, words);
+-	result.assign(words, Mint::word(0));
+ 	const auto address = reinterpret_cast<std::uintptr_t>(result.data());
+ 	const std::size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(Mint);
++	result.resize(offset);
++	result.insert(result.end(), a.begin(), a.end());
++	result.resize(words);
+ 	Mint* const to = result.data() + offset;
+ 	Product plan(a.size(), b.size(), reinterpret_cast<std::uint32_t*>(to));
+-	copy_input_mint(a, to);
+ 	copy_input(b, plan.b(), len);
+-	plan.multiply();
++	plan.multiply<true>();
+ 	if (offset) std::memmove(static_cast<void*>(result.data()), to, size * sizeof(Mint));
+ 	result.resize(size);
+ 	return result;

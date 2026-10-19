@@ -1,0 +1,54 @@
+{
+  "started": "2026-10-19T05:51:46.257856+00:00",
+  "baseline": "bd29f70c70e24e27770b9e9a3777b6cf85664b63",
+  "head": "bd29f70c70e24e27770b9e9a3777b6cf85664b63",
+  "selection": "test/benchmark/results/fps_round4_validation/selection-final.json",
+  "selection_sha256": "04844928ae69a702212181f3ad9f229aefc381fad60143c4f15e4f718281fb7c",
+  "script_sha256": "df93a9bf6bb6049ac1bc5864af90b8a360cbe66dcad84e10c890d0bb607f0815",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "clang": "Debian clang version 19.1.7 (3+b1)",
+  "python": "Python 3.12.14",
+  "verify_helper_version": "5.6.0",
+  "lock": "flock -s /tmp/cp-fps-tuning.lock",
+  "commands": [
+    [
+      "/tmp/fps-venv/bin/python",
+      ".verify-helper/ci.py",
+      "docs",
+      "--selection",
+      "test/benchmark/results/fps_round4_validation/selection-final.json"
+    ],
+    [
+      "/tmp/fps-venv/bin/python",
+      ".verify-helper/check-docs.py",
+      "--selection",
+      "test/benchmark/results/fps_round4_validation/selection-final.json"
+    ]
+  ],
+  "selected_bundles": [
+    "components/fps_convolution.hpp",
+    "components/fps_convolution_unbalanced.hpp",
+    "components/fps_product_tree.hpp",
+    "components/fps_taylor_blocked.hpp",
+    "components/polynomial_half_gcd.hpp",
+    "convolution/convolution.hpp",
+    "convolution/cyclic_convolution.hpp",
+    "convolution/max_min_convolution.hpp",
+    "convolution/multiplicative_convolution.hpp",
+    "convolution/multivariate_convolution.hpp",
+    "convolution/ordered_convolution.hpp",
+    "fps/bostan_mori.hpp",
+    "fps/compose.hpp",
+    "fps/compositional_inverse.hpp",
+    "fps/fps.hpp",
+    "fps/interpolate.hpp",
+    "fps/linear_recurrence.hpp",
+    "fps/multipoint_eval.hpp",
+    "fps/polynomial_gcd.hpp",
+    "fps/power_projection.hpp",
+    "fps/taylor_shift.hpp"
+  ],
+  "total_library_count": 151,
+  "expected_generated_source_count": 276,
+  "source_scope": "All production headers, source docs, README/AGENTS, judge/unit C++, verification scripts/config/templates, docs harness and selection. Mutable benchmark reports/results and generated outputs are excluded."
+}

@@ -1,0 +1,38 @@
+{
+  "baseline.tar.xz": {
+    "sha256": "558c89209ed31d6a4b2f43df12481e00a7b28e884dd16576742acb1b83ef332d",
+    "bytes": 209860
+  },
+  "current.patch": {
+    "sha256": "bf04fcd206c7c7feb18b7fd20968a5d60d2fdc0057c080d88137382555e61354",
+    "bytes": 8459
+  },
+  "harness.py": {
+    "sha256": "dbf52812fbbe4770ba9e0ec97d7a65638baaba26223dc4c5b27eb336dcd90fac",
+    "bytes": 20488
+  },
+  "primary.json": {
+    "sha256": "72af0648ac470bf03ab050034af1bf141a0323e5f87b281d1647788ad22d230e",
+    "bytes": 911883
+  },
+  "reconstruction.json": {
+    "sha256": "a2fdd0fc8b6bcddb880e25f16444e4d0755cfe1748f896b909185fc9c4f3c548",
+    "bytes": 316
+  },
+  "reference.cpp.xz": {
+    "sha256": "e8a5a214d1f0de52cb08df5649a75eaa09cb14a25e86cb1312d6ef20dad1c423",
+    "bytes": 34244
+  },
+  "replay.py": {
+    "sha256": "dc34a86c02a78560bdd1c164b928ac5b9ed45017e055aad5146592cd36d21d0d",
+    "bytes": 3817
+  },
+  "scope_review.json": {
+    "sha256": "ecf1c923cab627d3636e1ba7a50080f34ae9bbc83ca53f6335801392941a3cc9",
+    "bytes": 4141
+  },
+  "sources.json": {
+    "sha256": "1689f03aed6a2dacf55fadd8f4d32f1d321793d56f9521f3da577634f4af76ba",
+    "bytes": 32093
+  }
+}

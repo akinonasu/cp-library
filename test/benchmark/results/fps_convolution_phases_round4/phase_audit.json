@@ -1,0 +1,19 @@
+{
+  "baseline": "7521ea8703a362aaf3ccd370188fccab86050848",
+  "unmodified_reference_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+  "instrumented_reference_sha256": "d3bbbe7d873084dbcba474f4bf0baf073729cbf9b7c582a8344919f3859ffeb3",
+  "all_snapshot_files_unchanged": true,
+  "live_sources_match_snapshot": true,
+  "snapshot_files": 111,
+  "checker_order": [
+    "input",
+    "actual",
+    "answer"
+  ],
+  "checks_including_warmups": 80,
+  "phase_sum_exact": true,
+  "timing_frozen": true,
+  "trials_per_variant_case": 9,
+  "warmup_per_variant_case": 1,
+  "reference_source_matches_cache": true
+}

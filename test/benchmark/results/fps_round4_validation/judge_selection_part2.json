@@ -1,0 +1,12 @@
+{
+  "verification": [
+    "test/fps_bostan_mori.test.cpp",
+    "test/fps_compositional_inverse.test.cpp",
+    "test/fps_exp.test.cpp",
+    "test/fps_inv.test.cpp",
+    "test/fps_log.test.cpp",
+    "test/fps_taylor_shift.test.cpp",
+    "test/multivariate_convolution.test.cpp",
+    "test/power_projection.test.cpp"
+  ]
+}

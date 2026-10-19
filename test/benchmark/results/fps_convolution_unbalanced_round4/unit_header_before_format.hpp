@@ -1,0 +1,49 @@
+#ifndef CP_COMPONENTS_FPS_CONVOLUTION_UNBALANCED_HPP
+#define CP_COMPONENTS_FPS_CONVOLUTION_UNBALANCED_HPP
+#include "fps_blocked.hpp"
+#include <algorithm>
+#include <bit>
+#include <vector>
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+_Pragma("GCC target(\"avx2\")")
+namespace fps_detail::multiply_detail::unbalanced {
+using namespace blocked_poly;
+inline bool fits(std::size_t n, std::size_t m) {
+	const auto shorter = std::min(n, m), longer = std::max(n, m);
+	return shorter > 32 && longer >= 32768 && shorter <= longer / 32;
+}
+inline std::vector<Mint> multiply(std::span<const Mint> a, std::span<const Mint> b) {
+	const std::size_t len = 8 * std::bit_ceil(std::min(a.size(), b.size()));
+	const auto& x = a.size() >= b.size() ? a : b;
+	const auto& y = a.size() >= b.size() ? b : a;
+	const std::size_t n = x.size(), m = y.size(), stride = len - m + 1;
+	const int lg = std::countr_zero(len);
+	Arena arena(Transform::words(lg) + 3 * Arena::footprint(len));
+	const Transform t(arena, lg);
+	auto bt = arena.take(len), in = arena.take(len), out = arena.take(len);
+	for (std::size_t i = 0; i < m; ++i) in[i] = y[i].val();
+	t.forward(in.first(m), 0, bt);
+	std::vector<Mint> result;
+	fps_detail::prepare_fps_output(result, n + m - 1);
+	for (std::size_t p = 0; p < n; p += stride) {
+		const std::size_t count = std::min(stride, n - p);
+		for (std::size_t i = 0; i < count; ++i) {
+			const unsigned v = x[p + i].v;
+			in[i] = std::min(v, v - Mint::mod());
+		}
+		t.cyclic_product(in.first(count), 0, out, bt);
+		const std::size_t overlap = p == 0 ? 0 : m - 1;
+		for (std::size_t i = 0; i < overlap; ++i) {
+			const unsigned v = result[p + i].v + out[i];
+			result[p + i] = Mint::word(std::min(v, v - Mint::mod()));
+		}
+		fps_detail::append_fps_words<true>(result, out.data() + overlap, count + m - 1 - overlap);
+	}
+	return result;
+}
+}
+#pragma GCC pop_options
+#endif
+#endif

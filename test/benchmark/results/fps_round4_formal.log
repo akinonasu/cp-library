@@ -1,0 +1,64 @@
+built convolution_mod before
+built convolution_mod current
+built convolution_mod reference
+built inv_of_formal_power_series before
+built inv_of_formal_power_series current
+built inv_of_formal_power_series reference
+built log_of_formal_power_series before
+built log_of_formal_power_series current
+built log_of_formal_power_series reference
+built exp_of_formal_power_series before
+built exp_of_formal_power_series current
+built exp_of_formal_power_series reference
+built pow_of_formal_power_series before
+built pow_of_formal_power_series current
+built pow_of_formal_power_series reference
+built sqrt_of_formal_power_series before
+built sqrt_of_formal_power_series current
+built sqrt_of_formal_power_series reference
+built division_of_polynomials before
+built division_of_polynomials current
+built division_of_polynomials reference
+built kth_term_of_linearly_recurrent_sequence before
+built kth_term_of_linearly_recurrent_sequence current
+built kth_term_of_linearly_recurrent_sequence reference
+built composition_of_formal_power_series before
+built composition_of_formal_power_series current
+built composition_of_formal_power_series reference
+built composition_of_formal_power_series_large before
+built composition_of_formal_power_series_large current
+built composition_of_formal_power_series_large reference
+built compositional_inverse_of_formal_power_series before
+built compositional_inverse_of_formal_power_series current
+built compositional_inverse_of_formal_power_series reference
+built compositional_inverse_of_formal_power_series_large before
+built compositional_inverse_of_formal_power_series_large current
+built compositional_inverse_of_formal_power_series_large reference
+built multipoint_evaluation before
+built multipoint_evaluation current
+built multipoint_evaluation reference
+built polynomial_interpolation before
+built polynomial_interpolation current
+built polynomial_interpolation reference
+built polynomial_taylor_shift before
+built polynomial_taylor_shift current
+built polynomial_taylor_shift reference
+built inv_of_polynomials before
+built inv_of_polynomials current
+built inv_of_polynomials reference
+convolution_mod {'before': 12.181942, 'current': 12.210243, 'reference': 9.775904}
+inv_of_formal_power_series {'before': 11.497721, 'current': 11.619062, 'reference': 10.130744}
+log_of_formal_power_series {'before': 13.586936, 'current': 13.447648, 'reference': 12.290122}
+exp_of_formal_power_series {'before': 16.164057, 'current': 16.290787, 'reference': 14.671613}
+pow_of_formal_power_series {'before': 23.911989, 'current': 23.902955, 'reference': 22.212475}
+sqrt_of_formal_power_series {'before': 12.24179, 'current': 12.248701, 'reference': 10.121489}
+division_of_polynomials {'before': 5.764323, 'current': 5.748179, 'reference': 4.769771}
+kth_term_of_linearly_recurrent_sequence {'before': 54.723012, 'current': 54.972715, 'reference': 58.249269}
+composition_of_formal_power_series {'before': 2.876379, 'current': 2.867314, 'reference': 2.886743}
+composition_of_formal_power_series_large {'before': 33.1624, 'current': 33.145995, 'reference': 32.40478}
+compositional_inverse_of_formal_power_series {'before': 2.59607, 'current': 2.569541, 'reference': 2.591133}
+compositional_inverse_of_formal_power_series_large {'before': 30.793949, 'current': 30.522585, 'reference': 29.960546}
+multipoint_evaluation {'before': 15.494249, 'current': 15.543913, 'reference': 14.85751}
+polynomial_interpolation {'before': 19.546089, 'current': 19.464549, 'reference': 19.033275}
+polynomial_taylor_shift {'before': 9.790786, 'current': 9.879439, 'reference': 8.651357}
+inv_of_polynomials {'before': 15.356924, 'current': 15.426037, 'reference': 14.842237}

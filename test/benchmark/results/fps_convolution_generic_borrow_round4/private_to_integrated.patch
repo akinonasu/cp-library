@@ -1,0 +1,18 @@
+--- private
++++ integrated
+@@ -3,6 +3,7 @@
+ 
+ #include "fps_blocked.hpp"
+ #include "fps_output.hpp"
++#include "fps_convolution_unbalanced.hpp"
+ #include <algorithm>
+ #include <bit>
+ #include <cassert>
+@@ -3871,6 +3872,7 @@
+ 
+ inline std::vector<Mint> multiply(const std::vector<Mint> &a, const std::vector<Mint> &b) {
+ 	assert(!a.empty() && !b.empty() && a.size() + b.size() - 1 <= (1 << 23));
++	if (unbalanced::fits(a.size(), b.size())) return unbalanced::multiply(a, b);
+ 	if (Product::fits(a.size(), b.size())) return run_borrowed(a, b);
+ 	return run_borrowed_as<ntt::Convolution>(a, b);
+ }

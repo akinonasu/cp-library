@@ -1,0 +1,7 @@
+built before
+built range_transform_inline
+built reference
+max_random_00 {'before': 11.880497, 'range_transform_inline': 12.092565, 'reference': 9.546247} {'range_transform_inline': -0.31402899999999967} {'range_transform_inline': 2}
+max_random_01 {'before': 11.956322, 'range_transform_inline': 12.342898, 'reference': 9.721368} {'range_transform_inline': -0.307580999999999} {'range_transform_inline': 0}
+small_and_large_03 {'before': 9.181732, 'range_transform_inline': 9.518003, 'reference': 7.874753} {'range_transform_inline': -0.3411090000000012} {'range_transform_inline': 1}
+medium_02 {'before': 1.430974, 'range_transform_inline': 1.45541, 'reference': 1.20088} {'range_transform_inline': -0.04042000000000012} {'range_transform_inline': 3}

@@ -1,0 +1,46 @@
+{
+  "baseline.tar.xz": {
+    "sha256": "558c89209ed31d6a4b2f43df12481e00a7b28e884dd16576742acb1b83ef332d",
+    "bytes": 209860
+  },
+  "current.patch": {
+    "sha256": "91c07cabcc1b1574c2fc3347efd96a19dd0d47d2475472564b6fe9813f418bfa",
+    "bytes": 5287
+  },
+  "harness.py": {
+    "sha256": "330d590cc40741b654c1b4d7ac4f73e8d8fc0a9481dbb8953ac6cc587e2ef8e1",
+    "bytes": 18429
+  },
+  "harness_versions.json": {
+    "sha256": "d8b821a631a0fac6d0eb9b5f1aa7ef8644daac5b66bae59d3005d3455384fd17",
+    "bytes": 593
+  },
+  "primary.json": {
+    "sha256": "9b04faa961db61e96faab972546c76286cc56a1c8dde4fe46e13b91ba42a98c3",
+    "bytes": 909002
+  },
+  "reconstruction.json": {
+    "sha256": "a7acb704dcd5b8d77af33ed9f846e6f54e7b1420458af901157c9bb3ff2a87f0",
+    "bytes": 292
+  },
+  "reconstruction_verified.json": {
+    "sha256": "a624d365f29681cdbacf25f36e5e6a35b60935e23334d2fb5caa6da9fd65a48d",
+    "bytes": 609
+  },
+  "reference.cpp.xz": {
+    "sha256": "e8a5a214d1f0de52cb08df5649a75eaa09cb14a25e86cb1312d6ef20dad1c423",
+    "bytes": 34244
+  },
+  "replay.py": {
+    "sha256": "dc34a86c02a78560bdd1c164b928ac5b9ed45017e055aad5146592cd36d21d0d",
+    "bytes": 3817
+  },
+  "scope_review.json": {
+    "sha256": "5c41efe35e2d8c55d0b7dcd79b8d7c8a65427dbdd9a120abcc1a4dccbc86057e",
+    "bytes": 3955
+  },
+  "sources.json": {
+    "sha256": "8801b704ba1a9807365fe5ba962b6638485cd60fbfa46329d5bda0f804758cb0",
+    "bytes": 31978
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "snapshot_sha256": "604eb39befb8a1c61cbe1d582597b0a6079a1c93d6a9f40722619ea6e2e45c13",
+  "patch_sha256": "d57a5a381536c3ad096426f8d02294c6d08cb6cb603107a2d63c1b2c679105fb",
+  "reference_submission": 409465,
+  "reference_source_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+  "unit": {
+    "command": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/workspace/cp-fps-round4/constant/candidate",
+      "/workspace/cp-fps-round4/constant/unit.cpp",
+      "-o",
+      "/workspace/cp-fps-round4/constant/unit"
+    ],
+    "source_sha256": "45bd7f4c4304841b25e2461c27e055027ceea2599eca363db8fe8dba7ec1c97d",
+    "binary_sha256": "b29325e1b2466f8c99dc24cafe8d3b5474758259304f68c81e9f382a1e63f0a7",
+    "passed": true
+  },
+  "source_and_binary_hashes_after_screen_stable": true,
+  "production_modified": false,
+  "status": "Screen only; constant inputs improve >4ms but one random control regresses about0.2ms; adoption not yet approved."
+}

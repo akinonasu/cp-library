@@ -1,0 +1,27 @@
+--- a/components/fps_convolution.hpp
++++ b/components/fps_convolution.hpp
+@@ -3834,7 +3834,23 @@
+ 	constexpr std::size_t alignment = 32;
+ 	const std::size_t words = len + 16 + alignment / sizeof(Mint) - 1, size = a.size() + b.size() - 1;
+ 	std::vector<Mint> result;
+-	prepare_fps_output(result, words);
++	if (words < (1u << 17)) prepare_fps_output(result, words);
++	else {
++		try { result.reserve(words + 262144); }
++		catch (const std::bad_alloc&) { result.reserve(words); }
++		const auto first = reinterpret_cast<std::uintptr_t>(result.data());
++		const auto owned_end = first + result.capacity() * sizeof(Mint), used_end = first + words * sizeof(Mint);
++		[[maybe_unused]] const auto advise = [first](std::uintptr_t end, std::uintptr_t alignment, int advice) {
++			const auto lo = (first + alignment - 1) & ~(alignment - 1), hi = end & ~(alignment - 1);
++			if (lo < hi) static_cast<void>(madvise(reinterpret_cast<void*>(lo), hi - lo, advice));
++		};
++#if defined(MADV_HUGEPAGE)
++		advise(owned_end, 2u * 1024 * 1024, MADV_HUGEPAGE);
++#endif
++#if defined(MADV_POPULATE_WRITE)
++		advise(used_end, 4096, MADV_POPULATE_WRITE);
++#endif
++	}
+ 	result.assign(words, Mint::word(0));
+ 	const auto address = reinterpret_cast<std::uintptr_t>(result.data());
+ 	const std::size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(Mint);

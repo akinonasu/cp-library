@@ -1,0 +1,50 @@
+--- a/components/fast_io_bulk.hpp
++++ b/components/fast_io_bulk.hpp
+@@ -76,7 +76,7 @@
+ 			for (int k = 1; k < 4; ++k) left = std::min(left, end[k] - p[k]);
+ 			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
+ 			if (steps <= 0) break;
+-			for (auto j = steps; j; --j, done += 2) {
++			auto parse = [&]() __attribute__((target("avx2"), always_inline)) {
+ 				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+ 				const auto k = _mm256_set1_epi32(0x00012710);
+ 				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
+@@ -88,6 +88,20 @@
+ 				invalid = _mm256_or_si256(invalid, overflow);
+ 				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+ 				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
++				return q;
++			};
++			auto j = steps;
++			for (; j >= 4; j -= 4, done += 8) {
++				const auto p0 = parse(), p1 = parse(), p2 = parse(), p3 = parse();
++				const auto t0 = _mm256_unpacklo_epi64(p0, p1), t1 = _mm256_unpackhi_epi64(p0, p1);
++				const auto t2 = _mm256_unpacklo_epi64(p2, p3), t3 = _mm256_unpackhi_epi64(p2, p3);
++				_mm256_storeu_si256(reinterpret_cast<__m256i *>(out[0] + done), _mm256_permute2x128_si256(t0, t2, 0x20));
++				_mm256_storeu_si256(reinterpret_cast<__m256i *>(out[1] + done), _mm256_permute2x128_si256(t1, t3, 0x20));
++				_mm256_storeu_si256(reinterpret_cast<__m256i *>(out[2] + done), _mm256_permute2x128_si256(t0, t2, 0x31));
++				_mm256_storeu_si256(reinterpret_cast<__m256i *>(out[3] + done), _mm256_permute2x128_si256(t1, t3, 0x31));
++			}
++			for (; j; --j, done += 2) {
++				const auto q = parse();
+ 				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
+ 				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
+ 				_mm_storeh_pd(reinterpret_cast<double *>(out[1] + done), _mm_castsi128_pd(q01));
+--- a/components/fps_io.hpp
++++ b/components/fps_io.hpp
+@@ -141,11 +141,10 @@
+ 
+ namespace fps_detail {
+ [[gnu::always_inline]] inline __m256i io_values(__m256i x) {
+-	const auto p = _mm256_set1_epi32(Mint::mod()), ni = _mm256_set1_epi32(998244351);
+-	auto even = _mm256_and_si256(x, _mm256_set1_epi64x(0xffffffffULL));
+-	auto odd = _mm256_srli_epi64(x, 32);
+-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
++	const auto p = _mm256_set1_epi32(Mint::mod());
++	const auto q = _mm256_sub_epi32(_mm256_sub_epi32(_mm256_sub_epi32(_mm256_slli_epi32(x, 30), _mm256_slli_epi32(x, 26)), _mm256_slli_epi32(x, 23)), x);
++	const auto even = _mm256_add_epi64(_mm256_and_si256(x, _mm256_set1_epi64x(0xffffffffULL)), _mm256_mul_epu32(q, p));
++	const auto odd = _mm256_add_epi64(_mm256_srli_epi64(x, 32), _mm256_mul_epu32(_mm256_srli_epi64(q, 32), p));
+ 	const auto value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+ 	return _mm256_min_epu32(value, _mm256_sub_epi32(value, p));
+ }

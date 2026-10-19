@@ -1,0 +1,29 @@
+COMMAND ["/tmp/fps-venv/bin/python", ".verify-helper/ci.py", "docs", "--selection", "test/benchmark/results/fps_round4_validation/selection-final.json"]
+/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/documentation/build.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+/workspace/cp-library/test/dijkstra_bigint_yuki.test.cpp:4:10: fatal error: boost/multiprecision/cpp_int.hpp: No such file or directory
+    4 | #include <boost/multiprecision/cpp_int.hpp>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+failed to list attributes of test/dijkstra_bigint_yuki.test.cpp: Command '['g++', '-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1', '-I', '/workspace/cp-library', '-dM', '-E', '/workspace/cp-library/test/dijkstra_bigint_yuki.test.cpp']' returned non-zero exit status 1.
+Traceback (most recent call last):
+  File "/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/documentation/configure.py", line 152, in _get_source_code_stat
+    attributes = language.list_attributes(path, basedir=basedir)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/languages/cplusplus.py", line 152, in list_attributes
+    macros = _cplusplus_list_defined_macros(path.resolve(), CXX=env.CXX, joined_CXXFLAGS=joined_CXXFLAGS)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/fps-venv/lib/python3.12/site-packages/onlinejudge_verify/languages/cplusplus.py", line 62, in _cplusplus_list_defined_macros
+    data = subprocess.check_output(command)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['g++', '-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1', '-I', '/workspace/cp-library', '-dM', '-E', '/workspace/cp-library/test/dijkstra_bigint_yuki.test.cpp']' returned non-zero exit status 1.
+Generated documentation for 276 library and judge sources
+RESULT {"command": ["/tmp/fps-venv/bin/python", ".verify-helper/ci.py", "docs", "--selection", "test/benchmark/results/fps_round4_validation/selection-final.json"], "seconds": 67.66210531299294, "returncode": 0}
+COMMAND ["/tmp/fps-venv/bin/python", ".verify-helper/check-docs.py", "--selection", "test/benchmark/results/fps_round4_validation/selection-final.json"]
+Checked documentation for 151 libraries; compiled 21 affected bundles
+RESULT {"command": ["/tmp/fps-venv/bin/python", ".verify-helper/check-docs.py", "--selection", "test/benchmark/results/fps_round4_validation/selection-final.json"], "seconds": 38.54847161000362, "returncode": 0}

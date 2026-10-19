@@ -1,0 +1,49 @@
+{
+  "scope": "Frozen formal result, original helper, final report and minimal reconstruction pack. Referenced core source archive files retain their separate SHA records in metadata.json; generated binaries/output payloads are not committed.",
+  "files": {
+    "test/benchmark/results/fps_round4_constant_formal/audit.json": {
+      "sha256": "52c3765b44a089f93f1036a98b7e9a57ee29af30b78b30ca241adced461799f1",
+      "bytes": 591
+    },
+    "test/benchmark/results/fps_round4_constant_formal/drivers.tar.xz": {
+      "sha256": "c59859afe2dd6a8c7b87cd3c8f9aa9910404f34ce67afd1698e5822d5506726d",
+      "bytes": 1276
+    },
+    "test/benchmark/results/fps_round4_constant_formal/harness.py": {
+      "sha256": "4967dbf6ac51afa8b515a1384b5bbd68e95fca9fa6d2bb63ac069fcd7b322681",
+      "bytes": 15935
+    },
+    "test/benchmark/results/fps_round4_constant_formal/metadata.json": {
+      "sha256": "81936673f4d28b93f5c7e1c53ecb0442bcfdcf66582ba9a0f564703394e4ce16",
+      "bytes": 24545
+    },
+    "test/benchmark/results/fps_round4_constant_formal/paired_summary.json": {
+      "sha256": "4bb4865cb8dbbe9823c124e640e406bd980692500108588eebbe03cc3270d37e",
+      "bytes": 3622
+    },
+    "test/benchmark/results/fps_round4_constant_formal/reconstruction.json": {
+      "sha256": "fc3b835a08f6aeb91dea8c4ed5c1616a6eaaa80532ee6ec4ebb2c0b08241fe20",
+      "bytes": 35899
+    },
+    "test/benchmark/results/fps_round4_constant_formal/replay.py": {
+      "sha256": "dc06a99ce298d1699e28f7bc8c610d0bcad5cf04c870c753d540c7b08fbaf483",
+      "bytes": 3151
+    },
+    "test/benchmark/fps_round4_formal.py": {
+      "sha256": "4967dbf6ac51afa8b515a1384b5bbd68e95fca9fa6d2bb63ac069fcd7b322681",
+      "bytes": 15935
+    },
+    "test/benchmark/results/fps_round4_constant_formal.json": {
+      "sha256": "8caa43c1c879d3f2b6726bd152e61861112f9b8f22d467265da2b9b779dff927",
+      "bytes": 1028980
+    },
+    "test/benchmark/results/fps_round4_constant_formal.log": {
+      "sha256": "87e6f0e36e03c509a67c4500b45b73ad25044b10470fb3440171d53815d03dc2",
+      "bytes": 2691
+    },
+    "test/benchmark/fps_round4_constant_formal.md": {
+      "sha256": "aa73dd477881d325ff1f1f910c4880bd842369ab7fb2407471602f6b663bb518",
+      "bytes": 6493
+    }
+  }
+}

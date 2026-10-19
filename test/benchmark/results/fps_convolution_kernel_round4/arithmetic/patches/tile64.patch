@@ -1,0 +1,10 @@
+--- base/components/fps_convolution.hpp
++++ tile64/components/fps_convolution.hpp
+@@ -3682,7 +3682,6 @@
+ 		switch (nv) {
+ 		case 16: return tile<16>(a, b, k);
+ 		case 64: return tile<64>(a, b, k);
+-		case 256: return tile<256>(a, b, k);
+ 		}
+ 		const std::size_t h = nv / 4;
+ 		forward(a, b, h, k);

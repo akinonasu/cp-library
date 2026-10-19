@@ -1,0 +1,12 @@
+{
+  "verification": [
+    "test/cyclic_convolution.test.cpp",
+    "test/fps_compose_large.test.cpp",
+    "test/fps_divmod.test.cpp",
+    "test/fps_interpolate.test.cpp",
+    "test/fps_linear_recurrence.test.cpp",
+    "test/fps_sqrt.test.cpp",
+    "test/multipoint_eval.test.cpp",
+    "test/polynomial_inv_mod.test.cpp"
+  ]
+}

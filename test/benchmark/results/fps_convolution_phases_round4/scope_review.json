@@ -1,0 +1,14 @@
+{
+  "reviewer": "independent sub-agent /root/compose_reversion/profile_scope_review",
+  "mode": "read-only; no edits/build/timing",
+  "findings": "No material missing or mismatched work found.",
+  "current": "run_borrowed allocation/assign/offset/Plan/copy/multiply/memmove/resize/destruction order and current read_blocks preserved; output body matches current helper.",
+  "reference": "Only phase clocks and scopes exposing same Writer->Product->Reader destruction; preinit/_exit unchanged.",
+  "qualifications": [
+    "Result setup+Plan+copy+multiply+move is a functional per-trial sum, not a contiguous range in the reference.",
+    "Adding PlanRelease crosses output formatting in reference, so release is reported separately.",
+    "Input parser phase includes delayed scratch allocation, final scratch phase includes loop control and release; use combined input group.",
+    "Clock calls depend on callbacks/input case.",
+    "Profile driver layout/inlining and instrumentation perturbation must be compared with uninstrumented control."
+  ]
+}

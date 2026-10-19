@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python3",
+    "/workspace/cp-library/test/benchmark/results/fps_convolution_round4/replay.py",
+    "--work",
+    "/workspace/cp-fps-round4/final-convolution/reconstruction-verified"
+  ],
+  "replay_sha256": "dc34a86c02a78560bdd1c164b928ac5b9ed45017e055aad5146592cd36d21d0d",
+  "before_files": 152,
+  "current_files": 153,
+  "all_source_sha256_match": true,
+  "extra_builds": 0,
+  "extra_timing_trials": 0,
+  "scope": "Source-only reconstruction branch is unchanged; measurement branch additionally verifies dependency hash multisets and preserves the verified replay in its next pack."
+}
