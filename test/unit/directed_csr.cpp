@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <random>
 #include <span>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <utility>
@@ -47,6 +48,15 @@ void random_graphs(mt19937_64 &random) {
 		}
 		auto original = edges;
 		Graph graph(n, edges);
+		std::size_t emitted = 0;
+		Graph produced(n, edges.size(), [&](auto emit) {
+			for (const auto &edge : edges) {
+				emit(edge);
+				++emitted;
+			}
+		});
+		assert(emitted == edges.size());
+		check_graph(produced, expected);
 		for (size_t i = 0; i < edges.size(); ++i)
 			assert(edges[i].from == original[i].from && edges[i].to == original[i].to && edges[i].weight == original[i].weight);
 		check_graph(graph, expected);
@@ -65,6 +75,10 @@ void random_graphs(mt19937_64 &random) {
 		check_graph(moved, expected);
 		graph.build(n, original);
 		check_graph(graph, expected);
+		produced.build(n, original.size(), [&](auto emit) {
+			for (const auto &edge : original) emit(edge);
+		});
+		check_graph(produced, expected);
 	}
 }
 
@@ -86,6 +100,46 @@ int main() {
 	const vector<vector<pair<int, int>>> expected = {{{1, 9}, {0, 4}, {1, 3}}, {}, {{2, 7}, {1, 5}}, {}};
 	Graph graph(4, edges);
 	check_graph(graph, expected);
+	int producer_calls = 0;
+	Graph produced(4, edges.size(), [&](auto emit) {
+		++producer_calls;
+		for (auto edge : edges) emit(edge);
+	});
+	assert(producer_calls == 1);
+	check_graph(produced, expected);
+	produced.build(0, 0, [&](auto) { ++producer_calls; });
+	assert(producer_calls == 2);
+	check_graph(produced, {});
+	bool short_input = false, long_input = false;
+	try { Graph invalid(1, 1, [](auto) {}); }
+	catch (const length_error &) { short_input = true; }
+	try { Graph invalid(1, 0, [](auto emit) { emit(Graph::Edge{0, 0, 0}); }); }
+	catch (const length_error &) { long_input = true; }
+	assert(short_input && long_input);
+	produced = graph;
+	try { produced.build(4, 2, [](auto emit) { emit(Graph::Edge{2, 0, 1}); }); }
+	catch (const length_error &) {}
+	check_graph(produced, vector<vector<pair<int, int>>>(4));
+	produced = graph;
+	try {
+		produced.build(4, 1, [](auto emit) {
+			emit(Graph::Edge{2, 0, 1});
+			emit(Graph::Edge{2, 0, 1});
+		});
+	} catch (const length_error &) {}
+	check_graph(produced, vector<vector<pair<int, int>>>(4));
+	produced = graph;
+	bool callback_failed = false;
+	try {
+		produced.build(4, 2, [](auto emit) {
+			emit(Graph::Edge{2, 0, 1});
+			throw runtime_error("producer");
+		});
+	} catch (const runtime_error &) { callback_failed = true; }
+	assert(callback_failed);
+	check_graph(produced, vector<vector<pair<int, int>>>(4));
+	produced.build(4, edges);
+	check_graph(produced, expected);
 	auto row = graph[0];
 	const auto &arc = row[1];
 	const auto *data = row.data();
@@ -102,6 +156,11 @@ int main() {
 		vector<DirectedCSR<string>::Edge> words = {{1, 0, "two"}, {0, 1, "one"}};
 		text.build(2, words);
 	}
+	check_graph(text, {{{1, "one"}}, {{0, "two"}}});
+	text.build(2, 2, [](auto emit) {
+		emit(DirectedCSR<string>::Edge{1, 0, "two"});
+		emit(DirectedCSR<string>::Edge{0, 1, "one"});
+	});
 	check_graph(text, {{{1, "one"}}, {{0, "two"}}});
 	mt19937_64 random(982731);
 	random_graphs<int>(random);

@@ -117,7 +117,7 @@ COMPARISON = dict(
         'Suppressing other sinks and stopping early do not preserve final distances to all vertices.',
         'Apply these optimizations only to an explicitly single-target API, preserving the all-distances contract.',
     ],
-    separate_algorithm_policy='Keep the default Dijkstra API; enable topological preprocessing only through the explicit dijkstra<true> and dijkstra_path<true> extension. No deterministic-walk or BFS branch is included.',
+    separate_algorithm_policy='Keep the Dijkstra API. Skip queue work along the forced single-outgoing-edge prefix of a source-target search; topological preprocessing remains explicit through dijkstra<true> and dijkstra_path<true>. No BFS branch is included.',
     measurement_caveat='API times include parsing, graph construction, path output, and special-case branches; they do not isolate the Dijkstra kernel.',
     judge_environment='The public submission API returns lang=cpp and case timings, but does not identify the historical compiler version, flags, or CPU. Do not infer local performance from API rank.',
     license='No explicit license grant was found in the inspected submission sources. Sources remain in the ignored reference cache; compare algorithmic ideas and independently implement repository code.',
