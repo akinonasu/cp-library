@@ -1,0 +1,3942 @@
+{
+  "status": "passed",
+  "started": "2026-10-19T05:10:43.702187+00:00",
+  "harness_sha256": "d5fc9e5702cc4f2cb14989872ff550f4e1c79088e179740185ecd4af03e8d842",
+  "integration_sha256": "b8891ad8eb05513149a5e699c956d320ff51db322de796bf6d25eeb250145206",
+  "original_raw_sha256": "360af00d2182ce18c0c963a537220534d877c823b43a3fbf3d32923c9a5a1237",
+  "official_manifest_sha256": "d3443d7b66e3d5b78e92caa34d87f79c01bc5d280299a93c0abedac417708605",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "cpu": 2,
+  "trials": 21,
+  "warmups": 1,
+  "seed": 20261019,
+  "official_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "sources": {
+    "convolution_mod": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_current",
+        "binary_sha256": "c7f405503c1f2da70957d3d0520fb867c397aa77c49f87e4b6c2e867b12c58ee"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_current_upstream_f4aa",
+        "binary_sha256": "d9e6b6fa48521394ea83b4acb2d35b713f3aaf198b2066d0bd3f22a215af56c5"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_reference",
+        "binary_sha256": "d24b5bede99f29f20f2f3fa055c704b1c0e9b21eb436ad8f9a2579ea688a4097"
+      }
+    },
+    "inv_of_formal_power_series": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_current",
+        "binary_sha256": "cf83cdad507d1b679343f68e7e9c0f8d4035c97c11f712ae5570b4f7f9930e6c"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_current_upstream_f4aa",
+        "binary_sha256": "bc3e0c792946df552338495a88646736e914ba6ff4c29ad18ec3b96e941d46c7"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_reference",
+        "binary_sha256": "ebc33df30b4544826b4dac9f510ec0ed30392dbe82edbdab16bff7a141fb80fa"
+      }
+    },
+    "log_of_formal_power_series": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_current",
+        "binary_sha256": "418d5e6a172ea7b322b66e3111cf511c754e424509b6bc22529dafac52aa1123"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_current_upstream_f4aa",
+        "binary_sha256": "c2a32d9393b9556ee2909c876196397c46d0fea5a10f1962b358f74a1759f9d7"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_reference",
+        "binary_sha256": "695bacba76d4974619a2a7bf8d96e4780f6a481eafbe208a73ac4ae9d7ae65e4"
+      }
+    },
+    "exp_of_formal_power_series": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_current",
+        "binary_sha256": "caa60e3f1e76333fa4fcac81aa0dd5df9d6ffc85a434a2154bf082727f7902c2"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_current_upstream_f4aa",
+        "binary_sha256": "bcff3d89a8e17656af15496964fb21b90919f3967e79023b62b80b045afcbf99"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_reference",
+        "binary_sha256": "f4f9aa72e0acc3fe8bd31716bc85d9339ecab5a7485196f31b2ea0ec6677a09b"
+      }
+    },
+    "pow_of_formal_power_series": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_current",
+        "binary_sha256": "9872bfadd9ef0ec8edfe02f05c0ea8b1f8985a9b37114673bddc615ce2f13a3c"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_current_upstream_f4aa",
+        "binary_sha256": "9e59ce490bcfe6224822df2d3a37a7db28a2fed3d3fc9d9a222ebf53264ae26d"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_reference",
+        "binary_sha256": "dd79810b2ea8e43613800966bf848494a03b74b87a3481b0f8310e721084bfee"
+      }
+    },
+    "sqrt_of_formal_power_series": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_current",
+        "binary_sha256": "d34f03bd2bd1ee7ddac98e9fa49aa44646208f6683ce5aa5651e9fa1d5d5a6de"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_current_upstream_f4aa",
+        "binary_sha256": "8ebb1b685011efee99d896370a03c31b6e55217272cb1e33b2e667614a744bdd"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_reference",
+        "binary_sha256": "51a782b016a740f5025dd995e1375cad704bfc0adfe4e25cd49a5590ce31dd1a"
+      }
+    },
+    "division_of_polynomials": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_current",
+        "binary_sha256": "ebe864eb3415d7e075d162631b1940a6391e7a96dda55312e483b6aef7f80151"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_current_upstream_f4aa",
+        "binary_sha256": "324c14b0be948e8c332aa2ec1655356886cacf546daa1ed621a06ff508b6815d"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_reference",
+        "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9"
+      }
+    },
+    "kth_term_of_linearly_recurrent_sequence": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_current",
+        "binary_sha256": "ad9485dc5f0dbf22f0a6777eb22cfcd9b0d86fc3d812dda9af518c0ba3c4bb1c"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_current_upstream_f4aa",
+        "binary_sha256": "e5bb5c7fc6ba68552bab7c6751edc309a7469b1159ad7adffe034eb53770be05"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_reference",
+        "binary_sha256": "3eeb2c31c0e06a993b5348615672f0ffa8bf1ec821c845031c5f6a875cc7d5ca"
+      }
+    },
+    "composition_of_formal_power_series": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_current",
+        "binary_sha256": "4281299bf836b3f228b59a59ed28246307b8e57d7ad958934942112338115111"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_current_upstream_f4aa",
+        "binary_sha256": "c6b3da3c6c46bc41ca06a2de4a34acdcdea5dfc16544aa67fbb84efc69f82239"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_reference",
+        "binary_sha256": "e6e23ad2e7ecc6e2743393bc9b0c81134e782c976a7dc648564dfcf8d289dd1f"
+      }
+    },
+    "composition_of_formal_power_series_large": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_current",
+        "binary_sha256": "e269f5ef69aa4e24f9a44d1f0cbdbcc83a1486eedcd3b82312f7fea49dff5aa5"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_current_upstream_f4aa",
+        "binary_sha256": "160251106fff90cec1e5b5101e7385af466fc7ce43ff756bbbe19ecff86042fb"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_reference",
+        "binary_sha256": "60d51cd7d318ff55eee343b205ba5e5021d02b6fcfcc45cc5f4e2bc96a335579"
+      }
+    },
+    "compositional_inverse_of_formal_power_series": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_current",
+        "binary_sha256": "ad2c65fd422a9a07f3d0b42098f48fcad350e3b0f48e90ca60c5f55054c84bd1"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_current_upstream_f4aa",
+        "binary_sha256": "b2dacd1760640dd72241285efe15a6f5914b84bd960b3b2e8d066c4707ece0f6"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_reference",
+        "binary_sha256": "349c8f6a26f9d796a47d3d310792e3223bb59fa31b151c78dba0d248c718b076"
+      }
+    },
+    "compositional_inverse_of_formal_power_series_large": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_current",
+        "binary_sha256": "378a5ce2a6dfc749f49bb4ec77f6d0eb5e87af1227003d5fd9dd9668c97f091e"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_current_upstream_f4aa",
+        "binary_sha256": "f4c02db2384473cffdbcf097414de8249e9d7077ca23c22ef251f1e2f5236249"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_reference",
+        "binary_sha256": "d4c7076faf2000d6cd5b0a55e4f4376416fdf5bdd25d0037c3aa273f6b1f9c02"
+      }
+    },
+    "multipoint_evaluation": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_current",
+        "binary_sha256": "1628e02263bed13881f9d0d85eb318a8c03e759d08119f3ea3cf9265693c6005"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_current_upstream_f4aa",
+        "binary_sha256": "3ad475eab719092887bdb818a494f1badeb4829ddc45e997d2f4239c675b3b6a"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_reference",
+        "binary_sha256": "6fbddd29e97b1b6a8f62cef2ee2402688cec36d2e40fd49f447ca051fbfe5a95"
+      }
+    },
+    "polynomial_interpolation": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_current",
+        "binary_sha256": "80a45a43ae49d2d8ebf063f48f83989dba0dcec8f2eb699b081d56e698e749c3"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_current_upstream_f4aa",
+        "binary_sha256": "0de6c72cf7a55e4d265fdf27ee635f8c554b7f6ff9d17e43fc9c204d8d1041eb"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_reference",
+        "binary_sha256": "49275001e0d1a5668e3cc084bc8bbdc4d0e00f9879c4b5c4139ca5b1fdeb5517"
+      }
+    },
+    "polynomial_taylor_shift": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_current",
+        "binary_sha256": "6974c1572512ed63c923e85e63db78703076c24ffa4c71538114a0a6e3d0f96e"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_current_upstream_f4aa",
+        "binary_sha256": "83bc7b524a36ee2872a49a5fb2ba7c239d615a381d75acbe9cd883d9ddb076cc"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_reference",
+        "binary_sha256": "93a45c77fe090e0017cad162cfde2cd7d408ba2f49e9f7a6027cd94d4da8840f"
+      }
+    },
+    "inv_of_polynomials": {
+      "old_f3ac": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_current",
+        "binary_sha256": "f7db52a870bb0beee7c347e8ba5b7b974e3eec456ec13300a08b9b29be37346a"
+      },
+      "new_f4aa": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_current_upstream_f4aa",
+        "binary_sha256": "415166e469d1a494bf1a9c31fa779cef9d74854233c769800c189f8b0a72901b"
+      },
+      "reference": {
+        "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_reference",
+        "binary_sha256": "da4747331ce08aedccddda1992e18747294c925bfdf43b8b9785ea71937b6dec"
+      }
+    }
+  },
+  "official_files": {
+    "/tmp/library-checker-problems/convolution/convolution_mod/in/max_random_00.in": "3bbe45c5ce2820f3961db9f5746dfad939c09cb78d62bb1f9729ff3ac83e4208",
+    "/tmp/library-checker-problems/convolution/convolution_mod/out/max_random_00.out": "cc9c24649d26118ce95b106548050963fe7f029c8b4d9f2cdb567030c6f8be8a",
+    "/tmp/library-checker-problems/convolution/convolution_mod/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/inv_of_formal_power_series/in/max_random_00.in": "52b3f657383765daeb3b3926e7ce94ef072b4021f82d49b0cf01978f10777f36",
+    "/tmp/library-checker-problems/polynomial/inv_of_formal_power_series/out/max_random_00.out": "3eb0472ab025cad587bce8999b2035391d75f15fffe5cf4b9b85b797cc93db17",
+    "/tmp/library-checker-problems/polynomial/inv_of_formal_power_series/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/log_of_formal_power_series/in/max_random_00.in": "71cb0227a5a1e40ece225e19cd9d2633dfd4f07f25d39f01719bc2376e1d4ac8",
+    "/tmp/library-checker-problems/polynomial/log_of_formal_power_series/out/max_random_00.out": "c031f72a4eb2eacfaacce3a4f427b5f2d296b0fa9ecbd96d7dca445a38cbbd93",
+    "/tmp/library-checker-problems/polynomial/log_of_formal_power_series/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/exp_of_formal_power_series/in/max_random_00.in": "9b12be7a72b0dcf2e8c1b5e661cffef8092fc8b6db5eb4bc507049dd10ffd1cd",
+    "/tmp/library-checker-problems/polynomial/exp_of_formal_power_series/out/max_random_00.out": "1d9d614be7839c1edb76083ff62d4febd7f7a771fb22d0cfc1943dd4f078267c",
+    "/tmp/library-checker-problems/polynomial/exp_of_formal_power_series/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/pow_of_formal_power_series/in/max_random_00.in": "dab0e293a02d521e66e436a9958f4e66858285c50f31472d2ec5bd4b5d876d21",
+    "/tmp/library-checker-problems/polynomial/pow_of_formal_power_series/out/max_random_00.out": "4c0efffb2e685286c16144370e8f979fa140c9cf563a29ff53853a341a9815df",
+    "/tmp/library-checker-problems/polynomial/pow_of_formal_power_series/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/sqrt_of_formal_power_series/in/max_random_01.in": "23bba4b0457d6a0df2c70b75d0c357ea9741c4a13fe27ef0fce1c6cf7346449b",
+    "/tmp/library-checker-problems/polynomial/sqrt_of_formal_power_series/out/max_random_01.out": "e11fd5c51d46fcfcc8e1f6377afc26a08c5ab47c7fa6c1ba9404a33c4fd56829",
+    "/tmp/library-checker-problems/polynomial/sqrt_of_formal_power_series/checker": "e6ee0b3c5478748229770cf2cf63597e61ccb064c2870370e4643a8bab74175e",
+    "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/max_random_00.in": "df7ce432dda8321a191fd5480e751c1adb0886011875af11980b75609545adec",
+    "/tmp/library-checker-problems/polynomial/division_of_polynomials/out/max_random_00.out": "005c4376839fb231384761cb44124ec81e0693f619b7886709261e9d491069dd",
+    "/tmp/library-checker-problems/polynomial/division_of_polynomials/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/in/max_random_00.in": "024236a62dcb0f9a788c18997a92e730722a408314618cd4e1c556c974c3f8c6",
+    "/tmp/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/out/max_random_00.out": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+    "/tmp/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series/in/max_random_00.in": "510b6685010b93506c9cc54b06ff6c9e3072b618a4c4c6b08a3de2e9146570a1",
+    "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series/out/max_random_00.out": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5",
+    "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series_large/in/max_random_00.in": "9404320bd03fe869c53cbe50511a45d262f037388dd5d2e41074db1c8a6fffa6",
+    "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series_large/out/max_random_00.out": "2e032a16bc09a8e289e7a2470ec8f70b71904ec433c60df30da260a2fb6fd7dd",
+    "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series_large/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/in/max_random_00.in": "4791f4a020aedfa791e7f5c3d342b8e51c13d7a8a4c282025a4feb890cd54349",
+    "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/out/max_random_00.out": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8",
+    "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/in/max_random_00.in": "591e42b783095d264cc8d523a94fd53a2b0fd069f0cc7b21bfced85f46c30e55",
+    "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/out/max_random_00.out": "28a86d08c657c50919c1274634a352be8bfb3fcf6ab9b903923725340bfc4009",
+    "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/multipoint_evaluation/in/max_random_00.in": "bd75a638e1008099cf0a1366a652c8584e18f3c096473bdb8a464142673ee6ae",
+    "/tmp/library-checker-problems/polynomial/multipoint_evaluation/out/max_random_00.out": "de294de44c13cbc69e3d40c78af307493a90ee539d0acc5ed8b70946fb0c211f",
+    "/tmp/library-checker-problems/polynomial/multipoint_evaluation/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/polynomial_interpolation/in/max_random_00.in": "7362fa638f2b680748e1da459cc4a6b7d06573f9b8d43e761b07553f55e84566",
+    "/tmp/library-checker-problems/polynomial/polynomial_interpolation/out/max_random_00.out": "1433597bd42ff9eeddd5c38448d1d4cf442534d74062ea4d95836fcdde00113a",
+    "/tmp/library-checker-problems/polynomial/polynomial_interpolation/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/polynomial_taylor_shift/in/max_random_00.in": "ff5f733d78186d7592779ef5635863e86b305d3df77384ac3cda7eca84b27e32",
+    "/tmp/library-checker-problems/polynomial/polynomial_taylor_shift/out/max_random_00.out": "1db2c633136ee617f67bcd74cc2c137ebd534094c9ed29518f3ff60cfa00f22f",
+    "/tmp/library-checker-problems/polynomial/polynomial_taylor_shift/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+    "/tmp/library-checker-problems/polynomial/inv_of_polynomials/in/max_random_00.in": "efba1fb7dbebf3c7dfb0d604bac31059254316186bce5a7d1c98fc5a3baf20af",
+    "/tmp/library-checker-problems/polynomial/inv_of_polynomials/out/max_random_00.out": "a391be1c251f93b6f9b1668c994183e05a00fef160242dbb96a1c9860b0a5ad8",
+    "/tmp/library-checker-problems/polynomial/inv_of_polynomials/checker": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+  },
+  "artifacts_before": {
+    "/workspace/cp-library/test/benchmark/results/fps_round3_all_speed.json": "360af00d2182ce18c0c963a537220534d877c823b43a3fbf3d32923c9a5a1237",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_before": "a05a26057c47a6748fe5518087a221e3bc5bf3dec1073b0dcf36ec6e0201f9f8",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_before.out": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_current": "c7f405503c1f2da70957d3d0520fb867c397aa77c49f87e4b6c2e867b12c58ee",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_current.out": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_reference": "d24b5bede99f29f20f2f3fa055c704b1c0e9b21eb436ad8f9a2579ea688a4097",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_reference.out": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_before": "a5956f2f5f294a67a08e1e8e8711ca23b850da68120d5766716641e93054cbd3",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_before.out": "50944ee585848fe356ec84fd45deae34e728a9956573f826b240391ade312d82",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_current": "cf83cdad507d1b679343f68e7e9c0f8d4035c97c11f712ae5570b4f7f9930e6c",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_current.out": "50944ee585848fe356ec84fd45deae34e728a9956573f826b240391ade312d82",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_reference": "ebc33df30b4544826b4dac9f510ec0ed30392dbe82edbdab16bff7a141fb80fa",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_reference.out": "208dff7f43bc62623418b41ec032255606e7f3df13aad51953df588db7936e50",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_before": "345ff0a1427e8a71e0c816ebf272dd2217126db3cb99f4184e151b6db9832b6b",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_before.out": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_current": "418d5e6a172ea7b322b66e3111cf511c754e424509b6bc22529dafac52aa1123",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_current.out": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_reference": "695bacba76d4974619a2a7bf8d96e4780f6a481eafbe208a73ac4ae9d7ae65e4",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_reference.out": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_before": "c486fbdd909a319219287dfeca8a6d1913c4104e7b8797a5c7c1080fff9fb978",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_before.out": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_current": "caa60e3f1e76333fa4fcac81aa0dd5df9d6ffc85a434a2154bf082727f7902c2",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_current.out": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_reference": "f4f9aa72e0acc3fe8bd31716bc85d9339ecab5a7485196f31b2ea0ec6677a09b",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_reference.out": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_before": "df766ef85de0e8d3deba67bd4d135dec4fac8f28453f8bb5117a4962e8db9777",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_before.out": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_current": "9872bfadd9ef0ec8edfe02f05c0ea8b1f8985a9b37114673bddc615ce2f13a3c",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_current.out": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_reference": "dd79810b2ea8e43613800966bf848494a03b74b87a3481b0f8310e721084bfee",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_reference.out": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_before": "c7736bbb60e49f60a6b8e5301d6c05739e260033e096cc70dd3975650f78a81b",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_before.out": "973a604fef1c74a7443dd99b9e547a6ddea7d68c388389ba0335d9d97e143ce9",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_current": "d34f03bd2bd1ee7ddac98e9fa49aa44646208f6683ce5aa5651e9fa1d5d5a6de",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_current.out": "973a604fef1c74a7443dd99b9e547a6ddea7d68c388389ba0335d9d97e143ce9",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_reference": "51a782b016a740f5025dd995e1375cad704bfc0adfe4e25cd49a5590ce31dd1a",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_reference.out": "d3250df0c7ad169cf60f1bac45f15d4b5d13dbea12c4ddd3635f534b65f50010",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_before": "0c1230d0319147c55aa058836dfcc0c54d9f7a7ed3dbbb9256692e87848ec3ad",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_before.out": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_current": "ebe864eb3415d7e075d162631b1940a6391e7a96dda55312e483b6aef7f80151",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_current.out": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_reference": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_reference.out": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_before": "a6b8f1770bdc2fa7cf1933a9998b71ac0be15bf7269eed2ad66d17d61ebcaeed",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_before.out": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_current": "ad9485dc5f0dbf22f0a6777eb22cfcd9b0d86fc3d812dda9af518c0ba3c4bb1c",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_current.out": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_reference": "3eeb2c31c0e06a993b5348615672f0ffa8bf1ec821c845031c5f6a875cc7d5ca",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_reference.out": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_before": "13ee0316c35eeff1dbdff1767adfdd24bf3736d035bbc03edac01393edd4ef66",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_before.out": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_current": "4281299bf836b3f228b59a59ed28246307b8e57d7ad958934942112338115111",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_current.out": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_reference": "e6e23ad2e7ecc6e2743393bc9b0c81134e782c976a7dc648564dfcf8d289dd1f",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_reference.out": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_before": "01e4881f45912908cc1fe1357df6239e4eeeb6cded95bcfe24eb4619b19f7cbd",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_before.out": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_current": "e269f5ef69aa4e24f9a44d1f0cbdbcc83a1486eedcd3b82312f7fea49dff5aa5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_current.out": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_reference": "60d51cd7d318ff55eee343b205ba5e5021d02b6fcfcc45cc5f4e2bc96a335579",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_reference.out": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_before": "c9bfec3189c8726442db9c4e80348e38a7524e4c657e5645fa40114b5c98cfbb",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_before.out": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_current": "ad2c65fd422a9a07f3d0b42098f48fcad350e3b0f48e90ca60c5f55054c84bd1",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_current.out": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_reference": "349c8f6a26f9d796a47d3d310792e3223bb59fa31b151c78dba0d248c718b076",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_reference.out": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_before": "dac2234c577d2e769d3ab6293ec86203dcc60e2d24c1c6299f98ffdb33c099e4",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_before.out": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_current": "378a5ce2a6dfc749f49bb4ec77f6d0eb5e87af1227003d5fd9dd9668c97f091e",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_current.out": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_reference": "d4c7076faf2000d6cd5b0a55e4f4376416fdf5bdd25d0037c3aa273f6b1f9c02",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_reference.out": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_before": "c78675600256b3463a74e366898ea7ee8768e6820efbea84d65935370232a522",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_before.out": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_current": "1628e02263bed13881f9d0d85eb318a8c03e759d08119f3ea3cf9265693c6005",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_current.out": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_reference": "6fbddd29e97b1b6a8f62cef2ee2402688cec36d2e40fd49f447ca051fbfe5a95",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_reference.out": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_before": "bb5d3d7f6bd16ed106eb9f347fb4a7ed32990703e476e5d9f91b4ccfffcd8426",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_before.out": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_current": "80a45a43ae49d2d8ebf063f48f83989dba0dcec8f2eb699b081d56e698e749c3",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_current.out": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_reference": "49275001e0d1a5668e3cc084bc8bbdc4d0e00f9879c4b5c4139ca5b1fdeb5517",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_reference.out": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_before": "9549e342195dd7f38aa1b230acc187d1fe940e6bee9410382d59aa4ce664ef7c",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_before.out": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_current": "6974c1572512ed63c923e85e63db78703076c24ffa4c71538114a0a6e3d0f96e",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_current.out": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_reference": "93a45c77fe090e0017cad162cfde2cd7d408ba2f49e9f7a6027cd94d4da8840f",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_reference.out": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_before": "3c0a2ecec3030b6ce31d6504cf02baefcc37214c1217786bf27fff410f545062",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_before.out": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_current": "f7db52a870bb0beee7c347e8ba5b7b974e3eec456ec13300a08b9b29be37346a",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_current.out": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_reference": "da4747331ce08aedccddda1992e18747294c925bfdf43b8b9785ea71937b6dec",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_reference.out": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_current_upstream_f4aa": "d9e6b6fa48521394ea83b4acb2d35b713f3aaf198b2066d0bd3f22a215af56c5",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_current_upstream_f4aa": "bc3e0c792946df552338495a88646736e914ba6ff4c29ad18ec3b96e941d46c7",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_current_upstream_f4aa": "c2a32d9393b9556ee2909c876196397c46d0fea5a10f1962b358f74a1759f9d7",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_current_upstream_f4aa": "bcff3d89a8e17656af15496964fb21b90919f3967e79023b62b80b045afcbf99",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_current_upstream_f4aa": "9e59ce490bcfe6224822df2d3a37a7db28a2fed3d3fc9d9a222ebf53264ae26d",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_current_upstream_f4aa": "8ebb1b685011efee99d896370a03c31b6e55217272cb1e33b2e667614a744bdd",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_current_upstream_f4aa": "324c14b0be948e8c332aa2ec1655356886cacf546daa1ed621a06ff508b6815d",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_current_upstream_f4aa": "e5bb5c7fc6ba68552bab7c6751edc309a7469b1159ad7adffe034eb53770be05",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_current_upstream_f4aa": "c6b3da3c6c46bc41ca06a2de4a34acdcdea5dfc16544aa67fbb84efc69f82239",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_current_upstream_f4aa": "160251106fff90cec1e5b5101e7385af466fc7ce43ff756bbbe19ecff86042fb",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_current_upstream_f4aa": "b2dacd1760640dd72241285efe15a6f5914b84bd960b3b2e8d066c4707ece0f6",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_current_upstream_f4aa": "f4c02db2384473cffdbcf097414de8249e9d7077ca23c22ef251f1e2f5236249",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_current_upstream_f4aa": "3ad475eab719092887bdb818a494f1badeb4829ddc45e997d2f4239c675b3b6a",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_current_upstream_f4aa": "0de6c72cf7a55e4d265fdf27ee635f8c554b7f6ff9d17e43fc9c204d8d1041eb",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_current_upstream_f4aa": "83bc7b524a36ee2872a49a5fb2ba7c239d615a381d75acbe9cd883d9ddb076cc",
+    "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_current_upstream_f4aa": "415166e469d1a494bf1a9c31fa779cef9d74854233c769800c189f8b0a72901b"
+  },
+  "judge": [
+    {
+      "problem": "convolution_mod",
+      "input": "/tmp/library-checker-problems/convolution/convolution_mod/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/convolution/convolution_mod/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/convolution/convolution_mod/checker",
+      "reference": {
+        "id": 409465,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 21602304,
+        "problem_name": "convolution_mod",
+        "problem_title": "Convolution",
+        "status": "AC",
+        "submission_time": "2026-10-10T05:53:37.818419Z",
+        "time": 0.012,
+        "user_name": "Aiyiyi",
+        "source_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+        "url": "https://judge.yosupo.jp/submission/409465"
+      },
+      "order": [
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 12.070755,
+          "samples_ms": [
+            11.96663,
+            11.976074,
+            11.922405,
+            13.888325,
+            12.619814,
+            12.05983,
+            12.544912,
+            12.070755,
+            12.116424,
+            12.003646,
+            12.230333,
+            12.577431,
+            12.108902,
+            11.87286,
+            12.218495,
+            12.171345,
+            11.92657,
+            12.152498,
+            11.691911,
+            11.923617,
+            11.894052
+          ],
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe"
+        },
+        "new_f4aa": {
+          "median_ms": 12.193538,
+          "samples_ms": [
+            12.158737,
+            12.787996,
+            12.307659,
+            12.537371,
+            12.193538,
+            11.963987,
+            12.436311,
+            12.641927,
+            12.018798,
+            12.05439,
+            11.853241,
+            12.220468,
+            12.310162,
+            12.058597,
+            11.928753,
+            12.004287,
+            12.997878,
+            11.906972,
+            11.896055,
+            12.486065,
+            12.440908
+          ],
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe"
+        },
+        "reference": {
+          "median_ms": 9.713692,
+          "samples_ms": [
+            9.621755,
+            9.713692,
+            9.753891,
+            9.943513,
+            9.69962,
+            9.687232,
+            9.711288,
+            9.832557,
+            18.177765,
+            9.900259,
+            9.616656,
+            9.628125,
+            9.751237,
+            9.534694,
+            9.568294,
+            9.778468,
+            10.17494,
+            9.703998,
+            9.851907,
+            10.844858,
+            9.611529
+          ],
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.0507439999999999,
+      "new_wins": 10,
+      "old_wins": 11,
+      "new_old_ratio": 1.0101719403632996
+    },
+    {
+      "problem": "inv_of_formal_power_series",
+      "input": "/tmp/library-checker-problems/polynomial/inv_of_formal_power_series/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/inv_of_formal_power_series/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/inv_of_formal_power_series/checker",
+      "reference": {
+        "id": 409370,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 12091392,
+        "problem_name": "inv_of_formal_power_series",
+        "problem_title": "Inv of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T02:11:09.403965Z",
+        "time": 0.011,
+        "user_name": "Aiyiyi",
+        "source_sha256": "611eaf933f4187e567c90214aa5fc93f6bce7d139a122f68d11b769deeaabe66",
+        "url": "https://judge.yosupo.jp/submission/409370"
+      },
+      "order": [
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 11.67133,
+          "samples_ms": [
+            11.821735,
+            11.361789,
+            11.707845,
+            11.530571,
+            11.979138,
+            11.706343,
+            11.666073,
+            11.697539,
+            11.585471,
+            11.881024,
+            12.347067,
+            11.312675,
+            11.319094,
+            11.980781,
+            11.67133,
+            11.285945,
+            11.536829,
+            12.062053,
+            12.786451,
+            11.330652,
+            11.558741
+          ],
+          "output_sha256": "50944ee585848fe356ec84fd45deae34e728a9956573f826b240391ade312d82"
+        },
+        "new_f4aa": {
+          "median_ms": 11.586874,
+          "samples_ms": [
+            11.661756,
+            11.341479,
+            11.216322,
+            11.432053,
+            11.45728,
+            11.619171,
+            11.649157,
+            11.924067,
+            11.547505,
+            11.686123,
+            11.776036,
+            11.535456,
+            11.528726,
+            11.57754,
+            11.586874,
+            11.437401,
+            11.621065,
+            11.768635,
+            11.313435,
+            11.626362,
+            11.957666
+          ],
+          "output_sha256": "50944ee585848fe356ec84fd45deae34e728a9956573f826b240391ade312d82"
+        },
+        "reference": {
+          "median_ms": 10.146907,
+          "samples_ms": [
+            9.952858,
+            9.928632,
+            10.093819,
+            10.006377,
+            9.878237,
+            10.090323,
+            10.272054,
+            9.990274,
+            10.20248,
+            10.26936,
+            10.883265,
+            10.266465,
+            10.128389,
+            10.146907,
+            10.070724,
+            10.256109,
+            10.212405,
+            10.241829,
+            10.345242,
+            10.051504,
+            10.347385
+          ],
+          "output_sha256": "208dff7f43bc62623418b41ec032255606e7f3df13aad51953df588db7936e50"
+        }
+      },
+      "paired_new_minus_old_median_ms": -0.08445599999999942,
+      "new_wins": 14,
+      "old_wins": 7,
+      "new_old_ratio": 0.9927638066955523
+    },
+    {
+      "problem": "log_of_formal_power_series",
+      "input": "/tmp/library-checker-problems/polynomial/log_of_formal_power_series/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/log_of_formal_power_series/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/log_of_formal_power_series/checker",
+      "reference": {
+        "id": 409452,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 15474688,
+        "problem_name": "log_of_formal_power_series",
+        "problem_title": "Log of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T05:03:05.948735Z",
+        "time": 0.013,
+        "user_name": "Aiyiyi",
+        "source_sha256": "86ef3c3b4a4707ef5e7515e5229b2564f2a5f46bd830bb6cbe64b506a95675b6",
+        "url": "https://judge.yosupo.jp/submission/409452"
+      },
+      "order": [
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 13.50272,
+          "samples_ms": [
+            13.205687,
+            13.545795,
+            13.203454,
+            14.146891,
+            13.532515,
+            13.974063,
+            13.50272,
+            14.544613,
+            13.411645,
+            13.545895,
+            13.418956,
+            21.930675,
+            13.137877,
+            13.319017,
+            13.352597,
+            13.589189,
+            13.845702,
+            13.155243,
+            13.444653,
+            13.175222,
+            15.321361
+          ],
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9"
+        },
+        "new_f4aa": {
+          "median_ms": 13.627096,
+          "samples_ms": [
+            13.51531,
+            13.117636,
+            13.552654,
+            13.199588,
+            14.074032,
+            14.05224,
+            13.424044,
+            13.905751,
+            13.83104,
+            13.779714,
+            13.111046,
+            13.884439,
+            13.938911,
+            14.497113,
+            13.627096,
+            13.136134,
+            14.001134,
+            13.321571,
+            13.734907,
+            13.15388,
+            13.300489
+          ],
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9"
+        },
+        "reference": {
+          "median_ms": 12.34196,
+          "samples_ms": [
+            12.296533,
+            12.539835,
+            12.485663,
+            12.488869,
+            12.30177,
+            12.528588,
+            13.488559,
+            12.697,
+            12.781335,
+            11.97341,
+            12.269613,
+            12.715567,
+            12.472825,
+            12.353447,
+            12.22083,
+            12.181762,
+            12.271054,
+            12.320868,
+            12.34196,
+            12.136714,
+            12.260418
+          ],
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.15543200000000112,
+      "new_wins": 9,
+      "old_wins": 12,
+      "new_old_ratio": 1.0092111811546118
+    },
+    {
+      "problem": "exp_of_formal_power_series",
+      "input": "/tmp/library-checker-problems/polynomial/exp_of_formal_power_series/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/exp_of_formal_power_series/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/exp_of_formal_power_series/checker",
+      "reference": {
+        "id": 409662,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 15740928,
+        "problem_name": "exp_of_formal_power_series",
+        "problem_title": "Exp of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T16:37:46.435994Z",
+        "time": 0.016,
+        "user_name": "Aiyiyi",
+        "source_sha256": "ed6a6a427359ce548106dddc7dacb0a7de7bb9bbe5f1db1442799d5ed6998031",
+        "url": "https://judge.yosupo.jp/submission/409662"
+      },
+      "order": [
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 16.478486,
+          "samples_ms": [
+            17.18499,
+            16.387861,
+            16.478486,
+            15.953904,
+            16.798274,
+            16.839455,
+            18.423197,
+            16.746055,
+            16.335904,
+            16.666847,
+            16.206501,
+            16.048476,
+            15.780937,
+            19.960999,
+            16.129166,
+            16.978653,
+            15.774958,
+            16.861648,
+            16.487931,
+            16.301814,
+            16.212961
+          ],
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5"
+        },
+        "new_f4aa": {
+          "median_ms": 16.354752,
+          "samples_ms": [
+            16.806646,
+            16.248034,
+            16.392238,
+            16.492378,
+            16.354752,
+            16.877682,
+            17.381073,
+            16.454121,
+            16.705415,
+            16.082225,
+            16.093422,
+            15.860926,
+            16.24623,
+            16.222675,
+            16.428442,
+            16.346811,
+            15.859064,
+            15.948077,
+            16.730002,
+            16.647299,
+            16.308974
+          ],
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5"
+        },
+        "reference": {
+          "median_ms": 14.760545,
+          "samples_ms": [
+            14.639304,
+            14.843038,
+            14.782157,
+            14.499496,
+            14.897389,
+            14.634236,
+            70.018136,
+            15.570323,
+            16.858793,
+            14.595099,
+            15.380911,
+            14.760545,
+            15.685484,
+            14.622579,
+            14.571965,
+            14.628369,
+            14.311146,
+            14.737571,
+            17.511828,
+            14.526948,
+            15.147663
+          ],
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5"
+        }
+      },
+      "paired_new_minus_old_median_ms": -0.11307899999999904,
+      "new_wins": 12,
+      "old_wins": 9,
+      "new_old_ratio": 0.9924911791046824
+    },
+    {
+      "problem": "pow_of_formal_power_series",
+      "input": "/tmp/library-checker-problems/polynomial/pow_of_formal_power_series/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/pow_of_formal_power_series/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/pow_of_formal_power_series/checker",
+      "reference": {
+        "id": 409718,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 18366464,
+        "problem_name": "pow_of_formal_power_series",
+        "problem_title": "Pow of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T23:36:25.180715Z",
+        "time": 0.023,
+        "user_name": "Aiyiyi",
+        "source_sha256": "c11e38eb1639af2738f64482ce505c823801b6f2dadcbd72f4ded9a3c4199757",
+        "url": "https://judge.yosupo.jp/submission/409718"
+      },
+      "order": [
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 24.191636,
+          "samples_ms": [
+            26.72915,
+            23.650109,
+            23.808145,
+            24.08613,
+            25.701478,
+            33.660809,
+            24.668537,
+            23.809737,
+            24.640005,
+            24.026641,
+            24.991979,
+            24.40291,
+            24.588007,
+            24.169433,
+            24.171816,
+            24.136393,
+            24.042573,
+            24.621897,
+            23.976695,
+            24.298685,
+            24.191636
+          ],
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210"
+        },
+        "new_f4aa": {
+          "median_ms": 24.321159,
+          "samples_ms": [
+            24.574087,
+            24.218336,
+            23.736267,
+            23.747174,
+            24.5963,
+            24.936557,
+            25.931271,
+            24.107521,
+            24.330303,
+            23.898119,
+            24.462279,
+            24.8649,
+            24.451572,
+            24.043815,
+            24.552182,
+            24.843677,
+            24.025428,
+            24.321159,
+            23.747413,
+            24.166798,
+            23.976064
+          ],
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210"
+        },
+        "reference": {
+          "median_ms": 22.282589,
+          "samples_ms": [
+            22.430291,
+            21.896355,
+            22.156292,
+            22.184234,
+            23.710268,
+            23.022503,
+            23.097415,
+            21.98673,
+            22.563199,
+            22.371032,
+            21.891757,
+            21.891155,
+            22.18943,
+            22.396379,
+            22.282589,
+            23.185516,
+            22.676997,
+            22.415788,
+            22.172185,
+            22.14929,
+            22.009192
+          ],
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210"
+        }
+      },
+      "paired_new_minus_old_median_ms": -0.13188699999999898,
+      "new_wins": 15,
+      "old_wins": 6,
+      "new_old_ratio": 1.005354040545253
+    },
+    {
+      "problem": "sqrt_of_formal_power_series",
+      "input": "/tmp/library-checker-problems/polynomial/sqrt_of_formal_power_series/in/max_random_01.in",
+      "answer": "/tmp/library-checker-problems/polynomial/sqrt_of_formal_power_series/out/max_random_01.out",
+      "checker": "/tmp/library-checker-problems/polynomial/sqrt_of_formal_power_series/checker",
+      "reference": {
+        "id": 409728,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11845632,
+        "problem_name": "sqrt_of_formal_power_series",
+        "problem_title": "Sqrt of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-11T01:18:40.045704Z",
+        "time": 0.012,
+        "user_name": "Aiyiyi",
+        "source_sha256": "aa66b9de0c8361c9e9b46024c39231d50419f95335cfcce59cef7491e014dfbc",
+        "url": "https://judge.yosupo.jp/submission/409728"
+      },
+      "order": [
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 12.18118,
+          "samples_ms": [
+            12.543702,
+            12.586515,
+            12.306187,
+            12.401289,
+            12.166549,
+            12.500056,
+            12.154041,
+            12.270354,
+            12.598843,
+            12.171044,
+            12.546475,
+            12.048082,
+            13.723369,
+            11.920872,
+            12.18118,
+            12.674515,
+            12.067611,
+            12.003396,
+            12.158857,
+            12.114441,
+            11.832791
+          ],
+          "output_sha256": "973a604fef1c74a7443dd99b9e547a6ddea7d68c388389ba0335d9d97e143ce9"
+        },
+        "new_f4aa": {
+          "median_ms": 12.318265,
+          "samples_ms": [
+            12.318265,
+            12.676389,
+            11.875575,
+            13.576782,
+            12.632934,
+            11.80513,
+            13.471154,
+            12.26745,
+            12.379877,
+            13.30778,
+            12.272876,
+            14.340009,
+            12.864819,
+            12.580515,
+            12.072207,
+            11.9603,
+            11.883787,
+            12.039128,
+            12.193649,
+            12.586184,
+            12.12755
+          ],
+          "output_sha256": "973a604fef1c74a7443dd99b9e547a6ddea7d68c388389ba0335d9d97e143ce9"
+        },
+        "reference": {
+          "median_ms": 10.115681,
+          "samples_ms": [
+            10.02069,
+            10.115681,
+            10.485633,
+            10.539663,
+            10.348198,
+            10.666452,
+            10.179526,
+            10.220428,
+            9.989933,
+            10.168319,
+            10.107068,
+            10.375989,
+            10.849504,
+            10.06129,
+            9.883575,
+            9.942042,
+            9.982573,
+            10.018106,
+            9.951797,
+            10.12105,
+            10.030004
+          ],
+          "output_sha256": "d3250df0c7ad169cf60f1bac45f15d4b5d13dbea12c4ddd3635f534b65f50010"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.034792000000001266,
+      "new_wins": 10,
+      "old_wins": 11,
+      "new_old_ratio": 1.0112538358352805
+    },
+    {
+      "problem": "division_of_polynomials",
+      "input": "/tmp/library-checker-problems/polynomial/division_of_polynomials/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/division_of_polynomials/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/division_of_polynomials/checker",
+      "reference": {
+        "id": 409561,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16412672,
+        "problem_name": "division_of_polynomials",
+        "problem_title": "Division of Polynomials",
+        "status": "AC",
+        "submission_time": "2026-10-10T11:24:52.544273Z",
+        "time": 0.012,
+        "user_name": "Aiyiyi",
+        "source_sha256": "fd06ec63bfe326a8f8c2b25292ecf38d77c4fd0114fbaa2565e4c667b8b4eeb1",
+        "url": "https://judge.yosupo.jp/submission/409561"
+      },
+      "order": [
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 6.060545,
+          "samples_ms": [
+            6.284169,
+            6.102288,
+            6.216809,
+            6.277709,
+            5.687509,
+            5.523535,
+            6.416115,
+            6.131,
+            6.191701,
+            5.938383,
+            6.020827,
+            6.060545,
+            6.134651,
+            6.013876,
+            6.140374,
+            6.140575,
+            5.865475,
+            5.914158,
+            5.931293,
+            5.833247,
+            5.967858
+          ],
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344"
+        },
+        "new_f4aa": {
+          "median_ms": 5.968599,
+          "samples_ms": [
+            6.011532,
+            6.203187,
+            6.058813,
+            6.483336,
+            5.726177,
+            5.850232,
+            6.667089,
+            5.746347,
+            6.300353,
+            5.800868,
+            6.836723,
+            5.890061,
+            6.350068,
+            6.309145,
+            5.874098,
+            6.195376,
+            5.949259,
+            5.697153,
+            5.798775,
+            5.968599,
+            5.925625
+          ],
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344"
+        },
+        "reference": {
+          "median_ms": 4.841358,
+          "samples_ms": [
+            4.893665,
+            4.841358,
+            4.968927,
+            4.958493,
+            4.599897,
+            4.548311,
+            4.876771,
+            4.985212,
+            4.959664,
+            4.867937,
+            4.622442,
+            4.912744,
+            4.867918,
+            4.761609,
+            7.46491,
+            4.752535,
+            4.729571,
+            4.658104,
+            4.691524,
+            4.696311,
+            4.727988
+          ],
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.05480100000000032,
+      "new_wins": 9,
+      "old_wins": 12,
+      "new_old_ratio": 0.9848287571497283
+    },
+    {
+      "problem": "kth_term_of_linearly_recurrent_sequence",
+      "input": "/tmp/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/checker",
+      "reference": {
+        "id": 405848,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 9007104,
+        "problem_name": "kth_term_of_linearly_recurrent_sequence",
+        "problem_title": "Kth term of Linearly Recurrent Sequence",
+        "status": "AC",
+        "submission_time": "2026-09-24T15:43:47.24864Z",
+        "time": 0.068,
+        "user_name": "Rohan_Kapri",
+        "source_sha256": "f6d088ba82caad15a517bffc2396f4a1d81dd75ea98ed0992226c4fa0b847ff2",
+        "url": "https://judge.yosupo.jp/submission/405848"
+      },
+      "order": [
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 53.310808,
+          "samples_ms": [
+            52.807217,
+            53.23863,
+            54.161075,
+            52.958203,
+            53.191209,
+            53.073083,
+            53.579268,
+            53.216096,
+            53.094745,
+            53.099202,
+            53.066443,
+            52.818493,
+            53.310808,
+            55.825431,
+            53.985643,
+            55.807519,
+            54.147394,
+            54.573039,
+            54.326171,
+            55.582233,
+            55.132052
+          ],
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        "new_f4aa": {
+          "median_ms": 53.36649,
+          "samples_ms": [
+            53.370106,
+            53.692918,
+            53.325349,
+            53.114014,
+            53.36649,
+            53.364267,
+            53.279201,
+            53.193072,
+            53.289185,
+            53.189185,
+            53.518036,
+            52.93677,
+            53.122397,
+            54.639367,
+            53.343465,
+            54.357578,
+            54.185511,
+            54.210749,
+            57.904656,
+            55.21737,
+            54.10411
+          ],
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        "reference": {
+          "median_ms": 57.071153,
+          "samples_ms": [
+            57.036903,
+            56.816034,
+            56.960959,
+            56.708924,
+            56.76702,
+            57.066506,
+            57.196281,
+            57.121438,
+            57.071153,
+            57.007438,
+            56.872156,
+            56.798597,
+            57.157632,
+            57.010382,
+            58.247999,
+            58.876254,
+            58.241107,
+            57.626632,
+            58.559362,
+            57.569526,
+            59.235901
+          ],
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.038116999999999734,
+      "new_wins": 10,
+      "old_wins": 11,
+      "new_old_ratio": 1.0010444786355517
+    },
+    {
+      "problem": "composition_of_formal_power_series",
+      "input": "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series/checker",
+      "reference": {
+        "id": 409336,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 5021696,
+        "problem_name": "composition_of_formal_power_series",
+        "problem_title": "Composition of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T01:24:33.404041Z",
+        "time": 0.003,
+        "user_name": "Aiyiyi",
+        "source_sha256": "766d2101d5e2c619f9fa3d73e57099871f112b91345f463fa2e17fb6c6bb6188",
+        "url": "https://judge.yosupo.jp/submission/409336"
+      },
+      "order": [
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 2.864139,
+          "samples_ms": [
+            3.004349,
+            4.051039,
+            3.02563,
+            3.184367,
+            2.817471,
+            2.832213,
+            2.82374,
+            2.720386,
+            2.762729,
+            2.902637,
+            2.819483,
+            3.246329,
+            2.878041,
+            2.764972,
+            2.831881,
+            2.735278,
+            2.864139,
+            3.006492,
+            2.861676,
+            2.973042,
+            3.089536
+          ],
+          "output_sha256": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac"
+        },
+        "new_f4aa": {
+          "median_ms": 2.828687,
+          "samples_ms": [
+            2.822838,
+            6.145453,
+            3.086431,
+            3.049236,
+            2.792784,
+            2.853454,
+            2.761897,
+            2.822217,
+            2.822058,
+            2.863149,
+            2.778823,
+            2.765533,
+            3.063407,
+            2.828687,
+            2.81008,
+            2.752564,
+            2.805272,
+            3.421106,
+            2.994284,
+            2.897669,
+            3.128784
+          ],
+          "output_sha256": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac"
+        },
+        "reference": {
+          "median_ms": 2.858562,
+          "samples_ms": [
+            2.712604,
+            3.159009,
+            5.295875,
+            2.962647,
+            2.693366,
+            2.637261,
+            2.719154,
+            2.709939,
+            2.774205,
+            2.778622,
+            2.630892,
+            4.330872,
+            2.929638,
+            2.874335,
+            2.745183,
+            2.77039,
+            2.858562,
+            3.036888,
+            3.4142,
+            2.876809,
+            2.987624
+          ],
+          "output_sha256": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.017285999999999913,
+      "new_wins": 10,
+      "old_wins": 11,
+      "new_old_ratio": 0.9876221091224971
+    },
+    {
+      "problem": "composition_of_formal_power_series_large",
+      "input": "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series_large/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series_large/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/composition_of_formal_power_series_large/checker",
+      "reference": {
+        "id": 409535,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 41984000,
+        "problem_name": "composition_of_formal_power_series_large",
+        "problem_title": "Composition of Formal Power Series (Large)",
+        "status": "AC",
+        "submission_time": "2026-10-10T08:44:51.058085Z",
+        "time": 0.035,
+        "user_name": "Aiyiyi",
+        "source_sha256": "1829103fcfeb5f979b111354a58a95caeedb5b44615eb24197e111fc10b126c9",
+        "url": "https://judge.yosupo.jp/submission/409535"
+      },
+      "order": [
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 34.732791,
+          "samples_ms": [
+            35.952669,
+            33.516607,
+            35.714204,
+            34.328168,
+            33.691367,
+            38.217355,
+            47.933601,
+            32.90788,
+            33.226615,
+            33.003222,
+            32.986247,
+            35.127169,
+            34.732791,
+            33.306525,
+            33.952327,
+            36.573215,
+            37.284685,
+            34.292824,
+            37.148492,
+            35.936886,
+            36.08701
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        },
+        "new_f4aa": {
+          "median_ms": 34.087217,
+          "samples_ms": [
+            33.380263,
+            33.576947,
+            34.028761,
+            34.093187,
+            33.445401,
+            33.257291,
+            33.811708,
+            40.559838,
+            32.864796,
+            34.023132,
+            35.923285,
+            34.227537,
+            35.540335,
+            33.621343,
+            34.396459,
+            34.087217,
+            33.387544,
+            40.171117,
+            38.638153,
+            36.314489,
+            39.431155
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        },
+        "reference": {
+          "median_ms": 32.924765,
+          "samples_ms": [
+            32.885967,
+            32.693851,
+            33.032726,
+            32.884495,
+            32.689234,
+            32.453192,
+            32.553892,
+            32.581314,
+            32.083862,
+            32.924765,
+            33.046737,
+            33.738067,
+            32.575765,
+            32.532109,
+            33.434215,
+            33.971735,
+            33.956343,
+            33.767721,
+            34.949152,
+            35.773142,
+            33.757467
+          ],
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.06033999999999651,
+      "new_wins": 10,
+      "old_wins": 11,
+      "new_old_ratio": 0.9814131262874902
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series",
+      "input": "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker",
+      "reference": {
+        "id": 409399,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 2973696,
+        "problem_name": "compositional_inverse_of_formal_power_series",
+        "problem_title": "Compositional Inverse of Formal Power Series",
+        "status": "AC",
+        "submission_time": "2026-10-10T03:19:35.943433Z",
+        "time": 0.003,
+        "user_name": "Aiyiyi",
+        "source_sha256": "51f5819987ba31df921f041d640216b404593ad5b293732aa519ecf9e9b19145",
+        "url": "https://judge.yosupo.jp/submission/409399"
+      },
+      "order": [
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 2.776709,
+          "samples_ms": [
+            2.722018,
+            3.01153,
+            2.968936,
+            2.908857,
+            2.776709,
+            2.681908,
+            2.539716,
+            2.638984,
+            2.651914,
+            2.930629,
+            2.727065,
+            2.764261,
+            2.68319,
+            3.21992,
+            3.24675,
+            3.062406,
+            3.265339,
+            2.858972,
+            3.325668,
+            2.753895,
+            2.564744
+          ],
+          "output_sha256": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd"
+        },
+        "new_f4aa": {
+          "median_ms": 2.771882,
+          "samples_ms": [
+            2.560357,
+            3.117498,
+            2.534839,
+            2.705393,
+            2.608499,
+            2.746765,
+            2.646846,
+            2.519336,
+            2.730501,
+            2.722729,
+            3.050037,
+            2.798832,
+            3.232029,
+            3.139751,
+            2.841456,
+            2.82369,
+            2.88447,
+            3.040022,
+            2.67586,
+            2.880033,
+            2.771882
+          ],
+          "output_sha256": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd"
+        },
+        "reference": {
+          "median_ms": 2.816398,
+          "samples_ms": [
+            2.514719,
+            2.936377,
+            2.937239,
+            2.652144,
+            3.08549,
+            2.758322,
+            2.845683,
+            2.78365,
+            2.493026,
+            2.560998,
+            2.830329,
+            2.638924,
+            2.816398,
+            2.826653,
+            2.84431,
+            3.073973,
+            2.585845,
+            3.115324,
+            2.74985,
+            3.046171,
+            2.660326
+          ],
+          "output_sha256": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8"
+        }
+      },
+      "paired_new_minus_old_median_ms": -0.08016900000000016,
+      "new_wins": 11,
+      "old_wins": 10,
+      "new_old_ratio": 0.9982616111375013
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "input": "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker",
+      "reference": {
+        "id": 409549,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 10526720,
+        "problem_name": "compositional_inverse_of_formal_power_series_large",
+        "problem_title": "Compositional Inverse of Formal Power Series (Large)",
+        "status": "AC",
+        "submission_time": "2026-10-10T10:06:14.152816Z",
+        "time": 0.033,
+        "user_name": "Aiyiyi",
+        "source_sha256": "266ebfa429c5413f815d504684bb4ec69fcbf8bf743a777873b76486f82f5edf",
+        "url": "https://judge.yosupo.jp/submission/409549"
+      },
+      "order": [
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 31.275425,
+          "samples_ms": [
+            32.010212,
+            32.219022,
+            32.433583,
+            31.22466,
+            30.403617,
+            31.263659,
+            30.839115,
+            32.03699,
+            31.095386,
+            30.86969,
+            32.241385,
+            31.275425,
+            30.778654,
+            31.970632,
+            32.223118,
+            31.516255,
+            32.011813,
+            30.975218,
+            30.955258,
+            31.350056,
+            31.230188
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        },
+        "new_f4aa": {
+          "median_ms": 31.653429,
+          "samples_ms": [
+            33.127728,
+            32.082639,
+            34.811778,
+            32.092254,
+            32.195749,
+            31.054827,
+            32.723113,
+            31.653429,
+            31.103098,
+            31.01038,
+            31.426371,
+            31.321083,
+            32.353332,
+            31.625207,
+            32.065183,
+            31.934908,
+            31.082587,
+            31.569142,
+            30.861117,
+            30.693537,
+            37.22264
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        },
+        "reference": {
+          "median_ms": 30.56099,
+          "samples_ms": [
+            30.483486,
+            31.285811,
+            31.283378,
+            30.060765,
+            30.348865,
+            31.354834,
+            30.039372,
+            30.385258,
+            33.742183,
+            30.56099,
+            29.973844,
+            29.957761,
+            30.732026,
+            30.779976,
+            30.604455,
+            31.921839,
+            29.97026,
+            30.170748,
+            30.585867,
+            31.442694,
+            30.11217
+          ],
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.045658000000003085,
+      "new_wins": 9,
+      "old_wins": 12,
+      "new_old_ratio": 1.012086294590721
+    },
+    {
+      "problem": "multipoint_evaluation",
+      "input": "/tmp/library-checker-problems/polynomial/multipoint_evaluation/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/multipoint_evaluation/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/multipoint_evaluation/checker",
+      "reference": {
+        "id": 409516,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 30167040,
+        "problem_name": "multipoint_evaluation",
+        "problem_title": "Multipoint Evaluation",
+        "status": "AC",
+        "submission_time": "2026-10-10T07:58:23.421112Z",
+        "time": 0.015,
+        "user_name": "Aiyiyi",
+        "source_sha256": "bcba5d9515f79dda9970e8d324aa38cb496466fc86f6be9a81c7b2427cd3c165",
+        "url": "https://judge.yosupo.jp/submission/409516"
+      },
+      "order": [
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 15.237835,
+          "samples_ms": [
+            15.854195,
+            15.533187,
+            15.057868,
+            15.311456,
+            14.934405,
+            15.425737,
+            15.231257,
+            14.910949,
+            15.231537,
+            15.17995,
+            15.785362,
+            16.257707,
+            15.540267,
+            15.22086,
+            14.879783,
+            15.156535,
+            15.636611,
+            14.923768,
+            15.780566,
+            15.268793,
+            15.237835
+          ],
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324"
+        },
+        "new_f4aa": {
+          "median_ms": 15.140882,
+          "samples_ms": [
+            15.043757,
+            15.076346,
+            15.358286,
+            15.065689,
+            15.248232,
+            14.996336,
+            15.05876,
+            15.113582,
+            14.976648,
+            15.797041,
+            15.699334,
+            15.97811,
+            15.74333,
+            15.130827,
+            15.59545,
+            15.032781,
+            15.367219,
+            15.140882,
+            15.760787,
+            15.957268,
+            14.894004
+          ],
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324"
+        },
+        "reference": {
+          "median_ms": 14.671342,
+          "samples_ms": [
+            14.707936,
+            14.594437,
+            14.558965,
+            14.842607,
+            14.357674,
+            14.671342,
+            14.78378,
+            14.234581,
+            14.409241,
+            14.265447,
+            14.848746,
+            14.869607,
+            14.823288,
+            14.400027,
+            14.338646,
+            14.99838,
+            14.441269,
+            14.810039,
+            14.282903,
+            19.052874,
+            14.834705
+          ],
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324"
+        }
+      },
+      "paired_new_minus_old_median_ms": -0.09003300000000003,
+      "new_wins": 13,
+      "old_wins": 8,
+      "new_old_ratio": 0.9936373507128801
+    },
+    {
+      "problem": "polynomial_interpolation",
+      "input": "/tmp/library-checker-problems/polynomial/polynomial_interpolation/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/polynomial_interpolation/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/polynomial_interpolation/checker",
+      "reference": {
+        "id": 409545,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 28884992,
+        "problem_name": "polynomial_interpolation",
+        "problem_title": "Polynomial Interpolation",
+        "status": "AC",
+        "submission_time": "2026-10-10T09:35:56.43968Z",
+        "time": 0.02,
+        "user_name": "Aiyiyi",
+        "source_sha256": "5f74824b262ffc33fd8aa4dfb9744a476d08ed922f7dd9d9351088f084253de9",
+        "url": "https://judge.yosupo.jp/submission/409545"
+      },
+      "order": [
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 19.777244,
+          "samples_ms": [
+            19.317118,
+            19.444287,
+            19.510516,
+            19.455424,
+            19.513019,
+            19.349866,
+            19.805526,
+            19.919917,
+            19.783443,
+            19.902832,
+            19.596586,
+            20.152003,
+            19.875059,
+            20.000198,
+            19.477377,
+            19.554532,
+            19.451769,
+            19.777244,
+            19.968158,
+            20.635003,
+            20.201878
+          ],
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d"
+        },
+        "new_f4aa": {
+          "median_ms": 19.706468,
+          "samples_ms": [
+            19.096909,
+            19.281054,
+            19.256457,
+            19.76774,
+            19.706468,
+            19.929641,
+            19.573119,
+            20.043081,
+            19.739528,
+            19.341735,
+            19.172663,
+            19.876472,
+            19.588814,
+            19.335997,
+            20.047537,
+            19.204991,
+            19.440123,
+            20.20296,
+            19.82754,
+            20.593562,
+            20.002721
+          ],
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d"
+        },
+        "reference": {
+          "median_ms": 19.042629,
+          "samples_ms": [
+            18.954056,
+            19.329146,
+            18.747799,
+            19.339522,
+            18.411388,
+            18.496034,
+            19.118301,
+            19.144722,
+            19.038003,
+            18.591858,
+            18.978093,
+            19.339812,
+            19.1232,
+            19.109119,
+            18.518608,
+            18.619969,
+            19.042629,
+            19.47292,
+            19.357037,
+            19.712538,
+            18.994797
+          ],
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d"
+        }
+      },
+      "paired_new_minus_old_median_ms": -0.16323299999999819,
+      "new_wins": 15,
+      "old_wins": 6,
+      "new_old_ratio": 0.9964213416186806
+    },
+    {
+      "problem": "polynomial_taylor_shift",
+      "input": "/tmp/library-checker-problems/polynomial/polynomial_taylor_shift/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/polynomial_taylor_shift/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/polynomial_taylor_shift/checker",
+      "reference": {
+        "id": 409534,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 16683008,
+        "problem_name": "polynomial_taylor_shift",
+        "problem_title": "Polynomial Taylor Shift",
+        "status": "AC",
+        "submission_time": "2026-10-10T08:38:48.817344Z",
+        "time": 0.01,
+        "user_name": "Aiyiyi",
+        "source_sha256": "5252bec9266ab7a0475526d06b587c54c2431d133842337317f01aa729ffb58b",
+        "url": "https://judge.yosupo.jp/submission/409534"
+      },
+      "order": [
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 9.818177,
+          "samples_ms": [
+            10.066097,
+            9.637198,
+            10.000369,
+            9.580672,
+            10.879909,
+            9.863985,
+            9.865907,
+            9.80101,
+            9.858898,
+            9.81363,
+            9.876133,
+            10.121097,
+            9.755342,
+            9.983142,
+            9.572531,
+            10.072327,
+            9.666331,
+            9.818177,
+            9.767291,
+            9.709014,
+            9.790447
+          ],
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6"
+        },
+        "new_f4aa": {
+          "median_ms": 9.841802,
+          "samples_ms": [
+            9.835243,
+            9.626632,
+            10.001742,
+            9.826239,
+            9.593311,
+            9.841802,
+            10.124733,
+            9.905717,
+            9.927829,
+            9.682313,
+            9.775312,
+            10.264161,
+            9.842373,
+            10.111313,
+            9.811346,
+            9.945336,
+            9.666561,
+            9.569546,
+            10.136221,
+            9.51112,
+            10.056032
+          ],
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6"
+        },
+        "reference": {
+          "median_ms": 8.622864,
+          "samples_ms": [
+            8.872327,
+            8.555294,
+            8.434915,
+            8.622864,
+            8.427684,
+            8.791826,
+            8.927368,
+            8.691757,
+            8.312392,
+            8.515865,
+            8.618858,
+            8.893738,
+            8.906838,
+            8.635713,
+            8.756003,
+            8.809704,
+            8.632069,
+            8.481074,
+            8.533932,
+            8.390268,
+            8.483798
+          ],
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6"
+        }
+      },
+      "paired_new_minus_old_median_ms": 0.0013730000000009568,
+      "new_wins": 9,
+      "old_wins": 12,
+      "new_old_ratio": 1.0024062511808454
+    },
+    {
+      "problem": "inv_of_polynomials",
+      "input": "/tmp/library-checker-problems/polynomial/inv_of_polynomials/in/max_random_00.in",
+      "answer": "/tmp/library-checker-problems/polynomial/inv_of_polynomials/out/max_random_00.out",
+      "checker": "/tmp/library-checker-problems/polynomial/inv_of_polynomials/checker",
+      "reference": {
+        "id": 409589,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11862016,
+        "problem_name": "inv_of_polynomials",
+        "problem_title": "Inv of Polynomials",
+        "status": "AC",
+        "submission_time": "2026-10-10T12:56:52.628371Z",
+        "time": 0.015,
+        "user_name": "Aiyiyi",
+        "source_sha256": "274d6c6107676bf6043aa5984e4b5788617ae7c8ff0ae1f157b6b0954e895306",
+        "url": "https://judge.yosupo.jp/submission/409589"
+      },
+      "order": [
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "new_f4aa",
+          "reference",
+          "old_f3ac"
+        ],
+        [
+          "old_f3ac",
+          "reference",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "old_f3ac",
+          "new_f4aa"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ],
+        [
+          "new_f4aa",
+          "old_f3ac",
+          "reference"
+        ],
+        [
+          "old_f3ac",
+          "new_f4aa",
+          "reference"
+        ],
+        [
+          "reference",
+          "new_f4aa",
+          "old_f3ac"
+        ]
+      ],
+      "checker_runs": 66,
+      "variants": {
+        "old_f3ac": {
+          "median_ms": 15.470254,
+          "samples_ms": [
+            15.359999,
+            15.271968,
+            15.391457,
+            15.82977,
+            15.438827,
+            15.266401,
+            15.260361,
+            15.470254,
+            15.169014,
+            15.565945,
+            15.639816,
+            15.487348,
+            15.546017,
+            15.254963,
+            15.418597,
+            15.507158,
+            15.566908,
+            15.853885,
+            15.499767,
+            15.437894,
+            15.497183
+          ],
+          "output_sha256": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa"
+        },
+        "new_f4aa": {
+          "median_ms": 15.428141,
+          "samples_ms": [
+            15.294563,
+            15.356595,
+            15.281603,
+            15.52806,
+            15.283396,
+            15.575771,
+            15.54147,
+            15.322753,
+            15.54919,
+            15.435421,
+            15.388562,
+            15.335042,
+            15.428141,
+            15.265839,
+            15.308102,
+            15.424445,
+            15.441341,
+            15.687898,
+            16.28698,
+            15.844421,
+            15.845453
+          ],
+          "output_sha256": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa"
+        },
+        "reference": {
+          "median_ms": 15.003598,
+          "samples_ms": [
+            14.697081,
+            14.534549,
+            15.012222,
+            15.137318,
+            14.820615,
+            14.920725,
+            14.66881,
+            15.234422,
+            15.05911,
+            14.727265,
+            15.173951,
+            14.858512,
+            15.003598,
+            14.795558,
+            15.069225,
+            14.675068,
+            15.150867,
+            14.913023,
+            15.272779,
+            15.114042,
+            15.214091
+          ],
+          "output_sha256": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa"
+        }
+      },
+      "paired_new_minus_old_median_ms": -0.10985400000000034,
+      "new_wins": 13,
+      "old_wins": 8,
+      "new_old_ratio": 0.9972778081083865
+    }
+  ],
+  "artifacts_preserved": true,
+  "official_files_preserved": true,
+  "original_tree_preserved": true,
+  "candidate_tree_preserved": true,
+  "live_overlay_preserved": true,
+  "checker_runs": 1056,
+  "finished": "2026-10-19T05:11:52.545599+00:00"
+}
