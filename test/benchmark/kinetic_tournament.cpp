@@ -1,76 +1,73 @@
 #include "data_structure/segment_tree/kinetic_tournament.hpp"
-#include "ekzhang.cpp"
+#include "reference.hpp"
 #include <chrono>
 #include <iostream>
+#include <numeric>
 #include <random>
-#include <string>
+
+#define KINETIC_TOURNAMENT_JSC_TEST
+#include "test/benchmark/kinetic_tournament_jsc.cpp"
 
 struct Reference {
-	kinetic_tournament<std::int64_t> tree;
-	int n;
-	explicit Reference(int size) : tree(size), n(size) {}
-	void set(int i, std::int64_t a, std::int64_t b) { tree.update(i, a, b); }
-	void advance(std::int64_t t) { tree.heaten(t); }
-	std::int64_t prod(int l, int r) { return tree.query(l, r - 1); }
-	std::int64_t all() { return prod(0, n); }
+	reference::KineticRangeLinearAddMinTree tree;
+	explicit Reference(const std::vector<std::int64_t> &values) : tree(values) {}
+	void apply(int l, int r, std::int64_t a, std::int64_t b) { tree.add(l, r, a, b); }
+	std::int64_t prod(int l, int r) { return tree.minimum(l, r); }
 };
-
-template <class R>
 struct Library {
-	KineticTournament<std::int64_t, false, R> tree;
-	explicit Library(int n) : tree(n) {}
-	void set(int i, std::int64_t a, std::int64_t b) { tree.set(i, a, b); }
-	void advance(std::int64_t t) { tree.advance(t); }
-	std::int64_t prod(int l, int r) { return std::int64_t(tree.prod(l, r)->value); }
-	std::int64_t all() { return std::int64_t(tree.all_prod()->value); }
+	KineticTournament<std::int64_t, false> tree;
+	static std::vector<std::int64_t> slopes(std::size_t n) { std::vector<std::int64_t> v(n); std::iota(v.begin(), v.end(), 0); return v; }
+	explicit Library(const std::vector<std::int64_t> &values) : tree(slopes(values.size()), values) {}
+	void apply(int l, int r, std::int64_t a, std::int64_t b) { tree.apply(l, r, a, b); }
+	std::int64_t prod(int l, int r) { return tree.prod(l, r)->value; }
 };
-
 struct Operation { int type, l, r; std::int64_t a, b; };
 
-template <class Tree>
-void run(const std::string &kind) {
+template<class Tree> void run(const std::string &kind) {
 	constexpr int n = 100000, q = 100000;
 	std::mt19937_64 rng(20261020);
-	Tree tree(n);
-	for (int i = 0; i < n; ++i) {
-		std::int64_t a, b;
-		if (kind == "envelope" || kind == "jump") a = n - i - 1, b = std::int64_t(i) * (i + 1) / 2;
-		else if (kind == "concurrent") a = i, b = std::int64_t(n - i - 1) * n;
-		else a = kind == "same_slope" ? 7 : rng() % 1000000, b = rng() % 1000000000000ULL;
-		tree.set(i, a, b);
-	}
-	std::vector<Operation> operations;
-	if (kind == "jump" || kind == "concurrent") operations.push_back({1, 0, 0, n, 0});
+	std::vector<std::int64_t> values(n);
+	for (int i = 0; i < n; ++i) values[i] = kind == "random" || kind == "partial" ? std::int64_t(rng() % 2000000000001ULL) - 1000000000000LL : std::int64_t(n - i - 1) * (n - i) / 2;
+	Tree tree(values);
+	std::vector<Operation> ops;
+	if (kind == "jump") { ops.push_back({0, 0, n, n, 0}); ops.push_back({1, 0, n, 0, 0}); }
 	else for (int i = 0; i < q; ++i) {
-		if (kind == "envelope") { operations.push_back({1, 0, 0, i, 0}); operations.push_back({3, 0, 0, 0, 0}); }
-		else if (kind == "same_slope") {
-			operations.push_back({1, 0, 0, i, 0});
-			int l = rng() % n, r = l + 1 + rng() % (n - l);
-			operations.push_back({2, l, r, 0, 0});
-		} else if (i % 3 == 0) operations.push_back({0, int(rng() % n), 0, std::int64_t(rng() % 1000000), std::int64_t(rng() % 1000000000000ULL)});
-		else if (i % 3 == 1) operations.push_back({1, 0, 0, i, 0});
+		if (kind == "envelope") { ops.push_back({0, 0, n, 1, 0}); ops.push_back({1, 0, n, 0, 0}); }
 		else {
 			int l = rng() % n, r = l + 1 + rng() % (n - l);
-			operations.push_back({2, l, r, 0, 0});
+			if (i % 3 == 2) ops.push_back({1, l, r, 0, 0});
+			else ops.push_back({0, l, r, std::int64_t(rng() % 11), std::int64_t(rng() % 2000001) - 1000000});
+			if (kind == "partial" && i % 3 == 1) ops.push_back({0, 0, n / 2, 0, -1000000000});
 		}
 	}
 	std::uint64_t checksum = 0;
-	auto begin = std::chrono::steady_clock::now();
-	for (auto op : operations) {
-		if (!op.type) tree.set(op.l, op.a, op.b);
-		else if (op.type == 1) tree.advance(op.a);
-		else checksum = checksum * 1000000007 + std::uint64_t(op.type == 2 ? tree.prod(op.l, op.r) : tree.all());
+	auto start = std::chrono::steady_clock::now();
+	for (auto op : ops) {
+		if (!op.type) tree.apply(op.l, op.r, op.a, op.b);
+		else checksum = checksum * 1000000007 + std::uint64_t(tree.prod(op.l, op.r));
 	}
-	checksum = checksum * 1000000007 + std::uint64_t(tree.all());
-	auto elapsed = std::chrono::steady_clock::now() - begin;
-	std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count() << ' ' << checksum << '\n';
+	auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count();
+	std::cout << elapsed << ' ' << checksum << '\n';
 }
 
 int main(int argc, char **argv) {
-	if (argc != 3) return 2;
-	std::string mode = argv[1];
-	if (mode == "reference") run<Reference>(argv[2]);
-	else if (mode == "library64") run<Library<std::int64_t>>(argv[2]);
-	else if (mode == "library") run<Library<__int128_t>>(argv[2]);
-	else return 2;
+	if (argc != 3) return 1;
+	std::string mode = argv[1], kind = argv[2];
+	if (mode == "reference") run<Reference>(kind);
+	else if (mode == "library") run<Library>(kind);
+	else {
+		std::mt19937_64 rng(478321);
+		std::vector<std::int64_t> a(500000);
+		for (int i = 0; i < int(a.size()); ++i) {
+			if (kind == "equal") a[i] = 1000000000;
+			else if (kind == "ascending") a[i] = i + 1;
+			else if (kind == "descending") a[i] = a.size() - i;
+			else if (kind == "alternating") a[i] = i % 2 ? i + 1 : 1000000000 - i;
+			else a[i] = 1 + rng() % 1000000000;
+		}
+		auto start = std::chrono::steady_clock::now();
+		auto answer = solve(a);
+		auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count();
+		std::cout << elapsed << ' ' << answer << '\n';
+	}
 }

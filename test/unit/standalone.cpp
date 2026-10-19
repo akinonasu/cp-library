@@ -85,10 +85,9 @@ int main() {
 	dual.apply(0, 3, 4);
 	dual.set(1, 7);
 	assert(dual.get(0) == 5 && dual.get(1) == 7);
-	KineticTournament<> kinetic(2);
-	kinetic.set(0, 2, 1); kinetic.set(1, -1, 4);
-	kinetic.advance(3);
-	assert(kinetic.all_prod()->index == 1 && kinetic.all_prod()->value == 1);
+	KineticTournament<> kinetic(std::vector<std::int64_t>{1, 3}, std::vector<std::int64_t>{5, 0});
+	kinetic.advance(0, 2, 3);
+	assert(kinetic.all_prod()->index == 1 && kinetic.all_prod()->value == 9);
 	assert(mod_sqrt(10, 13) == 6 && !mod_sqrt(2, 13));
 	SternBrocotTree<> rational_tree(5, 3);
 	assert((rational_tree.depth() == 3 && rational_tree.ancestor(2)->value() == std::pair<std::uint64_t, std::uint64_t>(3, 2)));

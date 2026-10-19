@@ -202,7 +202,7 @@ using Tree = GenericSegtreeBeats<S, op, e, F, mapping, composition, id>;
 void sequence_test() {
 	using namespace sequence_beats;
 	Tree delayed(8, S("a"));
-	delayed.apply(0, 8, F(1, 0));
+	delayed.apply(F(1, 0));
 	require(failures == 0 && delayed.all_prod().text == std::string(8, 'b'));
 	require(delayed.get(3).text == "b" && failures > 0);
 	std::mt19937 rng(179841);
@@ -213,7 +213,8 @@ void sequence_test() {
 			int l = rng() % (n + 1), r = rng() % (n + 1);
 			if (l > r) std::swap(l, r);
 			F f = rng() % 2 ? F(rng() % 3, 0) : F(-1, rng() % 3);
-			seg.apply(l, r, f);
+			if (q % 3 == 0) { l = 0; r = n; seg.apply(f); }
+			else seg.apply(l, r, f);
 			for (int i = l; i < r; ++i) a[i] = char('a' + ((f.letter >= 0 ? f.letter : a[i] - 'a') + f.shift) % 26);
 			if (n && q % 7 == 0) {
 				int p = rng() % n;
@@ -247,7 +248,7 @@ int main() {
 	std::vector<division_beats::S> a(n);
 	for (int i = 0; i < n; ++i) a[i] = division_beats::leaf(i);
 	division_beats::Tree seg(a);
-	for (int q = 0; q < 24; ++q) seg.apply(0, n, {-1, 2});
+	for (int q = 0; q < 24; ++q) seg.apply(division_beats::F{-1, 2});
 	require(seg.all_prod().sum == 0);
 	seg.apply(0, n, {100000, 1});
 	seg.apply(0, n, {-1, ~0ULL});

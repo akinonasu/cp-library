@@ -1,31 +1,19 @@
-#define PROBLEM "https://judge.yosupo.jp/problem/line_add_get_min"
+#define PROBLEM "https://judge.yosupo.jp/problem/range_add_range_min"
 #include "../data_structure/segment_tree/kinetic_tournament.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {
-	using Tree = KineticTournament<>;
 	FastInput in;
 	FastOutput out;
 	int n = 0, q = 0;
 	in.read(n); in.read(q);
-	std::vector<Tree::Line> lines(n);
-	for (auto &[a, b] : lines) { in.read(a); in.read(b); }
-	struct Query { std::int64_t x; int count, index; };
-	std::vector<Query> queries;
+	std::vector<std::int64_t> values(n), slopes(n);
+	for (auto &value : values) in.read(value);
+	KineticTournament<std::int64_t, false> tree(slopes, values);
 	for (int i = 0; i < q; ++i) {
-		int type = 0;
-		std::int64_t a = 0, b = 0;
-		in.read(type); in.read(a);
-		if (!type) { in.read(b); lines.push_back({a, b}); }
-		else queries.push_back({a, int(lines.size()), int(queries.size())});
+		int type = 0, l = 0, r = 0;
+		in.read(type); in.read(l); in.read(r);
+		if (!type) { std::int64_t value = 0; in.read(value); tree.add(l, r, value); }
+		else out.println(tree.prod(l, r)->value);
 	}
-	if (queries.empty()) return 0;
-	std::sort(queries.begin(), queries.end(), [](auto a, auto b) { return a.x < b.x; });
-	Tree tree(lines, queries.front().x);
-	std::vector<Tree::value_type> answer(queries.size());
-	for (auto query : queries) {
-		tree.advance(query.x);
-		answer[query.index] = tree.prod(0, query.count)->value;
-	}
-	for (auto value : answer) out.println(value);
 }

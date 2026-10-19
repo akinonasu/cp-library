@@ -1,98 +1,196 @@
 {
-  "retrieved_at": "2026-10-19T21:15:24.927127+00:00",
-  "listing": {
-    "count": 2089,
-    "submissions": [
-      {
-        "id": 362191,
-        "is_latest": true,
-        "lang": "cpp",
-        "memory": 24797184,
-        "problem_name": "line_add_get_min",
-        "problem_title": "Line Add Get Min",
-        "status": "AC",
-        "submission_time": "2026-03-24T23:20:38.282851Z",
-        "time": 0.057,
-        "user_name": "IceKylin"
-      },
-      {
-        "id": 357336,
-        "is_latest": true,
-        "lang": "cpp",
-        "memory": 24854528,
-        "problem_name": "line_add_get_min",
-        "problem_title": "Line Add Get Min",
-        "status": "AC",
-        "submission_time": "2026-03-03T11:24:04.329731Z",
-        "time": 0.058,
-        "user_name": "IceKylin"
-      },
-      {
-        "id": 357321,
-        "is_latest": true,
-        "lang": "cpp",
-        "memory": 24850432,
-        "problem_name": "line_add_get_min",
-        "problem_title": "Line Add Get Min",
-        "status": "AC",
-        "submission_time": "2026-03-03T11:04:21.158858Z",
-        "time": 0.058,
-        "user_name": "IceKylin"
-      }
-    ]
+  "retrieved_at": "2026-10-19T21:46:44.330853+00:00",
+  "official": {
+    "editorial": "https://atcoder.jp/contests/jsc2024-final/editorial/10766",
+    "sample_submission": "https://atcoder.jp/contests/jsc2024-final/submissions/56754335",
+    "source_fetch_error": "HTTP Error 403: Forbidden"
   },
-  "references": [
-    {
-      "overview": {
-        "id": 362191,
-        "is_latest": true,
-        "lang": "cpp",
-        "memory": 24797184,
-        "problem_name": "line_add_get_min",
-        "problem_title": "Line Add Get Min",
-        "status": "AC",
-        "submission_time": "2026-03-24T23:20:38.282851Z",
-        "time": 0.057,
-        "user_name": "IceKylin"
+  "problems": {
+    "range_linear_add_range_min": {
+      "listing": {
+        "count": 115,
+        "submissions": [
+          {
+            "id": 393894,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 22331392,
+            "problem_name": "range_linear_add_range_min",
+            "problem_title": "Range Linear Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-08-16T12:44:51.56211Z",
+            "time": 0.102,
+            "user_name": "chaihf"
+          },
+          {
+            "id": 382268,
+            "is_latest": true,
+            "lang": "cpp20",
+            "memory": 22671360,
+            "problem_name": "range_linear_add_range_min",
+            "problem_title": "Range Linear Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-06-26T06:51:17.488629Z",
+            "time": 0.12,
+            "user_name": "t98slider"
+          },
+          {
+            "id": 371003,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 15630336,
+            "problem_name": "range_linear_add_range_min",
+            "problem_title": "Range Linear Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-05-07T13:33:09.610665Z",
+            "time": 0.212,
+            "user_name": "wery0"
+          }
+        ]
       },
-      "sha256": "d0721414299255528a55f6e64501647b8270e185a3f869470b7b23d4904f57a8",
-      "url": "https://judge.yosupo.jp/submission/362191"
+      "references": [
+        {
+          "overview": {
+            "id": 393894,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 22331392,
+            "problem_name": "range_linear_add_range_min",
+            "problem_title": "Range Linear Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-08-16T12:44:51.56211Z",
+            "time": 0.102,
+            "user_name": "chaihf"
+          },
+          "sha256": "f5483c492a7886ca7911d77eef19bfc94d0fb0566167ea736f05ccf7c47eae02",
+          "url": "https://judge.yosupo.jp/submission/393894"
+        },
+        {
+          "overview": {
+            "id": 382268,
+            "is_latest": true,
+            "lang": "cpp20",
+            "memory": 22671360,
+            "problem_name": "range_linear_add_range_min",
+            "problem_title": "Range Linear Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-06-26T06:51:17.488629Z",
+            "time": 0.12,
+            "user_name": "t98slider"
+          },
+          "sha256": "22693eda68903722dd93a2d3fe4ba65ba89412f0970428af6107ddc5d6ce7d02",
+          "url": "https://judge.yosupo.jp/submission/382268"
+        },
+        {
+          "overview": {
+            "id": 371003,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 15630336,
+            "problem_name": "range_linear_add_range_min",
+            "problem_title": "Range Linear Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-05-07T13:33:09.610665Z",
+            "time": 0.212,
+            "user_name": "wery0"
+          },
+          "sha256": "b908e19e8ad9e1bdb9e99b78f7dfd7c5c1ed766729effa4ffdde0000134bdd6f",
+          "url": "https://judge.yosupo.jp/submission/371003"
+        }
+      ]
     },
-    {
-      "overview": {
-        "id": 357336,
-        "is_latest": true,
-        "lang": "cpp",
-        "memory": 24854528,
-        "problem_name": "line_add_get_min",
-        "problem_title": "Line Add Get Min",
-        "status": "AC",
-        "submission_time": "2026-03-03T11:24:04.329731Z",
-        "time": 0.058,
-        "user_name": "IceKylin"
+    "range_add_range_min": {
+      "listing": {
+        "count": 401,
+        "submissions": [
+          {
+            "id": 409052,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 10727424,
+            "problem_name": "range_add_range_min",
+            "problem_title": "Range Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-10-09T02:05:36.712951Z",
+            "time": 0.05,
+            "user_name": "nandhagk"
+          },
+          {
+            "id": 402318,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 14979072,
+            "problem_name": "range_add_range_min",
+            "problem_title": "Range Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-09-14T12:04:57.473852Z",
+            "time": 0.051,
+            "user_name": "nandhagk"
+          },
+          {
+            "id": 408981,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 22794240,
+            "problem_name": "range_add_range_min",
+            "problem_title": "Range Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-10-08T17:24:23.993033Z",
+            "time": 0.055,
+            "user_name": "nandhagk"
+          }
+        ]
       },
-      "sha256": "de000107f2be5d61540548fb066e18d81e876c760bb9ba03ac25ec40fba68beb",
-      "url": "https://judge.yosupo.jp/submission/357336"
-    },
-    {
-      "overview": {
-        "id": 357321,
-        "is_latest": true,
-        "lang": "cpp",
-        "memory": 24850432,
-        "problem_name": "line_add_get_min",
-        "problem_title": "Line Add Get Min",
-        "status": "AC",
-        "submission_time": "2026-03-03T11:04:21.158858Z",
-        "time": 0.058,
-        "user_name": "IceKylin"
-      },
-      "sha256": "4573d73694db7a0625b40b5f0452bd42f75e6d74e8c295242f5ce1ea8a8fe029",
-      "url": "https://judge.yosupo.jp/submission/357321"
+      "references": [
+        {
+          "overview": {
+            "id": 409052,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 10727424,
+            "problem_name": "range_add_range_min",
+            "problem_title": "Range Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-10-09T02:05:36.712951Z",
+            "time": 0.05,
+            "user_name": "nandhagk"
+          },
+          "sha256": "1f184204931dcd970718be3aa4bc245f07f79b4177daa3c801b9b949e5a3d6d4",
+          "url": "https://judge.yosupo.jp/submission/409052"
+        },
+        {
+          "overview": {
+            "id": 402318,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 14979072,
+            "problem_name": "range_add_range_min",
+            "problem_title": "Range Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-09-14T12:04:57.473852Z",
+            "time": 0.051,
+            "user_name": "nandhagk"
+          },
+          "sha256": "ffe6fa365c0cb7052a6a50c95f002c3bebb45180281e6f8ab407bd69a752ad54",
+          "url": "https://judge.yosupo.jp/submission/402318"
+        },
+        {
+          "overview": {
+            "id": 408981,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 22794240,
+            "problem_name": "range_add_range_min",
+            "problem_title": "Range Add Range Min",
+            "status": "AC",
+            "submission_time": "2026-10-08T17:24:23.993033Z",
+            "time": 0.055,
+            "user_name": "nandhagk"
+          },
+          "sha256": "7ef450a596784a04414d842231c989bc810ab4341a9ea316ec64a9dfc06a6aec",
+          "url": "https://judge.yosupo.jp/submission/408981"
+        }
+      ]
     }
-  ],
-  "kinetic": {
-    "url": "https://raw.githubusercontent.com/ekzhang/library/f553dd59b9f5635351478d6f45a9283fe603c840/kinetic_tournament.cpp",
-    "sha256": "5246af20c90e7cc22df792ab7f8ae9209f1f6426409f340a69cd4b9f8789f23c"
   }
 }

@@ -59,6 +59,7 @@ long long sum = seg.prod(0, 3).sum;
 | `GenericSegtreeBeats(a)` | `vector<S>` から構築 | $$O(n)$$ |
 | `build(a)` | `vector<S>` で構築し直す | $$O(n)$$ |
 | `apply(l,r,f)` | 半開区間 `[l,r)` に更新 `f` を適用 | $$O(\log n+E_i)$$ |
+| `apply(f)` | 全体に更新 `f` を適用。空なら何もしない | $$O(1+E_i)$$ |
 | `apply(p,f)` | 1 点に更新 `f` を適用 | $$O(\log n+E_i)$$ |
 | `set(p,value)` | 1 点の集約値を `value` に置き換える | $$O(\log n+E_i)$$ |
 | `get(p)` | 1 点の値を `S` で返す | $$O(\log n+E_i)$$ |

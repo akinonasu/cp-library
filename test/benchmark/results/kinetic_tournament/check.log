@@ -1,7 +1,11 @@
+g++: standalone components/kinetic_tournament_monoid.hpp
 g++: standalone data_structure/segment_tree/kinetic_tournament.hpp
 g++: kinetic_tournament.cpp
+Kinetic tournament passed
 g++: standalone.cpp
+clang++: standalone components/kinetic_tournament_monoid.hpp
 clang++: standalone data_structure/segment_tree/kinetic_tournament.hpp
 clang++: kinetic_tournament.cpp
+Kinetic tournament passed
 clang++: standalone.cpp
 Verification passed

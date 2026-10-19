@@ -1,155 +1,113 @@
 #include "data_structure/segment_tree/kinetic_tournament.hpp"
+#include <iostream>
 #include <random>
 
-using I = __int128_t;
+#define KINETIC_TOURNAMENT_JSC_TEST
+#include "test/benchmark/kinetic_tournament_jsc.cpp"
 
-template <bool Maximize = false, class Tree>
-void equal(const Tree &tree, const std::vector<std::optional<typename Tree::Line>> &lines, int l, int r) {
-	int index = -1;
-	I value = 0;
-	for (int i = l; i < r; ++i) if (lines[i]) {
-		I current = I(lines[i]->a) * tree.time() + lines[i]->b;
-		if (index == -1 || (Maximize ? current > value : current < value)) index = i, value = current;
+template<class T, bool Max> void check(KineticTournament<T, Max> &tree, const std::vector<std::optional<T>> &values) {
+	int n = values.size(), active = 0;
+	for (auto value : values) active += value.has_value();
+	assert(tree.size() == n && tree.active_size() == active && tree.empty() == (active == 0));
+	for (int l = 0; l <= n; ++l) for (int r = l; r <= n; ++r) {
+		int index = -1;
+		for (int i = l; i < r; ++i) if (values[i]) {
+			if (index == -1 || (Max ? *values[i] >= *values[index] : *values[i] < *values[index])) index = i;
+		}
+		auto actual = tree.prod(l, r);
+		assert(actual.has_value() == (index != -1));
+		if (actual) assert(actual->index == index && actual->value == *values[index]);
 	}
-	auto actual = tree.prod(l, r);
-	assert(bool(actual) == (index != -1));
-	if (actual) assert(actual->index == index && actual->value == value);
+	auto result = tree.all_prod(), all = tree.prod(0, n);
+	assert(bool(result) == bool(all));
+	if (result) assert(result->index == all->index && result->value == all->value);
+	assert(tree.values() == values);
+	for (int i = 0; i < n; ++i) assert(tree.get(i) == values[i]);
 }
 
-template <class T, bool Maximize, class R>
-void random_test(std::uint64_t seed) {
-	using Tree = KineticTournament<T, Maximize, R>;
-	std::mt19937_64 rng(seed);
-	for (int n : {0, 1, 2, 3, 7, 8, 9, 31, 32, 33, 100}) {
-		Tree tree(n, T(-100));
-		std::vector<std::optional<typename Tree::Line>> lines(n);
-		for (int step = 0; step < 2000; ++step) {
-			int kind = rng() % 7;
-			if (kind <= 1 && n) {
-				int i = rng() % n;
-				T a = T(rng() % 201) - 100, b = T(rng() % 401) - 200;
-				lines[i] = typename Tree::Line{a, b};
-				tree.set(i, a, b);
-			} else if (kind == 2 && n) {
-				int i = rng() % n;
-				assert(tree.erase(i) == lines[i].has_value());
-				lines[i].reset();
-			} else if (kind == 3) tree.advance(T(tree.time() + rng() % 5));
-			else if (kind == 4 && tree.next_event()) tree.advance(*tree.next_event());
-			else if (kind == 5 && step % 71 == 0) {
-				tree.clear();
-				for (auto &line : lines) line.reset();
+template<class T, bool Max> void random() {
+	std::mt19937_64 rng(278456 + Max);
+	for (int trial = 0; trial < 80; ++trial) {
+		int n = rng() % 35;
+		std::vector<T> slopes(n);
+		std::vector<std::optional<T>> values(n);
+		for (auto &slope : slopes) slope = T(int(rng() % 31) - 15);
+		std::sort(slopes.begin(), slopes.end());
+		for (auto &value : values) if (rng() % 3) value = T(int(rng() % 201) - 100);
+		KineticTournament<T, Max> tree(slopes, values);
+		for (int step = 0; step < 1200; ++step) {
+			int l = rng() % (n + 1), r = rng() % (n + 1), type = rng() % 10;
+			if (l > r) std::swap(l, r);
+			T a = rng() % 30, b = T(int(rng() % 101) - 50);
+			if (type < 4) {
+				if (!type) { a = 0; tree.add(l, r, b); }
+				else if (type == 1) { b = 0; tree.advance(l, r, a); }
+				else if (type == 2) { l = 0; r = n; tree.all_apply(a, b); }
+				else tree.apply(l, r, a, b);
+				for (int i = l; i < r; ++i) if (values[i]) *values[i] += T(a * slopes[i] + b);
+			} else if (type == 4 && n) {
+				int i = rng() % n; tree.set(i, b); values[i] = b;
+			} else if (type == 5 && n) {
+				int i = rng() % n; assert(tree.erase(i) == values[i].has_value()); values[i].reset();
+			} else if (type == 6 && step % 100 == 0) {
+				tree.clear(); std::fill(values.begin(), values.end(), std::nullopt);
+			} else if (type == 7) {
+				auto copy = tree;
+				copy.all_apply(3, -5);
+				assert(tree.values() == values);
+				auto moved = std::move(copy);
+				assert(copy.size() == 0 && copy.empty() && !copy.all_prod());
+				copy = std::move(moved); assert(moved.size() == 0);
 			}
-			int count = 0;
-			for (int i = 0; i < n; ++i) {
-				count += lines[i].has_value();
-				auto line = tree.get(i);
-				assert(bool(line) == bool(lines[i]));
-				if (line) assert(line->a == lines[i]->a && line->b == lines[i]->b);
-			}
-			assert(tree.size() == n && tree.active_size() == count && tree.empty() == (count == 0));
-			if (tree.next_event()) assert(*tree.next_event() > tree.time());
-			for (int trial = 0; trial < 3; ++trial) {
-				int l = rng() % (n + 1), r = rng() % (n + 1);
-				if (l > r) std::swap(l, r);
-				int index = -1;
-				I value = 0;
-				for (int i = l; i < r; ++i) if (lines[i]) {
-					I candidate = I(lines[i]->a) * tree.time() + lines[i]->b;
-					if (index == -1 || (Maximize ? candidate > value : candidate < value)) index = i, value = candidate;
-				}
+			if (step % 100 == 0) check(tree, values);
+			if (l < r) {
 				auto actual = tree.prod(l, r);
+				int index = -1;
+				for (int i = l; i < r; ++i) if (values[i] && (index == -1 || (Max ? *values[i] >= *values[index] : *values[i] < *values[index]))) index = i;
 				assert(bool(actual) == (index != -1));
-				if (actual) assert(actual->index == index && I(actual->value) == value);
+				if (actual) assert(actual->index == index && actual->value == *values[index]);
 			}
-			auto a = tree.prod(0, n), b = tree.all_prod();
-			assert(bool(a) == bool(b));
-			if (a) assert(a->index == b->index && a->value == b->value);
 		}
-		auto copy = tree;
-		auto moved = Tree(std::move(copy));
-		assert(copy.size() == 0 && copy.empty() && !copy.all_prod() && !copy.next_event());
-		copy = std::move(moved);
-		assert(moved.empty() && moved.size() == 0 && copy.active_size() == tree.active_size());
-		copy = tree;
-		copy.reset(1, -1000);
-		assert(copy.size() == 1 && copy.empty() && copy.time() == -1000);
-		copy.build(std::vector<typename Tree::Line>{{1, 2}, {-3, 4}}, -2000);
-		assert(copy.size() == 2 && copy.active_size() == 2 && copy.time() == -2000);
+		check(tree, values);
 	}
+}
+
+std::int64_t brute(const std::vector<std::int64_t> &a) {
+	std::int64_t best = 0;
+	for (unsigned mask = 0; mask < (1U << a.size()); ++mask) {
+		std::int64_t low[2] = {std::numeric_limits<std::int64_t>::max(), std::numeric_limits<std::int64_t>::max()}, score = 0;
+		for (int i = 0; i < int(a.size()); ++i) { int side = (mask >> i) & 1; low[side] = std::min(low[side], a[i]); score += low[side]; }
+		best = std::max(best, score);
+	}
+	return best;
 }
 
 int main() {
-	using Tree = KineticTournament<>;
-	for (int a = -2; a <= 2; ++a) for (int b = -2; b <= 2; ++b)
-		for (int c = -2; c <= 2; ++c) for (int d = -2; d <= 2; ++d) {
-			std::vector<Tree::Line> values{{a, b}, {c, d}};
-			Tree tree(values, -5);
-			std::vector<std::optional<Tree::Line>> lines{values[0], values[1]};
-			for (int t = -5; t <= 5; ++t) {
-				tree.advance(t);
-				equal(tree, lines, 0, 2);
-				auto event = tree.next_event();
-				int now = tree.all_prod()->index;
-				std::optional<std::int64_t> expected;
-				for (int x = t + 1; x <= 20; ++x) {
-					I p = I(a) * x + b, q = I(c) * x + d;
-					if ((q < p ? 1 : 0) != now) { expected = x; break; }
-				}
-				assert(event == expected);
-			}
+	random<int, true>(); random<int, false>(); random<std::int64_t, true>(); random<std::int64_t, false>();
+	using T = std::int64_t;
+	const T lo = std::numeric_limits<T>::lowest(), hi = std::numeric_limits<T>::max();
+	for (bool minimum : {false, true}) {
+		if (minimum) {
+			KineticTournament<T, false> tree(std::vector<T>{lo, hi}, std::vector<T>{hi, lo});
+			tree.all_apply(1); assert(tree.all_prod()->value == -1 && tree.all_prod()->index == 0);
+		} else {
+			KineticTournament<> wide(std::vector<T>{lo, hi}, std::vector<T>{hi, lo});
+			wide.all_apply(1); assert(wide.get(0) == -1 && wide.get(1) == -1 && wide.all_prod()->index == 1);
+			KineticTournament<> tree(std::vector<T>{0, 1}, std::vector<T>{hi, lo});
+			tree.all_apply(hi); tree.all_apply(hi); assert(tree.all_prod()->index == 0);
+			tree.all_apply(1); assert(tree.all_prod()->index == 1);
+			assert(tree.get(0) == hi && tree.get(1) == hi);
 		}
-	constexpr auto lo = std::numeric_limits<std::int64_t>::min(), hi = std::numeric_limits<std::int64_t>::max();
-	std::vector<std::int64_t> ends{lo, lo + 1, -2, -1, 0, 1, 2, hi - 1, hi};
-	for (auto a : ends) for (auto b : ends) for (auto c : ends) for (auto d : ends) {
-		std::vector<Tree::Line> values{{a, b}, {c, d}};
-		Tree tree(values, lo);
-		std::vector<std::optional<Tree::Line>> lines{values[0], values[1]};
-		for (auto t : ends) { tree.advance(t); equal(tree, lines, 0, 2); }
-		using Max = KineticTournament<std::int64_t, true>;
-		std::vector<Max::Line> max_values{{a, b}, {c, d}};
-		Max max_tree(max_values, lo);
-		std::vector<std::optional<Max::Line>> max_lines{max_values[0], max_values[1]};
-		for (auto t : ends) { max_tree.advance(t); equal<true>(max_tree, max_lines, 0, 2); }
 	}
-	Tree last(std::vector<Tree::Line>{{-1, hi}, {0, 0}});
-	assert(last.next_event() == hi);
-	last.advance(hi);
-	assert(last.all_prod()->index == 0 && last.all_prod()->value == 0 && !last.next_event());
-	Tree first(std::vector<Tree::Line>{{0, 0}, {1, hi}}, lo);
-	assert(first.next_event() == lo + 1);
-	first.advance(lo + 1);
-	assert(first.all_prod()->index == 0 && !first.next_event());
-	Tree wide(std::vector<Tree::Line>{{lo, hi}, {hi, lo}}, lo);
-	assert(wide.next_event() == 1);
-	wide.advance(1);
-	assert(wide.all_prod()->index == 0 && wide.all_prod()->value == -1);
-	using Narrow = KineticTournament<int>;
-	Narrow narrow(std::vector<Narrow::Line>{{-1, std::numeric_limits<int>::max()}, {0, 0}});
-	assert(narrow.next_event() == std::numeric_limits<int>::max());
-	narrow.advance(std::numeric_limits<int>::max());
-	assert(narrow.all_prod()->index == 0 && !narrow.next_event());
-	KineticTournament<std::int64_t, false, std::int64_t> cancellation(2, 2);
-	cancellation.set(0, hi, -hi);
-	cancellation.set(1, 0, hi);
-	assert(cancellation.all_prod()->index == 0 && cancellation.all_prod()->value == hi);
-	cancellation.erase(0);
-	cancellation.advance(3);
-	assert(cancellation.all_prod()->value == hi);
-	KineticTournament<std::int64_t, false, int> small_result(2, 1);
-	small_result.set(0, -2000000000LL, 3000000000LL);
-	small_result.set(1, 0, 2000000000LL);
-	assert(small_result.all_prod()->index == 0 && small_result.all_prod()->value == 1000000000);
-	random_test<std::int64_t, false, I>(20261020);
-	random_test<std::int64_t, true, I>(20261021);
-	random_test<int, false, std::int64_t>(20261022);
-	random_test<int, true, std::int64_t>(20261023);
-	random_test<std::int64_t, false, std::int64_t>(20261024);
-	std::vector<Tree::Line> values;
-	for (int i = 0; i < 200000; ++i) values.push_back({-2 * i, std::int64_t(i) * i});
-	Tree large(values, 0);
-	large.advance(199999);
-	assert(large.all_prod()->index == 199999);
-	large.clear();
-	assert(large.size() == 200000 && large.empty() && !large.next_event());
+	KineticTournament<> cancellation(std::vector<T>{hi, hi}, std::vector<T>{0, 1});
+	for (int i = 0; i < 100; ++i) cancellation.all_apply(1, -hi);
+	assert(cancellation.get(0) == 0 && cancellation.get(1) == 1);
+	for (int n = 0; n <= 7; ++n) for (int mask = 0; mask < (1 << (2 * n)); ++mask) {
+		std::vector<T> a(n);
+		for (int i = 0; i < n; ++i) a[i] = 1 + ((mask >> (2 * i)) & 3);
+		assert(solve(a) == brute(a));
+	}
+	assert(solve({5, 3, 6, 1, 4, 7}) == 23);
+	assert(solve(std::vector<T>(500000, 1000000000)) == 500000000000000LL);
+	std::cout << "Kinetic tournament passed\n";
 }
