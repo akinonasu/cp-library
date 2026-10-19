@@ -1,0 +1,138 @@
+[
+  {
+    "case": "equal",
+    "operation": "build",
+    "dynamic_ms": 2.930593,
+    "dynamic_nodes": 0
+  },
+  {
+    "case": "equal",
+    "operation": "edit",
+    "dynamic_ms": 1.020382,
+    "kmp_ms": 291.257022,
+    "author_ms": 7.322467,
+    "dynamic_nodes": 10001
+  },
+  {
+    "case": "equal",
+    "operation": "splice",
+    "dynamic_ms": 1.561488,
+    "kmp_ms": 287.160551,
+    "dynamic_nodes": 13001
+  },
+  {
+    "case": "equal",
+    "operation": "move",
+    "dynamic_ms": 1.164956,
+    "kmp_ms": 287.859621,
+    "dynamic_nodes": 9001
+  },
+  {
+    "case": "binary",
+    "operation": "build",
+    "dynamic_ms": 8.177394,
+    "dynamic_nodes": 0
+  },
+  {
+    "case": "binary",
+    "operation": "edit",
+    "dynamic_ms": 0.338054,
+    "kmp_ms": 692.746248,
+    "dynamic_nodes": 7001
+  },
+  {
+    "case": "binary",
+    "operation": "splice",
+    "dynamic_ms": 0.977894,
+    "kmp_ms": 709.434671,
+    "dynamic_nodes": 10003
+  },
+  {
+    "case": "binary",
+    "operation": "move",
+    "dynamic_ms": 6.659991,
+    "kmp_ms": 788.60383,
+    "dynamic_nodes": 168682
+  },
+  {
+    "case": "letters",
+    "operation": "build",
+    "dynamic_ms": 5.966834,
+    "dynamic_nodes": 0
+  },
+  {
+    "case": "letters",
+    "operation": "edit",
+    "dynamic_ms": 0.406692,
+    "kmp_ms": 110.839072,
+    "dynamic_nodes": 7281
+  },
+  {
+    "case": "letters",
+    "operation": "splice",
+    "dynamic_ms": 0.874983,
+    "kmp_ms": 114.096726,
+    "dynamic_nodes": 10001
+  },
+  {
+    "case": "letters",
+    "operation": "move",
+    "dynamic_ms": 5.874829,
+    "kmp_ms": 115.826624,
+    "dynamic_nodes": 157200
+  },
+  {
+    "case": "periodic",
+    "operation": "build",
+    "dynamic_ms": 2.785115,
+    "dynamic_nodes": 0
+  },
+  {
+    "case": "periodic",
+    "operation": "edit",
+    "dynamic_ms": 0.45466,
+    "kmp_ms": 100.50668,
+    "dynamic_nodes": 7001
+  },
+  {
+    "case": "periodic",
+    "operation": "splice",
+    "dynamic_ms": 1.07089,
+    "kmp_ms": 103.410101,
+    "dynamic_nodes": 10825
+  },
+  {
+    "case": "periodic",
+    "operation": "move",
+    "dynamic_ms": 5.656689,
+    "kmp_ms": 97.095014,
+    "dynamic_nodes": 161926
+  },
+  {
+    "case": "fragmented",
+    "operation": "build",
+    "dynamic_ms": 7.265878,
+    "dynamic_nodes": 0
+  },
+  {
+    "case": "fragmented",
+    "operation": "edit",
+    "dynamic_ms": 4.081471,
+    "kmp_ms": 717.844732,
+    "dynamic_nodes": 133421
+  },
+  {
+    "case": "fragmented",
+    "operation": "splice",
+    "dynamic_ms": 10.184788,
+    "kmp_ms": 785.559725,
+    "dynamic_nodes": 277552
+  },
+  {
+    "case": "fragmented",
+    "operation": "move",
+    "dynamic_ms": 5.802966,
+    "kmp_ms": 737.652821,
+    "dynamic_nodes": 205773
+  }
+]

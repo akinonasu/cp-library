@@ -50,6 +50,7 @@
 #include "string/lcs.hpp"
 #include "string/lis.hpp"
 #include "string/suffix_tree.hpp"
+#include "string/dynamic_pattern_matching.hpp"
 #include "string/rolling_hash.hpp"
 
 #if defined(TEMPLATE_HPP) || defined(rep) || defined(per) || defined(vec) || defined(all) || defined(sz) || defined(uint)
@@ -73,6 +74,10 @@ struct StaticTreeSum {
 };
 
 int main() {
+	DynamicPatternMatching pattern_matching("banana", "ana");
+	assert(pattern_matching.count() == 2);
+	pattern_matching.erase(1);
+	assert(pattern_matching.str() == "aa" && pattern_matching.count() == 0);
 	const std::vector<int> sequence{3, 1, 2, 2, 4};
 	assert(lis_length(sequence) == 3 && lis_length<false>(sequence) == 4);
 	assert(lis(sequence).size() == 3);
