@@ -98,6 +98,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `graph/connectivity/dynamic_connectivity.hpp` | Online Dynamic Connectivity | [使い方](docs/dynamic_connectivity.md) |
+| `graph/connectivity/offline_dynamic_connectivity.hpp` | Offline Dynamic Connectivity（クエリ先読み） | [使い方](docs/offline_dynamic_connectivity.md) |
 | `graph/connectivity/low_link.hpp` | Low-Link | [使い方](docs/low_link.md) |
 | `graph/connectivity/two_edge_connected_components.hpp` | 二辺連結成分分解・橋の森 | [使い方](docs/two_edge_connected_components.md) |
 
@@ -238,6 +239,8 @@
 | `components/polynomial_half_gcd.hpp` | 多項式 Half-GCD | [使い方](docs/polynomial_half_gcd.md) |
 | `components/weighted_blossom.hpp` | 最大重みマッチングの内部部品 | [使い方](docs/weighted_blossom.md) |
 | `components/bipartite_matching_core.hpp` | 二部マッチングの内部演算 | [使い方](docs/bipartite_matching_core.md) |
+| `components/offline_time_segments.hpp` | オフラインの時間区間処理 | [使い方](docs/offline_time_segments.md) |
+| `components/radix_sort.hpp` | 64 bit キーの安定基数ソート | [使い方](docs/radix_sort.md) |
 | `components/montgomery.hpp` | Montgomery 64 | [使い方](docs/montgomery.md) |
 | `components/montgomery32.hpp` | Montgomery 32 | [使い方](docs/montgomery32.md) |
 | `components/mod_fast_core.hpp` | 定数時間 mod 演算の内部部品 | [使い方](docs/mod_fast_core.md) |
