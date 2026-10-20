@@ -1,0 +1,88 @@
+{
+  "utc": "2026-10-20T08:53:52.517784+00:00",
+  "base_headers": {
+    "components/dynamic_quad_vector.hpp": "c6637b59c7b6869ff9bc82068f654e7a0a20cc2a3fcbe39b0617d74f7acb2702",
+    "components/dynamic_quad_wavelet.hpp": "ee0f2994a3f780da8654ada52a18c956463d293e4eec1a5ffff84c7de91c2bcd",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a28ed1e82edb781024b0a6996ef1a9fcf949ca5dd44f12869017589833b88431"
+  },
+  "variant_headers": {
+    "components/dynamic_quad_vector.hpp": "3e214607a4b7c59b5062b5fd839545bc79ae390d5f6d9d2da119546206948518",
+    "components/dynamic_quad_wavelet.hpp": "ee0f2994a3f780da8654ada52a18c956463d293e4eec1a5ffff84c7de91c2bcd",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a28ed1e82edb781024b0a6996ef1a9fcf949ca5dd44f12869017589833b88431"
+  },
+  "changed_headers": [
+    "components/dynamic_quad_vector.hpp"
+  ],
+  "commands": [
+    [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-march=x86-64",
+      "-I/workspace/cp-dwm-study/quad-pdep",
+      "/workspace/cp-dwm-study/quad-pdep/check.cpp",
+      "-o",
+      "/workspace/cp-dwm-study/quad-pdep/check-generic"
+    ],
+    [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-march=native",
+      "-I/workspace/cp-dwm-study/quad-pdep",
+      "/workspace/cp-dwm-study/quad-pdep/check.cpp",
+      "-o",
+      "/workspace/cp-dwm-study/quad-pdep/check-native"
+    ],
+    [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-march=native",
+      "-DDYNAMIC_QUAD_DISABLE_SIMD",
+      "-I/workspace/cp-dwm-study/quad-pdep",
+      "/workspace/cp-dwm-study/quad-pdep/check.cpp",
+      "-o",
+      "/workspace/cp-dwm-study/quad-pdep/check-scalar"
+    ],
+    [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-march=x86-64",
+      "-O1",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer",
+      "-g",
+      "-I/workspace/cp-dwm-study/quad-pdep",
+      "/workspace/cp-dwm-study/quad-pdep/check.cpp",
+      "-o",
+      "/workspace/cp-dwm-study/quad-pdep/check-sanitize"
+    ]
+  ],
+  "checker_sha256": "353281fdb0bed2e3614c3dd9c1cd2d5d2cbad749aa6e146ec6eb2d96f4504d34",
+  "binary_sha256": {
+    "generic": "f8887c8f525e46017733fc1f34292641a202563b09ab83a87b1ab2db719fb60c",
+    "native": "8d1f08923c5877d7b076bb4075dfc8fc1dd499a19ee2e80290c7fa5000d3f2ed",
+    "scalar": "b76926950140d3e9cd2c541f87824e786274129b473cf1fe982719592e60bc76",
+    "sanitize": "e9ef6bf49a6d52cc4311a29a19c6d73f32d9916501b84404c8af5845b8db17f9"
+  },
+  "notes": [
+    "Only select_word dispatch and its private target-bmi2 helper added. Native __BMI2__ uses inline intrinsic; generic x86_64 GCC/Clang runtime CPU check guards target helper; all other targets and DYNAMIC_QUAD_DISABLE_SIMD retain exact old implementation.",
+    "select_word caller assures 0<=k<popcount(word)<=64, so uint64(1)<<k has k<=63 and PDEP result is nonzero. No undefined shift or illegal instructions on unsupported CPU.",
+    "Private static helper accessed for test by standard explicit-template-instantiation friend technique; production header and public API are not exposed or changed for testing.",
+    "Original component checker plus independent bit-position scan for all nonzero16bitwords at shifts0/48, all-ones, bits0/63, alternating patterns and10000random64bitwords; no performance measurements."
+  ]
+}

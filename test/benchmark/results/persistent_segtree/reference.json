@@ -1,0 +1,147 @@
+{
+  "checked_date": "2026-10-21",
+  "order": "+time",
+  "status": "AC",
+  "references": [
+    {
+      "problem": "persistent_unionfind",
+      "submissions": [
+        {
+          "id": 409831,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 6852608,
+          "problem_name": "persistent_unionfind",
+          "problem_title": "Persistent Unionfind",
+          "status": "AC",
+          "submission_time": "2026-10-11T12:39:08.018002Z",
+          "time": 0.015,
+          "url": "https://judge.yosupo.jp/submission/409831",
+          "sha256": "6afeed1fa9597a54433e8eb00c1db918a45d40235d6d9eebe5157efc60b72840"
+        },
+        {
+          "id": 404578,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 15785984,
+          "problem_name": "persistent_unionfind",
+          "problem_title": "Persistent Unionfind",
+          "status": "AC",
+          "submission_time": "2026-09-21T09:33:33.545298Z",
+          "time": 0.018,
+          "user_name": "Rohan_Kapri",
+          "url": "https://judge.yosupo.jp/submission/404578",
+          "sha256": "d2de4f4a2241f60131f018286d97ee3acb5776fe24591a0872fe45a2017cffe5"
+        },
+        {
+          "id": 218108,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 16453632,
+          "problem_name": "persistent_unionfind",
+          "problem_title": "Persistent Unionfind",
+          "status": "AC",
+          "submission_time": "2024-07-01T03:19:34.43052Z",
+          "time": 0.018,
+          "user_name": "sortA0329",
+          "url": "https://judge.yosupo.jp/submission/218108",
+          "sha256": "d2de4f4a2241f60131f018286d97ee3acb5776fe24591a0872fe45a2017cffe5"
+        }
+      ]
+    },
+    {
+      "problem": "persistent_range_affine_range_sum",
+      "submissions": [
+        {
+          "id": 307048,
+          "is_latest": true,
+          "lang": "cpp20",
+          "memory": 150454272,
+          "problem_name": "persistent_range_affine_range_sum",
+          "problem_title": "Persistent Range Affine Range Sum",
+          "status": "AC",
+          "submission_time": "2025-08-13T08:22:40.566041Z",
+          "time": 0.189,
+          "user_name": "polyominal",
+          "url": "https://judge.yosupo.jp/submission/307048",
+          "sha256": "b4bc27ebaacc0f83e9cfbdbf07aab056f82836b69cc147f22b9300f65218d77a"
+        },
+        {
+          "id": 401007,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 150413312,
+          "problem_name": "persistent_range_affine_range_sum",
+          "problem_title": "Persistent Range Affine Range Sum",
+          "status": "AC",
+          "submission_time": "2026-09-09T10:07:51.323476Z",
+          "time": 0.192,
+          "user_name": "Rohan_Kapri",
+          "url": "https://judge.yosupo.jp/submission/401007",
+          "sha256": "8a22fcf7d110bc6c5cbb7f1346519927005289eaac259656d6b29fde4742e059"
+        },
+        {
+          "id": 307049,
+          "is_latest": true,
+          "lang": "cpp20",
+          "memory": 150192128,
+          "problem_name": "persistent_range_affine_range_sum",
+          "problem_title": "Persistent Range Affine Range Sum",
+          "status": "AC",
+          "submission_time": "2025-08-13T08:25:31.05994Z",
+          "time": 0.198,
+          "user_name": "polyominal",
+          "url": "https://judge.yosupo.jp/submission/307049",
+          "sha256": "cfd9889a47cc99c9ef4c9bd05b0e205a70495ceb3d382f76b31b4de1368d91c1"
+        }
+      ]
+    },
+    {
+      "problem": "rectangle_sum",
+      "submissions": [
+        {
+          "id": 393934,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 27766784,
+          "problem_name": "rectangle_sum",
+          "problem_title": "Rectangle Sum",
+          "status": "AC",
+          "submission_time": "2026-08-16T13:15:29.07865Z",
+          "time": 0.084,
+          "user_name": "chaihf",
+          "url": "https://judge.yosupo.jp/submission/393934",
+          "sha256": "fb5574facde426fc76244d20a7657a1448925d6766dc920d7b7bac6eddf9ae2e"
+        },
+        {
+          "id": 404517,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 27734016,
+          "problem_name": "rectangle_sum",
+          "problem_title": "Rectangle Sum",
+          "status": "AC",
+          "submission_time": "2026-09-21T08:48:35.677753Z",
+          "time": 0.095,
+          "user_name": "Rohan_Kapri",
+          "url": "https://judge.yosupo.jp/submission/404517",
+          "sha256": "6d317f7eb06dc6e1eb09763d1529886321d0266a5bbdcaf3df9dfeca39520f82"
+        },
+        {
+          "id": 220264,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 18661376,
+          "problem_name": "rectangle_sum",
+          "problem_title": "Rectangle Sum",
+          "status": "AC",
+          "submission_time": "2024-07-11T19:37:15.513281Z",
+          "time": 0.111,
+          "user_name": "oldyan",
+          "url": "https://judge.yosupo.jp/submission/220264",
+          "sha256": "0e629389bd4619537031a0c5c92fa42404e04733f59794406525eb4f35ca8cac"
+        }
+      ]
+    }
+  ]
+}

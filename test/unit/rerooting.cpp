@@ -21,12 +21,34 @@ struct NoDefault {
 	explicit NoDefault(int value) : value(value) {}
 };
 
+struct Poison {
+	int value = -19937;
+};
+
 int main() {
 	std::mt19937 rng(973401);
 	Rerooting<int> empty;
 	require(empty.empty() && empty.size() == 0 && empty.edge_count() == 0);
 	empty.build(0, std::plus<int>{}, [](int x, int) { return x + 1; }, [](int x, int, int, int) { return x; });
 	require(empty.values().empty());
+	{
+		Rerooting<Poison> tree(17);
+		for (int v = 1; v < 12; ++v) tree.add_edge(v - 1, v);
+		for (int root : {0, 8, 16, 0}) {
+			tree.build(Poison{0}, [](Poison a, Poison b) { return Poison{a.value + b.value}; },
+				[](Poison a, int) { return Poison{a.value + 1}; }, [](Poison a, int, int, int) { return a; }, root);
+			for (int v = 0; v < 17; ++v) require(tree[v].value == (v < 12 ? 12 : 1));
+			for (int id = 0; id < tree.edge_count(); ++id)
+				require(tree.edge_dp(id).value == id + 1 && tree.edge_dp(id, true).value == 11 - id);
+		}
+		Rerooting<int, NoDefault> different(3);
+		different.add_edge(0, 1);
+		for (int repeat = 0; repeat < 2; ++repeat) {
+			different.build(NoDefault(0), [](NoDefault a, NoDefault b) { return NoDefault(a.value + b.value); },
+				[](NoDefault a, int) { return a.value + 1; }, [](int a, int, int, int) { return NoDefault(a); });
+			require(different[0] == 2 && different[1] == 2 && different[2] == 1);
+		}
+	}
 	for (int n = 1; n <= 35; ++n) for (int trial = 0; trial < 12; ++trial) {
 		Rerooting<Vertex, Pair> tree(n);
 		std::vector<std::pair<int, int>> edges;

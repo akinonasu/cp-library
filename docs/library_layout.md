@@ -6,9 +6,9 @@
 | `graph/` | 最短経路 |
 | `graph/connectivity/` | Low-Link、二辺連結成分、動的連結性 |
 | `graph/flow/` | 最大流、最小費用流 |
-| `graph/matching/` | 一般マッチング、重み付きマッチング、割当問題 |
+| `graph/matching/` | 二部マッチング、一般マッチング、重み付きマッチング、割当問題 |
 | `data_structure/` | Li Chao Tree、区間集合、Treap、Slope Trick、Union-Find |
-| `data_structure/segment_tree/` | 動的・双対セグメント木、Segtree Beats、Sortable Segtree |
+| `data_structure/segment_tree/` | 動的・双対・永続セグメント木、Segtree Beats、Sortable Segtree |
 | `data_structure/wavelet_matrix/` | 静的・動的・重み付き・一点代入 Wavelet Matrix |
 | `data_structure/priority_queue/` | Retroactive Priority Queue |
 | `data_structure/range_query/` | Sparse Table、Disjoint Sparse Table |
@@ -19,7 +19,8 @@
 | `math/linear_algebra/` | 行列、XOR 基底 |
 | `convolution/` | 畳み込み |
 | `fps/` | 形式的冪級数、多項式 |
-| `string/` | 列・文字列、LIS、LCS、Eertree |
+| `sequence/` | 列アルゴリズム、最長増加部分列（LIS） |
+| `string/` | 列・文字列、LCS、Eertree |
 | `components/` | 変換と共有する内部部品 |
 
 include には新しいパスを使います。型名と関数名は変わりません。

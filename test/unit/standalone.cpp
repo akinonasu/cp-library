@@ -4,6 +4,7 @@
 #include "graph/connectivity/dynamic_connectivity.hpp"
 #include "data_structure/segment_tree/dynamic_segtree.hpp"
 #include "data_structure/segment_tree/dual_segtree.hpp"
+#include "data_structure/segment_tree/persistent_segtree.hpp"
 #include "data_structure/advanced/kinetic_tournament.hpp"
 #include "data_structure/segment_tree/dynamic_lazy_segtree.hpp"
 #include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
@@ -48,7 +49,7 @@
 #include "math/floor_sum/partition_mod_of_linear.hpp"
 #include "string/edit_distance.hpp"
 #include "string/lcs.hpp"
-#include "string/lis.hpp"
+#include "sequence/lis.hpp"
 #include "string/suffix_tree.hpp"
 #include "string/dynamic_pattern_matching.hpp"
 #include "string/rolling_hash.hpp"
@@ -74,6 +75,9 @@ struct StaticTreeSum {
 };
 
 int main() {
+	PersistentSegtree<std::int64_t, add, zero> persistent(3);
+	auto p0 = persistent.initial_root(), p1 = persistent.set(p0, 1, 7);
+	assert(persistent.all_prod(p0) == 0 && persistent.prod(p1, 0, 3) == 7);
 	DynamicPatternMatching pattern_matching("banana", "ana");
 	assert(pattern_matching.count() == 2);
 	pattern_matching.erase(1);
@@ -167,7 +171,6 @@ int main() {
 	low.add_edge(1, 2);
 	low.build();
 	assert(low.is_bridge(0) && low.articulation == std::vector<int>({1}));
-	init_comb();
 	assert(comb(5, 2).val() == 10);
 	assert(is_prime(998244353));
 	Fraction<> rational(2, -6);

@@ -147,8 +147,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		return *this;
 	}
 
-	F operator+(const F &g) const { return F(*this) += g; }
-	F operator-(const F &g) const { return F(*this) -= g; }
+	F operator+(const F &g) const {
+		F r(*this);
+		r += g;
+		return r;
+	}
+	F operator-(const F &g) const {
+		F r(*this);
+		r -= g;
+		return r;
+	}
 	F operator*(const F &g) const { return multiply(*this, g); }
 	F operator/(const F &g) const { return div_series(g); }
 	F operator%(const F &g) const { return divmod(g).second; }
@@ -172,8 +180,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		r /= x;
 		return r;
 	}
-	F operator<<(int d) const { return F(*this) <<= d; }
-	F operator>>(int d) const { return F(*this) >>= d; }
+	F operator<<(int d) const {
+		F r(*this);
+		r <<= d;
+		return r;
+	}
+	F operator>>(int d) const {
+		F r(*this);
+		r >>= d;
+		return r;
+	}
 
 	F pre(int n) const {
 		assert(n >= 0);

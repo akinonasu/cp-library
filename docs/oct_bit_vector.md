@@ -32,4 +32,4 @@ auto count = bits.rank(4, 7);
 
 `avx2` を含む関数と `popcounts`・`prefix_counts` は x86 専用です。直接使う場合は `has_avx2()` が真であることを確認し、AVX2 対応関数から呼び出します。通常は `build` と Wavelet Matrix を使います。
 
-長さを $$n$$ として、構築は $$O(n)$$、問い合わせは $$O(1)$$、空間は $$O(n)$$ bit です。
+長さを $$n$$ として、構築は $$O(n)$$、クエリは $$O(1)$$、空間は $$O(n)$$ bit です。

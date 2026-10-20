@@ -1,3 +1,4 @@
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -11,14 +12,17 @@ import yaml
 
 def main():
     root = Path(__file__).resolve().parents[2]
-    output = root / 'test/benchmark/results/lis'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', type=Path, default=root / 'test/benchmark/results/lis')
+    output = parser.parse_args().output.resolve()
+    output.mkdir(parents=True, exist_ok=True)
 
     def run(command, **kwargs):
         return subprocess.run(command, cwd=root, check=True, **kwargs)
 
     with (output / 'sanitize.log').open('w') as stream:
         run([sys.executable, 'test/verify.py', '--unit-only', '--cxx', 'clang++', '--sanitize',
-             '--selection', str(output / 'selection.json')], stdout=stream, stderr=subprocess.STDOUT)
+             '--selection', str(root / 'test/benchmark/lis_selection.json')], stdout=stream, stderr=subprocess.STDOUT)
     print('ASan/UBSan passed', flush=True)
     url = 'https://judge.yosupo.jp/problem/longest_increasing_subsequence'
     cases = root / '.verify-helper/cache' / hashlib.md5(url.encode()).hexdigest() / 'test'
@@ -49,7 +53,7 @@ def main():
                 assert all(0 <= p < n for p in indices), (compiler, path)
                 assert all(p < q and a[p] < a[q] for p, q in zip(indices, indices[1:])), (compiler, path)
             result['official'].append({'compiler': compiler, 'cases': len(inputs), 'length_and_subsequence': 'passed'})
-            for header, document in [('components/binary_search.hpp', 'docs/binary_search.md'), ('string/lis.hpp', 'docs/lis.md')]:
+            for header, document in [('components/binary_search.hpp', 'docs/binary_search.md'), ('sequence/lis.hpp', 'docs/lis.md')]:
                 text = (root / document).read_text()
                 assert yaml.safe_load(text.split('---', 2)[1])['documentation_of'] == '//' + header
                 assert '`' + header + '`' in (root / 'README.md').read_text()
@@ -65,7 +69,7 @@ def main():
                     run([*flags, '-Wno-unused-variable', '-Wno-unused-but-set-variable', '-fsyntax-only', '-x', 'c++', '-'], input=source, text=True)
                 result['docs'].append({'compiler': compiler, 'header': header, 'bundle': 'passed', 'examples': len(examples)})
             print(compiler, len(inputs), 'official cases, bundles and examples passed', flush=True)
-    names = ['components/binary_search.hpp', 'string/lis.hpp', 'test/unit/binary_search.cpp', 'test/unit/lis.cpp',
+    names = ['components/binary_search.hpp', 'sequence/lis.hpp', 'test/unit/binary_search.cpp', 'test/unit/lis.cpp',
              'test/unit/standalone.cpp', 'test/lis.test.cpp', 'docs/binary_search.md', 'docs/lis.md']
     result['sources'] = {name: hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest() for name in names}
     (output / 'validation.json').write_text(json.dumps(result, indent=2) + '\n')

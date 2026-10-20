@@ -1,12 +1,14 @@
 ---
 title: "Longest Increasing Subsequence"
-documentation_of: //string/lis.hpp
+documentation_of: //sequence/lis.hpp
+redirect_from:
+- /string/lis.hpp.html
 ---
 
 列から要素を順序通りに選び、値が増加する部分列の最大長と、そのような部分列の 1 つを求めます。元の列で連続している必要はありません。数値以外の要素や独自の比較にも対応します。
 
 ```cpp
-#include "lib/string/lis.hpp"
+#include "lib/sequence/lis.hpp"
 
 std::vector<int> a{3, 1, 2, 2, 4};
 int length = lis_length(a);       // 3
@@ -38,7 +40,7 @@ auto weak_indices = lis<false>(a);     // 1, 2, 3, 4
 比較関数は厳密弱順序を定めるものを使います。狭義の場合は `compare(x,y)`、広義の場合は `!compare(y,x)` を満たす順に要素を選びます。例えば `std::greater<>{}` を渡すと、減少部分列を求められます。
 
 ```cpp
-#include "lib/string/lis.hpp"
+#include "lib/sequence/lis.hpp"
 
 std::vector<int> a{5, 3, 4, 2, 1};
 auto decreasing = lis(a, std::greater<>{}); // 値は 5, 4, 2, 1

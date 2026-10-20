@@ -11,9 +11,17 @@
 #endif
 constexpr int COMB_INF = static_cast<int>(COMB_MAX);
 static_assert(COMB_INF >= 0 && COMB_INF < mint::mod());
-inline mint fact[COMB_INF + 1], finv[COMB_INF + 1];
-inline void init_comb() {
-	fps_detail::factorials(fact, finv, COMB_INF + 1);
+inline constinit mint fact[COMB_INF + 1], finv[COMB_INF + 1];
+namespace comb_detail {
+struct Initializer {
+	Initializer() {
+		[[maybe_unused]] static const bool initialized = [] {
+			fps_detail::factorials(fact, finv, COMB_INF + 1);
+			return true;
+		}();
+	}
+};
+[[maybe_unused]] static const Initializer initializer;
 }
 inline mint comb(int n, int k) {
 	if (n < 0 || k < 0 || k > n) return 0;

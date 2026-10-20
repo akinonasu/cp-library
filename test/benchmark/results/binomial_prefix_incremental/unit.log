@@ -1,0 +1,5 @@
+g++: standalone math/combinatorics/binomial_prefix_sum_incremental.hpp
+g++: binomial_prefix_sum_incremental.cpp
+clang++: standalone math/combinatorics/binomial_prefix_sum_incremental.hpp
+clang++: binomial_prefix_sum_incremental.cpp
+Verification passed

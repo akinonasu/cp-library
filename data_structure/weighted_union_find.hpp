@@ -29,8 +29,9 @@ struct WeightedUnionFind {
 	bool same(int x, int y) { return leader(x) == leader(y); }
 	int size(int x) { return -parent[leader(x)]; }
 	T diff(int x, int y) {
-		assert(same(x, y));
-		return weight(y) - weight(x);
+		[[maybe_unused]] int rx = leader(x), ry = leader(y);
+		assert(rx == ry);
+		return delta[y] - delta[x];
 	}
 	bool merge(int x, int y, T w) {
 		int rx = leader(x), ry = leader(y);

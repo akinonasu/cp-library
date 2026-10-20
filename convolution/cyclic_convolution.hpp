@@ -10,19 +10,17 @@
 template <bool negative = false, class T>
 std::vector<T> cyclic_convolution(const std::vector<T> &a, const std::vector<T> &b, std::size_t n) {
 	assert(n > 0);
-	std::vector<T> x(n, T(0)), y(n, T(0));
-	for (std::size_t i = 0; i < a.size(); ++i) {
-		if constexpr (negative) {
-			if ((i / n) & 1) x[i % n] -= a[i];
-			else x[i % n] += a[i];
-		} else x[i % n] += a[i];
-	}
-	for (std::size_t i = 0; i < b.size(); ++i) {
-		if constexpr (negative) {
-			if ((i / n) & 1) y[i % n] -= b[i];
-			else y[i % n] += b[i];
-		} else y[i % n] += b[i];
-	}
+	auto fold = [n](const std::vector<T> &v) {
+		std::vector<T> result(n, T(0));
+		for (std::size_t i = 0; i < v.size(); ++i) {
+			if constexpr (negative) {
+				if ((i / n) & 1) result[i % n] -= v[i];
+				else result[i % n] += v[i];
+			} else result[i % n] += v[i];
+		}
+		return result;
+	};
+	auto x = fold(a), y = fold(b);
 	auto product = convolution(x, y);
 	x.assign(n, T(0));
 	for (std::size_t i = 0; i < product.size(); ++i) {

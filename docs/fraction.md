@@ -45,6 +45,7 @@ double approximation = static_cast<double>(a);
 `floor()`・`ceil()` は数学的な切り下げ・切り上げ、`static_cast<Int>(a)` は0方向への切り捨てです。
 `float`・`double`・`long double` には明示的に変換できます。
 `abs(a)`・`floor(a)`・`ceil(a)`・`pow(a, k)` も使えます。`k` は `std::uint64_t` で、0乗は1です。
+`inv()` は約分済みの分子と分母を入れ替え、符号だけを整えます。
 
 分母0、0による除算・逆数は不可です。**約分後の分子と正の分母が `Int` に収まること**を必要とします。
 比較と四則演算の途中の積には幅の広い整数型を使うため、中間値が `Int` を超えても、約分後に収まる結果を扱えます。
