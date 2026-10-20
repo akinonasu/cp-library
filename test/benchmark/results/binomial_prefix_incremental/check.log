@@ -1,0 +1,4 @@
+g++ test/binomial_prefix_sum_incremental_arc190_b.test.cpp 191 cases and bundle passed
+g++ test/benchmark/arc190_b_sweeps.cpp 191 cases and bundle passed
+clang++ test/binomial_prefix_sum_incremental_arc190_b.test.cpp 191 cases and bundle passed
+clang++ test/benchmark/arc190_b_sweeps.cpp 191 cases and bundle passed
