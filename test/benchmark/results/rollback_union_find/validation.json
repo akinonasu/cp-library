@@ -1,0 +1,21 @@
+{
+  "result": "passed",
+  "unit_compilers": [
+    "GCC 15.2.0",
+    "Clang 21.1.8"
+  ],
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "official_cases_per_compiler": 14,
+  "online_submission": false,
+  "sources": {
+    "data_structure/rollback_union_find.hpp": "80a014698bf2ac5ded140e073db98cd86249564056f11be7337bac2f0b193295",
+    "docs/rollback_union_find.md": "36e565029047140cb77807cc6a82200c58db0b6ee22af5bc92ab5f7f201b82c0",
+    "test/unit/rollback_union_find.cpp": "096d25c41c4d9b98882ff70f99d3255cf8690b5472439c170e857aa4a4f9cde2",
+    "test/rollback_union_find.test.cpp": "21d98ceccf097225cbebcdaf8db97ba810e09d402468e125df1751c96a6e35df",
+    "test/benchmark/rollback_union_find.cpp": "f7de282fea0c2ad48909837a15ddc103f5e73559c367cbce711ca8ecea7e5023",
+    "test/benchmark/rollback_union_find.py": "8e0ab14a6c72792f69e5dd507ab94746b4603e7ec516f1b94dec56fc262b747d"
+  }
+}

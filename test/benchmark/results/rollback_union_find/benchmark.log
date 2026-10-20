@@ -1,0 +1,9 @@
+All 14 official cases passed for GCC, Clang and reference
+max_random_00 {'library': 13.739139, '409831': 11.498845}
+max_random_04 {'library': 13.072502, '409831': 11.409299}
+conchon_filliatre_tle_00 {'library': 10.189053, '409831': 7.976286}
+conchon_filliatre_tle_01 {'library': 10.31314, '409831': 8.742573}
+branches {'compact': 0.637101, 'full': 0.641984}
+balanced {'compact': 11.7374, 'full': 12.0657}
+redundant {'compact': 1.19078, 'full': 1.73438}
+mixed {'compact': 2.28647, 'full': 2.34836}
