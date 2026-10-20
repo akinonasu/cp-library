@@ -79,10 +79,7 @@ template <class Tree> class AuxiliaryTree {
 			stack_.push_back({v, -1, true});
 #endif
 		}
-		while (stack_.size() > 1) {
-			int child = finish();
-			attach(child);
-		}
+		while (stack_.size() > 1) attach(finish());
 		if (!stack_.empty()) finish();
 		return nodes_;
 	}
