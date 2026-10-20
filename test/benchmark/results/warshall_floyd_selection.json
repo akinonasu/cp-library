@@ -1,0 +1,1 @@
+{"headers": ["components/warshall_floyd_kernel.hpp", "graph/warshall_floyd.hpp"], "unit": ["test/unit/warshall_floyd.cpp"], "sanitize": ["test/unit/warshall_floyd.cpp"], "tests": ["test/warshall_floyd.test.cpp"]}
