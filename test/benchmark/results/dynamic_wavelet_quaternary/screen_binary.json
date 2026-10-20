@@ -1,0 +1,3699 @@
+{
+  "manifest": {
+    "utc": "2026-10-20 08:39:26.115416+00:00",
+    "base": "2559803022319333756173295947577d6f5f9b2e",
+    "driver_sha256": "15ce469bce9a53cd360a7ae1f26a42e9c45ec3bbd996643e7fd2b43a5b5d55bf",
+    "flags": [
+      "-O2",
+      "-std=gnu++23",
+      "-march=native",
+      "-ftrivial-auto-var-init=zero",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "assertions": true,
+    "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "compiler_sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
+    "cpuinfo": "processor\t: 2\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9V74 80-Core Processor\nstepping\t: 1\nmicrocode\t: 0x1000065\ncpu MHz\t\t: 2596.144\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 5\ncore id\t\t: 2\ncpu cores\t: 5\napicid\t\t: 2\ninitial apicid\t: 2\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nbugs\t\t: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa\nbogomips\t: 5192.28\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:",
+    "pin": 2,
+    "n": 20000,
+    "q": 20000,
+    "repeats": 3,
+    "sources": {
+      "baseline": {
+        "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a7be7adeb53a92c1f1eed6dc3e8c0c703ddb61efacfaa3e6f2b56ca3088422d3"
+      },
+      "inleaf": {
+        "components/dynamic_bit_vector.hpp": "8791c894f9ea282c37dd660eb723ebda6284a8a6ec8a99ca513e8bb09d136720",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a7be7adeb53a92c1f1eed6dc3e8c0c703ddb61efacfaa3e6f2b56ca3088422d3"
+      },
+      "child": {
+        "components/dynamic_bit_vector.hpp": "de39ddfc4a77c8abd7e32b26588371e4c0b520013fd38f91087f22e620e1620c",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a7be7adeb53a92c1f1eed6dc3e8c0c703ddb61efacfaa3e6f2b56ca3088422d3"
+      },
+      "child_pair": {
+        "components/dynamic_bit_vector.hpp": "c711ff46441edfde3bdbbc12c311a320a68a93dac62576630d4cb0758e21e5e7",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a7be7adeb53a92c1f1eed6dc3e8c0c703ddb61efacfaa3e6f2b56ca3088422d3"
+      },
+      "neighbors": {
+        "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "44d89da4e9473ee463b9216f15446ec095ad0fa532cc77d142cfdff384d7564f"
+      }
+    },
+    "binaries": {
+      "baseline_range": {
+        "path": "/workspace/cp-dwm-study/screen_binary/baseline_range",
+        "sha256": "04f35662809229e424e1cd3f7978d8163fc041100c682ad8a208c7e1f2b07264",
+        "variant": "baseline",
+        "direct": false
+      },
+      "baseline_count": {
+        "path": "/workspace/cp-dwm-study/screen_binary/baseline_count",
+        "sha256": "d775122eea932be22a852147bf5710d2f33e6313f4e8d5c572c38ef8027604e5",
+        "variant": "baseline",
+        "direct": true
+      },
+      "inleaf_range": {
+        "path": "/workspace/cp-dwm-study/screen_binary/inleaf_range",
+        "sha256": "87c6a6380147619e1b0cf19adfa20259ceb5aa2258ce3f1c4dc564f0ff32aa7d",
+        "variant": "inleaf",
+        "direct": false
+      },
+      "inleaf_count": {
+        "path": "/workspace/cp-dwm-study/screen_binary/inleaf_count",
+        "sha256": "1709d347db484db8a63547f25d44f0ee92ea630a1596dd028399aa7b27b43c59",
+        "variant": "inleaf",
+        "direct": true
+      },
+      "child_range": {
+        "path": "/workspace/cp-dwm-study/screen_binary/child_range",
+        "sha256": "9c374249021a99fddc9b58fbc8a3541dd90efb973422944753bfc325e153d660",
+        "variant": "child",
+        "direct": false
+      },
+      "child_count": {
+        "path": "/workspace/cp-dwm-study/screen_binary/child_count",
+        "sha256": "a2f4e44cffe51281bd62706418a4a90004f74bf1004bc779a857ad7658422bc6",
+        "variant": "child",
+        "direct": true
+      },
+      "child_pair_range": {
+        "path": "/workspace/cp-dwm-study/screen_binary/child_pair_range",
+        "sha256": "1e42e6ed8e48bde1d102d8ebd1a677d5ab18815390056e884ef6000266e1fc11",
+        "variant": "child_pair",
+        "direct": false
+      },
+      "child_pair_count": {
+        "path": "/workspace/cp-dwm-study/screen_binary/child_pair_count",
+        "sha256": "20990362412e2de7bdb90a0562fc46b57b813a27e618201e7e42ec5c508a673a",
+        "variant": "child_pair",
+        "direct": true
+      },
+      "neighbors_range": {
+        "path": "/workspace/cp-dwm-study/screen_binary/neighbors_range",
+        "sha256": "b058ee83ffcc03843cd077d552de19dbfcba1a8e6b17bd32e28e29aef0af4eea",
+        "variant": "neighbors",
+        "direct": false
+      },
+      "neighbors_count": {
+        "path": "/workspace/cp-dwm-study/screen_binary/neighbors_count",
+        "sha256": "6fc63fac38a63de848a79cbb21b6ee5c9ff85d1a574509ada9bc5a761ca06180",
+        "variant": "neighbors",
+        "direct": true
+      }
+    },
+    "commands": [
+      [
+        "python3",
+        "/workspace/cp-dwm-study/abc343_cases.py",
+        "generate",
+        "--directory",
+        "/workspace/cp-dwm-study/screen_binary/cases",
+        "--large",
+        "--n",
+        "20000",
+        "--q",
+        "20000",
+        "--shape",
+        "random30",
+        "--shape",
+        "duplicates16",
+        "--shape",
+        "short"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/baseline",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DCOUNT_DIRECT",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/baseline",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/inleaf",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DCOUNT_DIRECT",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/inleaf",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/child",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DCOUNT_DIRECT",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/child",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/child_pair",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DCOUNT_DIRECT",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/child_pair",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/neighbors",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DCOUNT_DIRECT",
+        "-I",
+        "/workspace/cp-dwm-study/screen_binary/sources/neighbors",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    ],
+    "timing_runner_sha256": "baefbd4af81b0bc471f0bbc388848638ff3894c2e33ff278e4c77bd1d4346f91",
+    "original_runner_sha256": "4535d1f2ffa5942a4f5e0de2a302196533c58aaf5914b6f5a83c06a1340f1ff1",
+    "compile_runner_sha256": "6e1d7c5f7a56be9e4878d74f25b0382f180649bc73edffcd8dfbb6ee7a7a7ee5",
+    "corrected_utc": "2026-10-20 08:41:12.851763+00:00"
+  },
+  "cases": [
+    {
+      "name": "random30",
+      "n": 20000,
+      "q": 20000,
+      "seed": 20261020,
+      "input": {
+        "path": "/workspace/cp-dwm-study/screen_binary/cases/random30.in",
+        "sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+        "bytes": 499516
+      },
+      "expected": {
+        "path": "/workspace/cp-dwm-study/screen_binary/cases/random30.out",
+        "sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "bytes": 20000
+      },
+      "stats": {
+        "set": 10000,
+        "set_same": 0,
+        "set_changed": 10000,
+        "query": 10000,
+        "query_single": 104,
+        "query_2_to_16": 15,
+        "query_full": 104,
+        "answer_zero": 104,
+        "naive_cross_checks": 0
+      },
+      "generator_sha256": "9aaaee1ad39d7d406416c22531f7891275bbabaac1ccf449209c675a2230763f",
+      "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+      "created_at": "2026-10-20T08:39:26.264141+00:00",
+      "oracle": "independent iterative segment tree, highest two distinct values with multiplicities"
+    },
+    {
+      "name": "duplicates16",
+      "n": 20000,
+      "q": 20000,
+      "seed": 20261021,
+      "input": {
+        "path": "/workspace/cp-dwm-study/screen_binary/cases/duplicates16.in",
+        "sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+        "bytes": 276259
+      },
+      "expected": {
+        "path": "/workspace/cp-dwm-study/screen_binary/cases/duplicates16.out",
+        "sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "bytes": 38544
+      },
+      "stats": {
+        "set": 10000,
+        "set_same": 627,
+        "set_changed": 9373,
+        "query": 10000,
+        "query_single": 104,
+        "query_2_to_16": 13,
+        "query_full": 104,
+        "answer_zero": 104,
+        "naive_cross_checks": 0
+      },
+      "generator_sha256": "9aaaee1ad39d7d406416c22531f7891275bbabaac1ccf449209c675a2230763f",
+      "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+      "created_at": "2026-10-20T08:39:26.378421+00:00",
+      "oracle": "independent iterative segment tree, highest two distinct values with multiplicities"
+    },
+    {
+      "name": "short",
+      "n": 20000,
+      "q": 20000,
+      "seed": 20261025,
+      "input": {
+        "path": "/workspace/cp-dwm-study/screen_binary/cases/short.in",
+        "sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+        "bytes": 499849
+      },
+      "expected": {
+        "path": "/workspace/cp-dwm-study/screen_binary/cases/short.out",
+        "sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "bytes": 20000
+      },
+      "stats": {
+        "set": 10000,
+        "set_same": 0,
+        "set_changed": 10000,
+        "query": 10000,
+        "query_single": 5000,
+        "query_2_to_16": 5000,
+        "query_full": 0,
+        "answer_zero": 5000,
+        "naive_cross_checks": 0
+      },
+      "generator_sha256": "9aaaee1ad39d7d406416c22531f7891275bbabaac1ccf449209c675a2230763f",
+      "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+      "created_at": "2026-10-20T08:39:26.473975+00:00",
+      "oracle": "independent iterative segment tree, highest two distinct values with multiplicities"
+    }
+  ],
+  "validation": [
+    {
+      "case": "small_boundaries",
+      "tag": "baseline_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "baseline_count",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "inleaf_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "inleaf_count",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "child_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "child_count",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "child_pair_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "child_pair_count",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "neighbors_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "neighbors_count",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "baseline_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "baseline_count",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "inleaf_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "inleaf_count",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "child_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "child_count",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "child_pair_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "child_pair_count",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "neighbors_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "neighbors_count",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_single",
+      "tag": "baseline_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "baseline_count",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "inleaf_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "inleaf_count",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "child_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "child_count",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "child_pair_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "child_pair_count",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "neighbors_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "neighbors_count",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "random30",
+      "tag": "baseline_range",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "baseline_count",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "inleaf_range",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "inleaf_count",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "child_range",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "child_count",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "child_pair_range",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "child_pair_count",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "neighbors_range",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "random30",
+      "tag": "neighbors_count",
+      "input_sha256": "5d77226680828d0b51f00ec3be94f727bfd6d273775032850534a3d13a4cb0aa",
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "baseline_range",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "baseline_count",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "inleaf_range",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "inleaf_count",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "child_range",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "child_count",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "child_pair_range",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "child_pair_count",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "neighbors_range",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "neighbors_count",
+      "input_sha256": "463529e8d55a270a547acb4de336f95975f73508e3de8f25f2f8afa238ce8f86",
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "baseline_range",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "baseline_count",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "inleaf_range",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "inleaf_count",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "child_range",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "child_count",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "child_pair_range",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "child_pair_count",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "neighbors_range",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    },
+    {
+      "case": "short",
+      "tag": "neighbors_count",
+      "input_sha256": "bd5fe2e9c5d8bdfa6c55f46d5c5ca26f78f4525fd14a523352320a146b755eb4",
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "answers": 10000
+    }
+  ],
+  "discarded_samples": {
+    "reason": "subprocess.run(timeout=30) introduced polling wait and quantized short-process wall times; corrected with blocking wait. Binaries/inputs unchanged; full-output preflight retained.",
+    "samples": [
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.01408300000000029,
+        "wall_seconds": 0.016045662,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.0568010000000001,
+        "wall_seconds": 0.064230808,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.014736999999999334,
+        "wall_seconds": 0.015805633,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.016449999999999854,
+        "wall_seconds": 0.031984965,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "child_count",
+        "cpu_seconds": 0.05572700000000008,
+        "wall_seconds": 0.064011461,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.050183999999999784,
+        "wall_seconds": 0.06401753,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.03788400000000003,
+        "wall_seconds": 0.063941046,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.0982340000000006,
+        "wall_seconds": 0.114092413,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.026371000000000144,
+        "wall_seconds": 0.03408753,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.015514000000000472,
+        "wall_seconds": 0.015789961,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.04821099999999934,
+        "wall_seconds": 0.063939214,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.04816700000000029,
+        "wall_seconds": 0.064072583,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.048164999999999125,
+        "wall_seconds": 0.064085321,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.05155100000000079,
+        "wall_seconds": 0.064032422,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.01591599999999982,
+        "wall_seconds": 0.031815763,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.04731299999999994,
+        "wall_seconds": 0.063851933,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "child_count",
+        "cpu_seconds": 0.049913000000000096,
+        "wall_seconds": 0.06395083,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.04789399999999944,
+        "wall_seconds": 0.063962949,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "child_range",
+        "cpu_seconds": 0.05496500000000015,
+        "wall_seconds": 0.063975769,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.0500190000000007,
+        "wall_seconds": 0.063996259,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.04950399999999977,
+        "wall_seconds": 0.06401133,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.049432999999999616,
+        "wall_seconds": 0.064015217,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.0498409999999998,
+        "wall_seconds": 0.063985653,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "child_count",
+        "cpu_seconds": 0.015671000000000213,
+        "wall_seconds": 0.031829031,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "random30",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.053454999999999586,
+        "wall_seconds": 0.063824112,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.016028000000000375,
+        "wall_seconds": 0.03176044,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.04753399999999974,
+        "wall_seconds": 0.063798013,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.047585000000000655,
+        "wall_seconds": 0.063875379,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "duplicates16",
+        "variant": "child_range",
+        "cpu_seconds": 0.016604000000000063,
+        "wall_seconds": 0.031776184,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 0,
+        "case": "short",
+        "variant": "child_range",
+        "cpu_seconds": 0.049704999999999444,
+        "wall_seconds": 0.063860976,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.04748399999999986,
+        "wall_seconds": 0.063911352,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.07372800000000002,
+        "wall_seconds": 0.114126566,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.030534000000000283,
+        "wall_seconds": 0.031857024,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.03542200000000051,
+        "wall_seconds": 0.063915618,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "child_count",
+        "cpu_seconds": 0.016163999999999845,
+        "wall_seconds": 0.031900348,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.06126200000000015,
+        "wall_seconds": 0.063993314,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.05426299999999973,
+        "wall_seconds": 0.064091671,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.015500000000000291,
+        "wall_seconds": 0.015777822,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.04844600000000021,
+        "wall_seconds": 0.063959683,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "child_range",
+        "cpu_seconds": 0.05587499999999945,
+        "wall_seconds": 0.063974786,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.01456700000000044,
+        "wall_seconds": 0.015679936,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "child_count",
+        "cpu_seconds": 0.05548500000000001,
+        "wall_seconds": 0.063831723,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.04767700000000019,
+        "wall_seconds": 0.063853354,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.04992299999999972,
+        "wall_seconds": 0.063902398,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.054227000000000025,
+        "wall_seconds": 0.063913263,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.013583999999999818,
+        "wall_seconds": 0.016376594,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.016272999999999982,
+        "wall_seconds": 0.031774179,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.05634600000000045,
+        "wall_seconds": 0.063929338,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.048003999999999714,
+        "wall_seconds": 0.063960213,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.05093100000000028,
+        "wall_seconds": 0.064170878,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.016423999999999772,
+        "wall_seconds": 0.031920187,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.05536199999999969,
+        "wall_seconds": 0.063971791,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.05444899999999997,
+        "wall_seconds": 0.064089526,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.04801500000000036,
+        "wall_seconds": 0.063913234,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.055279999999999774,
+        "wall_seconds": 0.06389125,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "child_count",
+        "cpu_seconds": 0.04917199999999955,
+        "wall_seconds": 0.063892953,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "short",
+        "variant": "child_range",
+        "cpu_seconds": 0.05097400000000096,
+        "wall_seconds": 0.063921296,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "random30",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.04843499999999956,
+        "wall_seconds": 0.063926062,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.015579000000000676,
+        "wall_seconds": 0.031799328,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 1,
+        "case": "duplicates16",
+        "variant": "child_range",
+        "cpu_seconds": 0.016623999999999306,
+        "wall_seconds": 0.031691086,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.050196999999999825,
+        "wall_seconds": 0.06386449,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "child_count",
+        "cpu_seconds": 0.031333000000000055,
+        "wall_seconds": 0.03183413,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "child_count",
+        "cpu_seconds": 0.061200000000000365,
+        "wall_seconds": 0.063902918,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.04850999999999939,
+        "wall_seconds": 0.063940745,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.04685400000000062,
+        "wall_seconds": 0.063905492,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "child_range",
+        "cpu_seconds": 0.016635999999999207,
+        "wall_seconds": 0.031784095,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.015146000000000548,
+        "wall_seconds": 0.015651794,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.013715000000000366,
+        "wall_seconds": 0.015781347,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.05338799999999999,
+        "wall_seconds": 0.063872893,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.04803799999999914,
+        "wall_seconds": 0.063941646,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.049437000000000175,
+        "wall_seconds": 0.063886493,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.01657900000000012,
+        "wall_seconds": 0.031789112,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "baseline_count",
+        "cpu_seconds": 0.02225399999999933,
+        "wall_seconds": 0.031739508,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.052547000000001454,
+        "wall_seconds": 0.064086231,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.05012499999999953,
+        "wall_seconds": 0.064015356,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.014388999999999541,
+        "wall_seconds": 0.015683541,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "child_count",
+        "cpu_seconds": 0.0543199999999997,
+        "wall_seconds": 0.063991229,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "child_range",
+        "cpu_seconds": 0.05492399999999975,
+        "wall_seconds": 0.063968525,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "neighbors_range",
+        "cpu_seconds": 0.046354000000000894,
+        "wall_seconds": 0.063903219,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.01625600000000027,
+        "wall_seconds": 0.031758726,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.048961999999999506,
+        "wall_seconds": 0.063855728,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "child_range",
+        "cpu_seconds": 0.050048000000000314,
+        "wall_seconds": 0.063852092,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "neighbors_count",
+        "cpu_seconds": 0.04657899999999948,
+        "wall_seconds": 0.063855448,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "inleaf_count",
+        "cpu_seconds": 0.048220000000000596,
+        "wall_seconds": 0.064001756,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.015532000000000323,
+        "wall_seconds": 0.015780426,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "baseline_range",
+        "cpu_seconds": 0.05011599999999916,
+        "wall_seconds": 0.06383066,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/baseline_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "random30",
+        "variant": "child_pair_range",
+        "cpu_seconds": 0.05377999999999972,
+        "wall_seconds": 0.063906804,
+        "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "child_pair_count",
+        "cpu_seconds": 0.049945000000001016,
+        "wall_seconds": 0.064101594,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "short",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.04745899999999992,
+        "wall_seconds": 0.063842197,
+        "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      },
+      {
+        "trial": 2,
+        "case": "duplicates16",
+        "variant": "inleaf_range",
+        "cpu_seconds": 0.01611100000000043,
+        "wall_seconds": 0.031801251,
+        "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+        "command": [
+          "taskset",
+          "-c",
+          "2",
+          "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+        ]
+      }
+    ]
+  },
+  "samples": [
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.015704,
+      "wall_seconds": 0.015959157,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.066039,
+      "wall_seconds": 0.066343772,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.017123000000000013,
+      "wall_seconds": 0.017438423,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.017633999999999983,
+      "wall_seconds": 0.017868003,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "child_count",
+      "cpu_seconds": 0.06257300000000002,
+      "wall_seconds": 0.062927104,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.055721999999999994,
+      "wall_seconds": 0.05601266,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.01793700000000001,
+      "wall_seconds": 0.018197479,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.05204099999999995,
+      "wall_seconds": 0.052381251,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.021320000000000006,
+      "wall_seconds": 0.021690672,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.018805000000000016,
+      "wall_seconds": 0.019081316,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.047433,
+      "wall_seconds": 0.047699942,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.047819999999999974,
+      "wall_seconds": 0.048136623,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.05545300000000003,
+      "wall_seconds": 0.05587207,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.05213399999999996,
+      "wall_seconds": 0.05248092,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.015607999999999955,
+      "wall_seconds": 0.015835958,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.04836000000000007,
+      "wall_seconds": 0.048614166,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "child_count",
+      "cpu_seconds": 0.05255200000000004,
+      "wall_seconds": 0.052812729,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.049647,
+      "wall_seconds": 0.049940092,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "child_range",
+      "cpu_seconds": 0.05611199999999994,
+      "wall_seconds": 0.056388275,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.05047200000000007,
+      "wall_seconds": 0.050747736,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.05004699999999995,
+      "wall_seconds": 0.05028106,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.050317999999999974,
+      "wall_seconds": 0.050584893,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.05122700000000002,
+      "wall_seconds": 0.051507359,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "child_count",
+      "cpu_seconds": 0.01571200000000006,
+      "wall_seconds": 0.015945051,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.054067999999999894,
+      "wall_seconds": 0.054287324,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.01628200000000013,
+      "wall_seconds": 0.016508621,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.04829299999999992,
+      "wall_seconds": 0.048500776,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.04881000000000002,
+      "wall_seconds": 0.049037296,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "child_range",
+      "cpu_seconds": 0.017419000000000073,
+      "wall_seconds": 0.017659047,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "child_range",
+      "cpu_seconds": 0.054000999999999966,
+      "wall_seconds": 0.054251419,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.049482000000000026,
+      "wall_seconds": 0.049840685,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.04884500000000003,
+      "wall_seconds": 0.049178677,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.016198999999999852,
+      "wall_seconds": 0.016470074,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.017352999999999952,
+      "wall_seconds": 0.017698976,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "child_count",
+      "cpu_seconds": 0.016134000000000093,
+      "wall_seconds": 0.016387761,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.049985999999999864,
+      "wall_seconds": 0.050274451,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.057037000000000004,
+      "wall_seconds": 0.057313234,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.015637000000000123,
+      "wall_seconds": 0.015854987,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.051139000000000046,
+      "wall_seconds": 0.05135439,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "child_range",
+      "cpu_seconds": 0.05645099999999981,
+      "wall_seconds": 0.056799488,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.01479100000000022,
+      "wall_seconds": 0.015040183,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "child_count",
+      "cpu_seconds": 0.055393000000000026,
+      "wall_seconds": 0.055675953,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.048474999999999824,
+      "wall_seconds": 0.048769918,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.05711200000000005,
+      "wall_seconds": 0.057479302,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.054546000000000205,
+      "wall_seconds": 0.054795951,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.013811999999999935,
+      "wall_seconds": 0.014018199,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.016202999999999967,
+      "wall_seconds": 0.016370585,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.050888000000000044,
+      "wall_seconds": 0.051098163,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.049428999999999945,
+      "wall_seconds": 0.049701361,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.0510520000000001,
+      "wall_seconds": 0.051357575,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.016826999999999703,
+      "wall_seconds": 0.017054826,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.05270000000000019,
+      "wall_seconds": 0.052954696,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.049099000000000004,
+      "wall_seconds": 0.049380828,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.050014,
+      "wall_seconds": 0.050371546,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.05639100000000008,
+      "wall_seconds": 0.056780789,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "child_count",
+      "cpu_seconds": 0.050335999999999714,
+      "wall_seconds": 0.050721187,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "child_range",
+      "cpu_seconds": 0.051225000000000076,
+      "wall_seconds": 0.051519567,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.04878999999999989,
+      "wall_seconds": 0.049137105,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.016831000000000262,
+      "wall_seconds": 0.017104821,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "child_range",
+      "cpu_seconds": 0.01747999999999994,
+      "wall_seconds": 0.017778745,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.051285000000000025,
+      "wall_seconds": 0.051671518,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "child_count",
+      "cpu_seconds": 0.016280999999999768,
+      "wall_seconds": 0.016659932,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "child_count",
+      "cpu_seconds": 0.05093700000000023,
+      "wall_seconds": 0.051240851,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.04876299999999967,
+      "wall_seconds": 0.049139589,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.04908100000000015,
+      "wall_seconds": 0.049445915,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "child_range",
+      "cpu_seconds": 0.018057000000000212,
+      "wall_seconds": 0.018382275,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.016754999999999853,
+      "wall_seconds": 0.017056289,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.01445799999999986,
+      "wall_seconds": 0.014810785,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.05669700000000022,
+      "wall_seconds": 0.057168823,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.0493629999999996,
+      "wall_seconds": 0.049732733,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.050980000000000025,
+      "wall_seconds": 0.051359858,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.0169640000000002,
+      "wall_seconds": 0.017269175,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "baseline_count",
+      "cpu_seconds": 0.015198000000000267,
+      "wall_seconds": 0.01543447,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.04986200000000007,
+      "wall_seconds": 0.050203335,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.04955199999999982,
+      "wall_seconds": 0.049932471,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.014625999999999806,
+      "wall_seconds": 0.015060172,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "child_count",
+      "cpu_seconds": 0.05666000000000038,
+      "wall_seconds": 0.057047277,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "child_range",
+      "cpu_seconds": 0.05606700000000009,
+      "wall_seconds": 0.056478349,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "neighbors_range",
+      "cpu_seconds": 0.04783499999999963,
+      "wall_seconds": 0.04814428,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.017199000000000186,
+      "wall_seconds": 0.017451312,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.0498050000000001,
+      "wall_seconds": 0.050083236,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "child_range",
+      "cpu_seconds": 0.050713999999999704,
+      "wall_seconds": 0.050994954,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "neighbors_count",
+      "cpu_seconds": 0.0474190000000001,
+      "wall_seconds": 0.047845118,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/neighbors_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "inleaf_count",
+      "cpu_seconds": 0.050447999999999826,
+      "wall_seconds": 0.050831972,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.015530000000000044,
+      "wall_seconds": 0.015848457,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.050510000000000055,
+      "wall_seconds": 0.050814245,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "child_pair_range",
+      "cpu_seconds": 0.054918000000000244,
+      "wall_seconds": 0.055244731,
+      "answer_sha256": "32d3ba8b32307b316a62f608bbfa52fb16e31fa55c68e7848a45295006528662",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "child_pair_count",
+      "cpu_seconds": 0.05032399999999981,
+      "wall_seconds": 0.050615038,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/child_pair_count"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.05548500000000001,
+      "wall_seconds": 0.055772016,
+      "answer_sha256": "b645c6e108c2d89adf680ae5a4c6678433032d498e83c63af1709d48dbb2da60",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "inleaf_range",
+      "cpu_seconds": 0.01726699999999992,
+      "wall_seconds": 0.017568512,
+      "answer_sha256": "fc3c0f23cc748e7c903426cb46632c704ffe5bc0eca932b370d7857bff4425ef",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/inleaf_range"
+      ]
+    }
+  ],
+  "summary": {
+    "random30": {
+      "baseline_range": {
+        "cpu_seconds": {
+          "median": 0.055721999999999994,
+          "min": 0.050510000000000055,
+          "max": 0.057037000000000004
+        },
+        "wall_seconds": {
+          "median": 0.05601266,
+          "min": 0.050814245,
+          "max": 0.057313234
+        }
+      },
+      "baseline_count": {
+        "cpu_seconds": {
+          "median": 0.05122700000000002,
+          "min": 0.050888000000000044,
+          "max": 0.051285000000000025
+        },
+        "wall_seconds": {
+          "median": 0.051507359,
+          "min": 0.051098163,
+          "max": 0.051671518
+        }
+      },
+      "inleaf_range": {
+        "cpu_seconds": {
+          "median": 0.050980000000000025,
+          "min": 0.05047200000000007,
+          "max": 0.05270000000000019
+        },
+        "wall_seconds": {
+          "median": 0.051359858,
+          "min": 0.050747736,
+          "max": 0.052954696
+        }
+      },
+      "inleaf_count": {
+        "cpu_seconds": {
+          "median": 0.05213399999999996,
+          "min": 0.04986200000000007,
+          "max": 0.05711200000000005
+        },
+        "wall_seconds": {
+          "median": 0.05248092,
+          "min": 0.050203335,
+          "max": 0.057479302
+        }
+      },
+      "child_range": {
+        "cpu_seconds": {
+          "median": 0.05611199999999994,
+          "min": 0.05606700000000009,
+          "max": 0.05645099999999981
+        },
+        "wall_seconds": {
+          "median": 0.056478349,
+          "min": 0.056388275,
+          "max": 0.056799488
+        }
+      },
+      "child_count": {
+        "cpu_seconds": {
+          "median": 0.05666000000000038,
+          "min": 0.055393000000000026,
+          "max": 0.06257300000000002
+        },
+        "wall_seconds": {
+          "median": 0.057047277,
+          "min": 0.055675953,
+          "max": 0.062927104
+        }
+      },
+      "child_pair_range": {
+        "cpu_seconds": {
+          "median": 0.054918000000000244,
+          "min": 0.054067999999999894,
+          "max": 0.05639100000000008
+        },
+        "wall_seconds": {
+          "median": 0.055244731,
+          "min": 0.054287324,
+          "max": 0.056780789
+        }
+      },
+      "child_pair_count": {
+        "cpu_seconds": {
+          "median": 0.05669700000000022,
+          "min": 0.054546000000000205,
+          "max": 0.066039
+        },
+        "wall_seconds": {
+          "median": 0.057168823,
+          "min": 0.054795951,
+          "max": 0.066343772
+        }
+      },
+      "neighbors_range": {
+        "cpu_seconds": {
+          "median": 0.04878999999999989,
+          "min": 0.047433,
+          "max": 0.04908100000000015
+        },
+        "wall_seconds": {
+          "median": 0.049137105,
+          "min": 0.047699942,
+          "max": 0.049445915
+        }
+      },
+      "neighbors_count": {
+        "cpu_seconds": {
+          "median": 0.04884500000000003,
+          "min": 0.04876299999999967,
+          "max": 0.05204099999999995
+        },
+        "wall_seconds": {
+          "median": 0.049178677,
+          "min": 0.049139589,
+          "max": 0.052381251
+        }
+      }
+    },
+    "duplicates16": {
+      "baseline_range": {
+        "cpu_seconds": {
+          "median": 0.016826999999999703,
+          "min": 0.01628200000000013,
+          "max": 0.0169640000000002
+        },
+        "wall_seconds": {
+          "median": 0.017054826,
+          "min": 0.016508621,
+          "max": 0.017269175
+        }
+      },
+      "baseline_count": {
+        "cpu_seconds": {
+          "median": 0.016198999999999852,
+          "min": 0.015198000000000267,
+          "max": 0.01793700000000001
+        },
+        "wall_seconds": {
+          "median": 0.016470074,
+          "min": 0.01543447,
+          "max": 0.018197479
+        }
+      },
+      "inleaf_range": {
+        "cpu_seconds": {
+          "median": 0.017352999999999952,
+          "min": 0.01726699999999992,
+          "max": 0.017633999999999983
+        },
+        "wall_seconds": {
+          "median": 0.017698976,
+          "min": 0.017568512,
+          "max": 0.017868003
+        }
+      },
+      "inleaf_count": {
+        "cpu_seconds": {
+          "median": 0.016831000000000262,
+          "min": 0.016754999999999853,
+          "max": 0.018805000000000016
+        },
+        "wall_seconds": {
+          "median": 0.017104821,
+          "min": 0.017056289,
+          "max": 0.019081316
+        }
+      },
+      "child_range": {
+        "cpu_seconds": {
+          "median": 0.01747999999999994,
+          "min": 0.017419000000000073,
+          "max": 0.018057000000000212
+        },
+        "wall_seconds": {
+          "median": 0.017778745,
+          "min": 0.017659047,
+          "max": 0.018382275
+        }
+      },
+      "child_count": {
+        "cpu_seconds": {
+          "median": 0.016134000000000093,
+          "min": 0.01571200000000006,
+          "max": 0.016280999999999768
+        },
+        "wall_seconds": {
+          "median": 0.016387761,
+          "min": 0.015945051,
+          "max": 0.016659932
+        }
+      },
+      "child_pair_range": {
+        "cpu_seconds": {
+          "median": 0.017199000000000186,
+          "min": 0.016202999999999967,
+          "max": 0.021320000000000006
+        },
+        "wall_seconds": {
+          "median": 0.017451312,
+          "min": 0.016370585,
+          "max": 0.021690672
+        }
+      },
+      "child_pair_count": {
+        "cpu_seconds": {
+          "median": 0.015607999999999955,
+          "min": 0.015530000000000044,
+          "max": 0.015637000000000123
+        },
+        "wall_seconds": {
+          "median": 0.015848457,
+          "min": 0.015835958,
+          "max": 0.015854987
+        }
+      },
+      "neighbors_range": {
+        "cpu_seconds": {
+          "median": 0.01479100000000022,
+          "min": 0.014625999999999806,
+          "max": 0.017123000000000013
+        },
+        "wall_seconds": {
+          "median": 0.015060172,
+          "min": 0.015040183,
+          "max": 0.017438423
+        }
+      },
+      "neighbors_count": {
+        "cpu_seconds": {
+          "median": 0.01445799999999986,
+          "min": 0.013811999999999935,
+          "max": 0.015704
+        },
+        "wall_seconds": {
+          "median": 0.014810785,
+          "min": 0.014018199,
+          "max": 0.015959157
+        }
+      }
+    },
+    "short": {
+      "baseline_range": {
+        "cpu_seconds": {
+          "median": 0.0498050000000001,
+          "min": 0.04829299999999992,
+          "max": 0.051139000000000046
+        },
+        "wall_seconds": {
+          "median": 0.050083236,
+          "min": 0.048500776,
+          "max": 0.05135439
+        }
+      },
+      "baseline_count": {
+        "cpu_seconds": {
+          "median": 0.050014,
+          "min": 0.0493629999999996,
+          "max": 0.05545300000000003
+        },
+        "wall_seconds": {
+          "median": 0.050371546,
+          "min": 0.049732733,
+          "max": 0.05587207
+        }
+      },
+      "inleaf_range": {
+        "cpu_seconds": {
+          "median": 0.049647,
+          "min": 0.048474999999999824,
+          "max": 0.05548500000000001
+        },
+        "wall_seconds": {
+          "median": 0.049940092,
+          "min": 0.048769918,
+          "max": 0.055772016
+        }
+      },
+      "inleaf_count": {
+        "cpu_seconds": {
+          "median": 0.049428999999999945,
+          "min": 0.04881000000000002,
+          "max": 0.050447999999999826
+        },
+        "wall_seconds": {
+          "median": 0.049701361,
+          "min": 0.049037296,
+          "max": 0.050831972
+        }
+      },
+      "child_range": {
+        "cpu_seconds": {
+          "median": 0.051225000000000076,
+          "min": 0.050713999999999704,
+          "max": 0.054000999999999966
+        },
+        "wall_seconds": {
+          "median": 0.051519567,
+          "min": 0.050994954,
+          "max": 0.054251419
+        }
+      },
+      "child_count": {
+        "cpu_seconds": {
+          "median": 0.05093700000000023,
+          "min": 0.050335999999999714,
+          "max": 0.05255200000000004
+        },
+        "wall_seconds": {
+          "median": 0.051240851,
+          "min": 0.050721187,
+          "max": 0.052812729
+        }
+      },
+      "child_pair_range": {
+        "cpu_seconds": {
+          "median": 0.050317999999999974,
+          "min": 0.04955199999999982,
+          "max": 0.0510520000000001
+        },
+        "wall_seconds": {
+          "median": 0.050584893,
+          "min": 0.049932471,
+          "max": 0.051357575
+        }
+      },
+      "child_pair_count": {
+        "cpu_seconds": {
+          "median": 0.05004699999999995,
+          "min": 0.049985999999999864,
+          "max": 0.05032399999999981
+        },
+        "wall_seconds": {
+          "median": 0.05028106,
+          "min": 0.050274451,
+          "max": 0.050615038
+        }
+      },
+      "neighbors_range": {
+        "cpu_seconds": {
+          "median": 0.04783499999999963,
+          "min": 0.047819999999999974,
+          "max": 0.049482000000000026
+        },
+        "wall_seconds": {
+          "median": 0.04814428,
+          "min": 0.048136623,
+          "max": 0.049840685
+        }
+      },
+      "neighbors_count": {
+        "cpu_seconds": {
+          "median": 0.04836000000000007,
+          "min": 0.0474190000000001,
+          "max": 0.049099000000000004
+        },
+        "wall_seconds": {
+          "median": 0.048614166,
+          "min": 0.047845118,
+          "max": 0.049380828
+        }
+      }
+    }
+  }
+}

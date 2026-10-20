@@ -1,0 +1,748 @@
+{
+  "started_utc": "2026-10-20 09:22:48.731576+00:00",
+  "sources": {
+    "components/dynamic_quad_vector.hpp": "541466cdfeabc524243dfcd661a752c2f3eeb71f1ffdd5b975d0265114a44d06",
+    "components/dynamic_quad_wavelet.hpp": "de93626cab81a07ac4f356a7699a39beacde634889e9ddedc6d57fce387ee655",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "2db1f1f83a1ab0f879bd85b8bc4220e0c84f0b5a4dbb2756870e5b98fcb0b5ef",
+    "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+    "test/unit/dynamic_quad_vector.cpp": "cef6a9bb89009474d8a3a33b9587cfd29f5f8d8bf6f5d3edd7fa3cfe6d6ad7c6",
+    "test/unit/dynamic_quad_wavelet.cpp": "cbb7725a2ac7a126423cf705ed9c026b0cdceb476e0b6a8f78522b316c497059",
+    "test/unit/dynamic_wavelet_matrix.cpp": "0e11f53132768810c754ce22eb8a89737e57b149a7feada85ea7944877651bda",
+    "test/unit/dynamic_wavelet_count.cpp": "03f6a25a878c8d927663b00204552d0d4e5552121856df3a085fce074b673175",
+    "test/unit/dynamic_wavelet_core.cpp": "711022a978822e41634d71b036eb27d370905c840808fc903cbabeeef3e8a82e"
+  },
+  "runs": [
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_count"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "7292dd03613a13691ae3f6dfa49bee2afb23ee6224c27c2237d0afb4a0540521",
+      "passed": true,
+      "wall_seconds": 22.615952491760254,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_count.log"
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_matrix"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "0eb219b12b1b942d314e6ec2e0489ac1f71e7c990c0bc3cf5dba0033bc73529b",
+      "passed": true,
+      "wall_seconds": 53.68662071228027,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_matrix.log"
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_quad_vector"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_quad_vector"
+      ],
+      "binary_sha256": "8a4e814bec813f1d80e94459e4c1357f72db6253cc1b259cdafa303d000f1856",
+      "passed": true,
+      "wall_seconds": 6.908437013626099,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_quad_vector.log"
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_core"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "4452314e553e660c4195b17d9ada8e488f025c3a16255f754ffde15eafeb2728",
+      "passed": true,
+      "wall_seconds": 44.21858739852905,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_wavelet_core.log"
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_quad_wavelet"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "8d0672149f6ad71c7d31dc4b92a2ab7353f163b39b9062930501519644b3066a",
+      "passed": true,
+      "wall_seconds": 9.503413677215576,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_quad_wavelet.log"
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_count"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "ca132683856705a9372442fa8136107841302eeeadbec14ce4fe23ca13c1f6d2",
+      "passed": true,
+      "wall_seconds": 2.493521213531494,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_count.log"
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_matrix"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "d2fafe695d7259aa996e12dcac241adff1e577c730ac30d51a4c3ca6e1b1a85e",
+      "passed": true,
+      "wall_seconds": 8.170905828475952,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_matrix.log"
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_quad_vector"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_quad_vector"
+      ],
+      "binary_sha256": "f54ac9d4f9c2022dca8697d542a053d0839753660033cae9d4673a77c49e8b0c",
+      "passed": true,
+      "wall_seconds": 76.69038724899292,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_quad_vector.log"
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_core"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "53a1bb52f69fb5e3d9898f4ce44c24efb770b41a032ca07877dd46772ceb0d9a",
+      "passed": true,
+      "wall_seconds": 8.154284238815308,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/clang-dynamic_wavelet_core.log"
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_quad_vector"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_quad_vector"
+      ],
+      "binary_sha256": "965ad9874b322fd550313a68837201dc282af1573966840f25b80d1478836758",
+      "passed": true,
+      "wall_seconds": 12.437847137451172,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_quad_vector.log"
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_count"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "d3ea319202f7553a590493dd67f0b876a240e99675c08de6fe8cab2555578e7c",
+      "passed": true,
+      "wall_seconds": 3.225973606109619,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_count.log"
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_quad_wavelet"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "d75f4b9a89f8bf98ff88efe44c43670ec84433db2f889abb246fb84303bf0396",
+      "passed": true,
+      "wall_seconds": 92.03319215774536,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/sanitize-dynamic_quad_wavelet.log"
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_matrix"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "2f32a2c5b6fa681a048480793dce05d3e4237066e1d99ecd0479d6b9db6714b4",
+      "passed": true,
+      "wall_seconds": 11.98970341682434,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_matrix.log"
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_quad_wavelet"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "1b7791725a8d47a10c4d7bccea8817b3093da8c85e3c766a04f383d774590c29",
+      "passed": true,
+      "wall_seconds": 17.056092977523804,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_quad_wavelet.log"
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_core"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "abdd89ae989cb823bc421e36850470de2d7f68ee5e0549ab49e25fcd25f43972",
+      "passed": true,
+      "wall_seconds": 9.224340200424194,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/generic-dynamic_wavelet_core.log"
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_quad_vector"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_quad_vector"
+      ],
+      "binary_sha256": "6974d818e1b90e6992c93be7e87f8691ec86255bf5403179e94690985a02a47d",
+      "passed": true,
+      "wall_seconds": 9.418394565582275,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_quad_vector.log"
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_count"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "d2b817491f9c1f9cf6925fdc7f0c37a6b02c22cad7cb2dff1ac4bb4ca70eaddc",
+      "passed": true,
+      "wall_seconds": 3.1035749912261963,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_count.log"
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_matrix"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "c987df610bc46fb3f9e104d31740c477674b8c14ae578859f4a9f5b89f74853d",
+      "passed": true,
+      "wall_seconds": 10.648830890655518,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_matrix.log"
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_quad_wavelet"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "4450fbe14d033a7e8aa70af074b2e7e7534f1ca4104fb9925aba85f5d1bceaba",
+      "passed": true,
+      "wall_seconds": 14.2918119430542,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_quad_wavelet.log"
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_core"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "6d4fa38af68e3f873302a2cc1fcbe9cdca65a696eb22e343a0416d18058baff3",
+      "passed": true,
+      "wall_seconds": 8.903699398040771,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/native-dynamic_wavelet_core.log"
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_quad_vector"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_quad_vector"
+      ],
+      "binary_sha256": "4fb9f51dbdfd870c22590ac590bf313e4c3ef843cef78b25e8f12608f4c670cb",
+      "passed": true,
+      "wall_seconds": 9.725651264190674,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_quad_vector.log"
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_count"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "d3e4a86b6233b4d8a06b94e0a9bbd13b0f0bf54c3b41eff1fb00dafb472273ee",
+      "passed": true,
+      "wall_seconds": 2.865898609161377,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_count.log"
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_matrix"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "d16b2eac44edf308de133960572c011db68a34cbe426a7356ec6b1ce5caa2e5f",
+      "passed": true,
+      "wall_seconds": 10.499686002731323,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_matrix.log"
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_quad_wavelet"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "3f08abf85b7a94a9db1d55157a9e5758131a66369bedd1be2d8b3855e1ba4ada",
+      "passed": true,
+      "wall_seconds": 14.642181158065796,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_quad_wavelet.log"
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_core"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "3c124f552e8ead04a8a3dec8cf49e3ed0de8661c87ab99544e5f0d8732b817ba",
+      "passed": true,
+      "wall_seconds": 9.064313650131226,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/avx2-dynamic_wavelet_core.log"
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_quad_vector"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_quad_vector"
+      ],
+      "binary_sha256": "930b8d79beb110a3013ea5e5ccab53b87d5d593ca5c65c62e781108d268decb1",
+      "passed": true,
+      "wall_seconds": 9.307917594909668,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_quad_vector.log"
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_count"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "7b0eeb7cf6ced123c132e2c650bf7c496b7689b5c1c6be5d2c6be25362bdbb3f",
+      "passed": true,
+      "wall_seconds": 2.9778990745544434,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_count.log"
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_matrix"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "68d43b2bb4e7d0fdf5fabcee5bf6834d334658880bdaf4115a0a8768c7212f45",
+      "passed": true,
+      "wall_seconds": 10.431939601898193,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_matrix.log"
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_core"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "7799037d7acafbcb2cc8d3bc02c5bb112b7cd6c8af28826259fe8f27644482db",
+      "passed": true,
+      "wall_seconds": 9.070988416671753,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_wavelet_core.log"
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_quad_wavelet"
+      ],
+      "test_command": [
+        "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "633923b2051f00f6905f1abe8eeeb438cffe593592182aa52a982738be0bc3b1",
+      "passed": true,
+      "wall_seconds": 15.501921653747559,
+      "log": "/workspace/cp-dwm-study/final-validation/revision2/scalar-dynamic_quad_wavelet.log"
+    }
+  ],
+  "workers": 4,
+  "locking": "SH /tmp/cp-fps-tuning.lock",
+  "compiler_versions": {
+    "g++": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "/workspace/cp-binomial-study/bin/clang++": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/cp-binomial-study/clang/toolchain/usr/lib/llvm-19/bin\n"
+  },
+  "completed_utc": "2026-10-20 09:25:01.799487+00:00"
+}

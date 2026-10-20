@@ -1,0 +1,598 @@
+{
+  "utc": "2026-10-20 09:04:20.055549+00:00",
+  "sources": {
+    "components/dynamic_quad_vector.hpp": "36a86dd0725c137075fa6900301f6f7b9a5a3b1c7ac9cf55318c28284b899a81",
+    "components/dynamic_quad_wavelet.hpp": "e8201e59e4afbb6845c038f36682248d55740cb9bbe8bf0d219486a254f999ea",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "2db1f1f83a1ab0f879bd85b8bc4220e0c84f0b5a4dbb2756870e5b98fcb0b5ef",
+    "test/unit/dynamic_quad_vector.cpp": "77efe5ff33abc549e5b889fb0a5268c02d5886a5642f76b5b9a144b6e59e3e4f",
+    "test/unit/dynamic_quad_wavelet.cpp": "cbb7725a2ac7a126423cf705ed9c026b0cdceb476e0b6a8f78522b316c497059",
+    "test/unit/dynamic_wavelet_matrix.cpp": "0e11f53132768810c754ce22eb8a89737e57b149a7feada85ea7944877651bda",
+    "test/unit/dynamic_wavelet_count.cpp": "03f6a25a878c8d927663b00204552d0d4e5552121856df3a085fce074b673175",
+    "test/unit/dynamic_wavelet_core.cpp": "711022a978822e41634d71b036eb27d370905c840808fc903cbabeeef3e8a82e"
+  },
+  "runs": [
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/generic-dynamic_quad_vector"
+      ],
+      "binary_sha256": "4405a509f662cee921cadfef074e30ac57f735ed887f6c257f07beae7b28ce6d",
+      "passed": true
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/generic-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "c82f0d8c9d1defec2037ce5303b6ee881a0ff1a40b15ba94f6bdce73a8086acd",
+      "passed": true
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/generic-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "039f969de17cf6c094a0c3c4ce90f54551c8b3326b88da530ec7fa963d1dbc8e",
+      "passed": true
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/generic-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "739795ae29d4ff8f23536a0b645ba58961c787c90475ebbaa7266aec3d34b7aa",
+      "passed": true
+    },
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/generic-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "0ddb6f4360c6288e78e1ea445ea5181f022a967c6d3472024fdbe370ce3c9385",
+      "passed": true
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/native-dynamic_quad_vector"
+      ],
+      "binary_sha256": "1c6360d310070a9834a1c25bfcb5dca2517839e204940c80d0d8285243d4f2fd",
+      "passed": true
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/native-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "b7023dc9547cbe9c3ed0ab2b09f7ea3c5b44ebf912b75656a85c60af4b7cdb95",
+      "passed": true
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/native-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "1a67dcc7c64ed998a049ea5158006839c41781c162247c155bf3016478242006",
+      "passed": true
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/native-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "3729fa5a6d1592f90f1c28a15740c513f97566b7d575a8556e8fd1a4eff2796b",
+      "passed": true
+    },
+    {
+      "mode": "native",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-march=native",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/native-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "7d01fe92117a76890af498b670a4a6859b03c7517120c402f1e02e1d114cbbde",
+      "passed": true
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/avx2-dynamic_quad_vector"
+      ],
+      "binary_sha256": "04260d7e6b03927891fcb0abcee8a36815a5f64a3307dec58f3e5ae4af4bf914",
+      "passed": true
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/avx2-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "0aed3cbf347d71a34e09ddc5f3442b79c33420b19c85b4607d0dede9d8fc363b",
+      "passed": true
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/avx2-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "b0280f9dd31ebcd678f63e63d4e0dd2e6d8a5ed9d16b70e3068b868d33189d6e",
+      "passed": true
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/avx2-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "fdf054b0cc5e16eff9ef700ee0d36a1307c79936cd0bdcf4d1513326a56b0802",
+      "passed": true
+    },
+    {
+      "mode": "avx2",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_AVX512",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/avx2-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "0f219fe205dfefb475b41c4ef28001711f1f60fed953076f246923e7d700d87e",
+      "passed": true
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/scalar-dynamic_quad_vector"
+      ],
+      "binary_sha256": "7594d5b4b5d1b2a972fb346e8616b0d6e99840fb74ca61c79f112bdeb94235e8",
+      "passed": true
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/scalar-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "de5d24f177050168394abda8dc3516e057d00a8f7fd075f195715b68fd41c446",
+      "passed": true
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/scalar-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "12e4cb72333dba44981260f97708f8eb44b58efc69c9d23f64bb6494886b8166",
+      "passed": true
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/scalar-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "145169e972c7e5449e5e4e6c2b636d674e1ef78fa79e52c87ac385450fefe927",
+      "passed": true
+    },
+    {
+      "mode": "scalar",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-DDYNAMIC_QUAD_DISABLE_SIMD",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/scalar-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "90066d8002c99cd18bc109eb02f6b6df783c7f30f8d9d969a7773c589506b280",
+      "passed": true
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/sanitize-dynamic_quad_vector"
+      ],
+      "binary_sha256": "8cb3fbe69c51db57a37ae00a08695537085a84f4fdb3d887e2040604a935dfdd",
+      "passed": true
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/sanitize-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "7317f76e016b5d4b63bf14841ecae79383d6093197a82498653415b0f3d44ff2",
+      "passed": true
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/sanitize-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "ca6ef888494dfaf91d5399b4f07ae4fbe6ab66740427179145023c5ac883cbb5",
+      "passed": true
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/sanitize-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "e0554c4a22d77643e9acc22931eabadb4c45a2954cc1a786e41379c99240a4c8",
+      "passed": true
+    },
+    {
+      "mode": "sanitize",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/sanitize-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "69dfad2f9a943cee17d4017207e9f307f03d1c213747d38ef5e355f124d2d8f0",
+      "passed": true
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_quad_vector.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_quad_vector.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/clang-dynamic_quad_vector"
+      ],
+      "binary_sha256": "fc12ef5d548ebd1c6a4932ff031a823744f24c6cb3a82f3e80884760eca85dd7",
+      "passed": true
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_quad_wavelet.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/clang-dynamic_quad_wavelet"
+      ],
+      "binary_sha256": "681b2d15c745a3237320fd48365cbe93ae2ee7c71f43189101eb6d089bcf8b8a",
+      "passed": true
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_wavelet_matrix.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_matrix.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/clang-dynamic_wavelet_matrix"
+      ],
+      "binary_sha256": "4219606bd4f8491a5b5a836fe52212bf88cd3c9debf911846e41f3f0d23a575d",
+      "passed": true
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_wavelet_count.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_count.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/clang-dynamic_wavelet_count"
+      ],
+      "binary_sha256": "3744b4eed50ad54aa62a1689d9771440b34a6f6ea2a6da7478e21b0c7d165982",
+      "passed": true
+    },
+    {
+      "mode": "clang",
+      "source": "test/unit/dynamic_wavelet_core.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I.",
+        "test/unit/dynamic_wavelet_core.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/final-validation/clang-dynamic_wavelet_core"
+      ],
+      "binary_sha256": "644113bfcaade522c7603159433d9929e49ecaf93465d39cff39d1564c83c6fd",
+      "passed": true
+    }
+  ],
+  "failures": [
+    {
+      "mode": "generic",
+      "source": "test/unit/dynamic_quad_wavelet.cpp",
+      "stage": "compile",
+      "reason": "Test assert macro needed outer parentheses around a template call with comma; corrected test source only."
+    }
+  ]
+}

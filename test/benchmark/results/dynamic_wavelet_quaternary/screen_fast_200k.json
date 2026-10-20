@@ -1,0 +1,1417 @@
+{
+  "manifest": {
+    "base": "2559803022319333756173295947577d6f5f9b2e",
+    "flags": [
+      "-O2",
+      "-std=gnu++23",
+      "-march=native",
+      "-ftrivial-auto-var-init=zero",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "assertions": true,
+    "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "compiler_sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
+    "cpuinfo": "processor\t: 2\nvendor_id\t: AuthenticAMD\ncpu family\t: 25\nmodel\t\t: 17\nmodel name\t: AMD EPYC 9V74 80-Core Processor\nstepping\t: 1\nmicrocode\t: 0x1000065\ncpu MHz\t\t: 2596.144\ncache size\t: 1024 KB\nphysical id\t: 0\nsiblings\t: 5\ncore id\t\t: 2\ncpu cores\t: 5\napicid\t\t: 2\ninitial apicid\t: 2\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 28\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nbugs\t\t: sysret_ss_attrs null_seg spectre_v1 spectre_v2 spec_store_bypass srso spectre_v2_user tsa\nbogomips\t: 5192.28\nTLB size\t: 3584 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 46 bits physical, 48 bits virtual\npower management:",
+    "pin": 2,
+    "repeats": 3,
+    "nim_build": {
+      "utc": "2026-10-20T08:42:11.628906+00:00",
+      "command": [
+        "/workspace/cp-dwm-study/toolchain/nim-2.2.4/bin/nim",
+        "cpp",
+        "-d:release",
+        "--opt:speed",
+        "--multimethods:on",
+        "--warning[SmallLshouldNotBeUsed]:off",
+        "--hints:off",
+        "--maxLoopIterationsVM:10000000000000",
+        "--maxCallDepthVM:10000000000000",
+        "--path:/workspace/cp-dwm-study/nim-reference",
+        "--nimcache:/workspace/cp-dwm-study/nim-reference/bundled-nimcache",
+        "--out:/workspace/cp-dwm-study/nim-reference/abc343f-bundled",
+        "/workspace/cp-dwm-study/nim-reference/BundledMain.nim"
+      ],
+      "nim_version": "Nim Compiler Version 2.2.4 [Linux: amd64]\nCompiled at 2025-04-22\nCopyright (c) 2006-2025 by Andreas Rumpf\n\ngit hash: f7145dd26efeeeb6eeae6fff649db244d81b212d\nactive boot switches: -d:release\n",
+      "backend": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "nim_binary_sha256": "8eda591ce66af95b583622c748df12017f6fb1c75364b0a23082836ed1f2d4bc",
+      "solver_binary_sha256": "793e4f67940b6667720c61fefb8abf0956b759d2d87021c09d17ab9c1e4688c6",
+      "sources": {
+        "BundledChecksOff.nim": "d228f2778294c7a8e0d9faf383174935ed74c7ce9f0f0f27735dde31dcd18797",
+        "BundledMain.nim": "1ce8527d48a30fa97168582da0b963e5e97f6ad2c157f52f50b71f3457ebe47f",
+        "Main.nim": "a906f4a934c1c83444c952e246cc07af565d3eb0508b7137c060b76bdbe02fae",
+        "MainChecksOff.nim": "f72bb16a58cce7a02c1115131178877e4579ed66063ffe48e1cf270bda6989b6",
+        "cplib/collections/dynamic_bplus_kernels.nim": "0ddbaa6418a1c3e482c9fbc1aba6b3c3b1c1b0d04abc2fbf343bb020c1f1c34e",
+        "cplib/collections/dynamic_quaternary_kernels.nim": "294c16755e6de8cc397aa7bce4daf1c2a1f0e1bf673d7e0369da39bba2ac9d8a",
+        "cplib/collections/dynamic_quaternary_vector.nim": "4ce47b576695ae636c80754206fac652b7addfbb32c72633a7749d7b08d067ce",
+        "cplib/collections/dynamic_quaternary_waveletmatrix.nim": "90aedcfd100cc02b61a9735488f185336ed6a88c2453f967fed4da282326ee5b",
+        "cplib/tmpl/fastio.nim": "075bfbe1736976148ac7adc6157a6e1cff0aa15d1a9ee19db5910552aa5aa063",
+        "cplib/tmpl/sheep.nim": "b6b1af04e745a12e5041739e8648352a00ba5c166622dde0ca2106a85a2ba20a",
+        "cplib/utils/constants.nim": "b9451e5d994497483e22ff9936876b31ffea94c13cdd922521805871875fdf4d"
+      },
+      "cases": [
+        {
+          "status": "pass",
+          "answers": 292,
+          "actual_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+          "case": "small_boundaries"
+        },
+        {
+          "status": "pass",
+          "answers": 15309,
+          "actual_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+          "case": "small_exhaustive"
+        },
+        {
+          "status": "pass",
+          "answers": 5,
+          "actual_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+          "case": "small_single"
+        }
+      ],
+      "note": "Faithful main reconstructed from user-provided semantics, pinned cplib source and exact QuadVector[32,256]/H30/quadOptimized/quadLeafPrefix/checks-off; local GCC14.2 backend rather than AtCoder GCC15.2. Recursively bundled; quad defines before dependencies and checks-off immediately before final main, matching the pasted submission lexical scope. No runtime measurements.",
+      "nim_generated_build": {
+        "compile": [
+          [
+            "/workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem@sexceptions.nim.cpp",
+            "g++ -c -std=gnu++17 -funsigned-char  -w -fmax-errors=3 -fpermissive -pthread -mavx2 -DCPLIB_FASTIO_NO_MMAP -DDQV_FAST_RANK -O3 -fno-strict-aliasing -fno-ident -fno-math-errno   -I/workspace/cp-dwm-study/toolchain/nim-2.2.4/lib -I/workspace/cp-dwm-study/nim-reference -o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem@sexceptions.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem@sexceptions.nim.cpp"
+          ],
+          [
+            "/workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@sstd@sassertions.nim.cpp",
+            "g++ -c -std=gnu++17 -funsigned-char  -w -fmax-errors=3 -fpermissive -pthread -mavx2 -DCPLIB_FASTIO_NO_MMAP -DDQV_FAST_RANK -O3 -fno-strict-aliasing -fno-ident -fno-math-errno   -I/workspace/cp-dwm-study/toolchain/nim-2.2.4/lib -I/workspace/cp-dwm-study/nim-reference -o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@sstd@sassertions.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@sstd@sassertions.nim.cpp"
+          ],
+          [
+            "/workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem.nim.cpp",
+            "g++ -c -std=gnu++17 -funsigned-char  -w -fmax-errors=3 -fpermissive -pthread -mavx2 -DCPLIB_FASTIO_NO_MMAP -DDQV_FAST_RANK -O3 -fno-strict-aliasing -fno-ident -fno-math-errno   -I/workspace/cp-dwm-study/toolchain/nim-2.2.4/lib -I/workspace/cp-dwm-study/nim-reference -o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem.nim.cpp"
+          ],
+          [
+            "/workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@spure@soptions.nim.cpp",
+            "g++ -c -std=gnu++17 -funsigned-char  -w -fmax-errors=3 -fpermissive -pthread -mavx2 -DCPLIB_FASTIO_NO_MMAP -DDQV_FAST_RANK -O3 -fno-strict-aliasing -fno-ident -fno-math-errno   -I/workspace/cp-dwm-study/toolchain/nim-2.2.4/lib -I/workspace/cp-dwm-study/nim-reference -o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@spure@soptions.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@spure@soptions.nim.cpp"
+          ],
+          [
+            "/workspace/cp-dwm-study/nim-reference/bundled-nimcache/@mBundledMain.nim.cpp",
+            "g++ -c -std=gnu++17 -funsigned-char  -w -fmax-errors=3 -fpermissive -pthread -mavx2 -DCPLIB_FASTIO_NO_MMAP -DDQV_FAST_RANK -O3 -fno-strict-aliasing -fno-ident -fno-math-errno   -I/workspace/cp-dwm-study/toolchain/nim-2.2.4/lib -I/workspace/cp-dwm-study/nim-reference -o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@mBundledMain.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@mBundledMain.nim.cpp"
+          ]
+        ],
+        "linkcmd": "g++   -o /workspace/cp-dwm-study/nim-reference/abc343f-bundled /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem@sexceptions.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@sstd@sprivate@sdigitsutils.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@sstd@sassertions.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem@sdollars.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@ssystem.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@m..@stoolchain@snim-2.2.4@slib@spure@soptions.nim.cpp.o /workspace/cp-dwm-study/nim-reference/bundled-nimcache/@mBundledMain.nim.cpp.o  -pthread -pthread -lm -lm   -ldl"
+      },
+      "variant": "primary-faithful-lexical-scope",
+      "main_sha256": "1ce8527d48a30fa97168582da0b963e5e97f6ad2c157f52f50b71f3457ebe47f",
+      "notes": "Pinned cplib dependency definitions before checks:off; quadOptimized and quadLeafPrefix enabled before all dependencies. Unused originalSource metadata template omitted. This is a faithful local reconstruction, not a byte-identical downloaded AtCoder source."
+    },
+    "nim_provenance": {
+      "pinned_library_commit": "c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3",
+      "license": "CC0-1.0",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/kemuniku/cplib/c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3/src/cplib/collections/dynamic_quaternary_waveletmatrix.nim",
+          "status": 200,
+          "bytes": 21169,
+          "sha256": "90aedcfd100cc02b61a9735488f185336ed6a88c2453f967fed4da282326ee5b",
+          "utc": "2026-10-20 08:36:06.186163+00:00"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kemuniku/cplib/c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3/src/cplib/collections/dynamic_quaternary_vector.nim",
+          "status": 200,
+          "bytes": 37505,
+          "sha256": "4ce47b576695ae636c80754206fac652b7addfbb32c72633a7749d7b08d067ce",
+          "utc": "2026-10-20 08:36:06.861880+00:00"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kemuniku/cplib/c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3/src/cplib/collections/dynamic_quaternary_kernels.nim",
+          "status": 200,
+          "bytes": 17774,
+          "sha256": "294c16755e6de8cc397aa7bce4daf1c2a1f0e1bf673d7e0369da39bba2ac9d8a",
+          "utc": "2026-10-20 08:36:07.829777+00:00"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kemuniku/cplib/c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3/src/cplib/collections/dynamic_bplus_kernels.nim",
+          "status": 200,
+          "bytes": 7134,
+          "sha256": "0ddbaa6418a1c3e482c9fbc1aba6b3c3b1c1b0d04abc2fbf343bb020c1f1c34e",
+          "utc": "2026-10-20 08:36:08.686197+00:00"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kemuniku/cplib/c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3/src/cplib/tmpl/sheep.nim",
+          "status": 200,
+          "bytes": 5501,
+          "sha256": "b6b1af04e745a12e5041739e8648352a00ba5c166622dde0ca2106a85a2ba20a",
+          "utc": "2026-10-20 08:36:09.449952+00:00"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kemuniku/cplib/c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3/src/cplib/tmpl/fastio.nim",
+          "status": 200,
+          "bytes": 47427,
+          "sha256": "075bfbe1736976148ac7adc6157a6e1cff0aa15d1a9ee19db5910552aa5aa063",
+          "utc": "2026-10-20 08:36:10.242082+00:00"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kemuniku/cplib/c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3/src/cplib/utils/constants.nim",
+          "status": 200,
+          "bytes": 170,
+          "sha256": "b9451e5d994497483e22ff9936876b31ffea94c13cdd922521805871875fdf4d",
+          "utc": "2026-10-20 08:36:10.644829+00:00"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/kemuniku/cplib/c95c3c35f66357921a0d3bcd8cb79cbc7b13d6c3/LICENSE",
+          "status": 200,
+          "bytes": 7048,
+          "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+          "utc": "2026-10-20 08:36:11.434572+00:00"
+        },
+        {
+          "url": "https://github.com/nim-lang/nightlies/releases/download/2025-04-22-version-2-2-f7145dd26efeeeb6eeae6fff649db244d81b212d/nim-2.2.4-linux_x64.tar.xz",
+          "bytes": 16154064,
+          "sha256": "791802138aaf19c8579232c50b4998ce2ae2928b791127ce5b4ef3c7af53fb46",
+          "utc": "2026-10-20T08:39:20.763876+00:00"
+        },
+        {
+          "url": "https://img.atcoder.jp/file/language-update/2025-10/language-list.html",
+          "bytes": 324938,
+          "sha256": "781c93a73c58bc2a76ecd7b1ab6e200023a5426676a0f4a7ceb4fbc9bd358075",
+          "utc": "2026-10-20T08:39:24.078604+00:00"
+        }
+      ]
+    },
+    "nim_source_sha256": "1ce8527d48a30fa97168582da0b963e5e97f6ad2c157f52f50b71f3457ebe47f",
+    "n": 200000,
+    "q": 200000,
+    "utc": "2026-10-20 08:52:05.362317+00:00",
+    "driver_sha256": "15ce469bce9a53cd360a7ae1f26a42e9c45ec3bbd996643e7fd2b43a5b5d55bf",
+    "runner_sha256": "6fef48c7c26efa6d35d18324280b65bfc985b85d854fee73aafd8a9912f5f977",
+    "sources": {
+      "baseline": {
+        "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a7be7adeb53a92c1f1eed6dc3e8c0c703ddb61efacfaa3e6f2b56ca3088422d3"
+      },
+      "quad-uniform-wmfast": {
+        "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+        "components/dynamic_quad_vector.hpp": "8bbe09b80d55c900c11eccc275dfc0ff957fde080c38a790786baaf07cbf0450",
+        "components/dynamic_quad_wavelet.hpp": "03bf8b1d9148da0a1d125725ed8f284e01c48e23038be0d2796eea414494fcc0",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a28ed1e82edb781024b0a6996ef1a9fcf949ca5dd44f12869017589833b88431"
+      },
+      "quad-fast-wmfast": {
+        "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+        "components/dynamic_quad_vector.hpp": "c6637b59c7b6869ff9bc82068f654e7a0a20cc2a3fcbe39b0617d74f7acb2702",
+        "components/dynamic_quad_wavelet.hpp": "03bf8b1d9148da0a1d125725ed8f284e01c48e23038be0d2796eea414494fcc0",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a28ed1e82edb781024b0a6996ef1a9fcf949ca5dd44f12869017589833b88431"
+      },
+      "quad-fast-o3": {
+        "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+        "components/dynamic_quad_vector.hpp": "8be6221d3120d761c02f9430ed76ecbc05f634b1c0a6d8d1fabc65bc630e868c",
+        "components/dynamic_quad_wavelet.hpp": "e8201e59e4afbb6845c038f36682248d55740cb9bbe8bf0d219486a254f999ea",
+        "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "a28ed1e82edb781024b0a6996ef1a9fcf949ca5dd44f12869017589833b88431"
+      }
+    },
+    "binaries": {
+      "baseline_range": {
+        "path": "/workspace/cp-dwm-study/screen_binary/baseline_range",
+        "sha256": "04f35662809229e424e1cd3f7978d8163fc041100c682ad8a208c7e1f2b07264",
+        "variant": "baseline",
+        "direct": false
+      },
+      "quad-uniform-wmfast_range": {
+        "path": "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range",
+        "sha256": "1be9e592d31339d9a7667299cdd9ceb56c9216a271a5ed282c6746c1977bf20a",
+        "variant": "quad-uniform-wmfast",
+        "direct": false
+      },
+      "nim-primary": {
+        "path": "/workspace/cp-dwm-study/screen_quad0/nim-primary",
+        "sha256": "793e4f67940b6667720c61fefb8abf0956b759d2d87021c09d17ab9c1e4688c6",
+        "variant": "reference-nim",
+        "direct": false
+      },
+      "quad-fast-wmfast_range": {
+        "path": "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range",
+        "sha256": "ab9126329e8736aec1251771457433cd3d870637adbc933ca6f6ebc5a821cad5",
+        "variant": "quad-fast-wmfast",
+        "direct": false
+      },
+      "quad-fast-o3_range": {
+        "path": "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range",
+        "sha256": "4dbf25e2ea0b5cf403d9401513a51e9b6133f28b213be3f55b31b0456ca0a4c7",
+        "variant": "quad-fast-o3",
+        "direct": false
+      }
+    },
+    "commands": [
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-dwm-study/variants/quad-fast-wmfast",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ],
+      [
+        "g++",
+        "-O2",
+        "-std=gnu++23",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-dwm-study/variants/quad-fast-o3",
+        "/workspace/cp-dwm-study/abc343_binary.cpp",
+        "-o",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    ]
+  },
+  "cases": [
+    {
+      "name": "random30",
+      "n": 200000,
+      "q": 200000,
+      "seed": 20261020,
+      "input": {
+        "path": "/workspace/cp-dwm-study/cases-large/random30.in",
+        "sha256": "ef5e4b8acc2cec303265992a6a3460cd4988fd1df5dd4f94aa41f8679e300880",
+        "bytes": 5295984
+      },
+      "expected": {
+        "path": "/workspace/cp-dwm-study/cases-large/random30.out",
+        "sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+        "bytes": 200000
+      },
+      "stats": {
+        "set": 100000,
+        "set_same": 0,
+        "set_changed": 100000,
+        "query": 100000,
+        "query_single": 1031,
+        "query_2_to_16": 16,
+        "query_full": 1031,
+        "answer_zero": 1031,
+        "naive_cross_checks": 0
+      },
+      "generator_sha256": "9aaaee1ad39d7d406416c22531f7891275bbabaac1ccf449209c675a2230763f",
+      "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+      "created_at": "2026-10-20T08:43:40.071878+00:00",
+      "oracle": "independent iterative segment tree, highest two distinct values with multiplicities"
+    },
+    {
+      "name": "duplicates16",
+      "n": 200000,
+      "q": 200000,
+      "seed": 20261021,
+      "input": {
+        "path": "/workspace/cp-dwm-study/cases-large/duplicates16.in",
+        "sha256": "dda49d6cf8f572d3eb0fbc72837d597a280d4da79595f194c98f2b88b6a2c875",
+        "bytes": 3059873
+      },
+      "expected": {
+        "path": "/workspace/cp-dwm-study/cases-large/duplicates16.out",
+        "sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+        "bytes": 484628
+      },
+      "stats": {
+        "set": 100000,
+        "set_same": 6161,
+        "set_changed": 93839,
+        "query": 100000,
+        "query_single": 1032,
+        "query_2_to_16": 10,
+        "query_full": 1031,
+        "answer_zero": 1032,
+        "naive_cross_checks": 0
+      },
+      "generator_sha256": "9aaaee1ad39d7d406416c22531f7891275bbabaac1ccf449209c675a2230763f",
+      "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+      "created_at": "2026-10-20T08:43:41.621224+00:00",
+      "oracle": "independent iterative segment tree, highest two distinct values with multiplicities"
+    },
+    {
+      "name": "short",
+      "n": 200000,
+      "q": 200000,
+      "seed": 20261025,
+      "input": {
+        "path": "/workspace/cp-dwm-study/cases-large/short.in",
+        "sha256": "43ca77ed31967a9c9074d11f4b9c32a8d1f8e9999dde3b0a7f1be8dff1cf5fb5",
+        "bytes": 5299727
+      },
+      "expected": {
+        "path": "/workspace/cp-dwm-study/cases-large/short.out",
+        "sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+        "bytes": 200000
+      },
+      "stats": {
+        "set": 100000,
+        "set_same": 0,
+        "set_changed": 100000,
+        "query": 100000,
+        "query_single": 50001,
+        "query_2_to_16": 49999,
+        "query_full": 0,
+        "answer_zero": 50001,
+        "naive_cross_checks": 0
+      },
+      "generator_sha256": "9aaaee1ad39d7d406416c22531f7891275bbabaac1ccf449209c675a2230763f",
+      "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+      "created_at": "2026-10-20T08:43:47.563511+00:00",
+      "oracle": "independent iterative segment tree, highest two distinct values with multiplicities"
+    }
+  ],
+  "validation": [
+    {
+      "case": "small_boundaries",
+      "tag": "baseline_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "baseline_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_single",
+      "tag": "baseline_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "nim-primary",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "nim-primary",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_single",
+      "tag": "nim-primary",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "quad-uniform-wmfast_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "quad-uniform-wmfast_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_single",
+      "tag": "quad-uniform-wmfast_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "random30",
+      "tag": "baseline_range",
+      "input_sha256": "ef5e4b8acc2cec303265992a6a3460cd4988fd1df5dd4f94aa41f8679e300880",
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "random30",
+      "tag": "nim-primary",
+      "input_sha256": "ef5e4b8acc2cec303265992a6a3460cd4988fd1df5dd4f94aa41f8679e300880",
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "random30",
+      "tag": "quad-uniform-wmfast_range",
+      "input_sha256": "ef5e4b8acc2cec303265992a6a3460cd4988fd1df5dd4f94aa41f8679e300880",
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "duplicates16",
+      "tag": "baseline_range",
+      "input_sha256": "dda49d6cf8f572d3eb0fbc72837d597a280d4da79595f194c98f2b88b6a2c875",
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "duplicates16",
+      "tag": "nim-primary",
+      "input_sha256": "dda49d6cf8f572d3eb0fbc72837d597a280d4da79595f194c98f2b88b6a2c875",
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "duplicates16",
+      "tag": "quad-uniform-wmfast_range",
+      "input_sha256": "dda49d6cf8f572d3eb0fbc72837d597a280d4da79595f194c98f2b88b6a2c875",
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "short",
+      "tag": "baseline_range",
+      "input_sha256": "43ca77ed31967a9c9074d11f4b9c32a8d1f8e9999dde3b0a7f1be8dff1cf5fb5",
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "short",
+      "tag": "nim-primary",
+      "input_sha256": "43ca77ed31967a9c9074d11f4b9c32a8d1f8e9999dde3b0a7f1be8dff1cf5fb5",
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "short",
+      "tag": "quad-uniform-wmfast_range",
+      "input_sha256": "43ca77ed31967a9c9074d11f4b9c32a8d1f8e9999dde3b0a7f1be8dff1cf5fb5",
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "answers": 100000,
+      "reused_from": "screen_uniform_200k.json"
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "quad-fast-wmfast_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_boundaries",
+      "tag": "quad-fast-o3_range",
+      "input_sha256": "85dcaafe58c94d1d8f8b1d2a829a62aab99c392da54bf5cb65ef44080f4e951a",
+      "answer_sha256": "9925ffc98521d74bc91142b331a98677a15fcd7a0856adc3e7f0c87109976291",
+      "answers": 292
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "quad-fast-wmfast_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_exhaustive",
+      "tag": "quad-fast-o3_range",
+      "input_sha256": "2a31eefb1f2973c482bda41bea07f95e7aeb2c85ba50d34eaa3ad1b51013c5ed",
+      "answer_sha256": "6a1a3cdef579ba3d783367fa3f3c7e1df5fd20331c1f4f396aedc4e078671725",
+      "answers": 15309
+    },
+    {
+      "case": "small_single",
+      "tag": "quad-fast-wmfast_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "small_single",
+      "tag": "quad-fast-o3_range",
+      "input_sha256": "a07bffc3bfb8efe4a0e361c50138e72855b9e7069e0f26639f594ba57ef4f511",
+      "answer_sha256": "aeec6cd696078c273d36ddb33500d5af1aeac51b1b65a725363f3ae5728dd8c6",
+      "answers": 5
+    },
+    {
+      "case": "random30",
+      "tag": "quad-fast-wmfast_range",
+      "input_sha256": "ef5e4b8acc2cec303265992a6a3460cd4988fd1df5dd4f94aa41f8679e300880",
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "answers": 100000
+    },
+    {
+      "case": "random30",
+      "tag": "quad-fast-o3_range",
+      "input_sha256": "ef5e4b8acc2cec303265992a6a3460cd4988fd1df5dd4f94aa41f8679e300880",
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "answers": 100000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "quad-fast-wmfast_range",
+      "input_sha256": "dda49d6cf8f572d3eb0fbc72837d597a280d4da79595f194c98f2b88b6a2c875",
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "answers": 100000
+    },
+    {
+      "case": "duplicates16",
+      "tag": "quad-fast-o3_range",
+      "input_sha256": "dda49d6cf8f572d3eb0fbc72837d597a280d4da79595f194c98f2b88b6a2c875",
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "answers": 100000
+    },
+    {
+      "case": "short",
+      "tag": "quad-fast-wmfast_range",
+      "input_sha256": "43ca77ed31967a9c9074d11f4b9c32a8d1f8e9999dde3b0a7f1be8dff1cf5fb5",
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "answers": 100000
+    },
+    {
+      "case": "short",
+      "tag": "quad-fast-o3_range",
+      "input_sha256": "43ca77ed31967a9c9074d11f4b9c32a8d1f8e9999dde3b0a7f1be8dff1cf5fb5",
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "answers": 100000
+    }
+  ],
+  "samples": [
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.6712920000000002,
+      "wall_seconds": 0.672308835,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.22203499999999998,
+      "wall_seconds": 0.222454991,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.5184499999999996,
+      "wall_seconds": 0.518995761,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.7231910000000017,
+      "wall_seconds": 0.723606061,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.1580289999999991,
+      "wall_seconds": 0.158538664,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.15233000000000096,
+      "wall_seconds": 0.152683073,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.4858089999999997,
+      "wall_seconds": 0.486257234,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.8192470000000007,
+      "wall_seconds": 0.821258908,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.48782499999999906,
+      "wall_seconds": 0.48817524,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "random30",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.5191660000000002,
+      "wall_seconds": 0.51974628,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.2280490000000004,
+      "wall_seconds": 0.228593254,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.8038619999999987,
+      "wall_seconds": 0.804984547,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.7430719999999997,
+      "wall_seconds": 0.743559943,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "duplicates16",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.3303989999999999,
+      "wall_seconds": 0.330772987,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 0,
+      "case": "short",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.599692000000001,
+      "wall_seconds": 0.600166772,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.3686429999999987,
+      "wall_seconds": 0.369150344,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.7089220000000012,
+      "wall_seconds": 0.710000788,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.8317300000000021,
+      "wall_seconds": 0.832380723,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.148261999999999,
+      "wall_seconds": 0.148607355,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.5113710000000005,
+      "wall_seconds": 0.5118077,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.797819999999998,
+      "wall_seconds": 0.798419223,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.2271579999999993,
+      "wall_seconds": 0.227508542,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.7410640000000015,
+      "wall_seconds": 0.741599515,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.478667999999999,
+      "wall_seconds": 0.479004158,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.592646000000002,
+      "wall_seconds": 0.593678475,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.22062599999999932,
+      "wall_seconds": 0.22107095,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "short",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.48851099999999903,
+      "wall_seconds": 0.488933357,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.709582000000001,
+      "wall_seconds": 0.710179368,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "random30",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.5202339999999985,
+      "wall_seconds": 0.521220983,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 1,
+      "case": "duplicates16",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.15636299999999892,
+      "wall_seconds": 0.156725851,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.4852249999999998,
+      "wall_seconds": 0.485687596,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.14952500000000057,
+      "wall_seconds": 0.149896745,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.22824100000000058,
+      "wall_seconds": 0.22861693,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.4735590000000016,
+      "wall_seconds": 0.474026294,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.5132449999999977,
+      "wall_seconds": 0.513696895,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.5850240000000007,
+      "wall_seconds": 0.585376644,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "quad-fast-wmfast_range",
+      "cpu_seconds": 0.1548050000000032,
+      "wall_seconds": 0.155182685,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-wmfast_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.7889719999999976,
+      "wall_seconds": 0.789388444,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.21872800000000225,
+      "wall_seconds": 0.219073513,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "duplicates16",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.3204769999999968,
+      "wall_seconds": 0.320872745,
+      "answer_sha256": "fcbb9ab9c7b033ccbf8fceb896f9aca973a8280dab7022392738934304deab2a",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "quad-fast-o3_range",
+      "cpu_seconds": 0.5042580000000001,
+      "wall_seconds": 0.504596464,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_fast_200k/quad-fast-o3_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "short",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.732683999999999,
+      "wall_seconds": 0.733634223,
+      "answer_sha256": "0b656df882e3cae6737667d03c2d4ed6303bcdc07eb7fa56d00cef59c517acd1",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "quad-uniform-wmfast_range",
+      "cpu_seconds": 0.6984990000000018,
+      "wall_seconds": 0.698981662,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_uniform_200k/quad-uniform-wmfast_range"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "nim-primary",
+      "cpu_seconds": 0.6597229999999996,
+      "wall_seconds": 0.660079615,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_quad0/nim-primary"
+      ]
+    },
+    {
+      "trial": 2,
+      "case": "random30",
+      "variant": "baseline_range",
+      "cpu_seconds": 0.8265739999999973,
+      "wall_seconds": 0.827007126,
+      "answer_sha256": "32083b5454d83d30fdbcc241b906a3cceaf9a211852c8747b56d1a6a8305e633",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "/workspace/cp-dwm-study/screen_binary/baseline_range"
+      ]
+    }
+  ],
+  "summary": {
+    "random30": {
+      "baseline_range": {
+        "cpu_seconds": {
+          "median": 0.8265739999999973,
+          "min": 0.8192470000000007,
+          "max": 0.8317300000000021
+        },
+        "wall_seconds": {
+          "median": 0.827007126,
+          "min": 0.821258908,
+          "max": 0.832380723
+        }
+      },
+      "quad-uniform-wmfast_range": {
+        "cpu_seconds": {
+          "median": 0.709582000000001,
+          "min": 0.6984990000000018,
+          "max": 0.7231910000000017
+        },
+        "wall_seconds": {
+          "median": 0.710179368,
+          "min": 0.698981662,
+          "max": 0.723606061
+        }
+      },
+      "nim-primary": {
+        "cpu_seconds": {
+          "median": 0.6712920000000002,
+          "min": 0.6597229999999996,
+          "max": 0.7089220000000012
+        },
+        "wall_seconds": {
+          "median": 0.672308835,
+          "min": 0.660079615,
+          "max": 0.710000788
+        }
+      },
+      "quad-fast-wmfast_range": {
+        "cpu_seconds": {
+          "median": 0.5191660000000002,
+          "min": 0.5132449999999977,
+          "max": 0.5202339999999985
+        },
+        "wall_seconds": {
+          "median": 0.51974628,
+          "min": 0.513696895,
+          "max": 0.521220983
+        }
+      },
+      "quad-fast-o3_range": {
+        "cpu_seconds": {
+          "median": 0.5113710000000005,
+          "min": 0.5042580000000001,
+          "max": 0.5184499999999996
+        },
+        "wall_seconds": {
+          "median": 0.5118077,
+          "min": 0.504596464,
+          "max": 0.518995761
+        }
+      }
+    },
+    "duplicates16": {
+      "baseline_range": {
+        "cpu_seconds": {
+          "median": 0.2280490000000004,
+          "min": 0.2271579999999993,
+          "max": 0.22824100000000058
+        },
+        "wall_seconds": {
+          "median": 0.228593254,
+          "min": 0.227508542,
+          "max": 0.22861693
+        }
+      },
+      "quad-uniform-wmfast_range": {
+        "cpu_seconds": {
+          "median": 0.22062599999999932,
+          "min": 0.21872800000000225,
+          "max": 0.22203499999999998
+        },
+        "wall_seconds": {
+          "median": 0.22107095,
+          "min": 0.219073513,
+          "max": 0.222454991
+        }
+      },
+      "nim-primary": {
+        "cpu_seconds": {
+          "median": 0.3303989999999999,
+          "min": 0.3204769999999968,
+          "max": 0.3686429999999987
+        },
+        "wall_seconds": {
+          "median": 0.330772987,
+          "min": 0.320872745,
+          "max": 0.369150344
+        }
+      },
+      "quad-fast-wmfast_range": {
+        "cpu_seconds": {
+          "median": 0.15636299999999892,
+          "min": 0.1548050000000032,
+          "max": 0.1580289999999991
+        },
+        "wall_seconds": {
+          "median": 0.156725851,
+          "min": 0.155182685,
+          "max": 0.158538664
+        }
+      },
+      "quad-fast-o3_range": {
+        "cpu_seconds": {
+          "median": 0.14952500000000057,
+          "min": 0.148261999999999,
+          "max": 0.15233000000000096
+        },
+        "wall_seconds": {
+          "median": 0.149896745,
+          "min": 0.148607355,
+          "max": 0.152683073
+        }
+      }
+    },
+    "short": {
+      "baseline_range": {
+        "cpu_seconds": {
+          "median": 0.797819999999998,
+          "min": 0.7889719999999976,
+          "max": 0.8038619999999987
+        },
+        "wall_seconds": {
+          "median": 0.798419223,
+          "min": 0.789388444,
+          "max": 0.804984547
+        }
+      },
+      "quad-uniform-wmfast_range": {
+        "cpu_seconds": {
+          "median": 0.7410640000000015,
+          "min": 0.732683999999999,
+          "max": 0.7430719999999997
+        },
+        "wall_seconds": {
+          "median": 0.741599515,
+          "min": 0.733634223,
+          "max": 0.743559943
+        }
+      },
+      "nim-primary": {
+        "cpu_seconds": {
+          "median": 0.592646000000002,
+          "min": 0.5850240000000007,
+          "max": 0.599692000000001
+        },
+        "wall_seconds": {
+          "median": 0.593678475,
+          "min": 0.585376644,
+          "max": 0.600166772
+        }
+      },
+      "quad-fast-wmfast_range": {
+        "cpu_seconds": {
+          "median": 0.48782499999999906,
+          "min": 0.4852249999999998,
+          "max": 0.48851099999999903
+        },
+        "wall_seconds": {
+          "median": 0.48817524,
+          "min": 0.485687596,
+          "max": 0.488933357
+        }
+      },
+      "quad-fast-o3_range": {
+        "cpu_seconds": {
+          "median": 0.478667999999999,
+          "min": 0.4735590000000016,
+          "max": 0.4858089999999997
+        },
+        "wall_seconds": {
+          "median": 0.479004158,
+          "min": 0.474026294,
+          "max": 0.486257234
+        }
+      }
+    }
+  }
+}
