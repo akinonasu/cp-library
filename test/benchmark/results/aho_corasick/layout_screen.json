@@ -1,0 +1,245 @@
+{
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DNDEBUG",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-I."
+  ],
+  "trials": 3,
+  "sources": {
+    "initial": "4096ec6a59babc8e8ab4671862aaf83e8a98ae1de6dd0076284aabc542244bd5",
+    "packed": "3f96a186a56c533db6e669c49303bab55fd9a65f35391c61c4ec16b7163c0b9c"
+  },
+  "measurements": {
+    "random26": {
+      "samples": {
+        "dense": {
+          "build_ms": [
+            64.0241,
+            62.9433,
+            59.6885
+          ],
+          "scan_ms": [
+            34.5745,
+            33.4272,
+            32.4006
+          ]
+        },
+        "packed": {
+          "build_ms": [
+            61.7855,
+            58.1192,
+            57.0821
+          ],
+          "scan_ms": [
+            30.0749,
+            29.3135,
+            28.6208
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 62.9433,
+          "scan_ms": 33.4272
+        },
+        "packed": {
+          "build_ms": 58.1192,
+          "scan_ms": 29.3135
+        }
+      }
+    },
+    "random2": {
+      "samples": {
+        "dense": {
+          "build_ms": [
+            34.8334,
+            36.0787,
+            36.501
+          ],
+          "scan_ms": [
+            28.9806,
+            28.7798,
+            29.1747
+          ]
+        },
+        "packed": {
+          "build_ms": [
+            34.6912,
+            33.9295,
+            34.5692
+          ],
+          "scan_ms": [
+            32.0133,
+            33.1136,
+            31.2145
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 36.0787,
+          "scan_ms": 28.9806
+        },
+        "packed": {
+          "build_ms": 34.5692,
+          "scan_ms": 32.0133
+        }
+      }
+    },
+    "long_pattern": {
+      "samples": {
+        "dense": {
+          "build_ms": [
+            24.7741,
+            24.6069,
+            26.3731
+          ],
+          "scan_ms": [
+            7.84917,
+            8.86124,
+            7.98266
+          ]
+        },
+        "packed": {
+          "build_ms": [
+            24.7801,
+            24.1782,
+            26.4651
+          ],
+          "scan_ms": [
+            7.53838,
+            6.90847,
+            7.88656
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 24.7741,
+          "scan_ms": 7.98266
+        },
+        "packed": {
+          "build_ms": 24.7801,
+          "scan_ms": 7.53838
+        }
+      }
+    },
+    "suffix_chain": {
+      "samples": {
+        "dense": {
+          "build_ms": [
+            1.69668,
+            1.66758,
+            1.66077
+          ],
+          "scan_ms": [
+            4.08263,
+            4.08935,
+            4.11465
+          ]
+        },
+        "packed": {
+          "build_ms": [
+            1.92108,
+            1.8856,
+            1.92357
+          ],
+          "scan_ms": [
+            3.38199,
+            3.44529,
+            3.37405
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 1.66758,
+          "scan_ms": 4.08935
+        },
+        "packed": {
+          "build_ms": 1.92108,
+          "scan_ms": 3.38199
+        }
+      }
+    },
+    "shared_prefix": {
+      "samples": {
+        "dense": {
+          "build_ms": [
+            3.13117,
+            3.08812,
+            3.09175
+          ],
+          "scan_ms": [
+            4.19625,
+            4.12327,
+            4.11344
+          ]
+        },
+        "packed": {
+          "build_ms": [
+            3.15382,
+            3.10365,
+            3.14588
+          ],
+          "scan_ms": [
+            3.44125,
+            3.46666,
+            3.47377
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 3.09175,
+          "scan_ms": 4.12327
+        },
+        "packed": {
+          "build_ms": 3.14588,
+          "scan_ms": 3.46666
+        }
+      }
+    },
+    "duplicates": {
+      "samples": {
+        "dense": {
+          "build_ms": [
+            0.606222,
+            0.613653,
+            0.621531
+          ],
+          "scan_ms": [
+            4.1593,
+            4.13168,
+            4.08487
+          ]
+        },
+        "packed": {
+          "build_ms": [
+            0.599772,
+            0.596516,
+            0.643924
+          ],
+          "scan_ms": [
+            3.40081,
+            3.4417,
+            3.36127
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 0.613653,
+          "scan_ms": 4.13168
+        },
+        "packed": {
+          "build_ms": 0.599772,
+          "scan_ms": 3.40081
+        }
+      }
+    }
+  }
+}
