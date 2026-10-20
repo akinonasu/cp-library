@@ -34,9 +34,14 @@ struct NontrivialMint {
 	std::uint64_t encoded = 3 * ::fps_scalar_return_test::mod;
 	std::string label = "coefficient-with-nontrivial-storage";
 	static inline std::uint64_t inversions = 0;
+	static inline std::uint64_t copies = 0;
 	static constexpr int mod() { return 998244353; }
 	NontrivialMint() = default;
 	NontrivialMint(long long value) : encoded(canonical(value) + 3 * ::fps_scalar_return_test::mod) {}
+	NontrivialMint(const NontrivialMint &other) : encoded(other.encoded), label(other.label) { ++copies; }
+	NontrivialMint(NontrivialMint &&) noexcept = default;
+	NontrivialMint &operator=(const NontrivialMint &) = default;
+	NontrivialMint &operator=(NontrivialMint &&) noexcept = default;
 	static NontrivialMint raw(unsigned value) { return NontrivialMint(value); }
 	unsigned val() const { return encoded % ::fps_scalar_return_test::mod; }
 	NontrivialMint &operator+=(const NontrivialMint &other) {
@@ -141,8 +146,12 @@ template<class T> void run_type(const char *name) {
 			auto doubled = raw_values, zero = raw_values;
 			for (auto &coefficient : doubled) coefficient = 2 * coefficient % mod;
 			for (auto &coefficient : zero) coefficient = 0;
+			NontrivialMint::copies = 0;
 			require(values(source + source) == doubled);
+			if constexpr (std::is_same_v<T, NontrivialMint>) require(NontrivialMint::copies == n);
+			NontrivialMint::copies = 0;
 			require(values(source - source) == zero);
+			if constexpr (std::is_same_v<T, NontrivialMint>) require(NontrivialMint::copies == n);
 			untouched(source, saved);
 			adjacent_cases += 2;
 			std::vector<std::size_t> shifts{0, n, n + 1};
@@ -153,8 +162,12 @@ template<class T> void run_type(const char *name) {
 					if (i >= shift) left[i] = raw_values[i - shift];
 					if (i + shift < n) right[i] = raw_values[i + shift];
 				}
+				NontrivialMint::copies = 0;
 				require(values(source << static_cast<int>(shift)) == left);
+				if constexpr (std::is_same_v<T, NontrivialMint>) if (shift >= n) require(NontrivialMint::copies == n);
+				NontrivialMint::copies = 0;
 				require(values(source >> static_cast<int>(shift)) == right);
+				if constexpr (std::is_same_v<T, NontrivialMint>) if (shift >= n) require(NontrivialMint::copies == n);
 				untouched(source, saved);
 				adjacent_cases += 2;
 			}

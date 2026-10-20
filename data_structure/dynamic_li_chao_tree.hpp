@@ -84,10 +84,7 @@ class DynamicLiChaoTree {
 			auto child = insert_segment<V>(nodes_[k].left & mask, l, m, ql, qr, f);
 			nodes_[k].left = (nodes_[k].left & present) | child;
 		}
-		if (m < qr) {
-			auto child = insert_segment<V>(nodes_[k].right, T(m + 1), r, ql, qr, f);
-			nodes_[k].right = child;
-		}
+		if (m < qr) nodes_[k].right = insert_segment<V>(nodes_[k].right, T(m + 1), r, ql, qr, f);
 		return k;
 	}
 	void check(Line f, T l, T r) {

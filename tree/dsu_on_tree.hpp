@@ -14,10 +14,7 @@ class DSUOnTree {
 	bool built_ = false;
 	std::vector<std::pair<int, int>> edges_;
 	std::vector<int> parent_, heavy_, in_, out_, order_;
-	void check(int v) const {
-		assert(built_ && 0 <= v && v < n_);
-		(void)v;
-	}
+	void check([[maybe_unused]] int v) const { assert(built_ && 0 <= v && v < n_); }
 	template<class Add, class Answer, class Clear>
 	void execute(Add& add, Answer& answer, Clear& clear, bool keep) const {
 		assert(built_);

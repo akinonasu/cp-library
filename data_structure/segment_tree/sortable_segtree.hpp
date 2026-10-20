@@ -40,8 +40,8 @@ class SortableSegtree {
 	bool side(int x, int bit) const {
 		return bit >= 31 ? keys[pool[x].leaf] >> (bit - 31) & 1 : unsigned(pool[x].leaf) >> bit & 1;
 	}
-	S product(int x, bool reverse) const {
-		if constexpr (commutative) { (void)reverse; return pool[x].forward; }
+	S product(int x, [[maybe_unused]] bool reverse) const {
+		if constexpr (commutative) return pool[x].forward;
 		else return reverse ? pool[x].backward : pool[x].forward;
 	}
 	void pull(int x) {
@@ -96,6 +96,11 @@ class SortableSegtree {
 			else k -= count, x = pool[x].right;
 		}
 		return x;
+	}
+	[[gnu::always_inline]] int locate(int p) const {
+		assert(0 <= p && p < n);
+		int l = boundaries.prev(p), x = roots[l], k = p - l;
+		return at(x, reversed[l] ? pool[x].count - 1 - k : k);
 	}
 	S fold(int x, int l, int r, bool reverse) const {
 		if (!l && r == pool[x].count) return product(x, reverse);
@@ -177,17 +182,10 @@ public:
 	int size() const { return n; }
 	bool empty() const { return n == 0; }
 	std::pair<Key, S> get(int p) const {
-		assert(0 <= p && p < n);
-		int l = boundaries.prev(p), x = roots[l], k = p - l;
-		x = at(x, reversed[l] ? pool[x].count - 1 - k : k);
+		int x = locate(p);
 		return {Key(keys[pool[x].leaf] ^ sign), pool[x].forward};
 	}
-	Key key(int p) const {
-		assert(0 <= p && p < n);
-		int l = boundaries.prev(p), x = roots[l], k = p - l;
-		x = at(x, reversed[l] ? pool[x].count - 1 - k : k);
-		return Key(keys[pool[x].leaf] ^ sign);
-	}
+	Key key(int p) const { return Key(keys[pool[locate(p)].leaf] ^ sign); }
 	void set(int p, Key key, S value) {
 		assert(0 <= p && p < n);
 		cut(p); cut(p + 1);
