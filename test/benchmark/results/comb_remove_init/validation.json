@@ -1,0 +1,47 @@
+{
+  "result": "passed",
+  "checks": [
+    {
+      "compiler": "g++",
+      "multiple_translation_units": "passed in both link orders",
+      "default_limit": 502022,
+      "release_flags": [
+        "-DNDEBUG",
+        "-march=native",
+        "-ftrivial-auto-var-init=zero",
+        "-DATCODER",
+        "-DONLINE_JUDGE",
+        "-fconstexpr-depth=1024",
+        "-fconstexpr-loop-limit=524288",
+        "-fconstexpr-ops-limit=2097152"
+      ],
+      "bundles": "passed",
+      "example": "passed",
+      "yukicoder_3172_samples": 4
+    },
+    {
+      "compiler": "clang++",
+      "multiple_translation_units": "passed in both link orders",
+      "default_limit": 502022,
+      "release_flags": [
+        "-DNDEBUG"
+      ],
+      "bundles": "passed",
+      "example": "passed",
+      "yukicoder_3172_samples": 4
+    }
+  ],
+  "sources": {
+    "math/combinatorics/comb.hpp": "da208932e9549467565e21e5b0e299f97394726c46548543a0b0fad9bc28bf14",
+    "docs/comb.md": "711db0c145e7768217d758d8a823fba661d6f96b88b2f1b4bd578561405644ca",
+    "test/unit/comb.cpp": "dc0d2ef7c704ad28fc4647e29e6924b8ac6646c6d4fb0254a979390532d04602",
+    "test/unit/comb_zero.cpp": "0ea58575558a67d2d8f97fdf142734efeb95c2e274996bef617bf815d1e4e336",
+    "test/unit/comb_factorials.cpp": "d65dd1b4e8095ec0406d7dbf9acb2250a014de71dd074468e613bbcdf2ec4893",
+    "test/unit/standalone.cpp": "5cd4a5dbf7a6fc836c31f14b4a81f1cd24bcb80216d91a312def9c85fc3ae0dd",
+    "test/comb.test.cpp": "e0d05305962b6d2e612537c16eb5919a6ef0fcc11a02ea5af6d94346c6f279fc"
+  },
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)\nTarget: x86_64-conda-linux-gnu\nThread model: posix\nInstalledDir: /var/tmp/cp-audit-tools/env/bin\nConfiguration file: /var/tmp/cp-audit-tools/env/bin/x86_64-conda-linux-gnu-clang++.cfg\n"
+  }
+}

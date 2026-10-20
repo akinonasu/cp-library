@@ -1,0 +1,6 @@
+{
+  "headers": ["math/combinatorics/comb.hpp"],
+  "unit": ["test/unit/comb.cpp", "test/unit/comb_zero.cpp", "test/unit/comb_factorials.cpp", "test/unit/standalone.cpp"],
+  "sanitize": ["test/unit/comb.cpp", "test/unit/comb_zero.cpp", "test/unit/comb_factorials.cpp"],
+  "bundles": ["math/combinatorics/comb.hpp"]
+}
