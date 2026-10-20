@@ -13,10 +13,7 @@ class LCA {
 	static int min_op(int a, int b) { return std::min(a, b); }
 	std::vector<int> in, out, order;
 	SparseTable<int, min_op> table;
-	void check(int v) const {
-		assert(0 <= v && v < n && static_cast<int>(in.size()) == n);
-		(void)v;
-	}
+	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && static_cast<int>(in.size()) == n); }
 
   public:
 	int n;

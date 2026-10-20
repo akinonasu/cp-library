@@ -47,8 +47,8 @@ class DynamicLazySegtree {
 	void push(int k, Coord l, Coord m, Coord r) {
 		if (!nodes[k].dirty) return;
 		F f = nodes[k].lazy;
-		if (!nodes[k].left) { int child = make_node(l, m); nodes[k].left = child; }
-		if (!nodes[k].right) { int child = make_node(m, r); nodes[k].right = child; }
+		if (!nodes[k].left) nodes[k].left = make_node(l, m);
+		if (!nodes[k].right) nodes[k].right = make_node(m, r);
 		all_apply(nodes[k].left, f, leaf(l, m));
 		all_apply(nodes[k].right, f, leaf(m, r));
 		nodes[k].dirty = false;
@@ -61,8 +61,8 @@ class DynamicLazySegtree {
 		if (a == l && b == r) { all_apply(k, f, leaf(l, r)); return k; }
 		Coord m = std::midpoint(l, r);
 		push(k, l, m, r);
-		if (a < m) { int child = update(nodes[k].left, l, m, a, std::min(b, m), f); nodes[k].left = child; }
-		if (m < b) { int child = update(nodes[k].right, m, r, std::max(a, m), b, f); nodes[k].right = child; }
+		if (a < m) nodes[k].left = update(nodes[k].left, l, m, a, std::min(b, m), f);
+		if (m < b) nodes[k].right = update(nodes[k].right, m, r, std::max(a, m), b, f);
 		pull(k, l, m, r);
 		return k;
 	}
@@ -71,8 +71,8 @@ class DynamicLazySegtree {
 		if (leaf(l, r)) { nodes[k].value = x; return k; }
 		Coord m = std::midpoint(l, r);
 		push(k, l, m, r);
-		if (p < m) { int child = write(nodes[k].left, l, m, p, x); nodes[k].left = child; }
-		else { int child = write(nodes[k].right, m, r, p, x); nodes[k].right = child; }
+		if (p < m) nodes[k].left = write(nodes[k].left, l, m, p, x);
+		else nodes[k].right = write(nodes[k].right, m, r, p, x);
 		pull(k, l, m, r);
 		return k;
 	}

@@ -369,7 +369,24 @@ void backward_elimination_edges() {
 		}
 }
 
+void arithmetic_moves() {
+	Matrix<mint> b(3, 4, mint(2));
+	auto check = [](auto operation, mint expected) {
+		Matrix<mint> a(3, 4, mint(6));
+		const auto *storage = a.data();
+		auto result = operation(std::move(a));
+		assert(result.data() == storage && a.empty());
+		assert(result == Matrix<mint>(3, 4, expected));
+	};
+	check([&](auto a) { return std::move(a) + b; }, mint(8));
+	check([&](auto a) { return std::move(a) - b; }, mint(4));
+	check([](auto a) { return std::move(a) * mint(2); }, mint(12));
+	check([](auto a) { return mint(2) * std::move(a); }, mint(12));
+	check([](auto a) { return std::move(a) / mint(2); }, mint(3));
+}
+
 int main() {
+	arithmetic_moves();
 	backward_elimination_edges<mint>();
 	backward_elimination_edges<Mod<2>>();
 	backward_elimination_edges<Mod<2147483647>>();

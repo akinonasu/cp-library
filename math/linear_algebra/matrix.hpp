@@ -55,12 +55,6 @@ class Matrix {
 		}
 		return work;
 	}
-	std::pair<T, std::optional<Matrix>> invert(long double eps) const {
-		auto work = augmented_identity();
-		auto [det, pivots] = work.reduce(w, true, eps);
-		if (int(pivots.size()) < h) return {T(0), std::nullopt};
-		return {det, work.submatrix(0, h, w, w * 2)};
-	}
 
   public:
 	using value_type = T;
@@ -126,8 +120,8 @@ class Matrix {
 	Matrix &operator*=(const Matrix &b) { return *this = *this * b; }
 	Matrix &operator*=(T x) { for (auto &v : a) v *= x; return *this; }
 	Matrix &operator/=(T x) { static_assert(!matrix_detail::integer<T>); assert(x != T(0)); return *this *= T(1) / x; }
-	friend Matrix operator+(Matrix a, const Matrix &b) { return a += b; }
-	friend Matrix operator-(Matrix a, const Matrix &b) { return a -= b; }
+	friend Matrix operator+(Matrix a, const Matrix &b) { a += b; return a; }
+	friend Matrix operator-(Matrix a, const Matrix &b) { a -= b; return a; }
 	friend Matrix operator*(const Matrix &a, const Matrix &b) {
 		assert(a.w == b.h);
 		Matrix result;
@@ -135,9 +129,9 @@ class Matrix {
 		result.a = matrix_detail::multiply(a.a, b.a, a.h, a.w, b.w);
 		return result;
 	}
-	friend Matrix operator*(Matrix a, T x) { return a *= x; }
-	friend Matrix operator*(T x, Matrix a) { return a *= x; }
-	friend Matrix operator/(Matrix a, T x) { return a /= x; }
+	friend Matrix operator*(Matrix a, T x) { a *= x; return a; }
+	friend Matrix operator*(T x, Matrix a) { a *= x; return a; }
+	friend Matrix operator/(Matrix a, T x) { a /= x; return a; }
 	std::vector<T> operator*(const std::vector<T> &v) const {
 		assert(int(v.size()) == w);
 		return matrix_detail::multiply(a, v, h, w, 1);
@@ -174,7 +168,12 @@ class Matrix {
 		auto pivots = work.reduce(w, true, eps).second;
 		return {std::move(work), std::move(pivots)};
 	}
-	std::optional<Matrix> inverse(long double eps = default_epsilon) const { return invert(eps).second; }
+	std::optional<Matrix> inverse(long double eps = default_epsilon) const {
+		auto work = augmented_identity();
+		auto pivots = work.reduce(w, true, eps).second;
+		if (int(pivots.size()) < h) return std::nullopt;
+		return work.submatrix(0, h, w, w * 2);
+	}
 	std::vector<std::vector<T>> kernel(long double eps = default_epsilon) const {
 		auto [work, pivots] = rref(eps);
 		return nullspace(work, pivots, w);

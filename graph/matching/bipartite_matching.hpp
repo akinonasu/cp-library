@@ -8,6 +8,11 @@
 #include <optional>
 
 class BipartiteMatching {
+public:
+	struct VertexSet { std::vector<int> left, right; };
+	enum class EdgeStatus : unsigned char { never, optional, forced };
+
+private:
 	int l_, r_, size_ = 0;
 	bool dirty_ = false;
 	std::vector<std::pair<int, int>> input_;
@@ -18,10 +23,15 @@ class BipartiteMatching {
 		if (!analysis_) analysis_.emplace(l_, r_, input_, left_, right_);
 		return *analysis_;
 	}
+	template<bool left_selected, bool right_selected>
+	VertexSet select_vertices(const std::vector<unsigned char>& mask) const {
+		VertexSet result;
+		for (int u = 0; u < l_; ++u) if (bool(mask[u]) == left_selected) result.left.push_back(u);
+		for (int v = 0; v < r_; ++v) if (bool(mask[l_ + v]) == right_selected) result.right.push_back(v);
+		return result;
+	}
 
 public:
-	struct VertexSet { std::vector<int> left, right; };
-	enum class EdgeStatus : unsigned char { never, optional, forced };
 	explicit BipartiteMatching(int l, int r) : l_(l), r_(r), left_(l, -1), right_(r, -1) {
 		assert(l >= 0 && r >= 0 && std::int64_t(l) + r < std::numeric_limits<int>::max());
 	}
@@ -71,20 +81,8 @@ public:
 		for (int id : ids) if (id >= 0) result.push_back(id);
 		return result;
 	}
-	VertexSet minimum_vertex_cover() {
-		const auto& a = analysis();
-		VertexSet result;
-		for (int u = 0; u < l_; ++u) if (!a.from_left[u]) result.left.push_back(u);
-		for (int v = 0; v < r_; ++v) if (a.from_left[l_ + v]) result.right.push_back(v);
-		return result;
-	}
-	VertexSet maximum_independent_set() {
-		const auto& a = analysis();
-		VertexSet result;
-		for (int u = 0; u < l_; ++u) if (a.from_left[u]) result.left.push_back(u);
-		for (int v = 0; v < r_; ++v) if (!a.from_left[l_ + v]) result.right.push_back(v);
-		return result;
-	}
+	VertexSet minimum_vertex_cover() { return select_vertices<false, true>(analysis().from_left); }
+	VertexSet maximum_independent_set() { return select_vertices<true, false>(analysis().from_left); }
 	std::optional<std::vector<int>> minimum_edge_cover() {
 		build();
 		std::vector<int> first_left(l_, -1), first_right(r_, -1);
@@ -102,19 +100,11 @@ public:
 	}
 	std::optional<VertexSet> hall_witness_left() {
 		if (covers_left()) return std::nullopt;
-		const auto& a = analysis();
-		VertexSet result;
-		for (int u = 0; u < l_; ++u) if (a.from_left[u]) result.left.push_back(u);
-		for (int v = 0; v < r_; ++v) if (a.from_left[l_ + v]) result.right.push_back(v);
-		return result;
+		return select_vertices<true, true>(analysis().from_left);
 	}
 	std::optional<VertexSet> hall_witness_right() {
 		if (covers_right()) return std::nullopt;
-		const auto& a = analysis();
-		VertexSet result;
-		for (int u = 0; u < l_; ++u) if (a.to_right[u]) result.left.push_back(u);
-		for (int v = 0; v < r_; ++v) if (a.to_right[l_ + v]) result.right.push_back(v);
-		return result;
+		return select_vertices<true, true>(analysis().to_right);
 	}
 	std::vector<EdgeStatus> edge_classification() {
 		auto& a = analysis();
