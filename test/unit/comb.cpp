@@ -7,9 +7,11 @@
 using namespace std;
 
 static_assert(is_array_v<decltype(fact)> && extent_v<decltype(fact)> == 201);
+const unsigned before_main = comb(10, 3).val();
+const unsigned before_main_factorial = fact[5].val();
 
 int main() {
-	init_comb();
+	assert(before_main == 120 && before_main_factorial == 120);
 	mint row[201]{};
 	row[0] = 1;
 	for (int n = 0; n < 201; ++n) {

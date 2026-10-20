@@ -7,6 +7,11 @@
 void require(bool value) { if (!value) std::abort(); }
 
 int main() {
+	std::uint64_t automatic = 1;
+	for (int i = 0; i <= COMB_INF; ++i) {
+		if (i) automatic = automatic * i % mint::mod();
+		require(fact[i].val() == automatic && fact[i] * finv[i] == mint(1));
+	}
 	fps_detail::factorials(nullptr, nullptr, 0);
 	for (int n : {0, 1, 2, 7, 8, 31, 32, 63, 64, 127, 128, 255, 256, 257, 511, 512, 513, 65535, 65536, 65537, 1048576}) {
 		std::vector<mint> a(n + 2, mint(17)), b(n + 2, mint(19));
