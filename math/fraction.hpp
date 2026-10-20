@@ -119,7 +119,10 @@ class Fraction {
 	constexpr explicit operator F() const { return F(num) / F(den); }
 	constexpr Int floor() const { return num / den - (num % den < 0); }
 	constexpr Int ceil() const { return num / den + (num % den > 0); }
-	constexpr Fraction inv() const { assert(num != 0); return Fraction(den, num); }
+	constexpr Fraction inv() const {
+		assert(num != 0);
+		return num < 0 ? reduced(-W(den), -W(num)) : reduced(den, num);
+	}
 	constexpr Fraction pow(std::uint64_t k) const {
 		Fraction result(1), base = *this;
 		while (k) {

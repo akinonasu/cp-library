@@ -60,8 +60,7 @@ class DynamicSegtree {
 	static void pull(Leaf &node) { node.product = fold<B>(node.values.data(), node.count); }
 
 	template <bool Append>
-	static void write(Leaf &node, U key, S value) {
-		unsigned p = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, key) - node.keys.begin();
+	static void write(Leaf &node, unsigned p, U key, S value) {
 		if (p < node.count && node.keys[p] == key) {
 			if constexpr (Append) node.values[p] = op(node.values[p], value);
 			else node.values[p] = std::move(value);
@@ -78,7 +77,7 @@ class DynamicSegtree {
 	void update(U key, S value) {
 		if (!root) {
 			root = make_leaf();
-			write<Append>(leaf(root), key, std::move(value));
+			write<Append>(leaf(root), 0, key, std::move(value));
 			++points;
 			return;
 		}
@@ -96,7 +95,7 @@ class DynamicSegtree {
 		if (outside) {
 			assert(points < limit);
 			unsigned added = make_leaf();
-			write<Append>(leaf(added), key, std::move(value));
+			write<Append>(leaf(added), 0, key, std::move(value));
 			unsigned h = std::bit_width(U(key ^ nodes[id].middle)) - 1;
 			U middle = ((key | nodes[id].middle) >> h) << h;
 			replacement = key < middle ? make_node(middle, added, id) : make_node(middle, id, added);
@@ -106,7 +105,7 @@ class DynamicSegtree {
 			unsigned p = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, key) - node.keys.begin();
 			bool exists = p < node.count && node.keys[p] == key;
 			assert(exists || points < limit);
-			if (exists || node.count < B) write<Append>(node, key, std::move(value));
+			if (exists || node.count < B) write<Append>(node, p, key, std::move(value));
 			else {
 				U low = std::min(key, node.keys[0]), high = std::max(key, node.keys[B - 1]);
 				unsigned h = std::bit_width(U(low ^ high)) - 1;
@@ -117,8 +116,8 @@ class DynamicSegtree {
 				b.count = B - cut;
 				for (unsigned i = 0; i < b.count; ++i) b.keys[i] = a.keys[cut + i], b.values[i] = std::move(a.values[cut + i]);
 				a.count = cut;
-				if (key < middle) write<Append>(a, key, std::move(value));
-				else write<Append>(b, key, std::move(value));
+				if (key < middle) write<Append>(a, p, key, std::move(value));
+				else write<Append>(b, p - cut, key, std::move(value));
 				if (key < middle) pull(b);
 				else pull(a);
 				replacement = make_node(middle, id, added);

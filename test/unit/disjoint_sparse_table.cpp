@@ -117,4 +117,13 @@ int main() {
 	assert(flags.prod(0, 3) && !flags.prod(0, 1) && !flags.prod(3, 3));
 	DisjointSparseTable<int, minimum> singleton(vector<int>{-8});
 	assert(singleton.all_prod() == -8 && singleton[0] == -8);
+	for (int n : {1024, 3, 257, 1, 0, 128, 17}) {
+		vector<Box> values;
+		for (int i = 0; i < n; ++i) values.emplace_back(1);
+		boxes.build(values);
+		assert(boxes.size() == n);
+		if (n) assert(boxes.all_prod().value == n);
+		text.build(vector<string>(n, "a"));
+		if (n) assert(text.prod(0, n) == string(n, 'a'));
+	}
 }

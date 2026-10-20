@@ -1,0 +1,15 @@
+g++: standalone math/fraction.hpp
+g++: fraction.cpp
+g++: matrix.cpp
+g++: stern_brocot_tree.cpp
+clang++: standalone math/fraction.hpp
+clang++: fraction.cpp
+clang++: matrix.cpp
+clang++: stern_brocot_tree.cpp
+Verification passed
+clang++: fraction.cpp
+clang++: matrix.cpp
+clang++: stern_brocot_tree.cpp
+Verification passed
+Generated documentation for 1 library and judge sources
+Checked documentation for 180 libraries; compiled 1 affected bundles

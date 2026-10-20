@@ -1,0 +1,279 @@
+{
+  "created_at": "2026-10-20T12:16:51.404778+00:00",
+  "selection": {
+    "headers": [
+      "components/static_range_min.hpp",
+      "components/suffix_range.hpp",
+      "data_structure/range_query/disjoint_sparse_table.hpp",
+      "data_structure/range_query/sparse_table.hpp",
+      "data_structure/segment_tree/dynamic_segtree.hpp",
+      "data_structure/weighted_union_find.hpp",
+      "math/fraction.hpp",
+      "string/dynamic_pattern_matching.hpp",
+      "string/suffix_tree.hpp",
+      "tree/lca.hpp",
+      "tree/permutation_tree.hpp",
+      "tree/rerooting.hpp"
+    ],
+    "unit": [
+      "test/unit/auxiliary_tree.cpp",
+      "test/unit/disjoint_sparse_table.cpp",
+      "test/unit/dynamic_pattern_matching.cpp",
+      "test/unit/dynamic_segtree.cpp",
+      "test/unit/fraction.cpp",
+      "test/unit/lca.cpp",
+      "test/unit/matrix.cpp",
+      "test/unit/permutation_tree.cpp",
+      "test/unit/rerooting.cpp",
+      "test/unit/rolling_hash_monoid.cpp",
+      "test/unit/sparse_table.cpp",
+      "test/unit/standalone.cpp",
+      "test/unit/static_range_min.cpp",
+      "test/unit/stern_brocot_tree.cpp",
+      "test/unit/suffix_tree.cpp",
+      "test/unit/weighted_union_find.cpp"
+    ],
+    "verification": [
+      "test/auxiliary_tree.test.cpp",
+      "test/disjoint_sparse_table_affine.test.cpp",
+      "test/disjoint_sparse_table_min.test.cpp",
+      "test/dynamic_pattern_matching_array.test.cpp",
+      "test/dynamic_segtree_composite.test.cpp",
+      "test/dynamic_segtree_sum.test.cpp",
+      "test/hld_path_composite.test.cpp",
+      "test/hld_path_sum.test.cpp",
+      "test/hld_subtree_sum.test.cpp",
+      "test/lowest_common_ancestor.test.cpp",
+      "test/permutation_tree.test.cpp",
+      "test/rerooting.test.cpp",
+      "test/rerooting_diameter.test.cpp",
+      "test/sparse_table_min.test.cpp",
+      "test/suffix_tree_array.test.cpp",
+      "test/suffix_tree_substrings.test.cpp",
+      "test/weighted_union_find.test.cpp"
+    ],
+    "sanitize": [
+      "test/unit/auxiliary_tree.cpp",
+      "test/unit/disjoint_sparse_table.cpp",
+      "test/unit/dynamic_pattern_matching.cpp",
+      "test/unit/dynamic_segtree.cpp",
+      "test/unit/fraction.cpp",
+      "test/unit/lca.cpp",
+      "test/unit/matrix.cpp",
+      "test/unit/permutation_tree.cpp",
+      "test/unit/rerooting.cpp",
+      "test/unit/rolling_hash_monoid.cpp",
+      "test/unit/sparse_table.cpp",
+      "test/unit/standalone.cpp",
+      "test/unit/static_range_min.cpp",
+      "test/unit/stern_brocot_tree.cpp",
+      "test/unit/suffix_tree.cpp",
+      "test/unit/weighted_union_find.cpp"
+    ],
+    "bundles": [
+      "components/static_range_min.hpp",
+      "components/suffix_range.hpp",
+      "data_structure/range_query/disjoint_sparse_table.hpp",
+      "data_structure/range_query/sparse_table.hpp",
+      "data_structure/segment_tree/dynamic_segtree.hpp",
+      "data_structure/weighted_union_find.hpp",
+      "math/fraction.hpp",
+      "string/dynamic_pattern_matching.hpp",
+      "string/suffix_tree.hpp",
+      "tree/lca.hpp",
+      "tree/permutation_tree.hpp",
+      "tree/rerooting.hpp"
+    ]
+  },
+  "unit": "GCC and Clang; all 16 affected units",
+  "sanitize": "Clang ASan and UBSan; all 16 affected units",
+  "judge": "all 17 selected drivers; configured GCC and Clang environments",
+  "documentation": "all 180 metadata; 12 affected header bundles and 17 judge bundles compiled",
+  "source_sha256": {
+    "components/static_range_min.hpp": "c074a549c240e1f2731e6e30b3be761b362dcdcd0201164e4e48f6dea0fe60c8",
+    "components/suffix_range.hpp": "a91b7c52c957b919828e9b491634e9af58696502f564693a8878c2ac01528fee",
+    "data_structure/range_query/disjoint_sparse_table.hpp": "dfe3c1cb1f333f54a3cfb797a8d8a6ce7fa77a5d668f74b290780521cdbfe93b",
+    "data_structure/range_query/sparse_table.hpp": "cbbedab6d22585168650776581639712c05ee015b94d892be87858d175172152",
+    "data_structure/segment_tree/dynamic_segtree.hpp": "b349a9d27578723536cc1909d645505a4023db9e99259fc90fcfee8386d079e3",
+    "data_structure/weighted_union_find.hpp": "a4d2770f9713316669b225e1a6dd5260397f6bc5074b1fce2973577f9a3a0f50",
+    "tree/lca.hpp": "a35851bfb3825d3f3134ee17a3f3947df6828ef530dad4651ea8e2940474bdaa",
+    "tree/permutation_tree.hpp": "04f3830f523a90457a6f1a908f598ce8df4801e5bdeb85266468a6ad6ffcfec1",
+    "tree/rerooting.hpp": "e9f043ff7f3ae65e0ecdba900730199576222d2687a66b7ddfd2bbf6c2d592e4",
+    "string/dynamic_pattern_matching.hpp": "40df68aa5161a34b1f8361ee5df626212514cdc2ae4c8bbe6afe0f2725fe6a9d",
+    "string/suffix_tree.hpp": "4b1afd4e23ec3c5e7261f610abd95d5fa598c6635746221997472f2efc41bdbd",
+    "test/unit/auxiliary_tree.cpp": "2eb3f427c669e6dbaf701bf3612b2f70041559ffa1ae1153215d45983ec625a6",
+    "test/unit/disjoint_sparse_table.cpp": "87319d3d501afce95176aaaba319128ebbbf99f594a212acece354da8cf831e8",
+    "test/unit/dynamic_pattern_matching.cpp": "4d4074d13d4aba5daf94d15dcd59f33840d323c4f2a254d897a7c68a03bf055c",
+    "test/unit/dynamic_segtree.cpp": "37c6c9c48915c38330aee188721063dfa8f4877fe14003d4919885058cf15004",
+    "test/unit/lca.cpp": "222456e99e3116d11cbda6aae2d43df99a9ac42962c30eb6239c92d211b8fc12",
+    "test/unit/permutation_tree.cpp": "b4b807154205e39747ae71c76d7d31b8cc674c0b0d3ae0098a551054dd9ebf61",
+    "test/unit/rerooting.cpp": "1f9367cd4473796b434ba160047203f4c165d36766a9820cb9570d7d0dd8c5e9",
+    "test/unit/rolling_hash_monoid.cpp": "3294461c7c02d51af6e280f5784f8b8abb032b09b8ad770bd6fb86cfc2ed171c",
+    "test/unit/sparse_table.cpp": "c55cc61a4ea2e9b2340c0b630268ae3ee5b61c92660664b3a52455c4d12f0e1a",
+    "test/unit/standalone.cpp": "2bc3e07cd6ffa21f6f16dd7e020b0f09970b6c09b8f62e00b7e38c8074cbf564",
+    "test/unit/static_range_min.cpp": "5ff1ce47aa9631f8d8e83ce10d30dee8da2d50841b33cd86cd7a5653e8abafd2",
+    "test/unit/suffix_tree.cpp": "9623e9eab8fe661262ee2633f21589c15c87bbc1eda6faa42a65c6b77de51c30",
+    "test/unit/weighted_union_find.cpp": "a18f8b3df69efe86d355fee0214cbc1594a0a4b1eb4ef6da77eb7d9bf687d240",
+    "test/auxiliary_tree.test.cpp": "8b24387e538f01f72b73b34372977dd8bce423bc72eae74b60f83c14db95cda7",
+    "test/disjoint_sparse_table_affine.test.cpp": "7095df94c11945be27309d4ffbbcf08c66d7e38e01d096965ef36bd1aab516d1",
+    "test/disjoint_sparse_table_min.test.cpp": "823eb50d735bb86bd1273851fb2324cb568fd0973a14c0e396190b860eb0a743",
+    "test/dynamic_pattern_matching_array.test.cpp": "e8eb53a9dbcf299561c5b19773452d3f8d752515957cae2ad12436637d2731a4",
+    "test/dynamic_segtree_composite.test.cpp": "0c18b43350e62fb338238dc2460520e358809d10020128338126e67c5d422d9f",
+    "test/dynamic_segtree_sum.test.cpp": "e9044dd85846badaf5383c6f3d855439255e0658003b2306021bd3ab03c17dba",
+    "test/hld_path_composite.test.cpp": "2b67d3f71f3be2c1f5cb7a2d79582dbb2ad7813346806c0f062d9ced3d780634",
+    "test/hld_path_sum.test.cpp": "368a1c1dc7ce50254390c7c4a2581d4c5060e133193841ded234a0f500b7917f",
+    "test/hld_subtree_sum.test.cpp": "b3bd03b89d0344f8bc0263c0c5cd156865a28e96e14607b1dc762922e321903d",
+    "test/lowest_common_ancestor.test.cpp": "74811d8dee94f1b89efbebd33ef0643fd7b901c1df55e064ea7ccd3fff228a99",
+    "test/permutation_tree.test.cpp": "e169ffd43889ea84f6f61abba68ee435b3fae885f5250238b741eeb67236db17",
+    "test/rerooting.test.cpp": "133d852596e698467eacf2ba9d8a8d7c27f7676b3b10d699b37fc930a64f2b5a",
+    "test/rerooting_diameter.test.cpp": "d6285ad1d59b52241cca963bab3e417bfa3612dd781ad64120042297e05ed6e0",
+    "test/sparse_table_min.test.cpp": "53754f548922bb213ad86fe22854680f5f68bfbffce945947b9c9f2422a0712c",
+    "test/suffix_tree_array.test.cpp": "836ec60d661f0a4fc8c41fc51b0962c7d11ab3befe9cbe409865c5bf46552aac",
+    "test/suffix_tree_substrings.test.cpp": "f9958dbd2cbd27d764dcca5bc89b3ca657dc54f80e79d3f7fec43f09fd3f485c",
+    "test/weighted_union_find.test.cpp": "87f32a6038e69c7973d60be42d6caa49d5b2f4af59b3b35fbbed385d953422b3",
+    "math/fraction.hpp": "590af17b2404a567c84b8c2adf68d09dd960f93618e6c3c35fdc349c199595a0",
+    "test/unit/fraction.cpp": "d32666ae4ef9bc80c31a36d299a4dee79f4b6a686b2b83c48d59cc5c61720256",
+    "test/unit/matrix.cpp": "fcbaa6a205b4468c444af87d3683a7feb1af2274eb045604534efc8f2f918f1a",
+    "test/unit/stern_brocot_tree.cpp": "6d472876938e5fb6ef2b81ab58c69e2097220b005ead5a4420580cb87a6733e9"
+  },
+  "fraction": "GCC and Clang; ASan and UBSan; fraction, matrix, Stern-Brocot Tree; docs bundle",
+  "judge_cases": {
+    "test/auxiliary_tree.test.cpp": {
+      "problem": "lca",
+      "cases": 25,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/disjoint_sparse_table_affine.test.cpp": {
+      "problem": "queue_operate_all_composite",
+      "cases": 19,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/disjoint_sparse_table_min.test.cpp": {
+      "problem": "staticrmq",
+      "cases": 27,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/dynamic_pattern_matching_array.test.cpp": {
+      "problem": "suffixarray",
+      "cases": 50,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/dynamic_segtree_composite.test.cpp": {
+      "problem": "point_set_range_composite",
+      "cases": 16,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/dynamic_segtree_sum.test.cpp": {
+      "problem": "point_add_range_sum",
+      "cases": 21,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/hld_path_composite.test.cpp": {
+      "problem": "vertex_set_path_composite",
+      "cases": 20,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/hld_path_sum.test.cpp": {
+      "problem": "vertex_add_path_sum",
+      "cases": 19,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/hld_subtree_sum.test.cpp": {
+      "problem": "vertex_add_subtree_sum",
+      "cases": 16,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/lowest_common_ancestor.test.cpp": {
+      "problem": "lca",
+      "cases": 25,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/permutation_tree.test.cpp": {
+      "problem": "common_interval_decomposition_tree",
+      "cases": 30,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/rerooting.test.cpp": {
+      "problem": "tree_path_composite_sum",
+      "cases": 16,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/rerooting_diameter.test.cpp": {
+      "problem": "tree_diameter",
+      "cases": 16,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/sparse_table_min.test.cpp": {
+      "problem": "staticrmq",
+      "cases": 27,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/suffix_tree_array.test.cpp": {
+      "problem": "suffixarray",
+      "cases": 50,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/suffix_tree_substrings.test.cpp": {
+      "problem": "number_of_substrings",
+      "cases": 24,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    },
+    "test/weighted_union_find.test.cpp": {
+      "problem": "unionfind_with_potential",
+      "cases": 18,
+      "compilers": [
+        "g++",
+        "clang++"
+      ]
+    }
+  },
+  "official_generator_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae"
+}
