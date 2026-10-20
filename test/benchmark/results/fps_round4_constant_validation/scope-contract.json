@@ -1,0 +1,21 @@
+{
+  "core_counts": {
+    "bundles": 0,
+    "headers": 4,
+    "sanitize": 2,
+    "unit": 2,
+    "verification": 0
+  },
+  "full_counts": {
+    "bundles": 21,
+    "headers": 21,
+    "sanitize": 28,
+    "unit": 28,
+    "verification": 24
+  },
+  "previous_audit_sha256": "8e8865105d4ef0cc62a9eaac8d125a034721d62640fcadcf474a4551c90f40c2",
+  "previous_result_sha256": "2771186c451fdaafa1eb7e54d2492c587124d7a8505372c8fedce261d1ced3a3",
+  "scope_reason": "New constant helper, both public gateways, and direct plus FPS integration tests; the previous complete frozen snapshot is preserved separately.",
+  "selection_core_sha256": "fa1d5bff93d6a721f3c59e2ae62e7f811c82c7926014e2a607017d2067e353a0",
+  "selection_full_sha256": "85e3ddd751ae5d2bc587773e760d348a46856ae1a7a7974d33a490f5254c60fd"
+}

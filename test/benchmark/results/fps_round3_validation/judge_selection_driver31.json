@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/matrix_characteristic_polynomial.test.cpp"
+  ]
+}

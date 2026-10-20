@@ -10,7 +10,7 @@ std::vector<long long> a{3, 1, 0, 3}, b{5, 1, 3, 3, 2};
 auto c = min_plus_convolution_convex(a, b); // {8,4,2,1,3,3,2,5}
 ```
 
-min-plus は $$\min_{i+j=k}(a_i+b_j)$$、max-plus は $$\max_{i+j=k}(a_i+b_j)$$ を計算します。
+min-plus は $$\displaystyle \min_{i+j=k}(a_i+b_j)$$、max-plus は $$\displaystyle \max_{i+j=k}(a_i+b_j)$$ を計算します。
 
 | 関数 | $$a$$ の条件 | 時間計算量 |
 | --- | --- | --- |

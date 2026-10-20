@@ -1,0 +1,8 @@
+test/lazy_reversible_treap_affine.test.cpp 33 passed
+dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/lazy_reversible_treap_affine.test.cpp
+lazy_reversible_treap_affine.test.o: \
+ /workspace/cp-library/test/lazy_reversible_treap_affine.test.cpp \
+ /workspace/cp-library/test/../data_structure/lazy_reversible_treap.hpp \
+ /workspace/cp-library/test/../data_structure/../components/splitmix64.hpp \
+ /workspace/cp-library/test/../components/fast_io.hpp \
+ /workspace/cp-library/test/../math/mint.hpp

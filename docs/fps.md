@@ -13,6 +13,19 @@ fps inverse = f.inv(10);
 
 mod は 998244353、係数は定数項から順に格納します。`fps` は `std::vector<mint>` と同様に扱えます。`deg` は返す係数の個数で、省略時は元のサイズです。
 
+提出用ソースは通常どおり `oj-bundle` で生成できます。合成などの追加機能は、必要なヘッダーだけを include してください。AtCoder の 512 KiB 制限は利用者のコードも含むため、結合後のファイルサイズを確認してください。FPS 内部では命令文字列を共通化してサイズを削減し、生成する命令は維持しています。
+
+さらに短い提出用ソースが必要な場合は、結合後に [compact_fps.py](https://github.com/qandori/cp-library/blob/main/tools/compact_fps.py) を使えます。
+
+```sh
+oj-bundle -I . a.cpp > bundled.cpp
+python3 tools/compact_fps.py bundled.cpp --limit 262144 -o submit.cpp
+```
+
+`--limit` は UTF-8 のバイト数を指定し、その値以上なら出力前にエラーにします。生成結果は UTF-8 のまま保存してください。繰り返し使う記述を短い内部マクロへまとめ、コンパイル時に元の記述へ展開します。演算、公開 API、実行時の CPU 判定、他環境の fallback は削除しません。asm・文字列・プリプロセッサ条件・元の論理行番号も維持します。通常のヘッダーは読みやすい形のまま利用できます。
+
+線形漸化式の提出例は 248,530 bytes ですが、追加機能や利用者のコードによっては 256 KiB を超えます。[サイズと生成コードの検証](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_compact.md)を参照してください。
+
 `fps{1,2,3}` は $$1+2x+3x^2$$ を表します。係数 `f[i]` は `mint` なので、整数として取り出すには `f[i].val()` を使います。`f.inv(10)` などの 10 は最高次数ではなく返す長さで、$$x^0$$ から $$x^9$$ までを計算します。
 
 `f.pow(k)`・微分・積分・シフトは元の長さで打ち切ります。例えば `fps{1,1}.pow(3)` は `{1,3}` です。4 係数が必要なら `f.resize(4)` としてから `f.pow(3)` を呼びます。一方、通常の積 `f*g` は両入力が非空なら長さ `f.size()+g.size()-1` を返します。

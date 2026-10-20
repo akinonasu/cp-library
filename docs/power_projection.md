@@ -17,7 +17,7 @@ auto b = power_projection(f, 2, 4); // {0, 1, 1, 0}
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `power_projection(f,w,deg = -1)` | $$a_i=\sum_{j=0}^{n-1}w_j[x^j]f(x)^i$$ を $$0\le i<\mathrm{deg}$$ について返す。$$n=\texttt{w.size()}$$。省略時の長さは `w.size()` | f[0]=0: $$O(n\log^2 n+m)$$、その他: $$O(n\log^2 n+m\log m)$$ |
+| `power_projection(f,w,deg = -1)` | $$\displaystyle a_i=\sum_{j=0}^{n-1}w_j[x^j]f(x)^i$$ を $$0\le i<\mathrm{deg}$$ について返す。$$n=\texttt{w.size()}$$。省略時の長さは `w.size()` | f[0]=0: $$O(n\log^2 n+m)$$、その他: $$O(n\log^2 n+m\log m)$$ |
 | `power_projection(f,n,deg = -1)` | $$a_i=[x^n]f(x)^i$$ を返す。$$n\ge0$$。省略時の長さは `n + 1` | f[0]=0: $$O(n\log^2 n+m)$$、その他: $$O(n\log^2 n+m\log m)$$ |
 
 `deg` は返す要素数です。0 なら空列、空の重みなら零列を返します。空の `f` は零多項式として扱い、$$f(x)^0=1$$ とします。重み付き版の `w.size()`、係数版の `n + 1` は $$2^{21}$$ 以下、`deg` は $$2^{22}$$ 以下とします。

@@ -75,3 +75,25 @@ python3 test/benchmark/interval_set_judge.py --cache .verify-helper/cache/interv
 ```
 
 `--cases-dir` には `oj-verify` が取得した Predecessor Problem の `test/` を指定してください。
+
+## 128 bit・多倍長整数対応
+
+2026-10-19 に座標型と要素数の型を拡張しました。区間を管理するアルゴリズムは上記の実装を維持しています。Boost への依存をヘッダーに追加せず、`std::numeric_limits` で整数型と上限の有無を判定します。要素数を `Size` で保持し、式テンプレートの計算結果も値として確定させます。
+
+- 64 bit 以下の組み込み整数は、要素数の型と API を維持。
+- 符号付き・符号なし 128 bit の全端点範囲と、要素数 $$2^{128}-1$$ を検証。
+- Boost の `int256_t`・`uint256_t`・checked 型・`cpp_int` を検証。固定幅の符号付き座標の全範囲には `Size = cpp_int` を指定。
+- 128 / 256 bit 型の大きな座標と、`cpp_int` の正負の 1024 bit 座標付近で、各設定 2,500 回の区間・単点更新を配列と比較。所属・包含・交差・要素数・前後要素・mex・全区間・コピー・移動・交換・再構築を確認。
+- 256 bit 型の大きな要素数と、正負の 4096 bit 座標にまたがる区間の追加・分割・再結合を検証。
+- GCC 15.2 / Clang 21.1.8、`-std=c++2b -O2 -Wall -Wextra` で単体テストと既存ヘッダーとの同時 include を確認。Clang の ASan / UBSan も通過。
+- 両コンパイラで Predecessor Problem の公式 22 ケースが正答。ドキュメントの API 表・対応ヘッダー・Bundle と、Boost をヘッダーの前後に include する使い方も確認。
+
+検証環境は WSL2 / Linux x86_64 です。macOS 実機はローカルでは未検証で、macOS CI の対象です。今回の拡張では速度を測定しておらず、多倍長整数の速度や、上記の過去の測定値からの変化は主張しません。
+
+記録は `results/interval_set_wide_check.log`・`results/interval_set_wide_sanitize.log`・`results/interval_set_wide_extra.log`・`results/interval_set_wide_validation.json` にあります。再現には Boost ヘッダーとテスト用 Python 依存を用意してください。
+
+```sh
+python3 test/verify.py --unit-only --cxx g++ clang++ --selection test/benchmark/results/interval_set_wide_selection.json
+python3 test/verify.py --unit-only --cxx clang++ --sanitize --selection test/benchmark/results/interval_set_wide_selection.json
+python3 test/benchmark/interval_set_wide_check.py --cases-dir .verify-helper/cache/857afc16bc9bf8d936851d86478706ec/test
+```

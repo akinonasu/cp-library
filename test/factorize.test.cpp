@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/factorize"
-#include "../math/factorize.hpp"
+#include "../math/number_theory/factorize.hpp"
 #include <cstdint>
 #include <iostream>
 #include <tuple>

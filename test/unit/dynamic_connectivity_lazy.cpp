@@ -1,4 +1,4 @@
-#include "data_structure/dynamic_connectivity.hpp"
+#include "graph/connectivity/dynamic_connectivity.hpp"
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>

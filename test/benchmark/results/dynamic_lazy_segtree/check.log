@@ -1,0 +1,10 @@
+g++: standalone data_structure/segment_tree/dynamic_lazy_segtree.hpp
+g++: dynamic_lazy_segtree.cpp
+g++: standalone.cpp
+clang++: standalone data_structure/segment_tree/dynamic_lazy_segtree.hpp
+clang++: dynamic_lazy_segtree.cpp
+clang++: standalone.cpp
+Verification passed
+g++: dynamic_lazy_segtree.cpp
+clang++: dynamic_lazy_segtree.cpp
+Verification passed

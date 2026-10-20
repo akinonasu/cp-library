@@ -1,4 +1,4 @@
-#include "math/prime_sieve.hpp"
+#include "math/number_theory/prime_sieve.hpp"
 #include <algorithm>
 #include <chrono>
 #include <cstddef>

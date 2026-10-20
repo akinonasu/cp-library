@@ -86,7 +86,7 @@ def main():
               'input_transport': 'regular file for every program',
               'sources': {name: digest(source) for name, (source, _) in programs.items()},
               'headers': {name: digest(ROOT / name) for name in
-                          ['graph/two_edge_connected_components.hpp', 'graph/low_link.hpp', 'components/undirected_csr.hpp',
+                          ['graph/connectivity/two_edge_connected_components.hpp', 'graph/connectivity/low_link.hpp', 'components/undirected_csr.hpp',
                            'components/default_init_allocator.hpp', 'components/fast_io.hpp',
                            'test/benchmark/two_edge_connected_components_baseline.hpp']},
               'workloads': {}}

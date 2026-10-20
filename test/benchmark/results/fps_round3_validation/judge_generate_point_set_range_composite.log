@@ -1,0 +1,34 @@
+/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py:566: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  logger.warn('Please install colorlog: pip3 install colorlog')
+04:19:00 [WARNING] Please install colorlog: pip3 install colorlog
+04:19:00 [INFO] Start point_set_range_composite
+04:19:00 [INFO] generate params.h
+04:19:00 [INFO] compile checker
+04:19:04 [INFO] compile solution
+04:19:04 [INFO] compile generators
+04:19:04 [INFO] compile example.in
+04:19:04 [INFO] compile random.cpp
+04:19:05 [INFO] compile max_random.cpp
+04:19:05 [INFO] compile small.cpp
+04:19:06 [INFO] clear input /workspace/cp-fps-scratch-round3/library-checker-problems/data_structure/point_set_range_composite/in
+04:19:06 [INFO] gen example.in 1cases
+04:19:06 [INFO] gen random.cpp 5cases
+04:19:06 [INFO] gen max_random.cpp 5cases
+04:19:07 [INFO] gen small.cpp 5cases
+04:19:07 [INFO] clear output /workspace/cp-fps-scratch-round3/library-checker-problems/data_structure/point_set_range_composite/out
+04:19:07 [INFO] ANS      1 msecs : example_00 : b''
+04:19:07 [INFO] ANS    295 msecs : random_00 : b''
+04:19:07 [INFO] ANS    299 msecs : random_01 : b''
+04:19:07 [INFO] ANS    127 msecs : random_02 : b''
+04:19:08 [INFO] ANS    154 msecs : random_03 : b''
+04:19:08 [INFO] ANS     76 msecs : random_04 : b''
+04:19:08 [INFO] ANS    414 msecs : max_random_00 : b''
+04:19:08 [INFO] ANS    330 msecs : max_random_01 : b''
+04:19:09 [INFO] ANS    302 msecs : max_random_02 : b''
+04:19:09 [INFO] ANS    309 msecs : max_random_03 : b''
+04:19:09 [INFO] ANS    288 msecs : max_random_04 : b''
+04:19:09 [INFO] ANS      2 msecs : small_00 : b''
+04:19:09 [INFO] ANS      2 msecs : small_01 : b''
+04:19:09 [INFO] ANS      1 msecs : small_02 : b''
+04:19:09 [INFO] ANS      1 msecs : small_03 : b''
+04:19:09 [INFO] ANS      1 msecs : small_04 : b''

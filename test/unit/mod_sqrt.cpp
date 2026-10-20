@@ -1,5 +1,5 @@
-#include "math/mod_sqrt.hpp"
-#include "math/is_prime.hpp"
+#include "math/number_theory/mod_sqrt.hpp"
+#include "math/number_theory/is_prime.hpp"
 #include <cassert>
 #include <cstdint>
 #include <limits>

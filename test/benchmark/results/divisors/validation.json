@@ -1,0 +1,37 @@
+{
+  "result": "passed",
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)\nTarget: x86_64-conda-linux-gnu\nThread model: posix\nInstalledDir: /var/tmp/cp-audit-tools/env/bin\nConfiguration file: /var/tmp/cp-audit-tools/env/bin/x86_64-conda-linux-gnu-clang++.cfg\n"
+  },
+  "selection": {
+    "headers": [
+      "math/number_theory/discrete_log.hpp",
+      "math/number_theory/factorize.hpp",
+      "convolution/multiplicative_convolution.hpp"
+    ],
+    "unit": [
+      "test/unit/convolution.cpp",
+      "test/unit/discrete_log.cpp",
+      "test/unit/divisors.cpp",
+      "test/unit/factorize.cpp",
+      "test/unit/primality_arithmetic.cpp",
+      "test/unit/standalone.cpp"
+    ],
+    "sanitize": [
+      "test/unit/divisors.cpp"
+    ]
+  },
+  "judge_bundles": [
+    "test/discrete_log.test.cpp",
+    "test/factorize.test.cpp",
+    "test/multiplicative_convolution.test.cpp"
+  ],
+  "docs": "compiled and executed with both compilers",
+  "sources": {
+    "math/number_theory/factorize.hpp": "bd2c6fe3b131f84611bc401576da1a9a370b9d5f99a7f0989d4106a624cf9ab0",
+    "docs/factorize.md": "eeb065b16ef8dedc4c21bf360474f6c1fcc83d6029b484da98cd2e29ba48167f",
+    "test/unit/divisors.cpp": "4f5acfcc3139feba0328bbfd1962312b5f94aae0b43a7822d6838145773629e5",
+    "test/unit/standalone.cpp": "55e78c799fec943c6b568a4486c0589f862cd51e1b7186761d66d656dd0fa9b1"
+  }
+}

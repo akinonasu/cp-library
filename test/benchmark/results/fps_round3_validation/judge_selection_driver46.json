@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/point_set_tree_path_composite_sum.test.cpp"
+  ]
+}

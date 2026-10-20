@@ -1,0 +1,23 @@
+built convolution_mod_base
+built convolution_mod_late2
+built convolution_mod_reference
+built inv_of_formal_power_series_base
+built inv_of_formal_power_series_late2
+built inv_of_formal_power_series_reference
+built sqrt_of_formal_power_series_base
+built sqrt_of_formal_power_series_late2
+built sqrt_of_formal_power_series_reference
+waiting EX
+EX acquired
+convolution_mod max_random_00 {'base': 14.722098, 'late2': 14.741326, 'reference': 11.512404}
+convolution_mod max_random_01 {'base': 14.63608, 'late2': 14.784631, 'reference': 10.908293}
+inv_of_formal_power_series max_random_00 {'base': 12.399215, 'late2': 12.507376, 'reference': 10.81319}
+inv_of_formal_power_series max_random_01 {'base': 12.774254, 'late2': 12.531583, 'reference': 10.961811}
+Traceback (most recent call last):
+  File "/workspace/cp-library/test/benchmark/fps_ntt_round3.py", line 142, in <module>
+    main()
+  File "/workspace/cp-library/test/benchmark/fps_ntt_round3.py", line 120, in main
+    subprocess.run([str(args.work / (problem + '_' + v))], stdin=fin, stdout=fout, check=True)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/tmp/fps-avx512-top/official_compare/sqrt_of_formal_power_series_reference']' died with <Signals.SIGABRT: 6>.

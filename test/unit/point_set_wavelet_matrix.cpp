@@ -1,4 +1,4 @@
-#include "data_structure/point_set_wavelet_matrix.hpp"
+#include "data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp"
 #include <cstdlib>
 #include <cstdio>
 #include <random>

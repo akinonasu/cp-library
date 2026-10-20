@@ -1,0 +1,2 @@
+small_and_large_00 {'before': 10.932, 'reference': 9.497, 'overlap_256': 7.908, 'overlap_512': 7.274, 'overlap_1024': 7.338, 'overlap_2048': 7.515, 'overlap_4096': 7.371, 'overlap_8192': 7.942, 'overlap_16384': 7.613}
+small_and_large_01 {'before': 11.383, 'reference': 9.265, 'overlap_1024': 44.075, 'overlap_2048': 8.503, 'overlap_4096': 7.76, 'overlap_8192': 7.896, 'overlap_16384': 8.034}

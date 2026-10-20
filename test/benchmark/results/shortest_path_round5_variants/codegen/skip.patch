@@ -1,0 +1,22 @@
+--- a/components/directed_csr.hpp
++++ b/components/directed_csr.hpp
+@@ -50,10 +50,15 @@
+ 			for (const auto &edge : edges) arcs_[edge.from - (single_gap_ >= 0 && edge.from > single_gap_)] = {edge.to, edge.weight};
+ 			return;
+ 		}
+-		std::size_t active = offset_[0] != 0;
+-		for (std::size_t v = 1; v < offset_.size(); ++v) {
+-			active += offset_[v] != 0;
+-			offset_[v] += offset_[v - 1];
++		std::size_t active = 0;
++		if (n >= 8192) {
++			active = offset_[0] != 0;
++			for (std::size_t v = 1; v < offset_.size(); ++v) {
++				active += offset_[v] != 0;
++				offset_[v] += offset_[v - 1];
++			}
++		} else {
++			for (std::size_t v = 1; v < offset_.size(); ++v) offset_[v] += offset_[v - 1];
+ 		}
+ 		arcs_.resize(edges.size());
+ 		std::size_t i = edges.size();

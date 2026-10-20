@@ -1,0 +1,94 @@
+{
+  "retrieved_at": "2026-10-19T11:41:52.995197+00:00",
+  "listing": {
+    "count": 581,
+    "submissions": [
+      {
+        "id": 372659,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 9306112,
+        "problem_name": "longest_increasing_subsequence",
+        "problem_title": "Longest Increasing Subsequence",
+        "status": "AC",
+        "submission_time": "2026-05-15T11:59:09.848266Z",
+        "time": 0.01,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 372657,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 9682944,
+        "problem_name": "longest_increasing_subsequence",
+        "problem_title": "Longest Increasing Subsequence",
+        "status": "AC",
+        "submission_time": "2026-05-15T11:53:28.484538Z",
+        "time": 0.01,
+        "user_name": "IceKylin"
+      },
+      {
+        "id": 238857,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 8863744,
+        "problem_name": "longest_increasing_subsequence",
+        "problem_title": "Longest Increasing Subsequence",
+        "status": "AC",
+        "submission_time": "2024-09-30T09:04:12.076835Z",
+        "time": 0.01,
+        "user_name": "sortA0329"
+      }
+    ]
+  },
+  "references": [
+    {
+      "overview": {
+        "id": 372659,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 9306112,
+        "problem_name": "longest_increasing_subsequence",
+        "problem_title": "Longest Increasing Subsequence",
+        "status": "AC",
+        "submission_time": "2026-05-15T11:59:09.848266Z",
+        "time": 0.01,
+        "user_name": "IceKylin"
+      },
+      "sha256": "590a1b036d1c1179dc540c1b59ab9eeb99f1c20227abeb188217da77d26fa371",
+      "url": "https://judge.yosupo.jp/submission/372659"
+    },
+    {
+      "overview": {
+        "id": 372657,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 9682944,
+        "problem_name": "longest_increasing_subsequence",
+        "problem_title": "Longest Increasing Subsequence",
+        "status": "AC",
+        "submission_time": "2026-05-15T11:53:28.484538Z",
+        "time": 0.01,
+        "user_name": "IceKylin"
+      },
+      "sha256": "472ac621816b07967ac124b18727e5e636f3712b223af9476bac30bf64300245",
+      "url": "https://judge.yosupo.jp/submission/372657"
+    },
+    {
+      "overview": {
+        "id": 238857,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 8863744,
+        "problem_name": "longest_increasing_subsequence",
+        "problem_title": "Longest Increasing Subsequence",
+        "status": "AC",
+        "submission_time": "2024-09-30T09:04:12.076835Z",
+        "time": 0.01,
+        "user_name": "sortA0329"
+      },
+      "sha256": "6f9887e963c319bce93c7a8d95684a5ff1f4fccfa69ca6455778808e4fb8a161",
+      "url": "https://judge.yosupo.jp/submission/238857"
+    }
+  ]
+}

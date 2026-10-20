@@ -57,6 +57,27 @@ def environment_key():
             for group in GROUPS}
 
 
+def boost_identity():
+    if platform.system() != "Linux":
+        return None
+    try:
+        def package(name):
+            row = subprocess.check_output(
+                ["dpkg-query", "-W", "-f=${db:Status-Status}\t${Version}\t${Depends}", name],
+                text=True, stderr=subprocess.DEVNULL, timeout=10).split("\t")
+            if len(row) != 3 or row[0] != "installed" or not row[1]:
+                raise ValueError("Missing Boost package")
+            return row
+        meta = package("libboost-dev")
+        headers = re.findall(r"(?:^|,)\s*(libboost[0-9.]+-dev)\s*(?:\([^)]*\))?\s*(?=,|$)", meta[2])
+        if len(headers) != 1:
+            return None
+        resolved = package(headers[0])
+        return [("libboost-dev", meta[1]), (headers[0], resolved[1])]
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None
+
+
 def workflow_checks(root):
     checks = {group: [] for group in GROUPS}
     files = sorted((root / ".github/workflows").glob("*.y*ml"))
@@ -92,7 +113,7 @@ def build_plan(root, previous=None, *, environment, force=False):
     root = root.resolve()
     targets = {
         "headers": sorted(path.relative_to(root).as_posix()
-                          for folder in ("components", "convolution", "fps", "data_structure", "graph", "math", "string")
+                          for folder in ("components", "convolution", "fps", "data_structure", "graph", "tree", "math", "string")
                           for path in (root / folder).rglob("*.hpp")),
         "unit": sorted(path.relative_to(root).as_posix() for path in (root / "test/unit").rglob("*.cpp")),
         "verification": sorted(path.relative_to(root).as_posix() for path in (root / "test").rglob("*.test.cpp")),
@@ -102,6 +123,8 @@ def build_plan(root, previous=None, *, environment, force=False):
     contents = {}
     dependencies = {}
     uncertain = set()
+    boost_consumers = set()
+    boost = []
 
     def content(name):
         if name not in contents:
@@ -139,13 +162,17 @@ def build_plan(root, previous=None, *, environment, force=False):
                 result.add(dependency)
                 if content(dependency) is not None:
                     break
+            else:
+                if (angled or quoted).startswith("boost/"):
+                    boost_consumers.add(name)
         return result
 
     settings = {
         "headers": ("test/verify.py",),
         "unit": ("test/verify.py",),
         "sanitize": ("test/verify.py",),
-        "verification": (".verify-helper/config.toml", "test/requirements.txt"),
+        "verification": (".verify-helper/config.toml", "test/requirements.txt",
+                         ".verify-helper/ci.py", ".verify-helper/verification.py", ".verify-helper/judge_data.py"),
         "bundles": (".verify-helper/check-docs.py", ".verify-helper/documentation.py", ".verify-helper/verification.py",
                     ".verify-helper/config.toml", "test/requirements.txt"),
     }
@@ -166,7 +193,14 @@ def build_plan(root, previous=None, *, environment, force=False):
                     pending.extend(includes(path) - visited)
             inputs = [(path, digest(content(path)) if content(path) is not None else None)
                       for path in sorted(visited)]
-            fingerprints[group][name] = digest(json.dumps([context, configuration, commands[group], inputs]).encode())
+            fingerprint = [context, configuration, commands[group], inputs]
+            if visited & boost_consumers:
+                if not boost:
+                    boost.append(boost_identity())
+                fingerprint.append({"boost": boost[0]})
+                if boost[0] is None:
+                    uncacheable[group].add(name)
+            fingerprints[group][name] = digest(json.dumps(fingerprint).encode())
             if visited & uncertain:
                 uncacheable[group].add(name)
     valid = cached_targets(previous) is not None

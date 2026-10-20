@@ -84,8 +84,7 @@ GitHub Actions の Ubuntu 24.04、Linux x86_64 / GCC 13.3、`-std=c++23 -O2`。�
 
 ## 小次数の追加候補
 
-[実行 38856366450](https://github.com/qandori/cp-library/actions/runs/38856366450)、ソース `e38042a7aa26b7d9762dfdbecad7543e80624601`、AMD EPYC 7763。`raw` は二次の三角数を $$\lfloor n/2
-floor(n-1+(nmod2))$$ で計算して modint の乗算を 1 回減らす。`one` は $$n=1$$ で再帰を止める。`rawone` は両方を適用する。以下は `-DNDEBUG` の中央値（ms）。
+[実行 38856366450](https://github.com/qandori/cp-library/actions/runs/38856366450)、ソース `e38042a7aa26b7d9762dfdbecad7543e80624601`、AMD EPYC 7763。`raw` は二次の三角数を $$\displaystyle \left\lfloor\frac{n}{2}\right\rfloor(n-1+(n\bmod2))$$ で計算して modint の乗算を 1 回減らす。`one` は $$n=1$$ で再帰を止める。`rawone` は両方を適用する。以下は `-DNDEBUG` の中央値（ms）。
 
 | 入力 | 次数・型 | 調整前 | raw | one | rawone |
 | --- | --- | ---: | ---: | ---: | ---: |
@@ -135,7 +134,7 @@ floor(n-1+(nmod2))$$ で計算して modint の乗算を 1 回減らす。`one`
 
 ## 検証
 
-No.2362 の転倒数を、$$f_{p,q}(n,m,a,b)=\sum_{i<n}i^p\lfloor(ai+b)/m\rfloor^q$$ として次で計算する。
+No.2362 の転倒数を、$$\displaystyle f_{p,q}(n,m,a,b)=\sum_{i<n}i^p\lfloor(ai+b)/m\rfloor^q$$ として次で計算する。
 
 $$2f_{1,1}(n,m,a,b)-(n-1)f_{0,1}(n,m,a,b)+f_{1,1}(n,m,a,0)-nf_{0,1}(n,m,a,0)$$
 
@@ -150,3 +149,5 @@ g++ -std=c++23 -O2 -DNDEBUG -I . -I test/benchmark -I /tmp/floor-variants test/b
 ```
 
 `.github/workflows/generalized-floor-sum-benchmark.yml` でも同じ比較と公式ケース検証を実行できる。`benchmark`・`verify` で測定と検証を個別に切り替えられる。単体検証は `verify_selected.py` から既存の検証スクリプトを呼び出し、測定用ワークフローの追加が通常 CI の既存キャッシュを無効化しないことも確認した。API キーは既存の GitHub Secret `YUKICODER_TOKEN` からのみ渡す。
+
+2026-10-20 に負の係数対応と No.2996 の検証を追加した。変更内容・参考提出・検証・非負入力の測定は [負の係数の資料](generalized_floor_sum_signed.md) を参照。

@@ -1,0 +1,69 @@
+--- a/components/fps_blocked.hpp
++++ b/components/fps_blocked.hpp
+@@ -2829,11 +2829,10 @@
+ }
+ 
+ struct alignas(64) Window {
+-	std::uint32_t word[17];
++	std::uint32_t word[16];
+ };
+ 
+ inline void fill_window(Window& window, Vec a, const Factor& w) {
+-	window.word[16] = 0;
+ 	store(window.word + 8, a);
+ 	store(window.word, reduce(times(a, w), kP));
+ }
+@@ -2843,7 +2842,6 @@
+ 	const Factor y = entry(roots, 2 * g), z = entry(roots, 2 * g + 1);
+ #pragma GCC unroll 4
+ 	for (int t = 0; t < 4; ++t) {
+-		window[t].word[16] = 0;
+ 		store(window[t].word + 8, a[t]);
+ 		const Vec wa = times(a[t], t < 2 ? y : z);
+ 		store(window[t].word, reduce(t % 2 ? _mm256_sub_epi32(broadcast(2 * kP), wa) : wa, kP));
+@@ -2854,8 +2852,10 @@
+ 	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP), p2 = broadcast(2 * kP);
+ 	Vec even, odd, bi, t0, t1, t2, t3;
+ 	asm("vpbroadcastd (%[b]), %[bi]\n\t"
+-		"vpmuludq 36(%[w]), %[bi], %[odd]\n\t"
+-		"vpmuludq 32(%[w]), %[bi], %[even]\n\t"
++		"vmovdqa 32(%[w]), %[even]\n\t"
++		"vpsrlq $32, %[even], %[odd]\n\t"
++		"vpmuludq %[odd], %[bi], %[odd]\n\t"
++		"vpmuludq %[even], %[bi], %[even]\n\t"
+ 		"vpbroadcastd 4(%[b]), %[bi]\n\t"
+ 		"vpmuludq 32(%[w]), %[bi], %[t0]\n\t"
+ 		"vpmuludq 28(%[w]), %[bi], %[t1]\n\t"
+@@ -2905,7 +2905,7 @@
+ 		: [even] "=&x"(even), [odd] "=&x"(odd), [bi] "=&x"(bi), [t0] "=&x"(t0), [t1] "=&x"(t1), [t2] "=&x"(t2),
+ 		[t3] "=&x"(t3)
+ 		: [w] "r"(window.word), [b] "r"(b), [ni] "x"(ni), [p] "x"(p), [p2] "x"(p2),
+-		"m"(*reinterpret_cast<const std::uint32_t(*)[17]>(window.word)),
++		"m"(*reinterpret_cast<const std::uint32_t(*)[16]>(window.word)),
+ 		"m"(*reinterpret_cast<const std::uint32_t(*)[8]>(b)));
+ 	return even;
+ }
+--- a/components/fps_sqrt_blocked.hpp
++++ b/components/fps_sqrt_blocked.hpp
+@@ -49,8 +49,10 @@
+ 	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP), p2 = broadcast(2 * kP);
+ 	Vec even, odd, bi, t0, t1, t2;
+ 	asm("vpbroadcastd 32(%[w]), %[bi]\n\t"
+-		"vpmuludq 36(%[w]), %[bi], %[odd]\n\t"
+-		"vpmuludq 32(%[w]), %[bi], %[even]\n\t"
++		"vmovdqa 32(%[w]), %[even]\n\t"
++		"vpsrlq $32, %[even], %[odd]\n\t"
++		"vpmuludq %[odd], %[bi], %[odd]\n\t"
++		"vpmuludq %[even], %[bi], %[even]\n\t"
+ 		"vpbroadcastd 36(%[w]), %[bi]\n\t"
+ 		"vpmuludq 28(%[w]), %[bi], %[t0]\n\t"
+ 		"vpbroadcastd 40(%[w]), %[bi]\n\t"
+@@ -92,7 +94,7 @@
+ 		"vpminud %[t0], %[even], %[even]"
+ 		: [even] "=&x"(even), [odd] "=&x"(odd), [bi] "=&x"(bi), [t0] "=&x"(t0), [t1] "=&x"(t1), [t2] "=&x"(t2)
+ 		: [w] "r"(window.word), [ni] "x"(ni), [p] "x"(p), [p2] "x"(p2),
+-		"m"(*reinterpret_cast<const std::uint32_t(*)[17]>(window.word)));
++		"m"(*reinterpret_cast<const std::uint32_t(*)[16]>(window.word)));
+ 	return even;
+ }
+ 

@@ -1,0 +1,15 @@
+{
+  "baseline": "f4aa743",
+  "current": "bd29f70",
+  "compiler": "GCC 15.2.0",
+  "flags": ["-std=gnu++23", "-O2", "-DNDEBUG", "-DATCODER", "-DONLINE_JUDGE", "-ftrivial-auto-var-init=zero", "-march=native", "-S", "-fverbose-asm"],
+  "main_stack_sub_bytes": {"old": 704, "current": 704},
+  "bulk_read_blocks_stack_sub_bytes": {"old": 544, "current": 544},
+  "dijkstra_run_stack_sub_bytes": {"old": 3176, "current": 3176},
+  "observations": [
+    "Current producer callback retains a unique_incoming_ flag check inside the emitted records. Deferred incoming validation removes this check but did not explain the reported sparse whole-program regression.",
+    "The current assembly emits RadixHeap<unsigned long, int>::pop_value separately, while the old ordinary Dijkstra run inlines it. The old-queue candidate was slower on the screened sparse case, so reverting it was rejected.",
+    "Input, build, path and run noinline candidates did not provide a stable broad improvement. No noinline or code-alignment change was selected.",
+    "Equal stack-frame sizes do not prove equal register-spill costs. No claim that register allocation caused the earlier regression is made."
+  ]
+}

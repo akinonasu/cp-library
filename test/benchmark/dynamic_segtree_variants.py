@@ -73,17 +73,17 @@ combo_leaf=leaf.replace('\t\tU key;\n\t\tS value, product;\n\t\tstd::uint32_t le
 for name, text in [('combo_branch',combo_branch),('combo_leaf',combo_leaf),('branch',branch),('leaf',leaf),('cover',cover),('layout',layout),('recursive',recursion),('base',source)]:
     text=text.replace('DYNAMIC_SEGTREE_BASE_HPP','DYNAMIC_SEGTREE_'+name.upper()+'_HPP').replace('DynamicSegtreeBase','DynamicSegtree_'+name)
     (out/(name+'.hpp')).write_text(text)
-    unit=(root/'test/unit/dynamic_segtree.cpp').read_text().replace('"data_structure/dynamic_segtree.hpp"',f'"{name}.hpp"').replace('DynamicSegtree','DynamicSegtree_'+name)
+    unit=(root/'test/unit/dynamic_segtree.cpp').read_text().replace('"data_structure/segment_tree/dynamic_segtree.hpp"',f'"{name}.hpp"').replace('DynamicSegtree','DynamicSegtree_'+name)
     (out/(name+'_test.cpp')).write_text(unit)
 
-block_unit=(root/'test/unit/dynamic_segtree.cpp').read_text().replace('"data_structure/dynamic_segtree.hpp"','"test/benchmark/dynamic_segtree_block.hpp"').replace('DynamicSegtree','DynamicSegtreeBlock')
+block_unit=(root/'test/unit/dynamic_segtree.cpp').read_text().replace('"data_structure/segment_tree/dynamic_segtree.hpp"','"test/benchmark/dynamic_segtree_block.hpp"').replace('DynamicSegtree','DynamicSegtreeBlock')
 (out/'block_test.cpp').write_text(block_unit)
 
-unit=(root/'test/unit/dynamic_segtree.cpp').read_text().replace('"data_structure/dynamic_segtree.hpp"','"test/benchmark/dynamic_segtree_block.hpp"').replace('DynamicSegtree','TestTree')
+unit=(root/'test/unit/dynamic_segtree.cpp').read_text().replace('"data_structure/segment_tree/dynamic_segtree.hpp"','"test/benchmark/dynamic_segtree_block.hpp"').replace('DynamicSegtree','TestTree')
 unit=unit.replace('using namespace std;', 'template <class S, auto op, auto e, class Coord = std::int64_t> using TestTree = DynamicSegtreeBlock<S, op, e, Coord, 16, 4, true>;\nusing namespace std;')
 (out/'balanced_test.cpp').write_text(unit)
 
 for cap in [4, 8, 16]:
-    unit=(root/'test/unit/dynamic_segtree.cpp').read_text().replace('"data_structure/dynamic_segtree.hpp"','"test/benchmark/dynamic_segtree_bucket.hpp"').replace('DynamicSegtree','TestTree')
+    unit=(root/'test/unit/dynamic_segtree.cpp').read_text().replace('"data_structure/segment_tree/dynamic_segtree.hpp"','"test/benchmark/dynamic_segtree_bucket.hpp"').replace('DynamicSegtree','TestTree')
     unit=unit.replace('using namespace std;', f'template <class S, auto op, auto e, class Coord = std::int64_t> using TestTree = DynamicSegtreeBucket<S, op, e, Coord, {cap}, true>;\nusing namespace std;')
     (out/f'bucket{cap}_test.cpp').write_text(unit)

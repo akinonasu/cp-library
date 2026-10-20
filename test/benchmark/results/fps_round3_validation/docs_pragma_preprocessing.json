@@ -1,0 +1,55 @@
+{
+  "original": {
+    "file_sha256": "bbe4528ee226bcf0ea90d143f0b5832ef6f69b2162b448ec845d249349bc7be3",
+    "bytes": 1947,
+    "source_lines": 51,
+    "uncommented_lines": 77,
+    "command": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I",
+      "/workspace/cp-library/components",
+      "-E",
+      "-P",
+      "-x",
+      "c++",
+      "/workspace/cp-library/components/fps_bostan.hpp"
+    ],
+    "normalized_preprocessed_sha256": "5a141c94a287b829d2b715c23eb2dbfb1c497d72f470b4bc6012dc6e5f7cf18c",
+    "normalized_preprocessed_lines": 120135,
+    "stderr": ""
+  },
+  "candidate": {
+    "file_sha256": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258",
+    "bytes": 1952,
+    "source_lines": 51,
+    "uncommented_lines": 51,
+    "command": [
+      "g++",
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-I",
+      "/workspace/cp-library/components",
+      "-E",
+      "-P",
+      "-x",
+      "c++",
+      "/tmp/fps-bostan-bundle-target.hpp"
+    ],
+    "normalized_preprocessed_sha256": "5a141c94a287b829d2b715c23eb2dbfb1c497d72f470b4bc6012dc6e5f7cf18c",
+    "normalized_preprocessed_lines": 120135,
+    "stderr": ""
+  },
+  "normal_preprocessing_identical": true,
+  "diagnosis": "Raw GCC target pragma executes under -fpreprocessed -dD and injects 26 architecture macro lines; _Pragma remains a single line during comment-removal preprocessing. Normal compiler preprocessing and object code are unchanged.",
+  "proposed_patch": "--- a/components/fps_bostan.hpp\n+++ b/components/fps_bostan.hpp\n@@ -5,7 +5,7 @@\n \n #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)\n #pragma GCC push_options\n-#pragma GCC target(\"avx2\")\n+_Pragma(\"GCC target(\\\"avx2\\\")\")\n #pragma GCC optimize(\"O3\")\n \n namespace fps_detail::bostan_detail {\n"
+}

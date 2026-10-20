@@ -1,4 +1,4 @@
-#include "math/generalized_floor_sum.hpp"
+#include "math/floor_sum/generalized_floor_sum.hpp"
 #include "math/mint.hpp"
 #include "generalized_floor_sum_monoid.hpp"
 #include "generalized_floor_sum_quadratic.hpp"

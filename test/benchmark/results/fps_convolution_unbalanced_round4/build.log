@@ -1,0 +1,9 @@
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot -DLENGTH=256 driver.cpp -o overlap_256
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot -DLENGTH=512 driver.cpp -o overlap_512
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot -DLENGTH=1024 driver.cpp -o overlap_1024
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot -DLENGTH=2048 driver.cpp -o overlap_2048
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot -DLENGTH=4096 driver.cpp -o overlap_4096
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot -DLENGTH=8192 driver.cpp -o overlap_8192
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot -DLENGTH=16384 driver.cpp -o overlap_16384
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot snapshot/test/convolution.test.cpp -o before
+g++ -std=c++23 -O2 -DEVAL -DONLINE_JUDGE -ftrivial-auto-var-init=zero -march=haswell -Isnapshot /tmp/fps-reference/convolution_mod/409465.cpp -o reference

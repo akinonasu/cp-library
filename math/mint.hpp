@@ -24,7 +24,7 @@ struct Mint {
 	static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
-	Mint() = default;
+	[[gnu::always_inline]] Mint() = default;
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
 	Mint(I x) {
 		long long r = x % (long long)mod();

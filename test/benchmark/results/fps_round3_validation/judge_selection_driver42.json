@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/online_convolution.test.cpp"
+  ]
+}

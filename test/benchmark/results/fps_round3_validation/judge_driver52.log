@@ -1,0 +1,6 @@
+test/weighted_union_find.test.cpp 18 passed
+dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/weighted_union_find.test.cpp
+weighted_union_find.test.o: \
+ /workspace/cp-library/test/weighted_union_find.test.cpp \
+ /workspace/cp-library/test/../data_structure/weighted_union_find.hpp \
+ /workspace/cp-library/test/../math/mint.hpp

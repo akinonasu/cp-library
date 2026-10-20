@@ -1,0 +1,43 @@
+{
+  "actual_dependencies_unchanged": true,
+  "actual_dependency_scans": 100,
+  "all_compile_and_test_commands_passed": true,
+  "baseline": "bd29f70c70e24e27770b9e9a3777b6cf85664b63",
+  "core_target_fingerprints_unchanged": true,
+  "current_plan_matches_final": true,
+  "current_source_hashes_match": true,
+  "dependency_files": 173,
+  "final_selected_counts": {
+    "bundles": 21,
+    "headers": 21,
+    "sanitize": 4,
+    "unit": 27,
+    "verification": 24
+  },
+  "final_selection_sha256": "04844928ae69a702212181f3ad9f229aefc381fad60143c4f15e4f718281fb7c",
+  "full_log_coverage": {
+    "clang19": {
+      "exact_order": true,
+      "expected": 48,
+      "observed": 48
+    },
+    "gcc14": {
+      "exact_order": true,
+      "expected": 48,
+      "observed": 48
+    },
+    "gcc14-sanitize": {
+      "exact_order": true,
+      "expected": 4,
+      "observed": 4
+    }
+  },
+  "harness_sha256": "729950450d0d81bcd5b8ff25add48e71da97518a28ec9fb568924ae8435bee96",
+  "historical_runner_result_sha256": "2771186c451fdaafa1eb7e54d2492c587124d7a8505372c8fedce261d1ced3a3",
+  "historical_runner_status": "failed",
+  "normalization_exceptions": [],
+  "original_selection_sha256": "a817ab9fecb5e31c875c85521408e015219ce4f2c7b1c9b3e830a1cbee1af0a0",
+  "refinement": "Only an archived byte-identical driver copy was renamed out of CI discovery; production and all executed core target fingerprints are unchanged.",
+  "scope_refinement_sha256": "8499224e335d2c70f7440f9545844853fc048d11b871f67dddbd279d678b0b30",
+  "status": "passed"
+}

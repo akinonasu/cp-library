@@ -331,6 +331,43 @@ inline void power(const Transform& t, std::span<const std::uint32_t> f, std::uin
 namespace blocked_poly {
 namespace detail {
 template <bool differentiated>
+[[gnu::noinline]] Mint exp_tail_coefficient(const Mint* in, std::size_t input, const Mint* g, std::size_t n) {
+	const std::size_t count = std::min(n, input ? input - 1 : 0), full = count / 8 * 8;
+	const Vec reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0), ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
+	Vec total = _mm256_setzero_si256();
+	Indices index(1);
+	std::size_t j = 0;
+	for (; j < full;) {
+		Vec even = _mm256_setzero_si256(), odd = even;
+		const std::size_t end = std::min(full, j + 64);
+		for (; j < end; j += 8, index.next()) {
+			Vec a, b;
+			std::memcpy(&a, in + j + 1, sizeof(a));
+			std::memcpy(&b, g + n - j - 8, sizeof(b));
+			a = reduce(a, kP);
+			if constexpr (!differentiated) a = canonical(montgomery(a, index.value()));
+			b = _mm256_permutevar8x32_epi32(reduce(b, kP), reversed);
+			even = _mm256_add_epi64(even, _mm256_mul_epu32(a, b));
+			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
+		}
+		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
+		const Vec value = canonical(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA));
+		total = low(add(total, value));
+	}
+	total = low(add(total, _mm256_permute2x128_si256(total, total, 1)));
+	total = low(add(total, _mm256_shuffle_epi32(total, 0x4E)));
+	total = low(add(total, _mm256_shuffle_epi32(total, 0xB1)));
+	Mint result = Mint::word(std::uint32_t(_mm_cvtsi128_si32(_mm256_castsi256_si128(total))));
+	for (; j < count; ++j) {
+		Mint value = in[j + 1] * g[n - j - 1];
+		if constexpr (!differentiated) value *= Mint(j + 1);
+		result += value;
+	}
+	return result / Mint(n);
+}
+
+template <bool differentiated>
 [[gnu::noinline]] void import_exp_input(const Mint* in, std::size_t first, std::size_t count, std::uint32_t* to) {
 	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
 	std::size_t i = 0;
@@ -349,7 +386,7 @@ template <bool differentiated>
 }
 }
 
-inline void native_exp(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, bool differentiated = false) {
+inline void native_exp_regular(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, bool differentiated) {
 	const std::size_t m = detail::exp_length(n) / 2, size = std::min(input, n), below = std::min(size, m);
 	const int lg = exp_log(n);
 	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(exp_scratch(n)));
@@ -368,6 +405,22 @@ inline void native_exp(const Mint *in, std::size_t input, std::vector<Mint> &out
 	for (auto &x : g.first(std::min(n, detail::kExpBase))) x = blocked_ntt::detail::multiply_mod(x, detail::kR);
 	if (n > detail::kExpBase) detail::exp_newton(t, lo, g, scratch.subspan(Arena::footprint(m)));
 	append_fps_words<true>(out, g.data(), n);
+}
+
+inline void native_exp(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, bool differentiated = false) {
+	const std::size_t prefix = std::bit_floor(n), tail = n - prefix;
+	if (prefix >= 4096 && tail && tail <= 4) {
+		const std::size_t offset = out.size();
+		prepare_fps_output(out, offset + n);
+		native_exp_regular(in, input, out, prefix, differentiated);
+		for (std::size_t at = prefix; at < n; ++at) {
+			const Mint value = differentiated ? detail::exp_tail_coefficient<true>(in, input, out.data() + offset, at)
+											 : detail::exp_tail_coefficient<false>(in, input, out.data() + offset, at);
+			out.push_back(value);
+		}
+		return;
+	}
+	native_exp_regular(in, input, out, n, differentiated);
 }
 
 inline void native_power(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, std::uint32_t e, Mint c) {

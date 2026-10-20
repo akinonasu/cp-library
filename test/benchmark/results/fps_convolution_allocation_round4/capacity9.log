@@ -1,0 +1,8 @@
+built before
+built capacity_1m
+built capacity_2m
+built reference
+max_random_00 {'before': 11.97927, 'capacity_1m': 12.012909, 'capacity_2m': 12.078718, 'reference': 9.829585} {'capacity_1m': 0.009406000000000247, 'capacity_2m': -0.036613000000000895} {'capacity_1m': 5, 'capacity_2m': 3}
+max_random_01 {'before': 12.003606, 'capacity_1m': 11.979911, 'capacity_2m': 12.008884, 'reference': 9.636979} {'capacity_1m': 0.29383800000000093, 'capacity_2m': 0.23603100000000055} {'capacity_1m': 6, 'capacity_2m': 6}
+small_and_large_03 {'before': 9.271005, 'capacity_1m': 9.351524, 'capacity_2m': 9.413917, 'reference': 7.921162} {'capacity_1m': 0.12486700000000006, 'capacity_2m': -0.06697100000000056} {'capacity_1m': 6, 'capacity_2m': 4}
+medium_02 {'before': 1.378536, 'capacity_1m': 1.388781, 'capacity_2m': 1.385446, 'reference': 1.143905} {'capacity_1m': -0.009884000000000004, 'capacity_2m': -0.0024939999999999962} {'capacity_1m': 3, 'capacity_2m': 3}

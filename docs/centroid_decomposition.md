@@ -1,10 +1,13 @@
 ---
-title: "重心分解"
-documentation_of: //graph/centroid_decomposition.hpp
+title: 重心分解
+documentation_of: //data_structure/advanced/centroid_decomposition.hpp
+redirect_from:
+- /graph/centroid_decomposition.hpp.html
+- /tree/centroid_decomposition.hpp.html
 ---
 
 ```cpp
-#include "lib/graph/centroid_decomposition.hpp"
+#include "lib/data_structure/advanced/centroid_decomposition.hpp"
 
 CentroidDecomposition<> tree(3);
 tree.add_edge(0, 1);
@@ -55,6 +58,6 @@ tree.for_each_ancestor(v, [&](int c, int d, int) {
 });
 ```
 
-`build(false)` でも重心分解木と部分木の区間は取得できます。`ancestors`・`for_each_ancestor`・`distance_to_ancestor`・`dist` には `build(true)` が必要です。`ancestors` の返す参照は再構築・辺の追加で無効になります。構築後の公開配列は参照用です。元の木の LCA が必要なら [LCA](https://qandori.github.io/cp-library/graph/lca.hpp.html) を使います。
+`build(false)` でも重心分解木と部分木の区間は取得できます。`ancestors`・`for_each_ancestor`・`distance_to_ancestor`・`dist` には `build(true)` が必要です。`ancestors` の返す参照は再構築・辺の追加で無効になります。構築後の公開配列は参照用です。元の木の LCA が必要なら [LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) を使います。
 
 構築は $$O(n\log n)$$ 時間、距離キャッシュを持つ場合は $$O(n\log n)$$ 空間、持たない場合は $$O(n)$$ 空間です。`add_edge` は償却 $$O(1)$$、`for_each_ancestor`・`centroid_lca`・`dist` は $$O(\log n)$$、それ以外の問い合わせは $$O(1)$$ です。

@@ -15,7 +15,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE = '523956fbb612ed975d73d1fcac414238f8ec2d16'
-HEADER = 'data_structure/wavelet_matrix.hpp'
+HEADER = 'data_structure/wavelet_matrix/wavelet_matrix.hpp'
 PROBLEMS = {'kth': ('range_kth_smallest', 'test/wavelet_matrix_kth.test.cpp', 402999),
             'freq': ('static_range_frequency', 'test/wavelet_matrix_freq.test.cpp', 205664),
             'sum': ('static_range_sum_with_upper_bound', 'test/wavelet_matrix_sum.test.cpp', 402379)}
@@ -160,7 +160,7 @@ def main():
                             code = code.replace('\twm.prepare_count();\n', '')
                         elif kind == 'freq' and io == 'stdio':
                             code = code.replace('\tWaveletMatrix wm(a);', '\tWaveletMatrix wm(a);\n\twm.prepare_count();')
-                        code = code.replace('../data_structure/wavelet_matrix.hpp', str(header)).replace('../components/fast_io.hpp', 'components/fast_io.hpp')
+                        code = code.replace('../data_structure/wavelet_matrix/wavelet_matrix.hpp', str(header)).replace('../components/fast_io.hpp', 'components/fast_io.hpp')
                         source = work / (kind + '_' + name + '_' + io + '.cpp')
                         source.write_text(code)
                         binaries[name + '_' + io] = compile(source, source.with_suffix(''))

@@ -1,4 +1,4 @@
-#include "graph/centroid_decomposition.hpp"
+#include "data_structure/advanced/centroid_decomposition.hpp"
 #include <chrono>
 #include <cstdint>
 #include <cstdlib>

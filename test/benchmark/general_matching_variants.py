@@ -151,8 +151,8 @@ def components(code):
 		for (int u : roots) if (mate[u] == -1 && augment(u)) {''')
     code = code.replace('if (++cardinality == n / 2) break;', 'if (++cardinality == limit) break;')
     return code
-variants = dict(plain=plain, greedy=source, reverse=reverse, short=short, short2=short2, free_first=free_first, bitset=bitset(source, 1024), bitset_short=bitset(short, 1024), bitset_short2=bitset(short2, 1024), components=components(source), components_short=components(short), components_short2=components(short2), current=(root / 'graph/general_matching.hpp').read_text())
+variants = dict(plain=plain, greedy=source, reverse=reverse, short=short, short2=short2, free_first=free_first, bitset=bitset(source, 1024), bitset_short=bitset(short, 1024), bitset_short2=bitset(short2, 1024), components=components(source), components_short=components(short), components_short2=components(short2), current=(root / 'graph/matching/general_matching.hpp').read_text())
 for name, code in variants.items():
     code = code.replace('GENERAL_MATCHING_HPP', 'GENERAL_MATCHING_' + name.upper() + '_HPP').replace('GeneralMatching', 'Matching_' + name)
     (out / (name + '.hpp')).write_text(code)
-    (out / (name + '_test.cpp')).write_text(unit.replace('"graph/general_matching.hpp"', '"' + name + '.hpp"').replace('GeneralMatching', 'Matching_' + name))
+    (out / (name + '_test.cpp')).write_text(unit.replace('"graph/matching/general_matching.hpp"', '"' + name + '.hpp"').replace('GeneralMatching', 'Matching_' + name))

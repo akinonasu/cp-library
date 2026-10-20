@@ -4,7 +4,7 @@ from pathlib import Path
 root = Path(__file__).resolve().parents[2]
 out = Path(sys.argv[1])
 out.mkdir(parents=True, exist_ok=True)
-source = (root / 'data_structure/segtree_beats.hpp').read_text()
+source = (root / 'data_structure/advanced/segtree_beats.hpp').read_text()
 source = source.replace('#include "../components/default_init_allocator.hpp"\n', '').replace('std::vector<Node, DefaultInitAllocator<Node>>', 'std::vector<Node>').replace('\n\t\ttree[k].add = 0;', '')
 unit = (root / 'test/unit/segtree_beats.cpp').read_text()
 variants = {'compact': source}
@@ -133,4 +133,4 @@ for name, code in variants.items():
     cls = 'Beats_' + name
     code = code.replace('SEGTREE_BEATS_HPP', 'SEGTREE_BEATS_' + name.upper() + '_HPP').replace('SegtreeBeats', cls)
     (out / (name + '.hpp')).write_text(code)
-    (out / (name + '_test.cpp')).write_text(unit.replace('"data_structure/segtree_beats.hpp"', '"' + name + '.hpp"').replace('SegtreeBeats', cls))
+    (out / (name + '_test.cpp')).write_text(unit.replace('"data_structure/advanced/segtree_beats.hpp"', '"' + name + '.hpp"').replace('SegtreeBeats', cls))

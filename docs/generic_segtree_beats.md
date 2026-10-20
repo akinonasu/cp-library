@@ -1,12 +1,15 @@
 ---
-title: "Generic Segtree Beats"
-documentation_of: //data_structure/generic_segtree_beats.hpp
+title: Generic Segtree Beats
+documentation_of: //data_structure/advanced/generic_segtree_beats.hpp
+redirect_from:
+- /data_structure/generic_segtree_beats.hpp.html
+- /data_structure/segment_tree/generic_segtree_beats.hpp.html
 ---
 
-集約値と更新を定義して使う汎用の Segtree Beats です。区間除算、bitwise AND/OR など、通常の遅延セグメント木では一度に処理できない更新を扱います。[chmin・chmax・加算・代入の専用版](https://qandori.github.io/cp-library/data_structure/segtree_beats.hpp.html) もそのまま使えます。
+集約値と更新を定義して使う汎用の Segtree Beats です。区間除算、bitwise AND/OR など、通常の遅延セグメント木では一度に処理できない更新を扱います。[chmin・chmax・加算・代入の専用版](https://qandori.github.io/cp-library/data_structure/advanced/segtree_beats.hpp.html) もそのまま使えます。
 
 ```cpp
-#include "lib/data_structure/generic_segtree_beats.hpp"
+#include "lib/data_structure/advanced/generic_segtree_beats.hpp"
 
 struct S { long long sum; int lo, hi, len; };
 struct F { int value, divisor; };
@@ -57,6 +60,7 @@ long long sum = seg.prod(0, 3).sum;
 | `GenericSegtreeBeats(a)` | `vector<S>` から構築 | $$O(n)$$ |
 | `build(a)` | `vector<S>` で構築し直す | $$O(n)$$ |
 | `apply(l,r,f)` | 半開区間 `[l,r)` に更新 `f` を適用 | $$O(\log n+E_i)$$ |
+| `apply(f)` | 全体に更新 `f` を適用。空なら何もしない | $$O(1+E_i)$$ |
 | `apply(p,f)` | 1 点に更新 `f` を適用 | $$O(\log n+E_i)$$ |
 | `set(p,value)` | 1 点の集約値を `value` に置き換える | $$O(\log n+E_i)$$ |
 | `get(p)` | 1 点の値を `S` で返す | $$O(\log n+E_i)$$ |

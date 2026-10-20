@@ -1,0 +1,31 @@
+{
+  "result": "passed",
+  "all_settings_and_bootstrap_intervals_equal": true,
+  "source_summary": "test/benchmark/results/shortest_path_round5_summary.json",
+  "resamples": 10000,
+  "summary_script_sha256": "b380c36b5ccbcb73736da5d1c685d83c177dc6c2861251c5952aa3d1477cfc2b",
+  "measurement_record_sha256": "d7c71d7b927fa0168849a410954dbb2075f0e03d51c1f8b4493bca0ce7be6117",
+  "command": [
+    "python3",
+    "test/benchmark/shortest_path_round5_summary.py",
+    "--allow-archived-source",
+    "--output",
+    ".verify-helper/cache/shortest-path/round5/archived_summary.json"
+  ],
+  "validation": {
+    "completed_runs": true,
+    "cases": 41,
+    "trials": 21,
+    "same_inputs": true,
+    "sources_match_between_settings": true,
+    "live_sources_match": null,
+    "current_benchmark_sources_match": null,
+    "allow_archived_source": true,
+    "skipped_checks": [
+      "current live library and submission sources",
+      "current driver, runner, helper and utility hashes"
+    ],
+    "archived_sources_match": true,
+    "recorded_environment_and_results_match": true
+  }
+}

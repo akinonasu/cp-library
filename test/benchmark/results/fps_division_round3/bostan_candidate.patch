@@ -1,0 +1,141 @@
+diff --git a/components/fps_bostan.hpp b/components/fps_bostan.hpp
+new file mode 100644
+--- /dev/null
++++ b/components/fps_bostan.hpp
+@@ -0,0 +1,51 @@
++#ifndef CP_COMPONENTS_FPS_BOSTAN_HPP
++#define CP_COMPONENTS_FPS_BOSTAN_HPP
++
++#include "ntt.hpp"
++
++#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
++#pragma GCC push_options
++#pragma GCC target("avx2")
++#pragma GCC optimize("O3")
++
++namespace fps_detail::bostan_detail {
++inline void inverse_twisted(const NTT& plan, const NTT::U* in, NTT::U* out, const NTT::U* powers, int n) {
++	using N = NTT;
++	if (n == 8) {
++		auto z = plan.small8<4, true>(plan.small8<2, true>(plan.small8<1, true>(N::load8(in), 0), 0), 0);
++		N::store8(out, N::mul8(z, N::load8(powers)));
++		return;
++	}
++	for (int j = 0; j < n; j += 8) {
++		auto z = N::load8(in + j);
++		z = plan.small8<4, true>(plan.small8<2, true>(plan.small8<1, true>(z, j / 8), j / 8), j / 8);
++		N::store8(out + j, z);
++	}
++	int h = 8;
++	for (; 4 * h < n; h *= 4) plan.radix4_8<true>(out, h, n);
++	if (4 * h == n) {
++		const auto im = _mm256_set1_epi32(plan.inverse_roots[1]);
++		const auto iq = _mm256_set1_epi32(plan.inverse_root_quotients[1]);
++		for (int i = 0; i < h; i += 8) {
++			const auto x0 = N::load8(out + i), x1 = N::load8(out + h + i);
++			const auto x2 = N::load8(out + 2 * h + i), x3 = N::load8(out + 3 * h + i);
++			const auto u = N::add8(x0, x1), v = N::sub8(x0, x1), s = N::add8(x2, x3);
++			const auto t = N::fixed_mul8(N::sub8(x2, x3), im, iq);
++			N::store8(out + i, N::mul8(N::add8(u, s), N::load8(powers + i)));
++			N::store8(out + h + i, N::mul8(N::add8(v, t), N::load8(powers + h + i)));
++			N::store8(out + 2 * h + i, N::mul8(N::sub8(u, s), N::load8(powers + 2 * h + i)));
++			N::store8(out + 3 * h + i, N::mul8(N::sub8(v, t), N::load8(powers + 3 * h + i)));
++		}
++	} else {
++		for (int i = 0; i < h; i += 8) {
++			const auto x = N::load8(out + i), y = N::load8(out + h + i);
++			N::store8(out + i, N::mul8(N::add8(x, y), N::load8(powers + i)));
++			N::store8(out + h + i, N::mul8(N::sub8(x, y), N::load8(powers + h + i)));
++		}
++	}
++}
++}
++
++#pragma GCC pop_options
++#endif
++#endif
+diff --git a/fps/bostan_mori.hpp b/fps/bostan_mori.hpp
+--- a/fps/bostan_mori.hpp
++++ b/fps/bostan_mori.hpp
+@@ -2,6 +2,7 @@
+ #define CP_FPS_BOSTAN_MORI_HPP
+ 
+ #include "fps.hpp"
++#include "../components/fps_bostan.hpp"
+ 
+ #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+ #pragma GCC push_options
+@@ -59,10 +60,18 @@
+ 		plan.template fft<false>(b, 2 * n);
+ 		auto doubling = [&](Word *v, T leading) {
+ 			Word *odd = v + n;
+-			std::copy_n(v, n, odd);
+-			plan.template fft<true>(odd, n);
+-			odd[0] = fps_detail::NTT::sub(odd[0], (T(2 * n) * leading).v);
+-			fps_detail::NTT::product(odd, odd, O::words(powers), n);
++#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
++			if (n >= 8 && fps_detail::NTT::vectorized()) {
++				fps_detail::bostan_detail::inverse_twisted(plan, v, odd, O::words(powers), n);
++				odd[0] = fps_detail::NTT::sub(odd[0], (T(2) * leading).v);
++			} else
++#endif
++			{
++				std::copy_n(v, n, odd);
++				plan.template fft<true>(odd, n);
++				odd[0] = fps_detail::NTT::sub(odd[0], (T(2 * n) * leading).v);
++				fps_detail::NTT::product(odd, odd, O::words(powers), n);
++			}
+ 			plan.template fft<false>(odd, n);
+ 		};
+ 		while (k) {
+diff --git a/test/unit/fps_bostan.cpp b/test/unit/fps_bostan.cpp
+new file mode 100644
+--- /dev/null
++++ b/test/unit/fps_bostan.cpp
+@@ -0,0 +1,46 @@
++#include "components/fps_bostan.hpp"
++#include "components/fps_workspace.hpp"
++#include <random>
++#include <new>
++#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
++#include <sys/mman.h>
++#include <unistd.h>
++
++static void check_inverse_twisted() {
++	using N = fps_detail::NTT;
++	std::mt19937 random(92837);
++	const std::size_t page = std::size_t(sysconf(_SC_PAGESIZE));
++	for (int n = 8; n <= (1 << 18); n *= 2) {
++		N plan(n, false);
++		const std::size_t bytes = std::size_t(n) * sizeof(N::U), readable = (bytes + page - 1) / page * page;
++		for (bool at_end : {false, true}) {
++			void* source = mmap(nullptr, readable + 2 * page, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++			void* target = mmap(nullptr, readable + 2 * page, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++			assert(source != MAP_FAILED && target != MAP_FAILED);
++			auto* source_begin = static_cast<char*>(source) + page;
++			auto* target_begin = static_cast<char*>(target) + page;
++			assert(mprotect(source, page, PROT_NONE) == 0 && mprotect(source_begin + readable, page, PROT_NONE) == 0);
++			assert(mprotect(target, page, PROT_NONE) == 0 && mprotect(target_begin + readable, page, PROT_NONE) == 0);
++			auto* input = ::new (source_begin + (at_end ? readable - bytes : 0)) N::U[n];
++			auto* actual = ::new (target_begin + (at_end ? readable - bytes : 0)) N::U[n];
++			auto expected = fps_detail::allocate_fps_words(n), powers = fps_detail::allocate_fps_words(n);
++			for (int i = 0; i < n; ++i) {
++				input[i] = expected[i] = i % 4 == 0 ? 2 * N::mod - 1 : random() % (2 * N::mod);
++				powers[i] = i % 4 == 0 ? 0 : random() % (2 * N::mod);
++			}
++			assert(mprotect(source_begin, readable, PROT_READ) == 0);
++			plan.fft<true>(expected.get(), n);
++			N::product(expected.get(), expected.get(), powers.get(), n);
++			fps_detail::bostan_detail::inverse_twisted(plan, input, actual, powers.get(), n);
++			for (int i = 0; i < n; ++i) assert(actual[i] % N::mod == expected[i] % N::mod);
++			assert(munmap(source, readable + 2 * page) == 0 && munmap(target, readable + 2 * page) == 0);
++		}
++	}
++}
++#endif
++
++int main() {
++#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
++	if (fps_detail::NTT::vectorized()) check_inverse_twisted();
++#endif
++}

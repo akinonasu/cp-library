@@ -96,7 +96,7 @@ def main():
               'metric': 'wall time including process startup, input, computation, output and exit',
               'input_transport': 'regular file for every program',
               'sources': {name: {'sha256': digest(source), 'extra_flags': extra} for name, (source, extra) in programs.items()},
-              'headers': {name: digest(ROOT / name) for name in ['math/kth_root.hpp', 'components/fast_io.hpp']},
+              'headers': {name: digest(ROOT / name) for name in ['math/number_theory/kth_root.hpp', 'components/fast_io.hpp']},
               'workloads': {}}
     rng = random.Random(28063)
     for mode, (data, expected) in cases.items():

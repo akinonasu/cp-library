@@ -5,11 +5,12 @@ from importlib.util import find_spec
 from pathlib import Path
 import runpy
 import sys
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
-from ci import GROUPS, ROOT, VERSION, build_plan, checkpoint_success, invalidate_selected, read_json, record_success, verify_selected, write_json
+from ci import GROUPS, ROOT, VERSION, boost_identity, build_plan, checkpoint_success, invalidate_selected, read_json, record_success, verify_selected, write_json
 from documentation import source_paths
 
 
@@ -40,18 +41,21 @@ class Summary:
 
 class IncrementalVerification(unittest.TestCase):
     def setUp(self):
+        boost = patch("ci.boost_identity", return_value=[("libboost-dev", "1.83"), ("libboost1.83-dev", "1.83-1")])
+        self.boost = boost.start()
+        self.addCleanup(boost.stop)
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
         for name, source in {
             "math/mint.hpp": "#pragma once\n",
-            "math/comb.hpp": '#include "mint.hpp"\n',
-            "graph/lca.hpp": "#pragma once\n",
-            "test/unit/comb.cpp": '#include "math/comb.hpp"\n',
+            "math/combinatorics/comb.hpp": '#include "../mint.hpp"\n',
+            "tree/lca.hpp": "#pragma once\n",
+            "test/unit/comb.cpp": '#include "math/combinatorics/comb.hpp"\n',
             "test/unit/mint.cpp": '#include "math/mint.hpp"\n',
-            "test/unit/lca.cpp": '#include "graph/lca.hpp"\n',
-            "test/comb.test.cpp": '#include "../math/comb.hpp"\n',
-            "test/lca.test.cpp": '#include "../graph/lca.hpp"\n',
+            "test/unit/lca.cpp": '#include "tree/lca.hpp"\n',
+            "test/comb.test.cpp": '#include "../math/combinatorics/comb.hpp"\n',
+            "test/lca.test.cpp": '#include "../tree/lca.hpp"\n',
             "test/requirements.txt": "online-judge-verify-helper==5.6.0\n",
         }.items():
             self.write(name, source)
@@ -95,26 +99,26 @@ class IncrementalVerification(unittest.TestCase):
     def test_transitive_header_change(self):
         self.write("math/mint.hpp", "#pragma once\nusing mint = int;\n")
         plan = self.plan(self.previous)
-        self.assertEqual(plan["headers"], ["math/comb.hpp", "math/mint.hpp"])
+        self.assertEqual(plan["headers"], ["math/combinatorics/comb.hpp", "math/mint.hpp"])
         self.assertEqual(plan["unit"], ["test/unit/comb.cpp", "test/unit/mint.cpp"])
         self.assertEqual(plan["verification"], ["test/comb.test.cpp"])
 
     def test_driver_only_change(self):
-        self.write("test/comb.test.cpp", '#include "../math/comb.hpp"\nint main() {}\n')
+        self.write("test/comb.test.cpp", '#include "../math/combinatorics/comb.hpp"\nint main() {}\n')
         plan = self.plan(self.previous)
         self.assertEqual(plan["headers"], [])
         self.assertEqual(plan["unit"], [])
         self.assertEqual(plan["verification"], ["test/comb.test.cpp"])
 
     def test_nested_verification_driver(self):
-        self.write("test/nested/comb.test.cpp", '#include "../../math/comb.hpp"\n')
+        self.write("test/nested/comb.test.cpp", '#include "../../math/combinatorics/comb.hpp"\n')
         plan = self.plan(self.previous)
         self.assertEqual(plan["verification"], ["test/nested/comb.test.cpp"])
         self.write("math/mint.hpp", "#pragma once\nusing mint = int;\n")
         self.assertIn("test/nested/comb.test.cpp", self.plan(plan["state"])["verification"])
 
     def test_unit_only_change(self):
-        self.write("test/unit/comb.cpp", '#include "math/comb.hpp"\nint main() {}\n')
+        self.write("test/unit/comb.cpp", '#include "math/combinatorics/comb.hpp"\nint main() {}\n')
         plan = self.plan(self.previous)
         self.assertEqual(plan["headers"], [])
         self.assertEqual(plan["unit"], ["test/unit/comb.cpp"])
@@ -125,7 +129,7 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(self.plan(self.previous)["headers"], ["math/new.hpp"])
         (self.root / "math/mint.hpp").unlink()
         plan = self.plan(self.previous)
-        self.assertIn("math/comb.hpp", plan["headers"])
+        self.assertIn("math/combinatorics/comb.hpp", plan["headers"])
         self.assertIn("test/comb.test.cpp", plan["verification"])
 
     def test_string_header_and_dependencies(self):
@@ -169,15 +173,15 @@ class IncrementalVerification(unittest.TestCase):
         previous = self.plan()["state"]
         self.write("math/small.hpp", "#pragma once\nusing number = long;\n")
         self.assertIn("test/comb.test.cpp", self.plan(previous)["verification"])
-        self.write("test/unit/math/comb.hpp", "#pragma once\n")
+        self.write("test/unit/math/combinatorics/comb.hpp", "#pragma once\n")
         self.assertIn("test/unit/comb.cpp", self.plan(previous)["unit"])
 
     def test_angle_include_and_cycle(self):
-        self.write("math/mint.hpp", '#include <math/comb.hpp>\n')
+        self.write("math/mint.hpp", '#include <math/combinatorics/comb.hpp>\n')
         previous = self.plan()["state"]
-        self.write("math/comb.hpp", '#include "mint.hpp"\nusing value = long;\n')
+        self.write("math/combinatorics/comb.hpp", '#include "../mint.hpp"\nusing value = long;\n')
         plan = self.plan(previous)
-        self.assertEqual(plan["headers"], ["math/comb.hpp", "math/mint.hpp"])
+        self.assertEqual(plan["headers"], ["math/combinatorics/comb.hpp", "math/mint.hpp"])
 
     def test_new_local_file_shadowing_system_header(self):
         self.write("math/mint.hpp", "#include <vector>\n")
@@ -201,7 +205,7 @@ class IncrementalVerification(unittest.TestCase):
         for source in ("#include HEADER\n", '#include_next "other.hpp"\n', '#if __has_include("other.hpp")\n#endif\n'):
             self.write("math/mint.hpp", source)
             changed = self.plan(self.previous)
-            self.assertEqual(changed["headers"], ["math/comb.hpp", "math/mint.hpp"])
+            self.assertEqual(changed["headers"], ["math/combinatorics/comb.hpp", "math/mint.hpp"])
             self.assertEqual(changed["verification"], ["test/comb.test.cpp"])
             repeated = self.plan(changed["state"])
             self.assertEqual(repeated["headers"], changed["headers"])
@@ -224,10 +228,55 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(self.plan(successful)["verification"], [])
 
     def test_auxiliary_scripts_do_not_invalidate_tests(self):
-        for name in (".verify-helper/ci.py", ".verify-helper/ci_test.py", "test/verify_edit_distance_simd.py", ".gitignore"):
+        for name in (".verify-helper/ci_test.py", "test/verify_edit_distance_simd.py", ".gitignore"):
             self.write(name, "Updated auxiliary file\n")
         for group in GROUPS:
             self.assertEqual(self.plan(self.previous)[group], [])
+
+    def test_judge_engines_invalidate_only_their_groups(self):
+        for name in ("ci.py", "verification.py", "judge_data.py"):
+            with self.subTest(name=name):
+                previous = self.plan()["state"]
+                self.write(".verify-helper/" + name, "changed engine\n")
+                plan = self.plan(previous)
+                for group in GROUPS:
+                    changed = group == "verification" or (name == "verification.py" and group == "bundles")
+                    self.assertEqual(plan[group], self.plan()[group] if changed else [])
+
+    def test_boost_identity_only_affects_transitive_consumers(self):
+        self.write("math/mint.hpp", '#include <boost/multiprecision/cpp_int.hpp>\n')
+        previous = self.plan()["state"]
+        for identity in ([('libboost-dev', '1.84'), ('libboost1.83-dev', '1.83-1')],
+                         [('libboost-dev', '1.83'), ('libboost1.83-dev', '1.83-2')], None):
+            with self.subTest(identity=identity):
+                self.boost.return_value = identity
+                plan = self.plan(previous)
+                for group in GROUPS:
+                    expected = sorted(name for name in previous["targets"][group] if "lca" not in name)
+                    self.assertEqual(plan[group], expected)
+                    for name in previous["targets"][group]:
+                        if "lca" in name:
+                            self.assertEqual(plan["state"]["targets"][group][name], previous["targets"][group][name])
+                retry = self.plan(plan["state"])
+                for group in GROUPS:
+                    self.assertEqual(retry[group], plan[group] if identity is None else [])
+
+    def test_quoted_boost_and_local_shadowing(self):
+        self.write("math/mint.hpp", '#include "boost/version.hpp"\n')
+        self.boost.return_value = None
+        previous = self.plan()["state"]
+        self.assertIn("test/comb.test.cpp", self.plan(previous)["verification"])
+        self.write("math/boost/version.hpp", "#pragma once\n")
+        previous = self.plan()["state"]
+        self.boost.reset_mock()
+        for group in GROUPS:
+            self.assertEqual(self.plan(previous)[group], [])
+        self.boost.assert_not_called()
+
+    def test_non_boost_targets_do_not_probe_packages(self):
+        self.boost.reset_mock()
+        self.plan(self.previous)
+        self.boost.assert_not_called()
 
     @unittest.skipUnless(find_spec("yaml"), "Workflow parsing requires PyYAML from test/requirements.txt")
     def test_unrelated_workflow_does_not_invalidate_tests(self):
@@ -299,7 +348,7 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(retry["unit"], [])
         self.assertEqual(retry["sanitize"], ["test/unit/comb.cpp", "test/unit/mint.cpp"])
         self.assertEqual(retry["verification"], ["test/comb.test.cpp"])
-        self.assertEqual(retry["bundles"], ["math/comb.hpp", "math/mint.hpp"])
+        self.assertEqual(retry["bundles"], ["math/combinatorics/comb.hpp", "math/mint.hpp"])
         completed = record_success(completed, plan, ["sanitize", "verification", "bundles"])
         for group in GROUPS:
             self.assertEqual(self.plan(completed)[group], [])
@@ -365,12 +414,12 @@ class IncrementalVerification(unittest.TestCase):
             record_success(self.previous, self.plan(), ["unknown"])
 
     def test_documentation_only_discovers_libraries_and_judge_drivers(self):
-        self.write("test/benchmark/comb.cpp", '#include "math/comb.hpp"\n')
+        self.write("test/benchmark/comb.cpp", '#include "math/combinatorics/comb.hpp"\n')
         self.write("test/verify.py", "raise RuntimeError('must not be analyzed')\n")
         paths = source_paths(self.plan(), [])
-        self.assertEqual(paths, list(map(Path, ["graph/lca.hpp", "math/comb.hpp", "math/mint.hpp",
-                                              "test/comb.test.cpp", "test/lca.test.cpp"])))
-        self.assertEqual(source_paths(self.plan(), [Path("test")]), paths[:3])
+        self.assertEqual(paths, sorted(map(Path, ["tree/lca.hpp", "math/combinatorics/comb.hpp", "math/mint.hpp",
+                                                "test/comb.test.cpp", "test/lca.test.cpp"])))
+        self.assertEqual(source_paths(self.plan(), [Path("test")]), [path for path in paths if Path("test") not in path.parents])
 
     def test_sanitizer_uses_its_own_selection(self):
         selection = self.root / "selection.json"
@@ -409,12 +458,12 @@ class IncrementalVerification(unittest.TestCase):
 
         def changed(path):
             data = original(path)
-            return data + b"\n" if path == ROOT / "data_structure/wavelet_matrix.hpp" else data
+            return data + b"\n" if path == ROOT / "data_structure/wavelet_matrix/wavelet_matrix.hpp" else data
 
         with patch.object(Path, "read_bytes", changed):
             plan = build_plan(ROOT, previous, environment="test")
         self.assertFalse(plan["full"])
-        self.assertEqual(plan["headers"], ["data_structure/point_set_wavelet_matrix.hpp", "data_structure/wavelet_matrix.hpp", "data_structure/weighted_wavelet_matrix.hpp"])
+        self.assertEqual(plan["headers"], ["data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp", "data_structure/wavelet_matrix/wavelet_matrix.hpp", "data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"])
         self.assertEqual(plan["unit"], ["test/unit/dynamic_wavelet_matrix.cpp", "test/unit/point_set_wavelet_matrix.cpp", "test/unit/standalone.cpp", "test/unit/wavelet_matrix.cpp", "test/unit/wavelet_matrix_opt.cpp", "test/unit/wavelet_matrix_sum_bound.cpp", "test/unit/weighted_wavelet_matrix.cpp"])
         self.assertEqual(plan["verification"], ["test/wavelet_matrix_freq.test.cpp", "test/wavelet_matrix_kth.test.cpp", "test/wavelet_matrix_sum.test.cpp", "test/weighted_wavelet_matrix_rectangle.test.cpp"])
 
@@ -445,10 +494,31 @@ class IncrementalVerification(unittest.TestCase):
 
         with patch.object(Path, "read_bytes", changed):
             plan = build_plan(ROOT, previous, environment="test")
-        self.assertEqual(plan["headers"], ["components/dynamic_bit_vector.hpp", "data_structure/dynamic_wavelet_matrix.hpp"])
+        self.assertEqual(plan["headers"], ["components/dynamic_bit_vector.hpp", "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"])
         self.assertEqual(plan["unit"], ["test/unit/dynamic_bit_vector.cpp", "test/unit/dynamic_wavelet_core.cpp", "test/unit/dynamic_wavelet_count.cpp", "test/unit/dynamic_wavelet_matrix.cpp", "test/unit/standalone.cpp"])
         self.assertEqual(plan["sanitize"], plan["unit"])
         self.assertEqual(plan["verification"], ["test/dynamic_wavelet_matrix_freq.test.cpp", "test/dynamic_wavelet_matrix_kth.test.cpp"])
+
+
+class BoostIdentityTests(unittest.TestCase):
+    def test_installed_meta_and_resolved_header_versions(self):
+        with patch("ci.platform.system", return_value="Linux"), patch("ci.subprocess.check_output", side_effect=[
+                "installed\t1.83.0.1\tlibboost1.83-dev (= 1.83.0-1)", "installed\t1.83.0-1\t"] ) as query:
+            self.assertEqual(boost_identity(), [("libboost-dev", "1.83.0.1"), ("libboost1.83-dev", "1.83.0-1")])
+            self.assertEqual(query.call_args_list[1].args[0][-1], "libboost1.83-dev")
+
+    def test_missing_ambiguous_and_unsupported_identity(self):
+        for response in ("", "not-installed\t1\tlibboost1.83-dev", "installed\t1\t",
+                         "installed\t1\tlibboost1.83-dev, libboost1.84-dev"):
+            with self.subTest(response=response), patch("ci.platform.system", return_value="Linux"), \
+                    patch("ci.subprocess.check_output", return_value=response):
+                self.assertIsNone(boost_identity())
+        for error in (FileNotFoundError(), subprocess.CalledProcessError(1, "dpkg-query"), subprocess.TimeoutExpired("dpkg-query", 10)):
+            with patch("ci.platform.system", return_value="Linux"), patch("ci.subprocess.check_output", side_effect=error):
+                self.assertIsNone(boost_identity())
+        with patch("ci.platform.system", return_value="Darwin"), patch("ci.subprocess.check_output") as query:
+            self.assertIsNone(boost_identity())
+            query.assert_not_called()
 
 
 if __name__ == "__main__":

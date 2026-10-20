@@ -1,0 +1,38 @@
+{
+  "audited_at": "2026-10-19T06:32:14.533951+00:00",
+  "destination": "/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/shortest-path/round5/storage-replay",
+  "revision": "c075fb733c2954ce303eb6a7fa1ef78977a611f9",
+  "source_manifest_sha256": "d0f2de04ee568be6112941caf29bd577981e4848ab3df43ed07b728359c51745",
+  "replay_sha256": "acc4dafc56b6860f47e1db8d79fd6fac56bd880b9e5f2e996d8e0cc2839c6015",
+  "variants": {
+    "current": {
+      "files": 10,
+      "all_source_hashes_match": true
+    },
+    "overwrite": {
+      "files": 11,
+      "all_source_hashes_match": true
+    }
+  },
+  "measurements": {
+    "screen_native.json": {
+      "cases": 8,
+      "trials": 17,
+      "frozen_source_hashes_match": true,
+      "all_trial_counts_match": true
+    },
+    "screen_generic.json": {
+      "cases": 8,
+      "trials": 17,
+      "frozen_source_hashes_match": true,
+      "all_trial_counts_match": true
+    },
+    "shuffled_native.json": {
+      "cases": 6,
+      "trials": 17,
+      "frozen_source_hashes_match": true,
+      "all_trial_counts_match": true
+    }
+  },
+  "shuffled_input_hashes_match": true
+}

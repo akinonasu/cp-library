@@ -1,10 +1,12 @@
 ---
-title: "Permutation Tree"
-documentation_of: //data_structure/permutation_tree.hpp
+title: Permutation Tree
+documentation_of: //tree/permutation_tree.hpp
+redirect_from:
+- /data_structure/permutation_tree.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/permutation_tree.hpp"
+#include "lib/tree/permutation_tree.hpp"
 #include <iostream>
 
 PermutationTree tree(std::vector<int>{1, 0, 3, 2});

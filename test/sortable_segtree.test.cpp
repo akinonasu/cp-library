@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/point_set_range_sort_range_composite"
 #include "../components/fast_io.hpp"
-#include "../data_structure/sortable_segtree.hpp"
+#include "../data_structure/segment_tree/sortable_segtree.hpp"
 
 struct Affine { std::uint32_t a, b; };
 Affine compose(Affine f, Affine g) {

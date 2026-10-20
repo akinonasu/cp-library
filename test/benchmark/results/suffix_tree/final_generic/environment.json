@@ -1,0 +1,37 @@
+{
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-I",
+    "/mnt/c/Users/yukiz/Desktop/cp-library",
+    "-isystem",
+    "/mnt/c/Users/yukiz/Desktop/cp-library/.verify-helper/cache/suffix_tree_references"
+  ],
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "affinity": [
+    2
+  ],
+  "rounds": 7,
+  "n": 500000,
+  "queries": 20000,
+  "seed": 20261020,
+  "acl": {
+    "url": "https://raw.githubusercontent.com/atcoder/ac-library/864245a00b00dd008d1abfdc239618fdb7d139da/atcoder/string.hpp",
+    "sha256": "e7ffe101a268208d63c17374e970f781a1a828feb6cc6010ead78c2a709cda86"
+  },
+  "sources": {
+    "string/suffix_tree.hpp": "4b1afd4e23ec3c5e7261f610abd95d5fa598c6635746221997472f2efc41bdbd",
+    "components/suffix_array.hpp": "2bf2598e6fe7cc016696d6ae465bcaafe8bcc0b810b87347dcea5a51c82f1c8c",
+    "components/sequence_compare.hpp": "d4ad8a26a732392a955f69b0527b98b75b8a61481b3cd4d9da8384cbeda654ac",
+    "components/static_range_min.hpp": "48a735aad7971fd6c507700286e6f8250d575e014c4e11654f9affc13b37720f",
+    "data_structure/range_query/sparse_table.hpp": "5aa45c4ea1edfd593999740d02cf66f1e775c53d875014bee33eb6c41dd61514",
+    "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+    "test/benchmark/suffix_tree.cpp": "b0a42856fa269da368715840fb42994ee3f325d62503e18536685553fa65d7d8"
+  },
+  "baseline_archive_sha256": "40595b04ecc92b442a3e821f5b54563bbe44cd7dd4c8a336ac88c0b4b11214db"
+}

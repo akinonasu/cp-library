@@ -14,7 +14,7 @@ auto c = convolution_fft(a, b); // 約 {4,13,22,15}
 | --- | --- | --- |
 | `convolution_fft(a,b)` | 実数または複素数の通常の畳み込みを近似計算 | $$O(L\log L)$$ |
 
-$$c_k = \sum_{i+j=k} a_i b_j$$。係数は浮動小数点型、またはその `std::complex` です。浮動小数点による近似計算です。
+$$\displaystyle c_k = \sum_{i+j=k} a_i b_j$$。係数は浮動小数点型、またはその `std::complex` です。浮動小数点による近似計算です。
 
 返り値は入力と同じ型の `vector` です。両方が非空なら長さは `a.size()+b.size()-1`、どちらかが空なら空配列です。入力は変更しません。整数の厳密な答えが必要な場合は、整数型の配列で `convolution_integer` を使えます。
 

@@ -1,0 +1,1266 @@
+0000000000005270 <fps_detail::Mint::Mint()>:
+    5270:	movl   $0x0,(%rdi)
+    5276:	ret
+    5277:	nopw   0x0(%rax,%rax,1)
+
+00000000000131c0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)>:
+   131c0:	push   %rbp
+   131c1:	mov    $0x40,%ecx
+   131c6:	mov    %rsp,%rbp
+   131c9:	push   %r15
+   131cb:	push   %r14
+   131cd:	push   %r13
+   131cf:	mov    %rdi,%r13
+   131d2:	push   %r12
+   131d4:	mov    %rsi,%r12
+   131d7:	push   %rbx
+   131d8:	mov    %rdx,%rbx
+   131db:	and    $0xffffffffffffffe0,%rsp
+   131df:	sub    $0x260,%rsp
+   131e6:	mov    0x8(%rdx),%rax
+   131ea:	sub    (%rdx),%rax
+   131ed:	mov    0x8(%rsi),%rdx
+   131f1:	sub    (%rsi),%rdx
+   131f4:	sar    $0x2,%rax
+   131f8:	movq   $0x0,0x10(%rdi)
+   13200:	sar    $0x2,%rdx
+   13204:	vmovdqa 0xf694(%rip),%xmm1        # 228a0 <fps_detail::blocked_ntt::kernels::kP+0x2b0>
+   1320c:	add    %rdx,%rax
+   1320f:	lea    -0x2(%rax),%rdx
+   13213:	dec    %rax
+   13216:	lzcnt  %rdx,%rdx
+   1321b:	sub    %edx,%ecx
+   1321d:	mov    $0x1,%edx
+   13222:	mov    %rax,0x58(%rsp)
+   13227:	vmovd  %ecx,%xmm0
+   1322b:	vpmaxsd %xmm1,%xmm0,%xmm0
+   13230:	vmovd  %xmm0,%ecx
+   13234:	vmovd  %xmm0,0x2c(%rsp)
+   1323a:	vpxor  %xmm0,%xmm0,%xmm0
+   1323e:	mov    %ecx,%esi
+   13240:	vmovdqu %xmm0,(%rdi)
+   13244:	shlx   %rsi,%rdx,%rcx
+   13249:	lea    0x17(%rcx),%rdx
+   1324d:	mov    %rcx,0x80(%rsp)
+   13255:	mov    %rdx,%rsi
+   13258:	mov    %rdx,0x88(%rsp)
+   13260:	call   52a0 <fps_detail::prepare_fps_output(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >&, unsigned long)>
+   13265:	mov    0x8(%r13),%r15
+   13269:	mov    0x10(%r13),%rax
+   1326d:	mov    0x88(%rsp),%rdx
+   13275:	sub    %r15,%rax
+   13278:	sar    $0x2,%rax
+   1327c:	cmp    %rdx,%rax
+   1327f:	jb     13fa8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xde8>
+   13285:	movl   $0x0,0xe8(%rsp)
+   13290:	xor    %eax,%eax
+   13292:	movb   $0x0,0xe8(%rsp)
+   1329a:	mov    0xe8(%rsp),%ecx
+   132a1:	mov    %ecx,(%r15,%rax,4)
+   132a5:	inc    %rax
+   132a8:	cmp    %rax,%rdx
+   132ab:	jne    13292 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xd2>
+   132ad:	mov    0x80(%rsp),%rax
+   132b5:	lea    0x5c(%r15,%rax,4),%rax
+   132ba:	mov    %rax,0x8(%r13)
+   132be:	mov    0x0(%r13),%rax
+   132c2:	mov    %rax,%rdx
+   132c5:	neg    %rdx
+   132c8:	and    $0x1c,%edx
+   132cb:	add    %rdx,%rax
+   132ce:	mov    %rdx,0x70(%rsp)
+   132d3:	mov    %rax,0x88(%rsp)
+   132db:	mov    0x8(%rbx),%rdx
+   132df:	mov    0x8(%r12),%rax
+   132e4:	sub    (%rbx),%rdx
+   132e7:	sub    (%r12),%rax
+   132eb:	sar    $0x2,%rax
+   132ef:	sar    $0x2,%rdx
+   132f3:	vmovdqa 0xf5a5(%rip),%xmm1        # 228a0 <fps_detail::blocked_ntt::kernels::kP+0x2b0>
+   132fb:	lea    -0x2(%rdx,%rax,1),%rdx
+   13300:	mov    $0x40,%eax
+   13305:	lzcnt  %rdx,%rdx
+   1330a:	sub    %edx,%eax
+   1330c:	mov    $0x1,%edx
+   13311:	vmovd  %eax,%xmm0
+   13315:	vpmaxsd %xmm1,%xmm0,%xmm0
+   1331a:	vmovd  %xmm0,0xa0(%rsp)
+   13323:	vmovd  %xmm0,%eax
+   13327:	shlx   %rax,%rdx,%rax
+   1332c:	mov    %rax,%rcx
+   1332f:	lea    0x10(%rax),%r15
+   13333:	mov    %rax,0x38(%rsp)
+   13338:	movabs $0x3fffffffffe7ffff,%rdx
+   13342:	shr    $0x3,%rcx
+   13346:	lea    0x10(%rcx),%r14
+   1334a:	mov    %rcx,0x30(%rsp)
+   1334f:	mov    0x88(%rsp),%rcx
+   13357:	lea    0x410(%rax,%r14,2),%r10
+   1335f:	lea    (%r14,%r15,1),%rax
+   13363:	add    %rax,%rax
+   13366:	test   %rcx,%rcx
+   13369:	cmove  %rax,%r10
+   1336d:	lea    -0x80000(%r10),%rax
+   13374:	cmp    %rax,%rdx
+   13377:	jae    13f10 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xd50>
+   1337d:	movabs $0x1ffffffffffffffe,%rax
+   13387:	cmp    %r10,%rax
+   1338a:	jb     14626 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1466>
+   13390:	lea    0x0(,%r10,4),%rdi
+   13398:	mov    $0x40,%esi
+   1339d:	call   2040 <operator new[](unsigned long, std::align_val_t)@plt>
+   133a2:	mov    %rax,0x78(%rsp)
+   133a7:	movq   $0x0,0x18(%rsp)
+   133b0:	movq   $0x0,0x20(%rsp)
+   133b9:	cmpq   $0x0,0x88(%rsp)
+   133c2:	lea    0x0(,%r15,4),%rcx
+   133ca:	je     14110 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xf50>
+   133d0:	mov    0x88(%rsp),%rdi
+   133d8:	mov    0x78(%rsp),%rdx
+   133dd:	mov    %rdi,%rax
+   133e0:	shr    $0x6,%rdx
+   133e4:	mov    %rdi,0x60(%rsp)
+   133e9:	shr    $0x6,%rax
+   133ed:	mov    %rdi,0xc0(%rsp)
+   133f5:	inc    %rax
+   133f8:	sub    %rdx,%rax
+   133fb:	and    $0x3f,%eax
+   133fe:	shl    $0x6,%rax
+   13402:	mov    %rax,0x40(%rsp)
+   13407:	mov    %rax,%rsi
+   1340a:	mov    0x78(%rsp),%rax
+   1340f:	shl    $0x2,%r14
+   13413:	lea    (%rax,%rsi,1),%r15
+   13417:	lea    (%r15,%rcx,1),%rax
+   1341b:	vmovq  %r15,%xmm3
+   13420:	lea    (%rax,%r14,1),%rcx
+   13424:	vpinsrq $0x1,%rax,%xmm3,%xmm0
+   1342a:	mov    %rax,0x48(%rsp)
+   1342f:	add    %rcx,%r14
+   13432:	mov    %rcx,0x50(%rsp)
+   13437:	mov    %rcx,0xd8(%rsp)
+   1343f:	vmovdqu %xmm0,0xc8(%rsp)
+   13448:	cmp    %r14,%rax
+   1344b:	je     1345d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x29d>
+   1344d:	mov    %r14,%rdx
+   13450:	mov    %rax,%rdi
+   13453:	xor    %esi,%esi
+   13455:	sub    %rax,%rdx
+   13458:	call   2090 <memset@plt>
+   1345d:	mov    (%r12),%rdx
+   13461:	mov    0x8(%r12),%rax
+   13466:	mov    $0xc47fffff,%esi
+   1346b:	xor    %r8d,%r8d
+   1346e:	vmovd  %esi,%xmm2
+   13472:	mov    0x88(%rsp),%rcx
+   1347a:	mov    $0x8,%edi
+   1347f:	sub    %rdx,%rax
+   13482:	vpbroadcastd %xmm2,%ymm2
+   13487:	cmp    $0x1c,%rax
+   1348b:	jbe    144e0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1320>
+   13491:	data16 cs nopw 0x0(%rax,%rax,1)
+   1349c:	data16 cs nopw 0x0(%rax,%rax,1)
+   134a7:	data16 cs nopw 0x0(%rax,%rax,1)
+   134b2:	data16 cs nopw 0x0(%rax,%rax,1)
+   134bd:	nopl   (%rax)
+   134c0:	vmovdqu (%rdx,%r8,1),%ymm0
+   134c6:	mov    %rdi,%rsi
+   134c9:	add    $0x8,%rdi
+   134cd:	vpaddd %ymm2,%ymm0,%ymm1
+   134d1:	vpminud %ymm1,%ymm0,%ymm0
+   134d6:	vmovdqu %ymm0,(%rcx,%r8,1)
+   134dc:	mov    (%r12),%rdx
+   134e0:	mov    0x8(%r12),%rax
+   134e5:	add    $0x20,%r8
+   134e9:	sub    %rdx,%rax
+   134ec:	sar    $0x2,%rax
+   134f0:	cmp    %rdi,%rax
+   134f3:	jae    134c0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x300>
+   134f5:	cmp    %rax,%rsi
+   134f8:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   134fe:	mov    %rax,%r8
+   13501:	sub    %rsi,%r8
+   13504:	lea    -0x1(%r8),%rdi
+   13508:	cmp    $0x2,%rdi
+   1350c:	jbe    142c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1108>
+   13512:	mov    0x88(%rsp),%rcx
+   1351a:	lea    0x0(,%rsi,4),%rdi
+   13522:	lea    0x4(%rdx,%rdi,1),%r11
+   13527:	lea    (%rcx,%rdi,1),%r9
+   1352b:	mov    %r9,%r10
+   1352e:	sub    %r11,%r10
+   13531:	cmp    $0x8,%r10
+   13535:	jbe    142d0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1110>
+   1353b:	mov    $0xc47fffff,%edi
+   13540:	vmovdqu (%rdx,%rsi,4),%xmm1
+   13545:	vmovd  %edi,%xmm0
+   13549:	mov    %r8,%rdi
+   1354c:	vpbroadcastd %xmm0,%xmm0
+   13551:	and    $0xfffffffffffffffc,%rdi
+   13555:	vpaddd %xmm0,%xmm1,%xmm0
+   13559:	add    %rdi,%rsi
+   1355c:	and    $0x3,%r8d
+   13560:	vpminud %xmm1,%xmm0,%xmm0
+   13565:	vmovdqu %xmm0,(%r9)
+   1356a:	je     135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   1356c:	mov    (%rdx,%rsi,4),%r8d
+   13570:	lea    0x0(,%rsi,4),%r9
+   13578:	lea    -0x3b800001(%r8),%edi
+   1357f:	cmp    %r8d,%edi
+   13582:	cmova  %r8d,%edi
+   13586:	mov    %edi,(%rcx,%rsi,4)
+   13589:	lea    0x1(%rsi),%rdi
+   1358d:	cmp    %rax,%rdi
+   13590:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   13592:	mov    0x4(%rdx,%r9,1),%r8d
+   13597:	lea    -0x3b800001(%r8),%edi
+   1359e:	cmp    %r8d,%edi
+   135a1:	cmova  %r8d,%edi
+   135a5:	add    $0x2,%rsi
+   135a9:	mov    %edi,0x4(%rcx,%r9,1)
+   135ae:	cmp    %rax,%rsi
+   135b1:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   135b3:	mov    0x8(%rdx,%r9,1),%edx
+   135b8:	lea    -0x3b800001(%rdx),%eax
+   135be:	cmp    %edx,%eax
+   135c0:	cmova  %edx,%eax
+   135c3:	mov    %eax,0x8(%rcx,%r9,1)
+   135c8:	mov    (%rbx),%rdx
+   135cb:	mov    0x8(%rbx),%r9
+   135cf:	mov    $0xc47fffff,%eax
+   135d4:	xor    %edi,%edi
+   135d6:	mov    0x80(%rsp),%rcx
+   135de:	vmovd  %eax,%xmm2
+   135e2:	mov    $0x8,%r8d
+   135e8:	sub    %rdx,%r9
+   135eb:	vpbroadcastd %xmm2,%ymm2
+   135f0:	shr    $1,%rcx
+   135f3:	cmp    $0x1c,%r9
+   135f7:	jbe    13ec0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xd00>
+   135fd:	nopl   (%rax)
+   13600:	vmovdqu (%rdx,%rdi,1),%ymm0
+   13605:	mov    %r8,%rsi
+   13608:	lea    0x8(%r8),%r8
+   1360c:	vpaddd %ymm2,%ymm0,%ymm1
+   13610:	vpminud %ymm1,%ymm0,%ymm0
+   13615:	vmovdqa %ymm0,(%r15,%rdi,1)
+   1361b:	mov    (%rbx),%rdx
+   1361e:	mov    0x8(%rbx),%rax
+   13622:	add    $0x20,%rdi
+   13626:	sub    %rdx,%rax
+   13629:	sar    $0x2,%rax
+   1362d:	cmp    %r8,%rax
+   13630:	jae    13600 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x440>
+   13632:	cmp    %rax,%rsi
+   13635:	jae    13729 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x569>
+   1363b:	lea    0x1(%rsi),%r10
+   1363f:	mov    %rax,%r9
+   13642:	cmp    %r10,%rax
+   13645:	setae  %r11b
+   13649:	sub    %rsi,%r9
+   1364c:	lea    -0x1(%r9),%r14
+   13650:	cmp    $0x2,%r14
+   13654:	jbe    143d0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1210>
+   1365a:	test   %r11b,%r11b
+   1365d:	je     143d0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1210>
+   13663:	mov    0x40(%rsp),%rdi
+   13668:	mov    0x78(%rsp),%rbx
+   1366d:	lea    0x0(,%rsi,4),%r8
+   13675:	lea    0x4(%rdx,%r8,1),%r12
+   1367a:	add    %r8,%rdi
+   1367d:	add    %rbx,%rdi
+   13680:	mov    %rdi,%rbx
+   13683:	sub    %r12,%rbx
+   13686:	cmp    $0x8,%rbx
+   1368a:	jbe    143d8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1218>
+   13690:	mov    $0xc47fffff,%ebx
+   13695:	vmovdqu (%rdx,%rsi,4),%xmm1
+   1369a:	vmovd  %ebx,%xmm0
+   1369e:	vpbroadcastd %xmm0,%xmm0
+   136a3:	vpaddd %xmm0,%xmm1,%xmm0
+   136a7:	vpminud %xmm1,%xmm0,%xmm0
+   136ac:	vmovdqu %xmm0,(%rdi)
+   136b0:	mov    %r9,%rdi
+   136b3:	and    $0xfffffffffffffffc,%rdi
+   136b7:	add    %rdi,%rsi
+   136ba:	and    $0x3,%r9d
+   136be:	je     1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   136c0:	mov    (%rdx,%rsi,4),%r8d
+   136c4:	lea    0x0(,%rsi,4),%r9
+   136cc:	lea    -0x3b800001(%r8),%edi
+   136d3:	cmp    %r8d,%edi
+   136d6:	cmova  %r8d,%edi
+   136da:	mov    %edi,(%r15,%rsi,4)
+   136de:	lea    0x1(%rsi),%rdi
+   136e2:	cmp    %rax,%rdi
+   136e5:	jae    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   136e7:	mov    0x4(%rdx,%r9,1),%r8d
+   136ec:	lea    -0x3b800001(%r8),%edi
+   136f3:	cmp    %r8d,%edi
+   136f6:	cmova  %r8d,%edi
+   136fa:	add    $0x2,%rsi
+   136fe:	mov    %edi,0x4(%r15,%r9,1)
+   13703:	cmp    %rax,%rsi
+   13706:	jae    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   13708:	mov    0x8(%rdx,%r9,1),%edx
+   1370d:	lea    -0x3b800001(%rdx),%eax
+   13713:	cmp    %edx,%eax
+   13715:	cmova  %edx,%eax
+   13718:	mov    %eax,0x8(%r15,%r9,1)
+   1371d:	xor    %esi,%esi
+   1371f:	test   %r11b,%r11b
+   13722:	cmovne %r14,%rsi
+   13726:	add    %r10,%rsi
+   13729:	lea    0x0(,%rsi,4),%r8
+   13731:	lea    (%r15,%r8,1),%rdi
+   13735:	cmp    %rsi,%rcx
+   13738:	jae    13ee0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xd20>
+   1373e:	movzbl 0x2c(%rsp),%ebx
+   13743:	mov    $0x4,%eax
+   13748:	shlx   %rbx,%rax,%rax
+   1374d:	mov    %rax,%rbx
+   13750:	lea    (%r15,%rax,1),%rdx
+   13754:	cmp    %r8,%rax
+   13757:	je     13f04 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xd44>
+   1375d:	sub    %rdi,%rdx
+   13760:	xor    %esi,%esi
+   13762:	vzeroupper
+   13765:	call   2090 <memset@plt>
+   1376a:	mov    0x80(%rsp),%rax
+   13772:	lea    (%r15,%rbx,1),%rdi
+   13776:	lea    0x40(,%rax,4),%rdx
+   1377e:	cmp    %rbx,%rdx
+   13781:	je     1378d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x5cd>
+   13783:	sub    %rbx,%rdx
+   13786:	xor    %esi,%esi
+   13788:	call   2090 <memset@plt>
+   1378d:	mov    0x38(%rsp),%rax
+   13792:	mov    0x48(%rsp),%r14
+   13797:	lea    0xeda2(%rip),%rdx        # 22540 <fps_detail::blocked_ntt::detail::kRoots>
+   1379e:	mov    %rax,%rbx
+   137a1:	shr    $0x4,%rax
+   137a5:	mov    %r14,%rdi
+   137a8:	mov    %rax,%r12
+   137ab:	mov    %rax,%rsi
+   137ae:	shr    $0x6,%rbx
+   137b2:	call   5df0 <fps_detail::blocked_ntt::detail::build_table(unsigned int*, unsigned long, std::array<unsigned int, 21ul> const&)>
+   137b7:	mov    %r12,%rsi
+   137ba:	mov    0x50(%rsp),%r12
+   137bf:	lea    0xedce(%rip),%rdx        # 22594 <fps_detail::blocked_ntt::detail::kRoots+0x54>
+   137c6:	mov    %r12,%rdi
+   137c9:	call   5df0 <fps_detail::blocked_ntt::detail::build_table(unsigned int*, unsigned long, std::array<unsigned int, 21ul> const&)>
+   137ce:	mov    0x60(%rsp),%rdi
+   137d3:	mov    %r14,%rdx
+   137d6:	mov    %rbx,%rsi
+   137d9:	call   7f60 <fps_detail::multiply_detail::forward_radix8(long long __vector(4)*, unsigned long, unsigned int const*)>
+   137de:	mov    %r14,%rdx
+   137e1:	mov    %rbx,%rsi
+   137e4:	mov    %r15,%rdi
+   137e7:	call   7f60 <fps_detail::multiply_detail::forward_radix8(long long __vector(4)*, unsigned long, unsigned int const*)>
+   137ec:	mov    %r14,0x90(%rsp)
+   137f4:	mov    %r12,0x98(%rsp)
+   137fc:	cmp    $0x10,%rbx
+   13800:	je     14130 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xf70>
+   13806:	cmp    $0x40,%rbx
+   1380a:	je     14270 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x10b0>
+   13810:	cmp    $0x100,%rbx
+   13817:	je     141a0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xfe0>
+   1381d:	mov    0x60(%rsp),%rsi
+   13822:	mov    %rbx,%rax
+   13825:	mov    %r15,%r12
+   13828:	mov    %r13,0x48(%rsp)
+   1382d:	lea    0x90(%rsp),%r14
+   13835:	shl    $0x5,%rax
+   13839:	xor    %r15d,%r15d
+   1383c:	mov    %r14,0x80(%rsp)
+   13844:	mov    %rsi,%r13
+   13847:	mov    %r12,%r14
+   1384a:	mov    %rax,%r12
+   1384d:	nopl   (%rax)
+   13850:	mov    %r15,%r8
+   13853:	mov    %r14,%rdx
+   13856:	mov    %r13,%rsi
+   13859:	mov    %rbx,%rcx
+   1385c:	mov    0x80(%rsp),%rdi
+   13864:	inc    %r15
+   13867:	add    %r12,%r13
+   1386a:	add    %r12,%r14
+   1386d:	call   121c0 <fps_detail::multiply_detail::Subtrees::visit(long long __vector(4)*, long long __vector(4)*, unsigned long, unsigned long) const [clone .part.0]>
+   13872:	cmp    $0x8,%r15
+   13876:	jne    13850 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x690>
+   13878:	mov    0x48(%rsp),%r13
+   1387d:	mov    0x30(%rsp),%r8d
+   13882:	mov    $0x1e,%r11d
+   13888:	mov    $0x1,%ecx
+   1388d:	mov    $0x1,%r10d
+   13893:	movabs $0x89ae40875de0cc3f,%rdi
+   1389d:	mov    $0x3b7fffff,%r9d
+   138a3:	nopl   0x0(%rax,%rax,1)
+   138a8:	mov    %rcx,%rsi
+   138ab:	test   $0x1,%r9b
+   138af:	je     138d4 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x714>
+   138b1:	imul   %r8,%rcx
+   138b5:	mov    %rcx,%rax
+   138b8:	mul    %rdi
+   138bb:	mov    %rdx,%rsi
+   138be:	shr    $0x1d,%rsi
+   138c2:	imul   $0x3b800001,%rsi,%rax
+   138c9:	sub    %rax,%rcx
+   138cc:	mov    %rcx,%rsi
+   138cf:	mov    %ecx,%ecx
+   138d1:	mov    %rcx,%r10
+   138d4:	imul   %r8,%r8
+   138d8:	shr    $1,%r9d
+   138db:	mov    %r8,%rax
+   138de:	mul    %rdi
+   138e1:	shr    $0x1d,%rdx
+   138e5:	imul   $0x3b800001,%rdx,%rdx
+   138ec:	sub    %edx,%r8d
+   138ef:	dec    %r11d
+   138f2:	jne    138a8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x6e8>
+   138f4:	mov    0x50(%rsp),%r15
+   138f9:	mov    %rsi,%r9
+   138fc:	shl    $0x20,%rcx
+   13900:	vmovd  %r10d,%xmm0
+   13905:	vpbroadcastd %xmm0,%ymm0
+   1390a:	mov    0x4(%r15),%r11d
+   1390e:	mov    0x8(%r15),%r14d
+   13912:	imul   %r11,%r9
+   13916:	imul   %rsi,%r14
+   1391a:	mov    %r9,%rax
+   1391d:	mul    %rdi
+   13920:	shr    $0x1d,%rdx
+   13924:	imul   $0x3b800001,%rdx,%rax
+   1392b:	sub    %rax,%r9
+   1392e:	mov    %r14,%rax
+   13931:	mul    %rdi
+   13934:	mov    %r9,%r8
+   13937:	mov    %r14,%r9
+   1393a:	mov    0xc(%r15),%r14d
+   1393e:	vmovdqa %ymm0,0xe0(%rsp)
+   13947:	vmovd  %r8d,%xmm2
+   1394c:	shl    $0x20,%r8
+   13950:	imul   %rsi,%r14
+   13954:	vpbroadcastd %xmm2,%ymm2
+   13959:	vmovdqa %ymm2,0x120(%rsp)
+   13962:	shr    $0x1d,%rdx
+   13966:	vmovdqa %ymm2,0x1e0(%rsp)
+   1396f:	imul   $0x3b800001,%rdx,%rax
+   13976:	sub    %rax,%r9
+   13979:	mov    %r14,%rax
+   1397c:	mul    %rdi
+   1397f:	mov    %rdx,%rsi
+   13982:	shr    $0x1d,%rsi
+   13986:	imul   $0x3b800001,%rsi,%rax
+   1398d:	mov    %r14,%rsi
+   13990:	lea    0xe0(%rsp),%r14
+   13998:	sub    %rax,%rsi
+   1399b:	mov    %rcx,%rax
+   1399e:	lea    (%rbx,%rbx,2),%rcx
+   139a2:	mul    %rdi
+   139a5:	mov    %r8,%rax
+   139a8:	shr    $0x1d,%rdx
+   139ac:	vmovd  %edx,%xmm0
+   139b0:	mul    %rdi
+   139b3:	vpbroadcastd %xmm0,%ymm0
+   139b8:	vmovdqa %ymm0,0x100(%rsp)
+   139c1:	vmovd  %r9d,%xmm0
+   139c6:	shl    $0x20,%r9
+   139ca:	shr    $0x1d,%rdx
+   139ce:	mov    %r9,%rax
+   139d1:	vpbroadcastd %xmm0,%ymm0
+   139d6:	vmovdqa %ymm0,0x160(%rsp)
+   139df:	vmovd  %edx,%xmm1
+   139e3:	mul    %rdi
+   139e6:	vpbroadcastd %xmm1,%ymm1
+   139eb:	vmovdqa %ymm1,0x140(%rsp)
+   139f4:	vmovdqa %ymm1,0x200(%rsp)
+   139fd:	shr    $0x1d,%rdx
+   13a01:	vmovd  %edx,%xmm0
+   13a05:	vpbroadcastd %xmm0,%ymm0
+   13a0a:	vmovdqa %ymm0,0x180(%rsp)
+   13a13:	vmovd  %esi,%xmm0
+   13a17:	shl    $0x20,%rsi
+   13a1b:	mov    %rsi,%rax
+   13a1e:	vpbroadcastd %xmm0,%ymm0
+   13a23:	mov    %rbx,%rsi
+   13a26:	vmovdqa %ymm0,0x1a0(%rsp)
+   13a2f:	mul    %rdi
+   13a32:	shr    $0x1d,%rdx
+   13a36:	vmovd  %edx,%xmm0
+   13a3a:	vpbroadcastd %xmm0,%ymm0
+   13a3f:	vmovdqa %ymm0,0x1c0(%rsp)
+   13a48:	vmovd  %r11d,%xmm0
+   13a4d:	shl    $0x20,%r11
+   13a51:	mov    %r11,%rax
+   13a54:	vpbroadcastd %xmm0,%ymm0
+   13a59:	vmovdqa %ymm0,0x220(%rsp)
+   13a62:	mul    %rdi
+   13a65:	mov    0x60(%rsp),%rax
+   13a6a:	shr    $0x1d,%rdx
+   13a6e:	vmovd  %edx,%xmm0
+   13a72:	mov    %rbx,%rdx
+   13a75:	shl    $0x7,%rdx
+   13a79:	vpbroadcastd %xmm0,%ymm0
+   13a7e:	vmovdqa %ymm0,0x240(%rsp)
+   13a87:	add    %rax,%rdx
+   13a8a:	shl    $0x5,%rsi
+   13a8e:	lea    (%rax,%rsi,1),%rdi
+   13a92:	shl    $0x5,%rcx
+   13a96:	vpbroadcastd 0xeb51(%rip),%ymm15        # 225f0 <fps_detail::blocked_ntt::kernels::kP>
+   13a9f:	vpbroadcastd 0xeb44(%rip),%ymm14        # 225ec <fps_detail::blocked_ntt::kernels::k2P>
+   13aa8:	data16 cs nopw 0x0(%rax,%rax,1)
+   13ab3:	data16 cs nopw 0x0(%rax,%rax,1)
+   13abe:	xchg   %ax,%ax
+   13ac0:	vmovdqa (%rdx),%ymm0
+   13ac4:	vmovdqa (%rdx,%rsi,2),%ymm1
+   13ac9:	vmovdqa (%rax),%ymm2
+   13acd:	vmovdqa (%rax,%rsi,2),%ymm3
+   13ad2:	vpaddd %ymm14,%ymm0,%ymm4
+   13ad7:	vpaddd (%rdx,%rsi,1),%ymm0,%ymm0
+   13adc:	vpsubd (%rdx,%rsi,1),%ymm4,%ymm4
+   13ae1:	vpaddd %ymm14,%ymm1,%ymm5
+   13ae6:	vpsubd %ymm14,%ymm0,%ymm6
+   13aeb:	vpaddd (%rdx,%rcx,1),%ymm1,%ymm1
+   13af0:	vpsrlq $0x20,%ymm4,%ymm7
+   13af5:	vpmuludq 0xa0(%r14),%ymm4,%ymm8
+   13afe:	vpsubd (%rdx,%rcx,1),%ymm5,%ymm5
+   13b03:	vpaddd %ymm14,%ymm2,%ymm9
+   13b08:	vpmuludq 0xa0(%r14),%ymm7,%ymm7
+   13b11:	vpsrlq $0x20,%ymm5,%ymm10
+   13b16:	vpmuludq 0xe0(%r14),%ymm5,%ymm11
+   13b1f:	vpaddd %ymm14,%ymm3,%ymm12
+   13b24:	vpmuludq 0xe0(%r14),%ymm10,%ymm10
+   13b2d:	vpmulld 0x80(%r14),%ymm4,%ymm4
+   13b36:	vpminud %ymm6,%ymm0,%ymm6
+   13b3b:	vpsubd %ymm14,%ymm1,%ymm0
+   13b40:	vpsrlq $0x20,%ymm8,%ymm8
+   13b46:	vpaddd (%rax,%rsi,1),%ymm2,%ymm2
+   13b4b:	vpsubd (%rax,%rsi,1),%ymm9,%ymm9
+   13b50:	vpminud %ymm0,%ymm1,%ymm0
+   13b55:	vpblendd $0xaa,%ymm7,%ymm8,%ymm7
+   13b5b:	vpsrlq $0x20,%ymm11,%ymm11
+   13b61:	vpaddd (%rax,%rcx,1),%ymm3,%ymm3
+   13b66:	vpsubd (%rax,%rcx,1),%ymm12,%ymm12
+   13b6b:	vpmulld %ymm15,%ymm7,%ymm7
+   13b70:	vpblendd $0xaa,%ymm10,%ymm11,%ymm10
+   13b76:	vpmulld 0xc0(%r14),%ymm5,%ymm5
+   13b7f:	vpsrlq $0x20,%ymm2,%ymm11
+   13b84:	vpmulld %ymm15,%ymm10,%ymm10
+   13b89:	vpmuludq 0x20(%r14),%ymm2,%ymm8
+   13b8f:	vpsrlq $0x20,%ymm9,%ymm1
+   13b95:	vpsrlq $0x20,%ymm3,%ymm13
+   13b9a:	vpmuludq 0x20(%r14),%ymm11,%ymm11
+   13ba0:	vpmuludq 0x20(%r14),%ymm1,%ymm1
+   13ba6:	vpmuludq 0x20(%r14),%ymm13,%ymm13
+   13bac:	vpsubd %ymm7,%ymm4,%ymm7
+   13bb0:	vpmulld (%r14),%ymm2,%ymm2
+   13bb5:	vpsrlq $0x20,%ymm12,%ymm4
+   13bbb:	vpmuludq 0x60(%r14),%ymm4,%ymm4
+   13bc1:	vpsubd %ymm10,%ymm5,%ymm10
+   13bc6:	vpsrlq $0x20,%ymm8,%ymm8
+   13bcc:	vpmuludq 0x20(%r14),%ymm9,%ymm5
+   13bd2:	vpblendd $0xaa,%ymm11,%ymm8,%ymm11
+   13bd8:	vpmulld (%r14),%ymm9,%ymm9
+   13bdd:	vpmuludq 0x20(%r14),%ymm3,%ymm8
+   13be3:	vpmulld %ymm15,%ymm11,%ymm11
+   13be8:	vpmulld (%r14),%ymm3,%ymm3
+   13bed:	vpsrlq $0x20,%ymm5,%ymm5
+   13bf2:	vpsrlq $0x20,%ymm8,%ymm8
+   13bf8:	vpblendd $0xaa,%ymm1,%ymm5,%ymm1
+   13bfe:	vpmuludq 0x60(%r14),%ymm12,%ymm5
+   13c04:	vpmulld 0x40(%r14),%ymm12,%ymm12
+   13c0a:	vpblendd $0xaa,%ymm13,%ymm8,%ymm13
+   13c10:	vpmulld %ymm15,%ymm1,%ymm1
+   13c15:	vpsubd %ymm11,%ymm2,%ymm11
+   13c1a:	vpaddd %ymm14,%ymm6,%ymm2
+   13c1f:	vpaddd %ymm14,%ymm7,%ymm8
+   13c24:	vpaddd %ymm0,%ymm6,%ymm6
+   13c28:	vpsubd %ymm0,%ymm2,%ymm0
+   13c2c:	vpmulld %ymm15,%ymm13,%ymm13
+   13c31:	vpsrlq $0x20,%ymm5,%ymm5
+   13c36:	vpsubd %ymm10,%ymm8,%ymm8
+   13c3b:	vpsrlq $0x20,%ymm6,%ymm2
+   13c40:	vpaddd %ymm10,%ymm7,%ymm10
+   13c45:	vpblendd $0xaa,%ymm4,%ymm5,%ymm4
+   13c4b:	vpmuludq 0x20(%r14),%ymm6,%ymm5
+   13c51:	vpsrlq $0x20,%ymm0,%ymm7
+   13c56:	vpmuludq 0x20(%r14),%ymm2,%ymm2
+   13c5c:	vpmulld %ymm15,%ymm4,%ymm4
+   13c61:	vpmuludq 0x120(%r14),%ymm7,%ymm7
+   13c6a:	vpsubd %ymm1,%ymm9,%ymm1
+   13c6e:	vpsubd %ymm13,%ymm3,%ymm13
+   13c73:	vpmuludq 0x120(%r14),%ymm0,%ymm3
+   13c7c:	vpsrlq $0x20,%ymm8,%ymm9
+   13c82:	vpmulld (%r14),%ymm6,%ymm6
+   13c87:	vpmuludq 0x160(%r14),%ymm9,%ymm9
+   13c90:	vpsrlq $0x20,%ymm5,%ymm5
+   13c95:	vpmulld 0x100(%r14),%ymm0,%ymm0
+   13c9e:	vpsubd %ymm4,%ymm12,%ymm4
+   13ca2:	vpblendd $0xaa,%ymm2,%ymm5,%ymm2
+   13ca8:	vpmuludq 0x160(%r14),%ymm8,%ymm5
+   13cb1:	vpaddd %ymm13,%ymm11,%ymm12
+   13cb6:	vpsrlq $0x20,%ymm3,%ymm3
+   13cbb:	vpsubd %ymm13,%ymm11,%ymm13
+   13cc0:	vpmulld %ymm15,%ymm2,%ymm2
+   13cc5:	vpmulld 0x140(%r14),%ymm8,%ymm8
+   13cce:	vpblendd $0xaa,%ymm7,%ymm3,%ymm7
+   13cd4:	vpaddd %ymm4,%ymm1,%ymm3
+   13cd8:	vpsubd %ymm4,%ymm1,%ymm4
+   13cdc:	vpsubd %ymm14,%ymm12,%ymm1
+   13ce1:	vpsrlq $0x20,%ymm5,%ymm5
+   13ce6:	vpmulld %ymm15,%ymm7,%ymm7
+   13ceb:	vpsubd %ymm14,%ymm3,%ymm11
+   13cf0:	vpminud %ymm1,%ymm12,%ymm1
+   13cf5:	vpblendd $0xaa,%ymm9,%ymm5,%ymm9
+   13cfb:	vpaddd %ymm14,%ymm13,%ymm5
+   13d00:	vpaddd %ymm14,%ymm4,%ymm12
+   13d05:	vpminud %ymm11,%ymm3,%ymm11
+   13d0a:	vpmulld %ymm15,%ymm9,%ymm9
+   13d0f:	vpminud %ymm5,%ymm13,%ymm5
+   13d14:	vpminud %ymm12,%ymm4,%ymm12
+   13d19:	vpsubd %ymm14,%ymm10,%ymm4
+   13d1e:	vpsubd %ymm2,%ymm6,%ymm2
+   13d22:	vpminud %ymm4,%ymm10,%ymm4
+   13d27:	vpsubd %ymm7,%ymm0,%ymm7
+   13d2b:	vpaddd %ymm14,%ymm1,%ymm0
+   13d30:	vpaddd %ymm14,%ymm11,%ymm10
+   13d35:	vpaddd %ymm14,%ymm5,%ymm6
+   13d3a:	vpaddd %ymm14,%ymm12,%ymm13
+   13d3f:	vpaddd %ymm2,%ymm1,%ymm1
+   13d43:	vpsubd %ymm9,%ymm8,%ymm9
+   13d48:	vpsubd %ymm2,%ymm0,%ymm2
+   13d4c:	vpaddd %ymm4,%ymm11,%ymm11
+   13d50:	vpsubd %ymm4,%ymm10,%ymm4
+   13d54:	vpaddd %ymm7,%ymm5,%ymm5
+   13d58:	vpsubd %ymm7,%ymm6,%ymm7
+   13d5c:	vpaddd %ymm9,%ymm12,%ymm12
+   13d61:	vpsubd %ymm9,%ymm13,%ymm9
+   13d66:	vpsubd %ymm14,%ymm1,%ymm13
+   13d6b:	vpsubd %ymm14,%ymm2,%ymm6
+   13d70:	vpsubd %ymm14,%ymm11,%ymm10
+   13d75:	vpsubd %ymm14,%ymm4,%ymm0
+   13d7a:	vpsubd %ymm14,%ymm5,%ymm8
+   13d7f:	vpsubd %ymm14,%ymm7,%ymm3
+   13d84:	vpminud %ymm13,%ymm1,%ymm13
+   13d89:	vpminud %ymm6,%ymm2,%ymm6
+   13d8e:	vpsubd %ymm14,%ymm12,%ymm2
+   13d93:	vpsubd %ymm14,%ymm9,%ymm1
+   13d98:	vpminud %ymm10,%ymm11,%ymm10
+   13d9d:	vpminud %ymm0,%ymm4,%ymm0
+   13da2:	vpminud %ymm8,%ymm5,%ymm8
+   13da7:	vpminud %ymm3,%ymm7,%ymm3
+   13dac:	vpminud %ymm2,%ymm12,%ymm2
+   13db1:	vpminud %ymm1,%ymm9,%ymm1
+   13db6:	vpsubd %ymm15,%ymm13,%ymm9
+   13dbb:	vpsubd %ymm15,%ymm6,%ymm12
+   13dc0:	vpsubd %ymm15,%ymm10,%ymm7
+   13dc5:	vpsubd %ymm15,%ymm0,%ymm5
+   13dca:	vpsubd %ymm15,%ymm8,%ymm4
+   13dcf:	vpsubd %ymm15,%ymm3,%ymm11
+   13dd4:	vpminud %ymm9,%ymm13,%ymm9
+   13dd9:	vpminud %ymm12,%ymm6,%ymm12
+   13dde:	vpsubd %ymm15,%ymm2,%ymm6
+   13de3:	vpsubd %ymm15,%ymm1,%ymm13
+   13de8:	vpminud %ymm7,%ymm10,%ymm7
+   13ded:	vpminud %ymm5,%ymm0,%ymm5
+   13df2:	vmovdqa %ymm9,(%rax)
+   13df6:	vpminud %ymm4,%ymm8,%ymm4
+   13dfb:	vpminud %ymm11,%ymm3,%ymm11
+   13e00:	vpminud %ymm6,%ymm2,%ymm6
+   13e05:	vpminud %ymm13,%ymm1,%ymm13
+   13e0a:	vmovdqa %ymm12,(%rdx)
+   13e0e:	vmovdqa %ymm7,(%rax,%rsi,1)
+   13e13:	vmovdqa %ymm5,(%rdx,%rsi,1)
+   13e18:	vmovdqa %ymm4,(%rax,%rsi,2)
+   13e1d:	vmovdqa %ymm11,(%rdx,%rsi,2)
+   13e22:	vmovdqa %ymm6,(%rax,%rcx,1)
+   13e27:	vmovdqa %ymm13,(%rdx,%rcx,1)
+   13e2c:	add    $0x20,%rax
+   13e30:	add    $0x20,%rdx
+   13e34:	cmp    %rdi,%rax
+   13e37:	jne    13ac0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x900>
+   13e3d:	cmpq   $0x0,0x70(%rsp)
+   13e43:	jne    14090 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xed0>
+   13e49:	vzeroupper
+   13e4c:	mov    0x8(%r13),%r15
+   13e50:	mov    0x0(%r13),%rdx
+   13e54:	mov    0x58(%rsp),%rbx
+   13e59:	mov    %r15,%r14
+   13e5c:	sub    %rdx,%r14
+   13e5f:	mov    %r14,%rax
+   13e62:	sar    $0x2,%rax
+   13e66:	cmp    %rbx,%rax
+   13e69:	jb     140c0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xf00>
+   13e6f:	cmp    %rax,%rbx
+   13e72:	jae    13e81 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xcc1>
+   13e74:	lea    (%rdx,%rbx,4),%rax
+   13e78:	cmp    %rax,%r15
+   13e7b:	je     13e81 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xcc1>
+   13e7d:	mov    %rax,0x8(%r13)
+   13e81:	cmpq   $0x0,0x78(%rsp)
+   13e87:	je     13ea4 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xce4>
+   13e89:	mov    0x20(%rsp),%rax
+   13e8e:	test   %rax,%rax
+   13e91:	je     14188 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xfc8>
+   13e97:	mov    0x18(%rsp),%rsi
+   13e9c:	mov    %rax,%rdi
+   13e9f:	call   20b0 <munmap@plt>
+   13ea4:	lea    -0x28(%rbp),%rsp
+   13ea8:	mov    %r13,%rax
+   13eab:	pop    %rbx
+   13eac:	pop    %r12
+   13eae:	pop    %r13
+   13eb0:	pop    %r14
+   13eb2:	pop    %r15
+   13eb4:	pop    %rbp
+   13eb5:	ret
+   13eb6:	cs nopw 0x0(%rax,%rax,1)
+   13ec0:	mov    %r9,%rax
+   13ec3:	xor    %esi,%esi
+   13ec5:	mov    %r15,%rdi
+   13ec8:	xor    %r8d,%r8d
+   13ecb:	sar    $0x2,%rax
+   13ecf:	test   %r9,%r9
+   13ed2:	jne    1363b <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x47b>
+   13ed8:	nopl   0x0(%rax,%rax,1)
+   13ee0:	lea    0x0(,%rcx,4),%rax
+   13ee8:	movzbl 0x2c(%rsp),%ecx
+   13eed:	mov    $0x4,%ebx
+   13ef2:	lea    (%r15,%rax,1),%rdx
+   13ef6:	shlx   %rcx,%rbx,%rbx
+   13efb:	cmp    %r8,%rax
+   13efe:	jne    1375d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x59d>
+   13f04:	vzeroupper
+   13f07:	jmp    1376a <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x5aa>
+   13f0c:	nopl   0x0(%rax)
+   13f10:	xor    %r9d,%r9d
+   13f13:	xor    %edi,%edi
+   13f15:	mov    $0xffffffff,%r8d
+   13f1b:	mov    $0x22,%ecx
+   13f20:	lea    0x1fffff(,%r10,4),%r11
+   13f28:	mov    $0x3,%edx
+   13f2d:	mov    %r10,0x78(%rsp)
+   13f32:	and    $0xffffffffffe00000,%r11
+   13f39:	lea    0x200000(%r11),%rax
+   13f40:	mov    %r11,0x60(%rsp)
+   13f45:	mov    %rax,%rsi
+   13f48:	mov    %rax,0x18(%rsp)
+   13f4d:	call   2200 <mmap@plt>
+   13f52:	mov    0x78(%rsp),%r10
+   13f57:	cmp    $0xffffffffffffffff,%rax
+   13f5b:	mov    %rax,0x20(%rsp)
+   13f60:	je     1337d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1bd>
+   13f66:	add    $0x1fffff,%rax
+   13f6c:	and    $0xffffffffffe00000,%rax
+   13f72:	mov    %rax,0x78(%rsp)
+   13f77:	mov    %rax,%rdi
+   13f7a:	movabs $0x1ffffffffffffffe,%rax
+   13f84:	cmp    %r10,%rax
+   13f87:	jb     14610 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1450>
+   13f8d:	mov    0x60(%rsp),%rsi
+   13f92:	mov    $0xe,%edx
+   13f97:	call   2150 <madvise@plt>
+   13f9c:	jmp    133b9 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1f9>
+   13fa1:	nopl   0x0(%rax)
+   13fa8:	mov    0x0(%r13),%r14
+   13fac:	mov    %r15,%rsi
+   13faf:	movabs $0x1fffffffffffffff,%rcx
+   13fb9:	sub    %r14,%rsi
+   13fbc:	mov    %rsi,%rax
+   13fbf:	sar    $0x2,%rax
+   13fc3:	sub    %rax,%rcx
+   13fc6:	cmp    %rdx,%rcx
+   13fc9:	jb     14615 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1455>
+   13fcf:	cmp    %rax,%rdx
+   13fd2:	mov    %rax,%rcx
+   13fd5:	cmovae %rdx,%rcx
+   13fd9:	add    %rcx,%rax
+   13fdc:	mov    %rax,0x70(%rsp)
+   13fe1:	jb     144d0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1310>
+   13fe7:	test   %rax,%rax
+   13fea:	jne    141fd <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x103d>
+   13ff0:	movq   $0x0,0x88(%rsp)
+   13ffc:	xor    %ecx,%ecx
+   13ffe:	movq   $0x0,0x78(%rsp)
+   14007:	shl    $0x2,%rdx
+   1400b:	lea    (%rcx,%rsi,1),%rdi
+   1400f:	xor    %esi,%esi
+   14011:	mov    %rcx,0x50(%rsp)
+   14016:	mov    %rdx,0x60(%rsp)
+   1401b:	call   2090 <memset@plt>
+   14020:	cmp    %r14,%r15
+   14023:	mov    0x60(%rsp),%rdx
+   14028:	mov    0x50(%rsp),%rcx
+   1402d:	je     145f4 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1434>
+   14033:	sub    %r14,%r15
+   14036:	xor    %eax,%eax
+   14038:	nopl   0x0(%rax,%rax,1)
+   14040:	mov    (%r14,%rax,1),%esi
+   14044:	mov    %esi,(%rcx,%rax,1)
+   14047:	add    $0x4,%rax
+   1404b:	cmp    %r15,%rax
+   1404e:	jne    14040 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xe80>
+   14050:	add    %rcx,%rax
+   14053:	vmovq  %rcx,%xmm4
+   14058:	add    %rdx,%rax
+   1405b:	vpinsrq $0x1,%rax,%xmm4,%xmm0
+   14061:	mov    0x10(%r13),%rsi
+   14065:	mov    %r14,%rdi
+   14068:	vmovdqa %xmm0,0x60(%rsp)
+   1406e:	sub    %r14,%rsi
+   14071:	call   2110 <operator delete(void*, unsigned long)@plt>
+   14076:	vmovdqa 0x60(%rsp),%xmm0
+   1407c:	mov    0x78(%rsp),%rax
+   14081:	vmovdqu %xmm0,0x0(%r13)
+   14087:	mov    %rax,0x10(%r13)
+   1408b:	jmp    132db <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x11b>
+   14090:	mov    0x58(%rsp),%rax
+   14095:	mov    0x0(%r13),%rdi
+   14099:	mov    0x88(%rsp),%rsi
+   140a1:	lea    0x0(,%rax,4),%rdx
+   140a9:	vzeroupper
+   140ac:	call   21c0 <memmove@plt>
+   140b1:	jmp    13e4c <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xc8c>
+   140b6:	cs nopw 0x0(%rax,%rax,1)
+   140c0:	mov    0x10(%r13),%rsi
+   140c4:	mov    %rbx,%rcx
+   140c7:	sub    %rax,%rcx
+   140ca:	sub    %r15,%rsi
+   140cd:	sar    $0x2,%rsi
+   140d1:	cmp    %rcx,%rsi
+   140d4:	jb     144f0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1330>
+   140da:	lea    (%r15,%rcx,4),%rbx
+   140de:	mov    %r15,%r12
+   140e1:	mov    %rcx,%r14
+   140e4:	nopl   0x0(%rax)
+   140e8:	movl   $0x0,(%r12)
+   140f0:	mov    %r12,%rdi
+   140f3:	add    $0x4,%r12
+   140f7:	call   5270 <fps_detail::Mint::Mint()>
+   140fc:	cmp    %rbx,%r12
+   140ff:	jne    140e8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xf28>
+   14101:	lea    (%r15,%r14,4),%rax
+   14105:	mov    %rax,0x8(%r13)
+   14109:	jmp    13e81 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xcc1>
+   1410e:	xchg   %ax,%ax
+   14110:	mov    0x78(%rsp),%rax
+   14115:	mov    %rcx,0x40(%rsp)
+   1411a:	mov    %rcx,%rsi
+   1411d:	mov    %rax,0xc0(%rsp)
+   14125:	mov    %rax,0x60(%rsp)
+   1412a:	jmp    1340a <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x24a>
+   1412f:	nop
+   14130:	mov    0x60(%rsp),%rax
+   14135:	mov    %rbx,0x80(%rsp)
+   1413d:	xor    %r12d,%r12d
+   14140:	lea    0x90(%rsp),%r14
+   14148:	mov    %rax,%rbx
+   1414b:	nopl   0x0(%rax,%rax,1)
+   14150:	mov    %r12,%rcx
+   14153:	mov    %r15,%rdx
+   14156:	mov    %rbx,%rsi
+   14159:	mov    %r14,%rdi
+   1415c:	call   ffe0 <void fps_detail::multiply_detail::Subtrees::tile<16ul>(long long __vector(4)*, long long __vector(4)*, unsigned long) const>
+   14161:	inc    %r12
+   14164:	add    $0x200,%rbx
+   1416b:	add    $0x200,%r15
+   14172:	cmp    $0x8,%r12
+   14176:	jne    14150 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xf90>
+   14178:	mov    0x80(%rsp),%rbx
+   14180:	jmp    1387d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x6bd>
+   14185:	nopl   (%rax)
+   14188:	mov    0x78(%rsp),%rdi
+   1418d:	mov    $0x40,%esi
+   14192:	call   21b0 <operator delete[](void*, std::align_val_t)@plt>
+   14197:	jmp    13ea4 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xce4>
+   1419c:	nopl   0x0(%rax)
+   141a0:	mov    0x60(%rsp),%rax
+   141a5:	lea    0x90(%rsp),%r14
+   141ad:	mov    %rbx,0x80(%rsp)
+   141b5:	xor    %r12d,%r12d
+   141b8:	mov    %r15,%rbx
+   141bb:	mov    %r14,%r15
+   141be:	mov    %rax,%r14
+   141c1:	nopl   0x0(%rax)
+   141c8:	mov    %r12,%rcx
+   141cb:	mov    %rbx,%rdx
+   141ce:	mov    %r14,%rsi
+   141d1:	mov    %r15,%rdi
+   141d4:	call   11120 <void fps_detail::multiply_detail::Subtrees::tile<256ul>(long long __vector(4)*, long long __vector(4)*, unsigned long) const>
+   141d9:	inc    %r12
+   141dc:	add    $0x2000,%r14
+   141e3:	add    $0x2000,%rbx
+   141ea:	cmp    $0x8,%r12
+   141ee:	jne    141c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1008>
+   141f0:	mov    0x80(%rsp),%rbx
+   141f8:	jmp    1387d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x6bd>
+   141fd:	movabs $0x1fffffffffffffff,%rcx
+   14207:	cmp    %rcx,%rax
+   1420a:	cmova  %rcx,%rax
+   1420e:	lea    0x0(,%rax,4),%rdi
+   14216:	mov    %rsi,0x50(%rsp)
+   1421b:	mov    %rdx,0x60(%rsp)
+   14220:	mov    %rdi,0x88(%rsp)
+   14228:	call   2100 <operator new(unsigned long)@plt>
+   1422d:	mov    0x88(%rsp),%rdi
+   14235:	mov    %rax,%rcx
+   14238:	mov    0x60(%rsp),%rdx
+   1423d:	mov    0x50(%rsp),%rsi
+   14242:	lea    (%rax,%rdi,1),%rax
+   14246:	mov    %rax,0x78(%rsp)
+   1424b:	mov    %rcx,%rax
+   1424e:	neg    %rax
+   14251:	and    $0x1c,%eax
+   14254:	mov    %rax,0x70(%rsp)
+   14259:	add    %rcx,%rax
+   1425c:	mov    %rax,0x88(%rsp)
+   14264:	jmp    14007 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xe47>
+   14269:	nopl   0x0(%rax)
+   14270:	mov    0x60(%rsp),%rax
+   14275:	mov    %rbx,0x80(%rsp)
+   1427d:	xor    %r12d,%r12d
+   14280:	lea    0x90(%rsp),%r14
+   14288:	mov    %rax,%rbx
+   1428b:	nopl   0x0(%rax,%rax,1)
+   14290:	mov    %r12,%rcx
+   14293:	mov    %r15,%rdx
+   14296:	mov    %rbx,%rsi
+   14299:	mov    %r14,%rdi
+   1429c:	call   105a0 <void fps_detail::multiply_detail::Subtrees::tile<64ul>(long long __vector(4)*, long long __vector(4)*, unsigned long) const>
+   142a1:	inc    %r12
+   142a4:	add    $0x800,%rbx
+   142ab:	add    $0x800,%r15
+   142b2:	cmp    $0x8,%r12
+   142b6:	jne    14290 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x10d0>
+   142b8:	mov    0x80(%rsp),%rbx
+   142c0:	jmp    1387d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x6bd>
+   142c5:	nopl   (%rax)
+   142c8:	lea    0x0(,%rsi,4),%rdi
+   142d0:	mov    (%rdx,%rsi,4),%r9d
+   142d4:	mov    0x88(%rsp),%rcx
+   142dc:	lea    -0x3b800001(%r9),%r8d
+   142e3:	cmp    %r9d,%r8d
+   142e6:	cmova  %r9d,%r8d
+   142ea:	mov    %r8d,(%rcx,%rsi,4)
+   142ee:	lea    0x1(%rsi),%r8
+   142f2:	cmp    %rax,%r8
+   142f5:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   142fb:	mov    0x4(%rdx,%rdi,1),%r9d
+   14300:	lea    -0x3b800001(%r9),%r8d
+   14307:	cmp    %r9d,%r8d
+   1430a:	cmova  %r9d,%r8d
+   1430e:	mov    %r8d,0x4(%rcx,%rdi,1)
+   14313:	lea    0x2(%rsi),%r8
+   14317:	cmp    %rax,%r8
+   1431a:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   14320:	mov    0x8(%rdx,%rdi,1),%r9d
+   14325:	lea    -0x3b800001(%r9),%r8d
+   1432c:	cmp    %r9d,%r8d
+   1432f:	cmova  %r9d,%r8d
+   14333:	mov    %r8d,0x8(%rcx,%rdi,1)
+   14338:	lea    0x3(%rsi),%r8
+   1433c:	cmp    %rax,%r8
+   1433f:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   14345:	mov    0xc(%rdx,%rdi,1),%r9d
+   1434a:	lea    -0x3b800001(%r9),%r8d
+   14351:	cmp    %r9d,%r8d
+   14354:	cmova  %r9d,%r8d
+   14358:	mov    %r8d,0xc(%rcx,%rdi,1)
+   1435d:	lea    0x4(%rsi),%r8
+   14361:	cmp    %rax,%r8
+   14364:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   1436a:	mov    0x10(%rdx,%rdi,1),%r9d
+   1436f:	lea    -0x3b800001(%r9),%r8d
+   14376:	cmp    %r9d,%r8d
+   14379:	cmova  %r9d,%r8d
+   1437d:	mov    %r8d,0x10(%rcx,%rdi,1)
+   14382:	lea    0x5(%rsi),%r8
+   14386:	cmp    %rax,%r8
+   14389:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   1438f:	mov    0x14(%rdx,%rdi,1),%r9d
+   14394:	lea    -0x3b800001(%r9),%r8d
+   1439b:	cmp    %r9d,%r8d
+   1439e:	cmova  %r9d,%r8d
+   143a2:	add    $0x6,%rsi
+   143a6:	mov    %r8d,0x14(%rcx,%rdi,1)
+   143ab:	cmp    %rax,%rsi
+   143ae:	jae    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   143b4:	mov    0x18(%rdx,%rdi,1),%edx
+   143b8:	lea    -0x3b800001(%rdx),%eax
+   143be:	cmp    %edx,%eax
+   143c0:	cmova  %edx,%eax
+   143c3:	mov    %eax,0x18(%rcx,%rdi,1)
+   143c7:	jmp    135c8 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x408>
+   143cc:	nopl   0x0(%rax)
+   143d0:	lea    0x0(,%rsi,4),%r8
+   143d8:	mov    (%rdx,%rsi,4),%r9d
+   143dc:	lea    -0x3b800001(%r9),%edi
+   143e3:	cmp    %r9d,%edi
+   143e6:	cmova  %r9d,%edi
+   143ea:	mov    %edi,(%r15,%rsi,4)
+   143ee:	cmp    %rax,%r10
+   143f1:	jae    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   143f7:	mov    0x4(%rdx,%r8,1),%r9d
+   143fc:	lea    -0x3b800001(%r9),%edi
+   14403:	cmp    %r9d,%edi
+   14406:	cmova  %r9d,%edi
+   1440a:	mov    %edi,0x4(%r15,%r8,1)
+   1440f:	lea    0x2(%rsi),%rdi
+   14413:	cmp    %rax,%rdi
+   14416:	jae    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   1441c:	mov    0x8(%rdx,%r8,1),%r9d
+   14421:	lea    -0x3b800001(%r9),%edi
+   14428:	cmp    %r9d,%edi
+   1442b:	cmova  %r9d,%edi
+   1442f:	mov    %edi,0x8(%r15,%r8,1)
+   14434:	lea    0x3(%rsi),%rdi
+   14438:	cmp    %rax,%rdi
+   1443b:	jae    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   14441:	mov    0xc(%rdx,%r8,1),%r9d
+   14446:	lea    -0x3b800001(%r9),%edi
+   1444d:	cmp    %r9d,%edi
+   14450:	cmova  %r9d,%edi
+   14454:	mov    %edi,0xc(%r15,%r8,1)
+   14459:	lea    0x4(%rsi),%rdi
+   1445d:	cmp    %rax,%rdi
+   14460:	jae    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   14466:	mov    0x10(%rdx,%r8,1),%r9d
+   1446b:	lea    -0x3b800001(%r9),%edi
+   14472:	cmp    %r9d,%edi
+   14475:	cmova  %r9d,%edi
+   14479:	mov    %edi,0x10(%r15,%r8,1)
+   1447e:	lea    0x5(%rsi),%rdi
+   14482:	cmp    %rax,%rdi
+   14485:	jae    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   1448b:	mov    0x14(%rdx,%r8,1),%r9d
+   14490:	lea    -0x3b800001(%r9),%edi
+   14497:	cmp    %r9d,%edi
+   1449a:	cmova  %r9d,%edi
+   1449e:	add    $0x6,%rsi
+   144a2:	mov    %edi,0x14(%r15,%r8,1)
+   144a7:	cmp    %rax,%rsi
+   144aa:	jae    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   144b0:	mov    0x18(%rdx,%r8,1),%edx
+   144b5:	lea    -0x3b800001(%rdx),%eax
+   144bb:	cmp    %edx,%eax
+   144bd:	cmova  %edx,%eax
+   144c0:	mov    %eax,0x18(%r15,%r8,1)
+   144c5:	jmp    1371d <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x55d>
+   144ca:	nopw   0x0(%rax,%rax,1)
+   144d0:	movabs $0x7ffffffffffffffc,%rdi
+   144da:	jmp    14216 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1056>
+   144df:	nop
+   144e0:	sar    $0x2,%rax
+   144e4:	xor    %esi,%esi
+   144e6:	jmp    134f5 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x335>
+   144eb:	nopl   0x0(%rax,%rax,1)
+   144f0:	movabs $0x1fffffffffffffff,%rsi
+   144fa:	sub    %rax,%rsi
+   144fd:	cmp    %rcx,%rsi
+   14500:	jb     1467a <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x14ba>
+   14506:	cmp    %rcx,%rax
+   14509:	mov    %rcx,%rbx
+   1450c:	mov    %rdx,0x70(%rsp)
+   14511:	cmovae %rax,%rbx
+   14515:	mov    %rcx,0x80(%rsp)
+   1451d:	add    %rax,%rbx
+   14520:	movabs $0x1fffffffffffffff,%rax
+   1452a:	cmp    %rax,%rbx
+   1452d:	cmova  %rax,%rbx
+   14531:	lea    0x0(,%rbx,4),%rax
+   14539:	mov    %rax,%rdi
+   1453c:	mov    %rax,0x88(%rsp)
+   14544:	call   2100 <operator new(unsigned long)@plt>
+   14549:	mov    0x80(%rsp),%rcx
+   14551:	add    %rax,%r14
+   14554:	mov    %rax,0x80(%rsp)
+   1455c:	mov    %r14,%rbx
+   1455f:	lea    (%r14,%rcx,4),%r12
+   14563:	mov    0x70(%rsp),%r14
+   14568:	nopl   0x0(%rax,%rax,1)
+   14570:	movl   $0x0,(%rbx)
+   14576:	mov    %rbx,%rdi
+   14579:	add    $0x4,%rbx
+   1457d:	call   5270 <fps_detail::Mint::Mint()>
+   14582:	cmp    %rbx,%r12
+   14585:	jne    14570 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x13b0>
+   14587:	mov    0x80(%rsp),%rbx
+   1458f:	mov    %r14,%rdx
+   14592:	mov    %r14,%rax
+   14595:	mov    %rbx,%rcx
+   14598:	cmp    %r14,%r15
+   1459b:	je     145b2 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x13f2>
+   1459d:	nopl   (%rax)
+   145a0:	mov    (%rax),%esi
+   145a2:	add    $0x4,%rax
+   145a6:	add    $0x4,%rcx
+   145aa:	mov    %esi,-0x4(%rcx)
+   145ad:	cmp    %rax,%r15
+   145b0:	jne    145a0 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x13e0>
+   145b2:	test   %rdx,%rdx
+   145b5:	je     145c6 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x1406>
+   145b7:	mov    0x10(%r13),%rsi
+   145bb:	mov    %rdx,%rdi
+   145be:	sub    %rdx,%rsi
+   145c1:	call   2110 <operator delete(void*, unsigned long)@plt>
+   145c6:	mov    0x58(%rsp),%rax
+   145cb:	mov    0x88(%rsp),%r8
+   145d3:	vmovq  %rbx,%xmm5
+   145d8:	lea    (%rbx,%rax,4),%rax
+   145dc:	add    %rbx,%r8
+   145df:	vpinsrq $0x1,%rax,%xmm5,%xmm0
+   145e5:	mov    %r8,0x10(%r13)
+   145e9:	vmovdqu %xmm0,0x0(%r13)
+   145ef:	jmp    13e81 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xcc1>
+   145f4:	add    %rcx,%rdx
+   145f7:	vmovq  %rcx,%xmm6
+   145fc:	vpinsrq $0x1,%rdx,%xmm6,%xmm0
+   14602:	test   %r14,%r14
+   14605:	je     1407c <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xebc>
+   1460b:	jmp    14061 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0xea1>
+   14610:	call   2190 <__cxa_throw_bad_array_new_length@plt>
+   14615:	lea    0x3a43(%rip),%rdi        # 1805f <_IO_stdin_used+0x5f>
+   1461c:	call   2080 <std::__throw_length_error(char const*)@plt>
+   14621:	mov    %rax,%rbx
+   14624:	jmp    14662 <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x14a2>
+   14626:	call   2190 <__cxa_throw_bad_array_new_length@plt>
+   1462b:	mov    0x20(%rsp),%rax
+   14630:	lea    0xa8(%rsp),%rdi
+   14638:	mov    %rax,0xa8(%rsp)
+   14640:	mov    0x18(%rsp),%rax
+   14645:	mov    %rax,0xb0(%rsp)
+   1464d:	mov    0x78(%rsp),%rax
+   14652:	mov    %rax,0xb8(%rsp)
+   1465a:	vzeroupper
+   1465d:	call   c840 <std::unique_ptr<unsigned int [], fps_detail::FpsWordsDelete>::~unique_ptr()>
+   14662:	mov    %r13,%rdi
+   14665:	vzeroupper
+   14668:	call   13160 <std::_Vector_base<fps_detail::Mint, std::allocator<fps_detail::Mint> >::~_Vector_base()>
+   1466d:	mov    %rbx,%rdi
+   14670:	call   21f0 <_Unwind_Resume@plt>
+   14675:	mov    %rax,%rbx
+   14678:	jmp    1462b <fps_detail::multiply_detail::run_borrowed(std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&, std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> > const&)+0x146b>
+   1467a:	lea    0x39f5(%rip),%rdi        # 18076 <_IO_stdin_used+0x76>
+   14681:	call   2080 <std::__throw_length_error(char const*)@plt>
+   14686:	cs nopw 0x0(%rax,%rax,1)
+   14690:	cs nopw 0x0(%rax,%rax,1)
+   1469a:	cs nopw 0x0(%rax,%rax,1)
+   146a4:	cs nopw 0x0(%rax,%rax,1)
+   146ae:	cs nopw 0x0(%rax,%rax,1)
+   146b8:	nopl   0x0(%rax,%rax,1)
+
+0000000000015760 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)>:
+   15760:	test   %rsi,%rsi
+   15763:	je     157d0 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)+0x70>
+   15765:	push   %r15
+   15767:	push   %r14
+   15769:	push   %r13
+   1576b:	push   %r12
+   1576d:	push   %rbp
+   1576e:	mov    %rdi,%rbp
+   15771:	push   %rbx
+   15772:	mov    %rsi,%rbx
+   15775:	sub    $0x28,%rsp
+   15779:	mov    0x8(%rdi),%r13
+   1577d:	mov    0x10(%rdi),%rax
+   15781:	sub    %r13,%rax
+   15784:	sar    $0x2,%rax
+   15788:	cmp    %rsi,%rax
+   1578b:	jb     157d8 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)+0x78>
+   1578d:	mov    %rsi,%r14
+   15790:	mov    %r13,%r12
+   15793:	nopl   0x0(%rax,%rax,1)
+   15798:	movl   $0x0,(%r12)
+   157a0:	mov    %r12,%rdi
+   157a3:	add    $0x4,%r12
+   157a7:	call   5270 <fps_detail::Mint::Mint()>
+   157ac:	dec    %r14
+   157af:	jne    15798 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)+0x38>
+   157b1:	lea    0x0(%r13,%rbx,4),%rax
+   157b6:	mov    %rax,0x8(%rbp)
+   157ba:	add    $0x28,%rsp
+   157be:	pop    %rbx
+   157bf:	pop    %rbp
+   157c0:	pop    %r12
+   157c2:	pop    %r13
+   157c4:	pop    %r14
+   157c6:	pop    %r15
+   157c8:	ret
+   157c9:	nopl   0x0(%rax)
+   157d0:	ret
+   157d1:	nopl   0x0(%rax)
+   157d8:	mov    (%rdi),%r14
+   157db:	mov    %r13,%r15
+   157de:	sub    %r14,%r15
+   157e1:	mov    %r15,%rax
+   157e4:	sar    $0x2,%rax
+   157e8:	mov    %rax,%rsi
+   157eb:	mov    %rax,0x10(%rsp)
+   157f0:	movabs $0x1fffffffffffffff,%rax
+   157fa:	sub    %rsi,%rax
+   157fd:	cmp    %rbx,%rax
+   15800:	jb     158e2 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)+0x182>
+   15806:	mov    0x10(%rsp),%rcx
+   1580b:	mov    %rbx,%r12
+   1580e:	movabs $0x1fffffffffffffff,%rdx
+   15818:	cmp    %rcx,%rbx
+   1581b:	mov    %rcx,%rax
+   1581e:	cmovae %rbx,%rax
+   15822:	add    %rcx,%rax
+   15825:	cmp    %rdx,%rax
+   15828:	cmova  %rdx,%rax
+   1582c:	shl    $0x2,%rax
+   15830:	mov    %rax,%rdi
+   15833:	mov    %rax,0x18(%rsp)
+   15838:	call   2100 <operator new(unsigned long)@plt>
+   1583d:	mov    %rax,0x8(%rsp)
+   15842:	add    %rax,%r15
+   15845:	nopl   (%rax)
+   15848:	movl   $0x0,(%r15)
+   1584f:	mov    %r15,%rdi
+   15852:	add    $0x4,%r15
+   15856:	call   5270 <fps_detail::Mint::Mint()>
+   1585b:	dec    %r12
+   1585e:	jne    15848 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)+0xe8>
+   15860:	cmp    %r13,%r14
+   15863:	je     15892 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)+0x132>
+   15865:	mov    0x8(%rsp),%rax
+   1586a:	sub    %r14,%r13
+   1586d:	mov    %r14,%rdx
+   15870:	add    %rax,%r13
+   15873:	data16 cs nopw 0x0(%rax,%rax,1)
+   1587e:	xchg   %ax,%ax
+   15880:	mov    (%rdx),%ecx
+   15882:	add    $0x4,%rax
+   15886:	add    $0x4,%rdx
+   1588a:	mov    %ecx,-0x4(%rax)
+   1588d:	cmp    %r13,%rax
+   15890:	jne    15880 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)+0x120>
+   15892:	test   %r14,%r14
+   15895:	je     158a6 <std::vector<fps_detail::Mint, std::allocator<fps_detail::Mint> >::_M_default_append(unsigned long)+0x146>
+   15897:	mov    0x10(%rbp),%rsi
+   1589b:	mov    %r14,%rdi
+   1589e:	sub    %r14,%rsi
+   158a1:	call   2110 <operator delete(void*, unsigned long)@plt>
+   158a6:	mov    0x10(%rsp),%rax
+   158ab:	mov    0x8(%rsp),%rdx
+   158b0:	add    %rax,%rbx
+   158b3:	vmovq  %rdx,%xmm1
+   158b8:	lea    (%rdx,%rbx,4),%rax
+   158bc:	vpinsrq $0x1,%rax,%xmm1,%xmm0
+   158c2:	mov    0x18(%rsp),%rax
+   158c7:	vmovdqu %xmm0,0x0(%rbp)
+   158cc:	add    %rdx,%rax
+   158cf:	mov    %rax,0x10(%rbp)
+   158d3:	add    $0x28,%rsp
+   158d7:	pop    %rbx
+   158d8:	pop    %rbp
+   158d9:	pop    %r12
+   158db:	pop    %r13
+   158dd:	pop    %r14
+   158df:	pop    %r15
+   158e1:	ret
+   158e2:	lea    0x278d(%rip),%rdi        # 18076 <_IO_stdin_used+0x76>
+   158e9:	call   2080 <std::__throw_length_error(char const*)@plt>
+   158ee:	xchg   %ax,%ax

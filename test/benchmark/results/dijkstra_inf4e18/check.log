@@ -1,0 +1,15 @@
+g++: standalone graph/dijkstra.hpp
+g++: dijkstra.cpp
+g++: dijkstra_csr.cpp
+g++: dijkstra_forced_path.cpp
+g++: dijkstra_topological.cpp
+g++: dijkstra_unique.cpp
+g++: standalone.cpp
+clang++: standalone graph/dijkstra.hpp
+clang++: dijkstra.cpp
+clang++: dijkstra_csr.cpp
+clang++: dijkstra_forced_path.cpp
+clang++: dijkstra_topological.cpp
+clang++: dijkstra_unique.cpp
+clang++: standalone.cpp
+Verification passed

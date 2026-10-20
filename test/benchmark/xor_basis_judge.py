@@ -57,7 +57,7 @@ def main():
     reference = metadata['problems']['intersection_of_f2_vector_spaces']['references'][0]
     reference_source = args.cache / (str(reference['id']) + '.cpp')
     assert hashlib.sha256(reference_source.read_bytes()).hexdigest() == reference['source_sha256']
-    paths = ['math/xor_basis.hpp', 'components/xor_basis_core.hpp', 'components/fast_io.hpp',
+    paths = ['math/linear_algebra/xor_basis.hpp', 'components/xor_basis_core.hpp', 'components/fast_io.hpp',
              'test/xor_basis_intersection.test.cpp', 'test/benchmark/xor_basis_judge.py']
     env = {'compiler': subprocess.check_output(['g++', '--version'], text=True), 'flags': flags, 'reference': reference,
            'cpu': subprocess.check_output(['lscpu'], text=True), 'uname': subprocess.check_output(['uname', '-a'], text=True),

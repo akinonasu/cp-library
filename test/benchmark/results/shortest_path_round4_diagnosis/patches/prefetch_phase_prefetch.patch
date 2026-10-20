@@ -1,0 +1,47 @@
+--- bd29f70/components/directed_csr.hpp
++++ diagnostic/components/directed_csr.hpp
+@@ -13,6 +13,8 @@
+ #include <vector>
+ 
+ namespace directed_csr_detail { struct Access; }
++
++namespace reproduce { inline std::uintptr_t offset, arcs, edges; inline std::chrono::steady_clock::time_point t0,t1,t2,t3; inline rusage r0,r1,r2,r3; }
+ 
+ template<class T>
+ class DirectedCSR {
+@@ -38,7 +40,7 @@
+ 			word |= mask;
+ 		}
+ 	}
+-	void finish(std::span<const Edge> edges) {
++	void finish(std::span<const Edge> edges) { reproduce::t0=std::chrono::steady_clock::now(); getrusage(RUSAGE_SELF, &reproduce::r0);
+ 		const auto n = offset_.size() - 1;
+ 		single_gap_ = -2;
+ 		if (edges.size() >= n - (n != 0) && edges.size() <= n &&
+@@ -46,15 +48,23 @@
+ 			single_gap_ = -1;
+ 			if (edges.size() != n) single_gap_ = int(std::find(offset_.begin(), offset_.end() - 1, 0) - offset_.begin());
+ 			for (std::size_t v = 0; v <= n; ++v) offset_[v] = v - (single_gap_ >= 0 && v > std::size_t(single_gap_));
+-			arcs_.resize(edges.size());
++			reproduce::t1=std::chrono::steady_clock::now(); getrusage(RUSAGE_SELF, &reproduce::r1); arcs_.resize(edges.size()); reproduce::t2=std::chrono::steady_clock::now(); getrusage(RUSAGE_SELF, &reproduce::r2);
++		reproduce::offset = reinterpret_cast<std::uintptr_t>(offset_.data()); reproduce::arcs = reinterpret_cast<std::uintptr_t>(arcs_.data()); reproduce::edges = reinterpret_cast<std::uintptr_t>(edges.data());
+ 			for (const auto &edge : edges) arcs_[edge.from - (single_gap_ >= 0 && edge.from > single_gap_)] = {edge.to, edge.weight};
+ 			return;
+ 		}
+ 		for (std::size_t v = 1; v < offset_.size(); ++v) offset_[v] += offset_[v - 1];
+-		arcs_.resize(edges.size());
++		reproduce::t1=std::chrono::steady_clock::now(); getrusage(RUSAGE_SELF, &reproduce::r1); arcs_.resize(edges.size()); reproduce::t2=std::chrono::steady_clock::now(); getrusage(RUSAGE_SELF, &reproduce::r2);
++		reproduce::offset = reinterpret_cast<std::uintptr_t>(offset_.data()); reproduce::arcs = reinterpret_cast<std::uintptr_t>(arcs_.data()); reproduce::edges = reinterpret_cast<std::uintptr_t>(edges.data());
+ 		for (std::size_t i = edges.size(); i; --i) {
++			if (i > 32) {
++				const auto from = edges[i - 33].from;
++				__builtin_prefetch(&offset_[from], 1, 3);
++				__builtin_prefetch(&arcs_[offset_[from] - 1], 1, 3);
++			}
++
+ 			const auto &edge = edges[i - 1];
+-			arcs_[--offset_[edge.from]] = {edge.to, edge.weight};
++			arcs_[--offset_[edge.from]] = {edge.to, edge.weight};if(i==1) { reproduce::t3=std::chrono::steady_clock::now(); getrusage(RUSAGE_SELF, &reproduce::r3); }
+ 		}
+ 	}
+ 	void clear_edges() {

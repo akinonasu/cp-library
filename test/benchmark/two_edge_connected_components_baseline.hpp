@@ -1,7 +1,7 @@
 #ifndef TWO_EDGE_CONNECTED_COMPONENTS_BASELINE_HPP
 #define TWO_EDGE_CONNECTED_COMPONENTS_BASELINE_HPP
 
-#include "graph/low_link.hpp"
+#include "graph/connectivity/low_link.hpp"
 #include <numeric>
 #include <span>
 

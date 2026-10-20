@@ -60,7 +60,7 @@ def main():
               'flags': flags, 'affinity': [args.cpu], 'trials': args.trials, 'warmup': 1,
               'binary_filesystem': 'Linux /tmp (WSL ext4)', 'schedule_seed': 771306,
               'kernel_seed': 731605, 'end_to_end_seed': 941607,
-              'source_sha256': {p: digest(ROOT / p) for p in ('graph/rerooting.hpp', 'components/undirected_csr.hpp',
+              'source_sha256': {p: digest(ROOT / p) for p in ('tree/rerooting.hpp', 'components/undirected_csr.hpp',
                   'math/mint.hpp', 'components/fast_io.hpp', 'test/rerooting.test.cpp',
                   'test/benchmark/rerooting.cpp', 'test/benchmark/rerooting.py')},
               'metric': {'kernel': 'in-process wall time including graph construction and DP; excludes generation, result checksum and I/O; library result destruction excluded, baseline work-vector destruction included',

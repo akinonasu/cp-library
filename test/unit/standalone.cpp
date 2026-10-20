@@ -1,29 +1,33 @@
 #define COMB_MAX 20
-#include "data_structure/disjoint_sparse_table.hpp"
+#include "data_structure/range_query/disjoint_sparse_table.hpp"
 #include "components/dynamic_bit_vector.hpp"
-#include "data_structure/dynamic_connectivity.hpp"
-#include "data_structure/dynamic_segtree.hpp"
-#include "data_structure/dynamic_wavelet_matrix.hpp"
+#include "graph/connectivity/dynamic_connectivity.hpp"
+#include "data_structure/segment_tree/dynamic_segtree.hpp"
+#include "data_structure/segment_tree/dual_segtree.hpp"
+#include "data_structure/advanced/kinetic_tournament.hpp"
+#include "data_structure/segment_tree/dynamic_lazy_segtree.hpp"
+#include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
 #include "data_structure/li_chao_tree.hpp"
 #include "data_structure/dynamic_li_chao_tree.hpp"
 #include "data_structure/interval_set.hpp"
-#include "data_structure/link_cut_tree.hpp"
+#include "tree/link_cut_tree.hpp"
 #include "data_structure/slope_trick.hpp"
-#include "data_structure/wavelet_matrix.hpp"
+#include "data_structure/wavelet_matrix/wavelet_matrix.hpp"
 #include "data_structure/weighted_union_find.hpp"
 #include "graph/dijkstra.hpp"
-#include "graph/max_flow.hpp"
-#include "graph/min_cost_flow.hpp"
-#include "graph/hld.hpp"
-#include "graph/static_top_tree.hpp"
-#include "graph/centroid_decomposition.hpp"
-#include "graph/lca.hpp"
-#include "graph/low_link.hpp"
-#include "math/comb.hpp"
-#include "math/binomial_prefix_sum.hpp"
-#include "math/mod_pow.hpp"
-#include "math/mod_sqrt.hpp"
-#include "math/factorize.hpp"
+#include "graph/bellman_ford.hpp"
+#include "graph/flow/max_flow.hpp"
+#include "graph/flow/min_cost_flow.hpp"
+#include "data_structure/advanced/hld.hpp"
+#include "data_structure/advanced/static_top_tree.hpp"
+#include "data_structure/advanced/centroid_decomposition.hpp"
+#include "tree/lca.hpp"
+#include "graph/connectivity/low_link.hpp"
+#include "math/combinatorics/comb.hpp"
+#include "math/combinatorics/binomial_prefix_sum.hpp"
+#include "math/number_theory/mod_pow.hpp"
+#include "math/number_theory/mod_sqrt.hpp"
+#include "math/number_theory/factorize.hpp"
 #include "fps/fps.hpp"
 #include "fps/bostan_mori.hpp"
 #include "fps/linear_recurrence.hpp"
@@ -35,15 +39,18 @@
 #include "fps/polynomial_gcd.hpp"
 #include "convolution/online_convolution.hpp"
 #include "math/fraction.hpp"
-#include "math/stern_brocot_tree.hpp"
-#include "math/matrix.hpp"
-#include "math/xor_basis.hpp"
-#include "math/min_of_mod_of_linear.hpp"
-#include "math/prefix_min_of_mod_of_linear.hpp"
-#include "math/monoid_floor_sum.hpp"
-#include "math/partition_mod_of_linear.hpp"
+#include "math/number_theory/stern_brocot_tree.hpp"
+#include "math/linear_algebra/matrix.hpp"
+#include "math/linear_algebra/xor_basis.hpp"
+#include "math/floor_sum/min_of_mod_of_linear.hpp"
+#include "math/floor_sum/prefix_min_of_mod_of_linear.hpp"
+#include "math/floor_sum/monoid_floor_sum.hpp"
+#include "math/floor_sum/partition_mod_of_linear.hpp"
 #include "string/edit_distance.hpp"
 #include "string/lcs.hpp"
+#include "string/lis.hpp"
+#include "string/suffix_tree.hpp"
+#include "string/dynamic_pattern_matching.hpp"
 #include "string/rolling_hash.hpp"
 
 #if defined(TEMPLATE_HPP) || defined(rep) || defined(per) || defined(vec) || defined(all) || defined(sz) || defined(uint)
@@ -67,6 +74,20 @@ struct StaticTreeSum {
 };
 
 int main() {
+	DynamicPatternMatching pattern_matching("banana", "ana");
+	assert(pattern_matching.count() == 2);
+	pattern_matching.erase(1);
+	assert(pattern_matching.str() == "aa" && pattern_matching.count() == 0);
+	const std::vector<int> sequence{3, 1, 2, 2, 4};
+	assert(lis_length(sequence) == 3 && lis_length<false>(sequence) == 4);
+	assert(lis(sequence).size() == 3);
+	DualSegtree<std::int64_t, std::int64_t, add, add, zero, true> dual(3, 1);
+	dual.apply(0, 3, 4);
+	dual.set(1, 7);
+	assert(dual.get(0) == 5 && dual.get(1) == 7);
+	KineticTournament<> kinetic(std::vector<std::int64_t>{1, 3}, std::vector<std::int64_t>{5, 0});
+	kinetic.advance(0, 2, 3);
+	assert(kinetic.all_prod()->index == 1 && kinetic.all_prod()->value == 9);
 	assert(mod_sqrt(10, 13) == 6 && !mod_sqrt(2, 13));
 	SternBrocotTree<> rational_tree(5, 3);
 	assert((rational_tree.depth() == 3 && rational_tree.ancestor(2)->value() == std::pair<std::uint64_t, std::uint64_t>(3, 2)));
@@ -168,6 +189,7 @@ int main() {
 	assert(prefix_min.size() == 1 && prefix_min[0].count == 4);
 	assert(prefix_min[0].y - prefix_min[0].dy * 3 == 2);
 	assert(factorize(12) == std::vector<std::uint64_t>({2, 2, 3}));
+	assert(divisors(12) == std::vector<std::uint64_t>({1, 2, 3, 4, 6, 12}));
 	fps f{1, 2, 3};
 	assert(polynomial_gcd(fps{mint(-1), 0, 1}, fps{mint(-1), 1}) == fps({mint(-1), 1}));
 	assert(bostan_mori(fps{1}, fps{1, -1}, 100) == mint(1));

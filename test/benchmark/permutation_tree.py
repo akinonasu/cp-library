@@ -22,7 +22,7 @@ def sha(path):
 def prepare(cache, reference):
     source = (reference / '252918.cpp').read_text().split('#include <cstdio>')[0]
     (cache / 'reference.hpp').write_text(source)
-    header = (ROOT / 'data_structure/permutation_tree.hpp').read_text().replace('../components/', 'components/')
+    header = (ROOT / 'tree/permutation_tree.hpp').read_text().replace('../components/', 'components/')
     aggregate = header.replace('PERMUTATION_TREE_HPP', 'PERMUTATION_TREE_AGGREGATE_HPP').replace('PermutationTree', 'PermutationTreeAggregate')
     begin = aggregate.index('#ifdef __cpp_aggregate_paren_init')
     end = aggregate.index('#endif', begin) + len('#endif')
@@ -83,8 +83,8 @@ def main():
     flags = ['-std=c++23', '-O2', '-DEVAL', '-DONLINE_JUDGE', '-march=native']
     if args.zero_init:
         flags.append('-ftrivial-auto-var-init=zero')
-    paths = ['data_structure/permutation_tree.hpp', 'components/static_range_min.hpp', 'components/default_init_allocator.hpp',
-             'data_structure/sparse_table.hpp', 'components/fast_io.hpp', 'test/permutation_tree.test.cpp',
+    paths = ['tree/permutation_tree.hpp', 'components/static_range_min.hpp', 'components/default_init_allocator.hpp',
+             'data_structure/range_query/sparse_table.hpp', 'components/fast_io.hpp', 'test/permutation_tree.test.cpp',
              'test/benchmark/permutation_tree.py', 'test/benchmark/permutation_tree.cpp']
     environment = dict(date=datetime.datetime.now(datetime.timezone.utc).isoformat(), flags=flags,
                        compiler=subprocess.check_output(['g++', '--version'], text=True),

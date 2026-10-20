@@ -1,0 +1,105 @@
+prepared 53 drivers, 48 Yosupo, 5 Yukicoder skips
+test/bitwise_and_convolution.test.cpp 13 passed
+test/bitwise_xor_convolution.test.cpp 13 passed
+test/convolution.test.cpp 53 passed
+test/dynamic_segtree_composite.test.cpp 16 passed
+test/disjoint_sparse_table_affine.test.cpp 19 passed
+test/fps_bostan_mori.test.cpp 20 passed
+test/fps_compose_large.test.cpp 32 passed
+test/fps_compose.test.cpp 27 passed
+test/fps_divmod.test.cpp 35 passed
+test/fps_compositional_inverse.test.cpp 23 passed
+test/fps_compositional_inverse_large.test.cpp 28 passed
+test/fps_interpolate.test.cpp 9 passed
+test/fps_exp_sparse.test.cpp 25 passed
+test/fps_exp.test.cpp 26 passed
+test/fps_inv.test.cpp 25 passed
+test/fps_linear_recurrence.test.cpp 20 passed
+test/fps_inv_sparse.test.cpp 24 passed
+test/fps_log.test.cpp 25 passed
+test/fps_sqrt.test.cpp 35 passed
+test/fps_pow.test.cpp 37 passed
+test/gcd_convolution.test.cpp 29 passed
+test/hld_path_composite.test.cpp 20 passed
+test/fps_taylor_shift.test.cpp 38 passed
+test/link_cut_tree_composite.test.cpp 23 passed
+test/lcm_convolution.test.cpp 29 passed
+test/lazy_reversible_treap_affine.test.cpp 33 passed
+test/matrix_det.test.cpp 25 passed
+test/matrix_characteristic_polynomial.test.cpp 28 passed
+test/matrix_adjugate.test.cpp 44 passed
+test/matrix_inverse.test.cpp 26 passed
+test/matrix_product.test.cpp 22 passed
+test/matrix_pow.test.cpp 43 passed
+test/matrix_rank.test.cpp 36 passed
+test/matrix_solve.test.cpp 27 passed
+test/multiplicative_convolution.test.cpp 40 passed
+test/multivariate_convolution.test.cpp 17 passed
+test/ntt.test.cpp 53 passed
+test/multipoint_eval.test.cpp 11 passed
+test/online_convolution_inv.test.cpp 25 passed
+test/online_convolution_exp.test.cpp 26 passed
+test/online_convolution.test.cpp 53 passed
+test/point_set_tree_path_composite_sum_fixed_root.test.cpp 26 passed
+test/point_set_tree_path_composite_sum.test.cpp 26 passed
+test/rerooting.test.cpp 16 passed
+test/polynomial_inv_mod.test.cpp 18 passed
+test/power_projection.test.cpp 28 passed
+test/weighted_union_find.test.cpp 18 passed
+test/subset_convolution.test.cpp 11 passed
+{
+  "selection_sha256": "b2e965770fdc2e3709af7ff4cab6356f5b06e600997fc83d465a1e681bfc3e37",
+  "freeze_sha256": "7f14d6c7e1c2fab6e9405ece92fa0946479e7df7a241826a3d9c3929ec6c576f",
+  "selected_drivers": 53,
+  "passed_drivers": 48,
+  "passed_cases": 1296,
+  "skipped_drivers": 5,
+  "skip_reasons": {
+    "test/binomial_prefix_sum_offline.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/2206",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/binomial_prefix_sum_online.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/2206",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/comb.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/3172",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/cyclic_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    },
+    "test/ordered_convolution.test.cpp": {
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "Yukicoder token unavailable; skip as instructed"
+    }
+  },
+  "reused_drivers": 14,
+  "executed_drivers": 34,
+  "coverage_matches_final_selection": true,
+  "full_official_cases": true,
+  "source_hashes_unchanged": true,
+  "official_hashes_unchanged": true,
+  "actual_dependencies_unchanged": true,
+  "source_files_checked": 203,
+  "official_files_checked": 2310,
+  "checker_order": [
+    "input",
+    "actual_output",
+    "official_answer"
+  ],
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-I",
+    "/workspace/cp-library"
+  ],
+  "harness_sha256": "8bef17af7491f2079c3651d493c4564fec29a379bf2d0ac303f73a73b6d6c1bf"
+}

@@ -1,0 +1,11 @@
+--- a/graph/dijkstra.hpp
++++ b/graph/dijkstra.hpp
+@@ -25,7 +25,7 @@
+ }
+ 
+ template<bool Path, class G, class T>
+-std::vector<T> run(const G &g, int st, int target, T inf, std::vector<int> &parent) {
++[[gnu::noinline]] std::vector<T> run(const G &g, int st, int target, T inf, std::vector<int> &parent) {
+ 	const auto n = static_cast<std::size_t>(g.size());
+ 	assert(n <= static_cast<std::size_t>(std::numeric_limits<int>::max()));
+ 	assert(st >= 0 && static_cast<std::size_t>(st) < n);

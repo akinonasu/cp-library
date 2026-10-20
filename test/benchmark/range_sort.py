@@ -30,7 +30,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     os.sched_setaffinity(0, {args.cpu})
     flags = ['-std=c++23', '-O2', '-DEVAL', '-DONLINE_JUDGE', '-march=native', '-ftrivial-auto-var-init=zero']
-    paths = ['data_structure/sortable_segtree.hpp', 'components/predecessor_set.hpp',
+    paths = ['data_structure/segment_tree/sortable_segtree.hpp', 'components/predecessor_set.hpp',
              'components/fast_io.hpp', 'test/sortable_segtree.test.cpp', 'test/benchmark/range_sort.py']
     environment = dict(date=datetime.now(timezone.utc).isoformat(), flags=flags,
                        compiler=subprocess.check_output(['g++', '--version'], text=True),
@@ -51,7 +51,7 @@ def main():
                                       .replace('std::vector<toy::u32> keys(n);', 'std::vector<int> keys(n);'))
         sources['treap393919'] = work / 'treap.cpp'
         if args.explore:
-            header = (ROOT / 'data_structure/sortable_segtree.hpp').read_text().replace('"../components/predecessor_set.hpp"', '"components/predecessor_set.hpp"')
+            header = (ROOT / 'data_structure/segment_tree/sortable_segtree.hpp').read_text().replace('"../components/predecessor_set.hpp"', '"components/predecessor_set.hpp"')
             inline = header.replace('bit = -1, leaf;', 'bit = -1, leaf;\n\t\tU key = 0;')
             inline = inline.replace('keys[pool[a].leaf]', 'pool[a].key').replace('keys[pool[b].leaf]', 'pool[b].key').replace('keys[pool[x].leaf]', 'pool[x].key')
             inline = inline.replace('node.leaf = a.leaf;', 'node.leaf = a.leaf; node.key = a.key;')
@@ -67,7 +67,7 @@ def main():
             for name, body in [('inline', inline), ('split', split)]:
                 (work / (name + '.hpp')).write_text(body)
                 driver = (ROOT / 'test/sortable_segtree.test.cpp').read_text()
-                driver = driver.replace('"../components/fast_io.hpp"', '"components/fast_io.hpp"').replace('"../data_structure/sortable_segtree.hpp"', '"' + name + '.hpp"')
+                driver = driver.replace('"../components/fast_io.hpp"', '"components/fast_io.hpp"').replace('"../data_structure/segment_tree/sortable_segtree.hpp"', '"' + name + '.hpp"')
                 (work / (name + '.cpp')).write_text(driver)
                 sources[name] = work / (name + '.cpp')
         environment['variants'] = {name: sha(source) for name, source in sources.items()}

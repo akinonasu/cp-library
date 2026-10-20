@@ -1,0 +1,58 @@
+{
+  "audit_helper_sha256": "45d5ec6f4ef3e441cf42328d71211e65487ab401a6b8e22e5344ea80c88bc2a6",
+  "executed_harness_sha256": "9dbc3343b68a9ae95bea0f869e8c04276bb1e76978eee129855de01e0876f0ca",
+  "files": {
+    "README.md": "38a12d5e6d3cc01d44bc898419d9bbb50a1418635d9b8e6747f68180a7271e64",
+    "after-plan.json": "85e3ddd751ae5d2bc587773e760d348a46856ae1a7a7974d33a490f5254c60fd",
+    "clang19.log": "18908e84b7d0f5e20671cbcaea99af34f63d5c1fc7a01c30bf35ae279470f930",
+    "conditions.json": "f1c6c906cd45877745b93d4abf1605fe1562dd50b8188552e527a1ec0fdcf150",
+    "dependencies-after.json": "60354bc8ba56e589b8bc16766c83b52293b9c312e910fbd099047f3aad7129cd",
+    "dependencies-before.json": "60354bc8ba56e589b8bc16766c83b52293b9c312e910fbd099047f3aad7129cd",
+    "gcc14-sanitize.log": "118e07a95e898ecaa409c9f4df8d390318d60cc2ca02ee3398f970d7e8d5d733",
+    "gcc14.log": "cdfd9c1697667fc7b1e1daeeacb183cfd42227b5288b20223da44e9d679c1899",
+    "previous-selection.json": "04844928ae69a702212181f3ad9f229aefc381fad60143c4f15e4f718281fb7c",
+    "result.json": "ae2fa7d62a023d242f505e47224d8ce8f02c3917cf02cb825d584599b1b3439e",
+    "reuse-assessment.json": "dcc5556ca4a8fe34d014716aa1a9eaa58f0eae96efc346041de84b76bbb080b1",
+    "runner.log": "4809dea9640e3cf330d9f04602726162d4216a361a4d8ef842a767064454f510",
+    "scope-audit.json": "8c76133a567588b110fc07e52cec89043218d3be98a36cbe5beb741c045843c4",
+    "scope-contract.json": "7462d8515af822aff0a584aa3df27fd53cb68fb8058ca24d43d2b518cd4973ae",
+    "scope-final-audit.json": "b1ea326fc467c83f96a7433096d17cde81fa1f0b5f8e2473aab50589ffac7cf5",
+    "scope-final-audit.log": "b1ea326fc467c83f96a7433096d17cde81fa1f0b5f8e2473aab50589ffac7cf5",
+    "selection-core.json": "fa1d5bff93d6a721f3c59e2ae62e7f811c82c7926014e2a607017d2067e353a0",
+    "selection-execute-clang19.json": "fa1d5bff93d6a721f3c59e2ae62e7f811c82c7926014e2a607017d2067e353a0",
+    "selection-execute-gcc14-sanitize.json": "84dcdb284a50eb9417112ae412ea485c71327701ff7fb7b1ed3bdb1bdc54e55b",
+    "selection-execute-gcc14.json": "bbeac3cfb06735f99e89ed76abc8ce27b6d98be06fce532a5a83a3e823fe8386",
+    "selection-full.json": "85e3ddd751ae5d2bc587773e760d348a46856ae1a7a7974d33a490f5254c60fd"
+  },
+  "logical_coverage": {
+    "clang19": {
+      "exact_order": true,
+      "executed": 6,
+      "logical_total": 6,
+      "observed": 6,
+      "passed": true,
+      "reused": 0
+    },
+    "gcc14": {
+      "exact_order": true,
+      "executed": 5,
+      "logical_total": 6,
+      "observed": 5,
+      "passed": true,
+      "reused": 1
+    },
+    "gcc14-sanitize": {
+      "exact_order": true,
+      "executed": 1,
+      "logical_total": 2,
+      "observed": 1,
+      "passed": true,
+      "reused": 1
+    }
+  },
+  "previous_audit_sha256": "8e8865105d4ef0cc62a9eaac8d125a034721d62640fcadcf474a4551c90f40c2",
+  "reused_checks": 2,
+  "shared_helper_sha256": "bec17ed18ca234558fea7c464b292cd041ae5bc16ef3e15a3dde953258021c51",
+  "snapshot": "Additional constant implementation before subsequent upstream integration",
+  "status": "passed"
+}

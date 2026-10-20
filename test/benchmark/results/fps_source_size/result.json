@@ -1,0 +1,2469 @@
+{
+  "baseline": "3d7dfe2caa96a00c8e78246b26a29bcafa41926c",
+  "harness_sha256": "3232990463b6d755902d55e474326ede35d485d99cea04ae0a5281c4f388a52a",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "source_hashes": {
+    "before": {
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+      "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+      "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+      "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+      "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+      "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+      "components/fps_bostan.hpp": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258",
+      "components/fps_composition.hpp": "a032ade49c86615bd0effea7718f1816e7437a5df8de7481774582ec0e28d2a1",
+      "components/fps_convolution.hpp": "4d74b3d877f8a33f50f02d61ec5b56fc7a1b216ce1bbf04de7c32ff4e2d91f56",
+      "components/fps_convolution_constant.hpp": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6",
+      "components/fps_convolution_unbalanced.hpp": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fps_exp_blocked.hpp": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2",
+      "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+      "components/fps_io.hpp": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+      "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "data_structure/disjoint_sparse_table.hpp": "4506c898e40a65343fc5157254714bd1d1ff3dd2c1e21a09e4f01ede13f25c5d",
+      "data_structure/dynamic_connectivity.hpp": "55b8f98c4ae154babc1381af13bce9d8ae8060a55ace8a1db5250e54c7c3c673",
+      "data_structure/dynamic_li_chao_tree.hpp": "cc7549e65e18dd282d595cdce7d8304264b174b1cf9897a79884c510f72bc96a",
+      "data_structure/dynamic_segtree.hpp": "1f526854b82302e39944b9a8d3b64c94b89b2791275e0bce87ad28e3c61b88ff",
+      "data_structure/dynamic_wavelet_matrix.hpp": "8683aa75c8b5011b9b3e9c06adde7f97b0f2c94cd4345baadc5b80eb3f577caf",
+      "data_structure/generic_segtree_beats.hpp": "51b5ca8efe45c0982df4a967cdc5cd0a82cd58e8dcb1a5c28798c100b950c81f",
+      "data_structure/interval_set.hpp": "cb3aaa2681149c61befa9acbe05d4b308f8bc072bc76b21b85b5a053c3b1ce04",
+      "data_structure/lazy_reversible_treap.hpp": "f9d1e97795f92fbbec6c8531d3496335fb390485fd4e6df4885b66ef0d1cd231",
+      "data_structure/li_chao_tree.hpp": "84f0ac941a24b2f292680531c43db1c442f663270b637ba5acb527945311fadc",
+      "data_structure/link_cut_tree.hpp": "af32cdb70a44aab214649cef14f8476796e5de87bbb3d07fd5e275888e95c833",
+      "data_structure/partially_retroactive_priority_queue.hpp": "7f4982a4348636cb096a5134da00be96533182e30fb64149ba6c48af06810a0e",
+      "data_structure/permutation_tree.hpp": "114140f2c8abb9ae06799bea977e221f45291aa82bed16659ad2bca8a5b52936",
+      "data_structure/point_set_wavelet_matrix.hpp": "6c1f94bf2138c8dd92afee50256f4f43708cb9bd45230a0c8489de471e2ecfe3",
+      "data_structure/retroactive_priority_queue.hpp": "3e06052d465be892c2281010f964c9cd1e5f5c67147a9de811252e314430c2f6",
+      "data_structure/segtree_beats.hpp": "8b7fbb411f2be9f22321afe6f90ca9848b35a534ca191ca08014b18bb4f80e7e",
+      "data_structure/slope_trick.hpp": "81cd59ebb299290402065b9b44a1221a3f502068029e9d607b8f07f8f51ca539",
+      "data_structure/sortable_segtree.hpp": "9827a50a595b0ede541a358181a220ab3c7342006e399c12cb0ac6f13ffe7c01",
+      "data_structure/sparse_table.hpp": "b9378b433210bd5bcba5c69280b25ef9c906b480b641297fa58efe6ebbd4f884",
+      "data_structure/wavelet_matrix.hpp": "389023db38a020bd3234266c1f281de80d4fa1b17955a62310b17e23ad09b945",
+      "data_structure/weighted_union_find.hpp": "1dd4fe325f5922b55c6854ad4445ef7cae5522e0f9419370daa073c34f463eff",
+      "data_structure/weighted_wavelet_matrix.hpp": "1312b9ae6e181bfede84dffdcf3d784857094bf48c2e89a2b16fc23c59ea12b2",
+      "fps/bostan_mori.hpp": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "graph/auxiliary_tree.hpp": "7090beef3b1c0eee6163ca90beb85e6a8803a1295f66c42815f6b3aad08fa31b",
+      "graph/centroid_decomposition.hpp": "48248bac34f499c6919ad1cbee748789a230d516f244e1a8f1fd8d2f900d782d",
+      "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3",
+      "graph/general_matching.hpp": "62c215ab4bf9d24bcffc8da5defb9e5b187e69975276e78413d05f965e0007be",
+      "graph/general_weighted_matching.hpp": "f635efd5314d62a5b7d444ab056660e337a95285508f1785b093cc7129a2e960",
+      "graph/hld.hpp": "6d199cbd38699bd74e5f49ba382e05a5577ef40a11b30b40ecb62d3e0620519d",
+      "graph/hungarian.hpp": "4acb5ca3ba74c793aed5af3e7696575471eff662e4148f785703852ae6ea246c",
+      "graph/lca.hpp": "0cc2ff890d61a09d8974ba0ac2e23db82af3d55180eae74d2377b13602ffb64c",
+      "graph/low_link.hpp": "b576f131cce2b84806f874c16c2270bb7927d189d487c9f8c3de5b8658230cfd",
+      "graph/max_flow.hpp": "f40590ace6a7bc77cbfe8914a8a44c2ddba5fc5860e47ec89c1670ec3886033c",
+      "graph/min_cost_flow.hpp": "3a7c754efcac8b30ec1c177f84a9fb67e0ec2c0f40da7eec553cd28b869423ec",
+      "graph/rerooting.hpp": "f7b2af0d128eb794a1342acc328becb82d1fd49075daa6db273d09dda308b828",
+      "graph/static_top_tree.hpp": "fe99e28ce863ac6488cdd6a92a139a0a394aee075d9bd5d6d1b64e80fa7bd066",
+      "graph/two_edge_connected_components.hpp": "f9c9634ca99665376d3d7ff07f7d55f0761232f6aa6db82dfa4c9e2025a30e2f",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "string/edit_distance.hpp": "0ecb3409c0bf02770d7756343e9784fa3fa208961c0beb64eea3784da502c9ef",
+      "string/eertree.hpp": "0b261b2c37af32c12d624c9246be8085a58a29b6539694da0fc3bfc08f8e0787",
+      "string/lcs.hpp": "2a4313d5cdb7698c2d6e0909acdcd0533b6a83549d95d751d61e3e4b922d5f4d",
+      "string/rolling_hash.hpp": "ca48dbc8344472d686ce156eef7d1314a387b9c167c595cfa55761d5d4e441f5",
+      "string/run_enumerate.hpp": "47ec2c03e7533442bf34f954812bc39ad64c6b725d7b1bd289d24e5bff8a97d9",
+      "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235"
+    },
+    "after": {
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+      "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+      "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+      "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+      "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+      "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fps_asm.hpp": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde",
+      "components/fps_blocked.hpp": "f2fd3a8e88ed8ddce9c663a6fa62c5848b4e78ccf46ad19de1f7b9f19db76cfa",
+      "components/fps_bostan.hpp": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258",
+      "components/fps_composition.hpp": "f69538f8607f69fa341604b46e8d19489459b9936066881fb3b4c384924517a4",
+      "components/fps_convolution.hpp": "9553bd866393d26325dba88a6d779749a9e26a0ff02536ba568fcc0bd91c2bc1",
+      "components/fps_convolution_constant.hpp": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6",
+      "components/fps_convolution_unbalanced.hpp": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fps_exp_blocked.hpp": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2",
+      "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+      "components/fps_io.hpp": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+      "components/fps_sqrt_blocked.hpp": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+      "data_structure/disjoint_sparse_table.hpp": "4506c898e40a65343fc5157254714bd1d1ff3dd2c1e21a09e4f01ede13f25c5d",
+      "data_structure/dynamic_connectivity.hpp": "55b8f98c4ae154babc1381af13bce9d8ae8060a55ace8a1db5250e54c7c3c673",
+      "data_structure/dynamic_li_chao_tree.hpp": "cc7549e65e18dd282d595cdce7d8304264b174b1cf9897a79884c510f72bc96a",
+      "data_structure/dynamic_segtree.hpp": "1f526854b82302e39944b9a8d3b64c94b89b2791275e0bce87ad28e3c61b88ff",
+      "data_structure/dynamic_wavelet_matrix.hpp": "8683aa75c8b5011b9b3e9c06adde7f97b0f2c94cd4345baadc5b80eb3f577caf",
+      "data_structure/generic_segtree_beats.hpp": "51b5ca8efe45c0982df4a967cdc5cd0a82cd58e8dcb1a5c28798c100b950c81f",
+      "data_structure/interval_set.hpp": "cb3aaa2681149c61befa9acbe05d4b308f8bc072bc76b21b85b5a053c3b1ce04",
+      "data_structure/lazy_reversible_treap.hpp": "f9d1e97795f92fbbec6c8531d3496335fb390485fd4e6df4885b66ef0d1cd231",
+      "data_structure/li_chao_tree.hpp": "84f0ac941a24b2f292680531c43db1c442f663270b637ba5acb527945311fadc",
+      "data_structure/link_cut_tree.hpp": "af32cdb70a44aab214649cef14f8476796e5de87bbb3d07fd5e275888e95c833",
+      "data_structure/partially_retroactive_priority_queue.hpp": "7f4982a4348636cb096a5134da00be96533182e30fb64149ba6c48af06810a0e",
+      "data_structure/permutation_tree.hpp": "114140f2c8abb9ae06799bea977e221f45291aa82bed16659ad2bca8a5b52936",
+      "data_structure/point_set_wavelet_matrix.hpp": "6c1f94bf2138c8dd92afee50256f4f43708cb9bd45230a0c8489de471e2ecfe3",
+      "data_structure/retroactive_priority_queue.hpp": "3e06052d465be892c2281010f964c9cd1e5f5c67147a9de811252e314430c2f6",
+      "data_structure/segtree_beats.hpp": "8b7fbb411f2be9f22321afe6f90ca9848b35a534ca191ca08014b18bb4f80e7e",
+      "data_structure/slope_trick.hpp": "81cd59ebb299290402065b9b44a1221a3f502068029e9d607b8f07f8f51ca539",
+      "data_structure/sortable_segtree.hpp": "9827a50a595b0ede541a358181a220ab3c7342006e399c12cb0ac6f13ffe7c01",
+      "data_structure/sparse_table.hpp": "b9378b433210bd5bcba5c69280b25ef9c906b480b641297fa58efe6ebbd4f884",
+      "data_structure/wavelet_matrix.hpp": "389023db38a020bd3234266c1f281de80d4fa1b17955a62310b17e23ad09b945",
+      "data_structure/weighted_union_find.hpp": "1dd4fe325f5922b55c6854ad4445ef7cae5522e0f9419370daa073c34f463eff",
+      "data_structure/weighted_wavelet_matrix.hpp": "1312b9ae6e181bfede84dffdcf3d784857094bf48c2e89a2b16fc23c59ea12b2",
+      "fps/bostan_mori.hpp": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "graph/auxiliary_tree.hpp": "7090beef3b1c0eee6163ca90beb85e6a8803a1295f66c42815f6b3aad08fa31b",
+      "graph/centroid_decomposition.hpp": "48248bac34f499c6919ad1cbee748789a230d516f244e1a8f1fd8d2f900d782d",
+      "graph/dijkstra.hpp": "0ace6394d5030cc0a18dadfc47da2cf348c69f1bc6b32ab8c4d97effe5223ab3",
+      "graph/general_matching.hpp": "62c215ab4bf9d24bcffc8da5defb9e5b187e69975276e78413d05f965e0007be",
+      "graph/general_weighted_matching.hpp": "f635efd5314d62a5b7d444ab056660e337a95285508f1785b093cc7129a2e960",
+      "graph/hld.hpp": "6d199cbd38699bd74e5f49ba382e05a5577ef40a11b30b40ecb62d3e0620519d",
+      "graph/hungarian.hpp": "4acb5ca3ba74c793aed5af3e7696575471eff662e4148f785703852ae6ea246c",
+      "graph/lca.hpp": "0cc2ff890d61a09d8974ba0ac2e23db82af3d55180eae74d2377b13602ffb64c",
+      "graph/low_link.hpp": "b576f131cce2b84806f874c16c2270bb7927d189d487c9f8c3de5b8658230cfd",
+      "graph/max_flow.hpp": "f40590ace6a7bc77cbfe8914a8a44c2ddba5fc5860e47ec89c1670ec3886033c",
+      "graph/min_cost_flow.hpp": "3a7c754efcac8b30ec1c177f84a9fb67e0ec2c0f40da7eec553cd28b869423ec",
+      "graph/rerooting.hpp": "f7b2af0d128eb794a1342acc328becb82d1fd49075daa6db273d09dda308b828",
+      "graph/static_top_tree.hpp": "fe99e28ce863ac6488cdd6a92a139a0a394aee075d9bd5d6d1b64e80fa7bd066",
+      "graph/two_edge_connected_components.hpp": "f9c9634ca99665376d3d7ff07f7d55f0761232f6aa6db82dfa4c9e2025a30e2f",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "string/edit_distance.hpp": "0ecb3409c0bf02770d7756343e9784fa3fa208961c0beb64eea3784da502c9ef",
+      "string/eertree.hpp": "0b261b2c37af32c12d624c9246be8085a58a29b6539694da0fc3bfc08f8e0787",
+      "string/lcs.hpp": "2a4313d5cdb7698c2d6e0909acdcd0533b6a83549d95d751d61e3e4b922d5f4d",
+      "string/rolling_hash.hpp": "ca48dbc8344472d686ce156eef7d1314a387b9c167c595cfa55761d5d4e441f5",
+      "string/run_enumerate.hpp": "47ec2c03e7533442bf34f954812bc39ad64c6b725d7b1bd289d24e5bff8a97d9",
+      "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235"
+    }
+  },
+  "bundle_tool": {
+    "path": "/tmp/fps-venv/bin/oj-bundle",
+    "sha256": "e3d0ee04ccb33ea23000743a233b3146859aa869bfe4bc4b07c7b6b058bb4e0e",
+    "version": "5.6.0"
+  },
+  "drivers": [
+    "test/convolution.test.cpp",
+    "test/cyclic_convolution.test.cpp",
+    "test/fps_bostan_mori.test.cpp",
+    "test/fps_compose.test.cpp",
+    "test/fps_compose_large.test.cpp",
+    "test/fps_compositional_inverse.test.cpp",
+    "test/fps_compositional_inverse_large.test.cpp",
+    "test/fps_divmod.test.cpp",
+    "test/fps_exp.test.cpp",
+    "test/fps_exp_sparse.test.cpp",
+    "test/fps_interpolate.test.cpp",
+    "test/fps_inv.test.cpp",
+    "test/fps_inv_sparse.test.cpp",
+    "test/fps_linear_recurrence.test.cpp",
+    "test/fps_log.test.cpp",
+    "test/fps_pow.test.cpp",
+    "test/fps_sqrt.test.cpp",
+    "test/fps_taylor_shift.test.cpp",
+    "test/multiplicative_convolution.test.cpp",
+    "test/multipoint_eval.test.cpp",
+    "test/multivariate_convolution.test.cpp",
+    "test/ordered_convolution.test.cpp",
+    "test/polynomial_inv_mod.test.cpp",
+    "test/power_projection.test.cpp"
+  ],
+  "sizes": [
+    {
+      "source": "test/convolution.test.cpp",
+      "before": {
+        "bytes": 560509,
+        "sha256": "dfe2d00a0f62f877d072567cea60df1edb1ae2bc3ce2aba31cb97df8c04068a5"
+      },
+      "after": {
+        "bytes": 408939,
+        "sha256": "cae44d7079aabc728f4589730e3dfc292b27d6519e25b944eef523a8708f0d02"
+      }
+    },
+    {
+      "source": "test/cyclic_convolution.test.cpp",
+      "before": {
+        "bytes": 532066,
+        "sha256": "cdb322a042d3d63a57840659996157c404e1dec4f97a06f1ea41d103cb357d2f"
+      },
+      "after": {
+        "bytes": 380496,
+        "sha256": "3ed29cf815c6a273faec721c619fb68dbb96712032f27ccb58dbb9e66efbb763"
+      }
+    },
+    {
+      "source": "test/fps_bostan_mori.test.cpp",
+      "before": {
+        "bytes": 552540,
+        "sha256": "557e79a07824c3620f58ad757531ec39bfda17f08918c40e750093ca46c015be"
+      },
+      "after": {
+        "bytes": 400970,
+        "sha256": "1dad693117bb6e5c0809432fc93114a00ec7efe8a22fc31c47211821165a3874"
+      }
+    },
+    {
+      "source": "test/fps_compose.test.cpp",
+      "before": {
+        "bytes": 639386,
+        "sha256": "e47f865d218d7cfcc14a2e63bae19b3f44aefbbd283cd5b908bcfe74a9c640ce"
+      },
+      "after": {
+        "bytes": 475673,
+        "sha256": "2a7abdb41de19121ba548f0855f7c222920412f39048bbcb5e0147032f2f5494"
+      }
+    },
+    {
+      "source": "test/fps_compose_large.test.cpp",
+      "before": {
+        "bytes": 639404,
+        "sha256": "dbfdf53706fd6447b4bd04991f2a0f22a2f32c9010f4dc2c3bd810fc3c44a91f"
+      },
+      "after": {
+        "bytes": 475691,
+        "sha256": "602fd32e3912038803f4f615821f3da232d6a49dd48da50697d9d612c53fb46e"
+      }
+    },
+    {
+      "source": "test/fps_compositional_inverse.test.cpp",
+      "before": {
+        "bytes": 639524,
+        "sha256": "eba5c92ee8c00b102f950b8e0df78c3779f9faa730285bc62bc8f1189e71f2a8"
+      },
+      "after": {
+        "bytes": 475811,
+        "sha256": "7d8cfc503a542eb19d460df3736aae79ad1a3f3792edd5217a9e01adacd5e834"
+      }
+    },
+    {
+      "source": "test/fps_compositional_inverse_large.test.cpp",
+      "before": {
+        "bytes": 639542,
+        "sha256": "fe7557937bb60ff272b0700774eb29916c98c3a2f073a79bba30caf591d3448d"
+      },
+      "after": {
+        "bytes": 475829,
+        "sha256": "ae9b211d762cd452d69a20a270943c585cf974a137b60faff89a92ddb9281f86"
+      }
+    },
+    {
+      "source": "test/fps_divmod.test.cpp",
+      "before": {
+        "bytes": 546706,
+        "sha256": "bb87c1fc93ec0de2cfac1ce263c5a9eda8923a85a9e957291c1de2c8117099b6"
+      },
+      "after": {
+        "bytes": 395136,
+        "sha256": "47968701dcf8fed991c70b8c13651dbfbcea08703d28180b71a448ad1da21700"
+      }
+    },
+    {
+      "source": "test/fps_exp.test.cpp",
+      "before": {
+        "bytes": 546651,
+        "sha256": "f3a36d61b412c749f0ea78e6fc99e27088e5c7617f30877bebc4dbed4fea1067"
+      },
+      "after": {
+        "bytes": 395081,
+        "sha256": "1a480b1ff353096048e05bdbd14093ee9e5b09f2a3421078b39102a5a895b63c"
+      }
+    },
+    {
+      "source": "test/fps_exp_sparse.test.cpp",
+      "before": {
+        "bytes": 546719,
+        "sha256": "566b4b6a925b3f72cedefd7614a4d18f8c2c957113baeebca65fb26e25bea796"
+      },
+      "after": {
+        "bytes": 395149,
+        "sha256": "330ce5ca6e7560a58ec053e25c346715a74f5c1638f6aff4f83064f08b9232f4"
+      }
+    },
+    {
+      "source": "test/fps_interpolate.test.cpp",
+      "before": {
+        "bytes": 623582,
+        "sha256": "5d6feeeba949489d225f9d93c46e75fcae21d0ac604a6ce32a8c47e3f1adbd13"
+      },
+      "after": {
+        "bytes": 472012,
+        "sha256": "3cb577f45917b7ed854ac585a14f655ddf4f7770bd6b349cc2649ff73ddba6f9"
+      }
+    },
+    {
+      "source": "test/fps_inv.test.cpp",
+      "before": {
+        "bytes": 546651,
+        "sha256": "540f46506ca5714501b40cab37feb253613206f1b30571a7657df376a9671205"
+      },
+      "after": {
+        "bytes": 395081,
+        "sha256": "c78d3775173bca41501a9f3887a45e4746d71463580e8e3c9004ac6f10df0794"
+      }
+    },
+    {
+      "source": "test/fps_inv_sparse.test.cpp",
+      "before": {
+        "bytes": 546719,
+        "sha256": "a640b0d4ac61ed0eeff9135d5b68c5c6c242d4981de2f8e12a4ecb6826230008"
+      },
+      "after": {
+        "bytes": 395149,
+        "sha256": "31f70262e1517db3d99c0b0758d34e90eb378164056ca100240cc37775461638"
+      }
+    },
+    {
+      "source": "test/fps_linear_recurrence.test.cpp",
+      "before": {
+        "bytes": 554004,
+        "sha256": "bec67aebac54c71cbe95f5cd90aa958a46e27448f26729c4e6b5164b1ab8d35b"
+      },
+      "after": {
+        "bytes": 402434,
+        "sha256": "e747728c941cfd78c9ee3d93ae8df16a6abfd03876731af5ea30035328ce1182"
+      }
+    },
+    {
+      "source": "test/fps_log.test.cpp",
+      "before": {
+        "bytes": 546651,
+        "sha256": "ac08de8b655fe054fd0c5454d03817a03bc1213816e5dac7d32ffd7695eaeb15"
+      },
+      "after": {
+        "bytes": 395081,
+        "sha256": "c982388a5cbf22abc2064161e4ed5f90363e225c4709380d7a4d5f65114aad53"
+      }
+    },
+    {
+      "source": "test/fps_pow.test.cpp",
+      "before": {
+        "bytes": 546584,
+        "sha256": "51dcb490cf3205bbb187671271aa62924039139041da6a4a715bef37334a873e"
+      },
+      "after": {
+        "bytes": 395014,
+        "sha256": "991ec947dcc4272be894779ae5342f0e34ff670efbe8b4411ea74c188ece91ea"
+      }
+    },
+    {
+      "source": "test/fps_sqrt.test.cpp",
+      "before": {
+        "bytes": 546598,
+        "sha256": "8d073a9c4404e7aabae8dec6476db7928a68688a528523f56a323491e76e2534"
+      },
+      "after": {
+        "bytes": 395028,
+        "sha256": "6db483a7b1ac38d327e12f215ecafe29cf068fdc7a3b1b6d7d2fbed271db774c"
+      }
+    },
+    {
+      "source": "test/fps_taylor_shift.test.cpp",
+      "before": {
+        "bytes": 564114,
+        "sha256": "8b220f92dae248d769aae59935e566cd8d6a7b05404fdb06c73b3690766be0e4"
+      },
+      "after": {
+        "bytes": 412544,
+        "sha256": "c6c9bc7aa232577576cf9abdbb5349dc8365429bcbcf7dcf26dbb9f070d56b9c"
+      }
+    },
+    {
+      "source": "test/multiplicative_convolution.test.cpp",
+      "before": {
+        "bytes": 537442,
+        "sha256": "30ff2eeb8ce59ffe3deabb100033b03cddca252f781f556f858c0832b1a8ffde"
+      },
+      "after": {
+        "bytes": 385872,
+        "sha256": "78e13a773bd67989686a2a99958df8b8bb13c05147934bf20e1e6b6d95aa65e8"
+      }
+    },
+    {
+      "source": "test/multipoint_eval.test.cpp",
+      "before": {
+        "bytes": 623319,
+        "sha256": "65956ca4c9270739bc521d88ad055e62c73188fcca2352cc80e5b42c666ce700"
+      },
+      "after": {
+        "bytes": 471749,
+        "sha256": "431e9b47ddc3eb4f714eb31512e49f7297f89905353004d9cd8d365e913a2b72"
+      }
+    },
+    {
+      "source": "test/multivariate_convolution.test.cpp",
+      "before": {
+        "bytes": 533892,
+        "sha256": "355c13cc00659e456b59e27ade27ef9bf0eb724d669db487be27d17c40c34fc1"
+      },
+      "after": {
+        "bytes": 382322,
+        "sha256": "697b1565145da2b6898beb7ffe39bee2fb96cd66931d29f3eeeff20a04de2900"
+      }
+    },
+    {
+      "source": "test/ordered_convolution.test.cpp",
+      "before": {
+        "bytes": 532518,
+        "sha256": "d91c363fdc8408715f7e2f1965b759ec37ff4f6887332e075ced0a6fdb2e8b21"
+      },
+      "after": {
+        "bytes": 380948,
+        "sha256": "ef434ead612af7e0ffa82320c4738dbe6d5a722ab6fe8f0d47735697c846ad27"
+      }
+    },
+    {
+      "source": "test/polynomial_inv_mod.test.cpp",
+      "before": {
+        "bytes": 584052,
+        "sha256": "078c32ddf6a5306792cb934a34678681d56db6b50579c6988d63c8c9295067f3"
+      },
+      "after": {
+        "bytes": 432482,
+        "sha256": "a3367bd504b207d317666cea35ba1e61e6be86c0828472b9ab35a31dc8620990"
+      }
+    },
+    {
+      "source": "test/power_projection.test.cpp",
+      "before": {
+        "bytes": 641120,
+        "sha256": "acc31a80b3b7eb3914f6cbd979ebb9a20d83a7d5356f4f2ea40d334eee5edc84"
+      },
+      "after": {
+        "bytes": 477407,
+        "sha256": "5171f41317de4761141c1369bf4f4fdaaa40292fc7a095fdf68b1eb3c63dbfe3"
+      }
+    },
+    {
+      "source": "fps/bostan_mori.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 552088,
+        "sha256": "3fb7c349a60b29954d168f3e29de267fe6df3905e6fc7d5e05cb635594cdf796"
+      },
+      "after": {
+        "bytes": 400518,
+        "sha256": "7702ed64effd825f875cb081194f921af4d5e401b164c956d7e23650a3957439"
+      }
+    },
+    {
+      "source": "fps/compose.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 639094,
+        "sha256": "829df54f7cfc94a6bad88aa1be68756d41b964555c1479ed775a80a23ba375c9"
+      },
+      "after": {
+        "bytes": 475381,
+        "sha256": "0bf0ab5c7295ea168eece63358037eaf1f84039a4db6980082ebff1e36616ae6"
+      }
+    },
+    {
+      "source": "fps/compositional_inverse.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 639220,
+        "sha256": "5e5325a903a5ae280b1fdfb2780f4b8ddcc3b6d1dfe1b9a7bfdea4eb6cf5f33e"
+      },
+      "after": {
+        "bytes": 475507,
+        "sha256": "52da9f171766884fd5cf2e949ebb6c3c1c6d0b99fa59523247d5317ce3f6735f"
+      }
+    },
+    {
+      "source": "fps/fps.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 546417,
+        "sha256": "807d4ba7e2299467a30736b9f576037586607787944b04d83620d97361d22df0"
+      },
+      "after": {
+        "bytes": 394847,
+        "sha256": "f25d708ef61b41577627f2b40098328e90451bb42477864c9dc9666c2e5dae45"
+      }
+    },
+    {
+      "source": "fps/interpolate.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 623284,
+        "sha256": "ff30ef1f72b4d7bad6aa59a1a46acc7904a2a85d8ec590ec44ca370301a22331"
+      },
+      "after": {
+        "bytes": 471714,
+        "sha256": "b0f190223ed186263175618d330921f17630e73f6d344f5521a01b958b91a338"
+      }
+    },
+    {
+      "source": "fps/linear_recurrence.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 553633,
+        "sha256": "30cb85c01ef57db26d6211b630f206e5d504e8641e6d6abd8751d2824b3653ff"
+      },
+      "after": {
+        "bytes": 402063,
+        "sha256": "ae5cd052f921c55fe18c4b9eb7f585b16f6919450ec27f2ae4fe4d96e1af9b77"
+      }
+    },
+    {
+      "source": "fps/multipoint_eval.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 623000,
+        "sha256": "da50f03be74e168629f2d96c1d621c0e190035b0ec191c5d940c19e7cf924dd9"
+      },
+      "after": {
+        "bytes": 471430,
+        "sha256": "d1684c67077a682ef58d404aa17999561e77d9534a29151838b701ecbc3d4738"
+      }
+    },
+    {
+      "source": "fps/polynomial_gcd.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 583602,
+        "sha256": "11fecf65630e98979c797de1601c424e7654abc859450b8b6523efa72873311f"
+      },
+      "after": {
+        "bytes": 432032,
+        "sha256": "95b674b2d65cb9c115b731b37ac6643dc9d37fa03f956edd891a7137e9f48a3e"
+      }
+    },
+    {
+      "source": "fps/power_projection.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 640437,
+        "sha256": "991c96b3ce5dcb00dbde653f4cd3dd77117f3f3d0cf17dfd858009757408d2a7"
+      },
+      "after": {
+        "bytes": 476724,
+        "sha256": "e9e1536ce68c9e845f2bb3907ba08948fdf464b67eaedf56c1450111a505bfce"
+      }
+    },
+    {
+      "source": "fps/taylor_shift.hpp",
+      "kind": "header-with-fast-io",
+      "before": {
+        "bytes": 563813,
+        "sha256": "579dbfcb14d08659d83ced247fd458eb36c6aa994599d3746b8edec541951314"
+      },
+      "after": {
+        "bytes": 412243,
+        "sha256": "9c6f45f984e12662c31c31a4b19f57e3d4686b3e6756421f69f65e7d8eb9ffc1"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/convolution.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_convolution.test"
+          ],
+          "binary_sha256": "71f9042e2811e6877473b40ca44d0a31d92f584cf333e77fe2df9cc4107701ef",
+          "bytes": 206592,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 4.19614361099957
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_convolution.test"
+          ],
+          "binary_sha256": "71f9042e2811e6877473b40ca44d0a31d92f584cf333e77fe2df9cc4107701ef",
+          "bytes": 206592,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 4.173478354001418
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/cyclic_convolution.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/cyclic_convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_cyclic_convolution.test"
+          ],
+          "binary_sha256": "20c079c7a5a0a66d8e025db0dc02a5c3730ea999065bc3d6be4a3a00fc280cb3",
+          "bytes": 39584,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 2.11924622899096
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/cyclic_convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_cyclic_convolution.test"
+          ],
+          "binary_sha256": "20c079c7a5a0a66d8e025db0dc02a5c3730ea999065bc3d6be4a3a00fc280cb3",
+          "bytes": 39584,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 2.416321134995087
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_bostan_mori.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_bostan_mori.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_bostan_mori.test"
+          ],
+          "binary_sha256": "9daa4b8bc73898fec6af770d517bf6b1a9092743337187873115a83adc0781d7",
+          "bytes": 426960,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.510862134004128
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_bostan_mori.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_bostan_mori.test"
+          ],
+          "binary_sha256": "9daa4b8bc73898fec6af770d517bf6b1a9092743337187873115a83adc0781d7",
+          "bytes": 426960,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.250393067995901
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_compose.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_compose.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_compose.test"
+          ],
+          "binary_sha256": "2c39c3b0bcf925660463c1433bbcedf0340e1b5d006d2841eabc75dc582866fc",
+          "bytes": 410952,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.12595225199766
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_compose.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_compose.test"
+          ],
+          "binary_sha256": "2c39c3b0bcf925660463c1433bbcedf0340e1b5d006d2841eabc75dc582866fc",
+          "bytes": 410952,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.890146043995628
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_compose_large.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_compose_large.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_compose_large.test"
+          ],
+          "binary_sha256": "8657203378f877d9fcea5b736fb356f6d9fedb0064cfdff84c0400188ae13cc7",
+          "bytes": 410960,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.8904974369943375
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_compose_large.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_compose_large.test"
+          ],
+          "binary_sha256": "8657203378f877d9fcea5b736fb356f6d9fedb0064cfdff84c0400188ae13cc7",
+          "bytes": 410960,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.782589478010777
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_compositional_inverse.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_compositional_inverse.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_compositional_inverse.test"
+          ],
+          "binary_sha256": "b69b7e9f2509d0e830a1c33e786532f10b4f52faf3d75938bcfec0645a0786e1",
+          "bytes": 719816,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 13.428616492004949
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_compositional_inverse.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_compositional_inverse.test"
+          ],
+          "binary_sha256": "b69b7e9f2509d0e830a1c33e786532f10b4f52faf3d75938bcfec0645a0786e1",
+          "bytes": 719816,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 13.778814998993766
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_compositional_inverse_large.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_compositional_inverse_large.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_compositional_inverse_large.test"
+          ],
+          "binary_sha256": "478b21fd1e0acdd424697d7f639beb8542681efe92734d83633e05c389602a51",
+          "bytes": 719824,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 13.759629250998842
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_compositional_inverse_large.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_compositional_inverse_large.test"
+          ],
+          "binary_sha256": "478b21fd1e0acdd424697d7f639beb8542681efe92734d83633e05c389602a51",
+          "bytes": 719824,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 13.55694062600378
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_divmod.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_divmod.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_divmod.test"
+          ],
+          "binary_sha256": "f64479d63d0a11de41419a735747805867be0c201a1918af165a6123bc8ae64f",
+          "bytes": 414080,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.648038977000397
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_divmod.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_divmod.test"
+          ],
+          "binary_sha256": "f64479d63d0a11de41419a735747805867be0c201a1918af165a6123bc8ae64f",
+          "bytes": 414080,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.7510556430061115
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_exp.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_exp.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_exp.test"
+          ],
+          "binary_sha256": "ba85d11a9d2ddb53317317a219a5c9148a93a5a56b981479b6bd1578d4e85335",
+          "bytes": 447112,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.234168209994095
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_exp.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_exp.test"
+          ],
+          "binary_sha256": "ba85d11a9d2ddb53317317a219a5c9148a93a5a56b981479b6bd1578d4e85335",
+          "bytes": 447112,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.796600661997218
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_exp_sparse.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_exp_sparse.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_exp_sparse.test"
+          ],
+          "binary_sha256": "f531c5fe8c2a03669d1ea786bba9ed8551e37e0699bf89db72bb9f92841c6434",
+          "bytes": 442304,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.08331701598945
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_exp_sparse.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_exp_sparse.test"
+          ],
+          "binary_sha256": "f531c5fe8c2a03669d1ea786bba9ed8551e37e0699bf89db72bb9f92841c6434",
+          "bytes": 442304,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.057181948999641
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_interpolate.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_interpolate.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_interpolate.test"
+          ],
+          "binary_sha256": "b286a99ca575ab06596a783d80617e4a04f59f314b3bab14db96d1e3e73ced7f",
+          "bytes": 581816,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 11.466245168994647
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_interpolate.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_interpolate.test"
+          ],
+          "binary_sha256": "b286a99ca575ab06596a783d80617e4a04f59f314b3bab14db96d1e3e73ced7f",
+          "bytes": 581816,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 10.687183996997192
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_inv.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_inv.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_inv.test"
+          ],
+          "binary_sha256": "a9eb3c4fe8df3f71b7272f7189c2a92fdbd00f1ddf23cd17a51526a4b5fdf3a5",
+          "bytes": 346352,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 6.250124300000607
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_inv.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_inv.test"
+          ],
+          "binary_sha256": "a9eb3c4fe8df3f71b7272f7189c2a92fdbd00f1ddf23cd17a51526a4b5fdf3a5",
+          "bytes": 346352,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 6.516588355996646
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_inv_sparse.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_inv_sparse.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_inv_sparse.test"
+          ],
+          "binary_sha256": "1801af9935396dcc93c651f056e1120a72c4b1ff2daf64a1f9959cd7328b0558",
+          "bytes": 337752,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 6.269768843005295
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_inv_sparse.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_inv_sparse.test"
+          ],
+          "binary_sha256": "1801af9935396dcc93c651f056e1120a72c4b1ff2daf64a1f9959cd7328b0558",
+          "bytes": 337752,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 6.087850746000186
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_linear_recurrence.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_linear_recurrence.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_linear_recurrence.test"
+          ],
+          "binary_sha256": "12272f663d57f6b9889e6be4ceadc0dc68b5ce0e4586716bddf83e88b8cec3a1",
+          "bytes": 426816,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.868088707007701
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_linear_recurrence.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_linear_recurrence.test"
+          ],
+          "binary_sha256": "12272f663d57f6b9889e6be4ceadc0dc68b5ce0e4586716bddf83e88b8cec3a1",
+          "bytes": 426816,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.04419579799287
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_log.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_log.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_log.test"
+          ],
+          "binary_sha256": "4e0f7390919dd98fb766a52f4b8700658fb7b460b361f44a4254a619681150ae",
+          "bytes": 423264,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.888192534999689
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_log.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_log.test"
+          ],
+          "binary_sha256": "4e0f7390919dd98fb766a52f4b8700658fb7b460b361f44a4254a619681150ae",
+          "bytes": 423264,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.025435828996706
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_pow.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_pow.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_pow.test"
+          ],
+          "binary_sha256": "609831414451985c65239996f844e1e24fe956a30a2cd4904b3a7c4e29d001a4",
+          "bytes": 503776,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 9.342846785992151
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_pow.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_pow.test"
+          ],
+          "binary_sha256": "609831414451985c65239996f844e1e24fe956a30a2cd4904b3a7c4e29d001a4",
+          "bytes": 503776,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 9.615131447004387
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_sqrt.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_sqrt.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_sqrt.test"
+          ],
+          "binary_sha256": "843b431597c663ffb67d6ca57ea7a4b6a6cfd17069747e746586eb4f73aba8f7",
+          "bytes": 447920,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.425457719000406
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_sqrt.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_sqrt.test"
+          ],
+          "binary_sha256": "843b431597c663ffb67d6ca57ea7a4b6a6cfd17069747e746586eb4f73aba8f7",
+          "bytes": 447920,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 8.474255925000762
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_taylor_shift.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_taylor_shift.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_fps_taylor_shift.test"
+          ],
+          "binary_sha256": "b5b38bde74428d19fd95defef07bcb53f1626239e09d489e8a348aa8f880e4ed",
+          "bytes": 256120,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 4.721697529996163
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_taylor_shift.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_fps_taylor_shift.test"
+          ],
+          "binary_sha256": "b5b38bde74428d19fd95defef07bcb53f1626239e09d489e8a348aa8f880e4ed",
+          "bytes": 256120,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 4.741928866991657
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/multiplicative_convolution.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/multiplicative_convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_multiplicative_convolution.test"
+          ],
+          "binary_sha256": "da4be5531f3c3f80be0c4e84639f924ddd5fcaf73dfc9c727d564022b4198a82",
+          "bytes": 145440,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.3200162360008107
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/multiplicative_convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_multiplicative_convolution.test"
+          ],
+          "binary_sha256": "da4be5531f3c3f80be0c4e84639f924ddd5fcaf73dfc9c727d564022b4198a82",
+          "bytes": 145440,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.434517223999137
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/multipoint_eval.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/multipoint_eval.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_multipoint_eval.test"
+          ],
+          "binary_sha256": "800a6a3b6f7aa1e9aa2a7d65304f789bac9037cd2f39f0c6a67714a80c8feecc",
+          "bytes": 535600,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 10.46357233299932
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/multipoint_eval.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_multipoint_eval.test"
+          ],
+          "binary_sha256": "800a6a3b6f7aa1e9aa2a7d65304f789bac9037cd2f39f0c6a67714a80c8feecc",
+          "bytes": 535600,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 9.957802784003434
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/multivariate_convolution.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/multivariate_convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_multivariate_convolution.test"
+          ],
+          "binary_sha256": "3eef6070e191481b4a9d99d676493c841a2bc26304493a059a9415cf46108573",
+          "bytes": 44016,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 2.5396826390060596
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/multivariate_convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_multivariate_convolution.test"
+          ],
+          "binary_sha256": "3eef6070e191481b4a9d99d676493c841a2bc26304493a059a9415cf46108573",
+          "bytes": 44016,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 2.4306632420048118
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/ordered_convolution.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/ordered_convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_ordered_convolution.test"
+          ],
+          "binary_sha256": "a11df639348697b65765b68ab35ba49fc1768cfaae0f73d5336d9bc74354c188",
+          "bytes": 135912,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.09048968499701
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/ordered_convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_ordered_convolution.test"
+          ],
+          "binary_sha256": "a11df639348697b65765b68ab35ba49fc1768cfaae0f73d5336d9bc74354c188",
+          "bytes": 135912,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.0083885060012108
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/polynomial_inv_mod.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/polynomial_inv_mod.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_polynomial_inv_mod.test"
+          ],
+          "binary_sha256": "df500d90cbd7e9a7b70fba77aaaa62334c0fcd203b2042192c4e1cae18587f08",
+          "bytes": 503000,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 9.464363042992773
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/polynomial_inv_mod.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_polynomial_inv_mod.test"
+          ],
+          "binary_sha256": "df500d90cbd7e9a7b70fba77aaaa62334c0fcd203b2042192c4e1cae18587f08",
+          "bytes": 503000,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 9.482172928997898
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/power_projection.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/power_projection.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_power_projection.test"
+          ],
+          "binary_sha256": "a41f4553cf3674fd4e68cf038bd93932bdf75551af840743c8cb8564db7c61f2",
+          "bytes": 668392,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 12.371043122999254
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/power_projection.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_power_projection.test"
+          ],
+          "binary_sha256": "a41f4553cf3674fd4e68cf038bd93932bdf75551af840743c8cb8564db7c61f2",
+          "bytes": 668392,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 12.2922908479959
+        }
+      }
+    },
+    {
+      "compiler": "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+      "source": "test/convolution.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp-13_convolution.test"
+          ],
+          "binary_sha256": "52ec4ba35d36ce9237ce09c1284030c674703584dac4c899787a23ddf04d5433",
+          "bytes": 199056,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.208255460995133
+        },
+        "after": {
+          "command": [
+            "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp-13_convolution.test"
+          ],
+          "binary_sha256": "52ec4ba35d36ce9237ce09c1284030c674703584dac4c899787a23ddf04d5433",
+          "bytes": 199056,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.002920596001786
+        }
+      }
+    },
+    {
+      "compiler": "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+      "source": "test/fps_compose.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_compose.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp-13_fps_compose.test"
+          ],
+          "binary_sha256": "f5df9aa4da2a7164485f97fbef04afc86a63d217910b56e16dd4afb3e9aa33aa",
+          "bytes": 387088,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 6.432974870986072
+        },
+        "after": {
+          "command": [
+            "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_compose.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp-13_fps_compose.test"
+          ],
+          "binary_sha256": "f5df9aa4da2a7164485f97fbef04afc86a63d217910b56e16dd4afb3e9aa33aa",
+          "bytes": 387088,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 6.2879661670012865
+        }
+      }
+    },
+    {
+      "compiler": "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+      "source": "test/fps_interpolate.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_interpolate.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp-13_fps_interpolate.test"
+          ],
+          "binary_sha256": "1a1dbdfb27103b8143ec72d61d3afc1d474eb06a36839c68110b64aaa69b6a33",
+          "bytes": 549944,
+          "log_sha256": "f00f8a11a96bc34d219056a31b96c1c8af0d520964ce8e1528223b8b3dd633f8",
+          "seconds": 9.241506979000405
+        },
+        "after": {
+          "command": [
+            "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_interpolate.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp-13_fps_interpolate.test"
+          ],
+          "binary_sha256": "1a1dbdfb27103b8143ec72d61d3afc1d474eb06a36839c68110b64aaa69b6a33",
+          "bytes": 549944,
+          "log_sha256": "f00f8a11a96bc34d219056a31b96c1c8af0d520964ce8e1528223b8b3dd633f8",
+          "seconds": 9.396253836996038
+        }
+      }
+    },
+    {
+      "compiler": "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+      "source": "test/fps_sqrt.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_sqrt.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp-13_fps_sqrt.test"
+          ],
+          "binary_sha256": "973c060e1209d9736e2715c49ddad483f2ba3acb458f7a261b480a46ce87f535",
+          "bytes": 427528,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.333320074001676
+        },
+        "after": {
+          "command": [
+            "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_sqrt.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp-13_fps_sqrt.test"
+          ],
+          "binary_sha256": "973c060e1209d9736e2715c49ddad483f2ba3acb458f7a261b480a46ce87f535",
+          "bytes": 427528,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 7.08375174899993
+        }
+      }
+    },
+    {
+      "compiler": "/tmp/fps-clang/toolchain/usr/bin/clang++-19",
+      "source": "test/convolution.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/tmp/fps-clang/toolchain/usr/bin/clang++-19",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/clangpp-19_convolution.test"
+          ],
+          "binary_sha256": "d637ae8885c9fbb168f495fdae29119424587643fc94be12369de554dfb3e91c",
+          "bytes": 102344,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 2.323885635996703
+        },
+        "after": {
+          "command": [
+            "/tmp/fps-clang/toolchain/usr/bin/clang++-19",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/clangpp-19_convolution.test"
+          ],
+          "binary_sha256": "d637ae8885c9fbb168f495fdae29119424587643fc94be12369de554dfb3e91c",
+          "bytes": 102344,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 2.3628104189992882
+        }
+      }
+    },
+    {
+      "compiler": "/tmp/fps-clang/toolchain/usr/bin/clang++-19",
+      "source": "test/fps_compose.test.cpp",
+      "extra_flags": [],
+      "variants": {
+        "before": {
+          "command": [
+            "/tmp/fps-clang/toolchain/usr/bin/clang++-19",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_compose.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/clangpp-19_fps_compose.test"
+          ],
+          "binary_sha256": "a1f97b2882c9ee3704e5ae749b7609362657b06d5f79ec57d041f8b44bd60dce",
+          "bytes": 131984,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 2.6881664609973086
+        },
+        "after": {
+          "command": [
+            "/tmp/fps-clang/toolchain/usr/bin/clang++-19",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_compose.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/clangpp-19_fps_compose.test"
+          ],
+          "binary_sha256": "a1f97b2882c9ee3704e5ae749b7609362657b06d5f79ec57d041f8b44bd60dce",
+          "bytes": 131984,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 2.8283190760121215
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/convolution.test.cpp",
+      "extra_flags": [
+        "-U__linux__"
+      ],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-U__linux__",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_portable_convolution.test"
+          ],
+          "binary_sha256": "7feabe55af3481f83fb4f3b7d70d74ad5d7f87aa88831ed47ab8c903cddc94ae",
+          "bytes": 126616,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.2325567700027023
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-U__linux__",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/convolution.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_portable_convolution.test"
+          ],
+          "binary_sha256": "7feabe55af3481f83fb4f3b7d70d74ad5d7f87aa88831ed47ab8c903cddc94ae",
+          "bytes": 126616,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.035498804994859
+        }
+      }
+    },
+    {
+      "compiler": "/usr/bin/g++",
+      "source": "test/fps_compose.test.cpp",
+      "extra_flags": [
+        "-U__linux__"
+      ],
+      "variants": {
+        "before": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-U__linux__",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/before=/library",
+            "/workspace/cp-fps-size/verification-final/before/bundles/fps_compose.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/before/binaries/gpp_portable_fps_compose.test"
+          ],
+          "binary_sha256": "949cb28fb6ff3af36c0829e7c59821aa171f078f43686f780af6eb8c922aca4a",
+          "bytes": 173848,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.9711173929972574
+        },
+        "after": {
+          "command": [
+            "/usr/bin/g++",
+            "-std=c++23",
+            "-O2",
+            "-DEVAL",
+            "-DONLINE_JUDGE",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-U__linux__",
+            "-ffile-prefix-map=/workspace/cp-fps-size/verification-final/after=/library",
+            "/workspace/cp-fps-size/verification-final/after/bundles/fps_compose.test.cpp",
+            "-o",
+            "/workspace/cp-fps-size/verification-final/after/binaries/gpp_portable_fps_compose.test"
+          ],
+          "binary_sha256": "949cb28fb6ff3af36c0829e7c59821aa171f078f43686f780af6eb8c922aca4a",
+          "bytes": 173848,
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "seconds": 3.9709386300091865
+        }
+      }
+    }
+  ],
+  "compilers": {
+    "/usr/bin/g++": {
+      "sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
+      "path": "/usr/bin/x86_64-linux-gnu-g++-14",
+      "version": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+    },
+    "/tmp/fps-gcc13/toolchain/usr/bin/g++-13": {
+      "sha256": "4eb8c1b2c530e0cb8616c4f4e2918bbe219f2137ae7294430ab5739e2fb39168",
+      "path": "/tmp/fps-gcc13/toolchain/usr/bin/x86_64-linux-gnu-g++-13",
+      "version": "g++-13 (Debian 13.3.0-16) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+    },
+    "/tmp/fps-clang/toolchain/usr/bin/clang++-19": {
+      "sha256": "0a3c55936ac43954fbe4914e6e73b577ca9e35e75d89ef13d3e28c187f41ca1a",
+      "path": "/tmp/fps-clang/toolchain/usr/lib/llvm-19/bin/clang",
+      "version": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /tmp/fps-clang/toolchain/usr/lib/llvm-19/bin\n"
+    }
+  },
+  "status": "passed",
+  "note": "Compile both variants with identical file basenames and mapped task-directory prefixes. No optimization, dispatch, asm qualifier, template bytes, constraints or clobbers may change.",
+  "assembly_templates": {
+    "before": [
+      {
+        "volatile": true,
+        "bytes": 4100,
+        "sha256": "1fb16f26e7e0e642fc040604bad8b1ebed5165c1facc5791148a97778f7e54d3"
+      },
+      {
+        "volatile": true,
+        "bytes": 4136,
+        "sha256": "8ebb7109f55d1e1be63cda9b077216e85012357a8d7359d3e8c6d31d442668de"
+      },
+      {
+        "volatile": true,
+        "bytes": 2782,
+        "sha256": "b626b8db06090aff01961ff05a02bda4aac52f7dc638ed36356e1b9f758c1f50"
+      },
+      {
+        "volatile": true,
+        "bytes": 2579,
+        "sha256": "cc8b7ca1e24e2638547226bcd1fce29e84bd8e2ecbee165f91d7b087bdeaa71b"
+      },
+      {
+        "volatile": true,
+        "bytes": 1860,
+        "sha256": "e75a7f96aeeb00e7d13c641266f8f047b5b7c9186a50b5505cfd03f2c1054aac"
+      },
+      {
+        "volatile": true,
+        "bytes": 7626,
+        "sha256": "59bff1311562da127e9d5bdc3aedcd23f959894a457b017ad3ef55805b5ab718"
+      },
+      {
+        "volatile": true,
+        "bytes": 7978,
+        "sha256": "4210e746be80be6a2d2d23df21a36104601f0412446a8cba859e37f1d765cc7f"
+      },
+      {
+        "volatile": true,
+        "bytes": 20125,
+        "sha256": "bc706b1ffb79329bb32002e6bbbc2755fc44f9f5239d4de87056617cc19f6211"
+      },
+      {
+        "volatile": true,
+        "bytes": 16794,
+        "sha256": "6c67856bdd1e7e74b47b25924cd24cbfafef2360b786839e3c30c2fa7054f1ff"
+      },
+      {
+        "volatile": true,
+        "bytes": 5493,
+        "sha256": "e351a816aedd0a879ec46c954c0c5ba7a0679c2659b3e8833619a8b3ddf928e9"
+      },
+      {
+        "volatile": true,
+        "bytes": 5732,
+        "sha256": "a1e811f80b1f68a2d72736ab85abded8fbc1f77dd7118de2ec309edd9d17db93"
+      },
+      {
+        "volatile": false,
+        "bytes": 1514,
+        "sha256": "d7c69a016924f495894e3c7c9ee0e3ae5b6aa7710a1eecfd24a22496d2ee89d8"
+      },
+      {
+        "volatile": false,
+        "bytes": 1298,
+        "sha256": "04d8656ee6a6987bae5a4569a94f62153937fb7414b4c01a30a95d5a05094eb1"
+      },
+      {
+        "volatile": true,
+        "bytes": 4079,
+        "sha256": "e2601320a58c1704bf788cce638950ba445a90542d0e6d1613025158d8782f89"
+      },
+      {
+        "volatile": true,
+        "bytes": 7194,
+        "sha256": "a1ba3d9abe7a70ba62b07384f3f44ebd77841bf0d3a79dd7559ab268f9058c97"
+      },
+      {
+        "volatile": true,
+        "bytes": 10753,
+        "sha256": "ee1fcf49dab9796b007be730ebae5229523fe40270a8eba12409cd10b89e09a0"
+      },
+      {
+        "volatile": true,
+        "bytes": 17864,
+        "sha256": "36e85a18167699a383f5bdce5005946820c5f8ee034b93d7df351a9cec02963f"
+      },
+      {
+        "volatile": true,
+        "bytes": 14467,
+        "sha256": "0c7d7d435dcdcca8d48684e6d82ce89db250e5914bfd4063e2d4d558fb895261"
+      },
+      {
+        "volatile": true,
+        "bytes": 17579,
+        "sha256": "7a3610b4ac68c149d11ac41ed11cdbc134f9d9bd538d63106b7c00c045be7e20"
+      },
+      {
+        "volatile": true,
+        "bytes": 32155,
+        "sha256": "a89e9f6de728530bb91d682926016e256fb009e2f17598924f1d616cb1662b83"
+      },
+      {
+        "volatile": true,
+        "bytes": 5514,
+        "sha256": "de2dc66766792bfa8e6c132bca26d624266255d9cb156ecd52dc109d4c8b9f17"
+      },
+      {
+        "volatile": true,
+        "bytes": 4181,
+        "sha256": "cdc98fb1303e5a410d8458c5ea8c6cf958949be6fa16efe57256ebf4559907e9"
+      },
+      {
+        "volatile": true,
+        "bytes": 4217,
+        "sha256": "b92b3c29eee8ec552e37325ef1f1f49da5f1e58582c13b3cdcf67e2a97dd518d"
+      },
+      {
+        "volatile": true,
+        "bytes": 4101,
+        "sha256": "a46fce4a412daa80d3b8ea24012ea9b50e0d0195dcf36640cbc156e6a5efcd68"
+      },
+      {
+        "volatile": true,
+        "bytes": 4137,
+        "sha256": "ea6675a7079fc70968ee82daffacb5ac44275ef78e519432048908e588e6ede4"
+      }
+    ],
+    "after": [
+      {
+        "volatile": true,
+        "bytes": 4100,
+        "sha256": "1fb16f26e7e0e642fc040604bad8b1ebed5165c1facc5791148a97778f7e54d3"
+      },
+      {
+        "volatile": true,
+        "bytes": 4136,
+        "sha256": "8ebb7109f55d1e1be63cda9b077216e85012357a8d7359d3e8c6d31d442668de"
+      },
+      {
+        "volatile": true,
+        "bytes": 2782,
+        "sha256": "b626b8db06090aff01961ff05a02bda4aac52f7dc638ed36356e1b9f758c1f50"
+      },
+      {
+        "volatile": true,
+        "bytes": 2579,
+        "sha256": "cc8b7ca1e24e2638547226bcd1fce29e84bd8e2ecbee165f91d7b087bdeaa71b"
+      },
+      {
+        "volatile": true,
+        "bytes": 1860,
+        "sha256": "e75a7f96aeeb00e7d13c641266f8f047b5b7c9186a50b5505cfd03f2c1054aac"
+      },
+      {
+        "volatile": true,
+        "bytes": 7626,
+        "sha256": "59bff1311562da127e9d5bdc3aedcd23f959894a457b017ad3ef55805b5ab718"
+      },
+      {
+        "volatile": true,
+        "bytes": 7978,
+        "sha256": "4210e746be80be6a2d2d23df21a36104601f0412446a8cba859e37f1d765cc7f"
+      },
+      {
+        "volatile": true,
+        "bytes": 20125,
+        "sha256": "bc706b1ffb79329bb32002e6bbbc2755fc44f9f5239d4de87056617cc19f6211"
+      },
+      {
+        "volatile": true,
+        "bytes": 16794,
+        "sha256": "6c67856bdd1e7e74b47b25924cd24cbfafef2360b786839e3c30c2fa7054f1ff"
+      },
+      {
+        "volatile": true,
+        "bytes": 5493,
+        "sha256": "e351a816aedd0a879ec46c954c0c5ba7a0679c2659b3e8833619a8b3ddf928e9"
+      },
+      {
+        "volatile": true,
+        "bytes": 5732,
+        "sha256": "a1e811f80b1f68a2d72736ab85abded8fbc1f77dd7118de2ec309edd9d17db93"
+      },
+      {
+        "volatile": false,
+        "bytes": 1514,
+        "sha256": "d7c69a016924f495894e3c7c9ee0e3ae5b6aa7710a1eecfd24a22496d2ee89d8"
+      },
+      {
+        "volatile": false,
+        "bytes": 1298,
+        "sha256": "04d8656ee6a6987bae5a4569a94f62153937fb7414b4c01a30a95d5a05094eb1"
+      },
+      {
+        "volatile": true,
+        "bytes": 4079,
+        "sha256": "e2601320a58c1704bf788cce638950ba445a90542d0e6d1613025158d8782f89"
+      },
+      {
+        "volatile": true,
+        "bytes": 7194,
+        "sha256": "a1ba3d9abe7a70ba62b07384f3f44ebd77841bf0d3a79dd7559ab268f9058c97"
+      },
+      {
+        "volatile": true,
+        "bytes": 10753,
+        "sha256": "ee1fcf49dab9796b007be730ebae5229523fe40270a8eba12409cd10b89e09a0"
+      },
+      {
+        "volatile": true,
+        "bytes": 17864,
+        "sha256": "36e85a18167699a383f5bdce5005946820c5f8ee034b93d7df351a9cec02963f"
+      },
+      {
+        "volatile": true,
+        "bytes": 14467,
+        "sha256": "0c7d7d435dcdcca8d48684e6d82ce89db250e5914bfd4063e2d4d558fb895261"
+      },
+      {
+        "volatile": true,
+        "bytes": 17579,
+        "sha256": "7a3610b4ac68c149d11ac41ed11cdbc134f9d9bd538d63106b7c00c045be7e20"
+      },
+      {
+        "volatile": true,
+        "bytes": 32155,
+        "sha256": "a89e9f6de728530bb91d682926016e256fb009e2f17598924f1d616cb1662b83"
+      },
+      {
+        "volatile": true,
+        "bytes": 5514,
+        "sha256": "de2dc66766792bfa8e6c132bca26d624266255d9cb156ecd52dc109d4c8b9f17"
+      },
+      {
+        "volatile": true,
+        "bytes": 4181,
+        "sha256": "cdc98fb1303e5a410d8458c5ea8c6cf958949be6fa16efe57256ebf4559907e9"
+      },
+      {
+        "volatile": true,
+        "bytes": 4217,
+        "sha256": "b92b3c29eee8ec552e37325ef1f1f49da5f1e58582c13b3cdcf67e2a97dd518d"
+      },
+      {
+        "volatile": true,
+        "bytes": 4101,
+        "sha256": "a46fce4a412daa80d3b8ea24012ea9b50e0d0195dcf36640cbc156e6a5efcd68"
+      },
+      {
+        "volatile": true,
+        "bytes": 4137,
+        "sha256": "ea6675a7079fc70968ee82daffacb5ac44275ef78e519432048908e588e6ede4"
+      }
+    ]
+  },
+  "live_source_hashes_match": true,
+  "compiler_hashes_match": true
+}

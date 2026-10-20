@@ -1,4 +1,4 @@
-#include "math/kth_root.hpp"
+#include "math/number_theory/kth_root.hpp"
 #include "components/fast_io.hpp"
 
 #ifndef KTH_ROOT_VARIANT

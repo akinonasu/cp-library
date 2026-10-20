@@ -156,7 +156,7 @@ def variants():
 			return k == d ? v : center_;
 		}''' + shaped[insert:]
         result['shapes' if name == 'peel_zero' else 'packed_shapes'] = shaped
-    result['current'] = (ROOT / 'graph/hld.hpp').read_text()
+    result['current'] = (ROOT / 'data_structure/advanced/hld.hpp').read_text()
     return result
 
 
@@ -166,7 +166,7 @@ def generate(directory):
     sources = variants()
     for name, source in sources.items():
         (directory / f'{name}.hpp').write_text(source)
-        (directory / f'{name}_test.cpp').write_text((ROOT / 'test/unit/hld.cpp').read_text().replace('"graph/hld.hpp"', f'"{name}.hpp"'))
+        (directory / f'{name}_test.cpp').write_text((ROOT / 'test/unit/hld.cpp').read_text().replace('"data_structure/advanced/hld.hpp"', f'"{name}.hpp"'))
     combined = '#include <algorithm>\n#include <array>\n#include <cassert>\n#include <cstddef>\n#include <limits>\n#include <utility>\n#include <vector>\n'
     for name, source in sources.items():
         source = re.sub(r'^#.*\n', '', source, flags=re.M)

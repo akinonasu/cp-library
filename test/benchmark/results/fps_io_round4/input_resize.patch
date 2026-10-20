@@ -1,0 +1,28 @@
+--- a/components/fps_io.hpp
++++ b/components/fps_io.hpp
+@@ -154,8 +154,24 @@
+ 	if (!n) return;
+ 	if (n > out.max_size() - out.size()) throw std::length_error("fps input");
+ 	prepare_fps_output(out, out.size() + n);
++	const auto first = out.size();
++	out.resize(first + n);
++	auto *destination = out.data() + first;
+ 	fast_io_detail::BulkInput::read_blocks(input, n, [&](const unsigned *values, std::size_t count) {
+-		append_fps_words<false>(out, values, count);
++		std::size_t i = 0;
++		for (; i + 64 <= count; i += 64) {
++#pragma GCC unroll 8
++			for (int j = 0; j < 64; j += 8) {
++				const auto x = fps_output_detail::montgomery(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + i + j)));
++				std::memcpy(static_cast<void *>(destination + i + j), &x, sizeof(x));
++			}
++		}
++		for (; i + 8 <= count; i += 8) {
++			const auto x = fps_output_detail::montgomery(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + i)));
++			std::memcpy(static_cast<void *>(destination + i), &x, sizeof(x));
++		}
++		for (; i < count; ++i) destination[i] = Mint::raw(values[i]);
++		destination += count;
+ 	});
+ }
+ 

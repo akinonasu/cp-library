@@ -1,0 +1,179 @@
+--- a/components/fps_composition.hpp
++++ b/components/fps_composition.hpp
+@@ -984,6 +984,33 @@
+ 	}
+ }
+ 
++[[gnu::noinline]] inline void forward_zero_columns(std::uint32_t* a, std::size_t h, std::size_t width, const std::uint32_t* roots) {
++	const Factor z(roots[1], roots[9]);
++	const std::size_t stride = 8 * h;
++	for (std::size_t c = 0; c < h; c += 2 * width)
++		for (std::size_t j = 8 * c; j < 8 * (c + width); j += 8) {
++			const Vec f0 = low(load(a + j)), f1 = low(load(a + j + stride));
++			const Vec f2 = low(load(a + j + 2 * stride)), f3 = low(load(a + j + 3 * stride));
++			const Vec ac = low(add(f0, f2)), amc = low(diff(f0, f2));
++			const Vec bd = low(add(f1, f3)), bmd = times(diff(f1, f3), z);
++			store(a + j, add(ac, bd)), store(a + j + stride, diff(ac, bd));
++			store(a + j + 2 * stride, add(amc, bmd)), store(a + j + 3 * stride, diff(amc, bmd));
++		}
++}
++
++[[gnu::noinline]] inline void inverse_zero_columns(std::uint32_t* a, std::size_t h, std::size_t width, const std::uint32_t* roots) {
++	const Factor z(roots[1], roots[9]);
++	const std::size_t stride = 8 * h;
++	for (std::size_t c = 0; c < h; c += 2 * width)
++		for (std::size_t j = 8 * c; j < 8 * (c + width); j += 8) {
++			const Vec f0 = load(a + j), f1 = load(a + j + stride), f2 = load(a + j + 2 * stride), f3 = load(a + j + 3 * stride);
++			const Vec ab = low(add(f0, f1)), cd = low(add(f2, f3));
++			const Vec amb = low(diff(f0, f1)), cmd = times(diff(f2, f3), z);
++			store(a + j, low(add(ab, cd))), store(a + j + stride, low(add(amb, cmd)));
++			store(a + j + 2 * stride, low(diff(ab, cd))), store(a + j + 3 * stride, low(diff(amb, cmd)));
++		}
++}
++
+ inline void forward_columns(std::uint32_t* a, std::size_t h, std::size_t b, const std::uint32_t* roots, std::size_t k) {
+ 	Vec* const v = reinterpret_cast<Vec*>(a);
+ 	if (b == 0) return kernels::forward_even_columns(v, h, roots + slot(k), roots + slot(2 * k));
+@@ -1021,7 +1048,7 @@
+ 	}
+ }
+ 
+-template <class Bottom>
++template <class Bottom, bool OptimizeZero = false>
+ class Pruned {
+ public:
+ 	Pruned(const Tables& tables, const Bottom& bottom, std::size_t b)
+@@ -1031,7 +1058,10 @@
+ 		const std::size_t h = nv / 4, low = std::size_t(std::countr_zero(h));
+ 		if (nv <= kForwardFull || low + 1 < b_) return recursion_.visit(a, nv, k);
+ 		if (low > b_) {
+-			forward_columns(a, h, b_, tables_.roots, k);
++			if constexpr (OptimizeZero) {
++				if (k == 0) forward_zero_columns(a, h, std::size_t(1) << b_, tables_.roots);
++				else forward_columns(a, h, b_, tables_.roots, k);
++			} else forward_columns(a, h, b_, tables_.roots, k);
+ 			for (std::size_t t = 0; t < 4; ++t) forward(a + 8 * t * h, h, 4 * k + t);
+ 			return;
+ 		}
+@@ -1044,6 +1074,8 @@
+ 		if (nv <= kInverseFull || low + 1 < b_) return recursion_.visit(a, nv, k);
+ 		if (low > b_) {
+ 			for (std::size_t t = 0; t < 4; ++t) inverse(a + 8 * t * h, h, 4 * k + t);
++			if constexpr (OptimizeZero)
++				if (k == 0) return inverse_zero_columns(a, h, std::size_t(1) << b_, tables_.inverse_roots);
+ 			return inverse_columns(a, h, b_, tables_.inverse_roots, k);
+ 		}
+ 		for (std::size_t t = 0; t < 4; ++t) recursion_.visit(a + 8 * t * h, h, 4 * k + t);
+@@ -1058,10 +1090,10 @@
+ 	std::size_t b_;
+ };
+ 
+-template <class Bottom>
++template <class Bottom, bool OptimizeZero = false>
+ void forward_pruned(std::span<std::uint32_t> a, std::size_t size, std::size_t b, const Tables& tables,
+ 					const Bottom& bottom) {
+-	const Pruned<Bottom> pruned(tables, bottom, b);
++	const Pruned<Bottom, OptimizeZero> pruned(tables, bottom, b);
+ 	const Source in(a.data(), size, 0);
+ 	const std::size_t nv = a.size() / 8, width = std::size_t(1) << b;
+ 	auto* v = reinterpret_cast<Vec*>(a.data());
+@@ -1095,10 +1127,10 @@
+ 	}
+ }
+ 
+-template <class Bottom>
++template <class Bottom, bool OptimizeZero = false>
+ void inverse_pruned(std::span<std::uint32_t> a, std::size_t b, const Tables& tables, const Bottom& bottom,
+ 					std::uint32_t scale, Half output = Half::kBoth) {
+-	const Pruned<Bottom> pruned(tables, bottom, b);
++	const Pruned<Bottom, OptimizeZero> pruned(tables, bottom, b);
+ 	const std::size_t nv = a.size() / 8, width = std::size_t(1) << b;
+ 	auto* v = reinterpret_cast<Vec*>(a.data());
+ 	const Factor s(scale);
+@@ -1582,7 +1614,7 @@
+ 	}
+ }
+ 
+-template <class Bottom>
++template <class Bottom, bool OptimizeZero = false>
+ class Doubling {
+ public:
+ 	
+@@ -1661,6 +1693,8 @@
+ 		}
+ 		const std::size_t h = nv / 4;
+ 		for (std::size_t t = 0; t < 4; ++t) above(a + 8 * t * h, h, 4 * k + t);
++		if constexpr (OptimizeZero)
++			if (k == 0) return inverse_zero_columns(a, h, std::size_t(1) << b_, tables_.inverse_roots);
+ 		inverse_columns(a, h, b_, tables_.inverse_roots, k);
+ 	}
+ 
+@@ -1703,7 +1737,7 @@
+ 
+ 	void forward_upper() const {
+ 		const std::size_t nv = half_ / 4, width = std::size_t(1) << b_;
+-		const Pruned<Bottom> pruned(tables_, bottom_, b_);
++		const Pruned<Bottom, OptimizeZero> pruned(tables_, bottom_, b_);
+ 		if (std::countr_zero(nv) % 2 == 0) {
+ 			const std::size_t h = nv / 4;
+ 			Vec* const v = reinterpret_cast<Vec*>(a_);
+@@ -1969,7 +2003,8 @@
+ 	return Arena::footprint(detail::Tables::words(m)) + 2 * Carve::words(4 * m) + Carve::words(detail::projection_work(m));
+ }
+ 
+-inline void power_projection(const Transform& t, std::span<const std::uint32_t> g, std::span<std::uint32_t> a,
++template <bool OptimizeZero>
++inline void power_projection_optimized(const Transform& t, std::span<const std::uint32_t> g, std::span<std::uint32_t> a,
+ 							 std::span<std::uint32_t> scratch) {
+ 	using namespace detail;
+ 	const std::size_t n = a.size();
+@@ -1987,26 +2022,31 @@
+ 		const std::size_t stride = 2 * (m >> s), rows = std::size_t(1) << s;
+ 		const std::size_t pad = std::size_t(std::countr_zero(stride / 16));
+ 		if (s == 2) {
+-			forward_pruned(p, rows * stride, pad, tables, ForwardBottom{tables.roots});
+-			forward_pruned(q, (rows + 1) * stride, pad, tables, bottom);
++			forward_pruned<ForwardBottom, OptimizeZero>(p, rows * stride, pad, tables, ForwardBottom{tables.roots});
++			forward_pruned<ProjectionBottom, OptimizeZero>(q, (rows + 1) * stride, pad, tables, bottom);
+ 		}
+ 		if (s + 4 < lg) {
+ 			const std::size_t block = stride / 16;
+ 			const std::uint32_t next =
+ 				blocked_ntt::detail::multiply_mod(blocked_ntt::detail::multiply_mod(blocked_ntt::detail::multiply_mod(c, c), half_scale), std::uint32_t(block));
+ 			const std::uint32_t y_scale = kInverseScales[0][s + 4];
+-			Doubling<ForwardBottom>(p, block, tables, ForwardBottom{tables.roots}).run(y_scale, 0);
+-			Doubling<ProjectionBottom>(q, block, tables, bottom).run(y_scale, next + next >= kP ? next + next - kP : next + next);
++			Doubling<ForwardBottom, OptimizeZero>(p, block, tables, ForwardBottom{tables.roots}).run(y_scale, 0);
++			Doubling<ProjectionBottom, OptimizeZero>(q, block, tables, bottom).run(y_scale, next + next >= kP ? next + next - kP : next + next);
+ 			c = next;
+ 		} else {
+ 			const std::uint32_t inverse_c = blocked_ntt::detail::power(c, kP - 2);
+ 			const std::uint32_t scale = blocked_ntt::detail::multiply_mod(graeffe_scale(lg + 1), blocked_ntt::detail::multiply_mod(inverse_c, inverse_c));
+-			inverse_pruned(q.first(2 * m), pad - 1, tables, InverseBottom{tables.inverse_roots, q.data()}, scale);
+-			inverse_pruned(p.first(2 * m), pad - 1, tables, InverseBottom{tables.inverse_roots, p.data()}, scale);
++			inverse_pruned<InverseBottom, OptimizeZero>(q.first(2 * m), pad - 1, tables, InverseBottom{tables.inverse_roots, q.data()}, scale);
++			inverse_pruned<InverseBottom, OptimizeZero>(p.first(2 * m), pad - 1, tables, InverseBottom{tables.inverse_roots, p.data()}, scale);
+ 			next_level(q, stride / 2, 2 * rows);
+ 		}
+ 	}
+ 	projection_last_levels(t, tables, q, p, w, a);
++}
++
++inline void power_projection(const Transform& t, std::span<const std::uint32_t> g, std::span<std::uint32_t> a,
++							 std::span<std::uint32_t> scratch) {
++	power_projection_optimized<false>(t, g, a, scratch);
+ }
+ 
+ inline void weighted_projection(const Transform& t, std::span<const std::uint32_t> g, std::span<const std::uint32_t> weights, std::span<std::uint32_t> a,
+--- a/components/fps_reversion.hpp
++++ b/components/fps_reversion.hpp
+@@ -18,7 +18,8 @@
+ 	const Transform t(arena, lg);
+ 	auto f = arena.take(input), g = arena.take(n), a = arena.take(n), scratch = arena.take(rest);
+ 	for (std::size_t i = 0; i < input; ++i) f[i] = coefficient_value(in[i]);
+-	power_projection(t, f, a, scratch.first(projection_scratch(n)));
++	if (n >= 32768) power_projection_optimized<true>(t, f, a, scratch.first(projection_scratch(n)));
++	else power_projection(t, f, a, scratch.first(projection_scratch(n)));
+ 	auto h = scratch.first(n - 1);
+ 	blocked_poly::divide_by_index(a.subspan(1), 1, h);
+ 	std::reverse(h.begin(), h.end());

@@ -1,0 +1,53 @@
+/workspace/cp-fps-scratch-round3/library-checker-problems/generate.py:566: DeprecationWarning: The 'warn' method is deprecated, use 'warning' instead
+  logger.warn('Please install colorlog: pip3 install colorlog')
+04:18:20 [WARNING] Please install colorlog: pip3 install colorlog
+04:18:20 [INFO] Start lcm_convolution
+04:18:20 [INFO] generate params.h
+04:18:20 [INFO] compile checker
+04:18:24 [INFO] compile solution
+04:18:24 [INFO] compile generators
+04:18:24 [INFO] compile example.in
+04:18:24 [INFO] compile all_zero.in
+04:18:24 [INFO] compile small.cpp
+04:18:24 [INFO] compile random.cpp
+04:18:25 [INFO] compile max_random.cpp
+04:18:25 [INFO] compile near_prime.cpp
+04:18:26 [INFO] compile near_prime_squared.cpp
+04:18:26 [INFO] clear input /workspace/cp-fps-scratch-round3/library-checker-problems/convolution/lcm_convolution/in
+04:18:26 [INFO] gen example.in 1cases
+04:18:26 [INFO] gen all_zero.in 1cases
+04:18:26 [INFO] gen small.cpp 16cases
+04:18:26 [INFO] gen random.cpp 3cases
+04:18:26 [INFO] gen max_random.cpp 2cases
+04:18:26 [INFO] gen near_prime.cpp 3cases
+04:18:27 [INFO] gen near_prime_squared.cpp 3cases
+04:18:27 [INFO] clear output /workspace/cp-fps-scratch-round3/library-checker-problems/convolution/lcm_convolution/out
+04:18:27 [INFO] ANS      1 msecs : example_00 : b''
+04:18:27 [INFO] ANS      1 msecs : all_zero_00 : b''
+04:18:27 [INFO] ANS      1 msecs : small_00 : b''
+04:18:27 [INFO] ANS      4 msecs : small_01 : b''
+04:18:27 [INFO] ANS      2 msecs : small_02 : b''
+04:18:27 [INFO] ANS      1 msecs : small_03 : b''
+04:18:27 [INFO] ANS      1 msecs : small_04 : b''
+04:18:27 [INFO] ANS      1 msecs : small_05 : b''
+04:18:27 [INFO] ANS      1 msecs : small_06 : b''
+04:18:27 [INFO] ANS      1 msecs : small_07 : b''
+04:18:27 [INFO] ANS      1 msecs : small_08 : b''
+04:18:27 [INFO] ANS      1 msecs : small_09 : b''
+04:18:27 [INFO] ANS      1 msecs : small_10 : b''
+04:18:27 [INFO] ANS      1 msecs : small_11 : b''
+04:18:27 [INFO] ANS      1 msecs : small_12 : b''
+04:18:27 [INFO] ANS      1 msecs : small_13 : b''
+04:18:27 [INFO] ANS      1 msecs : small_14 : b''
+04:18:27 [INFO] ANS      1 msecs : small_15 : b''
+04:18:27 [INFO] ANS     85 msecs : random_00 : b''
+04:18:27 [INFO] ANS     97 msecs : random_01 : b''
+04:18:27 [INFO] ANS    121 msecs : random_02 : b''
+04:18:28 [INFO] ANS    243 msecs : max_random_00 : b''
+04:18:28 [INFO] ANS    215 msecs : max_random_01 : b''
+04:18:28 [INFO] ANS    216 msecs : near_prime_00 : b''
+04:18:28 [INFO] ANS    241 msecs : near_prime_01 : b''
+04:18:29 [INFO] ANS    212 msecs : near_prime_02 : b''
+04:18:29 [INFO] ANS    227 msecs : near_prime_squared_00 : b''
+04:18:29 [INFO] ANS    222 msecs : near_prime_squared_01 : b''
+04:18:29 [INFO] ANS    235 msecs : near_prime_squared_02 : b''

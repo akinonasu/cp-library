@@ -30,6 +30,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install Boost
+        run: |
+          if ! brew list --versions boost >/dev/null 2>&1; then
+            brew install boost
+          fi
+          echo "CPLUS_INCLUDE_PATH=$(brew --prefix boost)/include${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}" >> "$GITHUB_ENV"
       - uses: actions/cache/restore@v4
         if: steps.route.outputs.mode == 'normal'
         id: cache

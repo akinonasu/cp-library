@@ -116,7 +116,7 @@ def variants():
               'directions': directions(baseline), 'set_directions': directions(point_set(baseline))}
     result['lazy_root'] = lazy_root(result['set_fused'])
     result['signed_lazy_root'] = lazy_root(result['set_signed_fused'])
-    result['current'] = (ROOT / 'data_structure/link_cut_tree.hpp').read_text()
+    result['current'] = (ROOT / 'tree/link_cut_tree.hpp').read_text()
     for name in ['baseline', 'set_fused', 'set_signed_fused', 'set_directions']:
         source = result[name]
         source = source.replace('template <class S, auto op, auto e, bool commutative = false>',
@@ -142,7 +142,7 @@ def main():
         source = source.replace('LINK_CUT_TREE_HPP', 'LINK_CUT_TREE_' + name.upper() + '_HPP')
         source = source.replace('LinkCutTree', class_name)
         (args.directory / f'{name}.hpp').write_text(source)
-        unit = test.replace('#include "data_structure/link_cut_tree.hpp"', f'#include "{name}.hpp"')
+        unit = test.replace('#include "tree/link_cut_tree.hpp"', f'#include "{name}.hpp"')
         (args.directory / f'{name}_test.cpp').write_text(unit.replace('LinkCutTree', class_name))
         names.append(name)
     (args.directory / 'variants.hpp').write_text(''.join(f'#include "{name}.hpp"\n' for name in names))

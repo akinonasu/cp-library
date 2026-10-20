@@ -1,0 +1,6 @@
+{'case': 'sparse', 'n': 20000, 'm': 100000, 'basic_ms': 2.191084, 'fifo_ms': 6.38973, 'slf_ms': 6.982356, 'gor_ms': 3.11807, 'scc_ms': 4.143407, 'library_ms': 8.827674}
+{'case': 'dense', 'n': 3000, 'm': 300000, 'basic_ms': 3.092739, 'fifo_ms': 2.915833, 'slf_ms': 3.079882, 'gor_ms': 3.323965, 'scc_ms': 4.391392, 'library_ms': 5.080842}
+{'case': 'dag', 'n': 6000, 'm': 23996, 'basic_ms': 274.388868, 'fifo_ms': 126.328458, 'slf_ms': 2.747243, 'gor_ms': 0.368095, 'scc_ms': 0.384987, 'library_ms': 1.160556}
+{'case': 'components', 'n': 20000, 'm': 39996, 'basic_ms': 253.021748, 'fifo_ms': 239.329896, 'slf_ms': 389.73213, 'gor_ms': 7.475575, 'scc_ms': 0.960908, 'library_ms': 1.773292}
+{'case': 'positive_bridge', 'n': 20000, 'm': 100000, 'basic_ms': 2.491208, 'fifo_ms': 6.464634, 'slf_ms': 3.032318, 'gor_ms': 3.395132, 'scc_ms': 2.165434, 'library_ms': 4.947746}
+{'case': 'augmented_gor', 'n': 4001, 'm': 26003, 'basic_ms': 0.162993, 'fifo_ms': 36.384065, 'slf_ms': 0.703765, 'gor_ms': 0.833796, 'scc_ms': 1.042449, 'library_ms': 1.15188}

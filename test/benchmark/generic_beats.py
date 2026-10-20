@@ -28,7 +28,7 @@ def main():
     flags = ['-std=c++2b', '-O2', '-DNDEBUG']
     if args.native:
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
-    paths = ['data_structure/generic_segtree_beats.hpp', 'data_structure/segtree_beats.hpp',
+    paths = ['data_structure/advanced/generic_segtree_beats.hpp', 'data_structure/advanced/segtree_beats.hpp',
              'components/default_init_allocator.hpp', 'test/fixtures/beats.hpp',
              'test/benchmark/generic_beats.cpp', 'test/benchmark/generic_beats.py']
     result = {'compiler': subprocess.check_output(['g++', '--version'], text=True),

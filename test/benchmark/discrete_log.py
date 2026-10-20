@@ -97,8 +97,8 @@ def main():
               'stack_limit_bytes': 64 * 1024 * 1024,
               'sources': {name: digest(source) for name, (source, _) in programs.items()},
               'headers': {name: digest(ROOT / name) for name in
-                          ['math/discrete_log.hpp', 'components/barrett32.hpp', 'components/fast_io.hpp',
-                           'math/factorize.hpp', 'math/is_prime.hpp', 'components/montgomery.hpp', 'components/splitmix64.hpp']},
+                          ['math/number_theory/discrete_log.hpp', 'components/barrett32.hpp', 'components/fast_io.hpp',
+                           'math/number_theory/factorize.hpp', 'math/number_theory/is_prime.hpp', 'components/montgomery.hpp', 'components/splitmix64.hpp']},
               'workloads': {}}
     rng = random.Random(482661)
     for mode, (data, queries, known) in workloads().items():

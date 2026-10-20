@@ -1,0 +1,91 @@
+/usr/bin/g++: standalone components/binomial_prefix_core.hpp
+/usr/bin/g++: standalone components/fps_blocked.hpp
+/usr/bin/g++: standalone components/fps_bostan.hpp
+/usr/bin/g++: standalone components/fps_composition.hpp
+/usr/bin/g++: standalone components/fps_convolution.hpp
+/usr/bin/g++: standalone components/fps_direct_eval.hpp
+/usr/bin/g++: standalone components/fps_division_blocked.hpp
+/usr/bin/g++: standalone components/fps_evaluation.hpp
+/usr/bin/g++: standalone components/fps_exp_blocked.hpp
+/usr/bin/g++: standalone components/fps_factorials.hpp
+/usr/bin/g++: standalone components/fps_horner.hpp
+/usr/bin/g++: standalone components/fps_inverse_blocked.hpp
+/usr/bin/g++: standalone components/fps_io.hpp
+/usr/bin/g++: standalone components/fps_log.hpp
+/usr/bin/g++: standalone components/fps_operations.hpp
+/usr/bin/g++: standalone components/fps_output.hpp
+/usr/bin/g++: standalone components/fps_product_tree.hpp
+/usr/bin/g++: standalone components/fps_reversion.hpp
+/usr/bin/g++: standalone components/fps_sqrt_blocked.hpp
+/usr/bin/g++: standalone components/fps_taylor_blocked.hpp
+/usr/bin/g++: standalone components/ntt.hpp
+/usr/bin/g++: standalone components/polynomial_gcd_blocked.hpp
+/usr/bin/g++: standalone components/polynomial_half_gcd.hpp
+/usr/bin/g++: standalone convolution/convolution.hpp
+/usr/bin/g++: standalone convolution/cyclic_convolution.hpp
+/usr/bin/g++: standalone convolution/max_min_convolution.hpp
+/usr/bin/g++: standalone convolution/multiplicative_convolution.hpp
+/usr/bin/g++: standalone convolution/multivariate_convolution.hpp
+/usr/bin/g++: standalone convolution/online_convolution.hpp
+/usr/bin/g++: standalone convolution/ordered_convolution.hpp
+/usr/bin/g++: standalone fps/bostan_mori.hpp
+/usr/bin/g++: standalone fps/compose.hpp
+/usr/bin/g++: standalone fps/compositional_inverse.hpp
+/usr/bin/g++: standalone fps/fps.hpp
+/usr/bin/g++: standalone fps/interpolate.hpp
+/usr/bin/g++: standalone fps/linear_recurrence.hpp
+/usr/bin/g++: standalone fps/multipoint_eval.hpp
+/usr/bin/g++: standalone fps/polynomial_gcd.hpp
+/usr/bin/g++: standalone fps/power_projection.hpp
+/usr/bin/g++: standalone fps/taylor_shift.hpp
+/usr/bin/g++: standalone math/binomial_prefix_sum.hpp
+/usr/bin/g++: standalone math/comb.hpp
+/usr/bin/g++: standalone math/mint.hpp
+/usr/bin/g++: binomial_prefix_sum.cpp
+/usr/bin/g++: bitwise_transforms.cpp
+/usr/bin/g++: comb.cpp
+/usr/bin/g++: comb_factorials.cpp
+/usr/bin/g++: convolution.cpp
+/usr/bin/g++: fourier_transforms.cpp
+/usr/bin/g++: fps.cpp
+fps_mint: scalar_cases=960 division_cases=192 adjacent_cases=666
+NontrivialMint: scalar_cases=960 division_cases=192 adjacent_cases=666
+PASS scalar checks=1037502
+/usr/bin/g++: fps_algorithms.cpp
+/usr/bin/g++: fps_bostan.cpp
+/usr/bin/g++: fps_bostan_workspace.cpp
+/usr/bin/g++: fps_composition_blocked.cpp
+/usr/bin/g++: fps_composition_tables.cpp
+/usr/bin/g++: fps_convolution.cpp
+/usr/bin/g++: fps_convolution_borrow.cpp
+/usr/bin/g++: fps_division_blocked.cpp
+/usr/bin/g++: fps_evaluation.cpp
+/usr/bin/g++: fps_exp_blocked.cpp
+/usr/bin/g++: fps_exp_import.cpp
+exp import derivative/lazy/tail/readonly checks passed
+/usr/bin/g++: fps_exp_tail.cpp
+/usr/bin/g++: fps_horner.cpp
+/usr/bin/g++: fps_inverse_blocked.cpp
+/usr/bin/g++: fps_io.cpp
+/usr/bin/g++: fps_log.cpp
+/usr/bin/g++: fps_speed.cpp
+/usr/bin/g++: fps_tuning_advanced.cpp
+/usr/bin/g++: fps_tuning_basic.cpp
+/usr/bin/g++: fps_tuning_polynomial.cpp
+/usr/bin/g++: fps_workspace.cpp
+/usr/bin/g++: generalized_floor_sum.cpp
+/usr/bin/g++: lazy_reversible_treap.cpp
+/usr/bin/g++: matrix.cpp
+/usr/bin/g++: matrix_characteristic.cpp
+/usr/bin/g++: mint.cpp
+/usr/bin/g++: mod_fast.cpp
+/usr/bin/g++: multipoint_tree.cpp
+/usr/bin/g++: online_convolution.cpp
+/usr/bin/g++: ordered_convolution.cpp
+/usr/bin/g++: polynomial_gcd.cpp
+/usr/bin/g++: power_projection.cpp
+/usr/bin/g++: standalone.cpp
+/usr/bin/g++: static_top_tree.cpp
+/usr/bin/g++: subset_convolution.cpp
+/usr/bin/g++: weighted_union_find.cpp
+Verification passed

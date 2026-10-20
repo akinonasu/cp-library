@@ -13,7 +13,7 @@ import urllib.parse
 import urllib.request
 
 ROOT = Path(__file__).resolve().parents[2]
-FILES = ['math/comb.hpp', 'components/binomial_prefix_core.hpp', 'components/fps_factorials.hpp', 'math/mint.hpp', 'components/ntt.hpp']
+FILES = ['math/combinatorics/comb.hpp', 'components/binomial_prefix_core.hpp', 'components/fps_factorials.hpp', 'math/mint.hpp', 'components/ntt.hpp']
 
 
 def sha(path):

@@ -1,0 +1,20 @@
+[
+  {
+    "case": "small",
+    "count": 10000,
+    "trial_ms": 27.020246,
+    "sorted_ms": 4.046121,
+    "unsorted_ms": 3.511112,
+    "reused_ms": 1.058161,
+    "reused_unsorted_ms": 0.40843
+  },
+  {
+    "case": "random32",
+    "count": 2000,
+    "trial_ms": 338.801052,
+    "sorted_ms": 2.059234,
+    "unsorted_ms": 1.754709,
+    "reused_ms": 0.407296,
+    "reused_unsorted_ms": 0.103063
+  }
+]

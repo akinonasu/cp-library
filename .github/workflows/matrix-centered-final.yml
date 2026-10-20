@@ -5,7 +5,7 @@ on:
     branches: [codex/matrix-centered-20261018]
     paths:
       - components/matrix_arithmetic.hpp
-      - math/matrix.hpp
+      - math/linear_algebra/matrix.hpp
       - math/mint.hpp
       - test/benchmark/matrix.cpp
       - test/benchmark/matrix.py

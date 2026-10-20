@@ -1,0 +1,148 @@
+{
+  "lock": "SH /tmp/cp-fps-tuning.lock",
+  "ASAN_OPTIONS": "detect_leaks=0",
+  "UBSAN_OPTIONS": "halt_on_error=1",
+  "commands": [
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni/test/convolution.test.cpp",
+        "-o",
+        "/workspace/cp-fps-round4/io/convolution_mod_tile4_shift_ni"
+      ],
+      "build_returncode": 0,
+      "build_stdout": "",
+      "build_stderr": ""
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni/test/fps_log.test.cpp",
+        "-o",
+        "/workspace/cp-fps-round4/io/log_of_formal_power_series_tile4_shift_ni"
+      ],
+      "build_returncode": 0,
+      "build_stdout": "",
+      "build_stderr": ""
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni/test/unit/fps_io.cpp",
+        "-o",
+        "/workspace/cp-fps-round4/io/combined_fps_io"
+      ],
+      "build_returncode": 0,
+      "build_stdout": "",
+      "build_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "",
+      "run_stderr": ""
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-g",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni/test/unit/fps_io.cpp",
+        "-o",
+        "/workspace/cp-fps-round4/io/combined_fps_io_san"
+      ],
+      "build_returncode": 0,
+      "build_stdout": "",
+      "build_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "",
+      "run_stderr": ""
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni",
+        "/workspace/cp-fps-round4/io/check_io_values.cpp",
+        "-o",
+        "/workspace/cp-fps-round4/io/shift_values"
+      ],
+      "build_returncode": 0,
+      "build_stdout": "",
+      "build_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "",
+      "run_stderr": ""
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I",
+        "/workspace/cp-fps-round4/io/tile4_shift_ni",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-g",
+        "/workspace/cp-fps-round4/io/check_io_values.cpp",
+        "-o",
+        "/workspace/cp-fps-round4/io/shift_values_san"
+      ],
+      "build_returncode": 0,
+      "build_stdout": "",
+      "build_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "",
+      "run_stderr": ""
+    }
+  ],
+  "headers": {
+    "components/fast_io_bulk.hpp": "a8a18b90f5474b09271585a308e47a4a2081c3a09d5a969dc3a8577947cccd48",
+    "components/fps_io.hpp": "03a34018a07d334d11bd8f023a278f923a1557e5d4cc4a331f6e381eec6cc0f6",
+    "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+  },
+  "run_environment": {
+    "ASAN_OPTIONS": "detect_leaks=0",
+    "UBSAN_OPTIONS": "halt_on_error=1"
+  }
+}

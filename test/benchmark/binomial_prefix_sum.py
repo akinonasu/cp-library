@@ -50,7 +50,7 @@ def main():
         'metric': 'wall time including process startup, input, preprocessing, queries, output',
         'sources': {name: sha(path) for name, path in sources.items()},
         'headers': {name: sha(root / name) for name in [
-            'math/binomial_prefix_sum.hpp', 'components/binomial_prefix_core.hpp',
+            'math/combinatorics/binomial_prefix_sum.hpp', 'components/binomial_prefix_core.hpp',
             'components/mo_order.hpp', 'math/mint.hpp', 'components/fast_io.hpp']},
         'workloads': {},
     }

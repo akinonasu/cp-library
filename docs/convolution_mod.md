@@ -16,7 +16,7 @@ auto exact = convolution_integer(a, b); // {4,13,22,15}
 | `convolution_mod(a,b,mod)` | 通常の畳み込みを指定法で計算し、`vector<uint32_t>` を返す | $$O(L\log L)$$ |
 | `convolution_integer(a,b)` | 整数の通常の畳み込みを厳密計算し、入力と同じ係数型で返す | $$O(L\log L)$$ |
 
-どちらも $$\sum_{i+j=k} a_i b_j$$ を計算します。入力は 64 bit 以下の整数型です。
+どちらも $$\displaystyle \sum_{i+j=k} a_i b_j$$ を計算します。入力は 64 bit 以下の整数型です。
 
 各配列を定数項から順に並べた多項式の係数として渡します。両方が非空なら返す長さは `a.size()+b.size()-1`、どちらかが空なら空配列です。入力は変更しません。法を指定する版は各係数をその法で割った非負の余りにし、整数版は余りを取らずに返します。
 

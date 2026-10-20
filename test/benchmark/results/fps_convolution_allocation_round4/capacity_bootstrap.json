@@ -1,0 +1,38 @@
+{
+  "method": "10000 percentile bootstrap resamples of paired before-candidate medians",
+  "seed": 20261046,
+  "rows": [
+    {
+      "input": "max_random_00",
+      "paired_median_ms": 0.14561699999999966,
+      "percentile_95_ms": [
+        0.030465999999998772,
+        0.27850399999999986
+      ]
+    },
+    {
+      "input": "max_random_01",
+      "paired_median_ms": 0.0878110000000003,
+      "percentile_95_ms": [
+        -0.05987900000000046,
+        0.2430229999999991
+      ]
+    },
+    {
+      "input": "small_and_large_03",
+      "paired_median_ms": 0.1135900000000003,
+      "percentile_95_ms": [
+        -0.09324799999999911,
+        0.23432999999999993
+      ]
+    },
+    {
+      "input": "medium_02",
+      "paired_median_ms": -0.0017940000000000733,
+      "percentile_95_ms": [
+        -0.0065309999999998425,
+        0.005138000000000087
+      ]
+    }
+  ]
+}

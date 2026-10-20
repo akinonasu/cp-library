@@ -110,7 +110,7 @@ def variants():
     fused = baseline[:begin] + FUSED + baseline[end:]
     return {
         'baseline': baseline,
-        'current': (ROOT / 'data_structure/dynamic_connectivity.hpp').read_text().replace('../components/', 'components/').replace('std::chrono::steady_clock::now().time_since_epoch().count()', 'dynamic_connectivity_benchmark_seed'),
+        'current': (ROOT / 'graph/connectivity/dynamic_connectivity.hpp').read_text().replace('../components/', 'components/').replace('std::chrono::steady_clock::now().time_since_epoch().count()', 'dynamic_connectivity_benchmark_seed'),
         'pad32': baseline.replace('struct Node {', 'struct alignas(32) Node {'),
         'fused': fused,
         'fused_pad32': fused.replace('struct Node {', 'struct alignas(32) Node {'),

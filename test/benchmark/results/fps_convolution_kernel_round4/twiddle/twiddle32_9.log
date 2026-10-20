@@ -1,0 +1,8 @@
+built base
+built vlcontext
+built vlregs
+built reference
+waiting EX
+acquired EX
+max_random_00 {'base': 12.08942, 'vlcontext': 12.17694, 'vlregs': 12.24796, 'reference': 10.03754}
+max_random_01 {'base': 12.25885, 'vlcontext': 12.24612, 'vlregs': 12.16807, 'reference': 9.79086}

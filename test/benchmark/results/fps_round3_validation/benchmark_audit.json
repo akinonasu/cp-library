@@ -1,0 +1,1101 @@
+{
+  "status": "passed",
+  "baseline": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "cpu": 2,
+  "workloads": 16,
+  "variants_per_workload": 3,
+  "samples_per_variant": 21,
+  "total_timed_samples": 1008,
+  "source_binary_output_records": 48,
+  "primary_raw": {
+    "path": "/workspace/cp-library/test/benchmark/results/fps_round3_all_speed.json",
+    "sha256_before": "360af00d2182ce18c0c963a537220534d877c823b43a3fbf3d32923c9a5a1237",
+    "sha256_after": "360af00d2182ce18c0c963a537220534d877c823b43a3fbf3d32923c9a5a1237",
+    "unchanged": true
+  },
+  "header_audit": {
+    "before": {
+      "recorded": 105,
+      "actual": 105,
+      "delta": {},
+      "auxiliary_headers": {}
+    },
+    "current": {
+      "recorded": 108,
+      "actual": 134,
+      "delta": {
+        "components/fps_bostan.hpp": [
+          "bbe4528ee226bcf0ea90d143f0b5832ef6f69b2162b448ec845d249349bc7be3",
+          "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258"
+        ]
+      },
+      "auxiliary_headers": {
+        "test/benchmark/bitwise_transforms_baseline.hpp": "f3481fe1532ae9a42784f6d2213e727d80c90117719845e56298219251a64a4e",
+        "test/benchmark/dynamic_connectivity_baseline.hpp": "0a261f0201efc0d83cb194bf8ea6ad6e38454144372b0d74a92362f15ddddfec",
+        "test/benchmark/dynamic_segtree_base.hpp": "19ae066138bd144eb4e01dbd47820c1225ccc83eab589dca06a15a945e0b8c8a",
+        "test/benchmark/dynamic_segtree_block.hpp": "9d5fb5133510e54cde1cfcde78e839245aeb55d1d7da7fc19d7bf4dd0216f145",
+        "test/benchmark/dynamic_segtree_bucket.hpp": "91f67446690e9ba7c335d7899dd48dcfdf6bdfcf1397cd5953fdc5bbdbd795cc",
+        "test/benchmark/eertree_baseline.hpp": "7d3dd37b6e97bf18b4d36b56b74047aa2cec8a8126fe9eca5a5d2155b9d6c5a9",
+        "test/benchmark/fast_io_integer_baseline.hpp": "6cc12635f1e1d774fcb42461e1e700dbb93bccc45a604d82910df719ef9a1a38",
+        "test/benchmark/fps_bostan_transform_candidate.hpp": "50520e9c7a8f9996500ca2ed20425790b2f5ff976aeb8ad862b8f5f1b9612a95",
+        "test/benchmark/fps_scalar_return/api.hpp": "0e78bf2a9c0e3af4a305b01e7520abc7f8284d5e673af80f2e022c0e7215bf97",
+        "test/benchmark/fraction_baseline.hpp": "b46befb67ba60ec4ce090b3f66c902d16d708fa7ca887e3fb4a2e9236eec5bf9",
+        "test/benchmark/general_matching_baseline.hpp": "66b5501ee0727acd4ab1d24db2aa0df3be85e14402431c6908456ccc41693608",
+        "test/benchmark/generalized_floor_sum_base.hpp": "2e813db20eb3b97fab79e9c470b7b00437513553364c72fe7af5768478170a33",
+        "test/benchmark/generalized_floor_sum_monoid.hpp": "0a36179d0552e41da0e873db829716425d13272879d317c3f7412353aeeb9fde",
+        "test/benchmark/generalized_floor_sum_quadratic.hpp": "fae368760ac0842b53dc36527da5ba10888e924383d0d11e18ff81bdafc5ba60",
+        "test/benchmark/hungarian_baseline.hpp": "7a4a8f87354c87cefcc542770fb594f410a409809bb3e6872901b31ba826fdac",
+        "test/benchmark/lazy_reversible_treap_base.hpp": "a12f23c22d5b2ae119974c4c5f738540258711486b43c96c556124088c5557da",
+        "test/benchmark/link_cut_tree_baseline.hpp": "dc2127c04de12b0da3e661d71e436ec5cb584686b9e6297ead7e24efe0ca8434",
+        "test/benchmark/mod_linear_partition_baseline.hpp": "ee8833fb548f1bdfdf766abe8f4fd730a5991e0b5573ca27de1118193d8637f6",
+        "test/benchmark/mod_sqrt_baseline.hpp": "fc8ccf9dd7e3a7bd55c7b6ddfdbedafb3730a1cd3e6392ddfc9edc40d9f39d85",
+        "test/benchmark/ordered_convolution_baseline.hpp": "4724ff4eabd882aba8b8ae6aeedb6d2b77dfb2e88b673ef90bebc10a972102cb",
+        "test/benchmark/prefix_min_of_mod_of_linear_baseline.hpp": "22648a93e9ebc97aa44b34d61deea88a9986683e1c7a7a52f72953389402540b",
+        "test/benchmark/primality_factorize_baseline.hpp": "c74eecb1ae7cd3a849c25ae543591074e815f3266bfe6b0f5c50696d23d6eb47",
+        "test/benchmark/subset_convolution_baseline.hpp": "dcfc6a12835ec6992e35f7ee3c4ad4022c6238dc918267a7c9bce67ff47a06d8",
+        "test/benchmark/two_edge_connected_components_baseline.hpp": "175c5a17e4f57c15b52f2b24e5e609c7bf837c7a1fa6833d83213a57d12ccc3d",
+        "test/fixtures/beats.hpp": "301ddef41fefaa51a748e724c6b8d5f736a9d7cdc200309b3d246cf596e675f7",
+        "test/fixtures/retroactive_scheduling.hpp": "71c48c1e45f41925ade7d11510302938b030f462ddf5e2cc0bfcd9d281933ed8"
+      }
+    }
+  },
+  "auxiliary_headers_excluded_by_static_native_driver_closure": true,
+  "normalization": {
+    "path": "/workspace/cp-library/test/benchmark/results/fps_round3_validation/bostan_pragma_normalization.json",
+    "sha256": "3a2cd6bf244d4e495ed4c5a969898819d3f66784b83671a8f25fc6422f76a3f2",
+    "exact_one_header": true,
+    "lr_binary_byte_identical": true
+  },
+  "checker_hash_provenance": "judge_official_before.json, also matched against existing checker files; no checker rerun",
+  "official_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "fresh_heads_retrieved_at": "2026-10-19T03:54:00.298956+00:00",
+  "provenance_hashes": {
+    "/workspace/cp-library/test/benchmark/results/fps_round3_all_speed.json": "360af00d2182ce18c0c963a537220534d877c823b43a3fbf3d32923c9a5a1237",
+    "/workspace/cp-library/test/benchmark/results/fps_round3_validation/bostan_pragma_normalization.json": "3a2cd6bf244d4e495ed4c5a969898819d3f66784b83671a8f25fc6422f76a3f2",
+    "/workspace/cp-library/test/benchmark/results/fps_round3_validation/judge_official_before.json": "d3443d7b66e3d5b78e92caa34d87f79c01bc5d280299a93c0abedac417708605",
+    "/workspace/cp-library/test/benchmark/results/fps_round3_reference_heads.json": "a880574e97fd7971eea931ea66c0f4809a5c73879cff4ddc16d25f7e855b9b53",
+    "/workspace/cp-library/test/benchmark/results/fps_speed_reference.json": "fbf6d467086790ad106c42088bb352554e5603eb72c4a727b0129dfe260d6cf6",
+    "/workspace/cp-library/test/benchmark/fps_all_speed.py": "c48f7be3294b9cc1de1b43e6ef54a820a1097559068f1fae5b17b1d6b6e3ac47",
+    "/workspace/cp-library/test/benchmark/fps_round3_references.py": "620ff0d705141bdeb19709277de2d82c81014b7bc50e98230ed7cd6edb9d5d40"
+  },
+  "audited_harness_sha256": "c48f7be3294b9cc1de1b43e6ef54a820a1097559068f1fae5b17b1d6b6e3ac47",
+  "audit_harness_sha256": "99f12cc0a785118eba55c814e997dad48099500c9c58c8140bcc80702abf1746",
+  "rows": [
+    {
+      "problem": "convolution_mod",
+      "reference_id": 409465,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/convolution/convolution_mod/in/max_random_00.in",
+          "sha256": "3bbe45c5ce2820f3961db9f5746dfad939c09cb78d62bb1f9729ff3ac83e4208"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/convolution/convolution_mod/out/max_random_00.out",
+          "sha256": "cc9c24649d26118ce95b106548050963fe7f029c8b4d9f2cdb567030c6f8be8a"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/convolution/convolution_mod/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/convolution.test.cpp",
+          "source_sha256": "51e8bb757f35275e6632f3ea4f521f9959aea7e1baa5ad4895b5e3294fc1c043",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_before",
+          "binary_sha256": "a05a26057c47a6748fe5518087a221e3bc5bf3dec1073b0dcf36ec6e0201f9f8",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_before.out",
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe",
+          "samples": 21,
+          "median_ms": 13.179954
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/convolution.test.cpp",
+          "source_sha256": "51e8bb757f35275e6632f3ea4f521f9959aea7e1baa5ad4895b5e3294fc1c043",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_current",
+          "binary_sha256": "c7f405503c1f2da70957d3d0520fb867c397aa77c49f87e4b6c2e867b12c58ee",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_current.out",
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe",
+          "samples": 21,
+          "median_ms": 12.386511
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/convolution_mod/409465.cpp",
+          "source_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_reference",
+          "binary_sha256": "d24b5bede99f29f20f2f3fa055c704b1c0e9b21eb436ad8f9a2579ea688a4097",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/convolution_mod_reference.out",
+          "output_sha256": "2d7c4c53e8b0615180aed4e790fdd95089d3e645b6d37a60c723c6e3834322fe",
+          "samples": 21,
+          "median_ms": 10.022583
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.4807769999999998,
+        "wins": 17,
+        "ties": 0,
+        "losses": 4
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -2.4466479999999997,
+        "wins": 1,
+        "ties": 0,
+        "losses": 20
+      }
+    },
+    {
+      "problem": "inv_of_formal_power_series",
+      "reference_id": 409370,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/inv_of_formal_power_series/in/max_random_00.in",
+          "sha256": "52b3f657383765daeb3b3926e7ce94ef072b4021f82d49b0cf01978f10777f36"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/inv_of_formal_power_series/out/max_random_00.out",
+          "sha256": "3eb0472ab025cad587bce8999b2035391d75f15fffe5cf4b9b85b797cc93db17"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/inv_of_formal_power_series/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_inv.test.cpp",
+          "source_sha256": "bc1e05a137fc4284b6e90df99afa0d7ab16005f4f4bcabed2178f9bc748b56d6",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_before",
+          "binary_sha256": "a5956f2f5f294a67a08e1e8e8711ca23b850da68120d5766716641e93054cbd3",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_before.out",
+          "output_sha256": "50944ee585848fe356ec84fd45deae34e728a9956573f826b240391ade312d82",
+          "samples": 21,
+          "median_ms": 11.914519
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_inv.test.cpp",
+          "source_sha256": "bc1e05a137fc4284b6e90df99afa0d7ab16005f4f4bcabed2178f9bc748b56d6",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_current",
+          "binary_sha256": "cf83cdad507d1b679343f68e7e9c0f8d4035c97c11f712ae5570b4f7f9930e6c",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_current.out",
+          "output_sha256": "50944ee585848fe356ec84fd45deae34e728a9956573f826b240391ade312d82",
+          "samples": 21,
+          "median_ms": 11.730424
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/inv_of_formal_power_series/409370.cpp",
+          "source_sha256": "611eaf933f4187e567c90214aa5fc93f6bce7d139a122f68d11b769deeaabe66",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_reference",
+          "binary_sha256": "ebc33df30b4544826b4dac9f510ec0ed30392dbe82edbdab16bff7a141fb80fa",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_formal_power_series_reference.out",
+          "output_sha256": "208dff7f43bc62623418b41ec032255606e7f3df13aad51953df588db7936e50",
+          "samples": 21,
+          "median_ms": 10.285732
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.09996300000000069,
+        "wins": 13,
+        "ties": 0,
+        "losses": 8
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -1.402311000000001,
+        "wins": 0,
+        "ties": 0,
+        "losses": 21
+      }
+    },
+    {
+      "problem": "log_of_formal_power_series",
+      "reference_id": 409452,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/log_of_formal_power_series/in/max_random_00.in",
+          "sha256": "71cb0227a5a1e40ece225e19cd9d2633dfd4f07f25d39f01719bc2376e1d4ac8"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/log_of_formal_power_series/out/max_random_00.out",
+          "sha256": "c031f72a4eb2eacfaacce3a4f427b5f2d296b0fa9ecbd96d7dca445a38cbbd93"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/log_of_formal_power_series/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_log.test.cpp",
+          "source_sha256": "a232adf2929cadb631c5f1d0a8d7269bdc3ca118f5432f01034b13408ce51512",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_before",
+          "binary_sha256": "345ff0a1427e8a71e0c816ebf272dd2217126db3cb99f4184e151b6db9832b6b",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_before.out",
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9",
+          "samples": 21,
+          "median_ms": 14.14903
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_log.test.cpp",
+          "source_sha256": "a232adf2929cadb631c5f1d0a8d7269bdc3ca118f5432f01034b13408ce51512",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_current",
+          "binary_sha256": "418d5e6a172ea7b322b66e3111cf511c754e424509b6bc22529dafac52aa1123",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_current.out",
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9",
+          "samples": 21,
+          "median_ms": 14.011875
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/log_of_formal_power_series/409452.cpp",
+          "source_sha256": "86ef3c3b4a4707ef5e7515e5229b2564f2a5f46bd830bb6cbe64b506a95675b6",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_reference",
+          "binary_sha256": "695bacba76d4974619a2a7bf8d96e4780f6a481eafbe208a73ac4ae9d7ae65e4",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/log_of_formal_power_series_reference.out",
+          "output_sha256": "e3c4390c3facdd99cc256a1dc567e625cec49901bc83f81a7bde9acd1efb28b9",
+          "samples": 21,
+          "median_ms": 12.707802
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.1036640000000002,
+        "wins": 13,
+        "ties": 0,
+        "losses": 8
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -1.380075999999999,
+        "wins": 3,
+        "ties": 0,
+        "losses": 18
+      }
+    },
+    {
+      "problem": "exp_of_formal_power_series",
+      "reference_id": 409662,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/exp_of_formal_power_series/in/max_random_00.in",
+          "sha256": "9b12be7a72b0dcf2e8c1b5e661cffef8092fc8b6db5eb4bc507049dd10ffd1cd"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/exp_of_formal_power_series/out/max_random_00.out",
+          "sha256": "1d9d614be7839c1edb76083ff62d4febd7f7a771fb22d0cfc1943dd4f078267c"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/exp_of_formal_power_series/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_exp.test.cpp",
+          "source_sha256": "539ae3bf7a1cad3142df2efd43059fbcd9594fd87331ac7f9bd5a5e50f15df75",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_before",
+          "binary_sha256": "c486fbdd909a319219287dfeca8a6d1913c4104e7b8797a5c7c1080fff9fb978",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_before.out",
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5",
+          "samples": 21,
+          "median_ms": 17.142984
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_exp.test.cpp",
+          "source_sha256": "539ae3bf7a1cad3142df2efd43059fbcd9594fd87331ac7f9bd5a5e50f15df75",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_current",
+          "binary_sha256": "caa60e3f1e76333fa4fcac81aa0dd5df9d6ffc85a434a2154bf082727f7902c2",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_current.out",
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5",
+          "samples": 21,
+          "median_ms": 16.559995
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/exp_of_formal_power_series/409662.cpp",
+          "source_sha256": "ed6a6a427359ce548106dddc7dacb0a7de7bb9bbe5f1db1442799d5ed6998031",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_reference",
+          "binary_sha256": "f4f9aa72e0acc3fe8bd31716bc85d9339ecab5a7485196f31b2ea0ec6677a09b",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/exp_of_formal_power_series_reference.out",
+          "output_sha256": "b9940ea101aee969ed9ad7b974a482d1ca831e05c17aa1c053d810c1f874d3c5",
+          "samples": 21,
+          "median_ms": 15.113629
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.604340999999998,
+        "wins": 13,
+        "ties": 0,
+        "losses": 8
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -1.5659650000000003,
+        "wins": 1,
+        "ties": 0,
+        "losses": 20
+      }
+    },
+    {
+      "problem": "pow_of_formal_power_series",
+      "reference_id": 409718,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/pow_of_formal_power_series/in/max_random_00.in",
+          "sha256": "dab0e293a02d521e66e436a9958f4e66858285c50f31472d2ec5bd4b5d876d21"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/pow_of_formal_power_series/out/max_random_00.out",
+          "sha256": "4c0efffb2e685286c16144370e8f979fa140c9cf563a29ff53853a341a9815df"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/pow_of_formal_power_series/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_pow.test.cpp",
+          "source_sha256": "e7128041c69640a19d988c531ab51ca0db789d7b8c316b0f8223c0c8c337c482",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_before",
+          "binary_sha256": "df766ef85de0e8d3deba67bd4d135dec4fac8f28453f8bb5117a4962e8db9777",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_before.out",
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210",
+          "samples": 21,
+          "median_ms": 25.007698
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_pow.test.cpp",
+          "source_sha256": "e7128041c69640a19d988c531ab51ca0db789d7b8c316b0f8223c0c8c337c482",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_current",
+          "binary_sha256": "9872bfadd9ef0ec8edfe02f05c0ea8b1f8985a9b37114673bddc615ce2f13a3c",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_current.out",
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210",
+          "samples": 21,
+          "median_ms": 24.674354
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/pow_of_formal_power_series/409718.cpp",
+          "source_sha256": "c11e38eb1639af2738f64482ce505c823801b6f2dadcbd72f4ded9a3c4199757",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_reference",
+          "binary_sha256": "dd79810b2ea8e43613800966bf848494a03b74b87a3481b0f8310e721084bfee",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/pow_of_formal_power_series_reference.out",
+          "output_sha256": "040ed8668cc4237b892a9ca50f5b308cd77e72a0ec08f2790b4681b601e5d210",
+          "samples": 21,
+          "median_ms": 22.985937
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.5201050000000009,
+        "wins": 13,
+        "ties": 0,
+        "losses": 8
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -1.6408860000000018,
+        "wins": 2,
+        "ties": 0,
+        "losses": 19
+      }
+    },
+    {
+      "problem": "sqrt_of_formal_power_series",
+      "reference_id": 409728,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/sqrt_of_formal_power_series/in/max_random_01.in",
+          "sha256": "23bba4b0457d6a0df2c70b75d0c357ea9741c4a13fe27ef0fce1c6cf7346449b"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/sqrt_of_formal_power_series/out/max_random_01.out",
+          "sha256": "e11fd5c51d46fcfcc8e1f6377afc26a08c5ab47c7fa6c1ba9404a33c4fd56829"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/sqrt_of_formal_power_series/checker",
+          "sha256": "e6ee0b3c5478748229770cf2cf63597e61ccb064c2870370e4643a8bab74175e"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_sqrt.test.cpp",
+          "source_sha256": "44cf003ff7729fc563c904aa62134cb706d1bcc99f56eed7a9858d8e191dafbf",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_before",
+          "binary_sha256": "c7736bbb60e49f60a6b8e5301d6c05739e260033e096cc70dd3975650f78a81b",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_before.out",
+          "output_sha256": "973a604fef1c74a7443dd99b9e547a6ddea7d68c388389ba0335d9d97e143ce9",
+          "samples": 21,
+          "median_ms": 12.237523
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_sqrt.test.cpp",
+          "source_sha256": "44cf003ff7729fc563c904aa62134cb706d1bcc99f56eed7a9858d8e191dafbf",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_current",
+          "binary_sha256": "d34f03bd2bd1ee7ddac98e9fa49aa44646208f6683ce5aa5651e9fa1d5d5a6de",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_current.out",
+          "output_sha256": "973a604fef1c74a7443dd99b9e547a6ddea7d68c388389ba0335d9d97e143ce9",
+          "samples": 21,
+          "median_ms": 12.391363
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/sqrt_of_formal_power_series/409728.cpp",
+          "source_sha256": "aa66b9de0c8361c9e9b46024c39231d50419f95335cfcce59cef7491e014dfbc",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_reference",
+          "binary_sha256": "51a782b016a740f5025dd995e1375cad704bfc0adfe4e25cd49a5590ce31dd1a",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/sqrt_of_formal_power_series_reference.out",
+          "output_sha256": "d3250df0c7ad169cf60f1bac45f15d4b5d13dbea12c4ddd3635f534b65f50010",
+          "samples": 21,
+          "median_ms": 10.10882
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": -0.013519999999999754,
+        "wins": 10,
+        "ties": 0,
+        "losses": 11
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -2.173552000000001,
+        "wins": 1,
+        "ties": 0,
+        "losses": 20
+      }
+    },
+    {
+      "problem": "division_of_polynomials",
+      "reference_id": 409561,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/division_of_polynomials/in/max_random_00.in",
+          "sha256": "df7ce432dda8321a191fd5480e751c1adb0886011875af11980b75609545adec"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/division_of_polynomials/out/max_random_00.out",
+          "sha256": "005c4376839fb231384761cb44124ec81e0693f619b7886709261e9d491069dd"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/division_of_polynomials/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_divmod.test.cpp",
+          "source_sha256": "a78f990ad682790a86acf29a92ce53eda1f2bed119b3dfd392a0ab8d98093cbc",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_before",
+          "binary_sha256": "0c1230d0319147c55aa058836dfcc0c54d9f7a7ed3dbbb9256692e87848ec3ad",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_before.out",
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344",
+          "samples": 21,
+          "median_ms": 5.923491
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_divmod.test.cpp",
+          "source_sha256": "a78f990ad682790a86acf29a92ce53eda1f2bed119b3dfd392a0ab8d98093cbc",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_current",
+          "binary_sha256": "ebe864eb3415d7e075d162631b1940a6391e7a96dda55312e483b6aef7f80151",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_current.out",
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344",
+          "samples": 21,
+          "median_ms": 5.834879
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/division_of_polynomials/409561.cpp",
+          "source_sha256": "fd06ec63bfe326a8f8c2b25292ecf38d77c4fd0114fbaa2565e4c667b8b4eeb1",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_reference",
+          "binary_sha256": "72b285c75e7d62c36676a075367d36ae2bc86c16b8448f2412e4fed6fd5c5da9",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/division_of_polynomials_reference.out",
+          "output_sha256": "54489e6f2762a4dcf46c77a471462b4dbe08ef7e9a3fb76b73f219a7a8d00344",
+          "samples": 21,
+          "median_ms": 4.652426
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.07839699999999983,
+        "wins": 14,
+        "ties": 0,
+        "losses": 7
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -1.1447760000000002,
+        "wins": 1,
+        "ties": 0,
+        "losses": 20
+      }
+    },
+    {
+      "problem": "kth_term_of_linearly_recurrent_sequence",
+      "reference_id": 405848,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/in/max_random_00.in",
+          "sha256": "024236a62dcb0f9a788c18997a92e730722a408314618cd4e1c556c974c3f8c6"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/out/max_random_00.out",
+          "sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/other/kth_term_of_linearly_recurrent_sequence/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_bostan_mori.test.cpp",
+          "source_sha256": "7a8464feb82f0ad2a7fecbe684f0af0f13a715d1ef9f61c3819ae0e8bd20a624",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_before",
+          "binary_sha256": "a6b8f1770bdc2fa7cf1933a9998b71ac0be15bf7269eed2ad66d17d61ebcaeed",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_before.out",
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+          "samples": 21,
+          "median_ms": 54.924605
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_bostan_mori.test.cpp",
+          "source_sha256": "7a8464feb82f0ad2a7fecbe684f0af0f13a715d1ef9f61c3819ae0e8bd20a624",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_current",
+          "binary_sha256": "ad9485dc5f0dbf22f0a6777eb22cfcd9b0d86fc3d812dda9af518c0ba3c4bb1c",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_current.out",
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+          "samples": 21,
+          "median_ms": 53.041607
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/kth_term_of_linearly_recurrent_sequence/405848.cpp",
+          "source_sha256": "f6d088ba82caad15a517bffc2396f4a1d81dd75ea98ed0992226c4fa0b847ff2",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_reference",
+          "binary_sha256": "3eeb2c31c0e06a993b5348615672f0ffa8bf1ec821c845031c5f6a875cc7d5ca",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/kth_term_of_linearly_recurrent_sequence_reference.out",
+          "output_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+          "samples": 21,
+          "median_ms": 56.928993
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 1.8429260000000056,
+        "wins": 19,
+        "ties": 0,
+        "losses": 2
+      },
+      "paired_reference_minus_current": {
+        "median_ms": 3.8554989999999947,
+        "wins": 21,
+        "ties": 0,
+        "losses": 0
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series",
+      "reference_id": 409336,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/composition_of_formal_power_series/in/max_random_00.in",
+          "sha256": "510b6685010b93506c9cc54b06ff6c9e3072b618a4c4c6b08a3de2e9146570a1"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/composition_of_formal_power_series/out/max_random_00.out",
+          "sha256": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/composition_of_formal_power_series/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_compose.test.cpp",
+          "source_sha256": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_before",
+          "binary_sha256": "13ee0316c35eeff1dbdff1767adfdd24bf3736d035bbc03edac01393edd4ef66",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_before.out",
+          "output_sha256": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac",
+          "samples": 21,
+          "median_ms": 2.759164
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_compose.test.cpp",
+          "source_sha256": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_current",
+          "binary_sha256": "4281299bf836b3f228b59a59ed28246307b8e57d7ad958934942112338115111",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_current.out",
+          "output_sha256": "88e0d31b5284450b1d2faba77400e3af913a1fe8af0f9e937727f83bc8b80dac",
+          "samples": 21,
+          "median_ms": 2.77772
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/composition_of_formal_power_series/409336.cpp",
+          "source_sha256": "766d2101d5e2c619f9fa3d73e57099871f112b91345f463fa2e17fb6c6bb6188",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_reference",
+          "binary_sha256": "e6e23ad2e7ecc6e2743393bc9b0c81134e782c976a7dc648564dfcf8d289dd1f",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_reference.out",
+          "output_sha256": "d985a268419c393a5b09fe9d54162455b1defa66661162a102d32828b9ec2eb5",
+          "samples": 21,
+          "median_ms": 2.702238
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": -0.021260999999999974,
+        "wins": 8,
+        "ties": 0,
+        "losses": 13
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -0.0867,
+        "wins": 1,
+        "ties": 0,
+        "losses": 20
+      }
+    },
+    {
+      "problem": "composition_of_formal_power_series_large",
+      "reference_id": 409535,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/composition_of_formal_power_series_large/in/max_random_00.in",
+          "sha256": "9404320bd03fe869c53cbe50511a45d262f037388dd5d2e41074db1c8a6fffa6"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/composition_of_formal_power_series_large/out/max_random_00.out",
+          "sha256": "2e032a16bc09a8e289e7a2470ec8f70b71904ec433c60df30da260a2fb6fd7dd"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/composition_of_formal_power_series_large/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_compose_large.test.cpp",
+          "source_sha256": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_before",
+          "binary_sha256": "01e4881f45912908cc1fe1357df6239e4eeeb6cded95bcfe24eb4619b19f7cbd",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_before.out",
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a",
+          "samples": 21,
+          "median_ms": 32.851075
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_compose_large.test.cpp",
+          "source_sha256": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_current",
+          "binary_sha256": "e269f5ef69aa4e24f9a44d1f0cbdbcc83a1486eedcd3b82312f7fea49dff5aa5",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_current.out",
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a",
+          "samples": 21,
+          "median_ms": 32.872405
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/composition_of_formal_power_series_large/409535.cpp",
+          "source_sha256": "1829103fcfeb5f979b111354a58a95caeedb5b44615eb24197e111fc10b126c9",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_reference",
+          "binary_sha256": "60d51cd7d318ff55eee343b205ba5e5021d02b6fcfcc45cc5f4e2bc96a335579",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/composition_of_formal_power_series_large_reference.out",
+          "output_sha256": "79d0cd1f160500106a6344aebec8b90967ac942955356c4caafac9c8bea3fb9a",
+          "samples": 21,
+          "median_ms": 31.867378
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.07014499999999657,
+        "wins": 12,
+        "ties": 0,
+        "losses": 9
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -0.9215029999999977,
+        "wins": 0,
+        "ties": 0,
+        "losses": 21
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series",
+      "reference_id": 409399,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/in/max_random_00.in",
+          "sha256": "4791f4a020aedfa791e7f5c3d342b8e51c13d7a8a4c282025a4feb890cd54349"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/out/max_random_00.out",
+          "sha256": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_compositional_inverse.test.cpp",
+          "source_sha256": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_before",
+          "binary_sha256": "c9bfec3189c8726442db9c4e80348e38a7524e4c657e5645fa40114b5c98cfbb",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_before.out",
+          "output_sha256": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd",
+          "samples": 21,
+          "median_ms": 2.570202
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_compositional_inverse.test.cpp",
+          "source_sha256": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_current",
+          "binary_sha256": "ad2c65fd422a9a07f3d0b42098f48fcad350e3b0f48e90ca60c5f55054c84bd1",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_current.out",
+          "output_sha256": "2d4cf46a6a99bb89c5047eb835111ee330cd0e3ef9abf2270662adb155843afd",
+          "samples": 21,
+          "median_ms": 2.585225
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/compositional_inverse_of_formal_power_series/409399.cpp",
+          "source_sha256": "51f5819987ba31df921f041d640216b404593ad5b293732aa519ecf9e9b19145",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_reference",
+          "binary_sha256": "349c8f6a26f9d796a47d3d310792e3223bb59fa31b151c78dba0d248c718b076",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_reference.out",
+          "output_sha256": "44164197c22cfae81aead4c08abbfe60ec6b5a1ed97e803a30dacb6f033de3c8",
+          "samples": 21,
+          "median_ms": 2.463223
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": -0.015493000000000201,
+        "wins": 10,
+        "ties": 0,
+        "losses": 11
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -0.1108450000000003,
+        "wins": 2,
+        "ties": 0,
+        "losses": 19
+      }
+    },
+    {
+      "problem": "compositional_inverse_of_formal_power_series_large",
+      "reference_id": 409549,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/in/max_random_00.in",
+          "sha256": "591e42b783095d264cc8d523a94fd53a2b0fd069f0cc7b21bfced85f46c30e55"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/out/max_random_00.out",
+          "sha256": "28a86d08c657c50919c1274634a352be8bfb3fcf6ab9b903923725340bfc4009"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/compositional_inverse_of_formal_power_series_large/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_compositional_inverse_large.test.cpp",
+          "source_sha256": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_before",
+          "binary_sha256": "dac2234c577d2e769d3ab6293ec86203dcc60e2d24c1c6299f98ffdb33c099e4",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_before.out",
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5",
+          "samples": 21,
+          "median_ms": 29.93001
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_compositional_inverse_large.test.cpp",
+          "source_sha256": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_current",
+          "binary_sha256": "378a5ce2a6dfc749f49bb4ec77f6d0eb5e87af1227003d5fd9dd9668c97f091e",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_current.out",
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5",
+          "samples": 21,
+          "median_ms": 29.903941
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/compositional_inverse_of_formal_power_series_large/409549.cpp",
+          "source_sha256": "266ebfa429c5413f815d504684bb4ec69fcbf8bf743a777873b76486f82f5edf",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_reference",
+          "binary_sha256": "d4c7076faf2000d6cd5b0a55e4f4376416fdf5bdd25d0037c3aa273f6b1f9c02",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/compositional_inverse_of_formal_power_series_large_reference.out",
+          "output_sha256": "4a43fecd779b5e19d294916e3e9a7926c5af9139ad79bdf33a19e2bc91d516b5",
+          "samples": 21,
+          "median_ms": 29.315443
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.16363400000000183,
+        "wins": 13,
+        "ties": 0,
+        "losses": 8
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -0.6491679999999995,
+        "wins": 2,
+        "ties": 0,
+        "losses": 19
+      }
+    },
+    {
+      "problem": "multipoint_evaluation",
+      "reference_id": 409516,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/multipoint_evaluation/in/max_random_00.in",
+          "sha256": "bd75a638e1008099cf0a1366a652c8584e18f3c096473bdb8a464142673ee6ae"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/multipoint_evaluation/out/max_random_00.out",
+          "sha256": "de294de44c13cbc69e3d40c78af307493a90ee539d0acc5ed8b70946fb0c211f"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/multipoint_evaluation/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/multipoint_eval.test.cpp",
+          "source_sha256": "8469d66654aace27c9f70256216d8423b17e9f6cff01f91f71ff4eb08de38ab7",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_before",
+          "binary_sha256": "c78675600256b3463a74e366898ea7ee8768e6820efbea84d65935370232a522",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_before.out",
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324",
+          "samples": 21,
+          "median_ms": 15.163997
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/multipoint_eval.test.cpp",
+          "source_sha256": "8469d66654aace27c9f70256216d8423b17e9f6cff01f91f71ff4eb08de38ab7",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_current",
+          "binary_sha256": "1628e02263bed13881f9d0d85eb318a8c03e759d08119f3ea3cf9265693c6005",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_current.out",
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324",
+          "samples": 21,
+          "median_ms": 15.004869
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/multipoint_evaluation/409516.cpp",
+          "source_sha256": "bcba5d9515f79dda9970e8d324aa38cb496466fc86f6be9a81c7b2427cd3c165",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_reference",
+          "binary_sha256": "6fbddd29e97b1b6a8f62cef2ee2402688cec36d2e40fd49f447ca051fbfe5a95",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/multipoint_evaluation_reference.out",
+          "output_sha256": "50542acd5de37ae3d5d424596dbc71510a940e4046aa89b036d0db20c0ce7324",
+          "samples": 21,
+          "median_ms": 14.47533
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.10031000000000034,
+        "wins": 14,
+        "ties": 0,
+        "losses": 7
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -0.5857930000000007,
+        "wins": 1,
+        "ties": 0,
+        "losses": 20
+      }
+    },
+    {
+      "problem": "polynomial_interpolation",
+      "reference_id": 409545,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/polynomial_interpolation/in/max_random_00.in",
+          "sha256": "7362fa638f2b680748e1da459cc4a6b7d06573f9b8d43e761b07553f55e84566"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/polynomial_interpolation/out/max_random_00.out",
+          "sha256": "1433597bd42ff9eeddd5c38448d1d4cf442534d74062ea4d95836fcdde00113a"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/polynomial_interpolation/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_interpolate.test.cpp",
+          "source_sha256": "ecaa85688202af4ffef77861e0ac51c5ad033b4d187f609705fcdfdba806d55a",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_before",
+          "binary_sha256": "bb5d3d7f6bd16ed106eb9f347fb4a7ed32990703e476e5d9f91b4ccfffcd8426",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_before.out",
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d",
+          "samples": 21,
+          "median_ms": 19.71403
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_interpolate.test.cpp",
+          "source_sha256": "ecaa85688202af4ffef77861e0ac51c5ad033b4d187f609705fcdfdba806d55a",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_current",
+          "binary_sha256": "80a45a43ae49d2d8ebf063f48f83989dba0dcec8f2eb699b081d56e698e749c3",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_current.out",
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d",
+          "samples": 21,
+          "median_ms": 19.548923
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/polynomial_interpolation/409545.cpp",
+          "source_sha256": "5f74824b262ffc33fd8aa4dfb9744a476d08ed922f7dd9d9351088f084253de9",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_reference",
+          "binary_sha256": "49275001e0d1a5668e3cc084bc8bbdc4d0e00f9879c4b5c4139ca5b1fdeb5517",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_interpolation_reference.out",
+          "output_sha256": "36e32d95ef9188210a6a654ddf9f77afcded377553e9c6896452bfcb9e435c4d",
+          "samples": 21,
+          "median_ms": 18.837623
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.11800600000000117,
+        "wins": 12,
+        "ties": 0,
+        "losses": 9
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -0.6083970000000001,
+        "wins": 4,
+        "ties": 0,
+        "losses": 17
+      }
+    },
+    {
+      "problem": "polynomial_taylor_shift",
+      "reference_id": 409534,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/polynomial_taylor_shift/in/max_random_00.in",
+          "sha256": "ff5f733d78186d7592779ef5635863e86b305d3df77384ac3cda7eca84b27e32"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/polynomial_taylor_shift/out/max_random_00.out",
+          "sha256": "1db2c633136ee617f67bcd74cc2c137ebd534094c9ed29518f3ff60cfa00f22f"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/polynomial_taylor_shift/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/fps_taylor_shift.test.cpp",
+          "source_sha256": "b9394bb97305e6b6ada35724f401fdd0f64eaa59986b09ae460197c0dbf29787",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_before",
+          "binary_sha256": "9549e342195dd7f38aa1b230acc187d1fe940e6bee9410382d59aa4ce664ef7c",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_before.out",
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6",
+          "samples": 21,
+          "median_ms": 10.030134
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/fps_taylor_shift.test.cpp",
+          "source_sha256": "b9394bb97305e6b6ada35724f401fdd0f64eaa59986b09ae460197c0dbf29787",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_current",
+          "binary_sha256": "6974c1572512ed63c923e85e63db78703076c24ffa4c71538114a0a6e3d0f96e",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_current.out",
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6",
+          "samples": 21,
+          "median_ms": 9.810246
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/polynomial_taylor_shift/409534.cpp",
+          "source_sha256": "5252bec9266ab7a0475526d06b587c54c2431d133842337317f01aa729ffb58b",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_reference",
+          "binary_sha256": "93a45c77fe090e0017cad162cfde2cd7d408ba2f49e9f7a6027cd94d4da8840f",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/polynomial_taylor_shift_reference.out",
+          "output_sha256": "7b3bb23703830587fb053cd482ac25c32c7ea615296d53dca2999684d3e9a4b6",
+          "samples": 21,
+          "median_ms": 8.664758
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.2388849999999998,
+        "wins": 14,
+        "ties": 0,
+        "losses": 7
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -1.2312449999999995,
+        "wins": 0,
+        "ties": 0,
+        "losses": 21
+      }
+    },
+    {
+      "problem": "inv_of_polynomials",
+      "reference_id": 409589,
+      "fresh_fastest_matches": true,
+      "official": {
+        "input": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/inv_of_polynomials/in/max_random_00.in",
+          "sha256": "efba1fb7dbebf3c7dfb0d604bac31059254316186bce5a7d1c98fc5a3baf20af"
+        },
+        "answer": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/inv_of_polynomials/out/max_random_00.out",
+          "sha256": "a391be1c251f93b6f9b1668c994183e05a00fef160242dbb96a1c9860b0a5ad8"
+        },
+        "checker": {
+          "path": "/workspace/cp-fps-scratch-round3/library-checker-problems/polynomial/inv_of_polynomials/checker",
+          "sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28"
+        }
+      },
+      "variants": {
+        "before": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/before/test/polynomial_inv_mod.test.cpp",
+          "source_sha256": "6f4c81be491bcc6eea1753e5ea78ec33559237cc19c37849d5a6aab8ea1689b0",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_before",
+          "binary_sha256": "3c0a2ecec3030b6ce31d6504cf02baefcc37214c1217786bf27fff410f545062",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_before.out",
+          "output_sha256": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa",
+          "samples": 21,
+          "median_ms": 15.400643
+        },
+        "current": {
+          "source": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/current/test/polynomial_inv_mod.test.cpp",
+          "source_sha256": "6f4c81be491bcc6eea1753e5ea78ec33559237cc19c37849d5a6aab8ea1689b0",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_current",
+          "binary_sha256": "f7db52a870bb0beee7c347e8ba5b7b974e3eec456ec13300a08b9b29be37346a",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_current.out",
+          "output_sha256": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa",
+          "samples": 21,
+          "median_ms": 15.301776
+        },
+        "reference": {
+          "source": "/tmp/fps-reference/inv_of_polynomials/409589.cpp",
+          "source_sha256": "274d6c6107676bf6043aa5984e4b5788617ae7c8ff0ae1f157b6b0954e895306",
+          "binary": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_reference",
+          "binary_sha256": "da4747331ce08aedccddda1992e18747294c925bfdf43b8b9785ea71937b6dec",
+          "output": "/workspace/cp-fps-scratch-round3/fps-round3-all-speed/inv_of_polynomials_reference.out",
+          "output_sha256": "664a147f58ddd7bc07c554d941354c9d32ccccbe9312fb73c4f4240ac3bfdaaa",
+          "samples": 21,
+          "median_ms": 14.748992
+        }
+      },
+      "paired_before_minus_current": {
+        "median_ms": 0.006489000000000189,
+        "wins": 11,
+        "ties": 0,
+        "losses": 10
+      },
+      "paired_reference_minus_current": {
+        "median_ms": -0.594856,
+        "wins": 0,
+        "ties": 0,
+        "losses": 21
+      }
+    }
+  ]
+}

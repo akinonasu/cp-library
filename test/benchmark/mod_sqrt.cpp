@@ -1,4 +1,4 @@
-#include "math/mod_sqrt.hpp"
+#include "math/number_theory/mod_sqrt.hpp"
 #include "test/benchmark/mod_sqrt_baseline.hpp"
 #include "components/fast_io.hpp"
 

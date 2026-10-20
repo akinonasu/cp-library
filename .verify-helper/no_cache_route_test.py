@@ -360,7 +360,7 @@ class NoCacheWorkflowTests(unittest.TestCase):
         self.assertEqual(set(workflow["on"]), {"push"})
         self.assertEqual(workflow["on"]["push"]["branches"], ["codex/matrix-centered-20261018"])
         self.assertEqual(set(workflow["on"]["push"]["paths"]), {
-            "components/matrix_arithmetic.hpp", "math/matrix.hpp", "math/mint.hpp",
+            "components/matrix_arithmetic.hpp", "math/linear_algebra/matrix.hpp", "math/mint.hpp",
             "test/benchmark/matrix.cpp", "test/benchmark/matrix.py",
             ".github/workflows/matrix-centered-final.yml",
         })
@@ -386,7 +386,7 @@ class NoCacheWorkflowTests(unittest.TestCase):
         self.assertEqual(set(workflow["on"]), {"push"})
         self.assertEqual(workflow["on"]["push"]["branches"], ["codex/matrix-backward-20261018"])
         self.assertEqual(set(workflow["on"]["push"]["paths"]), {
-            "components/matrix_arithmetic.hpp", "math/matrix.hpp", "math/mint.hpp",
+            "components/matrix_arithmetic.hpp", "math/linear_algebra/matrix.hpp", "math/mint.hpp",
             "test/benchmark/matrix.cpp", "test/benchmark/matrix.py",
             ".github/workflows/matrix-backward-final.yml",
         })

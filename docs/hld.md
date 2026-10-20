@@ -1,10 +1,13 @@
 ---
-title: "HLD (Heavy-Light Decomposition)"
-documentation_of: //graph/hld.hpp
+title: HLD (Heavy-Light Decomposition)
+documentation_of: //data_structure/advanced/hld.hpp
+redirect_from:
+- /graph/hld.hpp.html
+- /tree/hld.hpp.html
 ---
 
 ```cpp
-#include "lib/graph/hld.hpp"
+#include "lib/data_structure/advanced/hld.hpp"
 
 HLD tree(3);
 tree.add_edge(0, 1);

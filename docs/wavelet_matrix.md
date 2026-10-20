@@ -1,10 +1,12 @@
 ---
-title: "Wavelet Matrix"
-documentation_of: //data_structure/wavelet_matrix.hpp
+title: Wavelet Matrix
+documentation_of: //data_structure/wavelet_matrix/wavelet_matrix.hpp
+redirect_from:
+- /data_structure/wavelet_matrix.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/wavelet_matrix.hpp"
+#include "lib/data_structure/wavelet_matrix/wavelet_matrix.hpp"
 
 WaveletMatrix<int> wm(std::vector<int>{3, 1, 4, 1, 5});
 auto value = wm.kth_smallest(0, 5, 2);
@@ -40,7 +42,7 @@ auto value = wm.kth_smallest(0, 5, 2);
 
 `min_count_*`・`max_count_*` は非負整数列と整数の和の型で使います。`min_count_*` は `target <= 0` なら 0、`max_count_*` は `budget < 0` なら -1 を返します。和の準備は自動で行います。`sum_largest` などを個数について二分探索するより、索引を直接たどることで探索を一度に済ませます。
 
-一点代入と和の探索には [Point Set Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/point_set_wavelet_matrix.hpp.html)、固定した値の重み更新には [Weighted Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/weighted_wavelet_matrix.hpp.html) を使えます。
+一点代入と和の探索には [Point Set Wavelet Matrix (クエリ先読み)](https://qandori.github.io/cp-library/data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp.html)、固定した値の重み更新には [Weighted Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp.html) を使えます。
 
 要素数を $$n$$、異なる値の数を $$\sigma$$ として、整数型の構築は $$O(n \log \sigma)$$、その他の型は $$O(n \log n)$$ 時間です。`access` は $$O(1)$$、`select` は $$O(\log \sigma)$$、その他の問い合わせは $$O(\log \sigma)$$ です。
 

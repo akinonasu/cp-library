@@ -1,0 +1,30 @@
+[
+  {
+    "case": "sparse",
+    "push_ms": 39.728488,
+    "push_nodes": 830717,
+    "library_ms": 40.422077,
+    "library_nodes": 830717
+  },
+  {
+    "case": "broad",
+    "push_ms": 172.788278,
+    "push_nodes": 3650826,
+    "library_ms": 101.635344,
+    "library_nodes": 1918776
+  },
+  {
+    "case": "read_heavy",
+    "push_ms": 157.282787,
+    "push_nodes": 3649491,
+    "library_ms": 0.880245,
+    "library_nodes": 1
+  },
+  {
+    "case": "dense",
+    "push_ms": 31.213356,
+    "push_nodes": 179778,
+    "library_ms": 24.807251,
+    "library_nodes": 135509
+  }
+]

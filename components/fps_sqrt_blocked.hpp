@@ -1,6 +1,6 @@
 #ifndef CP_COMPONENTS_FPS_SQRT_BLOCKED_HPP
 #define CP_COMPONENTS_FPS_SQRT_BLOCKED_HPP
-
+#include "fps_asm.hpp"
 #include "fps_inverse_blocked.hpp"
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -48,48 +48,48 @@ inline Vec load_first(const std::uint32_t* p, std::size_t count) {
 [[gnu::always_inline]] inline Vec leaf_square(const Window& window) {
 	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP), p2 = broadcast(2 * kP);
 	Vec even, odd, bi, t0, t1, t2;
-	asm("vpbroadcastd 32(%[w]), %[bi]\n\t"
-		"vpmuludq 36(%[w]), %[bi], %[odd]\n\t"
-		"vpmuludq 32(%[w]), %[bi], %[even]\n\t"
-		"vpbroadcastd 36(%[w]), %[bi]\n\t"
-		"vpmuludq 28(%[w]), %[bi], %[t0]\n\t"
-		"vpbroadcastd 40(%[w]), %[bi]\n\t"
-		"vpmuludq 28(%[w]), %[bi], %[t1]\n\t"
-		"vpmuludq 24(%[w]), %[bi], %[t2]\n\t"
-		"vpaddq %[t0], %[even], %[even]\n\t"
-		"vpbroadcastd 44(%[w]), %[bi]\n\t"
-		"vpmuludq 20(%[w]), %[bi], %[t0]\n\t"
-		"vpaddq %[t1], %[odd], %[odd]\n\t"
-		"vpaddq %[t2], %[even], %[even]\n\t"
-		"vpbroadcastd 48(%[w]), %[bi]\n\t"
-		"vpmuludq 20(%[w]), %[bi], %[t1]\n\t"
-		"vpmuludq 16(%[w]), %[bi], %[t2]\n\t"
-		"vpaddq %[t0], %[even], %[even]\n\t"
-		"vpbroadcastd 52(%[w]), %[bi]\n\t"
-		"vpmuludq 12(%[w]), %[bi], %[t0]\n\t"
-		"vpaddq %[t1], %[odd], %[odd]\n\t"
-		"vpaddq %[t2], %[even], %[even]\n\t"
-		"vpbroadcastd 56(%[w]), %[bi]\n\t"
-		"vpmuludq 12(%[w]), %[bi], %[t1]\n\t"
-		"vpmuludq 8(%[w]), %[bi], %[t2]\n\t"
-		"vpaddq %[t0], %[even], %[even]\n\t"
-		"vpbroadcastd 60(%[w]), %[bi]\n\t"
-		"vpmuludq 4(%[w]), %[bi], %[t0]\n\t"
-		"vpaddq %[t1], %[odd], %[odd]\n\t"
-		"vpaddq %[t2], %[even], %[even]\n\t"
-		"vpaddq %[t0], %[even], %[even]\n\t"
-		"vpaddq %[odd], %[odd], %[odd]\n\t"
-
-		"vpmuludq %[ni], %[even], %[t0]\n\t"
-		"vpmuludq %[ni], %[odd], %[t1]\n\t"
-		"vpmuludq %[p], %[t0], %[t0]\n\t"
-		"vpmuludq %[p], %[t1], %[t1]\n\t"
-		"vpaddq %[t0], %[even], %[even]\n\t"
-		"vpaddq %[t1], %[odd], %[odd]\n\t"
-		"vpsrlq $32, %[even], %[even]\n\t"
-		"vpblendd $0xaa, %[odd], %[even], %[even]\n\t"
-		"vpsubd %[p2], %[even], %[t0]\n\t"
-		"vpminud %[t0], %[even], %[even]"
+	#define CP_FPS_ASM_BLOCK(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,q,r) \
+h(m,b) c(n,b,d) c(m,b,a) h(n,b)\
+c(l,b,e)\
+h(40(%[w]),b)\
+c(l,b,g)\
+c(24(%[w]),b,i)\
+f(e,a,a)\
+h(44(%[w]),b)\
+c(k,b,e)\
+f(g,d,d)\
+f(i,a,a)\
+h(48(%[w]),b)\
+c(k,b,g)\
+c(16(%[w]),b,i)\
+f(e,a,a)\
+h(52(%[w]),b)\
+c(j,b,e)\
+f(g,d,d)\
+f(i,a,a)\
+h(56(%[w]),b)\
+c(j,b,g)\
+c(8(%[w]),b,i)\
+f(e,a,a)\
+h(60(%[w]),b)\
+c(4(%[w]),b,e)\
+f(g,d,d)\
+f(i,a,a)\
+f(e,a,a)\
+f(d,d,d)\
+c(%[ni],a,e)\
+c(%[ni],d,g)\
+c(%[p],e,e)\
+c(%[p],g,g)\
+f(e,a,a)\
+f(g,d,d)\
+q($32,a,a)\
+o($0xaa,d,a,a)\
+r(%[p2],a,e)\
+"vpminud %[t0], %[even], %[even]"
+	asm(
+		CP_FPS_ASM_BLOCK(%[even],%[bi],CP_FPS_ASM_VPMULUDQ,%[odd],%[t0],CP_FPS_ASM_VPADDQ,%[t1],CP_FPS_ASM_VPBROADCASTD,%[t2],12(%[w]),20(%[w]),28(%[w]),32(%[w]),36(%[w]),CP_FPS_ASM_VPBLENDD,CP_FPS_ASM_VPSRLQ,CP_FPS_ASM_VPSUBD)
+#undef CP_FPS_ASM_BLOCK
 		: [even] "=&x"(even), [odd] "=&x"(odd), [bi] "=&x"(bi), [t0] "=&x"(t0), [t1] "=&x"(t1), [t2] "=&x"(t2)
 		: [w] "r"(window.word), [ni] "x"(ni), [p] "x"(p), [p2] "x"(p2),
 		"m"(*reinterpret_cast<const std::uint32_t(*)[17]>(window.word)));
