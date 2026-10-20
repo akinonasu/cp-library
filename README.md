@@ -24,6 +24,17 @@
 | `components/ntt.hpp` | NTT（998244353） | [使い方](docs/ntt.md) |
 | `components/predecessor_set.hpp` | Predecessor Set（64 分木） | [使い方](docs/predecessor_set.md) |
 
+### 幾何
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `geometry/geometry.hpp` | 平面幾何の一括 include | [使い方](docs/geometry.md) |
+| `geometry/point.hpp` | 点・ベクトル・偏角順 | [使い方](docs/geometry_point.md) |
+| `geometry/linear.hpp` | 直線・線分の交差・距離・射影 | [使い方](docs/geometry_linear.md) |
+| `geometry/polygon.hpp` | 多角形の面積・内外・切断 | [使い方](docs/geometry_polygon.md) |
+| `geometry/convex.hpp` | 凸包・直径・最近点対・Minkowski和 | [使い方](docs/geometry_convex.md) |
+| `geometry/circle.hpp` | 円・接線・共通面積・最小包含円 | [使い方](docs/geometry_circle.md) |
+
 ### 畳み込み
 
 | ファイル | 内容 | 使い方 |

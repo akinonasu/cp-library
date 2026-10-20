@@ -88,6 +88,20 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(plan["headers"], ["fps/bostan_mori.hpp", "fps/fps.hpp"])
         self.assertEqual(plan["verification"], ["test/bostan_mori.test.cpp"])
 
+    def test_geometry_directory(self):
+        self.write("geometry/point.hpp", "#pragma once\n")
+        self.write("geometry/linear.hpp", '#include "point.hpp"\n')
+        self.write("test/unit/geometry.cpp", '#include "geometry/linear.hpp"\n')
+        self.write("test/geometry.test.cpp", '#include "geometry/linear.hpp"\n')
+        previous = self.plan()["state"]
+        self.assertIn("geometry/point.hpp", previous["targets"]["headers"])
+        self.assertIn("geometry/linear.hpp", previous["targets"]["bundles"])
+        self.write("geometry/point.hpp", "#pragma once\nstruct Point {};\n")
+        plan = self.plan(previous)
+        self.assertEqual(plan["headers"], ["geometry/linear.hpp", "geometry/point.hpp"])
+        self.assertEqual(plan["unit"], ["test/unit/geometry.cpp"])
+        self.assertEqual(plan["verification"], ["test/geometry.test.cpp"])
+
     def test_unchanged_and_documentation_only(self):
         self.write("docs/comb.md", "Updated documentation\n")
         self.write("test/benchmark/result.md", "Updated benchmark\n")
