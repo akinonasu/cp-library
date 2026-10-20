@@ -1,3 +1,4 @@
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -8,7 +9,9 @@ import tempfile
 
 def main():
     root = Path(__file__).resolve().parents[2]
-    output = root / 'test/benchmark/results/comb_auto_init'
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', type=Path, default=root / 'test/benchmark/results/comb_auto_init')
+    output = parser.parse_args().output
     checks = []
 
     def run(command, **kwargs):
@@ -22,8 +25,7 @@ const unsigned before_main = comb(10, 3).val();
 int main() {
     if (before_main != 120 || fact[0] != mint(7)) std::abort();
     if (other_fact() != fact || other_finv() != finv) std::abort();
-    init_comb();
-    if (fact[0] != mint(1) || comb(20, 10).val() != 184756) std::abort();
+    if (finv[0] != mint(1) || comb(20, 10).val() != 184756) std::abort();
 }
 '''
     secondary = common + '''

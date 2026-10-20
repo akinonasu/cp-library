@@ -1,5 +1,7 @@
 # 二項係数の自動初期化
 
+追記：後続の変更で手動の `init_comb()` は削除した。[削除後の検証](comb_remove_init.md)を参照。以下は自動初期化を導入した時点の記録。
+
 2026-10-20。`math/combinatorics/comb.hpp` の include により、起動時に `fact`・`finv` を自動で前計算するようにした。既存の `init_comb()` は再計算用として残し、C 配列の型・`COMB_MAX`・`comb(n,k)` の意味を維持する。
 
 ## 初期化方法

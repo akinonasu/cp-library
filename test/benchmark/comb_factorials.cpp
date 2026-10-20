@@ -14,11 +14,15 @@
 #include <iostream>
 #include <string_view>
 
+#ifndef COMB_GENERATE
+#define COMB_GENERATE() fps_detail::factorials(fact, finv, COMB_INF + 1)
+#endif
+
 int main(int argc, char** argv) {
 	const bool prefix = argc > 1 && std::string_view(argv[1]) == "prefix";
 	const int repeats = std::max(1, std::min(20000, 10000000 / (COMB_INF + 1)));
 	binomial_prefix_detail::Table<mint> table;
-	auto generate = [&] { if (prefix) table.build(COMB_INF); else init_comb(); };
+	auto generate = [&] { if (prefix) table.build(COMB_INF); else COMB_GENERATE(); };
 	generate();
 	auto start = std::chrono::steady_clock::now();
 	for (int i = 0; i < repeats; ++i) {
