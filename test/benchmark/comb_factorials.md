@@ -34,7 +34,7 @@ WSL2 / Linux x86_64、Core i7-13700F、CPU 2 固定、GCC 15.2。`-std=gnu++23 -
 | 1048576 | 6.873575 | 1.310639 | 6.980577 | 2.227865 |
 | 4194304 | 28.101356 | 5.338755 | 28.038274 | 9.064137 |
 
-[native の全試行とソース](results/comb_factorials.json)、[`-march=native` を外した 5 回の測定](results/comb_factorials_generic.json)。後者も同じ AVX2 対応 CPU で、実行時判定により SIMD を使う。Mac の速度や AtCoder 実機での速度は測定していない。prefix の値は内部テーブルの生成時間で、平方分割表・Mo 法・問い合わせ全体の時間ではない。
+[native の全試行とソース](results/comb_factorials.json)、[`-march=native` を外した 5 回の測定](results/comb_factorials_generic.json)。後者も同じ AVX2 対応 CPU で、実行時判定により SIMD を使う。Mac の速度や AtCoder 実機での速度は測定していない。prefix の値は内部テーブルの生成時間で、平方分割表・Mo 法・クエリ全体の時間ではない。
 
 ## 検証
 

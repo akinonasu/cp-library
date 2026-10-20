@@ -52,4 +52,4 @@ tree.for_each_path(u, v, [&](int l, int r, bool) { answer += seg.prod(l, r); });
 
 構築後の各配列は参照用です。`parent[v]` は親（根は `-1`）、`depth[v]` は深さ、`size[v]` は部分木サイズ、`heavy[v]` は重い子（なければ `-1`）、`head[v]` は連鎖の先頭です。`in[v]`・`out[v]` は部分木の区間、`order[i]` は添字 `i` の頂点です。
 
-構築・空間は $$O(n)$$、`lca`・`dist`・`ancestor`・`jump`・パス分解は $$O(\log n)$$、それ以外の問い合わせは $$O(1)$$ です。分解される区間数は $$O(\log n)$$、Segtree と組み合わせたパスクエリは $$O(\log^2 n)$$ です。
+構築・空間は $$O(n)$$、`lca`・`dist`・`ancestor`・`jump`・パス分解は $$O(\log n)$$、それ以外のクエリは $$O(1)$$ です。分解される区間数は $$O(\log n)$$、Segtree と組み合わせたパスクエリは $$O(\log^2 n)$$ です。
