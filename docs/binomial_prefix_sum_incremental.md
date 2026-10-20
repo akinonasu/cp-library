@@ -26,7 +26,7 @@ auto e = sum.binom(5, 2); // 10
 | `query(n,k)` | $$\displaystyle\sum_{i=0}^{k-1}\binom ni$$。右端を含まない | $$O(\lvert\Delta n\rvert+\lvert\Delta k\rvert)$$ |
 | `binom(n,k)` | $$\binom nk$$。`n < 0`、`k < 0`、`n < k` なら 0 | $$O(1)$$ |
 
-`Mint` の既定は `mint` です。素数 mod の `mod()`・`inv()` と整数からの構築・加減乗算に対応する modint を指定できます。$$0\leq n\leq\text{max\_n}<\min(\text{mod},\text{INT\_MAX})$$ とし、使用中に法を変更しないでください。`k` は `std::int64_t` で、$$[0,n+1]$$ に収めて扱います。
+`Mint` の既定は `mint` です。素数 mod の `mod()`・`inv()` と整数からの構築・加減乗算に対応する modint を指定できます。`n` は 0 以上 `max_n` 以下、`max_n` は `mod()`・`INT_MAX` 未満とし、使用中に法を変更しないでください。`k` は `std::int64_t` で、$$[0,n+1]$$ に収めて扱います。
 
 `build(max_n)` は前計算と状態を作り直し、`max_n()` は前計算の上限を返します。初期状態は $$(n,k)=(0,0)$$ です。同じクエリは $$O(1)$$、離れたクエリほど更新量が増えます。
 
@@ -38,7 +38,7 @@ auto e = sum.binom(5, 2); // 10
 
 利用例：[ARC190 B の提出用コード](../test/binomial_prefix_sum_incremental_arc190_b.test.cpp)。小さい入力に固定の大きな前計算を行わず、4つの状態で表を共有します。
 
-$$N=\text{max\_n}$$ として、構築・`build` は $$O(N)$$ 時間・空間と逆元計算1回、`max_n()` は $$O(1)$$ です。
+`max_n` を $$N$$ として、構築・`build` は $$O(N)$$ 時間・空間と逆元計算1回、`max_n()` は $$O(1)$$ です。
 
 `query` は直前の状態との差を $$\Delta n,\Delta k$$ として $$O(\lvert\Delta n\rvert+\lvert\Delta k\rvert)$$ 時間・$$O(1)$$ 追加空間です。
 
