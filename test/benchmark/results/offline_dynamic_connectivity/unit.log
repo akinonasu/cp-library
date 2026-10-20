@@ -1,0 +1,9 @@
+g++: standalone components/offline_time_segments.hpp
+g++: standalone graph/connectivity/offline_dynamic_connectivity.hpp
+g++: offline_time_segments.cpp
+g++: offline_dynamic_connectivity.cpp
+clang++: standalone components/offline_time_segments.hpp
+clang++: standalone graph/connectivity/offline_dynamic_connectivity.hpp
+clang++: offline_time_segments.cpp
+clang++: offline_dynamic_connectivity.cpp
+Verification passed

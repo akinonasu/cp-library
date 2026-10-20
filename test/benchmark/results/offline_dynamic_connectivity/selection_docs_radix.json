@@ -1,0 +1,6 @@
+{
+  "headers": [
+    "components/radix_sort.hpp",
+    "graph/connectivity/offline_dynamic_connectivity.hpp"
+  ]
+}

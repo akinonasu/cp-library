@@ -1,0 +1,15 @@
+All 19 official cases passed for ['library', 'clang']
+link_and_cut_00 {'library': 71.177954, '402761': 37.851826}
+max_random_00 {'library': 37.000804, '402761': 17.844121}
+dense_00 {'library': 40.400041, '402761': 17.347215}
+uv_swapped_00 {'library': 35.510776, '402761': 17.593468}
+random_00 {'library': 34.451679, '402761': 15.85932}
+link_and_cut_00 {'csr': 60.437311, 'vectors': 57.43868, 'all_times': 99.983508} {'csr': 43188, 'vectors': 44040, 'all_times': 63408}
+max_random_00 {'csr': 23.128478, 'vectors': 39.001516, 'all_times': 28.945983} {'csr': 38284, 'vectors': 50372, 'all_times': 47036}
+dense_00 {'csr': 30.536357, 'vectors': 42.546898, 'all_times': 38.413949} {'csr': 31296, 'vectors': 38432, 'all_times': 42980}
+uv_swapped_00 {'csr': 21.289766, 'vectors': 36.35367, 'all_times': 27.019359} {'csr': 38336, 'vectors': 50248, 'all_times': 47048}
+random_00 {'csr': 21.590884, 'vectors': 35.509143, 'all_times': 27.296119} {'csr': 34944, 'vectors': 46676, 'all_times': 43292}
+few_queries {'csr': 8.838327, 'vectors': 8.953851, 'all_times': 33.324541} {'csr': 21880, 'vectors': 22084, 'all_times': 37528}
+churn {'csr': 5.216653, 'vectors': 8.462493, 'all_times': 8.302366} {'csr': 16412, 'vectors': 20052, 'all_times': 22804}
+parallel_edges {'csr': 0.425183, 'vectors': 0.441045, 'all_times': 1.108441} {'csr': 5692, 'vectors': 5540, 'all_times': 7808}
+query_only {'csr': 1.098894, 'vectors': 1.128554, 'all_times': 1.119387} {'csr': 10904, 'vectors': 11004, 'all_times': 10888}
