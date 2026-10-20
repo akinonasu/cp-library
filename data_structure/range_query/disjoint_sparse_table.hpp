@@ -40,7 +40,6 @@ class DisjointSparseTable {
 		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
 		n = static_cast<int>(a.size());
 		int levels = std::max(1, int(std::bit_width(unsigned(std::max(0, n - 1)))));
-		data.clear();
 		data.resize(levels);
 		for (int k = 0; k < levels; ++k) {
 			std::size_t length = n, half = std::size_t(1) << k;

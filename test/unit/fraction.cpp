@@ -68,6 +68,7 @@ static_assert(2 * F(1, 3) == F(2, 3) && 2 / F(1, 3) == 6);
 static_assert(F(-4, 3).floor() == -2 && F(-4, 3).ceil() == -1);
 static_assert(floor(F(4, 3)) == 1 && ceil(F(4, 3)) == 2);
 static_assert(F(2, 3).inv() == F(3, 2) && pow(F(-2, 3), 3) == F(-8, 27));
+static_assert(F(-2, 3).inv() == F(-3, 2));
 static_assert(1 < F(3, 2) && F(-1, 2) < 0 && 1 == F(5, 5));
 static_assert(std::is_trivially_copyable_v<F> && sizeof(F) == 16);
 static_assert(Fraction<int>(std::numeric_limits<int>::max(), 2) * 2 == std::numeric_limits<int>::max());
@@ -116,6 +117,8 @@ int main() {
 		boundary.emplace_back(n, d);
 	}
 	for (auto a : boundary) for (auto b : boundary) pair(a, b);
+	for (auto a : boundary) if (a && fits<std::int64_t>(Reference(a.denominator(), a.numerator())))
+		equal(a.inv(), Reference(a.denominator(), a.numerator()));
 	for (int i = 0; i < 30000; ++i) {
 		auto integer = [&] { return std::bit_cast<std::int64_t>(random()); };
 		std::int64_t n = integer(), d = std::int64_t(random() % high) + 1;

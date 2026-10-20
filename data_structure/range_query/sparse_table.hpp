@@ -18,6 +18,10 @@ class SparseTable {
 	using Reference = std::conditional_t<std::is_same_v<S, bool>, bool, const S &>;
 	int n = 0;
 	std::vector<std::vector<Value, DefaultInitAllocator<Value>>> data;
+	static decltype(auto) combine(const Value &a, const Value &b) {
+		if constexpr (std::is_same_v<S, bool> || !std::is_invocable_v<decltype(op), const S &, const S &>) return S(op(S(a), S(b)));
+		else return op(a, b);
+	}
 
   public:
 	SparseTable() = default;
@@ -43,27 +47,26 @@ class SparseTable {
 	template <class F>
 	void build(int size, F value) {
 		assert(size >= 0);
-		clear();
 		n = size;
+		data.resize(std::bit_width(unsigned(n)));
 		if (!n) return;
-		data.reserve(std::bit_width(unsigned(n)));
-		data.emplace_back();
 		if constexpr (std::is_default_constructible_v<Value>) {
 			data[0].resize(n);
 			for (int i = 0; i < n; ++i) data[0][i] = value(i);
 		} else {
+			data[0].clear();
 			data[0].reserve(n);
 			for (int i = 0; i < n; ++i) data[0].push_back(value(i));
 		}
 		for (int k = 1; k < std::bit_width(unsigned(n)); ++k) {
 			int length = n - (1U << k) + 1, half = 1U << (k - 1);
-			data.emplace_back();
 			if constexpr (std::is_default_constructible_v<Value>) {
 				data[k].resize(length);
-				for (int i = 0; i < length; ++i) data[k][i] = op(S(data[k - 1][i]), S(data[k - 1][i + half]));
+				for (int i = 0; i < length; ++i) data[k][i] = combine(data[k - 1][i], data[k - 1][i + half]);
 			} else {
+				data[k].clear();
 				data[k].reserve(length);
-				for (int i = 0; i < length; ++i) data[k].push_back(op(data[k - 1][i], data[k - 1][i + half]));
+				for (int i = 0; i < length; ++i) data[k].push_back(combine(data[k - 1][i], data[k - 1][i + half]));
 			}
 		}
 	}
@@ -81,7 +84,7 @@ class SparseTable {
 	}
 	[[gnu::always_inline]] S prod_unchecked(int l, int r) const {
 		int k = std::bit_width(unsigned(r - l)) - 1;
-		return op(S(data[k][l]), S(data[k][r - (1U << k)]));
+		return combine(data[k][l], data[k][r - (1U << k)]);
 	}
 	S all_prod() const { return prod(0, n); }
 };
