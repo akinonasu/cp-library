@@ -111,6 +111,7 @@
 | `data_structure/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
+| `data_structure/rollback_union_find.hpp` | Rollback Union Find | [使い方](docs/rollback_union_find.md) |
 
 ### セグメント木
 
