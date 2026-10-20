@@ -8,7 +8,7 @@
 | `graph/flow/` | 最大流、最小費用流 |
 | `graph/matching/` | 二部マッチング、一般マッチング、重み付きマッチング、割当問題 |
 | `data_structure/` | Li Chao Tree、区間集合、Treap、Slope Trick、Union-Find |
-| `data_structure/segment_tree/` | 動的・双対セグメント木、Segtree Beats、Sortable Segtree |
+| `data_structure/segment_tree/` | 動的・双対・永続セグメント木、Segtree Beats、Sortable Segtree |
 | `data_structure/wavelet_matrix/` | 静的・動的・重み付き・一点代入 Wavelet Matrix |
 | `data_structure/priority_queue/` | Retroactive Priority Queue |
 | `data_structure/range_query/` | Sparse Table、Disjoint Sparse Table |

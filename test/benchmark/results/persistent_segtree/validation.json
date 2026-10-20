@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-21",
+  "compilers": [
+    "GCC 15.2.0",
+    "Clang 21.1.8"
+  ],
+  "header_and_unit": "passed with GCC and Clang",
+  "standalone_integration": "passed with GCC and Clang",
+  "sanitizers": "Clang AddressSanitizer and UndefinedBehaviorSanitizer passed for unit and standalone",
+  "strict_unit": "-Wall -Wextra -Werror passed with GCC and Clang",
+  "documentation_example": "compiled and ran with assertions enabled under GCC and Clang",
+  "documentation_bundle": "182 documentation entries checked; new bundle compiled",
+  "library_checker": {
+    "persistent_unionfind": {
+      "official_cases": 14,
+      "gcc": "passed",
+      "clang": "passed"
+    },
+    "rectangle_sum": {
+      "official_cases": 14,
+      "gcc": "passed",
+      "clang": "passed"
+    }
+  },
+  "source_sha256": {
+    "data_structure/segment_tree/persistent_segtree.hpp": "bccc0a14bd13d35f1a4c23688f517c7514ea8c8f279f390e631c88891c75ee90",
+    "test/unit/persistent_segtree.cpp": "d0f48e419024ad45987e2d57c45a2252c88492bd5f1d74c6a0a3c7ae9f8d5e69",
+    "test/persistent_segtree_unionfind.test.cpp": "fe62fe089e6138be8b98809c806a3139f7eb6cae871d5bc0cc6c9978a486c535",
+    "test/persistent_segtree_rectangle.test.cpp": "9034a133d1b063fc784c714050e656d6a17f5d7eb844ffcdd883d2a39e0e8f80",
+    "test/unit/standalone.cpp": "a1d8a5ad85cbfc7cea9b0ee8035374b9be4f562c76a0707e3e13fab75c78cd66"
+  },
+  "macos": "not measured locally; covered by macOS CI after push"
+}
