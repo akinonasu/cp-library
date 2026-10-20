@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-21",
+  "platform": "WSL Ubuntu Linux x86_64",
+  "standalone_headers": 6,
+  "unit_tests": 5,
+  "unit_compilers": [
+    "GCC 15.2.0",
+    "Clang 21.1.8"
+  ],
+  "sanitize": {
+    "compiler": "Clang 21.1.8",
+    "flags": [
+      "-fsanitize=address,undefined"
+    ],
+    "tests": 5
+  },
+  "ci_helper_tests": {
+    "ci_test.py": 46,
+    "affected_test.py": 28
+  },
+  "judge": [
+    {
+      "driver": "test/geometry_argument_sort.test.cpp",
+      "cases_per_compiler": 21,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_circle_line.test.cpp",
+      "cases_per_compiler": 12,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_closest_pair.test.cpp",
+      "cases_per_compiler": 29,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_convex_hull.test.cpp",
+      "cases_per_compiler": 25,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_furthest_pair.test.cpp",
+      "cases_per_compiler": 46,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_polygon_contains.test.cpp",
+      "cases_per_compiler": 20,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_projection.test.cpp",
+      "cases_per_compiler": 32,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_segment_distance.test.cpp",
+      "cases_per_compiler": 20,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_circle_polygon.test.cpp",
+      "cases_per_compiler": 32,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    },
+    {
+      "driver": "test/geometry_convex_cut.test.cpp",
+      "cases_per_compiler": 16,
+      "compilers": [
+        "GCC 15.2.0",
+        "Clang 21.1.8"
+      ]
+    }
+  ],
+  "judge_cases_total": 506,
+  "judge_scope": "downloaded Library Checker/AOJ cases; local official checker for Library Checker, numeric comparison for AOJ; no remote submission",
+  "reduced_precision": {
+    "real_type": "double in temporary header copies",
+    "compiler": "GCC 15.2.0",
+    "unit_tests": 5,
+    "scope": "numeric precision check; not a macOS execution"
+  },
+  "documentation": {
+    "headers": 6,
+    "bundles_gcc": 6,
+    "examples_gcc_and_clang": 6
+  }
+}

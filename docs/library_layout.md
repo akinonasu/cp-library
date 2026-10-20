@@ -20,6 +20,7 @@
 | `convolution/` | 畳み込み |
 | `fps/` | 形式的冪級数、多項式 |
 | `sequence/` | 列アルゴリズム、最長増加部分列（LIS） |
+| `geometry/` | 点・直線・線分・円・多角形・凸包・最近点対 |
 | `string/` | 列・文字列、LCS、Eertree |
 | `components/` | 変換と共有する内部部品 |
 

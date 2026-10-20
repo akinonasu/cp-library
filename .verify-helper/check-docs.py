@@ -17,7 +17,7 @@ if args.jobs < 1:
     parser.error('--jobs must be positive')
 selection = json.loads(args.selection.read_text()) if args.selection else None
 selected = set(selection.get('bundles', selection['headers'])) if selection is not None else None
-headers = sorted(path for folder in ('components', 'convolution', 'fps', 'data_structure', 'graph', 'tree', 'math', 'sequence', 'string') for path in (root / folder).rglob('*.hpp'))
+headers = sorted(path for folder in ('components', 'convolution', 'fps', 'data_structure', 'graph', 'tree', 'math', 'sequence', 'string', 'geometry') for path in (root / folder).rglob('*.hpp'))
 bundles = []
 for header in headers:
     path = header.relative_to(root)

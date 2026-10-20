@@ -1,0 +1,752 @@
+[
+  {
+    "operation": "hull",
+    "kind": "random",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 19.3225,
+    "count": 30,
+    "digest": "6043866067453028925",
+    "trial": 0
+  },
+  {
+    "operation": "hull",
+    "kind": "random",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 18.9375,
+    "count": 34,
+    "digest": "18301117274062746584",
+    "trial": 1
+  },
+  {
+    "operation": "hull",
+    "kind": "random",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 19.011,
+    "count": 26,
+    "digest": "11439530041093837753",
+    "trial": 2
+  },
+  {
+    "operation": "hull",
+    "kind": "random",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 18.8563,
+    "count": 30,
+    "digest": "13054109571006644984",
+    "trial": 3
+  },
+  {
+    "operation": "hull",
+    "kind": "random",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 18.5393,
+    "count": 27,
+    "digest": "11719242891620403584",
+    "trial": 4
+  },
+  {
+    "operation": "hull",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 14.6144,
+    "count": 2,
+    "digest": "202398988",
+    "trial": 0
+  },
+  {
+    "operation": "hull",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 14.8079,
+    "count": 2,
+    "digest": "202398988",
+    "trial": 1
+  },
+  {
+    "operation": "hull",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 16.0593,
+    "count": 2,
+    "digest": "202398988",
+    "trial": 2
+  },
+  {
+    "operation": "hull",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 17.0221,
+    "count": 2,
+    "digest": "202398988",
+    "trial": 3
+  },
+  {
+    "operation": "hull",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 15.7312,
+    "count": 2,
+    "digest": "202398988",
+    "trial": 4
+  },
+  {
+    "operation": "hull",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 20.0684,
+    "count": 5,
+    "digest": "10023202546343612248",
+    "trial": 0
+  },
+  {
+    "operation": "hull",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 19.7965,
+    "count": 5,
+    "digest": "10023202546343612248",
+    "trial": 1
+  },
+  {
+    "operation": "hull",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 19.7921,
+    "count": 5,
+    "digest": "10023202546343612248",
+    "trial": 2
+  },
+  {
+    "operation": "hull",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 20.3127,
+    "count": 5,
+    "digest": "10023202546343612248",
+    "trial": 3
+  },
+  {
+    "operation": "hull",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 19.5887,
+    "count": 5,
+    "digest": "10023202546343612248",
+    "trial": 4
+  },
+  {
+    "operation": "hull",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 10.5734,
+    "count": 4,
+    "digest": "8670086598168522560",
+    "trial": 0
+  },
+  {
+    "operation": "hull",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 10.4922,
+    "count": 4,
+    "digest": "8670086598168522560",
+    "trial": 1
+  },
+  {
+    "operation": "hull",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 10.166,
+    "count": 4,
+    "digest": "8670086598168522560",
+    "trial": 2
+  },
+  {
+    "operation": "hull",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 10.0998,
+    "count": 4,
+    "digest": "8670086598168522560",
+    "trial": 3
+  },
+  {
+    "operation": "hull",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 10.3066,
+    "count": 4,
+    "digest": "8670086598168522560",
+    "trial": 4
+  },
+  {
+    "operation": "hull",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 16.3046,
+    "count": 200000,
+    "digest": "321412567466817792",
+    "trial": 0
+  },
+  {
+    "operation": "hull",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 16.3414,
+    "count": 200000,
+    "digest": "321412567466817792",
+    "trial": 1
+  },
+  {
+    "operation": "hull",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 16.2609,
+    "count": 200000,
+    "digest": "321412567466817792",
+    "trial": 2
+  },
+  {
+    "operation": "hull",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 15.8476,
+    "count": 200000,
+    "digest": "321412567466817792",
+    "trial": 3
+  },
+  {
+    "operation": "hull",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 15.6572,
+    "count": 200000,
+    "digest": "321412567466817792",
+    "trial": 4
+  },
+  {
+    "operation": "closest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 28.9709,
+    "count": 2,
+    "digest": "92109896201934",
+    "trial": 0
+  },
+  {
+    "operation": "closest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 29.1383,
+    "count": 2,
+    "digest": "728104355754803",
+    "trial": 1
+  },
+  {
+    "operation": "closest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 28.4387,
+    "count": 2,
+    "digest": "349984036375361",
+    "trial": 2
+  },
+  {
+    "operation": "closest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 28.7859,
+    "count": 2,
+    "digest": "108718541904149",
+    "trial": 3
+  },
+  {
+    "operation": "closest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 28.4029,
+    "count": 2,
+    "digest": "331038922261059",
+    "trial": 4
+  },
+  {
+    "operation": "closest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 19.4612,
+    "count": 2,
+    "digest": "265454748879015",
+    "trial": 0
+  },
+  {
+    "operation": "closest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 19.7407,
+    "count": 2,
+    "digest": "728039906373240",
+    "trial": 1
+  },
+  {
+    "operation": "closest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 19.3971,
+    "count": 2,
+    "digest": "811259192834427",
+    "trial": 2
+  },
+  {
+    "operation": "closest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 18.9629,
+    "count": 2,
+    "digest": "653066957388949",
+    "trial": 3
+  },
+  {
+    "operation": "closest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 18.7547,
+    "count": 2,
+    "digest": "709653151408503",
+    "trial": 4
+  },
+  {
+    "operation": "closest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 23.7424,
+    "count": 2,
+    "digest": "265454748789764",
+    "trial": 0
+  },
+  {
+    "operation": "closest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 23.59,
+    "count": 2,
+    "digest": "728039906512670",
+    "trial": 1
+  },
+  {
+    "operation": "closest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 23.5682,
+    "count": 2,
+    "digest": "811259192841714",
+    "trial": 2
+  },
+  {
+    "operation": "closest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 23.4748,
+    "count": 2,
+    "digest": "653066957396937",
+    "trial": 3
+  },
+  {
+    "operation": "closest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 23.2186,
+    "count": 2,
+    "digest": "709653151537688",
+    "trial": 4
+  },
+  {
+    "operation": "closest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 9.8898,
+    "count": 2,
+    "digest": "822361683316102",
+    "trial": 0
+  },
+  {
+    "operation": "closest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 9.47594,
+    "count": 2,
+    "digest": "487453018318611",
+    "trial": 1
+  },
+  {
+    "operation": "closest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 9.33576,
+    "count": 2,
+    "digest": "531661116847772",
+    "trial": 2
+  },
+  {
+    "operation": "closest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 9.26468,
+    "count": 2,
+    "digest": "717448517184604",
+    "trial": 3
+  },
+  {
+    "operation": "closest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 9.50578,
+    "count": 2,
+    "digest": "677861803515973",
+    "trial": 4
+  },
+  {
+    "operation": "closest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 20.5266,
+    "count": 2,
+    "digest": "753079565799344",
+    "trial": 0
+  },
+  {
+    "operation": "closest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 19.901,
+    "count": 2,
+    "digest": "855905377752994",
+    "trial": 1
+  },
+  {
+    "operation": "closest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 20.3701,
+    "count": 2,
+    "digest": "771427666129711",
+    "trial": 2
+  },
+  {
+    "operation": "closest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 20.4025,
+    "count": 2,
+    "digest": "110372069759055",
+    "trial": 3
+  },
+  {
+    "operation": "closest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 20.5284,
+    "count": 2,
+    "digest": "509052408853824",
+    "trial": 4
+  },
+  {
+    "operation": "furthest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 19.0585,
+    "count": 2,
+    "digest": "7964667830145048873",
+    "trial": 0
+  },
+  {
+    "operation": "furthest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 19.0454,
+    "count": 2,
+    "digest": "7966017169412266653",
+    "trial": 1
+  },
+  {
+    "operation": "furthest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 19.0132,
+    "count": 2,
+    "digest": "7979106565719656082",
+    "trial": 2
+  },
+  {
+    "operation": "furthest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 18.9985,
+    "count": 2,
+    "digest": "7980105479064774841",
+    "trial": 3
+  },
+  {
+    "operation": "furthest",
+    "kind": "random",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 18.9791,
+    "count": 2,
+    "digest": "7992051643603544963",
+    "trial": 4
+  },
+  {
+    "operation": "furthest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 14.7928,
+    "count": 2,
+    "digest": "265201909645494",
+    "trial": 0
+  },
+  {
+    "operation": "furthest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 14.928,
+    "count": 2,
+    "digest": "728405542607150",
+    "trial": 1
+  },
+  {
+    "operation": "furthest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 14.5496,
+    "count": 2,
+    "digest": "810937634000124",
+    "trial": 2
+  },
+  {
+    "operation": "furthest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 14.8443,
+    "count": 2,
+    "digest": "652745398556495",
+    "trial": 3
+  },
+  {
+    "operation": "furthest",
+    "kind": "collinear",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 14.6225,
+    "count": 2,
+    "digest": "709391722227025",
+    "trial": 4
+  },
+  {
+    "operation": "furthest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 19.7864,
+    "count": 2,
+    "digest": "610070039887880",
+    "trial": 0
+  },
+  {
+    "operation": "furthest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 19.3501,
+    "count": 2,
+    "digest": "766849231103968",
+    "trial": 1
+  },
+  {
+    "operation": "furthest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 20.1035,
+    "count": 2,
+    "digest": "314387311369939",
+    "trial": 2
+  },
+  {
+    "operation": "furthest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 19.8114,
+    "count": 2,
+    "digest": "693512664514606",
+    "trial": 3
+  },
+  {
+    "operation": "furthest",
+    "kind": "grid",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 21.4625,
+    "count": 2,
+    "digest": "208739706016816",
+    "trial": 4
+  },
+  {
+    "operation": "furthest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 11.1669,
+    "count": 2,
+    "digest": "822361683293621",
+    "trial": 0
+  },
+  {
+    "operation": "furthest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 10.2173,
+    "count": 2,
+    "digest": "487453018321122",
+    "trial": 1
+  },
+  {
+    "operation": "furthest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 9.91501,
+    "count": 2,
+    "digest": "531661116829879",
+    "trial": 2
+  },
+  {
+    "operation": "furthest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 10.1912,
+    "count": 2,
+    "digest": "717448517157236",
+    "trial": 3
+  },
+  {
+    "operation": "furthest",
+    "kind": "duplicates",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 10.4614,
+    "count": 2,
+    "digest": "677861803573014",
+    "trial": 4
+  },
+  {
+    "operation": "furthest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 731,
+    "milliseconds": 19.6363,
+    "count": 2,
+    "digest": "7765880054874838382",
+    "trial": 0
+  },
+  {
+    "operation": "furthest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 732,
+    "milliseconds": 19.5965,
+    "count": 2,
+    "digest": "7765424423269134886",
+    "trial": 1
+  },
+  {
+    "operation": "furthest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 733,
+    "milliseconds": 19.0722,
+    "count": 2,
+    "digest": "7765863493480809942",
+    "trial": 2
+  },
+  {
+    "operation": "furthest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 734,
+    "milliseconds": 19.2607,
+    "count": 2,
+    "digest": "7766240187882518006",
+    "trial": 3
+  },
+  {
+    "operation": "furthest",
+    "kind": "parabola",
+    "n": 200000,
+    "seed": 735,
+    "milliseconds": 19.3823,
+    "count": 2,
+    "digest": "7766053850726359405",
+    "trial": 4
+  }
+]

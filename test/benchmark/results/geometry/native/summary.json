@@ -1,0 +1,107 @@
+[
+  {
+    "operation": "hull",
+    "kind": "random",
+    "median_ms": 19.4801,
+    "min_ms": 19.328,
+    "max_ms": 19.5341
+  },
+  {
+    "operation": "hull",
+    "kind": "collinear",
+    "median_ms": 15.2073,
+    "min_ms": 15.0943,
+    "max_ms": 15.4888
+  },
+  {
+    "operation": "hull",
+    "kind": "grid",
+    "median_ms": 20.0566,
+    "min_ms": 19.7374,
+    "max_ms": 20.6745
+  },
+  {
+    "operation": "hull",
+    "kind": "duplicates",
+    "median_ms": 10.4242,
+    "min_ms": 9.96831,
+    "max_ms": 10.6501
+  },
+  {
+    "operation": "hull",
+    "kind": "parabola",
+    "median_ms": 16.644,
+    "min_ms": 16.3559,
+    "max_ms": 18.3477
+  },
+  {
+    "operation": "closest",
+    "kind": "random",
+    "median_ms": 30.6477,
+    "min_ms": 30.1533,
+    "max_ms": 30.9715
+  },
+  {
+    "operation": "closest",
+    "kind": "collinear",
+    "median_ms": 21.3343,
+    "min_ms": 20.3758,
+    "max_ms": 22.0829
+  },
+  {
+    "operation": "closest",
+    "kind": "grid",
+    "median_ms": 25.3183,
+    "min_ms": 25.1537,
+    "max_ms": 26.4065
+  },
+  {
+    "operation": "closest",
+    "kind": "duplicates",
+    "median_ms": 11.2931,
+    "min_ms": 11.0947,
+    "max_ms": 12.3837
+  },
+  {
+    "operation": "closest",
+    "kind": "parabola",
+    "median_ms": 22.8399,
+    "min_ms": 22.5173,
+    "max_ms": 23.8614
+  },
+  {
+    "operation": "furthest",
+    "kind": "random",
+    "median_ms": 19.8245,
+    "min_ms": 19.4831,
+    "max_ms": 20.0021
+  },
+  {
+    "operation": "furthest",
+    "kind": "collinear",
+    "median_ms": 15.2905,
+    "min_ms": 15.1786,
+    "max_ms": 15.4406
+  },
+  {
+    "operation": "furthest",
+    "kind": "grid",
+    "median_ms": 20.4632,
+    "min_ms": 20.0897,
+    "max_ms": 21.1805
+  },
+  {
+    "operation": "furthest",
+    "kind": "duplicates",
+    "median_ms": 10.2773,
+    "min_ms": 9.97074,
+    "max_ms": 10.8033
+  },
+  {
+    "operation": "furthest",
+    "kind": "parabola",
+    "median_ms": 19.9763,
+    "min_ms": 19.8522,
+    "max_ms": 20.5232
+  }
+]
