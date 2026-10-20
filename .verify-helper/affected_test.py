@@ -126,6 +126,16 @@ class AffectedVerification(unittest.TestCase):
             ci.main()
         return output.getvalue()
 
+    def test_sequence_header_scope(self):
+        self.write("sequence/lis.hpp", "#pragma once\n")
+        self.write("test/unit/lis.cpp", '#include "sequence/lis.hpp"\n')
+        self.write("test/lis.test.cpp", '#include "../sequence/lis.hpp"\n')
+        self.commit("add sequence library")
+        plan = self.plan()
+        self.assertEqual(plan["headers"], ["sequence/lis.hpp"])
+        self.assertEqual(plan["unit"], ["test/unit/lis.cpp"])
+        self.assertEqual(plan["verification"], ["test/lis.test.cpp"])
+
     def test_cold_dynamic_scope_and_incompatible_cache_inventory(self):
         self.change_bits()
         plan = self.plan()

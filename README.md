@@ -136,12 +136,17 @@
 | `data_structure/range_query/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
 | `data_structure/range_query/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
 
+### 列アルゴリズム
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `sequence/lis.hpp` | 最長増加部分列（長さ・復元） | [使い方](docs/lis.md) |
+
 ### 列・文字列
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `string/lcs.hpp` | 最長共通部分列 | [使い方](docs/lcs.md) |
-| `string/lis.hpp` | 最長増加部分列（長さ・復元） | [使い方](docs/lis.md) |
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |

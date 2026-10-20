@@ -48,7 +48,7 @@
 #include "math/floor_sum/partition_mod_of_linear.hpp"
 #include "string/edit_distance.hpp"
 #include "string/lcs.hpp"
-#include "string/lis.hpp"
+#include "sequence/lis.hpp"
 #include "string/suffix_tree.hpp"
 #include "string/dynamic_pattern_matching.hpp"
 #include "string/rolling_hash.hpp"

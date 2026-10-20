@@ -1,0 +1,12 @@
+{
+  "headers": [
+    "sequence/lis.hpp"
+  ],
+  "unit": [
+    "test/unit/lis.cpp",
+    "test/unit/standalone.cpp"
+  ],
+  "sanitize": [
+    "test/unit/lis.cpp"
+  ]
+}
