@@ -40,7 +40,7 @@ int main() {
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `AuxiliaryTree(tree)` | 前処理済みの木を参照して作成。型は推論可能 | $$O(1)$$ |
-| `build(vertices)` | 頂点列から構築し、`nodes()` と同じ配列への const 参照を返す | LCA: $$O(k\log k)$$、HLD: $$O(k\log k+k\log n)$$ |
+| `build(vertices)` | 頂点列から構築し、`nodes()` と同じ配列への const 参照を返す | LCA: $$O(k)$$、HLD: $$O(k\log n)$$ |
 | `build_sorted(vertices)` | 元の木の DFS 番号の小さい順に並んだ頂点列から構築。内部のソートを省く。通常は `build` を使う | LCA: $$O(k)$$、HLD: $$O(k\log n)$$ |
 | `size()` | 補助木の頂点数 | $$O(1)$$ |
 | `empty()` | 補助木が空か | $$O(1)$$ |
@@ -72,7 +72,7 @@ std::sort(vertices.begin(), vertices.end(), [&](int u, int v) {
 vt.build_sorted(vertices);
 ```
 
-自分でこのソートをするだけなら、通常の `build(vertices)` と同じです。`build_sorted` が役立つのは、木を DFS 順に走査しながら頂点を集めた場合など、入力が最初からこの順番になっているときです。順番が分からなければ `build` を使ってください。
+通常の `build` は DFS 番号を整数キーとして基数ソートし、256件未満では比較ソートを使います。自分で上の比較ソートをすると $$O(k\log k)$$ 時間かかります。`build_sorted` が役立つのは、木を DFS 順に走査しながら頂点を集めた場合など、入力が最初からこの順番になっているときです。順番が分からなければ `build` を使ってください。
 
 重み付き距離は、元の木の根からの重み和を `distance[v]` として `distance[vt[i].vertex] - distance[vt[vt[i].parent].vertex]` で得られます。`length` は重みにかかわらず辺数です。
 
@@ -80,4 +80,4 @@ vt.build_sorted(vertices);
 
 `Tree` に必要な操作は `lca(u,v)`、部分木の DFS 区間を返す `subtree(v)`、辺数による深さ `depth[v]` です。
 
-元の頂点数を $$n$$、入力列長を $$k$$ とすると、LCA の前処理は時間・空間 $$O(n \log n)$$、補助木の構築は $$O(k \log k)$$、ソート済みなら $$O(k)$$ です。HLD は前処理・空間 $$O(n)$$、構築 $$O(k \log k + k \log n)$$、ソート済みなら $$O(k \log n)$$ です。補助木の追加空間は最大の入力列長に対し $$O(k)$$、生成後の参照操作は $$O(1)$$ です。
+元の頂点数を $$n$$、入力列長を $$k$$ とすると、LCA の前処理は時間・空間 $$O(n \log n)$$、補助木の構築は $$O(k)$$ です。HLD は前処理・空間 $$O(n)$$、構築 $$O(k \log n)$$ です。ソート済みの入力でも同じ計算量ですが、`build_sorted` はソートとその作業領域の確保を省けます。補助木の追加空間は最大の入力列長に対し $$O(k)$$、生成後の参照操作は $$O(1)$$ です。

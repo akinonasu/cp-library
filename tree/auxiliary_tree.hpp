@@ -1,6 +1,7 @@
 #ifndef AUXILIARY_TREE_HPP
 #define AUXILIARY_TREE_HPP
 
+#include "../components/radix_sort.hpp"
 #include <algorithm>
 #include <cassert>
 #include <span>
@@ -47,7 +48,10 @@ template <class Tree> class AuxiliaryTree {
 	const std::vector<Node> &construct(std::span<const int> vertices, bool sorted) {
 		keys_.clear();
 		for (int v : vertices) keys_.emplace_back(tree_->subtree(v).first, v);
-		if (!sorted) std::sort(keys_.begin(), keys_.end());
+		if (!sorted) {
+			if (keys_.size() < 256) std::sort(keys_.begin(), keys_.end());
+			else stable_radix_sort(keys_, [](const auto &x) { return static_cast<unsigned>(x.first); });
+		}
 		else assert(std::is_sorted(keys_.begin(), keys_.end()));
 		nodes_.clear();
 		stack_.clear();
