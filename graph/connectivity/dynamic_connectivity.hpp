@@ -268,28 +268,21 @@ class DynamicConnectivity {
 			if (t[a].size > t[b].size) std::swap(a, b);
 			if (!(t[a].flags & 2)) continue;
 			bool promoted = false;
+			auto replace = [&](int id) {
+				int u = edges[id].key >> 32, v = unsigned(edges[id].key);
+				if (same_nodes(vertices[level][u], vertices[level][v])) return false;
+				detach(id);
+				edges[id].top = 0;
+				for (int i = 0; i <= level; ++i) link_tree(id, i, i == level);
+				return true;
+			};
 			while (int x = find_flag(a, 2)) {
 				while (t[x].aux) {
 					int id = t[x].aux >> 1;
-					int s = edges[id].key >> 32, d = unsigned(edges[id].key);
-					if (!same_nodes(vertices[level][s], vertices[level][d])) {
-						detach(id);
-						edges[id].top = 0;
-						for (int i = 0; i < level + 1; ++i) link_tree(id, i, i == level);
-						return true;
-					}
+					if (replace(id)) return true;
 					if (!promoted) {
 						int token = edges[id].next[t[x].aux & 1];
-						if (token) {
-							int candidate = token >> 1;
-							int c = edges[candidate].key >> 32, d = unsigned(edges[candidate].key);
-							if (!same_nodes(vertices[level][c], vertices[level][d])) {
-								detach(candidate);
-								edges[candidate].top = 0;
-								for (int i = 0; i < level + 1; ++i) link_tree(candidate, i, i == level);
-								return true;
-							}
-						}
+						if (token && replace(token >> 1)) return true;
 
 						while (int y = find_flag(a, 1)) {
 							int edge = -t[y].key;
