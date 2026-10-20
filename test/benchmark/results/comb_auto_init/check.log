@@ -1,0 +1,6 @@
+g++ multiple translation units passed
+g++ default limit and array types passed
+g++ bundles, example and 4 samples passed
+clang++ multiple translation units passed
+clang++ default limit and array types passed
+clang++ bundles, example and 4 samples passed

@@ -167,7 +167,6 @@ int main() {
 	low.add_edge(1, 2);
 	low.build();
 	assert(low.is_bridge(0) && low.articulation == std::vector<int>({1}));
-	init_comb();
 	assert(comb(5, 2).val() == 10);
 	assert(is_prime(998244353));
 	Fraction<> rational(2, -6);
