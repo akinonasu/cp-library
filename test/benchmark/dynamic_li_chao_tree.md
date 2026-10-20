@@ -1,6 +1,6 @@
 # Dynamic Li Chao Tree
 
-`data_structure/dynamic_li_chao_tree.hpp` を測定した。問い合わせ座標を先読みせず、指定した整数座標範囲で直線・線分の追加と点問い合わせを処理する。最小値・最大値の両方を扱う。
+`data_structure/dynamic_li_chao_tree.hpp` を測定した。クエリ座標を先読みせず、指定した整数座標範囲で直線・線分の追加と点クエリを処理する。最小値・最大値の両方を扱う。
 
 ## 参考提出・資料
 
@@ -17,7 +17,7 @@
 
 取得した上位提出は全て座標を先読みする Li Chao Tree で、配列配置、葉の値の分離、radix sort による座標圧縮を利用している。線分版は区間を分解し、反復で直線を挿入する。今回のオンライン API では座標の先読み・圧縮を使わず、配列配置と不要な挿入の打ち切りを参考にした。取得結果とソースのハッシュは `results/dynamic_li_chao_tree_reference.json` に保存した。これらの提出とのローカル時間比較はしていない。
 
-[Luzhiled: Dynamic Li Chao Tree](https://ei1333.github.io/library/structure/convex-hull-trick/dynamic-li-chao-tree.hpp.html) の動的ノードと端点比較による手法も確認した。比較用には、個別に確保するポインタのノード・端点比較・再帰的な挿入と問い合わせを持つ実装を用意した。中点には安全な `std::midpoint` を使い、空の結果は `optional` で表す。
+[Luzhiled: Dynamic Li Chao Tree](https://ei1333.github.io/library/structure/convex-hull-trick/dynamic-li-chao-tree.hpp.html) の動的ノードと端点比較による手法も確認した。比較用には、個別に確保するポインタのノード・端点比較・再帰的な挿入とクエリを持つ実装を用意した。中点には安全な `std::midpoint` を使い、空の結果は `optional` で表す。
 
 ```sh
 python3 test/benchmark/dynamic_li_chao_tree_reference.py --cache .verify-helper/cache/dynamic-li-chao-references --output test/benchmark/results/dynamic_li_chao_tree_reference.json
@@ -25,7 +25,7 @@ python3 test/benchmark/dynamic_li_chao_tree_reference.py --cache .verify-helper/
 
 ## 実装
 
-ノードを連続した `vector` に格納し、子を 32 bit の添字で保持する。左の子の添字の上位 bit を直線の有無に使い、線分追加用の中間ノードと直線を持つノードを区別する。直線を持つノードは中点で最適な直線を残し、残りが改善し得る側を傾きから選ぶ。直線追加・問い合わせは反復で処理する。線分追加の再帰の深さは座標型の bit 数以下。
+ノードを連続した `vector` に格納し、子を 32 bit の添字で保持する。左の子の添字の上位 bit を直線の有無に使い、線分追加用の中間ノードと直線を持つノードを区別する。直線を持つノードは中点で最適な直線を残し、残りが改善し得る側を傾きから選ぶ。直線追加・クエリは反復で処理する。線分追加の再帰の深さは座標型の bit 数以下。
 
 既定の評価型は 128 bit。直線・線分の有効範囲の両端を調べ、64 bit に収まる間は軽い比較を使う。中間の積が 64 bit を超えても、128 bit で評価してから狭めるため、和が収まる場合の符号付きオーバーフローを避けられる。全ての積と和が 64 bit に収まることが分かる場合は第 3 テンプレート引数に `int64_t` を指定できる。
 
@@ -33,7 +33,7 @@ python3 test/benchmark/dynamic_li_chao_tree_reference.py --cache .verify-helper/
 
 ## 測定条件
 
-WSL2/Linux x86_64、Intel Core i7-13700F、GCC 15.2.0、CPU 2 に固定。各入力は追加 200000 回と問い合わせ 200000 回を交互に行う。seed 731、各条件 7 回、実装の実行順は毎回シャッフルした。入力生成とオブジェクト破棄は時間に含めず、構築・`reserve(200000)`・追加・問い合わせ・共通のチェックサム処理を測定した。比較側の `reserve` は何もしない。測定中は他のテストを実行していない。
+WSL2/Linux x86_64、Intel Core i7-13700F、GCC 15.2.0、CPU 2 に固定。各入力は追加 200000 回とクエリ 200000 回を交互に行う。seed 731、各条件 7 回、実装の実行順は毎回シャッフルした。入力生成とオブジェクト破棄は時間に含めず、構築・`reserve(200000)`・追加・クエリ・共通のチェックサム処理を測定した。比較側の `reserve` は何もしない。測定中は他のテストを実行していない。
 
 | 入力 | 内容 |
 | --- | --- |
@@ -41,11 +41,11 @@ WSL2/Linux x86_64、Intel Core i7-13700F、GCC 15.2.0、CPU 2 に固定。各入
 | hull | 直線 -2ix+i^2 を順に追加。全ての直線がある座標で最小になる |
 | same_slope | 傾き 7 を固定した直線 |
 | segments | ランダムな座標区間に直線を追加 |
-| points | 一点だけ有効な線分を追加。問い合わせの半分は追加した点 |
+| points | 一点だけ有効な線分を追加。クエリの半分は追加した点 |
 | dominated | 最初に定数 -8×10^18 を追加し、それより大きい線分を追加 |
 | wide | 符号付き 64 bit 全域の座標・傾き・切片による直線 |
 
-`baseline` は `wide` 以外で 64 bit、`wide` で 128 bit の比較を使う。`library` は既定型、`library64` は第 3 引数に `int64_t` を指定したもの。後者は値が収まる入力だけを対象にする。全実装・全試行で問い合わせ結果のチェックサムが一致した。
+`baseline` は `wide` 以外で 64 bit、`wide` で 128 bit の比較を使う。`library` は既定型、`library64` は第 3 引数に `int64_t` を指定したもの。後者は値が収まる入力だけを対象にする。全実装・全試行でクエリ結果のチェックサムが一致した。
 
 generic は `-std=c++2b -O2 -DNDEBUG -Wall -Wextra -Werror`。native はさらに `-march=native -ftrivial-auto-var-init=zero` を指定した。以下は中央値、単位はミリ秒。ノード数は当該入力で使用した数。AtCoder 実機での速度は未測定。
 

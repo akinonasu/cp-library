@@ -3,9 +3,9 @@
 ## 参考文献・比較対象
 
 - Demaine, E. D., Iacono, J., & Langerman, S. (2007). [Retroactive Data Structures](https://erikdemaine.org/papers/Retroactive_TALG/paper.pdf). TALG 3(2), Article 13. 操作履歴を変更するモデルと、部分的 retroactive priority queue の橋による構成。
-- Demaine et al. (2015). [Polylogarithmic Fully Retroactive Priority Queues via Hierarchical Checkpointing](https://erikdemaine.org/papers/FullyRetroactive_WADS2015/paper.pdf). 任意時点への問い合わせを扱う階層チェックポイントによる構成も調査しました。
+- Demaine et al. (2015). [Polylogarithmic Fully Retroactive Priority Queues via Hierarchical Checkpointing](https://erikdemaine.org/papers/FullyRetroactive_WADS2015/paper.pdf). 任意時点へのクエリを扱う階層チェックポイントによる構成も調査しました。
 
-今回の実装は線形空間のブロック要約を使う fully retroactive 版です。更新・問い合わせの計算量は `docs/retroactive_priority_queue.md` に記載しています。2026-10-16 の Library Checker 公式 API には対応する retroactive priority queue 問題がなかったため、独立した時系列シミュレーターとの比較で検証しています。
+今回の実装は線形空間のブロック要約を使う fully retroactive 版です。更新・クエリの計算量は `docs/retroactive_priority_queue.md` に記載しています。2026-10-16 の Library Checker 公式 API には対応する retroactive priority queue 問題がなかったため、独立した時系列シミュレーターとの比較で検証しています。
 
 ## ブロックの要約
 
@@ -17,7 +17,7 @@ $$a+\max(c-(p-d),0)$$
 
 です。対象キー以下の個数に着目すると、挿入は $$c\gets c+1$$、削除は $$c\gets\max(c-1,0)$$ になり、この形は合成に閉じています。
 
-この個数が正になる最小のキーを、全挿入の値順 treap 上で二分探索します。問い合わせ時刻を含むブロックだけを部分的に要約し、それ以前は保存済みの要約を使います。値順 treap は履歴の操作ノードを直接参照し、削除ノードの領域を再利用します。乱数生成には既存の `SplitMix64` を使います。
+この個数が正になる最小のキーを、全挿入の値順 treap 上で二分探索します。クエリ時刻を含むブロックだけを部分的に要約し、それ以前は保存済みの要約を使います。値順 treap は履歴の操作ノードを直接参照し、削除ノードの領域を再利用します。乱数生成には既存の `SplitMix64` を使います。
 
 ### 逆向きの判定
 
@@ -70,7 +70,7 @@ g++ -std=c++23 -O2 -DNDEBUG -I . -I /tmp/retro-pq-variants test/benchmark/retroa
 
 幅256では初期構築が約22–32 ms、変更の成功件数は `growing` 4,316回、`balanced` 3,915回、`steady` 3,701回でした。幅256の逆向き判定は、前向きに比べて `top` が約1.3–6.2倍速くなっています。
 
-幅を大きくすると問い合わせに有利な一方、1回の履歴変更で要約し直す範囲が増えます。更新も多い場合のバランスとして256を既定にし、問い合わせ中心の場合は512・1024も選べるようにしています。`balanced` では幅1024の問い合わせが幅256の約半分の時間でした。
+幅を大きくするとクエリに有利な一方、1回の履歴変更で要約し直す範囲が増えます。更新も多い場合のバランスとして256を既定にし、クエリ中心の場合は512・1024も選べるようにしています。`balanced` では幅1024のクエリが幅256の約半分の時間でした。
 
 assert 有効でも全候補・全試行のチェックサムが一致しました。幅256の `top` は `growing` 146.72 ms、`balanced` 761.07 ms、`steady` 133.25 msでした。
 

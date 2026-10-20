@@ -15,7 +15,7 @@
 
 [ABC351 G の解説](https://atcoder.jp/contests/abc351/editorial/9910)、[maspy の Static Top Tree](https://maspypy.github.io/library/graph/ds/static_toptree.hpp)、[問題の解説](https://maspypy.com/library-checker-point-set-tree-path-composite-sum) も確認した。
 
-今回の実装は既存の HLD を使い、light な枝を高さの小さい順に併合する。heavy path は高さを使うスタックで連結する。構築・更新・問い合わせに再帰を使わない。構造の構築は値に依存しない内部部品に分離し、実行時には Point と Path を別配列に置いて、親が二つの子の値を直接保持する。
+今回の実装は既存の HLD を使い、light な枝を高さの小さい順に併合する。heavy path は高さを使うスタックで連結する。構築・更新・クエリに再帰を使わない。構造の構築は値に依存しない内部部品に分離し、実行時には Point と Path を別配列に置いて、親が二つの子の値を直接保持する。
 
 固定根版は片方向の一次関数合成、可変根版は順方向・逆方向を持つ DP で検証する。構造自体は modint・演算の可逆性・特定の CPU 命令に依存しない。
 

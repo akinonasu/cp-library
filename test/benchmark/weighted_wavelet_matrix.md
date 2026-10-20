@@ -14,7 +14,7 @@ auto answer = wm.min_count_largest(l, r, k);
 ## 調査
 
 - [ABC467 G の公式解説](https://atcoder.jp/contests/abc467/editorial/23438): 値域を直接下ることで、個数の二分探索による余分な log を除く。添付入力の独立な比較には、[dyc2022 の公式別解](https://atcoder.jp/contests/abc467/editorial/23445)の平方分割コードを使用した。参照コードは `main()` を `int main()` に直しただけで、ブロック幅 500 や入出力は変更していない。
-- Library Checker [Point Add Rectangle Sum](https://judge.yosupo.jp/problem/point_add_rectangle_sum) の AC を実行時間順に取得し、上位 5 提出を確認した。[401818 / toomer](https://judge.yosupo.jp/submission/401818) は取得時 115 ms、[404949 / toomer](https://judge.yosupo.jp/submission/404949) は 116 ms の Rust 実装。4 分岐、0 側だけの Fenwick Tree、区間和で共通の祖先を省く構成を比較した。[408282 / ArcAki](https://judge.yosupo.jp/submission/408282) は 132 ms。[206958 / oldyan](https://judge.yosupo.jp/submission/206958) と [206843 / oldyan](https://judge.yosupo.jp/submission/206843) は 151 / 152 ms の C++ 実装で、二次元問い合わせを Wavelet Matrix に変換している。
+- Library Checker [Point Add Rectangle Sum](https://judge.yosupo.jp/problem/point_add_rectangle_sum) の AC を実行時間順に取得し、上位 5 提出を確認した。[401818 / toomer](https://judge.yosupo.jp/submission/401818) は取得時 115 ms、[404949 / toomer](https://judge.yosupo.jp/submission/404949) は 116 ms の Rust 実装。4 分岐、0 側だけの Fenwick Tree、区間和で共通の祖先を省く構成を比較した。[408282 / ArcAki](https://judge.yosupo.jp/submission/408282) は 132 ms。[206958 / oldyan](https://judge.yosupo.jp/submission/206958) と [206843 / oldyan](https://judge.yosupo.jp/submission/206843) は 151 / 152 ms の C++ 実装で、二次元クエリを Wavelet Matrix に変換している。
 - 今回は 4 分岐、個数と `値 * 個数` の和、0 側の Fenwick Tree を組み合わせた。残りの個数が 1 なら和から値が分かるため、その時点で探索を終了する。二点の個数移動は共通の Fenwick 祖先をまとめて更新する。共通部品は `components/fenwick_sum.hpp` に分離した。
 
 取得結果・参照ソースの SHA-256 は [reference.json](results/weighted_wavelet_matrix_reference.json) に保存した。ABC467 G の提出一覧は認証が必要で取得できず、AtCoder 上の最速提出との比較は行っていない。
@@ -23,7 +23,7 @@ auto answer = wm.min_count_largest(l, r, k);
 
 Core i7-13700F、WSL2 Ubuntu / Linux x86_64、CPU 2 に固定。GCC 15.2、`-std=gnu++23 -O2 -march=native -ftrivial-auto-var-init=zero -DATCODER -DONLINE_JUDGE`。LTO は使用しない。[AtCoder の言語一覧](https://img.atcoder.jp/file/language-update/2025-10/language-list.html)と [2026 年 6 月の更新](https://atcoder.jp/posts/language_update20260616_en)に合わせた設定であり、AtCoder 実機での時間ではない。
 
-毎回新しいプロセスを起動し、入力の解析、更新候補の登録、構築、全更新・全問い合わせ、Linux の一時ファイルへの出力までを測る。入力生成とコピー、コンパイルは含めない。各組み合わせで 1 回予熱し、順序を乱択して測定する。中央値を記載し、生データ、ソースの SHA-256、環境情報、出力ハッシュ、別実行の最大 RSS を JSON に保存する。
+毎回新しいプロセスを起動し、入力の解析、更新候補の登録、構築、全更新・全クエリ、Linux の一時ファイルへの出力までを測る。入力生成とコピー、コンパイルは含めない。各組み合わせで 1 回予熱し、順序を乱択して測定する。中央値を記載し、生データ、ソースの SHA-256、環境情報、出力ハッシュ、別実行の最大 RSS を JSON に保存する。
 
 ### 添付された全 14 入力
 
@@ -80,7 +80,7 @@ Point Add Rectangle Sum の公式全 18 入力について、本実装・Rust 40
 ## 検証と再現
 
 - 変更した 4 ヘッダーと依存する 8 unit を GCC 15 / Clang 21 で検証。新規の 4 unit とヘッダーを GCC 13 でも検証。`NDEBUG`、Clang の ASan / UBSan、空区間、0、負の値を含む通常の順位・和、64 bit 境界、大きな個数、未登録の代入、再構築も確認した。[ログ](results/weighted_wavelet_matrix/validation.log)、[記録](results/weighted_wavelet_matrix/validation.json)。
-- ABC467 G の公式 2 サンプルと 14400 回の乱択更新・問い合わせを、ソートによる愚直解と照合した。
+- ABC467 G の公式 2 サンプルと 14400 回の乱択更新・クエリを、ソートによる愚直解と照合した。
 - 既存 Wavelet Matrix の 3 検証と、新規の長方形和の検証を GCC / Clang の両方で実行した。[ログ](results/weighted_wavelet_matrix/judge.log)。
 - ドキュメントと展開コード、公開関数の表を確認した。[ログ](results/weighted_wavelet_matrix/docs.log)。
 

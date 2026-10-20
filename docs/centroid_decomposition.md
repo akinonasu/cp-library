@@ -46,7 +46,7 @@ tree.for_each_ancestor(0, [&](int c, int d, int branch) {
 
 `Ancestor::branch` は `centroid` から対象頂点に向かう重心分解木の子の頂点番号で、自身のレコードでは `-1` です。同じ重心の同じ枝に属する頂点を除くことで、距離ごとの総和などの重複を取り除けます。枝の距離も、その親の重心から測ります。
 
-例えば非負重みの木で、各重心について有効な頂点までの最小距離 `best[c]` を保存すれば、頂点の追加と最近傍問い合わせを次のように書けます。`inf` は距離和より十分大きく、加算がオーバーフローしない値にします。
+例えば非負重みの木で、各重心について有効な頂点までの最小距離 `best[c]` を保存すれば、頂点の追加と最近傍クエリを次のように書けます。`inf` は距離和より十分大きく、加算がオーバーフローしない値にします。
 
 ```cpp
 tree.for_each_ancestor(v, [&](int c, int d, int) {
@@ -60,4 +60,4 @@ tree.for_each_ancestor(v, [&](int c, int d, int) {
 
 `build(false)` でも重心分解木と部分木の区間は取得できます。`ancestors`・`for_each_ancestor`・`distance_to_ancestor`・`dist` には `build(true)` が必要です。`ancestors` の返す参照は再構築・辺の追加で無効になります。構築後の公開配列は参照用です。元の木の LCA が必要なら [LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) を使います。
 
-構築は $$O(n\log n)$$ 時間、距離キャッシュを持つ場合は $$O(n\log n)$$ 空間、持たない場合は $$O(n)$$ 空間です。`add_edge` は償却 $$O(1)$$、`for_each_ancestor`・`centroid_lca`・`dist` は $$O(\log n)$$、それ以外の問い合わせは $$O(1)$$ です。
+構築は $$O(n\log n)$$ 時間、距離キャッシュを持つ場合は $$O(n\log n)$$ 空間、持たない場合は $$O(n)$$ 空間です。`add_edge` は償却 $$O(1)$$、`for_each_ancestor`・`centroid_lca`・`dist` は $$O(\log n)$$、それ以外のクエリは $$O(1)$$ です。

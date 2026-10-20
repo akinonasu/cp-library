@@ -38,7 +38,7 @@ Linux x86_64 / WSL2、Core i7-13700F、GCC 15.2、CPU 2 固定。`-std=c++2b -O2
 
 `library` は今回の実装、`Tonelli64` は改善前の通常の Tonelli–Shanks と Montgomery64、`Cipolla` は同じ Montgomery 部品・Fast I/O を使う比較用スカラー実装です。後者 2 個は `mod_sqrt.cpp` と `mod_sqrt_baseline.hpp` に保存しています。参考提出は原文でビルドしました。
 
-| 入力 | 問い合わせ数 | 条件 |
+| 入力 | クエリ数 | 条件 |
 | --- | ---: | --- |
 | mixed31 | 100,000 | `10^8 <= p < 10^9` の素数 256 個から選択 |
 | mod4_3 | 100,000 | 同じ範囲で `p mod 4 = 3` |
