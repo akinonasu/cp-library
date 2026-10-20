@@ -13,7 +13,7 @@ inline std::uint64_t dc_splays = 0, dc_rotations = 0, dc_visits = 0, dc_promotio
 inline std::array<std::uint64_t, 32> dc_levels{};
 #endif
 #ifndef DC_BENCH_HEADER
-#define DC_BENCH_HEADER "data_structure/dynamic_connectivity.hpp"
+#define DC_BENCH_HEADER "graph/connectivity/dynamic_connectivity.hpp"
 #endif
 #include DC_BENCH_HEADER
 

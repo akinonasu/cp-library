@@ -1,0 +1,5 @@
+{
+  "headers": ["components/persistent_rope.hpp", "components/suffix_range.hpp", "string/dynamic_pattern_matching.hpp"],
+  "unit": ["test/unit/dynamic_pattern_matching.cpp", "test/unit/standalone.cpp"],
+  "sanitize": ["test/unit/dynamic_pattern_matching.cpp"]
+}

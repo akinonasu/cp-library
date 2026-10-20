@@ -25,9 +25,9 @@ auto y = f.eval(5);
 | `add_x_minus_a(a)` | $$f(x)+\max(x-a,0)$$ | 償却 $$O(\log n)$$ |
 | `add_abs(a)` | $$f(x)+\lvert x-a\rvert$$ | 償却 $$O(\log n)$$ |
 | `shift(a)` | $$f(x-a)$$ | $$O(1)$$ |
-| `shift(a,b)` | $$\min_{x-b\le y\le x-a}f(y)$$、$$a\le b$$ | $$O(1)$$ |
-| `clear_right()` | $$\min_{y\le x}f(y)$$ | $$O(1)$$ |
-| `clear_left()` | $$\min_{y\ge x}f(y)$$ | $$O(1)$$ |
+| `shift(a,b)` | $$\displaystyle \min_{x-b\le y\le x-a}f(y)$$、$$a\le b$$ | $$O(1)$$ |
+| `clear_right()` | $$\displaystyle \min_{y\le x}f(y)$$ | $$O(1)$$ |
+| `clear_left()` | $$\displaystyle \min_{y\ge x}f(y)$$ | $$O(1)$$ |
 | `min()` | 最小値 | $$O(1)$$ |
 | `argmin()` | 最小値を取る閉区間の両端。無限側は `nullopt` | $$O(1)$$ |
 | `eval(x)` | $$f(x)$$。関数は変更しない | $$O(n)$$ |

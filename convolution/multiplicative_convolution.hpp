@@ -7,7 +7,7 @@
 #include <limits>
 #include <vector>
 
-#include "../math/factorize.hpp"
+#include "../math/number_theory/factorize.hpp"
 #include "convolution.hpp"
 
 template <class T>

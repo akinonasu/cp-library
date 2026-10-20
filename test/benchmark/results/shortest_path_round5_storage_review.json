@@ -1,0 +1,57 @@
+{
+  "reviewed_at": "2026-10-19",
+  "scope": "Design review only; no live storage implementation or CPU measurements",
+  "conclusion": "Allocate an Arc array and explicitly construct each final slot during scatter. Do not assign into unconstructed elements or alter vector internals.",
+  "sources": [
+    {
+      "title": "C++23 draft N4950, allocator.members and specialized.construct",
+      "url": "https://github.com/cplusplus/draft/blob/n4950/source/memory.tex",
+      "facts": [
+        "allocator<T>::allocate(n) creates the array object and returns its initial-element pointer; element lifetimes are not started.",
+        "construct_at performs placement construction from its forwarded arguments.",
+        "deallocate must receive the original allocation pointer and allocation count, not the current logical size."
+      ]
+    },
+    {
+      "title": "C++23 draft N4950, basic.life",
+      "url": "https://github.com/cplusplus/draft/blob/n4950/source/basic.tex",
+      "facts": [
+        "Storage reuse or release can end a class object's lifetime without calling its destructor.",
+        "Only constructed slots may be read. A span is exposed after all slots have been constructed."
+      ]
+    },
+    {
+      "title": "WG21 P0593R6, section 5.10",
+      "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0593r6.html",
+      "facts": [
+        "The array-lifetime rule was introduced to support container storage and array pointer arithmetic independently of element construction.",
+        "The design does not rely on pair being an implicit-lifetime or trivially-copyable type."
+      ]
+    },
+    {
+      "title": "WG21 P0784R7, specialized.construct",
+      "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p0784r7.html",
+      "facts": [
+        "construct_at was added in C++20 and is specified through placement construction."
+      ]
+    }
+  ],
+  "required_invariants": [
+    "Use size_t for logical size and capacity; let allocator handle size and alignment checks.",
+    "Restrict raw storage to trivial weights, trivial Arc destruction and non-throwing Arc construction from an endpoint and weight; preserve vector fallback for other weights.",
+    "Every scatter destination occurs exactly once and is within the allocated array.",
+    "Construct with construct_at(data + index, to, weight); do not read a slot before construction.",
+    "Copy only the constructed logical range, using object construction rather than memcpy of pair.",
+    "Move transfers pointer, allocation count and logical size together, then resets the source to empty.",
+    "A rebuild preserves capacity when sufficient; growth allocates before releasing the old block.",
+    "Trivial destruction permits clear without scanning slots; retained slots are reconstructed before later use.",
+    "Producer or allocation failure still invokes the graph's existing clear_edges path.",
+    "Prefetch computes an address within the allocated Arc array and never reads an unconstructed object."
+  ],
+  "rejected_shortcuts": [
+    "Assigning through an allocator pointer without starting element lifetimes",
+    "Assuming std::pair<int,T> is trivially copyable",
+    "Using a union Slot array as span<Arc>",
+    "Changing vector's private size or treating capacity as initialized elements"
+  ]
+}

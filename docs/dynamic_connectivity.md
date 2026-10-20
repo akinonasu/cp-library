@@ -1,10 +1,12 @@
 ---
-title: "Online Dynamic Connectivity"
-documentation_of: //data_structure/dynamic_connectivity.hpp
+title: Online Dynamic Connectivity
+documentation_of: //graph/connectivity/dynamic_connectivity.hpp
+redirect_from:
+- /data_structure/dynamic_connectivity.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/dynamic_connectivity.hpp"
+#include "lib/graph/connectivity/dynamic_connectivity.hpp"
 
 DynamicConnectivity<> graph(5);
 graph.link(0, 1);

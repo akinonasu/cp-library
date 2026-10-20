@@ -1,0 +1,6 @@
+dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/dynamic_segtree_composite.test.cpp
+dynamic_segtree_composite.test.o: \
+ /workspace/cp-library/test/dynamic_segtree_composite.test.cpp \
+ /workspace/cp-library/test/../data_structure/dynamic_segtree.hpp \
+ /workspace/cp-library/test/../math/mint.hpp
+Reused successful driver: actual dependencies, source, flags, compiler and official data hashes match.

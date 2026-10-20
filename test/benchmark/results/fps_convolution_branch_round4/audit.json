@@ -1,0 +1,36 @@
+{
+  "status": "rejected",
+  "reason": "The unlikely hint did not improve either random maximum control. Original noinline dispatch is retained.",
+  "parent_primary_sha256": "72af0648ac470bf03ab050034af1bf141a0323e5f87b281d1647788ad22d230e",
+  "parent_manifest_sha256": "1a2261c698a7abbaf09642b6239659c426e9427f00fc99056b5cfc84766151b6",
+  "binary_reuse_exact": true,
+  "source_delta": "Only the unlikely annotation in unlikely.patch; original final source pack is the parent.",
+  "checks": 352,
+  "independent_same_binary_confirmation": [
+    {
+      "input": "max_random_00",
+      "paired_before_minus_current_ms": 0.192517,
+      "current_wins_before": 14,
+      "paired_current_minus_hint_ms": -0.06577799999999989
+    },
+    {
+      "input": "max_random_01",
+      "paired_before_minus_current_ms": 0.082243,
+      "current_wins_before": 12,
+      "paired_current_minus_hint_ms": -0.03885799999999939
+    },
+    {
+      "input": "all_same_00",
+      "paired_before_minus_current_ms": 4.257978,
+      "current_wins_before": 21,
+      "paired_current_minus_hint_ms": -0.19064499999999995
+    },
+    {
+      "input": "all_same_01",
+      "paired_before_minus_current_ms": 4.10483,
+      "current_wins_before": 21,
+      "paired_current_minus_hint_ms": -0.03696599999999961
+    }
+  ],
+  "note": "The independent before/current comparison changes the direction of the small random-case differences. Keep both sessions; do not claim stable improvement on balanced maxima."
+}

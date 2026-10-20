@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/intersection_of_f2_vector_spaces"
-#include "math/xor_basis.hpp"
+#include "math/linear_algebra/xor_basis.hpp"
 #include "components/fast_io.hpp"
 #include <cstdint>
 

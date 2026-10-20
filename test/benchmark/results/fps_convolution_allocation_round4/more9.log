@@ -1,0 +1,9 @@
+built before
+built range_transform
+built reserve_only
+built huge_only
+built reference
+max_random_00 {'before': 12.33583, 'range_transform': 12.662236, 'reserve_only': 12.516118, 'huge_only': 12.174211, 'reference': 9.855434} {'range_transform': -0.41120300000000043, 'reserve_only': -0.5180109999999996, 'huge_only': -0.07238900000000115} {'range_transform': 1, 'reserve_only': 2, 'huge_only': 4}
+max_random_01 {'before': 12.082382, 'range_transform': 12.73813, 'reserve_only': 12.732262, 'huge_only': 12.231454, 'reference': 9.613952} {'range_transform': -0.6557479999999991, 'reserve_only': -0.5072460000000003, 'huge_only': -0.1289630000000006} {'range_transform': 1, 'reserve_only': 0, 'huge_only': 2}
+small_and_large_03 {'before': 9.520544, 'range_transform': 10.069873, 'reserve_only': 9.787492, 'huge_only': 9.645781, 'reference': 8.054748} {'range_transform': -0.5576509999999999, 'reserve_only': -0.2981750000000005, 'huge_only': -0.11963800000000013} {'range_transform': 1, 'reserve_only': 1, 'huge_only': 1}
+medium_02 {'before': 1.460878, 'range_transform': 1.456722, 'reserve_only': 1.465014, 'huge_only': 1.504743, 'reference': 1.281651} {'range_transform': -0.013961000000000112, 'reserve_only': -0.03403999999999985, 'huge_only': -0.056804999999999994} {'range_transform': 4, 'reserve_only': 3, 'huge_only': 2}

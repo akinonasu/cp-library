@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/discrete_logarithm_fixed_mod"
-#include "math/mod_pow.hpp"
+#include "math/number_theory/mod_pow.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

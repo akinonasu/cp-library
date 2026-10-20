@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_set_path_composite"
-#include "../data_structure/dynamic_segtree.hpp"
-#include "../graph/hld.hpp"
+#include "../data_structure/segment_tree/dynamic_segtree.hpp"
+#include "../data_structure/advanced/hld.hpp"
 #include "../math/mint.hpp"
 #include <iostream>
 #include <vector>

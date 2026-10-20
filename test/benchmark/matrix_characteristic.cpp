@@ -1,4 +1,4 @@
-#include "math/matrix.hpp"
+#include "math/linear_algebra/matrix.hpp"
 #include "math/mint.hpp"
 #ifdef MATRIX_BASELINE_HEADER
 #undef MATRIX_HPP

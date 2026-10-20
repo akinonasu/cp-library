@@ -1,0 +1,242 @@
+--- base/components/fps_convolution.hpp
++++ leaf32/components/fps_convolution.hpp
+@@ -3674,6 +3674,231 @@
+ 
+ 
+ 
++
++[[gnu::target("avx512f,avx512vl,avx512dq")]]
++[[gnu::noinline]] inline void bottom_four32(Vec* a, Vec* b, std::size_t nv, std::size_t first,
++                                         const std::uint32_t* roots, const std::uint32_t* inverse_roots) {
++	using namespace blocked_poly::detail;
++	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP), p2 = broadcast(2 * kP);
++	for (std::size_t j = 0, g = first; j < nv; j += 4, ++g) {
++		Vec af[4] = {a[j], a[j + 1], a[j + 2], a[j + 3]};
++		Vec bf[4] = {b[j], b[j + 1], b[j + 2], b[j + 3]};
++		forward_h1(af, Group(roots, g));
++		forward_h1(bf, Group(roots, g));
++		const Factor yw = entry(roots, 2 * g), zw = entry(roots, 2 * g + 1);
++
++		const Vec a0 = canonical(af[0]), b0 = canonical(bf[0]);
++		const Vec wa0 = times(a0, yw);
++		const Vec w0 = reduce(wa0, kP);
++		Vec prev0 = _mm256_srli_epi64(a0, 32), even0 = _mm256_setzero_si256(), odd0 = _mm256_setzero_si256();
++		const Vec a1 = canonical(af[1]), b1 = canonical(bf[1]);
++		const Vec wa1 = times(a1, yw);
++		const Vec w1 = reduce(_mm256_sub_epi32(p2, wa1), kP);
++		Vec prev1 = _mm256_srli_epi64(a1, 32), even1 = _mm256_setzero_si256(), odd1 = _mm256_setzero_si256();
++		const Vec a2 = canonical(af[2]), b2 = canonical(bf[2]);
++		const Vec wa2 = times(a2, zw);
++		const Vec w2 = reduce(wa2, kP);
++		Vec prev2 = _mm256_srli_epi64(a2, 32), even2 = _mm256_setzero_si256(), odd2 = _mm256_setzero_si256();
++		const Vec a3 = canonical(af[3]), b3 = canonical(bf[3]);
++		const Vec wa3 = times(a3, zw);
++		const Vec w3 = reduce(_mm256_sub_epi32(p2, wa3), kP);
++		Vec prev3 = _mm256_srli_epi64(a3, 32), even3 = _mm256_setzero_si256(), odd3 = _mm256_setzero_si256();
++		const Vec bi0 = _mm256_set1_epi32(0);
++		const Vec bj0_0 = _mm256_permutevar8x32_epi32(b0, bi0);
++		const Vec v0_0 = a0;
++		const Vec bj0_1 = _mm256_permutevar8x32_epi32(b1, bi0);
++		const Vec v0_1 = a1;
++		const Vec bj0_2 = _mm256_permutevar8x32_epi32(b2, bi0);
++		const Vec v0_2 = a2;
++		const Vec bj0_3 = _mm256_permutevar8x32_epi32(b3, bi0);
++		const Vec v0_3 = a3;
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(v0_0, bj0_0));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(prev0, bj0_0));
++		prev0 = v0_0;
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(v0_1, bj0_1));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(prev1, bj0_1));
++		prev1 = v0_1;
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(v0_2, bj0_2));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(prev2, bj0_2));
++		prev2 = v0_2;
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(v0_3, bj0_3));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(prev3, bj0_3));
++		prev3 = v0_3;
++		const Vec bi1 = _mm256_set1_epi32(1);
++		const Vec index1 = _mm256_setr_epi32(7, 8, 9, 10, 11, 12, 13, 14);
++		const Vec bj1_0 = _mm256_permutevar8x32_epi32(b0, bi1);
++		const Vec v1_0 = _mm256_permutex2var_epi32(w0, index1, a0);
++		const Vec bj1_1 = _mm256_permutevar8x32_epi32(b1, bi1);
++		const Vec v1_1 = _mm256_permutex2var_epi32(w1, index1, a1);
++		const Vec bj1_2 = _mm256_permutevar8x32_epi32(b2, bi1);
++		const Vec v1_2 = _mm256_permutex2var_epi32(w2, index1, a2);
++		const Vec bj1_3 = _mm256_permutevar8x32_epi32(b3, bi1);
++		const Vec v1_3 = _mm256_permutex2var_epi32(w3, index1, a3);
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(v1_0, bj1_0));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(prev0, bj1_0));
++		prev0 = v1_0;
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(v1_1, bj1_1));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(prev1, bj1_1));
++		prev1 = v1_1;
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(v1_2, bj1_2));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(prev2, bj1_2));
++		prev2 = v1_2;
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(v1_3, bj1_3));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(prev3, bj1_3));
++		prev3 = v1_3;
++		const Vec bi2 = _mm256_set1_epi32(2);
++		const Vec index2 = _mm256_setr_epi32(6, 7, 8, 9, 10, 11, 12, 13);
++		const Vec bj2_0 = _mm256_permutevar8x32_epi32(b0, bi2);
++		const Vec v2_0 = _mm256_permutex2var_epi32(w0, index2, a0);
++		const Vec bj2_1 = _mm256_permutevar8x32_epi32(b1, bi2);
++		const Vec v2_1 = _mm256_permutex2var_epi32(w1, index2, a1);
++		const Vec bj2_2 = _mm256_permutevar8x32_epi32(b2, bi2);
++		const Vec v2_2 = _mm256_permutex2var_epi32(w2, index2, a2);
++		const Vec bj2_3 = _mm256_permutevar8x32_epi32(b3, bi2);
++		const Vec v2_3 = _mm256_permutex2var_epi32(w3, index2, a3);
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(v2_0, bj2_0));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(prev0, bj2_0));
++		prev0 = v2_0;
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(v2_1, bj2_1));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(prev1, bj2_1));
++		prev1 = v2_1;
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(v2_2, bj2_2));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(prev2, bj2_2));
++		prev2 = v2_2;
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(v2_3, bj2_3));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(prev3, bj2_3));
++		prev3 = v2_3;
++		const Vec bi3 = _mm256_set1_epi32(3);
++		const Vec index3 = _mm256_setr_epi32(5, 6, 7, 8, 9, 10, 11, 12);
++		const Vec bj3_0 = _mm256_permutevar8x32_epi32(b0, bi3);
++		const Vec v3_0 = _mm256_permutex2var_epi32(w0, index3, a0);
++		const Vec bj3_1 = _mm256_permutevar8x32_epi32(b1, bi3);
++		const Vec v3_1 = _mm256_permutex2var_epi32(w1, index3, a1);
++		const Vec bj3_2 = _mm256_permutevar8x32_epi32(b2, bi3);
++		const Vec v3_2 = _mm256_permutex2var_epi32(w2, index3, a2);
++		const Vec bj3_3 = _mm256_permutevar8x32_epi32(b3, bi3);
++		const Vec v3_3 = _mm256_permutex2var_epi32(w3, index3, a3);
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(v3_0, bj3_0));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(prev0, bj3_0));
++		prev0 = v3_0;
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(v3_1, bj3_1));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(prev1, bj3_1));
++		prev1 = v3_1;
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(v3_2, bj3_2));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(prev2, bj3_2));
++		prev2 = v3_2;
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(v3_3, bj3_3));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(prev3, bj3_3));
++		prev3 = v3_3;
++		const Vec bi4 = _mm256_set1_epi32(4);
++		const Vec index4 = _mm256_setr_epi32(4, 5, 6, 7, 8, 9, 10, 11);
++		const Vec bj4_0 = _mm256_permutevar8x32_epi32(b0, bi4);
++		const Vec v4_0 = _mm256_permutex2var_epi32(w0, index4, a0);
++		const Vec bj4_1 = _mm256_permutevar8x32_epi32(b1, bi4);
++		const Vec v4_1 = _mm256_permutex2var_epi32(w1, index4, a1);
++		const Vec bj4_2 = _mm256_permutevar8x32_epi32(b2, bi4);
++		const Vec v4_2 = _mm256_permutex2var_epi32(w2, index4, a2);
++		const Vec bj4_3 = _mm256_permutevar8x32_epi32(b3, bi4);
++		const Vec v4_3 = _mm256_permutex2var_epi32(w3, index4, a3);
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(v4_0, bj4_0));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(prev0, bj4_0));
++		prev0 = v4_0;
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(v4_1, bj4_1));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(prev1, bj4_1));
++		prev1 = v4_1;
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(v4_2, bj4_2));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(prev2, bj4_2));
++		prev2 = v4_2;
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(v4_3, bj4_3));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(prev3, bj4_3));
++		prev3 = v4_3;
++		const Vec bi5 = _mm256_set1_epi32(5);
++		const Vec index5 = _mm256_setr_epi32(3, 4, 5, 6, 7, 8, 9, 10);
++		const Vec bj5_0 = _mm256_permutevar8x32_epi32(b0, bi5);
++		const Vec v5_0 = _mm256_permutex2var_epi32(w0, index5, a0);
++		const Vec bj5_1 = _mm256_permutevar8x32_epi32(b1, bi5);
++		const Vec v5_1 = _mm256_permutex2var_epi32(w1, index5, a1);
++		const Vec bj5_2 = _mm256_permutevar8x32_epi32(b2, bi5);
++		const Vec v5_2 = _mm256_permutex2var_epi32(w2, index5, a2);
++		const Vec bj5_3 = _mm256_permutevar8x32_epi32(b3, bi5);
++		const Vec v5_3 = _mm256_permutex2var_epi32(w3, index5, a3);
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(v5_0, bj5_0));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(prev0, bj5_0));
++		prev0 = v5_0;
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(v5_1, bj5_1));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(prev1, bj5_1));
++		prev1 = v5_1;
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(v5_2, bj5_2));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(prev2, bj5_2));
++		prev2 = v5_2;
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(v5_3, bj5_3));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(prev3, bj5_3));
++		prev3 = v5_3;
++		const Vec bi6 = _mm256_set1_epi32(6);
++		const Vec index6 = _mm256_setr_epi32(2, 3, 4, 5, 6, 7, 8, 9);
++		const Vec bj6_0 = _mm256_permutevar8x32_epi32(b0, bi6);
++		const Vec v6_0 = _mm256_permutex2var_epi32(w0, index6, a0);
++		const Vec bj6_1 = _mm256_permutevar8x32_epi32(b1, bi6);
++		const Vec v6_1 = _mm256_permutex2var_epi32(w1, index6, a1);
++		const Vec bj6_2 = _mm256_permutevar8x32_epi32(b2, bi6);
++		const Vec v6_2 = _mm256_permutex2var_epi32(w2, index6, a2);
++		const Vec bj6_3 = _mm256_permutevar8x32_epi32(b3, bi6);
++		const Vec v6_3 = _mm256_permutex2var_epi32(w3, index6, a3);
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(v6_0, bj6_0));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(prev0, bj6_0));
++		prev0 = v6_0;
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(v6_1, bj6_1));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(prev1, bj6_1));
++		prev1 = v6_1;
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(v6_2, bj6_2));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(prev2, bj6_2));
++		prev2 = v6_2;
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(v6_3, bj6_3));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(prev3, bj6_3));
++		prev3 = v6_3;
++		const Vec bi7 = _mm256_set1_epi32(7);
++		const Vec index7 = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 8);
++		const Vec bj7_0 = _mm256_permutevar8x32_epi32(b0, bi7);
++		const Vec v7_0 = _mm256_permutex2var_epi32(w0, index7, a0);
++		const Vec bj7_1 = _mm256_permutevar8x32_epi32(b1, bi7);
++		const Vec v7_1 = _mm256_permutex2var_epi32(w1, index7, a1);
++		const Vec bj7_2 = _mm256_permutevar8x32_epi32(b2, bi7);
++		const Vec v7_2 = _mm256_permutex2var_epi32(w2, index7, a2);
++		const Vec bj7_3 = _mm256_permutevar8x32_epi32(b3, bi7);
++		const Vec v7_3 = _mm256_permutex2var_epi32(w3, index7, a3);
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(v7_0, bj7_0));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(prev0, bj7_0));
++		prev0 = v7_0;
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(v7_1, bj7_1));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(prev1, bj7_1));
++		prev1 = v7_1;
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(v7_2, bj7_2));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(prev2, bj7_2));
++		prev2 = v7_2;
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(v7_3, bj7_3));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(prev3, bj7_3));
++		prev3 = v7_3;
++		Vec product[4];
++		even0 = _mm256_add_epi64(even0, _mm256_mul_epu32(_mm256_mul_epu32(even0, ni), p));
++		odd0 = _mm256_add_epi64(odd0, _mm256_mul_epu32(_mm256_mul_epu32(odd0, ni), p));
++		product[0] = reduce(_mm256_blend_epi32(_mm256_srli_epi64(even0, 32), odd0, 0xaa), 2 * kP);
++		even1 = _mm256_add_epi64(even1, _mm256_mul_epu32(_mm256_mul_epu32(even1, ni), p));
++		odd1 = _mm256_add_epi64(odd1, _mm256_mul_epu32(_mm256_mul_epu32(odd1, ni), p));
++		product[1] = reduce(_mm256_blend_epi32(_mm256_srli_epi64(even1, 32), odd1, 0xaa), 2 * kP);
++		even2 = _mm256_add_epi64(even2, _mm256_mul_epu32(_mm256_mul_epu32(even2, ni), p));
++		odd2 = _mm256_add_epi64(odd2, _mm256_mul_epu32(_mm256_mul_epu32(odd2, ni), p));
++		product[2] = reduce(_mm256_blend_epi32(_mm256_srli_epi64(even2, 32), odd2, 0xaa), 2 * kP);
++		even3 = _mm256_add_epi64(even3, _mm256_mul_epu32(_mm256_mul_epu32(even3, ni), p));
++		odd3 = _mm256_add_epi64(odd3, _mm256_mul_epu32(_mm256_mul_epu32(odd3, ni), p));
++		product[3] = reduce(_mm256_blend_epi32(_mm256_srli_epi64(even3, 32), odd3, 0xaa), 2 * kP);
++		inverse_h1(product, Group(inverse_roots, g));
++		a[j] = product[0];
++		a[j + 1] = product[1];
++		a[j + 2] = product[2];
++		a[j + 3] = product[3];
++	}
++}
++
+ class Subtrees {
+ public:
+ 	Subtrees(const std::uint32_t* roots, const std::uint32_t* inverse_roots) : r_(roots), ir_(inverse_roots) {}
+@@ -3724,6 +3949,7 @@
+ 
+ 	
+ 	void bottom(Vec* a, Vec* b, std::size_t nv, std::size_t first) const {
++		if (__builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512vl") && __builtin_cpu_supports("avx512dq")) return bottom_four32(a, b, nv, first, r_, ir_);
+ 		Leaves leaves[2][2]{};
+ 		bottom_kernels::first(a, b, leaves[0], r_ + slot(first), r_ + slot(2 * first));
+ 		for (std::size_t j = 0, k = first;; j += 8, k += 2) {

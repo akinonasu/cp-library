@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/queue_operate_all_composite"
-#include "../data_structure/disjoint_sparse_table.hpp"
+#include "../data_structure/range_query/disjoint_sparse_table.hpp"
 #include "../math/mint.hpp"
 #include <iostream>
 #include <tuple>

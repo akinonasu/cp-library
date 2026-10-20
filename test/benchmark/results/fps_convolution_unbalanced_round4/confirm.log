@@ -1,0 +1,4 @@
+small_and_large_00 {'before': 11.307, 'reference': 9.281, 'overlap_dynamic4': 7.603, 'overlap_dynamic8': 7.598}
+small_and_large_01 {'before': 11.144, 'reference': 9.227, 'overlap_dynamic4': 7.78, 'overlap_dynamic8': 7.442}
+small_and_large_02 {'before': 10.905, 'reference': 9.204, 'overlap_dynamic4': 7.355, 'overlap_dynamic8': 7.37}
+small_and_large_03 {'before': 10.655, 'reference': 9.022, 'overlap_dynamic4': 7.521, 'overlap_dynamic8': 7.364}

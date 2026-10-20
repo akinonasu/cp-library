@@ -1,0 +1,3 @@
+clang++: binary_search.cpp
+clang++: lis.cpp
+Verification passed

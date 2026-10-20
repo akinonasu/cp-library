@@ -19,7 +19,7 @@ mint c2 = product.push(7, 11);
 | --- | --- | --- |
 | `OnlineConvolution<T = mint>` | 法 998244353 のオンライン畳み込み。係数型 `T` は `mod()`・`val()`・`raw()` を持つ modint | —（型） |
 | `OnlineConvolution(max_size = 1 << 23)` | 追加できる項数の上限を指定して構築。最初から上限分を確保することはない | $$O(1)$$ |
-| `push(x,y)` | 次の係数対 `a[n]=x`・`b[n]=y` を追加し、積の対応する係数を `T` で返す。追加前の項数を `n` とすると $$\sum_{i=0}^n a_i b_{n-i}$$ | 償却 $$O(\log^2 n)$$、最悪 $$O(n\log n)$$ |
+| `push(x,y)` | 次の係数対 `a[n]=x`・`b[n]=y` を追加し、積の対応する係数を `T` で返す。追加前の項数を `n` とすると $$\displaystyle \sum_{i=0}^n a_i b_{n-i}$$ | 償却 $$O(\log^2 n)$$、最悪 $$O(n\log n)$$ |
 | `pending()` | 次の係数のうち、追加済みの入力だけで決まる部分を `T` で返す | $$O(1)$$ |
 | `operator[](i)` | 確定済みの積の第 `i` 係数を `T` で返す。`0 <= i < size()` | $$O(1)$$ |
 | `size()` | 追加済みの係数対の数 | $$O(1)$$ |
@@ -30,7 +30,7 @@ mint c2 = product.push(7, 11);
 
 `0 <= max_size <= 2^23` とし、`push()`・`pending()` は `size() < max_size()` のときに呼びます。必要な項数が分かる場合は、構築時に指定すると最後の不要な先読み計算を省けます。長さの異なる有限列を最後まで畳み込む場合は、上限を `a.size()+b.size()-1` とし、それぞれの列の末尾に 0 を追加します。
 
-追加済みの項数を $$n$$ とすると、`pending()` は $$\sum_{i=1}^{n-1} a_i b_{n-i}$$ です。$$n=0,1$$ では 0 を返します。次の `push(x,y)` の返り値は、$$n>0$$ なら $$\mathrm{pending}()+xb_0+a_0y$$、$$n=0$$ なら $$xy$$ になります。`pending()` は状態を変更しません。
+追加済みの項数を $$n$$ とすると、`pending()` は $$\displaystyle \sum_{i=1}^{n-1} a_i b_{n-i}$$ です。$$n=0,1$$ では 0 を返します。次の `push(x,y)` の返り値は、$$n>0$$ なら $$\mathrm{pending}()+xb_0+a_0y$$、$$n=0$$ なら $$xy$$ になります。`pending()` は状態を変更しません。
 
 係数の法は 998244353 に固定しています。[mint](https://qandori.github.io/cp-library/math/mint.hpp.html) を既定とし、同じ法の別の modint でも使えます。内部では既存の NTT と Montgomery 表現を使い、対応する x86 CPU では AVX2 を利用します。Mac・Clang でも利用できます。
 

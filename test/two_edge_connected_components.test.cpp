@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/two_edge_connected_components"
-#include "graph/two_edge_connected_components.hpp"
+#include "graph/connectivity/two_edge_connected_components.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

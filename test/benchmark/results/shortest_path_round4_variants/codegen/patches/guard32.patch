@@ -1,0 +1,21 @@
+--- a/components/directed_csr.hpp
++++ b/components/directed_csr.hpp
+@@ -52,7 +52,17 @@
+ 		}
+ 		for (std::size_t v = 1; v < offset_.size(); ++v) offset_[v] += offset_[v - 1];
+ 		arcs_.resize(edges.size());
+-		for (std::size_t i = edges.size(); i; --i) {
++		std::size_t i = edges.size();
++		if (n >= 8192) {
++			for (; i > 32; --i) {
++				const auto from = edges[i - 33].from;
++				__builtin_prefetch(&offset_[from], 1, 3);
++				__builtin_prefetch(&arcs_[offset_[from] - 1], 1, 3);
++				const auto &edge = edges[i - 1];
++				arcs_[--offset_[edge.from]] = {edge.to, edge.weight};
++			}
++		}
++		for (; i; --i) {
+ 			const auto &edge = edges[i - 1];
+ 			arcs_[--offset_[edge.from]] = {edge.to, edge.weight};
+ 		}

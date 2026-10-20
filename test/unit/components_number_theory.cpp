@@ -1,6 +1,6 @@
-#include "math/is_prime.hpp"
+#include "math/number_theory/is_prime.hpp"
 #include "components/montgomery.hpp"
-#include "math/prime_sieve.hpp"
+#include "math/number_theory/prime_sieve.hpp"
 #include "components/splitmix64.hpp"
 #include <cassert>
 #include <cstdint>

@@ -1,0 +1,38 @@
+{
+  "started_utc": "2026-10-19T04:14:56.908592+00:00",
+  "finished_utc": "2026-10-19T04:16:21.384637+00:00",
+  "commands": [
+    {
+      "command": [
+        "/tmp/fps-venv/bin/python",
+        ".verify-helper/ci.py",
+        "docs",
+        "--selection",
+        "test/benchmark/results/fps_round3_validation/selection.json"
+      ],
+      "seconds": 80.90943085600156,
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/tmp/fps-venv/bin/python",
+        ".verify-helper/check-docs.py",
+        "--selection",
+        "test/benchmark/results/fps_round3_validation/selection.json"
+      ],
+      "seconds": 3.390680862008594,
+      "returncode": 1
+    }
+  ],
+  "source_count": 575,
+  "source_hashes_unchanged": false,
+  "changed_sources": [
+    "docs/fps_convolution.md"
+  ],
+  "root_freeze_hashes_match": true,
+  "generated_library_count": 145,
+  "compiled_affected_bundles": 43,
+  "nonfatal_generator_metadata_warning_sources": [],
+  "error": "Documentation command failed",
+  "success": false
+}

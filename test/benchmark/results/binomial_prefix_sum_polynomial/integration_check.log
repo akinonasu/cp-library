@@ -1,0 +1,4 @@
+g++ online : 136 exhaustive cases and 1 public samples passed
+g++ offline : 136 exhaustive cases and 1 public samples passed
+clang++ online : 136 exhaustive cases and 1 public samples passed
+clang++ offline : 136 exhaustive cases and 1 public samples passed

@@ -1,10 +1,12 @@
 ---
-title: "Weighted Wavelet Matrix"
-documentation_of: //data_structure/weighted_wavelet_matrix.hpp
+title: Weighted Wavelet Matrix
+documentation_of: //data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp
+redirect_from:
+- /data_structure/weighted_wavelet_matrix.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/weighted_wavelet_matrix.hpp"
+#include "lib/data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"
 
 WeightedWaveletMatrix<int> wm(std::vector<int>{3, 1, 5},
                             std::vector<std::int64_t>{2, 0, 1});
@@ -41,6 +43,6 @@ auto count = wm.min_count_largest(0, 3, 8);
 
 `min_count_*`・`max_count_*` には登録した値全てが非負であることが必要です。前者は `target <= 0` なら 0、後者は `budget < 0` なら -1 を返します。これ以外の操作は負の値も扱えます。
 
-値の代入が必要で候補を先読みできる場合は [Point Set Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/point_set_wavelet_matrix.hpp.html) を使えます。コピーと `build` による再構築も可能です。
+値の代入が必要で候補を先読みできる場合は [Point Set Wavelet Matrix (クエリ先読み)](https://qandori.github.io/cp-library/data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp.html) を使えます。コピーと `build` による再構築も可能です。
 
 固定した位置の数を $$n$$、異なる値の数を $$\sigma$$ として、構築・空間は $$O(n\log\sigma)$$、更新・値域を指定する問い合わせ・順位と和の探索は $$O(\log n\log\sigma)$$ です。`count(l,r)`・`range_sum(l,r)` は $$O(\log n)$$、サイズと要素・重みの取得は $$O(1)$$ です。

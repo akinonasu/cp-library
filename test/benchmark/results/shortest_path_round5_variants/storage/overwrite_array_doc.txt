@@ -1,0 +1,37 @@
+---
+title: "Overwrite Array"
+documentation_of: //components/overwrite_array.hpp
+---
+
+`OverwriteArray<T>` は、各要素を任意の順番で構築する内部配列です。`resize(n)` は要素の初期化を行いません。`DirectedCSR` のように、全要素の格納位置が先に決まり、初期化直後に全て上書きする処理に使います。
+
+```cpp
+#include "lib/components/overwrite_array.hpp"
+#include <memory>
+#include <utility>
+
+OverwriteArray<std::pair<int, int>> a;
+a.resize(3);
+std::construct_at(a.data() + 2, 7, 9);
+std::construct_at(a.data(), 1, 5);
+std::construct_at(a.data() + 1, 2, 4);
+auto b = a;
+```
+
+`resize` の後は、`data()+i` の各位置に `std::construct_at` で要素を 1 回ずつ構築してください。未構築の要素への代入・読み出しはできません。コピー・走査・`operator[]` を使うのは、全要素の構築後に限ります。再度 `resize` した場合も全要素を構築し直してください。構築途中で例外が出た場合は、`clear` で空に戻すか、配列を破棄してください。
+
+`T` は自明に破棄でき、コピー構築が例外を送出しない型に限ります。要素の寿命は `std::construct_at` で開始し、配列の確保には `std::allocator<T>` を使います。アラインメントの大きい型にも対応します。
+
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `OverwriteArray<T>()` | 空配列を構築 | $$O(1)$$ |
+| コピー構築・コピー代入 | 構築済みの全要素をコピー。代入先の旧要素は保持しない | $$O(n)$$ と必要なら領域確保 |
+| 移動構築・移動代入 | 領域を移し、移動元を空にする | $$O(1)$$ と代入先の旧領域解放 |
+| `resize(n)` | 要素数を `n` にする。足りなければ領域を確保し、旧要素を保持せず解放 | $$O(1)$$ と必要なら領域確保・解放 |
+| `clear()` | 要素数を 0 にする。確保済みの領域は保持 | $$O(1)$$ |
+| `size()` / `empty()` | 要素数／要素数が 0 かを返す | $$O(1)$$ |
+| `data()` | 要素を構築する領域へのポインタを返す | $$O(1)$$ |
+| `begin()` / `end()` | 配列の先頭／末尾へのポインタを返す | $$O(1)$$ |
+| `operator[](i)` | 構築済みの `i` 番目の要素への参照を返す | $$O(1)$$ |
+
+各要素の構築・コピーを $$O(1)$$ とすると、全要素を構築する処理とコピーは $$O(n)$$ 時間です。確保する空間は、過去最大の要素数を $$N$$ として $$O(N)$$ です。

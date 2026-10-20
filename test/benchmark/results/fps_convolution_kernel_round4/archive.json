@@ -1,0 +1,19 @@
+{
+  "all_candidates_rejected": true,
+  "balanced_gap_resolved": false,
+  "baseline": "7521ea8703a362aaf3ccd370188fccab86050848",
+  "official_checker_passes": 620,
+  "packs": {
+    "arithmetic": {
+      "bytes": 2033978,
+      "files": 36,
+      "manifest_sha256": "05bf4b70b06995dc65e87ffcb23e2ab72495ff5456512e5156017c1bc9eef439"
+    },
+    "twiddle": {
+      "bytes": 803759,
+      "files": 14,
+      "manifest_sha256": "29ee6bed88ba8b85e61af3750c91d7645debc46ef66ab38e396391192481743c"
+    }
+  },
+  "production_changes_from_these_candidates": false
+}

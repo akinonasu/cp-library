@@ -1,4 +1,4 @@
-#include "math/generalized_floor_sum.hpp"
+#include "math/floor_sum/generalized_floor_sum.hpp"
 namespace generalized_floor_sum_detail {
 template <class T>
 Table<2, T> quadratic_baseline(U n, U m, U a, U b) {

@@ -1,0 +1,51 @@
+[
+  {
+    "group": "tree",
+    "case": "random",
+    "library_ms": 58.200118,
+    "reference_ms": 41.860022
+  },
+  {
+    "group": "tree",
+    "case": "partial",
+    "library_ms": 64.858941,
+    "reference_ms": 43.832961
+  },
+  {
+    "group": "tree",
+    "case": "envelope",
+    "library_ms": 24.688774,
+    "reference_ms": 9.758163
+  },
+  {
+    "group": "tree",
+    "case": "jump",
+    "library_ms": 1.003578,
+    "reference_ms": 0.508206
+  },
+  {
+    "group": "jsc",
+    "case": "equal",
+    "jsc_ms": 19.520619
+  },
+  {
+    "group": "jsc",
+    "case": "ascending",
+    "jsc_ms": 554.907887
+  },
+  {
+    "group": "jsc",
+    "case": "descending",
+    "jsc_ms": 171.658433
+  },
+  {
+    "group": "jsc",
+    "case": "alternating",
+    "jsc_ms": 544.743261
+  },
+  {
+    "group": "jsc",
+    "case": "random",
+    "jsc_ms": 899.768977
+  }
+]

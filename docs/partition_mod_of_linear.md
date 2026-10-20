@@ -1,10 +1,12 @@
 ---
-title: "Mod of Linear の等差数列分割"
-documentation_of: //math/partition_mod_of_linear.hpp
+title: Mod of Linear の等差数列分割
+documentation_of: //math/floor_sum/partition_mod_of_linear.hpp
+redirect_from:
+- /math/partition_mod_of_linear.hpp.html
 ---
 
 ```cpp
-#include "lib/math/partition_mod_of_linear.hpp"
+#include "lib/math/floor_sum/partition_mod_of_linear.hpp"
 
 auto parts = partition_mod_of_linear(4, 5, 2, 1);
 std::vector<std::uint64_t> values(4);
@@ -40,6 +42,6 @@ $$0\le i<n$$ の添字と値を分割します。`n,m,a,b` と `x,y,dx,count` �
 
 旧 `sqrt_floor`・`math/sqrt_floor.hpp` を置き換えた API です。以前は共通の公差と区間配列を別々に返していましたが、各区間に公差も含める形に変更しました。配列を保存する必要がなければ、コールバック版を使います。
 
-添字の刻みは $$1\le d\le\lfloor\sqrt n\rfloor$$ の範囲で $$(ad)\bmod m$$ の絶対値が最小になるものを選びます。ここで絶対値は、正負の代表元のうち絶対値が小さい方です。同値なら最小の `d`、正負も同値なら非負の公差を選びます。探索には prefix minimum の内部処理を使い、列挙には正負の公差を直接使います。
+添字の刻みは $$\displaystyle 1\le d\le\lfloor\sqrt n\rfloor$$ の範囲で $$(ad)\bmod m$$ の絶対値が最小になるものを選びます。ここで絶対値は、正負の代表元のうち絶対値が小さい方です。同値なら最小の `d`、正負も同値なら非負の公差を選びます。探索には prefix minimum の内部処理を使い、列挙には正負の公差を直接使います。
 
-[解説](https://atcoder.jp/contests/abc429/editorial/17143) の分割方法に基づきます。出力区間数を $$k=O(\sqrt n)$$ とすると、時間は $$O(\log m+k)$$、追加空間は配列版が $$O(k)$$、コールバック版が $$O(1)$$ です。コールバック 1 回の時間は $$O(1)$$ とします。
+[解説](https://atcoder.jp/contests/abc429/editorial/17143) の分割方法に基づきます。出力区間数を $$\displaystyle k=O(\sqrt n)$$ とすると、時間は $$O(\log m+k)$$、追加空間は配列版が $$O(k)$$、コールバック版が $$O(1)$$ です。コールバック 1 回の時間は $$O(1)$$ とします。

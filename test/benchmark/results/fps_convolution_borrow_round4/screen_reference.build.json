@@ -1,0 +1,16 @@
+{
+  "command": [
+    "g++",
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell",
+    "/tmp/fps-reference/convolution_mod/409465.cpp",
+    "-o",
+    "/workspace/cp-fps-round4/root/fallback_first/reference"
+  ],
+  "headers": null,
+  "source_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d"
+}

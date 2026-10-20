@@ -3,7 +3,7 @@ title: "Weighted Blossom（最大重みマッチングの内部部品）"
 documentation_of: //components/weighted_blossom.hpp
 ---
 
-一般グラフの最大重みマッチングを計算する内部部品です。通常は `graph/general_weighted_matching.hpp` の `GeneralWeightedMatching` を使います。
+一般グラフの最大重みマッチングを計算する内部部品です。通常は `graph/matching/general_weighted_matching.hpp` の `GeneralWeightedMatching` を使います。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

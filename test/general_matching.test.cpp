@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/general_matching"
-#include "../graph/general_matching.hpp"
+#include "../graph/matching/general_matching.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

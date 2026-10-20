@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/subset_convolution.test.cpp"
+  ]
+}

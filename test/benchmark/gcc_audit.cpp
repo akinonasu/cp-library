@@ -1,8 +1,8 @@
 #include "components/ntt_mod.hpp"
-#include "math/prime_sieve.hpp"
+#include "math/number_theory/prime_sieve.hpp"
 #include "convolution/convolution_mod.hpp"
 #include "components/quad_bit_vector.hpp"
-#include "data_structure/wavelet_matrix.hpp"
+#include "data_structure/wavelet_matrix/wavelet_matrix.hpp"
 #include <chrono>
 #include <cstdint>
 #include <cstdlib>

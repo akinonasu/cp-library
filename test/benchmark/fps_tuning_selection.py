@@ -40,7 +40,7 @@ def main():
     def affected(paths):
         return [p.relative_to(root).as_posix() for p in paths if dependencies(p.relative_to(root).as_posix()) & changed]
 
-    headers = sorted(p for folder in ['components', 'convolution', 'fps', 'data_structure', 'graph', 'math', 'string'] for p in (root / folder).glob('*.hpp'))
+    headers = sorted(p for folder in ['components', 'convolution', 'fps', 'data_structure', 'graph', 'tree', 'math', 'string'] for p in (root / folder).glob('*.hpp'))
     selection = dict(headers=affected(headers), unit=affected(sorted((root / 'test/unit').glob('*.cpp'))), verification=affected(sorted((root / 'test').glob('*.test.cpp'))))
     selection['sanitize'] = selection['unit'].copy()
     selection['bundles'] = selection['headers'].copy()

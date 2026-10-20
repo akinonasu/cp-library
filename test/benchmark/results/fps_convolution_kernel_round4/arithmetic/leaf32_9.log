@@ -1,0 +1,8 @@
+built base
+built leaf32
+built reference
+waiting EX
+acquired EX
+max_random_00 {'base': 12.60363, 'leaf32': 13.52282, 'reference': 10.83056}
+max_random_01 {'base': 12.28646, 'leaf32': 12.98008, 'reference': 10.22101}
+all_same_00 {'base': 13.97958, 'leaf32': 13.44106, 'reference': 8.57663}

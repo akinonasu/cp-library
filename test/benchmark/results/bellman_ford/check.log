@@ -1,0 +1,9 @@
+g++: standalone components/shortest_path_scc.hpp
+g++: standalone graph/bellman_ford.hpp
+g++: bellman_ford.cpp
+g++: standalone.cpp
+clang++: standalone components/shortest_path_scc.hpp
+clang++: standalone graph/bellman_ford.hpp
+clang++: bellman_ford.cpp
+clang++: standalone.cpp
+Verification passed

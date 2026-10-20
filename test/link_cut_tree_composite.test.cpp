@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/dynamic_tree_vertex_set_path_composite"
-#include "../data_structure/link_cut_tree.hpp"
+#include "../tree/link_cut_tree.hpp"
 #include "../math/mint.hpp"
 #include <array>
 #include <iostream>

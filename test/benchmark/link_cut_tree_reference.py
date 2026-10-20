@@ -56,7 +56,7 @@ def main():
                 'input_storage': 'Copied into the temporary directory before timing',
                 'problems': {}, 'cases': {}, 'implementation_sha256': {
                     str(p): sha256((ROOT / p).read_bytes()) for p in [
-                        'data_structure/link_cut_tree.hpp', 'math/mint.hpp',
+                        'tree/link_cut_tree.hpp', 'math/mint.hpp',
                         'test/benchmark/link_cut_tree_baseline.hpp',
                         'test/link_cut_tree_sum.test.cpp', 'test/link_cut_tree_composite.test.cpp']}}
     for key, command in [('uname', ['uname', '-a']), ('cpu', ['lscpu'])]:
@@ -89,7 +89,7 @@ def main():
             shutil.copyfile(ROOT / driver, before / driver)
             shutil.copyfile(ROOT / 'math/mint.hpp', before / 'math/mint.hpp')
             shutil.copyfile(ROOT / 'test/benchmark/link_cut_tree_baseline.hpp',
-                            before / 'data_structure/link_cut_tree.hpp')
+                            before / 'tree/link_cut_tree.hpp')
             for name, source in [('baseline', before / driver), ('current', ROOT / driver),
                                  ('fastest', args.source_dir / f'{submissions[0]}.cpp')]:
                 binary = directory / (kind + '_' + name)

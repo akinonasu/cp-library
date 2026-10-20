@@ -1,0 +1,1936 @@
+{
+  "baseline": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "cpu": 2,
+  "trials": 41,
+  "seed": 20261025,
+  "harness_sha256": "0fb29d2edf8b8c594844765b005d1a9aface90433e8d8a33405720a5d696cfe6",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "hardware": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "sources": {
+    "before": {
+      "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+      "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+      "components/fps_composition.hpp": "a032ade49c86615bd0effea7718f1816e7437a5df8de7481774582ec0e28d2a1",
+      "components/fps_convolution.hpp": "b0d675b0d0063baf7c64dab92e5368ae5b0fdaf208ffd1d0fa761a95869a7c61",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fps_exp_blocked.hpp": "5aa5bbfa6552463c6ec69074e383efd3e30eaf93009138da65b7c3f51d67a3f2",
+      "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+      "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+      "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8"
+    },
+    "borrow32_assign": {
+      "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+      "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+      "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+      "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+      "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+      "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+      "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+      "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+      "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+      "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+      "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+      "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+      "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+      "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+      "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+      "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+      "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+      "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+      "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+      "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+      "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+      "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+      "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+      "components/fps_composition.hpp": "a032ade49c86615bd0effea7718f1816e7437a5df8de7481774582ec0e28d2a1",
+      "components/fps_convolution.hpp": "c756be0b18cd5435641e568c977e2e71aced49d3a7393bd27fb749372ed8067e",
+      "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+      "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+      "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+      "components/fps_exp_blocked.hpp": "5aa5bbfa6552463c6ec69074e383efd3e30eaf93009138da65b7c3f51d67a3f2",
+      "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+      "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+      "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+      "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+      "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+      "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+      "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+      "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+      "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+      "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+      "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+      "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+      "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+      "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+      "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+      "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+      "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+      "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+      "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+      "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+      "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+      "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+      "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+      "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+      "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+      "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+      "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+      "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+      "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+      "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+      "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+      "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+      "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+      "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+      "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+      "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+      "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+      "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+      "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+      "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+      "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+      "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+      "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+      "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+      "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+      "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+      "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+      "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+      "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+      "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+      "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+      "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+      "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+      "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+      "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+      "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+      "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+      "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+      "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+      "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+      "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+      "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+      "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+      "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+      "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+      "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+      "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+      "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+      "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+      "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+      "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+      "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+      "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+      "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8"
+    }
+  },
+  "builds": {
+    "before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I/tmp/fps-evaluation-round3/base",
+        "/tmp/fps-evaluation-round3/base/test/convolution.test.cpp",
+        "-o",
+        "/tmp/fps-borrow-round3/screen/before"
+      ],
+      "headers": {
+        "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+        "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+        "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+        "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+        "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+        "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+        "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+        "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+        "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+        "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+        "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+        "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+        "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+        "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+        "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+        "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+        "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+        "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+        "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+        "components/fps_composition.hpp": "a032ade49c86615bd0effea7718f1816e7437a5df8de7481774582ec0e28d2a1",
+        "components/fps_convolution.hpp": "b0d675b0d0063baf7c64dab92e5368ae5b0fdaf208ffd1d0fa761a95869a7c61",
+        "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+        "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+        "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+        "components/fps_exp_blocked.hpp": "5aa5bbfa6552463c6ec69074e383efd3e30eaf93009138da65b7c3f51d67a3f2",
+        "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+        "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+        "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+        "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+        "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+        "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+        "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+        "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+        "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+        "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+        "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+        "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+        "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+        "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+        "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+        "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+        "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+        "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+        "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+        "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+        "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+        "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+        "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+        "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+        "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+        "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+        "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+        "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+        "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+        "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+        "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+        "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+        "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+        "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+        "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+        "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+        "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+        "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+        "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+        "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+        "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+        "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+        "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+        "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+        "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+        "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+        "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+        "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+        "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+        "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+        "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+        "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+        "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+        "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+        "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+        "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+        "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+        "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+        "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+        "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+        "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+        "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+        "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+        "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+        "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+        "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+        "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8"
+      },
+      "source_sha256": "51e8bb757f35275e6632f3ea4f521f9959aea7e1baa5ad4895b5e3294fc1c043",
+      "binary_sha256": "3b064f5af6169264e8494baf731277e85ee5216bc3c7a69fd05907dad75a3a5d"
+    },
+    "borrow32_assign": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "-I/tmp/fps-borrow-round3/borrow32_assign",
+        "/tmp/fps-borrow-round3/borrow32_assign/test/convolution.test.cpp",
+        "-o",
+        "/tmp/fps-borrow-round3/screen/borrow32_assign"
+      ],
+      "headers": {
+        "fps/bostan_mori.hpp": "045beb26199fae50357ae5219ca16974eaa1720e58140a741298e507358a5d11",
+        "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+        "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+        "fps/fps.hpp": "2f9d9496fc89e05a98ea5b0d25ef0601dad83c6695b38e2141fa6859d5f95c9f",
+        "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+        "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+        "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+        "fps/taylor_shift.hpp": "a3a68edbd28be78a8c6a8374ed65f0dcc45948ade7c3cc6a5006bda03c40a282",
+        "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+        "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+        "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+        "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+        "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+        "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+        "components/divisor_zeta.hpp": "883f68f4e0d54c6bdd13da55e65b44fa57febd282d927e52bb28cfa4ff82026f",
+        "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+        "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+        "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+        "components/fps_blocked.hpp": "6dc0bfb55934d062365181ef78d4f06a039fe564ee84dcb8a75f3368f71c84a1",
+        "components/fps_composition.hpp": "a032ade49c86615bd0effea7718f1816e7437a5df8de7481774582ec0e28d2a1",
+        "components/fps_convolution.hpp": "c756be0b18cd5435641e568c977e2e71aced49d3a7393bd27fb749372ed8067e",
+        "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+        "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+        "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+        "components/fps_exp_blocked.hpp": "5aa5bbfa6552463c6ec69074e383efd3e30eaf93009138da65b7c3f51d67a3f2",
+        "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+        "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+        "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+        "components/fps_io.hpp": "0002a5e76346c2f2962c55f662d162cfc9fa03af1ddc32079beae631c2ef97d9",
+        "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+        "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+        "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+        "components/fps_sqrt_blocked.hpp": "ca8559f41852d100a4a74e43f1c257a97a7d97a90d04564f9a030248d90cd163",
+        "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+        "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+        "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+        "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+        "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+        "components/mo_order.hpp": "4cf62e6bc4b9908f22f0fb85a93d616c276ef60afbb1a41180dfda81c811f588",
+        "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+        "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+        "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+        "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+        "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+        "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+        "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+        "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+        "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+        "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+        "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+        "components/sequence_match.hpp": "d74576a5e82377109abce1ca14f2b947b2ba918ba9e27070ea3c8d798397412f",
+        "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+        "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+        "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+        "components/static_range_min.hpp": "45e3d5a108984056325832931c87c855078a169ec933b4ebd1ebaed10109163e",
+        "components/static_top_tree_structure.hpp": "cf06f7ffee6ceb893ba7c3627aff39240ad72cae57452ffc5c0e4bdbcdc9b6e2",
+        "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+        "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+        "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+        "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+        "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+        "math/binomial_prefix_sum.hpp": "cb339a005584bdb6285d62cc9564b78c8ca0bb86f48da0cfc051f0402b2841a7",
+        "math/comb.hpp": "15e3c4d9abca92bbfe84e67c040455605e28546ba0224375f2ad06f93e7b4986",
+        "math/discrete_log.hpp": "d16af40dddaa8136f80478bca72422e6406514b88506faa9a9aac65ce962f5b6",
+        "math/factorize.hpp": "b9a934a9c6a4b960b0ff65d0bee0a72734308ed90f7b88dad2342c95f3365414",
+        "math/fraction.hpp": "75936e45326c6b62251dce7d103c7c009729b4348206216392d972258175cc2d",
+        "math/generalized_floor_sum.hpp": "961e9b1c9f36943d05d65929e975afe7af2735fef3880e436bff8143b23ea9da",
+        "math/is_prime.hpp": "307a1400592b593bcba5f3568fa11f992328cceff1cd6c400c8e04d5d3c60627",
+        "math/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+        "math/matrix.hpp": "51ec3df6083c23f1d5e7fb41463ce3dddf8f11edb087d4495e8d38b81a9b1887",
+        "math/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+        "math/mint.hpp": "67cec2452dda0af8b4cd307449fc65b3f1d678613e0392fdd666031dae062171",
+        "math/mod_inv.hpp": "bda8bf0658d160c648a0fa5b2614a946b72561e505f8b8da06d6db3bb7482ec8",
+        "math/mod_pow.hpp": "8dd5fe7994928adb61e17b68e09ee213ab056aeca297c216ab0556efb0e8adf0",
+        "math/mod_sqrt.hpp": "c2b414db307c613ee14f535073fb80458bbd0ef768c352b1822cf658fcceb68b",
+        "math/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+        "math/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+        "math/prefix_min_of_mod_of_linear.hpp": "6e4c10f6390b73ae6bf26fa515865c6e8fe99c18e042a7607e331757a5423fd8",
+        "math/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+        "math/stern_brocot_tree.hpp": "7f0648852c2727ff944cfde1c7e670298fd45cc05eb14852ffeef7c72ae0e518",
+        "math/xor_basis.hpp": "ca3716ebce772b2ba5b404120bc26347d83126a2805fd85e5010b52ce6759058",
+        "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+        "convolution/boolean_convolution.hpp": "f4f7390573d867c233b8fb8c37001f07e394d7a3c1ab0290f5c303ae34744bf5",
+        "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/cyclic_convolution.hpp": "6dc96d46bc899520e3a3036a88872a168d21a4a36520eeaf8ca2c2fcf0f3ab34",
+        "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+        "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+        "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+        "convolution/multiplicative_convolution.hpp": "5a5f34b1579b48986183b6b927fcdca7c25abae87be6fe77863256acdbd33cc1",
+        "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+        "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+        "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+        "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8"
+      },
+      "source_sha256": "51e8bb757f35275e6632f3ea4f521f9959aea7e1baa5ad4895b5e3294fc1c043",
+      "binary_sha256": "dbb5173c2db46f56927ba7ed98658f2bc74ee809e1e3f7f183c10542e09f3340"
+    },
+    "reference": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-march=haswell",
+        "/tmp/fps-reference/convolution_mod/409465.cpp",
+        "-o",
+        "/tmp/fps-borrow-round3/screen/reference"
+      ],
+      "headers": null,
+      "source_sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d",
+      "binary_sha256": "d24b5bede99f29f20f2f3fa055c704b1c0e9b21eb436ad8f9a2579ea688a4097"
+    }
+  },
+  "checks": [
+    {
+      "variant": "borrow32_assign",
+      "cases": 53
+    }
+  ],
+  "results": [
+    {
+      "input": "max_random_00",
+      "input_sha256": "3bbe45c5ce2820f3961db9f5746dfad939c09cb78d62bb1f9729ff3ac83e4208",
+      "orders": [
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ]
+      ],
+      "samples_ms": {
+        "before": [
+          15.431768,
+          14.920426,
+          14.639055,
+          15.169486,
+          15.083999,
+          14.671403,
+          15.222165,
+          14.920445,
+          15.046533,
+          14.829389,
+          16.106061,
+          14.853544,
+          15.182053,
+          15.742068,
+          14.644281,
+          15.158878,
+          14.832101,
+          14.500607,
+          15.048294,
+          15.101323,
+          14.830559,
+          14.99215,
+          15.531033,
+          14.95223,
+          16.740749,
+          15.269866,
+          14.878021,
+          15.512397,
+          14.855028,
+          15.215964,
+          15.549031,
+          15.434261,
+          14.888637,
+          15.291998,
+          14.379547,
+          15.109136,
+          15.20669,
+          15.419748,
+          14.824721,
+          14.923288,
+          15.489582
+        ],
+        "borrow32_assign": [
+          14.204899,
+          15.121044,
+          14.227442,
+          14.710542,
+          14.235835,
+          14.187632,
+          15.769752,
+          15.098351,
+          15.133282,
+          14.32685,
+          15.840995,
+          14.004067,
+          14.854685,
+          14.238266,
+          14.09361,
+          13.909506,
+          14.465645,
+          14.108462,
+          14.400658,
+          14.912561,
+          14.192357,
+          14.284044,
+          14.323402,
+          14.647648,
+          14.573077,
+          14.435452,
+          13.838612,
+          13.863629,
+          14.504214,
+          14.494489,
+          14.448691,
+          14.271546,
+          14.095215,
+          14.497022,
+          13.939792,
+          14.679746,
+          14.663711,
+          14.546356,
+          14.773415,
+          14.522901,
+          15.145019
+        ],
+        "reference": [
+          11.776037,
+          11.592213,
+          11.644571,
+          12.154882,
+          11.387588,
+          11.319637,
+          11.357443,
+          11.32854,
+          11.495809,
+          12.003506,
+          13.410582,
+          11.49778,
+          12.059248,
+          11.223642,
+          11.602887,
+          11.83274,
+          11.63816,
+          11.717507,
+          11.368578,
+          11.372123,
+          11.371132,
+          11.499954,
+          11.506032,
+          11.7723,
+          16.415725,
+          11.505273,
+          11.538252,
+          11.605183,
+          11.828386,
+          12.118687,
+          11.82482,
+          12.015643,
+          11.31638,
+          12.495199,
+          11.764119,
+          11.425303,
+          13.204787,
+          12.401929,
+          12.190834,
+          15.749891,
+          12.192988
+        ]
+      },
+      "median_ms": {
+        "before": 15.083999,
+        "borrow32_assign": 14.448691,
+        "reference": 11.644571
+      },
+      "paired_saving_ms": {
+        "borrow32_assign": 0.5429790000000008
+      },
+      "wins": {
+        "borrow32_assign": 37
+      }
+    },
+    {
+      "input": "max_random_01",
+      "input_sha256": "9662f2e421cb15a04decf66ad413a6d24a46698488875ebe6c7f65876d168a03",
+      "orders": [
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ]
+      ],
+      "samples_ms": {
+        "before": [
+          14.742369,
+          14.748939,
+          14.795848,
+          15.166241,
+          14.850851,
+          15.150006,
+          14.884781,
+          15.404947,
+          14.610843,
+          15.474921,
+          19.547353,
+          14.629571,
+          15.427912,
+          14.987055,
+          14.949278,
+          15.103697,
+          14.912262,
+          15.209837,
+          15.002487,
+          15.234172,
+          15.376735,
+          14.457074,
+          15.657894,
+          15.137959,
+          14.753135,
+          14.626977,
+          15.314011,
+          14.721819,
+          14.82317,
+          15.086101,
+          15.41388,
+          15.202345,
+          16.050299,
+          14.630893,
+          14.807807,
+          14.545295,
+          14.311367,
+          14.217176,
+          15.01179,
+          14.636231,
+          14.373309
+        ],
+        "borrow32_assign": [
+          14.11304,
+          15.088635,
+          13.993412,
+          14.372987,
+          14.831922,
+          14.681499,
+          14.875538,
+          14.576041,
+          15.161443,
+          15.913225,
+          15.652677,
+          15.120834,
+          14.805513,
+          15.101454,
+          15.4538,
+          15.485076,
+          14.158479,
+          14.714858,
+          14.69625,
+          15.19232,
+          15.153823,
+          15.234623,
+          15.159401,
+          14.779314,
+          14.424885,
+          14.355342,
+          14.806124,
+          14.51498,
+          15.13883,
+          13.953803,
+          14.5614,
+          13.935496,
+          14.077107,
+          14.936438,
+          15.17923,
+          15.372398,
+          13.854616,
+          13.989366,
+          13.933123,
+          14.183205,
+          13.894715
+        ],
+        "reference": [
+          11.44983,
+          11.186427,
+          11.263132,
+          11.135321,
+          12.671521,
+          11.586134,
+          11.420427,
+          11.694575,
+          11.671081,
+          12.324745,
+          11.749507,
+          11.461367,
+          11.575178,
+          11.949966,
+          12.430613,
+          12.47557,
+          11.363483,
+          11.504081,
+          11.796027,
+          11.995224,
+          12.309893,
+          11.79091,
+          11.668386,
+          11.479165,
+          11.527726,
+          12.204826,
+          11.178796,
+          11.616359,
+          11.310062,
+          11.326957,
+          11.353567,
+          11.311153,
+          11.774664,
+          11.203302,
+          11.284334,
+          12.823348,
+          11.517692,
+          10.981092,
+          11.12794,
+          11.124395,
+          11.470431
+        ]
+      },
+      "median_ms": {
+        "before": 14.949278,
+        "borrow32_assign": 14.779314,
+        "reference": 11.517692
+      },
+      "paired_saving_ms": {
+        "borrow32_assign": 0.3282500000000006
+      },
+      "wins": {
+        "borrow32_assign": 29
+      }
+    },
+    {
+      "input": "small_and_large_03",
+      "input_sha256": "7b394c263060739762fbf708ef2a52673e79f73d13706cf23ef515cb3c14c5ca",
+      "orders": [
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ]
+      ],
+      "samples_ms": {
+        "before": [
+          10.702446,
+          10.677769,
+          10.610508,
+          11.237883,
+          10.545222,
+          10.920702,
+          11.468356,
+          11.026859,
+          11.358214,
+          10.966379,
+          10.554764,
+          12.513005,
+          11.154008,
+          10.763176,
+          11.632752,
+          11.227949,
+          11.250352,
+          11.163492,
+          11.34877,
+          11.392164,
+          11.339655,
+          10.729977,
+          10.45049,
+          11.003975,
+          10.877517,
+          10.644238,
+          10.988352,
+          10.98715,
+          10.601556,
+          10.299996,
+          12.953681,
+          10.68503,
+          10.616728,
+          10.509008,
+          10.179935,
+          10.402878,
+          10.935062,
+          10.546433,
+          10.876454,
+          10.684639,
+          10.512432
+        ],
+        "borrow32_assign": [
+          10.598611,
+          10.298554,
+          10.529058,
+          10.857917,
+          10.312805,
+          10.312064,
+          10.493785,
+          10.576949,
+          10.832499,
+          10.216921,
+          10.63083,
+          11.254168,
+          11.717289,
+          11.486925,
+          10.993279,
+          11.085887,
+          10.779011,
+          11.311194,
+          11.125536,
+          10.908061,
+          10.791168,
+          10.470991,
+          10.782384,
+          12.719101,
+          10.493335,
+          10.787713,
+          10.293796,
+          10.408057,
+          10.94645,
+          10.826741,
+          10.400997,
+          10.670328,
+          10.243612,
+          10.381167,
+          10.254559,
+          10.419104,
+          10.699512,
+          10.071996,
+          10.206566,
+          10.281488,
+          9.992296
+        ],
+        "reference": [
+          8.711958,
+          8.700892,
+          8.624058,
+          9.013889,
+          8.695013,
+          9.178003,
+          8.897175,
+          8.831206,
+          9.035561,
+          8.669605,
+          9.084083,
+          9.20266,
+          9.810516,
+          9.163882,
+          9.022892,
+          9.38417,
+          9.246735,
+          9.336829,
+          9.520424,
+          8.847941,
+          9.169891,
+          8.7932,
+          8.799249,
+          8.864146,
+          9.073548,
+          9.052475,
+          8.62523,
+          9.033267,
+          8.714331,
+          9.035942,
+          8.669495,
+          8.966747,
+          8.776945,
+          8.744456,
+          8.819018,
+          8.799979,
+          9.016952,
+          9.122741,
+          8.676185,
+          8.732019,
+          9.012797
+        ]
+      },
+      "median_ms": {
+        "before": 10.877517,
+        "borrow32_assign": 10.598611,
+        "reference": 8.966747
+      },
+      "paired_saving_ms": {
+        "borrow32_assign": 0.37311599999999956
+      },
+      "wins": {
+        "borrow32_assign": 30
+      }
+    },
+    {
+      "input": "medium_02",
+      "input_sha256": "f34cc4c301aa6744c6655f740cb376839465f0349516fbb0c094c0b6f3be30e2",
+      "orders": [
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "reference",
+          "borrow32_assign",
+          "before"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "borrow32_assign",
+          "before",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "borrow32_assign",
+          "reference",
+          "before"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "before",
+          "reference",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ],
+        [
+          "reference",
+          "before",
+          "borrow32_assign"
+        ],
+        [
+          "before",
+          "borrow32_assign",
+          "reference"
+        ]
+      ],
+      "samples_ms": {
+        "before": [
+          1.454919,
+          1.394389,
+          1.450342,
+          1.474899,
+          1.471794,
+          1.373207,
+          1.370453,
+          1.371204,
+          1.372866,
+          1.732273,
+          1.407759,
+          1.591433,
+          1.373498,
+          1.468459,
+          1.394098,
+          1.478524,
+          1.491924,
+          1.516901,
+          1.405956,
+          1.459657,
+          1.357864,
+          1.34788,
+          1.351275,
+          1.363613,
+          1.400748,
+          1.379066,
+          1.369131,
+          1.44241,
+          1.378795,
+          1.377603,
+          1.46928,
+          1.407869,
+          1.375991,
+          1.385937,
+          1.366347,
+          1.361069,
+          2.472056,
+          1.735187,
+          1.513947,
+          1.423202,
+          1.427589
+        ],
+        "borrow32_assign": [
+          1.391845,
+          1.466036,
+          1.403352,
+          1.394679,
+          1.355401,
+          1.348971,
+          1.384744,
+          1.369893,
+          1.34161,
+          1.432927,
+          1.38828,
+          1.415651,
+          1.364163,
+          1.427108,
+          1.399096,
+          1.405676,
+          1.418074,
+          1.448409,
+          1.870448,
+          1.436372,
+          1.376101,
+          1.36853,
+          1.377805,
+          1.362532,
+          1.389151,
+          1.40877,
+          1.371334,
+          1.407028,
+          1.478925,
+          1.405075,
+          1.412766,
+          1.380899,
+          1.36141,
+          1.371114,
+          1.417483,
+          1.449832,
+          1.392716,
+          1.493567,
+          1.447959,
+          1.553426,
+          1.538663
+        ],
+        "reference": [
+          1.377193,
+          1.2071,
+          1.209874,
+          1.119709,
+          1.076645,
+          1.095674,
+          1.078658,
+          1.10036,
+          1.142784,
+          1.105909,
+          1.123104,
+          1.196714,
+          1.137326,
+          1.145007,
+          1.196714,
+          1.231196,
+          1.206359,
+          1.181811,
+          1.163815,
+          1.159769,
+          1.148042,
+          1.131167,
+          1.185989,
+          1.148473,
+          1.12644,
+          1.102223,
+          1.091417,
+          1.152008,
+          1.252007,
+          1.241581,
+          1.177675,
+          1.191036,
+          1.158537,
+          1.143414,
+          1.159159,
+          1.155633,
+          1.319698,
+          1.292857,
+          1.298917,
+          1.223664,
+          1.264595
+        ]
+      },
+      "median_ms": {
+        "before": 1.405956,
+        "borrow32_assign": 1.403352,
+        "reference": 1.159159
+      },
+      "paired_saving_ms": {
+        "borrow32_assign": 0.01482300000000003
+      },
+      "wins": {
+        "borrow32_assign": 26
+      }
+    }
+  ]
+}

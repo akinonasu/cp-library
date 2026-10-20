@@ -1,0 +1,5 @@
+{
+  "headers": ["components/shortest_path_scc.hpp", "graph/bellman_ford.hpp"],
+  "unit": ["test/unit/bellman_ford.cpp", "test/unit/shortest_path_scc.cpp", "test/unit/standalone.cpp"],
+  "sanitize": ["test/unit/bellman_ford.cpp", "test/unit/shortest_path_scc.cpp"]
+}

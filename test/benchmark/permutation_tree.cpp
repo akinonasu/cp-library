@@ -1,4 +1,4 @@
-#include "data_structure/permutation_tree.hpp"
+#include "tree/permutation_tree.hpp"
 #include "baseline.hpp"
 #include "packed.hpp"
 #include "aggregate.hpp"

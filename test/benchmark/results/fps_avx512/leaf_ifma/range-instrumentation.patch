@@ -1,0 +1,20 @@
+--- a/components/fps_blocked.hpp
++++ b/components/fps_blocked.hpp
+@@ -2850,7 +2850,17 @@
+ 	}
+ }
+ 
++inline std::uint64_t leaf_probe_calls = 0;
++inline std::uint32_t leaf_probe_weighted = 0, leaf_probe_unweighted = 0, leaf_probe_b = 0;
+ [[gnu::always_inline]] inline Vec leaf_product(const Window& window, const std::uint32_t* b) {
++	++leaf_probe_calls;
++	for (int i = 0; i < 8; ++i) {
++		if (window.word[i] > kP || window.word[8 + i] >= kP || b[i] >= kP) std::abort();
++		leaf_probe_weighted = std::max(leaf_probe_weighted, window.word[i]);
++		leaf_probe_unweighted = std::max(leaf_probe_unweighted, window.word[8 + i]);
++		leaf_probe_b = std::max(leaf_probe_b, b[i]);
++	}
++
+ 	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP), p2 = broadcast(2 * kP);
+ 	Vec even, odd, bi, t0, t1, t2, t3;
+ 	asm("vpbroadcastd (%[b]), %[bi]\n\t"

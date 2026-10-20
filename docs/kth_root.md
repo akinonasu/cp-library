@@ -1,10 +1,12 @@
 ---
-title: "整数 k 乗根"
-documentation_of: //math/kth_root.hpp
+title: 整数 k 乗根
+documentation_of: //math/number_theory/kth_root.hpp
+redirect_from:
+- /math/kth_root.hpp.html
 ---
 
 ```cpp
-#include "lib/math/kth_root.hpp"
+#include "lib/math/number_theory/kth_root.hpp"
 
 auto a = kth_root(215, 3);                     // 5
 auto b = kth_root(216, 3);                     // 6

@@ -121,7 +121,7 @@ def main():
               'metric': 'wall time including process startup, input, computation, output and exit',
               'input_transport': 'regular file for every program',
               'sources': {name: digest(source) for name, (source, _) in programs.items()},
-              'headers': {name: digest(ROOT / name) for name in ['math/mod_sqrt.hpp', 'components/montgomery.hpp',
+              'headers': {name: digest(ROOT / name) for name in ['math/number_theory/mod_sqrt.hpp', 'components/montgomery.hpp',
                           'components/montgomery32.hpp', 'components/splitmix64.hpp', 'components/fast_io.hpp',
                           'test/benchmark/mod_sqrt_baseline.hpp']},
               'workloads': {}}

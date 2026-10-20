@@ -13,8 +13,8 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[2]
-FILES = ['data_structure/wavelet_matrix.hpp', 'data_structure/weighted_wavelet_matrix.hpp',
-         'data_structure/point_set_wavelet_matrix.hpp', 'components/fenwick_sum.hpp',
+FILES = ['data_structure/wavelet_matrix/wavelet_matrix.hpp', 'data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp',
+         'data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp', 'components/fenwick_sum.hpp',
          'components/quad_bit_vector.hpp', 'components/oct_bit_vector.hpp', 'components/splitmix64.hpp']
 DRIVER = 'test/benchmark/abc467_g.cpp'
 

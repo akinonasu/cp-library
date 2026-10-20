@@ -1,0 +1,4 @@
+all_same_00 {'before': 13110064, 'candidate': 8980929, 'noinline': 8880370, 'reference': 8575195} paired 4216827 wins 21 noinline_paired 4199821 noinline_wins 21
+all_same_01 {'before': 12135312, 'candidate': 7861926, 'noinline': 8061457, 'reference': 9160287} paired 4273386 wins 21 noinline_paired 4076869 noinline_wins 21
+max_random_00 {'before': 12384984, 'candidate': 12353448, 'noinline': 12344543, 'reference': 9918466} paired -57306 wins 9 noinline_paired -12298 noinline_wins 10
+max_random_01 {'before': 12547194, 'candidate': 12618111, 'noinline': 12462880, 'reference': 10128489} paired -47149 wins 8 noinline_paired 30705 noinline_wins 12

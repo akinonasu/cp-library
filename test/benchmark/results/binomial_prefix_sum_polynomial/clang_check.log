@@ -1,0 +1,5 @@
+clang++: standalone components/binomial_prefix_polynomial.hpp
+clang++: standalone math/combinatorics/binomial_prefix_sum.hpp
+clang++: binomial_prefix_sum.cpp
+clang++: standalone.cpp
+Verification passed

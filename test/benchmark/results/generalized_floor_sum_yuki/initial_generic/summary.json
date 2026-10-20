@@ -1,0 +1,23 @@
+[
+  {
+    "degree": 4,
+    "count": 10000,
+    "base_ms": 39.635857,
+    "unsigned_ms": 41.399896,
+    "signed_ms": 41.276834
+  },
+  {
+    "degree": 8,
+    "count": 2000,
+    "base_ms": 35.686761,
+    "unsigned_ms": 38.481335,
+    "signed_ms": 37.723413
+  },
+  {
+    "degree": 20,
+    "count": 100,
+    "base_ms": 18.089739,
+    "unsigned_ms": 19.005842,
+    "signed_ms": 19.0168
+  }
+]

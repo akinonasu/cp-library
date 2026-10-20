@@ -1,5 +1,5 @@
 #if defined(WAVELET_CANDIDATE_FIRST)
-#include "data_structure/wavelet_matrix.hpp"
+#include "data_structure/wavelet_matrix/wavelet_matrix.hpp"
 #undef WAVELET_MATRIX_HPP
 #endif
 #define WaveletMatrix WaveletMatrixBaseline
@@ -7,7 +7,7 @@
 #undef WaveletMatrix
 #undef WAVELET_MATRIX_HPP
 #if !defined(WAVELET_CANDIDATE_FIRST)
-#include "data_structure/wavelet_matrix.hpp"
+#include "data_structure/wavelet_matrix/wavelet_matrix.hpp"
 #endif
 #include <chrono>
 #include <cstdlib>

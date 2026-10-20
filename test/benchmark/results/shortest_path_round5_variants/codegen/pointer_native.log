@@ -1,0 +1,16 @@
+compiled old_phase
+compiled old_actual
+compiled current_phase
+compiled current_actual
+compiled pointer_phase
+compiled pointer_actual
+compiled pointer_all_phase
+compiled pointer_all_actual
+max_dense_random_00 {'pointer_all_actual': 6.267, 'current_actual': 5.986, 'pointer_all_phase': 6.116, 'old_actual': 6.118, 'current_phase': 6.116, 'old_phase': 6.154, 'pointer_actual': 6.051, 'pointer_phase': 6.188}
+max_dense_random_01 {'pointer_all_actual': 6.258, 'pointer_phase': 6.24, 'pointer_actual': 6.29, 'old_phase': 6.195, 'current_actual': 6.261, 'pointer_all_phase': 6.171, 'old_actual': 6.13, 'current_phase': 6.322}
+max_dense_zero_00 {'pointer_all_actual': 5.816, 'pointer_phase': 5.773, 'current_actual': 5.709, 'pointer_all_phase': 5.761, 'old_actual': 5.787, 'old_phase': 5.781, 'current_phase': 5.8, 'pointer_actual': 5.775}
+max_sparse_random_01 {'old_phase': 16.146, 'pointer_phase': 13.403, 'current_phase': 13.399, 'pointer_all_phase': 16.884, 'current_actual': 13.216, 'pointer_all_actual': 15.142, 'old_actual': 14.433, 'pointer_actual': 13.236}
+max_star_00 {'pointer_actual': 9.746, 'pointer_phase': 9.863, 'old_actual': 9.779, 'current_actual': 9.68, 'pointer_all_actual': 11.416, 'pointer_all_phase': 11.495, 'old_phase': 9.746, 'current_phase': 9.701}
+line_00 {'current_phase': 20.991, 'pointer_actual': 21.193, 'old_phase': 21.046, 'current_actual': 21.287, 'old_actual': 21.301, 'pointer_phase': 21.479, 'pointer_all_phase': 21.055, 'pointer_all_actual': 21.568}
+grid_swirl_00 {'old_phase': 15.501, 'current_actual': 14.476, 'pointer_all_actual': 15.712, 'current_phase': 14.424, 'pointer_phase': 14.511, 'pointer_actual': 14.314, 'pointer_all_phase': 15.963, 'old_actual': 15.268}
+max_dense_long_00 {'pointer_phase': 6.325, 'current_phase': 6.346, 'current_actual': 6.374, 'old_phase': 6.522, 'old_actual': 6.243, 'pointer_all_actual': 6.3, 'pointer_actual': 6.401, 'pointer_all_phase': 6.313}

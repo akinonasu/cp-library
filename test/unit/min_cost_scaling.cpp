@@ -1,4 +1,4 @@
-#include "graph/min_cost_flow.hpp"
+#include "graph/flow/min_cost_flow.hpp"
 #include <random>
 
 int main() {

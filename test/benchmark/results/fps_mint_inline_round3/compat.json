@@ -1,0 +1,99 @@
+{
+  "started_at": "2026-10-19T04:11:51.950152+00:00",
+  "harness_sha256": "2a5caa899958a1fa074bde9b44033147f656da0cb516893c18e62dcaf798cc68",
+  "builds": {
+    "gcc14": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O0",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/workspace/cp-fps-scratch-round3/mint-inline/candidate",
+        "/workspace/cp-fps-scratch-round3/mint-inline/traits_codegen.cpp",
+        "-o",
+        "/workspace/cp-fps-scratch-round3/mint-inline/traits_o0_gcc14"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "binary_sha256": "87559e366560acb2e321400b2a11eb43b7adeb372d1d4329307ef45ed62f5ee9"
+    },
+    "gcc13": {
+      "command": [
+        "/tmp/fps-gcc13/toolchain/usr/bin/g++-13",
+        "-std=c++23",
+        "-O0",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/workspace/cp-fps-scratch-round3/mint-inline/candidate",
+        "/workspace/cp-fps-scratch-round3/mint-inline/traits_codegen.cpp",
+        "-o",
+        "/workspace/cp-fps-scratch-round3/mint-inline/traits_o0_gcc13"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "binary_sha256": "1758a56ed9e1a7327247b2ed0addef61bec457d42e8a9acefd9dfdae894115d7"
+    },
+    "clang19": {
+      "command": [
+        "/tmp/fps-clang/toolchain/usr/bin/clang++-19",
+        "-std=c++23",
+        "-O0",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/workspace/cp-fps-scratch-round3/mint-inline/candidate",
+        "/workspace/cp-fps-scratch-round3/mint-inline/traits_codegen.cpp",
+        "-o",
+        "/workspace/cp-fps-scratch-round3/mint-inline/traits_o0_clang19"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "binary_sha256": "0f313aca534a80f1e24e7b9ce0ad6195703fcfb190598f7b720654cace0ab930"
+    }
+  },
+  "runs": {
+    "gcc14": {
+      "returncode": 0,
+      "stdout": "{\"sizeof\":4,\"alignof\":4,\"standard_layout\":true,\"trivially_copyable\":true,\"aggregate\":false,\"trivial\":false,\"trivially_default_constructible\":false,\"default_constructible\":true,\"nothrow_default_constructible\":true,\"constexpr_zero\":true,\"default_initialization\":\"zero\",\"resize_prefix\":\"preserved\"}\n",
+      "stderr": ""
+    },
+    "gcc13": {
+      "returncode": 0,
+      "stdout": "{\"sizeof\":4,\"alignof\":4,\"standard_layout\":true,\"trivially_copyable\":true,\"aggregate\":false,\"trivial\":false,\"trivially_default_constructible\":false,\"default_constructible\":true,\"nothrow_default_constructible\":true,\"constexpr_zero\":true,\"default_initialization\":\"zero\",\"resize_prefix\":\"preserved\"}\n",
+      "stderr": ""
+    },
+    "clang19": {
+      "returncode": 0,
+      "stdout": "{\"sizeof\":4,\"alignof\":4,\"standard_layout\":true,\"trivially_copyable\":true,\"aggregate\":false,\"trivial\":false,\"trivially_default_constructible\":false,\"default_constructible\":true,\"nothrow_default_constructible\":true,\"constexpr_zero\":true,\"default_initialization\":\"zero\",\"resize_prefix\":\"preserved\"}\n",
+      "stderr": ""
+    }
+  },
+  "codegen": {
+    "base": {
+      "assembly_sha256": "b04c5fb06988c04a04df8e1bf6c8dc9adac200f44a521178eac46fefd86bb146",
+      "all_ctor_call_sites": 5,
+      "all_memset_call_sites": 0,
+      "vector_ctor_call_sites": 1,
+      "vector_memset_call_sites": 0,
+      "vector_body": "\n_Z11make_vectorm:\n.LFB5391:\n\t.cfi_startproc\n\tpushq\t%r13\n\t.cfi_def_cfa_offset 16\n\t.cfi_offset 13, -16\n\tmovq\t%rsi, %rax\n\tpushq\t%r12\n\t.cfi_def_cfa_offset 24\n\t.cfi_offset 12, -24\n\tpushq\t%rbp\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset 6, -32\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 40\n\t.cfi_offset 3, -40\n\tsubq\t$8, %rsp\n\t.cfi_def_cfa_offset 48\n\tshrq\t$61, %rax\n\tjne\t.L11\n\tvpxor\t%xmm0, %xmm0, %xmm0\n\tmovq\t$0, 16(%rdi)\n\tmovq\t%rdi, %r12\n\tmovq\t%rsi, %rbp\n\tvmovdqu\t%xmm0, (%rdi)\n\ttestq\t%rsi, %rsi\n\tje\t.L13\n\tleaq\t0(,%rsi,4), %r13\n\tmovq\t%r13, %rdi\n\tcall\t_Znwm@PLT\n\taddq\t%rax, %r13\n\tvmovq\t%rax, %xmm1\n\tmovq\t%rax, %rbx\n\tmovq\t%r13, 16(%r12)\n\tvpunpcklqdq\t%xmm1, %xmm1, %xmm0\n\tvmovdqu\t%xmm0, (%r12)\n\t.p2align 4,,10\n\t.p2align 3\n.L9:\n\tmovl\t$0, (%rbx)\n\tmovq\t%rbx, %rdi\n\taddq\t$4, %rbx\n\tcall\t_ZN10fps_detail4MintC1Ev\n\tdecq\t%rbp\n\tjne\t.L9\n\tmovq\t%r13, %rax\n.L8:\n\tmovq\t%rax, 8(%r12)\n\taddq\t$8, %rsp\n\t.cfi_remember_state\n\t.cfi_def_cfa_offset 40\n\tmovq\t%r12, %rax\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 32\n\tpopq\t%rbp\n\t.cfi_def_cfa_offset 24\n\tpopq\t%r12\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r13\n\t.cfi_def_cfa_offset 8\n\tret\n\t.p2align 4,,10\n\t.p2align 3\n.L13:\n\t.cfi_restore_state\n\tmovq\t$0, (%rdi)\n\txorl\t%eax, %eax\n\tmovq\t$0, 16(%rdi)\n\tjmp\t.L8\n\t.cfi_endproc\n\t.section\t.text.unlikely\n\t.cfi_startproc\n\t.type\t_Z11make_vectorm.cold, @function\n_Z11make_vectorm.cold:\n.LFSB5391:\n.L11:\n\t.cfi_def_cfa_offset 48\n\t.cfi_offset 3, -40\n\t.cfi_offset 6, -32\n\t.cfi_offset 12, -24\n\t.cfi_offset 13, -16\n\tleaq\t.LC0(%rip), %rdi\n\tcall\t_ZSt20__throw_length_errorPKc@PLT\n\t.cfi_endproc\n.LFE5391:\n\t.text",
+      "single_default_body": "\n_Z12make_defaultv:\n.LFB5390:\n\t.cfi_startproc\n\txorl\t%eax, %eax\n\tret\n\t.cfi_endproc\n.LFE5390:"
+    },
+    "candidate": {
+      "assembly_sha256": "19faad07ba171abf8cf6db110eee535201880fc5b138e4ebdcbbd44283404b03",
+      "all_ctor_call_sites": 0,
+      "all_memset_call_sites": 5,
+      "vector_ctor_call_sites": 0,
+      "vector_memset_call_sites": 1,
+      "vector_body": "\n_Z11make_vectorm:\n.LFB5391:\n\t.cfi_startproc\n\tmovq\t%rsi, %rax\n\tpushq\t%r12\n\t.cfi_def_cfa_offset 16\n\t.cfi_offset 12, -16\n\tshrq\t$61, %rax\n\tpushq\t%rbp\n\t.cfi_def_cfa_offset 24\n\t.cfi_offset 6, -24\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset 3, -32\n\tjne\t.L8\n\tvpxor\t%xmm0, %xmm0, %xmm0\n\tmovq\t$0, 16(%rdi)\n\tmovq\t%rdi, %rbx\n\tvmovdqu\t%xmm0, (%rdi)\n\ttestq\t%rsi, %rsi\n\tje\t.L10\n\tleaq\t0(,%rsi,4), %rbp\n\tmovq\t%rbp, %rdi\n\tcall\t_Znwm@PLT\n\tmovq\t%rbp, %rdx\n\txorl\t%esi, %esi\n\tleaq\t(%rax,%rbp), %r12\n\tmovq\t%rax, (%rbx)\n\tmovq\t%rax, %rdi\n\tmovq\t%r12, 16(%rbx)\n\tcall\tmemset@PLT\n\tmovq\t%r12, 8(%rbx)\n\tmovq\t%rbx, %rax\n\tpopq\t%rbx\n\t.cfi_remember_state\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbp\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r12\n\t.cfi_def_cfa_offset 8\n\tret\n\t.p2align 4,,10\n\t.p2align 3\n.L10:\n\t.cfi_restore_state\n\txorl\t%r12d, %r12d\n\tmovq\t$0, (%rdi)\n\tmovq\t%rbx, %rax\n\tmovq\t$0, 16(%rdi)\n\tmovq\t%r12, 8(%rbx)\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbp\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r12\n\t.cfi_def_cfa_offset 8\n\tret\n\t.cfi_endproc\n\t.section\t.text.unlikely\n\t.cfi_startproc\n\t.type\t_Z11make_vectorm.cold, @function\n_Z11make_vectorm.cold:\n.LFSB5391:\n.L8:\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset 3, -32\n\t.cfi_offset 6, -24\n\t.cfi_offset 12, -16\n\tleaq\t.LC0(%rip), %rdi\n\tcall\t_ZSt20__throw_length_errorPKc@PLT\n\t.cfi_endproc\n.LFE5391:\n\t.text",
+      "single_default_body": "\n_Z12make_defaultv:\n.LFB5390:\n\t.cfi_startproc\n\txorl\t%eax, %eax\n\tret\n\t.cfi_endproc\n.LFE5390:"
+    }
+  },
+  "production_mint_unchanged": true,
+  "finished_at": "2026-10-19T04:11:53.359265+00:00"
+}

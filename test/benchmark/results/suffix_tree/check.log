@@ -1,0 +1,9 @@
+g++: standalone components/suffix_array.hpp
+g++: standalone string/suffix_tree.hpp
+g++: suffix_tree.cpp
+g++: standalone.cpp
+clang++: standalone components/suffix_array.hpp
+clang++: standalone string/suffix_tree.hpp
+clang++: suffix_tree.cpp
+clang++: standalone.cpp
+Verification passed

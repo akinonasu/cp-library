@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/weighted_union_find.test.cpp"
+  ]
+}

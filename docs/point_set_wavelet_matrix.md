@@ -1,10 +1,12 @@
 ---
-title: "Point Set Wavelet Matrix"
-documentation_of: //data_structure/point_set_wavelet_matrix.hpp
+title: Point Set Wavelet Matrix (クエリ先読み)
+documentation_of: //data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp
+redirect_from:
+- /data_structure/point_set_wavelet_matrix.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/point_set_wavelet_matrix.hpp"
+#include "lib/data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp"
 
 std::vector<int> a{3, 1, 4, 1, 5};
 std::vector<std::pair<int, int>> candidates{ {0, 10}, {2, 7} };
@@ -13,7 +15,7 @@ wm.set(0, 10);
 auto answer = wm.min_count_largest(0, 5, 12);
 ```
 
-配列の一点代入と、区間内の順位・和の問い合わせを扱います。初期値は自動登録されます。それ以外に代入する `(位置,値)` は `candidates` に登録します。問い合わせは先読みする必要がありません。区間は $$[l,r)$$、順位は 0 始まりです。
+配列の一点代入と、区間内の順位・和の問い合わせを扱います。初期値以外に代入する全ての `(位置,値)` の事前登録が必要です。通常は構築前に更新クエリを先読みし、候補を `candidates` に集めます。初期値は自動登録されます。候補が最初から分かっていれば、更新クエリ自体の先読みは不要です。順位・和を求める問い合わせは先読みせずに処理できます。区間は $$[l,r)$$、順位は 0 始まりです。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

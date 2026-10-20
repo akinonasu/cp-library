@@ -1,0 +1,6 @@
+test/subset_convolution.test.cpp 11 passed
+dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/subset_convolution.test.cpp
+subset_convolution.test.o: \
+ /workspace/cp-library/test/subset_convolution.test.cpp \
+ /workspace/cp-library/test/../convolution/subset_convolution.hpp \
+ /workspace/cp-library/test/../math/mint.hpp

@@ -1,0 +1,11 @@
+--- a/components/fps_convolution.hpp
++++ b/components/fps_convolution.hpp
+@@ -3835,7 +3835,7 @@
+ 	const std::size_t words = len + 16 + alignment / sizeof(Mint) - 1, size = a.size() + b.size() - 1;
+ 	std::vector<Mint> result;
+ 	prepare_fps_output(result, words);
+-	result.assign(words, Mint::word(0));
++	result.resize(words);
+ 	const auto address = reinterpret_cast<std::uintptr_t>(result.data());
+ 	const std::size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(Mint);
+ 	Mint* const to = result.data() + offset;

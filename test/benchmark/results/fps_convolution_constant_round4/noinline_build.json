@@ -1,0 +1,17 @@
+{
+  "command": [
+    "g++",
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell",
+    "-I/workspace/cp-fps-round4/constant/candidate_noinline",
+    "/workspace/cp-fps-round4/constant/candidate_noinline/test/convolution.test.cpp",
+    "-o",
+    "/workspace/cp-fps-round4/constant/noinline.bin"
+  ],
+  "source_sha256": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6",
+  "binary_sha256": "1b0fae18811818763543fb8f874a031801efa53eed2bbf220dc938995dd117ab"
+}

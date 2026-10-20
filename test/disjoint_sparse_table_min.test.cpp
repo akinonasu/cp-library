@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/staticrmq"
-#include "../data_structure/disjoint_sparse_table.hpp"
+#include "../data_structure/range_query/disjoint_sparse_table.hpp"
 #include <algorithm>
 #include <iostream>
 #include <limits>

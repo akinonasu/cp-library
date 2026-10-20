@@ -1,4 +1,4 @@
-#include "math/factorize.hpp"
+#include "math/number_theory/factorize.hpp"
 #include "primality_factorize_baseline.hpp"
 #include <algorithm>
 #include <chrono>

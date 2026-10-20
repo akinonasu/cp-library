@@ -1,10 +1,13 @@
 ---
-title: "Segtree Beats"
-documentation_of: //data_structure/segtree_beats.hpp
+title: Segtree Beats
+documentation_of: //data_structure/advanced/segtree_beats.hpp
+redirect_from:
+- /data_structure/segtree_beats.hpp.html
+- /data_structure/segment_tree/segtree_beats.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/segtree_beats.hpp"
+#include "lib/data_structure/advanced/segtree_beats.hpp"
 
 SegtreeBeats seg(std::vector<long long>{1, 4, 2, 8});
 seg.chmin(0, 4, 5);
@@ -18,7 +21,7 @@ auto mx = seg.max(0, 4);
 
 [基本的な使い方の一覧](https://qandori.github.io/cp-library/docs/segtree_beats_examples.html)
 
-このヘッダーは chmin・chmax・加算・代入の専用版です。他の更新や集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/generic_segtree_beats.hpp.html) を使ってください。
+このヘッダーは chmin・chmax・加算・代入の専用版です。他の更新や集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/advanced/generic_segtree_beats.hpp.html) を使ってください。
 
 区間は $$[l,r)$$ です。`SegtreeBeats<T = long long, Sum = T>` は符号付き整数を扱います。`SegtreeBeats<T, Sum>(n, x = 0)` は長さ `n` を `x` で初期化します。和だけ広い型にする場合は `SegtreeBeats<long long, __int128_t>` などを指定します。
 

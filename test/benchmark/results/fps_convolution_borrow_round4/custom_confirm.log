@@ -1,0 +1,5 @@
+65536_65536 {'before': 2.920714, 'borrowed': 2.765282, 'split': 2.744301, 'reference': 2.215943} {'borrowed': 0.1570229999999997, 'split': 0.16973199999999977} {'borrowed': 19, 'split': 20}
+262144_262144 {'before': 7.135097, 'borrowed': 6.858434, 'split': 6.885995, 'reference': 5.66768} {'borrowed': 0.28117899999999985, 'split': 0.22119099999999925} {'borrowed': 21, 'split': 18}
+300000_220000 {'before': 7.250349, 'borrowed': 6.993246, 'split': 7.018743, 'reference': 5.744534} {'borrowed': 0.2573439999999998, 'split': 0.15171699999999966} {'borrowed': 15, 'split': 16}
+max_random_00 {'before': 12.06728, 'borrowed': 12.051837, 'split': 12.087059, 'reference': 9.727632} {'borrowed': 0.07347999999999999, 'split': -0.079267999999999} {'borrowed': 11, 'split': 9}
+max_random_01 {'before': 11.887592, 'borrowed': 11.790928, 'split': 11.817428, 'reference': 9.622385} {'borrowed': 0.05846700000000027, 'split': 0.055611999999999995} {'borrowed': 13, 'split': 12}

@@ -102,9 +102,9 @@ rect_scan = narrow_order[:rect_start] + '''
 			}
 		}
 ''' + narrow_order[rect_end:]
-variants = dict(classic=classic, dense=dense, greedy=greedy, column=column, no_transfer=no_transfer, reduced=reduced, ascending=ascending, queue=queue, current=(root / 'graph/hungarian.hpp').read_text(), baseline=source, narrow=narrow, narrow_order=narrow_order, free_only=free_only, rect_scan=rect_scan, queue_half=queue.replace('work < 2 * n', 'work < n'))
+variants = dict(classic=classic, dense=dense, greedy=greedy, column=column, no_transfer=no_transfer, reduced=reduced, ascending=ascending, queue=queue, current=(root / 'graph/matching/hungarian.hpp').read_text(), baseline=source, narrow=narrow, narrow_order=narrow_order, free_only=free_only, rect_scan=rect_scan, queue_half=queue.replace('work < 2 * n', 'work < n'))
 for name, code in variants.items():
     code = code.replace('std::min(delta, value(i, j) - price[j])', 'std::min(delta, Cost(value(i, j) - price[j]))')
     code = code.replace('HUNGARIAN_HPP', 'HUNGARIAN_' + name.upper() + '_HPP').replace('Hungarian', 'Hungarian_' + name)
     (out / (name + '.hpp')).write_text(code)
-    (out / (name + '_test.cpp')).write_text(unit.replace('"graph/hungarian.hpp"', '"' + name + '.hpp"').replace('Hungarian', 'Hungarian_' + name))
+    (out / (name + '_test.cpp')).write_text(unit.replace('"graph/matching/hungarian.hpp"', '"' + name + '.hpp"').replace('Hungarian', 'Hungarian_' + name))

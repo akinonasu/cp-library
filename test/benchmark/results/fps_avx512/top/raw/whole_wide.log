@@ -1,0 +1,7 @@
+built base
+built wide
+built reference
+waiting EX
+EX acquired
+max_random_00 {'base': 14.694147, 'wide': 14.452987, 'reference': 12.951478}
+max_random_01 {'base': 14.334833, 'wide': 14.279277, 'reference': 12.89928}

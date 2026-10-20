@@ -14,18 +14,21 @@
 #include <utility>
 #include <vector>
 
-template<class T = std::int64_t>
+template<class T = std::int64_t, class Size = std::conditional_t<
+	std::is_integral_v<T> && sizeof(T) <= 8, std::uint64_t,
+	std::conditional_t<std::is_same_v<T, __int128_t>, __uint128_t, T>>>
 class IntervalSet {
-	static_assert(std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8);
+	static_assert(std::numeric_limits<T>::is_integer && !std::is_same_v<T, bool>);
+	static_assert(std::numeric_limits<Size>::is_integer && !std::is_same_v<Size, bool>);
 	std::map<T, T> ranges;
-	std::uint64_t total = 0;
-	static std::uint64_t length(T l, T r) {
-		return static_cast<std::uint64_t>(r) - static_cast<std::uint64_t>(l);
+	Size total = 0;
+	static Size length(const T &l, const T &r) {
+		return static_cast<Size>(r) - static_cast<Size>(l);
 	}
 
 public:
 	using coordinate_type = T;
-	using size_type = std::uint64_t;
+	using size_type = Size;
 	using interval_type = std::pair<T, T>;
 	using const_iterator = typename std::map<T, T>::const_iterator;
 	using const_reverse_iterator = typename std::map<T, T>::const_reverse_iterator;
@@ -34,8 +37,8 @@ public:
 	explicit IntervalSet(std::vector<interval_type> intervals) { assign(std::move(intervals)); }
 	IntervalSet(std::initializer_list<interval_type> intervals) { assign(intervals); }
 	IntervalSet(const IntervalSet &) = default;
-	IntervalSet(IntervalSet &&other) noexcept { swap(other); }
-	IntervalSet &operator=(IntervalSet other) noexcept { swap(other); return *this; }
+	IntervalSet(IntervalSet &&other) noexcept(std::is_nothrow_constructible_v<Size, int> && std::is_nothrow_swappable_v<Size>) { swap(other); }
+	IntervalSet &operator=(IntervalSet other) noexcept(std::is_nothrow_swappable_v<Size>) { swap(other); return *this; }
 
 	void assign(std::vector<interval_type> intervals) {
 		std::sort(intervals.begin(), intervals.end());
@@ -84,13 +87,13 @@ public:
 			node.mapped() = right;
 			ranges.insert(next_it, std::move(node));
 		}
-		auto added = length(left, right) - removed;
+		size_type added = length(left, right) - removed;
 		total += added;
 		return added;
 	}
 
 	size_type insert(T x) {
-		assert(x < (std::numeric_limits<T>::max)());
+		if constexpr (std::numeric_limits<T>::is_bounded) assert(x < (std::numeric_limits<T>::max)());
 		return insert(x, static_cast<T>(x + 1));
 	}
 
@@ -130,7 +133,8 @@ public:
 	}
 
 	size_type erase(T x) {
-		if (x == (std::numeric_limits<T>::max)()) return 0;
+		if constexpr (std::numeric_limits<T>::is_bounded)
+			if (x == (std::numeric_limits<T>::max)()) return 0;
 		return erase(x, static_cast<T>(x + 1));
 	}
 
@@ -197,11 +201,12 @@ public:
 	const_reverse_iterator rbegin() const { return ranges.rbegin(); }
 	const_reverse_iterator rend() const { return ranges.rend(); }
 	void clear() { ranges.clear(); total = 0; }
-	void swap(IntervalSet &other) noexcept {
+	void swap(IntervalSet &other) noexcept(std::is_nothrow_swappable_v<Size>) {
 		ranges.swap(other.ranges);
-		std::swap(total, other.total);
+		using std::swap;
+		swap(total, other.total);
 	}
-	friend void swap(IntervalSet &a, IntervalSet &b) noexcept { a.swap(b); }
+	friend void swap(IntervalSet &a, IntervalSet &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
 };
 
 #endif

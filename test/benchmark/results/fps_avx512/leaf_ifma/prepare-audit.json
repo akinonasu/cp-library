@@ -1,0 +1,21 @@
+{
+  "baseline": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
+  "command": [
+    "python3",
+    "/workspace/cp-library/test/benchmark/results/fps_avx512/leaf_ifma/prepare.py",
+    "/workspace/cp-library",
+    "/tmp/fps-ifma-leaf-reconstruction"
+  ],
+  "header_counts": {
+    "base": 175,
+    "instrumented": 175,
+    "base32": 175
+  },
+  "all_full_header_hashes_match": true,
+  "all_probe_source_hashes_match": true,
+  "local_scripts_only_work_path_changed": true,
+  "original_build_source_hashes_match": true,
+  "raw_samples_verified": 504,
+  "production_modified_by_experiment": false,
+  "compile_or_benchmark_repeated_for_reconstruction": false
+}

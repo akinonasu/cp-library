@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/lca"
-#include "../graph/auxiliary_tree.hpp"
-#include "../graph/lca.hpp"
+#include "../tree/auxiliary_tree.hpp"
+#include "../tree/lca.hpp"
 #include "../components/fast_io.hpp"
 #include <array>
 

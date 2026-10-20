@@ -1,0 +1,49 @@
+{
+  "started_utc": "2026-10-19T04:14:56.908592+00:00",
+  "finished_utc": "2026-10-19T04:16:21.384637+00:00",
+  "commands": [
+    {
+      "command": [
+        "/tmp/fps-venv/bin/python",
+        ".verify-helper/ci.py",
+        "docs",
+        "--selection",
+        "test/benchmark/results/fps_round3_validation/selection.json"
+      ],
+      "seconds": 80.90943085600156,
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/tmp/fps-venv/bin/python",
+        ".verify-helper/check-docs.py",
+        "--selection",
+        "test/benchmark/results/fps_round3_validation/selection.json"
+      ],
+      "seconds": 3.390680862008594,
+      "returncode": 1
+    }
+  ],
+  "source_count": 575,
+  "source_hashes_unchanged": false,
+  "changed_sources": [
+    "docs/fps_convolution.md"
+  ],
+  "root_freeze_hashes_match": true,
+  "generated_library_count": 145,
+  "compiled_affected_bundles": 43,
+  "nonfatal_generator_metadata_warning_sources": [],
+  "error": "Documentation command failed",
+  "success": false,
+  "planned_affected_bundle_count": 43,
+  "actual_individual_bundle_compiles_completed": 2,
+  "complete_docs_validation_passes": 0,
+  "bundle_check_completed": false,
+  "compiled_affected_bundles_field_semantics": "The original runner incorrectly copied planned count 43 into this field before any completed check pass. Preserved raw value; actual successful individual compiles before the Bostan assertion were 2.",
+  "successful_individual_bundles": [
+    "components/binomial_prefix_core.hpp",
+    "components/fps_blocked.hpp"
+  ],
+  "individual_success_evidence": "check-docs.py traverses sorted headers and runs each selected g++ subprocess with check=True. The traceback is at components/fps_bostan.hpp after the preceding two selected entries.",
+  "note": "Initial prepared attempt stopped on the Bostan target-pragma bundler incompatibility. The authorized convolution docs update is recorded separately. No complete validation pass succeeded."
+}

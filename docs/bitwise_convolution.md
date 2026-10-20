@@ -14,9 +14,9 @@ auto f = xor_convolution(a, b); // {70,68,62,60}
 
 | 関数 | 定義 | 計算量 |
 | --- | --- | --- |
-| `and_convolution(a, b)` | $$c_k = \sum_{i\mathbin{\&}j=k} a_i b_j$$ | $$O(N\log N)$$ |
-| `or_convolution(a, b)` | $$c_k = \sum_{i\mathbin{\vert}j=k} a_i b_j$$ | $$O(N\log N)$$ |
-| `xor_convolution(a, b)` | $$c_k = \sum_{i\mathbin{\oplus}j=k} a_i b_j$$ | $$O(N\log N)$$ |
+| `and_convolution(a, b)` | $$\displaystyle c_k = \sum_{i\mathbin{\&}j=k} a_i b_j$$ | $$O(N\log N)$$ |
+| `or_convolution(a, b)` | $$\displaystyle c_k = \sum_{i\mathbin{\vert}j=k} a_i b_j$$ | $$O(N\log N)$$ |
+| `xor_convolution(a, b)` | $$\displaystyle c_k = \sum_{i\mathbin{\oplus}j=k} a_i b_j$$ | $$O(N\log N)$$ |
 
 添字 `i,j` に AND・OR・XOR を適用し、その添字へ積 `a[i]*b[j]` を加えます。入力を変更せず、新しい配列を返します。短い配列の不足分は 0 で埋めます。どちらかが空なら空配列です。
 

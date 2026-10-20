@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-19T05:54:12.782164+00:00",
+  "success": true,
+  "source_hashes_unchanged": true,
+  "selection_sha256": "04844928ae69a702212181f3ad9f229aefc381fad60143c4f15e4f718281fb7c",
+  "records": {
+    "fps_round4_docs.log": "1c94863c7dbdde510be6ea5bf38efa5d594c4f797d849a8ce23981102350f777",
+    "fps_round4_docs_audit.json": "50469f4c18d4f408be2dcd002db2d9efce896beb079655163025c52cd68ee957",
+    "fps_round4_docs_commands.json": "fed8cea6052a0dc638ec266d6918b6dff8e45452d18129e20657e26e56fff25a",
+    "fps_round4_docs_driver.log": "952473d0e3b0a90e4d03c613bf9566c69bd513b26fff114086ba3baadcb7f078",
+    "fps_round4_docs_result.json": "8a570b475b12682efe5910bccdac19a07924e2733fdfeae568af1c90e2cb33a8",
+    "fps_round4_docs_sources_after.json": "38ec4e59dbd678615830bdea8fcc4c203447c0db34fd4e03daa051d775bdf6eb",
+    "fps_round4_docs_sources_before.json": "38ec4e59dbd678615830bdea8fcc4c203447c0db34fd4e03daa051d775bdf6eb"
+  },
+  "harness": {
+    "path": "test/benchmark/fps_round4_docs.py",
+    "sha256": "df93a9bf6bb6049ac1bc5864af90b8a360cbe66dcad84e10c890d0bb607f0815"
+  }
+}

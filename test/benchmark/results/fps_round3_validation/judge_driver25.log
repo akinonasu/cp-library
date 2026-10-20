@@ -1,0 +1,8 @@
+test/gcd_convolution.test.cpp 29 passed
+dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/gcd_convolution.test.cpp
+gcd_convolution.test.o: \
+ /workspace/cp-library/test/gcd_convolution.test.cpp \
+ /workspace/cp-library/test/../convolution/gcd_lcm_convolution.hpp \
+ /workspace/cp-library/test/../convolution/../components/divisor_zeta.hpp \
+ /workspace/cp-library/test/../convolution/../components/../math/prime_sieve.hpp \
+ /workspace/cp-library/test/../math/mint.hpp

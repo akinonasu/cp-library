@@ -1,0 +1,16 @@
+--- a/components/fps_composition.hpp
++++ b/components/fps_composition.hpp
+@@ -2069,10 +2069,10 @@
+ 	Arena arena(Transform::words(lg) + Arena::footprint(nf) + Arena::footprint(ng) +
+ 				Arena::footprint(n) + Arena::footprint(compose_scratch(n)));
+ 	const Transform t(arena, lg);
+-	auto a = arena.take(nf), b = arena.take(ng), c = arena.take(n);
+-	for (std::size_t i = 0; i < nf; ++i) a[i] = std::min(f[i].v, f[i].v - Mint::mod());
++	arena.take(nf);
++	auto b = arena.take(ng), c = arena.take(n);
+ 	for (std::size_t i = 0; i < ng; ++i) b[i] = coefficient_value(g[i]);
+-	compose_imported(t, std::span<const std::uint32_t>(a), b, c, arena.take(compose_scratch(n)), &t);
++	compose_imported(t, std::span<const Mint>(f, nf), b, c, arena.take(compose_scratch(n)), &t);
+ 	append_fps_words<true>(out, c.data(), c.size());
+ }
+ inline void native_weighted_projection(const Mint *g, std::size_t ng, const Mint *weights,

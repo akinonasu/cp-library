@@ -49,7 +49,7 @@
 
 ## 検証と再現
 
-`fps_composition_tables` は小さい表から最大 $m=2^{21}$ まで、独立して生成した根・逆根と借用した表の一致、空の作業領域での借用、表が足りない場合の独立生成を確認する。既存 `fps_composition_blocked` に 16,385 項を加え、2 冪をまたぐ次数で raw API、合成・重み付き射影の双対性、合成逆元の両側の恒等式、入力保存、汚した作業領域を確認する。最終版の通常・ASan/UBSan は [記録](results/fps_composition_round2_check.json) と [ログ](results/fps_composition_round2_check.log) を参照する。統合後の公式ケースは総合検証に含める。
+`fps_composition_tables` は小さい表から最大 $$m=2^{21}$$ まで、独立して生成した根・逆根と借用した表の一致、空の作業領域での借用、表が足りない場合の独立生成を確認する。既存 `fps_composition_blocked` に 16,385 項を加え、2 冪をまたぐ次数で raw API、合成・重み付き射影の双対性、合成逆元の両側の恒等式、入力保存、汚した作業領域を確認する。最終版の通常・ASan/UBSan は [記録](results/fps_composition_round2_check.json) と [ログ](results/fps_composition_round2_check.log) を参照する。統合後の公式ケースは総合検証に含める。
 
 ```sh
 mkdir -p /tmp/cp-fps-round2-base

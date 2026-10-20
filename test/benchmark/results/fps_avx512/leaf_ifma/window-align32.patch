@@ -1,0 +1,11 @@
+--- a/components/fps_blocked.hpp
++++ b/components/fps_blocked.hpp
+@@ -2828,7 +2828,7 @@
+ 	f[2] = times(diff(ab, cd), w.x), f[3] = times(diff(amb, cmd), w.x);
+ }
+ 
+-struct alignas(64) Window {
++struct alignas(32) Window {
+ 	std::uint32_t word[17];
+ };
+ 

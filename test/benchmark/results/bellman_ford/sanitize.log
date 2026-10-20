@@ -1,0 +1,3 @@
+clang++: bellman_ford.cpp
+clang++: shortest_path_scc.cpp
+Verification passed

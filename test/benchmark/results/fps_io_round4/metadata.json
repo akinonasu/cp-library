@@ -1,0 +1,239 @@
+{
+  "baseline": "7521ea8703a362aaf3ccd370188fccab86050848",
+  "adopted_variants": [],
+  "decision": "Every candidate was rejected. Nine-trial gains of tile/shift/resize/extra allocation did not generalize or reproduce in the 21-trial confirmation. Lower minor faults alone did not imply lower whole time.",
+  "headers": {
+    "baseline": {
+      "components/fast_io_bulk.hpp": "6ec128d4bdb81ccbfda82cf12ad934dc90a9d0155e3e6223e28c721b4fb51e4f",
+      "components/fps_io.hpp": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "parser_montgomery": {
+      "components/fast_io_bulk.hpp": "518991fb8ab4c479cd735b6310e78b52e3633da69152ea75289681de7279a56f",
+      "components/fps_io.hpp": "149bdb286a463077be240089206febdcf9e2c4a0e08d65b653c802d4e8b340ad",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "parser_split_montgomery": {
+      "components/fast_io_bulk.hpp": "2480f02d2f3b6623901162438772e074e1fcab78e59cc02391a32441e62399b4",
+      "components/fps_io.hpp": "97a2edb173b3d2a40342d80c5161daa507f14a53ac7ba475ba2479e56a84a8bb",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "parser_tile4": {
+      "components/fast_io_bulk.hpp": "a8a18b90f5474b09271585a308e47a4a2081c3a09d5a969dc3a8577947cccd48",
+      "components/fps_io.hpp": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "output_shift_ni": {
+      "components/fast_io_bulk.hpp": "6ec128d4bdb81ccbfda82cf12ad934dc90a9d0155e3e6223e28c721b4fb51e4f",
+      "components/fps_io.hpp": "03a34018a07d334d11bd8f023a278f923a1557e5d4cc4a331f6e381eec6cc0f6",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "tile4_shift_ni": {
+      "components/fast_io_bulk.hpp": "a8a18b90f5474b09271585a308e47a4a2081c3a09d5a969dc3a8577947cccd48",
+      "components/fps_io.hpp": "03a34018a07d334d11bd8f023a278f923a1557e5d4cc4a331f6e381eec6cc0f6",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "input_resize": {
+      "components/fast_io_bulk.hpp": "6ec128d4bdb81ccbfda82cf12ad934dc90a9d0155e3e6223e28c721b4fb51e4f",
+      "components/fps_io.hpp": "567d49979660418ce2c1bb548c23ea172526e21a6ecea55c1a4d79ea8a68bc25",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "input_iterator": {
+      "components/fast_io_bulk.hpp": "6ec128d4bdb81ccbfda82cf12ad934dc90a9d0155e3e6223e28c721b4fb51e4f",
+      "components/fps_io.hpp": "2c58dd743b16b27900bbce60c77a78d9b6593b65285294f4c76b480c486403a4",
+      "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "input_extra_capacity": {
+      "components/fast_io_bulk.hpp": "6ec128d4bdb81ccbfda82cf12ad934dc90a9d0155e3e6223e28c721b4fb51e4f",
+      "components/fps_io.hpp": "622cf319abab56fce2d977e43c109a2f3b502e5df453393cf7f4a0de2352415c",
+      "components/fps_output.hpp": "1f6b27400f4f21ec7abdc12b0da0c4c4df80cf3edbca08a1e36afb381730d942"
+    },
+    "resize_extra_capacity": {
+      "components/fast_io_bulk.hpp": "6ec128d4bdb81ccbfda82cf12ad934dc90a9d0155e3e6223e28c721b4fb51e4f",
+      "components/fps_io.hpp": "ba10588f8a873cb7f922961d3e79bfe6e075408bb1037d5763b8754146a6bf5e",
+      "components/fps_output.hpp": "1f6b27400f4f21ec7abdc12b0da0c4c4df80cf3edbca08a1e36afb381730d942"
+    }
+  },
+  "patches": {
+    "parser_montgomery": "b281500639e86f95dede0901916204c5e7594a36d25d7b7ad345f3c353883c44",
+    "parser_split_montgomery": "01db62b94c02f02f98c9c434870c115789634019d15bc44684d8388f143d40b1",
+    "parser_tile4": "d06bab32fccc64095e35cfd2f0dc1276a89eaa3ea3472a06dfbb814784ab43db",
+    "output_shift_ni": "da40cada8d3dc43fe28146d93aca4f874d6b412288cca6393b86df0f382ba9ac",
+    "tile4_shift_ni": "e21499eb231220b5edcf872de424edb475fe45d46d9bac999605309e87ab4410",
+    "input_resize": "65d996f00cfe1eda642732977d241ae5882357524eb2fac3411031359af7c386",
+    "input_iterator": "38e1f544b190cff707c8c2db62c342ad1722859c9370785041d0472dda4ec3f0",
+    "input_extra_capacity": "efc8c572d9833bbfcce08947dcc9b0bde3246b979f4f756562fef1f2b313dc94",
+    "resize_extra_capacity": "e114c78023c0d240a778485d2b5ffcf0289365b99c2a3398cd8b10a02e5db4a5"
+  },
+  "raw_experiments": {
+    "parser_first9": {
+      "sha256": "07602620da5e73a4ec288d6e47d4db38cb7726e68a3a00200fd5158bed740f33",
+      "checker_calls_including_warmups": 150,
+      "trials": 9,
+      "variants": [
+        "baseline",
+        "parser_montgomery",
+        "reference"
+      ],
+      "cases": [
+        "convolution_mod:max_random_00",
+        "convolution_mod:max_random_01",
+        "convolution_mod:small_and_large_01",
+        "log_of_formal_power_series:max_random_00",
+        "log_of_formal_power_series:max_random_01"
+      ]
+    },
+    "split_tile_first9": {
+      "sha256": "ee3566d7507da1dc38cc1e32780fb3e7b5c3b57d79e60237dee57df2f045d7dd",
+      "checker_calls_including_warmups": 200,
+      "trials": 9,
+      "variants": [
+        "baseline",
+        "parser_split_montgomery",
+        "parser_tile4",
+        "reference"
+      ],
+      "cases": [
+        "convolution_mod:max_random_00",
+        "convolution_mod:max_random_01",
+        "convolution_mod:small_and_large_01",
+        "log_of_formal_power_series:max_random_00",
+        "log_of_formal_power_series:max_random_01"
+      ]
+    },
+    "output_shift_first9": {
+      "sha256": "60416a26715a7fbe6e91753b0743d27a469729088493039bb16ceb83249aaf79",
+      "checker_calls_including_warmups": 150,
+      "trials": 9,
+      "variants": [
+        "baseline",
+        "output_shift_ni",
+        "reference"
+      ],
+      "cases": [
+        "convolution_mod:max_random_00",
+        "convolution_mod:max_random_01",
+        "convolution_mod:small_and_large_01",
+        "log_of_formal_power_series:max_random_00",
+        "log_of_formal_power_series:max_random_01"
+      ]
+    },
+    "tile_shift_confirm21": {
+      "sha256": "9efb4d7a3338037ee583775466227c058cb1dd93877df030a69863ea922f1fc5",
+      "checker_calls_including_warmups": 770,
+      "trials": 21,
+      "variants": [
+        "baseline",
+        "parser_tile4",
+        "output_shift_ni",
+        "tile4_shift_ni",
+        "reference"
+      ],
+      "cases": [
+        "convolution_mod:max_random_00",
+        "convolution_mod:max_random_01",
+        "convolution_mod:small_and_large_01",
+        "convolution_mod:all_same_00",
+        "convolution_mod:all_same_01",
+        "log_of_formal_power_series:max_random_00",
+        "log_of_formal_power_series:max_random_01"
+      ]
+    },
+    "input_construct_first9": {
+      "sha256": "f6e6557aaa639fa6ae8e1002bd4dfd38122108dccbb97924af7df9538e279f5f",
+      "checker_calls_including_warmups": 240,
+      "trials": 9,
+      "variants": [
+        "baseline",
+        "input_resize",
+        "input_iterator",
+        "reference"
+      ],
+      "cases": [
+        "convolution_mod:max_random_00",
+        "convolution_mod:max_random_01",
+        "convolution_mod:small_and_large_01",
+        "convolution_mod:all_same_00",
+        "log_of_formal_power_series:max_random_00",
+        "log_of_formal_power_series:max_random_01"
+      ]
+    },
+    "extra_capacity_first9": {
+      "sha256": "b5fdf3dbc710d28460b21cbfbac8f5c7fd255a22dd9f947fb8d4dc367a416c18",
+      "checker_calls_including_warmups": 300,
+      "trials": 9,
+      "variants": [
+        "baseline",
+        "input_resize",
+        "input_extra_capacity",
+        "resize_extra_capacity",
+        "reference"
+      ],
+      "cases": [
+        "convolution_mod:max_random_00",
+        "convolution_mod:max_random_01",
+        "convolution_mod:small_and_large_01",
+        "convolution_mod:all_same_00",
+        "log_of_formal_power_series:max_random_00",
+        "log_of_formal_power_series:max_random_01"
+      ]
+    },
+    "construct_extra_confirm21": {
+      "sha256": "211d0bf255529b8b30df8121a3cc9e06236ccd9d50bd88d1739e08e4033a6fed",
+      "checker_calls_including_warmups": 704,
+      "trials": 21,
+      "variants": [
+        "baseline",
+        "input_resize",
+        "input_extra_capacity",
+        "reference"
+      ],
+      "cases": [
+        "convolution_mod:max_random_00",
+        "convolution_mod:max_random_01",
+        "convolution_mod:small_and_large_01",
+        "convolution_mod:all_same_00",
+        "convolution_mod:all_same_01",
+        "log_of_formal_power_series:max_random_00",
+        "log_of_formal_power_series:max_random_01",
+        "log_of_formal_power_series:max_all_zero_00"
+      ]
+    },
+    "extra_memory9": {
+      "sha256": "da4e81bb6394a19d8e7dbc0f887e8b8359bd660ed225f426b1fe1e0c0b884e1f",
+      "checker_calls_including_warmups": 90,
+      "trials": 9,
+      "variants": [
+        "baseline",
+        "input_extra_capacity",
+        "reference"
+      ],
+      "cases": [
+        "convolution_mod:max_random_00",
+        "convolution_mod:small_and_large_01",
+        "log_of_formal_power_series:max_random_00"
+      ]
+    }
+  },
+  "references": {
+    "convolution_mod": {
+      "id": 409465,
+      "sha256": "6cd230b64c18b2d41870f0be209727b019e0b7fca6b036f19f9d802b9d0a883d"
+    },
+    "log_of_formal_power_series": {
+      "id": 409452,
+      "sha256": "86ef3c3b4a4707ef5e7515e5229b2564f2a5f46bd830bb6cbe64b506a95675b6"
+    }
+  },
+  "all_checker_calls": 2604,
+  "private_outputs": "All actual final output files remain under /workspace/cp-fps-round4/io; all per-trial output hashes are in raw JSON. Large generated outputs/binaries are not committed; replay regenerates them and runs each checker.",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "official_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae"
+}

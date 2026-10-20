@@ -56,8 +56,8 @@ def main():
         'metric': 'wall time including startup, input, construction, queries, output and exit',
         'sources': {name: sha(path) for name, path in sources.items()},
         'headers': {name: sha(ROOT / name) for name in [
-            'graph/static_top_tree.hpp', 'components/static_top_tree_structure.hpp',
-            'graph/hld.hpp', 'components/fast_io.hpp', 'math/mint.hpp',
+            'data_structure/advanced/static_top_tree.hpp', 'components/static_top_tree_structure.hpp',
+            'data_structure/advanced/hld.hpp', 'components/fast_io.hpp', 'math/mint.hpp',
             'test/static_top_tree_dp.hpp']}, 'workloads': {},
     }
     for shape in ['random', 'chain', 'star', 'balanced', 'broom']:

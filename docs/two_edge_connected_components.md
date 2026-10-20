@@ -1,10 +1,12 @@
 ---
-title: "二辺連結成分分解"
-documentation_of: //graph/two_edge_connected_components.hpp
+title: 二辺連結成分分解
+documentation_of: //graph/connectivity/two_edge_connected_components.hpp
+redirect_from:
+- /graph/two_edge_connected_components.hpp.html
 ---
 
 ```cpp
-#include "lib/graph/two_edge_connected_components.hpp"
+#include "lib/graph/connectivity/two_edge_connected_components.hpp"
 
 TwoEdgeConnectedComponents graph(4);
 graph.add_edge(0, 1);
@@ -41,6 +43,6 @@ auto forest = graph.forest();
 
 `n`・`component`・`bridges`・構築済みの `edges` は直接書き換えないでください。辺の追加前に `edges.reserve(m)` で領域を確保できます。頂点数は `INT_MAX` 未満、辺数は `INT_MAX/2` 以下としてください。
 
-CSR と反復 DFS を使います。成分が確定するたびに頂点スタックから取り出し、保存する頂点一覧と作業用スタックに同じ配列を使います。関節点も必要な場合は [Low-Link](https://qandori.github.io/cp-library/graph/low_link.hpp.html) を使えます。
+CSR と反復 DFS を使います。成分が確定するたびに頂点スタックから取り出し、保存する頂点一覧と作業用スタックに同じ配列を使います。関節点も必要な場合は [Low-Link](https://qandori.github.io/cp-library/graph/connectivity/low_link.hpp.html) を使えます。
 
 頂点数を $$n$$、辺数を $$m$$、成分数を $$k$$、橋の本数を $$b$$ とすると、`build()` は $$O(n+m)$$ 時間・空間です。`add_edge` は償却 $$O(1)$$、`group`・`same`・`component_count`・`is_bridge` は $$O(1)$$ 時間です。`groups` は $$O(n+k)$$、`forest` は $$O(k+b)$$ 時間・追加空間です。

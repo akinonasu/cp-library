@@ -1,0 +1,7 @@
+max_sparse_random_01 {'phase_f4': 13.957, 'phase_bd': 13.961, 'own_bd': 13.84, 'own_f4': 14.076}
+line_00 {'own_bd': 20.256, 'phase_f4': 31.97, 'phase_bd': 20.544, 'own_f4': 30.997}
+max_star_01 {'phase_f4': 17.786, 'phase_bd': 10.265, 'own_bd': 10.256, 'own_f4': 17.498}
+wrong_dijkstra_killer_01 {'phase_f4': 28.566, 'own_f4': 29.244, 'phase_bd': 26.507, 'own_bd': 26.78}
+grid_swirl_00 {'own_bd': 15.954, 'phase_bd': 16.798, 'phase_f4': 19.554, 'own_f4': 17.04}
+max_sparse_random_00 {'own_bd': 9.219, 'phase_bd': 9.314, 'own_f4': 9.737, 'phase_f4': 9.926}
+All paths checked

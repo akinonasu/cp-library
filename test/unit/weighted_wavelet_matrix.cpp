@@ -1,4 +1,4 @@
-#include "data_structure/weighted_wavelet_matrix.hpp"
+#include "data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <random>

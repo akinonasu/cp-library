@@ -1,0 +1,5 @@
+g++: standalone math/floor_sum/generalized_floor_sum.hpp
+g++: generalized_floor_sum.cpp
+clang++: standalone math/floor_sum/generalized_floor_sum.hpp
+clang++: generalized_floor_sum.cpp
+Verification passed

@@ -36,7 +36,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     os.sched_setaffinity(0, {args.cpu})
     flags = ['-std=c++23', '-O2', '-DEVAL', '-DONLINE_JUDGE', '-march=native', '-ftrivial-auto-var-init=zero']
-    sources = ['components/weighted_blossom.hpp', 'graph/general_weighted_matching.hpp', 'components/fast_io.hpp',
+    sources = ['components/weighted_blossom.hpp', 'graph/matching/general_weighted_matching.hpp', 'components/fast_io.hpp',
                'test/general_weighted_matching.test.cpp', 'test/benchmark/general_weighted_matching.cpp', 'test/benchmark/general_weighted_matching.py']
     environment = dict(date=datetime.now(timezone.utc).isoformat(), flags=flags,
                        compiler=subprocess.check_output(['g++', '--version'], text=True),
@@ -50,7 +50,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='cp-weighted-matching-', dir='/tmp') as directory:
         work = Path(directory)
         core = (ROOT / 'components/weighted_blossom.hpp').read_text()
-        wrapper = (ROOT / 'graph/general_weighted_matching.hpp').read_text()
+        wrapper = (ROOT / 'graph/matching/general_weighted_matching.hpp').read_text()
         has_greedy = GREEDY in core
         variants = ['current', 'greedy', 'int64', 'int128']
         for name in variants:
@@ -67,8 +67,8 @@ def main():
             if name in ['int64', 'int128']:
                 integer = 'std::int64_t' if name == 'int64' else '__int128_t'
                 modified = modified[:begin] + f'\t\tweighted_matching_detail::Blossom<{integer}>(n, weights, maximum).solve(mate);' + modified[end:]
-            (folder / 'graph/general_weighted_matching.hpp').write_text(modified)
-        driver = (ROOT / 'test/general_weighted_matching.test.cpp').read_text().replace('"../components/fast_io.hpp"', '"components/fast_io.hpp"').replace('"../graph/general_weighted_matching.hpp"', '"graph/general_weighted_matching.hpp"')
+            (folder / 'graph/matching/general_weighted_matching.hpp').write_text(modified)
+        driver = (ROOT / 'test/general_weighted_matching.test.cpp').read_text().replace('"../components/fast_io.hpp"', '"components/fast_io.hpp"').replace('"../graph/matching/general_weighted_matching.hpp"', '"graph/matching/general_weighted_matching.hpp"')
         (work / 'driver.cpp').write_text(driver)
         binaries, kernels = {}, {}
         for name in variants:

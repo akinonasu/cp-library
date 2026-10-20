@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/jump_on_tree"
-#include "../graph/hld.hpp"
+#include "../data_structure/advanced/hld.hpp"
 #include <iostream>
 
 int main() {

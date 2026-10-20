@@ -1,4 +1,4 @@
-#include "data_structure/dynamic_segtree.hpp"
+#include "data_structure/segment_tree/dynamic_segtree.hpp"
 #include "components/fast_io.hpp"
 #include <bit>
 #include <cstdint>

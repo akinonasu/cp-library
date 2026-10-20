@@ -1,0 +1,12 @@
+built before
+built borrow32
+built borrow2m
+built reference
+checked borrow32 53
+checked borrow2m 53
+max_random_00 {'before': 14.876919, 'borrow32': 15.668219, 'borrow2m': 16.916114, 'reference': 11.350375} {'borrow32': -0.7166290000000011, 'borrow2m': -1.8797339999999991} {'borrow32': 3, 'borrow2m': 0}
+max_random_01 {'before': 14.673908, 'borrow32': 15.504174, 'borrow2m': 16.59499, 'reference': 11.344296} {'borrow32': -0.9108079999999994, 'borrow2m': -1.9351549999999982} {'borrow32': 2, 'borrow2m': 0}
+max_ans_zero_00 {'before': 14.686055, 'borrow32': 15.904085, 'borrow2m': 16.969353, 'reference': 11.359912} {'borrow32': -0.9078929999999996, 'borrow2m': -2.2173350000000003} {'borrow32': 1, 'borrow2m': 1}
+fft_killer_09 {'before': 15.483714, 'borrow32': 16.676642, 'borrow2m': 17.530625, 'reference': 11.770398} {'borrow32': -0.9257299999999979, 'borrow2m': -2.1300549999999987} {'borrow32': 3, 'borrow2m': 0}
+small_and_large_03 {'before': 11.099378, 'borrow32': 12.305487, 'borrow2m': 13.572764, 'reference': 9.007389} {'borrow32': -1.2491520000000005, 'borrow2m': -2.384024} {'borrow32': 2, 'borrow2m': 0}
+medium_02 {'before': 1.47544, 'borrow32': 1.462451, 'borrow2m': 2.531906, 'reference': 1.257996} {'borrow32': -0.005438999999999972, 'borrow2m': -1.098558} {'borrow32': 10, 'borrow2m': 0}

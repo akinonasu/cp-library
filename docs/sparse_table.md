@@ -1,10 +1,12 @@
 ---
-title: "Sparse Table"
-documentation_of: //data_structure/sparse_table.hpp
+title: Sparse Table
+documentation_of: //data_structure/range_query/sparse_table.hpp
+redirect_from:
+- /data_structure/sparse_table.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/sparse_table.hpp"
+#include "lib/data_structure/range_query/sparse_table.hpp"
 
 int op(int a, int b) { return std::min(a, b); }
 
@@ -26,7 +28,7 @@ auto value = table.prod(0, 2); // 2
 
 空区間も使う場合は単位元を返す関数 `e()` を定義し、`SparseTable<S, op, e>` とします。`build(a)` または `build(n, value)` で再構築でき、後者は `value(i)` を各要素とします。
 
-冪等性は `op(x,x)==x` という条件です。最小値・最大値・gcd などに使えます。総和のようにこの条件を満たさない演算には [Disjoint Sparse Table](https://qandori.github.io/cp-library/data_structure/disjoint_sparse_table.hpp.html) を使います。構築後の要素は固定です。別の配列に変える場合は `build` を呼び直します。
+冪等性は `op(x,x)==x` という条件です。最小値・最大値・gcd などに使えます。総和のようにこの条件を満たさない演算には [Disjoint Sparse Table](https://qandori.github.io/cp-library/data_structure/range_query/disjoint_sparse_table.hpp.html) を使います。構築後の要素は固定です。別の配列に変える場合は `build` を呼び直します。
 
 `prod_unchecked(l, r)` は境界検査を省略します。非空の区間を指定してください。
 

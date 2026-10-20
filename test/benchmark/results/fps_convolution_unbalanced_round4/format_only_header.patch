@@ -1,0 +1,16 @@
+--- unit_header_before_format.hpp
++++ fps_convolution_unbalanced.hpp
+@@ -1,9 +1,13 @@
+ #ifndef CP_COMPONENTS_FPS_CONVOLUTION_UNBALANCED_HPP
+ #define CP_COMPONENTS_FPS_CONVOLUTION_UNBALANCED_HPP
++
+ #include "fps_blocked.hpp"
+ #include <algorithm>
+ #include <bit>
++#include <cstddef>
++#include <span>
+ #include <vector>
++
+ #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+ #pragma GCC push_options
+ #pragma GCC optimize("O3")

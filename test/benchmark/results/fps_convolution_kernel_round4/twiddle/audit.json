@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "context_only_change_is_target_pragma": true,
+  "candidate_only_change_is_forward_pair": true,
+  "forward_pair_restores_byte_exactly_after_reversing_twiddle_replacements": true,
+  "original_archive_manifest_sha256": "05bf4b70b06995dc65e87ffcb23e2ab72495ff5456512e5156017c1bc9eef439",
+  "original_archive_all_files_unchanged": true,
+  "checker_passes": 80,
+  "paired": [
+    {
+      "case": "max_random_00",
+      "paired_regs_minus_context_median_ms": 0.20088999999999935,
+      "regs_wins": 3,
+      "trials": 9
+    },
+    {
+      "case": "max_random_01",
+      "paired_regs_minus_context_median_ms": 0.02830200000000005,
+      "regs_wins": 4,
+      "trials": 9
+    }
+  ]
+}

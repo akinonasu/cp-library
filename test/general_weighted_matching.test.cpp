@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/general_weighted_matching"
 #include "../components/fast_io.hpp"
-#include "../graph/general_weighted_matching.hpp"
+#include "../graph/matching/general_weighted_matching.hpp"
 
 int main() {
 	FastInput in;

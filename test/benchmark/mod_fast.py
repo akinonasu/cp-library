@@ -24,8 +24,8 @@ def main():
     flags = ['-std=c++2b', '-O2', '-DNDEBUG', '-Wall', '-Wextra', '-Werror']
     if args.native:
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
-    paths = ['components/mod_fast_core.hpp', 'math/mod_inv.hpp', 'math/mod_pow.hpp',
-             'math/mint.hpp', 'math/is_prime.hpp', 'components/montgomery.hpp',
+    paths = ['components/mod_fast_core.hpp', 'math/number_theory/mod_inv.hpp', 'math/number_theory/mod_pow.hpp',
+             'math/mint.hpp', 'math/number_theory/is_prime.hpp', 'components/montgomery.hpp',
              'components/splitmix64.hpp', 'test/benchmark/mod_fast.cpp', 'test/benchmark/mod_fast.py']
     env = {'compiler': subprocess.check_output(['g++', '--version'], text=True), 'flags': flags,
            'cpu': subprocess.check_output(['lscpu'], text=True), 'uname': subprocess.check_output(['uname', '-a'], text=True),

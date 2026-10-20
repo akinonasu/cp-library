@@ -1,0 +1,22 @@
+{
+  "verification": [
+    "test/binomial_prefix_sum_offline.test.cpp",
+    "test/bitwise_xor_convolution.test.cpp",
+    "test/cyclic_convolution.test.cpp",
+    "test/fps_bostan_mori.test.cpp",
+    "test/fps_compositional_inverse.test.cpp",
+    "test/fps_exp.test.cpp",
+    "test/fps_inv.test.cpp",
+    "test/fps_log.test.cpp",
+    "test/fps_taylor_shift.test.cpp",
+    "test/lazy_reversible_treap_affine.test.cpp",
+    "test/matrix_adjugate.test.cpp",
+    "test/matrix_inverse.test.cpp",
+    "test/matrix_rank.test.cpp",
+    "test/multipoint_eval.test.cpp",
+    "test/online_convolution.test.cpp",
+    "test/ordered_convolution.test.cpp",
+    "test/polynomial_inv_mod.test.cpp",
+    "test/subset_convolution.test.cpp"
+  ]
+}

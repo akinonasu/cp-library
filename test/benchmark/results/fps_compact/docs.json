@@ -1,0 +1,31 @@
+{
+  "commands": [
+    {
+      "command": [
+        "/tmp/fps-venv/bin/python",
+        ".verify-helper/ci.py",
+        "docs",
+        "--selection",
+        "/workspace/cp-library/test/benchmark/results/fps_compact/docs_selection.json"
+      ],
+      "returncode": 0,
+      "log_sha256": "80c5afde1c051199132fdb2a5b5b6be1c54a5af626af79b580f45cd918b44260"
+    },
+    {
+      "command": [
+        "/tmp/fps-venv/bin/python",
+        ".verify-helper/check-docs.py",
+        "--selection",
+        "/workspace/cp-library/test/benchmark/results/fps_compact/docs_selection.json"
+      ],
+      "returncode": 0,
+      "log_sha256": "bbc9c8433ee5322d7746e5caf27c398013e003d00a865d8c7ed5c3a85293ad75"
+    }
+  ],
+  "source_hashes": {
+    "README.md": "b248ec5ee794badece07c8ec0e505d7b5b6376665e9102e2f22717b1540f3f3f",
+    "docs/fps.md": "f08dc26db4a9c9c1e34ba9a03ca1c8113f8b3333883b09de8fa3c80beac5fa66",
+    "submissions/README.md": "6761413d1bfd4d701d6aef881988c1423c9f141d8c08c55c3bd621af5fd2039c"
+  },
+  "status": "passed"
+}

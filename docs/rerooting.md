@@ -1,12 +1,14 @@
 ---
-title: "全方位木 DP"
-documentation_of: //graph/rerooting.hpp
+title: 全方位木 DP
+documentation_of: //tree/rerooting.hpp
+redirect_from:
+- /graph/rerooting.hpp.html
 ---
 
 全頂点をそれぞれ根にした木 DP を計算します。辺の両方向の寄与も取得できます。次は、各頂点から全頂点までの距離の総和を求める例です。
 
 ```cpp
-#include "lib/graph/rerooting.hpp"
+#include "lib/tree/rerooting.hpp"
 
 using Data = std::pair<long long, int>;
 Rerooting<Data> tree(3);

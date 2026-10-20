@@ -1,0 +1,19 @@
+--- f4aa743/components/directed_csr.hpp
++++ diagnostic/components/directed_csr.hpp
+@@ -11,6 +11,8 @@
+ #include <type_traits>
+ #include <utility>
+ #include <vector>
++
++namespace reproduce { inline std::uintptr_t offset, arcs, edges; }
+ 
+ template<class T>
+ class DirectedCSR {
+@@ -26,6 +28,7 @@
+ 	void finish(std::span<const Edge> edges) {
+ 		for (std::size_t v = 1; v < offset_.size(); ++v) offset_[v] += offset_[v - 1];
+ 		arcs_.resize(edges.size());
++		reproduce::offset = reinterpret_cast<std::uintptr_t>(offset_.data()); reproduce::arcs = reinterpret_cast<std::uintptr_t>(arcs_.data()); reproduce::edges = reinterpret_cast<std::uintptr_t>(edges.data());
+ 		for (std::size_t i = edges.size(); i; --i) {
+ 			const auto &edge = edges[i - 1];
+ 			arcs_[--offset_[edge.from]] = {edge.to, edge.weight};

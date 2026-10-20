@@ -1,5 +1,5 @@
 #ifndef WM_OPT_HEADER
-#define WM_OPT_HEADER "data_structure/wavelet_matrix.hpp"
+#define WM_OPT_HEADER "data_structure/wavelet_matrix/wavelet_matrix.hpp"
 #endif
 #include WM_OPT_HEADER
 #include <chrono>

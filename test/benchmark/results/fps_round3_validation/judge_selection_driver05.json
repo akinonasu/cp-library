@@ -1,0 +1,5 @@
+{
+  "verification": [
+    "test/convolution.test.cpp"
+  ]
+}

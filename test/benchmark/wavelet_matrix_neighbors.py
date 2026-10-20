@@ -28,7 +28,7 @@ cases += [(200000, m, o, length)
           for o in (4, 5)]
 with tempfile.TemporaryDirectory(prefix='wavelet-neighbors-') as directory:
     temporary = pathlib.Path(directory)
-    for name in ('data_structure/wavelet_matrix.hpp', 'components/quad_bit_vector.hpp'):
+    for name in ('data_structure/wavelet_matrix/wavelet_matrix.hpp', 'components/quad_bit_vector.hpp'):
         destination = temporary / name
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(subprocess.check_output(
@@ -37,7 +37,7 @@ with tempfile.TemporaryDirectory(prefix='wavelet-neighbors-') as directory:
         raise RuntimeError('this paired benchmark requires an unchanged QuadBitVector')
     binary = temporary / 'benchmark'
     command = [args.compiler, '-std=c++23', '-O2', f'-I{root}',
-               f'-DWAVELET_BASELINE_HEADER="{temporary / "data_structure/wavelet_matrix.hpp"}"']
+               f'-DWAVELET_BASELINE_HEADER="{temporary / "data_structure/wavelet_matrix/wavelet_matrix.hpp"}"']
     if args.native:
         command.append('-march=native')
     if args.candidate_first:
@@ -46,7 +46,7 @@ with tempfile.TemporaryDirectory(prefix='wavelet-neighbors-') as directory:
     subprocess.run(command, check=True)
     print(json.dumps({'metadata': {
         'baseline': subprocess.check_output(['git', 'rev-parse', args.baseline], cwd=root, text=True).strip(),
-        'candidate_sha256': hashlib.sha256((root / 'data_structure/wavelet_matrix.hpp').read_bytes()).hexdigest(),
+        'candidate_sha256': hashlib.sha256((root / 'data_structure/wavelet_matrix/wavelet_matrix.hpp').read_bytes()).hexdigest(),
         'compiler': subprocess.check_output([args.compiler, '--version'], text=True).splitlines()[0],
         'native': args.native, 'candidate_first': args.candidate_first,
         'seconds': args.seconds, 'pairs': args.pairs, 'uniform_bounds': args.uniform_bounds}}), flush=True)

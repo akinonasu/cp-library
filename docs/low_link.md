@@ -1,10 +1,12 @@
 ---
-title: "Low-Link"
-documentation_of: //graph/low_link.hpp
+title: Low-Link
+documentation_of: //graph/connectivity/low_link.hpp
+redirect_from:
+- /graph/low_link.hpp.html
 ---
 
 ```cpp
-#include "lib/graph/low_link.hpp"
+#include "lib/graph/connectivity/low_link.hpp"
 
 LowLink graph(3);
 int id = graph.add_edge(0, 1);

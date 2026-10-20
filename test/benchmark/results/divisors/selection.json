@@ -1,0 +1,18 @@
+{
+  "headers": [
+    "math/number_theory/discrete_log.hpp",
+    "math/number_theory/factorize.hpp",
+    "convolution/multiplicative_convolution.hpp"
+  ],
+  "unit": [
+    "test/unit/convolution.cpp",
+    "test/unit/discrete_log.cpp",
+    "test/unit/divisors.cpp",
+    "test/unit/factorize.cpp",
+    "test/unit/primality_arithmetic.cpp",
+    "test/unit/standalone.cpp"
+  ],
+  "sanitize": [
+    "test/unit/divisors.cpp"
+  ]
+}

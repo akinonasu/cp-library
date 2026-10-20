@@ -1,0 +1,8 @@
+built base
+built karatsuba4
+built reference
+waiting EX
+acquired EX
+max_random_00 {'base': 12.1983, 'karatsuba4': 13.26231, 'reference': 9.95077}
+max_random_01 {'base': 12.30112, 'karatsuba4': 13.80627, 'reference': 9.94458}
+all_same_00 {'base': 12.80209, 'karatsuba4': 13.8912, 'reference': 8.50509}

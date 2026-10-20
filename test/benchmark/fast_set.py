@@ -53,7 +53,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     os.sched_setaffinity(0, {args.cpu})
     flags = ['-std=c++23', '-O2', '-DEVAL', '-DONLINE_JUDGE', '-march=native', '-ftrivial-auto-var-init=zero']
-    sources = ['components/predecessor_set.hpp', 'data_structure/sortable_segtree.hpp',
+    sources = ['components/predecessor_set.hpp', 'data_structure/segment_tree/sortable_segtree.hpp',
                'components/fast_io.hpp', 'test/predecessor_set.test.cpp', 'test/sortable_segtree.test.cpp',
                'test/benchmark/fast_set.cpp', 'test/benchmark/fast_set.py']
     environment = dict(date=datetime.now(timezone.utc).isoformat(), flags=flags,
@@ -91,10 +91,10 @@ def main():
             subprocess.run(['g++', *flags, '-I', str(ROOT), '-I', str(work), str(source), '-o', str(binaries[name])], check=True)
         subprocess.run(['g++', *flags, '-I', str(ROOT), '-I', str(work), str(ROOT / 'test/benchmark/fast_set.cpp'), '-o', str(work / 'kernel')], check=True)
         sortable = args.official.parent / 'point_set_range_sort_range_composite'
-        header = (ROOT / 'data_structure/sortable_segtree.hpp').read_text().replace('"../components/predecessor_set.hpp"', '"old.hpp"')
+        header = (ROOT / 'data_structure/segment_tree/sortable_segtree.hpp').read_text().replace('"../components/predecessor_set.hpp"', '"old.hpp"')
         (work / 'old_sortable.hpp').write_text(header)
         driver = (ROOT / 'test/sortable_segtree.test.cpp').read_text().replace('"../components/fast_io.hpp"', '"components/fast_io.hpp"')
-        (work / 'old_sortable.cpp').write_text(driver.replace('"../data_structure/sortable_segtree.hpp"', '"old_sortable.hpp"'))
+        (work / 'old_sortable.cpp').write_text(driver.replace('"../data_structure/segment_tree/sortable_segtree.hpp"', '"old_sortable.hpp"'))
         sort_binaries = dict(current=work / 'sort_current', before=work / 'sort_before')
         for name, source in [('current', ROOT / 'test/sortable_segtree.test.cpp'), ('before', work / 'old_sortable.cpp')]:
             subprocess.run(['g++', *flags, '-I', str(ROOT), '-I', str(work), str(source), '-o', str(sort_binaries[name])], check=True)

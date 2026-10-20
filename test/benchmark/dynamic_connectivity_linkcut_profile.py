@@ -23,7 +23,7 @@ def main():
     source = source.replace('std::puts("}");', '''std::printf(",\\\"nodes\\\":%zu,\\\"vertex_nodes\\\":%zu,\\\"node_bytes\\\":%zu", graph.benchmark_nodes(), graph.benchmark_vertices(), graph.benchmark_node_bytes());
 	std::puts("}");''')
     before = subprocess.check_output(['git', 'show', BASELINE + ':data_structure/dynamic_connectivity.hpp'], cwd=ROOT, text=True)
-    current = (ROOT / 'data_structure/dynamic_connectivity.hpp').read_text()
+    current = (ROOT / 'graph/connectivity/dynamic_connectivity.hpp').read_text()
     result = dict(baseline=BASELINE, compiler=subprocess.check_output(['g++', '--version'], text=True), cpu=subprocess.check_output(['lscpu'], text=True), affinity=[args.cpu], seed=713,
         note='Instrumented builds; operation counts and node allocation/RSS diagnostics, not performance timings', cases={})
     with tempfile.TemporaryDirectory(prefix='cp-dc-profile-') as temporary:
@@ -69,7 +69,7 @@ def main():
             assert rows['before']['checksum'] == rows['current']['checksum']
             result['cases'][case] = rows
             print(case, rows, flush=True)
-        result['source_sha256'] = {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in ['data_structure/dynamic_connectivity.hpp', 'test/benchmark/dynamic_connectivity_linkcut.cpp', 'test/benchmark/dynamic_connectivity_linkcut_profile.py']}
+        result['source_sha256'] = {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in ['graph/connectivity/dynamic_connectivity.hpp', 'test/benchmark/dynamic_connectivity_linkcut.cpp', 'test/benchmark/dynamic_connectivity_linkcut_profile.py']}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2) + '\n')
 

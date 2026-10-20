@@ -1,5 +1,5 @@
-#include "data_structure/partially_retroactive_priority_queue.hpp"
-#include "data_structure/retroactive_priority_queue.hpp"
+#include "data_structure/advanced/partially_retroactive_priority_queue.hpp"
+#include "data_structure/advanced/retroactive_priority_queue.hpp"
 #include "separate_incremental.hpp"
 #include "separate_bulk.hpp"
 #include "fused_bulk.hpp"

@@ -46,7 +46,7 @@ jobs:
           g++ -std=c++23 -O2 -DNDEBUG -Wall -Wextra -Werror -I . -I /tmp/partial-pq-variants test/benchmark/partially_retroactive_priority_queue.cpp -o /tmp/partial-pq-bench
           /tmp/partial-pq-bench 100000 10000 5 > benchmark-results/release.csv
       - name: Check current library
-        run: python3 test/benchmark/verify_selected.py data_structure/partially_retroactive_priority_queue.hpp test/unit/partially_retroactive_priority_queue.cpp
+        run: python3 test/benchmark/verify_selected.py data_structure/advanced/partially_retroactive_priority_queue.hpp test/unit/partially_retroactive_priority_queue.cpp
       - name: Verify Library Checker problem
         if: inputs.verify_judge
         run: |

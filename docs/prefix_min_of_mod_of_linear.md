@@ -1,10 +1,12 @@
 ---
-title: "Mod of Linear の Prefix Minimum"
-documentation_of: //math/prefix_min_of_mod_of_linear.hpp
+title: Mod of Linear の Prefix Minimum
+documentation_of: //math/floor_sum/prefix_min_of_mod_of_linear.hpp
+redirect_from:
+- /math/prefix_min_of_mod_of_linear.hpp.html
 ---
 
 ```cpp
-#include "lib/math/prefix_min_of_mod_of_linear.hpp"
+#include "lib/math/floor_sum/prefix_min_of_mod_of_linear.hpp"
 
 auto parts = prefix_min_of_mod_of_linear(100, 100, 71, 85);
 ```
@@ -16,7 +18,7 @@ auto parts = prefix_min_of_mod_of_linear(100, 100, 71, 85);
 | `part.x` / `part.y` / `part.dx` / `part.dy` / `part.count` | 最初の位置・値／位置の増分／値の減少幅／更新点数 | $$O(1)$$ |
 | `part == other` / `part != other` | 全フィールドの比較 | $$O(1)$$ |
 
-$$f(x)=(ax+b)\bmod m$$ の $$0\le x<n$$ において、$$x=0$$ または $$f(x)<\min_{0\le i<x} f(i)$$ を満たす位置・値を等差数列に圧縮して返します。同じ最小値が再び現れる位置は含めません。
+$$f(x)=(ax+b)\bmod m$$ の $$0\le x<n$$ において、$$x=0$$ または $$\displaystyle f(x)<\min_{0\le i<x} f(i)$$ を満たす位置・値を等差数列に圧縮して返します。同じ最小値が再び現れる位置は含めません。
 
 引数と各フィールドは `std::uint64_t`、$$m>0$$ です。$$a,b$$ は内部で正規化します。$$n=0$$ では空の結果です。
 

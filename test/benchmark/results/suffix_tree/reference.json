@@ -1,0 +1,104 @@
+{
+  "retrieved_at": "2026-10-19T20:24:28.980041+00:00",
+  "listing": {
+    "count": 4360,
+    "submissions": [
+      {
+        "id": 403148,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 6602752,
+        "problem_name": "suffixarray",
+        "problem_title": "Suffix Array",
+        "status": "AC",
+        "submission_time": "2026-09-17T07:34:04.415715Z",
+        "time": 0.021,
+        "user_name": "nandhagk"
+      },
+      {
+        "id": 403162,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 6619136,
+        "problem_name": "suffixarray",
+        "problem_title": "Suffix Array",
+        "status": "AC",
+        "submission_time": "2026-09-17T08:18:41.142749Z",
+        "time": 0.022,
+        "user_name": "nandhagk"
+      },
+      {
+        "id": 406232,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 6627328,
+        "problem_name": "suffixarray",
+        "problem_title": "Suffix Array",
+        "status": "AC",
+        "submission_time": "2026-09-26T06:42:11.223439Z",
+        "time": 0.024,
+        "user_name": "Rohan_Kapri"
+      }
+    ]
+  },
+  "references": [
+    {
+      "overview": {
+        "id": 403148,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 6602752,
+        "problem_name": "suffixarray",
+        "problem_title": "Suffix Array",
+        "status": "AC",
+        "submission_time": "2026-09-17T07:34:04.415715Z",
+        "time": 0.021,
+        "user_name": "nandhagk"
+      },
+      "sha256": "4e102493ed94eb3630617166c25b076957353495d778a475646f80160aa1f985",
+      "url": "https://judge.yosupo.jp/submission/403148"
+    },
+    {
+      "overview": {
+        "id": 403162,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 6619136,
+        "problem_name": "suffixarray",
+        "problem_title": "Suffix Array",
+        "status": "AC",
+        "submission_time": "2026-09-17T08:18:41.142749Z",
+        "time": 0.022,
+        "user_name": "nandhagk"
+      },
+      "sha256": "6ebe887942b94016ae9efe5e2275c8854ec76f023cd360b3ea1d4204be22706c",
+      "url": "https://judge.yosupo.jp/submission/403162"
+    },
+    {
+      "overview": {
+        "id": 406232,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 6627328,
+        "problem_name": "suffixarray",
+        "problem_title": "Suffix Array",
+        "status": "AC",
+        "submission_time": "2026-09-26T06:42:11.223439Z",
+        "time": 0.024,
+        "user_name": "Rohan_Kapri"
+      },
+      "sha256": "3b6cba9abfee902d7f36c31ae9b4002b1a9198f0bd8c2d9d67fac96e45f2eff2",
+      "url": "https://judge.yosupo.jp/submission/406232"
+    }
+  ],
+  "acl": [
+    {
+      "url": "https://raw.githubusercontent.com/atcoder/ac-library/864245a00b00dd008d1abfdc239618fdb7d139da/atcoder/string.hpp",
+      "sha256": "e7ffe101a268208d63c17374e970f781a1a828feb6cc6010ead78c2a709cda86"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/atcoder/ac-library/864245a00b00dd008d1abfdc239618fdb7d139da/LICENSE",
+      "sha256": "5537d4d10b76b81b6e8dfd8b644480a4b1efa332fbb0cdb61126c5be781ef7b4"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum"
-#include "../data_structure/segtree_beats.hpp"
+#include "../data_structure/advanced/segtree_beats.hpp"
 #include "../components/fast_io.hpp"
 #include <vector>
 

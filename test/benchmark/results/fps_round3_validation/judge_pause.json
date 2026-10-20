@@ -1,0 +1,22 @@
+{
+  "reason": "Root requested a gap for the primary exclusive timing window; SIGINT sent to coordinator only; ThreadPoolExecutor waited for running drivers to finish normally.",
+  "coordinator_exit_code": 130,
+  "completed_drivers": [
+    "test/bitwise_and_convolution.test.cpp",
+    "test/bitwise_xor_convolution.test.cpp",
+    "test/convolution.test.cpp",
+    "test/disjoint_sparse_table_affine.test.cpp",
+    "test/dynamic_segtree_composite.test.cpp",
+    "test/fps_bostan_mori.test.cpp",
+    "test/fps_compose.test.cpp",
+    "test/fps_compose_large.test.cpp",
+    "test/fps_compositional_inverse.test.cpp",
+    "test/fps_compositional_inverse_large.test.cpp",
+    "test/fps_divmod.test.cpp",
+    "test/fps_exp.test.cpp",
+    "test/fps_exp_sparse.test.cpp",
+    "test/fps_interpolate.test.cpp"
+  ],
+  "production_changes": false,
+  "active_driver_children_after_exit": 0
+}

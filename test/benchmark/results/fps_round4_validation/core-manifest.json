@@ -1,0 +1,35 @@
+{
+  "authoritative_core_gate": "scope-final-audit.json",
+  "baseline": "bd29f70c70e24e27770b9e9a3777b6cf85664b63",
+  "files": {
+    "README.md": "af11fdd3b6e7f986c767bc0b020dc52c992eecb2e77403fa03fc0fa2a6a05690",
+    "after-plan.json": "ec606779b833675d619616ac75a508b121d2c46e8591fa939ba86f5dff8c2f45",
+    "baseline-plan.json": "03858561b43b8a99907815ba4a9d05687aaa5678d487750944280789452ce731",
+    "baseline-provenance.json": "7830d21e90b67ec653e8a70c10b3d280b125ac45e91dabbc93c74023b93e0389",
+    "clang19.log": "d15aab702087a143daab056dc5acfe2d4d67e442fc40466ac2e2e833bff90e5c",
+    "conditions.json": "0f273421df1835f03a0d573c6903611ffbba5282b44aaeba1f35db9d71b453fd",
+    "dependencies-after.json": "510bc31a8aa03f778e9c74b5b4c70e334dd3930343d71b53a02a355c882aa56c",
+    "dependencies-before.json": "510bc31a8aa03f778e9c74b5b4c70e334dd3930343d71b53a02a355c882aa56c",
+    "gcc14-sanitize.log": "63abf994f79071a931cf01010519e60b78f5691b3fc4085040e93e8c548c01f0",
+    "gcc14.log": "f3b185e0f805ff1337985f18eae243e8d070110fb8d414e4736b21122293ea22",
+    "private-reuse-assessment.json": "bfbe7f33135a65b820fce2ff94e76e11d026e1875ab38f6f81059fd818ff802b",
+    "result.json": "2771186c451fdaafa1eb7e54d2492c587124d7a8505372c8fedce261d1ced3a3",
+    "runner.log": "e5ead19e175216205fc15100f68e4631d220aede3f62b2fd7a0fba9922ff371a",
+    "scope-audit.json": "498d1a2b3a942c8463ba5bf50635d064525c20cfde818bdf08d020a6538b7bb5",
+    "scope-contract.json": "73e9ce10e529f5be6e6ee65347f16984b03302fd5150c5aac75dc838bd515c9d",
+    "scope-final-audit.json": "8e8865105d4ef0cc62a9eaac8d125a034721d62640fcadcf474a4551c90f40c2",
+    "scope-final-audit.log": "8e8865105d4ef0cc62a9eaac8d125a034721d62640fcadcf474a4551c90f40c2",
+    "scope-refinement.json": "8499224e335d2c70f7440f9545844853fc048d11b871f67dddbd279d678b0b30",
+    "selection-final.json": "04844928ae69a702212181f3ad9f229aefc381fad60143c4f15e4f718281fb7c",
+    "selection.json": "a817ab9fecb5e31c875c85521408e015219ce4f2c7b1c9b3e830a1cbee1af0a0"
+  },
+  "helpers": {
+    "test/benchmark/fps_round4_judge.py": "38346291afb2a884357d829402a141a9885d9ea0b2068e1303ea6cff01a290ed",
+    "test/benchmark/fps_round4_validation.py": "bec17ed18ca234558fea7c464b292cd041ae5bc16ef3e15a3dde953258021c51",
+    "test/benchmark/fps_round4_validation_audit.py": "729950450d0d81bcd5b8ff25add48e71da97518a28ec9fb568924ae8435bee96"
+  },
+  "official_gate_sha256": "2bd7d508463b93f3dbb93c0d1fc80efb4698e56199feb417ad575aced91758ac",
+  "raw_runner_status": "failed",
+  "snapshot": "Round 4 before the additional constant-input implementation",
+  "status": "passed"
+}

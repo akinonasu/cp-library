@@ -1,0 +1,122 @@
+diff --git a/components/fps_io.hpp b/components/fps_io.hpp
+index 854487e..f2e8938 100644
+--- a/components/fps_io.hpp
++++ b/components/fps_io.hpp
+@@ -97,14 +97,14 @@ struct BulkInput {
+ 		return done;
+ 	}
+ 
+-	static std::size_t chunk(const char *&p, const char *limit, unsigned *dst, std::size_t count, unsigned *scratch) {
++	template <class Emit>
++	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
+ 		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
+ 		const std::size_t stream = bytes / 4;
+ 		const char *p1 = after_separator(p + stream), *p2 = after_separator(p + 2 * stream);
+ 		const char *p3 = after_separator(p + 3 * stream), *last = after_separator(p + bytes);
+ 		if (!p1 || !p2 || !p3 || !last) return 0;
+ 		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
+-		unsigned *const out[4] = {dst, scratch, scratch + kCapacity, scratch + 2 * kCapacity};
+ 		auto invalid = _mm256_setzero_si256();
+ 		const auto done = lockstep(s, end, out, invalid);
+ 		bool bad = !_mm256_testz_si256(invalid, invalid);
+@@ -116,27 +116,38 @@ struct BulkInput {
+ 		}
+ 		const auto parsed = n[0] + n[1] + n[2] + n[3];
+ 		if (bad || parsed > count) return 0;
+-		auto *next = dst + n[0];
+-		for (int k = 1; k < 4; ++k) {
+-			std::memcpy(next, out[k], n[k] * sizeof(unsigned));
+-			next += n[k];
+-		}
++		for (int k = 0; k < 4; ++k) emit(out[k], n[k]);
+ 		p = last;
+ 		return parsed;
+ 	}
+ 
+-	static void read(FastInput &in, unsigned *out, std::size_t count) {
++	static std::size_t chunk(const char *&p, const char *limit, unsigned *dst, std::size_t count, unsigned *scratch) {
++		unsigned *const out[4] = {dst, scratch, scratch + kCapacity, scratch + 2 * kCapacity};
++		bool first = true;
++		unsigned *next = dst;
++		return chunk_blocks(p, limit, count, out, [&](const unsigned *values, std::size_t n) {
++			if (!first) std::memcpy(next, values, n * sizeof(unsigned));
++			first = false;
++			next += n;
++		});
++	}
++
++	template <class Emit>
++	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
+ 		std::unique_ptr<unsigned[]> scratch;
+ 		std::size_t done = 0;
+ 		while (done < count) {
+ 			const char *p = in.current;
+ 			while (p != in.end && static_cast<unsigned char>(*p) <= ' ') ++p;
+ 			while (count - done >= 1024 && in.end - p >= 1088) {
+-				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(3 * kCapacity);
+-				const auto parsed = chunk(p, in.end, out + done, count - done, scratch.get());
++				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
++				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
++				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+ 				if (!parsed) break;
+ 				done += parsed;
+ 			}
++			unsigned tail[64];
++			std::size_t used = 0;
+ 			while (done + 2 <= count && in.end - p >= 32) {
+ 				const char *next = p;
+ 				auto invalid = _mm256_setzero_si256();
+@@ -146,17 +157,33 @@ struct BulkInput {
+ 				const unsigned h0 = _mm256_extract_epi32(halves, 0), l0 = _mm256_extract_epi32(halves, 1);
+ 				const unsigned h1 = _mm256_extract_epi32(halves, 4), l1 = _mm256_extract_epi32(halves, 5);
+ 				if (h0 > 42 || (h0 == 42 && l0 > 94967295) || h1 > 42 || (h1 == 42 && l1 > 94967295)) break;
+-				out[done++] = h0 * 100000000 + l0;
+-				out[done++] = h1 * 100000000 + l1;
++				tail[used++] = h0 * 100000000 + l0;
++				tail[used++] = h1 * 100000000 + l1;
++				if (used == 64) {
++					emit(tail, used);
++					used = 0;
++				}
++				done += 2;
+ 				p = next;
+ 			}
++			if (used) emit(tail, used);
+ 			in.current = p;
+ 			if (done < count) {
+-				out[done] = 0;
+-				in.read(out[done++]);
++				unsigned value = 0;
++				in.read(value);
++				emit(&value, 1);
++				++done;
+ 			}
+ 		}
+ 	}
++
++	static void read(FastInput &in, unsigned *out, std::size_t count) {
++		read_blocks(in, count, [&](const unsigned *values, std::size_t n) {
++			std::memcpy(out, values, n * sizeof(unsigned));
++			out += n;
++		});
++	}
++
+ };
+ struct BulkOutput {
+ 	static void write(FastOutput &out, std::string_view text) {
+@@ -317,12 +344,9 @@ inline void read_coefficients(FastInput &input, std::vector<Mint> &out, std::siz
+ 	if (!n) return;
+ 	if (n > out.max_size() - out.size()) throw std::length_error("fps input");
+ 	prepare_fps_output(out, out.size() + n);
+-	auto values = std::make_unique_for_overwrite<unsigned[]>(std::min<std::size_t>(32768, n));
+-	for (std::size_t i = 0; i < n; i += 32768) {
+-		const auto count = std::min<std::size_t>(32768, n - i);
+-		fast_io_detail::BulkInput::read(input, values.get(), count);
+-		append_fps_words<false>(out, values.get(), count);
+-	}
++	fast_io_detail::BulkInput::read_blocks(input, n, [&](const unsigned *values, std::size_t count) {
++		append_fps_words<false>(out, values, count);
++	});
+ }
+ 
+ inline void write_coefficients(FastOutput &output, const Mint *in, std::size_t n) {

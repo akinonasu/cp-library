@@ -1,0 +1,51 @@
+--- base/components/fps_convolution.hpp
++++ top32/components/fps_convolution.hpp
+@@ -3674,6 +3674,34 @@
+ 
+ 
+ 
++
++[[gnu::target("avx512f,avx512vl,avx512dq")]]
++inline void forward_radix8_pair32(Vec* __restrict a, Vec* __restrict b, std::size_t q, const std::uint32_t* roots) {
++	const Factor i(roots[1], roots[9]), y(roots[2], roots[10]), z(roots[3], roots[11]);
++	for (std::size_t j = 0; j < q; ++j) {
++		const Vec a_f0 = a[j], a_f1 = a[j + q], a_f2 = a[j + 2 * q], a_f3 = a[j + 3 * q];
++		const Vec b_f0 = b[j], b_f1 = b[j + q], b_f2 = b[j + 2 * q], b_f3 = b[j + 3 * q];
++		const Vec a_g0 = add(a_f0, a_f2), a_g1 = add(a_f1, a_f3);
++		const Vec b_g0 = add(b_f0, b_f2), b_g1 = add(b_f1, b_f3);
++		const Vec a_h0 = diff_canonical(a_f0, a_f2), a_ih1 = times(diff_canonical(a_f1, a_f3), i);
++		const Vec b_h0 = diff_canonical(b_f0, b_f2), b_ih1 = times(diff_canonical(b_f1, b_f3), i);
++		a[j] = add(a_g0, a_g1), a[j + q] = diff(a_g0, a_g1);
++		b[j] = add(b_g0, b_g1), b[j + q] = diff(b_g0, b_g1);
++		a[j + 2 * q] = add(a_h0, a_ih1), a[j + 3 * q] = diff(a_h0, a_ih1);
++		b[j + 2 * q] = add(b_h0, b_ih1), b[j + 3 * q] = diff(b_h0, b_ih1);
++		const Vec a_if2 = times(a_f2, i), a_if3 = times(a_f3, i);
++		const Vec b_if2 = times(b_f2, i), b_if3 = times(b_f3, i);
++		const Vec a_u0 = reduce(add(a_f0, a_if2), 2 * kP), a_v0 = reduce(diff(a_f0, a_if2), 2 * kP);
++		const Vec b_u0 = reduce(add(b_f0, b_if2), 2 * kP), b_v0 = reduce(diff(b_f0, b_if2), 2 * kP);
++		const Vec a_yu1 = times(add(a_f1, a_if3), y), a_zv1 = times(diff(a_f1, a_if3), z);
++		const Vec b_yu1 = times(add(b_f1, b_if3), y), b_zv1 = times(diff(b_f1, b_if3), z);
++		a[j + 4 * q] = add(a_u0, a_yu1), a[j + 5 * q] = diff(a_u0, a_yu1);
++		b[j + 4 * q] = add(b_u0, b_yu1), b[j + 5 * q] = diff(b_u0, b_yu1);
++		a[j + 6 * q] = add(a_v0, a_zv1), a[j + 7 * q] = diff(a_v0, a_zv1);
++		b[j + 6 * q] = add(b_v0, b_zv1), b[j + 7 * q] = diff(b_v0, b_zv1);
++	}
++}
++
+ class Subtrees {
+ public:
+ 	Subtrees(const std::uint32_t* roots, const std::uint32_t* inverse_roots) : r_(roots), ir_(inverse_roots) {}
+@@ -3774,8 +3802,11 @@
+ 		build_table(inverse_roots_, len / 16, kRoots[1]);
+ 		auto* a = reinterpret_cast<Vec*>(a_);
+ 		auto* b = reinterpret_cast<Vec*>(b_);
+-		forward_radix8(a, q, roots_);
+-		forward_radix8(b, q, roots_);
++		if (__builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512vl") && __builtin_cpu_supports("avx512dq")) forward_radix8_pair32(a, b, q, roots_);
++		else {
++			forward_radix8(a, q, roots_);
++			forward_radix8(b, q, roots_);
++		}
+ 
+ 		const Subtrees subtrees(roots_, inverse_roots_);
+ 		for (std::size_t c = 0; c < 8; ++c) subtrees.visit(a + c * q, b + c * q, q, c);

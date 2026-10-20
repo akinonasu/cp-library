@@ -1,4 +1,4 @@
-#include "data_structure/sparse_table.hpp"
+#include "data_structure/range_query/sparse_table.hpp"
 #include <algorithm>
 #include <cassert>
 #include <limits>

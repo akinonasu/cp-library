@@ -1,5 +1,5 @@
 #define PROBLEM "https://yukicoder.me/problems/no/2362"
-#include "../math/generalized_floor_sum.hpp"
+#include "../math/floor_sum/generalized_floor_sum.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

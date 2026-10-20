@@ -1,6 +1,7 @@
 #ifndef LCS_HPP
 #define LCS_HPP
 
+#include "../components/sequence_compare.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -74,15 +75,14 @@ inline bool subsequence(std::string_view s, std::string_view t) {
 	return false;
 }
 
-inline std::pair<std::string_view, std::string_view> trim(std::string_view &s, std::string_view &t) {
-	std::size_t prefix = 0, limit = std::min(s.size(), t.size());
-	while (prefix < limit && s[prefix] == t[prefix]) ++prefix;
+[[gnu::always_inline]] inline std::pair<std::string_view, std::string_view> trim(std::string_view &s, std::string_view &t) {
+	std::size_t limit = std::min(s.size(), t.size());
+	std::size_t prefix = limit && s.front() == t.front() ? sequence_compare_detail::prefix(s.data(), t.data(), int(limit)) : 0;
 	std::string_view head = s.substr(0, prefix);
 	s.remove_prefix(prefix);
 	t.remove_prefix(prefix);
-	std::size_t suffix = 0;
 	limit -= prefix;
-	while (suffix < limit && s[s.size() - 1 - suffix] == t[t.size() - 1 - suffix]) ++suffix;
+	std::size_t suffix = limit && s.back() == t.back() ? sequence_compare_detail::suffix(s.data() + s.size(), t.data() + t.size(), int(limit)) : 0;
 	std::string_view tail = s.substr(s.size() - suffix);
 	s.remove_suffix(suffix);
 	t.remove_suffix(suffix);
