@@ -1,0 +1,482 @@
+{
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DNDEBUG",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-I",
+    "/mnt/c/Users/yukiz/Desktop/cp-library"
+  ],
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "uname": [
+    "Linux",
+    "qand-PC",
+    "6.18.40.1-microsoft-standard-WSL2",
+    "#1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026",
+    "x86_64"
+  ],
+  "pin": 2,
+  "seed": 20261020,
+  "repeats": 3,
+  "problem_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "cases": [
+    {
+      "case": "augmented_cycle_00",
+      "input_sha256": "8ead2630ed5641d57d4bc8a7160a7e2e52dd2d3417bc94bcec021a4ab77e5b56",
+      "expected": 66666,
+      "api_ms": {
+        "ours": [
+          33.989492,
+          34.108743,
+          34.749365
+        ],
+        "no_transpose": [
+          33.718829,
+          34.428524,
+          33.820487
+        ],
+        "no_greedy": [
+          33.56154,
+          32.188784,
+          33.050026
+        ],
+        "budget4": [
+          323.000923,
+          327.213678,
+          323.376445
+        ],
+        "budget64": [
+          32.986341,
+          32.995494,
+          33.492318
+        ],
+        "phase0": [
+          31.034721,
+          30.856897,
+          30.534236
+        ],
+        "phase1": [
+          36.039573,
+          36.33021,
+          34.831138
+        ],
+        "reference": [
+          31.716062,
+          31.017998,
+          31.389761
+        ],
+        "baseline": [
+          478.038687,
+          478.971868,
+          479.939514
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "issue1068_large_00",
+      "input_sha256": "4ad8176ed94ff977e4e4a5ced79c766cd35375954e173c2490ae482eb1d378d5",
+      "expected": 74998,
+      "api_ms": {
+        "ours": [
+          1.913161,
+          2.000613,
+          1.918457
+        ],
+        "no_transpose": [
+          2.529544,
+          2.635738,
+          2.657943
+        ],
+        "no_greedy": [
+          1.936991,
+          1.862601,
+          1.910465
+        ],
+        "budget4": [
+          1.959334,
+          1.920898,
+          1.883478
+        ],
+        "budget64": [
+          1.924037,
+          1.945593,
+          1.97311
+        ],
+        "phase0": [
+          2.944591,
+          2.791474,
+          2.844103
+        ],
+        "phase1": [
+          1.970184,
+          1.893327,
+          1.960993
+        ],
+        "reference": [
+          2.366141,
+          2.334092,
+          2.480288
+        ],
+        "baseline": [
+          1.867179,
+          1.985219,
+          1.912326
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "line_random_00",
+      "input_sha256": "c4bdb03533c15b051ad02d9bcaaf3adb345eb4bcd6389e9f26913e358c2bb62b",
+      "expected": 100000,
+      "api_ms": {
+        "ours": [
+          27.989585,
+          29.209322,
+          29.974898
+        ],
+        "no_transpose": [
+          28.660075,
+          29.742093,
+          29.282526
+        ],
+        "no_greedy": [
+          28.306842,
+          29.079828,
+          27.203931
+        ],
+        "budget4": [
+          173.901791,
+          171.535164,
+          167.321741
+        ],
+        "budget64": [
+          28.899318,
+          28.298014,
+          29.615566
+        ],
+        "phase0": [
+          25.783975,
+          26.606812,
+          25.306047
+        ],
+        "phase1": [
+          26.484343,
+          25.903897,
+          25.329837
+        ],
+        "reference": [
+          27.122569,
+          24.110453,
+          21.673287
+        ],
+        "baseline": [
+          264.598191,
+          263.768517,
+          264.623982
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "many_paths_00",
+      "input_sha256": "bb22b209d226f6f01f1669b350dd8dd82924aa756558005d7aff579a36d1ed70",
+      "expected": 63398,
+      "api_ms": {
+        "ours": [
+          16.000352,
+          16.675485,
+          16.679047
+        ],
+        "no_transpose": [
+          15.842919,
+          16.284205,
+          17.359803
+        ],
+        "no_greedy": [
+          15.017292,
+          14.516836,
+          13.944741
+        ],
+        "budget4": [
+          31.673327,
+          33.206534,
+          33.554453
+        ],
+        "budget64": [
+          15.899853,
+          16.077398,
+          15.802314
+        ],
+        "phase0": [
+          12.179693,
+          12.5694,
+          11.896319
+        ],
+        "phase1": [
+          16.467137,
+          18.648183,
+          17.577481
+        ],
+        "reference": [
+          11.617682,
+          10.351298,
+          10.540865
+        ],
+        "baseline": [
+          207.632877,
+          205.546329,
+          209.648105
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "max_random_00",
+      "input_sha256": "6233cb5daba0e96eeafc4b705a608e943aba18792ca4984ec32cd419020e9ba1",
+      "expected": 78404,
+      "api_ms": {
+        "ours": [
+          13.322815,
+          13.455737,
+          13.548885
+        ],
+        "no_transpose": [
+          13.18645,
+          12.977283,
+          13.10958
+        ],
+        "no_greedy": [
+          12.635204,
+          12.527266,
+          12.603745
+        ],
+        "budget4": [
+          13.40189,
+          13.121228,
+          13.394763
+        ],
+        "budget64": [
+          13.539419,
+          13.373596,
+          13.299303
+        ],
+        "phase0": [
+          10.276799,
+          10.080168,
+          10.231297
+        ],
+        "phase1": [
+          11.501821,
+          11.539274,
+          12.436833
+        ],
+        "reference": [
+          10.313427,
+          10.001673,
+          9.269403
+        ],
+        "baseline": [
+          31.179118,
+          30.411194,
+          30.894702
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "random_00",
+      "input_sha256": "0215f50f80f6c7d85ac4f1d6bbcb9b7c8d50ffa72e3cf79cf97b73fea7c7395c",
+      "expected": 8453,
+      "api_ms": {
+        "ours": [
+          1.087647,
+          1.077723,
+          1.082173
+        ],
+        "no_transpose": [
+          1.079099,
+          1.089161,
+          1.18479
+        ],
+        "no_greedy": [
+          1.652013,
+          1.574296,
+          1.395046
+        ],
+        "budget4": [
+          1.084873,
+          1.086195,
+          1.133805
+        ],
+        "budget64": [
+          1.096448,
+          1.142971,
+          1.130657
+        ],
+        "phase0": [
+          1.24795,
+          1.24517,
+          1.355216
+        ],
+        "phase1": [
+          1.339495,
+          1.363979,
+          1.316652
+        ],
+        "reference": [
+          1.886514,
+          1.877716,
+          1.787115
+        ],
+        "baseline": [
+          0.621823,
+          0.601043,
+          0.544776
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "random_09",
+      "input_sha256": "71c8b189a1ea9eae381142c4e1e04dd9160481024a23d19f9c89ba307e78d15b",
+      "expected": 23290,
+      "api_ms": {
+        "ours": [
+          2.566962,
+          2.389443,
+          2.421514
+        ],
+        "no_transpose": [
+          8.238443,
+          8.061989,
+          7.871241
+        ],
+        "no_greedy": [
+          2.910656,
+          2.979941,
+          2.927065
+        ],
+        "budget4": [
+          2.430384,
+          2.518831,
+          2.300995
+        ],
+        "budget64": [
+          2.399884,
+          2.33068,
+          2.371848
+        ],
+        "phase0": [
+          4.648113,
+          4.442541,
+          4.479892
+        ],
+        "phase1": [
+          2.788685,
+          2.836199,
+          3.436399
+        ],
+        "reference": [
+          2.480584,
+          3.064633,
+          2.402891
+        ],
+        "baseline": [
+          1.517379,
+          1.42764,
+          1.507572
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "unique_matching_00",
+      "input_sha256": "e2a928b8e1befc7be907810f78cad91f081473e102ef61c318f9e4e1582141de",
+      "expected": 66676,
+      "api_ms": {
+        "ours": [
+          37.390953,
+          37.500475,
+          37.463724
+        ],
+        "no_transpose": [
+          40.714141,
+          37.319452,
+          36.434515
+        ],
+        "no_greedy": [
+          38.455849,
+          36.610444,
+          35.900105
+        ],
+        "budget4": [
+          311.638118,
+          289.74168,
+          286.135176
+        ],
+        "budget64": [
+          38.787814,
+          39.006121,
+          39.741884
+        ],
+        "phase0": [
+          34.6886,
+          32.355148,
+          33.789905
+        ],
+        "phase1": [
+          38.451035,
+          34.654828,
+          35.016682
+        ],
+        "reference": [
+          33.707212,
+          31.269011,
+          29.187402
+        ],
+        "baseline": [
+          521.5912,
+          473.280968,
+          475.038529
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    }
+  ],
+  "sources": {
+    "graph/matching/bipartite_matching.hpp": "f4ac0137ccb61d5987f339d2738e328d943c37fa93ba5ecca0265c1c490c631b",
+    "components/bipartite_matching_core.hpp": "0deb05ad4e5bf47bcd2339f130b50d34f7963bbfa39dcaa6e521bbb448fac0a0",
+    "test/bipartite_matching.test.cpp": "1518edeabdc30fc7764218594c83674e4192c20ebf943718bc985a81723869b4",
+    "test/benchmark/bipartite_matching.py": "1c80f0a327466b8a152ba9891c7e0b97fb4fab3d0d1c2eabf156e07458f6c598",
+    "test/benchmark/bipartite_matching_api.cpp": "d80b93cb9498b9ef6fe7fdef408565e070baf8a69ce24367cd2fafe8473ab9a8"
+  },
+  "reference_source_sha256": "f7d7658d84bd6caf0b8c1eb5b6054a76e2d55d10ccd833d685de9b4becc94d02"
+}

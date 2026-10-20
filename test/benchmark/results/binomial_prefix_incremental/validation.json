@@ -1,0 +1,38 @@
+{
+  "result": "passed",
+  "checks": [
+    {
+      "compiler": "g++",
+      "source": "test/binomial_prefix_sum_incremental_arc190_b.test.cpp",
+      "cases": 191,
+      "bundle": "passed"
+    },
+    {
+      "compiler": "g++",
+      "source": "test/benchmark/arc190_b_sweeps.cpp",
+      "cases": 191,
+      "bundle": "passed"
+    },
+    {
+      "compiler": "clang++",
+      "source": "test/binomial_prefix_sum_incremental_arc190_b.test.cpp",
+      "cases": 191,
+      "bundle": "passed"
+    },
+    {
+      "compiler": "clang++",
+      "source": "test/benchmark/arc190_b_sweeps.cpp",
+      "cases": 191,
+      "bundle": "passed"
+    }
+  ],
+  "brute_grid_limit": 6,
+  "seed": 20261020,
+  "sources": {
+    "math/combinatorics/binomial_prefix_sum_incremental.hpp": "3bdf45d3337624ba558926892ca2e36e4178fad56ecb9422155327a1c62dbcac",
+    "test/unit/binomial_prefix_sum_incremental.cpp": "7c9ddae5dcc36195138b2fd0ade8eb0b2037c14b5caa97226f288d4357eebcda",
+    "test/binomial_prefix_sum_incremental_arc190_b.test.cpp": "63aa617c6b1e271f44c647e4f4fd71dfe1637eafa086535989b9c1201ab14f72",
+    "test/benchmark/arc190_b_sweeps.cpp": "c5235fb4e6c8b151f1188aa7583ddaa5040670ecc7a28bd6e051616ca9d0275e",
+    "test/benchmark/binomial_prefix_incremental_check.py": "779c15f9792f888b7d350b620c17f5afbf85f036aa01f0c27626f907190d7994"
+  }
+}

@@ -19,9 +19,9 @@ queue.set(10, 1);
 queue.erase(30);
 ```
 
-`RetroactivePriorityQueue<T, Compare = std::less<T>, Time = std::int64_t, BlockSize = 256>` は、過去の操作を変更し、任意時点の状態を問い合わせる fully retroactive な優先度付きキューです。`std::less<T>` では最小値、`std::greater<T>` では最大値を先頭にします。
+`RetroactivePriorityQueue<T, Compare = std::less<T>, Time = std::int64_t, BlockSize = 256>` は、過去の操作を変更し、任意時点の状態をクエリる fully retroactive な優先度付きキューです。`std::less<T>` では最小値、`std::greater<T>` では最大値を先頭にします。
 
-時刻は64 bit以下の整数で、各時刻に置ける操作は1つです。問い合わせは指定時刻の操作を実行した直後の状態で、引数なしでは履歴の末尾を参照します。比較上同順位の要素は、挿入時刻が早い方を優先します。
+時刻は64 bit以下の整数で、各時刻に置ける操作は1つです。クエリは指定時刻の操作を実行した直後の状態で、引数なしでは履歴の末尾を参照します。比較上同順位の要素は、挿入時刻が早い方を優先します。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

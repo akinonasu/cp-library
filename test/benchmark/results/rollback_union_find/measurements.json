@@ -1,0 +1,406 @@
+{
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)\nTarget: x86_64-conda-linux-gnu\nThread model: posix\nInstalledDir: /var/tmp/cp-audit-tools/env/bin\nConfiguration file: /var/tmp/cp-audit-tools/env/bin/x86_64-conda-linux-gnu-clang++.cfg\n"
+  },
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DNDEBUG",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-DONLINE_JUDGE",
+    "-I",
+    "/mnt/c/Users/yukiz/Desktop/cp-library"
+  ],
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "kernel": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "affinity": [
+    2
+  ],
+  "trials": 7,
+  "warmup": 1,
+  "seed": 20261020,
+  "problem_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "source_sha256": {
+    "data_structure/rollback_union_find.hpp": "80a014698bf2ac5ded140e073db98cd86249564056f11be7337bac2f0b193295",
+    "test/rollback_union_find.test.cpp": "21d98ceccf097225cbebcdaf8db97ba810e09d402468e125df1751c96a6e35df",
+    "test/unit/rollback_union_find.cpp": "096d25c41c4d9b98882ff70f99d3255cf8690b5472439c170e857aa4a4f9cde2",
+    "test/benchmark/rollback_union_find.cpp": "f7de282fea0c2ad48909837a15ddc103f5e73559c367cbce711ca8ecea7e5023",
+    "test/benchmark/rollback_union_find.py": "8e0ab14a6c72792f69e5dd507ab94746b4603e7ec516f1b94dec56fc262b747d"
+  },
+  "reference_source_sha256": "61125ddb8336a043920841fb382d5db8917e49be0ca4d372a86c6336aa249a2e",
+  "judge": [
+    {
+      "case": "conchon_filliatre_tle_00",
+      "input_sha256": "1b20afeab3e522e9f53614a3ff3e6bbea5127115eb11711c4fccbd3473eca9a5",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "conchon_filliatre_tle_01",
+      "input_sha256": "26441337e2f9c423f09aeb47ce843fc45a9e00f1e54d63e8e7cb53348c2f5644",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "example_00",
+      "input_sha256": "69d26bf859c490cc455d2a702e04fb6f52a5454c14c0768418cf102e5c09f08d",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "hand_00",
+      "input_sha256": "ded143c4127c50bfef9f3a510b78a54de012e7b8cd981673fdf24aa70884b515",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "max_random_00",
+      "input_sha256": "8537e53f714c0248ac2a38ef7dd73e35c19dfe5a341287bbc9043ebca14bb669",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "max_random_01",
+      "input_sha256": "e8dba25eb7339193a630a97fa18073a204428d10029a48cb75a91f01d52354c3",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "max_random_02",
+      "input_sha256": "e6be06d8a4be7e00d906e86e43a093f562b125717a43f65c557e0c7ee230f374",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "max_random_03",
+      "input_sha256": "9f8158268781ed9240eea2b30f5ef5956c431eb3de0c307189afdef7aea10a14",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "max_random_04",
+      "input_sha256": "dbded379487164e8125b385915a4c14df9cb8ede0af97772e18ceb4388ad11f2",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "random_00",
+      "input_sha256": "93e6aad77abf0fa20cf3dc838e062a5e82953a2c3b6966e9e352f66bb88ae943",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "random_01",
+      "input_sha256": "071c49e6c2e7e7a24acabe279648b4cc4211b58634d710c2b323b4614abf76ea",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "random_02",
+      "input_sha256": "8f93229ab776a7c5691fbb22fb037e270af7fe25b1a3a49990c140e37d42759c",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "random_03",
+      "input_sha256": "984ed94748529df4c100fc064a008fcbb5c8a461c6df9fce689e1a6cdbd825d9",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    },
+    {
+      "case": "random_04",
+      "input_sha256": "5d4a426b01bce8773c29de019fc1415fe309549c9a2ed38d31f11fab93ab3b89",
+      "passed": [
+        "library",
+        "clang",
+        "409831"
+      ]
+    }
+  ],
+  "end_to_end": {
+    "max_random_00": {
+      "milliseconds": {
+        "library": [
+          13.188846,
+          13.739139,
+          14.744879,
+          14.442379,
+          12.967924,
+          14.142578,
+          12.963595
+        ],
+        "409831": [
+          11.301305,
+          11.498845,
+          11.563066,
+          13.887096,
+          11.92333,
+          11.351929,
+          11.285521
+        ]
+      },
+      "median_ms": {
+        "library": 13.739139,
+        "409831": 11.498845
+      }
+    },
+    "max_random_04": {
+      "milliseconds": {
+        "library": [
+          13.072502,
+          12.927218,
+          12.786573,
+          12.971655,
+          14.046773,
+          13.797994,
+          13.169587
+        ],
+        "409831": [
+          11.266731,
+          11.201279,
+          11.232814,
+          11.427102,
+          11.480686,
+          11.409299,
+          11.526829
+        ]
+      },
+      "median_ms": {
+        "library": 13.072502,
+        "409831": 11.409299
+      }
+    },
+    "conchon_filliatre_tle_00": {
+      "milliseconds": {
+        "library": [
+          10.663638,
+          9.665668,
+          12.325245,
+          10.189053,
+          10.48658,
+          9.959548,
+          9.372123
+        ],
+        "409831": [
+          7.707807,
+          7.62538,
+          8.865725,
+          7.976286,
+          8.59467,
+          8.55121,
+          7.648872
+        ]
+      },
+      "median_ms": {
+        "library": 10.189053,
+        "409831": 7.976286
+      }
+    },
+    "conchon_filliatre_tle_01": {
+      "milliseconds": {
+        "library": [
+          9.28232,
+          9.638438,
+          9.37625,
+          14.972188,
+          11.513478,
+          14.129996,
+          10.31314
+        ],
+        "409831": [
+          7.578485,
+          7.423982,
+          8.873739,
+          10.611533,
+          8.742573,
+          8.915896,
+          8.548279
+        ]
+      },
+      "median_ms": {
+        "library": 10.31314,
+        "409831": 8.742573
+      }
+    }
+  },
+  "api": {
+    "branches": {
+      "n": 100000,
+      "operations": 242000,
+      "input_sha256": "5decb08b419833e168c39c57b6bd8e57e03c108f395b083efe456cfd62ae7232",
+      "result": [
+        "6374773442137952867",
+        "0",
+        "100000"
+      ],
+      "milliseconds": {
+        "compact": [
+          0.637101,
+          0.679413,
+          0.635042,
+          0.680294,
+          0.651394,
+          0.622478,
+          0.631549
+        ],
+        "full": [
+          0.607486,
+          0.71581,
+          0.641984,
+          0.662879,
+          0.598327,
+          0.658124,
+          0.612881
+        ]
+      },
+      "median_ms": {
+        "compact": 0.637101,
+        "full": 0.641984
+      }
+    },
+    "balanced": {
+      "n": 131072,
+      "operations": 431072,
+      "input_sha256": "ba5472e2269f89274c7c3170c33454ea03251d09d412a5f59d0f1c0c720f2376",
+      "result": [
+        "1318958149864356403",
+        "0",
+        "131072"
+      ],
+      "milliseconds": {
+        "compact": [
+          11.6293,
+          11.7374,
+          11.8835,
+          11.7152,
+          11.6739,
+          12.6072,
+          12.1167
+        ],
+        "full": [
+          11.9219,
+          12.0657,
+          12.7023,
+          11.916,
+          11.9915,
+          12.1248,
+          12.2259
+        ]
+      },
+      "median_ms": {
+        "compact": 11.7374,
+        "full": 12.0657
+      }
+    },
+    "redundant": {
+      "n": 64,
+      "operations": 400064,
+      "input_sha256": "54764e893a99e15b144ed5ddd9e895cffdfedea9163543ef5b670317ebc509a6",
+      "result": [
+        "12967975237298963059",
+        "0",
+        "64"
+      ],
+      "milliseconds": {
+        "compact": [
+          1.27558,
+          1.17356,
+          1.1827,
+          1.16762,
+          1.22869,
+          1.19078,
+          1.24042
+        ],
+        "full": [
+          1.80997,
+          1.67296,
+          1.75486,
+          1.70299,
+          1.79197,
+          1.73438,
+          1.65471
+        ]
+      },
+      "median_ms": {
+        "compact": 1.19078,
+        "full": 1.73438
+      }
+    },
+    "mixed": {
+      "n": 1000,
+      "operations": 400000,
+      "input_sha256": "f0024aa730f1e35474b314fc2cb101af996425d6504266c15424787750194372",
+      "result": [
+        "8858865925603692783",
+        "22",
+        "978"
+      ],
+      "milliseconds": {
+        "compact": [
+          2.28647,
+          2.24878,
+          2.35899,
+          2.31568,
+          2.24339,
+          2.19369,
+          2.3474
+        ],
+        "full": [
+          2.27309,
+          2.31315,
+          2.47679,
+          2.37674,
+          2.20189,
+          2.3521,
+          2.34836
+        ]
+      },
+      "median_ms": {
+        "compact": 2.28647,
+        "full": 2.34836
+      }
+    }
+  },
+  "complete": true
+}

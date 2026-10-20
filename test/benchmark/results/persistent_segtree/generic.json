@@ -1,0 +1,256 @@
+{
+  "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "cpu": "13th Gen Intel(R) Core(TM) i7-13700F",
+  "affinity_cpu": 2,
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0",
+  "flags": [
+    "-std=c++2b",
+    "-O2",
+    "-DNDEBUG",
+    "-Wall",
+    "-Wextra",
+    "-Werror"
+  ],
+  "seed": 20261021,
+  "n": 131073,
+  "timed_operations": 160000,
+  "trials": 5,
+  "read_heavy_warmup": 20000,
+  "answers_compared": "Every answer and final node count on every trial",
+  "source_sha256": {
+    "test/benchmark/persistent_segtree.cpp": "84123927ec9f4909be941ec825f726b56c83e11977a768c0087ba6aa5207436c",
+    "data_structure/segment_tree/persistent_segtree.hpp": "bccc0a14bd13d35f1a4c23688f517c7514ea8c8f279f390e631c88891c75ee90"
+  },
+  "summary": {
+    "branching": {
+      "baseline_ms": 22.6232,
+      "candidate_ms": 20.6593,
+      "ratio": 0.9131908836946144,
+      "nodes": 1433917,
+      "reserved_bytes": 48640016
+    },
+    "copy_mix": {
+      "baseline_ms": 24.1335,
+      "candidate_ms": 23.0783,
+      "ratio": 0.9562765450514843,
+      "nodes": 1264341,
+      "reserved_bytes": 48640016
+    },
+    "latest": {
+      "baseline_ms": 32.196,
+      "candidate_ms": 25.3912,
+      "ratio": 0.7886445521182757,
+      "nodes": 1437912,
+      "reserved_bytes": 48640016
+    },
+    "read_heavy": {
+      "baseline_ms": 33.9942,
+      "candidate_ms": 24.672,
+      "ratio": 0.7257708667949239,
+      "nodes": 360000,
+      "reserved_bytes": 54720016
+    }
+  },
+  "samples": [
+    {
+      "case": "latest",
+      "trial": 0,
+      "baseline_ms": 32.1832,
+      "candidate_ms": 25.8743,
+      "nodes": 1437912,
+      "bytes": 48640016,
+      "answers": 80116,
+      "checksum": 17037252982565538368
+    },
+    {
+      "case": "latest",
+      "trial": 1,
+      "baseline_ms": 31.6607,
+      "candidate_ms": 25.3912,
+      "nodes": 1437912,
+      "bytes": 48640016,
+      "answers": 80116,
+      "checksum": 17037252982565538368
+    },
+    {
+      "case": "latest",
+      "trial": 2,
+      "baseline_ms": 32.196,
+      "candidate_ms": 25.2342,
+      "nodes": 1437912,
+      "bytes": 48640016,
+      "answers": 80116,
+      "checksum": 17037252982565538368
+    },
+    {
+      "case": "latest",
+      "trial": 3,
+      "baseline_ms": 33.151,
+      "candidate_ms": 25.3561,
+      "nodes": 1437912,
+      "bytes": 48640016,
+      "answers": 80116,
+      "checksum": 17037252982565538368
+    },
+    {
+      "case": "latest",
+      "trial": 4,
+      "baseline_ms": 34.533,
+      "candidate_ms": 27.7452,
+      "nodes": 1437912,
+      "bytes": 48640016,
+      "answers": 80116,
+      "checksum": 17037252982565538368
+    },
+    {
+      "case": "branching",
+      "trial": 0,
+      "baseline_ms": 22.6232,
+      "candidate_ms": 20.4502,
+      "nodes": 1433917,
+      "bytes": 48640016,
+      "answers": 80338,
+      "checksum": 3330777705178182541
+    },
+    {
+      "case": "branching",
+      "trial": 1,
+      "baseline_ms": 24.7216,
+      "candidate_ms": 20.3643,
+      "nodes": 1433917,
+      "bytes": 48640016,
+      "answers": 80338,
+      "checksum": 3330777705178182541
+    },
+    {
+      "case": "branching",
+      "trial": 2,
+      "baseline_ms": 23.2025,
+      "candidate_ms": 20.8067,
+      "nodes": 1433917,
+      "bytes": 48640016,
+      "answers": 80338,
+      "checksum": 3330777705178182541
+    },
+    {
+      "case": "branching",
+      "trial": 3,
+      "baseline_ms": 22.5509,
+      "candidate_ms": 20.6593,
+      "nodes": 1433917,
+      "bytes": 48640016,
+      "answers": 80338,
+      "checksum": 3330777705178182541
+    },
+    {
+      "case": "branching",
+      "trial": 4,
+      "baseline_ms": 22.5886,
+      "candidate_ms": 23.2368,
+      "nodes": 1433917,
+      "bytes": 48640016,
+      "answers": 80338,
+      "checksum": 3330777705178182541
+    },
+    {
+      "case": "copy_mix",
+      "trial": 0,
+      "baseline_ms": 25.3237,
+      "candidate_ms": 23.3794,
+      "nodes": 1264341,
+      "bytes": 48640016,
+      "answers": 60146,
+      "checksum": 4644902557848949054
+    },
+    {
+      "case": "copy_mix",
+      "trial": 1,
+      "baseline_ms": 22.9819,
+      "candidate_ms": 22.2338,
+      "nodes": 1264341,
+      "bytes": 48640016,
+      "answers": 60146,
+      "checksum": 4644902557848949054
+    },
+    {
+      "case": "copy_mix",
+      "trial": 2,
+      "baseline_ms": 23.0368,
+      "candidate_ms": 23.5291,
+      "nodes": 1264341,
+      "bytes": 48640016,
+      "answers": 60146,
+      "checksum": 4644902557848949054
+    },
+    {
+      "case": "copy_mix",
+      "trial": 3,
+      "baseline_ms": 24.1335,
+      "candidate_ms": 23.0783,
+      "nodes": 1264341,
+      "bytes": 48640016,
+      "answers": 60146,
+      "checksum": 4644902557848949054
+    },
+    {
+      "case": "copy_mix",
+      "trial": 4,
+      "baseline_ms": 24.2567,
+      "candidate_ms": 22.1446,
+      "nodes": 1264341,
+      "bytes": 48640016,
+      "answers": 60146,
+      "checksum": 4644902557848949054
+    },
+    {
+      "case": "read_heavy",
+      "trial": 0,
+      "baseline_ms": 34.8108,
+      "candidate_ms": 25.999,
+      "nodes": 360000,
+      "bytes": 54720016,
+      "answers": 160000,
+      "checksum": 6636921605681668257
+    },
+    {
+      "case": "read_heavy",
+      "trial": 1,
+      "baseline_ms": 33.9942,
+      "candidate_ms": 24.672,
+      "nodes": 360000,
+      "bytes": 54720016,
+      "answers": 160000,
+      "checksum": 6636921605681668257
+    },
+    {
+      "case": "read_heavy",
+      "trial": 2,
+      "baseline_ms": 33.891,
+      "candidate_ms": 24.314,
+      "nodes": 360000,
+      "bytes": 54720016,
+      "answers": 160000,
+      "checksum": 6636921605681668257
+    },
+    {
+      "case": "read_heavy",
+      "trial": 3,
+      "baseline_ms": 33.287,
+      "candidate_ms": 24.7619,
+      "nodes": 360000,
+      "bytes": 54720016,
+      "answers": 160000,
+      "checksum": 6636921605681668257
+    },
+    {
+      "case": "read_heavy",
+      "trial": 4,
+      "baseline_ms": 34.3994,
+      "candidate_ms": 23.8469,
+      "nodes": 360000,
+      "bytes": 54720016,
+      "answers": 160000,
+      "checksum": 6636921605681668257
+    }
+  ]
+}

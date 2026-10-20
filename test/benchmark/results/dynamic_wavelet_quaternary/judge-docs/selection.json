@@ -1,0 +1,19 @@
+{
+  "headers": [
+    "components/dynamic_quad_vector.hpp",
+    "components/dynamic_quad_wavelet.hpp",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
+  ],
+  "bundles": [
+    "components/dynamic_quad_vector.hpp",
+    "components/dynamic_quad_wavelet.hpp",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
+  ],
+  "unit": [
+    "test/unit/standalone.cpp"
+  ],
+  "verification": [
+    "test/dynamic_wavelet_matrix_freq.test.cpp",
+    "test/dynamic_wavelet_matrix_kth.test.cpp"
+  ]
+}

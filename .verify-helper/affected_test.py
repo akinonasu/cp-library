@@ -69,6 +69,9 @@ class AffectedVerification(unittest.TestCase):
         environment_patch.start()
         self.addCleanup(environment_patch.stop)
         self.git("init", "--quiet")
+        self.git("config", "gc.auto", "0")
+        self.git("config", "maintenance.auto", "false")
+        self.git("config", "gc.autoDetach", "false")
         self.write(".gitignore", ".verify-helper/selection.json\n.verify-helper/verified-state.json\n.verify-helper/timestamps.*.json\n__pycache__/\n")
         self.write("components/dynamic_bit_vector.hpp", "#pragma once\n")
         self.write("data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp", '#include "../../components/dynamic_bit_vector.hpp"\n')
@@ -125,6 +128,16 @@ class AffectedVerification(unittest.TestCase):
                 patch.object(ci, "environment_key", return_value="fixture"), contextlib.redirect_stdout(output):
             ci.main()
         return output.getvalue()
+
+    def test_sequence_header_scope(self):
+        self.write("sequence/lis.hpp", "#pragma once\n")
+        self.write("test/unit/lis.cpp", '#include "sequence/lis.hpp"\n')
+        self.write("test/lis.test.cpp", '#include "../sequence/lis.hpp"\n')
+        self.commit("add sequence library")
+        plan = self.plan()
+        self.assertEqual(plan["headers"], ["sequence/lis.hpp"])
+        self.assertEqual(plan["unit"], ["test/unit/lis.cpp"])
+        self.assertEqual(plan["verification"], ["test/lis.test.cpp"])
 
     def test_cold_dynamic_scope_and_incompatible_cache_inventory(self):
         self.change_bits()

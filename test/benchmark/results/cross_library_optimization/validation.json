@@ -1,0 +1,152 @@
+{
+  "created_at": "2026-10-20T11:57:22.841394+00:00",
+  "selection": {
+    "headers": [
+      "components/mo_order.hpp",
+      "tree/auxiliary_tree.hpp"
+    ],
+    "unit": [
+      "test/unit/auxiliary_tree.cpp",
+      "test/unit/binomial_prefix_sum.cpp",
+      "test/unit/mo_order.cpp"
+    ],
+    "sanitize": [
+      "test/unit/auxiliary_tree.cpp",
+      "test/unit/binomial_prefix_sum.cpp",
+      "test/unit/mo_order.cpp"
+    ],
+    "verification": [
+      "test/auxiliary_tree.test.cpp"
+    ],
+    "bundles": [
+      "components/mo_order.hpp",
+      "tree/auxiliary_tree.hpp"
+    ]
+  },
+  "official_generator_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "cases": [
+    {
+      "name": "almost_line_00.in",
+      "sha256": "ea3f1411571fa29bbaaa70c407c19168382c40a1ea4189823dcd394ed155fd1b"
+    },
+    {
+      "name": "almost_line_01.in",
+      "sha256": "8d8360a96a0e1ffefa8c7ed04b09c86c24ffa3d181d29862128bcb45b23420e1"
+    },
+    {
+      "name": "binary_00.in",
+      "sha256": "6e7c16bc8af7a039b1ac60ce46b085b7950381faf413d4006f6e668ca229707a"
+    },
+    {
+      "name": "binary_01.in",
+      "sha256": "20d7fb5dd98dbef4ba16e080dd80b1b729d9c0044231f2baeb4aaa6c540c41e6"
+    },
+    {
+      "name": "binary_02.in",
+      "sha256": "ee85fcb9c3171cbf0e5b1f38e06a44107654fec2f61212c8c0ab10c4631ad753"
+    },
+    {
+      "name": "example_00.in",
+      "sha256": "0595e1703d23732058c02c3346d6e89cdfdad2ac283bef01ca0e9a3acb7e7fa8"
+    },
+    {
+      "name": "line_00.in",
+      "sha256": "4bb8d5302f3a45ae9c35d10d908e732686ca63dfcd3bb27471154ee4e51412d9"
+    },
+    {
+      "name": "line_01.in",
+      "sha256": "0d72a09ebc9780664df8a0e06f2dbedb019cd160085b157bdb0ff6478e75876c"
+    },
+    {
+      "name": "line_02.in",
+      "sha256": "b080a812ca5cc3ac0b8068c68c531bcf1ef4fa0348395577cfbc8105327f33c2"
+    },
+    {
+      "name": "line_03.in",
+      "sha256": "c3056c81cbfc80e61138eaf53cc42a21569cb9eaa2bdeeb5212c11ef8f90adf5"
+    },
+    {
+      "name": "line_04.in",
+      "sha256": "61e17a4b2b6ea4c1c3821f3e466b28fc1bb8fb2e2af0fb789474f684263bc38c"
+    },
+    {
+      "name": "max_line_00.in",
+      "sha256": "fc83acd982216580ee51ba050c070b319566c172c4c3c3c343b157756356dcae"
+    },
+    {
+      "name": "max_line_01.in",
+      "sha256": "1882abdd01a703acd4bd3e768a243bae3560cf7e5947990a983ebf2f6581092e"
+    },
+    {
+      "name": "max_line_02.in",
+      "sha256": "140601263f2e3cd743f23b034f859b6ed0cc917a952088a8734f498cb9f4264c"
+    },
+    {
+      "name": "max_random_00.in",
+      "sha256": "2bac06f93005ee23a224634f80a7376089b98f439b5b1d525906f27c921aaa39"
+    },
+    {
+      "name": "max_random_01.in",
+      "sha256": "b570804924fa654e7629d716bac2404a13c7003ddf03c2622e7a4228b0318151"
+    },
+    {
+      "name": "max_random_02.in",
+      "sha256": "89338ea2520be2712639f8311cb8dafc04fc3e5e816b9e975fef8244d12f0577"
+    },
+    {
+      "name": "path_graph_root_centroid_00.in",
+      "sha256": "ad4b99944b6a835d81f5b94a2270cba4b93601b3246b1c1884084be0dc1678ee"
+    },
+    {
+      "name": "path_graph_root_centroid_01.in",
+      "sha256": "2e29447fe8419d10eef6d5a50efca8fb81001fab5115d22a509e3bd36dd9b9a9"
+    },
+    {
+      "name": "path_graph_root_centroid_02.in",
+      "sha256": "83cd0957de2a2b250ca132a0f3d46a0ab059e48f0fe91d6fa67893ad06cfddbc"
+    },
+    {
+      "name": "random_00.in",
+      "sha256": "08e152f5cfe99a60f7fed4b613d19159027fddb718e43e6a6f809543b5ff1edb"
+    },
+    {
+      "name": "random_01.in",
+      "sha256": "2e9544f1176948b1905023b764e90537abbef38ce27f24383e789393ebf3bce1"
+    },
+    {
+      "name": "random_02.in",
+      "sha256": "05ac966aa1bb1e36ee50dc72b0f5cf0bd30c1968a8616567d723fae57c5266f3"
+    },
+    {
+      "name": "random_03.in",
+      "sha256": "77b41207e3eb3ecb95b4309f9d44e8e97cf3d5e97cc738dbd0538dd712b57826"
+    },
+    {
+      "name": "random_04.in",
+      "sha256": "31d7565cfccb2c5a4634411abd2c2980e248fa9b45c9dbfcbb9b825d22f4ba8d"
+    }
+  ],
+  "compilers": {
+    "g++": {
+      "version": "g++ (conda-forge gcc 15.2.0-20) 15.2.0",
+      "official_cases": 25,
+      "unit": true,
+      "sanitize": false
+    },
+    "clang++": {
+      "version": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)",
+      "official_cases": 25,
+      "unit": true,
+      "sanitize": true
+    }
+  },
+  "documentation": "all metadata checked; 2 changed bundles and 1 judge bundle compiled",
+  "source_sha256": {
+    "components/mo_order.hpp": "8459f04ad7bb42a9da74080596acd04af00987e725e6b9b292c73a0f90b87ebb",
+    "tree/auxiliary_tree.hpp": "1e866bf1d2dac8830b780ad8780f193b8484557ad8b586a7dc111f160823728a",
+    "test/unit/auxiliary_tree.cpp": "2eb3f427c669e6dbaf701bf3612b2f70041559ffa1ae1153215d45983ec625a6",
+    "test/unit/binomial_prefix_sum.cpp": "1d3f3e5cca252b20e856e9829849ea8046e119c3d41d5f4799bc8e2e7c87cb56",
+    "test/unit/mo_order.cpp": "5d830cc83975f6026db85c494788b568b2aca7ee1e97b97ccb96a955bc6c70f9",
+    "test/auxiliary_tree.test.cpp": "8b24387e538f01f72b73b34372977dd8bce423bc72eae74b60f83c14db95cda7"
+  }
+}

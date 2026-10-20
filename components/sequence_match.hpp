@@ -4,12 +4,7 @@
 #include "sequence_compare.hpp"
 #include <algorithm>
 #include <array>
-#include <bit>
-#include <cstddef>
-#include <cstdint>
-#include <cstring>
 #include <span>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -23,7 +18,6 @@ template <class T, bool Vectorize = true>
 class Matcher {
 	const T *data;
 	std::vector<std::array<int, 2>> runs;
-	static constexpr bool bytes = std::is_integral_v<T> && std::has_unique_object_representations_v<T>;
 public:
 	explicit Matcher(std::span<const T> values) : data(values.data()) {}
 	void index_runs(int n) {
@@ -56,57 +50,11 @@ public:
 	}
 	int forward(int i, int j, int limit) const {
 		if (!limit) return 0;
-		int matched = 0;
-		if constexpr (bytes) {
-			const auto *a = reinterpret_cast<const unsigned char *>(data + i);
-			const auto *b = reinterpret_cast<const unsigned char *>(data + j);
-			std::size_t offset = 0, size = std::size_t(limit) * sizeof(T);
-			while (size - offset >= 8) {
-				std::uint64_t x, y;
-				std::memcpy(&x, a + offset, 8);
-				std::memcpy(&y, b + offset, 8);
-				auto difference = x ^ y;
-				if (difference) {
-					int bits = std::endian::native == std::endian::little ? std::countr_zero(difference) : std::countl_zero(difference);
-					return static_cast<int>((offset + bits / 8) / sizeof(T));
-				}
-				offset += 8;
-#if defined(__x86_64__)
-				if constexpr (Vectorize) if (size - offset >= 64 && __builtin_cpu_supports("avx2"))
-					return static_cast<int>((offset + forward_avx2(a + offset, b + offset, size - offset)) / sizeof(T));
-#endif
-			}
-			matched = static_cast<int>(offset / sizeof(T));
-		}
-		while (matched < limit && data[i + matched] == data[j + matched]) ++matched;
-		return matched;
+		return sequence_compare_detail::prefix<Vectorize>(data + i, data + j, limit);
 	}
 	int backward(int i, int j, int limit) const {
 		if (!limit) return 0;
-		int matched = 0;
-		if constexpr (bytes) {
-			const auto *a = reinterpret_cast<const unsigned char *>(data + i);
-			const auto *b = reinterpret_cast<const unsigned char *>(data + j);
-			std::size_t offset = 0, size = std::size_t(limit) * sizeof(T);
-			while (size - offset >= 8) {
-				std::uint64_t x, y;
-				std::memcpy(&x, a - offset - 8, 8);
-				std::memcpy(&y, b - offset - 8, 8);
-				auto difference = x ^ y;
-				if (difference) {
-					int bits = std::endian::native == std::endian::little ? std::countl_zero(difference) : std::countr_zero(difference);
-					return static_cast<int>((offset + bits / 8) / sizeof(T));
-				}
-				offset += 8;
-#if defined(__x86_64__)
-				if constexpr (Vectorize) if (size - offset >= 64 && __builtin_cpu_supports("avx2"))
-					return static_cast<int>((offset + backward_avx2(a - offset, b - offset, size - offset)) / sizeof(T));
-#endif
-			}
-			matched = static_cast<int>(offset / sizeof(T));
-		}
-		while (matched < limit && data[i - matched - 1] == data[j - matched - 1]) ++matched;
-		return matched;
+		return sequence_compare_detail::suffix<Vectorize>(data + i, data + j, limit);
 	}
 };
 

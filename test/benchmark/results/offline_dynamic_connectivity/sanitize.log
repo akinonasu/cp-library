@@ -1,0 +1,3 @@
+clang++: offline_time_segments.cpp
+clang++: offline_dynamic_connectivity.cpp
+Verification passed

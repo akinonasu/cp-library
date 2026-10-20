@@ -119,7 +119,10 @@ class Fraction {
 	constexpr explicit operator F() const { return F(num) / F(den); }
 	constexpr Int floor() const { return num / den - (num % den < 0); }
 	constexpr Int ceil() const { return num / den + (num % den > 0); }
-	constexpr Fraction inv() const { assert(num != 0); return Fraction(den, num); }
+	constexpr Fraction inv() const {
+		assert(num != 0);
+		return num < 0 ? reduced(-W(den), -W(num)) : reduced(den, num);
+	}
 	constexpr Fraction pow(std::uint64_t k) const {
 		Fraction result(1), base = *this;
 		while (k) {
@@ -143,13 +146,10 @@ class Fraction {
 			is.get();
 			if (!(is >> d)) return is;
 		}
-		if (!d || n < std::numeric_limits<Int>::min() || n > std::numeric_limits<Int>::max()
-			|| d < std::numeric_limits<Int>::min() || d > std::numeric_limits<Int>::max()) {
-			is.setstate(std::ios::failbit);
-			return is;
-		}
 		Fraction value;
-		if (!value.assign(static_cast<Int>(n), static_cast<Int>(d))) {
+		if (!d || n < std::numeric_limits<Int>::min() || n > std::numeric_limits<Int>::max()
+			|| d < std::numeric_limits<Int>::min() || d > std::numeric_limits<Int>::max()
+			|| !value.assign(static_cast<Int>(n), static_cast<Int>(d))) {
 			is.setstate(std::ios::failbit);
 			return is;
 		}

@@ -1,0 +1,4 @@
+g++: standalone graph/matching/bipartite_matching.hpp
+g++: standalone components/bipartite_matching_core.hpp
+g++: bipartite_matching.cpp
+Verification passed

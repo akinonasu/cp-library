@@ -76,8 +76,12 @@ Library Checker の Longest Increasing Subsequence について、公式 API の
 
 ```sh
 python3 test/benchmark/lis_reference.py --cache .verify-helper/cache/lis_references --output test/benchmark/results/lis/reference.json
-flock /tmp/cp-wm-opt.lock python3 test/verify.py --unit-only --cxx g++ clang++ --selection test/benchmark/results/lis/selection.json
+flock /tmp/cp-wm-opt.lock python3 test/verify.py --unit-only --cxx g++ clang++ --selection test/benchmark/lis_selection.json
 flock /tmp/cp-wm-opt.lock python3 test/benchmark/lis_check.py
 flock /tmp/cp-wm-opt.lock python3 test/benchmark/lis.py --output test/benchmark/results/lis/reproduced_generic
 flock /tmp/cp-wm-opt.lock python3 test/benchmark/lis.py --native --output test/benchmark/results/lis/reproduced_native
 ```
+
+配置変更後は `sequence/lis.hpp` を使います。過去の測定・検証記録は当時のパスを保持しています。現在の検証選択は `test/benchmark/lis_selection.json` です。
+
+2026-10-20 の配置変更ではヘッダー本体を変更していません。GCC・Clang の単体テスト、両コンパイラで公式 19 ケースの長さ・復元列、ASan・UBSan、コード例・結合ヘッダーのコンパイルを確認しました。検証ツールの 144 テストと、新しい分類を含むドキュメント生成も成功しています。

@@ -1,0 +1,53 @@
+g++: standalone components/static_range_min.hpp
+g++: standalone components/suffix_range.hpp
+g++: standalone data_structure/range_query/disjoint_sparse_table.hpp
+g++: standalone data_structure/range_query/sparse_table.hpp
+g++: standalone data_structure/segment_tree/dynamic_segtree.hpp
+g++: standalone data_structure/weighted_union_find.hpp
+g++: standalone tree/lca.hpp
+g++: standalone tree/permutation_tree.hpp
+g++: standalone tree/rerooting.hpp
+g++: standalone string/dynamic_pattern_matching.hpp
+g++: standalone string/suffix_tree.hpp
+g++: auxiliary_tree.cpp
+Auxiliary Tree OK
+g++: disjoint_sparse_table.cpp
+g++: dynamic_pattern_matching.cpp
+Dynamic pattern matching passed
+g++: dynamic_segtree.cpp
+g++: lca.cpp
+g++: permutation_tree.cpp
+g++: rerooting.cpp
+g++: rolling_hash_monoid.cpp
+g++: sparse_table.cpp
+g++: standalone.cpp
+g++: static_range_min.cpp
+g++: suffix_tree.cpp
+g++: weighted_union_find.cpp
+clang++: standalone components/static_range_min.hpp
+clang++: standalone components/suffix_range.hpp
+clang++: standalone data_structure/range_query/disjoint_sparse_table.hpp
+clang++: standalone data_structure/range_query/sparse_table.hpp
+clang++: standalone data_structure/segment_tree/dynamic_segtree.hpp
+clang++: standalone data_structure/weighted_union_find.hpp
+clang++: standalone tree/lca.hpp
+clang++: standalone tree/permutation_tree.hpp
+clang++: standalone tree/rerooting.hpp
+clang++: standalone string/dynamic_pattern_matching.hpp
+clang++: standalone string/suffix_tree.hpp
+clang++: auxiliary_tree.cpp
+Auxiliary Tree OK
+clang++: disjoint_sparse_table.cpp
+clang++: dynamic_pattern_matching.cpp
+Dynamic pattern matching passed
+clang++: dynamic_segtree.cpp
+clang++: lca.cpp
+clang++: permutation_tree.cpp
+clang++: rerooting.cpp
+clang++: rolling_hash_monoid.cpp
+clang++: sparse_table.cpp
+clang++: standalone.cpp
+clang++: static_range_min.cpp
+clang++: suffix_tree.cpp
+clang++: weighted_union_find.cpp
+Verification passed

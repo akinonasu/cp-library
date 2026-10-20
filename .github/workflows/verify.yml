@@ -23,7 +23,7 @@ jobs:
     outputs:
       mode: ${{ steps.route.outputs.mode }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,14 +52,20 @@ jobs:
         run: python -m pip install --no-cache-dir -r test/requirements.txt
       - name: Install Boost
         run: sudo apt-get update && sudo apt-get install -y libboost-dev
+      - name: Identify cache environment
+        if: steps.route.outputs.mode == 'normal'
+        id: cache-environment
+        run: echo "image=${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
       - name: Restore successful verification results
         if: steps.route.outputs.mode == 'normal'
         id: verification-cache
         uses: actions/cache/restore@v4
         with:
           path: .verify-helper/verified-state.json
-          key: ${{ runner.os }}-${{ runner.arch }}-verified-v2-${{ github.ref }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: ${{ runner.os }}-${{ runner.arch }}-verified-v3-${{ steps.cache-environment.outputs.image }}-${{ github.ref }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-verified-v3-${{ steps.cache-environment.outputs.image }}-${{ github.ref }}-
+            ${{ runner.os }}-${{ runner.arch }}-verified-v3-${{ steps.cache-environment.outputs.image }}-refs/heads/main-
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-${{ github.ref }}-
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-refs/heads/main-
       - name: Test incremental verification
@@ -92,13 +98,13 @@ jobs:
           manifest: .verify-helper/judge-cache.json
       - name: Run unit tests with GCC and Clang
         run: |
-          python test/verify.py --unit-only --cxx g++ clang++ --selection .verify-helper/selection.json
+          python test/verify.py --unit-only --cxx g++ clang++ --jobs 2 --selection .verify-helper/selection.json
           python .verify-helper/ci.py record --groups headers unit
       - name: Run ASan and UBSan tests
         env:
           UBSAN_OPTIONS: halt_on_error=1
         run: |
-          python test/verify.py --unit-only --cxx clang++ --sanitize --selection .verify-helper/selection.json
+          python test/verify.py --unit-only --cxx clang++ --sanitize --jobs 2 --selection .verify-helper/selection.json
           python .verify-helper/ci.py record --groups sanitize
       - name: Run affected judge tests
         env:
@@ -116,7 +122,7 @@ jobs:
         run: python .verify-helper/ci.py docs
       - name: Check bundled documentation
         run: |
-          python .verify-helper/check-docs.py --selection .verify-helper/selection.json
+          python .verify-helper/check-docs.py --jobs 2 --selection .verify-helper/selection.json
           python .verify-helper/ci.py record --groups bundles
       - name: Save completed verification results
         if: ${{ always() && steps.route.outputs.mode == 'normal' && steps.selection.outcome == 'success' }}

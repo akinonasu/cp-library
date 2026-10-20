@@ -1,0 +1,38 @@
+{
+  "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "cpu_count": 24,
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)"
+  },
+  "runner_sha256": "672fb1ca6242a4e5990927fdcd309e4f16fdfe76967fc996a72645399acc03be",
+  "headers": [
+    "components/barrett32.hpp",
+    "tree/dsu_on_tree.hpp",
+    "math/linear_algebra/matrix.hpp",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
+  ],
+  "unit": [
+    "test/unit/barrett32.cpp",
+    "test/unit/dsu_on_tree.cpp",
+    "test/unit/matrix.cpp",
+    "test/unit/dynamic_wavelet_matrix.cpp"
+  ],
+  "trials": 2,
+  "seconds": {
+    "1": [
+      38.659242909999996,
+      36.422008031000004
+    ],
+    "2": [
+      20.580325290000005,
+      20.004402260999996
+    ]
+  },
+  "median_seconds": {
+    "1": 37.540625470500004,
+    "2": 20.2923637755
+  },
+  "parallel_over_serial": 0.5405441044514842
+}

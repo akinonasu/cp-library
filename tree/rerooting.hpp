@@ -54,9 +54,10 @@ class Rerooting {
 	const std::vector<T>& build(E unit, Merge&& merge, AddVertex&& add_vertex, AddEdge&& add_edge, int root = 0) {
 		assert(n_ == 0 || (0 <= root && root < n_));
 		built_ = false;
-		values_.clear();
-		messages_.assign(2 * edges_.size(), unit);
+		if constexpr (std::is_default_constructible_v<E>) messages_.resize(2 * edges_.size());
+		else messages_.assign(2 * edges_.size(), unit);
 		if (n_ == 0) {
+			values_.clear();
 			built_ = true;
 			return values_;
 		}
@@ -93,8 +94,8 @@ class Rerooting {
 				if (arc.id != id) value = merge(value, messages_[arc.id ^ 1]);
 			messages_[id] = add_edge(add_vertex(value, v), v, parent[v], id >> 1);
 		}
-		if constexpr (std::is_same_v<T, E>) values_.assign(n_, unit);
-		else values_.resize(n_);
+		if constexpr (std::is_default_constructible_v<T>) values_.resize(n_);
+		else values_.assign(n_, unit);
 		int maximum = 0;
 		for (int v = 0; v < n_; ++v) maximum = std::max(maximum, graph.start[v + 1] - graph.start[v]);
 		std::vector<E> prefix(maximum, unit);

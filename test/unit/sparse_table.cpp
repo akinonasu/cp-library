@@ -16,6 +16,9 @@ struct Box {
 	bool operator==(const Box &) const = default;
 };
 Box min_box(const Box &a, const Box &b) { return a.x < b.x ? a : b; }
+struct MoveArgument { int x = 0; };
+MoveArgument min_moved(MoveArgument &&a, MoveArgument &&b) { return {std::min(a.x, b.x)}; }
+const MoveArgument &min_moved_ref(MoveArgument &&a, MoveArgument &&b) { return a.x < b.x ? a : b; }
 int main() {
 	std::mt19937 rng(91);
 	SparseTable<int, minimum, identity> table;
@@ -50,4 +53,19 @@ int main() {
 	assert(!bits[0] && bits.prod(1, 3) && !bits.prod(2, 3) && !bits.prod(3, 3));
 	SparseTable<int, [](int a, int b) { return std::gcd(a, b); }> gcd(std::vector<int>{12, 18, 24});
 	assert(gcd.prod(0, 3) == 6);
+	SparseTable<MoveArgument, min_moved> rvalues;
+	SparseTable<MoveArgument, min_moved_ref> references;
+	for (int n : {1024, 3, 257, 1, 0, 128, 17}) {
+		rvalues.build(n, [](int i) { return MoveArgument{731 - i}; });
+		assert(rvalues.size() == n);
+		if (n) assert(rvalues.all_prod().x == 732 - n);
+		references.build(n, [](int i) { return MoveArgument{731 - i}; });
+		if (n) assert(references.all_prod().x == 732 - n);
+		table.build(n, [](int i) { return 731 - i; });
+		assert(table.size() == n && table.all_prod() == (n ? 732 - n : identity()));
+		box.build(n, [](int i) { return Box(731 - i); });
+		if (n) assert(box.all_prod().x == 732 - n);
+	}
+	table.clear();
+	assert(table.empty() && table.all_prod() == identity());
 }

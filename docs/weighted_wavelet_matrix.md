@@ -45,4 +45,4 @@ auto count = wm.min_count_largest(0, 3, 8);
 
 値の代入が必要で候補を先読みできる場合は [Point Set Wavelet Matrix (クエリ先読み)](https://qandori.github.io/cp-library/data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp.html) を使えます。コピーと `build` による再構築も可能です。
 
-固定した位置の数を $$n$$、異なる値の数を $$\sigma$$ として、構築・空間は $$O(n\log\sigma)$$、更新・値域を指定する問い合わせ・順位と和の探索は $$O(\log n\log\sigma)$$ です。`count(l,r)`・`range_sum(l,r)` は $$O(\log n)$$、サイズと要素・重みの取得は $$O(1)$$ です。
+固定した位置の数を $$n$$、異なる値の数を $$\sigma$$ として、構築・空間は $$O(n\log\sigma)$$、更新・値域を指定するクエリ・順位と和の探索は $$O(\log n\log\sigma)$$ です。`count(l,r)`・`range_sum(l,r)` は $$O(\log n)$$、サイズと要素・重みの取得は $$O(1)$$ です。

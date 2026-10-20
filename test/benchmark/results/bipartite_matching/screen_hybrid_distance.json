@@ -1,0 +1,522 @@
+{
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DNDEBUG",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-I",
+    "/mnt/c/Users/yukiz/Desktop/cp-library"
+  ],
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "uname": [
+    "Linux",
+    "qand-PC",
+    "6.18.40.1-microsoft-standard-WSL2",
+    "#1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026",
+    "x86_64"
+  ],
+  "pin": 2,
+  "seed": 20261020,
+  "repeats": 3,
+  "problem_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "cases": [
+    {
+      "case": "augmented_cycle_00",
+      "input_sha256": "8ead2630ed5641d57d4bc8a7160a7e2e52dd2d3417bc94bcec021a4ab77e5b56",
+      "expected": 66666,
+      "api_ms": {
+        "ours": [
+          38.637019,
+          39.332163,
+          37.212358
+        ],
+        "no_transpose": [
+          37.960744,
+          39.576338,
+          36.161799
+        ],
+        "no_greedy": [
+          36.140168,
+          36.170551,
+          33.648352
+        ],
+        "budget4": [
+          303.61033,
+          290.424043,
+          281.986075
+        ],
+        "budget64": [
+          38.81131,
+          39.481156,
+          36.083888
+        ],
+        "short0": [
+          32.270409,
+          32.152255,
+          30.417964
+        ],
+        "short2": [
+          36.025432,
+          37.304484,
+          33.57379
+        ],
+        "short8": [
+          43.712096,
+          43.421106,
+          40.360947
+        ],
+        "reference": [
+          32.238758,
+          29.960507,
+          26.546543
+        ],
+        "baseline": [
+          480.548972,
+          484.493365,
+          450.998014
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "issue1068_large_00",
+      "input_sha256": "4ad8176ed94ff977e4e4a5ced79c766cd35375954e173c2490ae482eb1d378d5",
+      "expected": 74998,
+      "api_ms": {
+        "ours": [
+          2.693391,
+          2.526294,
+          2.604923
+        ],
+        "no_transpose": [
+          3.096804,
+          2.90089,
+          2.917279
+        ],
+        "no_greedy": [
+          1.656583,
+          1.821937,
+          1.671446
+        ],
+        "budget4": [
+          2.600534,
+          2.774472,
+          2.5682
+        ],
+        "budget64": [
+          2.48782,
+          2.512881,
+          2.564598
+        ],
+        "short0": [
+          2.482175,
+          2.606704,
+          2.612504
+        ],
+        "short2": [
+          2.472776,
+          2.579486,
+          2.526004
+        ],
+        "short8": [
+          2.632889,
+          2.530376,
+          2.606725
+        ],
+        "reference": [
+          2.011874,
+          2.016846,
+          2.119045
+        ],
+        "baseline": [
+          1.786666,
+          1.638864,
+          1.760587
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "line_random_00",
+      "input_sha256": "c4bdb03533c15b051ad02d9bcaaf3adb345eb4bcd6389e9f26913e358c2bb62b",
+      "expected": 100000,
+      "api_ms": {
+        "ours": [
+          23.800114,
+          23.973571,
+          23.799717
+        ],
+        "no_transpose": [
+          23.256253,
+          24.616149,
+          24.355675
+        ],
+        "no_greedy": [
+          27.125025,
+          27.743003,
+          27.945345
+        ],
+        "budget4": [
+          135.297418,
+          134.694999,
+          134.268826
+        ],
+        "budget64": [
+          24.364252,
+          23.396407,
+          25.669411
+        ],
+        "short0": [
+          24.245893,
+          24.470069,
+          26.623097
+        ],
+        "short2": [
+          23.14916,
+          23.158532,
+          22.875473
+        ],
+        "short8": [
+          26.875576,
+          24.375443,
+          25.330123
+        ],
+        "reference": [
+          20.556977,
+          21.0658,
+          22.646882
+        ],
+        "baseline": [
+          251.908163,
+          254.946188,
+          263.174861
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "many_paths_00",
+      "input_sha256": "bb22b209d226f6f01f1669b350dd8dd82924aa756558005d7aff579a36d1ed70",
+      "expected": 63398,
+      "api_ms": {
+        "ours": [
+          19.361464,
+          18.578236,
+          20.320982
+        ],
+        "no_transpose": [
+          18.769855,
+          19.166909,
+          19.402368
+        ],
+        "no_greedy": [
+          19.721485,
+          18.959136,
+          19.173543
+        ],
+        "budget4": [
+          29.879618,
+          29.538814,
+          32.393098
+        ],
+        "budget64": [
+          18.888572,
+          19.092613,
+          20.371627
+        ],
+        "short0": [
+          13.327618,
+          13.137605,
+          14.557793
+        ],
+        "short2": [
+          17.90545,
+          17.434148,
+          17.90272
+        ],
+        "short8": [
+          27.450053,
+          26.782376,
+          29.50184
+        ],
+        "reference": [
+          10.592749,
+          10.68814,
+          10.854729
+        ],
+        "baseline": [
+          208.211319,
+          205.427678,
+          213.386377
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "max_random_00",
+      "input_sha256": "6233cb5daba0e96eeafc4b705a608e943aba18792ca4984ec32cd419020e9ba1",
+      "expected": 78404,
+      "api_ms": {
+        "ours": [
+          16.068171,
+          16.043828,
+          16.114504
+        ],
+        "no_transpose": [
+          15.739669,
+          17.871777,
+          16.035286
+        ],
+        "no_greedy": [
+          16.770392,
+          17.849207,
+          17.01628
+        ],
+        "budget4": [
+          16.070842,
+          16.113836,
+          16.205995
+        ],
+        "budget64": [
+          16.276876,
+          16.351884,
+          16.272271
+        ],
+        "short0": [
+          11.703971,
+          11.438725,
+          10.991649
+        ],
+        "short2": [
+          12.999259,
+          13.225857,
+          12.495987
+        ],
+        "short8": [
+          22.809067,
+          22.383346,
+          22.234993
+        ],
+        "reference": [
+          9.498682,
+          9.475354,
+          9.808364
+        ],
+        "baseline": [
+          32.501848,
+          32.492984,
+          32.254976
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "random_00",
+      "input_sha256": "0215f50f80f6c7d85ac4f1d6bbcb9b7c8d50ffa72e3cf79cf97b73fea7c7395c",
+      "expected": 8453,
+      "api_ms": {
+        "ours": [
+          0.574769,
+          0.597395,
+          0.65427
+        ],
+        "no_transpose": [
+          0.614701,
+          0.58719,
+          0.591432
+        ],
+        "no_greedy": [
+          0.785139,
+          0.877239,
+          0.766894
+        ],
+        "budget4": [
+          0.588381,
+          0.576032,
+          0.584653
+        ],
+        "budget64": [
+          0.576722,
+          0.584871,
+          0.576208
+        ],
+        "short0": [
+          1.37942,
+          1.463967,
+          1.335373
+        ],
+        "short2": [
+          1.493987,
+          1.305446,
+          1.347308
+        ],
+        "short8": [
+          0.581899,
+          0.576523,
+          0.5957
+        ],
+        "reference": [
+          1.829652,
+          1.89321,
+          2.00412
+        ],
+        "baseline": [
+          0.616442,
+          0.591833,
+          0.584018
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "random_09",
+      "input_sha256": "71c8b189a1ea9eae381142c4e1e04dd9160481024a23d19f9c89ba307e78d15b",
+      "expected": 23290,
+      "api_ms": {
+        "ours": [
+          1.505509,
+          1.520573,
+          1.517893
+        ],
+        "no_transpose": [
+          6.319314,
+          6.309116,
+          6.341456
+        ],
+        "no_greedy": [
+          1.678586,
+          1.722006,
+          1.825932
+        ],
+        "budget4": [
+          1.863054,
+          1.800544,
+          1.537224
+        ],
+        "budget64": [
+          1.490179,
+          1.489465,
+          1.528106
+        ],
+        "short0": [
+          4.809893,
+          4.644674,
+          4.713948
+        ],
+        "short2": [
+          2.890922,
+          3.037736,
+          2.930233
+        ],
+        "short8": [
+          1.891051,
+          1.639711,
+          1.517444
+        ],
+        "reference": [
+          2.535987,
+          2.580174,
+          2.548658
+        ],
+        "baseline": [
+          1.623771,
+          1.655366,
+          1.569988
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "unique_matching_00",
+      "input_sha256": "e2a928b8e1befc7be907810f78cad91f081473e102ef61c318f9e4e1582141de",
+      "expected": 66676,
+      "api_ms": {
+        "ours": [
+          42.261294,
+          43.889524,
+          42.708361
+        ],
+        "no_transpose": [
+          44.449263,
+          43.91836,
+          43.228972
+        ],
+        "no_greedy": [
+          42.895049,
+          41.749115,
+          41.283962
+        ],
+        "budget4": [
+          322.650267,
+          324.796637,
+          322.173716
+        ],
+        "budget64": [
+          41.842611,
+          42.967295,
+          41.520554
+        ],
+        "short0": [
+          35.295794,
+          35.945158,
+          34.921395
+        ],
+        "short2": [
+          38.474531,
+          39.123215,
+          37.821179
+        ],
+        "short8": [
+          48.288732,
+          48.913039,
+          47.487952
+        ],
+        "reference": [
+          33.714033,
+          35.908541,
+          32.109103
+        ],
+        "baseline": [
+          527.880086,
+          521.084322,
+          523.668565
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    }
+  ],
+  "sources": {
+    "graph/matching/bipartite_matching.hpp": "f4ac0137ccb61d5987f339d2738e328d943c37fa93ba5ecca0265c1c490c631b",
+    "components/bipartite_matching_core.hpp": "4c201646d64bcfddef597a6ed8b0c9fe639d93006a891f7fee11ad12f94682e2",
+    "test/bipartite_matching.test.cpp": "1518edeabdc30fc7764218594c83674e4192c20ebf943718bc985a81723869b4",
+    "test/benchmark/bipartite_matching.py": "7ebedc8130249075c40229230a1ea3f15101fef5cfc16bf4819f4d8cf1ac3c6d",
+    "test/benchmark/bipartite_matching_api.cpp": "d80b93cb9498b9ef6fe7fdef408565e070baf8a69ce24367cd2fafe8473ab9a8"
+  },
+  "reference_source_sha256": "f7d7658d84bd6caf0b8c1eb5b6054a76e2d55d10ccd833d685de9b4becc94d02"
+}

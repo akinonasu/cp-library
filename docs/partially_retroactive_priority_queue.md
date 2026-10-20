@@ -33,7 +33,7 @@ queue.set(10, 1, changed);       // sum = 2
 queue.erase(30, changed);        // sum = 3
 ```
 
-`PartiallyRetroactivePriorityQueue<T, Compare = std::less<T>, Time = std::int64_t>` は、過去の操作を変更し、現在の状態を問い合わせる優先度付きキューです。`std::less<T>` では最小値、`std::greater<T>` では最大値を先頭にします。同順位の要素は挿入時刻順です。時刻は64 bit以下の整数で、各時刻に置ける操作は1つです。
+`PartiallyRetroactivePriorityQueue<T, Compare = std::less<T>, Time = std::int64_t>` は、過去の操作を変更し、現在の状態をクエリる優先度付きキューです。`std::less<T>` では最小値、`std::greater<T>` では最大値を先頭にします。同順位の要素は挿入時刻順です。時刻は64 bit以下の整数で、各時刻に置ける操作は1つです。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -69,4 +69,4 @@ queue.erase(30, changed);        // sum = 3
 
 `updates` は `std::vector<Queue::update_type>` で、要素は `{時刻, std::optional<T>}`、`nullopt` は削除操作です。順不同で渡せます。`Queue(updates, compare = Compare{}, seed = 0)` による構築には有効な履歴を渡します。空列の構築は `Queue(compare = Compare{}, seed = 0)` です。`top_ptr()` の戻り値は次の変更操作まで使用できます。削除ノードは再利用し、`clear()` は確保容量を残します。
 
-操作数を $$m$$、過去の最大操作数を $$M$$ とします。履歴変更は償却期待 $$O(\log m)$$、`contains_time` は期待 $$O(\log m)$$、現在の問い合わせ・`operation_count`・`memory_usage` は $$O(1)$$、構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、`reserve`・`clear` は $$O(M)$$、`for_each` は $$O(m)$$ です。変更通知付きも通知処理が $$O(1)$$ なら同じ計算量です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。比較・値のコピーを $$O(1)$$ とします。ABC363 G の例は償却期待 $$O((N+Q)\log N)$$ 時間、$$O(N)$$ 空間です。
+操作数を $$m$$、過去の最大操作数を $$M$$ とします。履歴変更は償却期待 $$O(\log m)$$、`contains_time` は期待 $$O(\log m)$$、現在のクエリ・`operation_count`・`memory_usage` は $$O(1)$$、構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、`reserve`・`clear` は $$O(M)$$、`for_each` は $$O(m)$$ です。変更通知付きも通知処理が $$O(1)$$ なら同じ計算量です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。比較・値のコピーを $$O(1)$$ とします。ABC363 G の例は償却期待 $$O((N+Q)\log N)$$ 時間、$$O(N)$$ 空間です。

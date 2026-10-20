@@ -1,4 +1,4 @@
-#include "string/lis.hpp"
+#include "sequence/lis.hpp"
 #include <algorithm>
 #include <chrono>
 #include <cstdint>

@@ -96,6 +96,8 @@ def main():
                 options = []
                 if name == 'baseline':
                     options = ['-DCOMB_HEADER="' + str(before / FILES[0]) + '"', '-DPREFIX_HEADER="' + str(before / FILES[1]) + '"']
+                    if 'init_comb' in baseline[FILES[0]]:
+                        options.append('-DCOMB_GENERATE=init_comb')
                 fcntl.flock(lock, fcntl.LOCK_EX)
                 subprocess.run(['g++', *flags, *options, f'-DCOMB_MAX={n}', 'test/benchmark/comb_factorials.cpp', '-o', binary], check=True)
                 fcntl.flock(lock, fcntl.LOCK_UN)

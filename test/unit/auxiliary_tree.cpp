@@ -80,6 +80,25 @@ int main() {
 	AuxiliaryTree empty_vt(empty);
 	require(empty_vt.build({}).empty() && empty_vt.root() == -1);
 	std::mt19937 rng(413708);
+	{
+		LCA tree(8192);
+		for (int v = 1; v < tree.n; ++v) tree.add_edge(rng() % v, v);
+		tree.build(731);
+		AuxiliaryTree vt(tree);
+		for (int size : {255, 256, 257, 511, 512, 1023, 1024, 8192}) for (int shape = 0; shape < 3; ++shape) {
+			std::vector<int> keys(size);
+			for (int &v : keys) v = rng() % (shape == 0 ? 1 : shape == 1 ? 256 : tree.n);
+			auto original = keys;
+			auto saved = vt.build(keys);
+			require(keys == original);
+			std::sort(keys.begin(), keys.end(), [&](int u, int v) { return tree.subtree(u).first < tree.subtree(v).first; });
+			vt.build_sorted(keys);
+			require(vt.size() == int(saved.size()));
+			for (int i = 0; i < vt.size(); ++i)
+				require(vt[i].vertex == saved[i].vertex && vt[i].parent == saved[i].parent &&
+					vt[i].length == saved[i].length && vt[i].selected == saved[i].selected);
+		}
+	}
 	for (int n = 1; n <= 36; ++n) for (int trial = 0; trial < 8; ++trial) {
 		LCA lca(n);
 		HLD hld(n);

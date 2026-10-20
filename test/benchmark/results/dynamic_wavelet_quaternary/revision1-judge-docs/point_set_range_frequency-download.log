@@ -1,0 +1,201 @@
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/agent/.local/share/online-judge-tools/cookie.jar
+git version 2.52.0
+[INFO] $ git clone https://github.com/yosupo06/library-checker-problems /home/agent/.cache/online-judge-tools/library-checker-problems
+Cloning into '/home/agent/.cache/online-judge-tools/library-checker-problems'...
+[INFO] $ /tmp/cp-binomial-venv/bin/python3 /home/agent/.cache/online-judge-tools/library-checker-problems/generate.py /home/agent/.cache/online-judge-tools/library-checker-problems/data_structure/point_set_range_frequency/info.toml
+09:03:27 [INFO] Start point_set_range_frequency
+09:03:27 [INFO] generate params.h
+09:03:27 [INFO] compile checker
+09:03:30 [INFO] compile solution
+09:03:31 [INFO] compile generators
+09:03:31 [INFO] compile example.in
+09:03:31 [INFO] compile small_n.cpp
+09:03:31 [INFO] compile medium.cpp
+09:03:32 [INFO] compile max.cpp
+09:03:32 [INFO] compile many_query_0.cpp
+09:03:33 [INFO] compile many_query_1.cpp
+09:03:33 [INFO] clear input /home/agent/.cache/online-judge-tools/library-checker-problems/data_structure/point_set_range_frequency/in
+09:03:33 [INFO] gen example.in 1cases
+09:03:33 [INFO] gen small_n.cpp 3cases
+09:03:33 [INFO] gen medium.cpp 5cases
+09:03:33 [INFO] gen max.cpp 8cases
+09:03:35 [INFO] gen many_query_0.cpp 4cases
+09:03:36 [INFO] gen many_query_1.cpp 4cases
+09:03:36 [INFO] clear output /home/agent/.cache/online-judge-tools/library-checker-problems/data_structure/point_set_range_frequency/out
+09:03:36 [INFO] ANS      1 msecs : example_00 : b''
+09:03:36 [INFO] ANS     35 msecs : small_n_00 : b''
+09:03:36 [INFO] ANS     38 msecs : small_n_01 : b''
+09:03:36 [INFO] ANS     38 msecs : small_n_02 : b''
+09:03:36 [INFO] ANS     54 msecs : medium_00 : b''
+09:03:36 [INFO] ANS     52 msecs : medium_01 : b''
+09:03:36 [INFO] ANS     54 msecs : medium_02 : b''
+09:03:36 [INFO] ANS     80 msecs : medium_03 : b''
+09:03:36 [INFO] ANS     96 msecs : medium_04 : b''
+09:03:36 [INFO] ANS    115 msecs : max_00 : b''
+09:03:37 [INFO] ANS    130 msecs : max_01 : b''
+09:03:37 [INFO] ANS    143 msecs : max_02 : b''
+09:03:37 [INFO] ANS    167 msecs : max_03 : b''
+09:03:37 [INFO] ANS    228 msecs : max_04 : b''
+09:03:37 [INFO] ANS    217 msecs : max_05 : b''
+09:03:38 [INFO] ANS    305 msecs : max_06 : b''
+09:03:38 [INFO] ANS    352 msecs : max_07 : b''
+09:03:38 [INFO] ANS    120 msecs : many_query_0_00 : b''
+09:03:38 [INFO] ANS    181 msecs : many_query_0_01 : b''
+09:03:38 [INFO] ANS    208 msecs : many_query_0_02 : b''
+09:03:39 [INFO] ANS    375 msecs : many_query_0_03 : b''
+09:03:39 [INFO] ANS    134 msecs : many_query_1_00 : b''
+09:03:39 [INFO] ANS    146 msecs : many_query_1_01 : b''
+09:03:39 [INFO] ANS    157 msecs : many_query_1_02 : b''
+09:03:39 [INFO] ANS    209 msecs : many_query_1_03 : b''
+[INFO] save cookie to: /home/agent/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: example_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/1.in
+[INFO] output: example_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/1.out
+
+[INFO] sample 1
+[INFO] input: many_query_0_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/2.in
+[INFO] output: many_query_0_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/2.out
+
+[INFO] sample 2
+[INFO] input: many_query_0_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/3.in
+[INFO] output: many_query_0_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/3.out
+
+[INFO] sample 3
+[INFO] input: many_query_0_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/4.in
+[INFO] output: many_query_0_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/4.out
+
+[INFO] sample 4
+[INFO] input: many_query_0_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/5.in
+[INFO] output: many_query_0_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/5.out
+
+[INFO] sample 5
+[INFO] input: many_query_1_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/6.in
+[INFO] output: many_query_1_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/6.out
+
+[INFO] sample 6
+[INFO] input: many_query_1_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/7.in
+[INFO] output: many_query_1_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/7.out
+
+[INFO] sample 7
+[INFO] input: many_query_1_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/8.in
+[INFO] output: many_query_1_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/8.out
+
+[INFO] sample 8
+[INFO] input: many_query_1_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/9.in
+[INFO] output: many_query_1_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/9.out
+
+[INFO] sample 9
+[INFO] input: max_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/10.in
+[INFO] output: max_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/10.out
+
+[INFO] sample 10
+[INFO] input: max_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/11.in
+[INFO] output: max_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/11.out
+
+[INFO] sample 11
+[INFO] input: max_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/12.in
+[INFO] output: max_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/12.out
+
+[INFO] sample 12
+[INFO] input: max_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/13.in
+[INFO] output: max_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/13.out
+
+[INFO] sample 13
+[INFO] input: max_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/14.in
+[INFO] output: max_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/14.out
+
+[INFO] sample 14
+[INFO] input: max_05
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/15.in
+[INFO] output: max_05
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/15.out
+
+[INFO] sample 15
+[INFO] input: max_06
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/16.in
+[INFO] output: max_06
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/16.out
+
+[INFO] sample 16
+[INFO] input: max_07
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/17.in
+[INFO] output: max_07
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/17.out
+
+[INFO] sample 17
+[INFO] input: medium_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/18.in
+[INFO] output: medium_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/18.out
+
+[INFO] sample 18
+[INFO] input: medium_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/19.in
+[INFO] output: medium_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/19.out
+
+[INFO] sample 19
+[INFO] input: medium_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/20.in
+[INFO] output: medium_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/20.out
+
+[INFO] sample 20
+[INFO] input: medium_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/21.in
+[INFO] output: medium_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/21.out
+
+[INFO] sample 21
+[INFO] input: medium_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/22.in
+[INFO] output: medium_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/22.out
+
+[INFO] sample 22
+[INFO] input: small_n_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/23.in
+[INFO] output: small_n_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/23.out
+
+[INFO] sample 23
+[INFO] input: small_n_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/24.in
+[INFO] output: small_n_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/24.out
+
+[INFO] sample 24
+[INFO] input: small_n_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/25.in
+[INFO] output: small_n_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/point_set_range_frequency/25.out

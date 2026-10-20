@@ -20,7 +20,7 @@ API の `problem=...&status=AC&order=%2Btime&limit=1` で確認した先頭の�
 | --- | --- | --- |
 | 任意 mod 畳み込み | [409643 / Aiyiyi](https://judge.yosupo.jp/submission/409643) | AVX2、Shoup 商、radix-4、再帰的な積の融合、遅延剰余。法を小さく制限するカーネルがあり、そのままでは本ライブラリの `mod < 2^31` 契約を満たさない。Shoup 商と AVX2 を採用し、各バタフライの出力を法未満に戻す。 |
 | 素数列挙 | [336754 / adamant](https://judge.yosupo.jp/submission/336754) | 2・3・5・7 の wheel、bit 配列、区間処理。大規模列挙に向くが固定表や処理が増える。既存 API の簡潔さを維持し、まず奇数だけの byte 篩を採用した。wheel 版とのローカル速度比較は未実施。 |
-| 区間 k 番目 | [403008 / nandhagk](https://judge.yosupo.jp/submission/403008) | radix による値圧縮、AVX2、クエリを先読みするオフラインの階層処理。オンライン問い合わせ用の Wavelet Matrix を保持しない構成なので API 全体の置換には使わない。ビット抽出の並列化を比較対象とした。 |
+| 区間 k 番目 | [403008 / nandhagk](https://judge.yosupo.jp/submission/403008) | radix による値圧縮、AVX2、クエリを先読みするオフラインの階層処理。オンラインクエリ用の Wavelet Matrix を保持しない構成なので API 全体の置換には使わない。ビット抽出の並列化を比較対象とした。 |
 
 提出の AC 状態、ソースの SHA-256 は [gcc_audit_reference.json](results/gcc_audit_reference.json) に保存した。再取得用スクリプトは `gcc_audit_reference.py`。
 
@@ -29,7 +29,7 @@ API の `problem=...&status=AC&order=%2Btime&limit=1` で確認した先頭の�
 * WSL2 / Ubuntu / Linux x86_64、Intel Core i7-13700F。AVX2 対応、AVX-512 非対応。
 * conda-forge GCC 15.2.0。単一 CPU に affinity を固定し、変更前・変更後を交互に 7 回測る。試行ごとに実行順を反転する。
 * 基本フラグは `-std=c++23 -O2 -DNDEBUG -Wall -Wextra -Werror -Wno-unused-parameter`。native 版のみ `-march=native -ftrivial-auto-var-init=zero` を追加する。`unused-parameter` の抑制は変更前 Wavelet Matrix の assert 専用引数を含むためで、両版に同じ条件で指定する。
-* 配列の生成は計測外。割り当て、変換表の準備、構築、出力の checksum 集計は計測に含む。NTT はコピー・順変換・逆変換、CRT は 1000000007 による畳み込み、Wavelet Matrix は構築と中央要素 1 個の問い合わせを測る。
+* 配列の生成は計測外。割り当て、変換表の準備、構築、出力の checksum 集計は計測に含む。NTT はコピー・順変換・逆変換、CRT は 1000000007 による畳み込み、Wavelet Matrix は構築と中央要素 1 個のクエリを測る。
 * RNG seed は `20261016`。すべての試行で変更前後の checksum 一致を検査する。速さの数値は該当するサイズと型に限定する。
 
 中央値の単位は ms。表の時間は反復回数分の合計。小さい NTT は高速化を主張しない。
@@ -109,7 +109,7 @@ taskset -c 0 python3 test/benchmark/gcc_audit.py --cxx g++ \
 | data_structure/segtree_beats.hpp | 維持。連続ノード配置と一様区間の短絡。既存の測定資料あり。 |
 | data_structure/slope_trick.hpp | 維持。heap の頂点置換と同時処理が既存。 |
 | data_structure/sparse_table.hpp | 維持。必要な長さの各段と未初期化 allocator。 |
-| data_structure/wavelet_matrix.hpp | 内部の QuadBitVector の構築を高速化。圧縮・問い合わせ API は維持。 |
+| data_structure/wavelet_matrix.hpp | 内部の QuadBitVector の構築を高速化。圧縮・クエリ API は維持。 |
 | data_structure/weighted_union_find.hpp | 維持。サイズ併合と重み付き経路圧縮。 |
 | graph/dijkstra.hpp | 維持。整数重みの RadixHeap と他の重みの priority_queue。 |
 | graph/general_matching.hpp | 維持。CSR、短い増加道、成分の上界。既存の Linux 測定資料あり。 |

@@ -17,6 +17,6 @@ documentation_of: //components/mod_fast_core.hpp
 | `RationalTable::limit()` | 分子の絶対値の上限 | $$O(1)$$ |
 | `RationalTable::fraction(x)` | $$x\equiv a/b\pmod p$$ を満たす `{a,b}`。$$1\le x<p$$、$$a\ne0$$、$$b>0$$ | $$O(1)$$ |
 
-`RationalTable` は Farey 数列を走査し、各バケットの中央で分子の絶対値が小さい分数を保存します。分母上限とバケット幅を法に応じて調整し、問い合わせには右シフト・配列参照・積と差だけを使います。
+`RationalTable` は Farey 数列を走査し、各バケットの中央で分子の絶対値が小さい分数を保存します。分母上限とバケット幅を法に応じて調整し、クエリには右シフト・配列参照・積と差だけを使います。
 
-`Reducer` の構築・縮約・積は $$O(1)$$ 時間・空間、累乗は $$O(\log e)$$ 時間です。`RationalTable` の構築は $$O(p^{2/3})$$ 時間・空間、各問い合わせは $$O(1)$$ 時間です。
+`Reducer` の構築・縮約・積は $$O(1)$$ 時間・空間、累乗は $$O(\log e)$$ 時間です。`RationalTable` の構築は $$O(p^{2/3})$$ 時間・空間、各クエリは $$O(1)$$ 時間です。

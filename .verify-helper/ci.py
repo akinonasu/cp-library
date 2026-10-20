@@ -113,7 +113,7 @@ def build_plan(root, previous=None, *, environment, force=False):
     root = root.resolve()
     targets = {
         "headers": sorted(path.relative_to(root).as_posix()
-                          for folder in ("components", "convolution", "fps", "data_structure", "graph", "tree", "math", "string")
+                          for folder in ("components", "convolution", "fps", "data_structure", "graph", "tree", "math", "sequence", "string")
                           for path in (root / folder).rglob("*.hpp")),
         "unit": sorted(path.relative_to(root).as_posix() for path in (root / "test/unit").rglob("*.cpp")),
         "verification": sorted(path.relative_to(root).as_posix() for path in (root / "test").rglob("*.test.cpp")),
@@ -357,7 +357,7 @@ def main():
         elif args.command == "judge":
             import onlinejudge.service
             from onlinejudge_verify import verify
-            from verification import get_marker
+            from verification import get_marker, prepare_samples
 
             logging.basicConfig(level=logging.INFO)
             if affected and list((ROOT / ".verify-helper").glob("timestamps.*.json")):
@@ -372,9 +372,11 @@ def main():
                 if os.environ.get("VERIFY_JUDGE_CACHE"):
                     from judge_data import mark_ready
                     mark_ready(Path(os.environ["VERIFY_JUDGE_CACHE"]), name)
+            def run(paths):
+                prepare_samples(ROOT, paths)
+                return verify.main(paths, marker=verification, timeout=3000, tle=10, jobs=2)
             with verification:
-                verify_selected(plan, verification, lambda paths: verify.main(
-                    paths, marker=verification, timeout=3000, tle=10, jobs=2),
+                verify_selected(plan, verification, run,
                     completed=None if affected else completed, starting=None if affected else starting)
         else:
             from documentation import generate

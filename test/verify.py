@@ -1,4 +1,5 @@
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
 import os
 from pathlib import Path
@@ -12,22 +13,28 @@ parser.add_argument("--cxx", nargs="+", default=["g++", "clang++"])
 parser.add_argument("--unit-only", action="store_true")
 parser.add_argument("--sanitize", action="store_true")
 parser.add_argument("--selection", type=Path)
+parser.add_argument("--jobs", type=int, default=1)
 args = parser.parse_args()
+if args.jobs < 1:
+    parser.error("--jobs must be positive")
 if args.selection and not args.unit_only:
     parser.error("--selection requires --unit-only; use .verify-helper/ci.py judge for Library Checker tests")
 selection = json.loads(args.selection.read_text()) if args.selection else None
 headers = ([root / path for path in selection["headers"]] if selection is not None else
-           sorted(path for folder in ("components", "convolution", "fps", "data_structure", "graph", "tree", "math", "string")
+           sorted(path for folder in ("components", "convolution", "fps", "data_structure", "graph", "tree", "math", "sequence", "string")
                   for path in (root / folder).rglob("*.hpp")))
 source_group = "sanitize" if args.sanitize and selection is not None and "sanitize" in selection else "unit"
 sources = ([root / path for path in selection[source_group]] if selection is not None else
            sorted((root / "test/unit").rglob("*.cpp")))
-with tempfile.TemporaryDirectory(prefix="kyopro-verify-") as directory:
-    for compiler in args.cxx:
+
+
+def check(task):
+    compiler, path, standalone = task
+    with tempfile.TemporaryDirectory(prefix="kyopro-verify-") as directory:
         flags = ["-std=c++2b", "-O2", "-Wall", "-Wextra", "-DDEBUG=1", "-I", str(root)]
-        for header in ([] if args.sanitize else headers):
+        if standalone:
             source = Path(directory) / "header.cpp"
-            name = header.relative_to(root).as_posix()
+            name = path.relative_to(root).as_posix()
             source.write_text(f'#include "{name}"\n#include "{name}"\n'
                               '#if defined(TEMPLATE_HPP) || defined(rep) || defined(per) || defined(vec) '
                               '|| defined(all) || defined(sz) || defined(uint)\n'
@@ -35,14 +42,27 @@ with tempfile.TemporaryDirectory(prefix="kyopro-verify-") as directory:
                               'int main() {}\n')
             print(f"{compiler}: standalone {name}", flush=True)
             subprocess.run([compiler, *flags, "-Werror", "-fsyntax-only", str(source)], check=True, cwd=root)
-        for source in sources:
-            executable = Path(directory) / source.stem
+        else:
+            executable = Path(directory) / path.stem
             test_flags = flags.copy()
             if args.sanitize:
                 test_flags += ["-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-g"]
-            print(f"{compiler}: {source.name}", flush=True)
-            subprocess.run([compiler, *test_flags, str(source), "-o", str(executable)], check=True, cwd=root)
+            print(f"{compiler}: {path.name}", flush=True)
+            subprocess.run([compiler, *test_flags, str(path), "-o", str(executable)], check=True, cwd=root)
             subprocess.run([str(executable)], check=True, timeout=120, cwd=root)
+
+
+tasks = [(compiler, path, True) for compiler in args.cxx for path in ([] if args.sanitize else headers)]
+tasks += [(compiler, path, False) for compiler in args.cxx for path in sources]
+with ThreadPoolExecutor(max_workers=args.jobs) as pool:
+    futures = [pool.submit(check, task) for task in tasks]
+    try:
+        for future in as_completed(futures):
+            future.result()
+    except BaseException:
+        for future in futures:
+            future.cancel()
+        raise
 if not args.unit_only:
     command = shutil.which("oj-verify")
     if command is None:

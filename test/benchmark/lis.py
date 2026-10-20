@@ -24,7 +24,7 @@ def main():
         flags += ['-march=native', '-ftrivial-auto-var-init=zero']
     metadata = {'flags': flags, 'compiler': subprocess.check_output(['g++', '--version'], text=True),
                 'cpu': subprocess.check_output(['lscpu'], text=True), 'affinity': [args.cpu], 'rounds': args.rounds}
-    names = ['components/binary_search.hpp', 'string/lis.hpp', 'test/benchmark/lis.cpp']
+    names = ['components/binary_search.hpp', 'sequence/lis.hpp', 'test/benchmark/lis.cpp']
     metadata['sources'] = {name: hashlib.sha256((root / name).read_bytes().replace(b'\r\n', b'\n')).hexdigest() for name in names}
     rows, summary = [], []
     rng = random.Random(20261019)

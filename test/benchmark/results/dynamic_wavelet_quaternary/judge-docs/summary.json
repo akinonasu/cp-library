@@ -1,0 +1,82 @@
+{
+  "revision": 2,
+  "utc": "2026-10-20 09:24:17.064260+00:00",
+  "upstream_library_checker": {
+    "repository": "https://github.com/yosupo06/library-checker-problems",
+    "commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+    "info_sha256": {
+      "point_set_range_frequency": "aec73e05bef124e2555ca6529b108ad2afa373ac3ba15b90f719493f60a97156",
+      "range_kth_smallest": "1012b42cc29866df46fef6c24f07c8300d7c05cbd1e9bcf4375c8292ff4e2bfa"
+    }
+  },
+  "input_reuse": {
+    "note": "Reuse unchanged official49 cases; no download/generation or test run performed during preparation. Original revision1 evidence remains unchanged.",
+    "original_evidence_directory": "/workspace/cp-dwm-study/final-validation/judge-docs",
+    "upstream_library_checker": {
+      "repository": "https://github.com/yosupo06/library-checker-problems",
+      "commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+      "info_sha256": {
+        "point_set_range_frequency": "aec73e05bef124e2555ca6529b108ad2afa373ac3ba15b90f719493f60a97156",
+        "range_kth_smallest": "1012b42cc29866df46fef6c24f07c8300d7c05cbd1e9bcf4375c8292ff4e2bfa"
+      }
+    },
+    "original_judge_record_sha256": "e0c9c52b3f4f73ca778692da4a886f81fb93842c4ab4ddabf9ea7043ca642de6",
+    "original_download_record_sha256": "5c3f60d7f7d6eea32279f194db974a9d16d763e74e9c94c4a71a5d5d3f95a7f0"
+  },
+  "compiler_versions": {
+    "gcc": "g++ (Debian 14.2.0-19) 14.2.0",
+    "clang": "Debian clang version 19.1.7 (3+b1)"
+  },
+  "source_sha256": {
+    "components/dynamic_quad_vector.hpp": "541466cdfeabc524243dfcd661a752c2f3eeb71f1ffdd5b975d0265114a44d06",
+    "components/dynamic_quad_wavelet.hpp": "de93626cab81a07ac4f356a7699a39beacde634889e9ddedc6d57fce387ee655",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "2db1f1f83a1ab0f879bd85b8bc4220e0c84f0b5a4dbb2756870e5b98fcb0b5ef",
+    "test/unit/standalone.cpp": "6ceea9ccd9731dada0743e2effcf0bec1b313786d5898749e9e85fa681e478de",
+    "test/dynamic_wavelet_matrix_freq.test.cpp": "0963eab026b2c984a0df77d93342512168d797740d53948514414287e2f856fc",
+    "test/dynamic_wavelet_matrix_kth.test.cpp": "babfd6f8961ed2899f5699eff6b26b031b38414ed56e40b1d746a6e40942305b",
+    "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101"
+  },
+  "documentation_source_sha256": {
+    "components/dynamic_quad_vector.hpp": "541466cdfeabc524243dfcd661a752c2f3eeb71f1ffdd5b975d0265114a44d06",
+    "components/dynamic_quad_wavelet.hpp": "de93626cab81a07ac4f356a7699a39beacde634889e9ddedc6d57fce387ee655",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "2db1f1f83a1ab0f879bd85b8bc4220e0c84f0b5a4dbb2756870e5b98fcb0b5ef",
+    "docs/dynamic_quad_vector.md": "6b2523e98681cd9cbd89f12cc565061a0c88778cb82a22842283b8e2fd7aba7e",
+    "docs/dynamic_quad_wavelet.md": "d645df956b6817fd75c042ee5e742f01f818c84ae1be76ff05d4f49be5630572",
+    "docs/dynamic_wavelet_matrix.md": "604985bb7284cfdef6ba9c0fd2076e980260cd9569e6bc25bbba34fd702e8bff",
+    "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101"
+  },
+  "passed": {
+    "double_include_headers_per_compiler": 3,
+    "compilers": [
+      "gcc",
+      "clang"
+    ],
+    "standalone_cpp_build_and_run_per_compiler": true,
+    "official_point_frequency_cases_per_compiler": 25,
+    "official_range_kth_cases_per_compiler": 24,
+    "total_compiler_case_combinations": 98,
+    "affected_documentation_bundles": 3,
+    "public_doc_snippet_build_and_run_per_compiler": true
+  },
+  "expanded_public_DWM_bytes": 71147,
+  "logs": {
+    "compile.log": "d77e6cd83ce3d0e18b204493735a0fb6c4de57a5e457a3cdca90bb3ffde13415",
+    "docs.log": "bb6959fd45605faa58b7811db0ba1c8886f5251ec9a6ead9dc8f8db5e999be72",
+    "judge.log": "ee20ac7b5824b43d3ea17c01a21b2f1c81db76e45fa6c830f7dbca0c9265d568"
+  },
+  "records": {
+    "compile.json": "10bf45de26577ae06c9061b32978a374c46c7a4c9e88ed9bd5a599ec878e4509",
+    "docs.json": "e74f24793f345233d8149cb6c20183a9851c917d0ce5e0291a7585c111d841fd",
+    "judge.json": "0eb1bd4a728f03b5ec66ae18ad2c7b3774b6cdba6c17fd45033f3974454ec63f",
+    "input-reuse.json": "7c5294eb7fffa04324544a1e309d45e982efbedeb92fe6db4265b33a4cf8fb40",
+    "freeze.json": "9bdfe742b566a582463b316e7fbe3a9f601ef655a04a7657b41ce2cc86007621"
+  },
+  "binary_sha256": {
+    "gcc-standalone": "998f3edab51cbe670b30c2fb23bb7b60defdb43e1f724ff99bc993de677d566c",
+    "clang-standalone": "e74d02b9e7c9837f2bbabe7f97065548008a4ea221fc5f4beea6cf117dceaf03",
+    "gcc-judge-0": "f3407aace91e12d3387a40dccd46be207b143631f195d38f8728aed441f485be",
+    "gcc-judge-1": "ed571ed1e40c8584cde8af05220a797d280ec52345ba0ffe02602483b4777b39",
+    "clang-judge-0": "511108c73c9d894172d748a527b1e74547b8c0c825c316dfb0c5a27de3aaa0e2",
+    "clang-judge-1": "3faad6f8c1755c20b7d57e05c013a32ed81072590c8e7803851109da996fc9f5"
+  }
+}

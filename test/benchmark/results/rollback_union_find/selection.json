@@ -1,0 +1,7 @@
+{
+  "headers": ["data_structure/rollback_union_find.hpp"],
+  "unit": ["test/unit/rollback_union_find.cpp"],
+  "sanitize": ["test/unit/rollback_union_find.cpp"],
+  "verification": ["test/rollback_union_find.test.cpp"],
+  "bundles": ["data_structure/rollback_union_find.hpp", "test/rollback_union_find.test.cpp"]
+}
