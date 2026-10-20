@@ -145,6 +145,19 @@ class IncrementalVerification(unittest.TestCase):
         for group in ("headers", "unit", "verification"):
             self.assertEqual(changed[group], plan[group])
 
+    def test_sequence_header_and_dependencies(self):
+        self.write("sequence/lis.hpp", "#pragma once\n")
+        self.write("test/unit/lis.cpp", '#include "sequence/lis.hpp"\n')
+        self.write("test/lis.test.cpp", '#include "../sequence/lis.hpp"\n')
+        plan = self.plan(self.previous)
+        self.assertEqual(plan["headers"], ["sequence/lis.hpp"])
+        self.assertEqual(plan["unit"], ["test/unit/lis.cpp"])
+        self.assertEqual(plan["verification"], ["test/lis.test.cpp"])
+        self.write("sequence/lis.hpp", "#pragma once\nint lis();\n")
+        changed = self.plan(plan["state"])
+        for group in ("headers", "unit", "verification"):
+            self.assertEqual(changed[group], plan[group])
+
     def test_deleted_test_is_not_run(self):
         (self.root / "test/comb.test.cpp").unlink()
         plan = self.plan(self.previous)

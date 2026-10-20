@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/longest_increasing_subsequence"
-#include "../string/lis.hpp"
+#include "../sequence/lis.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {
