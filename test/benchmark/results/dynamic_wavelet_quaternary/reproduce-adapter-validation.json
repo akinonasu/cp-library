@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "tests": [
+    "legacy stream metadata",
+    "legacy instrumented metadata",
+    "compiled helper stream fixture",
+    "compiled helper API fixture",
+    "reject uncompiled helper metadata",
+    "reject incorrect binary hash"
+  ],
+  "note": "JSON adapter integration test uses the already validated Nim binaries in a synthetic completed-helper metadata fixture. The helper was not recompiled or timed by this test.",
+  "original_measurement_runner_sha256": "fc55f510ab50b9d35b122714a46408b10a030b7f15f9aa36b2afc0ac82b82b57",
+  "reproduce_runner_sha256": "2bbf06929b2a947b5d780db320ef350ac14957863649b2d54b1fec621cd15b4d"
+}

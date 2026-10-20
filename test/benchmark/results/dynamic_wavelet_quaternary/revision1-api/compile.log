@@ -1,0 +1,24 @@
+/workspace/cp-dwm-study/final-api-controls/bench.cpp: In function ‘int main(int, char**)’:
+/workspace/cp-dwm-study/final-api-controls/bench.cpp:75:3: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
+   75 |   if(t==7)x=a.empty()?0:a[rng()%a.size()];if(kind=="select-lastbit-miss")x=decode_key((((U(x)&mask)^value_sign)|U(1))&mask);
+      |   ^~
+/workspace/cp-dwm-study/final-api-controls/bench.cpp:75:43: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   75 |   if(t==7)x=a.empty()?0:a[rng()%a.size()];if(kind=="select-lastbit-miss")x=decode_key((((U(x)&mask)^value_sign)|U(1))&mask);
+      |                                           ^~
+cc1plus: all warnings being treated as errors
+/workspace/cp-dwm-study/final-api-controls/bench.cpp: In function ‘int main(int, char**)’:
+/workspace/cp-dwm-study/final-api-controls/bench.cpp:78:3: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
+   78 |   if(kind=="select-lastbit-miss")k=0;if(kind=="select-high-k")k=n;if(kind=="select-valid-dup"){if(dist!="duplicates"||!n)return 2;k=rng()%duplicate_counts[((U(x)&mask)^value_sign)&15];}
+      |   ^~
+/workspace/cp-dwm-study/final-api-controls/bench.cpp:78:38: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   78 |   if(kind=="select-lastbit-miss")k=0;if(kind=="select-high-k")k=n;if(kind=="select-valid-dup"){if(dist!="duplicates"||!n)return 2;k=rng()%duplicate_counts[((U(x)&mask)^value_sign)&15];}
+      |                                      ^~
+cc1plus: all warnings being treated as errors
+/workspace/cp-dwm-study/final-api-controls/bench.cpp: In lambda function:
+/workspace/cp-dwm-study/final-api-controls/bench.cpp:47:3: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
+   47 |   if(kind=="select-lastbit-miss"||kind=="select-churn")x&=~U(1);return decode_key(x);};
+      |   ^~
+/workspace/cp-dwm-study/final-api-controls/bench.cpp:47:65: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+   47 |   if(kind=="select-lastbit-miss"||kind=="select-churn")x&=~U(1);return decode_key(x);};
+      |                                                                 ^~~~~~
+cc1plus: all warnings being treated as errors

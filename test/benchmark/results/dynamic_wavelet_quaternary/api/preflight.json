@@ -1,0 +1,7130 @@
+[
+  {
+    "domain": "i64",
+    "kind": "access",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "access",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-access-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "2e9aa0a25141c59be9f2bfdda7b9f8aa6bc9f90795abbf18b055e36153930753",
+    "full_output_final_sha256": "a2ccf85f04b988ee76ddb225f49ed0e43f8c50f068b649eeb714ba8a3e46ac95"
+  },
+  {
+    "domain": "i64",
+    "kind": "access",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "access",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-access-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "2e9aa0a25141c59be9f2bfdda7b9f8aa6bc9f90795abbf18b055e36153930753",
+    "full_output_final_sha256": "a2ccf85f04b988ee76ddb225f49ed0e43f8c50f068b649eeb714ba8a3e46ac95"
+  },
+  {
+    "domain": "i64",
+    "kind": "updates",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "updates",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-updates-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "91c28d9131842ec0f80cda33858e952f54aa723dd4974cc7a0748cc6309f987b",
+    "full_output_final_sha256": "331982e1d54ea5dcecfabe606c55507f0927517da5957baaa6f64951bd2a91d3"
+  },
+  {
+    "domain": "i64",
+    "kind": "updates",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "updates",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-updates-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "91c28d9131842ec0f80cda33858e952f54aa723dd4974cc7a0748cc6309f987b",
+    "full_output_final_sha256": "331982e1d54ea5dcecfabe606c55507f0927517da5957baaa6f64951bd2a91d3"
+  },
+  {
+    "domain": "i64",
+    "kind": "set-noop",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "set-noop",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-set-noop-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "71843e9b468c7c4940892da1a88952457dc000ad90f9dce746669b4c2cfa52f2",
+    "full_output_final_sha256": "5ada0a6c79f042e5b59fd9e160ca713ab3622267fc2c8852ed9cbbfbd89fdb76"
+  },
+  {
+    "domain": "i64",
+    "kind": "set-noop",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "set-noop",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-set-noop-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "71843e9b468c7c4940892da1a88952457dc000ad90f9dce746669b4c2cfa52f2",
+    "full_output_final_sha256": "5ada0a6c79f042e5b59fd9e160ca713ab3622267fc2c8852ed9cbbfbd89fdb76"
+  },
+  {
+    "domain": "i64",
+    "kind": "insert",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "insert",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-insert-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 5300,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "f70cd4480e3716a8e470ba678814988a54d2285bdceee7771c8840588ff116ce",
+    "full_output_final_sha256": "62f66b863dcd4bcca70992fd12f071aa8c46cfd233dcd5f1a7587adf5f85b13b"
+  },
+  {
+    "domain": "i64",
+    "kind": "insert",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "insert",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-insert-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 5300,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "f70cd4480e3716a8e470ba678814988a54d2285bdceee7771c8840588ff116ce",
+    "full_output_final_sha256": "62f66b863dcd4bcca70992fd12f071aa8c46cfd233dcd5f1a7587adf5f85b13b"
+  },
+  {
+    "domain": "i64",
+    "kind": "erase",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "erase",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-erase-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 2802,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        151,
+        1249,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "654ff53731c4bdeb9b7a91124726cb58b35d93b60481a0ec99337bc7c914730b",
+    "full_output_final_sha256": "58206c327fab6b10f3278c578ee3ad9efc492c4c675d0afb3d536ecf8da1fc06"
+  },
+  {
+    "domain": "i64",
+    "kind": "erase",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "erase",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-erase-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 2802,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        151,
+        1249,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "654ff53731c4bdeb9b7a91124726cb58b35d93b60481a0ec99337bc7c914730b",
+    "full_output_final_sha256": "58206c327fab6b10f3278c578ee3ad9efc492c4c675d0afb3d536ecf8da1fc06"
+  },
+  {
+    "domain": "i64",
+    "kind": "count",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "count",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-count-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        2,
+        45,
+        1353
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "23a9c7b444febc6bc25baa90d967ae6db5d0faff841d526d1050a8e422e0cafb",
+    "full_output_final_sha256": "527ea6c6b946a4187df443aaf323a2bb19aa523e067ec66273c5708d72e5d2e3"
+  },
+  {
+    "domain": "i64",
+    "kind": "count",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "count",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-count-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        2,
+        45,
+        1353
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "23a9c7b444febc6bc25baa90d967ae6db5d0faff841d526d1050a8e422e0cafb",
+    "full_output_final_sha256": "527ea6c6b946a4187df443aaf323a2bb19aa523e067ec66273c5708d72e5d2e3"
+  },
+  {
+    "domain": "i64",
+    "kind": "rank",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "rank",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-rank-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "95c6f347e1c3f160a587716d08468c11e97d582626a0d2ee0b657aabd5aa944c",
+    "full_output_final_sha256": "527ea6c6b946a4187df443aaf323a2bb19aa523e067ec66273c5708d72e5d2e3"
+  },
+  {
+    "domain": "i64",
+    "kind": "rank",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "rank",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-rank-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "95c6f347e1c3f160a587716d08468c11e97d582626a0d2ee0b657aabd5aa944c",
+    "full_output_final_sha256": "527ea6c6b946a4187df443aaf323a2bb19aa523e067ec66273c5708d72e5d2e3"
+  },
+  {
+    "domain": "i64",
+    "kind": "select",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "select",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-select-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 1400,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": [
+        [
+          1,
+          1400
+        ]
+      ]
+    },
+    "input_sha256": "407c3a66963a554179363e21c60d5d9823b1bc0d1efd80c1d8afb0b0d5988d6d",
+    "full_output_final_sha256": "7c24e7335a42e9be251df35b6872a2b4329be4aa85b67827b6a8d3c611ebcbb2"
+  },
+  {
+    "domain": "i64",
+    "kind": "select",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "select",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-select-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 1400,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": [
+        [
+          1,
+          1400
+        ]
+      ]
+    },
+    "input_sha256": "407c3a66963a554179363e21c60d5d9823b1bc0d1efd80c1d8afb0b0d5988d6d",
+    "full_output_final_sha256": "7c24e7335a42e9be251df35b6872a2b4329be4aa85b67827b6a8d3c611ebcbb2"
+  },
+  {
+    "domain": "i64",
+    "kind": "kth",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "kth",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-kth-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "30a067907a94fe75c118d32b3981e40319eb5ebfaa46a1d3600a62ea3a51a868",
+    "full_output_final_sha256": "e99c053c0b9356586b9bade93153005e4c0b9684d6ab1f3683866148cfc6e4c0"
+  },
+  {
+    "domain": "i64",
+    "kind": "kth",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "kth",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-kth-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "30a067907a94fe75c118d32b3981e40319eb5ebfaa46a1d3600a62ea3a51a868",
+    "full_output_final_sha256": "e99c053c0b9356586b9bade93153005e4c0b9684d6ab1f3683866148cfc6e4c0"
+  },
+  {
+    "domain": "i64",
+    "kind": "freq",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "freq",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-freq-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "64c77df5a22116d6c25736b7659c915a2a32837291cfb01ca96620be832b51bb",
+    "full_output_final_sha256": "ceb315e08400192c2a5529eccf824a628d55cad5ac43a4a15a11790cc5917b7b"
+  },
+  {
+    "domain": "i64",
+    "kind": "freq",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "freq",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-freq-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "64c77df5a22116d6c25736b7659c915a2a32837291cfb01ca96620be832b51bb",
+    "full_output_final_sha256": "ceb315e08400192c2a5529eccf824a628d55cad5ac43a4a15a11790cc5917b7b"
+  },
+  {
+    "domain": "i64",
+    "kind": "range",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "range",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-range-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "1afdb07452a5ab0d74d120dc43aebcf277e4779e7e734497ce223deb994231fa",
+    "full_output_final_sha256": "1288ed8ec31c87eea6b521f76470478a9a08660822728278408dec665c87cd7d"
+  },
+  {
+    "domain": "i64",
+    "kind": "range",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "range",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-range-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "1afdb07452a5ab0d74d120dc43aebcf277e4779e7e734497ce223deb994231fa",
+    "full_output_final_sha256": "1288ed8ec31c87eea6b521f76470478a9a08660822728278408dec665c87cd7d"
+  },
+  {
+    "domain": "i64",
+    "kind": "prev",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "prev",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-prev-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        1391,
+        0
+      ],
+      "neighbor_misses": [
+        9,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "612903b3006c4c1f04d165fd537583f52d4ee6757648f6d43b6490e8423278ab",
+    "full_output_final_sha256": "5b38e07e24e54355a64bc4c0448edca1e86a1ab4b9931dd10b7b5329e100754a"
+  },
+  {
+    "domain": "i64",
+    "kind": "prev",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "prev",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-prev-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        1391,
+        0
+      ],
+      "neighbor_misses": [
+        9,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "612903b3006c4c1f04d165fd537583f52d4ee6757648f6d43b6490e8423278ab",
+    "full_output_final_sha256": "5b38e07e24e54355a64bc4c0448edca1e86a1ab4b9931dd10b7b5329e100754a"
+  },
+  {
+    "domain": "i64",
+    "kind": "next",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i64",
+      "next",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-next-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        1386
+      ],
+      "neighbor_misses": [
+        0,
+        14
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "b9a3a8d73522018ad31d3f0ae1ff74b3a78a01179bee565ef6f23465b72531f1",
+    "full_output_final_sha256": "71d28fb2650cc59d0fe5fd33b28f85c823308a36d39df032104759ae23fd6ede"
+  },
+  {
+    "domain": "i64",
+    "kind": "next",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i64",
+      "next",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i64-next-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        1386
+      ],
+      "neighbor_misses": [
+        0,
+        14
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "b9a3a8d73522018ad31d3f0ae1ff74b3a78a01179bee565ef6f23465b72531f1",
+    "full_output_final_sha256": "71d28fb2650cc59d0fe5fd33b28f85c823308a36d39df032104759ae23fd6ede"
+  },
+  {
+    "domain": "u64",
+    "kind": "access",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "access",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-access-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "c61e656751ea3e6d6777e93133c194baa6106b21fdc0034801cf2212d4301887",
+    "full_output_final_sha256": "534411e0b7728441aed477f6b71363ff825ed97262dabd414b571414fb0b0152"
+  },
+  {
+    "domain": "u64",
+    "kind": "access",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "access",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-access-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "c61e656751ea3e6d6777e93133c194baa6106b21fdc0034801cf2212d4301887",
+    "full_output_final_sha256": "534411e0b7728441aed477f6b71363ff825ed97262dabd414b571414fb0b0152"
+  },
+  {
+    "domain": "u64",
+    "kind": "updates",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "updates",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-updates-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "745aab99fce00463cba5a301270fa8cc09fb915077532a0a827e1dc3cf4c967e",
+    "full_output_final_sha256": "a9ad2b379a9d618a32679cd62f946013809f0e2724860cf5490fc3a1301825e9"
+  },
+  {
+    "domain": "u64",
+    "kind": "updates",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "updates",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-updates-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "745aab99fce00463cba5a301270fa8cc09fb915077532a0a827e1dc3cf4c967e",
+    "full_output_final_sha256": "a9ad2b379a9d618a32679cd62f946013809f0e2724860cf5490fc3a1301825e9"
+  },
+  {
+    "domain": "u64",
+    "kind": "set-noop",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "set-noop",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-set-noop-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "7d901fd66b54cfa0b0e57299e4dc79e32078749d773354279e8053c497c28384",
+    "full_output_final_sha256": "aeac785054fc6880b2c558da49c38414f2dba09a978a3514dd5d252c616a1e13"
+  },
+  {
+    "domain": "u64",
+    "kind": "set-noop",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "set-noop",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-set-noop-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "7d901fd66b54cfa0b0e57299e4dc79e32078749d773354279e8053c497c28384",
+    "full_output_final_sha256": "aeac785054fc6880b2c558da49c38414f2dba09a978a3514dd5d252c616a1e13"
+  },
+  {
+    "domain": "u64",
+    "kind": "insert",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "insert",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-insert-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 5300,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "53c751e7e270bbcea1c93d95cbf3d033450450a5de114610880c963c03576962",
+    "full_output_final_sha256": "97f91872b4b4cb60e1c025626d25d974a6c01c3610952439e26785b460429b24"
+  },
+  {
+    "domain": "u64",
+    "kind": "insert",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "insert",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-insert-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 5300,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "53c751e7e270bbcea1c93d95cbf3d033450450a5de114610880c963c03576962",
+    "full_output_final_sha256": "97f91872b4b4cb60e1c025626d25d974a6c01c3610952439e26785b460429b24"
+  },
+  {
+    "domain": "u64",
+    "kind": "erase",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "erase",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-erase-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 2802,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        151,
+        1249,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "01e3b038e8eb22734940d76d5399e9f72bf82f61c52eb591201c2863af104fc7",
+    "full_output_final_sha256": "8d86074a2fe86f2efbb55c7a73f2cc471d4cd6ee77f5d518592504c0d687eef7"
+  },
+  {
+    "domain": "u64",
+    "kind": "erase",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "erase",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-erase-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 2802,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        151,
+        1249,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "01e3b038e8eb22734940d76d5399e9f72bf82f61c52eb591201c2863af104fc7",
+    "full_output_final_sha256": "8d86074a2fe86f2efbb55c7a73f2cc471d4cd6ee77f5d518592504c0d687eef7"
+  },
+  {
+    "domain": "u64",
+    "kind": "count",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "count",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-count-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        2,
+        45,
+        1353
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "9026b4d383e33c7a5f37223f3a894d6506a7f78908bf80397ca2394179916c2f",
+    "full_output_final_sha256": "e5ceefb10aa9139544751af9f95193e8b99c58bf9522856ca65a21f11dcc04c7"
+  },
+  {
+    "domain": "u64",
+    "kind": "count",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "count",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-count-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        2,
+        45,
+        1353
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "9026b4d383e33c7a5f37223f3a894d6506a7f78908bf80397ca2394179916c2f",
+    "full_output_final_sha256": "e5ceefb10aa9139544751af9f95193e8b99c58bf9522856ca65a21f11dcc04c7"
+  },
+  {
+    "domain": "u64",
+    "kind": "rank",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "rank",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-rank-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "f5bb997ad467c441b37f5f25505abc048d4943e8dd629b7fc633904b18ba5bbf",
+    "full_output_final_sha256": "e5ceefb10aa9139544751af9f95193e8b99c58bf9522856ca65a21f11dcc04c7"
+  },
+  {
+    "domain": "u64",
+    "kind": "rank",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "rank",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-rank-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "f5bb997ad467c441b37f5f25505abc048d4943e8dd629b7fc633904b18ba5bbf",
+    "full_output_final_sha256": "e5ceefb10aa9139544751af9f95193e8b99c58bf9522856ca65a21f11dcc04c7"
+  },
+  {
+    "domain": "u64",
+    "kind": "select",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "select",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-select-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 1400,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": [
+        [
+          1,
+          1400
+        ]
+      ]
+    },
+    "input_sha256": "bbc4f33936f8991fcbc74923f03b2279ec440df3afb8bd31be65d6d87fb5a7a0",
+    "full_output_final_sha256": "3d5b4762d6555422a9028f0ca3df3b051c6ea964b43bf996671d3f3af0bfa02f"
+  },
+  {
+    "domain": "u64",
+    "kind": "select",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "select",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-select-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 1400,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": [
+        [
+          1,
+          1400
+        ]
+      ]
+    },
+    "input_sha256": "bbc4f33936f8991fcbc74923f03b2279ec440df3afb8bd31be65d6d87fb5a7a0",
+    "full_output_final_sha256": "3d5b4762d6555422a9028f0ca3df3b051c6ea964b43bf996671d3f3af0bfa02f"
+  },
+  {
+    "domain": "u64",
+    "kind": "kth",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "kth",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-kth-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "9caf5a6394efa9748d6daec248afd4363c5f0bf9700856f1687312ba1a85f402",
+    "full_output_final_sha256": "8baefdaaf1c07e0e9fb62cc365922df3f6eeed8fa6c570b07ce96569ad4f9456"
+  },
+  {
+    "domain": "u64",
+    "kind": "kth",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "kth",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-kth-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "9caf5a6394efa9748d6daec248afd4363c5f0bf9700856f1687312ba1a85f402",
+    "full_output_final_sha256": "8baefdaaf1c07e0e9fb62cc365922df3f6eeed8fa6c570b07ce96569ad4f9456"
+  },
+  {
+    "domain": "u64",
+    "kind": "freq",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "freq",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-freq-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "5e5edf6f9a4e5934cf5b8ba35741c41fbe2aa3dc5c129d81e97fb9449b5f28f8",
+    "full_output_final_sha256": "e5bce92310fa1a276c079fe532e2b6dac2d50df345cac8e38bcb8cc3f2af8c87"
+  },
+  {
+    "domain": "u64",
+    "kind": "freq",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "freq",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-freq-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "5e5edf6f9a4e5934cf5b8ba35741c41fbe2aa3dc5c129d81e97fb9449b5f28f8",
+    "full_output_final_sha256": "e5bce92310fa1a276c079fe532e2b6dac2d50df345cac8e38bcb8cc3f2af8c87"
+  },
+  {
+    "domain": "u64",
+    "kind": "range",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "range",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-range-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "966d80e988e85bc629f817efe13129432b673c9ba1f6af4d2c1da7cc3ee5cc09",
+    "full_output_final_sha256": "99060b6ed99c995233755799f3e40630de6e04195506bd44d26837e4fde9ba4e"
+  },
+  {
+    "domain": "u64",
+    "kind": "range",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "range",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-range-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "966d80e988e85bc629f817efe13129432b673c9ba1f6af4d2c1da7cc3ee5cc09",
+    "full_output_final_sha256": "99060b6ed99c995233755799f3e40630de6e04195506bd44d26837e4fde9ba4e"
+  },
+  {
+    "domain": "u64",
+    "kind": "prev",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "prev",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-prev-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        1391,
+        0
+      ],
+      "neighbor_misses": [
+        9,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "d6269d30ab0daf3d5b91fd270a6e25d2ffdd1efa6c16aaee0b851d1e7f1d53c9",
+    "full_output_final_sha256": "ecdddbf90e91ac83c413f4df1f8ca54560b619dbf0a282b997f2f4ba386f80fa"
+  },
+  {
+    "domain": "u64",
+    "kind": "prev",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "prev",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-prev-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        1391,
+        0
+      ],
+      "neighbor_misses": [
+        9,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "d6269d30ab0daf3d5b91fd270a6e25d2ffdd1efa6c16aaee0b851d1e7f1d53c9",
+    "full_output_final_sha256": "ecdddbf90e91ac83c413f4df1f8ca54560b619dbf0a282b997f2f4ba386f80fa"
+  },
+  {
+    "domain": "u64",
+    "kind": "next",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u64",
+      "next",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-next-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        1386
+      ],
+      "neighbor_misses": [
+        0,
+        14
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "8633a44fda97b78a0e38059b2c341d4ee9d0481437333a28ccb0b4f70a34d764",
+    "full_output_final_sha256": "408b17de989458fbabf0c8f0b5e5202b4d9857af58c66f8fb6b54ff61eec77da"
+  },
+  {
+    "domain": "u64",
+    "kind": "next",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u64",
+      "next",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u64-next-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        1386
+      ],
+      "neighbor_misses": [
+        0,
+        14
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "8633a44fda97b78a0e38059b2c341d4ee9d0481437333a28ccb0b4f70a34d764",
+    "full_output_final_sha256": "408b17de989458fbabf0c8f0b5e5202b4d9857af58c66f8fb6b54ff61eec77da"
+  },
+  {
+    "domain": "i31",
+    "kind": "access",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "access",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-access-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "692aef5efc1a51dd460d382c439d8da02b5c55f1289ad28783916b2e19124c7c",
+    "full_output_final_sha256": "9fa86178c14a6548b6161f2e1d5a38363644afa310bfd3bd5b62004d90b47fed"
+  },
+  {
+    "domain": "i31",
+    "kind": "access",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "access",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-access-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "692aef5efc1a51dd460d382c439d8da02b5c55f1289ad28783916b2e19124c7c",
+    "full_output_final_sha256": "9fa86178c14a6548b6161f2e1d5a38363644afa310bfd3bd5b62004d90b47fed"
+  },
+  {
+    "domain": "i31",
+    "kind": "updates",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "updates",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-updates-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "d41dd9f980c0648e76c473668f341a5881416c8cc934c3bc0810252dfd113273",
+    "full_output_final_sha256": "02be3c653d2c8990cc16582e8b189e369a7bb70b15add16ff1edad71ca6fad06"
+  },
+  {
+    "domain": "i31",
+    "kind": "updates",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "updates",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-updates-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "d41dd9f980c0648e76c473668f341a5881416c8cc934c3bc0810252dfd113273",
+    "full_output_final_sha256": "02be3c653d2c8990cc16582e8b189e369a7bb70b15add16ff1edad71ca6fad06"
+  },
+  {
+    "domain": "i31",
+    "kind": "set-noop",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "set-noop",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-set-noop-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "23c8cc1249a79f6644c0d8a94590d44daae78b37f33746b3467bea5b1a5d4360",
+    "full_output_final_sha256": "4e8fe6111870c4cca9c47da5e9bceab7105eeb56f8c08f9a3dec454227171bdc"
+  },
+  {
+    "domain": "i31",
+    "kind": "set-noop",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "set-noop",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-set-noop-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "23c8cc1249a79f6644c0d8a94590d44daae78b37f33746b3467bea5b1a5d4360",
+    "full_output_final_sha256": "4e8fe6111870c4cca9c47da5e9bceab7105eeb56f8c08f9a3dec454227171bdc"
+  },
+  {
+    "domain": "i31",
+    "kind": "insert",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "insert",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-insert-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 5300,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "21393dc30559e18d968b6bd3d06d185d9b67fe7675e33ea5af68049234a630a1",
+    "full_output_final_sha256": "b1505766777637ba2504887e11a8e87ad139671ea03265651ff9e6f2709f626e"
+  },
+  {
+    "domain": "i31",
+    "kind": "insert",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "insert",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-insert-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 5300,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "21393dc30559e18d968b6bd3d06d185d9b67fe7675e33ea5af68049234a630a1",
+    "full_output_final_sha256": "b1505766777637ba2504887e11a8e87ad139671ea03265651ff9e6f2709f626e"
+  },
+  {
+    "domain": "i31",
+    "kind": "erase",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "erase",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-erase-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 2802,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        151,
+        1249,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "4a60bbb678bf2dbcd695de07722487e5e0bd205906ca2055a40d766fb523df57",
+    "full_output_final_sha256": "3ed4ab6fed6d5ee9880ff6d8e657e702ca3119a4dd3d2c280eb3409bf36d4602"
+  },
+  {
+    "domain": "i31",
+    "kind": "erase",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "erase",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-erase-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 2802,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        151,
+        1249,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "4a60bbb678bf2dbcd695de07722487e5e0bd205906ca2055a40d766fb523df57",
+    "full_output_final_sha256": "3ed4ab6fed6d5ee9880ff6d8e657e702ca3119a4dd3d2c280eb3409bf36d4602"
+  },
+  {
+    "domain": "i31",
+    "kind": "count",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "count",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-count-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        2,
+        45,
+        1353
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "264abcd6e23437284daacaee9dd3c36e17d9c745327907958c7cc9728741b56a",
+    "full_output_final_sha256": "2fb5db5ad3be9c6d00d9aeb7e07969eaedb75947ea63070a3afdf506284e6994"
+  },
+  {
+    "domain": "i31",
+    "kind": "count",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "count",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-count-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        2,
+        45,
+        1353
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "264abcd6e23437284daacaee9dd3c36e17d9c745327907958c7cc9728741b56a",
+    "full_output_final_sha256": "2fb5db5ad3be9c6d00d9aeb7e07969eaedb75947ea63070a3afdf506284e6994"
+  },
+  {
+    "domain": "i31",
+    "kind": "rank",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "rank",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-rank-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "37829ee50ff120e3cc3a11affc3f39b5dc8e2ad111ed3ca5bdc160203804efe4",
+    "full_output_final_sha256": "2fb5db5ad3be9c6d00d9aeb7e07969eaedb75947ea63070a3afdf506284e6994"
+  },
+  {
+    "domain": "i31",
+    "kind": "rank",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "rank",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-rank-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "37829ee50ff120e3cc3a11affc3f39b5dc8e2ad111ed3ca5bdc160203804efe4",
+    "full_output_final_sha256": "2fb5db5ad3be9c6d00d9aeb7e07969eaedb75947ea63070a3afdf506284e6994"
+  },
+  {
+    "domain": "i31",
+    "kind": "select",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "select",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-select-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 1400,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": [
+        [
+          1,
+          1400
+        ]
+      ]
+    },
+    "input_sha256": "fb61c230563a6973ce4398eb288e57798975f2664eb8c725211b4fe4185c4e9c",
+    "full_output_final_sha256": "34968a0a4a42badf756fbab880cd623eb6d3a286213b728b8f43e6d1bd584b92"
+  },
+  {
+    "domain": "i31",
+    "kind": "select",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "select",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-select-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 1400,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": [
+        [
+          1,
+          1400
+        ]
+      ]
+    },
+    "input_sha256": "fb61c230563a6973ce4398eb288e57798975f2664eb8c725211b4fe4185c4e9c",
+    "full_output_final_sha256": "34968a0a4a42badf756fbab880cd623eb6d3a286213b728b8f43e6d1bd584b92"
+  },
+  {
+    "domain": "i31",
+    "kind": "kth",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "kth",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-kth-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "a80e328b0bab0003ba57461ffd50fd3d64716b485e945e5cee5f56f1b89ad8e8",
+    "full_output_final_sha256": "5a979b877ea77315ca235a3d63fe3211245b694cd475a6b5b929af4daea3e7f2"
+  },
+  {
+    "domain": "i31",
+    "kind": "kth",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "kth",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-kth-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "a80e328b0bab0003ba57461ffd50fd3d64716b485e945e5cee5f56f1b89ad8e8",
+    "full_output_final_sha256": "5a979b877ea77315ca235a3d63fe3211245b694cd475a6b5b929af4daea3e7f2"
+  },
+  {
+    "domain": "i31",
+    "kind": "freq",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "freq",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-freq-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "83afacaf18135ada4ebdf5afa42838f02f562766397d25b300f77fb0f0c2b84a",
+    "full_output_final_sha256": "69c79ccc42ebc86d8ca4b003a0f160bd842caca4a35dacc42f2d09e47cdeaa33"
+  },
+  {
+    "domain": "i31",
+    "kind": "freq",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "freq",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-freq-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "83afacaf18135ada4ebdf5afa42838f02f562766397d25b300f77fb0f0c2b84a",
+    "full_output_final_sha256": "69c79ccc42ebc86d8ca4b003a0f160bd842caca4a35dacc42f2d09e47cdeaa33"
+  },
+  {
+    "domain": "i31",
+    "kind": "range",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "range",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-range-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "b61ddeb396fad13a68e587e6daf1219299ae95940e29fccbd51702a19885b929",
+    "full_output_final_sha256": "556e3e0d07858abb2bc669be4110fdf2c8741a83a2f2dac4a18ee69955fdf9ac"
+  },
+  {
+    "domain": "i31",
+    "kind": "range",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "range",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-range-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "b61ddeb396fad13a68e587e6daf1219299ae95940e29fccbd51702a19885b929",
+    "full_output_final_sha256": "556e3e0d07858abb2bc669be4110fdf2c8741a83a2f2dac4a18ee69955fdf9ac"
+  },
+  {
+    "domain": "i31",
+    "kind": "prev",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "prev",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-prev-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        1392,
+        0
+      ],
+      "neighbor_misses": [
+        8,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "3f44f40234da15b9347cfe0af135434f1d62ee3af08d0c81d967d245a3013723",
+    "full_output_final_sha256": "f6eae0633bc1a44ca48ff058c5cd14639cf6d8195522bcede835a2b2f0303a9a"
+  },
+  {
+    "domain": "i31",
+    "kind": "prev",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "prev",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-prev-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        1392,
+        0
+      ],
+      "neighbor_misses": [
+        8,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "3f44f40234da15b9347cfe0af135434f1d62ee3af08d0c81d967d245a3013723",
+    "full_output_final_sha256": "f6eae0633bc1a44ca48ff058c5cd14639cf6d8195522bcede835a2b2f0303a9a"
+  },
+  {
+    "domain": "i31",
+    "kind": "next",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-i31",
+      "next",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-next-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        1388
+      ],
+      "neighbor_misses": [
+        0,
+        12
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "748246b20cd6b17e6668fffd7903b7da96e88a2d783407f2e149dc7d4f274c67",
+    "full_output_final_sha256": "2422e0745e94742a8cb62fe109476821f9af2944081a2947269c1b1034501d86"
+  },
+  {
+    "domain": "i31",
+    "kind": "next",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-i31",
+      "next",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/i31-next-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        1388
+      ],
+      "neighbor_misses": [
+        0,
+        12
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 1100,
+      "initial_max_multiplicity": 1,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "748246b20cd6b17e6668fffd7903b7da96e88a2d783407f2e149dc7d4f274c67",
+    "full_output_final_sha256": "2422e0745e94742a8cb62fe109476821f9af2944081a2947269c1b1034501d86"
+  },
+  {
+    "domain": "u7",
+    "kind": "access",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "access",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-access-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "9a095906b8aa983472cdc9c361afd6f234125a53c4f9a262c535c8c45b8f1aad",
+    "full_output_final_sha256": "c541322856d9cb66f7e76b2062a867a490257d5b4b5a85954876f693b9dfddef"
+  },
+  {
+    "domain": "u7",
+    "kind": "access",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "access",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-access-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "9a095906b8aa983472cdc9c361afd6f234125a53c4f9a262c535c8c45b8f1aad",
+    "full_output_final_sha256": "c541322856d9cb66f7e76b2062a867a490257d5b4b5a85954876f693b9dfddef"
+  },
+  {
+    "domain": "u7",
+    "kind": "updates",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "updates",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-updates-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "325bacde71df7c542809e3088063f3629f3ad4c00571bbeab1fd8e8cd7aebaac",
+    "full_output_final_sha256": "279c3f68170978ee72360f36cce85b9437f5f6274112f8af8007d9188ca79f00"
+  },
+  {
+    "domain": "u7",
+    "kind": "updates",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "updates",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-updates-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "325bacde71df7c542809e3088063f3629f3ad4c00571bbeab1fd8e8cd7aebaac",
+    "full_output_final_sha256": "279c3f68170978ee72360f36cce85b9437f5f6274112f8af8007d9188ca79f00"
+  },
+  {
+    "domain": "u7",
+    "kind": "set-noop",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "set-noop",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-set-noop-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "9c6799b43c9573920e2a253c3483b95b789f8f518500bc77e9c84a42d5c0a694",
+    "full_output_final_sha256": "ffdfd20940bc6ab5e4ec32e83985322c694d20034bfb8031205f86276cf65adc"
+  },
+  {
+    "domain": "u7",
+    "kind": "set-noop",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "set-noop",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-set-noop-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "9c6799b43c9573920e2a253c3483b95b789f8f518500bc77e9c84a42d5c0a694",
+    "full_output_final_sha256": "ffdfd20940bc6ab5e4ec32e83985322c694d20034bfb8031205f86276cf65adc"
+  },
+  {
+    "domain": "u7",
+    "kind": "insert",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "insert",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-insert-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 5300,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "a6eb1d760680270efc2177b226cbcc74aba0a1d4a2f92b260fe8316ae1d89de6",
+    "full_output_final_sha256": "971ae20282b703bd73451ba5b10c44fc870c7c417a01ad417e5ab5c56d421cd2"
+  },
+  {
+    "domain": "u7",
+    "kind": "insert",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "insert",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-insert-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 5300,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "a6eb1d760680270efc2177b226cbcc74aba0a1d4a2f92b260fe8316ae1d89de6",
+    "full_output_final_sha256": "971ae20282b703bd73451ba5b10c44fc870c7c417a01ad417e5ab5c56d421cd2"
+  },
+  {
+    "domain": "u7",
+    "kind": "erase",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "erase",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-erase-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 2802,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        151,
+        1249,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "88c63eee8fc34337a4e3214c86035b6af4e53f87de649405a43931bf0b6c9300",
+    "full_output_final_sha256": "25927f9700ac1af76b3d495e9f102ffea665dcb5d2764080181a5b79fecb151f"
+  },
+  {
+    "domain": "u7",
+    "kind": "erase",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "erase",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-erase-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 2802,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        151,
+        1249,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "88c63eee8fc34337a4e3214c86035b6af4e53f87de649405a43931bf0b6c9300",
+    "full_output_final_sha256": "25927f9700ac1af76b3d495e9f102ffea665dcb5d2764080181a5b79fecb151f"
+  },
+  {
+    "domain": "u7",
+    "kind": "count",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "count",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-count-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        2,
+        45,
+        1353
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "b535771074cf07285fe0186010f794ade84d8a2baf3d03d8dbc96bb4a4989396",
+    "full_output_final_sha256": "01f20d05a4f1467217235fbad772c9c009bf549c7f528e02acf72c6d3271d706"
+  },
+  {
+    "domain": "u7",
+    "kind": "count",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "count",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-count-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        2,
+        45,
+        1353
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "b535771074cf07285fe0186010f794ade84d8a2baf3d03d8dbc96bb4a4989396",
+    "full_output_final_sha256": "01f20d05a4f1467217235fbad772c9c009bf549c7f528e02acf72c6d3271d706"
+  },
+  {
+    "domain": "u7",
+    "kind": "rank",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "rank",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-rank-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "97d26651b265268c39a6d484898206daf1700b398027fe06f4f7244d22b5d89e",
+    "full_output_final_sha256": "4d1e34737b09e660894fa30812d017d051532850911892756e4bd0f4b6a6c315"
+  },
+  {
+    "domain": "u7",
+    "kind": "rank",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "rank",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-rank-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "97d26651b265268c39a6d484898206daf1700b398027fe06f4f7244d22b5d89e",
+    "full_output_final_sha256": "4d1e34737b09e660894fa30812d017d051532850911892756e4bd0f4b6a6c315"
+  },
+  {
+    "domain": "u7",
+    "kind": "select",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "select",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-select-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 1400,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": [
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          109
+        ],
+        [
+          6,
+          61
+        ],
+        [
+          7,
+          139
+        ],
+        [
+          8,
+          201
+        ],
+        [
+          9,
+          173
+        ],
+        [
+          10,
+          207
+        ],
+        [
+          11,
+          81
+        ],
+        [
+          12,
+          106
+        ],
+        [
+          13,
+          109
+        ],
+        [
+          14,
+          85
+        ],
+        [
+          16,
+          44
+        ],
+        [
+          17,
+          27
+        ],
+        [
+          19,
+          25
+        ]
+      ]
+    },
+    "input_sha256": "97f557bc81ea2013d38e89bd735b6276c35cb185265c8c9ad1b2f96b2d859da2",
+    "full_output_final_sha256": "61619b919e3547b0f3de89d1bb87b75bcf391258e77e69387c6d7152193dada9"
+  },
+  {
+    "domain": "u7",
+    "kind": "select",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "select",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-select-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 1400,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": [
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          109
+        ],
+        [
+          6,
+          61
+        ],
+        [
+          7,
+          139
+        ],
+        [
+          8,
+          201
+        ],
+        [
+          9,
+          173
+        ],
+        [
+          10,
+          207
+        ],
+        [
+          11,
+          81
+        ],
+        [
+          12,
+          106
+        ],
+        [
+          13,
+          109
+        ],
+        [
+          14,
+          85
+        ],
+        [
+          16,
+          44
+        ],
+        [
+          17,
+          27
+        ],
+        [
+          19,
+          25
+        ]
+      ]
+    },
+    "input_sha256": "97f557bc81ea2013d38e89bd735b6276c35cb185265c8c9ad1b2f96b2d859da2",
+    "full_output_final_sha256": "61619b919e3547b0f3de89d1bb87b75bcf391258e77e69387c6d7152193dada9"
+  },
+  {
+    "domain": "u7",
+    "kind": "kth",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "kth",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-kth-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "e88e25f3ec4811067f6f0e0ee894d82df7cbf8bbfa073c92c3c77235b93606d5",
+    "full_output_final_sha256": "3846c34e3767c9c21b61a82d4e5e6f7c32b2ddfafa5b236799fe9c4ed30d7a6f"
+  },
+  {
+    "domain": "u7",
+    "kind": "kth",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "kth",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-kth-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "e88e25f3ec4811067f6f0e0ee894d82df7cbf8bbfa073c92c3c77235b93606d5",
+    "full_output_final_sha256": "3846c34e3767c9c21b61a82d4e5e6f7c32b2ddfafa5b236799fe9c4ed30d7a6f"
+  },
+  {
+    "domain": "u7",
+    "kind": "freq",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "freq",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-freq-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "a8da84cb8f5b5c066ff8b95a9cbe1950c401311426c17bc584fe5ee904e5015b",
+    "full_output_final_sha256": "f6cdfda9be2ed6c96bb001d8bd6f9fa5b6cabf101ac9448661d0fc5b3dd52334"
+  },
+  {
+    "domain": "u7",
+    "kind": "freq",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "freq",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-freq-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "a8da84cb8f5b5c066ff8b95a9cbe1950c401311426c17bc584fe5ee904e5015b",
+    "full_output_final_sha256": "f6cdfda9be2ed6c96bb001d8bd6f9fa5b6cabf101ac9448661d0fc5b3dd52334"
+  },
+  {
+    "domain": "u7",
+    "kind": "range",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "range",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-range-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "f9294565e33b0f2bf4f22545223f7aa5767c9d109b1db5e6d52deafbbd74f3c5",
+    "full_output_final_sha256": "9bee73d33b990261527178273cdc86f1518992a5ef2b941b0435583ce2563744"
+  },
+  {
+    "domain": "u7",
+    "kind": "range",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "range",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-range-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        0
+      ],
+      "neighbor_misses": [
+        0,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "f9294565e33b0f2bf4f22545223f7aa5767c9d109b1db5e6d52deafbbd74f3c5",
+    "full_output_final_sha256": "9bee73d33b990261527178273cdc86f1518992a5ef2b941b0435583ce2563744"
+  },
+  {
+    "domain": "u7",
+    "kind": "prev",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "prev",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-prev-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        1382,
+        0
+      ],
+      "neighbor_misses": [
+        18,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "391b1ea28da6e2bee33dd8202d121708a6b2ee69810f9c7b2263e6d36687b23d",
+    "full_output_final_sha256": "8ab47e7a95c8bb2ce1225bfbdb8b37ba5f77e560f95d3464cacd252e29725b40"
+  },
+  {
+    "domain": "u7",
+    "kind": "prev",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "prev",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-prev-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        1382,
+        0
+      ],
+      "neighbor_misses": [
+        18,
+        0
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "391b1ea28da6e2bee33dd8202d121708a6b2ee69810f9c7b2263e6d36687b23d",
+    "full_output_final_sha256": "8ab47e7a95c8bb2ce1225bfbdb8b37ba5f77e560f95d3464cacd252e29725b40"
+  },
+  {
+    "domain": "u7",
+    "kind": "next",
+    "arm": "base",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/base-u7",
+      "next",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-next-base",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        1388
+      ],
+      "neighbor_misses": [
+        0,
+        12
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "956451ef3d7979d5499ef6082fe58dfc9503680b148f66468cbc8c4eca247b9f",
+    "full_output_final_sha256": "a705ff38df43354aaec49f2e6ae7ea087fbe2a8b28f6cbef2868936b36f6f749"
+  },
+  {
+    "domain": "u7",
+    "kind": "next",
+    "arm": "current",
+    "command": [
+      "/workspace/cp-dwm-study/final-api-controls-revision2/current-u7",
+      "next",
+      "1100",
+      "1400",
+      "20261020",
+      "uniform",
+      "random",
+      "1",
+      "warm",
+      "/workspace/cp-dwm-study/final-api-controls-revision2/small/u7-next-current",
+      "bulk"
+    ],
+    "oracle": {
+      "oracle": "full_vector",
+      "status": "pass",
+      "n": 1100,
+      "q": 1400,
+      "checked_words": 3900,
+      "select_hits": 0,
+      "select_misses": 0,
+      "operation_counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1400,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "neighbor_hits": [
+        0,
+        1388
+      ],
+      "neighbor_misses": [
+        0,
+        12
+      ],
+      "range_lengths_empty_singleton_2to16_over16": [
+        0,
+        3,
+        34,
+        1363
+      ],
+      "initial_distinct": 128,
+      "initial_max_multiplicity": 19,
+      "select_absent_queries": 0,
+      "select_negative_k_queries": 0,
+      "select_high_k_queries": 0,
+      "select_multiplicity_histogram": []
+    },
+    "input_sha256": "956451ef3d7979d5499ef6082fe58dfc9503680b148f66468cbc8c4eca247b9f",
+    "full_output_final_sha256": "a705ff38df43354aaec49f2e6ae7ea087fbe2a8b28f6cbef2868936b36f6f749"
+  }
+]

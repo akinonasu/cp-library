@@ -1,0 +1,60 @@
+generic test/unit/dynamic_quad_vector.cpp
+generic test/unit/dynamic_quad_wavelet.cpp
+test/unit/dynamic_quad_wavelet.cpp:157:64: error: macro "assert" passed 2 arguments, but takes just 1
+  157 |                 assert(wm.pop_back() == from_key<T, Bits>(mask));
+      |                                                                ^
+In file included from /usr/include/c++/14/cassert:44,
+                 from test/unit/dynamic_quad_wavelet.cpp:3:
+/usr/include/assert.h:102:11: note: macro "assert" defined here
+  102 | #  define assert(expr)                                                  \
+      |           ^~~~~~
+test/unit/dynamic_quad_wavelet.cpp:158:61: error: macro "assert" passed 2 arguments, but takes just 1
+  158 |                 assert(wm.pop_back() == from_key<T, Bits>(0));
+      |                                                             ^
+/usr/include/assert.h:102:11: note: macro "assert" defined here
+  102 | #  define assert(expr)                                                  \
+      |           ^~~~~~
+test/unit/dynamic_quad_wavelet.cpp: In function ‘void structure()’:
+test/unit/dynamic_quad_wavelet.cpp:157:17: error: ‘assert’ was not declared in this scope
+  157 |                 assert(wm.pop_back() == from_key<T, Bits>(mask));
+      |                 ^~~~~~
+test/unit/dynamic_quad_wavelet.cpp:8:1: note: ‘assert’ is defined in header ‘<cassert>’; this is probably fixable by adding ‘#include <cassert>’
+    7 | #include <random>
+  +++ |+#include <cassert>
+    8 | #include <type_traits>
+Traceback (most recent call last):
+  File "/workspace/cp-dwm-study/final-validation/run.py", line 16, in <module>
+    subprocess.run(command,cwd=root,check=True)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['g++', '-std=c++23', '-O2', '-Wall', '-Wextra', '-Werror', '-I.', 'test/unit/dynamic_quad_wavelet.cpp', '-o', '/workspace/cp-dwm-study/final-validation/generic-dynamic_quad_wavelet']' returned non-zero exit status 1.
+generic test/unit/dynamic_quad_wavelet.cpp
+generic test/unit/dynamic_wavelet_matrix.cpp
+generic test/unit/dynamic_wavelet_count.cpp
+generic test/unit/dynamic_wavelet_core.cpp
+native test/unit/dynamic_quad_vector.cpp
+native test/unit/dynamic_quad_wavelet.cpp
+native test/unit/dynamic_wavelet_matrix.cpp
+native test/unit/dynamic_wavelet_count.cpp
+native test/unit/dynamic_wavelet_core.cpp
+avx2 test/unit/dynamic_quad_vector.cpp
+avx2 test/unit/dynamic_quad_wavelet.cpp
+avx2 test/unit/dynamic_wavelet_matrix.cpp
+avx2 test/unit/dynamic_wavelet_count.cpp
+avx2 test/unit/dynamic_wavelet_core.cpp
+scalar test/unit/dynamic_quad_vector.cpp
+scalar test/unit/dynamic_quad_wavelet.cpp
+scalar test/unit/dynamic_wavelet_matrix.cpp
+scalar test/unit/dynamic_wavelet_count.cpp
+scalar test/unit/dynamic_wavelet_core.cpp
+sanitize test/unit/dynamic_quad_vector.cpp
+sanitize test/unit/dynamic_quad_wavelet.cpp
+sanitize test/unit/dynamic_wavelet_matrix.cpp
+sanitize test/unit/dynamic_wavelet_count.cpp
+sanitize test/unit/dynamic_wavelet_core.cpp
+clang test/unit/dynamic_quad_vector.cpp
+clang test/unit/dynamic_quad_wavelet.cpp
+clang test/unit/dynamic_wavelet_matrix.cpp
+clang test/unit/dynamic_wavelet_count.cpp
+clang test/unit/dynamic_wavelet_core.cpp
+All final correctness checks passed

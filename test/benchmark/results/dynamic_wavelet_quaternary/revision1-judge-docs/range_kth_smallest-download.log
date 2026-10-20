@@ -1,0 +1,196 @@
+[INFO] online-judge-tools 11.5.1 (+ online-judge-api-client 10.10.1)
+[INFO] load cookie from: /home/agent/.local/share/online-judge-tools/cookie.jar
+git version 2.52.0
+[INFO] $ git -C /home/agent/.cache/online-judge-tools/library-checker-problems pull
+Already up to date.
+[INFO] $ /tmp/cp-binomial-venv/bin/python3 /home/agent/.cache/online-judge-tools/library-checker-problems/generate.py /home/agent/.cache/online-judge-tools/library-checker-problems/data_structure/range_kth_smallest/info.toml
+09:03:41 [INFO] Start range_kth_smallest
+09:03:41 [INFO] generate params.h
+09:03:41 [INFO] compile checker
+09:03:45 [INFO] compile solution
+09:03:46 [INFO] compile generators
+09:03:46 [INFO] compile example.in
+09:03:46 [INFO] compile random.cpp
+09:03:46 [INFO] compile small.cpp
+09:03:46 [INFO] compile max_random.cpp
+09:03:47 [INFO] compile dense_small_a.cpp
+09:03:47 [INFO] compile dense_large_a.cpp
+09:03:48 [INFO] compile all_zero.cpp
+09:03:48 [INFO] clear input /home/agent/.cache/online-judge-tools/library-checker-problems/data_structure/range_kth_smallest/in
+09:03:48 [INFO] gen example.in 1cases
+09:03:48 [INFO] gen random.cpp 5cases
+09:03:48 [INFO] gen small.cpp 10cases
+09:03:48 [INFO] gen max_random.cpp 5cases
+09:03:49 [INFO] gen dense_small_a.cpp 1cases
+09:03:49 [INFO] gen dense_large_a.cpp 1cases
+09:03:49 [INFO] gen all_zero.cpp 1cases
+09:03:49 [INFO] clear output /home/agent/.cache/online-judge-tools/library-checker-problems/data_structure/range_kth_smallest/out
+09:03:49 [INFO] ANS      1 msecs : example_00 : b''
+09:03:49 [INFO] ANS    150 msecs : random_00 : b''
+09:03:49 [INFO] ANS    169 msecs : random_01 : b''
+09:03:49 [INFO] ANS    101 msecs : random_02 : b''
+09:03:49 [INFO] ANS     66 msecs : random_03 : b''
+09:03:49 [INFO] ANS     65 msecs : random_04 : b''
+09:03:49 [INFO] ANS      2 msecs : small_00 : b''
+09:03:49 [INFO] ANS      2 msecs : small_01 : b''
+09:03:49 [INFO] ANS      2 msecs : small_02 : b''
+09:03:49 [INFO] ANS      1 msecs : small_03 : b''
+09:03:49 [INFO] ANS      1 msecs : small_04 : b''
+09:03:49 [INFO] ANS      1 msecs : small_05 : b''
+09:03:49 [INFO] ANS      1 msecs : small_06 : b''
+09:03:49 [INFO] ANS      1 msecs : small_07 : b''
+09:03:49 [INFO] ANS      1 msecs : small_08 : b''
+09:03:49 [INFO] ANS      1 msecs : small_09 : b''
+09:03:49 [INFO] ANS    237 msecs : max_random_00 : b''
+09:03:50 [INFO] ANS    228 msecs : max_random_01 : b''
+09:03:50 [INFO] ANS    231 msecs : max_random_02 : b''
+09:03:50 [INFO] ANS    233 msecs : max_random_03 : b''
+09:03:50 [INFO] ANS    235 msecs : max_random_04 : b''
+09:03:50 [INFO] ANS     70 msecs : dense_small_a_00 : b''
+09:03:50 [INFO] ANS     78 msecs : dense_large_a_00 : b''
+09:03:51 [INFO] ANS      3 msecs : all_zero_00 : b''
+[INFO] save cookie to: /home/agent/.local/share/online-judge-tools/cookie.jar
+
+[INFO] sample 0
+[INFO] input: all_zero_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/1.in
+[INFO] output: all_zero_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/1.out
+
+[INFO] sample 1
+[INFO] input: dense_large_a_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/2.in
+[INFO] output: dense_large_a_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/2.out
+
+[INFO] sample 2
+[INFO] input: dense_small_a_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/3.in
+[INFO] output: dense_small_a_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/3.out
+
+[INFO] sample 3
+[INFO] input: example_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/4.in
+[INFO] output: example_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/4.out
+
+[INFO] sample 4
+[INFO] input: max_random_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/5.in
+[INFO] output: max_random_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/5.out
+
+[INFO] sample 5
+[INFO] input: max_random_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/6.in
+[INFO] output: max_random_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/6.out
+
+[INFO] sample 6
+[INFO] input: max_random_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/7.in
+[INFO] output: max_random_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/7.out
+
+[INFO] sample 7
+[INFO] input: max_random_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/8.in
+[INFO] output: max_random_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/8.out
+
+[INFO] sample 8
+[INFO] input: max_random_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/9.in
+[INFO] output: max_random_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/9.out
+
+[INFO] sample 9
+[INFO] input: random_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/10.in
+[INFO] output: random_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/10.out
+
+[INFO] sample 10
+[INFO] input: random_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/11.in
+[INFO] output: random_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/11.out
+
+[INFO] sample 11
+[INFO] input: random_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/12.in
+[INFO] output: random_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/12.out
+
+[INFO] sample 12
+[INFO] input: random_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/13.in
+[INFO] output: random_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/13.out
+
+[INFO] sample 13
+[INFO] input: random_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/14.in
+[INFO] output: random_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/14.out
+
+[INFO] sample 14
+[INFO] input: small_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/15.in
+[INFO] output: small_00
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/15.out
+
+[INFO] sample 15
+[INFO] input: small_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/16.in
+[INFO] output: small_01
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/16.out
+
+[INFO] sample 16
+[INFO] input: small_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/17.in
+[INFO] output: small_02
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/17.out
+
+[INFO] sample 17
+[INFO] input: small_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/18.in
+[INFO] output: small_03
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/18.out
+
+[INFO] sample 18
+[INFO] input: small_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/19.in
+[INFO] output: small_04
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/19.out
+
+[INFO] sample 19
+[INFO] input: small_05
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/20.in
+[INFO] output: small_05
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/20.out
+
+[INFO] sample 20
+[INFO] input: small_06
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/21.in
+[INFO] output: small_06
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/21.out
+
+[INFO] sample 21
+[INFO] input: small_07
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/22.in
+[INFO] output: small_07
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/22.out
+
+[INFO] sample 22
+[INFO] input: small_08
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/23.in
+[INFO] output: small_08
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/23.out
+
+[INFO] sample 23
+[INFO] input: small_09
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/24.in
+[INFO] output: small_09
+[SUCCESS] saved to: /workspace/cp-dwm-study/final-validation/judge-docs/cases/range_kth_smallest/24.out

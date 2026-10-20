@@ -2,6 +2,7 @@
 #define DYNAMIC_WAVELET_MATRIX_HPP
 
 #include "../../components/dynamic_bit_vector.hpp"
+#include "../../components/dynamic_quad_wavelet.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -328,6 +329,14 @@ class DynamicWaveletMatrix {
 		}
 		return p;
 	}
+};
+
+template<class T, int Bits>
+class DynamicWaveletMatrix<T, Bits, DynamicBitVector<>> : public dynamic_wavelet_detail::QuadMatrix<T, Bits> {
+	using Base = dynamic_wavelet_detail::QuadMatrix<T, Bits>;
+  public:
+	using Base::Base;
+	void swap(DynamicWaveletMatrix& other) noexcept { Base::swap(other); }
 };
 
 #endif
