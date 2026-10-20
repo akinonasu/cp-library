@@ -1,6 +1,7 @@
 #ifndef MO_ORDER_HPP
 #define MO_ORDER_HPP
 
+#include "radix_sort.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -27,7 +28,8 @@ inline std::vector<int> mo_order(const std::vector<std::pair<int, int>>& ranges,
 		std::uint32_t right = block & 1 ? ~std::uint32_t(r) : std::uint32_t(r);
 		keys.emplace_back((std::uint64_t(block) << 32) | right, i);
 	}
-	std::sort(keys.begin(), keys.end());
+	if (keys.size() < 2048) std::sort(keys.begin(), keys.end());
+	else stable_radix_sort(keys, [](const auto &x) { return x.first; });
 	std::vector<int> order;
 	order.reserve(keys.size());
 	for (auto [key, i] : keys) { (void)key; order.push_back(i); }

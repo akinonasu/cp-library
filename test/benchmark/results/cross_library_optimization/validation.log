@@ -1,0 +1,141 @@
+RUN python3 test/verify.py --unit-only --cxx g++ clang++ --selection test/benchmark/results/cross_library_optimization/selection.json
+g++: standalone components/mo_order.hpp
+g++: standalone tree/auxiliary_tree.hpp
+g++: auxiliary_tree.cpp
+Auxiliary Tree OK
+g++: binomial_prefix_sum.cpp
+g++: mo_order.cpp
+clang++: standalone components/mo_order.hpp
+clang++: standalone tree/auxiliary_tree.hpp
+clang++: auxiliary_tree.cpp
+Auxiliary Tree OK
+clang++: binomial_prefix_sum.cpp
+clang++: mo_order.cpp
+Verification passed
+RUN python3 test/verify.py --unit-only --sanitize --cxx clang++ --selection test/benchmark/results/cross_library_optimization/selection.json
+clang++: auxiliary_tree.cpp
+Auxiliary Tree OK
+clang++: binomial_prefix_sum.cpp
+clang++: mo_order.cpp
+Verification passed
+RUN g++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 test/auxiliary_tree.test.cpp -o .verify-helper/cache/cross_library_optimization/verify_aux_gpp
+g++ almost_line_00.in OK
+g++ almost_line_01.in OK
+g++ binary_00.in OK
+g++ binary_01.in OK
+g++ binary_02.in OK
+g++ example_00.in OK
+g++ line_00.in OK
+g++ line_01.in OK
+g++ line_02.in OK
+g++ line_03.in OK
+g++ line_04.in OK
+g++ max_line_00.in OK
+g++ max_line_01.in OK
+g++ max_line_02.in OK
+g++ max_random_00.in OK
+g++ max_random_01.in OK
+g++ max_random_02.in OK
+g++ path_graph_root_centroid_00.in OK
+g++ path_graph_root_centroid_01.in OK
+g++ path_graph_root_centroid_02.in OK
+g++ random_00.in OK
+g++ random_01.in OK
+g++ random_02.in OK
+g++ random_03.in OK
+g++ random_04.in OK
+RUN clang++ -std=c++23 -O2 -Wall -Wextra -DDEBUG=1 test/auxiliary_tree.test.cpp -o .verify-helper/cache/cross_library_optimization/verify_aux_clangpp
+clang++ almost_line_00.in OK
+clang++ almost_line_01.in OK
+clang++ binary_00.in OK
+clang++ binary_01.in OK
+clang++ binary_02.in OK
+clang++ example_00.in OK
+clang++ line_00.in OK
+clang++ line_01.in OK
+clang++ line_02.in OK
+clang++ line_03.in OK
+clang++ line_04.in OK
+clang++ max_line_00.in OK
+clang++ max_line_01.in OK
+clang++ max_line_02.in OK
+clang++ max_random_00.in OK
+clang++ max_random_01.in OK
+clang++ max_random_02.in OK
+clang++ path_graph_root_centroid_00.in OK
+clang++ path_graph_root_centroid_01.in OK
+clang++ path_graph_root_centroid_02.in OK
+clang++ random_00.in OK
+clang++ random_01.in OK
+clang++ random_02.in OK
+clang++ random_03.in OK
+clang++ random_04.in OK
+RUN python3 .verify-helper/check-docs.py --selection test/benchmark/results/cross_library_optimization/selection.json
+Checked documentation for 180 libraries; compiled 2 affected bundles
+[32mINFO[0m:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:test/auxiliary_tree.test.cpp: line 2: #include "../tree/auxiliary_tree.hpp"[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/auxiliary_tree.hpp: line 1: #ifndef AUXILIARY_TREE_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/auxiliary_tree.hpp: line 2: #define AUXILIARY_TREE_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/auxiliary_tree.hpp: line 4: #include "../components/radix_sort.hpp"[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 1: #ifndef RADIX_SORT_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 2: #define RADIX_SORT_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 4: #include <algorithm>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 5: #include <array>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 6: #include <cstddef>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 7: #include <cstdint>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 8: #include <type_traits>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 9: #include <utility>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/radix_sort.hpp: line 10: #include <vector>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/auxiliary_tree.hpp: line 5: #include <algorithm>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/auxiliary_tree.hpp: line 6: #include <cassert>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/auxiliary_tree.hpp: line 7: #include <span>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/auxiliary_tree.hpp: line 8: #include <utility>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/auxiliary_tree.hpp: line 9: #include <vector>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:test/auxiliary_tree.test.cpp: line 3: #include "../tree/lca.hpp"[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 1: #ifndef LCA_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 2: #define LCA_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 4: #include "../data_structure/range_query/sparse_table.hpp"[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 1: #ifndef SPARSE_TABLE_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 2: #define SPARSE_TABLE_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 4: #include "../../components/default_init_allocator.hpp"[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/default_init_allocator.hpp: line 1: #ifndef DEFAULT_INIT_ALLOCATOR_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/default_init_allocator.hpp: line 2: #define DEFAULT_INIT_ALLOCATOR_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/default_init_allocator.hpp: line 4: #include <memory>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/default_init_allocator.hpp: line 5: #include <new>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 5: #include <algorithm>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 6: #include <bit>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 7: #include <cassert>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 8: #include <cstddef>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 9: #include <cstdint>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 10: #include <limits>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 11: #include <type_traits>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 12: #include <utility>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/data_structure/range_query/sparse_table.hpp: line 13: #include <vector>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 5: #include <algorithm>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 6: #include <cassert>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 7: #include <cstddef>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 8: #include <limits>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 9: #include <utility>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/tree/lca.hpp: line 10: #include <vector>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:test/auxiliary_tree.test.cpp: line 4: #include "../components/fast_io.hpp"[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 1: #ifndef FAST_IO_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 2: #define FAST_IO_HPP[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 4: #include <algorithm>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 5: #include <array>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 6: #include <bit>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 7: #include <cassert>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 8: #include <charconv>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 9: #include <cstddef>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 10: #include <cstdint>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 11: #include <cstdio>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 12: #include <cstring>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 13: #include <memory>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 14: #include <stdexcept>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 15: #include <string>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 16: #include <string_view>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 17: #include <type_traits>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 19: #include <sys/mman.h>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 20: #include <sys/stat.h>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:/mnt/c/Users/yukiz/Desktop/cp-library/components/fast_io.hpp: line 21: #include <unistd.h>[0m
+[37mDEBUG[0m:onlinejudge_verify.languages.cplusplus_bundle:test/auxiliary_tree.test.cpp: line 5: #include <array>[0m
+RUN g++ -std=c++23 -O2 -fsyntax-only .verify-helper/cache/cross_library_optimization/auxiliary_tree_bundle.cpp
