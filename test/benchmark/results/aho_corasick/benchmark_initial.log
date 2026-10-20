@@ -1,0 +1,13 @@
+All 72 official cases passed for GCC, Clang and reference
+bfs_03 {'library': 38.767116, '307744': 37.422789}
+random_03 {'library': 106.091473, '307744': 58.060733}
+random_11 {'library': 121.421077, '307744': 60.691778}
+short_period_00 {'library': 58.242678, '307744': 44.486497}
+fibonacci_00 {'library': 60.089331, '307744': 44.838961}
+almost_single_00 {'library': 55.9365, '307744': 44.348571}
+random26 {'dense': {'build_ms': 60.3428, 'scan_ms': 33.294}, 'sparse': {'build_ms': 54.6213, 'scan_ms': 49.3598}}
+random2 {'dense': {'build_ms': 38.4917, 'scan_ms': 31.8414}, 'sparse': {'build_ms': 36.3374, 'scan_ms': 63.9711}}
+long_pattern {'dense': {'build_ms': 24.4594, 'scan_ms': 7.85695}, 'sparse': {'build_ms': 24.1605, 'scan_ms': 16.8972}}
+suffix_chain {'dense': {'build_ms': 1.43408, 'scan_ms': 4.03065}, 'sparse': {'build_ms': 1.07643, 'scan_ms': 8.40495}}
+shared_prefix {'dense': {'build_ms': 1.8698, 'scan_ms': 4.01662}, 'sparse': {'build_ms': 2.65178, 'scan_ms': 8.40432}}
+duplicates {'dense': {'build_ms': 0.621088, 'scan_ms': 3.99286}, 'sparse': {'build_ms': 0.606639, 'scan_ms': 2.51028}}

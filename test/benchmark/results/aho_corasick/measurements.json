@@ -1,0 +1,1166 @@
+{
+  "compilers": {
+    "g++": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "clang++": "clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)\nTarget: x86_64-conda-linux-gnu\nThread model: posix\nInstalledDir: /var/tmp/cp-audit-tools/env/bin\nConfiguration file: /var/tmp/cp-audit-tools/env/bin/x86_64-conda-linux-gnu-clang++.cfg\n"
+  },
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DNDEBUG",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-DONLINE_JUDGE",
+    "-I",
+    "/mnt/c/Users/yukiz/Desktop/cp-library"
+  ],
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "kernel": "Linux qand-PC 6.18.40.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "affinity": [
+    2
+  ],
+  "trials": 7,
+  "problem_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "source_sha256": {
+    "string/aho_corasick.hpp": "a55e3bce02bf007d5c0c46dc6f1d821cf1ee8bb1d6fbe7efe1ba6aae3c6b6e5e",
+    "test/aho_corasick.test.cpp": "2f06b2902fd6e41c72d7f39759de67a85ea3e10b335eb421172a4c7353659034",
+    "test/unit/aho_corasick.cpp": "65ef3220fd44b8f5ca7bb5019337a1bf2b4a384e0b4a0b78eb7e380a1248dc61",
+    "test/benchmark/aho_corasick.cpp": "d3c6f63b14f10c458b620c2162d332c9397e1c6c23834ab115d529532e12a0a6",
+    "test/benchmark/aho_corasick.py": "f51ce925a723dec3a60d43b4d9e1bf2f4dbba5a39e97ef7f83a19ff52bdc29e4"
+  },
+  "reference_source_sha256": "8babce4a4277d5e1dfc5da7b1e4c09bfdd7b7fbcc52a863c0515ced9fbed6121",
+  "judge": [
+    {
+      "case": "almost_single_00",
+      "input_sha256": "6d8c6312b15cb00a47e8c0044585effd6f76053aa8bba5228b84c450ce2add9c",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "almost_single_01",
+      "input_sha256": "2e6435c5011ac91e21d6738f703ab6658f6921cfbc9f89132fcfd5cafc51aeb1",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "almost_single_02",
+      "input_sha256": "cc733226add11fac1293e542db8fdcdb8290c7264b71d208e39754b3e5017f10",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "almost_single_03",
+      "input_sha256": "572f9dc2859a1021e1aed78935aad85073ff85b30ea20a004ffe8fe3b75ad2b7",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "almost_single_04",
+      "input_sha256": "33022e5560816a8fa457a72deef574d905252d1e786406b72bdf1bc205711646",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "almost_single_05",
+      "input_sha256": "3983f025529568622a4bd0166b6fd43f4c325ccf33e92419da242c7d5d6a6f7b",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "almost_single_06",
+      "input_sha256": "aa2e3d1b943a05cec0f8b469332e2ab0ec8317b64aeef20ace0603b6a7031b42",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "almost_single_07",
+      "input_sha256": "577f250876755d0cf4221928ed3e7b915ef3b1e36ef188563895b3df27f0ae04",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "bfs_00",
+      "input_sha256": "394d2a78611ee31a1480b48303166af7f7010e388a2532028e48fac4c7ed01dc",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "bfs_01",
+      "input_sha256": "04d83b09bc38ad4a6ec057907dd9981b7840dded7135c2460309181e84b279fb",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "bfs_02",
+      "input_sha256": "61809cef33f11828e02c9a21bc269a8ab6a3a492c14728f1150ed2daa5162a63",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "bfs_03",
+      "input_sha256": "83a563428d9765a1dca5a9fc87c6c85c173ec5a79976289448f447f2ed9dd289",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "example_00",
+      "input_sha256": "9dd67c32f3c22ada9ddfa8f3ae02a91707365bf5269c71774e69a0b7abfe041a",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "example_01",
+      "input_sha256": "348f9749f441dfc2d88572b400cd135666345c67907a9e676fed7ed0dfd7daf7",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "example_02",
+      "input_sha256": "dccbdb408a2e97b98278d9b03bcc5b5dd00613294caab543478a4c340030205d",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "example_03",
+      "input_sha256": "f6f3bd450a1a03260e67640fdc1accad0118040dfd97ecc704b68541066a6bd0",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_00",
+      "input_sha256": "de162d59e65f495d80a3a68c3e5de2ac740951dd66e7e80a311b52bac79c7a8a",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_01",
+      "input_sha256": "4e18f15396f38ebbd9662aeff5f26b033973b748e30a52a9b542093053acfcfd",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_02",
+      "input_sha256": "33d30516f40615fb6be9c818cbb5cd3d4f17b85c947e69d8cc6b66fc99912b8c",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_03",
+      "input_sha256": "9a7dfc14644324bb58552e29808d8570b340eb88e3ab7f3ed07149299d05cd23",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_04",
+      "input_sha256": "f67235d2433dd996626b88948b7c5ae39efdcc838371a563215a1655a41f7e45",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_05",
+      "input_sha256": "306205a448cc1d9497fc1e5729eac22c3db4820d9f2b59140e99a2f68339777f",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_06",
+      "input_sha256": "3e1d2dc7773cfd115349d864f93e196fa6641e9821047ec3c1fffce75dbbf210",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_07",
+      "input_sha256": "7a142795b18bdfc0969cade7e89e39bbcfbc43ac8fc5023028e1f2562b95f3a9",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_08",
+      "input_sha256": "4399e3991cd25d9e5d917cd8ee23dc05f84930b554a0214df01aeb538d111f3e",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_09",
+      "input_sha256": "0dbffb0a7381c4b4724921ec885c5347158db70a09e35a5f7b5ef4d80d910689",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_10",
+      "input_sha256": "fbb0ba81785a34c5238f4e72affc306e8b28d047b8afeaff0bd394805ef1efec",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_11",
+      "input_sha256": "1d8321cd4f8c17513128cecb3d27438f5d230835cdb017d9b9afd95ccef0ddf9",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_12",
+      "input_sha256": "838f43c025675eb62455b31d0e2eed3f39bbbd37f189bf2acfe71b5d7c0b1b4d",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_13",
+      "input_sha256": "d85d564a7907a032fed5e727d2c463b6d1f010ed9ecbe05bed3c4b760df77424",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_14",
+      "input_sha256": "d0a6b0c9b67e8c63f1898a77d20e7edb64cb508afe58e241c10b605477e44be4",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "fibonacci_15",
+      "input_sha256": "6bbfcc1ffb0e789a97c4d1f13b5c47b89e2cc0a18171a2c2a927e9efbbb1abe0",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_00",
+      "input_sha256": "a28b483d0a95d38748b2247baed6b1fcd1bb5df4b4eb3be01721c742711f7533",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_01",
+      "input_sha256": "f34473a25fd6168efbb14dea58b5e0bc5402ae1225e97df982903c0f24e6943a",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_02",
+      "input_sha256": "a374206b6dc758d9fe402eb8c9d5f69392e53cbd1b09d11db4661411dd1b13ac",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_03",
+      "input_sha256": "2120e2afad9b111f0d2e09614116c1b02c417c76425605910022058d07f91a1d",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_04",
+      "input_sha256": "d5dff9d36299cfc4ec1bf0c3d3c933314d96cb902408dcba35310c9af1b55710",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_05",
+      "input_sha256": "b0201ada2e5a0bf6b73764aa5afcd2338ff772e087e7bd4aa46fc0f4ff60ecfc",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_06",
+      "input_sha256": "89263ad4951a459c0f811f0b3caa93c84f02e271d25b48cb63aba4c89809a947",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_07",
+      "input_sha256": "ae3f987d3a83762e2da6fbd9f0142fe9cd74e42e8b83e5954a04b4df98aaed41",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_08",
+      "input_sha256": "8780e1151bfe837d541e39d6b05d9ee6ef265512813637765b6f2157790d4835",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_09",
+      "input_sha256": "4a2456cba23e95f8978f8d6962427106ca4cb3fd15bf9c71ed8a88a1ae8d7dc4",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_10",
+      "input_sha256": "f298d2d0406e28923ae4cebf3f8ba5f6cc54871c6d14d05242354bd66b557012",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_11",
+      "input_sha256": "6d62ce2fc1478d8c9eaf482e48c22425bfb4ffd880a6ecf59566719478bb7cb4",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_12",
+      "input_sha256": "7f072d1cd0366f2e5e311d541bc337c8c7a8b418d66786b12d25443e41786e77",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_13",
+      "input_sha256": "e9539af682b0760afbd5c1ebfc451f92963a0f3504594b5b09ecdc55135700c3",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_14",
+      "input_sha256": "a205c2f7eaabb8cfa7846c2443ca6799cc4abc0cec850f327640dd8c434a10d1",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_15",
+      "input_sha256": "8aa2b5198c8b51906e38d90041cc70cb6934a4e30c2c9f5eeaaf72b97f5cadc4",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_16",
+      "input_sha256": "8d43f56f7279a3166d85369a3438da3f8dd504c42f64fb00bbe566bd2346cc39",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_17",
+      "input_sha256": "88cc1e78dd33f7beae8673554ab1be8990ccfd34c1c88dafa5dda749275dd600",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_18",
+      "input_sha256": "f851b2b449dc3a28e39520d791f30f9c25bd45e6b3d6b0c5728da5282bb72ea5",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_19",
+      "input_sha256": "282d0d44babcf139c3b44613212d8fb1633ac66590a4cb222fcbe20370ec19cd",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_20",
+      "input_sha256": "1907a3d488e4a1172299c54eeeeaca7d652dda355aa96229f82d1f5196b06123",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_21",
+      "input_sha256": "82fb40ff7ae665f8d676d185b76d0f043d1b6c50c3da1e2d3ece40481229fa4d",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_22",
+      "input_sha256": "cdc4ca5de73916f617289f9ec6800c7fff9a890bc7568610a6b325068167cb48",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "random_23",
+      "input_sha256": "aa212926f6722c9a8eca2e0001454b89ea129eaa12f84da0e19607b41651ad94",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_00",
+      "input_sha256": "866cbae085d31bf3d0aeca346f963d1ed5be5f6b8f17756fb3ccc92b26843e11",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_01",
+      "input_sha256": "d0920a850c6c4b0481db8b8643eba45de681682860d527413d53ac8d99c1ef46",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_02",
+      "input_sha256": "2f3ed91c486dce63e0a28a6d123dc2368a61af4b263ea88baeb62bf651537474",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_03",
+      "input_sha256": "d5b0ed5be795c476202d090ebd399263f0234301ad41dc099066acd372bbbc2e",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_04",
+      "input_sha256": "eed7419542f4904a3bd9023216ac258e764f9e41f488f014c26f6de20f2b0f1a",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_05",
+      "input_sha256": "c0830a40ac75b93789583456ac4941aa71d78e10cf7bb68f613a6fda117fdb04",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_06",
+      "input_sha256": "746981e5db3f327085234c88eae622b8c7cc0276dc447362f2c6c73c9023b89e",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_07",
+      "input_sha256": "2406130c9db270b22966a16a301941f31c927b77e19259d06e20093572918102",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_08",
+      "input_sha256": "01636c4979afe9c94d890fd5db8958e723041b2e3c77c43bbf3f2a84fb24911a",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_09",
+      "input_sha256": "68c5ec4ad424881c497bd120baa8b310d66ca3a6430fb826c4d50be5897f3494",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_10",
+      "input_sha256": "ed53e657c7c0d603646b3793ebb6dde3ae10edc2f6e254c933f227aa464041d6",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_11",
+      "input_sha256": "159ab70de8d625b328a7f3c7d62f5768614f7d91c788ee4215ceb1865e04cd9d",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_12",
+      "input_sha256": "83764a7022d6f7db3795d677d0d57eceb273c5efc5b89d5e363b716c867eebdb",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_13",
+      "input_sha256": "164b06e183b54bcd2617160da81d5a64a1bcfc4715fcddf35982584f2923b867",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_14",
+      "input_sha256": "b82962935efaa62c64589d3f1363f67b4477371c951671495a3451f805f4aa2b",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    },
+    {
+      "case": "short_period_15",
+      "input_sha256": "3d570a0c1fd740e2caf9751c531811a3bd632a20c0582e7df2f6e03c9e082ee0",
+      "passed": [
+        "library",
+        "clang"
+      ]
+    }
+  ],
+  "end_to_end": {
+    "bfs_03": {
+      "milliseconds": {
+        "library": [
+          37.442974,
+          37.420615,
+          37.69132,
+          37.335506,
+          40.683471,
+          41.899861,
+          43.189547
+        ],
+        "307744": [
+          36.715553,
+          42.662291,
+          37.33992,
+          39.063834,
+          39.802675,
+          38.085874,
+          37.643029
+        ]
+      },
+      "median_ms": {
+        "library": 37.69132,
+        "307744": 38.085874
+      },
+      "peak_rss_kib": {
+        "library": 47320,
+        "307744": 72160
+      }
+    },
+    "random_03": {
+      "milliseconds": {
+        "library": [
+          95.032185,
+          96.743371,
+          96.824914,
+          96.072457,
+          99.688942,
+          97.001845,
+          104.881832
+        ],
+        "307744": [
+          58.99589,
+          56.981853,
+          57.218222,
+          56.378069,
+          55.483083,
+          57.343184,
+          58.611147
+        ]
+      },
+      "median_ms": {
+        "library": 96.824914,
+        "307744": 57.218222
+      },
+      "peak_rss_kib": {
+        "library": 104212,
+        "307744": 77588
+      }
+    },
+    "random_11": {
+      "milliseconds": {
+        "library": [
+          116.772208,
+          114.686242,
+          116.332939,
+          118.426837,
+          122.001862,
+          120.964262,
+          117.270224
+        ],
+        "307744": [
+          58.515656,
+          57.30235,
+          58.744341,
+          61.865215,
+          58.120186,
+          60.27536,
+          59.616256
+        ]
+      },
+      "median_ms": {
+        "library": 117.270224,
+        "307744": 58.744341
+      },
+      "peak_rss_kib": {
+        "library": 129376,
+        "307744": 81620
+      }
+    },
+    "short_period_00": {
+      "milliseconds": {
+        "library": [
+          55.849154,
+          55.806905,
+          56.021466,
+          56.497501,
+          63.808924,
+          57.39165,
+          58.607162
+        ],
+        "307744": [
+          44.299015,
+          45.199318,
+          56.517711,
+          50.355862,
+          50.474051,
+          47.362552,
+          45.243037
+        ]
+      },
+      "median_ms": {
+        "library": 56.497501,
+        "307744": 47.362552
+      },
+      "peak_rss_kib": {
+        "library": 134340,
+        "307744": 82508
+      }
+    },
+    "fibonacci_00": {
+      "milliseconds": {
+        "library": [
+          58.809298,
+          59.668419,
+          63.156068,
+          59.127066,
+          59.126136,
+          59.646482,
+          63.270951
+        ],
+        "307744": [
+          46.612952,
+          47.530295,
+          43.636406,
+          44.429867,
+          43.939081,
+          47.539188,
+          44.411396
+        ]
+      },
+      "median_ms": {
+        "library": 59.646482,
+        "307744": 44.429867
+      },
+      "peak_rss_kib": {
+        "library": 134340,
+        "307744": 82124
+      }
+    },
+    "almost_single_00": {
+      "milliseconds": {
+        "library": [
+          61.17589,
+          66.903182,
+          63.203843,
+          55.962591,
+          73.966176,
+          56.128963,
+          59.492057
+        ],
+        "307744": [
+          50.261436,
+          62.982808,
+          67.250891,
+          45.758653,
+          68.261812,
+          46.071359,
+          44.588798
+        ]
+      },
+      "median_ms": {
+        "library": 61.17589,
+        "307744": 50.261436
+      },
+      "peak_rss_kib": {
+        "library": 134348,
+        "307744": 77708
+      }
+    }
+  },
+  "api": {
+    "random26": {
+      "patterns": 20000,
+      "total_length": 600000,
+      "text_length": 2000000,
+      "input_sha256": "ce39a270f3d9d2f51f543382e3a1e200df6b2d2b07417c7bf57ae4471b9ff124",
+      "count_and_checksum": [
+        "0",
+        "17911657850828575214"
+      ],
+      "samples": {
+        "dense": {
+          "build_ms": [
+            59.4125,
+            58.6143,
+            57.6476,
+            59.0235,
+            59.2369,
+            59.7555,
+            58.8958
+          ],
+          "scan_ms": [
+            30.5301,
+            31.7098,
+            32.9736,
+            30.794,
+            30.3971,
+            32.1312,
+            31.71
+          ]
+        },
+        "sparse": {
+          "build_ms": [
+            51.354,
+            45.9811,
+            49.8902,
+            52.399,
+            52.4199,
+            47.5655,
+            49.1887
+          ],
+          "scan_ms": [
+            48.453,
+            48.3811,
+            50.0603,
+            49.5399,
+            48.847,
+            58.4729,
+            49.9675
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 59.0235,
+          "scan_ms": 31.7098
+        },
+        "sparse": {
+          "build_ms": 49.8902,
+          "scan_ms": 49.5399
+        }
+      }
+    },
+    "random2": {
+      "patterns": 20000,
+      "total_length": 600000,
+      "text_length": 2000000,
+      "input_sha256": "1a0a06638c4e375e8d8c8066a57ca06873433b79817b518b39a403c445df8746",
+      "count_and_checksum": [
+        "38",
+        "10590720137544398342"
+      ],
+      "samples": {
+        "dense": {
+          "build_ms": [
+            36.8124,
+            36.7268,
+            42.7573,
+            37.239,
+            39.5991,
+            36.1666,
+            34.8902
+          ],
+          "scan_ms": [
+            32.386,
+            32.2747,
+            35.6058,
+            31.8903,
+            31.3927,
+            33.1441,
+            33.5787
+          ]
+        },
+        "sparse": {
+          "build_ms": [
+            33.5538,
+            38.6571,
+            39.1237,
+            35.2287,
+            35.5624,
+            36.0764,
+            35.2385
+          ],
+          "scan_ms": [
+            66.9972,
+            78.0288,
+            81.4578,
+            69.6191,
+            75.4208,
+            66.5998,
+            66.8502
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 36.8124,
+          "scan_ms": 32.386
+        },
+        "sparse": {
+          "build_ms": 35.5624,
+          "scan_ms": 69.6191
+        }
+      }
+    },
+    "long_pattern": {
+      "patterns": 1,
+      "total_length": 600000,
+      "text_length": 2000000,
+      "input_sha256": "e3f84447663d63b0a31306d47f8d9c60151fa0844667c3010d0be6ac2264196d",
+      "count_and_checksum": [
+        "1400000",
+        "18361347395202630273"
+      ],
+      "samples": {
+        "dense": {
+          "build_ms": [
+            23.5123,
+            23.2789,
+            23.2698,
+            23.5069,
+            24.4924,
+            24.5248,
+            25.121
+          ],
+          "scan_ms": [
+            7.72788,
+            8.22773,
+            7.78987,
+            7.86994,
+            9.50339,
+            7.466,
+            8.64821
+          ]
+        },
+        "sparse": {
+          "build_ms": [
+            23.9867,
+            23.4427,
+            23.4142,
+            24.8153,
+            24.2599,
+            23.6422,
+            25.2544
+          ],
+          "scan_ms": [
+            15.0582,
+            14.8837,
+            15.307,
+            15.419,
+            16.8014,
+            15.0345,
+            15.9965
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 23.5123,
+          "scan_ms": 7.86994
+        },
+        "sparse": {
+          "build_ms": 23.9867,
+          "scan_ms": 15.307
+        }
+      }
+    },
+    "suffix_chain": {
+      "patterns": 1000,
+      "total_length": 500500,
+      "text_length": 2000000,
+      "input_sha256": "ee9ca9b56ea11200794f31fbebcbe7ab6edf3ecb1e20ca407bd1d583e14555ba",
+      "count_and_checksum": [
+        "1999500500",
+        "7435428190127747617"
+      ],
+      "samples": {
+        "dense": {
+          "build_ms": [
+            0.954777,
+            1.00083,
+            0.962429,
+            1.86122,
+            0.977027,
+            0.973173,
+            0.949631
+          ],
+          "scan_ms": [
+            3.27535,
+            3.2735,
+            3.25488,
+            3.2926,
+            3.31306,
+            3.26544,
+            3.28653
+          ]
+        },
+        "sparse": {
+          "build_ms": [
+            1.01867,
+            0.953884,
+            0.968348,
+            0.950855,
+            0.947999,
+            0.947853,
+            0.955796
+          ],
+          "scan_ms": [
+            6.77975,
+            6.78225,
+            6.75167,
+            6.95946,
+            6.80166,
+            6.77662,
+            6.80025
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 0.973173,
+          "scan_ms": 3.27535
+        },
+        "sparse": {
+          "build_ms": 0.953884,
+          "scan_ms": 6.78225
+        }
+      }
+    },
+    "shared_prefix": {
+      "patterns": 40,
+      "total_length": 601200,
+      "text_length": 2000000,
+      "input_sha256": "50212a00e67f4697516fd4cf8186fddfcb8e191501981075e28709ed36ad1204",
+      "count_and_checksum": [
+        "0",
+        "7052102988647653880"
+      ],
+      "samples": {
+        "dense": {
+          "build_ms": [
+            1.75087,
+            1.70203,
+            1.78399,
+            1.78751,
+            1.61825,
+            1.57782,
+            1.73697
+          ],
+          "scan_ms": [
+            3.30502,
+            3.28778,
+            3.32973,
+            3.27163,
+            3.2854,
+            3.26753,
+            3.33649
+          ]
+        },
+        "sparse": {
+          "build_ms": [
+            2.46478,
+            2.34502,
+            2.47105,
+            2.18143,
+            2.24509,
+            2.22542,
+            2.16462
+          ],
+          "scan_ms": [
+            6.70221,
+            6.77836,
+            6.71868,
+            6.70956,
+            6.73224,
+            6.72831,
+            6.81044
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 1.73697,
+          "scan_ms": 3.28778
+        },
+        "sparse": {
+          "build_ms": 2.24509,
+          "scan_ms": 6.72831
+        }
+      }
+    },
+    "duplicates": {
+      "patterns": 80000,
+      "total_length": 560000,
+      "text_length": 2000005,
+      "input_sha256": "6bff5d337e0614bf74856562a40679c15d08bb421b0c52dc6af013a1c5c137ef",
+      "count_and_checksum": [
+        "22857200000",
+        "3359702351681931055"
+      ],
+      "samples": {
+        "dense": {
+          "build_ms": [
+            0.57046,
+            0.566848,
+            0.571761,
+            0.619568,
+            0.572077,
+            0.572066,
+            0.572407
+          ],
+          "scan_ms": [
+            3.28399,
+            3.2855,
+            3.2899,
+            3.26667,
+            3.30131,
+            3.27613,
+            3.33197
+          ]
+        },
+        "sparse": {
+          "build_ms": [
+            0.574463,
+            0.579556,
+            0.578667,
+            0.60927,
+            0.57011,
+            0.587216,
+            0.574649
+          ],
+          "scan_ms": [
+            2.21047,
+            2.20053,
+            2.16746,
+            2.147,
+            2.17999,
+            2.17801,
+            2.25693
+          ]
+        }
+      },
+      "median_ms": {
+        "dense": {
+          "build_ms": 0.572066,
+          "scan_ms": 3.2855
+        },
+        "sparse": {
+          "build_ms": 0.578667,
+          "scan_ms": 2.17999
+        }
+      }
+    }
+  },
+  "complete": true
+}
