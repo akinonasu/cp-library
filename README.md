@@ -120,6 +120,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
+| `data_structure/segment_tree/persistent_segtree.hpp` | 永続セグメント木（過去版への更新・区間コピー） | [使い方](docs/persistent_segtree.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
 | `data_structure/segment_tree/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
 | `data_structure/segment_tree/sortable_segtree.hpp` | Sortable Segtree（区間ソート・区間集約） | [使い方](docs/sortable_segtree.md) |

@@ -4,6 +4,7 @@
 #include "graph/connectivity/dynamic_connectivity.hpp"
 #include "data_structure/segment_tree/dynamic_segtree.hpp"
 #include "data_structure/segment_tree/dual_segtree.hpp"
+#include "data_structure/segment_tree/persistent_segtree.hpp"
 #include "data_structure/advanced/kinetic_tournament.hpp"
 #include "data_structure/segment_tree/dynamic_lazy_segtree.hpp"
 #include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
@@ -74,6 +75,9 @@ struct StaticTreeSum {
 };
 
 int main() {
+	PersistentSegtree<std::int64_t, add, zero> persistent(3);
+	auto p0 = persistent.initial_root(), p1 = persistent.set(p0, 1, 7);
+	assert(persistent.all_prod(p0) == 0 && persistent.prod(p1, 0, 3) == 7);
 	DynamicPatternMatching pattern_matching("banana", "ana");
 	assert(pattern_matching.count() == 2);
 	pattern_matching.erase(1);
