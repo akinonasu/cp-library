@@ -88,6 +88,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `graph/matching/bipartite_matching.hpp` | 二部マッチング・最小頂点被覆・最大独立集合・辺の分類 | [使い方](docs/bipartite_matching.md) |
 | `graph/matching/general_matching.hpp` | General Matching（一般グラフ最大マッチング） | [使い方](docs/general_matching.md) |
 | `graph/matching/general_weighted_matching.hpp` | General Weighted Matching（一般グラフ最大重みマッチング） | [使い方](docs/general_weighted_matching.md) |
 | `graph/matching/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
@@ -234,6 +235,7 @@
 | `components/stern_brocot_path.hpp` | Stern–Brocot Tree の経路演算 | [使い方](docs/stern_brocot_path.md) |
 | `components/polynomial_half_gcd.hpp` | 多項式 Half-GCD | [使い方](docs/polynomial_half_gcd.md) |
 | `components/weighted_blossom.hpp` | 最大重みマッチングの内部部品 | [使い方](docs/weighted_blossom.md) |
+| `components/bipartite_matching_core.hpp` | 二部マッチングの内部演算 | [使い方](docs/bipartite_matching_core.md) |
 | `components/montgomery.hpp` | Montgomery 64 | [使い方](docs/montgomery.md) |
 | `components/montgomery32.hpp` | Montgomery 32 | [使い方](docs/montgomery32.md) |
 | `components/mod_fast_core.hpp` | 定数時間 mod 演算の内部部品 | [使い方](docs/mod_fast_core.md) |

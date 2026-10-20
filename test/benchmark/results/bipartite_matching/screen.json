@@ -1,0 +1,522 @@
+{
+  "compiler": "g++ (conda-forge gcc 15.2.0-20) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DNDEBUG",
+    "-march=native",
+    "-ftrivial-auto-var-init=zero",
+    "-I",
+    "/mnt/c/Users/yukiz/Desktop/cp-library"
+  ],
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  24\nOn-line CPU(s) list:                     0-23\nVendor ID:                               GenuineIntel\nModel name:                              13th Gen Intel(R) Core(TM) i7-13700F\nCPU family:                              6\nModel:                                   183\nThread(s) per core:                      2\nCore(s) per socket:                      12\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology tsc_reliable nonstop_tsc cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch ssbd ibrs ibpb stibp ibrs_enhanced tpr_shadow ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves avx_vnni vnmi umip waitpkg gfni vaes vpclmulqdq rdpid movdiri movdir64b fsrm md_clear serialize ibt flush_l1d arch_capabilities\nVirtualization:                          VT-x\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               576 KiB (12 instances)\nL1i cache:                               384 KiB (12 instances)\nL2 cache:                                24 MiB (12 instances)\nL3 cache:                                30 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-23\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; Enhanced IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; PBRSB-eIBRS SW sequence; BHI BHI_DIS_S\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "uname": [
+    "Linux",
+    "qand-PC",
+    "6.18.40.1-microsoft-standard-WSL2",
+    "#1 SMP PREEMPT_DYNAMIC Fri Jul 31 22:12:15 UTC 2026",
+    "x86_64"
+  ],
+  "pin": 2,
+  "seed": 20261020,
+  "repeats": 3,
+  "problem_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "cases": [
+    {
+      "case": "augmented_cycle_00",
+      "input_sha256": "8ead2630ed5641d57d4bc8a7160a7e2e52dd2d3417bc94bcec021a4ab77e5b56",
+      "expected": 66666,
+      "api_ms": {
+        "ours": [
+          29.88654,
+          33.624344,
+          29.269503
+        ],
+        "no_transpose": [
+          30.133355,
+          31.071443,
+          29.786434
+        ],
+        "no_greedy": [
+          30.969207,
+          31.555076,
+          32.993798
+        ],
+        "budget4": [
+          388.881894,
+          385.608029,
+          376.062188
+        ],
+        "budget64": [
+          29.571113,
+          29.062522,
+          27.345484
+        ],
+        "roots0": [
+          29.867141,
+          30.608384,
+          29.557718
+        ],
+        "roots16": [
+          29.965762,
+          30.798447,
+          29.748187
+        ],
+        "roots64": [
+          30.501002,
+          30.278543,
+          30.633133
+        ],
+        "reference": [
+          30.73948,
+          29.876636,
+          28.599074
+        ],
+        "baseline": [
+          477.55768,
+          481.921842,
+          474.316379
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "issue1068_large_00",
+      "input_sha256": "4ad8176ed94ff977e4e4a5ced79c766cd35375954e173c2490ae482eb1d378d5",
+      "expected": 74998,
+      "api_ms": {
+        "ours": [
+          1.779796,
+          1.776957,
+          1.839808
+        ],
+        "no_transpose": [
+          2.301109,
+          2.395559,
+          2.424645
+        ],
+        "no_greedy": [
+          2.479413,
+          2.361439,
+          2.445353
+        ],
+        "budget4": [
+          1.932391,
+          1.784633,
+          1.789177
+        ],
+        "budget64": [
+          1.877923,
+          1.831611,
+          1.815642
+        ],
+        "roots0": [
+          2.383936,
+          2.319387,
+          2.365288
+        ],
+        "roots16": [
+          2.052693,
+          1.944345,
+          1.871344
+        ],
+        "roots64": [
+          2.101809,
+          1.764359,
+          1.805857
+        ],
+        "reference": [
+          2.311078,
+          2.13701,
+          2.062905
+        ],
+        "baseline": [
+          1.765579,
+          1.904414,
+          1.772965
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "line_random_00",
+      "input_sha256": "c4bdb03533c15b051ad02d9bcaaf3adb345eb4bcd6389e9f26913e358c2bb62b",
+      "expected": 100000,
+      "api_ms": {
+        "ours": [
+          25.030364,
+          28.838885,
+          25.426912
+        ],
+        "no_transpose": [
+          25.123821,
+          26.031053,
+          24.924087
+        ],
+        "no_greedy": [
+          25.085772,
+          25.622271,
+          24.433938
+        ],
+        "budget4": [
+          188.132622,
+          189.534882,
+          187.540458
+        ],
+        "budget64": [
+          25.208344,
+          26.631996,
+          25.362268
+        ],
+        "roots0": [
+          25.093857,
+          25.700752,
+          25.109917
+        ],
+        "roots16": [
+          25.269921,
+          24.465214,
+          26.134436
+        ],
+        "roots64": [
+          24.541391,
+          24.708684,
+          25.00586
+        ],
+        "reference": [
+          21.304267,
+          21.902974,
+          24.260211
+        ],
+        "baseline": [
+          263.902643,
+          259.801858,
+          257.769575
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "many_paths_00",
+      "input_sha256": "bb22b209d226f6f01f1669b350dd8dd82924aa756558005d7aff579a36d1ed70",
+      "expected": 63398,
+      "api_ms": {
+        "ours": [
+          11.499232,
+          12.52125,
+          12.001106
+        ],
+        "no_transpose": [
+          11.45942,
+          11.307713,
+          11.849903
+        ],
+        "no_greedy": [
+          12.144976,
+          13.190802,
+          12.169642
+        ],
+        "budget4": [
+          46.006118,
+          46.135158,
+          46.982176
+        ],
+        "budget64": [
+          11.695264,
+          12.094422,
+          11.814734
+        ],
+        "roots0": [
+          11.730943,
+          11.453703,
+          11.506937
+        ],
+        "roots16": [
+          11.326358,
+          11.843763,
+          11.660249
+        ],
+        "roots64": [
+          12.286353,
+          11.461901,
+          11.780029
+        ],
+        "reference": [
+          13.030633,
+          11.524228,
+          10.405184
+        ],
+        "baseline": [
+          204.905291,
+          204.062073,
+          205.623779
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "max_random_00",
+      "input_sha256": "6233cb5daba0e96eeafc4b705a608e943aba18792ca4984ec32cd419020e9ba1",
+      "expected": 78404,
+      "api_ms": {
+        "ours": [
+          9.926934,
+          9.609997,
+          10.09609
+        ],
+        "no_transpose": [
+          9.740172,
+          10.001505,
+          9.447666
+        ],
+        "no_greedy": [
+          11.802443,
+          11.743521,
+          11.153599
+        ],
+        "budget4": [
+          9.946417,
+          9.474755,
+          9.494414
+        ],
+        "budget64": [
+          9.840349,
+          9.771769,
+          9.722676
+        ],
+        "roots0": [
+          9.591065,
+          9.642535,
+          9.6455
+        ],
+        "roots16": [
+          9.682256,
+          9.516343,
+          9.647354
+        ],
+        "roots64": [
+          10.035511,
+          9.518551,
+          9.470684
+        ],
+        "reference": [
+          9.542474,
+          8.965831,
+          9.306415
+        ],
+        "baseline": [
+          31.033993,
+          30.793867,
+          30.248766
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "random_00",
+      "input_sha256": "0215f50f80f6c7d85ac4f1d6bbcb9b7c8d50ffa72e3cf79cf97b73fea7c7395c",
+      "expected": 8453,
+      "api_ms": {
+        "ours": [
+          0.587037,
+          0.567544,
+          0.669388
+        ],
+        "no_transpose": [
+          0.570174,
+          0.560479,
+          0.564578
+        ],
+        "no_greedy": [
+          1.543684,
+          1.463254,
+          1.649358
+        ],
+        "budget4": [
+          0.563776,
+          0.558477,
+          0.594897
+        ],
+        "budget64": [
+          0.554598,
+          0.565957,
+          0.556431
+        ],
+        "roots0": [
+          1.240636,
+          1.23321,
+          1.23914
+        ],
+        "roots16": [
+          0.566979,
+          0.570869,
+          0.567574
+        ],
+        "roots64": [
+          1.275214,
+          1.302937,
+          1.215643
+        ],
+        "reference": [
+          1.767515,
+          1.764065,
+          1.893943
+        ],
+        "baseline": [
+          0.560726,
+          0.562208,
+          0.562057
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "random_09",
+      "input_sha256": "71c8b189a1ea9eae381142c4e1e04dd9160481024a23d19f9c89ba307e78d15b",
+      "expected": 23290,
+      "api_ms": {
+        "ours": [
+          1.68307,
+          1.809261,
+          1.807342
+        ],
+        "no_transpose": [
+          4.120005,
+          3.95781,
+          4.133974
+        ],
+        "no_greedy": [
+          3.972691,
+          4.522665,
+          3.990896
+        ],
+        "budget4": [
+          1.530238,
+          1.523296,
+          1.577171
+        ],
+        "budget64": [
+          1.449988,
+          1.478537,
+          1.795871
+        ],
+        "roots0": [
+          4.985477,
+          5.113754,
+          5.043483
+        ],
+        "roots16": [
+          1.47507,
+          1.708921,
+          1.754616
+        ],
+        "roots64": [
+          1.425384,
+          1.43091,
+          1.533525
+        ],
+        "reference": [
+          2.430282,
+          2.445594,
+          2.73156
+        ],
+        "baseline": [
+          1.465779,
+          1.826676,
+          1.755212
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    },
+    {
+      "case": "unique_matching_00",
+      "input_sha256": "e2a928b8e1befc7be907810f78cad91f081473e102ef61c318f9e4e1582141de",
+      "expected": 66676,
+      "api_ms": {
+        "ours": [
+          34.267662,
+          33.949264,
+          34.948388
+        ],
+        "no_transpose": [
+          34.859274,
+          34.545085,
+          34.679738
+        ],
+        "no_greedy": [
+          38.857639,
+          39.911077,
+          39.047596
+        ],
+        "budget4": [
+          367.70329,
+          364.55486,
+          361.484338
+        ],
+        "budget64": [
+          35.561925,
+          35.370383,
+          35.749498
+        ],
+        "roots0": [
+          34.733018,
+          35.326726,
+          35.153859
+        ],
+        "roots16": [
+          36.426524,
+          34.73618,
+          34.661527
+        ],
+        "roots64": [
+          34.181351,
+          34.800764,
+          34.574649
+        ],
+        "reference": [
+          34.51407,
+          32.097488,
+          32.765084
+        ],
+        "baseline": [
+          510.866992,
+          522.598371,
+          530.995931
+        ]
+      },
+      "full_ms": {
+        "ours": [],
+        "reference": []
+      }
+    }
+  ],
+  "sources": {
+    "graph/matching/bipartite_matching.hpp": "f4ac0137ccb61d5987f339d2738e328d943c37fa93ba5ecca0265c1c490c631b",
+    "components/bipartite_matching_core.hpp": "2f62e6837db4c02000b97700c1349291a6d05c8dd286e1f0e4698de1db2c2ccb",
+    "test/bipartite_matching.test.cpp": "1518edeabdc30fc7764218594c83674e4192c20ebf943718bc985a81723869b4",
+    "test/benchmark/bipartite_matching.py": "6647c51b33a77a86ffcc1538f53a2e6b413a0e3fb2dbf0235a66a2ea947a5f5b",
+    "test/benchmark/bipartite_matching_api.cpp": "d80b93cb9498b9ef6fe7fdef408565e070baf8a69ce24367cd2fafe8473ab9a8"
+  },
+  "reference_source_sha256": "f7d7658d84bd6caf0b8c1eb5b6054a76e2d55d10ccd833d685de9b4becc94d02"
+}
