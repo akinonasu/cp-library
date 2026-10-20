@@ -1,5 +1,7 @@
 # 二項係数の prefix sum（差分更新）
 
+表の共有・更新の高速化・ARC190 B の測定は [2026-10-20 の記録](binomial_prefix_incremental.md)を参照。
+
 `math/combinatorics/binomial_prefix_sum_incremental.hpp` は、前回の `(n,k)` と値を保持し、呼び出し順に差分を処理する。並べ替えや平方分割の表は持たない。
 
 ## 参考資料

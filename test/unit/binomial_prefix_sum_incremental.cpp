@@ -31,6 +31,9 @@ template<class Mint> void check(int limit) {
 		for (int k = n + 1; k > 0 && k <= limit; --k) row[k] += row[k - 1];
 	}
 	IncrementalBinomialPrefixSum<Mint> sum(limit), other(limit);
+	for (int n = 0; n <= limit; ++n)
+		for (int k = 0; k <= n; ++k) assert(sum.binom(n, k) == prefix[n][k + 1] - prefix[n][k]);
+	assert(sum.binom(-1, 0) == Mint(0) && sum.binom(0, -1) == Mint(0) && sum.binom(0, 1) == Mint(0));
 	auto query = [&](int n, std::int64_t k) {
 		Mint expected = prefix[n][std::clamp(k, std::int64_t(0), std::int64_t(n) + 1)];
 		assert(sum.query(n, k) == expected);
@@ -50,7 +53,15 @@ template<class Mint> void check(int limit) {
 		assert(other.query(limit, i % (limit + 2)) == prefix[limit][i % (limit + 2)]);
 	}
 	for (int n = limit; n >= 0; --n) query(n, 2), query(n, n / 2), query(n, n - 1);
+	auto copied = sum;
+	assert(copied.query(limit, limit / 2) == prefix[limit][limit / 2]);
+	query(limit / 2, limit / 3);
 	sum.build(0);
+	assert(copied.max_n() == limit);
+	assert(copied.query(limit, limit / 3) == prefix[limit][limit / 3]);
+	other = copied;
+	copied.build(0);
+	assert(other.query(limit, limit / 2) == prefix[limit][limit / 2]);
 	assert(sum.max_n() == 0);
 	assert(sum.query(0, 0) == Mint(0));
 	assert(sum.query(0, 1) == Mint(1));
