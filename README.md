@@ -173,6 +173,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `string/lcs.hpp` | 最長共通部分列 | [使い方](docs/lcs.md) |
+| `string/longest_common_substring.hpp` | 最長共通部分文字列 | [使い方](docs/longest_common_substring.md) |
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
