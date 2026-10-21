@@ -1,7 +1,8 @@
-{% if page.data.dependsOn.size != 0 %}
+{% assign dependencies = page.data._extendedDependsOn | uniq: 'path' %}
+{% if dependencies.size != 0 %}
 <h2>依存ライブラリ</h2>
 <ul>
-  {% for item in page.data._extendedDependsOn %}
+  {% for item in dependencies %}
   <li><a href="{{ item.path | append: '.html' | relative_url }}">{{ item.title | escape }}</a></li>
   {% endfor %}
 </ul>
