@@ -1,5 +1,16 @@
 <h1>{{ page.data._verificationStatusIcon }} {{ page.title | escape }}</h1>
 <p class="source-path"><code>{{ page.data.path | escape }}</code> · <a href="https://github.com/{{ site.repository }}/blob/main/{{ page.data.path }}">GitHub で見る</a></p>
+{% if page.data.copyByteCount %}
+<p class="profile-note">{% if page.size_profile == 'lightweight' %}軽量版（64 KiB）{% else %}全体（256 KiB向け）{% endif %} · 展開・参照URL込み {{ page.data.copyByteCount }} B
+{% if page.size_profile == 'lightweight' %}
+ · <a href="{{ page.data.path | append: '.html' | relative_url }}">全体サイトで見る</a>
+{% elsif page.data.lightweightAvailable %}
+ · <a href="{{ '/lightweight/' | append: page.data.path | append: '.html' | relative_url }}">軽量版サイトで見る</a>
+{% else %} · 64 KiB版は未掲載{% endif %}</p>
+{% if page.data.copyByteCount > page.code_limit %}
+<p class="size-warning">この展開コードは256 KiBを超えます。FPS関連は <a href="https://github.com/{{ site.repository }}/blob/main/tools/compact_fps.py">compact_fps.py</a> で短縮し、解答を含む全体のサイズを確認してください。</p>
+{% endif %}
+{% endif %}
 {% if page.data._isVerificationFailed %}
 <p><a href="https://github.com/{{ site.repository }}/actions/workflows/verify.yml">検証ログ</a></p>
 {% endif %}

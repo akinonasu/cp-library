@@ -108,6 +108,16 @@ class BundleTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             source_pages({Path('source.md'): oversized})
 
+    def test_windows_line_endings(self):
+        from documentation import source_pages
+        from onlinejudge_verify.documentation.front_matter import merge_front_matter, split_front_matter
+        source = '#line 1 "source.cpp"\r\nint main() {}\r\n'
+        page = merge_front_matter({'data': {'bundledCode': source}}, b'Body\n')
+        generated = source_pages({Path('source.md'): page})
+        metadata, _ = split_front_matter(generated[Path('source.md')])
+        self.assertEqual(metadata['data']['bundledCode'], source)
+        self.assertEqual(metadata['data']['bundledBytes'], len(source.encode('utf-8')))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -22,6 +22,11 @@ performance = load('performance.json')
 sizes = load('sizes.json')
 submission = load('submission.json')
 distribution = load('distribution.json')
+documentation = load('documentation.json')
+python_checks = load('python_checks.json')
+assert documentation['completed'] and python_checks['completed']
+for name, digest in documentation['controls'].items():
+    assert sha(ROOT / name) == digest, name
 assert all(row['completed'] for row in [official, native, audit, asserts, performance, sizes, submission])
 assert official['source_sha256'] == native['source_sha256'] == core['source_sha256']
 for name, digest in core['source_sha256'].items():
@@ -106,12 +111,15 @@ assert len(samples) == len(performance['results']) * 2 * performance['trials'] =
 assert not (ROOT / 'tools/bundle.py').exists()
 assert submission['source_sha256'] == sha(ROOT / 'submissions/kth_term_of_linearly_recurrent_sequence.cpp')
 reports = ['core_checks.json', 'official.json', 'native_sanitize.json', 'audit.json', 'assert_audit.json',
-           'performance.json', 'performance.csv', 'sizes.json', 'submission.json', 'distribution.json']
+           'performance.json', 'performance.csv', 'sizes.json', 'submission.json', 'distribution.json',
+           'documentation.json', 'python_checks.json']
 controls = ['tools/update_fps_headers.py', 'tools/compact_fps.py', '.verify-helper/documentation.py',
             '.verify-helper/bundle_test.py', '.verify-helper/ci.py', '.verify-helper/check-docs.py',
             'test/benchmark/fps_plain_finalize.py', 'test/benchmark/source_size_budget.py',
             'test/benchmark/fps_plain_resume.py', 'test/benchmark/fps_plain_assert_audit.py',
-            'test/benchmark/fps_plain_audit.py', 'test/benchmark/fps_plain_submission.py']
+            'test/benchmark/fps_plain_audit.py', 'test/benchmark/fps_plain_submission.py',
+            '.verify-helper/size_profiles.py', '.verify-helper/check_profiles.py',
+            '.verify-helper/library_code_test.cjs', '.verify-helper/size_profiles_test.py']
 certificate = {'completed': True, 'completed_at': datetime.now(timezone.utc).isoformat(),
     'baseline_commit': core['baseline_commit'], 'source_sha256': core['source_sha256'],
     'compiler_sha256': core['compiler_sha256'], 'reports': {name: sha(RESULT / name) for name in reports},
@@ -125,6 +133,7 @@ certificate = {'completed': True, 'completed_at': datetime.now(timezone.utc).iso
     'external_drivers': official['skipped_external'], 'release_equivalence_pairs': len(audit['pairs']),
     'assertion_equivalence_pairs': len(asserts['pairs']), 'size_checks': len(sizes['sizes']),
     'header_count': sizes['header_count'], 'judge_count': sizes['judge_count'],
+    'documentation_sources': documentation['generated_sources'], 'website_profiles_checked': True,
     'maximum_copy_bytes': sizes['maximum_copy_bytes'], 'performance_conditions': len(performance['results']),
     'performance_samples': len(samples), 'bundle_tool_removed': True,
     'scope': 'Core stages and two completed official drivers reused with identical source/compiler hashes; remaining official drivers completed after preparing two missing fixtures. All selected Library Checker driver/compiler pairs are covered.'}

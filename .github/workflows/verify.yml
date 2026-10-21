@@ -70,6 +70,8 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-refs/heads/main-
       - name: Test incremental verification
         run: python -m unittest discover -s .verify-helper -p '*_test.py'
+      - name: Test website copy controls
+        run: node --test .verify-helper/library_code_test.cjs
       - name: Select affected libraries and tests
         if: steps.route.outputs.mode == 'normal'
         id: selection
@@ -120,6 +122,8 @@ jobs:
           manifest: .verify-helper/judge-cache.json
       - name: Generate documentation
         run: python .verify-helper/ci.py docs
+      - name: Check website size profiles
+        run: python .verify-helper/check_profiles.py
       - name: Check bundled documentation
         run: |
           python .verify-helper/check-docs.py --jobs 2 --selection .verify-helper/selection.json

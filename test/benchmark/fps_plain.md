@@ -85,8 +85,10 @@ Linux x86_64、AMD EPYC 9V74、GCC 14.2、CPU 2 固定。`-std=c++23 -O2 -DEVAL 
 - 全 API・include 順・高速 I/O の先頭配置・利用者マクロ・実 ACL modint・非 Linux 分岐の **14 通り**が成功しました。
 - 実 NTT 長 `2^23` の dense な積と、他の公開出力端点を確認しました。他の端点では疎・単項式入力を使っています。
 - Yosupo の **54 提出例**を GCC・Clang で実行し、公式 checker で **延べ 3,054 ケース**が成功しました。外部 AtCoder / yukicoder の 7 提出例は再提出せず、対応する単体検証で確認しています。
-- サイトの影響する **115 ソース**を生成し、全 **208 ヘッダー**の参照 URL 付き Copy サイズと、影響する **54 Bundle** の構文検査が成功しました。以前自動圧縮されていたページはすべて更新対象に含みます。
-- Bundle・生成器の回帰 5 件、CI の回帰 46 件、Fast I/O の AtCoder 相当 constexpr 制限の検査も成功しました。全ヘッダーの予算テストは全 API 使用例へ強化した後も成功しています。
+- サイトの全 **389 ソース**（208 ヘッダー・181 提出例）を生成し、全ヘッダーの参照 URL 付き Copy サイズと、変更の影響する **56 Bundle** の構文検査が成功しました。全体・軽量版の一覧、リンク、コピー対象の対応も検査し、全 208 件が 256 KiB 未満、158 件が軽量版の 64 KiB 以内でした。
+- 結合後の Bundle・生成器の回帰 6 件、CI の回帰 46 件、サイズ別サイトの Python 検査 10 件、コピー操作の Node 検査 8 件が成功しました。Fast I/O の AtCoder 相当 constexpr 制限と、全 API 使用例を含むサイズ予算の検査も成功しています。
+
+サイトのサイズ別表示を追加した `785e1a3` を取り込みました。C++ 実装 270 ファイルのハッシュは正答・速度検証時と一致しています。サイト再生成後も 206 ヘッダーの展開コードが以前の検査時と一致し、初回の部分生成で古いコードを残していた Fast I/O の 2 ページは更新して構文検査を追加しました。[サイト検証](results/fps_plain/documentation.json)、[回帰検査](results/fps_plain/python_checks.json)
 
 公式入力 2 問の追加生成を挟んだため、単体検証と公式検証は別原票です。成功済みの検査はソース・コンパイラ・ログの SHA を確認して再利用し、[統合原票](results/fps_plain/validation.json)で全対象の完了を検査しています。[単体検証の原票](results/fps_plain/core_checks.json)、[公式検証の再開原票](results/fps_plain/official.json)、[GCC native sanitizer](results/fps_plain/native_sanitize.json)
 
