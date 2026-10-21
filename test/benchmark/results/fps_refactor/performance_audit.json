@@ -1,0 +1,36 @@
+{
+  "completed": true,
+  "completed_at": "2026-10-21T16:43:44.833694+00:00",
+  "report_sha256": "59f1b1166630035e8ccbfa33bd7eca53524bdb129eb13f19592d79db70eac9ed",
+  "csv_sha256": "32fad16d66e90ad30d0021c02a1440ed009ce23a8bc088ea8ca557c5459593f0",
+  "harness_sha256": "ab3894f94a84875a250e9bff7146d6a408cd0c919168ade283e96b09fc512d70",
+  "unique_source_files_reverified": 93,
+  "bundler_sha256_reverified": "90f022d09a7763a8e70cc7bb0470e8d266fdded58fbe52200a05e461f95b0dbd",
+  "conditions": 73,
+  "samples": 1314,
+  "median_recomputed": true,
+  "all_answers_equal": true,
+  "summary": {
+    "core": {
+      "conditions": 45,
+      "sum_median_before_ms": 129.648668,
+      "sum_median_after_ms": 133.07361,
+      "after_over_before": 1.0264171013311145,
+      "max_after_over_before": 1.1382660020259432
+    },
+    "algorithms": {
+      "conditions": 8,
+      "sum_median_before_ms": 19.512087,
+      "sum_median_after_ms": 19.576363,
+      "after_over_before": 1.0032941632537822,
+      "max_after_over_before": 1.0189532860393522
+    },
+    "advanced": {
+      "conditions": 20,
+      "sum_median_before_ms": 57.184818,
+      "sum_median_after_ms": 58.785848,
+      "after_over_before": 1.0279974660407243,
+      "max_after_over_before": 1.089515426771719
+    }
+  }
+}

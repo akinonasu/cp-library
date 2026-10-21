@@ -11,12 +11,13 @@ except ImportError:
 
 
 LIMIT = 256 * 1024
+COMPACT_THRESHOLD = 192 * 1024
 
 
 def fit_source(source, limit=LIMIT):
     if limit <= 0:
         raise ValueError('the source limit must be positive')
-    if len(source.encode('utf-8')) >= limit:
+    if len(source.encode('utf-8')) >= min(limit, COMPACT_THRESHOLD):
         source = compact(source)
     size = len(source.encode('utf-8'))
     if size >= limit:

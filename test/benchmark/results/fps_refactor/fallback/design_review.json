@@ -1,0 +1,81 @@
+{
+  "reviewed_at_utc": "2026-10-21T16:21:38Z",
+  "scope": "Read-only API and safety review of the current source-size refactor; no production changes in this review.",
+  "header_sha256": {
+    "fps/fps.hpp": "bbd61a92acde166c09b5b2041f881a73551417fd830c2c87978193e69bd0e0bc",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "components/ntt.hpp": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164",
+    "components/fps_blocked.hpp": "fc20ec2cf1ddc4137900478f60812f5e8f198b6627978dd6c81d7c59bdbc7df6",
+    "components/fps_convolution.hpp": "9ebbc42810223057d7b9b9073a18c7d140288ff20b336a4a8efe8a06b4e979e1",
+    "components/fps_composition.hpp": "2d53cf305fe08baace3a9e2e355f95bd5a76840f42407e47051b66c6e96c1021",
+    "components/fps_evaluation.hpp": "a1926659b76efea0caf7a73dd83e30451c7f4560a7bc607d39d4cc4831aef37e",
+    "components/fps_taylor_blocked.hpp": "6769fea15208ccf3d74956b0a807e3d1500bd74b61e562bce139982641f4cdc8",
+    "tools/compact_fps.py": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680",
+    ".verify-helper/bundle_test.py": "16feb89b5a7653dcd39f6bf44185468bbf5ce5236ad5a2ed1d458dc25f4ee82d"
+  },
+  "findings": [],
+  "log_precision": {
+    "conclusion": "The removed LogTransform path is not required to support precision 2^24 on Clang/x86 or Mac. The existing generic block-division fallback retains the same precision.",
+    "affected_region": "256 <= degree D <= 2^24, denominator size >=64; all other removed-path predicates unchanged.",
+    "size_selection": "Let S be ceil_power_of_two(D), optionally halved when D < 3S/4. Then S <= 2^24, B=S/32 <=2^19, L=2B <=2^20. B is a nonzero power of two because D>=256.",
+    "transforms": "The initial g.inv(B) requires transforms of at most B. The initial multiplication has output size at most 2B-1, hence transform length at most 2B=L. All later denominator, quotient, inverse and error transforms use L. Thus every length is <=2^20 < the existing NTT limit 2^23. No transform of length D is requested.",
+    "inverse_without_avx2": "On ARM or x86 without AVX2, inv(B) may call generic div_series. Its block size is at most B/16, so recursion strictly decreases until a small direct/Newton case. No larger transform is introduced.",
+    "allocation_and_index_bounds": "The count C=ceil(D/B) is at most48. pitch=L+16, and (2C-1)*pitch <=95*(2^20+16)=99,616,240 <2^27 <INT_MAX. Every slot offset and allocation-word product fits the existing int arithmetic. Actual allocation may remain large, as expected for precision2^24.",
+    "integration": "inverses(D-1) requires D-1 <mod=998244353; this holds for D<=2^24. Weighted derivative uses at most D coefficients and existing bounded loops.",
+    "mathematics": "Generic log_derivative forms x*f'(x), divides by f modulo x^D, and for log multiplies coefficient i by 1/i. With f[0]=1 this equals the original logarithm for every coefficient below D.",
+    "evidence": [
+      "fps/fps.hpp:199 div_series",
+      "fps/fps.hpp:223 block/length/count selection",
+      "fps/fps.hpp:224 initial inverse and multiplication",
+      "fps/fps.hpp:230 workspace",
+      "fps/fps.hpp:720 log_derivative",
+      "components/fps_operations.hpp:44 transform length assertion",
+      "components/fps_operations.hpp:258 inverse integer range assertion"
+    ],
+    "maximum_precision_fixture": "log_precision.cpp executed with Clang19 on the final frozen source, assertions enabled: all16,777,216 coefficients passed the independent closed form; checksum15647648346265480621. Source hashes unchanged before/after execution. See log_precision.json and log_precision.py."
+  },
+  "other_review": {
+    "public_api": "No public FPS method signatures or return shapes were changed by the reviewed diff. Removed NTT methods are internal kernels; inverse_newton8 remains because its generic replacement regressed small-size performance. Standalone LogTransform remains available.",
+    "portable_targets": "Removal of NEON paths selects existing scalar NTT behavior on ARM. Other large native kernels remain guarded by Linux x86_64 GCC !Clang conditions; no ARM intrinsics are introduced.",
+    "composition_range_invariant": "composition_difference now shares difference(), which expects inputs <2p. Its companion composition_forward_y change replaces lazy radix4 with nonlazy stage_pair/stage, giving output <2p. These two changes must remain together.",
+    "evaluation_tree_shared_storage": "BaseTree shared descent offsets are values_+8*(lo-lo_). BaseDescent leaves lo_=0 and retains global-output indexing. BaseInterpolation assigns lo_=lo per run and retains local indexing. The shared memory/product capacities are unchanged; the storage pointer is saved by the base constructor and first dereferenced only after complete object construction.",
+    "taylor_table": "The generated constexpr table still contains all513 entries at step1024. uint64 product value*((i-1)*1024+j) is below 998244353*524288 <2^49, so generation cannot overflow. It adds no runtime initialization.",
+    "compaction": "The active compact_fps change only lowers repeat-count eligibility from3 to2; existing token-boundary, protected-macro, literal, line-mapping and gain checks remain. New bundle fixture exercises twice-occurring code.",
+    "limitations": "This is an independent code review, not a replacement for final platform builds, numerical validation, sanitizers or performance measurements. Any later native-kernel changes require their own final review/validation.",
+    "taylor_table_exact_value_check": "All513 generated entries independently reproduced in Python and compared equal to the previous HEAD literal table."
+  },
+  "final_freeze_review_at_utc": "2026-10-21T16:26:13Z",
+  "final_shared_convolution_sha256": {
+    "components/fps_convolution.hpp": "9ebbc42810223057d7b9b9073a18c7d140288ff20b336a4a8efe8a06b4e979e1",
+    "components/fps_blocked.hpp": "fc20ec2cf1ddc4137900478f60812f5e8f198b6627978dd6c81d7c59bdbc7df6",
+    "components/fps_taylor_blocked.hpp": "6769fea15208ccf3d74956b0a807e3d1500bd74b61e562bce139982641f4cdc8"
+  },
+  "shared_convolution_review": {
+    "conclusion": "No new API or safety defect found in the frozen shared-backend implementation.",
+    "constructor_validation": "Convolution::log_length rejects zero sizes and each operand >2^23 before evaluating n+m-1. Short-circuit evaluation bounds both sizes before summation, so size_t overflow cannot reach bit_width or allocation. It then rejects output size >2^23. Thus 6<=log_length<=23 and64<=len<=2^23 before member allocations.",
+    "arena_capacity": "Transform::words(lg) reserves exactly footprint(2*table_words(lg)); Transform constructor consumes that single span. The remaining arena budget has one footprint(len)=len+16 for borrowed a, or two for owned a and b. All accessed tails [len,len+16) lie inside their span footprints.",
+    "borrowed_output": "run_borrowed_as constructs len+16+7 live Mint elements, offsets to a32-byte boundary by0..7 elements, and hence retains at least len+16 elements after the aligned pointer. copy_input_mint writes exactly a.size() inputs; remaining result elements are initialized zero. After multiplication size<=len, so optional memmove and final resize remain inside live storage.",
+    "copy_input_padding": "copy_input reads full SIMD chunks only when i+8<=input.size(), handles tails scalarly, pads the necessary lower-half/full-length interval, and writes exactly16 extra words at len. The shared Source span contains the true input length, so any remaining upper-half arena bytes are treated as logical zero and are not read as input. Arena vectors are64-byte aligned; borrowed a is32-byte aligned.",
+    "montgomery_scale": "Inputs are Mint words xR and yR. Transform::cyclic_product with c=1 gives the ordinary raw polynomial product xyR^2: its existing inverse_scale(true) cancels the leaf Montgomery reduction. Passing c=R^-1 therefore gives xyR, the expected Mint representation. The correction is fused into the final existing scaling pass; append_fps_words<true> and borrowed output must therefore copy words directly. Both paths do so.",
+    "subtree_weight_and_scale": "New Subtrees forwards b using ForwardBottom and applies ProductBottom to a, both at the same absolute recursion index k as before. Both share the exact blocked_ntt root table and slot layout used by the removed clone. Recursion is unnormalized; no Transform final inverse scaling is added. Thus the existing Taylor outer inverse/scaling logic stays compatible.",
+    "origin_bounds": "For Subtrees::visit(nv,k), origin=k*nv is a vector index. Its bottom nodes cover g starting at k*nv/4. Every accessed b vector index4g+t-origin therefore lies in[0,nv). Recursive calls preserve the same absolute global-vector interval. Only the final nonnegative index difference is added to the actual b allocation; no pointer before the allocation is formed. Other ProductBottom aggregate initializers use the default origin0 and preserve their previous offsets.",
+    "origin_callsite_audit": "All ProductBottom b accesses in finish, InverseProductSumBottom, ForwardProductBottom and SideProductBottom subtract origin before pointer addition. InverseProductBottom a inputs and SideProductBottom side inputs retain their original whole-plan indexing; nonzero origin is only introduced for the b operand by Subtrees.",
+    "portable_effect": "The new Convolution/Subtrees implementation and ProductBottom.origin field are under Linux x86_64 GCC !Clang guards. The Clang/ARM mathematical fallback is unchanged by this additional backend sharing.",
+    "verification_handoff": "Final scoped GCC/Clang numerical tests, guard pages, sanitizers, official inputs and performance measurements run independently under the parent validation/benchmark tasks.",
+    "maximum_precision_handoff": "The additional Clang log endpoint run passed after final freeze; full evidence in log_precision.json."
+  },
+  "initial_header_sha256": {
+    "fps/fps.hpp": "bbd61a92acde166c09b5b2041f881a73551417fd830c2c87978193e69bd0e0bc",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "components/ntt.hpp": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164",
+    "components/fps_blocked.hpp": "081047721cbf519323564d033f6d4671f9a0ea4f2479c151e2a95e38b5d7f2f6",
+    "components/fps_convolution.hpp": "e1ed8a22fc003c3e0680d9b4da95e57b717712e7c6da27ced642f3f7fbae7046",
+    "components/fps_composition.hpp": "2d53cf305fe08baace3a9e2e355f95bd5a76840f42407e47051b66c6e96c1021",
+    "components/fps_evaluation.hpp": "a1926659b76efea0caf7a73dd83e30451c7f4560a7bc607d39d4cc4831aef37e",
+    "components/fps_taylor_blocked.hpp": "6769fea15208ccf3d74956b0a807e3d1500bd74b61e562bce139982641f4cdc8",
+    "tools/compact_fps.py": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680",
+    ".verify-helper/bundle_test.py": "69271f6c580967c12c4ca2968d4f59da9340f3fb70458c74742785e04ffee87d"
+  }
+}

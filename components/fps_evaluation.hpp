@@ -210,10 +210,10 @@ public:
 		const std::size_t h = nv / 2;
 		recursion.visit(out.data(), h, 2);
 		recursion.visit(out.data() + 8 * h, h, 3);
-		const Factor sz(blocked_ntt::detail::multiply_mod(scale(out.size(), c), inverse_roots_[1]));
+		const Factor scale_z(blocked_ntt::detail::multiply_mod(scale(out.size(), c), inverse_roots_[1]));
 		for (std::size_t j = 0; j < h; ++j) {
 			const Vec u = v[j], w = v[j + h];
-			v[j] = reduce(times(add(u, w), s), kP), v[j + h] = reduce(times(diff(u, w), sz), kP);
+			v[j] = reduce(times(add(u, w), s), kP), v[j + h] = reduce(times(diff(u, w), scale_z), kP);
 		}
 	}
 	void leaf_products(const std::uint32_t* a, const std::uint32_t* b, std::span<std::uint32_t> out) const {
@@ -638,20 +638,10 @@ void with_degree(std::size_t d, F&& f) {
 		default: std::abort();
 	}
 }
-class BaseDescent {
-public:
-	BaseDescent(const PointSlots& slots, std::uint32_t* values) : slots_(slots), values_(values) {}
-	void run(std::size_t lo, std::size_t hi, const std::uint32_t* w) {
-		const std::size_t count = hi - lo;
-		if (count == 1) return store(values_ + 8 * lo, load(w));
-		if (std::has_single_bit(count)) return run_levels(lo, count, w);
-		free_ = memory_;
-		build(1, lo, hi);
-		descend(1, lo, hi, w);
-	}
-private:
-	void run_levels(std::size_t lo, std::size_t count, const std::uint32_t* w) {
-		const std::uint32_t* products[6];
+class BaseTree {
+protected:
+	BaseTree(const PointSlots& slots, std::uint32_t* values) : slots_(slots), values_(values) {}
+	std::uint32_t* build_levels(std::size_t lo, std::size_t count, const std::uint32_t** products) {
 		std::uint32_t* at = memory_;
 		for (std::size_t k = 0; k < count; ++k) slots_.load(lo + k, at + 16 * k);
 		products[0] = at;
@@ -663,10 +653,12 @@ private:
 			products[j] = at;
 			at += 8 * (2 * d + 1) * (count / (2 * d));
 		}
-		std::uint32_t* const windows[2] = {at, at + 8 * count};
+		return at;
+	}
+	void descend_levels(std::size_t lo, std::size_t count, const std::uint32_t* w, const std::uint32_t* const* products, std::uint32_t* const* windows) {
 		const std::uint32_t* parents = w;
 		for (std::size_t d = count / 2, j = std::countr_zero(count) - 1;; d /= 2, --j) {
-			std::uint32_t* const out = d == 1 ? values_ + 8 * lo : windows[j & 1];
+			std::uint32_t* const out = d == 1 ? values_ + 8 * (lo - lo_) : windows[j & 1];
 			with_degree(d, [&]<std::size_t D>() { middle_level<D>(parents, products[j], out, count / D); });
 			if (d == 1) return;
 			parents = out;
@@ -689,7 +681,7 @@ private:
 		return out;
 	}
 	void descend(std::size_t v, std::size_t lo, std::size_t hi, const std::uint32_t* w) {
-		if (hi - lo == 1) return store(values_ + 8 * lo, load(w));
+		if (hi - lo == 1) return store(values_ + 8 * (lo - lo_), load(w));
 		const std::size_t mid = lo + (hi - lo) / 2;
 		std::uint32_t* const left = free_;
 		std::uint32_t* const right = left + 8 * (mid - lo);
@@ -705,6 +697,24 @@ private:
 	std::uint32_t* free_ = memory_;
 	const PointSlots& slots_;
 	std::uint32_t* values_;
+	std::size_t lo_ = 0;
+};
+class BaseDescent : private BaseTree {
+public:
+	BaseDescent(const PointSlots& slots, std::uint32_t* values) : BaseTree(slots, values) {}
+	void run(std::size_t lo, std::size_t hi, const std::uint32_t* w) {
+		const std::size_t count = hi - lo;
+		if (count == 1) return store(values_ + 8 * lo, load(w));
+		if (std::has_single_bit(count)) {
+			const std::uint32_t* products[6];
+			std::uint32_t* at = build_levels(lo, count, products);
+			std::uint32_t* const windows[2] = {at, at + 8 * count};
+			return descend_levels(lo, count, w, products, windows);
+		}
+		free_ = memory_;
+		build(1, lo, hi);
+		descend(1, lo, hi, w);
+	}
 };
 }
 class PointTree {
@@ -1078,9 +1088,9 @@ inline Vec inverse_montgomery(Vec x) {
 	}
 	return result;
 }
-class BaseInterpolation {
+class BaseInterpolation : private BaseTree {
 public:
-	BaseInterpolation(const PointSlots& slots, const std::uint32_t* y, std::size_t m) : slots_(slots), y_(y), m_(m) {}
+	BaseInterpolation(const PointSlots& slots, const std::uint32_t* y, std::size_t m) : BaseTree(slots, storage_), y_(y), m_(m) {}
 	const std::uint32_t* run(std::size_t lo, std::size_t hi, const std::uint32_t* w) {
 		const std::size_t count = hi - lo;
 		lo_ = lo;
@@ -1100,25 +1110,9 @@ public:
 private:
 	const std::uint32_t* run_levels(std::size_t count, const std::uint32_t* w) {
 		const std::uint32_t* products[6];
-		std::uint32_t* at = memory_;
-		for (std::size_t k = 0; k < count; ++k) slots_.load(lo_ + k, at + 16 * k);
-		products[0] = at;
-		at += 16 * count;
-		for (std::size_t d = 1, j = 1; 2 * d < count; d *= 2, ++j) {
-			with_degree(d, [&]<std::size_t D>() {
-				if constexpr (D <= LaneLayout::kBase / 4) product_level<D>(products[j - 1], at, count / (2 * D));
-			});
-			products[j] = at;
-			at += 8 * (2 * d + 1) * (count / (2 * d));
-		}
+		std::uint32_t* at = build_levels(lo_, count, products);
 		std::uint32_t* const buffers[2] = {at, at + 8 * count};
-		const std::uint32_t* parents = w;
-		for (std::size_t d = count / 2, j = std::countr_zero(count) - 1;; d /= 2, --j) {
-			std::uint32_t* const out = d == 1 ? values_ : buffers[j & 1];
-			with_degree(d, [&]<std::size_t D>() { middle_level<D>(parents, products[j], out, count / D); });
-			if (d == 1) break;
-			parents = out;
-		}
+		descend_levels(lo_, count, w, products, buffers);
 		weights(count);
 		const std::uint32_t* sums = values_;
 		for (std::size_t d = 1, j = 0; d < count; d *= 2, ++j) {
@@ -1127,34 +1121,6 @@ private:
 			sums = out;
 		}
 		return sums_;
-	}
-	const std::uint32_t* build(std::size_t v, std::size_t lo, std::size_t hi) {
-		std::uint32_t* const c = free_;
-		if (hi - lo == 1) {
-			slots_.load(lo, c);
-			free_ += 16;
-			return c;
-		}
-		const std::size_t mid = lo + (hi - lo) / 2;
-		product_[2 * v] = build(2 * v, lo, mid);
-		product_[2 * v + 1] = build(2 * v + 1, mid, hi);
-		if (v == 1) return nullptr;
-		std::uint32_t* const out = free_;
-		multiply_lanes_any(product_[2 * v], mid - lo, product_[2 * v + 1], hi - mid, out);
-		free_ += 8 * (hi - lo + 1);
-		return out;
-	}
-	void descend(std::size_t v, std::size_t lo, std::size_t hi, const std::uint32_t* w) {
-		if (hi - lo == 1) return store(values_ + 8 * (lo - lo_), load(w));
-		const std::size_t mid = lo + (hi - lo) / 2;
-		std::uint32_t* const left = free_;
-		std::uint32_t* const right = left + 8 * (mid - lo);
-		free_ = right + 8 * (hi - mid);
-		middle_lanes(w, hi - mid, product_[2 * v + 1], mid - lo, left);
-		middle_lanes(w, mid - lo, product_[2 * v], hi - mid, right);
-		descend(2 * v, lo, mid, left);
-		descend(2 * v + 1, mid, hi, right);
-		free_ = left;
 	}
 	void ascend(std::size_t v, std::size_t lo, std::size_t hi, std::uint32_t* out) {
 		if (hi - lo == 1) return store(out, load(values_ + 8 * (lo - lo_)));
@@ -1204,14 +1170,10 @@ private:
 		}
 	}
 	static constexpr std::size_t kMaxSlots = LaneLayout::kBase;
-	alignas(32) std::uint32_t memory_[8 * 320];
-	alignas(32) std::uint32_t values_[8 * kMaxSlots];
+	alignas(32) std::uint32_t storage_[8 * kMaxSlots];
 	alignas(32) std::uint32_t sums_[8 * kMaxSlots];
-	const std::uint32_t* product_[64];
-	std::uint32_t* free_ = memory_;
-	const PointSlots& slots_;
 	const std::uint32_t* y_;
-	std::size_t m_, lo_ = 0;
+	std::size_t m_;
 };
 }
 class InterpolationTree : public PointTree {

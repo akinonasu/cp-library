@@ -1,0 +1,621 @@
+--- a/components/fps_composition.hpp
++++ b/components/fps_composition.hpp
+@@ -16,585 +16,44 @@
+ using blocked_poly::kModulus;
+ namespace kernels {
+ using Vec = __m256i;
+-using blocked_poly::kernels::kP;
+-using blocked_poly::kernels::k2P;
+-[[gnu::noinline]] inline void forward_columns(Vec* a, std::size_t h, std::size_t width, const std::uint32_t* x, const std::uint32_t* y) {
+-	alignas(32) Vec w[3];
+-	Vec* const end = a + h;
+-	Vec* stop;
+-	#define CP_FPS_ASM_BLOCK(c,d,e,f,g,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Q,R,S,T,U,V,W,X) \
+-W(%[P],z) W(%[P2],r) D((%[x]),d) m(d,G)\
+-D(32(%[x]),w)\
+-D((%[y]),d)\
+-m(d,M)\
+-D(32(%[y]),E)\
+-D(4(%[y]),d)\
+-m(d,N)\
+-D(36(%[y]),F)\
+-"1:\n\t" \
+-X((%[a],%[width]),O)\
+-".p2align 5\n\t" \
+-"2:\n\t" \
+-m(I,d)\
+-m(K,c)\
+-m(Q,k)\
+-m(S,g)\
+-q(I,w,u)\
+-q(K,w,s)\
+-q(4(%[a],%[h3]),w,e)\
+-q(36(%[a],%[h3]),w,i)\
+-m(J,l)\
+-v(t,u,u)\
+-m(L,n)\
+-v(t,s,s)\
+-B(A,e,u,e)\
+-B(A,i,s,i)\
+-m((%[a]),s)\
+-p(G,d,d)\
+-p(z,e,e)\
+-m(R,u)\
+-p(G,c,c)\
+-p(z,i,i)\
+-j(r,k,f)\
+-C(f,k,f)\
+-q(J,w,k)\
+-j(e,d,e)\
+-j(r,g,d)\
+-C(d,g,d)\
+-j(i,c,i)\
+-q(L,w,c)\
+-q(4(%[a],%[h],2),w,g)\
+-v(t,k,k)\
+-p(G,l,l)\
+-p(G,n,n)\
+-v(t,c,c)\
+-B(A,g,k,g)\
+-q(36(%[a],%[h],2),w,k)\
+-p(z,g,g)\
+-B(A,k,c,k)\
+-o(r,f,c)\
+-o(e,f,f)\
+-j(e,c,e)\
+-p(z,k,k)\
+-j(g,l,g)\
+-o(r,d,l)\
+-o(i,d,d)\
+-j(i,l,i)\
+-v(t,f,l)\
+-q(E,f,c)\
+-q(E,l,l)\
+-p(M,f,f)\
+-j(k,n,k)\
+-v(t,e,n)\
+-q(F,n,n)\
+-v(t,c,c)\
+-B(A,l,c,l)\
+-q(F,e,c)\
+-p(N,e,e)\
+-p(z,l,l)\
+-v(t,c,c)\
+-B(A,n,c,n)\
+-j(l,f,l)\
+-v(t,d,f)\
+-q(E,d,c)\
+-q(E,f,f)\
+-p(z,n,n)\
+-p(M,d,d)\
+-v(t,c,c)\
+-B(A,f,c,f)\
+-j(n,e,n)\
+-v(t,i,e)\
+-q(F,i,c)\
+-q(F,e,e)\
+-p(z,f,f)\
+-p(N,i,i)\
+-v(t,c,c)\
+-B(A,e,c,e)\
+-j(f,d,f)\
+-j(r,s,d)\
+-j(r,u,c)\
+-C(d,s,d)\
+-C(c,u,c)\
+-p(z,e,e)\
+-o(g,d,u)\
+-j(g,d,g)\
+-o(k,c,d)\
+-j(k,c,k)\
+-j(r,u,c)\
+-o(r,g,s)\
+-C(c,u,c)\
+-C(s,g,s)\
+-j(e,i,e)\
+-j(r,d,i)\
+-o(r,k,g)\
+-C(i,d,i)\
+-o(r,c,d)\
+-o(r,s,u)\
+-C(g,k,g)\
+-o(l,c,c)\
+-j(l,d,l)\
+-o(n,s,s)\
+-o(r,i,d)\
+-o(r,g,k)\
+-j(n,u,n)\
+-o(f,i,i)\
+-m(c,(%[a]))\
+-j(f,d,f)\
+-o(e,g,g)\
+-j(e,k,e)\
+-m(l,Q)\
+-m(s,J)\
+-m(n,I)\
+-m(i,R)\
+-m(f,S)\
+-m(g,L)\
+-m(e,K)\
+-T($64,H)\
+-U(O,H)\
+-V(2b)\
+-T(%[width],H)\
+-U(%[end],H)\
+-V(1b)
+-	asm volatile(
+-		CP_FPS_ASM_BLOCK(%%ymm1,%%ymm0,%%ymm6,%%ymm10,%%ymm3,%%ymm7,CP_FPS_ASM_VPSUBD,%%ymm2,%%ymm8,CP_FPS_ASM_VMOVDQA,%%ymm9,CP_FPS_ASM_VPADDD,CP_FPS_ASM_VPMULLD,CP_FPS_ASM_VPMULUDQ,%%ymm14,%%ymm5,$32,%%ymm4,CP_FPS_ASM_VPSRLQ,%%ymm11,%%ymm15,$170,CP_FPS_ASM_VPBLENDD,CP_FPS_ASM_VPMINUD,CP_FPS_ASM_VBROADCASTSS,%%ymm12,%%ymm13,(%[w]),%[a],(%[a],%[h3]),(%[a],%[h],2),32(%[a],%[h3]),32(%[a],%[h],2),32(%[w]),64(%[w]),%[stop],(%[a],%[h]),32(%[a]),32(%[a],%[h]),CP_FPS_ASM_ADD,CP_FPS_ASM_CMP,CP_FPS_ASM_JNE,CP_FPS_ASM_VPBROADCASTD,CP_FPS_ASM_LEA)
+-#undef CP_FPS_ASM_BLOCK
+-		: [a] "+r"(a), [stop] "=&r"(stop)
+-		: [end] "r"(end), [h] "r"(32 * h), [h3] "r"(96 * h), [width] "r"(32 * width), [y] "r"(y), [x] "r"(x), [w] "r"(w),
+-		  [P] "m"(kP), [P2] "m"(k2P)
+-		: "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15", "memory", "cc");
+-}
++namespace column_detail = blocked_poly::detail;
+ 
+-[[gnu::noinline]] inline void inverse_columns(Vec* a, std::size_t h, std::size_t width, const std::uint32_t* x, const std::uint32_t* y) {
+-	alignas(32) Vec w[3];
+-	Vec* const end = a + h;
+-	Vec* stop;
+-	#define CP_FPS_ASM_BLOCK(c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Q,R,S,T,U,V,W) \
+-V(%[P],w) V(%[P2],k) C((%[x]),c) r(c,F)\
+-C(32(%[x]),v)\
+-C((%[y]),c)\
+-r(c,L)\
+-C(32(%[y]),D)\
+-C(4(%[y]),c)\
+-r(c,M)\
+-C(36(%[y]),E)\
+-"1:\n\t" \
+-W((%[a],%[width]),N)\
+-".p2align 5\n\t" \
+-"2:\n\t" \
+-r((%[a]),c)\
+-r(Q,f)\
+-r(O,s)\
+-r(R,t)\
+-n(k,c,i)\
+-n(I,c,c)\
+-n(k,f,j)\
+-h(I,i,i)\
+-n(K,f,f)\
+-h(k,c,u)\
+-n(k,s,e)\
+-h(K,j,j)\
+-q(l,i,g)\
+-p(D,i,d)\
+-n(k,t,m)\
+-h(H,e,e)\
+-p(D,g,g)\
+-o(L,i,i)\
+-h(J,m,m)\
+-n(H,s,s)\
+-B(u,c,u)\
+-q(l,j,c)\
+-p(D,c,c)\
+-q(l,d,d)\
+-n(J,t,t)\
+-A(z,g,d,g)\
+-p(D,j,d)\
+-o(L,j,j)\
+-o(w,g,g)\
+-q(l,d,d)\
+-A(z,c,d,c)\
+-h(g,i,g)\
+-q(l,e,i)\
+-p(E,e,d)\
+-p(E,i,i)\
+-o(w,c,c)\
+-o(M,e,e)\
+-q(l,d,d)\
+-A(z,i,d,i)\
+-h(c,j,c)\
+-q(l,m,j)\
+-p(E,m,d)\
+-p(E,j,j)\
+-o(w,i,i)\
+-o(M,m,m)\
+-q(l,d,d)\
+-A(z,j,d,j)\
+-h(i,e,i)\
+-h(k,f,e)\
+-h(k,s,d)\
+-o(w,j,j)\
+-B(e,f,e)\
+-B(d,s,d)\
+-h(k,t,s)\
+-n(k,u,f)\
+-B(s,t,s)\
+-n(k,e,t)\
+-n(d,u,u)\
+-h(d,f,d)\
+-h(s,t,t)\
+-n(s,e,s)\
+-n(k,g,e)\
+-h(j,m,j)\
+-n(k,c,m)\
+-h(i,e,e)\
+-q(l,d,f)\
+-h(j,m,m)\
+-p(v,f,f)\
+-n(i,g,i)\
+-n(j,c,j)\
+-p(v,d,c)\
+-q(l,e,g)\
+-o(F,d,d)\
+-p(v,g,g)\
+-q(l,c,c)\
+-A(z,f,c,f)\
+-p(v,e,c)\
+-o(F,e,e)\
+-o(w,f,f)\
+-q(l,c,c)\
+-A(z,g,c,g)\
+-h(f,d,f)\
+-q(l,t,d)\
+-p(v,t,c)\
+-p(v,d,d)\
+-o(w,g,g)\
+-r(f,O)\
+-q(l,m,f)\
+-p(v,f,f)\
+-o(F,t,t)\
+-q(l,c,c)\
+-A(z,d,c,d)\
+-h(g,e,g)\
+-p(v,m,e)\
+-o(F,m,m)\
+-o(w,d,d)\
+-h(k,u,c)\
+-r(g,H)\
+-h(k,i,g)\
+-B(c,u,c)\
+-q(l,e,e)\
+-h(k,s,u)\
+-B(g,i,g)\
+-r(c,(%[a]))\
+-A(z,f,e,f)\
+-h(k,j,e)\
+-B(u,s,u)\
+-h(d,t,d)\
+-r(g,I)\
+-o(w,f,f)\
+-B(e,j,e)\
+-r(u,Q)\
+-r(e,K)\
+-r(d,R)\
+-h(f,m,f)\
+-r(f,J)\
+-S($64,G)\
+-T(N,G)\
+-U(2b)\
+-S(%[width],G)\
+-T(%[end],G)\
+-U(1b)
+-	asm volatile(
+-		CP_FPS_ASM_BLOCK(%%ymm0,%%ymm9,%%ymm7,%%ymm1,%%ymm8,CP_FPS_ASM_VPSUBD,%%ymm4,%%ymm5,%%ymm14,$32,%%ymm10,CP_FPS_ASM_VPADDD,CP_FPS_ASM_VPMULLD,CP_FPS_ASM_VPMULUDQ,CP_FPS_ASM_VPSRLQ,CP_FPS_ASM_VMOVDQA,%%ymm2,%%ymm3,%%ymm6,%%ymm11,%%ymm15,$170,CP_FPS_ASM_VPBLENDD,CP_FPS_ASM_VPMINUD,CP_FPS_ASM_VBROADCASTSS,%%ymm12,%%ymm13,(%[w]),%[a],(%[a],%[h3]),(%[a],%[h]),32(%[a],%[h3]),32(%[a],%[h]),32(%[w]),64(%[w]),%[stop],(%[a],%[h],2),32(%[a]),32(%[a],%[h],2),CP_FPS_ASM_ADD,CP_FPS_ASM_CMP,CP_FPS_ASM_JNE,CP_FPS_ASM_VPBROADCASTD,CP_FPS_ASM_LEA)
+-#undef CP_FPS_ASM_BLOCK
+-		: [a] "+r"(a), [stop] "=&r"(stop)
+-		: [end] "r"(end), [h] "r"(32 * h), [h3] "r"(96 * h), [width] "r"(32 * width), [y] "r"(y), [x] "r"(x), [w] "r"(w),
+-		  [P] "m"(kP), [P2] "m"(k2P)
+-		: "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15", "memory", "cc");
++template<bool Inverse>
++[[gnu::noinline]] void columns(Vec *a, std::size_t h, std::size_t width,
++		const std::uint32_t *x, const std::uint32_t *y) {
++	using namespace column_detail;
++	const Factor wx(x[0], x[8]), wy(y[0], y[8]), wz(y[1], y[9]);
++	for (std::size_t c = 0; c < h; c += 2 * width)
++		for (std::size_t j = c; j < c + width; ++j) {
++			const Vec f0 = a[j], f1 = a[j + h], f2 = a[j + 2 * h], f3 = a[j + 3 * h];
++			if constexpr (Inverse) {
++				const Vec ab = low(add(f0, f1)), cd = low(add(f2, f3));
++				const Vec amb = times(diff(f0, f1), wy), cmd = times(diff(f2, f3), wz);
++				a[j] = low(add(ab, cd)), a[j + h] = low(add(amb, cmd));
++				a[j + 2 * h] = times(diff(ab, cd), wx), a[j + 3 * h] = times(diff(amb, cmd), wx);
++			} else {
++				const Vec lo = low(f0), hi = low(f1), xc = times(f2, wx), xd = times(f3, wx);
++				const Vec ac = low(add(lo, xc)), amc = low_difference(lo, xc);
++				const Vec bd = times(add(hi, xd), wy), bmd = times(diff(hi, xd), wz);
++				a[j] = add(ac, bd), a[j + h] = diff(ac, bd);
++				a[j + 2 * h] = add(amc, bmd), a[j + 3 * h] = diff(amc, bmd);
++			}
++		}
+ }
+-
+-[[gnu::noinline]] inline void forward_even_columns(Vec* a, std::size_t h, const std::uint32_t* x, const std::uint32_t* y) {
+-	alignas(32) Vec w[3];
+-	Vec* const end = a + h;
+-	#define CP_FPS_ASM_BLOCK(c,d,e,f,g,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Q,R,S,T,U) \
+-R(%[P],z) R(%[P2],r) D((%[x]),d) m(d,G)\
+-D(32(%[x]),w)\
+-D((%[y]),d)\
+-m(d,J)\
+-D(32(%[y]),E)\
+-D(4(%[y]),d)\
+-m(d,M)\
+-D(36(%[y]),F)\
+-".p2align 5\n\t" \
+-"1:\n\t" \
+-m(H,d)\
+-m(K,c)\
+-m(N,k)\
+-m(Q,g)\
+-q(H,w,u)\
+-q(K,w,s)\
+-q(4(%[a],%[h3]),w,e)\
+-q(68(%[a],%[h3]),w,i)\
+-m(I,l)\
+-v(t,u,u)\
+-m(L,n)\
+-v(t,s,s)\
+-B(A,e,u,e)\
+-B(A,i,s,i)\
+-m((%[a]),s)\
+-p(G,d,d)\
+-p(z,e,e)\
+-m(O,u)\
+-p(G,c,c)\
+-p(z,i,i)\
+-j(r,k,f)\
+-C(f,k,f)\
+-q(I,w,k)\
+-j(e,d,e)\
+-j(r,g,d)\
+-C(d,g,d)\
+-j(i,c,i)\
+-q(L,w,c)\
+-q(4(%[a],%[h],2),w,g)\
+-v(t,k,k)\
+-p(G,l,l)\
+-p(G,n,n)\
+-v(t,c,c)\
+-B(A,g,k,g)\
+-q(68(%[a],%[h],2),w,k)\
+-p(z,g,g)\
+-B(A,k,c,k)\
+-o(r,f,c)\
+-o(e,f,f)\
+-j(e,c,e)\
+-p(z,k,k)\
+-j(g,l,g)\
+-o(r,d,l)\
+-o(i,d,d)\
+-j(i,l,i)\
+-v(t,f,l)\
+-q(E,f,c)\
+-q(E,l,l)\
+-p(J,f,f)\
+-j(k,n,k)\
+-v(t,e,n)\
+-q(F,n,n)\
+-v(t,c,c)\
+-B(A,l,c,l)\
+-q(F,e,c)\
+-p(M,e,e)\
+-p(z,l,l)\
+-v(t,c,c)\
+-B(A,n,c,n)\
+-j(l,f,l)\
+-v(t,d,f)\
+-q(E,d,c)\
+-q(E,f,f)\
+-p(z,n,n)\
+-p(J,d,d)\
+-v(t,c,c)\
+-B(A,f,c,f)\
+-j(n,e,n)\
+-v(t,i,e)\
+-q(F,i,c)\
+-q(F,e,e)\
+-p(z,f,f)\
+-p(M,i,i)\
+-v(t,c,c)\
+-B(A,e,c,e)\
+-j(f,d,f)\
+-j(r,s,d)\
+-j(r,u,c)\
+-C(d,s,d)\
+-C(c,u,c)\
+-p(z,e,e)\
+-o(g,d,u)\
+-j(g,d,g)\
+-o(k,c,d)\
+-j(k,c,k)\
+-j(r,u,c)\
+-o(r,g,s)\
+-C(c,u,c)\
+-C(s,g,s)\
+-j(e,i,e)\
+-j(r,d,i)\
+-o(r,k,g)\
+-C(i,d,i)\
+-o(r,c,d)\
+-o(r,s,u)\
+-C(g,k,g)\
+-o(l,c,c)\
+-j(l,d,l)\
+-o(n,s,s)\
+-o(r,i,d)\
+-o(r,g,k)\
+-j(n,u,n)\
+-o(f,i,i)\
+-m(c,(%[a]))\
+-j(f,d,f)\
+-o(e,g,g)\
+-j(e,k,e)\
+-m(l,N)\
+-m(s,I)\
+-m(n,H)\
+-m(i,O)\
+-m(f,Q)\
+-m(g,L)\
+-m(e,K)\
+-S($128,%[a])\
+-T(%[end],%[a])\
+-U(1b)
+-	asm volatile(
+-		CP_FPS_ASM_BLOCK(%%ymm1,%%ymm0,%%ymm6,%%ymm10,%%ymm3,%%ymm7,CP_FPS_ASM_VPSUBD,%%ymm2,%%ymm8,CP_FPS_ASM_VMOVDQA,%%ymm9,CP_FPS_ASM_VPADDD,CP_FPS_ASM_VPMULLD,CP_FPS_ASM_VPMULUDQ,%%ymm14,%%ymm5,$32,%%ymm4,CP_FPS_ASM_VPSRLQ,%%ymm11,%%ymm15,$170,CP_FPS_ASM_VPBLENDD,CP_FPS_ASM_VPMINUD,CP_FPS_ASM_VBROADCASTSS,%%ymm12,%%ymm13,(%[w]),(%[a],%[h3]),(%[a],%[h],2),32(%[w]),64(%[a],%[h3]),64(%[a],%[h],2),64(%[w]),(%[a],%[h]),64(%[a]),64(%[a],%[h]),CP_FPS_ASM_VPBROADCASTD,CP_FPS_ASM_ADD,CP_FPS_ASM_CMP,CP_FPS_ASM_JNE)
+-#undef CP_FPS_ASM_BLOCK
+-		: [a] "+r"(a)
+-		: [end] "r"(end), [h] "r"(32 * h), [h3] "r"(96 * h), [y] "r"(y), [x] "r"(x), [w] "r"(w),
+-		  [P] "m"(kP), [P2] "m"(k2P)
+-		: "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15", "memory", "cc");
++inline void forward_columns(Vec *a, std::size_t h, std::size_t width, const std::uint32_t *x, const std::uint32_t *y) {
++	columns<false>(a, h, width, x, y);
+ }
+-
+-[[gnu::noinline]] inline void inverse_even_columns(Vec* a, std::size_t h, const std::uint32_t* x, const std::uint32_t* y) {
+-	alignas(32) Vec w[3];
+-	Vec* const end = a + h;
+-	#define CP_FPS_ASM_BLOCK(c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,z,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,Q,R,S,T) \
+-Q(%[P],w) Q(%[P2],k) C((%[x]),c) r(c,F)\
+-C(32(%[x]),v)\
+-C((%[y]),c)\
+-r(c,I)\
+-C(32(%[y]),D)\
+-C(4(%[y]),c)\
+-r(c,L)\
+-C(36(%[y]),E)\
+-".p2align 5\n\t" \
+-"1:\n\t" \
+-r((%[a]),c)\
+-r(N,f)\
+-r(M,s)\
+-r(O,t)\
+-n(k,c,i)\
+-n(H,c,c)\
+-n(k,f,j)\
+-h(H,i,i)\
+-n(K,f,f)\
+-h(k,c,u)\
+-n(k,s,e)\
+-h(K,j,j)\
+-q(l,i,g)\
+-p(D,i,d)\
+-n(k,t,m)\
+-h(G,e,e)\
+-p(D,g,g)\
+-o(I,i,i)\
+-h(J,m,m)\
+-n(G,s,s)\
+-B(u,c,u)\
+-q(l,j,c)\
+-p(D,c,c)\
+-q(l,d,d)\
+-n(J,t,t)\
+-A(z,g,d,g)\
+-p(D,j,d)\
+-o(I,j,j)\
+-o(w,g,g)\
+-q(l,d,d)\
+-A(z,c,d,c)\
+-h(g,i,g)\
+-q(l,e,i)\
+-p(E,e,d)\
+-p(E,i,i)\
+-o(w,c,c)\
+-o(L,e,e)\
+-q(l,d,d)\
+-A(z,i,d,i)\
+-h(c,j,c)\
+-q(l,m,j)\
+-p(E,m,d)\
+-p(E,j,j)\
+-o(w,i,i)\
+-o(L,m,m)\
+-q(l,d,d)\
+-A(z,j,d,j)\
+-h(i,e,i)\
+-h(k,f,e)\
+-h(k,s,d)\
+-o(w,j,j)\
+-B(e,f,e)\
+-B(d,s,d)\
+-h(k,t,s)\
+-n(k,u,f)\
+-B(s,t,s)\
+-n(k,e,t)\
+-n(d,u,u)\
+-h(d,f,d)\
+-h(s,t,t)\
+-n(s,e,s)\
+-n(k,g,e)\
+-h(j,m,j)\
+-n(k,c,m)\
+-h(i,e,e)\
+-q(l,d,f)\
+-h(j,m,m)\
+-p(v,f,f)\
+-n(i,g,i)\
+-n(j,c,j)\
+-p(v,d,c)\
+-q(l,e,g)\
+-o(F,d,d)\
+-p(v,g,g)\
+-q(l,c,c)\
+-A(z,f,c,f)\
+-p(v,e,c)\
+-o(F,e,e)\
+-o(w,f,f)\
+-q(l,c,c)\
+-A(z,g,c,g)\
+-h(f,d,f)\
+-q(l,t,d)\
+-p(v,t,c)\
+-p(v,d,d)\
+-o(w,g,g)\
+-r(f,M)\
+-q(l,m,f)\
+-p(v,f,f)\
+-o(F,t,t)\
+-q(l,c,c)\
+-A(z,d,c,d)\
+-h(g,e,g)\
+-p(v,m,e)\
+-o(F,m,m)\
+-o(w,d,d)\
+-h(k,u,c)\
+-r(g,G)\
+-h(k,i,g)\
+-B(c,u,c)\
+-q(l,e,e)\
+-h(k,s,u)\
+-B(g,i,g)\
+-r(c,(%[a]))\
+-A(z,f,e,f)\
+-h(k,j,e)\
+-B(u,s,u)\
+-h(d,t,d)\
+-r(g,H)\
+-o(w,f,f)\
+-B(e,j,e)\
+-r(u,N)\
+-r(e,K)\
+-r(d,O)\
+-h(f,m,f)\
+-r(f,J)\
+-R($128,%[a])\
+-S(%[end],%[a])\
+-T(1b)
+-	asm volatile(
+-		CP_FPS_ASM_BLOCK(%%ymm0,%%ymm9,%%ymm7,%%ymm1,%%ymm8,CP_FPS_ASM_VPSUBD,%%ymm4,%%ymm5,%%ymm14,$32,%%ymm10,CP_FPS_ASM_VPADDD,CP_FPS_ASM_VPMULLD,CP_FPS_ASM_VPMULUDQ,CP_FPS_ASM_VPSRLQ,CP_FPS_ASM_VMOVDQA,%%ymm2,%%ymm3,%%ymm6,%%ymm11,%%ymm15,$170,CP_FPS_ASM_VPBLENDD,CP_FPS_ASM_VPMINUD,CP_FPS_ASM_VBROADCASTSS,%%ymm12,%%ymm13,(%[w]),(%[a],%[h3]),(%[a],%[h]),32(%[w]),64(%[a],%[h3]),64(%[a],%[h]),64(%[w]),(%[a],%[h],2),64(%[a]),64(%[a],%[h],2),CP_FPS_ASM_VPBROADCASTD,CP_FPS_ASM_ADD,CP_FPS_ASM_CMP,CP_FPS_ASM_JNE)
+-#undef CP_FPS_ASM_BLOCK
+-		: [a] "+r"(a)
+-		: [end] "r"(end), [h] "r"(32 * h), [h3] "r"(96 * h), [y] "r"(y), [x] "r"(x), [w] "r"(w),
+-		  [P] "m"(kP), [P2] "m"(k2P)
+-		: "xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7", "xmm8", "xmm9", "xmm10", "xmm11", "xmm12", "xmm13", "xmm14", "xmm15", "memory", "cc");
++inline void inverse_columns(Vec *a, std::size_t h, std::size_t width, const std::uint32_t *x, const std::uint32_t *y) {
++	columns<true>(a, h, width, x, y);
+ }
+-
++inline void forward_even_columns(Vec *a, std::size_t h, const std::uint32_t *x, const std::uint32_t *y) {
++	columns<false>(a, h, 1, x, y);
+ }
++inline void inverse_even_columns(Vec *a, std::size_t h, const std::uint32_t *x, const std::uint32_t *y) {
++	columns<true>(a, h, 1, x, y);
++}
++}
++
+ namespace detail {
+ using namespace blocked_poly::detail;
+ using blocked_poly::detail::times;

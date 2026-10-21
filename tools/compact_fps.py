@@ -194,7 +194,7 @@ def compact(source):
                         counts[code[i:j + 1]] += 1
         candidates = []
         for code, count in counts.items():
-            if count < 3:
+            if count < 2:
                 continue
             size = len(render(code).encode('utf-8'))
             gain = (size - 2) * count - size - 22
