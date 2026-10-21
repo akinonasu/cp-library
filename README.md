@@ -96,6 +96,7 @@
 | --- | --- | --- |
 | `graph/flow/max_flow.hpp` | 最大流・最小カット | [使い方](docs/max_flow.md) |
 | `graph/flow/min_cost_flow.hpp` | 最小費用流・費用曲線 | [使い方](docs/min_cost_flow.md) |
+| `graph/flow/project_selection.hpp` | Project Selection（燃やす埋める） | [使い方](docs/project_selection.md) |
 
 ### マッチング
 
