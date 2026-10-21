@@ -1,6 +1,6 @@
 {
   "completed": true,
-  "completed_at": "2026-10-21T20:17:50.008131+00:00",
+  "completed_at": "2026-10-21T21:03:46.498752+00:00",
   "baseline_commit": "c6bee6c3fac99a6e90797e7a01837bde82ed6265",
   "source_sha256": {
     "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
@@ -288,21 +288,27 @@
     "performance.csv": "23892965d1ab4ecfe9130c92289953af67b260c8aef0a33df8cd0c48dea0bdc9",
     "sizes.json": "c78aec010fd275dae3cfb9c9b962e780cb011d0363498f50f337685fb1ee6752",
     "submission.json": "4fc31e319cdd8662d018b09802ee6d9baed08edbba2f6496a6bfea3dc2b29338",
-    "distribution.json": "d77b10728f34f22212679a21be3bc511259403211359c8db60e6282a4287ff22"
+    "distribution.json": "d77b10728f34f22212679a21be3bc511259403211359c8db60e6282a4287ff22",
+    "documentation.json": "7ac6932db1855142f597761c34fff346a2b4b023420b31258c479a31afe70c49",
+    "python_checks.json": "5f308ebf052a21748054fb5b29e5b62778ccbf955c1762f30920a68fad9a84cd"
   },
   "controls": {
     "tools/update_fps_headers.py": "241b471cd5081a63f67fb753700588b6407f66778bc640efc2ef06c3b59ee35b",
     "tools/compact_fps.py": "a4bb9cca133a152101e7ffa6204d342de013cd9bbad0bcb11d40bb4a9fa97732",
-    ".verify-helper/documentation.py": "3f2bb2a1d4cc6584c9acae3dfcb342b8f7569d7eecbda42a6181a7e428477c4c",
-    ".verify-helper/bundle_test.py": "794c058afd8c46cae75393460573f376cad57000198ab47ea08e728bf025b53f",
-    ".verify-helper/ci.py": "d23ce067fd2f35eeab591551e564af33cd0d06952949f2772debcc97e7402f61",
+    ".verify-helper/documentation.py": "28511b49579e36da628ec9625fa10cde36df421f5be5d849283c6799fd36b00d",
+    ".verify-helper/bundle_test.py": "5aa7ded6f138df66a5031c2e50378d34e1c2101684042f20ff4f21441720f28e",
+    ".verify-helper/ci.py": "2f98c30644cf826652baefa3ea17c58622487087ef174c8b75a0a35397a49369",
     ".verify-helper/check-docs.py": "706f290bca482ed493b9e5a436d9cbc0c0be326074902de1ef4db602456a527e",
-    "test/benchmark/fps_plain_finalize.py": "002707dc1898e5dad63d7121f9cbeb632421435a3811915d4087f74414dc258e",
+    "test/benchmark/fps_plain_finalize.py": "df59104ccf482aff610af530c5b81baf16ff0a3c96a5b6980550dfa74ca8f376",
     "test/benchmark/source_size_budget.py": "ca1b228851109091b08ad7ef14ac03f88812b830271f0edcc3e1a198549d834f",
     "test/benchmark/fps_plain_resume.py": "4bd5bb6ea4d685a57ac86346ad4ba59af48b63d0737cd759526c8cf1dc92344e",
     "test/benchmark/fps_plain_assert_audit.py": "0be16df1dc080f738fec4e54b2ef7038cfcdb190c75936348bc6b79e9387fc46",
     "test/benchmark/fps_plain_audit.py": "efb5c62af0e0902a1eb8e43c006ad522e5266112f996aac366e042dcc2c3de97",
-    "test/benchmark/fps_plain_submission.py": "0b60a62e14291ead5d07dfa6615d196f86cc84bf6fcf7961a36df9e725461155"
+    "test/benchmark/fps_plain_submission.py": "0b60a62e14291ead5d07dfa6615d196f86cc84bf6fcf7961a36df9e725461155",
+    ".verify-helper/size_profiles.py": "68e0404d8b9d85ced651e910da114801a27c4cc1e47d743acb906f3327e7484e",
+    ".verify-helper/check_profiles.py": "7a0a12371a64471568feec0937755eed4556b4271b4cd798a40504420bc936aa",
+    ".verify-helper/library_code_test.cjs": "4f3e1a7a7730629550ee6bde6e1e405fe9b9f35d31de8608116e6b70285d8512",
+    ".verify-helper/size_profiles_test.py": "4e1f0173ba4385d7f5416b5c9b89dc5a3a906e5eef7b4177a08f49b31c8cb0a0"
   },
   "original_sources": {
     "components/fast_io.inc": {
@@ -555,6 +561,8 @@
   "size_checks": 597,
   "header_count": 208,
   "judge_count": 181,
+  "documentation_sources": 389,
+  "website_profiles_checked": true,
   "maximum_copy_bytes": 253415,
   "performance_conditions": 73,
   "performance_samples": 1314,

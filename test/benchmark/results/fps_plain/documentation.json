@@ -1,8 +1,8 @@
 {
   "completed": true,
-  "generated_sources": 115,
+  "generated_sources": 389,
   "headers_checked": 208,
-  "compiled_bundles": 54,
+  "compiled_bundles": 56,
   "metadata": {
     "components/RadixHeap.hpp": {
       "raw_sha256": "a3c96293da21a8f3295e0d3386f88018cb7403d70b4c5ac3b92cb75fd23a81f3",
@@ -77,12 +77,12 @@
       "copy_bytes": 217746
     },
     "components/fast_io.hpp": {
-      "raw_sha256": "c8468b8a304e0294a0db1bb7cda1e547554378ca40c7f512410b43b743c06f46",
-      "copy_bytes": 7626
+      "raw_sha256": "4436888e64794550d94d82f20118afde5ef8d9fefa5d0d518c75b68bed597e8e",
+      "copy_bytes": 6250
     },
     "components/fast_io_bulk.hpp": {
-      "raw_sha256": "7384637ca771f411e9e7547cad52ee56d0ac3ddc1c9639aded2d48365a433204",
-      "copy_bytes": 20544
+      "raw_sha256": "f5b598d59d005dad9b3452a94272491f8686d98c95790a46b2a11452bc05374a",
+      "copy_bytes": 15430
     },
     "components/fenwick_sum.hpp": {
       "raw_sha256": "b4b28f03c11107ebf7178d8ed027b304f661497de69d5542596619dce1111d86",
@@ -838,15 +838,30 @@
     }
   },
   "controls": {
-    ".verify-helper/documentation.py": "3f2bb2a1d4cc6584c9acae3dfcb342b8f7569d7eecbda42a6181a7e428477c4c",
+    ".verify-helper/documentation.py": "28511b49579e36da628ec9625fa10cde36df421f5be5d849283c6799fd36b00d",
     ".verify-helper/check-docs.py": "706f290bca482ed493b9e5a436d9cbc0c0be326074902de1ef4db602456a527e",
-    ".verify-helper/docs/static/_includes/document_body.html": "c3508f5b39fbd31b8699cdd909bf1936d9766060bee0bf816f7da981f95a491b",
-    ".verify-helper/docs/static/assets/js/library-code.js": "defe849c5ff0005388255b80cc7ce6a6150a38b6225298f316a57c2cd412eefc",
+    ".verify-helper/docs/static/_includes/document_body.html": "753a2135ed03705a8b9d6d11d8a5f00b2d443527c95c0ad5ff804ada5b758f39",
+    ".verify-helper/docs/static/assets/js/library-code.js": "3411970f86d2f0954d4bf74f739e42cd52a711eb6e98b02848ffb891ac641258",
     "docs/bundle.md": "3ee3be9495ea36b762f61a2020c71acb9d23dcc4f2a5cc3057313599cb2117fc",
     "docs/fps.md": "ad381f778e837b93cdc5d33a88304e8b4b1edaf6932d4a60bf1f9fdd321c4a48",
     "docs/fps_backend.md": "609390d5f40342dd798fba5e93a56dc9d07c4c7d7bb3adbadebf61704b1666fb",
-    "docs/fps_light_backend.md": "1fc4d36d01ca021818ddc5a2c01be072929014263c9751aab346c01eade8557a"
+    "docs/fps_light_backend.md": "1fc4d36d01ca021818ddc5a2c01be072929014263c9751aab346c01eade8557a",
+    ".verify-helper/size_profiles.py": "68e0404d8b9d85ced651e910da114801a27c4cc1e47d743acb906f3327e7484e",
+    ".verify-helper/check_profiles.py": "7a0a12371a64471568feec0937755eed4556b4271b4cd798a40504420bc936aa",
+    ".verify-helper/docs/static/_includes/toppage_body.html": "f0bb224a012e16090f5eb9ec6a0a69bad359e0edbd098f586ea8952af3d804ca"
   },
   "check_log_sha256": "857dd1e887f10aafaf081a2b61a2a3a42d460165c4fd8c1b00fabf215dcd021c",
-  "scope": "Affected sources regenerated; unaffected existing metadata retained. Every previously auto-compressed header is in the affected set. All header Copy byte limits and affected bundle syntax checked."
+  "scope": "All 208 headers and 181 judge sources regenerated after merging the size-profile website. Raw bundled source SHA-256 and full-profile Copy sizes for 206 headers exactly match the premerge documentation evidence, so the successful affected-bundle syntax checks remain valid. Two Fast I/O pages retained older uncompressed code in the initial partial generation; their current compact code was regenerated and syntax-checked. Both profile inventories, catalogs, page presence, copy sizes, source equality, and links checked.",
+  "premerge_generated_sources": 115,
+  "refreshed_io_headers": [
+    "components/fast_io.hpp",
+    "components/fast_io_bulk.hpp"
+  ],
+  "io_check_log_sha256": "1e40f650fcf10e87e9647e04340b1cb02cebe26fbfe9de95ac6c7e60603c2367",
+  "merge_remote": "785e1a313b755c68062db9fc176c2ee566698b6d",
+  "regeneration_log_sha256": "f9f101cad94ec898fedce03894493031c10b3ee7685f3226ce4ff3581aa05641",
+  "profile_check": {
+    "log_sha256": "56650346d72287d1c544423d09daf4c66f2b102df4ab277c77aa00085ec2d176",
+    "output": "Checked 208 libraries: 158 within 64 KiB; all within 256 KiB"
+  }
 }
