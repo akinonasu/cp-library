@@ -8,6 +8,8 @@
 
 [ライブラリ検索・Bundle](https://qandori.github.io/cp-library/)
 
+[提出コードの生成とサイズ上限](docs/bundle.md)
+
 ## ライブラリ
 
 [フォルダの分類](docs/library_layout.md)

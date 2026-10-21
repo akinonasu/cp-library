@@ -1,5 +1,7 @@
 # FPS 提出コードの追加圧縮
 
+この資料は初期版の圧縮ツールの記録です。現在の全ライブラリ向けの生成方法・サイズ・検証は [256 KiB 制限への対応](source_size_256k.md) を参照してください。
+
 前回提示した Kth term of Linearly Recurrent Sequence の単一ファイルは 402,426 → **248,530 bytes**。256 KiB = 262,144 bytes より 13,614 bytes 小さい。C++23・UTF-8のファイルとして提出する。
 
 `fps` の通常ヘッダーを変更せず、`oj-bundle` の後で [tools/compact_fps.py](../../tools/compact_fps.py) を実行する。公開関数・型・演算・実行時CPU判定・他環境のfallbackを残す。未使用関数を削る方法ではなく、通常どおり全FPS機能の記述を含む。

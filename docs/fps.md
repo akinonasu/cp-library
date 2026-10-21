@@ -13,18 +13,15 @@ fps inverse = f.inv(10);
 
 mod は 998244353、係数は定数項から順に格納します。`fps` は `std::vector<mint>` と同様に扱えます。`deg` は返す係数の個数で、省略時は元のサイズです。
 
-提出用ソースは通常どおり `oj-bundle` で生成できます。合成などの追加機能は、必要なヘッダーだけを include してください。AtCoder の 512 KiB 制限は利用者のコードも含むため、結合後のファイルサイズを確認してください。FPS 内部では命令文字列を共通化してサイズを削減し、生成する命令は維持しています。
-
-さらに短い提出用ソースが必要な場合は、結合後に [compact_fps.py](https://github.com/qandori/cp-library/blob/main/tools/compact_fps.py) を使えます。
+256 KiB 制限向けの提出コードは、[bundle.py](https://github.com/qandori/cp-library/blob/main/tools/bundle.py) で生成できます。合成などの追加機能は、必要なヘッダーだけを include してください。
 
 ```sh
-oj-bundle -I . a.cpp > bundled.cpp
-python3 tools/compact_fps.py bundled.cpp --limit 262144 -o submit.cpp
+python3 tools/bundle.py a.cpp -I . -o submit.cpp
 ```
 
-`--limit` は UTF-8 のバイト数を指定し、その値以上なら出力前にエラーにします。生成結果は UTF-8 のまま保存してください。繰り返し使う記述を短い内部マクロへまとめ、コンパイル時に元の記述へ展開します。演算、公開 API、実行時の CPU 判定、他環境の fallback は削除しません。asm・文字列・プリプロセッサ条件・元の論理行番号も維持します。通常のヘッダーは読みやすい形のまま利用できます。
+上限の既定値は UTF-8 で 262,144 bytes 未満です。必要な場合だけトークン列を短い内部マクロへまとめ、コンパイル時に元の記述へ展開します。上限以上の結果は出力せず、既存の出力先も更新しません。Web サイトの Bundle も同じ方法を使います。生成結果は UTF-8 のまま保存してください。公開 API・演算・CPU 判定・他環境の fallback を残し、通常のヘッダーは読みやすい形を維持しています。
 
-線形漸化式の提出例は 248,530 bytes ですが、追加機能や利用者のコードによっては 256 KiB を超えます。[サイズと生成コードの検証](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_compact.md)を参照してください。
+[生成方法の詳細](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)と、[全ヘッダー・提出例のサイズと検証](https://github.com/qandori/cp-library/blob/main/test/benchmark/source_size_256k.md)を参照してください。通常の `oj-bundle` の出力は引き続き大きいため、提出用には上記コマンドかサイトの Bundle を使います。
 
 `fps{1,2,3}` は $$1+2x+3x^2$$ を表します。係数 `f[i]` は `mint` なので、整数として取り出すには `f[i].val()` を使います。`f.inv(10)` などの 10 は最高次数ではなく返す長さで、$$x^0$$ から $$x^9$$ までを計算します。
 
