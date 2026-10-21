@@ -60,6 +60,8 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `fps/fps.hpp` | 形式的冪級数 | [使い方](docs/fps.md) |
+| `fps/fps_light.hpp` | 軽量 FPS（64 KiB 制限向け） | [使い方](docs/fps_light.md) |
+| `fps/fps_light_algorithms.hpp` | 軽量 FPS の Taylor shift・線形漸化式・多点評価・補間 | [使い方](docs/fps_light_algorithms.md) |
 | `fps/polynomial_gcd.hpp` | 多項式 GCD・拡張 GCD・多項式の逆元 | [使い方](docs/polynomial_gcd.md) |
 | `fps/bostan_mori.hpp` | Bostan–Mori | [使い方](docs/bostan_mori.md) |
 | `fps/linear_recurrence.hpp` | 線形漸化式の第 k 項 | [使い方](docs/linear_recurrence.md) |
@@ -294,6 +296,8 @@
 | `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
 | `components/matrix_arithmetic.hpp` | 行列の内部演算 | [使い方](docs/matrix_arithmetic.md) |
+| `components/fps_light_ntt.hpp` | 軽量 FPS の NTT・畳み込み | [使い方](docs/fps_light_ntt.md) |
+| `components/fps_light_product_tree.hpp` | 軽量 FPS の積木 | [使い方](docs/fps_light_product_tree.md) |
 | `components/fps_operations.hpp` | FPS の内部演算 | [使い方](docs/fps_operations.md) |
 | `components/fps_factorials.hpp` | 階乗・逆階乗生成 | [使い方](docs/fps_factorials.md) |
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |

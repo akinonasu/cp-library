@@ -1,0 +1,750 @@
+{
+  "started_at": "2026-10-21T13:32:32.991199+00:00",
+  "revision": "6bb650a9897398192042bb52a3fcaef0e8db1502",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.30\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "affinity": [
+    2
+  ],
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-Wall",
+    "-Wextra",
+    "-march=haswell"
+  ],
+  "trials": 9,
+  "sizes": [
+    1024,
+    32768,
+    131072,
+    131073,
+    524288
+  ],
+  "seed": 731,
+  "execution_order_seed": 20261021,
+  "source_sha256": {
+    "fps/fps_light.hpp": "d2faa3d2d2d3cea8d7ec43682bb52115bf5c6f6c8e9b137665bf1f554502edbe",
+    "components/fps_light_ntt.hpp": "3d8211e0f1c6d071897515aa1ffb5bb94382636c673d72125a1fa43f2df2a100",
+    "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+    "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+    "fps/fps_light_algorithms.hpp": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b",
+    "components/fps_light_product_tree.hpp": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c",
+    "test/fps_light_convolution.test.cpp": "230493bd0cec1c8b205cd3c28086ef51ac916dbc3f7ccad477fb77bbda9ffd94",
+    "test/fps_light_io.hpp": "68eefea6d1edea2a66636ad3cfb8b6f0713905a7335c391df85565c9c7c71466",
+    "test/fps_light_divmod.test.cpp": "fa0079d362666f90b83a13190eccadbbf1034e9290d7f3af32e7471237223cf3",
+    "test/fps_light_exp.test.cpp": "a240e135650507ed5960846f2ea1bd8b7668614804a4f6d3176cbc3fb8ed6ada",
+    "test/fps_light_interpolate.test.cpp": "dba37fe0eca5409fe220e1d400f5bff08d5377563dce4ffff09d82b28ac28236",
+    "test/fps_light_inv.test.cpp": "83129bc0050f465c64f5d8db7f2b48ec7372f267501798e53612ff162db7a10f",
+    "test/fps_light_linear_recurrence.test.cpp": "8f0fbbd37da1cf3b38f83e53af05adb5a9c253285b1a3fbfa0da77e431f8a5e4",
+    "test/fps_light_log.test.cpp": "060e47a4fc4c38cdf9d82e6f5dd486c4d6c992d636f6b1b4a4af98ebbe3a8e2b",
+    "test/fps_light_multipoint_eval.test.cpp": "8e9cf9143ade2ea53dd9aa33ee5f535edd9db6dc7dbccbd6d62c774708aa67c7",
+    "test/fps_light_pow.test.cpp": "9616844a72065b41bb957d0c8a2840943402e98d3e941ec9785dbc0b91a3904f",
+    "test/fps_light_sqrt.test.cpp": "73fecd03b05e0b60dd66960ce7c001f28bd2a2eb4108c41d683dc0f45536537b",
+    "test/fps_light_taylor_shift.test.cpp": "4cee1c48a7bea6d439bcc0ebc63ee4d4bb7b0541bb3b971e6ff220e246771d07",
+    "fps/fps.hpp": "750945cc34405caa95b245a4e6eb39a035a4513446d8a69434efedf50f94e429",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+    "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+    "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+    "components/fps_blocked.hpp": "f2fd3a8e88ed8ddce9c663a6fa62c5848b4e78ccf46ad19de1f7b9f19db76cfa",
+    "components/fps_asm.hpp": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde",
+    "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+    "components/fps_exp_blocked.hpp": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2",
+    "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+    "components/fps_sqrt_blocked.hpp": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5",
+    "components/fps_convolution.hpp": "9553bd866393d26325dba88a6d779749a9e26a0ff02536ba568fcc0bd91c2bc1",
+    "components/fps_convolution_unbalanced.hpp": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd",
+    "components/fps_convolution_constant.hpp": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6",
+    "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+    "test/benchmark/fps_light.cpp": "ccd2ac1feb37449d898b8b2d994a5259b3f0bd3a4941efa4710d22f9841c850a",
+    "test/benchmark/fps_light.py": "3699752baa46f72caf5c412a87378ba1e8843c6c9627f0adef458cac3ba8ec4e"
+  },
+  "initialization": "random input construction outside timing; fresh process for every run; no transform prewarming; sqrt input has constant coefficient 17^2",
+  "results": [
+    {
+      "operation": "multiply",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.018047,
+        "light": 0.067061
+      },
+      "light_over_existing": 3.7159084612400948,
+      "answer": [
+        "2047",
+        "0",
+        "5568774458977791298"
+      ]
+    },
+    {
+      "operation": "square",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.016415,
+        "light": 0.050525
+      },
+      "light_over_existing": 3.077977459640573,
+      "answer": [
+        "2047",
+        "0",
+        "4132424393213501762"
+      ]
+    },
+    {
+      "operation": "inv",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.025448,
+        "light": 0.101522
+      },
+      "light_over_existing": 3.989390128890286,
+      "answer": [
+        "1024",
+        "0",
+        "15969795644576498889"
+      ]
+    },
+    {
+      "operation": "log",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.030356,
+        "light": 0.172027
+      },
+      "light_over_existing": 5.666985110027672,
+      "answer": [
+        "1024",
+        "0",
+        "13873593880529912636"
+      ]
+    },
+    {
+      "operation": "exp",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.039779,
+        "light": 0.436163
+      },
+      "light_over_existing": 10.964654717313156,
+      "answer": [
+        "1024",
+        "0",
+        "17082681039966735970"
+      ]
+    },
+    {
+      "operation": "sqrt",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.028623,
+        "light": 0.314361
+      },
+      "light_over_existing": 10.982811026097894,
+      "answer": [
+        "1024",
+        "0",
+        "15725451596305707618"
+      ]
+    },
+    {
+      "operation": "pow",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.053881,
+        "light": 0.579207
+      },
+      "light_over_existing": 10.749744808002822,
+      "answer": [
+        "1024",
+        "0",
+        "3247306303566372527"
+      ]
+    },
+    {
+      "operation": "div_series",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.031768,
+        "light": 0.162022
+      },
+      "light_over_existing": 5.100163686728784,
+      "answer": [
+        "1024",
+        "0",
+        "8836476700082409887"
+      ]
+    },
+    {
+      "operation": "divmod",
+      "n": 1024,
+      "median_ms": {
+        "existing": 0.031647,
+        "light": 0.187871
+      },
+      "light_over_existing": 5.9364552722216954,
+      "answer": [
+        "513",
+        "511",
+        "11012627324158518342"
+      ]
+    },
+    {
+      "operation": "multiply",
+      "n": 32768,
+      "median_ms": {
+        "existing": 0.335632,
+        "light": 2.103229
+      },
+      "light_over_existing": 6.266473399437479,
+      "answer": [
+        "65535",
+        "0",
+        "14370213329878362848"
+      ]
+    },
+    {
+      "operation": "square",
+      "n": 32768,
+      "median_ms": {
+        "existing": 0.33387,
+        "light": 1.521458
+      },
+      "light_over_existing": 4.557037170156049,
+      "answer": [
+        "65535",
+        "0",
+        "13014091842924804296"
+      ]
+    },
+    {
+      "operation": "inv",
+      "n": 32768,
+      "median_ms": {
+        "existing": 0.457736,
+        "light": 3.084467
+      },
+      "light_over_existing": 6.738528322002202,
+      "answer": [
+        "32768",
+        "0",
+        "4880292595452528384"
+      ]
+    },
+    {
+      "operation": "log",
+      "n": 32768,
+      "median_ms": {
+        "existing": 0.576233,
+        "light": 5.554345
+      },
+      "light_over_existing": 9.63906093542022,
+      "answer": [
+        "32768",
+        "0",
+        "8302876705376124628"
+      ]
+    },
+    {
+      "operation": "exp",
+      "n": 32768,
+      "median_ms": {
+        "existing": 0.709072,
+        "light": 13.616675
+      },
+      "light_over_existing": 19.203515298869508,
+      "answer": [
+        "32768",
+        "0",
+        "14842462111959050419"
+      ]
+    },
+    {
+      "operation": "sqrt",
+      "n": 32768,
+      "median_ms": {
+        "existing": 0.478186,
+        "light": 9.809115
+      },
+      "light_over_existing": 20.513178972199103,
+      "answer": [
+        "32768",
+        "0",
+        "8749043354197381342"
+      ]
+    },
+    {
+      "operation": "pow",
+      "n": 32768,
+      "median_ms": {
+        "existing": 1.121108,
+        "light": 18.364623
+      },
+      "light_over_existing": 16.380779550230667,
+      "answer": [
+        "32768",
+        "0",
+        "5398288293993385386"
+      ]
+    },
+    {
+      "operation": "div_series",
+      "n": 32768,
+      "median_ms": {
+        "existing": 0.643333,
+        "light": 5.089369
+      },
+      "light_over_existing": 7.910940368362884,
+      "answer": [
+        "32768",
+        "0",
+        "9577020165974701296"
+      ]
+    },
+    {
+      "operation": "divmod",
+      "n": 32768,
+      "median_ms": {
+        "existing": 0.521611,
+        "light": 6.017118
+      },
+      "light_over_existing": 11.535642461527843,
+      "answer": [
+        "16385",
+        "16383",
+        "2422669801803831721"
+      ]
+    },
+    {
+      "operation": "multiply",
+      "n": 131072,
+      "median_ms": {
+        "existing": 1.310983,
+        "light": 8.656248
+      },
+      "light_over_existing": 6.602868229412586,
+      "answer": [
+        "262143",
+        "0",
+        "5619891856952960720"
+      ]
+    },
+    {
+      "operation": "square",
+      "n": 131072,
+      "median_ms": {
+        "existing": 1.314578,
+        "light": 6.416445
+      },
+      "light_over_existing": 4.880992227163394,
+      "answer": [
+        "262143",
+        "0",
+        "12940261669271742204"
+      ]
+    },
+    {
+      "operation": "inv",
+      "n": 131072,
+      "median_ms": {
+        "existing": 1.899934,
+        "light": 12.846472
+      },
+      "light_over_existing": 6.761535927037466,
+      "answer": [
+        "131072",
+        "0",
+        "1952179122648352562"
+      ]
+    },
+    {
+      "operation": "log",
+      "n": 131072,
+      "median_ms": {
+        "existing": 2.153053,
+        "light": 23.409615
+      },
+      "light_over_existing": 10.872753712983377,
+      "answer": [
+        "131072",
+        "0",
+        "11381763647707109426"
+      ]
+    },
+    {
+      "operation": "exp",
+      "n": 131072,
+      "median_ms": {
+        "existing": 2.777067,
+        "light": 55.672303
+      },
+      "light_over_existing": 20.047158746980177,
+      "answer": [
+        "131072",
+        "0",
+        "15127219890119254500"
+      ]
+    },
+    {
+      "operation": "sqrt",
+      "n": 131072,
+      "median_ms": {
+        "existing": 1.924251,
+        "light": 40.80774
+      },
+      "light_over_existing": 21.20707745507213,
+      "answer": [
+        "131072",
+        "0",
+        "14717094228700750078"
+      ]
+    },
+    {
+      "operation": "pow",
+      "n": 131072,
+      "median_ms": {
+        "existing": 4.50866,
+        "light": 76.899531
+      },
+      "light_over_existing": 17.055961416474073,
+      "answer": [
+        "131072",
+        "0",
+        "10061399058272142457"
+      ]
+    },
+    {
+      "operation": "div_series",
+      "n": 131072,
+      "median_ms": {
+        "existing": 2.213654,
+        "light": 21.727968
+      },
+      "light_over_existing": 9.81543095714145,
+      "answer": [
+        "131072",
+        "0",
+        "16708705382600997663"
+      ]
+    },
+    {
+      "operation": "divmod",
+      "n": 131072,
+      "median_ms": {
+        "existing": 1.90373,
+        "light": 26.110227
+      },
+      "light_over_existing": 13.715299438470792,
+      "answer": [
+        "65537",
+        "65535",
+        "10484607784065574981"
+      ]
+    },
+    {
+      "operation": "multiply",
+      "n": 131073,
+      "median_ms": {
+        "existing": 2.539242,
+        "light": 17.379629
+      },
+      "light_over_existing": 6.844416168289592,
+      "answer": [
+        "262145",
+        "0",
+        "6309724454964575687"
+      ]
+    },
+    {
+      "operation": "square",
+      "n": 131073,
+      "median_ms": {
+        "existing": 2.431901,
+        "light": 12.600043
+      },
+      "light_over_existing": 5.181149643838298,
+      "answer": [
+        "262145",
+        "0",
+        "9411065557425801483"
+      ]
+    },
+    {
+      "operation": "inv",
+      "n": 131073,
+      "median_ms": {
+        "existing": 2.03798,
+        "light": 25.956007
+      },
+      "light_over_existing": 12.736144123102287,
+      "answer": [
+        "131073",
+        "0",
+        "16210068069609809213"
+      ]
+    },
+    {
+      "operation": "log",
+      "n": 131073,
+      "median_ms": {
+        "existing": 2.268176,
+        "light": 35.479571
+      },
+      "light_over_existing": 15.642335956292634,
+      "answer": [
+        "131073",
+        "0",
+        "7090227887811061834"
+      ]
+    },
+    {
+      "operation": "exp",
+      "n": 131073,
+      "median_ms": {
+        "existing": 2.867882,
+        "light": 94.532618
+      },
+      "light_over_existing": 32.962520075791126,
+      "answer": [
+        "131073",
+        "0",
+        "16335345078718233826"
+      ]
+    },
+    {
+      "operation": "sqrt",
+      "n": 131073,
+      "median_ms": {
+        "existing": 2.814182,
+        "light": 81.06386
+      },
+      "light_over_existing": 28.8054788211992,
+      "answer": [
+        "131073",
+        "0",
+        "12839559991635996791"
+      ]
+    },
+    {
+      "operation": "pow",
+      "n": 131073,
+      "median_ms": {
+        "existing": 6.089071,
+        "light": 129.656689
+      },
+      "light_over_existing": 21.29334491254906,
+      "answer": [
+        "131073",
+        "0",
+        "9110395909569671291"
+      ]
+    },
+    {
+      "operation": "div_series",
+      "n": 131073,
+      "median_ms": {
+        "existing": 3.006659,
+        "light": 43.586349
+      },
+      "light_over_existing": 14.496605368284198,
+      "answer": [
+        "131073",
+        "0",
+        "1003151585011899893"
+      ]
+    },
+    {
+      "operation": "divmod",
+      "n": 131073,
+      "median_ms": {
+        "existing": 1.856489,
+        "light": 29.516454
+      },
+      "light_over_existing": 15.899072927445301,
+      "answer": [
+        "65538",
+        "65535",
+        "66619323752264948"
+      ]
+    },
+    {
+      "operation": "multiply",
+      "n": 524288,
+      "median_ms": {
+        "existing": 5.140735,
+        "light": 36.560699
+      },
+      "light_over_existing": 7.111959476611807,
+      "answer": [
+        "1048575",
+        "0",
+        "17529128059922374377"
+      ]
+    },
+    {
+      "operation": "square",
+      "n": 524288,
+      "median_ms": {
+        "existing": 4.996179,
+        "light": 26.153729
+      },
+      "light_over_existing": 5.2347461930407215,
+      "answer": [
+        "1048575",
+        "0",
+        "11741172076839267214"
+      ]
+    },
+    {
+      "operation": "inv",
+      "n": 524288,
+      "median_ms": {
+        "existing": 7.386356,
+        "light": 53.854716
+      },
+      "light_over_existing": 7.291107550191191,
+      "answer": [
+        "524288",
+        "0",
+        "13967354100931791706"
+      ]
+    },
+    {
+      "operation": "log",
+      "n": 524288,
+      "median_ms": {
+        "existing": 9.082396,
+        "light": 96.615146
+      },
+      "light_over_existing": 10.637627559952243,
+      "answer": [
+        "524288",
+        "0",
+        "4617613877035562608"
+      ]
+    },
+    {
+      "operation": "exp",
+      "n": 524288,
+      "median_ms": {
+        "existing": 11.802998,
+        "light": 231.289253
+      },
+      "light_over_existing": 19.595805489418876,
+      "answer": [
+        "524288",
+        "0",
+        "125168764701876457"
+      ]
+    },
+    {
+      "operation": "sqrt",
+      "n": 524288,
+      "median_ms": {
+        "existing": 7.449238,
+        "light": 168.474354
+      },
+      "light_over_existing": 22.61632048808214,
+      "answer": [
+        "524288",
+        "0",
+        "9010551011944182318"
+      ]
+    },
+    {
+      "operation": "pow",
+      "n": 524288,
+      "median_ms": {
+        "existing": 19.725088,
+        "light": 321.281347
+      },
+      "light_over_existing": 16.287955065143436,
+      "answer": [
+        "524288",
+        "0",
+        "13038009071829007744"
+      ]
+    },
+    {
+      "operation": "div_series",
+      "n": 524288,
+      "median_ms": {
+        "existing": 9.862759,
+        "light": 92.239066
+      },
+      "light_over_existing": 9.3522579229605,
+      "answer": [
+        "524288",
+        "0",
+        "14109574238734875765"
+      ]
+    },
+    {
+      "operation": "divmod",
+      "n": 524288,
+      "median_ms": {
+        "existing": 7.712682,
+        "light": 108.785914
+      },
+      "light_over_existing": 14.104809974014229,
+      "answer": [
+        "262145",
+        "262143",
+        "10499747791531600166"
+      ]
+    }
+  ],
+  "binaries": {
+    "existing": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-march=haswell",
+        "-I",
+        "/workspace/cp-library",
+        "test/benchmark/fps_light.cpp",
+        "-o",
+        "/tmp/fps-light-benchmark-yg0w85ob/existing"
+      ],
+      "sha256": "b7b62c63855aa7f8e366cec8f6240e12e729f31814bbcfd86124095fbfc8d3e6",
+      "bytes": 636384,
+      "compiler_stdout": "",
+      "compiler_stderr": ""
+    },
+    "light": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-march=haswell",
+        "-DLIGHT_FPS",
+        "-I",
+        "/workspace/cp-library",
+        "test/benchmark/fps_light.cpp",
+        "-o",
+        "/tmp/fps-light-benchmark-yg0w85ob/light"
+      ],
+      "sha256": "c2cb4e7717d86e7b1960bf2b4be9c031772e4426136254e9a089a65bbd826003",
+      "bytes": 54552,
+      "compiler_stdout": "",
+      "compiler_stderr": ""
+    }
+  },
+  "completed": true,
+  "completed_at": "2026-10-21T13:34:13.675657+00:00"
+}

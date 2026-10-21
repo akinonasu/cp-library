@@ -1,0 +1,1040 @@
+{
+  "started_at": "2026-10-21T13:32:49.690560+00:00",
+  "compiler_versions": {
+    "/workspace/cp-binomial-study/bin/clang++": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/cp-binomial-study/clang/toolchain/usr/lib/llvm-19/bin\n",
+    "g++": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+  },
+  "source_sha256": {
+    "fps/fps_light.hpp": "d2faa3d2d2d3cea8d7ec43682bb52115bf5c6f6c8e9b137665bf1f554502edbe",
+    "components/fps_light_ntt.hpp": "3d8211e0f1c6d071897515aa1ffb5bb94382636c673d72125a1fa43f2df2a100",
+    "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+    "fps/fps_light_algorithms.hpp": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b",
+    "components/fps_light_product_tree.hpp": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c",
+    "test/unit/fps_light_algorithms.cpp": "06920c5c4f50ed9935fc650a24b831cad2aabcb9ef51be8d66f9ca80fe4fd0d7",
+    "test/fps_light_taylor_shift.test.cpp": "4cee1c48a7bea6d439bcc0ebc63ee4d4bb7b0541bb3b971e6ff220e246771d07",
+    "test/fps_light_multipoint_eval.test.cpp": "8e9cf9143ade2ea53dd9aa33ee5f535edd9db6dc7dbccbd6d62c774708aa67c7",
+    "test/fps_light_interpolate.test.cpp": "dba37fe0eca5409fe220e1d400f5bff08d5377563dce4ffff09d82b28ac28236",
+    "test/fps_light_linear_recurrence.test.cpp": "8f0fbbd37da1cf3b38f83e53af05adb5a9c253285b1a3fbfa0da77e431f8a5e4"
+  },
+  "unit": [
+    {
+      "compiler": "g++",
+      "sanitize": false,
+      "passed": true,
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        ".",
+        "test/unit/fps_light_algorithms.cpp",
+        "-o",
+        "/workspace/cp-light-fps-extras-unit"
+      ],
+      "note": "Executed before the combined Clang/official validation runner."
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "sanitize": false,
+      "passed": true,
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/fps_light_algorithms.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/unit"
+      ]
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "sanitize": true,
+      "passed": true,
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-g",
+        "/workspace/cp-library/test/unit/fps_light_algorithms.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/unit"
+      ]
+    }
+  ],
+  "official": [
+    {
+      "driver": "test/fps_light_taylor_shift.test.cpp",
+      "compiler": "g++",
+      "cases_passed": 38,
+      "cases": [
+        {
+          "name": "example_00.in",
+          "input_sha256": "3f6059448a752fcba8699a83aa69e7d7d2c31aacc817f5b4bdae27c9b50a0427",
+          "answer_sha256": "e6d731dd19de9b66275d79eee3884c6c4f261081c18b1d4b030dbe014ecd6017"
+        },
+        {
+          "name": "example_01.in",
+          "input_sha256": "95582d519db66051efd253c7a783b64624e39ae9a6cfedab99ecf1a4504b930a",
+          "answer_sha256": "674a889917679078d14ffb4d4a69d06bba96825963a311c57880d2dfbb07fc9c"
+        },
+        {
+          "name": "fft_killer_00.in",
+          "input_sha256": "8ff5c23c6a0716e3e3397b5f5b4350b75e25953c5af5f992736c89154cf3a1e6",
+          "answer_sha256": "25b796e769735e089958356afd5297dc861026e8f3e1ab2367b1ee09e3b2c9f5"
+        },
+        {
+          "name": "fft_killer_01.in",
+          "input_sha256": "40891215d37aa07b294008b82d4621f20c2ceba057ac3bd8e1294371342176ed",
+          "answer_sha256": "98cf9162b1d2aa6c8dc6c0b5bc9e1777f084d6e74351b4f88732cd3bc2838dd9"
+        },
+        {
+          "name": "fft_killer_02.in",
+          "input_sha256": "c1f82251874c20d9f8533d75430822d9c29dc5d14b61a08abc2320943684687a",
+          "answer_sha256": "cdd5a6b580456793d051d98bae1bfd9b352adbdfc6800eba4e49749edbac75de"
+        },
+        {
+          "name": "fft_killer_03.in",
+          "input_sha256": "beab4e408b6be0e3bd4dc0edd7ec11e7955cb561f7263a01cfe4735a266413fa",
+          "answer_sha256": "a9ff61c5faab4d5ea80a33c071e5c0556b77e1c8adb3eb8615fe03e79b392071"
+        },
+        {
+          "name": "fft_killer_04.in",
+          "input_sha256": "f119012f521f36a650a0256d28621cad035213e40dea249e035905c4e5bed7bc",
+          "answer_sha256": "846445a88e385e56dde231fd5b3c7f00e147ffbf9e0eda9f5b47355991581c25"
+        },
+        {
+          "name": "fft_killer_05.in",
+          "input_sha256": "1ac01d175151cff07e6cfc3df635811aa62d33c033f0ca98b175c65a086f6677",
+          "answer_sha256": "bcde028ea35a918a9534b015d03ef097c8c6d2bc084727bf4f1abd168ca2fca0"
+        },
+        {
+          "name": "fft_killer_06.in",
+          "input_sha256": "eb92c6275f3485a3c31e6eda52a2b072a528f612cc31f32e02aedb48f48352d7",
+          "answer_sha256": "b89fa00a264ff79bf5f7b0bcc415ae1125b6e93f9e72db599dcb29bc7279a108"
+        },
+        {
+          "name": "fft_killer_07.in",
+          "input_sha256": "03e8a58a70451424cf725627998d7d7f6c5c56181cfdcfe2bc7fe9b93a8a86b3",
+          "answer_sha256": "d2f5bfec137079a10f03d841eae05e03d32c287d15b889512e8851b31e18bbf6"
+        },
+        {
+          "name": "fft_killer_08.in",
+          "input_sha256": "926ac1689a8377885814a493281062566e701772ad68fc53c09aef16e03c1531",
+          "answer_sha256": "6e72f718f89c6d895041df985ea125b6c3938d04189620deec85aa5928ffed2f"
+        },
+        {
+          "name": "fft_killer_09.in",
+          "input_sha256": "192c91234a0d0a650996cc23058997fbe9ccffcb1ec77f6d2a5d2e8d1e787409",
+          "answer_sha256": "cb0c767b72f5772a3d4ff42597ba2ac6a9393a010c8c4dda49590722c2886c64"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "ff5f733d78186d7592779ef5635863e86b305d3df77384ac3cda7eca84b27e32",
+          "answer_sha256": "1db2c633136ee617f67bcd74cc2c137ebd534094c9ed29518f3ff60cfa00f22f"
+        },
+        {
+          "name": "max_random_01.in",
+          "input_sha256": "cf1a81808547dff71414f5a07c438302e0bbb86ced97b81f29751b34b1058654",
+          "answer_sha256": "c1778fd7e1f807b21173d59dad72216f1369c0ec616a234f1cbc3eed3a8376c1"
+        },
+        {
+          "name": "medium_00.in",
+          "input_sha256": "1b7cfd97117fecf2776d65424762926ba036af31b442bd7732376533ae7d8e7e",
+          "answer_sha256": "7ab1fbcb2026cac31a0b5bc99ff7698652da131b8a09bf7d28505522567654e8"
+        },
+        {
+          "name": "medium_01.in",
+          "input_sha256": "13e7d59b4c17b0a408e23292a90523e97528279ec84ad172664eaf88a9904a40",
+          "answer_sha256": "954e63690d8dc7675c9e3a7fd02277532fb8ba6c4ecf0d622155e8ec5f7b3610"
+        },
+        {
+          "name": "medium_02.in",
+          "input_sha256": "8bba93967d4e1b895e9c6cff8fed40fc94fa1ed1402229d272b3f45f45fddf58",
+          "answer_sha256": "ed4dbaad4c3cd315c2870a4c88e34f951e6a7a2f04d83ac970045794f2b27d2b"
+        },
+        {
+          "name": "medium_all_zero_00.in",
+          "input_sha256": "2c5739767e82850852258bbbff57e40062b2d9c8bd0fbcff9e0583480f814e47",
+          "answer_sha256": "41ef5ea003515ebd48706f0ee877853442735b856d87754b2b60cdffec1af42e"
+        },
+        {
+          "name": "medium_c_zero_00.in",
+          "input_sha256": "f5d277669dd37bfa1ea05ab6823704a7f8bedb20819f8d9b5532e2bf906041b0",
+          "answer_sha256": "45baad3c77ea0eb3d99cdcbafc92d398ac604e513ff5f6445d0db36fc0fff4f7"
+        },
+        {
+          "name": "random_00.in",
+          "input_sha256": "d788d0848f2ae27044468b0fa2df5c8e14f827f3bb37aa02a31cd4fb14f6887c",
+          "answer_sha256": "75b000ba523b24b0cc83dc6256d3e3ae8e7776ac10e9a0bb064ffba244b55db7"
+        },
+        {
+          "name": "random_01.in",
+          "input_sha256": "6958f8b435eb7131f237242f0c0533d8468eb036e3bf386b196f42f65da50664",
+          "answer_sha256": "59ea264bc46b43e5f2a3ec77fa2b7978ff3847c05880acb62ede598297a0f903"
+        },
+        {
+          "name": "random_02.in",
+          "input_sha256": "db16dee33c47d3c2eb16925c76a6c8d7bcdbcaa0d201566fd81ddbd731dc32d9",
+          "answer_sha256": "617a676d5c8f3426691286d42d7a5e5abcf1b986f798eb8735a9904c4a016be5"
+        },
+        {
+          "name": "small_00.in",
+          "input_sha256": "03648d2465fd5c55ab3ccc0d2957389c972097bcf534db9dc46abdbc3239e4e5",
+          "answer_sha256": "3cfdf017bf8e88510a8d2d670a5736b66267d2e4af13d68a60871013426e0a01"
+        },
+        {
+          "name": "small_01.in",
+          "input_sha256": "339151ca98f6e5b60274a0dc2f4714f4db43a973b1f3bacca9b046ff8f5cc984",
+          "answer_sha256": "99c328689f86a7af014ca63aafa89c0a52c2735e71566d0526ffa95938472b83"
+        },
+        {
+          "name": "small_02.in",
+          "input_sha256": "054c3b035faab1ca7b6d8c9d9deceac6be84fda49f57bdb4c749029800661df0",
+          "answer_sha256": "cbf246b559792af8ffccecbd73910d668db17f17eb47a0f6bed221e65fb0aeb9"
+        },
+        {
+          "name": "small_03.in",
+          "input_sha256": "cb7d3546d63aac395290e45b0ea4c26c1869ed6660c83dfef38021b8e4de8d7f",
+          "answer_sha256": "df1d4a31ad14d71ca3891812e7abffb76f3b7c6e367d42de95c9eb9cced818d7"
+        },
+        {
+          "name": "small_04.in",
+          "input_sha256": "bac78421dc0053639a6d1c9126525779c63cb0fb5683da633cba00b5b321a577",
+          "answer_sha256": "de8f62a02d285c8ca298aa19ad7a5d9b32d83859a6e9927632ac3beaccb4f753"
+        },
+        {
+          "name": "small_05.in",
+          "input_sha256": "b01c0200ba90edade4512e7fe25b414077530f19872277fdcdb6ab776df57da8",
+          "answer_sha256": "f578b756023ac835fe8fb46c754e649773c3e64518c14633be3fb6633f96d4cc"
+        },
+        {
+          "name": "small_06.in",
+          "input_sha256": "0e4297511abc8b98aa7d4fc057dc4298f06a277721e39fcae23fdd36a7dbf55f",
+          "answer_sha256": "cefa42165ebe967823e630218fb0f71b5a391bcdc56591a98eec122ba22a977e"
+        },
+        {
+          "name": "small_07.in",
+          "input_sha256": "adc979b7fb83b7899b9550b17685629f80d790e7c0ba9c8256218254833267c9",
+          "answer_sha256": "783c0b4744919cb9baca78ec4cf63198ab6d3e318ae2b97440710f47e2d9fbef"
+        },
+        {
+          "name": "small_08.in",
+          "input_sha256": "15a1871d54373bb7bbfcea3a0185b785c962980dbfad92477698f4a9731dc313",
+          "answer_sha256": "603af1a2b642b542d00f2265580330eb1be7aeacf7335c908b8e5112ca7048ab"
+        },
+        {
+          "name": "small_09.in",
+          "input_sha256": "05e14d9463066530b1fbb40b91a119f49c6395242084e9ceb48f1cd0711cb675",
+          "answer_sha256": "4392fcf1421f9b0e4fc5a42caa5be38e19c7ee6c230fe207587813b45f187d2f"
+        },
+        {
+          "name": "small_10.in",
+          "input_sha256": "64d8b4c380fd839620e5da9c69d2386c083d48722282fb1a7433a7eb031ad936",
+          "answer_sha256": "a7d14ce1c094bdb038cc212abe48bfd640f1eb9bfff667452e4d554971970ea4"
+        },
+        {
+          "name": "small_11.in",
+          "input_sha256": "f200274866da023c4ecf370c3eb4440c44fbfbe2d04a9dbc46bef93283a7af41",
+          "answer_sha256": "03d948df658a779f33d7788fdc0ea08bab586336a1f5310bf9dbb7a415523d38"
+        },
+        {
+          "name": "small_12.in",
+          "input_sha256": "91137a8c14e164d2a49be5cda0809e4950283c83cda90e68d4d6abb013074598",
+          "answer_sha256": "978d932fe0991bf886bb22573532fa95b3aa3cbea06193b608f1e53ebd1158c0"
+        },
+        {
+          "name": "small_13.in",
+          "input_sha256": "55c8a10bfeaa17ac01c4b0763c694d872f04b30b7b2683a262df2406a29cb1d5",
+          "answer_sha256": "d838ae7af0e016a8adfb998272a339efa5a56b7d9e9d7db3e302e0b5a97f8958"
+        },
+        {
+          "name": "small_14.in",
+          "input_sha256": "0599fa455df84bc5deeaf079c1ccd7fd4d6fcc3d1cc51c1ba9e96b1b5f5dace9",
+          "answer_sha256": "c477ca8fab0fbf0f14169bc346089d677c504f749cb6d03a492a492c2e3d1486"
+        },
+        {
+          "name": "small_15.in",
+          "input_sha256": "5405d538b35262a0df58f4a2464379bfb66f3046731fb114e72f43be0b0ad5dc",
+          "answer_sha256": "c7629eefbca7a1b68afee8ad3a7bd0f7b7d9b0ce816a4b730eb5cc9a9ce92e9a"
+        }
+      ],
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_taylor_shift.test.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/taylor_shift"
+      ],
+      "elapsed_seconds": 1.5161429769996175
+    },
+    {
+      "driver": "test/fps_light_taylor_shift.test.cpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 38,
+      "cases": [
+        {
+          "name": "example_00.in",
+          "input_sha256": "3f6059448a752fcba8699a83aa69e7d7d2c31aacc817f5b4bdae27c9b50a0427",
+          "answer_sha256": "e6d731dd19de9b66275d79eee3884c6c4f261081c18b1d4b030dbe014ecd6017"
+        },
+        {
+          "name": "example_01.in",
+          "input_sha256": "95582d519db66051efd253c7a783b64624e39ae9a6cfedab99ecf1a4504b930a",
+          "answer_sha256": "674a889917679078d14ffb4d4a69d06bba96825963a311c57880d2dfbb07fc9c"
+        },
+        {
+          "name": "fft_killer_00.in",
+          "input_sha256": "8ff5c23c6a0716e3e3397b5f5b4350b75e25953c5af5f992736c89154cf3a1e6",
+          "answer_sha256": "25b796e769735e089958356afd5297dc861026e8f3e1ab2367b1ee09e3b2c9f5"
+        },
+        {
+          "name": "fft_killer_01.in",
+          "input_sha256": "40891215d37aa07b294008b82d4621f20c2ceba057ac3bd8e1294371342176ed",
+          "answer_sha256": "98cf9162b1d2aa6c8dc6c0b5bc9e1777f084d6e74351b4f88732cd3bc2838dd9"
+        },
+        {
+          "name": "fft_killer_02.in",
+          "input_sha256": "c1f82251874c20d9f8533d75430822d9c29dc5d14b61a08abc2320943684687a",
+          "answer_sha256": "cdd5a6b580456793d051d98bae1bfd9b352adbdfc6800eba4e49749edbac75de"
+        },
+        {
+          "name": "fft_killer_03.in",
+          "input_sha256": "beab4e408b6be0e3bd4dc0edd7ec11e7955cb561f7263a01cfe4735a266413fa",
+          "answer_sha256": "a9ff61c5faab4d5ea80a33c071e5c0556b77e1c8adb3eb8615fe03e79b392071"
+        },
+        {
+          "name": "fft_killer_04.in",
+          "input_sha256": "f119012f521f36a650a0256d28621cad035213e40dea249e035905c4e5bed7bc",
+          "answer_sha256": "846445a88e385e56dde231fd5b3c7f00e147ffbf9e0eda9f5b47355991581c25"
+        },
+        {
+          "name": "fft_killer_05.in",
+          "input_sha256": "1ac01d175151cff07e6cfc3df635811aa62d33c033f0ca98b175c65a086f6677",
+          "answer_sha256": "bcde028ea35a918a9534b015d03ef097c8c6d2bc084727bf4f1abd168ca2fca0"
+        },
+        {
+          "name": "fft_killer_06.in",
+          "input_sha256": "eb92c6275f3485a3c31e6eda52a2b072a528f612cc31f32e02aedb48f48352d7",
+          "answer_sha256": "b89fa00a264ff79bf5f7b0bcc415ae1125b6e93f9e72db599dcb29bc7279a108"
+        },
+        {
+          "name": "fft_killer_07.in",
+          "input_sha256": "03e8a58a70451424cf725627998d7d7f6c5c56181cfdcfe2bc7fe9b93a8a86b3",
+          "answer_sha256": "d2f5bfec137079a10f03d841eae05e03d32c287d15b889512e8851b31e18bbf6"
+        },
+        {
+          "name": "fft_killer_08.in",
+          "input_sha256": "926ac1689a8377885814a493281062566e701772ad68fc53c09aef16e03c1531",
+          "answer_sha256": "6e72f718f89c6d895041df985ea125b6c3938d04189620deec85aa5928ffed2f"
+        },
+        {
+          "name": "fft_killer_09.in",
+          "input_sha256": "192c91234a0d0a650996cc23058997fbe9ccffcb1ec77f6d2a5d2e8d1e787409",
+          "answer_sha256": "cb0c767b72f5772a3d4ff42597ba2ac6a9393a010c8c4dda49590722c2886c64"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "ff5f733d78186d7592779ef5635863e86b305d3df77384ac3cda7eca84b27e32",
+          "answer_sha256": "1db2c633136ee617f67bcd74cc2c137ebd534094c9ed29518f3ff60cfa00f22f"
+        },
+        {
+          "name": "max_random_01.in",
+          "input_sha256": "cf1a81808547dff71414f5a07c438302e0bbb86ced97b81f29751b34b1058654",
+          "answer_sha256": "c1778fd7e1f807b21173d59dad72216f1369c0ec616a234f1cbc3eed3a8376c1"
+        },
+        {
+          "name": "medium_00.in",
+          "input_sha256": "1b7cfd97117fecf2776d65424762926ba036af31b442bd7732376533ae7d8e7e",
+          "answer_sha256": "7ab1fbcb2026cac31a0b5bc99ff7698652da131b8a09bf7d28505522567654e8"
+        },
+        {
+          "name": "medium_01.in",
+          "input_sha256": "13e7d59b4c17b0a408e23292a90523e97528279ec84ad172664eaf88a9904a40",
+          "answer_sha256": "954e63690d8dc7675c9e3a7fd02277532fb8ba6c4ecf0d622155e8ec5f7b3610"
+        },
+        {
+          "name": "medium_02.in",
+          "input_sha256": "8bba93967d4e1b895e9c6cff8fed40fc94fa1ed1402229d272b3f45f45fddf58",
+          "answer_sha256": "ed4dbaad4c3cd315c2870a4c88e34f951e6a7a2f04d83ac970045794f2b27d2b"
+        },
+        {
+          "name": "medium_all_zero_00.in",
+          "input_sha256": "2c5739767e82850852258bbbff57e40062b2d9c8bd0fbcff9e0583480f814e47",
+          "answer_sha256": "41ef5ea003515ebd48706f0ee877853442735b856d87754b2b60cdffec1af42e"
+        },
+        {
+          "name": "medium_c_zero_00.in",
+          "input_sha256": "f5d277669dd37bfa1ea05ab6823704a7f8bedb20819f8d9b5532e2bf906041b0",
+          "answer_sha256": "45baad3c77ea0eb3d99cdcbafc92d398ac604e513ff5f6445d0db36fc0fff4f7"
+        },
+        {
+          "name": "random_00.in",
+          "input_sha256": "d788d0848f2ae27044468b0fa2df5c8e14f827f3bb37aa02a31cd4fb14f6887c",
+          "answer_sha256": "75b000ba523b24b0cc83dc6256d3e3ae8e7776ac10e9a0bb064ffba244b55db7"
+        },
+        {
+          "name": "random_01.in",
+          "input_sha256": "6958f8b435eb7131f237242f0c0533d8468eb036e3bf386b196f42f65da50664",
+          "answer_sha256": "59ea264bc46b43e5f2a3ec77fa2b7978ff3847c05880acb62ede598297a0f903"
+        },
+        {
+          "name": "random_02.in",
+          "input_sha256": "db16dee33c47d3c2eb16925c76a6c8d7bcdbcaa0d201566fd81ddbd731dc32d9",
+          "answer_sha256": "617a676d5c8f3426691286d42d7a5e5abcf1b986f798eb8735a9904c4a016be5"
+        },
+        {
+          "name": "small_00.in",
+          "input_sha256": "03648d2465fd5c55ab3ccc0d2957389c972097bcf534db9dc46abdbc3239e4e5",
+          "answer_sha256": "3cfdf017bf8e88510a8d2d670a5736b66267d2e4af13d68a60871013426e0a01"
+        },
+        {
+          "name": "small_01.in",
+          "input_sha256": "339151ca98f6e5b60274a0dc2f4714f4db43a973b1f3bacca9b046ff8f5cc984",
+          "answer_sha256": "99c328689f86a7af014ca63aafa89c0a52c2735e71566d0526ffa95938472b83"
+        },
+        {
+          "name": "small_02.in",
+          "input_sha256": "054c3b035faab1ca7b6d8c9d9deceac6be84fda49f57bdb4c749029800661df0",
+          "answer_sha256": "cbf246b559792af8ffccecbd73910d668db17f17eb47a0f6bed221e65fb0aeb9"
+        },
+        {
+          "name": "small_03.in",
+          "input_sha256": "cb7d3546d63aac395290e45b0ea4c26c1869ed6660c83dfef38021b8e4de8d7f",
+          "answer_sha256": "df1d4a31ad14d71ca3891812e7abffb76f3b7c6e367d42de95c9eb9cced818d7"
+        },
+        {
+          "name": "small_04.in",
+          "input_sha256": "bac78421dc0053639a6d1c9126525779c63cb0fb5683da633cba00b5b321a577",
+          "answer_sha256": "de8f62a02d285c8ca298aa19ad7a5d9b32d83859a6e9927632ac3beaccb4f753"
+        },
+        {
+          "name": "small_05.in",
+          "input_sha256": "b01c0200ba90edade4512e7fe25b414077530f19872277fdcdb6ab776df57da8",
+          "answer_sha256": "f578b756023ac835fe8fb46c754e649773c3e64518c14633be3fb6633f96d4cc"
+        },
+        {
+          "name": "small_06.in",
+          "input_sha256": "0e4297511abc8b98aa7d4fc057dc4298f06a277721e39fcae23fdd36a7dbf55f",
+          "answer_sha256": "cefa42165ebe967823e630218fb0f71b5a391bcdc56591a98eec122ba22a977e"
+        },
+        {
+          "name": "small_07.in",
+          "input_sha256": "adc979b7fb83b7899b9550b17685629f80d790e7c0ba9c8256218254833267c9",
+          "answer_sha256": "783c0b4744919cb9baca78ec4cf63198ab6d3e318ae2b97440710f47e2d9fbef"
+        },
+        {
+          "name": "small_08.in",
+          "input_sha256": "15a1871d54373bb7bbfcea3a0185b785c962980dbfad92477698f4a9731dc313",
+          "answer_sha256": "603af1a2b642b542d00f2265580330eb1be7aeacf7335c908b8e5112ca7048ab"
+        },
+        {
+          "name": "small_09.in",
+          "input_sha256": "05e14d9463066530b1fbb40b91a119f49c6395242084e9ceb48f1cd0711cb675",
+          "answer_sha256": "4392fcf1421f9b0e4fc5a42caa5be38e19c7ee6c230fe207587813b45f187d2f"
+        },
+        {
+          "name": "small_10.in",
+          "input_sha256": "64d8b4c380fd839620e5da9c69d2386c083d48722282fb1a7433a7eb031ad936",
+          "answer_sha256": "a7d14ce1c094bdb038cc212abe48bfd640f1eb9bfff667452e4d554971970ea4"
+        },
+        {
+          "name": "small_11.in",
+          "input_sha256": "f200274866da023c4ecf370c3eb4440c44fbfbe2d04a9dbc46bef93283a7af41",
+          "answer_sha256": "03d948df658a779f33d7788fdc0ea08bab586336a1f5310bf9dbb7a415523d38"
+        },
+        {
+          "name": "small_12.in",
+          "input_sha256": "91137a8c14e164d2a49be5cda0809e4950283c83cda90e68d4d6abb013074598",
+          "answer_sha256": "978d932fe0991bf886bb22573532fa95b3aa3cbea06193b608f1e53ebd1158c0"
+        },
+        {
+          "name": "small_13.in",
+          "input_sha256": "55c8a10bfeaa17ac01c4b0763c694d872f04b30b7b2683a262df2406a29cb1d5",
+          "answer_sha256": "d838ae7af0e016a8adfb998272a339efa5a56b7d9e9d7db3e302e0b5a97f8958"
+        },
+        {
+          "name": "small_14.in",
+          "input_sha256": "0599fa455df84bc5deeaf079c1ccd7fd4d6fcc3d1cc51c1ba9e96b1b5f5dace9",
+          "answer_sha256": "c477ca8fab0fbf0f14169bc346089d677c504f749cb6d03a492a492c2e3d1486"
+        },
+        {
+          "name": "small_15.in",
+          "input_sha256": "5405d538b35262a0df58f4a2464379bfb66f3046731fb114e72f43be0b0ad5dc",
+          "answer_sha256": "c7629eefbca7a1b68afee8ad3a7bd0f7b7d9b0ce816a4b730eb5cc9a9ce92e9a"
+        }
+      ],
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_taylor_shift.test.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/taylor_shift"
+      ],
+      "elapsed_seconds": 1.2149805299995933
+    },
+    {
+      "driver": "test/fps_light_multipoint_eval.test.cpp",
+      "compiler": "g++",
+      "cases_passed": 11,
+      "cases": [
+        {
+          "name": "example_00.in",
+          "input_sha256": "791ce85d065df0981bec48053b908ae230fd083a23b7e4f15c55bbfc09d5b09e",
+          "answer_sha256": "89bee91478eb45ef73901bfdbc28bbaa8468c003dc480f8881b3222f9bc7e956"
+        },
+        {
+          "name": "example_01.in",
+          "input_sha256": "cb82ca85c390fabfd1c38aa4d97d76071db8fb8ba0e70ba6179f525564e40cd1",
+          "answer_sha256": "de6aeb89b0d91519a443ac503ea9e652f130752e5ecc78cbcffc3e0f04e4bbf0"
+        },
+        {
+          "name": "issue_1287_00.in",
+          "input_sha256": "24c5293f33bf38ab1c1d64f239a1736c69ab507d9d693c7abb43053107cc632c",
+          "answer_sha256": "4e440e0688fe50b33a612be918cb0128462a2bea7b4f1972c89c49a04d3015e4"
+        },
+        {
+          "name": "issue_1287_cpp_00.in",
+          "input_sha256": "7551d684fed0a3bb2b524ce5da628be67b83d0265a4cb3bfd8e92de5ea66d32a",
+          "answer_sha256": "3f0ca4137cda8b0ba02f5b1c3abeea996fe3932a27ca6044a42ab66991c49b33"
+        },
+        {
+          "name": "issue_1287_cpp_01.in",
+          "input_sha256": "baf531c8562b0b39f9a1bc9e513e1a8acbaa04da283449abeb7f2269cb5b4759",
+          "answer_sha256": "b689a41bf8113edc0911bad9f798001fe4173b7f96033ff31c0ac3378e5bab4a"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "bd75a638e1008099cf0a1366a652c8584e18f3c096473bdb8a464142673ee6ae",
+          "answer_sha256": "de294de44c13cbc69e3d40c78af307493a90ee539d0acc5ed8b70946fb0c211f"
+        },
+        {
+          "name": "max_random_01.in",
+          "input_sha256": "663c77c8cf1375ccc8a4d1ed95ce1bf91c988bb6ea517fcbc8b34852f2b963ee",
+          "answer_sha256": "b89e9bd91542ffb2082873d998ebf71c9e899fe36558aaef48df9b7faeacd9a0"
+        },
+        {
+          "name": "random_00.in",
+          "input_sha256": "365e5b731b2727968a6f1854a453e20c95ce874bc2abbf7d7a59171e56b434d0",
+          "answer_sha256": "8d7d16f271ca5c98ad45323cd32ddeacc1240c8d1486c529882a8fa4907815cb"
+        },
+        {
+          "name": "random_01.in",
+          "input_sha256": "a67912a632a8ecf324cceb2422e39512ae86561e101abed4ac160fbf73d1e509",
+          "answer_sha256": "d83eea8f3422d35e7a3780bb23353917b01cf6dcc3418d45e3a792cdecd64d04"
+        },
+        {
+          "name": "random_02.in",
+          "input_sha256": "8a9fea3a95160393dfae7ad5046eaba2348edbac832b1cad4c483e66a9e89767",
+          "answer_sha256": "936439d821edf06cfc53704587eea761be27024f383f687942255ffc92576663"
+        },
+        {
+          "name": "zero_00.in",
+          "input_sha256": "679e68dd5663916e0c7e7195ded44061a8facb4f43d6737afea9604167ca1ca1",
+          "answer_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+        }
+      ],
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_multipoint_eval.test.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/multipoint_eval"
+      ],
+      "elapsed_seconds": 2.496606418000738
+    },
+    {
+      "driver": "test/fps_light_multipoint_eval.test.cpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 11,
+      "cases": [
+        {
+          "name": "example_00.in",
+          "input_sha256": "791ce85d065df0981bec48053b908ae230fd083a23b7e4f15c55bbfc09d5b09e",
+          "answer_sha256": "89bee91478eb45ef73901bfdbc28bbaa8468c003dc480f8881b3222f9bc7e956"
+        },
+        {
+          "name": "example_01.in",
+          "input_sha256": "cb82ca85c390fabfd1c38aa4d97d76071db8fb8ba0e70ba6179f525564e40cd1",
+          "answer_sha256": "de6aeb89b0d91519a443ac503ea9e652f130752e5ecc78cbcffc3e0f04e4bbf0"
+        },
+        {
+          "name": "issue_1287_00.in",
+          "input_sha256": "24c5293f33bf38ab1c1d64f239a1736c69ab507d9d693c7abb43053107cc632c",
+          "answer_sha256": "4e440e0688fe50b33a612be918cb0128462a2bea7b4f1972c89c49a04d3015e4"
+        },
+        {
+          "name": "issue_1287_cpp_00.in",
+          "input_sha256": "7551d684fed0a3bb2b524ce5da628be67b83d0265a4cb3bfd8e92de5ea66d32a",
+          "answer_sha256": "3f0ca4137cda8b0ba02f5b1c3abeea996fe3932a27ca6044a42ab66991c49b33"
+        },
+        {
+          "name": "issue_1287_cpp_01.in",
+          "input_sha256": "baf531c8562b0b39f9a1bc9e513e1a8acbaa04da283449abeb7f2269cb5b4759",
+          "answer_sha256": "b689a41bf8113edc0911bad9f798001fe4173b7f96033ff31c0ac3378e5bab4a"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "bd75a638e1008099cf0a1366a652c8584e18f3c096473bdb8a464142673ee6ae",
+          "answer_sha256": "de294de44c13cbc69e3d40c78af307493a90ee539d0acc5ed8b70946fb0c211f"
+        },
+        {
+          "name": "max_random_01.in",
+          "input_sha256": "663c77c8cf1375ccc8a4d1ed95ce1bf91c988bb6ea517fcbc8b34852f2b963ee",
+          "answer_sha256": "b89e9bd91542ffb2082873d998ebf71c9e899fe36558aaef48df9b7faeacd9a0"
+        },
+        {
+          "name": "random_00.in",
+          "input_sha256": "365e5b731b2727968a6f1854a453e20c95ce874bc2abbf7d7a59171e56b434d0",
+          "answer_sha256": "8d7d16f271ca5c98ad45323cd32ddeacc1240c8d1486c529882a8fa4907815cb"
+        },
+        {
+          "name": "random_01.in",
+          "input_sha256": "a67912a632a8ecf324cceb2422e39512ae86561e101abed4ac160fbf73d1e509",
+          "answer_sha256": "d83eea8f3422d35e7a3780bb23353917b01cf6dcc3418d45e3a792cdecd64d04"
+        },
+        {
+          "name": "random_02.in",
+          "input_sha256": "8a9fea3a95160393dfae7ad5046eaba2348edbac832b1cad4c483e66a9e89767",
+          "answer_sha256": "936439d821edf06cfc53704587eea761be27024f383f687942255ffc92576663"
+        },
+        {
+          "name": "zero_00.in",
+          "input_sha256": "679e68dd5663916e0c7e7195ded44061a8facb4f43d6737afea9604167ca1ca1",
+          "answer_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+        }
+      ],
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_multipoint_eval.test.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/multipoint_eval"
+      ],
+      "elapsed_seconds": 1.3507927739992738
+    },
+    {
+      "driver": "test/fps_light_interpolate.test.cpp",
+      "compiler": "g++",
+      "cases_passed": 9,
+      "cases": [
+        {
+          "name": "1169_00.in",
+          "input_sha256": "01fa2df384d0e2d5a9a0f8a63c64935210f6c625ccfacd20dd5e8edab1234a64",
+          "answer_sha256": "63e9513edcd96636e7a78d2dc432a9d971f3ca5de1d1bcb4c8ffd2bcac8dd7c2"
+        },
+        {
+          "name": "example_00.in",
+          "input_sha256": "745a5014aa4ade554b909ed460261559945e0cb444366b1fc0711648895aaa3f",
+          "answer_sha256": "e085ba5d29787095f6e2bad7b1309b2ae13208e58bea570c84c0dd651de681b9"
+        },
+        {
+          "name": "example_01.in",
+          "input_sha256": "8f0ebdb9a3d767b099c3e12776d35d390525a3f6b28090aea0cfd82c1bfcea72",
+          "answer_sha256": "de6aeb89b0d91519a443ac503ea9e652f130752e5ecc78cbcffc3e0f04e4bbf0"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "7362fa638f2b680748e1da459cc4a6b7d06573f9b8d43e761b07553f55e84566",
+          "answer_sha256": "1433597bd42ff9eeddd5c38448d1d4cf442534d74062ea4d95836fcdde00113a"
+        },
+        {
+          "name": "max_random_01.in",
+          "input_sha256": "6da0e9060d4d9fc986790d4688a2abb04e118dcd39f28e8def442b7d581c686c",
+          "answer_sha256": "c27090c2c240ae2ccc920a168f041e5cc27674a28ad927dcb423d4e1115ae461"
+        },
+        {
+          "name": "random_00.in",
+          "input_sha256": "798162e771cd0026e561e4a2df41c79feb1243d08a0b30aff32522f107330c10",
+          "answer_sha256": "2f9a8dec1a62dcee8a4241572aeaf26db939f8e1c21fcf0bdc9b233c2e06a754"
+        },
+        {
+          "name": "random_01.in",
+          "input_sha256": "3f277d067e254684f93b173a5405ca85656ebc3cc5a1fe926915aec58c4e40c5",
+          "answer_sha256": "a0b93bf865afafc2572c9aac67a4436783b61d7f6a8be134f9bc57d6733731e4"
+        },
+        {
+          "name": "random_02.in",
+          "input_sha256": "c1fa3c399be5c03fdc49f685a50d23d208454f0fdbc247b287e56716abced21f",
+          "answer_sha256": "307ad8b9e2da40a0319605e91126fe88b3eff1d9415a0069f64dd5ed858b92b6"
+        },
+        {
+          "name": "x_zero_00.in",
+          "input_sha256": "a70c2efb776b7654bcabff3582dc215da344650483826a59283834b2998e74a3",
+          "answer_sha256": "63d84105de9685f46d7ebaf80c864e0a1934a1c04a03ad407041f3736c7d5217"
+        }
+      ],
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_interpolate.test.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/interpolate"
+      ],
+      "elapsed_seconds": 3.035810377999951
+    },
+    {
+      "driver": "test/fps_light_interpolate.test.cpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 9,
+      "cases": [
+        {
+          "name": "1169_00.in",
+          "input_sha256": "01fa2df384d0e2d5a9a0f8a63c64935210f6c625ccfacd20dd5e8edab1234a64",
+          "answer_sha256": "63e9513edcd96636e7a78d2dc432a9d971f3ca5de1d1bcb4c8ffd2bcac8dd7c2"
+        },
+        {
+          "name": "example_00.in",
+          "input_sha256": "745a5014aa4ade554b909ed460261559945e0cb444366b1fc0711648895aaa3f",
+          "answer_sha256": "e085ba5d29787095f6e2bad7b1309b2ae13208e58bea570c84c0dd651de681b9"
+        },
+        {
+          "name": "example_01.in",
+          "input_sha256": "8f0ebdb9a3d767b099c3e12776d35d390525a3f6b28090aea0cfd82c1bfcea72",
+          "answer_sha256": "de6aeb89b0d91519a443ac503ea9e652f130752e5ecc78cbcffc3e0f04e4bbf0"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "7362fa638f2b680748e1da459cc4a6b7d06573f9b8d43e761b07553f55e84566",
+          "answer_sha256": "1433597bd42ff9eeddd5c38448d1d4cf442534d74062ea4d95836fcdde00113a"
+        },
+        {
+          "name": "max_random_01.in",
+          "input_sha256": "6da0e9060d4d9fc986790d4688a2abb04e118dcd39f28e8def442b7d581c686c",
+          "answer_sha256": "c27090c2c240ae2ccc920a168f041e5cc27674a28ad927dcb423d4e1115ae461"
+        },
+        {
+          "name": "random_00.in",
+          "input_sha256": "798162e771cd0026e561e4a2df41c79feb1243d08a0b30aff32522f107330c10",
+          "answer_sha256": "2f9a8dec1a62dcee8a4241572aeaf26db939f8e1c21fcf0bdc9b233c2e06a754"
+        },
+        {
+          "name": "random_01.in",
+          "input_sha256": "3f277d067e254684f93b173a5405ca85656ebc3cc5a1fe926915aec58c4e40c5",
+          "answer_sha256": "a0b93bf865afafc2572c9aac67a4436783b61d7f6a8be134f9bc57d6733731e4"
+        },
+        {
+          "name": "random_02.in",
+          "input_sha256": "c1fa3c399be5c03fdc49f685a50d23d208454f0fdbc247b287e56716abced21f",
+          "answer_sha256": "307ad8b9e2da40a0319605e91126fe88b3eff1d9415a0069f64dd5ed858b92b6"
+        },
+        {
+          "name": "x_zero_00.in",
+          "input_sha256": "a70c2efb776b7654bcabff3582dc215da344650483826a59283834b2998e74a3",
+          "answer_sha256": "63d84105de9685f46d7ebaf80c864e0a1934a1c04a03ad407041f3736c7d5217"
+        }
+      ],
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_interpolate.test.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/interpolate"
+      ],
+      "elapsed_seconds": 1.6093669020010566
+    },
+    {
+      "driver": "test/fps_light_linear_recurrence.test.cpp",
+      "compiler": "g++",
+      "cases_passed": 20,
+      "cases": [
+        {
+          "name": "example_00.in",
+          "input_sha256": "b9071f6fb2bafefc8dc1c06a2b98b0e1007bf62f660ca8f0aa9bfd951e1a6b81",
+          "answer_sha256": "aa67a169b0bba217aa0aa88a65346920c84c42447c36ba5f7ea65f422c1fe5d8"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "024236a62dcb0f9a788c18997a92e730722a408314618cd4e1c556c974c3f8c6",
+          "answer_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        {
+          "name": "max_random_01.in",
+          "input_sha256": "dc91a59768f19f00a74adea46729605da0be00bbd6605b103a3269974b187d55",
+          "answer_sha256": "b1714920b5b5a706f08dc97d188924c03537b16f0841b537ed46baf640537614"
+        },
+        {
+          "name": "max_random_02.in",
+          "input_sha256": "b1676c8a6ca755b144b696830bd26ba7d6719ce1387c07c1233fc36dcc86ba3c",
+          "answer_sha256": "6695688173a7bd50020ebcad14f04865f0a501363d9e7222dced327756bc238e"
+        },
+        {
+          "name": "near_65536_00.in",
+          "input_sha256": "708b7c4190f368ddc2209cbf6fbbc6a22b415401d085c58285c751796c160ca3",
+          "answer_sha256": "6738953f178bb1ed2aca3872ed08f674529c4f5747eb5161cb52830c965fe182"
+        },
+        {
+          "name": "near_65536_01.in",
+          "input_sha256": "914969529a6c2cb1ef477cda390ec36a0220614d04b57a5886bbacad3596d727",
+          "answer_sha256": "38c4ed4f8425869293118576add37cc22564c1324496a4479e0c899617b1b722"
+        },
+        {
+          "name": "near_65536_02.in",
+          "input_sha256": "deed96d2e7123f73eb99795ed20d4578013192a4fbad769fca6012f41f4d81ea",
+          "answer_sha256": "c5fe92f599c6c5981fca044fb94b9712992c85e7ebc7d4ece8d8b9b2b7ad8952"
+        },
+        {
+          "name": "random_00.in",
+          "input_sha256": "daa2c8706bae46d49c60d299db9c973721ad1d2f4b172c2f747c089c1df8b479",
+          "answer_sha256": "77b0f2801db2003c32d86e30c606660ed42c8a6a0ad7adfd3dcc4ea94f27130e"
+        },
+        {
+          "name": "random_01.in",
+          "input_sha256": "5690ff7e06c3cd3b913c7b8956e52306bebda2f36c8d7ba2cf8468be7280b294",
+          "answer_sha256": "25514b8a0dde5b6ed96e3cff5696bf9e943ca74395bed2e47a9e2338761bffcc"
+        },
+        {
+          "name": "random_02.in",
+          "input_sha256": "ee6606d26c703e796b8013cf71ff571b0528b6949a6b2d87214aa6c391719f91",
+          "answer_sha256": "76be6d4797924e33951eac57d7433e07fdd6fc15645f5fe7001fe9bcb0cb21c3"
+        },
+        {
+          "name": "small_00.in",
+          "input_sha256": "2601943eeaebd17264a202a4295ff6348f7c904c6909fe33c66f3cfb5626e1ac",
+          "answer_sha256": "037814971b020ce9d0e73de4bf116d4fef66369481f7d394a6392c1f8fa28760"
+        },
+        {
+          "name": "small_01.in",
+          "input_sha256": "6a1b8916e9afcf670785df56082ca8c2556f3ab4ab3a0a3275c5eca6614adbbf",
+          "answer_sha256": "410d4d7440b62e56c5bd435dcb15b0c567e59e29211edf4803c423b45b702594"
+        },
+        {
+          "name": "small_02.in",
+          "input_sha256": "141894d632cfae7acb05e6acad15b0e08afadf680a367958515f73e5ac99f59f",
+          "answer_sha256": "40f475843b61c64957d029fa2d0650d98eb274555feb0cb030389f3ae50b6230"
+        },
+        {
+          "name": "small_03.in",
+          "input_sha256": "ed3e79da16378bbac37ea9e8bf41550a17b2a9331ddc6ab09ea1bae28ab5f007",
+          "answer_sha256": "a50652ae68cd5c8619cdcc620719e560fa014e9aaff36c79dd3766080291eacf"
+        },
+        {
+          "name": "small_04.in",
+          "input_sha256": "1e5cf3e1e475003169c539b00342bc3858f4ba94ec28ce58d31bf04f1d3779f4",
+          "answer_sha256": "cc4d67b832d1af8d2efd3969ebcff39636721a99417f7a8f8e12764b4509c61d"
+        },
+        {
+          "name": "small_05.in",
+          "input_sha256": "acb82ae4d72cd1738b0d42e0b2875c3359c7729ea08261ef15a3838eba40b0ab",
+          "answer_sha256": "59f1a83c8a866d08a04b70463f2b350d1e0d8e1b4f2346a97cabbf12bf7a9649"
+        },
+        {
+          "name": "small_06.in",
+          "input_sha256": "55e5fef2f84e9c721fbbd7a16d6ed0340455a1ecf1ea4db034c40555329042fd",
+          "answer_sha256": "3ca5e96d33854df64d1f3bfa253a7895c850ea5dcb6ad355741ae2edce1b9da7"
+        },
+        {
+          "name": "small_07.in",
+          "input_sha256": "a5427937ece732a7392dfa33318ea047f8ea0f746752da1bbf3c6ffe88e53896",
+          "answer_sha256": "00ee7ee957f78b30eef6439c08a92fffe68b02014349fe379510bb369f282ca7"
+        },
+        {
+          "name": "small_08.in",
+          "input_sha256": "5f9769baf2b46031a4aa7c82620ec5b747cff41660b1c9bc5b60f05824a5e5a5",
+          "answer_sha256": "9b0bf690066ee4465a107caa658f51f84f8c0323f2874977bb07ffd8294d4a88"
+        },
+        {
+          "name": "small_09.in",
+          "input_sha256": "ee0376b051026bee575b04b11e9c08f280185b7e6b78cbddbb137ab69281d542",
+          "answer_sha256": "0d659babdc2964e142043142fe3b2aa32826efbe79fb7c6254a46d16070b2c87"
+        }
+      ],
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_linear_recurrence.test.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/linear_recurrence"
+      ],
+      "elapsed_seconds": 6.741971645000376
+    },
+    {
+      "driver": "test/fps_light_linear_recurrence.test.cpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 20,
+      "cases": [
+        {
+          "name": "example_00.in",
+          "input_sha256": "b9071f6fb2bafefc8dc1c06a2b98b0e1007bf62f660ca8f0aa9bfd951e1a6b81",
+          "answer_sha256": "aa67a169b0bba217aa0aa88a65346920c84c42447c36ba5f7ea65f422c1fe5d8"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "024236a62dcb0f9a788c18997a92e730722a408314618cd4e1c556c974c3f8c6",
+          "answer_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        {
+          "name": "max_random_01.in",
+          "input_sha256": "dc91a59768f19f00a74adea46729605da0be00bbd6605b103a3269974b187d55",
+          "answer_sha256": "b1714920b5b5a706f08dc97d188924c03537b16f0841b537ed46baf640537614"
+        },
+        {
+          "name": "max_random_02.in",
+          "input_sha256": "b1676c8a6ca755b144b696830bd26ba7d6719ce1387c07c1233fc36dcc86ba3c",
+          "answer_sha256": "6695688173a7bd50020ebcad14f04865f0a501363d9e7222dced327756bc238e"
+        },
+        {
+          "name": "near_65536_00.in",
+          "input_sha256": "708b7c4190f368ddc2209cbf6fbbc6a22b415401d085c58285c751796c160ca3",
+          "answer_sha256": "6738953f178bb1ed2aca3872ed08f674529c4f5747eb5161cb52830c965fe182"
+        },
+        {
+          "name": "near_65536_01.in",
+          "input_sha256": "914969529a6c2cb1ef477cda390ec36a0220614d04b57a5886bbacad3596d727",
+          "answer_sha256": "38c4ed4f8425869293118576add37cc22564c1324496a4479e0c899617b1b722"
+        },
+        {
+          "name": "near_65536_02.in",
+          "input_sha256": "deed96d2e7123f73eb99795ed20d4578013192a4fbad769fca6012f41f4d81ea",
+          "answer_sha256": "c5fe92f599c6c5981fca044fb94b9712992c85e7ebc7d4ece8d8b9b2b7ad8952"
+        },
+        {
+          "name": "random_00.in",
+          "input_sha256": "daa2c8706bae46d49c60d299db9c973721ad1d2f4b172c2f747c089c1df8b479",
+          "answer_sha256": "77b0f2801db2003c32d86e30c606660ed42c8a6a0ad7adfd3dcc4ea94f27130e"
+        },
+        {
+          "name": "random_01.in",
+          "input_sha256": "5690ff7e06c3cd3b913c7b8956e52306bebda2f36c8d7ba2cf8468be7280b294",
+          "answer_sha256": "25514b8a0dde5b6ed96e3cff5696bf9e943ca74395bed2e47a9e2338761bffcc"
+        },
+        {
+          "name": "random_02.in",
+          "input_sha256": "ee6606d26c703e796b8013cf71ff571b0528b6949a6b2d87214aa6c391719f91",
+          "answer_sha256": "76be6d4797924e33951eac57d7433e07fdd6fc15645f5fe7001fe9bcb0cb21c3"
+        },
+        {
+          "name": "small_00.in",
+          "input_sha256": "2601943eeaebd17264a202a4295ff6348f7c904c6909fe33c66f3cfb5626e1ac",
+          "answer_sha256": "037814971b020ce9d0e73de4bf116d4fef66369481f7d394a6392c1f8fa28760"
+        },
+        {
+          "name": "small_01.in",
+          "input_sha256": "6a1b8916e9afcf670785df56082ca8c2556f3ab4ab3a0a3275c5eca6614adbbf",
+          "answer_sha256": "410d4d7440b62e56c5bd435dcb15b0c567e59e29211edf4803c423b45b702594"
+        },
+        {
+          "name": "small_02.in",
+          "input_sha256": "141894d632cfae7acb05e6acad15b0e08afadf680a367958515f73e5ac99f59f",
+          "answer_sha256": "40f475843b61c64957d029fa2d0650d98eb274555feb0cb030389f3ae50b6230"
+        },
+        {
+          "name": "small_03.in",
+          "input_sha256": "ed3e79da16378bbac37ea9e8bf41550a17b2a9331ddc6ab09ea1bae28ab5f007",
+          "answer_sha256": "a50652ae68cd5c8619cdcc620719e560fa014e9aaff36c79dd3766080291eacf"
+        },
+        {
+          "name": "small_04.in",
+          "input_sha256": "1e5cf3e1e475003169c539b00342bc3858f4ba94ec28ce58d31bf04f1d3779f4",
+          "answer_sha256": "cc4d67b832d1af8d2efd3969ebcff39636721a99417f7a8f8e12764b4509c61d"
+        },
+        {
+          "name": "small_05.in",
+          "input_sha256": "acb82ae4d72cd1738b0d42e0b2875c3359c7729ea08261ef15a3838eba40b0ab",
+          "answer_sha256": "59f1a83c8a866d08a04b70463f2b350d1e0d8e1b4f2346a97cabbf12bf7a9649"
+        },
+        {
+          "name": "small_06.in",
+          "input_sha256": "55e5fef2f84e9c721fbbd7a16d6ed0340455a1ecf1ea4db034c40555329042fd",
+          "answer_sha256": "3ca5e96d33854df64d1f3bfa253a7895c850ea5dcb6ad355741ae2edce1b9da7"
+        },
+        {
+          "name": "small_07.in",
+          "input_sha256": "a5427937ece732a7392dfa33318ea047f8ea0f746752da1bbf3c6ffe88e53896",
+          "answer_sha256": "00ee7ee957f78b30eef6439c08a92fffe68b02014349fe379510bb369f282ca7"
+        },
+        {
+          "name": "small_08.in",
+          "input_sha256": "5f9769baf2b46031a4aa7c82620ec5b747cff41660b1c9bc5b60f05824a5e5a5",
+          "answer_sha256": "9b0bf690066ee4465a107caa658f51f84f8c0323f2874977bb07ffd8294d4a88"
+        },
+        {
+          "name": "small_09.in",
+          "input_sha256": "ee0376b051026bee575b04b11e9c08f280185b7e6b78cbddbb137ab69281d542",
+          "answer_sha256": "0d659babdc2964e142043142fe3b2aa32826efbe79fb7c6254a46d16070b2c87"
+        }
+      ],
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_linear_recurrence.test.cpp",
+        "-o",
+        "/tmp/fps-light-extra-44bbgfyq/linear_recurrence"
+      ],
+      "elapsed_seconds": 3.434969910998916
+    }
+  ],
+  "generator_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "completed": true,
+  "completed_at": "2026-10-21T13:33:31.518499+00:00"
+}
