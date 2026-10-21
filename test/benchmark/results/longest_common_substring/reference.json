@@ -1,0 +1,94 @@
+{
+  "retrieved_at": "2026-10-21T11:35:11.626300+00:00",
+  "listing": {
+    "count": 618,
+    "submissions": [
+      {
+        "id": 406239,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11276288,
+        "problem_name": "longest_common_substring",
+        "problem_title": "Longest Common Substring",
+        "status": "AC",
+        "submission_time": "2026-09-26T06:50:54.309356Z",
+        "time": 0.013,
+        "user_name": "Rohan_Kapri"
+      },
+      {
+        "id": 403347,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11276288,
+        "problem_name": "longest_common_substring",
+        "problem_title": "Longest Common Substring",
+        "status": "AC",
+        "submission_time": "2026-09-17T13:05:21.989681Z",
+        "time": 0.013,
+        "user_name": "nandhagk"
+      },
+      {
+        "id": 403279,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11280384,
+        "problem_name": "longest_common_substring",
+        "problem_title": "Longest Common Substring",
+        "status": "AC",
+        "submission_time": "2026-09-17T09:56:13.630776Z",
+        "time": 0.013,
+        "user_name": "nandhagk"
+      }
+    ]
+  },
+  "references": [
+    {
+      "overview": {
+        "id": 406239,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11276288,
+        "problem_name": "longest_common_substring",
+        "problem_title": "Longest Common Substring",
+        "status": "AC",
+        "submission_time": "2026-09-26T06:50:54.309356Z",
+        "time": 0.013,
+        "user_name": "Rohan_Kapri"
+      },
+      "sha256": "09bb92a1c643703884cae3cd32036f6faac7eca0d153be252b464dc87accbd75",
+      "url": "https://judge.yosupo.jp/submission/406239"
+    },
+    {
+      "overview": {
+        "id": 403347,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11276288,
+        "problem_name": "longest_common_substring",
+        "problem_title": "Longest Common Substring",
+        "status": "AC",
+        "submission_time": "2026-09-17T13:05:21.989681Z",
+        "time": 0.013,
+        "user_name": "nandhagk"
+      },
+      "sha256": "8728a425607fd3173a372ee0e8a36b6022c7d8c3c48d0a14bec234ea68038221",
+      "url": "https://judge.yosupo.jp/submission/403347"
+    },
+    {
+      "overview": {
+        "id": 403279,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 11280384,
+        "problem_name": "longest_common_substring",
+        "problem_title": "Longest Common Substring",
+        "status": "AC",
+        "submission_time": "2026-09-17T09:56:13.630776Z",
+        "time": 0.013,
+        "user_name": "nandhagk"
+      },
+      "sha256": "9d6ea2ff95bd23061b96e83c4ad6b807135dd6cb9751310cf83bb8931d7fda57",
+      "url": "https://judge.yosupo.jp/submission/403279"
+    }
+  ]
+}

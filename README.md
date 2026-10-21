@@ -74,6 +74,8 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `tree/prufer_code.hpp` | Prufer Code（木の符号化・復号） | [使い方](docs/prufer_code.md) |
+| `tree/cartesian_tree.hpp` | Cartesian Tree（根・親・左右の子） | [使い方](docs/cartesian_tree.md) |
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
@@ -95,6 +97,7 @@
 | --- | --- | --- |
 | `graph/flow/max_flow.hpp` | 最大流・最小カット | [使い方](docs/max_flow.md) |
 | `graph/flow/min_cost_flow.hpp` | 最小費用流・費用曲線 | [使い方](docs/min_cost_flow.md) |
+| `graph/flow/project_selection.hpp` | Project Selection（燃やす埋める） | [使い方](docs/project_selection.md) |
 
 ### マッチング
 
@@ -104,6 +107,18 @@
 | `graph/matching/general_matching.hpp` | General Matching（一般グラフ最大マッチング） | [使い方](docs/general_matching.md) |
 | `graph/matching/general_weighted_matching.hpp` | General Weighted Matching（一般グラフ最大重みマッチング） | [使い方](docs/general_weighted_matching.md) |
 | `graph/matching/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
+
+### トポロジカルソート
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/topological_sort.hpp` | トポロジカルソート・辞書順最小・閉路判定 | [使い方](docs/topological_sort.md) |
+
+### Euler 路
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/eulerian_trail.hpp` | 有向・無向 Euler 路（頂点列・辺 ID 列） | [使い方](docs/eulerian_trail.md) |
 
 ### 連結性
 
@@ -157,12 +172,14 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `sequence/lis.hpp` | 最長増加部分列（長さ・復元） | [使い方](docs/lis.md) |
+| `sequence/inversion_count.hpp` | 転倒数 | [使い方](docs/inversion_count.md) |
 
 ### 列・文字列
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `string/lcs.hpp` | 最長共通部分列 | [使い方](docs/lcs.md) |
+| `string/longest_common_substring.hpp` | 最長共通部分文字列 | [使い方](docs/longest_common_substring.md) |
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
@@ -198,7 +215,7 @@
 | --- | --- | --- |
 | `math/combinatorics/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
 | `math/combinatorics/binomial_prefix_sum_incremental.hpp` | 二項係数の prefix sum（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
-| `math/combinatorics/comb.hpp` | 階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
+| `math/combinatorics/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 
 ### Floor Sum
 
@@ -245,6 +262,7 @@
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |
 | `components/sequence_match.hpp` | 前方・後方の一致比較と Z algorithm | [使い方](docs/sequence_match.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
+| `components/factorial_table.hpp` | 型を指定する階乗・逆階乗テーブル | [使い方](docs/factorial_table.md) |
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |
 | `components/static_range_min.hpp` | ブロック分割による静的 RMQ | [使い方](docs/static_range_min.md) |
 | `components/static_top_tree_structure.hpp` | Static Top Tree の構造 | [使い方](docs/static_top_tree_structure.md) |

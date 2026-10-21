@@ -1,0 +1,5 @@
+{
+  "headers": ["graph/flow/project_selection.hpp"],
+  "unit": ["test/unit/project_selection.cpp"],
+  "sanitize": ["test/unit/project_selection.cpp"]
+}

@@ -1,0 +1,94 @@
+{
+  "retrieved_at": "2026-10-21T11:05:34.719632+00:00",
+  "listing": {
+    "count": 746,
+    "submissions": [
+      {
+        "id": 215554,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 23543808,
+        "problem_name": "cartesian_tree",
+        "problem_title": "Cartesian Tree",
+        "status": "AC",
+        "submission_time": "2024-06-17T11:18:57.284482Z",
+        "time": 0.021,
+        "user_name": "oldyan"
+      },
+      {
+        "id": 215553,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24072192,
+        "problem_name": "cartesian_tree",
+        "problem_title": "Cartesian Tree",
+        "status": "AC",
+        "submission_time": "2024-06-17T11:17:00.901522Z",
+        "time": 0.021,
+        "user_name": "oldyan"
+      },
+      {
+        "id": 405124,
+        "is_latest": true,
+        "lang": "cpp20",
+        "memory": 24129536,
+        "problem_name": "cartesian_tree",
+        "problem_title": "Cartesian Tree",
+        "status": "AC",
+        "submission_time": "2026-09-22T11:21:53.69111Z",
+        "time": 0.022,
+        "user_name": "Rohan_Kapri"
+      }
+    ]
+  },
+  "references": [
+    {
+      "overview": {
+        "id": 215554,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 23543808,
+        "problem_name": "cartesian_tree",
+        "problem_title": "Cartesian Tree",
+        "status": "AC",
+        "submission_time": "2024-06-17T11:18:57.284482Z",
+        "time": 0.021,
+        "user_name": "oldyan"
+      },
+      "sha256": "1a5c4a8e12be7fa7ed1b56225aec056d4eff1c6c4bdad87f7e5346fe1f8cf39a",
+      "url": "https://judge.yosupo.jp/submission/215554"
+    },
+    {
+      "overview": {
+        "id": 215553,
+        "is_latest": true,
+        "lang": "cpp",
+        "memory": 24072192,
+        "problem_name": "cartesian_tree",
+        "problem_title": "Cartesian Tree",
+        "status": "AC",
+        "submission_time": "2024-06-17T11:17:00.901522Z",
+        "time": 0.021,
+        "user_name": "oldyan"
+      },
+      "sha256": "01a965f1de3a320c7b824cc841117c8e9eb00ec35c0d55540f2a830930b9f3bb",
+      "url": "https://judge.yosupo.jp/submission/215553"
+    },
+    {
+      "overview": {
+        "id": 405124,
+        "is_latest": true,
+        "lang": "cpp20",
+        "memory": 24129536,
+        "problem_name": "cartesian_tree",
+        "problem_title": "Cartesian Tree",
+        "status": "AC",
+        "submission_time": "2026-09-22T11:21:53.69111Z",
+        "time": 0.022,
+        "user_name": "Rohan_Kapri"
+      },
+      "sha256": "4cccb1ed68357477d0658b01ed52ca072eb6abf2f110a73f812742540575e7ad",
+      "url": "https://judge.yosupo.jp/submission/405124"
+    }
+  ]
+}
