@@ -1,6 +1,29 @@
 from pathlib import Path
 
 
+def compact_source_pages(pages):
+    import sys
+    from onlinejudge_verify.documentation.front_matter import merge_front_matter, split_front_matter
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    try:
+        from tools.bundle import LIMIT, fit_source
+    finally:
+        sys.path.pop(0)
+    result = {}
+    for path, content in pages.items():
+        metadata, body = split_front_matter(content)
+        data = metadata.get("data", {})
+        original = data.get("bundledCode")
+        if isinstance(original, str):
+            generated = fit_source(original)
+            data.update(bundledCode=generated, bundledBytes=len(generated.encode("utf-8")),
+                        bundledCompressed=generated != original, bundledLimit=LIMIT)
+            content = merge_front_matter(metadata, body)
+        result[path] = content
+    return result
+
+
 def source_paths(plan, excluded):
     paths = set(plan["state"]["targets"]["headers"]) | set(plan["state"]["targets"]["verification"])
     return sorted(path for path in map(Path, paths) if not any(
@@ -31,7 +54,7 @@ def generate(plan):
         front_matter={"layout": "toppage", "title": "補助部品", "components": True},
         content=config.index_md.with_name("components.md").read_bytes(),
     ))
-    pages = build.render_pages(page_render_jobs=jobs, source_code_stats=stats, site_render_config=config)
+    pages = compact_source_pages(build.render_pages(page_render_jobs=jobs, source_code_stats=stats, site_render_config=config))
     pages.update(build.load_static_files(site_render_config=config))
     for path, content in pages.items():
         path.parent.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,101 @@
+{
+  "completed": true,
+  "checks": [
+    {
+      "source": "test/fps_compose.test.cpp",
+      "commands": [
+        [
+          "g++",
+          "-std=c++23",
+          "-O2",
+          "-DEVAL",
+          "-DONLINE_JUDGE",
+          "-ftrivial-auto-var-init=zero",
+          "-march=x86-64",
+          "-ffile-prefix-map=/workspace/cp-256k-study/budget/test__fps_compose.test.cpp/before=/source",
+          "/workspace/cp-256k-study/budget/test__fps_compose.test.cpp/before/source.cpp"
+        ],
+        [
+          "g++",
+          "-std=c++23",
+          "-O2",
+          "-DEVAL",
+          "-DONLINE_JUDGE",
+          "-ftrivial-auto-var-init=zero",
+          "-march=x86-64",
+          "-ffile-prefix-map=/workspace/cp-256k-study/budget/test__fps_compose.test.cpp/after=/source",
+          "/workspace/cp-256k-study/budget/test__fps_compose.test.cpp/after/source.cpp"
+        ]
+      ],
+      "binary_sha256": [
+        "87b9f434f92db31606e7a2f29c1acbc82221129911add1bbcf0cfe706191b291",
+        "87b9f434f92db31606e7a2f29c1acbc82221129911add1bbcf0cfe706191b291"
+      ],
+      "tokens_identical": true
+    },
+    {
+      "source": "test/fps_interpolate.test.cpp",
+      "commands": [
+        [
+          "g++",
+          "-std=c++23",
+          "-O2",
+          "-DEVAL",
+          "-DONLINE_JUDGE",
+          "-ftrivial-auto-var-init=zero",
+          "-march=x86-64",
+          "-ffile-prefix-map=/workspace/cp-256k-study/budget/test__fps_interpolate.test.cpp/before=/source",
+          "/workspace/cp-256k-study/budget/test__fps_interpolate.test.cpp/before/source.cpp"
+        ],
+        [
+          "g++",
+          "-std=c++23",
+          "-O2",
+          "-DEVAL",
+          "-DONLINE_JUDGE",
+          "-ftrivial-auto-var-init=zero",
+          "-march=x86-64",
+          "-ffile-prefix-map=/workspace/cp-256k-study/budget/test__fps_interpolate.test.cpp/after=/source",
+          "/workspace/cp-256k-study/budget/test__fps_interpolate.test.cpp/after/source.cpp"
+        ]
+      ],
+      "binary_sha256": [
+        "94661c1df240d5b6b0bf05581abaa714d13035bedf4c24adfa0e5f4359ae924a",
+        "94661c1df240d5b6b0bf05581abaa714d13035bedf4c24adfa0e5f4359ae924a"
+      ],
+      "tokens_identical": true
+    },
+    {
+      "source": "test/power_projection.test.cpp",
+      "commands": [
+        [
+          "g++",
+          "-std=c++23",
+          "-O2",
+          "-DEVAL",
+          "-DONLINE_JUDGE",
+          "-ftrivial-auto-var-init=zero",
+          "-march=x86-64",
+          "-ffile-prefix-map=/workspace/cp-256k-study/budget/test__power_projection.test.cpp/before=/source",
+          "/workspace/cp-256k-study/budget/test__power_projection.test.cpp/before/source.cpp"
+        ],
+        [
+          "g++",
+          "-std=c++23",
+          "-O2",
+          "-DEVAL",
+          "-DONLINE_JUDGE",
+          "-ftrivial-auto-var-init=zero",
+          "-march=x86-64",
+          "-ffile-prefix-map=/workspace/cp-256k-study/budget/test__power_projection.test.cpp/after=/source",
+          "/workspace/cp-256k-study/budget/test__power_projection.test.cpp/after/source.cpp"
+        ]
+      ],
+      "binary_sha256": [
+        "53acf411bcd982f0d93554d03bdb78d92aa2d13c827c6d6a315f89dbfac183e9",
+        "53acf411bcd982f0d93554d03bdb78d92aa2d13c827c6d6a315f89dbfac183e9"
+      ],
+      "tokens_identical": true
+    }
+  ]
+}

@@ -25,6 +25,6 @@
     <span id="code-status" role="status" aria-live="polite"></span>
   </div>
   <div id="code-original">{% include highlight.html extension=page.data._pathExtension content=page.data.code %}</div>
-  <div id="code-bundled" hidden>{% include highlight.html extension=page.data._pathExtension content=page.data.bundledCode %}</div>
+  <div id="code-bundled" data-source-bytes="{{ page.data.bundledBytes }}" data-compacted="{{ page.data.bundledCompressed }}" hidden>{% include highlight.html extension=page.data._pathExtension content=page.data.bundledCode %}</div>
 </div>
 <script defer src="{{ '/assets/js/library-code.js' | relative_url }}"></script>
