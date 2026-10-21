@@ -8,7 +8,7 @@
 
 | サイト | 内容 |
 | --- | --- |
-| [全体（256 KiB向け）](https://qandori.github.io/cp-library/) | 従来実装を全て掲載 |
+| [全体（256 KiB向け）](https://qandori.github.io/cp-library/) | 高速実装と軽量実装を掲載 |
 | [軽量版（64 KiB）](https://qandori.github.io/cp-library/lightweight/) | 同じ分類・項目順で64 KiB以内の実装を案内 |
 
 [サイズ制限と提出方法](docs/source_size.md)
@@ -337,9 +337,11 @@
 
 提出には [oj-bundle](https://github.com/online-judge-tools/verification-helper) の利用を想定しています。
 
-| 提出用ツール | 説明 |
+FPS も通常の `oj-bundle` だけで展開できます。専用の圧縮ツールは不要です。
+
+| メンテナー向けツール | 説明 |
 | --- | --- |
-| [tools/compact_fps.py](tools/compact_fps.py) | FPS の結合ソースの短縮（[使い方](docs/fps.md)） |
+| [tools/update_fps_headers.py](tools/update_fps_headers.py) | FPS の編集用原本から配布ヘッダーを更新（[説明](docs/fps_backend.md)） |
 
 例えば
 

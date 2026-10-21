@@ -60,7 +60,10 @@ def documentation_links(root, markdown):
         page = target.resolve().relative_to(root).as_posix() + '.html' if target else re.sub(r'\.md$', '.html', path)
         targets[path] = page
         origins[page] = path
-        for alias in front.get('redirect_from', []):
+        aliases = front.get('redirect_from', [])
+        if isinstance(aliases, str):
+            aliases = [aliases]
+        for alias in aliases:
             targets[alias.lstrip('/')] = page
     for source in (root / 'test').rglob('*.test.cpp'):
         path = source.relative_to(root).as_posix()
@@ -225,11 +228,9 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
 
 def remove_stale_pages(destination, pages):
     destination = Path(destination).resolve()
-    directory = destination / LIGHTWEIGHT
-    if not directory.exists():
+    if not destination.exists():
         return
-    directory.resolve().relative_to(destination)
     kept = {Path(path).resolve() for path in pages}
-    for path in directory.rglob('*.md'):
+    for path in destination.rglob('*.md'):
         if path.resolve() not in kept:
             path.unlink()

@@ -14,7 +14,7 @@ auto logarithm = f.log(10);
 
 Codeforces などの小さいソースサイズ上限向けの FPS です。法は 998244353、係数は定数項から順に格納します。`light_fps` と `LightFPS` は `LightFormalPowerSeries<mint>` の別名で、`std::vector<mint>` と同様の要素アクセス・イテレータ・サイズ変更を使えます。
 
-既存の [高速 FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) と別の型で、同じソース内に両方を include できます。軽量版は小さい NTT と Newton 法を共有し、既存版の大きな演算別カーネルを読み込みません。ソースサイズと既存版との速度差は [測定資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_speed.md) にあります。提出用コードはヘッダーを結合して作り、利用者のコードやほかのライブラリを含めた総バイト数を確認してください。
+[高速実装の FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) と別の型で、同じソース内に両方を include できます。軽量版は小さい NTT と Newton 法を共有し、高速実装の大きな演算別カーネルを読み込みません。ソースサイズと高速実装との速度差は [測定資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_speed.md) にあります。提出用コードはヘッダーを結合して作り、利用者のコードやほかのライブラリを含めた総バイト数を確認してください。
 
 `LightFormalPowerSeries<T>` は `mod()` が定数式となる法 998244353 の modint 型を指定できます。`T` は整数からの構築、`mod()`・`raw()`・`val()`・`inv()`・`pow()`、四則演算と等値比較に対応する必要があります。既定型以外は積・逆数・対数・指数・平方根などの演算ごとに共有する `mint` へ変換します。
 
