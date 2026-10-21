@@ -24,24 +24,24 @@ mint* other_finv();
 const unsigned before_main = comb(10, 3).val();
 int main() {
     if (before_main != 120 || fact[0] != mint(7)) std::abort();
-    if (other_fact() != fact || other_finv() != finv) std::abort();
+    if (other_fact() != comb_detail::factorial || other_finv() != comb_detail::inverse_factorial) std::abort();
     if (finv[0] != mint(1) || comb(20, 10).val() != 184756) std::abort();
 }
 '''
     secondary = common + '''
 const bool marked = [] {
     if (fact[0] != mint(1) || finv[0] != mint(1) || comb(10, 3).val() != 120) std::abort();
-    fact[0] = 7;
+    comb_detail::factorial[0] = 7;
     return true;
 }();
-mint* other_fact() { return fact; }
-mint* other_finv() { return finv; }
+mint* other_fact() { return comb_detail::factorial; }
+mint* other_finv() { return comb_detail::inverse_factorial; }
 '''
     default = '''
 #include "math/combinatorics/comb.hpp"
 #include <cstdlib>
 #include <type_traits>
-static_assert(std::is_array_v<decltype(fact)> && std::extent_v<decltype(fact)> == COMB_INF + 1);
+static_assert(std::is_same_v<decltype(fact[0]), mint>);
 int main() {
     unsigned long long expected = 1;
     for (int i = 0; i <= COMB_INF; ++i) {
@@ -76,9 +76,9 @@ int main() {
                 options += ['-march=native', '-ftrivial-auto-var-init=zero', '-DATCODER', '-DONLINE_JUDGE',
                             '-fconstexpr-depth=1024', '-fconstexpr-loop-limit=524288', '-fconstexpr-ops-limit=2097152']
             run([*flags, *options, str(temporary / 'default.cpp'), '-o', executable]); run([executable])
-            checks[-1]['default_limit'] = 502022
+            checks[-1]['default_limit'] = 10000000
             checks[-1]['release_flags'] = options
-            print(compiler, 'default limit and array types passed', flush=True)
+            print(compiler, 'default limit and accessors passed', flush=True)
             for target in ['math/combinatorics/comb.hpp', 'test/comb.test.cpp']:
                 bundle = subprocess.check_output(['oj-bundle', target], cwd=root, text=True, stderr=subprocess.DEVNULL)
                 assert '#include "' not in bundle
