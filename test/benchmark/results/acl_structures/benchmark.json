@@ -1,0 +1,383 @@
+{
+  "started_at": "2026-10-21T12:53:58.859826+00:00",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.30\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "affinity": [
+    2
+  ],
+  "acl_commit": "864245a00b00dd008d1abfdc239618fdb7d139da",
+  "stack_limit": [
+    -1,
+    -1
+  ],
+  "trials": 9,
+  "n": 200000,
+  "q": 500000,
+  "sources": {
+    "data_structure/union_find.hpp": "83b4e5d7f1bd821d551463161ac9f8e3a43241fda197b4240ba1264eef0c2499",
+    "data_structure/fenwick_tree.hpp": "9571f6b05eb2c39e46979d867dba0bd5d43644cccfe699ec224c3e83bcb37274",
+    "data_structure/segment_tree/lazy_segtree.hpp": "419d6b8300e3ac1b5305d48b9ec8212b9183543a768a6d2775c6ef7de47376d0",
+    "components/scc_core.hpp": "4ec3a1efe509c6e4147e5504a1d952f5c17dcc877a632643c012cdd76b056a2c",
+    "graph/connectivity/scc.hpp": "647bfc1e62e4680b1859c1129e703894d4c4ff9ad55ec36b183c5d152fa2c989",
+    "graph/two_sat.hpp": "c67917ab16eddaf83316a13f9ec2ee745b23376c7b782abf3dcb308b1571ae63",
+    "test/benchmark/acl_structures.cpp": "e1d68403fe215fe5a82968108a043fe2af57edb041675c789c363a67c3097a8a",
+    "test/benchmark/acl_structures.py": "39db2fe8f210d787947c7e063aff437e5b7edb13d0ffebcbd397fb2784b8668a"
+  },
+  "flags": {
+    "generic": [
+      "-std=c++23",
+      "-O2",
+      "-DNDEBUG",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I",
+      "/workspace/cp-library",
+      "-isystem",
+      "/workspace/cp-comb-generic-study/ac-library"
+    ],
+    "native": [
+      "-std=c++23",
+      "-O2",
+      "-DNDEBUG",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I",
+      "/workspace/cp-library",
+      "-isystem",
+      "/workspace/cp-comb-generic-study/ac-library",
+      "-march=native"
+    ]
+  },
+  "results": [
+    {
+      "variant": "generic",
+      "scenario": "dsu_mixed",
+      "median_ms": {
+        "acl": 7.798501,
+        "ours": 7.628295
+      },
+      "acl_over_ours": 1.0223124564532442,
+      "checksum": "1593433482364824967"
+    },
+    {
+      "variant": "generic",
+      "scenario": "dsu_queries",
+      "median_ms": {
+        "acl": 3.902996,
+        "ours": 4.561719
+      },
+      "acl_over_ours": 0.8555976376449316,
+      "checksum": "17124243513395895616"
+    },
+    {
+      "variant": "generic",
+      "scenario": "dsu_groups",
+      "median_ms": {
+        "acl": 2.379228,
+        "ours": 0.787527
+      },
+      "acl_over_ours": 3.021138322876549,
+      "checksum": "10663504207552361121"
+    },
+    {
+      "variant": "generic",
+      "scenario": "fenwick_random",
+      "median_ms": {
+        "acl": 11.343267,
+        "ours": 11.880497,
+        "unpadded": 11.241684
+      },
+      "acl_over_ours": 0.9547805112866912,
+      "checksum": "10270765668520173100"
+    },
+    {
+      "variant": "generic",
+      "scenario": "fenwick_local",
+      "median_ms": {
+        "acl": 11.200481,
+        "ours": 9.605316,
+        "unpadded": 10.241666
+      },
+      "acl_over_ours": 1.1660710589844208,
+      "checksum": "16188709251362949181"
+    },
+    {
+      "variant": "generic",
+      "scenario": "fenwick_prefix",
+      "median_ms": {
+        "acl": 8.927143,
+        "ours": 8.903568,
+        "unpadded": 8.96469
+      },
+      "acl_over_ours": 1.0026478148984765,
+      "checksum": "7433753729775068165"
+    },
+    {
+      "variant": "generic",
+      "scenario": "lazy_mixed",
+      "median_ms": {
+        "acl": 447.17847,
+        "ours": 332.205204
+      },
+      "acl_over_ours": 1.3460911045812516,
+      "checksum": "2863521034491697999"
+    },
+    {
+      "variant": "generic",
+      "scenario": "lazy_read_heavy",
+      "median_ms": {
+        "acl": 401.154735,
+        "ours": 268.795184
+      },
+      "acl_over_ours": 1.4924178663855823,
+      "checksum": "10204247665454800360"
+    },
+    {
+      "variant": "generic",
+      "scenario": "lazy_point",
+      "median_ms": {
+        "acl": 299.228931,
+        "ours": 49.5547
+      },
+      "acl_over_ours": 6.038356220499771,
+      "checksum": "3742543481022469149"
+    },
+    {
+      "variant": "generic",
+      "scenario": "scc_random",
+      "median_ms": {
+        "acl": 23.66418,
+        "ours": 16.900605
+      },
+      "acl_over_ours": 1.4001972118749597,
+      "checksum": "13564151840884818882"
+    },
+    {
+      "variant": "generic",
+      "scenario": "scc_dag",
+      "median_ms": {
+        "acl": 17.961488,
+        "ours": 13.919718
+      },
+      "acl_over_ours": 1.290362922582196,
+      "checksum": "1457951641905131232"
+    },
+    {
+      "variant": "generic",
+      "scenario": "scc_cycle",
+      "median_ms": {
+        "acl": 14.791554,
+        "ours": 2.554542
+      },
+      "acl_over_ours": 5.790295872997977,
+      "checksum": "5720871316173295873"
+    },
+    {
+      "variant": "generic",
+      "scenario": "scc_path",
+      "median_ms": {
+        "acl": 19.272991,
+        "ours": 5.902235
+      },
+      "acl_over_ours": 3.265371677000323,
+      "checksum": "1457951641905131232"
+    },
+    {
+      "variant": "generic",
+      "scenario": "sat_sat",
+      "median_ms": {
+        "acl": 18.7176,
+        "ours": 15.589352
+      },
+      "acl_over_ours": 1.2006656851420123,
+      "checksum": "1"
+    },
+    {
+      "variant": "generic",
+      "scenario": "sat_unsat",
+      "median_ms": {
+        "acl": 22.872473,
+        "ours": 15.715492
+      },
+      "acl_over_ours": 1.4554092865816737,
+      "checksum": "0"
+    },
+    {
+      "variant": "generic",
+      "scenario": "sat_units",
+      "median_ms": {
+        "acl": 6.545867,
+        "ours": 3.594244
+      },
+      "acl_over_ours": 1.8212082986018756,
+      "checksum": "1"
+    },
+    {
+      "variant": "native",
+      "scenario": "dsu_mixed",
+      "median_ms": {
+        "acl": 7.558246,
+        "ours": 7.549312
+      },
+      "acl_over_ours": 1.001183419098323,
+      "checksum": "1593433482364824967"
+    },
+    {
+      "variant": "native",
+      "scenario": "dsu_queries",
+      "median_ms": {
+        "acl": 3.647754,
+        "ours": 4.63744
+      },
+      "acl_over_ours": 0.7865878588186586,
+      "checksum": "17124243513395895616"
+    },
+    {
+      "variant": "native",
+      "scenario": "dsu_groups",
+      "median_ms": {
+        "acl": 2.33502,
+        "ours": 0.841081
+      },
+      "acl_over_ours": 2.77621299256552,
+      "checksum": "10663504207552361121"
+    },
+    {
+      "variant": "native",
+      "scenario": "fenwick_random",
+      "median_ms": {
+        "acl": 10.986198,
+        "ours": 10.339459,
+        "unpadded": 10.744482
+      },
+      "acl_over_ours": 1.062550564782935,
+      "checksum": "10270765668520173100"
+    },
+    {
+      "variant": "native",
+      "scenario": "fenwick_local",
+      "median_ms": {
+        "acl": 10.666994,
+        "ours": 8.94348,
+        "unpadded": 8.339847
+      },
+      "acl_over_ours": 1.1927117855689287,
+      "checksum": "16188709251362949181"
+    },
+    {
+      "variant": "native",
+      "scenario": "fenwick_prefix",
+      "median_ms": {
+        "acl": 8.448422,
+        "ours": 7.925271,
+        "unpadded": 9.179517
+      },
+      "acl_over_ours": 1.0660104872123617,
+      "checksum": "7433753729775068165"
+    },
+    {
+      "variant": "native",
+      "scenario": "lazy_mixed",
+      "median_ms": {
+        "acl": 435.331922,
+        "ours": 359.896326
+      },
+      "acl_over_ours": 1.2096036845899896,
+      "checksum": "2863521034491697999"
+    },
+    {
+      "variant": "native",
+      "scenario": "lazy_read_heavy",
+      "median_ms": {
+        "acl": 396.381408,
+        "ours": 291.710103
+      },
+      "acl_over_ours": 1.3588196086578463,
+      "checksum": "10204247665454800360"
+    },
+    {
+      "variant": "native",
+      "scenario": "lazy_point",
+      "median_ms": {
+        "acl": 274.045728,
+        "ours": 47.517402
+      },
+      "acl_over_ours": 5.767270862156985,
+      "checksum": "3742543481022469149"
+    },
+    {
+      "variant": "native",
+      "scenario": "scc_random",
+      "median_ms": {
+        "acl": 25.175124,
+        "ours": 17.255168
+      },
+      "acl_over_ours": 1.458990373202973,
+      "checksum": "13564151840884818882"
+    },
+    {
+      "variant": "native",
+      "scenario": "scc_dag",
+      "median_ms": {
+        "acl": 19.190259,
+        "ours": 14.330593
+      },
+      "acl_over_ours": 1.33911129846476,
+      "checksum": "1457951641905131232"
+    },
+    {
+      "variant": "native",
+      "scenario": "scc_cycle",
+      "median_ms": {
+        "acl": 20.427537,
+        "ours": 2.727248
+      },
+      "acl_over_ours": 7.490164810827618,
+      "checksum": "5720871316173295873"
+    },
+    {
+      "variant": "native",
+      "scenario": "scc_path",
+      "median_ms": {
+        "acl": 21.854661,
+        "ours": 6.14784
+      },
+      "acl_over_ours": 3.554851948001249,
+      "checksum": "1457951641905131232"
+    },
+    {
+      "variant": "native",
+      "scenario": "sat_sat",
+      "median_ms": {
+        "acl": 20.119501,
+        "ours": 16.741814
+      },
+      "acl_over_ours": 1.2017515545209139,
+      "checksum": "1"
+    },
+    {
+      "variant": "native",
+      "scenario": "sat_unsat",
+      "median_ms": {
+        "acl": 23.525011,
+        "ours": 16.107213
+      },
+      "acl_over_ours": 1.4605264734501242,
+      "checksum": "0"
+    },
+    {
+      "variant": "native",
+      "scenario": "sat_units",
+      "median_ms": {
+        "acl": 6.862012,
+        "ours": 3.665139
+      },
+      "acl_over_ours": 1.8722378605559025,
+      "checksum": "1"
+    }
+  ],
+  "completed": true,
+  "completed_at": "2026-10-21T12:54:49.960434+00:00"
+}

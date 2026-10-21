@@ -1,0 +1,23 @@
+---
+title: "Fenwick Tree"
+documentation_of: //data_structure/fenwick_tree.hpp
+---
+
+```cpp
+#include "lib/data_structure/fenwick_tree.hpp"
+
+FenwickTree<long long> tree(std::vector<long long>{1, 2, 3, 4});
+tree.add(1, 5);
+auto sum = tree.sum(1, 3); // 10
+auto prefix = tree.sum(3); // 11
+```
+
+`FenwickTree<T>(n)` は長さ `n` の零列、ベクトルを渡す構築はその列で初期化します。添字は 0 始まり、`add(p,x)` は一点加算、`sum(l,r)` は半開区間の和、`sum(r)` は `[0,r)` の和、`size()` は要素数です。空列・空区間にも対応します。コピーは独立します。
+
+`T` は零初期化・加減算ができる可換群の型です。整数、modint などを指定できます。整数型は内部を符号なし整数にし、符号付きオーバーフローを避けます。結果は型のビット幅に応じた剰余です。`bool` は指定できません。浮動小数点型は和の順序によって丸め誤差が変わります。
+
+長さは非負の `int`、更新位置は `[0,n)`、区間は `0 <= l <= r <= n` が必要です。
+
+両端の prefix に共通する祖先を読み飛ばします。既定では 1024 要素ごとに 1 要素分のパディングを入れ、キャッシュの競合を減らします。`FenwickTree<T, false>` で無効にできます。効果は区間長・CPU・コンパイル条件に依存します。[比較資料](../test/benchmark/acl_structures.md) に両方の測定を載せています。
+
+長さを $$n$$ として、構築・空間は $$O(n)$$、加算・和は $$O(\log(n+1))$$、`size()` は $$O(1)$$ です。型の演算・コピーは $$O(1)$$ とします。
