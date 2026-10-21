@@ -2,9 +2,7 @@
 <p class="source-path"><code>{{ page.data.path | escape }}</code> · <a href="https://github.com/{{ site.repository }}/blob/main/{{ page.data.path }}">GitHub で見る</a></p>
 {% if page.data.copyByteCount %}
 <p class="profile-note">{% if page.size_profile == 'lightweight' %}64 KiBサイト{% else %}全体サイト（256 KiB向け）{% endif %}{% if page.data.implementationKind %} · {{ page.data.implementationKind }}{% endif %} · 展開・参照URL込み {{ page.data.copyByteCount }} B
-{% if page.data.counterpartPage and page.data.implementationLinks.size == 0 %}
- · <a href="{{ page.data.counterpartPage | relative_url }}">{% if page.size_profile == 'lightweight' %}全体サイトで見る{% else %}64 KiBサイトで見る{% endif %}</a>
-{% elsif page.data.counterpartPage == nil %} · 軽量実装なし{% endif %}</p>
+{% if page.data.counterpartPage == nil %} · 軽量実装なし{% endif %}</p>
 {% if page.data.implementationApi %}
 <p>この項目の軽量実装は <code>{{ page.data.implementationApi | escape }}</code> です。以下の使用例・API一覧は共有ヘッダーの説明です。</p>
 {% endif %}
