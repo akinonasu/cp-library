@@ -74,6 +74,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `tree/prufer_code.hpp` | Prufer Code（木の符号化・復号） | [使い方](docs/prufer_code.md) |
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
