@@ -108,6 +108,12 @@
 | `graph/matching/general_weighted_matching.hpp` | General Weighted Matching（一般グラフ最大重みマッチング） | [使い方](docs/general_weighted_matching.md) |
 | `graph/matching/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
 
+### Euler 路
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/eulerian_trail.hpp` | 有向・無向 Euler 路（頂点列・辺 ID 列） | [使い方](docs/eulerian_trail.md) |
+
 ### 連結性
 
 | ファイル | 内容 | 使い方 |
