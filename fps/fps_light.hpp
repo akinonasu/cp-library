@@ -12,6 +12,11 @@
 #include <utility>
 #include <vector>
 
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
 template<class T = mint>
 struct LightFormalPowerSeries : std::vector<T> {
 	static_assert(T::mod() == 998244353);
@@ -121,29 +126,23 @@ struct LightFormalPowerSeries : std::vector<T> {
 		const int n = precision(deg);
 		if (!n) return {};
 		assert(!this->empty() && (*this)[0] != T(0));
-		if constexpr (!std::is_same_v<T, mint>) {
-			LightFormalPowerSeries<mint> work(this->size());
-			for (std::size_t i = 0; i < this->size(); ++i) work[i] = mint::raw((*this)[i].val());
-			auto value = work.inv(n);
-			F result(n);
-			for (int i = 0; i < n; ++i) result[i] = T::raw(value[i].val());
-			return result;
-		} else {
-			F result{(*this)[0].inv()};
-			for (int k = 1; k < n; k *= 2) {
-				const int size = k * 2, m = std::min(size, n);
-				F a = pre(m), b = result;
-				a.resize(size), b.resize(size);
-				fps_light_detail::transform(a);
-				fps_light_detail::transform(b);
-				for (int i = 0; i < size; ++i) a[i] *= b[i];
-				fps_light_detail::transform(a, true);
-				std::fill(a.begin(), a.begin() + k, T(0));
-				fps_light_detail::transform(a);
-				for (int i = 0; i < size; ++i) a[i] *= b[i];
-				fps_light_detail::transform(a, true);
-				result.resize(m);
-				for (int i = k; i < m; ++i) result[i] = -a[i];
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().inv(n));
+		else {
+			const int work = newton_precision(n), initial = std::min(work, 32);
+			F result(initial);
+			const T inverse = (*this)[0].inv();
+			result[0] = inverse;
+			for (int i = 1; i < initial; ++i) {
+				T sum = 0;
+				for (int j = 1; j <= i && std::size_t(j) < this->size(); ++j) sum += (*this)[j] * result[i - j];
+				result[i] = -sum * inverse;
+			}
+			for (int k = initial; k < work; k *= 2) inverse_step(*this, result, std::min(k * 2, work));
+			result.resize(n);
+			for (int i = work; i < n; ++i) {
+				T sum = 0;
+				for (int j = 1; j <= i && std::size_t(j) < this->size(); ++j) sum += (*this)[j] * result[i - j];
+				result[i] = -sum * inverse;
 			}
 			return result;
 		}
@@ -151,54 +150,168 @@ struct LightFormalPowerSeries : std::vector<T> {
 	F div_series(const F &g, int deg = -1) const {
 		const int n = precision(deg);
 		if (!n) return {};
-		F result = multiply(pre(n), g.inv(n)).pre(n);
-		result.resize(n);
-		return result;
+		assert(!g.empty() && g[0] != T(0));
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().div_series(g.native(), n));
+		else {
+			if (n <= 32) {
+				F result(n);
+				const T inverse = g[0].inv();
+				for (int i = 0; i < n; ++i) {
+					T value = std::size_t(i) < this->size() ? (*this)[i] : T(0);
+					for (int j = 1; j <= i && std::size_t(j) < g.size(); ++j) value -= g[j] * result[i - j];
+					result[i] = value * inverse;
+				}
+				return result;
+			}
+			const int work = newton_precision(n), k = std::bit_floor(unsigned(work - 1)), length = k * 2;
+			F inverse = g.inv(k), result = pre(k);
+			const T constant = inverse[0];
+			inverse.resize(length), result.resize(length);
+			fps_light_detail::transform(inverse);
+			fps_light_detail::transform(result);
+			fps_light_detail::pointwise(result, inverse);
+			fps_light_detail::transform(result, true);
+			std::fill(result.begin() + k, result.end(), T(0));
+			F quotient = result, error = g.pre(work);
+			error.resize(length);
+			fps_light_detail::transform(quotient);
+			fps_light_detail::transform(error);
+			fps_light_detail::pointwise(error, quotient);
+			fps_light_detail::transform(error, true);
+			std::fill(error.begin(), error.begin() + k, T(0));
+			for (int i = k; i < work; ++i) error[i] = (std::size_t(i) < this->size() ? (*this)[i] : T(0)) - error[i];
+			std::fill(error.begin() + work, error.end(), T(0));
+			fps_light_detail::transform(error);
+			fps_light_detail::pointwise(error, inverse);
+			fps_light_detail::transform(error, true);
+			result.resize(n);
+			std::copy(error.begin() + k, error.begin() + work, result.begin() + k);
+			for (int i = work; i < n; ++i) {
+				T value = std::size_t(i) < this->size() ? (*this)[i] : T(0);
+				for (int j = 1; j <= i && std::size_t(j) < g.size(); ++j) value -= g[j] * result[i - j];
+				result[i] = value * constant;
+			}
+			return result;
+		}
 	}
 	F log(int deg = -1) const {
 		const int n = precision(deg);
 		if (!n) return {};
 		assert(!this->empty() && (*this)[0] == T(1));
-		F result = multiply(pre(n).diff().pre(n - 1), inv(n)).pre(n - 1);
-		result.resize(n);
-		return result.integral();
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().log(n));
+		else {
+			F result = pre(n).diff().pre(n - 1).div_series(pre(n), n - 1);
+			result.resize(n);
+			return result.integral();
+		}
 	}
 	F exp(int deg = -1) const {
 		const int n = precision(deg);
 		if (!n) return {};
 		assert(this->empty() || (*this)[0] == T(0));
-		F result{T(1)};
-		for (int k = 1; k < n; k *= 2) {
-			const int m = std::min(k * 2, n);
-			F correction = pre(m);
-			correction.resize(m);
-			correction -= result.log(m);
-			correction[0] += T(1);
-			result = multiply(result, correction).pre(m);
-			result.resize(m);
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().exp(n));
+		else {
+			const int work = newton_precision(n), initial = std::min(work, 32);
+			const auto &inv = inverses(n);
+			F result(initial);
+			result[0] = T(1);
+			for (int i = 1; i < initial; ++i) {
+				T sum = 0;
+				for (int j = 1; j <= i && std::size_t(j) < this->size(); ++j) sum += T(j) * (*this)[j] * result[i - j];
+				result[i] = sum * inv[i];
+			}
+			if (work == n && initial == n) return result;
+			F reciprocal = result.inv(initial);
+			for (int k = initial; k < work; k *= 2) {
+				const int length = k * 2, m = std::min(length, work);
+				if (reciprocal.size() < std::size_t(k)) inverse_step(result, reciprocal, k);
+				F frequency = result, inverse = reciprocal, error(length);
+				frequency.resize(length), inverse.resize(length);
+				fps_light_detail::transform(frequency);
+				fps_light_detail::transform(inverse);
+				for (int i = 1; i < m && std::size_t(i) < this->size(); ++i) error[i - 1] = (*this)[i] * T(i);
+				fps_light_detail::transform(error);
+				fps_light_detail::pointwise(error, frequency);
+				fps_light_detail::transform(error, true);
+				std::fill(error.begin(), error.begin() + k - 1, T(0));
+				std::fill(error.begin() + m - 1, error.end(), T(0));
+				fps_light_detail::transform(error);
+				fps_light_detail::pointwise(error, inverse);
+				fps_light_detail::transform(error, true);
+				for (int i = m - 1; i >= k; --i) error[i] = error[i - 1] * inv[i];
+				std::fill(error.begin(), error.begin() + k, T(0));
+				std::fill(error.begin() + m, error.end(), T(0));
+				fps_light_detail::transform(error);
+				fps_light_detail::pointwise(error, frequency);
+				fps_light_detail::transform(error, true);
+				result.resize(m);
+				std::copy(error.begin() + k, error.begin() + m, result.begin() + k);
+			}
+			result.resize(n);
+			for (int i = work; i < n; ++i) {
+				T sum = 0;
+				for (int j = 1; j <= i && std::size_t(j) < this->size(); ++j) sum += T(j) * (*this)[j] * result[i - j];
+				result[i] = sum * inv[i];
+			}
+			return result;
 		}
-		return result;
 	}
 	F sqrt(int deg = -1) const {
 		const int n = precision(deg);
 		if (!n) return {};
-		int first = 0, last = static_cast<int>(std::min(this->size(), std::size_t(n)));
-		while (first < last && (*this)[first] == T(0)) ++first;
-		if (first == last) return F(n);
-		if (first & 1) return {};
-		auto constant = scalar_sqrt((*this)[first]);
-		if (!constant) return {};
-		const int shift = first / 2, target = n - shift;
-		F f(this->begin() + first, this->begin() + last), result{*constant};
-		const T half = T(2).inv();
-		for (int k = 1; k < target; k *= 2) {
-			const int m = std::min(k * 2, target);
-			F next = f.div_series(result, m);
-			result.resize(m);
-			for (int i = 0; i < m; ++i) result[i] = (result[i] + next[i]) * half;
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().sqrt(n));
+		else {
+			int first = 0, last = static_cast<int>(std::min(this->size(), std::size_t(n)));
+			while (first < last && (*this)[first] == T(0)) ++first;
+			if (first == last) return F(n);
+			if (first & 1) return {};
+			auto constant = scalar_sqrt((*this)[first]);
+			if (!constant) return {};
+			const int shift = first / 2, target = n - shift, work = newton_precision(target), initial = std::min(work, 32);
+			F f(this->begin() + first, this->begin() + last), result(initial);
+			const T half = T(2).inv(), factor = (T(2) * *constant).inv();
+			result[0] = *constant;
+			for (int i = 1; i < initial; ++i) {
+				T value = std::size_t(i) < f.size() ? f[i] : T(0);
+				for (int j = 1; j < i; ++j) value -= result[j] * result[i - j];
+				result[i] = value * factor;
+			}
+			if (initial == target) {
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+			F reciprocal = result.inv(initial);
+			for (int k = initial; k < work; k *= 2) {
+				const int length = k * 2, m = std::min(length, work);
+				F error;
+				if (reciprocal.size() < std::size_t(k)) inverse_step(result, reciprocal, k, &error);
+				if (error.empty()) { error = result; fps_light_detail::transform(error); }
+				F inverse = reciprocal;
+				fps_light_detail::pointwise(error, error);
+				fps_light_detail::transform(error, true);
+				error.resize(length), inverse.resize(length);
+				for (int i = 0; i < m - k; ++i) {
+					T low = std::size_t(i) < f.size() ? f[i] : T(0);
+					T high = std::size_t(k + i) < f.size() ? f[k + i] : T(0);
+					error[i] = (low + high - error[i]) * half;
+				}
+				std::fill(error.begin() + m - k, error.end(), T(0));
+				fps_light_detail::transform(error);
+				fps_light_detail::transform(inverse);
+				fps_light_detail::pointwise(error, inverse);
+				fps_light_detail::transform(error, true);
+				result.resize(m);
+				std::copy_n(error.begin(), m - k, result.begin() + k);
+			}
+			result.resize(target);
+			for (int i = work; i < target; ++i) {
+				T value = std::size_t(i) < f.size() ? f[i] : T(0);
+				for (int j = 1; j < i; ++j) value -= result[j] * result[i - j];
+				result[i] = value * factor;
+			}
+			result.insert(result.begin(), shift, T(0));
+			return result;
 		}
-		result.insert(result.begin(), shift, T(0));
-		return result;
 	}
 	F pow(long long k) const {
 		assert(k >= 0);
@@ -246,6 +359,38 @@ struct LightFormalPowerSeries : std::vector<T> {
 	}
 
   private:
+	static int newton_precision(int n) {
+		const int prefix = std::bit_floor(unsigned(n));
+		return prefix >= 4096 && n - prefix <= 4 ? prefix : n;
+	}
+	using Native = LightFormalPowerSeries<mint>;
+	Native native() const {
+		Native result(this->size());
+		for (std::size_t i = 0; i < this->size(); ++i) result[i] = mint::raw((*this)[i].val());
+		return result;
+	}
+	static F from_native(const Native &a) {
+		F result(a.size());
+		for (std::size_t i = 0; i < a.size(); ++i) result[i] = T::raw(a[i].val());
+		return result;
+	}
+	static void inverse_step(const F &f, F &result, int n, F *frequency = nullptr) {
+		const int k = static_cast<int>(result.size()), length = k * 2;
+		assert(k > 0 && std::has_single_bit(unsigned(k)) && k < n && n <= length);
+		F error = f.pre(n), inverse = result;
+		error.resize(length), inverse.resize(length);
+		fps_light_detail::transform(error);
+		if (frequency) *frequency = error;
+		fps_light_detail::transform(inverse);
+		fps_light_detail::pointwise(error, inverse);
+		fps_light_detail::transform(error, true);
+		std::fill(error.begin(), error.begin() + k, T(0));
+		fps_light_detail::transform(error);
+		fps_light_detail::pointwise(error, inverse);
+		fps_light_detail::transform(error, true);
+		result.resize(n);
+		for (int i = k; i < n; ++i) result[i] = -error[i];
+	}
 	int precision(int deg) const {
 		assert(this->size() <= std::size_t(std::numeric_limits<int>::max()));
 		int n = deg < 0 ? static_cast<int>(this->size()) : deg;
@@ -280,5 +425,9 @@ struct LightFormalPowerSeries : std::vector<T> {
 
 using light_fps = LightFormalPowerSeries<>;
 using LightFPS = light_fps;
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 
 #endif

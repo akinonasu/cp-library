@@ -224,11 +224,61 @@ void square_roots() {
 		equal(make(monomial).sqrt(n + 3), padded(expected, n + 3));
 	}
 }
+void dense_boundaries() {
+	std::mt19937_64 rng(813729);
+	for (int n : {127, 128, 129, 255, 256, 257, 511, 512, 513, 1023, 1024, 1025, 4095, 4096, 4097, 4098, 4099, 4100, 4101, 4103, 16385}) {
+		V a = random_values(rng, n);
+		a[0] = 7;
+		auto f = make(a), inverse_f = f.inv();
+		V unit(n); unit[0] = 1;
+		equal((f * inverse_f).pre(n), unit);
+		equal(inverse_f.pre(32), inverse(a, 32));
+		a[0] = 1;
+		f = make(a);
+		auto logarithm_f = f.log();
+		equal(logarithm_f.pre(32), logarithm(a, 32));
+		check(logarithm_f.exp() == f);
+		check(logarithm_f.diff().pre(n - 1) == (f.diff() * f.inv()).pre(n - 1));
+		a[0] = 0;
+		f = make(a);
+		auto exponential_f = f.exp();
+		equal(exponential_f.pre(32), exponential(a, 32));
+		check(exponential_f.log() == f);
+		check(exponential_f.diff().pre(n - 1) == (exponential_f * f.diff()).pre(n - 1));
+		for (int shift : {0, 3}) {
+			V square_root = random_values(rng, n);
+			std::fill(square_root.begin(), square_root.begin() + shift, 0);
+			square_root[shift] = 7;
+			auto r = make(square_root), square = (r * r).pre(n), computed = square.sqrt();
+			check(computed.size() == std::size_t(n));
+			check((computed * computed).pre(n) == square);
+			check(computed[shift] == mint(7));
+		}
+	}
+}
+
+void closed_form_tails() {
+	for (int n : {8192, 8193, 8194, 8195, 8196, 8197}) {
+		V ones(n, 1), ramp(n), logarithm(n), reciprocal(n);
+		logarithm[1] = 1;
+		for (int i = 0; i < n; ++i) ramp[i] = i + 1;
+		for (int i = 2; i < n; ++i) logarithm[i] = mod - (mod / U(i)) * logarithm[mod % U(i)] % mod;
+		reciprocal[0] = 1; reciprocal[1] = mod - 2; reciprocal[2] = 1;
+		equal(make(ramp).inv(), reciprocal);
+		equal(make(ones).log(), logarithm);
+		equal(make(logarithm).exp(), ones);
+		equal(make(ramp).sqrt(), ones);
+		equal(make(ramp).div_series(make(ones)), ones);
+	}
+}
+
 }
 
 int main() {
 	basics();
 	series();
 	square_roots();
+	dense_boundaries();
+	closed_form_tails();
 	std::printf("light FPS: %llu independent checks passed\n", static_cast<unsigned long long>(checks));
 }
