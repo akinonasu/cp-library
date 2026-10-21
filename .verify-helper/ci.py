@@ -113,7 +113,7 @@ def build_plan(root, previous=None, *, environment, force=False):
     root = root.resolve()
     targets = {
         "headers": sorted(path.relative_to(root).as_posix()
-                          for folder in ("components", "convolution", "fps", "data_structure", "graph", "tree", "math", "sequence", "string")
+                          for folder in ("components", "convolution", "fps", "data_structure", "graph", "tree", "math", "sequence", "string", "geometry")
                           for path in (root / folder).rglob("*.hpp")),
         "unit": sorted(path.relative_to(root).as_posix() for path in (root / "test/unit").rglob("*.cpp")),
         "verification": sorted(path.relative_to(root).as_posix() for path in (root / "test").rglob("*.test.cpp")),
