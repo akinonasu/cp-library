@@ -17,6 +17,7 @@ COMPACT_THRESHOLD = 192 * 1024
 def fit_source(source, limit=LIMIT):
     if limit <= 0:
         raise ValueError('the source limit must be positive')
+    source = source.replace('\r\n', '\n')
     if len(source.encode('utf-8')) >= min(limit, COMPACT_THRESHOLD):
         source = compact(source)
     size = len(source.encode('utf-8'))

@@ -131,6 +131,11 @@ class BundleTest(unittest.TestCase):
         self.assertEqual(body, b'Example text\n')
         self.assertEqual(generated[Path('plain.md')], b'Plain text\n')
 
+    def test_windows_line_endings(self):
+        source = '#line 1 "source.cpp"\n' + 'int f(int x);\n' * 25000
+        self.assertEqual(fit_source(source.replace('\n', '\r\n')), fit_source(source))
+        self.assertEqual(fit_source('int main() {}\r\n'), 'int main() {}\n')
+
 
 if __name__ == '__main__':
     unittest.main()
