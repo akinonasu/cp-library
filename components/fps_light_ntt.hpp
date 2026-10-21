@@ -11,24 +11,20 @@
 #include <immintrin.h>
 #endif
 
-namespace fps_light_detail {
-struct Roots {
-	std::vector<mint> forward{0, 1}, inverse{0, 1};
-	void prepare(std::size_t n) {
-		std::size_t begin = forward.size();
-		if (begin >= n) return;
-		forward.resize(n), inverse.resize(n);
-		for (std::size_t h = begin; h < n; h *= 2) {
-			mint step = mint(3).pow((mint::mod() - 1) / (h * 2)), back = step.inv();
-			forward[h] = inverse[h] = 1;
-			for (std::size_t j = 1; j < h; ++j) {
-				forward[h + j] = forward[h + j - 1] * step;
-				inverse[h + j] = inverse[h + j - 1] * back;
-			}
-		}
-	}
-};
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
 
+namespace fps_light_detail {
+static_assert(sizeof(mint) == sizeof(unsigned) && std::is_trivially_copyable_v<mint>);
+inline bool simd_available() {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	return __builtin_cpu_supports("avx2");
+#else
+	return false;
+#endif
+}
 template<bool Inverse>
 void scalar_stage(mint *a, std::size_t n, std::size_t h, const mint *roots) {
 	for (std::size_t start = 0; start < n; start += h * 2)
@@ -53,6 +49,97 @@ inline __m256i product(__m256i x, __m256i y) {
 	return _mm256_blend_epi32(even, odd, 0xaa);
 }
 
+__attribute__((target("avx2")))
+inline __m256i fixed_product(__m256i x, __m256i w, __m256i q) {
+	auto even = _mm256_mul_epu32(x, q);
+	auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(q, 32));
+	q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+	return _mm256_sub_epi32(_mm256_mullo_epi32(x, w), _mm256_mullo_epi32(q, _mm256_set1_epi32(mint::mod())));
+}
+
+__attribute__((target("avx2")))
+inline void pointwise_avx2(mint *a, const mint *b, std::size_t n) {
+	std::size_t i = 0;
+	for (; i + 8 <= n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), product(x, y));
+	}
+	for (; i < n; ++i) a[i] *= b[i];
+}
+
+__attribute__((target("avx2")))
+inline void scale_avx2(mint *a, std::size_t n, mint factor) {
+	std::size_t i = 0;
+	unsigned value = factor.val();
+	const auto f = _mm256_set1_epi32(value);
+	const auto q = _mm256_set1_epi32((static_cast<unsigned long long>(value) << 32) / mint::mod());
+	for (; i + 8 <= n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), fixed_product(x, f, q));
+	}
+	for (; i < n; ++i) a[i] *= factor;
+}
+
+__attribute__((target("avx2")))
+inline __m256i sum_vec(__m256i x, __m256i y) {
+	auto z = _mm256_add_epi32(x, y);
+	return _mm256_min_epu32(z, _mm256_sub_epi32(z, _mm256_set1_epi32(2 * mint::mod())));
+}
+
+__attribute__((target("avx2")))
+inline __m256i diff_vec(__m256i x, __m256i y) {
+	auto z = _mm256_sub_epi32(x, y);
+	return _mm256_min_epu32(z, _mm256_add_epi32(z, _mm256_set1_epi32(2 * mint::mod())));
+}
+
+template<bool Inverse>
+__attribute__((target("avx2")))
+void leaf8(mint *a, std::size_t n, const mint *roots) {
+	alignas(32) unsigned values[8], quotients[8];
+	for (int i = 0; i < 8; ++i) {
+		values[i] = roots[i].val();
+		quotients[i] = (static_cast<unsigned long long>(values[i]) << 32) / mint::mod();
+	}
+	const auto w2 = _mm256_broadcastq_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(values + 2)));
+	const auto w4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(values + 4)));
+	const auto q2 = _mm256_broadcastq_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(quotients + 2)));
+	const auto q4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(quotients + 4)));
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		if constexpr (!Inverse) {
+			auto y = _mm256_permute2x128_si256(x, x, 1);
+			x = _mm256_blend_epi32(sum_vec(x, y), fixed_product(diff_vec(y, x), w4, q4), 0xf0);
+			y = _mm256_shuffle_epi32(x, 0x4e);
+			x = _mm256_blend_epi32(sum_vec(x, y), fixed_product(diff_vec(y, x), w2, q2), 0xcc);
+			y = _mm256_shuffle_epi32(x, 0xb1);
+			x = _mm256_blend_epi32(sum_vec(x, y), diff_vec(y, x), 0xaa);
+		} else {
+			auto y = _mm256_shuffle_epi32(x, 0xb1);
+			x = _mm256_blend_epi32(sum_vec(x, y), diff_vec(y, x), 0xaa);
+			x = _mm256_blend_epi32(x, fixed_product(x, w2, q2), 0xcc);
+			y = _mm256_shuffle_epi32(x, 0x4e);
+			x = _mm256_blend_epi32(sum_vec(x, y), diff_vec(y, x), 0xcc);
+			x = _mm256_blend_epi32(x, fixed_product(x, w4, q4), 0xf0);
+			y = _mm256_permute2x128_si256(x, x, 1);
+			x = _mm256_blend_epi32(sum_vec(x, y), diff_vec(y, x), 0xf0);
+		}
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+}
+
+__attribute__((target("avx2")))
+inline void expand_roots(mint *out, const mint *previous, std::size_t n, mint step) {
+	const auto factor = _mm256_set1_epi32(step.v);
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(previous + i));
+		auto y = product(x, factor);
+		auto low = _mm256_unpacklo_epi32(x, y), high = _mm256_unpackhi_epi32(x, y);
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(out + 2 * i), _mm256_permute2x128_si256(low, high, 0x20));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(out + 2 * i + 8), _mm256_permute2x128_si256(low, high, 0x31));
+	}
+}
+
 template<bool Inverse>
 __attribute__((target("avx2")))
 void vector_stage(mint *a, std::size_t n, std::size_t h, const mint *roots) {
@@ -74,6 +161,43 @@ void vector_stage(mint *a, std::size_t n, std::size_t h, const mint *roots) {
 }
 #endif
 
+struct Roots {
+	std::vector<mint> forward{0, 1}, inverse{0, 1};
+	void prepare(std::size_t n) {
+		std::size_t begin = forward.size();
+		if (begin >= n) return;
+		forward.resize(n), inverse.resize(n);
+		for (std::size_t h = begin; h < n; h *= 2) {
+			mint step = mint(3).pow((mint::mod() - 1) / (h * 2));
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+			if (simd_available() && h >= 16) expand_roots(forward.data() + h, forward.data() + h / 2, h / 2, step);
+			else
+#endif
+			for (std::size_t j = 0; j < h / 2; ++j) {
+				forward[h + 2 * j] = forward[h / 2 + j];
+				forward[h + 2 * j + 1] = forward[h / 2 + j] * step;
+			}
+			inverse[h] = 1;
+			for (std::size_t j = 1; j < h; ++j) inverse[h + j] = -forward[2 * h - j];
+		}
+	}
+};
+
+inline void pointwise(std::vector<mint> &a, const std::vector<mint> &b, [[maybe_unused]] bool vectorized = simd_available()) {
+	assert(a.size() == b.size());
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	if (vectorized) return pointwise_avx2(a.data(), b.data(), a.size());
+#endif
+	for (std::size_t i = 0; i < a.size(); ++i) a[i] *= b[i];
+}
+
+inline void scale(std::vector<mint> &a, mint factor, [[maybe_unused]] bool vectorized = simd_available()) {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	if (vectorized) return scale_avx2(a.data(), a.size(), factor);
+#endif
+	for (auto &x : a) x *= factor;
+}
+
 template<bool Inverse>
 void stage(mint *a, std::size_t n, std::size_t h, const mint *roots, [[maybe_unused]] bool vectorized) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
@@ -92,11 +216,19 @@ inline void transform(std::vector<mint> &a, bool inverse = false) {
 	vectorized = __builtin_cpu_supports("avx2");
 #endif
 	if (inverse) {
-		for (std::size_t h = 1; h < n; h *= 2) stage<true>(a.data(), n, h, roots.inverse.data() + h, vectorized);
-		mint scale = mint(n).inv();
-		for (auto &x : a) x *= scale;
+		std::size_t h = 1;
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (vectorized && n >= 8) leaf8<true>(a.data(), n, roots.inverse.data()), h = 8;
+#endif
+		for (; h < n; h *= 2) stage<true>(a.data(), n, h, roots.inverse.data() + h, vectorized);
+		scale(a, mint(n).inv());
 	} else {
-		for (std::size_t h = n / 2; h; h /= 2) stage<false>(a.data(), n, h, roots.forward.data() + h, vectorized);
+		std::size_t h = n / 2;
+		for (; h >= 8; h /= 2) stage<false>(a.data(), n, h, roots.forward.data() + h, vectorized);
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (vectorized && n >= 8) return leaf8<false>(a.data(), n, roots.forward.data());
+#endif
+		for (; h; h /= 2) stage<false>(a.data(), n, h, roots.forward.data() + h, vectorized);
 	}
 }
 
@@ -116,17 +248,21 @@ inline std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<
 	x.resize(n);
 	transform(x);
 	if (&a == &b) {
-		for (auto &v : x) v *= v;
+		pointwise(x, x);
 	} else {
 		std::vector<mint> y = b;
 		y.resize(n);
 		transform(y);
-		for (std::size_t i = 0; i < n; ++i) x[i] *= y[i];
+		pointwise(x, y);
 	}
 	transform(x, true);
 	x.resize(length);
 	return x;
 }
 }
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 
 #endif
