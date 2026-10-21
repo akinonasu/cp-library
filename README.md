@@ -108,6 +108,12 @@
 | `graph/matching/general_weighted_matching.hpp` | General Weighted Matching（一般グラフ最大重みマッチング） | [使い方](docs/general_weighted_matching.md) |
 | `graph/matching/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
 
+### トポロジカルソート
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/topological_sort.hpp` | トポロジカルソート・辞書順最小・閉路判定 | [使い方](docs/topological_sort.md) |
+
 ### Euler 路
 
 | ファイル | 内容 | 使い方 |
