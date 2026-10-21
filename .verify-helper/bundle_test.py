@@ -8,7 +8,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from tools.bundle import LIMIT, fit_source
+from tools.bundle import COMPACT_THRESHOLD, LIMIT, bundle, fit_source
 from tools.compact_fps import compact, lex
 
 
@@ -21,6 +21,9 @@ class BundleTest(unittest.TestCase):
                 fit_source(source, limit)
         with self.assertRaises(ValueError):
             compact('int main() {}\n')
+        repeated = '#line 1 "source.cpp"\n' + 'int f(int);\n' * (COMPACT_THRESHOLD // 11)
+        self.assertLess(len(repeated.encode('utf-8')), LIMIT)
+        self.assertLess(len(fit_source(repeated).encode('utf-8')), len(repeated.encode('utf-8')))
 
     def test_preprocessor_equivalence(self):
         compilers = [compiler for compiler in ('g++', 'clang++') if shutil.which(compiler)]
@@ -28,6 +31,7 @@ class BundleTest(unittest.TestCase):
         prefix = '#line 1 "fixture.cpp"\n#include <cstdio>\n#include <cstdint>\n#include <source_location>\n'
         prefix += '#define TEXT(x) #x\n#define APPLY(F,X) F(X)\n#define ROW __LINE__\n#define ADD(x,y) ((x)+(y))\n'
         prefix += ''.join(f'inline int f{i}(int x) {{ const int y=x+123; return y^(y>>3); }}\n' for i in range(24))
+        prefix += ''.join(f'inline int pair{i}(int x) {{ const int z=(x*17371+99127)^(x*839+11203); return z+(z>>7); }}\n' for i in range(2))
         raw = 'R"raw(before\\\n' + '\n' * 40 + '#define NOT_A_DIRECTIVE 1\nafter)raw"'
         conditional = '#if PICK\n#undef ADD\n#define ADD(x,y) \\\n ((x)+(y))\n#else\n#undef ADD\n#define ADD(x,y) ((x)+(y))\n#endif\n'
         clobbers = ', '.join(f'"xmm{i}"' for i in range(16)) + ', "memory", "cc"'
@@ -71,6 +75,25 @@ class BundleTest(unittest.TestCase):
                                 outputs.append(subprocess.check_output([str(executable)]))
                             self.assertEqual(streams[0], streams[1])
                             self.assertEqual(outputs[0], outputs[1])
+
+    @unittest.skipUnless(shutil.which('oj-bundle'), 'oj-bundle is unavailable')
+    def test_fps_combined_budget(self):
+        headers = sorted(path.relative_to(ROOT).as_posix() for path in (ROOT / 'fps').glob('*.hpp'))
+        source = ''.join('#include "' + header + '"\n' for header in headers)
+        source += '#include "components/fast_io.hpp"\n#include "test/fps_io.hpp"\n'
+        source += 'int main() { fps f{1,2,1}, g{0,1,1}; auto c=compose(f,g,8); '
+        source += 'auto r=compositional_inverse(g,8); auto p=power_projection(g,7); '
+        source += 'auto v=multipoint_eval(f,std::vector<mint>{0,1,2}); '
+        source += 'auto h=interpolate(std::vector<mint>{0,1,2},v); '
+        source += 'auto d=polynomial_gcd(f,h); auto t=taylor_shift(d,1); '
+        source += 'light_fps lf{1,2,1}; auto li=lf.inv(8); '
+        source += 'return int(c.size()+r.size()+p.size()+t.size()+li.size()==0); }\n'
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'all_fps.cpp'
+            path.write_text(source)
+            original, generated = bundle(path, include_paths=[ROOT])
+            self.assertGreater(len(original.encode('utf-8')), LIMIT)
+            self.assertLess(len(generated.encode('utf-8')), LIMIT)
 
     @unittest.skipUnless(shutil.which('oj-bundle'), 'oj-bundle is unavailable')
     def test_command_and_failure_preserves_output(self):

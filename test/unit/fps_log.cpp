@@ -1,3 +1,4 @@
+#include "components/fps_log.hpp"
 #include "fps/fps.hpp"
 #include <cstdio>
 #include <cstdlib>

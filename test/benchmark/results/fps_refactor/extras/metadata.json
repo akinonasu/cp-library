@@ -1,0 +1,45 @@
+{
+  "base": "32f6930",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell",
+    "-Wall",
+    "-Wextra",
+    "-Werror"
+  ],
+  "locks": [
+    "/tmp/cp-fps-tuning.lock",
+    "/tmp/cp-wm-opt.lock"
+  ],
+  "sources": {
+    "before": {
+      "fps_composition.hpp": {
+        "bytes": 76835,
+        "sha256": "f69538f8607f69fa341604b46e8d19489459b9936066881fb3b4c384924517a4"
+      },
+      "fps_evaluation.hpp": {
+        "bytes": 64480,
+        "sha256": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5"
+      }
+    },
+    "candidate": {
+      "fps_composition.hpp": {
+        "bytes": 68191,
+        "sha256": "2d53cf305fe08baace3a9e2e355f95bd5a76840f42407e47051b66c6e96c1021"
+      },
+      "fps_evaluation.hpp": {
+        "bytes": 63094,
+        "sha256": "a1926659b76efea0caf7a73dd83e30451c7f4560a7bc607d39d4cc4831aef37e"
+      }
+    }
+  },
+  "checks": {
+    "columns": "Exact raw-word comparisons: h=4,8,...,512; width=1,2,...,h/2; root k=0..3; forward random [0,4P); inverse random [0,2P); width 1 compares original even-column kernels.",
+    "evaluation": "72 original/candidate checksum comparisons: eval and interpolation n=1,2,3,7,8,9,15,16,17,31,32,33,63,64,65,127,128,129,191,192,193,255,256,257,511,512,513,1023,1024,1025,4095,4096,4097,8191,8192,8193"
+  }
+}

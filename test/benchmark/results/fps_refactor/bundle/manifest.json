@@ -1,0 +1,606 @@
+{
+  "scope": "Current final raw bundle versus its corresponding compact bundle, not before-refactor versus after-refactor.",
+  "original_artifact_directory": "/workspace/cp-fps-256-refactor/final_union",
+  "profile_sources": {
+    "normal": {
+      "raw_bytes": 492453,
+      "compact_bytes": 241884,
+      "raw_sha256": "f0bc917145de412d4d6e22488bb38eac09b2f2989a20c9a86a7eac58be81494f",
+      "compact_sha256": "abc194ac1c44bd189091fbdcd6ee4f760890991c99a6e58cb6d587f27636a080",
+      "compact_script_sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680",
+      "sources": {
+        "fps/bostan_mori.hpp": {
+          "path": "/workspace/cp-library/fps/bostan_mori.hpp",
+          "sha256": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6"
+        },
+        "fps/fps.hpp": {
+          "path": "/workspace/cp-library/fps/fps.hpp",
+          "sha256": "bbd61a92acde166c09b5b2041f881a73551417fd830c2c87978193e69bd0e0bc"
+        },
+        "components/fps_operations.hpp": {
+          "path": "/workspace/cp-library/components/fps_operations.hpp",
+          "sha256": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051"
+        },
+        "components/ntt.hpp": {
+          "path": "/workspace/cp-library/components/ntt.hpp",
+          "sha256": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164"
+        },
+        "math/mint.hpp": {
+          "path": "/workspace/cp-library/math/mint.hpp",
+          "sha256": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+        },
+        "components/fps_horner.hpp": {
+          "path": "/workspace/cp-library/components/fps_horner.hpp",
+          "sha256": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25"
+        },
+        "components/fps_factorials.hpp": {
+          "path": "/workspace/cp-library/components/fps_factorials.hpp",
+          "sha256": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33"
+        },
+        "components/fps_workspace.hpp": {
+          "path": "/workspace/cp-library/components/fps_workspace.hpp",
+          "sha256": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923"
+        },
+        "components/fps_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_blocked.hpp",
+          "sha256": "fc20ec2cf1ddc4137900478f60812f5e8f198b6627978dd6c81d7c59bdbc7df6"
+        },
+        "components/fps_asm.hpp": {
+          "path": "/workspace/cp-library/components/fps_asm.hpp",
+          "sha256": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde"
+        },
+        "components/fps_output.hpp": {
+          "path": "/workspace/cp-library/components/fps_output.hpp",
+          "sha256": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+        },
+        "components/fps_exp_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_exp_blocked.hpp",
+          "sha256": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2"
+        },
+        "components/fps_inverse_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_inverse_blocked.hpp",
+          "sha256": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685"
+        },
+        "components/fps_sqrt_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_sqrt_blocked.hpp",
+          "sha256": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5"
+        },
+        "components/fps_convolution.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution.hpp",
+          "sha256": "9ebbc42810223057d7b9b9073a18c7d140288ff20b336a4a8efe8a06b4e979e1"
+        },
+        "components/fps_convolution_unbalanced.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution_unbalanced.hpp",
+          "sha256": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd"
+        },
+        "components/fps_convolution_constant.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution_constant.hpp",
+          "sha256": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6"
+        },
+        "components/fps_division_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_division_blocked.hpp",
+          "sha256": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037"
+        },
+        "components/fps_bostan.hpp": {
+          "path": "/workspace/cp-library/components/fps_bostan.hpp",
+          "sha256": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258"
+        },
+        "fps/compose.hpp": {
+          "path": "/workspace/cp-library/fps/compose.hpp",
+          "sha256": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025"
+        },
+        "components/fps_composition.hpp": {
+          "path": "/workspace/cp-library/components/fps_composition.hpp",
+          "sha256": "2d53cf305fe08baace3a9e2e355f95bd5a76840f42407e47051b66c6e96c1021"
+        },
+        "fps/compositional_inverse.hpp": {
+          "path": "/workspace/cp-library/fps/compositional_inverse.hpp",
+          "sha256": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737"
+        },
+        "components/fps_reversion.hpp": {
+          "path": "/workspace/cp-library/components/fps_reversion.hpp",
+          "sha256": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd"
+        },
+        "fps/interpolate.hpp": {
+          "path": "/workspace/cp-library/fps/interpolate.hpp",
+          "sha256": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a"
+        },
+        "components/fps_product_tree.hpp": {
+          "path": "/workspace/cp-library/components/fps_product_tree.hpp",
+          "sha256": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58"
+        },
+        "components/fps_evaluation.hpp": {
+          "path": "/workspace/cp-library/components/fps_evaluation.hpp",
+          "sha256": "a1926659b76efea0caf7a73dd83e30451c7f4560a7bc607d39d4cc4831aef37e"
+        },
+        "fps/linear_recurrence.hpp": {
+          "path": "/workspace/cp-library/fps/linear_recurrence.hpp",
+          "sha256": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553"
+        },
+        "fps/multipoint_eval.hpp": {
+          "path": "/workspace/cp-library/fps/multipoint_eval.hpp",
+          "sha256": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3"
+        },
+        "components/fps_direct_eval.hpp": {
+          "path": "/workspace/cp-library/components/fps_direct_eval.hpp",
+          "sha256": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380"
+        },
+        "fps/polynomial_gcd.hpp": {
+          "path": "/workspace/cp-library/fps/polynomial_gcd.hpp",
+          "sha256": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8"
+        },
+        "components/polynomial_half_gcd.hpp": {
+          "path": "/workspace/cp-library/components/polynomial_half_gcd.hpp",
+          "sha256": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de"
+        },
+        "components/polynomial_gcd_blocked.hpp": {
+          "path": "/workspace/cp-library/components/polynomial_gcd_blocked.hpp",
+          "sha256": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411"
+        },
+        "fps/power_projection.hpp": {
+          "path": "/workspace/cp-library/fps/power_projection.hpp",
+          "sha256": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a"
+        },
+        "fps/taylor_shift.hpp": {
+          "path": "/workspace/cp-library/fps/taylor_shift.hpp",
+          "sha256": "6aa8bfeb57500cd8c46dc79c50e148b456e73f84a7a68598f37815c6a71f8fb7"
+        },
+        "components/fps_taylor_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_taylor_blocked.hpp",
+          "sha256": "6769fea15208ccf3d74956b0a807e3d1500bd74b61e562bce139982641f4cdc8"
+        },
+        "components/fast_io.hpp": {
+          "path": "/workspace/cp-library/components/fast_io.hpp",
+          "sha256": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+        },
+        "test/fps_io.hpp": {
+          "path": "/workspace/cp-library/test/fps_io.hpp",
+          "sha256": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235"
+        },
+        "components/fps_io.hpp": {
+          "path": "/workspace/cp-library/components/fps_io.hpp",
+          "sha256": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267"
+        },
+        "components/fast_io_bulk.hpp": {
+          "path": "/workspace/cp-library/components/fast_io_bulk.hpp",
+          "sha256": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02"
+        },
+        "@compact_script": {
+          "path": "/workspace/cp-library/tools/compact_fps.py",
+          "sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680"
+        },
+        "@current_compact_script": {
+          "path": "/workspace/cp-library/tools/compact_fps.py",
+          "sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680"
+        }
+      },
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/fps-256k-union-ouyr2qg3/all_fps.cpp"
+      ]
+    },
+    "normal_and_light": {
+      "raw_bytes": 524205,
+      "compact_bytes": 256193,
+      "raw_sha256": "e1c304676f34caba621511f6c45262f26bc10975f0f239d8751411df36d58eba",
+      "compact_sha256": "e22e6be726ad147afb81c8167857661a2776b43e975be0f3643c1bc6efe14dbd",
+      "compact_script_sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680",
+      "sources": {
+        "fps/bostan_mori.hpp": {
+          "path": "/workspace/cp-library/fps/bostan_mori.hpp",
+          "sha256": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6"
+        },
+        "fps/fps.hpp": {
+          "path": "/workspace/cp-library/fps/fps.hpp",
+          "sha256": "bbd61a92acde166c09b5b2041f881a73551417fd830c2c87978193e69bd0e0bc"
+        },
+        "components/fps_operations.hpp": {
+          "path": "/workspace/cp-library/components/fps_operations.hpp",
+          "sha256": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051"
+        },
+        "components/ntt.hpp": {
+          "path": "/workspace/cp-library/components/ntt.hpp",
+          "sha256": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164"
+        },
+        "math/mint.hpp": {
+          "path": "/workspace/cp-library/math/mint.hpp",
+          "sha256": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+        },
+        "components/fps_horner.hpp": {
+          "path": "/workspace/cp-library/components/fps_horner.hpp",
+          "sha256": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25"
+        },
+        "components/fps_factorials.hpp": {
+          "path": "/workspace/cp-library/components/fps_factorials.hpp",
+          "sha256": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33"
+        },
+        "components/fps_workspace.hpp": {
+          "path": "/workspace/cp-library/components/fps_workspace.hpp",
+          "sha256": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923"
+        },
+        "components/fps_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_blocked.hpp",
+          "sha256": "fc20ec2cf1ddc4137900478f60812f5e8f198b6627978dd6c81d7c59bdbc7df6"
+        },
+        "components/fps_asm.hpp": {
+          "path": "/workspace/cp-library/components/fps_asm.hpp",
+          "sha256": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde"
+        },
+        "components/fps_output.hpp": {
+          "path": "/workspace/cp-library/components/fps_output.hpp",
+          "sha256": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+        },
+        "components/fps_exp_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_exp_blocked.hpp",
+          "sha256": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2"
+        },
+        "components/fps_inverse_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_inverse_blocked.hpp",
+          "sha256": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685"
+        },
+        "components/fps_sqrt_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_sqrt_blocked.hpp",
+          "sha256": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5"
+        },
+        "components/fps_convolution.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution.hpp",
+          "sha256": "9ebbc42810223057d7b9b9073a18c7d140288ff20b336a4a8efe8a06b4e979e1"
+        },
+        "components/fps_convolution_unbalanced.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution_unbalanced.hpp",
+          "sha256": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd"
+        },
+        "components/fps_convolution_constant.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution_constant.hpp",
+          "sha256": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6"
+        },
+        "components/fps_division_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_division_blocked.hpp",
+          "sha256": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037"
+        },
+        "components/fps_bostan.hpp": {
+          "path": "/workspace/cp-library/components/fps_bostan.hpp",
+          "sha256": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258"
+        },
+        "fps/compose.hpp": {
+          "path": "/workspace/cp-library/fps/compose.hpp",
+          "sha256": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025"
+        },
+        "components/fps_composition.hpp": {
+          "path": "/workspace/cp-library/components/fps_composition.hpp",
+          "sha256": "2d53cf305fe08baace3a9e2e355f95bd5a76840f42407e47051b66c6e96c1021"
+        },
+        "fps/compositional_inverse.hpp": {
+          "path": "/workspace/cp-library/fps/compositional_inverse.hpp",
+          "sha256": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737"
+        },
+        "components/fps_reversion.hpp": {
+          "path": "/workspace/cp-library/components/fps_reversion.hpp",
+          "sha256": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd"
+        },
+        "fps/fps_light.hpp": {
+          "path": "/workspace/cp-library/fps/fps_light.hpp",
+          "sha256": "9b6accf46850e7a07f8c406deb48c4cc8832fcff6dc138447aa0a7899b9c057c"
+        },
+        "components/fps_light_ntt.hpp": {
+          "path": "/workspace/cp-library/components/fps_light_ntt.hpp",
+          "sha256": "c6eb39d76a61a69a61c0193c74fa7a4243cf83ab4c9573d2514836ec473bb85c"
+        },
+        "fps/fps_light_algorithms.hpp": {
+          "path": "/workspace/cp-library/fps/fps_light_algorithms.hpp",
+          "sha256": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b"
+        },
+        "components/fps_light_product_tree.hpp": {
+          "path": "/workspace/cp-library/components/fps_light_product_tree.hpp",
+          "sha256": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c"
+        },
+        "fps/interpolate.hpp": {
+          "path": "/workspace/cp-library/fps/interpolate.hpp",
+          "sha256": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a"
+        },
+        "components/fps_product_tree.hpp": {
+          "path": "/workspace/cp-library/components/fps_product_tree.hpp",
+          "sha256": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58"
+        },
+        "components/fps_evaluation.hpp": {
+          "path": "/workspace/cp-library/components/fps_evaluation.hpp",
+          "sha256": "a1926659b76efea0caf7a73dd83e30451c7f4560a7bc607d39d4cc4831aef37e"
+        },
+        "fps/linear_recurrence.hpp": {
+          "path": "/workspace/cp-library/fps/linear_recurrence.hpp",
+          "sha256": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553"
+        },
+        "fps/multipoint_eval.hpp": {
+          "path": "/workspace/cp-library/fps/multipoint_eval.hpp",
+          "sha256": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3"
+        },
+        "components/fps_direct_eval.hpp": {
+          "path": "/workspace/cp-library/components/fps_direct_eval.hpp",
+          "sha256": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380"
+        },
+        "fps/polynomial_gcd.hpp": {
+          "path": "/workspace/cp-library/fps/polynomial_gcd.hpp",
+          "sha256": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8"
+        },
+        "components/polynomial_half_gcd.hpp": {
+          "path": "/workspace/cp-library/components/polynomial_half_gcd.hpp",
+          "sha256": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de"
+        },
+        "components/polynomial_gcd_blocked.hpp": {
+          "path": "/workspace/cp-library/components/polynomial_gcd_blocked.hpp",
+          "sha256": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411"
+        },
+        "fps/power_projection.hpp": {
+          "path": "/workspace/cp-library/fps/power_projection.hpp",
+          "sha256": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a"
+        },
+        "fps/taylor_shift.hpp": {
+          "path": "/workspace/cp-library/fps/taylor_shift.hpp",
+          "sha256": "6aa8bfeb57500cd8c46dc79c50e148b456e73f84a7a68598f37815c6a71f8fb7"
+        },
+        "components/fps_taylor_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_taylor_blocked.hpp",
+          "sha256": "6769fea15208ccf3d74956b0a807e3d1500bd74b61e562bce139982641f4cdc8"
+        },
+        "components/fast_io.hpp": {
+          "path": "/workspace/cp-library/components/fast_io.hpp",
+          "sha256": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+        },
+        "test/fps_io.hpp": {
+          "path": "/workspace/cp-library/test/fps_io.hpp",
+          "sha256": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235"
+        },
+        "components/fps_io.hpp": {
+          "path": "/workspace/cp-library/components/fps_io.hpp",
+          "sha256": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267"
+        },
+        "components/fast_io_bulk.hpp": {
+          "path": "/workspace/cp-library/components/fast_io_bulk.hpp",
+          "sha256": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02"
+        },
+        "@compact_script": {
+          "path": "/workspace/cp-library/tools/compact_fps.py",
+          "sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680"
+        },
+        "@current_compact_script": {
+          "path": "/workspace/cp-library/tools/compact_fps.py",
+          "sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680"
+        }
+      },
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/fps-256k-union-gp4_84m1/all_fps.cpp"
+      ]
+    },
+    "public_api_usage": {
+      "raw_bytes": 495936,
+      "compact_bytes": 244200,
+      "raw_sha256": "caa0b9f28ab9cdf2cc9cbc589bd9552a5ee746c7c1af860dfc3400b0ec17f28c",
+      "compact_sha256": "89bad197771250ca25c36872e3257fe3eb81157354fe3ff945cff2ca7ee08392",
+      "compact_script_sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680",
+      "sources": {
+        "fps/bostan_mori.hpp": {
+          "path": "/workspace/cp-library/fps/bostan_mori.hpp",
+          "sha256": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6"
+        },
+        "fps/fps.hpp": {
+          "path": "/workspace/cp-library/fps/fps.hpp",
+          "sha256": "bbd61a92acde166c09b5b2041f881a73551417fd830c2c87978193e69bd0e0bc"
+        },
+        "components/fps_operations.hpp": {
+          "path": "/workspace/cp-library/components/fps_operations.hpp",
+          "sha256": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051"
+        },
+        "components/ntt.hpp": {
+          "path": "/workspace/cp-library/components/ntt.hpp",
+          "sha256": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164"
+        },
+        "math/mint.hpp": {
+          "path": "/workspace/cp-library/math/mint.hpp",
+          "sha256": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+        },
+        "components/fps_horner.hpp": {
+          "path": "/workspace/cp-library/components/fps_horner.hpp",
+          "sha256": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25"
+        },
+        "components/fps_factorials.hpp": {
+          "path": "/workspace/cp-library/components/fps_factorials.hpp",
+          "sha256": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33"
+        },
+        "components/fps_workspace.hpp": {
+          "path": "/workspace/cp-library/components/fps_workspace.hpp",
+          "sha256": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923"
+        },
+        "components/fps_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_blocked.hpp",
+          "sha256": "fc20ec2cf1ddc4137900478f60812f5e8f198b6627978dd6c81d7c59bdbc7df6"
+        },
+        "components/fps_asm.hpp": {
+          "path": "/workspace/cp-library/components/fps_asm.hpp",
+          "sha256": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde"
+        },
+        "components/fps_output.hpp": {
+          "path": "/workspace/cp-library/components/fps_output.hpp",
+          "sha256": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+        },
+        "components/fps_exp_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_exp_blocked.hpp",
+          "sha256": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2"
+        },
+        "components/fps_inverse_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_inverse_blocked.hpp",
+          "sha256": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685"
+        },
+        "components/fps_sqrt_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_sqrt_blocked.hpp",
+          "sha256": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5"
+        },
+        "components/fps_convolution.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution.hpp",
+          "sha256": "9ebbc42810223057d7b9b9073a18c7d140288ff20b336a4a8efe8a06b4e979e1"
+        },
+        "components/fps_convolution_unbalanced.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution_unbalanced.hpp",
+          "sha256": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd"
+        },
+        "components/fps_convolution_constant.hpp": {
+          "path": "/workspace/cp-library/components/fps_convolution_constant.hpp",
+          "sha256": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6"
+        },
+        "components/fps_division_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_division_blocked.hpp",
+          "sha256": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037"
+        },
+        "components/fps_bostan.hpp": {
+          "path": "/workspace/cp-library/components/fps_bostan.hpp",
+          "sha256": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258"
+        },
+        "fps/compose.hpp": {
+          "path": "/workspace/cp-library/fps/compose.hpp",
+          "sha256": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025"
+        },
+        "components/fps_composition.hpp": {
+          "path": "/workspace/cp-library/components/fps_composition.hpp",
+          "sha256": "2d53cf305fe08baace3a9e2e355f95bd5a76840f42407e47051b66c6e96c1021"
+        },
+        "fps/compositional_inverse.hpp": {
+          "path": "/workspace/cp-library/fps/compositional_inverse.hpp",
+          "sha256": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737"
+        },
+        "components/fps_reversion.hpp": {
+          "path": "/workspace/cp-library/components/fps_reversion.hpp",
+          "sha256": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd"
+        },
+        "fps/interpolate.hpp": {
+          "path": "/workspace/cp-library/fps/interpolate.hpp",
+          "sha256": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a"
+        },
+        "components/fps_product_tree.hpp": {
+          "path": "/workspace/cp-library/components/fps_product_tree.hpp",
+          "sha256": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58"
+        },
+        "components/fps_evaluation.hpp": {
+          "path": "/workspace/cp-library/components/fps_evaluation.hpp",
+          "sha256": "a1926659b76efea0caf7a73dd83e30451c7f4560a7bc607d39d4cc4831aef37e"
+        },
+        "fps/linear_recurrence.hpp": {
+          "path": "/workspace/cp-library/fps/linear_recurrence.hpp",
+          "sha256": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553"
+        },
+        "fps/multipoint_eval.hpp": {
+          "path": "/workspace/cp-library/fps/multipoint_eval.hpp",
+          "sha256": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3"
+        },
+        "components/fps_direct_eval.hpp": {
+          "path": "/workspace/cp-library/components/fps_direct_eval.hpp",
+          "sha256": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380"
+        },
+        "fps/polynomial_gcd.hpp": {
+          "path": "/workspace/cp-library/fps/polynomial_gcd.hpp",
+          "sha256": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8"
+        },
+        "components/polynomial_half_gcd.hpp": {
+          "path": "/workspace/cp-library/components/polynomial_half_gcd.hpp",
+          "sha256": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de"
+        },
+        "components/polynomial_gcd_blocked.hpp": {
+          "path": "/workspace/cp-library/components/polynomial_gcd_blocked.hpp",
+          "sha256": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411"
+        },
+        "fps/power_projection.hpp": {
+          "path": "/workspace/cp-library/fps/power_projection.hpp",
+          "sha256": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a"
+        },
+        "fps/taylor_shift.hpp": {
+          "path": "/workspace/cp-library/fps/taylor_shift.hpp",
+          "sha256": "6aa8bfeb57500cd8c46dc79c50e148b456e73f84a7a68598f37815c6a71f8fb7"
+        },
+        "components/fps_taylor_blocked.hpp": {
+          "path": "/workspace/cp-library/components/fps_taylor_blocked.hpp",
+          "sha256": "6769fea15208ccf3d74956b0a807e3d1500bd74b61e562bce139982641f4cdc8"
+        },
+        "components/fast_io.hpp": {
+          "path": "/workspace/cp-library/components/fast_io.hpp",
+          "sha256": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+        },
+        "test/fps_io.hpp": {
+          "path": "/workspace/cp-library/test/fps_io.hpp",
+          "sha256": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235"
+        },
+        "components/fps_io.hpp": {
+          "path": "/workspace/cp-library/components/fps_io.hpp",
+          "sha256": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267"
+        },
+        "components/fast_io_bulk.hpp": {
+          "path": "/workspace/cp-library/components/fast_io_bulk.hpp",
+          "sha256": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02"
+        },
+        "@compact_script": {
+          "path": "/workspace/cp-library/tools/compact_fps.py",
+          "sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680"
+        },
+        "@current_compact_script": {
+          "path": "/workspace/cp-library/tools/compact_fps.py",
+          "sha256": "adbc271cc0152ce7933b9a97a3dd97d9c23da98d0024257d05ba9f9c38906680"
+        },
+        "@public_api_usage": {
+          "path": "/workspace/cp-library/test/unit/fps_public_headers.cpp",
+          "sha256": "1cdd7cdff495bd826a4e14a7b811d6b0942956800018192bb375024703351662"
+        }
+      },
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/fps-256k-union-7os6i1wg/all_fps.cpp"
+      ]
+    }
+  },
+  "regenerate_sources_command": [
+    "python3",
+    "test/benchmark/fps_256k_refactor.py",
+    "--suite",
+    "core",
+    "--trials",
+    "1",
+    "--size-only",
+    "--bundler",
+    "oj-bundle",
+    "--bundle-directory",
+    "/tmp/fps-bundle-audit-sources",
+    "--output",
+    "/tmp/fps-bundle-audit-sources.json"
+  ],
+  "audit_command": [
+    "python3",
+    "test/benchmark/results/fps_refactor/bundle/audit.py",
+    "--artifacts",
+    "/tmp/fps-bundle-audit-sources",
+    "--work",
+    "/tmp/fps-bundle-audit-work",
+    "--output",
+    "/tmp/fps-bundle-audit.json",
+    "--gxx",
+    "g++",
+    "--clang",
+    "clang++"
+  ],
+  "reproduction_notes": [
+    "Run at the revision containing this record. oj-bundle from online-judge-verify-helper is required. Use an available CPU with --cpu if CPU 2 is unavailable when regenerating sources.",
+    "The original raw bundles contain temporary #line wrapper filenames. New bundles will have different temporary filenames and file hashes; audit.py checks each new raw/compact pair directly. Original inputs and every transitive header hash are retained here for provenance.",
+    "Use unused --work and --output paths. Large source, PP, and ELF files stay only in --work; the permanent report contains hashes and commands."
+  ],
+  "bundler": {
+    "path": "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+    "sha256": "90f022d09a7763a8e70cc7bb0470e8d266fdded58fbe52200a05e461f95b0dbd"
+  },
+  "public_api_usage_fixture": {
+    "source": "test/unit/fps_public_headers.cpp",
+    "sha256": "1cdd7cdff495bd826a4e14a7b811d6b0942956800018192bb375024703351662",
+    "method": "directly include each normal public header once, FastIO and test/fps_io.hpp; retain require/check/main from the unit driver; omit conditional repeated-include stress prefixes"
+  }
+}

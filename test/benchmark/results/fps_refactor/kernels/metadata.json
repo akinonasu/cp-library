@@ -1,0 +1,339 @@
+{
+  "baseline_commit": "32f6930f1b1170681664000211a2a667921aa010",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "compiler_sha256": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.30\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-march=haswell"
+  ],
+  "cpu_affinity": [
+    2
+  ],
+  "locks": [
+    "/tmp/cp-fps-tuning.lock",
+    "/tmp/cp-wm-opt.lock"
+  ],
+  "timing": "Both locks exclusive; each trial shuffles fresh processes. Function timer, allocation inside function included; input generation/checksum excluded. 3 repeats at n>=65536,16 at n>=1024,32 otherwise; reported average per inner repeat. Five randomized trials per variant/case.",
+  "common_headers_identical": {
+    "baseline": true,
+    "split_both": true,
+    "loop_bottom": true,
+    "both_bottom": true,
+    "all_h4": true,
+    "all_top": true,
+    "endpoint": true,
+    "radix": true,
+    "radix_fast": true,
+    "shared_product": true,
+    "shared_safe": true,
+    "shared_mont": true
+  },
+  "baseline_sources": {
+    "components/polynomial_half_gcd.hpp": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de",
+    "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+    "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+    "components/offline_time_segments.hpp": "74d490cb8fcc50fdf0778ea4195fe6d91d8387037e57182690c0346d80a5fec1",
+    "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+    "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+    "components/binomial_prefix_polynomial.hpp": "dce907ab03e761a22edb6b2dfcbeaf899257659c376f8e91fa86e9f73650a3a7",
+    "components/fps_composition.hpp": "f69538f8607f69fa341604b46e8d19489459b9936066881fb3b4c384924517a4",
+    "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+    "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+    "components/fps_sqrt_blocked.hpp": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5",
+    "components/persistent_rope.hpp": "70b3403d80f1b4ee7ea7013773ae8359720391090a99be6eae1cc33437292602",
+    "components/fps_asm.hpp": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde",
+    "components/radix_sort.hpp": "6a49d050c217221788503464c86e1b77d9ff3b1ca89d4c34ed70e011ae5d8282",
+    "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+    "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+    "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+    "components/dynamic_quad_vector.hpp": "267a47faf2d93c0e390ae39f4b4165af600bc0b971ecde01a7681bc9613b3779",
+    "components/fps_light_product_tree.hpp": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c",
+    "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+    "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+    "components/fps_convolution.hpp": "9553bd866393d26325dba88a6d779749a9e26a0ff02536ba568fcc0bd91c2bc1",
+    "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+    "components/fps_convolution_unbalanced.hpp": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd",
+    "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+    "components/scc_core.hpp": "4ec3a1efe509c6e4147e5504a1d952f5c17dcc877a632643c012cdd76b056a2c",
+    "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+    "components/fps_bostan.hpp": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258",
+    "components/small_vector.hpp": "f6602e1a44b1a6da238995b4fe05d8cff0117019a9e9e9943edf162dbb42e7bb",
+    "components/suffix_range.hpp": "a91b7c52c957b919828e9b491634e9af58696502f564693a8878c2ac01528fee",
+    "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+    "components/polynomial_gcd_blocked.hpp": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411",
+    "components/dynamic_quad_wavelet.hpp": "d199aa8c0b2bd3591bf4767b92365e526381daadd07432335b5bef8d4878f7b9",
+    "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+    "components/monotone_minima.hpp": "c8c1243645131313a9e1671b9a8e392388b7ee386e9d7e4ba013534c64c3d592",
+    "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+    "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+    "components/sequence_match.hpp": "d0b9fc56f2aab0fc00ecea7717cb78ee02486ce5e805134d973e5da2e45506cd",
+    "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+    "components/sequence_compare.hpp": "d4ad8a26a732392a955f69b0527b98b75b8a61481b3cd4d9da8384cbeda654ac",
+    "components/suffix_array.hpp": "2bf2598e6fe7cc016696d6ae465bcaafe8bcc0b810b87347dcea5a51c82f1c8c",
+    "components/fps_blocked.hpp": "f2fd3a8e88ed8ddce9c663a6fa62c5848b4e78ccf46ad19de1f7b9f19db76cfa",
+    "components/static_top_tree_structure.hpp": "f0d5935bb460cecfacabb0bc6bcfa66d59ddf1cd00a9a342b432be5527bd988c",
+    "components/divisor_zeta.hpp": "516a6961ce19e2dec9dd9965e5dfb0bc40c1b42167524d29a311539b0a27e7d3",
+    "components/factorial_table.hpp": "51c36371d528a3896c29fa90cd43cec3a18f6205b6b887cd4688678ef82ea183",
+    "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+    "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+    "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+    "components/fps_exp_blocked.hpp": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2",
+    "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+    "components/limb_arithmetic.hpp": "7f0095e64bc8ddb7e5c7ee1b0901b973125cd1cdd93a979b1bf1231faae7778f",
+    "components/shortest_path_scc.hpp": "0c325c5c400f0efa05baccd3c4eb5a57bfa30b2a6c05ae8c264a83c60325c54c",
+    "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+    "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+    "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+    "components/fps_io.hpp": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267",
+    "components/bipartite_matching_core.hpp": "5d1a06f0e59b8c24736e30cda96502e278d933f1ce227f870174deafc1e931fd",
+    "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+    "components/fps_light_ntt.hpp": "c6eb39d76a61a69a61c0193c74fa7a4243cf83ab4c9573d2514836ec473bb85c",
+    "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+    "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+    "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+    "components/predecessor_set.hpp": "11f5a74271be53a73cd7bd9a5f372f10a3d32896ce4c61866b5ae911629f1350",
+    "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+    "components/weighted_blossom.hpp": "027b217b7dd06709e7fa6c06b6e1c521475f0cd081362d14cc6746ef13438720",
+    "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+    "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+    "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+    "components/barrett32.hpp": "ecffcdd9f837433eaf48ff883b52ca578c31febdce157c876200edf2b9082235",
+    "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+    "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+    "components/kinetic_tournament_monoid.hpp": "0d7ea6e1d2f2d824d7d4ec456eac3a58c91c50decd1da584df14499e7bde3949",
+    "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+    "components/binary_search.hpp": "1d5f42402a296d669c16fd8b9cd538821e410c51b25a82e63e1ae59b11d66dda",
+    "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+    "components/mo_order.hpp": "8459f04ad7bb42a9da74080596acd04af00987e725e6b9b292c73a0f90b87ebb",
+    "components/static_range_min.hpp": "48a735aad7971fd6c507700286e6f8250d575e014c4e11654f9affc13b37720f",
+    "components/fps_convolution_constant.hpp": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6",
+    "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+    "components/fast_io_bulk.hpp": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02",
+    "components/warshall_floyd_kernel.hpp": "bf53536261693c7aa577c759c8dc49676fb651c9bf3f78f4bbd3391cc5ff7e6e",
+    "components/fps_reversion.hpp": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd",
+    "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "fps/compositional_inverse.hpp": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737",
+    "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+    "fps/compose.hpp": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025",
+    "fps/fps_light.hpp": "9b6accf46850e7a07f8c406deb48c4cc8832fcff6dc138447aa0a7899b9c057c",
+    "fps/taylor_shift.hpp": "6aa8bfeb57500cd8c46dc79c50e148b456e73f84a7a68598f37815c6a71f8fb7",
+    "fps/fps.hpp": "750945cc34405caa95b245a4e6eb39a035a4513446d8a69434efedf50f94e429",
+    "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+    "fps/power_projection.hpp": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a",
+    "fps/fps_light_algorithms.hpp": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b",
+    "fps/bostan_mori.hpp": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6",
+    "fps/polynomial_gcd.hpp": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8",
+    "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+    "math/fraction.hpp": "0c0333ae0a8279633cb6c19063f0a33f3fea544d8986a792c1b5f867a8eb75ca",
+    "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+    "math/floor_sum/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+    "math/floor_sum/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+    "math/floor_sum/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+    "math/floor_sum/generalized_floor_sum.hpp": "fcec99cb6f476d79002ccd400da7a3b60beba6b95796a4151a1c7496a9b442b5",
+    "math/floor_sum/prefix_min_of_mod_of_linear.hpp": "27b3985b259da31ac1523281fd43617f453381f4b11bc6dfb0ab631968f90187",
+    "math/combinatorics/binomial_prefix_sum_incremental.hpp": "3bdf45d3337624ba558926892ca2e36e4178fad56ecb9422155327a1c62dbcac",
+    "math/combinatorics/binomial_prefix_sum.hpp": "5ce80a6fef2eac5a5232f1f712044883937084ec9f692996ae71f073bc13c2c3",
+    "math/combinatorics/comb.hpp": "41b3e9729b0c6d74ce7cfd5e20568a7faed113fd4246f039b56eb5f797c100fb",
+    "math/number_theory/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+    "math/number_theory/is_prime.hpp": "12734adb63fc711c66ada779957d379ffd957e78be354b907e5ee10088059618",
+    "math/number_theory/kth_root.hpp": "67f3a2961c6e4e794c97ed9eb2568026da57fce6788f0e33f7d6b0bfe5b339d8",
+    "math/number_theory/factorize.hpp": "bd2c6fe3b131f84611bc401576da1a9a370b9d5f99a7f0989d4106a624cf9ab0",
+    "math/number_theory/discrete_log.hpp": "2c4cf2e03014ab83b1e4c2a479376b1b9eee9ac92feb8b25938f8c64320bae50",
+    "math/number_theory/mod_pow.hpp": "31fc8cfc8c13811f35639d1ca6d31b3ffe8be7f5e23d9edbe73e2242aed0868b",
+    "math/number_theory/mod_inv.hpp": "b0ee562d5394ec94516464b2008c94eafd2f5d71cfedf6efae15ea53e044eb68",
+    "math/number_theory/mod_sqrt.hpp": "71e8fb7614d8c5af57a9535b1c8f1cb25d59493a086da7a88d56b5dd0bc484d3",
+    "math/number_theory/stern_brocot_tree.hpp": "24bfeeb8be5845cc37d74a9b4b4609f8a840f8243a0524b51e3fae4a2857c459",
+    "math/linear_algebra/matrix.hpp": "7ec1a5547a931d0d88318f8b35f0b65564f458075bb6db3625a28688da4316e6",
+    "math/linear_algebra/xor_basis.hpp": "cbeb54e9fce3fcbce9ba695b18e5c0990480be9b2ff731cf57019ed4e394801e",
+    "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+    "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+    "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+    "convolution/multiplicative_convolution.hpp": "b358396dfb6469b5760dfd978bf3847b1046e1e0c249259c47a41483c564eab1",
+    "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+    "convolution/cyclic_convolution.hpp": "380092d664a09555e2d78154498e3742a633758ac6e1c302930dfa8bd625d470",
+    "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+    "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+    "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+    "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+    "convolution/boolean_convolution.hpp": "d4892349ca7c413a6dedcb763357ef84d3dc20823319f9386952e2d1b2999a5e",
+    "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+    "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+    "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+    "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139"
+  },
+  "variants": {
+    "baseline": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "f2fd3a8e88ed8ddce9c663a6fa62c5848b4e78ccf46ad19de1f7b9f19db76cfa",
+        "components/fps_convolution.hpp": "9553bd866393d26325dba88a6d779749a9e26a0ff02536ba568fcc0bd91c2bc1"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 89982,
+        "components/fps_convolution.hpp": 64387
+      },
+      "binary_sha256": "46363f5de47cac3aa2c90ca27ff5e1a3d38acd158dafb1e544bdd064fdaf3474"
+    },
+    "split_both": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "f2fd3a8e88ed8ddce9c663a6fa62c5848b4e78ccf46ad19de1f7b9f19db76cfa",
+        "components/fps_convolution.hpp": "e1ed8a22fc003c3e0680d9b4da95e57b717712e7c6da27ced642f3f7fbae7046"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 89982,
+        "components/fps_convolution.hpp": 44142
+      },
+      "binary_sha256": "77416544dabb81717a112b106190b4cb27443798c2578eb4bb09e789272c6afa"
+    },
+    "loop_bottom": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "82b968faddebfea8dbadbbeb50abe0aaf9d8a4349ae6abe8ca81e73c591f6be5",
+        "components/fps_convolution.hpp": "9553bd866393d26325dba88a6d779749a9e26a0ff02536ba568fcc0bd91c2bc1"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 74608,
+        "components/fps_convolution.hpp": 64387
+      },
+      "binary_sha256": "0be2ac8a0012c1c511dc2cff6d139b29c3f8daae8e1ac8060abf132da0d13c00"
+    },
+    "both_bottom": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "82b968faddebfea8dbadbbeb50abe0aaf9d8a4349ae6abe8ca81e73c591f6be5",
+        "components/fps_convolution.hpp": "e1ed8a22fc003c3e0680d9b4da95e57b717712e7c6da27ced642f3f7fbae7046"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 74608,
+        "components/fps_convolution.hpp": 44142
+      },
+      "binary_sha256": "8f8c7c14c3f2823016851b9656089e07c815fd846366f2767311d56b11228035"
+    },
+    "all_h4": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "e432863e51b1fc73ee1e7d513ec5d3cd0f951f0aa29f569eea748388cdd86604",
+        "components/fps_convolution.hpp": "e1ed8a22fc003c3e0680d9b4da95e57b717712e7c6da27ced642f3f7fbae7046"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 67484,
+        "components/fps_convolution.hpp": 44142
+      },
+      "binary_sha256": "29ce03778193c44012fb3943326b05f2f3cef0bd0b008e4bccfbcad2ccd298a8"
+    },
+    "all_top": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "3e54e262d883460b1a98de62e1c3431ed0073fad76e0cff1111aa4f6497a4c07",
+        "components/fps_convolution.hpp": "e1ed8a22fc003c3e0680d9b4da95e57b717712e7c6da27ced642f3f7fbae7046"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 61005,
+        "components/fps_convolution.hpp": 44142
+      },
+      "binary_sha256": "32f74c220fad0363d40a8aea58663d1c0535907643a7f1c9a6d27e9b6f77a29f"
+    },
+    "endpoint": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "f2fd3a8e88ed8ddce9c663a6fa62c5848b4e78ccf46ad19de1f7b9f19db76cfa",
+        "components/fps_convolution.hpp": "c3f02ad69d2ed00750ef1474937c39594338794f75fd9a92ac654107c9eda3b6"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 89982,
+        "components/fps_convolution.hpp": 43524
+      },
+      "binary_sha256": "88a90db42057e6636641eed8181fb4ff0e8792f300567bd5aed5d69e6de32b94"
+    },
+    "radix": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "d5aff1d25a883a1aca490be10ee814114c2712482ce448ac794a929ce94ede08",
+        "components/fps_convolution.hpp": "e1ed8a22fc003c3e0680d9b4da95e57b717712e7c6da27ced642f3f7fbae7046"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 53659,
+        "components/fps_convolution.hpp": 44142
+      },
+      "binary_sha256": "c756084e8846e030f4c31dad83b4dccb7b000cd42ec6974f3247a77139c8f1e9"
+    },
+    "radix_fast": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "25d20e3afdeb225eefc4fd553a9d287b8649e72105dc9cb0c6b9ff76aa9ae167",
+        "components/fps_convolution.hpp": "e1ed8a22fc003c3e0680d9b4da95e57b717712e7c6da27ced642f3f7fbae7046"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 53705,
+        "components/fps_convolution.hpp": 44142
+      },
+      "binary_sha256": "eeac82b51a4fba9863fa19ffc2a46b38c66561e4fb3a99fdb585344cc14f9c49"
+    },
+    "shared_product": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "3e54e262d883460b1a98de62e1c3431ed0073fad76e0cff1111aa4f6497a4c07",
+        "components/fps_convolution.hpp": "cc3d28d2b77615f37b8226d61777e46055f7f79f8832b1701fd9249f9f7fa724"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 61005,
+        "components/fps_convolution.hpp": 6987
+      },
+      "binary_sha256": "eb3cda490275b928f856ce725dd6b4446f374f8ac2f9f8187fe3c84451bcc25a"
+    },
+    "shared_safe": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "fc20ec2cf1ddc4137900478f60812f5e8f198b6627978dd6c81d7c59bdbc7df6",
+        "components/fps_convolution.hpp": "5f3ad1b1f5e91242980b33daa0dfb2c18bc537febc606c58fd8dde1a48dc255d"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 61151,
+        "components/fps_convolution.hpp": 7085
+      },
+      "binary_sha256": "a2441979c7ad7f464bfd05c24635eaca4202bd3934fb5a570e57361ddd963f95"
+    },
+    "shared_mont": {
+      "source_hashes": {
+        "components/fps_blocked.hpp": "fc20ec2cf1ddc4137900478f60812f5e8f198b6627978dd6c81d7c59bdbc7df6",
+        "components/fps_convolution.hpp": "9ebbc42810223057d7b9b9073a18c7d140288ff20b336a4a8efe8a06b4e979e1"
+      },
+      "source_bytes": {
+        "components/fps_blocked.hpp": 61151,
+        "components/fps_convolution.hpp": 7084
+      },
+      "binary_sha256": "8b93ae7596fb50eb786c595b1bb183e38067c4d7df6bd9a421514152cffd2a71"
+    }
+  },
+  "selected": "shared_mont",
+  "selected_source_matches_canonical": true,
+  "subtrees_invariant": "Recursion.visit(a,nv,k) visits global vector interval [k*nv,(k+1)*nv). A child(4*k+t,nv/4) visits its t-th quarter; a bottom first=k*(nv/4) gives vector p=4*g+t in that interval. ProductBottom origin=k*nv shifts only the b index before forming a pointer, leaving all root/table indices global. Existing aggregate initialization defaults origin=0.",
+  "checks": [
+    "64 operation/size scenarios matched baseline checksum+length in5trial final screens",
+    "fps_convolution_borrow unit passed for shared_mont with guard pages/read-only inputs/offset output/padding checks"
+  ],
+  "rejected": [
+    "radix initial extra reductions were slow; radix_fast unnecessary after sharedbackend margin",
+    "shared_product exploratory local inverse pointer replaced by safe origin-based shared_safe/shared_mont",
+    "endpoint discarded work candidate not selected"
+  ],
+  "artifacts": {
+    "radix_fast.py": "9ecaf6c7e9c003dec685ffa3ccafa1b134263f9a008ead861be19df2fc515f37",
+    "correctness.json": "b0e721288bd83da61e04246f8d10a6b62edb387b4972ec0a94db7682aa98c907",
+    "screen_mont.json": "6b5584dc27de5e56d70d3bdfb75a26c06c5799b96aed3d37c63aa14853b981d1",
+    "baseline.tar.xz": "a9efa6514eacf63be18eae2b0e4232956399c1f51c851385f4ea602b4278132c",
+    "screen.json": "d6f42162861f17aa4186c249277808e937e898e9b5d5ecafb9184237c90a12e4",
+    "shared.py": "bdc2f3882f65436e5ebb66c38904b0a07cd586c4bbf733b6533838cfd8a21c32",
+    "screen_fast.json": "0eb1b2f0e5b3ec4d8cb7bc16b4337628a4badc7b3a5ff2f10720d28e026bfc53",
+    "shared_safe.py": "806edb7b1976b8e5644ad59446f7faacbc3fedc5195671f7a170b8dc41d6b5e0",
+    "endpoint.py": "d40569f600528197e6efee22eec68a7bfd1be03ba255b523280545d9a21f823a",
+    "screen_radix.py": "bb2ad4592d9583b5d6bff83e5ea52aeb849b3f2cb14a85fa85e37e0989628bd7",
+    "screen.py": "1f6edda29b265a6ded3607324c6a680bc0c7276fb35692eaac5d9505cafa45f5",
+    "prepare.py": "2eb86e0dfc4eb03149e52b8c7fb3dd351d9e7a0b7671fa502caa0eefd0b403cd",
+    "screen_mont.py": "5f209626b0c11f21419e4619c446e8806642782be09e70f036835165db08fb00",
+    "screen_fast.py": "7aa4efb0efbc8c578d0795e08411fe68c052f66aede8fe6e0d72492e21c1df8f",
+    "driver.cpp": "3fc1f6d9ccd04c74b2dd0bcc472ce5637ad2d87220470fe1786c29ab19e65e0a",
+    "radix.py": "305e80f8feb237ad6d0cec38fe1597deace763a7fdb5b2f1b43efbd1f852cc5f",
+    "screen_radix.json": "f2f9f95303c0ef1e28e52c0cb993a5fb8690d0a502096fb984427f1be94d6ee9",
+    "candidates.tar.xz": "a2768b612d4a8a7ea6bcbd65e7b7980bc9e11b8ee96f448dfc8285e482c765c5",
+    "replay.py": "754ccfefdf45416aff3e22f340b648e0eb446cea03e6eb53917a0aa66ee08ace"
+  }
+}

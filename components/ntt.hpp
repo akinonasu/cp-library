@@ -10,9 +10,6 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#if defined(__ARM_NEON)
-#include <arm_neon.h>
-#endif
 
 #if defined(__x86_64__) || defined(__i386__)
 #include <immintrin.h>
@@ -101,40 +98,6 @@ struct NTT {
 		}
 	}
 
-#if defined(__ARM_NEON)
-	using I = uint32x4_t;
-	static I mul4(I a, I b) {
-		uint64x2_t x = vmull_u32(vget_low_u32(a), vget_low_u32(b));
-		uint64x2_t y = vmull_u32(vget_high_u32(a), vget_high_u32(b));
-		auto reduce2 = [](uint64x2_t z) {
-			uint32x2_t q = vmul_u32(vmovn_u64(z), vdup_n_u32(998244351));
-			return vshrn_n_u64(vaddq_u64(z, vmull_u32(q, vdup_n_u32(mod))), 32);
-		};
-		return vcombine_u32(reduce2(x), reduce2(y));
-	}
-	static I add4(I a, I b) {
-		I c = vaddq_u32(a, b);
-		return vminq_u32(c, vsubq_u32(c, vdupq_n_u32(twice)));
-	}
-	static I sub4(I a, I b) {
-		I c = vsubq_u32(a, b);
-		return vminq_u32(c, vaddq_u32(c, vdupq_n_u32(twice)));
-	}
-	static I fixed_mul4(I a, I r, I q) {
-		uint64x2_t x = vmull_u32(vget_low_u32(a), vget_low_u32(q));
-		uint64x2_t y = vmull_u32(vget_high_u32(a), vget_high_u32(q));
-		I t = vcombine_u32(vshrn_n_u64(x, 32), vshrn_n_u64(y, 32));
-		return vmlsq_u32(vmulq_u32(a, r), t, vdupq_n_u32(mod));
-	}
-	template <bool inverse>
-	static void fixed_butterfly4(I &x, I &y, I r, I q, bool unit = false) {
-		if constexpr (!inverse)
-			if (!unit) y = fixed_mul4(y, r, q);
-		I z = sub4(x, y);
-		x = add4(x, y);
-		y = inverse && !unit ? fixed_mul4(z, r, q) : z;
-	}
-#endif
 #if defined(__x86_64__) || defined(__i386__)
 	static bool vectorized() {
 #if defined(__AVX2__)
@@ -400,82 +363,6 @@ struct NTT {
 			}
 		}
 	}
-	__attribute__((target("avx2"))) static void fold8(U *a, int columns) {
-		for (int i = 0; i < columns; i += 8) {
-			I8 x = add8(load8(a + i), load8(a + columns + i));
-			store8(a + i, x);
-			store8(a + columns + i, x);
-		}
-	}
-	__attribute__((target("avx2"))) void project8_8(U *a, int rows) const {
-		for (int j = 0; j < rows; ++j) {
-			I8 x0 = load8(a + 16 * j + 0);
-			x0 = small8<4, true>(small8<2, true>(small8<1, true>(x0, 0), 0), 0);
-			I8 x1 = load8(a + 16 * j + 8);
-			x1 = small8<4, true>(small8<2, true>(small8<1, true>(x1, 1), 1), 1);
-			x0 = add8(x0, x1);
-			x1 = x0;
-			x0 = small8<1, false>(small8<2, false>(small8<4, false>(x0, 0), 0), 0);
-			store8(a + 16 * j + 0, x0);
-			x1 = small8<1, false>(small8<2, false>(small8<4, false>(x1, 1), 1), 1);
-			store8(a + 16 * j + 8, x1);
-		}
-	}
-	__attribute__((target("avx2"))) void project16_8(U *a, int rows) const {
-		for (int j = 0; j < rows; ++j) {
-			I8 x0 = load8(a + 32 * j + 0);
-			x0 = small8<4, true>(small8<2, true>(small8<1, true>(x0, 0), 0), 0);
-			I8 x1 = load8(a + 32 * j + 8);
-			x1 = small8<4, true>(small8<2, true>(small8<1, true>(x1, 1), 1), 1);
-			I8 x2 = load8(a + 32 * j + 16);
-			x2 = small8<4, true>(small8<2, true>(small8<1, true>(x2, 2), 2), 2);
-			I8 x3 = load8(a + 32 * j + 24);
-			x3 = small8<4, true>(small8<2, true>(small8<1, true>(x3, 3), 3), 3);
-			fixed_butterfly8<true>(x0, x1, _mm256_set1_epi32(inverse_roots[0]), _mm256_set1_epi32(inverse_root_quotients[0]), true);
-			fixed_butterfly8<true>(x2, x3, _mm256_set1_epi32(inverse_roots[1]), _mm256_set1_epi32(inverse_root_quotients[1]), false);
-			x0 = add8(x0, x2);
-			x2 = x0;
-			x1 = add8(x1, x3);
-			x3 = x1;
-			fixed_butterfly8<false>(x0, x1, _mm256_set1_epi32(roots[0]), _mm256_set1_epi32(root_quotients[0]), true);
-			fixed_butterfly8<false>(x2, x3, _mm256_set1_epi32(roots[1]), _mm256_set1_epi32(root_quotients[1]), false);
-			x0 = small8<1, false>(small8<2, false>(small8<4, false>(x0, 0), 0), 0);
-			store8(a + 32 * j + 0, x0);
-			x1 = small8<1, false>(small8<2, false>(small8<4, false>(x1, 1), 1), 1);
-			store8(a + 32 * j + 8, x1);
-			x2 = small8<1, false>(small8<2, false>(small8<4, false>(x2, 2), 2), 2);
-			store8(a + 32 * j + 16, x2);
-			x3 = small8<1, false>(small8<2, false>(small8<4, false>(x3, 3), 3), 3);
-			store8(a + 32 * j + 24, x3);
-		}
-	}
-	__attribute__((target("avx2"))) static void scale_rows8(U *a, int rows, int columns, const U *factors) {
-		if (columns == 2) {
-			int j = 0;
-			for (; j + 1 < rows; j += 2) {
-				U w0 = factors[j], w1 = factors[j + 1], q0 = quotient(w0), q1 = quotient(w1);
-				I8 w = _mm256_setr_epi32(w0, w0, w0, w0, w1, w1, w1, w1);
-				I8 q = _mm256_setr_epi32(q0, q0, q0, q0, q1, q1, q1, q1);
-				store8(a + 4 * j, fixed_mul8(load8(a + 4 * j), w, q));
-			}
-			if (j < rows)
-				for (int i = 0; i < 4; ++i) a[4 * j + i] = fixed_mul(a[4 * j + i], factors[j], quotient(factors[j]));
-		} else {
-			for (int j = 0; j < rows; ++j) {
-				U w = factors[j];
-				I8 v = _mm256_set1_epi32(w), q = _mm256_set1_epi32(quotient(w));
-				for (int i = 0; i < 2 * columns; i += 8) store8(a + 2 * columns * j + i, fixed_mul8(load8(a + 2 * columns * j + i), v, q));
-			}
-		}
-	}
-	__attribute__((target("avx2"))) void project4_8(U *a, int rows) const {
-		for (int j = 0; j < rows; ++j) {
-			I8 x = small8<2, true>(small8<1, true>(load8(a + 8 * j), 0), 0);
-			x = add8(x, _mm256_permute2x128_si256(x, x, 1));
-			x = small8<1, false>(small8<2, false>(x, 0), 0);
-			store8(a + 8 * j, x);
-		}
-	}
 	__attribute__((target("avx2"))) static void load_pairs(const U *a, I8 &x, I8 &y) {
 		I8 index = _mm256_setr_epi32(0, 2, 4, 6, 1, 3, 5, 7);
 		I8 u = _mm256_permutevar8x32_epi32(load8(a), index),
@@ -557,111 +444,8 @@ struct NTT {
 															int length) {
 		for (int i = 0; i < length; i += 8) store8(a + i, sub8(load8(b + i), load8(c + i)));
 	}
-	__attribute__((target("avx2"))) static void project1_8(U *a, int rows) {
-		for (int j = 0; j < rows; j += 8) {
-			I8 x, y;
-			load_pairs(a + 2 * j, x, y);
-			x = add8(x, y);
-			store_pairs(a + 2 * j, x, x);
-		}
-	}
-	__attribute__((target("avx2"))) void project2_8(U *a, int rows) const {
-		const I8 index = _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7);
-		for (int j = 0; j < rows; j += 8) {
-			U *p = a + 4 * j;
-			I8 u = load8(p), v = load8(p + 8), w = load8(p + 16), z = load8(p + 24);
-			I8 uv0 = _mm256_unpacklo_epi32(u, v), uv1 = _mm256_unpackhi_epi32(u, v);
-			I8 wz0 = _mm256_unpacklo_epi32(w, z), wz1 = _mm256_unpackhi_epi32(w, z);
-			I8 a0 = _mm256_permutevar8x32_epi32(_mm256_unpacklo_epi64(uv0, wz0), index);
-			I8 a1 = _mm256_permutevar8x32_epi32(_mm256_unpackhi_epi64(uv0, wz0), index);
-			I8 a2 = _mm256_permutevar8x32_epi32(_mm256_unpacklo_epi64(uv1, wz1), index);
-			I8 a3 = _mm256_permutevar8x32_epi32(_mm256_unpackhi_epi64(uv1, wz1), index);
-			I8 x = add8(add8(a0, a1), add8(a2, a3));
-			I8 y =
-				add8(sub8(a0, a1), fixed_mul8(sub8(a2, a3), _mm256_set1_epi32(inverse_roots[1]),
-											  _mm256_set1_epi32(inverse_root_quotients[1])));
-			a0 = add8(x, y);
-			a1 = sub8(x, y);
-			y = fixed_mul8(y, _mm256_set1_epi32(roots[1]),
-						   _mm256_set1_epi32(root_quotients[1]));
-			a2 = add8(x, y);
-			a3 = sub8(x, y);
-			uv0 = _mm256_unpacklo_epi32(a0, a1);
-			uv1 = _mm256_unpackhi_epi32(a0, a1);
-			wz0 = _mm256_unpacklo_epi32(a2, a3);
-			wz1 = _mm256_unpackhi_epi32(a2, a3);
-			u = _mm256_unpacklo_epi64(uv0, wz0);
-			v = _mm256_unpackhi_epi64(uv0, wz0);
-			w = _mm256_unpacklo_epi64(uv1, wz1);
-			z = _mm256_unpackhi_epi64(uv1, wz1);
-			store8(p, _mm256_permute2x128_si256(u, v, 0x20));
-			store8(p + 8, _mm256_permute2x128_si256(w, z, 0x20));
-			store8(p + 16, _mm256_permute2x128_si256(u, v, 0x31));
-			store8(p + 24, _mm256_permute2x128_si256(w, z, 0x31));
-		}
-	}
 #endif
 
-#if defined(__ARM_NEON)
-	template <int stride, bool inverse>
-	void small4(I &a, I &b, int k) const {
-		const V &w = inverse ? inverse_roots : roots;
-		const V &quot = inverse ? inverse_root_quotients : root_quotients;
-		if constexpr (stride == 4) {
-			if (k == 0) {
-				I x = sub4(a, b);
-				a = add4(a, b);
-				b = x;
-			} else
-				fixed_butterfly4<inverse>(a, b, vdupq_n_u32(w[k]), vdupq_n_u32(quot[k]));
-		}
-		if constexpr (stride == 2) {
-			I x = vcombine_u32(vget_low_u32(a), vget_low_u32(b));
-			I y = vcombine_u32(vget_high_u32(a), vget_high_u32(b));
-			fixed_butterfly4<inverse>(
-				x, y, vcombine_u32(vdup_n_u32(w[2 * k]), vdup_n_u32(w[2 * k + 1])),
-				vcombine_u32(vdup_n_u32(quot[2 * k]), vdup_n_u32(quot[2 * k + 1])));
-			a = vcombine_u32(vget_low_u32(x), vget_low_u32(y));
-			b = vcombine_u32(vget_high_u32(x), vget_high_u32(y));
-		}
-		if constexpr (stride == 1) {
-			uint32x4x2_t z = vuzpq_u32(a, b);
-			fixed_butterfly4<inverse>(z.val[0], z.val[1], vld1q_u32(w.data() + 4 * k),
-									  vld1q_u32(quot.data() + 4 * k));
-			z = vzipq_u32(z.val[0], z.val[1]);
-			a = z.val[0];
-			b = z.val[1];
-		}
-	}
-	template <bool inverse>
-	void fft4(U *a, int length, int limit = 0) const {
-		if (!limit) limit = length;
-		if constexpr (!inverse) {
-			int h = limit / 2;
-			for (; h >= 16; h >>= 2) stage_pair<false>(a, h / 2, length);
-			if (h == 8) stage<false>(a, h, length);
-		}
-		for (int j = 0; j < length; j += 8) {
-			I x = vld1q_u32(a + j), y = vld1q_u32(a + j + 4);
-			if constexpr (inverse) {
-				small4<1, true>(x, y, j / 8);
-				small4<2, true>(x, y, j / 8);
-				small4<4, true>(x, y, j / 8);
-			} else {
-				small4<4, false>(x, y, j / 8);
-				small4<2, false>(x, y, j / 8);
-				small4<1, false>(x, y, j / 8);
-			}
-			vst1q_u32(a + j, x);
-			vst1q_u32(a + j + 4, y);
-		}
-		if constexpr (inverse) {
-			int h = 8;
-			for (; 4 * h <= limit; h <<= 2) stage_pair<true>(a, h, length);
-			if (h < limit) stage<true>(a, h, length);
-		}
-	}
-#endif
 	template <bool inverse>
 	void stage(U *a, int stride, int length, int first = 0) const {
 		const V &w = inverse ? inverse_roots : roots;
@@ -675,20 +459,6 @@ struct NTT {
 		for (int j = 0, k = first; j < length; j += 2 * stride, ++k) {
 			U r = w[k], q = quot[k];
 			int i = 0;
-#if defined(__ARM_NEON)
-			for (; i + 4 <= stride; i += 4) {
-				I x = vld1q_u32(a + j + i), y = vld1q_u32(a + j + stride + i);
-				if constexpr (!inverse)
-					if (k) y = fixed_mul4(y, vdupq_n_u32(r), vdupq_n_u32(q));
-				I z = sub4(x, y);
-				x = add4(x, y);
-				if constexpr (inverse)
-					if (k) z = fixed_mul4(z, vdupq_n_u32(r), vdupq_n_u32(q));
-				y = z;
-				vst1q_u32(a + j + i, x);
-				vst1q_u32(a + j + stride + i, y);
-			}
-#endif
 			for (; i < stride; ++i) {
 				U x = a[j + i], y = a[j + stride + i];
 				if constexpr (!inverse)
@@ -707,38 +477,6 @@ struct NTT {
 			return;
 		}
 #endif
-#if defined(__ARM_NEON)
-		if (stride >= 4) {
-			const V &w = inverse ? inverse_roots : roots;
-			const V &q = inverse ? inverse_root_quotients : root_quotients;
-			for (int j = 0, k = first; j < length; j += 4 * stride, ++k) {
-				I r = vdupq_n_u32(w[k]), rq = vdupq_n_u32(q[k]);
-				I r0 = vdupq_n_u32(w[2 * k]), q0 = vdupq_n_u32(q[2 * k]);
-				I r1 = vdupq_n_u32(w[2 * k + 1]), q1 = vdupq_n_u32(q[2 * k + 1]);
-				for (int i = 0; i < stride; i += 4) {
-					I x0 = vld1q_u32(a + j + i), x1 = vld1q_u32(a + j + stride + i);
-					I x2 = vld1q_u32(a + j + 2 * stride + i),
-					  x3 = vld1q_u32(a + j + 3 * stride + i);
-					if constexpr (inverse) {
-						fixed_butterfly4<true>(x0, x1, r0, q0, k == 0);
-						fixed_butterfly4<true>(x2, x3, r1, q1);
-						fixed_butterfly4<true>(x0, x2, r, rq, k == 0);
-						fixed_butterfly4<true>(x1, x3, r, rq, k == 0);
-					} else {
-						fixed_butterfly4<false>(x0, x2, r, rq, k == 0);
-						fixed_butterfly4<false>(x1, x3, r, rq, k == 0);
-						fixed_butterfly4<false>(x0, x1, r0, q0, k == 0);
-						fixed_butterfly4<false>(x2, x3, r1, q1);
-					}
-					vst1q_u32(a + j + i, x0);
-					vst1q_u32(a + j + stride + i, x1);
-					vst1q_u32(a + j + 2 * stride + i, x2);
-					vst1q_u32(a + j + 3 * stride + i, x3);
-				}
-			}
-			return;
-		}
-#endif
 		if constexpr (inverse)
 			stage<true>(a, stride, length, 2 * first), stage<true>(a, 2 * stride, length, first);
 		else
@@ -747,12 +485,7 @@ struct NTT {
 	template <bool inverse>
 	void fft(U *a, int length, int limit = 0) const {
 		if (!limit) limit = length;
-#if defined(__ARM_NEON)
-		if (limit >= 8) {
-			fft4<inverse>(a, length, limit);
-			return;
-		}
-#elif defined(__x86_64__) || defined(__i386__)
+#if defined(__x86_64__) || defined(__i386__)
 		if (limit >= 8 && vectorized()) {
 			fft8<inverse>(a, length, limit);
 			return;
@@ -975,13 +708,6 @@ struct NTT {
 #endif
 		U qr = quotient(r);
 		int i = 0;
-#if defined(__ARM_NEON)
-		I v = vdupq_n_u32(r), q = vdupq_n_u32(qr), p = vdupq_n_u32(mod);
-		for (; i + 4 <= n; i += 4) {
-			I x = fixed_mul4(vld1q_u32(a + i), v, q);
-			vst1q_u32(a + i, vminq_u32(x, vsubq_u32(x, p)));
-		}
-#endif
 		for (; i < n; ++i) {
 			U x = fixed_mul(a[i], r, qr);
 			a[i] = x < mod ? x : x - mod;
@@ -995,16 +721,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= n; i += 4) {
-			I x = vld1q_u32(a + i), y = vld1q_u32(a + n + i);
-			I u = mul4(vld1q_u32(q + i), vld1q_u32(q + i));
-			I v = mul4(vld1q_u32(q + n + i), vld1q_u32(q + n + i));
-			x = add4(x, x);
-			vst1q_u32(a + i, negative ? sub4(x, u) : add4(x, u));
-			vst1q_u32(a + n + i, add4(add4(y, y), v));
-		}
-#endif
 		for (; i < n; ++i) {
 			U u = mul(q[i], q[i]), v = mul(q[n + i], q[n + i]);
 			U x = add(a[i], a[i]);
@@ -1020,12 +736,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= n; i += 4) {
-			I x = vld1q_u32(a + i);
-			vst1q_u32(a + i, vminq_u32(x, vsubq_u32(x, vdupq_n_u32(mod))));
-		}
-#endif
 		for (; i < n; ++i)
 			if (a[i] >= mod) a[i] -= mod;
 	}
@@ -1037,12 +747,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= n; i += 4) {
-			I x = mul4(vld1q_u32(a + i), vld1q_u32(b + i));
-			vst1q_u32(dst + i, x);
-		}
-#endif
 		for (; i < n; ++i) dst[i] = mul(a[i], b[i]);
 	}
 #if defined(__x86_64__) || defined(__i386__)
@@ -1155,39 +859,6 @@ struct NTT {
 		return result;
 	}
 
-	__attribute__((target("avx2"))) static void inverse_fold8(U *a, const U *f, int n) {
-		int i = 0;
-		for (; i + 8 <= n; i += 8) store8(a + i, add8(load8(a + i), load8(f + i)));
-		for (; i < n; ++i) {
-			a[i] += f[i];
-			if (a[i] >= twice) a[i] -= twice;
-		}
-	}
-	__attribute__((target("avx2"))) static void inverse_recover8(U *g, const U *a, int m) {
-		int n = 2 * m;
-		U ratio = T(3).pow((mod - 1) / (2 * (n / 8))).inv().val();
-		U first = mod - (mod - 1) / (2 * (n / 8));
-		U phase = T(3).pow((mod - 1) / 4).inv().val();
-		U powers[8];
-		powers[0] = first;
-		for (int j = 1; j < 8; ++j) powers[j] = (unsigned long long)powers[j - 1] * ratio % mod;
-		U step = T(ratio).pow(8).val();
-		I8 factors = load8(powers), s = _mm256_set1_epi32(step), sq = _mm256_set1_epi32(quotient(step));
-		I8 vphase = _mm256_set1_epi32(phase), qphase = _mm256_set1_epi32(quotient(phase)), p = _mm256_set1_epi32(mod), z = _mm256_setzero_si256();
-		for (int i = 0; i < m; i += 64) {
-			store8(powers, factors);
-			for (int j = 0; j < 8; ++j) {
-				int at = i + 8 * j;
-				U w = powers[j];
-				I8 v = _mm256_set1_epi32(w), q = _mm256_set1_epi32(quotient(w));
-				I8 r = _mm256_add_epi32(load8(a + at), fixed_mul8(load8(a + m + at), vphase, qphase));
-				r = fixed_mul8(r, v, q);
-				store8(g + m + at, sub8(z, add8(r, load8(g + m + at))));
-			}
-			factors = fixed_mul8(factors, s, sq);
-			factors = _mm256_min_epu32(factors, _mm256_sub_epi32(factors, p));
-		}
-	}
 	template <bool inverse>
 	__attribute__((target("avx2"))) void inverse_partial8(U *a, int n, int limit = 0) const {
 		if (!limit) limit = n;
@@ -1201,60 +872,6 @@ struct NTT {
 			for (; 4 * stride <= n; stride <<= 2) radix4_8<true>(a, stride, n);
 			if (stride < n) stage8<true>(a, stride, n);
 		}
-	}
-	__attribute__((target("avx2"))) static void inverse_twist8(U *a, U *b, int n, U ratio, U first = one) {
-		U powers[8];
-		powers[0] = out(first);
-		U r = out(ratio);
-		for (int j = 1; j < 8; ++j) powers[j] = (unsigned long long)powers[j - 1] * r % mod;
-		U step = T::word(ratio).pow(8).val();
-		I8 factors = load8(powers), s = _mm256_set1_epi32(step), sq = _mm256_set1_epi32(quotient(step)), p = _mm256_set1_epi32(mod);
-		for (int i = 0; i < n; i += 64) {
-			store8(powers, factors);
-			for (int j = 0; j < 8 && i + 8 * j < n; ++j) {
-				U w = powers[j];
-				I8 v = _mm256_set1_epi32(w), q = _mm256_set1_epi32(quotient(w));
-				store8(a + i + 8 * j, fixed_mul8(load8(a + i + 8 * j), v, q));
-				if (b && i + 8 * j < n / 2) store8(b + i + 8 * j, fixed_mul8(load8(b + i + 8 * j), v, q));
-			}
-			factors = fixed_mul8(factors, s, sq);
-			factors = _mm256_min_epu32(factors, _mm256_sub_epi32(factors, p));
-		}
-	}
-	template <bool negative>
-	__attribute__((target("avx2"))) void inverse_cubic8(U *a, U *b, int n) const {
-		U shift = one;
-		if constexpr (negative) {
-			T psi = T(3).pow((mod - 1) / (2 * (n / 8)));
-			shift = psi.v;
-			if (shift >= mod) shift -= mod;
-			inverse_twist8(a, b, n, shift);
-		}
-		inverse_partial8<false>(a, n);
-		if constexpr (negative) {
-			std::copy_n(b, n / 2, b + n / 2);
-			inverse_partial8<false>(b, n, n / 2);
-		} else inverse_partial8<false>(b, n);
-		for (int i = 0; i < n; i += 8 * 8) {
-			U ws[8], qs[8];
-			for (int j = 0; j < 8; ++j) {
-				int k = i / 8 + j;
-				U w = roots[k / 2];
-				if (k & 1) w = mod - w;
-				if constexpr (negative) {
-					w = mul(w, shift);
-					if (w >= mod) w -= mod;
-					qs[j] = quotient(w);
-				} else qs[j] = (k & 1) ? ~root_quotients[k / 2] : root_quotients[k / 2];
-				ws[j] = w;
-			}
-			inverse_leaf_products8<8>(a + i, b + i, ws, qs);
-			inverse_leaf_products8<8, true>(a + i, b + i, ws, qs);
-			for (int j = 0; j < 8; ++j) store8(a + i + 8 * j, sub8(load8(a + i + 8 * j), load8(b + i + 8 * j)));
-		}
-		inverse_partial8<true>(a, n);
-		U normal = mod - (mod - 1) / (2 * (n / 8));
-		if constexpr (!negative) scale8(a, n, normal);
 	}
 	__attribute__((target("avx2"))) void inverse_newton8(U *a, U *b, int n) const {
 		assert(n >= 64 && !(n & (n - 1)) && n <= (1 << 23) && static_cast<int>(roots.size()) >= n / 16);
@@ -1351,16 +968,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= n; i += 4) {
-			auto p = vld2q_u32(a + 2 * i), q = vld2q_u32(b + 2 * i);
-			I x = mul4(p.val[0], q.val[1]), y = mul4(p.val[1], q.val[0]);
-			if constexpr (odd) x = mul4(sub4(x, y), vld1q_u32(twist + i));
-			else x = add4(x, y);
-			vst1q_u32(a + i, x);
-			vst1q_u32(b + i, mul4(q.val[0], q.val[1]));
-		}
-#endif
 		for (; i < n; ++i) {
 			U u = mul(a[2 * i], b[2 * i + 1]), v = mul(a[2 * i + 1], b[2 * i]);
 			a[i] = odd ? mul(sub(u, v), twist[i]) : add(u, v);
@@ -1375,9 +982,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= n; i += 4) vst1q_u32(a + i, add4(mul4(vld1q_u32(a + i), vld1q_u32(y + i)), mul4(vld1q_u32(b + i), vld1q_u32(x + i))));
-#endif
 		for (; i < n; ++i) a[i] = add(mul(a[i], y[i]), mul(b[i], x[i]));
 	}
 #if defined(__x86_64__) || defined(__i386__)
@@ -1406,20 +1010,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		U factors[4], power = one;
-		for (int j = 0; j < 4; ++j) {
-			factors[j] = mul(first, power);
-			power = mul(power, step);
-		}
-		I r = vld1q_u32(factors), ratio = vdupq_n_u32(power);
-		for (; i + 4 <= n; i += 4) {
-			vst1q_u32(a + i, mul4(vld1q_u32(a + i), r));
-			r = mul4(r, ratio);
-		}
-		vst1q_u32(factors, r);
-		first = factors[0];
-#endif
 		for (; i < n; ++i) {
 			a[i] = mul(a[i], first);
 			first = mul(first, step);
@@ -1443,9 +1033,6 @@ struct NTT {
 #endif
 		int i = 0;
 		U q = quotient(r);
-#if defined(__ARM_NEON)
-		for (; i + 4 <= n; i += 4) vst1q_u32(a + i, add4(vld1q_u32(a + i), fixed_mul4(vld1q_u32(b + i), vdupq_n_u32(r), vdupq_n_u32(q))));
-#endif
 		for (; i < n; ++i) a[i] = add(a[i], fixed_mul(b[i], r, q));
 	}
 	void leaf(U *a, const U *b, int k) const {
@@ -1459,20 +1046,6 @@ struct NTT {
 			window[8 + i] = x;
 			coefficients[i] = b[i] < mod ? b[i] : b[i] - mod;
 		}
-#if defined(__ARM_NEON)
-		for (int j = 0; j < 8; j += 4) {
-			uint64x2_t lo = vdupq_n_u64(0), hi = lo;
-			for (int i = 0; i < 8; ++i) {
-				I z = vld1q_u32(window + 8 - i + j);
-				lo = vmlal_n_u32(lo, vget_low_u32(z), coefficients[i]);
-				hi = vmlal_n_u32(hi, vget_high_u32(z), coefficients[i]);
-			}
-			uint32x2_t x = vmul_n_u32(vmovn_u64(lo), 998244351u), y = vmul_n_u32(vmovn_u64(hi), 998244351u);
-			I z = vcombine_u32(vshrn_n_u64(vmlal_n_u32(lo, x, mod), 32), vshrn_n_u64(vmlal_n_u32(hi, y, mod), 32));
-			z = vminq_u32(z, vsubq_u32(z, vdupq_n_u32(twice)));
-			vst1q_u32(a + j, vminq_u32(z, vsubq_u32(z, vdupq_n_u32(mod))));
-		}
-#else
 		for (int j = 0; j < 8; ++j) {
 			unsigned long long sum = 0;
 			for (int i = 0; i < 8; ++i) sum += (unsigned long long)window[8 - i + j] * coefficients[i];
@@ -1480,7 +1053,6 @@ struct NTT {
 			if (x >= twice) x -= twice;
 			a[j] = x < mod ? x : x - mod;
 		}
-#endif
 	}
 	template <int n>
 	void convolution_tile(U *a, U *b, int k) const {
@@ -1615,13 +1187,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= n; i += 4) {
-			I x = vld1q_u32(b + i), y = vld1q_u32(c + i);
-			x = minus ? sub4(x, y) : add4(x, y);
-			vst1q_u32(dst + i, add4(vld1q_u32(dst + i), mul4(vld1q_u32(a + i), x)));
-		}
-#endif
 		for (; i < n; ++i) dst[i] = add(dst[i], mul(a[i], minus ? sub(b[i], c[i]) : add(b[i], c[i])));
 	}
 	static void scale_copy(U *dst, const U *src, int length, U r) {
@@ -1633,9 +1198,6 @@ struct NTT {
 #endif
 		U q = quotient(r);
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= length; i += 4) vst1q_u32(dst + i, fixed_mul4(vld1q_u32(src + i), vdupq_n_u32(r), vdupq_n_u32(q)));
-#endif
 		for (; i < length; ++i) dst[i] = fixed_mul(src[i], r, q);
 	}
 	void scale(U *a, int length, U r) const {
@@ -1647,10 +1209,6 @@ struct NTT {
 #endif
 		int i = 0;
 		U q = quotient(r);
-#if defined(__ARM_NEON)
-		for (; i + 4 <= length; i += 4)
-			vst1q_u32(a + i, fixed_mul4(vld1q_u32(a + i), vdupq_n_u32(r), vdupq_n_u32(q)));
-#endif
 		for (; i < length; ++i) a[i] = fixed_mul(a[i], r, q);
 	}
 
@@ -1662,12 +1220,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= length; i += 4) {
-			uint32x4x2_t v = vld2q_u32(b + 2 * i);
-			vst1q_u32(a + i, mul4(v.val[0], v.val[1]));
-		}
-#endif
 		for (; i < length; ++i) a[i] = mul(b[2 * i], b[2 * i + 1]);
 	}
 	static void pair_multiply(U *a, const U *b, int length) {
@@ -1678,15 +1230,6 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= length; i += 4) {
-			uint32x4x2_t v = vld2q_u32(a + 2 * i);
-			I x = mul4(v.val[1], vld1q_u32(b + i));
-			v.val[1] = mul4(v.val[0], vld1q_u32(b + i));
-			v.val[0] = x;
-			vst2q_u32(a + 2 * i, v);
-		}
-#endif
 		for (; i < length; ++i) {
 			U x = a[2 * i];
 			a[2 * i] = mul(b[i], a[2 * i + 1]);
@@ -1701,71 +1244,20 @@ struct NTT {
 		}
 #endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= length; i += 4)
-			vst1q_u32(a + i, sub4(vld1q_u32(b + i), vld1q_u32(c + i)));
-#endif
 		for (; i < length; ++i) a[i] = sub(b[i], c[i]);
 	}
 	static void fold(U *a, int columns) {
-#if defined(__x86_64__) || defined(__i386__)
-		if (columns >= 8 && vectorized()) {
-			fold8(a, columns);
-			return;
-		}
-#endif
 		int i = 0;
-#if defined(__ARM_NEON)
-		for (; i + 4 <= columns; i += 4) {
-			I x = add4(vld1q_u32(a + i), vld1q_u32(a + columns + i));
-			vst1q_u32(a + i, x);
-			vst1q_u32(a + columns + i, x);
-		}
-#endif
 		for (; i < columns; ++i) a[i] = a[columns + i] = add(a[i], a[columns + i]);
 	}
 	void project(U *a, int rows, int columns) const {
 		if (columns == 1) {
-#if defined(__x86_64__) || defined(__i386__)
-			if (rows >= 8 && vectorized()) {
-				project1_8(a, rows);
-				return;
-			}
-#endif
 			int j = 0;
-#if defined(__ARM_NEON)
-			for (; j + 4 <= rows; j += 4) {
-				uint32x4x2_t v = vld2q_u32(a + 2 * j);
-				v.val[0] = v.val[1] = add4(v.val[0], v.val[1]);
-				vst2q_u32(a + 2 * j, v);
-			}
-#endif
 			for (; j < rows; ++j) a[2 * j] = a[2 * j + 1] = add(a[2 * j], a[2 * j + 1]);
 			return;
 		}
 		if (columns == 2) {
-#if defined(__x86_64__) || defined(__i386__)
-			if (rows >= 8 && vectorized()) {
-				project2_8(a, rows);
-				return;
-			}
-#endif
 			int j = 0;
-#if defined(__ARM_NEON)
-			for (; j + 4 <= rows; j += 4) {
-				uint32x4x4_t v = vld4q_u32(a + 4 * j);
-				I x = add4(add4(v.val[0], v.val[1]), add4(v.val[2], v.val[3]));
-				I y = add4(sub4(v.val[0], v.val[1]),
-						   fixed_mul4(sub4(v.val[2], v.val[3]), vdupq_n_u32(inverse_roots[1]),
-									  vdupq_n_u32(inverse_root_quotients[1])));
-				v.val[0] = add4(x, y);
-				v.val[1] = sub4(x, y);
-				y = fixed_mul4(y, vdupq_n_u32(roots[1]), vdupq_n_u32(root_quotients[1]));
-				v.val[2] = add4(x, y);
-				v.val[3] = sub4(x, y);
-				vst4q_u32(a + 4 * j, v);
-			}
-#endif
 			for (; j < rows; ++j) {
 				U *r = a + 4 * j;
 				U x = add(add(r[0], r[1]), add(r[2], r[3]));
@@ -1779,39 +1271,6 @@ struct NTT {
 			}
 			return;
 		}
-		if (columns == 4) {
-#if defined(__x86_64__) || defined(__i386__)
-			if (vectorized()) {
-				project4_8(a, rows);
-				return;
-			}
-#endif
-#if defined(__ARM_NEON)
-			for (int j = 0; j < rows; ++j) {
-				I x = vld1q_u32(a + 8 * j), y = vld1q_u32(a + 8 * j + 4);
-				small4<1, true>(x, y, 0);
-				small4<2, true>(x, y, 0);
-				x = y = add4(x, y);
-				small4<2, false>(x, y, 0);
-				small4<1, false>(x, y, 0);
-				vst1q_u32(a + 8 * j, x);
-				vst1q_u32(a + 8 * j + 4, y);
-			}
-			return;
-#endif
-		}
-#if defined(__x86_64__) || defined(__i386__)
-		if (columns == 8 && vectorized()) {
-			project8_8(a, rows);
-			return;
-		}
-#endif
-#if defined(__x86_64__) || defined(__i386__)
-		if (columns == 16 && vectorized()) {
-			project16_8(a, rows);
-			return;
-		}
-#endif
 		for (int j = 0; j < rows; ++j) {
 			U *row = a + 2 * columns * j;
 			fft<true>(row, 2 * columns, columns);
@@ -1820,74 +1279,20 @@ struct NTT {
 		}
 	}
 	void composition_difference(U *a, const U *b, const U *c, int n) const {
-#if defined(__x86_64__) || defined(__i386__)
-		if (vectorized()) {
-			composition_difference8(a, b, c, n);
-			return;
-		}
-#endif
 		difference(a, b, c, n);
 	}
-#if defined(__x86_64__) || defined(__i386__)
-	__attribute__((target("avx2"))) static void composition_difference8(U *a, const U *b, const U *c, int n) {
-		I8 p = _mm256_set1_epi32(twice);
-		for (int i = 0; i < n; i += 8) {
-			I8 x = load8(c + i);
-			x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
-			store8(a + i, sub8(load8(b + i), x));
-		}
-	}
-#endif
 	void composition_finish(U *p, const U *v, int columns, U factor) const {
-#if defined(__x86_64__) || defined(__i386__)
-		if (columns >= 8 && vectorized()) {
-			composition_finish8(p, v, columns, out(factor));
-			return;
-		}
-#endif
 		for (int i = 0; i < columns; ++i) p[i] = mul(sub(add(v[i], v[columns + i]), add(v[2 * columns + i], v[3 * columns + i])), factor);
 	}
-#if defined(__x86_64__) || defined(__i386__)
-	__attribute__((target("avx2"))) static void composition_finish8(U *dst, const U *v, int n, U factor) {
-		I8 r = _mm256_set1_epi32(factor), q = _mm256_set1_epi32(quotient(factor));
-		for (int i = 0; i < n; i += 8) {
-			I8 x = add8(load8(v + i), load8(v + n + i)), y = add8(load8(v + 2 * n + i), load8(v + 3 * n + i));
-			store8(dst + i, fixed_mul8(sub8(x, y), r, q));
-		}
-	}
-#endif
 	struct CompositionDelete {
 		void operator()(unsigned int *p) const { ::operator delete[](p, std::align_val_t(64)); }
 	};
 	using CompositionWords = std::unique_ptr<unsigned int[], CompositionDelete>;
 	void composition_forward_y(U *a, int size, int columns) const {
-#if defined(__x86_64__) || defined(__i386__)
-		if (vectorized()) {
-			int h = size;
-			bool lazy = false;
-			for (; h / 2 > columns && h / 2 >= 8; h >>= 2) {
-				radix4_8<false>(a, h / 2, 2 * size);
-				lazy = true;
-			}
-			if (lazy && h > columns) composition_shrink8(a, 2 * size);
-			for (; h / 2 > columns; h >>= 2) stage_pair<false>(a, h / 2, 2 * size);
-			if (h > columns) stage<false>(a, h, 2 * size);
-			return;
-		}
-#endif
 		int h = size;
 		for (; h / 2 > columns; h >>= 2) stage_pair<false>(a, h / 2, 2 * size);
 		if (h > columns) stage<false>(a, h, 2 * size);
 	}
-#if defined(__x86_64__) || defined(__i386__)
-	__attribute__((target("avx2"))) static void composition_shrink8(U *a, int n) {
-		I8 p = _mm256_set1_epi32(twice);
-		for (int i = 0; i < n; i += 8) {
-			I8 x = load8(a + i);
-			store8(a + i, _mm256_min_epu32(x, _mm256_sub_epi32(x, p)));
-		}
-	}
-#endif
 	void double_y(U *a, int rows, int columns, bool inverse) const {
 		const int size = rows * columns;
 		int h = 2 * columns;
@@ -1899,43 +1304,12 @@ struct NTT {
 				stage_pair<true>(a, h, 2 * size);
 		}
 		if (h <= size) stage<true>(a, h, 2 * size);
-#if defined(__x86_64__) || defined(__i386__)
-		if (columns >= 2 && vectorized()) {
-			scale_rows8(a, rows, columns, (inverse ? inverse_twists : twists).data() + rows);
-			return;
-		}
-#endif
 		for (int j = 0; j < rows; ++j)
 			scale(a + 2 * columns * j, 2 * columns,
 				  (inverse ? inverse_twists : twists)[rows + j]);
 	}
-#if defined(__x86_64__) || defined(__i386__)
-	__attribute__((target("avx2"))) static void projection_dot8(U *p, const U *q, int n) {
-		I8 ni = _mm256_set1_epi32(998244351), modulus = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice);
-		I8 index = _mm256_setr_epi32(0, 2, 4, 6, 1, 3, 5, 7);
-		for (int i = 0; i < n; i += 8) {
-			I8 x = load8(p + 2 * i), y = load8(p + 2 * i + 8), a = load8(q + 2 * i), b = load8(q + 2 * i + 8);
-			x = _mm256_min_epu32(x, _mm256_sub_epi32(x, pp));
-			y = _mm256_min_epu32(y, _mm256_sub_epi32(y, pp));
-			a = _mm256_min_epu32(a, _mm256_sub_epi32(a, pp));
-			b = _mm256_min_epu32(b, _mm256_sub_epi32(b, pp));
-			I8 lo = _mm256_add_epi64(_mm256_mul_epu32(x, _mm256_srli_epi64(a, 32)), _mm256_mul_epu32(_mm256_srli_epi64(x, 32), a));
-			I8 hi = _mm256_add_epi64(_mm256_mul_epu32(y, _mm256_srli_epi64(b, 32)), _mm256_mul_epu32(_mm256_srli_epi64(y, 32), b));
-			lo = _mm256_add_epi64(lo, _mm256_mul_epu32(_mm256_mul_epu32(lo, ni), modulus));
-			hi = _mm256_add_epi64(hi, _mm256_mul_epu32(_mm256_mul_epu32(hi, ni), modulus));
-			I8 r = _mm256_permutevar8x32_epi32(_mm256_blend_epi32(_mm256_srli_epi64(lo, 32), hi, 0xaa), index);
-			store8(p + i, _mm256_min_epu32(r, _mm256_sub_epi32(r, pp)));
-		}
-	}
-#endif
 
 	static void projection_dot(U *p, const U *q, int n) {
-#if defined(__x86_64__) || defined(__i386__)
-		if (n >= 8 && vectorized()) {
-			projection_dot8(p, q, n);
-			return;
-		}
-#endif
 		for (int i = 0; i < n; ++i) {
 			U x = p[2 * i], y = p[2 * i + 1], a = q[2 * i], b = q[2 * i + 1];
 			if (x >= twice) x -= twice;
