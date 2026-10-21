@@ -126,6 +126,8 @@
 | --- | --- | --- |
 | `graph/connectivity/dynamic_connectivity.hpp` | Online Dynamic Connectivity | [使い方](docs/dynamic_connectivity.md) |
 | `graph/connectivity/offline_dynamic_connectivity.hpp` | Offline Dynamic Connectivity（クエリ先読み） | [使い方](docs/offline_dynamic_connectivity.md) |
+| `graph/connectivity/scc.hpp` | 強連結成分分解（反復 SCC） | [使い方](docs/scc.md) |
+| `graph/two_sat.hpp` | 2-SAT | [使い方](docs/two_sat.md) |
 | `graph/connectivity/low_link.hpp` | Low-Link | [使い方](docs/low_link.md) |
 | `graph/connectivity/two_edge_connected_components.hpp` | 二辺連結成分分解・橋の森 | [使い方](docs/two_edge_connected_components.md) |
 
@@ -138,6 +140,8 @@
 | `data_structure/li_chao_tree.hpp` | Li Chao Tree (クエリ先読み) | [使い方](docs/li_chao_tree.md) |
 | `data_structure/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
+| `data_structure/union_find.hpp` | Union-Find・連結成分の列挙 | [使い方](docs/union_find.md) |
+| `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
 | `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
 | `data_structure/rollback_union_find.hpp` | Rollback Union Find | [使い方](docs/rollback_union_find.md) |
 
@@ -145,6 +149,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `data_structure/segment_tree/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
 | `data_structure/segment_tree/persistent_segtree.hpp` | 永続セグメント木（過去版への更新・区間コピー） | [使い方](docs/persistent_segtree.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
@@ -282,6 +287,7 @@
 | `components/dijkstra_topological.hpp` | Dijkstra のトポロジカル前処理 | [使い方](docs/dijkstra_topological.md) |
 | `components/dijkstra_unique.hpp` | Dijkstra の一意経路の探索 | [使い方](docs/dijkstra_unique.md) |
 | `components/warshall_floyd_kernel.hpp` | ワーシャルフロイド法のブロック・SIMD 演算 | [使い方](docs/warshall_floyd_kernel.md) |
+| `components/scc_core.hpp` | 反復 SCC の共通部品 | [使い方](docs/scc_core.md) |
 | `components/shortest_path_scc.hpp` | 最短路で使う到達可能部分の強連結成分分解 | [使い方](docs/shortest_path_scc.md) |
 | `components/directed_csr.hpp` | 重み付き有向グラフの CSR | [使い方](docs/directed_csr.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
