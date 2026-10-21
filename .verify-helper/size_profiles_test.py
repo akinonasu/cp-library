@@ -58,10 +58,14 @@ class SizeProfiles(unittest.TestCase):
         full, _ = split_page(result[destination / 'index.md'])
         light, _ = split_page(result[destination / LIGHTWEIGHT / 'index.md'])
         self.assertEqual(full['data']['profileLibraryCount'], 2)
-        self.assertEqual(light['data']['profileLibraryCount'], 1)
+        self.assertEqual(light['data']['profileLibraryCount'], 2)
+        self.assertEqual(light['data']['profileAvailableCount'], 1)
         for front, profile in [(full, 'full'), (light, LIGHTWEIGHT)]:
             entries = [p for c in front['data']['libraryCategories'] for p in c['pages']]
-            self.assertEqual(len(entries), 2 if profile == 'full' else 1)
+            self.assertEqual(len(entries), 2)
+            large = next(item for item in entries if item['path'] == 'fps/large.hpp')
+            self.assertEqual(large['profileAvailable'], profile == 'full')
+            self.assertEqual(large['pagePath'], 'fps/large.hpp.html')
             self.assertEqual(entries[0]['pagePath'], ('lightweight/' if profile == LIGHTWEIGHT else '') + 'tree/a.hpp.html')
         for name in ['tree/a.hpp', 'fps/large.hpp']:
             old, _ = split_page(pages[destination / (name + '.md')])
@@ -76,7 +80,7 @@ class SizeProfiles(unittest.TestCase):
         self.assertIn(b'/cp-library/lightweight/tree/a.hpp.html', body)
         self.assertEqual(result[destination / 'test/a.test.cpp.md'], pages[destination / 'test/a.test.cpp.md'])
 
-    def test_downgraded_library_disappears_from_all_lightweight_catalogs(self):
+    def test_over_limit_library_keeps_its_catalog_position_and_full_link(self):
         destination, pages = self.fixture()
         path = destination / 'tree/a.hpp.md'
         front, body = split_page(pages[path])
@@ -86,7 +90,65 @@ class SizeProfiles(unittest.TestCase):
         self.assertNotIn(destination / LIGHTWEIGHT / 'tree/a.hpp.md', result)
         for page in ['index.md', 'components/index.md', 'data_structure/advanced/index.md']:
             front, _ = split_page(result[destination / LIGHTWEIGHT / page])
-            self.assertTrue(all(not category['pages'] for category in front['data']['libraryCategories']))
+            entries = [item for category in front['data']['libraryCategories'] for item in category['pages']]
+            self.assertEqual([item['path'] for item in entries], ['tree/a.hpp', 'fps/large.hpp'])
+            self.assertTrue(all(not item['profileAvailable'] for item in entries))
+            self.assertTrue(all(item['pagePath'] == item['path'] + '.html' for item in entries))
+
+    def test_variants_share_paths_structure_and_reciprocal_links(self):
+        destination, pages = self.fixture()
+        config = dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp'})
+        result = prepare_pages(pages, destination, config)
+        full, _ = split_page(result[destination / 'fps/large.hpp.md'])
+        light, _ = split_page(result[destination / LIGHTWEIGHT / 'fps/large.hpp.md'])
+        original, _ = split_page(pages[destination / 'tree/a.hpp.md'])
+        self.assertEqual(light['title'], full['title'])
+        self.assertEqual(light['documentation_of'], 'fps/large.hpp')
+        self.assertEqual(light['data']['path'], 'tree/a.hpp')
+        self.assertEqual(light['data']['libraryPath'], 'fps/large.hpp')
+        self.assertEqual(light['data']['bundledCode'], original['data']['bundledCode'])
+        self.assertEqual(full['data']['implementationKind'], '高速実装')
+        self.assertEqual(light['data']['implementationKind'], '軽量実装')
+        self.assertEqual(light['data']['_extendedDependsOn'][0]['pagePath'], 'lightweight/fps/large.hpp.html')
+        self.assertEqual(full['data']['implementationLinks'][0]['pagePath'], 'lightweight/fps/large.hpp.html')
+        self.assertEqual(light['data']['implementationLinks'][0]['pagePath'], 'fps/large.hpp.html')
+        self.assertEqual(light['data']['copyByteCount'], copy_size(original['data']['bundledCode'], page_url(config, 'fps/large.hpp.html', LIGHTWEIGHT)))
+        self.assertIn(destination / 'tree/a.hpp.md', result)
+        self.assertIn(destination / LIGHTWEIGHT / 'tree/a.hpp.md', result)
+        for page in ['index.md', 'components/index.md', 'data_structure/advanced/index.md']:
+            for prefix in ['', LIGHTWEIGHT]:
+                front, _ = split_page(result[destination / prefix / page])
+                entries = [item for category in front['data']['libraryCategories'] for item in category['pages']]
+                self.assertEqual([item['path'] for item in entries], ['fps/large.hpp'])
+                self.assertTrue(entries[0]['profileAvailable'])
+
+    def test_shared_lightweight_header_can_back_separate_algorithm_pages(self):
+        destination, pages = self.fixture()
+        second = destination / 'fps/second.hpp.md'
+        front, body = split_page(pages[destination / 'fps/large.hpp.md'])
+        front['data']['path'] = 'fps/second.hpp'
+        front['title'] = 'Second algorithm'
+        pages[second] = render_page(front, body)
+        config = dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp', 'fps/second.hpp': 'tree/a.hpp'})
+        result = prepare_pages(pages, destination, config)
+        legacy, _ = split_page(result[destination / LIGHTWEIGHT / 'tree/a.hpp.md'])
+        self.assertEqual({item['pagePath'] for item in legacy['data']['implementationLinks']}, {'fps/large.hpp.html', 'fps/second.hpp.html'})
+        for name in config['implementation_variants']:
+            front, _ = split_page(result[destination / LIGHTWEIGHT / (name + '.md')])
+            self.assertEqual(front['data']['counterpartPage'], name + '.html')
+
+    def test_invalid_variant_pair_is_rejected(self):
+        destination, pages = self.fixture()
+        for variants in [{'missing.hpp': 'tree/a.hpp'}, {'tree/a.hpp': 'missing.hpp'}, {'tree/a.hpp': 'tree/a.hpp'}]:
+            with self.assertRaises(ValueError):
+                prepare_pages(pages, destination, dict(CONFIG, implementation_variants=variants))
+
+    def test_explicit_implementation_link_keeps_its_destination(self):
+        body = b'[fast](../fps/large.hpp.html) [other](../tree/a.hpp.html)'
+        actual = rewrite_links(body, 'docs/light.md', CONFIG, {}, {'fps/large.hpp.html', 'tree/a.hpp.html'}, LIGHTWEIGHT,
+                               {'fps/large.hpp.html': 'fps/large.hpp.html'})
+        self.assertIn(b'[fast](/cp-library/fps/large.hpp.html)', actual)
+        self.assertIn(b'[other](/cp-library/lightweight/tree/a.hpp.html)', actual)
 
     def test_standalone_guides_link_to_generated_library_pages(self):
         destination, pages = self.fixture()
