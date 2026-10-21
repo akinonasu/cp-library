@@ -1,0 +1,5 @@
+{
+  "headers": ["tree/cartesian_tree.hpp"],
+  "unit": ["test/unit/cartesian_tree.cpp"],
+  "sanitize": ["test/unit/cartesian_tree.cpp"]
+}

@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-21",
+  "base_commit": "89e912f437f7a643620973c85225e45e5353a6e7",
+  "validation": {
+    "gcc_unit": "passed",
+    "clang_unit": "passed",
+    "clang_asan_ubsan": "passed",
+    "gcc_clang_ndebug_examples": "passed",
+    "exhaustive_ternary_sequences": 9841,
+    "exhaustive_permutations": 46233,
+    "comparator_and_tie_variants": 4,
+    "random_sequences": 1000,
+    "large_n": 1000000,
+    "large_shapes": [
+      "increasing",
+      "decreasing",
+      "random_permutation",
+      "equal"
+    ],
+    "large_comparison_bound": "2n",
+    "submitted_to_public_judge": false
+  },
+  "official": {
+    "checks": [
+      {
+        "compiler": "gcc",
+        "official_cases": 25,
+        "result": "passed"
+      },
+      {
+        "compiler": "clang",
+        "official_cases": 25,
+        "result": "passed"
+      }
+    ],
+    "cases": {
+      "almost-decreasing_00.in": "52e57f57933fb73bce344e682e69f236fbe77e03372a130e5587b93da4c79bf1",
+      "almost-decreasing_01.in": "7054688a6894f72b0fc981ae7cea658af06ec7af8dff8ffefda55a7fc29fe952",
+      "almost-increasing_00.in": "81605a589b0c074fe29cb2b45801e8a2f62458907253663b581ec2fb0ce26eb3",
+      "almost-increasing_01.in": "62a7d2734b57f0f79ff986e3d4fe93c218170a801e15ddc7409d64cbdd2ff7c4",
+      "decreasing_00.in": "798cf2cc8a957304fcbb787ba3dd75e6565044ec0b3c6f06d7f88e5f16f77f8b",
+      "decreasing_01.in": "46e5e65eb7c75846b696519679b294e2735a56b5cc0648ab65d72cb2e4bcaddd",
+      "example_00.in": "d04590dfe91eae9df7f80eff1b2ea55a78841a6a600d85dd52aad8ee37808e90",
+      "example_01.in": "4d3fa4a9f901750d9d8e7829e7fbe6bc5afe61301df7d66deb114251fbc2e4a7",
+      "increasing_00.in": "046f89f2cbd85fe2807b3e6b543dcb232aa58ef81ef02611a1198dcb40a9e250",
+      "increasing_01.in": "eda0aca374f5455f617305ba7635461adc7a8447af8e4b3b037569ba39ba3fa9",
+      "random_00.in": "7f1ea278ede0d0f6587c7c79d82f17c1ea69fa3d4bbb3f7ca5c3fb74ef7babcc",
+      "random_01.in": "7a40050c5ce3bb5dd43877e2f5c0f78be0ae10ef22d962f6c5082aca7980e954",
+      "random_02.in": "739e62670b44051b61d67f63fed9111657dda6b5751eefbe0f4e5a3c3f0dba8b",
+      "random_03.in": "c0813a97c63163e040de6f4948f1d4128d4880a7ae4727810684ef43c542e01d",
+      "random_04.in": "80f525185ebcb9c4e75e9f2820648d1f7696950961c963ed7d9e5db3dfed8fed",
+      "small_00.in": "13432eb819aaa7b3081976be28497739e59a9e89c0e7e9d71764c025eaf9048a",
+      "small_01.in": "355014a00a393744791134e348f3aa549c131df2d7c3c6748a3bf67c00fcf563",
+      "small_02.in": "2b5910b07fe2c7312aabdb3b0d290245ce8b64b062433022c3871714606ef7b9",
+      "small_03.in": "9b308c6ee4d00b7b7d734ecd6b8dbcf07915bd5d63813924299a65072c992e0d",
+      "small_04.in": "5fb5542c48d90f3765906475fd5e7db3bdbfc7e934537d1ea0516bcf70d2b720",
+      "small_05.in": "4700d990363c077cfede82e588024a470ceb7a8815110f79f0b4b04cb1d26990",
+      "small_06.in": "edfb993a794fd3257e5959765bac15415620e373b5cfb59fc01673e2ea2d9823",
+      "small_07.in": "a69c25fa2cdea82c134fc4b74633f26384319008bcd523abe52faf677aca9645",
+      "small_08.in": "c0c195e1798075663d59c90645c24848165ca37e6dd4b7a383e0b1d7c0d2a887",
+      "small_09.in": "f87979260e0b921dc77891793db3aa179cc18ec1a022b2925520445ecf8cfd21"
+    },
+    "generator_repository_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae"
+  },
+  "sources": {
+    "tree/cartesian_tree.hpp": "54b11b99866ec891f1df1f9753229fa9e953be3b1e96871e56fd4c40ebe6373a",
+    "test/unit/cartesian_tree.cpp": "c13efa667e488c3a4bd78f73ec3109ee7ba81a695e700a7c247c355083053cd4",
+    "test/cartesian_tree.test.cpp": "97a7f189643328f0f40fb8012d858dcf7a4e108aa74889069e4755000b2c6fdc",
+    "docs/cartesian_tree.md": "f3e946b313b2815c077c48c1c2ac0c2f6cc5e653d2a3dc6cb90d2023ad16f9b5"
+  }
+}
