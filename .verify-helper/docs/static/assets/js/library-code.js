@@ -11,8 +11,7 @@
     bundle.setAttribute('aria-pressed', String(original.hidden));
     bundle.textContent = original.hidden ? 'Unbundle' : 'Bundle';
     const details = bundled.dataset.sourceBytes ? `（${bundled.dataset.sourceBytes} bytes）` : '';
-    const message = bundled.dataset.compacted === 'true' ? '依存ヘッダーを展開・圧縮しました' : '依存ヘッダーを展開しました';
-    status.textContent = original.hidden ? `${message}${details}` : '';
+    status.textContent = original.hidden ? `依存ヘッダーを展開しました${details}` : '';
   });
   document.getElementById('code-copy').addEventListener('click', async () => {
     document.getElementById('code-copy-fallback')?.remove();

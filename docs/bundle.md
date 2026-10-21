@@ -2,29 +2,17 @@
 title: "提出コードの生成とサイズ上限"
 ---
 
-ライブラリを使う C++ ソースから、依存ヘッダーを展開した提出用ファイルを生成します。
+通常の `oj-bundle` で依存ヘッダーを展開します。専用の提出用スクリプトや、展開後の追加圧縮は不要です。
 
 ```sh
-python3 tools/bundle.py a.cpp -I . -o submit.cpp
-```
-
-`oj-bundle` が PATH 上にあることが必要です。別の場所にある場合は `--bundle /path/to/oj-bundle` を指定します。`-I` は複数指定でき、省略時はカレントディレクトリです。
-
-既定の上限は **256 KiB = 262,144 bytes 未満**です。解答部分の余裕を確保するため、通常の結合結果が **192 KiB 以上**なら、共通するトークン列を内部マクロへまとめます。指定した上限がこれより小さい場合は、その上限から圧縮します。内部マクロはコンパイル時に元の記述へ展開され、生成処理によって演算・公開 API・未使用関数・CPU 判定・他環境の分岐を削除することはありません。元のライブラリのヘッダーは編集しやすい形のまま保持しています。
-
-Web サイトの **Bundle** ボタンも同じ上限を適用し、必要な場合だけ圧縮します。表示されるサイズは UTF-8 のバイト数です。生成結果は UTF-8 のまま保存してください。CLI は UTF-8・LF で書き出し、バイト数を上限検査と一致させます。
-
-```sh
-python3 tools/bundle.py a.cpp -I . --limit 65536 -o submit.cpp
+oj-bundle -I . a.cpp > submit.cpp
 wc -c submit.cpp
 ```
 
-`--limit` で別の上限も指定できます。その値以上にしかできない場合はエラーとなり、出力先を更新しません。64 KiB 制限で FPS を使う場合は [軽量版](https://qandori.github.io/cp-library/fps/fps_light.hpp.html) を選びます。
+FPS は短縮済みの配布ヘッダーをリポジトリに保存しています。通常版・軽量版の全機能を併用し、高速 I/O を加えた例も **256 KiB = 262,144 bytes 未満**になることを、後処理のない `oj-bundle` の出力で検査します。公開 API・CPU 判定・他環境の分岐・精度上限は維持しています。生成後のファイルは UTF-8 のまま保存してください。
 
-通常の `oj-bundle` 自体の動作は変更していないため、大型 FPS などはそれだけで結合すると 256 KiB を超えます。既に結合したコードには、従来どおり次のコマンドも使えます。
+Web サイトの **Bundle** も依存ヘッダーの展開だけを行います。サイト生成時には参照 URL を付けた Copy のサイズも検査します。上限を超えたコードを、自動圧縮して表示することはありません。
 
-```sh
-python3 tools/compact_fps.py bundled.cpp --limit 262144 -o submit.cpp
-```
+64 KiB 制限では [軽量版 FPS](https://qandori.github.io/cp-library/fps/fps_light.hpp.html) を使います。解答部分や他のライブラリを追加した最終ソースの大きさは `wc -c` で確認してください。
 
-公開ヘッダー・内部部品・Fast I/O を加えたコード・既存の提出例を検査しています。[従来の測定](https://github.com/qandori/cp-library/blob/main/test/benchmark/source_size_256k.md)に加え、[FPS 全ヘッダーの併用・実装の共通化・速度比較](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_refactor.md)も確認しています。複数ライブラリや解法を加えた最終ソースの総サイズは、生成時の上限検査で確認します。
+[サイズと検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_plain.md)に測定条件を記録しています。

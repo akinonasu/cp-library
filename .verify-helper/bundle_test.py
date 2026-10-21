@@ -8,22 +8,18 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from tools.bundle import COMPACT_THRESHOLD, LIMIT, bundle, fit_source
+LIMIT = 256 * 1024
 from tools.compact_fps import compact, lex
 
 
 class BundleTest(unittest.TestCase):
-    def test_limit_and_passthrough(self):
-        source = '#line 1 "source.cpp"\nint main() {}\n'
-        self.assertEqual(fit_source(source), source)
-        for limit in (0, -1, 1):
-            with self.assertRaises(ValueError):
-                fit_source(source, limit)
+    def test_compact_requires_line_directive(self):
         with self.assertRaises(ValueError):
             compact('int main() {}\n')
-        repeated = '#line 1 "source.cpp"\n' + 'int f(int);\n' * (COMPACT_THRESHOLD // 11)
-        self.assertLess(len(repeated.encode('utf-8')), LIMIT)
-        self.assertLess(len(fit_source(repeated).encode('utf-8')), len(repeated.encode('utf-8')))
+
+    def test_distribution_headers_are_current(self):
+        subprocess.run([sys.executable, str(ROOT / 'tools/update_fps_headers.py'), '--check'],
+                       cwd=ROOT, check=True, capture_output=True)
 
     def test_preprocessor_equivalence(self):
         compilers = [compiler for compiler in ('g++', 'clang++') if shutil.which(compiler)]
@@ -81,55 +77,36 @@ class BundleTest(unittest.TestCase):
         headers = sorted(path.relative_to(ROOT).as_posix() for path in (ROOT / 'fps').glob('*.hpp'))
         source = ''.join('#include "' + header + '"\n' for header in headers)
         source += '#include "components/fast_io.hpp"\n#include "test/fps_io.hpp"\n'
-        source += 'int main() { fps f{1,2,1}, g{0,1,1}; auto c=compose(f,g,8); '
-        source += 'auto r=compositional_inverse(g,8); auto p=power_projection(g,7); '
-        source += 'auto v=multipoint_eval(f,std::vector<mint>{0,1,2}); '
-        source += 'auto h=interpolate(std::vector<mint>{0,1,2},v); '
-        source += 'auto d=polynomial_gcd(f,h); auto t=taylor_shift(d,1); '
-        source += 'light_fps lf{1,2,1}; auto li=lf.inv(8); '
-        source += 'return int(c.size()+r.size()+p.size()+t.size()+li.size()==0); }\n'
+        usage = (ROOT / 'test/unit/fps_public_headers.cpp').read_text()
+        usage = usage[usage.index('void require('):]
+        usage = usage.replace('check<mint>();', 'light_fps lf{1,2,1}; require(lf.inv(8).size()==8); check<mint>();')
+        source += usage
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'all_fps.cpp'
             path.write_text(source)
-            original, generated = bundle(path, include_paths=[ROOT])
-            self.assertGreater(len(original.encode('utf-8')), LIMIT)
-            self.assertLess(len(generated.encode('utf-8')), LIMIT)
-
-    @unittest.skipUnless(shutil.which('oj-bundle'), 'oj-bundle is unavailable')
-    def test_command_and_failure_preserves_output(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            work = Path(temporary)
-            source, target = work / 'input.cpp', work / 'output.cpp'
-            source.write_bytes('int main() {} // 日本語\n'.encode('utf-8'))
-            command = [sys.executable, str(ROOT / 'tools/bundle.py'), str(source), '-o', str(target)]
-            subprocess.run(command, check=True, capture_output=True)
-            previous = target.read_bytes()
-            self.assertLess(len(previous), LIMIT)
-            environment = dict(os.environ, PYTHONIOENCODING='ascii')
-            piped = subprocess.check_output([*command[:-2]], env=environment)
-            self.assertEqual(piped, previous)
-            packed = subprocess.run([sys.executable, str(ROOT / 'tools/compact_fps.py'), '--limit', str(LIMIT)],
-                                    input=previous, capture_output=True, env=environment, check=True).stdout
-            packed.decode('utf-8')
-            self.assertNotIn(b'\r', packed)
-            result = subprocess.run([*command, '--limit', '1'], capture_output=True)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertEqual(target.read_bytes(), previous)
+            generated = subprocess.check_output(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT)
+            reference = b'//https://qandori.github.io/cp-library/fps/fps.hpp.html\n'
+            self.assertLess(len(reference + generated), LIMIT)
 
     def test_documentation_uses_same_limit(self):
-        from documentation import compact_source_pages
+        from documentation import source_pages
         from onlinejudge_verify.documentation.front_matter import merge_front_matter, split_front_matter
 
-        source = '#line 1 "source.cpp"\n' + 'int f(int x);\n' * 25000
+        source = '#line 1 "source.cpp"\nint f(int x);\n'
         metadata = {'data': {'code': source, 'bundledCode': source}, 'title': 'Example'}
         page = merge_front_matter(metadata, b'Example text\n')
-        generated = compact_source_pages({Path('source.md'): page, Path('plain.md'): b'Plain text\n'})
+        generated = source_pages({Path('source.md'): page, Path('plain.md'): b'Plain text\n'})
         result, body = split_front_matter(generated[Path('source.md')])
         self.assertLess(result['data']['bundledBytes'], LIMIT)
-        self.assertTrue(result['data']['bundledCompressed'])
+        self.assertNotIn('bundledCompressed', result['data'])
+        self.assertEqual(result['data']['bundledCode'], source)
         self.assertEqual(result['data']['code'], source)
         self.assertEqual(body, b'Example text\n')
         self.assertEqual(generated[Path('plain.md')], b'Plain text\n')
+        metadata['data']['bundledCode'] = source * (LIMIT // len(source) + 1)
+        oversized = merge_front_matter(metadata, b'Example text\n')
+        with self.assertRaises(ValueError):
+            source_pages({Path('source.md'): oversized})
 
 
 if __name__ == '__main__':

@@ -1,0 +1,378 @@
+{
+  "started_at": "2026-10-21T19:46:44.440594+00:00",
+  "completed": true,
+  "harness_sha256": "0be16df1dc080f738fec4e54b2ef7038cfcdb190c75936348bc6b79e9387fc46",
+  "release_audit_sha256": "8f38a853efb9a9ef43806f0031b8234854f9d4ea1088c265b35d82910a43161a",
+  "pairs": [
+    {
+      "profile": "normal_usage",
+      "compiler": "g++",
+      "extra": [],
+      "tokens_equal": true,
+      "variants": {
+        "before": {
+          "command": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/baseline=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/normal_usage/before=/source",
+            "-I",
+            "/workspace/cp-fps-plain/audit/baseline",
+            "/workspace/cp-fps-plain/audit/normal_usage/before/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "f5a8166ecb2f72a116f077e021689d9ec64fb8fbb88e81a1b4fb5b6d47f0ed9d",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1443975
+        },
+        "after": {
+          "command": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-library=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/normal_usage/after=/source",
+            "-I",
+            "/workspace/cp-library",
+            "/workspace/cp-fps-plain/audit/normal_usage/after/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "c6cb55be782399aac6e2f5c2c9c49a2972a7b92160ec96058698ad0e759aa1f2",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1443975
+        }
+      }
+    },
+    {
+      "profile": "normal_usage",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "extra": [],
+      "tokens_equal": true,
+      "variants": {
+        "before": {
+          "command": [
+            "/workspace/cp-binomial-study/bin/clang++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/baseline=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/normal_usage/before=/source",
+            "-I",
+            "/workspace/cp-fps-plain/audit/baseline",
+            "/workspace/cp-fps-plain/audit/normal_usage/before/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "d44e39130da1224005247deab36cd3787f5a69f4990ac9ed89539e0b3935eb4a",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1243680
+        },
+        "after": {
+          "command": [
+            "/workspace/cp-binomial-study/bin/clang++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-library=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/normal_usage/after=/source",
+            "-I",
+            "/workspace/cp-library",
+            "/workspace/cp-fps-plain/audit/normal_usage/after/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "80ccc468402d459563715c3057b25b14a88fd45c48d0e08fdf8b4cd2ac3c985e",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1243680
+        }
+      }
+    },
+    {
+      "profile": "normal_usage",
+      "compiler": "g++",
+      "extra": [
+        "-U__linux__"
+      ],
+      "tokens_equal": true,
+      "variants": {
+        "before": {
+          "command": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/baseline=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/normal_usage/before=/source",
+            "-U__linux__",
+            "-I",
+            "/workspace/cp-fps-plain/audit/baseline",
+            "/workspace/cp-fps-plain/audit/normal_usage/before/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "e35125ef89ea34e88fd33446092494501bf2b491a51148f57c258b6f7ab81497",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1336275
+        },
+        "after": {
+          "command": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-library=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/normal_usage/after=/source",
+            "-U__linux__",
+            "-I",
+            "/workspace/cp-library",
+            "/workspace/cp-fps-plain/audit/normal_usage/after/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "5948c946deff62efe6ea55a8fe407f32449dc8047fdb00dbd1783fabae0797a6",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1336275
+        }
+      }
+    },
+    {
+      "profile": "all_usage",
+      "compiler": "g++",
+      "extra": [],
+      "tokens_equal": true,
+      "variants": {
+        "before": {
+          "command": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/baseline=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/all_usage/before=/source",
+            "-I",
+            "/workspace/cp-fps-plain/audit/baseline",
+            "/workspace/cp-fps-plain/audit/all_usage/before/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "5b9aad2ff8eb467530300268c19d1dd57023ac377978b99373a114f015945b34",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1454736
+        },
+        "after": {
+          "command": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-library=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/all_usage/after=/source",
+            "-I",
+            "/workspace/cp-library",
+            "/workspace/cp-fps-plain/audit/all_usage/after/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "97563484faefac5a0788c0a0055257e6e47a352dfcd18bde76915bd75e740a5e",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1454736
+        }
+      }
+    },
+    {
+      "profile": "all_usage",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "extra": [],
+      "tokens_equal": true,
+      "variants": {
+        "before": {
+          "command": [
+            "/workspace/cp-binomial-study/bin/clang++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/baseline=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/all_usage/before=/source",
+            "-I",
+            "/workspace/cp-fps-plain/audit/baseline",
+            "/workspace/cp-fps-plain/audit/all_usage/before/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "33d8a818af88172a52c85291521cc14a45bb69a54ddf69196d681166651004a9",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1254823
+        },
+        "after": {
+          "command": [
+            "/workspace/cp-binomial-study/bin/clang++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-library=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/all_usage/after=/source",
+            "-I",
+            "/workspace/cp-library",
+            "/workspace/cp-fps-plain/audit/all_usage/after/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "04b1ce1fa2718d05f321fd20266d7a25085bd211bdfffc2819c82dda17a7c4e9",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1254823
+        }
+      }
+    },
+    {
+      "profile": "light_usage",
+      "compiler": "g++",
+      "extra": [],
+      "tokens_equal": true,
+      "variants": {
+        "before": {
+          "command": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/baseline=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/light_usage/before=/source",
+            "-I",
+            "/workspace/cp-fps-plain/audit/baseline",
+            "/workspace/cp-fps-plain/audit/light_usage/before/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "d09d9b57b8f6f7416642eaa98659e3fd13b6bb7419750a9b8241f1478a544096",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1299151
+        },
+        "after": {
+          "command": [
+            "g++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-library=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/light_usage/after=/source",
+            "-I",
+            "/workspace/cp-library",
+            "/workspace/cp-fps-plain/audit/light_usage/after/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "00d0bba7483d1ce84c17f87711d6c20019aa1bf895b44c90966c8db7cef73d48",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1299151
+        }
+      }
+    },
+    {
+      "profile": "light_usage",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "extra": [],
+      "tokens_equal": true,
+      "variants": {
+        "before": {
+          "command": [
+            "/workspace/cp-binomial-study/bin/clang++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/baseline=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/light_usage/before=/source",
+            "-I",
+            "/workspace/cp-fps-plain/audit/baseline",
+            "/workspace/cp-fps-plain/audit/light_usage/before/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "53159be227af39cdf468d5ac041b44b33b53e97e6298717917f1d0980953dff8",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1206918
+        },
+        "after": {
+          "command": [
+            "/workspace/cp-binomial-study/bin/clang++",
+            "-std=c++23",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-ftrivial-auto-var-init=zero",
+            "-march=haswell",
+            "-ffile-prefix-map=/workspace/cp-library=/library",
+            "-ffile-prefix-map=/workspace/cp-fps-plain/audit/light_usage/after=/source",
+            "-I",
+            "/workspace/cp-library",
+            "/workspace/cp-fps-plain/audit/light_usage/after/a.cpp",
+            "-E",
+            "-P"
+          ],
+          "preprocessed_sha256": "a53125d025f51feb9211eab6dc9fce61ade2579af1f14299f5108b914954b05f",
+          "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tokens": 1206918
+        }
+      }
+    }
+  ],
+  "scope": "Assertions enabled. Normalize only diagnostic pragmas and the text/file/line arguments of __assert_fail; retain every assertion predicate and all remaining C++ tokens. Restore internal local names inside the normal implementation.",
+  "completed_at": "2026-10-21T19:47:00.524859+00:00"
+}

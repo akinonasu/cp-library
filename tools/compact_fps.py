@@ -74,7 +74,7 @@ def factor_asm_clobbers(source):
     return first + '\n#define ' + name + ' ' + clobbers + '\n' + first + '\n' + rest
 
 
-def compact(source):
+def compact(source, *, max_tokens=48, passes=12, preserve_assertions=True):
     if not source.startswith('#line '):
         raise ValueError('oj-bundle output beginning with #line is required')
     if '\r' in source:
@@ -84,7 +84,7 @@ def compact(source):
     letters = [
         chr(i) for i in range(0xC0, 0x800)
         if chr(i).isidentifier() and unicodedata.normalize('NFC', chr(i)) == chr(i)
-        and chr(i) not in source
+        and i != 0x01C3 and chr(i) not in source
     ]
     names = sorted(set(re.findall(r'\bCP_FPS_ASM_\w+', source)))
     if len(names) >= len(letters):
@@ -95,6 +95,8 @@ def compact(source):
     macros = set(re.findall(r'^\s*#\s*define\s+([^\W\d]\w*)', source, re.MULTILINE))
     function_macros = set(re.findall(r'^\s*#\s*define\s+([^\W\d]\w*)\(', source, re.MULTILINE))
     protected = PROTECTED | (macros - {rename.get('CP_FPS_ASM_BLOCK')})
+    if not preserve_assertions:
+        protected -= {'assert', 'static_assert'}
     unsafe_lines = set()
     newlines = [i for i, char in enumerate(source) if char == '\n']
     matches = list(TOKEN.finditer(source))
@@ -171,7 +173,7 @@ def compact(source):
     codes, originals = merged_codes, merged_originals
 
     dictionary = []
-    for _ in range(12):
+    for _ in range(passes):
         counts = collections.Counter()
         for code in codes:
             if code is None:
@@ -181,7 +183,7 @@ def compact(source):
                 if first in ('(', ')', ',', ']', '}') or first.startswith(('"', "'")):
                     continue
                 stack = []
-                for j in range(i, min(i + 48, len(code))):
+                for j in range(i, min(i + max_tokens, len(code))):
                     part = parts[j]
                     if part in ('(', '[', '{'):
                         stack.append(part)

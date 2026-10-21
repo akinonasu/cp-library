@@ -1,0 +1,83 @@
+{
+  "completed": true,
+  "source_sha256": "043cbd8e70c82990c33de26072703f1ab2cd6a6dad002608f4f9889936ad2e75",
+  "bytes": 239753,
+  "harness_sha256": "0b60a62e14291ead5d07dfa6615d196f86cc84bf6fcf7961a36df9e725461155",
+  "checker_sha256": "9ecf0eff5d00d720381175a604cedeb2c9b20f4184da1f1adfeba8260f46af28",
+  "checks": [
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "/workspace/cp-library/submissions/kth_term_of_linearly_recurrent_sequence.cpp",
+        "-o",
+        "/workspace/cp-fps-plain/submission/0"
+      ],
+      "binary_sha256": "56002a799ed5de58b3e0e94297e5ff2fc257ffa119518786a230cc2b39aca5fe",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cases": [
+        {
+          "name": "example_00.in",
+          "input_sha256": "b9071f6fb2bafefc8dc1c06a2b98b0e1007bf62f660ca8f0aa9bfd951e1a6b81",
+          "answer_sha256": "aa67a169b0bba217aa0aa88a65346920c84c42447c36ba5f7ea65f422c1fe5d8",
+          "actual_sha256": "aa67a169b0bba217aa0aa88a65346920c84c42447c36ba5f7ea65f422c1fe5d8"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "024236a62dcb0f9a788c18997a92e730722a408314618cd4e1c556c974c3f8c6",
+          "answer_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+          "actual_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        {
+          "name": "small_09.in",
+          "input_sha256": "ee0376b051026bee575b04b11e9c08f280185b7e6b78cbddbb137ab69281d542",
+          "answer_sha256": "0d659babdc2964e142043142fe3b2aa32826efbe79fb7c6254a46d16070b2c87",
+          "actual_sha256": "0d659babdc2964e142043142fe3b2aa32826efbe79fb7c6254a46d16070b2c87"
+        }
+      ]
+    },
+    {
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "/workspace/cp-library/submissions/kth_term_of_linearly_recurrent_sequence.cpp",
+        "-o",
+        "/workspace/cp-fps-plain/submission/1"
+      ],
+      "binary_sha256": "f7deb2dcd4af01728d6db39eeefb41edf4b8237ea9dc8c8934498b4133413512",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cases": [
+        {
+          "name": "example_00.in",
+          "input_sha256": "b9071f6fb2bafefc8dc1c06a2b98b0e1007bf62f660ca8f0aa9bfd951e1a6b81",
+          "answer_sha256": "aa67a169b0bba217aa0aa88a65346920c84c42447c36ba5f7ea65f422c1fe5d8",
+          "actual_sha256": "aa67a169b0bba217aa0aa88a65346920c84c42447c36ba5f7ea65f422c1fe5d8"
+        },
+        {
+          "name": "max_random_00.in",
+          "input_sha256": "024236a62dcb0f9a788c18997a92e730722a408314618cd4e1c556c974c3f8c6",
+          "answer_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e",
+          "actual_sha256": "476da62d1dffc12e7cb96c56ac3b4d1726a1b5515d93ff4bcfc5b14df6a2cc0e"
+        },
+        {
+          "name": "small_09.in",
+          "input_sha256": "ee0376b051026bee575b04b11e9c08f280185b7e6b78cbddbb137ab69281d542",
+          "answer_sha256": "0d659babdc2964e142043142fe3b2aa32826efbe79fb7c6254a46d16070b2c87",
+          "actual_sha256": "0d659babdc2964e142043142fe3b2aa32826efbe79fb7c6254a46d16070b2c87"
+        }
+      ]
+    }
+  ]
+}
