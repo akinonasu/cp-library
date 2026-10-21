@@ -55,7 +55,11 @@ def generate(plan):
         content=config.index_md.with_name("components.md").read_bytes(),
     ))
     pages = compact_source_pages(build.render_pages(page_render_jobs=jobs, source_code_stats=stats, site_render_config=config))
+    from size_profiles import documentation_links, prepare_pages, remove_stale_pages
+    targets, origins = documentation_links(root, markdown)
+    pages = prepare_pages(pages, config.destination_dir, config.config_yml, targets=targets, origins=origins)
     pages.update(build.load_static_files(site_render_config=config))
+    remove_stale_pages(config.destination_dir, pages)
     for path, content in pages.items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)
