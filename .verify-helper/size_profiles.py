@@ -68,7 +68,7 @@ def documentation_links(root, markdown):
     return targets, origins
 
 
-def rewrite_links(body, origin, config, targets, available, profile):
+def rewrite_links(body, origin, config, targets, available, profile, routes=None):
     root_url = page_url(config, '')
     base = '/' + config.get('baseurl', '').strip('/')
     base = base.rstrip('/') + '/'
@@ -90,7 +90,7 @@ def rewrite_links(body, origin, config, targets, available, profile):
         if target not in targets.values() and target not in available:
             return match[0]
         prefix = LIGHTWEIGHT + '/' if profile == LIGHTWEIGHT and target in available else ''
-        result = base + prefix + target
+        result = base + (routes or {}).get(target, prefix + target)
         if url.query:
             result += '?' + url.query
         if url.fragment:
@@ -106,15 +106,31 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
     destination = Path(destination)
     targets, origins = targets or {}, origins or {}
     parsed = {Path(path): split_page(source) for path, source in pages.items()}
-    libraries = {}
-    for path, (front, _) in parsed.items():
-        data = front.get('data', {})
-        if data.get('path', '').endswith('.hpp') and not data.get('isVerificationFile'):
-            libraries[data['path']] = metadata(data['bundledCode'], data['path'], config)
+    sources = {front['data']['path']: (front, body)
+               for front, body in parsed.values()
+               if front.get('data', {}).get('path', '').endswith('.hpp')
+               and not front['data'].get('isVerificationFile')}
+    libraries = {name: metadata(front['data']['bundledCode'], name, config)
+                 for name, (front, _) in sources.items()}
+    variants = config.get('implementation_variants', {})
+    for normal, light in variants.items():
+        if normal not in sources or light not in sources or normal == light or light in variants:
+            raise ValueError('Invalid implementation pair: ' + normal + ' / ' + light)
+    aliases = set(variants.values())
+    alias_targets = {light: [normal for normal, source in variants.items() if source == light] for light in aliases}
+    catalog = {}
+    for name in sorted(libraries.keys() - aliases):
+        implementation = variants.get(name, name)
+        size = metadata(sources[implementation][0]['data']['bundledCode'], name, config)
+        catalog[name] = {'lightweightImplementation': implementation,
+                         'lightweightAvailable': size['lightweightAvailable'],
+                         'copyBytes': {'full': libraries[name]['copyBytes']['full'],
+                                       LIGHTWEIGHT: size['copyBytes'][LIGHTWEIGHT]}}
     available = {name + '.html' for name, size in libraries.items() if size['lightweightAvailable']}
-    result = dict(pages)
+    available.update(name + '.html' for name, size in catalog.items() if size['lightweightAvailable'])
+    result = {}
 
-    def transform(front, body, relative, profile):
+    def transform(front, body, relative, profile, logical=None):
         front = copy.deepcopy(front)
         front['size_profile'] = profile
         front['library_prefix'] = LIGHTWEIGHT + '/' if profile == LIGHTWEIGHT else ''
@@ -127,39 +143,82 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
             for category in data.get('libraryCategories', []):
                 entries = []
                 for item in category['pages']:
-                    size = libraries[item['path']]
-                    if profile == LIGHTWEIGHT and not size['lightweightAvailable']:
+                    name = item['path']
+                    if name not in catalog:
                         continue
+                    size = catalog[name]
                     item.update(size)
-                    item['pagePath'] = front['library_prefix'] + item['path'] + '.html'
+                    usable = profile == 'full' or size['lightweightAvailable']
+                    item['profileAvailable'] = usable
+                    item['implementationPath'] = size['lightweightImplementation'] if profile == LIGHTWEIGHT else name
+                    item['copyByteCount'] = size['copyBytes'][profile] if usable else None
+                    item['pagePath'] = (front['library_prefix'] if usable else '') + name + '.html'
                     entries.append(item)
                 category['pages'] = entries
-            data['profileLibraryCount'] = sum(1 for size in libraries.values() if profile == 'full' or size['lightweightAvailable'])
+            data['profileLibraryCount'] = len(catalog)
+            data['profileAvailableCount'] = sum(profile == 'full' or size['lightweightAvailable'] for size in catalog.values())
             if relative == 'index.md':
                 front['title'] = '軽量ライブラリ（64 KiB）' if profile == LIGHTWEIGHT else 'ライブラリ（全体・256 KiB向け）'
         elif data.get('path') in libraries:
-            data.update(libraries[data['path']])
+            name = logical or data['path']
+            data.update(metadata(data['bundledCode'], name, config))
+            data['libraryPath'] = name
             data['copyByteCount'] = data['copyBytes'][profile]
+            data['implementationLinks'] = []
+            data['implementationApi'] = config.get('implementation_variant_apis', {}).get(name) if profile == LIGHTWEIGHT else None
+            if name in catalog:
+                normal_front = sources[name][0]
+                front['title'] = normal_front['title']
+                front['documentation_of'] = name
+                other_available = profile == LIGHTWEIGHT or catalog[name]['lightweightAvailable']
+                data['counterpartPage'] = ('' if profile == LIGHTWEIGHT else LIGHTWEIGHT + '/') + name + '.html' if other_available else None
+                if name in variants:
+                    data['implementationKind'] = '軽量実装' if profile == LIGHTWEIGHT else '高速実装'
+                    if other_available:
+                        data['implementationLinks'].append({'label': ('高速実装（256 KiB向け）' if profile == LIGHTWEIGHT else '軽量実装（64 KiB）') + 'はこちら',
+                                                            'pagePath': data['counterpartPage']})
+            else:
+                data['counterpartPage'] = ('' if profile == LIGHTWEIGHT else LIGHTWEIGHT + '/') + name + '.html' if name + '.html' in available else None
+                data['implementationKind'] = '軽量実装'
+                for normal, light in variants.items():
+                    if light == name:
+                        data['implementationLinks'].append({'label': sources[normal][0]['title'] + 'の高速実装はこちら',
+                                                            'pagePath': normal + '.html'})
             for key in ['_extendedDependsOn', '_extendedRequiredBy']:
                 for item in data.get(key, []):
-                    item['pagePath'] = (LIGHTWEIGHT + '/' if profile == LIGHTWEIGHT and item['path'] + '.html' in available else '') + item['path'] + '.html'
+                    target = item['path']
+                    if profile == LIGHTWEIGHT and len(alias_targets.get(target, [])) == 1:
+                        target = alias_targets[target][0]
+                    item['pagePath'] = (LIGHTWEIGHT + '/' if profile == LIGHTWEIGHT and target + '.html' in available else '') + target + '.html'
             for item in data.get('_extendedVerifiedWith', []):
                 item['pagePath'] = item['path'] + '.html'
-        origin = origins.get(re.sub(r'\.md$', '.html', relative), relative)
-        body = rewrite_links(body, origin, config, targets, available, profile)
+        origin = origins.get(data.get('path', '') + '.html', origins.get(re.sub(r'\.md$', '.html', relative), relative))
+        routes = {}
+        for normal, light in variants.items():
+            if data.get('path') == light:
+                routes[normal + '.html'] = normal + '.html'
+            elif data.get('path') == normal and catalog[normal]['lightweightAvailable']:
+                routes[light + '.html'] = LIGHTWEIGHT + '/' + normal + '.html'
+        body = rewrite_links(body, origin, config, targets, available, profile, routes)
         return render_page(front, body)
 
     for path, (front, body) in parsed.items():
         relative = path.relative_to(destination).as_posix()
         data = front.get('data', {})
-        if not (front.get('layout') == 'toppage' or data.get('path') in libraries):
+        name = data.get('path')
+        if not (front.get('layout') == 'toppage' or name in libraries):
             origin = origins.get(re.sub(r'\.md$', '.html', relative), relative)
             result[path] = render_page(front, rewrite_links(body, origin, config, targets, available, 'full'))
             continue
         result[path] = transform(front, body, relative, 'full')
-        if front.get('layout') == 'toppage' or libraries[data['path']]['lightweightAvailable']:
+        if front.get('layout') == 'toppage':
             result[destination / LIGHTWEIGHT / relative] = transform(front, body, relative, LIGHTWEIGHT)
-    manifest = {'limits': LIMITS, 'libraries': libraries}
+        elif name in catalog and catalog[name]['lightweightAvailable']:
+            light_front, light_body = sources[catalog[name]['lightweightImplementation']]
+            result[destination / LIGHTWEIGHT / relative] = transform(light_front, light_body, relative, LIGHTWEIGHT, name)
+        elif name in aliases and libraries[name]['lightweightAvailable']:
+            result[destination / LIGHTWEIGHT / relative] = transform(front, body, relative, LIGHTWEIGHT)
+    manifest = {'limits': LIMITS, 'libraries': libraries, 'catalog': catalog, 'implementationVariants': variants}
     result[destination / 'assets/library-sizes.json'] = (json.dumps(manifest, ensure_ascii=False, indent=2) + '\n').encode()
     return result
 
