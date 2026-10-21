@@ -1,0 +1,563 @@
+{
+  "completed": true,
+  "completed_at": "2026-10-21T20:17:50.008131+00:00",
+  "baseline_commit": "c6bee6c3fac99a6e90797e7a01837bde82ed6265",
+  "source_sha256": {
+    "components/RadixHeap.hpp": "b335c2d100e9630924bd51000c3986c5ad66659b68e29a3444fe1153cdb8a46e",
+    "components/binary_search.hpp": "1d5f42402a296d669c16fd8b9cd538821e410c51b25a82e63e1ae59b11d66dda",
+    "components/binomial_prefix_core.hpp": "ee615d1ec92cb3eb7da906ca0fe8cff2b1c75f0fa918bcbc4c111f876325e496",
+    "components/binomial_prefix_polynomial.hpp": "dce907ab03e761a22edb6b2dfcbeaf899257659c376f8e91fa86e9f73650a3a7",
+    "components/bitwise_zeta.hpp": "1599d735dd409a85606724f049f50ed10560818bbb91b2a8e9630dfd40eec761",
+    "components/d_ary_heap.hpp": "944b7f6f89b265382a044f44ba5e83614473a16bdf583a10499a9e0f7fc89457",
+    "components/default_init_allocator.hpp": "7eb7ea8260decc57a9809a12fbf74b112b791723aa78a2c843270bdd714cd4f5",
+    "components/dijkstra_queue.hpp": "fe9039ba8f7e5b28743e812287fb949020f10ca9c8bf047cb7536f80e22eb8e2",
+    "components/dijkstra_topological.hpp": "bbd787ca1be1a04ed53c37c167539ca7a9ca888d17dbf91c553dafc0a4b6f161",
+    "components/dijkstra_unique.hpp": "5fda252aa026b8d1d960e2cc9c61611f4dc26e18a794fc71647d923244c9d11f",
+    "components/directed_csr.hpp": "6baa1fba1e6d5cdd6b8da7686031c2d1870a4e5b3beb74032ac7f24ac9b09628",
+    "components/divisor_zeta.hpp": "516a6961ce19e2dec9dd9965e5dfb0bc40c1b42167524d29a311539b0a27e7d3",
+    "components/dynamic_bit_vector.hpp": "677fb21568ef90b2418620912c6a77ee5dd064cd615147812713a3bd40f0b101",
+    "components/dynamic_quad_vector.hpp": "267a47faf2d93c0e390ae39f4b4165af600bc0b971ecde01a7681bc9613b3779",
+    "components/dynamic_quad_wavelet.hpp": "d199aa8c0b2bd3591bf4767b92365e526381daadd07432335b5bef8d4878f7b9",
+    "components/factorial_table.hpp": "51c36371d528a3896c29fa90cd43cec3a18f6205b6b887cd4688678ef82ea183",
+    "components/fast_io.hpp": "1066b06b0288fabcdf6e94c4a7a14d590293ede48d1203071e0a1f12e3a8f16d",
+    "components/fast_io_bulk.hpp": "c77b771da225f52818295658118b175e120485dff7a21476e5477e9d29910fdf",
+    "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+    "components/flow_graph.hpp": "1d3c369de91b6f221cec348c503a9033ee7b59ccc908484a77275b7b1022fdf8",
+    "components/fps_backend.hpp": "80c088e9880b0aaa021cff25bfed8b9560ca281cc726e8340f21612785738b7b",
+    "components/fps_blocked.hpp": "c7e2ef68bc952c7edc4f6bad0422f2ea08078ddcf52f9dd68d49a9124341d3ed",
+    "components/fps_bostan.hpp": "16a9ee17ea6ca6db48f156ae20030b2412731321851b29be6737175040824f9a",
+    "components/fps_composition.hpp": "b297e8de86fd457671cc5972e997ef4782766279a2c7000d80e8f90478e444a5",
+    "components/fps_convolution.hpp": "a32d285ff4a9dc720bd200e25cab9e6118794baa319a9f9997cb7386a4fc033c",
+    "components/fps_convolution_constant.hpp": "cbcca63af28e36904b22b7f756e8cdd5c9a4ff2d4c1585d726a504fb63ca79d3",
+    "components/fps_convolution_unbalanced.hpp": "50f77a09355c0cb4875e8c30dbe3793f7afbbc78beae498efa2fbd34effd7c1f",
+    "components/fps_direct_eval.hpp": "79f51fc3225493761224e0908f4242eed327dce251203673b9b4dc76fc33d56d",
+    "components/fps_division_blocked.hpp": "624a9c17cc03f0a9d4830f7c5602ede203d0e709de6914ce0d206420dfb83329",
+    "components/fps_evaluation.hpp": "7612a16e781cf75e0bb9b4deafb76e5977c0d393254208fe95ba4db78c13c777",
+    "components/fps_exp_blocked.hpp": "07f786c518b1ff981b4017e70f097b7edde1eacbce2d5858cadaeda3e1845252",
+    "components/fps_factorials.hpp": "fd3e19556123411159ebcf15b4ae188f895fee394177f591ef53ee7ff7320967",
+    "components/fps_horner.hpp": "e0463eddb01a635dfec6cf6afeec8e8cf61c8d663bcf57cb682cfe572830780f",
+    "components/fps_inverse_blocked.hpp": "b6aec6641a43aa39c79bfee262a7d0139fb0d3c374b3896cc91b1358e5729a5b",
+    "components/fps_io.hpp": "b462e7d4c406d10516cc794f491a8bf1fcacf682c74715fcb7e9f80d1d7079a0",
+    "components/fps_light_backend.hpp": "7d3b30f4f69f14215d2caf91b47753d19dcbb0fb8de7e163bb1c4bcfe22c55f4",
+    "components/fps_light_ntt.hpp": "ca16870a52dc6a39c8b065a49e49f6b23baec5d6ae712f0ebc06cf242c1e3d4f",
+    "components/fps_light_product_tree.hpp": "cf9b712b09dedacb3c1539b0841d0b362cf3f62d463e8e5fb595cfe5546536ee",
+    "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+    "components/fps_operations.hpp": "09d2f0ec2dbc9c50bd39d65e1568de8889af805aa841c53c0bf919e2bd60f491",
+    "components/fps_output.hpp": "888f929eabc402bb701016c3bd32eb00b02d3d0612a565b3f57b9752440a01d8",
+    "components/fps_product_tree.hpp": "19e33c08e95a580e5810edc30bee971ffd6967fb11bdfa939306429d3805a538",
+    "components/fps_reversion.hpp": "c94b8bb1f3b36373188000e0b5bab9461fb2af64e3bd40e27f7a8b5d52ee7816",
+    "components/fps_sqrt_blocked.hpp": "2a8695d1439f253f394bc3e9dfe2a20fe095b78a5011afdf1715e23fed20a2de",
+    "components/fps_taylor_blocked.hpp": "7a035b3468731a7613a2a206785ec607285dc6866eb71c409e6cd0bc78ef0dcd",
+    "components/fps_workspace.hpp": "6b57c782f6ce444ae91cb25e27fc09837b8d5e41d0e67c1de39c8155097eab39",
+    "components/kinetic_tournament_monoid.hpp": "0d7ea6e1d2f2d824d7d4ec456eac3a58c91c50decd1da584df14499e7bde3949",
+    "components/matrix_arithmetic.hpp": "a02fc4c897b3c3d82a8c0ad8c2b36f9440fe64f369f7a7fa75284878e6f90f57",
+    "components/min_cost_circulation.hpp": "7667acbfc85ce2cae75187c8a7de962df0f894e4841a63b5a964cef8cae94978",
+    "components/mo_order.hpp": "8459f04ad7bb42a9da74080596acd04af00987e725e6b9b292c73a0f90b87ebb",
+    "components/mod_fast_core.hpp": "b960071bd83b87bdcef0ddc2dfc56970dcfced148ef7ed580b4aa37df21fb860",
+    "components/mod_linear_prefix_min.hpp": "07fbfee2ead2eb9a673cf4d40e44bc137b819455249826193a92f755ee1f6ff2",
+    "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+    "components/montgomery32.hpp": "23d370166dec7837f0b47a9952d350c9ffafa96ccec02bc0a487de9ec1f7895a",
+    "components/ntt.hpp": "acdbab8b3dcf31a886e87558d6b53c0a14f01bfac0447dc229af2118e7b71bb3",
+    "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+    "components/oct_bit_vector.hpp": "c2d9656bd12c0a60e05c905b6484c284df1dfbff82bf48cf9d0d56a32c467435",
+    "components/persistent_rope.hpp": "70b3403d80f1b4ee7ea7013773ae8359720391090a99be6eae1cc33437292602",
+    "components/polynomial_gcd_blocked.hpp": "10dad16f34cdb54472f659c24eb54c87c7af688e232d38241c5c320f52a05f2a",
+    "components/polynomial_half_gcd.hpp": "e5d8c886587a47bc2801a75f8c062a56a28ff021bdb101b16f806ac82fa00ba5",
+    "components/push_relabel.hpp": "d00ab45a27a701c9013be3dc01a2f7f7d5cb0cc27a4b85eeafcb51118145d1a9",
+    "components/quad_bit_vector.hpp": "72a130ba540fe2f46b7b5c0874f92b8855bfc6edfce2456b9badd56aebe52818",
+    "components/radix_sort.hpp": "6a49d050c217221788503464c86e1b77d9ff3b1ca89d4c34ed70e011ae5d8282",
+    "components/sequence_compare.hpp": "d4ad8a26a732392a955f69b0527b98b75b8a61481b3cd4d9da8384cbeda654ac",
+    "components/shortest_path_scc.hpp": "0c325c5c400f0efa05baccd3c4eb5a57bfa30b2a6c05ae8c264a83c60325c54c",
+    "components/smawk.hpp": "695a3ebbf247d8bea41994ec058582dcce69a219b7c06473a49fbd0d34a70f89",
+    "components/splitmix64.hpp": "84e473d5ce9fcc1bc86e1a7c11c09aa032d9adc40b8e69a7114c137dbd1ba239",
+    "components/static_range_min.hpp": "48a735aad7971fd6c507700286e6f8250d575e014c4e11654f9affc13b37720f",
+    "components/static_top_tree_structure.hpp": "f0d5935bb460cecfacabb0bc6bcfa66d59ddf1cd00a9a342b432be5527bd988c",
+    "components/stern_brocot_path.hpp": "3032ce1f5177914194e79e1f4e8d71fb5a6f771f05010f907a05029249dbf83c",
+    "components/suffix_array.hpp": "2bf2598e6fe7cc016696d6ae465bcaafe8bcc0b810b87347dcea5a51c82f1c8c",
+    "components/suffix_range.hpp": "a91b7c52c957b919828e9b491634e9af58696502f564693a8878c2ac01528fee",
+    "components/undirected_csr.hpp": "2e53a2ce4fbaf18b7f30808cade253977b6cfe422eb3a199b1c79384a0093ec7",
+    "components/walsh_hadamard.hpp": "a3b29c25bc724fbcdb2ee7f9d29e86189c5734e2560ea155b4e10cedf38b41b8",
+    "components/xor_basis_core.hpp": "2d738ffa2c08a80393f42c0a95a552492694369de391cb012381cb38799cd0cf",
+    "convolution/bitwise_convolution.hpp": "036afd4eda1b5a11f9d661b43c7cf8d314c3323625fedfc48fa23bdf5b3977e4",
+    "convolution/boolean_convolution.hpp": "d4892349ca7c413a6dedcb763357ef84d3dc20823319f9386952e2d1b2999a5e",
+    "convolution/convolution.hpp": "e39abcf6cddc1933e9cd48fe9b2a8381a0410742671bb943156ca823d0c04aa1",
+    "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+    "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+    "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+    "convolution/cyclic_convolution.hpp": "380092d664a09555e2d78154498e3742a633758ac6e1c302930dfa8bd625d470",
+    "convolution/gcd_lcm_convolution.hpp": "5010f6f45a4a60eb652a1f6694f37c77f9b2bc366b72f937973688575bb8373b",
+    "convolution/max_min_convolution.hpp": "572a7f15fa2f7b337d10a1b159437f7bd3d9f70551098c2b79e84ac78883e171",
+    "convolution/min_plus_convolution.hpp": "ed441328442ee36f647a694a61079f3585ebff0ae696a943522812d06c6eb2c5",
+    "convolution/multiplicative_convolution.hpp": "b358396dfb6469b5760dfd978bf3847b1046e1e0c249259c47a41483c564eab1",
+    "convolution/multivariate_convolution.hpp": "5b3ca59d4624ddee7529e224748b7bdbcb2171892e78cdc7a60b47f065076298",
+    "convolution/online_convolution.hpp": "cdd826fe1e90ef7162aae835895ae611f9ed5472aa3a6ff3227f022b16f57af9",
+    "convolution/ordered_convolution.hpp": "7d34610c73a58b3a2635f947d73c2028c281e7d7072c933c88ed17451d6fc78f",
+    "convolution/subset_convolution.hpp": "5e646830279799f3106949c8fe3f310de0c3839ef5abc99b8c1a569786f533e8",
+    "data_structure/advanced/centroid_decomposition.hpp": "48248bac34f499c6919ad1cbee748789a230d516f244e1a8f1fd8d2f900d782d",
+    "data_structure/advanced/generic_segtree_beats.hpp": "e118fc9a17abf81921b8cbcab30262f6c9b14a64519f23f847a9b7798fb39446",
+    "data_structure/advanced/hld.hpp": "6d199cbd38699bd74e5f49ba382e05a5577ef40a11b30b40ecb62d3e0620519d",
+    "data_structure/advanced/kinetic_tournament.hpp": "239295e8f1acdcf32cdf0b1c8a7c552465dfdd4e09e339bc9ff330a69043328a",
+    "data_structure/advanced/static_top_tree.hpp": "7a94d55cdcf4061c29f37c84e777a785251ce424d9e40f573925d396f76677b4",
+    "data_structure/dynamic_li_chao_tree.hpp": "858c742eed05f57c1cc4f632ab9a9c9624a52fae74cac3bd4625cdf5ecc9d180",
+    "data_structure/interval_set.hpp": "111a5213fe6ddb6f44cc3b9b9a4294176fa5734e8a4d0d8fb73a20878023b5e4",
+    "data_structure/lazy_reversible_treap.hpp": "f9d1e97795f92fbbec6c8531d3496335fb390485fd4e6df4885b66ef0d1cd231",
+    "data_structure/li_chao_tree.hpp": "84f0ac941a24b2f292680531c43db1c442f663270b637ba5acb527945311fadc",
+    "data_structure/range_query/disjoint_sparse_table.hpp": "a3a7dd9094a15bb6f396a92e6a8c9a6086dcb5bddb6479d30319d31c05eee1d0",
+    "data_structure/range_query/sparse_table.hpp": "1effb3387eba8ee345e06587c461e9f5020c19d4ddabf520f7859db989bb823c",
+    "data_structure/segment_tree/dual_segtree.hpp": "e0d87598d9d8f300ef290277edad682afa71573fe4b67b41bca2b76a4f5b78ee",
+    "data_structure/segment_tree/dynamic_lazy_segtree.hpp": "418ce31146ef8179e8129e820f2954be9f7178b0b77af48afc8b4e0f832e9892",
+    "data_structure/segment_tree/dynamic_segtree.hpp": "685f0005c1e47ef1a4a8cfb457fd7484be5e7dd9bf200427cc38913abb896e06",
+    "data_structure/segment_tree/lazy_segtree.hpp": "419d6b8300e3ac1b5305d48b9ec8212b9183543a768a6d2775c6ef7de47376d0",
+    "data_structure/segment_tree/persistent_segtree.hpp": "bccc0a14bd13d35f1a4c23688f517c7514ea8c8f279f390e631c88891c75ee90",
+    "data_structure/slope_trick.hpp": "81cd59ebb299290402065b9b44a1221a3f502068029e9d607b8f07f8f51ca539",
+    "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp": "2db1f1f83a1ab0f879bd85b8bc4220e0c84f0b5a4dbb2756870e5b98fcb0b5ef",
+    "data_structure/wavelet_matrix/wavelet_matrix.hpp": "6df0c02c52cfcebdb2979fd3bcb0dbdec892ea6d00d3eabc5a6ee6b4148789f6",
+    "data_structure/weighted_union_find.hpp": "c9c1d4f095ce647b59e1e774210a00689c97b8330e96095d276e8c43a6c29da2",
+    "fps/bostan_mori.hpp": "81197676d1837d7dc3d1990979d14201da57cb6eb3f9a8f485b5370a8afb6b5d",
+    "fps/compose.hpp": "3a32f6da689d5ffe8400e8ef98fe9f5faac888ab4ebc8cc11b416a0a51895283",
+    "fps/compositional_inverse.hpp": "15557115c8552f692055de808404a91d55aba3a03cd281c0cc9a562664b3f50c",
+    "fps/fps.hpp": "5fbb6b4afe5d4f9a2460aa5c755b1516280063a95cd3afa5e4e217bdad25b432",
+    "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+    "fps/fps_light_algorithms.hpp": "5ffa868cc78f8cada050f3f8a25d72b02f28fd41785a4f48ef647dedcbb3c3d0",
+    "fps/interpolate.hpp": "d3dcb2af063c0c57a821728507602a5055599052541c770c0c4ecd63fd6ac1f0",
+    "fps/linear_recurrence.hpp": "9c6b8c4442d7a5cb5aa0fd2e8b6aea24b0a35dcd38cb170b04eb1843b82551e5",
+    "fps/multipoint_eval.hpp": "217d6d4e11cc590d4bbd18b98a0823285c07a26d9f195ec8f49754db2f30cbb9",
+    "fps/polynomial_gcd.hpp": "d164e93375be78f38cdc3e0ae3412426d3f675aabc211469cecf5205576753b3",
+    "fps/power_projection.hpp": "0dde8e10ea40f7165d1fb2f7c934b0f4ae9ac2b13f00b95f1f26c907b3297e9d",
+    "fps/taylor_shift.hpp": "b54e6fad11f6feba8f3af6685981a9daee78dd0eea89a76cf5f4c1ddfa6fd1f8",
+    "graph/bellman_ford.hpp": "4cc738115ae7d0a0020fc45664949e28179815af78b478a6996b01bcfb9dd04e",
+    "graph/connectivity/dynamic_connectivity.hpp": "06b43c81e57cfd71d2c473e72a670964cd80a0dad29cd4cf3a872a174f23df70",
+    "graph/connectivity/low_link.hpp": "574bb240882c9622ed03dc6020c6668e6322ad6db6939e5f0e3291f070fc380e",
+    "graph/dijkstra.hpp": "664fa7c73a8467fda69e8e3bc1aa807c52ae03af89c0f2990fa8ac3dc3123a51",
+    "graph/flow/max_flow.hpp": "40f8a298df6a5b78346dda31179f04b6f96aaaca0265ffa841b44ece439ad746",
+    "graph/flow/min_cost_flow.hpp": "63aab4553f9fb92b5aa38e94a3d0a1a0ff3a9913d761343691264c0c7ae567da",
+    "math/combinatorics/binomial_prefix_sum.hpp": "5ce80a6fef2eac5a5232f1f712044883937084ec9f692996ae71f073bc13c2c3",
+    "math/combinatorics/binomial_prefix_sum_incremental.hpp": "3bdf45d3337624ba558926892ca2e36e4178fad56ecb9422155327a1c62dbcac",
+    "math/combinatorics/comb.hpp": "41b3e9729b0c6d74ce7cfd5e20568a7faed113fd4246f039b56eb5f797c100fb",
+    "math/floor_sum/generalized_floor_sum.hpp": "fcec99cb6f476d79002ccd400da7a3b60beba6b95796a4151a1c7496a9b442b5",
+    "math/floor_sum/min_of_mod_of_linear.hpp": "971ca6e0a9f88128a1b584d8360d65f3356199827183db1f2da48a034101b47e",
+    "math/floor_sum/monoid_floor_sum.hpp": "34abc70b077143cf19e99191e26a9c72ae2eec62d9aad17eec9965f7a9949580",
+    "math/floor_sum/partition_mod_of_linear.hpp": "a6fc0d7fa1b50f2402ca49c6a3fbdb880240811f2c0872ff65d2cad1b207fa9f",
+    "math/floor_sum/prefix_min_of_mod_of_linear.hpp": "27b3985b259da31ac1523281fd43617f453381f4b11bc6dfb0ab631968f90187",
+    "math/fraction.hpp": "0c0333ae0a8279633cb6c19063f0a33f3fea544d8986a792c1b5f867a8eb75ca",
+    "math/linear_algebra/matrix.hpp": "7ec1a5547a931d0d88318f8b35f0b65564f458075bb6db3625a28688da4316e6",
+    "math/linear_algebra/xor_basis.hpp": "cbeb54e9fce3fcbce9ba695b18e5c0990480be9b2ff731cf57019ed4e394801e",
+    "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+    "math/number_theory/factorize.hpp": "bd2c6fe3b131f84611bc401576da1a9a370b9d5f99a7f0989d4106a624cf9ab0",
+    "math/number_theory/is_prime.hpp": "12734adb63fc711c66ada779957d379ffd957e78be354b907e5ee10088059618",
+    "math/number_theory/mod_inv.hpp": "b0ee562d5394ec94516464b2008c94eafd2f5d71cfedf6efae15ea53e044eb68",
+    "math/number_theory/mod_pow.hpp": "31fc8cfc8c13811f35639d1ca6d31b3ffe8be7f5e23d9edbe73e2242aed0868b",
+    "math/number_theory/mod_sqrt.hpp": "71e8fb7614d8c5af57a9535b1c8f1cb25d59493a086da7a88d56b5dd0bc484d3",
+    "math/number_theory/prime_sieve.hpp": "5e742307e8000973b95e820f26a394443b53a4498ab6d9fb998d78a75fce93df",
+    "math/number_theory/stern_brocot_tree.hpp": "24bfeeb8be5845cc37d74a9b4b4609f8a840f8243a0524b51e3fae4a2857c459",
+    "sequence/lis.hpp": "449f1280b553800776076bd0a1d3b25b22a40e48969db2b2e3f0e2ca7dd77c6f",
+    "string/dynamic_pattern_matching.hpp": "40df68aa5161a34b1f8361ee5df626212514cdc2ae4c8bbe6afe0f2725fe6a9d",
+    "string/edit_distance.hpp": "7dee79d6c5609f5d8b41b5ce63486e95e74b8b35b0b224301f4438b3d4835e4e",
+    "string/lcs.hpp": "43dfdff0e74ebb16f3c2f18b05940ea98637574402d8c7735de1db70a6c237aa",
+    "string/rolling_hash.hpp": "ca48dbc8344472d686ce156eef7d1314a387b9c167c595cfa55761d5d4e441f5",
+    "string/suffix_tree.hpp": "4b1afd4e23ec3c5e7261f610abd95d5fa598c6635746221997472f2efc41bdbd",
+    "test/benchmark/binomial_prefix_sum_comparison.hpp": "ab0b95c5d8127f00cf819228b27d43bb85f8da8719a502e8e8748ff332d81575",
+    "test/benchmark/comb_modint_types.hpp": "d0be1aa2840fe83b28c4ad7ffecfa63919b7063451bb22da7f2cb78de1bdc054",
+    "test/benchmark/fps_refactor_check.py": "f70405a7e5918f4e9280006016ab19dfb4c140cbd7856dafd49a12bcb2fd14d8",
+    "test/benchmark/fps_refactor_precision.cpp": "79cceb0d258886325e5cc505662acdbb0aec2eb27eeb92d5de17088b081d4f7a",
+    "test/benchmark/ordered_convolution_baseline.hpp": "4724ff4eabd882aba8b8ae6aeedb6d2b77dfb2e88b673ef90bebc10a972102cb",
+    "test/binomial_prefix_sum_incremental_arc190_b.test.cpp": "63aa617c6b1e271f44c647e4f4fd71dfe1637eafa086535989b9c1201ab14f72",
+    "test/binomial_prefix_sum_offline.test.cpp": "44748c945740e1b70996c993358234d167593cb4388c98bfd334ffe4c456ecd6",
+    "test/binomial_prefix_sum_online.test.cpp": "60678e4adffc2776abb9cb6ac92215bb79489b09c7f1bb29fa7fa1269d0eca08",
+    "test/comb.test.cpp": "e0d05305962b6d2e612537c16eb5919a6ef0fcc11a02ea5af6d94346c6f279fc",
+    "test/comb_prime_mod.test.cpp": "9e5a6fe60d41472be91fe34a6ecd0d685c9cf7492bb7987d4faa7550936e2515",
+    "test/convolution.test.cpp": "51e8bb757f35275e6632f3ea4f521f9959aea7e1baa5ad4895b5e3294fc1c043",
+    "test/cyclic_convolution.test.cpp": "bc94aef3d7c1c7d30bcb9b5f49703338b02e6b69837edaced678544faf09af9f",
+    "test/dual_segtree.test.cpp": "2e5251cc4bfa94d7c1470999e9ae3cb5f4bf45850e0a42a7bde927cad259e6f7",
+    "test/dynamic_lazy_segtree.test.cpp": "83a38c6a85a0737785b053dc237a775c8a3287838c55eef431b09e48b5acdf5b",
+    "test/dynamic_lazy_segtree_large.test.cpp": "701cbfcb3b43610416009a0a6a70606bbd3297a3d92f62711357a835aafcd40b",
+    "test/fps_bostan_mori.test.cpp": "7a8464feb82f0ad2a7fecbe684f0af0f13a715d1ef9f61c3819ae0e8bd20a624",
+    "test/fps_compose.test.cpp": "77c74a9feba82045669a6b2cd7546d9f3444fb4206a3c89ad7b536da6a026443",
+    "test/fps_compose_large.test.cpp": "3a4cb3df69c5aefea567a47cf14ab17ab95a096664ccc425cff2ba4a3fff3c56",
+    "test/fps_compositional_inverse.test.cpp": "8b808eaca2d4bacd40e7e9e8aeeed9e3e427188d13040c5616f7da9eb71edd2d",
+    "test/fps_compositional_inverse_large.test.cpp": "9b4bcd416795d20c37d8313e2f982fd6a156e99f3f15f54d54d4abecbadd1b98",
+    "test/fps_divmod.test.cpp": "a78f990ad682790a86acf29a92ce53eda1f2bed119b3dfd392a0ab8d98093cbc",
+    "test/fps_exp.test.cpp": "539ae3bf7a1cad3142df2efd43059fbcd9594fd87331ac7f9bd5a5e50f15df75",
+    "test/fps_exp_sparse.test.cpp": "8ab7c46a63a492b75d2264203a67b91a79fc881d2bf33bb2d04953e6bf7f12d8",
+    "test/fps_interpolate.test.cpp": "ecaa85688202af4ffef77861e0ac51c5ad033b4d187f609705fcdfdba806d55a",
+    "test/fps_inv.test.cpp": "bc1e05a137fc4284b6e90df99afa0d7ab16005f4f4bcabed2178f9bc748b56d6",
+    "test/fps_inv_sparse.test.cpp": "e7067f299524f2b49da354862022afe3f588ddb63c85e49bc11f92ce9b22fa2d",
+    "test/fps_io.hpp": "f8b1b6dc465c89d47c69c57e91089a9446a117d5fbf08e2de463bceddbaeb235",
+    "test/fps_light_convolution.test.cpp": "230493bd0cec1c8b205cd3c28086ef51ac916dbc3f7ccad477fb77bbda9ffd94",
+    "test/fps_light_divmod.test.cpp": "fa0079d362666f90b83a13190eccadbbf1034e9290d7f3af32e7471237223cf3",
+    "test/fps_light_exp.test.cpp": "a240e135650507ed5960846f2ea1bd8b7668614804a4f6d3176cbc3fb8ed6ada",
+    "test/fps_light_interpolate.test.cpp": "dba37fe0eca5409fe220e1d400f5bff08d5377563dce4ffff09d82b28ac28236",
+    "test/fps_light_inv.test.cpp": "83129bc0050f465c64f5d8db7f2b48ec7372f267501798e53612ff162db7a10f",
+    "test/fps_light_io.hpp": "68eefea6d1edea2a66636ad3cfb8b6f0713905a7335c391df85565c9c7c71466",
+    "test/fps_light_linear_recurrence.test.cpp": "8f0fbbd37da1cf3b38f83e53af05adb5a9c253285b1a3fbfa0da77e431f8a5e4",
+    "test/fps_light_log.test.cpp": "060e47a4fc4c38cdf9d82e6f5dd486c4d6c992d636f6b1b4a4af98ebbe3a8e2b",
+    "test/fps_light_multipoint_eval.test.cpp": "8e9cf9143ade2ea53dd9aa33ee5f535edd9db6dc7dbccbd6d62c774708aa67c7",
+    "test/fps_light_pow.test.cpp": "9616844a72065b41bb957d0c8a2840943402e98d3e941ec9785dbc0b91a3904f",
+    "test/fps_light_sqrt.test.cpp": "73fecd03b05e0b60dd66960ce7c001f28bd2a2eb4108c41d683dc0f45536537b",
+    "test/fps_light_taylor_shift.test.cpp": "4cee1c48a7bea6d439bcc0ebc63ee4d4bb7b0541bb3b971e6ff220e246771d07",
+    "test/fps_linear_recurrence.test.cpp": "f5e8e6a2cef42086936888ecf551a43ef012f8f9f1f88d8de41a9ac52f216abf",
+    "test/fps_log.test.cpp": "a232adf2929cadb631c5f1d0a8d7269bdc3ca118f5432f01034b13408ce51512",
+    "test/fps_pow.test.cpp": "e7128041c69640a19d988c531ab51ca0db789d7b8c316b0f8223c0c8c337c482",
+    "test/fps_sqrt.test.cpp": "44cf003ff7729fc563c904aa62134cb706d1bcc99f56eed7a9858d8e191dafbf",
+    "test/fps_taylor_shift.test.cpp": "b9394bb97305e6b6ada35724f401fdd0f64eaa59986b09ae460197c0dbf29787",
+    "test/generalized_floor_sum_yuki.test.cpp": "bc1026539bc188672102c96f7dab4e0423ad084b705d566c1269c5cbaf7a09ec",
+    "test/lazy_reversible_treap_affine.test.cpp": "827e5b569d53d95aed8343b3f5146867f0e5c6d755b821d81a50f0db00d2e6ef",
+    "test/lazy_segtree.test.cpp": "0bbd8474f5152ccacbfa952b4e28d6126c28dc7b0f7fd24393fd9e28f97951ef",
+    "test/matrix_adjugate.test.cpp": "2440af692573704b89da772f04d99625edcf77141baecfd85a719c2924f84951",
+    "test/matrix_characteristic_polynomial.test.cpp": "e9459ea94e73dc683bc2fed80068ccafc83931e3033dcb538b481558716f6de4",
+    "test/matrix_common.hpp": "583d94df651357bbe130874ad82cab21302095dec5a25fb75fbf1c6f35e35afa",
+    "test/matrix_det.test.cpp": "c2ca20d9753c06302b0e7413c4c9168a66b849eb7377dc75bba4eed766555ce1",
+    "test/matrix_inverse.test.cpp": "40dc3361f4af3a25490065d234a953fcb8d00b30b5c828e6c818ba4d91f0fade",
+    "test/matrix_pow.test.cpp": "d2c8db998727fbe838cdd3749b18fbfd86d4d8efed1ddd246b9aa688df73942a",
+    "test/matrix_product.test.cpp": "0b63b98a882d205e0d0c8f256ae6601f6ff5feb5590bdc9ac3061eb53296d4b2",
+    "test/matrix_rank.test.cpp": "06572c8e4f2e80bed0f55a553c2081250bdaab7e27107bafa7fc7ca741e160c7",
+    "test/matrix_solve.test.cpp": "c95cc464446e947cc4683e10ba921254464cf3d7a4568e9c7dea6d62e1a5549d",
+    "test/multiplicative_convolution.test.cpp": "29467fbb205922563de4634d04357b1d774f5f2fd08dd05c78103f8136d11f58",
+    "test/multipoint_eval.test.cpp": "8469d66654aace27c9f70256216d8423b17e9f6cff01f91f71ff4eb08de38ab7",
+    "test/multivariate_convolution.test.cpp": "5f6ede5486a171b391ecd748cccfedbd2bfb4919b674aa83a4dbee9bdcb1e1bc",
+    "test/ntt.test.cpp": "094a482c52d8197d648cc641c78770831ec59ada2e8ac03ff2e779c56d5a0386",
+    "test/online_convolution.test.cpp": "fb89f5777b12b297b6847d0b9b3c17203dbf7b1c44cd25330b174e04cf36bfe1",
+    "test/online_convolution_exp.test.cpp": "97a724c586226490b1034669b0937c0e16ee1674edf66bf3431fa8668e69757e",
+    "test/online_convolution_inv.test.cpp": "1ac4ae09e42bf570eefac4ffda10f8fc72d8d3dc3afc00a8535c352e015723b0",
+    "test/ordered_convolution.test.cpp": "c3c9a316fe6f3966f4fcbdab6f0f37d0d8b36149185f9f0c20e6021ca0b18203",
+    "test/point_set_tree_path_composite_sum.test.cpp": "797a74f5995b7e77dc59adf43c1a7cca501017b539086d9c3f36e6f0d80d190e",
+    "test/point_set_tree_path_composite_sum_fixed_root.test.cpp": "8c493e6041291ca334bde7d81d3c4f75f4f91ecbacb59f2e319021ee34843e8a",
+    "test/polynomial_inv_mod.test.cpp": "6f4c81be491bcc6eea1753e5ea78ec33559237cc19c37849d5a6aab8ea1689b0",
+    "test/power_projection.test.cpp": "f9562ed1681f9f7174a6f8ef63678ba25390358b17b4af7218fa1a1854c13f05",
+    "test/rerooting.test.cpp": "1f5388fd102d1aacc5bbe60c140ef51c8a0467cef549743d5512dd722300e219",
+    "test/static_top_tree_dp.hpp": "d88a0f3fa8992ebc9cba72ecbfb05ad7255ea494c22ef1b1668d4bb0a6c8b65a",
+    "test/unit/binomial_prefix_sum.cpp": "41abca5c364060e0c7cf815aafa5271ce4a1369b7cbf7a94c673515d6c746c27",
+    "test/unit/binomial_prefix_sum_incremental.cpp": "7c9ddae5dcc36195138b2fd0ade8eb0b2037c14b5caa97226f288d4357eebcda",
+    "test/unit/comb.cpp": "f843702efb32e001d2870979774eb0c09de117db5ed91ff8a17376c2cbeb82eb",
+    "test/unit/comb_default.cpp": "0f6eefea02b05589d7b0c2afcedd2b8067d490600774ab60f145b4921615785f",
+    "test/unit/comb_factorials.cpp": "d65dd1b4e8095ec0406d7dbf9acb2250a014de71dd074468e613bbcdf2ec4893",
+    "test/unit/comb_modint.cpp": "1538a67dc17df78bde18002e34af9597a4cf4b453a6717ac2012bfe047f3dc49",
+    "test/unit/comb_zero.cpp": "1a28ffbe32d6a4338f7872ca96975a7442d3ace4a1d46a391abe4be6d4b48fe4",
+    "test/unit/convolution.cpp": "8c2fdc97b70adb30773e4894db289669cff4e7f8d2029986c2c6bf274a8d869d",
+    "test/unit/factorial_table.cpp": "ea8f0db8bdadc3eb795ace19c151c5dc5b0a2c72eed581b20ccea32be160f34f",
+    "test/unit/fourier_transforms.cpp": "1169ab97f78f3400000c4f7be9bbd66f3b5b462782da73049b3f13b53873f5e6",
+    "test/unit/fps.cpp": "256993ceac4de1fbd9f6c1697469d9c1278f74d3c3bd4957d79851453e38aafa",
+    "test/unit/fps_algorithms.cpp": "89631e969ded7e2da3ff59580cc28285cd6f6612366bad0bafb11f634f69c86a",
+    "test/unit/fps_bostan.cpp": "5c9c55678434b7e77c77d162596470769ece4b9d715ce051f93938091170e8f1",
+    "test/unit/fps_bostan_workspace.cpp": "cd47a176f0510e39f3f38d2ade97aeb726f47ab0c449e0eba7c333a815a06596",
+    "test/unit/fps_composition_blocked.cpp": "0f3f85c68840e9c1c5425959b6a4719d8e986a31ff3fce7946403df4db080bf9",
+    "test/unit/fps_composition_tables.cpp": "5ef9fed696ac5cb3b005c18180a494b650904ae49d85abe1f017c006410ffec8",
+    "test/unit/fps_convolution.cpp": "0ae2992a1ccc8b9c4152e23f2a7b617acca9e92187da7eb07b9f36d36b5a1898",
+    "test/unit/fps_convolution_borrow.cpp": "3c5592e0e78d305cd3284393fc0708586fcfbb162df29ae134520c052a13998f",
+    "test/unit/fps_convolution_constant.cpp": "3594f641df7aac90c65ca0e5ae3fc528681c76151a843f9386c65b350068bd3f",
+    "test/unit/fps_convolution_unbalanced.cpp": "a7e65830fd3d08cab1304a5b53cac5e4f26d12c7259b56946979aec45bf3bb4c",
+    "test/unit/fps_division_blocked.cpp": "0d5a16e9f3c6022484d74c2fe85b25d90ee32dea9cf4020f114145f18447b355",
+    "test/unit/fps_evaluation.cpp": "f79ec63aea0ef8c398d6dd343b883642415812dc3c0ccfe2b6c8922bdf4ffbf8",
+    "test/unit/fps_exp_blocked.cpp": "9b2b20fa402658ebb14bea5741d54a854559d7ff94a1908008a49e9428ab3397",
+    "test/unit/fps_exp_import.cpp": "17374fa10612b84d23090ae88a0b9584ff8be01eb9000f40b779cc479848a56b",
+    "test/unit/fps_exp_tail.cpp": "e7c49c6e021219bcc576d221a469d52775587bf493599ab9b9c942da0b414d35",
+    "test/unit/fps_horner.cpp": "d4fd3b1231fc0d225b4bfa4cb9562c240643c704dd109268f4eb447baa227797",
+    "test/unit/fps_inverse_blocked.cpp": "3eb06f72c996fd13f0861c268e8c1494ded5c173c1a9a2ab695eccfdbd055194",
+    "test/unit/fps_io.cpp": "81a57dc2b803141a2baaf8663c862ac0e814935ad55651e03d7a7c01b6ed6fd8",
+    "test/unit/fps_light.cpp": "44cbe40c19a6a63f8c870a52271ce9fa7a4daa028d51d3156b90fbbdaf011786",
+    "test/unit/fps_light_algorithms.cpp": "06920c5c4f50ed9935fc650a24b831cad2aabcb9ef51be8d66f9ca80fe4fd0d7",
+    "test/unit/fps_light_ntt.cpp": "6839b8f21d8f089432bdf7588aca44159b0f2e6f6d08a006c8d7317cb1ba2b23",
+    "test/unit/fps_log.cpp": "d73f7cc5d7e3589ad34c27d9101274e3645f9828f8da9bceafa7b876bcf39d8b",
+    "test/unit/fps_public_headers.cpp": "1cdd7cdff495bd826a4e14a7b811d6b0942956800018192bb375024703351662",
+    "test/unit/fps_speed.cpp": "b3946d94cf0c2d2a20df1b0e464d1f0fd0f164e02470c266144ca2f13db78722",
+    "test/unit/fps_tuning_advanced.cpp": "1fa844f66ae7ef6193d640562a433fa9a2f24ff5769eb0ae1aca677d43fb10ee",
+    "test/unit/fps_tuning_basic.cpp": "25bda697830b318fc14f368a3c90434078a2f428821d5dd412d59409f0aaa65e",
+    "test/unit/fps_tuning_polynomial.cpp": "4b399ae857ad13a523b32aa321c5245ecd0dae65212463ab322d164b13d3a4e9",
+    "test/unit/fps_workspace.cpp": "e2d332bbef54141cc0456d7010fa3240df8028ce524a44fa9b897172a7e9dccd",
+    "test/unit/multipoint_tree.cpp": "3be7817463eac33169b428b55743b9f4279df2bc34978e3a497530d53d21a1a9",
+    "test/unit/online_convolution.cpp": "ba4cc24fc820cb585d6ea2a670429d48515c429e036d1eb8fe79fc500828855f",
+    "test/unit/ordered_convolution.cpp": "9b40a218239f7c008a36fa5b28163854080e38b8b6ee2c9e9fae067c7369f48b",
+    "test/unit/polynomial_gcd.cpp": "b1db3cd317a8b2fe7aff494f800af135776014b887a52048bbb93bfe560068ce",
+    "test/unit/power_projection.cpp": "19476d516bd0ad1d0072c961fa1ca1df61e71e57ff18ed3c5e9af1b79c6cc808",
+    "test/unit/standalone.cpp": "7178efab94747713dee9a3334d7d956dd18e6444ae5cb5d7c6985c71800303a2",
+    "tree/lca.hpp": "f6b0882ef0609749a8c79a7c73149115485227e61c2d3476d01fa0cc86a80ef4",
+    "tree/link_cut_tree.hpp": "af32cdb70a44aab214649cef14f8476796e5de87bbb3d07fd5e275888e95c833",
+    "tree/rerooting.hpp": "99ab5cfb8c8e215f89c560c5d9fef39deecb19d48a88e24596f2ba27c701a12f"
+  },
+  "compiler_sha256": {
+    "/workspace/cp-binomial-study/bin/clang++": "174073c5b6a85feabd1e7a26d8916c4caee912cb92eb220441a3f957b4455c8c",
+    "g++": "6b3696e4dcb85e1c949c732a02befa50e3983ecf94ce7e8e58d9d503b954b79d"
+  },
+  "reports": {
+    "core_checks.json": "d4a65d3c06f2fae779dd43eb6e1c3b756d23d735930dabf0c567cf210c346ecc",
+    "official.json": "7ff48e9922e6a1bebb19c0072690765877db3a42b53e1863841aca221dc71333",
+    "native_sanitize.json": "3f5a8fb30ebc9036ecbf4cee6f166c6d2c823a2a3db785f0d27faec3f1bca2f5",
+    "audit.json": "8f38a853efb9a9ef43806f0031b8234854f9d4ea1088c265b35d82910a43161a",
+    "assert_audit.json": "ba7e8bf0f8dd9c17f1473d90ea27eba90bff94d33e8ea4c5e5bad90f8e3de7f2",
+    "performance.json": "0e1c4da8be59169b014d9605bb7738eeeeac75540ee0810c9117c829d48c34f6",
+    "performance.csv": "23892965d1ab4ecfe9130c92289953af67b260c8aef0a33df8cd0c48dea0bdc9",
+    "sizes.json": "c78aec010fd275dae3cfb9c9b962e780cb011d0363498f50f337685fb1ee6752",
+    "submission.json": "4fc31e319cdd8662d018b09802ee6d9baed08edbba2f6496a6bfea3dc2b29338",
+    "distribution.json": "d77b10728f34f22212679a21be3bc511259403211359c8db60e6282a4287ff22"
+  },
+  "controls": {
+    "tools/update_fps_headers.py": "241b471cd5081a63f67fb753700588b6407f66778bc640efc2ef06c3b59ee35b",
+    "tools/compact_fps.py": "a4bb9cca133a152101e7ffa6204d342de013cd9bbad0bcb11d40bb4a9fa97732",
+    ".verify-helper/documentation.py": "3f2bb2a1d4cc6584c9acae3dfcb342b8f7569d7eecbda42a6181a7e428477c4c",
+    ".verify-helper/bundle_test.py": "794c058afd8c46cae75393460573f376cad57000198ab47ea08e728bf025b53f",
+    ".verify-helper/ci.py": "d23ce067fd2f35eeab591551e564af33cd0d06952949f2772debcc97e7402f61",
+    ".verify-helper/check-docs.py": "706f290bca482ed493b9e5a436d9cbc0c0be326074902de1ef4db602456a527e",
+    "test/benchmark/fps_plain_finalize.py": "002707dc1898e5dad63d7121f9cbeb632421435a3811915d4087f74414dc258e",
+    "test/benchmark/source_size_budget.py": "ca1b228851109091b08ad7ef14ac03f88812b830271f0edcc3e1a198549d834f",
+    "test/benchmark/fps_plain_resume.py": "4bd5bb6ea4d685a57ac86346ad4ba59af48b63d0737cd759526c8cf1dc92344e",
+    "test/benchmark/fps_plain_assert_audit.py": "0be16df1dc080f738fec4e54b2ef7038cfcdb190c75936348bc6b79e9387fc46",
+    "test/benchmark/fps_plain_audit.py": "efb5c62af0e0902a1eb8e43c006ad522e5266112f996aac366e042dcc2c3de97",
+    "test/benchmark/fps_plain_submission.py": "0b60a62e14291ead5d07dfa6615d196f86cc84bf6fcf7961a36df9e725461155"
+  },
+  "original_sources": {
+    "components/fast_io.inc": {
+      "baseline_header": "components/fast_io.hpp",
+      "sha256": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2"
+    },
+    "components/fast_io_bulk.inc": {
+      "baseline_header": "components/fast_io_bulk.hpp",
+      "sha256": "bb0f457d9f7a50cb2f56ec7f686b76a75e7d470c3f663c90e2c0e7cbdee67a02"
+    },
+    "components/fps_blocked.inc": {
+      "baseline_header": "components/fps_blocked.hpp",
+      "sha256": "fc20ec2cf1ddc4137900478f60812f5e8f198b6627978dd6c81d7c59bdbc7df6"
+    },
+    "components/fps_bostan.inc": {
+      "baseline_header": "components/fps_bostan.hpp",
+      "sha256": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258"
+    },
+    "components/fps_composition.inc": {
+      "baseline_header": "components/fps_composition.hpp",
+      "sha256": "2d53cf305fe08baace3a9e2e355f95bd5a76840f42407e47051b66c6e96c1021"
+    },
+    "components/fps_convolution.inc": {
+      "baseline_header": "components/fps_convolution.hpp",
+      "sha256": "9ebbc42810223057d7b9b9073a18c7d140288ff20b336a4a8efe8a06b4e979e1"
+    },
+    "components/fps_convolution_constant.inc": {
+      "baseline_header": "components/fps_convolution_constant.hpp",
+      "sha256": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6"
+    },
+    "components/fps_convolution_unbalanced.inc": {
+      "baseline_header": "components/fps_convolution_unbalanced.hpp",
+      "sha256": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd"
+    },
+    "components/fps_direct_eval.inc": {
+      "baseline_header": "components/fps_direct_eval.hpp",
+      "sha256": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380"
+    },
+    "components/fps_division_blocked.inc": {
+      "baseline_header": "components/fps_division_blocked.hpp",
+      "sha256": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037"
+    },
+    "components/fps_evaluation.inc": {
+      "baseline_header": "components/fps_evaluation.hpp",
+      "sha256": "a1926659b76efea0caf7a73dd83e30451c7f4560a7bc607d39d4cc4831aef37e"
+    },
+    "components/fps_exp_blocked.inc": {
+      "baseline_header": "components/fps_exp_blocked.hpp",
+      "sha256": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2"
+    },
+    "components/fps_factorials.inc": {
+      "baseline_header": "components/fps_factorials.hpp",
+      "sha256": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33"
+    },
+    "components/fps_horner.inc": {
+      "baseline_header": "components/fps_horner.hpp",
+      "sha256": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25"
+    },
+    "components/fps_inverse_blocked.inc": {
+      "baseline_header": "components/fps_inverse_blocked.hpp",
+      "sha256": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685"
+    },
+    "components/fps_io.inc": {
+      "baseline_header": "components/fps_io.hpp",
+      "sha256": "ce91c9fd049b4c6da7f45bf2f6a9eb348a96b881b57ceb8a1ac405691741b267"
+    },
+    "components/fps_light_ntt.inc": {
+      "baseline_header": "components/fps_light_ntt.hpp",
+      "sha256": "c6eb39d76a61a69a61c0193c74fa7a4243cf83ab4c9573d2514836ec473bb85c"
+    },
+    "components/fps_light_product_tree.inc": {
+      "baseline_header": "components/fps_light_product_tree.hpp",
+      "sha256": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c"
+    },
+    "components/fps_operations.inc": {
+      "baseline_header": "components/fps_operations.hpp",
+      "sha256": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051"
+    },
+    "components/fps_output.inc": {
+      "baseline_header": "components/fps_output.hpp",
+      "sha256": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd"
+    },
+    "components/fps_product_tree.inc": {
+      "baseline_header": "components/fps_product_tree.hpp",
+      "sha256": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58"
+    },
+    "components/fps_reversion.inc": {
+      "baseline_header": "components/fps_reversion.hpp",
+      "sha256": "fe1cdeb4cb156375ef9d651fdb093f4e1b9cbbe95c990ec9bbdde22d2bbd40cd"
+    },
+    "components/fps_sqrt_blocked.inc": {
+      "baseline_header": "components/fps_sqrt_blocked.hpp",
+      "sha256": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5"
+    },
+    "components/fps_taylor_blocked.inc": {
+      "baseline_header": "components/fps_taylor_blocked.hpp",
+      "sha256": "6769fea15208ccf3d74956b0a807e3d1500bd74b61e562bce139982641f4cdc8"
+    },
+    "components/fps_workspace.inc": {
+      "baseline_header": "components/fps_workspace.hpp",
+      "sha256": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923"
+    },
+    "components/ntt.inc": {
+      "baseline_header": "components/ntt.hpp",
+      "sha256": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164"
+    },
+    "components/polynomial_gcd_blocked.inc": {
+      "baseline_header": "components/polynomial_gcd_blocked.hpp",
+      "sha256": "3aa3d89423bc81d13dbebb6cf314163ab1f1f80c69c42fb89f079c6a8d8e6411"
+    },
+    "components/polynomial_half_gcd.inc": {
+      "baseline_header": "components/polynomial_half_gcd.hpp",
+      "sha256": "70830eb0ea8dcdb50128030dd0fb37c7ada1909b16786eed154f938bd595b1de"
+    },
+    "fps/bostan_mori.inc": {
+      "baseline_header": "fps/bostan_mori.hpp",
+      "sha256": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6"
+    },
+    "fps/compose.inc": {
+      "baseline_header": "fps/compose.hpp",
+      "sha256": "e7bc251cb54e356e3ce03220c37458f25e3c44dfce2dd5074ea933fe1b56b025"
+    },
+    "fps/compositional_inverse.inc": {
+      "baseline_header": "fps/compositional_inverse.hpp",
+      "sha256": "065ae0a24de9e962b8792a6c779dabe8d10631371d99844b7e8442352896d737"
+    },
+    "fps/fps.inc": {
+      "baseline_header": "fps/fps.hpp",
+      "sha256": "bbd61a92acde166c09b5b2041f881a73551417fd830c2c87978193e69bd0e0bc"
+    },
+    "fps/fps_light.inc": {
+      "baseline_header": "fps/fps_light.hpp",
+      "sha256": "9b6accf46850e7a07f8c406deb48c4cc8832fcff6dc138447aa0a7899b9c057c"
+    },
+    "fps/fps_light_algorithms.inc": {
+      "baseline_header": "fps/fps_light_algorithms.hpp",
+      "sha256": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b"
+    },
+    "fps/interpolate.inc": {
+      "baseline_header": "fps/interpolate.hpp",
+      "sha256": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a"
+    },
+    "fps/linear_recurrence.inc": {
+      "baseline_header": "fps/linear_recurrence.hpp",
+      "sha256": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553"
+    },
+    "fps/multipoint_eval.inc": {
+      "baseline_header": "fps/multipoint_eval.hpp",
+      "sha256": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3"
+    },
+    "fps/polynomial_gcd.inc": {
+      "baseline_header": "fps/polynomial_gcd.hpp",
+      "sha256": "d61444a8fb818d7045d6956ea154c810cb13483a1e92f2a0c2b47887a83cbce8"
+    },
+    "fps/power_projection.inc": {
+      "baseline_header": "fps/power_projection.hpp",
+      "sha256": "ac86ebb30fcc2f51aca5c3ad9ffa20f1ff11d55fe7ea9f324fec6af32d60f72a"
+    },
+    "fps/taylor_shift.inc": {
+      "baseline_header": "fps/taylor_shift.hpp",
+      "sha256": "6aa8bfeb57500cd8c46dc79c50e148b456e73f84a7a68598f37815c6a71f8fb7"
+    }
+  },
+  "standalone": 108,
+  "unit": 88,
+  "clang_sanitizer": 21,
+  "gcc_native_sanitizer": 6,
+  "integration": 14,
+  "maximum_precision": 1,
+  "official_driver_compiler_pairs": 108,
+  "official_drivers": 54,
+  "official_cases": 3054,
+  "official_problems": [
+    "adjugate_matrix",
+    "binomial_coefficient_prime_mod",
+    "characteristic_polynomial",
+    "composition_of_formal_power_series",
+    "composition_of_formal_power_series_large",
+    "compositional_inverse_of_formal_power_series",
+    "compositional_inverse_of_formal_power_series_large",
+    "convolution_mod",
+    "division_of_polynomials",
+    "dynamic_sequence_range_affine_range_sum",
+    "exp_of_formal_power_series",
+    "exp_of_formal_power_series_sparse",
+    "inv_of_formal_power_series",
+    "inv_of_formal_power_series_sparse",
+    "inv_of_polynomials",
+    "inverse_matrix",
+    "kth_term_of_linearly_recurrent_sequence",
+    "log_of_formal_power_series",
+    "matrix_det",
+    "matrix_product",
+    "matrix_rank",
+    "mul_modp_convolution",
+    "multipoint_evaluation",
+    "multivariate_convolution",
+    "point_set_tree_path_composite_sum",
+    "point_set_tree_path_composite_sum_fixed_root",
+    "polynomial_interpolation",
+    "polynomial_taylor_shift",
+    "pow_of_formal_power_series",
+    "pow_of_matrix",
+    "range_affine_point_get",
+    "range_affine_range_sum",
+    "range_affine_range_sum_large_array",
+    "sqrt_of_formal_power_series",
+    "system_of_linear_equations",
+    "tree_path_composite_sum"
+  ],
+  "external_drivers": [
+    {
+      "driver": "test/binomial_prefix_sum_incremental_arc190_b.test.cpp",
+      "url": "https://atcoder.jp/contests/arc190/tasks/arc190_b",
+      "reason": "External judge; covered by unit tests only"
+    },
+    {
+      "driver": "test/binomial_prefix_sum_offline.test.cpp",
+      "url": "https://yukicoder.me/problems/no/2206",
+      "reason": "External judge; covered by unit tests only"
+    },
+    {
+      "driver": "test/binomial_prefix_sum_online.test.cpp",
+      "url": "https://yukicoder.me/problems/no/2206",
+      "reason": "External judge; covered by unit tests only"
+    },
+    {
+      "driver": "test/comb.test.cpp",
+      "url": "https://yukicoder.me/problems/no/3172",
+      "reason": "External judge; covered by unit tests only"
+    },
+    {
+      "driver": "test/cyclic_convolution.test.cpp",
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "External judge; covered by unit tests only"
+    },
+    {
+      "driver": "test/generalized_floor_sum_yuki.test.cpp",
+      "url": "https://yukicoder.me/problems/no/2996",
+      "reason": "External judge; covered by unit tests only"
+    },
+    {
+      "driver": "test/ordered_convolution.test.cpp",
+      "url": "https://yukicoder.me/problems/no/1307",
+      "reason": "External judge; covered by unit tests only"
+    }
+  ],
+  "release_equivalence_pairs": 7,
+  "assertion_equivalence_pairs": 7,
+  "size_checks": 597,
+  "header_count": 208,
+  "judge_count": 181,
+  "maximum_copy_bytes": 253415,
+  "performance_conditions": 73,
+  "performance_samples": 1314,
+  "bundle_tool_removed": true,
+  "scope": "Core stages and two completed official drivers reused with identical source/compiler hashes; remaining official drivers completed after preparing two missing fixtures. All selected Library Checker driver/compiler pairs are covered."
+}

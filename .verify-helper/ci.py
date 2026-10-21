@@ -174,7 +174,7 @@ def build_plan(root, previous=None, *, environment, force=False):
         "verification": (".verify-helper/config.toml", "test/requirements.txt",
                          ".verify-helper/ci.py", ".verify-helper/verification.py", ".verify-helper/judge_data.py"),
         "bundles": (".verify-helper/check-docs.py", ".verify-helper/documentation.py", ".verify-helper/verification.py",
-                    ".verify-helper/config.toml", "test/requirements.txt", "tools/__init__.py", "tools/bundle.py", "tools/compact_fps.py"),
+                    ".verify-helper/config.toml", "test/requirements.txt"),
     }
     fingerprints = {}
     uncacheable = {group: set() for group in GROUPS}

@@ -11,4 +11,4 @@
 
 `shortest_path.cpp` はファイル全体を C++23 として提出します。再生成は `oj-bundle test/dijkstra_path.test.cpp > submissions/shortest_path.cpp` です。
 
-`kth_term_of_linearly_recurrent_sequence.cpp` もファイル全体を UTF-8・C++23 として提出します。248,530 bytes で 256 KiB 未満です。再生成は `oj-bundle -I . test/fps_linear_recurrence.test.cpp | python3 tools/compact_fps.py --limit 262144 -o submissions/kth_term_of_linearly_recurrent_sequence.cpp` です。[圧縮の検証記録](../test/benchmark/fps_compact.md)と[既存の速度比較](../test/benchmark/fps_round4.md)があります。judge 上の順位は未確認です。
+`kth_term_of_linearly_recurrent_sequence.cpp` もファイル全体を UTF-8・C++23 として提出します。239,753 bytes で 256 KiB 未満です。再生成は通常の `oj-bundle -I . test/fps_linear_recurrence.test.cpp` を使います。展開後の追加圧縮は不要です。[通常展開の検証記録](../test/benchmark/fps_plain.md)と[既存の速度比較](../test/benchmark/fps_round4.md)があります。judge 上の順位は未確認です。

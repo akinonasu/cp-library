@@ -13,15 +13,16 @@ fps inverse = f.inv(10);
 
 mod は 998244353、係数は定数項から順に格納します。`fps` は `std::vector<mint>` と同様に扱えます。`deg` は返す係数の個数で、省略時は元のサイズです。
 
-256 KiB 制限向けの提出コードは、[bundle.py](https://github.com/qandori/cp-library/blob/main/tools/bundle.py) で生成できます。合成・補間・GCD など通常版の全ヘッダーを併用し、高速 I/O を加えた場合も 241,884 bytes でした。必要な追加機能のヘッダーを include して使います。
+通常の `oj-bundle` で提出コードを生成できます。配布ヘッダー自体を短くしてあるため、専用スクリプトや展開後の追加圧縮は不要です。通常版の合成・補間・GCD なども同じ配布実装にまとめています。
 
 ```sh
-python3 tools/bundle.py a.cpp -I . -o submit.cpp
+oj-bundle -I . a.cpp > submit.cpp
+wc -c submit.cpp
 ```
 
-上限の既定値は UTF-8 で 262,144 bytes 未満です。通常の結合結果が 192 KiB 以上なら、解答部分の余裕を確保するためトークン列を短い内部マクロへまとめ、コンパイル時に元の記述へ展開します。上限以上の結果は出力せず、既存の出力先も更新しません。Web サイトの Bundle も同じ方法を使います。生成結果は UTF-8 のまま保存してください。公開 API と精度上限を保ち、高速経路を共通化しています。
+通常版・軽量版の全ヘッダーと高速 I/O を併用した例も、通常展開のまま UTF-8 で 256 KiB 未満に収まることを検査しています。公開 API・高速経路・精度上限は維持しています。[提出コードの生成](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)、[サイズ・速度・検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_plain.md)を参照してください。
 
-[生成方法の詳細](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)と、[FPS 全ヘッダー併用時のサイズ・共通化前後の速度比較](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_refactor.md)を参照してください。通常の `oj-bundle` の出力は引き続き大きいため、提出用には上記コマンドかサイトの Bundle を使います。数値は測定した include と解答部分に対する UTF-8 バイト数です。最終ソース全体を生成コマンドへ渡して確認してください。
+編集用の実装原本は各ヘッダーと同じ場所の `.inc` ファイルです。利用者が原本を展開・短縮する必要はありません。
 
 `fps{1,2,3}` は $$1+2x+3x^2$$ を表します。係数 `f[i]` は `mint` なので、整数として取り出すには `f[i].val()` を使います。`f.inv(10)` などの 10 は最高次数ではなく返す長さで、$$x^0$$ から $$x^9$$ までを計算します。
 

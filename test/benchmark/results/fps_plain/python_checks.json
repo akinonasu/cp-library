@@ -1,0 +1,26 @@
+{
+  "completed": true,
+  "checks": {
+    "bundle": {
+      "log_sha256": "93f9e1b97391a6e9f76751bcaf5d7428e545ff5c0125978fbed3c3798477f188",
+      "tail": "ary/components/fps_io.hpp: line 32: #include <immintrin.h>\n..\n----------------------------------------------------------------------\nRan 5 tests in 12.914s\n\nOK\n"
+    },
+    "full_api_budget": {
+      "log_sha256": "b3d7146a7e54b174e7df281700c0526d2b3ae4b6d44f1c24e0547d05299af296",
+      "tail": "ibrary/components/fps_io.hpp: line 32: #include <immintrin.h>\n.\n----------------------------------------------------------------------\nRan 1 test in 0.296s\n\nOK\n"
+    },
+    "ci": {
+      "log_sha256": "9d88ba3283244883a08b790ee280d46c297cff886ae9f97e047b8a46e43ad18e",
+      "tail": "s: verified 1, reused 1\nJudge tests: verified 0, reused 2\n...\n----------------------------------------------------------------------\nRan 46 tests in 3.014s\n\nOK\n"
+    },
+    "fast_io_constexpr": {
+      "log_sha256": "298dab80dae1fe7fcbdd0cc7a798941f205010d030f65d8593e0b584693e4b5c",
+      "tail": ".\n----------------------------------------------------------------------\nRan 1 test in 1.977s\n\nOK\n"
+    },
+    "distribution": {
+      "log_sha256": "a01180628d0d0c9ffe6070c9c8ad91a09476a58f2d9ae1b4571f4f07a62baefa",
+      "tail": "Checked 42 distribution headers\n"
+    }
+  },
+  "note": "Bundle module had 5 successful checks; after strengthening its combined-budget fixture, only that changed check was rerun. CI had 46 checks; constexpr check covers GCC and Clang."
+}
