@@ -185,12 +185,15 @@ class SizeProfiles(unittest.TestCase):
             (root / 'tree/a.hpp').write_text('int a;\n')
             (root / 'test/a.test.cpp').write_text('int main() {}\n')
             path = root / 'docs/a.md'
-            path.write_bytes(render_page({'documentation_of': '//tree/a.hpp', 'redirect_from': ['/old/a.hpp.html']}, b''))
-            targets, origins = documentation_links(root, [path])
-            self.assertEqual(targets['docs/a.md'], 'tree/a.hpp.html')
-            self.assertEqual(targets['old/a.hpp.html'], 'tree/a.hpp.html')
-            self.assertEqual(targets['test/a.test.cpp'], 'test/a.test.cpp.html')
-            self.assertEqual(origins['tree/a.hpp.html'], 'docs/a.md')
+            for aliases in ['/old/a.hpp.html', ['/old/a.hpp.html']]:
+                with self.subTest(aliases=aliases):
+                    path.write_bytes(render_page({'documentation_of': '//tree/a.hpp', 'redirect_from': aliases}, b''))
+                    targets, origins = documentation_links(root, [path])
+                    self.assertEqual(targets['docs/a.md'], 'tree/a.hpp.html')
+                    self.assertEqual(targets['old/a.hpp.html'], 'tree/a.hpp.html')
+                    self.assertEqual(targets['test/a.test.cpp'], 'test/a.test.cpp.html')
+                    self.assertEqual(origins['tree/a.hpp.html'], 'docs/a.md')
+                    self.assertEqual(set(targets), {'docs/a.md', 'old/a.hpp.html', 'test/a.test.cpp'})
 
     def test_stale_pages_are_removed_without_touching_other_outputs(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -205,7 +208,8 @@ class SizeProfiles(unittest.TestCase):
             remove_stale_pages(destination, {keep: b'new'})
             remove_stale_pages(destination, {keep: b'new'})
             self.assertFalse(stale.exists())
-            for path in [keep, asset, normal]:
+            self.assertFalse(normal.exists())
+            for path in [keep, asset]:
                 self.assertEqual(path.read_bytes(), b'content')
 
     def test_size_cli_checks_file_bytes_at_boundary(self):

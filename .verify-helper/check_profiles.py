@@ -14,6 +14,9 @@ def check(root):
     headers = {path.relative_to(root).as_posix() for folder in LIBRARIES for path in (root / folder).rglob('*.hpp')}
     assert manifest['limits'] == LIMITS
     assert set(manifest['libraries']) == headers, 'Size inventory does not match library headers'
+    actual_full = {path.relative_to(destination).as_posix().removesuffix('.md') for path in destination.rglob('*.hpp.md')
+                   if path.relative_to(destination).parts[0] != LIGHTWEIGHT}
+    assert actual_full == headers, 'Stale full-site library pages remain'
     variants = config.get('implementation_variants', {})
     assert manifest['implementationVariants'] == variants
     aliases = set(variants.values())
@@ -58,6 +61,10 @@ def check(root):
                 assert light['data']['implementationKind'] == '軽量実装'
                 assert full['data']['implementationLinks'][0]['pagePath'] == counterpart
                 assert light['data']['implementationLinks'][0]['pagePath'] == name + '.html'
+    expected_light = eligible | {name for name in aliases if manifest['libraries'][name]['lightweightAvailable']}
+    actual_light = {path.relative_to(destination / LIGHTWEIGHT).as_posix().removesuffix('.md')
+                    for path in (destination / LIGHTWEIGHT).rglob('*.hpp.md')}
+    assert actual_light == expected_light, 'Stale lightweight library pages remain'
     for name in aliases:
         page = destination / LIGHTWEIGHT / (name + '.md')
         assert page.exists() == manifest['libraries'][name]['lightweightAvailable']

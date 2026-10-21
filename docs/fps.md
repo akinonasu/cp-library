@@ -51,7 +51,7 @@ wc -c submit.cpp
 | `f.eval(x)` | 一点評価 | $$O(n)$$ |
 | `f.onemul(d,c)` / `f.onediv(d,c)` | $$1+cx^d$$ を掛ける／割る。`d >= 0`、自身のサイズを保つ。除算で `d = 0` なら `c != -1` | $$O(n)$$ |
 
-[Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html)、[線形漸化式](https://qandori.github.io/cp-library/fps/linear_recurrence.hpp.html)、[合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)、[合成逆元](https://qandori.github.io/cp-library/fps/compositional_inverse.hpp.html)、[多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html)、[補間](https://qandori.github.io/cp-library/fps/interpolate.hpp.html)、[Taylor shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) は専用ヘッダーの通常の関数として使います。本ヘッダーには含まれません。
+[Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html)、[線形漸化式](https://qandori.github.io/cp-library/fps/linear_recurrence.hpp.html)、[合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)、[合成逆元](https://qandori.github.io/cp-library/fps/compositional_inverse.hpp.html)、[多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html)、[補間](https://qandori.github.io/cp-library/fps/interpolate.hpp.html)、[Taylor shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) の使い方は、各ページを参照してください。関連する公開ヘッダーは同じ配布実装を共有しています。
 
 Linux x86_64 / GCC では AVX2 対応を実行時に確認し、積・逆数・対数・指数・冪・平方根・除算に専用のブロック変換を使います。部分木内で変換と積を融合し、Newton 更新や隣接区間の中間結果を再利用します。係数を内部の Montgomery 表現に保ち、結果の二重初期化や不要な入力コピーを省きます。疎な入力や小さな次数には既存の専用経路を使います。他の環境でも同じ API で動作します。
 

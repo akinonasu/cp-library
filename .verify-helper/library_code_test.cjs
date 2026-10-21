@@ -14,7 +14,7 @@ function page({profile = 'full', limit = 262144, original = 'original\n', bundle
     after(input) { elements[input.id] = input; },
     remove() { delete elements[this.id]; },
     focus() {}, select() { selected.push(this.value); }});
-  for (const id of ['code-original', 'code-bundled', 'code-bundle', 'code-copy', 'code-copy-source', 'code-size', 'code-status', 'library-code']) elements[id] = element();
+  for (const id of ['code-original', 'code-bundled', 'code-bundle', 'code-copy', 'code-copy-source', 'code-status', 'library-code']) elements[id] = element();
   elements['code-copy-source'].value = bundled;
   elements['code-original'].querySelector = () => ({textContent: original});
   elements['code-bundled'].querySelector = () => ({textContent: profile === 'lightweight' ? '\n' + bundled + '\n' : bundled});
@@ -58,7 +58,6 @@ test('exactly 64 KiB is allowed including the normalized URL', async () => {
   const p = page({profile: 'lightweight', limit: 65536, bundled: 'x'.repeat(65536 - prefix.length)});
   await p.click('code-copy');
   assert.equal(Buffer.byteLength(p.copied[0]), 65536);
-  assert.equal(p.elements['code-size'].dataset.overLimit, 'false');
 });
 
 test('UTF-8 bytes exceeding 64 KiB cannot reach the clipboard or fallback', async () => {
@@ -66,7 +65,6 @@ test('UTF-8 bytes exceeding 64 KiB cannot reach the clipboard or fallback', asyn
   await p.click('code-copy');
   assert.equal(p.copied.length, 0);
   assert.equal(p.selected.length, 0);
-  assert.equal(p.elements['code-size'].dataset.overLimit, 'true');
   assert.match(p.elements['code-status'].textContent, /64 KiB/);
 });
 
@@ -95,5 +93,5 @@ test('bundle status reports ordinary dependency expansion', () => {
   const p = page();
   p.elements['code-bundled'].dataset = {sourceBytes: '100'};
   p.click('code-bundle');
-  assert.match(p.elements['code-status'].textContent, /依存ヘッダーを展開しました（100 bytes）/);
+  assert.match(p.elements['code-status'].textContent, /^依存ヘッダーを展開しました$/);
 });

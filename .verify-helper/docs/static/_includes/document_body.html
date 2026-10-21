@@ -25,10 +25,9 @@
   <div class="code-toolbar" hidden>
     <button id="code-bundle" type="button" aria-pressed="false" aria-controls="code-original code-bundled">Bundle</button>
     <button id="code-copy" type="button">{% if page.size_profile == 'lightweight' %}展開済みをコピー{% else %}Copy{% endif %}</button>
-    <span id="code-size"></span>
     <span id="code-status" role="status" aria-live="polite"></span>
   </div>
   <div id="code-original">{% include highlight.html extension=page.data._pathExtension content=page.data.code %}</div>
-  <div id="code-bundled" data-source-bytes="{{ page.data.bundledBytes }}" hidden>{% include highlight.html extension=page.data._pathExtension content=page.data.bundledCode %}</div>
+  <div id="code-bundled" hidden>{% include highlight.html extension=page.data._pathExtension content=page.data.bundledCode %}</div>
 </div>
 <script defer src="{{ '/assets/js/library-code.js' | relative_url }}"></script>

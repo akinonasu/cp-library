@@ -6,19 +6,12 @@
   const container = document.getElementById('library-code');
   const lightweight = container.dataset.sizeProfile === 'lightweight';
   const limit = Number(container.dataset.codeLimit);
-  const codeSize = document.getElementById('code-size');
   const source = () => {
     const code = lightweight ? document.getElementById('code-copy-source').value : (original.hidden ? bundled : original).querySelector('code').textContent;
     const url = new URL(window.location.href);
     url.search = '';
     url.hash = '';
     return `//${url.href}\n${code}`;
-  };
-  const measure = () => {
-    const bytes = new TextEncoder().encode(source()).length;
-    codeSize.textContent = `${bytes} B${limit ? ` / ${limit / 1024} KiB` : ''}`;
-    codeSize.dataset.overLimit = String(Boolean(limit && bytes > limit));
-    return bytes;
   };
   if (lightweight) {
     original.hidden = true;
@@ -27,21 +20,18 @@
     bundle.textContent = 'Unbundle';
   }
   document.querySelector('.code-toolbar').hidden = false;
-  measure();
   bundle.addEventListener('click', () => {
     document.getElementById('code-copy-fallback')?.remove();
     original.hidden = !original.hidden;
     bundled.hidden = !original.hidden;
     bundle.setAttribute('aria-pressed', String(original.hidden));
     bundle.textContent = original.hidden ? 'Unbundle' : 'Bundle';
-    const details = bundled.dataset.sourceBytes ? `（${bundled.dataset.sourceBytes} bytes）` : '';
-    status.textContent = original.hidden ? `依存ヘッダーを展開しました${details}` : '';
-    measure();
+    status.textContent = original.hidden ? '依存ヘッダーを展開しました' : '';
   });
   document.getElementById('code-copy').addEventListener('click', async () => {
     document.getElementById('code-copy-fallback')?.remove();
     const text = source();
-    const bytes = measure();
+    const bytes = new TextEncoder().encode(text).length;
     if (limit && bytes > limit) {
       status.textContent = `参照URLを含めて${limit / 1024} KiBを超えるためコピーできません`;
       return;
