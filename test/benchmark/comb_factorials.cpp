@@ -14,8 +14,14 @@
 #include <iostream>
 #include <string_view>
 
+#if defined(COMB_998244353_HPP)
+inline mint *const comb_benchmark_fact = fact, *const comb_benchmark_finv = finv;
+#else
+inline mint *const comb_benchmark_fact = comb_detail::factorial, *const comb_benchmark_finv = comb_detail::inverse_factorial;
+#endif
+
 #ifndef COMB_GENERATE
-#define COMB_GENERATE() fps_detail::factorials(fact, finv, COMB_INF + 1)
+#define COMB_GENERATE() fps_detail::factorials(comb_benchmark_fact, comb_benchmark_finv, COMB_INF + 1)
 #endif
 
 int main(int argc, char** argv) {
@@ -33,8 +39,8 @@ int main(int argc, char** argv) {
 	}
 	auto end = std::chrono::steady_clock::now();
 	const double ms = std::chrono::duration<double, std::milli>(end - start).count() / repeats;
-	const mint* a = prefix ? table.factorial.data() : fact;
-	const mint* b = prefix ? table.inverse_factorial.data() : finv;
+	const mint* a = prefix ? table.factorial.data() : comb_benchmark_fact;
+	const mint* b = prefix ? table.inverse_factorial.data() : comb_benchmark_finv;
 	std::uint64_t checksum = 1;
 	for (int i = 0; i <= COMB_INF; ++i) {
 		checksum = (checksum ^ a[i].val()) * 1099511628211ULL;

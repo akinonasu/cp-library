@@ -1,0 +1,5 @@
+{
+  "headers": ["components/factorial_table.hpp", "math/combinatorics/comb.hpp"],
+  "unit": ["test/unit/comb.cpp", "test/unit/comb_zero.cpp", "test/unit/comb_factorials.cpp", "test/unit/comb_modint.cpp", "test/unit/factorial_table.cpp", "test/unit/standalone.cpp", "test/unit/comb_default.cpp"],
+  "sanitize": ["test/unit/comb.cpp", "test/unit/comb_zero.cpp", "test/unit/comb_factorials.cpp", "test/unit/comb_modint.cpp", "test/unit/factorial_table.cpp", "test/unit/comb_default.cpp"]
+}
