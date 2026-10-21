@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-21",
+  "base_commit": "0ab0f8b7ef0daf71c9146bdc2e97af7556833381",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DNDEBUG",
+    "-Wall",
+    "-Wextra",
+    "-Werror"
+  ],
+  "affinity": [
+    2
+  ],
+  "rounds": 7,
+  "aggregation": "median",
+  "seed": 20261021,
+  "benchmark_n": 500000,
+  "validation": {
+    "gcc_unit": "passed",
+    "clang_unit": "passed",
+    "clang_asan_ubsan": "passed",
+    "gcc_clang_ndebug_examples": "passed",
+    "exhaustive_ternary_sequences": 9841,
+    "exhaustive_permutations": 46233,
+    "comparator_variants": 2,
+    "random_sequences": 2000,
+    "large_n": 1000000,
+    "official": [
+      {
+        "compiler": "gcc",
+        "official_cases": 30,
+        "result": "passed"
+      },
+      {
+        "compiler": "clang",
+        "official_cases": 30,
+        "result": "passed"
+      }
+    ],
+    "benchmark_results_agree": true,
+    "submitted_to_public_judge": false
+  },
+  "sources": {
+    "sequence/inversion_count.hpp": "d61a34db12f6f6bdbfab4eccd5dbdeae7c5cd5ddd6ce59c94601699066f44b88",
+    "test/unit/inversion_count.cpp": "d1fde83eb13a5b092abc67ccbcb642dffc9977cbaf2b918b070fbcbb7f9fa4fa",
+    "test/inversion_count.test.cpp": "0afdf94edf03bb245c32f1386543a14083785779ea4dc3f7e1f76fc7971f6925",
+    "test/benchmark/inversion_count.cpp": "d66896caf57cc09ecdc9315802bc0fecbfd7b137196be3db927831639f5b3ffe",
+    "components/fenwick_sum.hpp": "6ed9f1996511720f88bf8256297f92f82abfbf1412c1963d550e63c9ec43333f",
+    "docs/inversion_count.md": "93c5faf2cf33d08a1ca5c4d3c21712a289917d463b8d616af6130e2ffedaabf1"
+  }
+}

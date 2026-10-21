@@ -160,6 +160,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `sequence/lis.hpp` | 最長増加部分列（長さ・復元） | [使い方](docs/lis.md) |
+| `sequence/inversion_count.hpp` | 転倒数 | [使い方](docs/inversion_count.md) |
 
 ### 列・文字列
 
