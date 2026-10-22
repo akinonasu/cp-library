@@ -1,4 +1,443 @@
 #ifndef CP_COMPONENTS_FPS_EXP_BLOCKED_HPP
 #define CP_COMPONENTS_FPS_EXP_BLOCKED_HPP
-#include "fps_backend.hpp"
+
+#include "fps_blocked.hpp"
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#pragma GCC push_options
+_Pragma("GCC target(\"avx2\")")
+#pragma GCC optimize("O3")
+namespace fps_detail {
+namespace blocked_poly {
+namespace detail {
+struct Factors {
+	Vec w, q;
+};
+
+inline Vec times(Vec x, const Factors& w) {
+	const Vec even = _mm256_srli_epi64(_mm256_mul_epu32(x, w.q), 32);
+	const Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(w.q, 32));
+	const Vec q = _mm256_blend_epi32(even, odd, 0xAA);
+	return _mm256_sub_epi32(_mm256_mullo_epi32(x, w.w), _mm256_mullo_epi32(q, broadcast(kP)));
+}
+
+inline Factors entries(const Word* table, size_t k) {
+	const Word* e = table + slot(k);
+	return {load(e), load(e + 8)};
+}
+
+
+}
+}
+namespace blocked_poly {
+
+namespace detail {
+
+inline constexpr size_t kExpBase = 64;
+
+inline void exp_direct(ConstWords q, Words g) {
+	using blocked_ntt::detail::multiply_mod;
+	Word inv[kExpBase] = {0, 1};
+	for (size_t i = 2; i < g.size(); ++i) inv[i] = multiply_mod(kP - kP / Word(i), inv[kP % i]);
+	g[0] = 1;
+	for (size_t i = 1; i < g.size(); ++i) {
+		std::uint64_t sum = 0;
+		for (size_t k = 1; k <= i; ++k) sum += std::uint64_t(q[k]) * g[i - k] % kP;
+		g[i] = multiply_mod(Word(sum % kP), inv[i]);
+	}
+}
+
+inline void multiply_by_index(ConstWords a, size_t first, Words out) {
+	const size_t n = out.size(), full = n / 8 * 8;
+	Indices index(first);
+	for (size_t i = 0; i < full; i += 8, index.next())
+		store_unaligned(out.data() + i, canonical(montgomery(load_unaligned(a.data() + i), index.value())));
+	for (size_t i = full; i < n; ++i) out[i] = blocked_ntt::detail::multiply_mod(Word((first + i) % kP), a[i]);
+}
+
+inline size_t exp_length(size_t n) {
+	return size_t(1) << std::max(Transform::kMinLog + 1, int(std::bit_width(std::max<size_t>(n, 2) - 1)));
+}
+
+}
+
+inline int exp_log(size_t n) { return std::countr_zero(detail::exp_length(n)) - 1; }
+
+namespace detail {
+
+struct QTransforms {
+	ConstWords low, block2;
+};
+struct NoQTransforms {};
+
+template <class Bottom>
+void product_to(const Transform& t, Words out, const Source& in, const Bottom& bottom,
+				Word scale, Half output, Words to) {
+	const size_t nv = out.size() / 8;
+	auto* v = reinterpret_cast<Vec*>(out.data());
+	const Recursion recursion(t.roots(), t.inverse_roots(), bottom);
+	const Factor s(scale);
+	const auto put = [to, &s](size_t j, Vec x) __attribute__((target("avx2"))) {
+		const Vec y = reduce(times(x, s), kP);
+		if (8 * j + 8 <= to.size()) return store_unaligned(to.data() + 8 * j, y);
+		if (8 * j >= to.size()) return;
+		const Vec lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+		const Vec mask = _mm256_cmpgt_epi32(broadcast(Word(to.size() - 8 * j)), lanes);
+		_mm256_maskstore_epi32(reinterpret_cast<int*>(to.data() + 8 * j), mask, y);
+	};
+	const bool lower = output == Half::kLower;
+	if (std::countr_zero(nv) % 2 == 0) {
+		const size_t h = nv / 4;
+		if constexpr (Bottom::kForward) forward_top4(in, v, h, t.roots());
+		for (size_t q = 0; q < 4; ++q) recursion.visit(out.data() + 8 * q * h, h, q);
+		const Factor z(t.inverse_roots()[1], t.inverse_roots()[9]);
+		for (size_t j = 0; j < h; ++j) {
+			const Vec ab = low(add(v[j], v[j + h])), cd = low(add(v[j + 2 * h], v[j + 3 * h]));
+			const Vec amb = low(diff(v[j], v[j + h])), cmd = times(diff(v[j + 2 * h], v[j + 3 * h]), z);
+			put(j, lower ? add(ab, cd) : diff(ab, cd));
+			put(j + h, lower ? add(amb, cmd) : diff(amb, cmd));
+		}
+	} else {
+		const size_t h = nv / 2;
+		radix2_halves(recursion, in, out.data(), nv, t.roots());
+		for (size_t j = 0; j < h; ++j) put(j, lower ? add(v[j], v[j + h]) : diff(v[j], v[j + h]));
+	}
+}
+
+template <class Given>
+[[gnu::always_inline]] inline void exp_last_step(const Transform& t, Words lo, Words g,
+												 size_t m, bool first, Words gt,
+												 ConstWords ht, Words w,
+												 Words work, const Given& given) {
+	const size_t n = g.size(), half = m / 2, rest = n - m, count = std::min(rest, half);
+	const bool upper = rest > half;
+	const Words g0t = gt.first(m), glt = gt.subspan(m, m), own = w.first(m), r = w.subspan(m, m);
+	ConstWords qt = own, q2t = lo;
+	bool given_low = false, given_block2 = false;
+	if constexpr (std::is_same_v<Given, QTransforms>) {
+		given_low = !given.low.empty(), given_block2 = !given.block2.empty();
+		if (given_low) qt = given.low;
+		if (given_block2) q2t = given.block2;
+	}
+	const auto q = [g, n](size_t i) __attribute__((target("avx2"))) {
+		if (i + 8 <= n) return load_unaligned(g.data() + i);
+		alignas(32) Word x[8] = {};
+		std::copy(g.begin() + std::ptrdiff_t(i), g.end(), x);
+		return load(x);
+	};
+	if (first) t.forward(g.first(half), 0, g0t);
+	t.forward(g.first(m), 0, glt);
+	if (given_low) {
+		t.inverse_product(qt, glt, r, upper ? Half::kBoth : Half::kLower);
+	} else if (upper) {
+		t.forward(lo, 0, own);
+		t.inverse_product(own, glt, r);
+	} else {
+		t.cyclic_product(lo, 0, r, glt, Half::kLower);
+	}
+
+	t.forward(r.first(half), 0, work);
+	t.inverse_product(ht, work, work, Half::kLower);
+	detail::divide_by_index(m, r.first(count), [&](size_t i) __attribute__((target("avx2"))) {
+		const Vec x = reduce(add(load(work.data() + i), q(m + i)), kP);
+		return add(x, _mm256_sub_epi32(broadcast(kP), load(lo.data() + i)));
+	});
+	if (upper && !given_block2) t.forward(g.subspan(m, half), 0, lo);
+	t.forward(r.first(count), 0, work);
+	const Word scale = kInverseScales[1][std::countr_zero(m)];
+	const Source none(nullptr, 0, 0);
+	product_to(t, work, none, InverseProductBottom{{t.roots(), t.inverse_roots(), work.data()}, g0t.data()}, scale,
+			   Half::kLower, g.subspan(m, count));
+	if (!upper) return;
+
+	t.forward(g.subspan(m, half), 0, work);
+	const Transform::Pair pairs[] = {{work, qt}, {q2t, glt}};
+	t.inverse_product_sum(pairs, work, Half::kUpper);
+	Indices index(half);
+	for (size_t i = half; i < m; i += 8, index.next()) {
+		const Vec xg = montgomery(load_unaligned(g.data() + i), index.value());
+		const Vec sum = add(load(r.data() + i), load(work.data() + i));
+		store(r.data() + i, canonical(_mm256_sub_epi32(add(sum, broadcast(2 * kP)), xg)));
+	}
+	t.forward(r.subspan(half, half), 0, own);
+	t.inverse_product(ht, own, own, Half::kLower);
+	detail::divide_by_index(m + half, r.first(rest - half),
+							[&](size_t i) __attribute__((target("avx2"))) { return add(load(own.data() + i), q(m + half + i)); });
+	t.forward(r.first(rest - half), 0, own);
+	product_to(t, own, none, InverseProductBottom{{t.roots(), t.inverse_roots(), own.data()}, g0t.data()}, scale,
+			   Half::kLower, g.subspan(m + half, rest - half));
+}
+
+template <class Given = NoQTransforms>
+[[gnu::always_inline]] inline void exp_newton(const Transform& t, Words lo, Words g,
+											  Words scratch, const Given& given = {}) {
+	const size_t n = g.size(), len = 2 * lo.size();
+	const auto take = [&scratch](size_t words) __attribute__((target("avx2"))) {
+		const Words s = scratch.first(words);
+		scratch = scratch.subspan(Arena::footprint(words));
+		return s;
+	};
+	const Words h = take(len / 2), gt = take(len), ht = take(len / 2), w = take(len);
+	size_t m = kExpBase;
+	inverse_direct(g, h.first(m / 2));
+	t.forward(h.first(m / 2), 0, ht.first(m));
+	for (; 2 * m < n; m *= 2) {
+		const size_t half = m / 2;
+		const Words g_low = gt.first(m), h_low = ht.first(m), w_low = w.first(m);
+		t.forward(g.first(m), 0, g_low);
+
+		t.inverse_product(g_low, h_low, w_low, Half::kUpper);
+		const Word negated = blocked_ntt::detail::multiply_mod(kInverseScales[1][std::countr_zero(m)], kP - 1);
+		product_to(t, w_low, Source(w_low.data() + half, half, half), ProductBottom{t.roots(), t.inverse_roots(), h_low.data()},
+				   negated, Half::kUpper, h.subspan(half, half));
+
+		t.forward_product(lo.first(m), 0, w_low, g_low);
+		t.inverse(w_low, gt.subspan(m, m));
+
+		t.forward(h.first(m), 0, ht.first(2 * m));
+		t.forward_upper(gt.subspan(m, m), 0, w.subspan(m, m));
+		t.inverse_product(w.first(2 * m), ht.first(2 * m), w.first(2 * m), Half::kLower);
+
+		detail::divide_by_index(m, w.subspan(m, m), [&](size_t i) __attribute__((target("avx2"))) {
+			const Vec x = reduce(add(load(w.data() + i), load(lo.data() + m + i)), kP);
+			return add(x, _mm256_sub_epi32(broadcast(kP), load(lo.data() + i)));
+		});
+		t.forward_upper(g.first(m), 0, gt.subspan(m, m));
+		product_to(t, w.first(2 * m), Source(w.data() + m, m, m), ProductBottom{t.roots(), t.inverse_roots(), gt.data()},
+				   kInverseScales[1][std::countr_zero(2 * m)], Half::kUpper, g.subspan(m, m));
+	}
+	exp_last_step(t, lo, g, m, m == kExpBase, gt, ht, w, h, given);
+}
+
+inline size_t exp_newton_scratch(size_t n) {
+	const size_t len = exp_length(n);
+	return 2 * Arena::footprint(len) + 2 * Arena::footprint(len / 2);
+}
+
+}
+
+inline size_t exp_scratch(size_t n) {
+	return Arena::footprint(detail::exp_length(n) / 2) + detail::exp_newton_scratch(n);
+}
+
+inline void exp(const Transform& t, ConstWords f, Words g,
+				Words scratch) {
+	using namespace detail;
+	const size_t n = g.size(), m = exp_length(n) / 2, size = std::min(f.size(), n), below = std::min(size, m);
+	const Words lo = scratch.first(m);
+	multiply_by_index(f.first(below), 0, lo.first(below));
+	std::fill(lo.begin() + std::ptrdiff_t(below), lo.end(), 0);
+	if (size > m) multiply_by_index(f.subspan(m, size - m), m, g.subspan(m, size - m));
+	if (n > std::max(size, m)) std::fill(g.begin() + std::ptrdiff_t(std::max(size, m)), g.end(), 0);
+	exp_direct(lo, g.first(std::min(n, kExpBase)));
+	if (n > kExpBase) exp_newton(t, lo, g, scratch.subspan(Arena::footprint(m)));
+}
+
+}
+
+namespace blocked_poly {
+
+namespace detail {
+
+template <bool kSum>
+void times_x(const Word* roots, const Word* a, const Word* b, Word e,
+			 Word alpha, Word beta, Words out) {
+	const size_t leaves = out.size() / 8;
+	const Factor scale(e);
+	const Vec rotate = _mm256_setr_epi32(7, 0, 1, 2, 3, 4, 5, 6), odd = _mm256_setr_epi32(0, -1, 0, -1, 0, -1, 0, -1);
+	const Word constants[2] = {(alpha + beta) % kP, (alpha + kP - beta) % kP};
+	for (size_t p = 0; p < leaves; p += 8) {
+		const bool upper = p >= leaves / 2;
+
+		const Factors r = entries(roots, p / 16 * 8);
+		const Vec pick = p % 16 ? _mm256_setr_epi32(4, 4, 5, 5, 6, 6, 7, 7) : _mm256_setr_epi32(0, 0, 1, 1, 2, 2, 3, 3);
+		const Vec rw = _mm256_permutevar8x32_epi32(r.w, pick), rq = _mm256_permutevar8x32_epi32(r.q, pick);
+		const Factors w{_mm256_blend_epi32(rw, _mm256_sub_epi32(broadcast(kP), rw), 0xAA), _mm256_xor_si256(rq, odd)};
+		Vec y[8];
+#pragma GCC unroll 8
+		for (size_t i = 0; i < 8; ++i) {
+			Vec c = load(a + 8 * (p + i));
+			if constexpr (kSum) c = upper ? difference(c, load(b + 8 * (p + i))) : reduce(add(c, load(b + 8 * (p + i))), kP);
+			y[i] = reduce(times(c, scale), kP);
+		}
+
+		const Vec t01 = _mm256_unpackhi_epi32(y[0], y[1]), t23 = _mm256_unpackhi_epi32(y[2], y[3]);
+		const Vec t45 = _mm256_unpackhi_epi32(y[4], y[5]), t67 = _mm256_unpackhi_epi32(y[6], y[7]);
+		const Vec u03 = _mm256_unpackhi_epi64(t01, t23), u47 = _mm256_unpackhi_epi64(t45, t67);
+		const Vec z = canonical(add(times(_mm256_permute2x128_si256(u03, u47, 0x31), w), broadcast(constants[upper])));
+		const Vec zh = _mm256_permute2x128_si256(z, z, 0x11);
+		const Vec lane0[8] = {z,  _mm256_srli_si256(z, 4),  _mm256_srli_si256(z, 8),  _mm256_srli_si256(z, 12),
+							  zh, _mm256_srli_si256(zh, 4), _mm256_srli_si256(zh, 8), _mm256_srli_si256(zh, 12)};
+#pragma GCC unroll 8
+		for (size_t i = 0; i < 8; ++i)
+			store(out.data() + 8 * (p + i), _mm256_blend_epi32(_mm256_permutevar8x32_epi32(y[i], rotate), lane0[i], 1));
+	}
+}
+
+}
+
+inline int power_log(size_t n) { return std::max(detail::log_derivative_log(n), exp_log(n)); }
+
+inline size_t power_scratch(size_t n) {
+	return 3 * Arena::footprint(detail::exp_length(n) / 2) +
+		   std::max(detail::log_derivative_scratch(n), detail::exp_newton_scratch(n));
+}
+
+inline void power(const Transform& t, ConstWords f, Word e, Word c,
+				  Words g, Words scratch) {
+	using namespace detail;
+	const size_t n = g.size(), m = exp_length(n) / 2, k = m / 2, stride = Arena::footprint(m);
+	if (f.empty() || f[0] == 0) std::abort();
+	const Words lo = scratch.first(m), rest = scratch.subspan(3 * stride);
+	const auto q = [&](size_t i) __attribute__((target("avx2"))) { return i < m ? lo.data() + i : g.data() + i; };
+	const Factor factor(e);
+
+	const bool reuse = m >= 128 && log_block(n) == k && log_blocks(n) >= 3;
+	const bool block2 = reuse && log_blocks(n) == 4 && n - m > k;
+	const Words qt = scratch.subspan(stride, reuse ? m : 0);
+	const Words q2t = scratch.subspan(2 * stride, block2 ? m : 0);
+	const Word* d0t = nullptr;
+	lo[0] = 0;
+	if (n >= 2)
+		log_derivative(
+			t, f, n, rest,
+			[&](size_t first, ConstWords d) __attribute__((target("avx2"))) {
+				size_t i = 0;
+				for (; i + 8 <= d.size(); i += 8) {
+					const size_t at = first + 1 + i;
+					const Vec x = reduce(times(load(d.data() + i), factor), kP);
+					if (at + 8 <= m || at >= m) {
+						store_unaligned(q(at), x);
+					} else {
+						alignas(32) Word words[8];
+						store(words, x);
+						for (size_t j = 0; j < 8; ++j) *q(at + j) = words[j];
+					}
+				}
+				for (; i < d.size(); ++i) *q(first + 1 + i) = blocked_ntt::detail::multiply_mod(d[i], e);
+			},
+			[&](size_t j, ConstWords dt) __attribute__((target("avx2"))) {
+				if (j == 0) d0t = dt.data();
+				if (j == 1 && reuse) times_x<true>(t.roots(), d0t, dt.data(), e, kP - *q(m), 0, qt);
+				if (j == 2 && block2) times_x<false>(t.roots(), dt.data(), nullptr, e, *q(m), kP - *q(m + k), q2t);
+			});
+	const Words start = g.first(std::min(n, kExpBase));
+	exp_direct(lo, start);
+	for (Word& x : start) x = blocked_ntt::detail::multiply_mod(x, c);
+	if (n > kExpBase) exp_newton(t, lo, g, rest, QTransforms{qt, q2t});
+}
+
+}
+namespace blocked_poly {
+namespace detail {
+template <bool differentiated>
+[[gnu::noinline]] mint exp_tail_coefficient(const mint* in, size_t input, const mint* g, size_t n) {
+	const size_t count = std::min(n, input ? input - 1 : 0), full = count / 8 * 8;
+	const Vec reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0), ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
+	Vec total = _mm256_setzero_si256();
+	Indices index(1);
+	size_t j = 0;
+	for (; j < full;) {
+		Vec even = _mm256_setzero_si256(), odd = even;
+		const size_t end = std::min(full, j + 64);
+		for (; j < end; j += 8, index.next()) {
+			Vec a, b;
+			std::memcpy(&a, in + j + 1, sizeof(a));
+			std::memcpy(&b, g + n - j - 8, sizeof(b));
+			a = reduce(a, kP);
+			if constexpr (!differentiated) a = canonical(montgomery(a, index.value()));
+			b = _mm256_permutevar8x32_epi32(reduce(b, kP), reversed);
+			even = _mm256_add_epi64(even, _mm256_mul_epu32(a, b));
+			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
+		}
+		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
+		const Vec value = canonical(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA));
+		total = low(add(total, value));
+	}
+	total = low(add(total, _mm256_permute2x128_si256(total, total, 1)));
+	total = low(add(total, _mm256_shuffle_epi32(total, 0x4E)));
+	total = low(add(total, _mm256_shuffle_epi32(total, 0xB1)));
+	mint result = mint::word(Word(_mm_cvtsi128_si32(_mm256_castsi256_si128(total))));
+	for (; j < count; ++j) {
+		mint value = in[j + 1] * g[n - j - 1];
+		if constexpr (!differentiated) value *= mint(j + 1);
+		result += value;
+	}
+	return result / mint(n);
+}
+
+template <bool differentiated>
+[[gnu::noinline]] void import_exp_input(const mint* in, size_t first, size_t count, Word* to) {
+	static_assert(sizeof(mint) == sizeof(Word) && std::is_trivially_copyable_v<mint>);
+	size_t i = 0;
+	const Factor undo(blocked_ntt::detail::power(kR, kP - 2));
+	auto index = add(broadcast(Word(first)), _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
+	for (; i + 8 <= count; i += 8, index = add(index, broadcast(8))) {
+		Vec value;
+		std::memcpy(&value, in + first + i, sizeof(value));
+		if constexpr (differentiated) store_unaligned(to + i, reduce(times(value, undo), kP));
+		else store_unaligned(to + i, reduce(montgomery(value, index), kP));
+	}
+	for (; i < count; ++i) {
+		if constexpr (differentiated) to[i] = in[first + i].val();
+		else to[i] = blocked_ntt::detail::multiply_mod(in[first + i].val(), first + i);
+	}
+}
+}
+
+inline void native_exp_regular(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool differentiated) {
+	const size_t m = detail::exp_length(n) / 2, size = std::min(input, n), below = std::min(size, m);
+	const int lg = exp_log(n);
+	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(exp_scratch(n)));
+	const Transform t(arena, lg);
+	auto g = arena.take(n), scratch = arena.take(exp_scratch(n));
+	auto lo = scratch.first(m);
+	const auto import = [&](size_t first, size_t count, Word* to) {
+		if (differentiated) detail::import_exp_input<true>(in, first, count, to);
+		else detail::import_exp_input<false>(in, first, count, to);
+	};
+	import(0, below, lo.data());
+	std::fill(lo.begin() + below, lo.end(), 0u);
+	if (size > m) import(m, size - m, g.data() + m);
+	if (n > std::max(size, m)) std::fill(g.begin() + std::max(size, m), g.end(), 0u);
+	detail::exp_direct(lo, g.first(std::min(n, detail::kExpBase)));
+	for (auto &x : g.first(std::min(n, detail::kExpBase))) x = blocked_ntt::detail::multiply_mod(x, detail::kR);
+	if (n > detail::kExpBase) detail::exp_newton(t, lo, g, scratch.subspan(Arena::footprint(m)));
+	append_fps_words<true>(out, g.data(), n);
+}
+
+inline void native_exp(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool differentiated = false) {
+	const size_t prefix = std::bit_floor(n), tail = n - prefix;
+	if (prefix >= 4096 && tail && tail <= 4) {
+		const size_t offset = out.size();
+		prepare_fps_output(out, offset + n);
+		native_exp_regular(in, input, out, prefix, differentiated);
+		for (size_t at = prefix; at < n; ++at) {
+			const mint value = differentiated ? detail::exp_tail_coefficient<true>(in, input, out.data() + offset, at)
+											 : detail::exp_tail_coefficient<false>(in, input, out.data() + offset, at);
+			out.push_back(value);
+		}
+		return;
+	}
+	native_exp_regular(in, input, out, n, differentiated);
+}
+
+inline void native_power(const mint *in, size_t input, std::vector<mint> &out, size_t n, Word e, mint c) {
+	const int lg = power_log(n);
+	const size_t size = std::min(input, n);
+	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(power_scratch(n)));
+	const Transform t(arena, lg);
+	auto g = arena.take(n), scratch = arena.take(power_scratch(n));
+	for (size_t i = 0; i < size; ++i) {
+		const auto x = in[i].v;
+		g[i] = std::min(x, x - mint::mod());
+	}
+	power(t, g.first(size), e, std::min(c.v, c.v - mint::mod()), g, scratch);
+	append_fps_words<true>(out, g.data(), n);
+}
+}
+}
+#pragma GCC pop_options
+#endif
 #endif

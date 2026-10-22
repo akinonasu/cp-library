@@ -27,7 +27,7 @@ oj-bundle -I . a.cpp > submission.cpp
 python3 tools/check_source_size.py submission.cpp --limit 64
 ```
 
-依存の展開は通常の `oj-bundle` を使います。高速 FPS は短縮済み配布ヘッダーを、軽量 FPS は通常の読みやすい C++ のヘッダーを同梱しています。どちらも展開後の追加圧縮は不要です。[提出コードの生成](bundle.md)も参照してください。
+依存の展開は通常の `oj-bundle` を使います。高速 FPS・軽量 FPS ともに通常の C++ のヘッダーを同梱し、必要な部品だけを展開します。[提出コードの生成](bundle.md)も参照してください。
 
 ```sh
 oj-bundle -I . a.cpp > submission.cpp
