@@ -3,7 +3,9 @@ title: FPS の合成・射影の内部処理
 documentation_of: //components/fps_composition.hpp
 ---
 
-Linux x86_64 / GCC 向けの内部部品です。呼び出し側で AVX2 の実行時判定を行い、公開 API は `compose` と `power_projection` を使います。他の環境では既存実装へ戻ります。法は $$p=998244353$$ です。
+Linux x86_64 / GCC 向けの内部部品です。呼び出し側で AVX2 の実行時判定を行います。通常は公開 API の [合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)・[power projection](https://qandori.github.io/cp-library/fps/power_projection.hpp.html) を使ってください。他の環境では[汎用実装](fps_composition_generic.md)へ戻ります。法は $$p=998244353$$ です。
+
+このヘッダーは[合成の専用変換](fps_compose_blocked.md)と[射影の専用変換](fps_projection_blocked.md)を両方読み込む互換ヘッダーです。従来の raw API は全て使えます。内部から片方の演算だけを使う場合は対応する個別ヘッダーを include し、根表・列変換・作業領域などは[共通部品](fps_composition_common.md)を共有します。
 
 `fps_detail::composition_poly` の `Arena`・`Transform`・`Half` はブロック変換の部品を共有します。内部配列は Arena から確保し、利用者の入力に padding や整列を要求しません。確保失敗時には通常の整列配列へ戻り、それも失敗した場合は例外となります。
 
@@ -14,9 +16,9 @@ Linux x86_64 / GCC 向けの内部部品です。呼び出し側で AVX2 の実�
 | `projection_log(n)`・`projection_scratch(n)` | 係数射影に必要な変換次数と作業領域のワード数 | $$O(1)$$ |
 | `power_projection(t,g,a,scratch)` | $$a_k=[x^{n-1}]g^k$$、$$n=\texttt{a.size()}$$、$$g_0=0$$ | $$O(n\log^2 n)$$ |
 | `weighted_projection(t,g,w,a,scratch)` | $$\displaystyle a_k=\sum_j w_j[x^j]g^k$$、`w.size()==a.size()>32`、$$g_0=0$$ | $$O(n\log^2 n)$$ |
-| `native_compose(f,nf,g,ng,out,n)` | 内部 Montgomery 係数の入力から、長さ `n` の合成を空の `vector<Mint>` へ追加 | $$O(n\log^2 n)$$ |
-| `native_projection(g,ng,out,n)` | 内部 Montgomery 係数から、長さ `n` の係数射影を空の `vector<Mint>` へ追加 | $$O(n\log^2 n)$$ |
-| `native_weighted_projection(g,ng,w,out,n,count)` | `n` 個の重みによる射影の最初の `count` 項を空の `vector<Mint>` へ追加。$$0<\texttt{count}\le n$$ | $$O(n\log^2 n)$$ |
+| `native_compose(f,nf,g,ng,out,n)` | 内部 Montgomery 係数の入力から、長さ `n` の合成を空の `vector<mint>` へ追加 | $$O(n\log^2 n)$$ |
+| `native_projection(g,ng,out,n)` | 内部 Montgomery 係数から、長さ `n` の係数射影を空の `vector<mint>` へ追加 | $$O(n\log^2 n)$$ |
+| `native_weighted_projection(g,ng,w,out,n,count)` | `n` 個の重みによる射影の最初の `count` 項を空の `vector<mint>` へ追加。$$0<\texttt{count}\le n$$ | $$O(n\log^2 n)$$ |
 
 普通剰余の係数は $$[0,p)$$、Montgomery 係数の内部ワードは $$[0,2p)$$ です。入力長を超える係数は 0 とし、出力次数以降は読みません。raw API の作業領域は Arena と同じ整列・余白を持たせます。重み付き raw API は `projection_scratch(n) + Arena::footprint(6*detail::projection_length(n))` ワード、変換次数は `projection_log(n)+1` を使います。
 

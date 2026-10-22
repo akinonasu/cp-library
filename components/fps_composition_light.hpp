@@ -2,130 +2,18 @@
 #define CP_COMPONENTS_FPS_COMPOSITION_LIGHT_HPP
 
 #include "../fps/fps_light.hpp"
-
-namespace fps_light_detail {
-template<class T> struct CompositionStage {
-	using F = LightFormalPowerSeries<T>;
-	int width, before, after, parity;
-	F even, odd;
-};
-
-template<class T>
-std::vector<CompositionStage<T>> composition_stages(const LightFormalPowerSeries<T> &f, int n, int count) {
-	using F = LightFormalPowerSeries<T>;
-	std::vector<CompositionStage<T>> stages;
-	F q(2 * n);
-	q[0] = 1;
-	for (int i = 1; i < std::min(n, int(f.size())); ++i) q[n + i] = -f[i];
-	int columns = 2, before = 1;
-	while (n > 1) {
-		const int next = (n + 1) / 2, parity = (n - 1) & 1;
-		CompositionStage<T> stage{n, before, std::min(count, before + columns - 1), parity, {}, {}};
-		stage.even.resize(n * columns), stage.odd.resize(n * columns);
-		for (int y = 0; y < columns; ++y) for (int x = 0; x < n; ++x)
-			(x & 1 ? stage.odd : stage.even)[y * n + x / 2] = q[y * n + x];
-		stage.even.shrink(), stage.odd.shrink();
-		F r = F::multiply(stage.even, stage.even), s = F::multiply(stage.odd, stage.odd);
-		const int height = std::min(count, 2 * columns - 1);
-		q.assign(next * height, T(0));
-		for (int y = 0; y < height; ++y) for (int x = 0; x < next; ++x) {
-			int i = y * n + x;
-			q[y * next + x] = (i < int(r.size()) ? r[i] : T(0)) - (i && i - 1 < int(s.size()) ? s[i - 1] : T(0));
-		}
-		q.shrink();
-		columns = std::max(1, (int(q.size()) + next - 1) / next);
-		q.resize(next * columns);
-		before = stage.after;
-		stages.push_back(std::move(stage));
-		n = next;
-	}
-	return stages;
-}
-
-template<class T>
-LightFormalPowerSeries<T> composition_correlation(const LightFormalPowerSeries<T> &a, const LightFormalPowerSeries<T> &b) {
-	using F = LightFormalPowerSeries<T>;
-	if (b.empty()) return {};
-	return F::multiply(a, F(b.rbegin(), b.rend()));
-}
-}
+#include "fps_composition_generic.hpp"
 
 namespace light_fps_algorithms {
 template<class T>
 LightFormalPowerSeries<T> compose(const LightFormalPowerSeries<T> &outer, const LightFormalPowerSeries<T> &inner, int deg = -1) {
-	using F = LightFormalPowerSeries<T>;
-	if (deg < 0) deg = int(outer.size());
-	assert(0 <= deg && deg <= (1 << 21) && (inner.empty() || inner[0] == T(0)));
-	F result(deg);
-	if (!deg || outer.empty()) return result;
-	const int count = std::min(deg, int(outer.size()));
-	if (count == 1) { result[0] = outer[0]; return result; }
-	auto stages = fps_light_detail::composition_stages(inner, deg, count);
-	F value(count);
-	std::copy_n(outer.begin(), count, value.begin());
-	if (!stages.empty()) value.resize(stages.back().after);
-	for (int level = int(stages.size()) - 1; level >= 0; --level) {
-		const auto &stage = stages[level];
-		const int n = stage.width, next = (n + 1) / 2;
-		F weights(n * stage.after);
-		for (int y = 0; y < stage.after; ++y) for (int x = 0; x < next; ++x)
-			weights[y * n + x] = value[y * next + x];
-		weights.shrink();
-		F even = fps_light_detail::composition_correlation(weights, stage.even);
-		F odd = fps_light_detail::composition_correlation(weights, stage.odd);
-		auto get = [](const F &a, int i) { return 0 <= i && i < int(a.size()) ? a[i] : T(0); };
-		value.assign(n * stage.before, T(0));
-		for (int y = 0; y < stage.before; ++y) for (int x = 0; x < n; ++x) {
-			int i = y * n + x / 2;
-			if ((x & 1) == stage.parity)
-				value[y * n + x] = get(even, i + int(stage.even.size()) - 1);
-			else value[y * n + x] = -get(odd, i + int(stage.odd.size()) - 1 + (stage.parity == 0));
-		}
-	}
-	std::reverse_copy(value.begin(), value.begin() + deg, result.begin());
-	return result;
+	assert(deg <= (1 << 21) && (deg >= 0 || outer.size() <= (std::size_t(1) << 21)));
+	return fps_detail::composition_fallback::compose(outer, inner, deg);
 }
 
 template<class T>
 LightFormalPowerSeries<T> power_projection(const LightFormalPowerSeries<T> &f, const LightFormalPowerSeries<T> &weights, int deg = -1) {
-	using F = LightFormalPowerSeries<T>;
-	if (deg < 0) deg = int(weights.size());
-	assert(0 <= deg && deg <= (1 << 22) && weights.size() <= (std::size_t(1) << 21));
-	F result(deg);
-	if (!deg || weights.empty()) return result;
-	int n = int(weights.size());
-	while (n && weights[n - 1] == T(0)) --n;
-	if (!n) return result;
-	const int count = std::min(deg, n);
-	F value(weights.begin(), weights.begin() + n);
-	std::reverse(value.begin(), value.end());
-	for (const auto &stage : fps_light_detail::composition_stages(f, n, count)) {
-		const int width = stage.width, next = (width + 1) / 2;
-		F numerator(2 * width * stage.before), denominator(2 * std::max(stage.even.size(), stage.odd.size()));
-		for (int y = 0; y < stage.before; ++y) for (int x = 0; x < width; ++x)
-			numerator[2 * y * width + x] = value[y * width + x];
-		for (int i = 0; i < int(stage.even.size()); ++i) denominator[2 * i] = stage.even[i];
-		for (int i = 0; i < int(stage.odd.size()); ++i) denominator[2 * i + 1] = -stage.odd[i];
-		numerator.shrink(), denominator.shrink();
-		F product = F::multiply(numerator, denominator);
-		value.assign(next * stage.after, T(0));
-		for (int y = 0; y < stage.after; ++y) for (int x = 0; x < next; ++x) {
-			int i = 2 * y * width + 2 * x + stage.parity;
-			if (i < int(product.size())) value[y * next + x] = product[i];
-		}
-	}
-	std::copy(value.begin(), value.end(), result.begin());
-	const T constant = f.empty() ? T(0) : f[0];
-	if (constant == T(0)) return result;
-	F factorial(deg, T(1)), inverse(deg, T(1)), b(deg);
-	for (int i = 1; i < deg; ++i) factorial[i] = factorial[i - 1] * T(i);
-	inverse.back() = factorial.back().inv();
-	for (int i = deg - 1; i; --i) inverse[i - 1] = inverse[i] * T(i);
-	T power = 1;
-	for (int i = 0; i < deg; ++i) result[i] *= inverse[i], b[i] = power * inverse[i], power *= constant;
-	result = F::multiply(result, b).pre(deg);
-	for (int i = 0; i < deg; ++i) result[i] *= factorial[i];
-	return result;
+	return fps_detail::composition_fallback::power_projection(f, weights, deg);
 }
 
 template<class T>
@@ -138,19 +26,7 @@ LightFormalPowerSeries<T> power_projection(const LightFormalPowerSeries<T> &f, i
 
 template<class T>
 LightFormalPowerSeries<T> compositional_inverse(const LightFormalPowerSeries<T> &f, int deg = -1) {
-	using F = LightFormalPowerSeries<T>;
-	if (deg < 0) deg = int(f.size());
-	assert(0 <= deg && deg <= (1 << 21) && (f.empty() || f[0] == T(0)));
-	if (deg <= 1) return F(deg);
-	assert(f.size() >= 2 && f[1] != T(0));
-	F projected = power_projection(f, deg - 1), h(deg - 1);
-	std::vector<T> inverse(deg, T(1));
-	for (int i = 2; i < deg; ++i) inverse[i] = -T(T::mod() / i) * inverse[T::mod() % i];
-	for (int i = 1; i < deg; ++i) h[deg - 1 - i] = projected[i] * inverse[i];
-	h /= h[0];
-	h = (h.log() * -inverse[deg - 1]).exp() / f[1];
-	h.insert(h.begin(), T(0));
-	return h;
+	return fps_detail::composition_fallback::compositional_inverse(f, deg);
 }
 }
 

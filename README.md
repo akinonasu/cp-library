@@ -341,13 +341,16 @@
 | `components/fps_factorials.hpp` | 階乗・逆階乗生成 | [使い方](docs/fps_factorials.md) |
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
 | `components/fps_log.hpp` | FPS の対数の内部変換 | [使い方](docs/fps_log.md) |
-| `components/fps_asm.hpp` | FPS の命令文字列 | [使い方](docs/fps_asm.md) |
 | `components/fps_blocked.hpp` | FPS のブロック変換 | [使い方](docs/fps_blocked.md) |
 | `components/fps_bostan.hpp` | Bostan–Mori の倍長化 | [使い方](docs/fps_bostan.md) |
 | `components/fps_horner.hpp` | FPS の一点評価 | [使い方](docs/fps_horner.md) |
 | `components/polynomial_gcd_blocked.hpp` | 多項式 Half-GCD の専用変換 | [使い方](docs/polynomial_gcd_blocked.md) |
 | `components/fps_composition.hpp` | FPS の合成・射影の内部処理 | [使い方](docs/fps_composition.md) |
+| `components/fps_composition_common.hpp` | FPS の合成・射影の共通変換 | [使い方](docs/fps_composition_common.md) |
+| `components/fps_compose_blocked.hpp` | FPS の合成の専用変換 | [使い方](docs/fps_compose_blocked.md) |
+| `components/fps_projection_blocked.hpp` | FPS の射影の専用変換 | [使い方](docs/fps_projection_blocked.md) |
 | `components/fps_composition_light.hpp` | 軽量 FPS の合成・射影の共通部品 | [使い方](docs/fps_composition_light.md) |
+| `components/fps_composition_generic.hpp` | FPS の合成・射影の汎用実装 | [使い方](docs/fps_composition_generic.md) |
 | `components/fps_convolution.hpp` | FPS の融合畳み込み | [使い方](docs/fps_convolution.md) |
 | `components/fps_convolution_unbalanced.hpp` | FPS の非対称畳み込み | [使い方](docs/fps_convolution_unbalanced.md) |
 | `components/fps_convolution_constant.hpp` | FPS の定数係数畳み込み | [使い方](docs/fps_convolution_constant.md) |
@@ -362,6 +365,7 @@
 | `components/fps_taylor_blocked.hpp` | Taylor Shift の中間積 | [使い方](docs/fps_taylor_blocked.md) |
 | `components/fps_io.hpp` | FPS の一括入出力 | [使い方](docs/fps_io.md) |
 | `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
+| `components/polynomial_product_tree.hpp` | 多項式の共通積木 | [使い方](docs/polynomial_product_tree.md) |
 | `components/xor_basis_core.hpp` | XOR 基底の内部演算 | [使い方](docs/xor_basis_core.md) |
 
 ## 使い方
@@ -371,10 +375,6 @@
 提出には [oj-bundle](https://github.com/online-judge-tools/verification-helper) の利用を想定しています。
 
 FPS も通常の `oj-bundle` だけで展開できます。専用の圧縮ツールは不要です。
-
-| メンテナー向けツール | 説明 |
-| --- | --- |
-| [tools/update_fps_headers.py](tools/update_fps_headers.py) | 高速 FPS の編集用原本から配布ヘッダーを更新（[説明](docs/fps_backend.md)） |
 
 例えば
 

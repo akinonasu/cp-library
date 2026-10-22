@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 #include "../math/mint.hpp"
+#include "polynomial_product_tree.hpp"
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 #include <immintrin.h>
@@ -682,42 +683,8 @@ using LightFPS = light_fps;
 #endif
 
 namespace fps_light_detail {
-template<class T> struct ProductTree {
-	using F = LightFormalPowerSeries<T>;
-	std::size_t size = 1, count;
-	std::vector<F> product;
-	explicit ProductTree(const std::vector<T> &xs) : count(xs.size()) {
-		assert(count < (std::size_t(1) << 23));
-		while (size < count) size <<= 1;
-		product.resize(2 * size);
-		for (std::size_t i = 0; i < size; ++i)
-			product[size + i] = i < count ? F{-xs[i], T(1)} : F{T(1)};
-		for (std::size_t i = size; --i;)
-			product[i] = product[2 * i + 1].size() == 1 ? product[2 * i]
-				: F::multiply(product[2 * i], product[2 * i + 1]);
-	}
-	std::vector<T> evaluate(const F &f) const {
-		std::vector<T> result(count);
-		if (!count) return result;
-		auto remainder = [](const F &a, const F &b) {
-			return a.size() < b.size() ? a : a.divmod(b).second;
-		};
-		auto visit = [&](auto &&self, std::size_t node, const F &value) -> void {
-			if (value.empty()) return;
-			if (node >= size) {
-				result[node - size] = value[0];
-				return;
-			}
-			self(self, node * 2, remainder(value, product[node * 2]));
-			if (product[node * 2 + 1].size() > 1)
-				self(self, node * 2 + 1, remainder(value, product[node * 2 + 1]));
-		};
-		F value = f;
-		value.shrink();
-		visit(visit, 1, remainder(value, product[1]));
-		return result;
-	}
-};
+template<class T>
+using ProductTree = polynomial_detail::ProductTree<LightFormalPowerSeries<T>>;
 }
 
 namespace light_fps_algorithms {
@@ -790,32 +757,8 @@ std::vector<T> multipoint_eval(const LightFormalPowerSeries<T> &f, const std::ve
 
 template<class T>
 LightFormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> &ys) {
-	using F = LightFormalPowerSeries<T>;
 	assert(xs.size() == ys.size());
-	const std::size_t n = xs.size();
-	if (!n) return {};
-	fps_light_detail::ProductTree<T> tree(xs);
-	F derivative = tree.product[1].diff();
-	derivative.shrink();
-	std::vector<T> denominator = tree.evaluate(derivative), prefix(n + 1, T(1));
-	for (std::size_t i = 0; i < n; ++i) {
-		assert(denominator[i] != T(0));
-		prefix[i + 1] = prefix[i] * denominator[i];
-	}
-	T inverse = prefix[n].inv();
-	std::vector<F> value(2 * tree.size);
-	for (std::size_t i = n; i--;) {
-		value[tree.size + i] = F{ys[i] * inverse * prefix[i]};
-		inverse *= denominator[i];
-	}
-	for (std::size_t i = tree.size; --i;) {
-		value[i] = F::multiply(value[2 * i], tree.product[2 * i + 1])
-			+ F::multiply(value[2 * i + 1], tree.product[2 * i]);
-		value[2 * i] = F();
-		value[2 * i + 1] = F();
-	}
-	value[1].resize(n);
-	return std::move(value[1]);
+	return fps_light_detail::ProductTree<T>(xs).interpolate(ys);
 }
 }
 
