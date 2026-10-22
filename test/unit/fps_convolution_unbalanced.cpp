@@ -8,7 +8,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 static void require(bool ok) { if (!ok) std::abort(); }
-using mint;
+using Mint = mint;
 namespace unbalanced = fps_detail::multiply_detail::unbalanced;
 struct Guarded {
 	void* region;
