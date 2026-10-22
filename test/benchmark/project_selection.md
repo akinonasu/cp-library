@@ -30,5 +30,24 @@
 ```sh
 python3 test/verify.py --unit-only --cxx g++ clang++ --selection test/benchmark/project_selection_selection.json
 python3 test/verify.py --unit-only --cxx clang++ --sanitize --selection test/benchmark/project_selection_selection.json
-oj-verify run test/project_selection.test.cpp
 ```
+
+## 2026-10-22 の機能追加
+
+頂点ごとの固定した選択反転を追加し、二部グラフ上の同一状態への罰金を扱えるようにしました。[ABC193 F の公式解説](https://atcoder.jp/contests/abc193/editorial/814)で、格子の片側を反転し、同じ色への罰金を最小カットで表す方法を確認しました。Project Selection に直接対応する Library Checker の問題はなく、最大流の実装は変更していません。今回も速度の比較測定は行っていません。
+
+費用・利益・制約と返される選択は、反転前の状態で指定・解釈できます。指定状態への単項・二変数の費用と利益、同じ／異なる選択への費用と利益、二変数の利益表、少なくとも一人が指定状態の場合の費用、指定状態を使った依存・禁止・排他・少なくとも片方を選ぶ制約を追加しました。反転後に最小カットで表せることを入力条件とし、条件違反の `assert` と、制約が矛盾した場合の `nullopt` を区別します。
+
+正の指定状態への罰金は直接有向辺に変換し、不要な単項項や容量の上限増加を避けます。符号の反転は既存実装と同様、128 bit に拡張してから行います。
+
+検証結果は次の通りです。
+
+- 既存の 2,400 問に加え、`int8_t`・`int`・`int64_t` で各 1,200 問、計 6,000 個のランダムな問題を全選択列挙と比較しました。追加分は seed `20261022`、変数数 0〜8、28 回の追加操作です。費用だけの問題も途中で検証し、矛盾した制約で費用計算の誤りが隠れないようにしています。
+- 反転指定 4 通り、表 355 通り、選択 4 通り、費用・利益の両方で 11,360 通りを確認しました。既存の費用表 1,420 通りも維持しています。
+- 復元した選択の評価、再求解、コピー、自己頂点・空列・重複、符号付き整数の最小値、有限容量の上限近傍を確認しました。既存の 20 万頂点の依存鎖に加え、反転指定が交互の 20 万頂点の異なる選択の鎖を検証しました。
+- GCC 14.2・Clang 19 の単独・二重 include と単体テスト、Clang の ASan・UBSan、両コンパイラの `NDEBUG` 利用例が成功しました。非対応の反転指定など 7 種の入力条件違反も両コンパイラで検出しました。
+- AtCoder の constexpr 上限を維持して、展開したドキュメントのコンパイルも確認しました。
+
+AtCoder のジャッジ用テストは全て削除しました。公式サンプルや独立した愚直解との手元での比較は行いましたが、非公開テストに対する AC は主張していません。追加機能の継続的な検証は `test/unit/project_selection.cpp` で行います。
+
+検証記録は `results/project_selection_extended/validation.json` に保存しています。再実行には上記の `test/verify.py --unit-only` の 2 コマンドを使えます。

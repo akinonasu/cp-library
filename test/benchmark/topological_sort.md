@@ -39,5 +39,5 @@
 ```sh
 python3 test/verify.py --unit-only --cxx g++ clang++ --selection test/benchmark/topological_sort_selection.json
 python3 test/verify.py --unit-only --cxx clang++ --sanitize --selection test/benchmark/topological_sort_selection.json
-oj-verify run test/topological_sort.test.cpp test/topological_sort_lexicographical.test.cpp
+oj-verify run test/topological_sort.test.cpp
 ```

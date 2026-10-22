@@ -1,0 +1,72 @@
+[
+  {
+    "compiler": "g++",
+    "mode": 0,
+    "returncode": -6
+  },
+  {
+    "compiler": "g++",
+    "mode": 1,
+    "returncode": -6
+  },
+  {
+    "compiler": "g++",
+    "mode": 2,
+    "returncode": -6
+  },
+  {
+    "compiler": "g++",
+    "mode": 3,
+    "returncode": -6
+  },
+  {
+    "compiler": "g++",
+    "mode": 4,
+    "returncode": -6
+  },
+  {
+    "compiler": "g++",
+    "mode": 5,
+    "returncode": -6
+  },
+  {
+    "compiler": "g++",
+    "mode": 6,
+    "returncode": -6
+  },
+  {
+    "compiler": "/workspace/cp-binomial-study/bin/clang++",
+    "mode": 0,
+    "returncode": -6
+  },
+  {
+    "compiler": "/workspace/cp-binomial-study/bin/clang++",
+    "mode": 1,
+    "returncode": -6
+  },
+  {
+    "compiler": "/workspace/cp-binomial-study/bin/clang++",
+    "mode": 2,
+    "returncode": -6
+  },
+  {
+    "compiler": "/workspace/cp-binomial-study/bin/clang++",
+    "mode": 3,
+    "returncode": -6
+  },
+  {
+    "compiler": "/workspace/cp-binomial-study/bin/clang++",
+    "mode": 4,
+    "returncode": -6
+  },
+  {
+    "compiler": "/workspace/cp-binomial-study/bin/clang++",
+    "mode": 5,
+    "returncode": -6
+  },
+  {
+    "compiler": "/workspace/cp-binomial-study/bin/clang++",
+    "mode": 6,
+    "returncode": -6
+  }
+]

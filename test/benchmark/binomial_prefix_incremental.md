@@ -33,9 +33,9 @@ $$\displaystyle S(n-1,k-1)=\frac{S(n,k)-\binom{n-1}{k-1}}2$$
 
 ## 提出コードの整理
 
-`arc190_b_sweeps.cpp` は元の4走査を維持する。入力後の表の構築・共有、`binom` の再利用と、補正項を積にまとめる変更を行った。
+当時の4走査版は元の4走査を維持する。入力後の表の構築・共有、`binom` の再利用と、補正項を積にまとめる変更を行った。
 
-`../binomial_prefix_sum_incremental_arc190_b.test.cpp` は累積値の差を使う。0始まりの座標 a,b に対し、
+当時の累積差分版は累積値の差を使う。0始まりの座標 a,b に対し、
 
 $$X_k=S(N-k,a+1)-S(N-k,a-k+1)$$
 
@@ -80,5 +80,6 @@ GCC・Clang の既存ユニットテスト、Clang ASan/UBSan、コピー・代�
 flock /tmp/cp-wm-opt.lock python3 test/benchmark/binomial_prefix_incremental.py
 flock /tmp/cp-wm-opt.lock python3 test/verify.py --unit-only --cxx g++ clang++ --selection test/benchmark/results/binomial_prefix_incremental/selection.json
 flock /tmp/cp-wm-opt.lock python3 test/verify.py --unit-only --sanitize --cxx clang++ --selection test/benchmark/results/binomial_prefix_incremental/selection.json
-flock /tmp/cp-wm-opt.lock python3 test/benchmark/binomial_prefix_incremental_check.py
 ```
+
+2026-10-22 に AtCoder 用の検証コードと問題固有の照合処理を削除しました。上の測定結果は過去の記録です。現在の `binomial_prefix_incremental.py` はライブラリ単体の測定だけを行い、結果を `micro_measurements.json` に保存します。

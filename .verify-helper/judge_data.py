@@ -14,6 +14,8 @@ from ci import affected_inventory, read_json, write_json
 
 
 def urls_for(root, plan):
+    from verification import check_judges
+    check_judges(root, plan["verification"])
     result = {}
     for name in plan['verification']:
         source = (root / name).read_text()

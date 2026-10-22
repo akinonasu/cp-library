@@ -118,6 +118,8 @@ def build_plan(root, previous=None, *, environment, force=False):
         "unit": sorted(path.relative_to(root).as_posix() for path in (root / "test/unit").rglob("*.cpp")),
         "verification": sorted(path.relative_to(root).as_posix() for path in (root / "test").rglob("*.test.cpp")),
     }
+    from verification import check_judges
+    check_judges(root, targets["verification"])
     targets["sanitize"] = targets["unit"]
     targets["bundles"] = targets["headers"]
     contents = {}
@@ -358,7 +360,7 @@ def main():
         elif args.command == "judge":
             import onlinejudge.service
             from onlinejudge_verify import verify
-            from verification import get_marker, prepare_samples
+            from verification import check_judges, get_marker
 
             logging.basicConfig(level=logging.INFO)
             if affected and list((ROOT / ".verify-helper").glob("timestamps.*.json")):
@@ -374,7 +376,7 @@ def main():
                     from judge_data import mark_ready
                     mark_ready(Path(os.environ["VERIFY_JUDGE_CACHE"]), name)
             def run(paths):
-                prepare_samples(ROOT, paths)
+                check_judges(ROOT, paths)
                 return verify.main(paths, marker=verification, timeout=3000, tle=10, jobs=2)
             with verification:
                 verify_selected(plan, verification, run,
