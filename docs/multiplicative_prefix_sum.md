@@ -48,16 +48,18 @@ $$\displaystyle \texttt{prime\_prefix}[i]=G(q_i)=\sum_{\substack{p\leq q_i\\p\te
 
 ## API
 
+以下では $$q_i=\texttt{quotients()}[i]$$ とします。
+
 | 操作 | 内容・返り値 |
 | --- | --- |
 | `MultiplicativePrefixSum<T>(n = 0)` | 上限 `n` の計算領域を作る |
 | `max_n()` / `size()` | 上限／商の表の要素数 |
 | `quotients()` | 異なる正の `n/i` を降順に並べた `const vector<uint64_t>&` |
 | `index(x)` | `quotients()` に含まれる正の `x` の添字 |
-| `prime_sum_linear(a,b)` | 素数上の値が `a+b*p` の場合の表を返す |
-| `prime_sum(integer_prefix)` | 完全乗法的な補助関数の素数上の表を返す。条件は後述 |
+| `prime_sum_linear(a,b)` | 各要素が $$\displaystyle\sum_{p\leq q_i,\ p\text{ prime}}(a+bp)$$ の `vector<T>` を返す |
+| `prime_sum(integer_prefix)` | **入力：** $$\displaystyle\texttt{integer\_prefix}(x)=\sum_{k=1}^x g(k)$$ を `T` で返す関数。$$g(1)=1$$ かつ全ての正整数 $$a,b$$ に対して $$g(ab)=g(a)g(b)$$ を満たす完全乗法的な $$g$$ に限る。**返り値：** 各要素が $$\displaystyle\sum_{p\leq q_i,\ p\text{ prime}}g(p)$$ の `vector<T>` |
 | `sum(prime_prefix,prime_power)` | `F(n)` を `T` で返す |
-| `prefix_sum(prime_prefix,prime_power)` | `quotients()` の各点に対する `F(x)` を `vector<T>` で返す |
+| `prefix_sum(prime_prefix,prime_power)` | 各要素が $$\displaystyle F(q_i)=\sum_{k=1}^{q_i}f(k)$$ の `vector<T>` を返す |
 | `get(table,x)` | 作った表の `x` に対する値。`x = 0` は 0 |
 | `swap(other)` | 二つの計算領域を交換する |
 
@@ -77,7 +79,7 @@ $$\displaystyle \texttt{prime\_prefix}[i]=G(q_i)=\sum_{\substack{p\leq q_i\\p\te
 | 約数和 σ | `prime_sum_linear(T(1),T(1))` | $$\displaystyle\sum_{j=0}^{e}T(p)^j$$ |
 | 平方数なら 1 | `prime_sum_linear(T(0),T(0))` | `T(e%2 == 0)` |
 
-`prime_sum(integer_prefix)` では、補助関数 $$g$$ が完全乗法的、すなわち互いに素という制約なしに $$g(ab)=g(a)g(b)$$、かつ $$g(1)=1$$ であることが必要です。`integer_prefix(x)` に $$\displaystyle\sum_{i=1}^x g(i)$$ を与えると、各点で $$\displaystyle\sum_{p\leq x,\ p\text{ prime}}g(p)$$ を返します。`g(i)=1,i,i^2` や Dirichlet 指標などが使えます。返された表の線形結合を作れば、素数上の値が多項式などで表せる関数にも対応できます。別の方法で作った正しい素数上の表を `sum`・`prefix_sum` に渡しても構いません。
+`prime_sum(integer_prefix)` では、補助関数 $$g$$ が完全乗法的、すなわち互いに素という制約なしに $$g(ab)=g(a)g(b)$$、かつ $$g(1)=1$$ であることが必要です。通常の乗法性だけでは不十分で、例えばトーティエント関数の累積和を直接渡すことはできません。`integer_prefix(x)` に $$\displaystyle\sum_{i=1}^x g(i)$$ を与えると、各点で $$\displaystyle\sum_{p\leq x,\ p\text{ prime}}g(p)$$ を返します。`g(i)=1,i,i^2` や Dirichlet 指標などが使えます。返された表の線形結合を作れば、素数上の値が多項式などで表せる関数にも対応できます。別の方法で作った正しい素数上の表を `sum`・`prefix_sum` に渡しても構いません。
 
 ## 範囲と計算量
 
