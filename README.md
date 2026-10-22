@@ -96,6 +96,8 @@
 | --- | --- | --- |
 | `tree/prufer_code.hpp` | Prufer Code（木の符号化・復号） | [使い方](docs/prufer_code.md) |
 | `tree/cartesian_tree.hpp` | Cartesian Tree（根・親・左右の子） | [使い方](docs/cartesian_tree.md) |
+| `tree/rooted_tree_hash.hpp` | 根付き木・各部分木のハッシュ | [使い方](docs/rooted_tree_hash.md) |
+| `tree/tree_hash.hpp` | 根を持たない木のハッシュ | [使い方](docs/tree_hash.md) |
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
@@ -312,6 +314,7 @@
 | `components/montgomery32.hpp` | Montgomery 32 | [使い方](docs/montgomery32.md) |
 | `components/mod_fast_core.hpp` | 定数時間 mod 演算の内部部品 | [使い方](docs/mod_fast_core.md) |
 | `components/splitmix64.hpp` | SplitMix64 | [使い方](docs/splitmix64.md) |
+| `components/tree_hash_core.hpp` | 木ハッシュの共通部品 | [使い方](docs/tree_hash_core.md) |
 | `components/d_ary_heap.hpp` | D-ary Heap | [使い方](docs/d_ary_heap.md) |
 | `components/RadixHeap.hpp` | Radix Heap | [使い方](docs/radix_heap.md) |
 | `components/dijkstra_queue.hpp` | Dijkstra の内部キュー | [使い方](docs/dijkstra_queue.md) |
