@@ -23,7 +23,13 @@ template <int Log> void arrays() {
 			unsigned k = random() % roots.size();
 			int p = random() % n, x = random() % 1000;
 			auto next = values[k]; next[p] = x;
-			roots.push_back(array.set(roots[k], p, x)); values.push_back(next);
+			if (t % 2) roots.push_back(array.set(roots[k], p, x));
+			else {
+				int q = random() % n, y = random() % 1000;
+				next[q] = y;
+				roots.push_back(array.set_pair(roots[k], p, x, q, y));
+			}
+			values.push_back(next);
 			k = random() % roots.size();
 			auto before = array.node_count();
 			for (int j = 0; j < n; ++j) assert(array.get(roots[k], j) == values[k][j]);
@@ -42,6 +48,18 @@ int main() {
 	PersistentArray<Value> nondefault(std::vector<Value>{Value(1), Value(2)}, Value(-1));
 	auto v = nondefault.set(nondefault.initial_root(), 0, Value(9));
 	assert(nondefault.get(v, 0).x == 9 && nondefault.get(nondefault.initial_root(), 0).x == 1);
+	auto pair = nondefault.set_pair(v, 0, Value(8), 1, Value(7));
+	assert(nondefault.get(pair, 0).x == 8 && nondefault.get(pair, 1).x == 7 && nondefault.get(v, 0).x == 9);
+	PersistentArray<int> shared(INT_MAX, -1);
+	auto before = shared.node_count();
+	auto separate = shared.set(shared.set(0, 123456, 1), 123456 + (1 << 24), 2);
+	auto separate_nodes = shared.node_count() - before;
+	before = shared.node_count();
+	auto together = shared.set_pair(0, 123456, 1, 123456 + (1 << 24), 2);
+	assert(shared.node_count() - before < separate_nodes);
+	for (int p : {0, 123456, 123456 + (1 << 24), INT_MAX - 1}) assert(shared.get(separate, p) == shared.get(together, p));
+	auto last = shared.set_pair(together, 123456, 3, 123456, 4);
+	assert(shared.get(last, 123456) == 4 && shared.get(together, 123456) == 1);
 	std::mt19937 random(998);
 	for (int n : {1, 2, 15, 80}) {
 		PersistentUnionFind uf(n);

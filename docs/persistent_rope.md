@@ -3,7 +3,7 @@ title: Persistent Rope Core
 documentation_of: //components/persistent_rope.hpp
 ---
 
-重み付きの断片列を、節点を共有する永続 AVL 木で管理する内部部品です。`DynamicPatternMatching` の部分文字列の分割・連結・コピーに使います。通常の文字列照合には `DynamicPatternMatching` を使います。
+重み付きの断片列を、節点を共有する永続 AVL 木で管理する内部部品です。[永続 deque](persistent_deque.md) の更新や、[動的パターン照合](dynamic_pattern_matching.md) の部分文字列の分割・連結・コピーに使います。
 
 ```cpp
 #include "lib/components/persistent_rope.hpp"
@@ -35,6 +35,8 @@ int main() {
 
 `split(root,p,splitter)` は重みの合計が `p` となる位置で分割します。`0 <= p <= size(root)` が必要です。断片の途中で分割するときだけ `splitter(value,offset)` を呼びます。返す `pair<T,T>` の重みは、それぞれ `offset` と `weight(value)-offset` にしてください。断片の境界では呼びません。`at(root,p)` は、その位置を含む断片と、断片内の重みのオフセットを返します。
 
+`insert` は `0 <= p <= size(root)`、`erase` は `0 <= l <= r <= size(root)` とします。どちらも断片の途中を操作するときだけ、`split` と同じ条件の `splitter` を呼びます。`replace` は `p < size(root)` が必要で、位置を含む断片全体を置き換えます。新しい値の重みは、その断片の重みと同じにしてください。
+
 根番号は、その節点を保持する同じインスタンスで使います。別のインスタンスへ移す場合は `copy_from` を使います。不要になった節点は自動で回収せず、`build` でも既存の領域は残ります。新しいインスタンスへ `copy_from` すると、指定した根から到達する節点だけを、共有関係を保って移せます。保持する節点数は `INT_MAX` 未満にしてください。
 
 $$L$$ を根からたどった列の断片数、$$A$$ を保持する節点数、$$C$$ を分割コールバックの時間とします。表は `T` のコピー・構築、`weight`、訪問コールバックが定数時間の場合です。文字列などを `T` にする場合は、そのコピー時間も加わります。† は節点配列の伸長を含む償却計算量です。
@@ -46,6 +48,9 @@ $$L$$ を根からたどった列の断片数、$$A$$ を保持する節点数�
 | `build(values)` | `vector<T>` の断片列から木を作り、根番号を返す | † $$O(L)$$ |
 | `join(a,b)` | 2 つの根の列をこの順に連結した根番号 | † $$O(\log L)$$ |
 | `split(root,p,splitter)` | 分割後の左・右の根番号の組 | † $$O(\log L+C)$$ |
+| `replace(root,p,value)` | 位置 `p` を含む断片を、同じ重みの `value` に置き換えた根番号 | † $$O(\log L)$$ |
+| `insert(root,p,value,splitter)` | 位置 `p` に断片を挿入した根番号 | † $$O(\log L+C)$$ |
+| `erase(root,l,r,splitter)` | 重みの区間 `[l,r)` を削除した根番号 | † $$O(\log L+C)$$ |
 | `size(root)` | 列の重みの合計。根 `0` なら 0 | $$O(1)$$ |
 | `storage_nodes()` | このインスタンスが保持する節点数 | $$O(1)$$ |
 | `leaf(node)` | 葉か。`leaf(0)` は false | $$O(1)$$ |
