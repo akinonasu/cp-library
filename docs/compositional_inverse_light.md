@@ -17,4 +17,4 @@ auto g = light_fps_algorithms::compositional_inverse(f, 5);
 
 軽量 FPS の power projection・対数・指数を使って Lagrange 反転を計算します。高速実装の FPS や専用 NTT には依存しません。[実装・検証資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_composition.md)を参照してください。
 
-出力係数数を $$n$$ として、時間は $$O(n\log^2(n+1))$$、追加空間は $$O(n\log(n+1))$$ です。
+出力係数数を $$n$$ として、時間は $$O(n\log^2 n)$$、追加空間は $$O(n\log n)$$ です。

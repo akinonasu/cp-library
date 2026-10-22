@@ -16,4 +16,4 @@ auto h = light_fps_algorithms::compose(f, g, 4); // {1, 2, 5, 6}
 
 `deg` は $$2^{21}$$ 以下とします。法や係数型の条件は軽量 FPS と同じです。[実装・検証資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_composition.md)を参照してください。
 
-出力係数数を $$n$$ として、時間は $$O(n\log^2(n+1))$$、追加空間は $$O(n\log(n+1))$$ です。
+出力係数数を $$n$$ として、時間は $$O(n\log^2 n)$$、追加空間は $$O(n\log n)$$ です。
