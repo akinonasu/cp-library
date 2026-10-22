@@ -1,7 +1,0 @@
-{
-  "headers": ["components/mod_linear_prefix_min.hpp", "math/prefix_min_of_mod_of_linear.hpp"],
-  "unit": ["test/unit/prefix_min_of_mod_of_linear.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/prefix_min_of_mod_of_linear.cpp"],
-  "verification": ["test/prefix_min_of_mod_of_linear.test.cpp"],
-  "bundles": ["components/mod_linear_prefix_min.hpp", "math/prefix_min_of_mod_of_linear.hpp"]
-}

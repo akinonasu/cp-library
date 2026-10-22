@@ -1,6 +1,0 @@
-{
-  "headers": ["data_structure/link_cut_tree.hpp"],
-  "unit": ["test/unit/link_cut_tree.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/link_cut_tree.cpp"],
-  "verification": ["test/link_cut_tree_sum.test.cpp", "test/link_cut_tree_composite.test.cpp"]
-}

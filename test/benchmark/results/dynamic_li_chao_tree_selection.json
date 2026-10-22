@@ -1,7 +1,0 @@
-{
-  "headers": ["data_structure/dynamic_li_chao_tree.hpp"],
-  "unit": ["test/unit/dynamic_li_chao_tree.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/dynamic_li_chao_tree.cpp", "test/unit/standalone.cpp"],
-  "verification": ["test/dynamic_li_chao_tree_line.test.cpp", "test/dynamic_li_chao_tree_segment.test.cpp"],
-  "bundles": ["data_structure/dynamic_li_chao_tree.hpp"]
-}

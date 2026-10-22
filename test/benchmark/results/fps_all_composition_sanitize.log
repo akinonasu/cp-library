@@ -1,9 +1,0 @@
-[worker 0] command: ['flock', '-s', '/tmp/cp-fps-tuning.lock', 'python3', 'test/verify.py', '--unit-only', '--sanitize', '--cxx', 'g++', '--selection', '/tmp/fps-final-composition-sanitize/part0.json']
-[worker 1] command: ['flock', '-s', '/tmp/cp-fps-tuning.lock', 'python3', 'test/verify.py', '--unit-only', '--sanitize', '--cxx', 'g++', '--selection', '/tmp/fps-final-composition-sanitize/part1.json']
-[worker 0] g++: fps_composition_blocked.cpp
-[worker 1] g++: fps_tuning_advanced.cpp
-[worker 0] Verification passed
-[worker 0] exit 0
-[worker 1] Verification passed
-[worker 1] exit 0
-Verification passed for both composition sanitizer tests

@@ -1,5 +1,0 @@
-{
-  "headers": ["tree/prufer_code.hpp"],
-  "unit": ["test/unit/prufer_code.cpp"],
-  "sanitize": ["test/unit/prufer_code.cpp"]
-}

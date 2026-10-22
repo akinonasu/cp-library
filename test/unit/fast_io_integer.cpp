@@ -1,5 +1,5 @@
 #include "components/fast_io.hpp"
-#include "test/benchmark/fast_io_integer_baseline.hpp"
+#include "test/fixtures/fast_io_integer_reference.hpp"
 #include <cstdlib>
 #include <limits>
 #include <random>

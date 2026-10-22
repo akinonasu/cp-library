@@ -1,2 +1,0 @@
-GCC 14.2.0 ASan/UBSan + Werror: compilation and execution passed.
-transform_ns(0), transform_ns(2^26), valid powers 2^6..2^25 checked.

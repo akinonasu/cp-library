@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/matrix_pow.test.cpp"
-  ]
-}

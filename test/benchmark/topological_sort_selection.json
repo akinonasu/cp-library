@@ -1,5 +1,0 @@
-{
-  "headers": ["graph/topological_sort.hpp"],
-  "unit": ["test/unit/topological_sort.cpp"],
-  "sanitize": ["test/unit/topological_sort.cpp"]
-}

@@ -1,5 +1,0 @@
-{
-  "headers": ["data_structure/segment_tree/dynamic_lazy_segtree.hpp"],
-  "unit": ["test/unit/dynamic_lazy_segtree.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/dynamic_lazy_segtree.cpp"]
-}

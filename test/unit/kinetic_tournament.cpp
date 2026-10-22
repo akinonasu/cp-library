@@ -2,8 +2,36 @@
 #include <iostream>
 #include <random>
 
-#define KINETIC_TOURNAMENT_JSC_TEST
-#include "test/benchmark/kinetic_tournament_jsc.cpp"
+std::int64_t sequence_score(const std::vector<std::int64_t> &a) {
+	if (a.empty()) return 0;
+	auto slopes = a;
+	std::sort(slopes.begin(), slopes.end());
+	slopes.erase(std::unique(slopes.begin(), slopes.end()), slopes.end());
+	slopes.push_back(slopes.back() + 1);
+	int n = static_cast<int>(slopes.size());
+	KineticTournament<> tree(slopes, std::nullopt);
+	tree.set(n - 1, 0);
+	std::int64_t prefix = slopes.back();
+	for (auto x : a) {
+		if (x < prefix) {
+			tree.add(0, n, x);
+			int i = std::lower_bound(slopes.begin(), slopes.end(), prefix) - slopes.begin();
+			tree.set(i, tree.all_prod()->value);
+			prefix = x;
+		} else {
+			int k = std::upper_bound(slopes.begin(), slopes.end(), x) - slopes.begin();
+			auto next = tree.prod(k, n);
+			tree.advance(0, k);
+			tree.add(k, n, prefix);
+			if (next) {
+				int i = k - 1;
+				auto previous = tree.get(i);
+				tree.set(i, previous ? std::max(*previous, next->value + x) : next->value + x);
+			}
+		}
+	}
+	return tree.all_prod()->value;
+}
 
 template<class T, bool Max> void check(KineticTournament<T, Max> &tree, const std::vector<std::optional<T>> &values) {
 	int n = values.size(), active = 0;
@@ -105,9 +133,9 @@ int main() {
 	for (int n = 0; n <= 7; ++n) for (int mask = 0; mask < (1 << (2 * n)); ++mask) {
 		std::vector<T> a(n);
 		for (int i = 0; i < n; ++i) a[i] = 1 + ((mask >> (2 * i)) & 3);
-		assert(solve(a) == brute(a));
+		assert(sequence_score(a) == brute(a));
 	}
-	assert(solve({5, 3, 6, 1, 4, 7}) == 23);
-	assert(solve(std::vector<T>(500000, 1000000000)) == 500000000000000LL);
+	assert(sequence_score({5, 3, 6, 1, 4, 7}) == 23);
+	assert(sequence_score(std::vector<T>(500000, 1000000000)) == 500000000000000LL);
 	std::cout << "Kinetic tournament passed\n";
 }

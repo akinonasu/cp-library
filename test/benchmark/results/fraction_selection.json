@@ -1,7 +1,0 @@
-{
-  "headers": ["math/fraction.hpp"],
-  "unit": ["test/unit/fraction.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/fraction.cpp"],
-  "verification": ["test/fraction.test.cpp"],
-  "bundles": ["math/fraction.hpp"]
-}

@@ -1,5 +1,0 @@
-{
-  "headers": ["graph/dijkstra.hpp"],
-  "unit": ["test/unit/dijkstra.cpp", "test/unit/dijkstra_csr.cpp", "test/unit/dijkstra_forced_path.cpp", "test/unit/dijkstra_topological.cpp", "test/unit/dijkstra_unique.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/dijkstra.cpp"]
-}

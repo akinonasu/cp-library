@@ -1,5 +1,5 @@
 #include "math/combinatorics/binomial_prefix_sum.hpp"
-#include "test/benchmark/binomial_prefix_sum_comparison.hpp"
+#include "test/fixtures/binomial_prefix_sum_reference.hpp"
 #include <random>
 
 template<unsigned P, bool Comparable = true> struct Field {

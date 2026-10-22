@@ -1,8 +1,0 @@
-test/matrix_solve.test.cpp 27 passed
-dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/matrix_solve.test.cpp
-matrix_solve.test.o: /workspace/cp-library/test/matrix_solve.test.cpp \
- /workspace/cp-library/test/matrix_common.hpp \
- /workspace/cp-library/test/../components/fast_io.hpp \
- /workspace/cp-library/test/../math/matrix.hpp \
- /workspace/cp-library/test/../math/../components/matrix_arithmetic.hpp \
- /workspace/cp-library/test/../math/mint.hpp

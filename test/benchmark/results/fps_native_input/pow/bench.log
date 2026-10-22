@@ -1,8 +1,0 @@
-waiting EX
-acquired EX
-kernel 262144 {'baseline': 8.928262, 'candidate': 8.878779, 'reference': 8.661574}
-kernel 262145 {'baseline': 12.304396, 'candidate': 12.188103, 'reference': 12.110778}
-kernel 393217 {'baseline': 16.966188, 'candidate': 17.006298, 'reference': 16.587233}
-kernel 500000 {'baseline': 18.696467, 'candidate': 18.733593, 'reference': 18.309691}
-whole max_random_00 {'baseline': 25.020917, 'candidate': 24.917253, 'reference': 22.909329}
-whole max_random_01 {'baseline': 25.179054, 'candidate': 25.132234, 'reference': 23.141825}

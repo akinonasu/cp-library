@@ -1,7 +1,7 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/sum_of_multiplicative_function"
 #include "math/number_theory/multiplicative_prefix_sum.hpp"
 #include "components/fast_io.hpp"
-#include "test/benchmark/multiplicative_prefix_sum_types.hpp"
+#include "test/fixtures/multiplicative_prefix_sum_types.hpp"
 
 int main() {
 	using M = MultiplicativeSumModint<469762049>;

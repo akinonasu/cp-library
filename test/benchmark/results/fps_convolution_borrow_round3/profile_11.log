@@ -1,2 +1,0 @@
-max_random_00.in {'before': {'plan': 0.202931, 'copy': 0.687019, 'ntt': 4.182323, 'export': 0.694721, 'whole': 15.30549}, 'color': {'allocate': 0.522756, 'resize': 1.457602, 'plan': 0.192746, 'copy': 0.578809, 'ntt': 4.062585, 'export': 0.05419, 'whole': 16.350679}}
-max_random_01.in {'before': {'plan': 0.213637, 'copy': 0.713428, 'ntt': 4.165888, 'export': 0.695802, 'whole': 15.142175}, 'color': {'allocate': 0.545789, 'resize': 1.463591, 'plan': 0.193557, 'copy': 0.531669, 'ntt': 4.107912, 'export': 0.055743, 'whole': 16.093252}}

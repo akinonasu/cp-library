@@ -22,6 +22,6 @@ auto [count, id] = graph.scc_ids();
 
 `size()` は頂点数、`edge_count()` は辺数、`reserve(m)` は辺の格納容量を予約します。頂点数は非負の `int`、辺数は `INT_MAX` 以下、辺の端点は `[0,n)` が必要です。
 
-再帰を使わず、単調な頂点番号の辺、入次数 0 の頂点、functional graph の残りの閉路を処理してから、必要な部分だけ反復 Tarjan 法を適用します。共通部品は [scc_core](scc_core.md)、ACL との測定は [比較資料](../test/benchmark/acl_structures.md) にあります。
+再帰を使わず、単調な頂点番号の辺、入次数 0 の頂点、functional graph の残りの閉路を処理してから、必要な部分だけ反復 Tarjan 法を適用します。共通部品は [scc_core](scc_core.md) にあります。
 
 頂点数を $$n$$、辺数を $$m$$ として、構築は $$O(1)$$、辺追加は償却 $$O(1)$$、分解は $$O(n+m)$$ 時間・$$O(n+m)$$ 追加空間、グラフの保持は $$O(n+m)$$ 空間です。

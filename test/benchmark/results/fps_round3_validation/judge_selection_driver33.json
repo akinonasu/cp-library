@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/matrix_inverse.test.cpp"
-  ]
-}

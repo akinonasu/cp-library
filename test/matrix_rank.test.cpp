@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/matrix_rank"
-#include "matrix_common.hpp"
+#include "fixtures/matrix_common.hpp"
 
 int main() {
 	FastInput in;

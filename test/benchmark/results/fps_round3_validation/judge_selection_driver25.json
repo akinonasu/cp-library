@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/gcd_convolution.test.cpp"
-  ]
-}

@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/dynamic_segtree_composite.test.cpp"
-  ]
-}

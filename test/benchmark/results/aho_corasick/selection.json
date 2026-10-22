@@ -1,7 +1,0 @@
-{
-  "headers": ["string/aho_corasick.hpp"],
-  "unit": ["test/unit/aho_corasick.cpp"],
-  "sanitize": ["test/unit/aho_corasick.cpp"],
-  "verification": ["test/aho_corasick.test.cpp"],
-  "bundles": ["string/aho_corasick.hpp", "test/aho_corasick.test.cpp"]
-}

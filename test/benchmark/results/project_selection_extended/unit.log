@@ -1,5 +1,0 @@
-g++: standalone graph/flow/project_selection.hpp
-clang++: standalone graph/flow/project_selection.hpp
-g++: project_selection.cpp
-clang++: project_selection.cpp
-Verification passed

@@ -14,5 +14,3 @@ wc -c submit.cpp
 Web サイトの **Bundle** も依存ヘッダーの展開だけを行います。サイト生成時には参照 URL を付けた Copy のサイズも検査します。上限を超えたコードを、自動圧縮して表示することはありません。
 
 64 KiB 制限では [軽量版 FPS](https://qandori.github.io/cp-library/fps/fps_light.hpp.html) を使います。解答部分や他のライブラリを追加した最終ソースの大きさは `wc -c` で確認してください。
-
-[サイズと検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_natural.md)に測定条件を記録しています。

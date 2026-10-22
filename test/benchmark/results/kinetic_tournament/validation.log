@@ -1,5 +1,0 @@
-unit and sanitizer passed
-g++ 23 official cases, 4 JSC samples, bundles and example passed
-g++ generic beats 33 official cases unchanged
-clang++ 23 official cases, 4 JSC samples, bundles and example passed
-clang++ generic beats 33 official cases unchanged

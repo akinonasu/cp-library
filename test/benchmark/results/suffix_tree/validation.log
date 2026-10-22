@@ -1,6 +1,0 @@
-ASan/UBSan passed
-g++ suffixarray 50 official cases passed
-clang++ suffixarray 50 official cases passed
-g++ number_of_substrings 24 official cases passed
-clang++ number_of_substrings 24 official cases passed
-Official cases, bundles and examples passed

@@ -1,4 +1,4 @@
-#include "test/fps_io.hpp"
+#include "test/fixtures/fps_io.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <random>

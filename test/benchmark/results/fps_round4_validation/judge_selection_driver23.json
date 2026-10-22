@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/power_projection.test.cpp"
-  ]
-}

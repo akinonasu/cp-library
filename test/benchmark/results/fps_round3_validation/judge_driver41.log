@@ -1,5 +1,0 @@
-test/ntt.test.cpp 53 passed
-dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/ntt.test.cpp
-ntt.test.o: /workspace/cp-library/test/ntt.test.cpp \
- /workspace/cp-library/test/../components/ntt.hpp \
- /workspace/cp-library/test/../components/../math/mint.hpp

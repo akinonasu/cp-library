@@ -1,7 +1,0 @@
-test/fps_compose_large.test.cpp 32 passed
-test/fps_divmod.test.cpp 35 passed
-test/fps_interpolate.test.cpp 9 passed
-test/fps_linear_recurrence.test.cpp 20 passed
-test/fps_sqrt.test.cpp 35 passed
-test/multipoint_eval.test.cpp 11 passed
-test/polynomial_inv_mod.test.cpp 18 passed

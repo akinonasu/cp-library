@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/composition_of_formal_power_series_large"
 #include "fps/compose.hpp"
-#include "fps_io.hpp"
+#include "fixtures/fps_io.hpp"
 
 int main() {
 	FastInput input;

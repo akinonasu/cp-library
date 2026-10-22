@@ -1,5 +1,0 @@
-{
-  "headers": ["data_structure/union_find.hpp", "data_structure/fenwick_tree.hpp", "data_structure/segment_tree/lazy_segtree.hpp", "components/scc_core.hpp", "graph/connectivity/scc.hpp", "graph/two_sat.hpp"],
-  "unit": ["test/unit/acl_structures.cpp"],
-  "sanitize": ["test/unit/acl_structures.cpp"]
-}

@@ -1,5 +1,0 @@
-division v_random_01 {'baseline': 9.365603, 'candidate': 9.29648} {'baseline': 4.28629, 'candidate': 4.175816} paired 0.187068 wins 13
-division v_random_02 {'baseline': 12.218386, 'candidate': 11.881013} {'baseline': 7.254164, 'candidate': 6.942049} paired 0.22810100000000055 wins 17
-division v_random_03 {'baseline': 10.178815, 'candidate': 9.889914} {'baseline': 5.644244, 'candidate': 5.329806} paired 0.3488819999999997 wins 15
-inverse_mod max_random_00 {'baseline': 15.845352, 'candidate': 15.814506} {'baseline': 13.613065, 'candidate': 13.660395} paired -0.01066499999999948 wins 10
-gcd max_random_00 {'baseline': 15.983699, 'candidate': 15.850209} {'baseline': 13.812832, 'candidate': 13.82526} paired 0.02163299999999957 wins 11

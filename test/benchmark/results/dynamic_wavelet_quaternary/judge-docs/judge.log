@@ -1,5 +1,0 @@
-gcc point_set_range_frequency 25 official cases passed
-gcc range_kth_smallest 24 official cases passed
-clang point_set_range_frequency 25 official cases passed
-clang range_kth_smallest 24 official cases passed
-All98compiler/case combinations passed

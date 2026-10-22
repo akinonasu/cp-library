@@ -1,5 +1,0 @@
-Waiting timing EX
-conv max_random_00 {'base': 14.748186, 'candidate': 14.661344} paired 0.11023499999999942 wins 14
-exp max_random_00 {'base': 17.873545, 'candidate': 17.97052} paired 0.005949000000001092 wins 11
-bostan max_random_00 {'base': 56.617037, 'candidate': 55.691327} paired 0.688606 wins 15
-bostan near_65536_00 {'base': 29.433465, 'candidate': 29.160788} paired 0.25077399999999983 wins 13

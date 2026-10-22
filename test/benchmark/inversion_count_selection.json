@@ -1,5 +1,0 @@
-{
-  "headers": ["sequence/inversion_count.hpp"],
-  "unit": ["test/unit/inversion_count.cpp"],
-  "sanitize": ["test/unit/inversion_count.cpp"]
-}

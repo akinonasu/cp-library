@@ -1,5 +1,0 @@
-g++: standalone data_structure/rollback_union_find.hpp
-g++: rollback_union_find.cpp
-clang++: standalone data_structure/rollback_union_find.hpp
-clang++: rollback_union_find.cpp
-Verification passed

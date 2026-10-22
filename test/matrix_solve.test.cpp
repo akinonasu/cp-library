@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/system_of_linear_equations"
-#include "matrix_common.hpp"
+#include "fixtures/matrix_common.hpp"
 
 int main() {
 	FastInput in;

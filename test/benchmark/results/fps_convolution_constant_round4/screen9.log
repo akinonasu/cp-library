@@ -1,4 +1,0 @@
-all_same_00 {'before': 13431325, 'candidate': 9155180, 'reference': 8677127} paired 4197228 wins 9
-all_same_01 {'before': 12271316, 'candidate': 8146105, 'reference': 9290952} paired 4184439 wins 9
-max_random_00 {'before': 12635048, 'candidate': 12948887, 'reference': 10157013} paired -196343 wins 3
-max_random_01 {'before': 12698203, 'candidate': 12706425, 'reference': 9983565} paired 23395 wins 5

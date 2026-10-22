@@ -1,6 +1,6 @@
 #include "math/number_theory/multiplicative_prefix_sum.hpp"
 #include "math/mint.hpp"
-#include "test/benchmark/multiplicative_prefix_sum_types.hpp"
+#include "test/fixtures/multiplicative_prefix_sum_types.hpp"
 #include <array>
 #include <cassert>
 #include <random>

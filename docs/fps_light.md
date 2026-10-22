@@ -14,9 +14,9 @@ auto logarithm = f.log(10);
 
 Codeforces などの小さいソースサイズ上限向けの FPS です。法は 998244353、係数は定数項から順に格納します。`light_fps` と `LightFPS` は `LightFormalPowerSeries<mint>` の別名で、`std::vector<mint>` と同様の要素アクセス・イテレータ・サイズ変更を使えます。
 
-[高速実装の FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) と別の型で、同じソース内に両方を include できます。軽量版は小さい NTT と Newton 法を共有し、高速実装の大きな演算別カーネルを読み込みません。ソースサイズと高速実装との速度差は [測定資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_speed.md) にあります。提出用コードはヘッダーを結合して作り、利用者のコードやほかのライブラリを含めた総バイト数を確認してください。
+[高速実装の FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) と別の型で、同じソース内に両方を include できます。軽量版は小さい NTT と Newton 法を共有し、高速実装の大きな演算別カーネルを読み込みません。提出用コードはヘッダーを結合して作り、利用者のコードやほかのライブラリを含めた総バイト数を確認してください。
 
-実装は通常の C++ と ASCII の識別子で記述しています。コード長のための特殊文字マクロや、展開後の追加圧縮は使いません。[共通実装](https://qandori.github.io/cp-library/components/fps_light_backend.hpp.html)をそのまま読んで編集できます。公開 API と各ヘッダーから使える機能は維持しています。[今回のコード長・速度・検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_natural.md)を参照してください。
+実装は通常の C++ と ASCII の識別子で記述しています。コード長のための特殊文字マクロや、展開後の追加圧縮は使いません。[共通実装](https://qandori.github.io/cp-library/components/fps_light_backend.hpp.html)をそのまま読んで編集できます。公開 API と各ヘッダーから使える機能は維持しています。
 
 `LightFormalPowerSeries<T>` は `mod()` が定数式となる法 998244353 の modint 型を指定できます。`T` は整数からの構築、`mod()`・`raw()`・`val()`・`inv()`・`pow()`、四則演算と等値比較に対応する必要があります。既定型以外は積・逆数・対数・指数・平方根などの演算ごとに共有する `mint` へ変換します。
 
@@ -51,36 +51,5 @@ Codeforces などの小さいソースサイズ上限向けの FPS です。法�
 `inv`・`log`・`exp`・`sqrt`・`pow`・`div_series` の出力長は $$2^{22}$$ 以下です。`divmod` は末尾の零を除いた被除数の係数数を $$2^{22}$$ 以下にします。変換長は最大 $$2^{23}$$ です。各操作の途中の積も含め、必要な NTT 長がこの上限以内であることが必要です。法 998244353 の整数の逆元を用いるため、積分・対数・指数などの次数は法未満にします。
 
 Taylor shift・Bostan–Mori・線形漸化式・多点評価・補間は [軽量 FPS の追加演算](https://qandori.github.io/cp-library/fps/fps_light_algorithms.hpp.html) にあります。合成・合成逆元・power projection・多項式 GCD も、それぞれ `fps/compose_light.hpp`・`fps/compositional_inverse_light.hpp`・`fps/power_projection_light.hpp`・`fps/polynomial_gcd_light.hpp` にあります。いずれも軽量 FPS だけを読み込み、`light_fps_algorithms` 名前空間で利用します。
-
-## 通常版 `fps` との速度比較
-
-2026-10-22 に測定した、通常の C++ で記述した軽量版と通常版 `fps` の比較です。Linux x86_64 / AMD EPYC 9V74、GCC 14.2、`-O2 -march=haswell`、同一入力を各 7 回実行した中央値です。各測定は新しいプロセスで、根の表の初期構築・演算中のメモリ確保を含み、入力生成・入出力・結果検証は除きます。ヘッダー内部の `O3` 指定も含めています。倍率は「軽量版の時間 ÷ 通常版の時間」で、大きいほど軽量版の所要時間が長くなります。
-
-### 基本演算：524,288 係数
-
-| 演算 | 通常版 `fps` (ms) | 軽量版 `light_fps` (ms) | 軽量版 / 通常版 |
-| --- | ---: | ---: | ---: |
-| 積 | 5.471 | 14.794 | 2.70 倍 |
-| 二乗 | 5.466 | 10.079 | 1.84 倍 |
-| 逆数 | 7.868 | 19.433 | 2.47 倍 |
-| 対数 | 9.455 | 33.788 | 3.57 倍 |
-| 指数 | 11.998 | 38.717 | 3.23 倍 |
-| 平方根 | 7.608 | 23.678 | 3.11 倍 |
-| 冪 | 19.887 | 67.399 | 3.39 倍 |
-| 級数除算 | 10.086 | 24.262 | 2.41 倍 |
-| 多項式の商・余り | 7.691 | 21.504 | 2.80 倍 |
-
-積・二乗は両入力が 524,288 係数で、出力は 1,048,575 係数です。多項式除算の除数は 262,144 係数、冪の指数は 123456789 です。
-
-### 追加演算：32,768 係数または点
-
-| 演算 | 通常版 `fps` (ms) | 軽量版 `light_fps` (ms) | 軽量版 / 通常版 |
-| --- | ---: | ---: | ---: |
-| Taylor shift | 0.387 | 1.204 | 3.12 倍 |
-| 多点評価 | 2.986 | 32.912 | 11.02 倍 |
-| 補間 | 3.996 | 42.681 | 10.68 倍 |
-| 線形漸化式の第 k 項 | 12.963 | 99.821 | 7.70 倍 |
-
-Taylor shift は 17、評価・補間の点は `0..n-1`、線形漸化式の項番号は 10^18 です。ほかのサイズ・全コンパイル条件・生データ・ソースサイズは [測定資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_natural.md) にあります。この表はローカルでの計算時間で、judge 上の表示時間ではありません。
 
 最大の入力・出力係数数を $$n$$ として、加減算・スカラー演算・微分・積分・シフト・一点評価は $$O(n)$$、積・級数除算・多項式除算・逆数・対数・指数・平方根は $$O(n\log n)$$、冪は $$O(n\log n+\log k)$$ 時間です。各操作の追加空間は $$O(n)$$ です。共有する NTT の根の表は、これまでに使用した最大変換長を $$L$$ として $$O(L)$$ 空間を保持します。整数逆元の表も、それまでに要求した最大の長さに応じて領域を保持します。

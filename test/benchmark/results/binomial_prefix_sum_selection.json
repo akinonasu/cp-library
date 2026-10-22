@@ -1,7 +1,0 @@
-{
-  "headers": ["components/mo_order.hpp", "components/binomial_prefix_core.hpp", "math/binomial_prefix_sum.hpp"],
-  "unit": ["test/unit/binomial_prefix_sum.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/binomial_prefix_sum.cpp", "test/unit/standalone.cpp"],
-  "verification": ["test/binomial_prefix_sum_online.test.cpp", "test/binomial_prefix_sum_offline.test.cpp"],
-  "bundles": ["components/mo_order.hpp", "components/binomial_prefix_core.hpp", "math/binomial_prefix_sum.hpp"]
-}

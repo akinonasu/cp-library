@@ -1,9 +1,0 @@
-g++: standalone components/radix_sort.hpp
-g++: standalone graph/connectivity/offline_dynamic_connectivity.hpp
-g++: radix_sort.cpp
-g++: offline_dynamic_connectivity.cpp
-clang++: standalone components/radix_sort.hpp
-clang++: standalone graph/connectivity/offline_dynamic_connectivity.hpp
-clang++: radix_sort.cpp
-clang++: offline_dynamic_connectivity.cpp
-Verification passed

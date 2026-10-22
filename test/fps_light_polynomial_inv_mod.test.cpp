@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/inv_of_polynomials"
 #include "fps/polynomial_gcd_light.hpp"
-#include "fps_light_io.hpp"
+#include "fixtures/fps_light_io.hpp"
 
 int main() {
 	FastInput input;

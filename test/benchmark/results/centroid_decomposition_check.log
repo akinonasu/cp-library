@@ -1,7 +1,0 @@
-g++: standalone graph/centroid_decomposition.hpp
-g++: centroid_decomposition.cpp
-g++: standalone.cpp
-clang++: standalone graph/centroid_decomposition.hpp
-clang++: centroid_decomposition.cpp
-clang++: standalone.cpp
-Verification passed

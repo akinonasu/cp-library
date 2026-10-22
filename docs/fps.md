@@ -13,7 +13,7 @@ fps inverse = f.inv(10);
 
 mod は 998244353、係数は定数項から順に格納します。`fps` は `std::vector<mint>` と同様に扱えます。`deg` は返す係数の個数で、省略時は元のサイズです。
 
-`FormalPowerSeries<atcoder::modint998244353>` として、ACL の型を公開する係数型に指定することもできます。`<atcoder/modint>` を別途 include してください。主な FPS 演算は内部で独自の Montgomery 表現へ変換して処理するため、型を指定した場合も内部では独自 modint を使います。変換の追加や、型ごとの SIMD 経路による差については [係数型の速度比較](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_modint.md) を参照してください。
+`FormalPowerSeries<atcoder::modint998244353>` として、ACL の型を公開する係数型に指定することもできます。`<atcoder/modint>` を別途 include してください。主な FPS 演算は内部で独自の Montgomery 表現へ変換して処理するため、型を指定した場合も内部では独自 modint を使います。
 
 通常の `oj-bundle` で提出コードを生成できます。配布ヘッダー自体を短くしてあるため、専用スクリプトや展開後の追加圧縮は不要です。通常版の合成・補間・GCD なども同じ配布実装にまとめています。
 
@@ -22,7 +22,7 @@ oj-bundle -I . a.cpp > submit.cpp
 wc -c submit.cpp
 ```
 
-通常版の全 API 使用例と基本の `FastInput`・`FastOutput` は、通常展開のまま UTF-8 で 256 KiB 未満に収まることを検査しています。軽量版は派生演算も含めて軽量 FPS に統一し、全 FPS 演算と同じ入出力を 64 KiB 未満で使えます。公開 API・高速経路・精度上限は維持しています。[提出コードの生成](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)、[サイズ・速度・検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_plain.md)を参照してください。
+通常版の全 API 使用例と基本の `FastInput`・`FastOutput` は、通常展開のまま UTF-8 で 256 KiB 未満に収まることを検査しています。軽量版は派生演算も含めて軽量 FPS に統一し、全 FPS 演算と同じ入出力を 64 KiB 未満で使えます。公開 API・高速経路・精度上限は維持しています。[提出コードの生成](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)を参照してください。
 
 編集用の実装原本は各ヘッダーと同じ場所の `.inc` ファイルです。利用者が原本を展開・短縮する必要はありません。
 

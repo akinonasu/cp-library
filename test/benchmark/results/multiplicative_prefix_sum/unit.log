@@ -1,5 +1,0 @@
-g++: standalone math/number_theory/multiplicative_prefix_sum.hpp
-clang++: standalone math/number_theory/multiplicative_prefix_sum.hpp
-g++: multiplicative_prefix_sum.cpp
-clang++: multiplicative_prefix_sum.cpp
-Verification passed

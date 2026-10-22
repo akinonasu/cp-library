@@ -1,5 +1,0 @@
-{
-  "headers": ["components/binary_search.hpp", "string/lis.hpp"],
-  "unit": ["test/unit/binary_search.cpp", "test/unit/lis.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/binary_search.cpp", "test/unit/lis.cpp"]
-}

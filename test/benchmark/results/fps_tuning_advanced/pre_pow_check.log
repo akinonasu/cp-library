@@ -1,6 +1,0 @@
-g++: advanced unit passed
-clang++: advanced unit passed
-g++ NDEBUG: advanced unit passed
-clang++ sanitizer: advanced unit passed
-test/unit/fps_algorithms.cpp: passed
-test/unit/power_projection.cpp: passed

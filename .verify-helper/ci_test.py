@@ -104,7 +104,7 @@ class IncrementalVerification(unittest.TestCase):
 
     def test_unchanged_and_documentation_only(self):
         self.write("docs/comb.md", "Updated documentation\n")
-        self.write("test/benchmark/result.md", "Updated benchmark\n")
+        self.write("notes/result.md", "Updated notes\n")
         self.write("math/mint.hpp", "#pragma once\n")
         plan = self.plan(self.previous)
         for group in GROUPS:
@@ -448,7 +448,7 @@ class IncrementalVerification(unittest.TestCase):
             record_success(self.previous, self.plan(), ["unknown"])
 
     def test_documentation_only_discovers_libraries_and_judge_drivers(self):
-        self.write("test/benchmark/comb.cpp", '#include "math/combinatorics/comb.hpp"\n')
+        self.write("tools/example.cpp", '#include "math/combinatorics/comb.hpp"\n')
         self.write("test/verify.py", "raise RuntimeError('must not be analyzed')\n")
         paths = source_paths(self.plan(), [])
         self.assertEqual(paths, sorted(map(Path, ["tree/lca.hpp", "math/combinatorics/comb.hpp", "math/mint.hpp",

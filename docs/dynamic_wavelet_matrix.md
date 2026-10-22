@@ -54,6 +54,4 @@ auto frequency = wm.count(0, wm.size(), 1);
 
 第3テンプレート引数に既定と異なる `BitVector` を指定した場合は、従来の二分 Wavelet Matrix を使います。独自の `BitVector` のインターフェース要件は変わりません。`move_rank` がない場合は `erase_rank` と `insert` を組み合わせ、`select` で `access_rank` を使えない場合は順位検索の経路を使います。この二分実装の BMI2・AVX2 最適化はコンパイル時の指定に従うので、その場合は実行する CPU に合ったオプションを使ってください。
 
-[比較結果と再現手順](https://github.com/qandori/cp-library/blob/main/test/benchmark/dynamic_wavelet_nim_round2.md)を別に記録しています。
-
 要素数を $$n$$、bit 数を $$B$$ として、構築は $$O(Bn)$$、挿入・代入は償却 $$O(B\log n)$$、削除・クエリは $$O(B\log n)$$ です。サイズ取得は $$O(1)$$、`clear`・`memory_usage`・`swap` は $$O(B)$$、`reserve(N)` は $$O(BN)$$、空間は $$O(BN)$$ です。$$N$$ は過去の最大要素数と予約容量の最大値です。

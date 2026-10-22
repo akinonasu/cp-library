@@ -8,5 +8,3 @@ documentation_of: //components/fps_light_backend.hpp
 公開ヘッダーは従来どおり `fps/fps_light.hpp`・`fps/fps_light_algorithms.hpp`・`components/fps_light_ntt.hpp`・`components/fps_light_product_tree.hpp` です。各ヘッダーから同じ実装を読み込み、複数を include しても定義は一度だけです。通常版 FPS の実装は読み込みません。
 
 利用者は通常の `#include`・`oj-bundle` だけで使えます。メンテナーが修正する場合も、このヘッダーを直接編集します。軽量実装には `.inc` 原本や配布コード生成の手順はありません。
-
-[コード長・速度・検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_natural.md)を参照してください。

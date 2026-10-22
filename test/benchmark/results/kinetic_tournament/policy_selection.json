@@ -1,5 +1,0 @@
-{
-  "headers": ["components/kinetic_tournament_monoid.hpp", "data_structure/segment_tree/kinetic_tournament.hpp"],
-  "unit": ["test/unit/kinetic_tournament.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/kinetic_tournament.cpp"]
-}

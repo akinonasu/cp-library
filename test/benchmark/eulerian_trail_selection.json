@@ -1,5 +1,0 @@
-{
-  "headers": ["graph/eulerian_trail.hpp"],
-  "unit": ["test/unit/eulerian_trail.cpp"],
-  "sanitize": ["test/unit/eulerian_trail.cpp"]
-}

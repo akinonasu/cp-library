@@ -1,6 +1,0 @@
-test/link_cut_tree_composite.test.cpp 23 passed
-dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/link_cut_tree_composite.test.cpp
-link_cut_tree_composite.test.o: \
- /workspace/cp-library/test/link_cut_tree_composite.test.cpp \
- /workspace/cp-library/test/../data_structure/link_cut_tree.hpp \
- /workspace/cp-library/test/../math/mint.hpp

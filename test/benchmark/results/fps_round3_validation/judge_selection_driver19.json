@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/fps_inv_sparse.test.cpp"
-  ]
-}
