@@ -1,7 +1,7 @@
 #ifndef CP_COMPONENTS_FPS_HORNER_HPP
 #define CP_COMPONENTS_FPS_HORNER_HPP
 
-#include "ntt.hpp"
+#include "mint_arithmetic.hpp"
 #include <array>
 #include <cstring>
 
@@ -11,6 +11,7 @@
 #endif
 
 namespace fps_detail {
+using mint_detail::Ops;
 namespace horner_detail {
 template<int K, class T>
 inline T scalar(const T* a, std::size_t n, T x) {
@@ -33,14 +34,14 @@ inline T scalar(const T* a, std::size_t n, T x) {
 template<int K>
 __attribute__((target("avx2"))) inline mint vector(const mint* a, std::size_t n, mint x) {
 	static_assert(K == 1 || K == 2 || K == 4);
-	using V = NTT::I8;
+	using V = Ops::I8;
 	static_assert(std::is_trivially_copyable_v<mint> && sizeof(mint) == sizeof(unsigned));
 	mint step = x;
 	for (int i = 0; i < 3; ++i) step *= step;
 	const unsigned x8 = step.val();
 	for (int i = 1; i < K; i *= 2) step *= step;
 	const unsigned value = step.val();
-	const V factor = _mm256_set1_epi32(value), quotient = _mm256_set1_epi32(NTT::quotient(value));
+	const V factor = _mm256_set1_epi32(value), quotient = _mm256_set1_epi32(Ops::quotient(value));
 	V sum[K];
 	for (auto& v : sum) v = _mm256_setzero_si256();
 	constexpr std::size_t width = 8 * K;
@@ -58,12 +59,12 @@ __attribute__((target("avx2"))) inline mint vector(const mint* a, std::size_t n,
 		for (int i = 0; i < K; ++i) {
 			V coefficient;
 			std::memcpy(&coefficient, a + groups * width + 8 * i, sizeof(V));
-			sum[i] = NTT::add8(value == 1 ? sum[i] : NTT::fixed_mul8(sum[i], factor, quotient), coefficient);
+			sum[i] = Ops::add8(value == 1 ? sum[i] : Ops::fixed_mul8(sum[i], factor, quotient), coefficient);
 		}
 	}
-	const V step8 = _mm256_set1_epi32(x8), quotient8 = _mm256_set1_epi32(NTT::quotient(x8));
+	const V step8 = _mm256_set1_epi32(x8), quotient8 = _mm256_set1_epi32(Ops::quotient(x8));
 	V joined = sum[K - 1];
-	for (int i = K - 1; i-- > 0;) joined = NTT::add8(NTT::fixed_mul8(joined, step8, quotient8), sum[i]);
+	for (int i = K - 1; i-- > 0;) joined = Ops::add8(Ops::fixed_mul8(joined, step8, quotient8), sum[i]);
 	alignas(32) mint word[8];
 	std::memcpy(static_cast<void*>(word), &joined, sizeof(joined));
 	mint result = 0;
@@ -77,7 +78,7 @@ inline mint horner(const mint* a, std::size_t n, mint x) {
 	if (!n) return mint(0);
 	if (x == mint(0)) return a[0];
 #if defined(__x86_64__) || defined(__i386__)
-	if (n >= 32 && NTT::vectorized()) {
+	if (n >= 32 && Ops::vectorized()) {
 		if (n < 64) return horner_detail::vector<1>(a, n, x);
 		return horner_detail::vector<4>(a, n, x);
 	}

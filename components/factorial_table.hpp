@@ -1,7 +1,7 @@
 #ifndef FACTORIAL_TABLE_HPP
 #define FACTORIAL_TABLE_HPP
 
-#include "fps_factorials.hpp"
+#include "mint_factorials.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -18,7 +18,7 @@ template<class Mint> struct Table {
 		int n = static_cast<int>(std::min(std::uint64_t(max_n), std::uint64_t(modulus) - 1));
 		factorial.resize(n + 1), inverse_factorial.resize(n + 1);
 		if constexpr (std::is_same_v<Mint, mint>) {
-			fps_detail::factorials(factorial.data(), inverse_factorial.data(), n + 1);
+			mint_detail::factorials(factorial.data(), inverse_factorial.data(), n + 1);
 		} else {
 			factorial[0] = Mint(1);
 			for (int i = 1; i <= n; ++i) factorial[i] = factorial[i - 1] * Mint(i);

@@ -2,7 +2,7 @@
 #define BINOMIAL_PREFIX_CORE_HPP
 
 #include "../math/mint.hpp"
-#include "fps_factorials.hpp"
+#include "mint_factorials.hpp"
 #include <cassert>
 #include <cstdint>
 #include <limits>
@@ -18,7 +18,7 @@ template<class Mint> struct Table {
 		assert(0 <= n && n < std::numeric_limits<int>::max() && std::uint64_t(n) < Mint::mod() && Mint::mod() > 1);
 		factorial.resize(n + 1), inverse_factorial.resize(n + 1), power2.resize(n + 1);
 		if constexpr (std::is_same_v<Mint, mint>) {
-			fps_detail::factorials(factorial.data(), inverse_factorial.data(), n + 1);
+			mint_detail::factorials(factorial.data(), inverse_factorial.data(), n + 1);
 			power2[0] = Mint(1);
 			for (int i = 1; i <= n; ++i) power2[i] = power2[i - 1] + power2[i - 1];
 		} else {

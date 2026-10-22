@@ -22,7 +22,7 @@ inline constexpr mint *factorial = storage.data(), *inverse_factorial = factoria
 struct Initializer {
 	Initializer() {
 		[[maybe_unused]] static const bool initialized = [] {
-			fps_detail::factorials(factorial, inverse_factorial, COMB_INF + 1);
+			mint_detail::factorials(factorial, inverse_factorial, COMB_INF + 1);
 			return true;
 		}();
 	}
