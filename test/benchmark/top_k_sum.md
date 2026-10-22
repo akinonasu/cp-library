@@ -38,3 +38,13 @@ k は要素数の半分、通常の値は0以上10^9未満です。単調増加�
 curl -L https://raw.githubusercontent.com/ei1333/library/088b4c8b49f85194099305d998e7113dc3d5dd2e/structure/others/priority-sum-structure.hpp -o /tmp/priority-sum-structure.hpp
 taskset -c 2 python3 test/benchmark/top_k_sum.py --reference /tmp/priority-sum-structure.hpp --output /tmp/top-k-sum.json
 ```
+
+## 同値の複数更新
+
+`insert(value,count)` と `erase(value,count)` を追加した。前者は指定個数を追加し、後者は存在する分まで削除して実際の個数を返す。0個の更新は何もせず、和に含める `k` は維持する。従来の1引数版の実装と返り値は変えていない。
+
+追加は選ぶ側に入る分だけ従来の更新を使い、それ以降の同値は挿入位置のヒントを共有する。削除は各木の同値区間を一度検索し、実際の値を和から引いて消した後、最後に一度だけ個数を調整する。比較上同値でも値が異なる型と、乗算を持たない和の型を扱える。追加個数を $$a$$、実際の削除個数を $$e$$ として、追加は $$O(a\log n)$$、削除は $$O(\log n+e)$$ 償却時間。個数を圧縮して保持する構造には変更していない。
+
+単体テストの30,000操作×4比較順へ複数更新を混ぜ、毎回ソートによる独立した正解と照合した。0個、不足する削除、`size_t` 最大値での削除要求、10万個の同値、選択境界をまたぐ削除、`k=0`、`k>size()`、128 bitの和、加減算だけを持つ和の型、比較上同値だが整数値は異なる要素も検査した。
+
+GCC 14.2・Clang 19 の単独includeとunit、Clang ASan/UBSanが成功した。既存のABC281 E・ABC306 Eの提出例も通常include・標準Bundle・両コンパイラで再確認し、公式サンプルとランダム入力の計812実行が成功した。条件は従来の正答検証と同じ。[複数更新の検証記録](results/top_k_sum_bulk.json)にソースハッシュとコマンドを記録した。この追加について、上記の速度表は再計測していない。

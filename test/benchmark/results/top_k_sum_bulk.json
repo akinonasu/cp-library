@@ -1,0 +1,116 @@
+{
+  "completed": true,
+  "date": "2026-10-22T05:25:09.601073+00:00",
+  "baseline": "9746935b4dfa6ccc3ba3141021009f53823633f9",
+  "source_sha256": {
+    "data_structure/top_k_sum.hpp": "1b09c1860973e0eb94a78e328bfb29e9d1dadb643c6c24c90c316fbce3ea35f7",
+    "test/unit/top_k_sum.cpp": "b28ce8c4d507d88eb1507f8a8b60e4291f3b0a718cfc65532c091d94cf4076f1",
+    "test/top_k_sum_abc281_e.test.cpp": "76bbe56b3fce15cb0934c5fe8084c52f97a961c2f84b22c630007998a0cf57e2",
+    "test/top_k_sum_abc306_e.test.cpp": "c7b1e8f9fde9c3aa6a8eb8d5684283eb9ee013b77083871445df1db819ef6ff6"
+  },
+  "unit_checks": [
+    {
+      "command": [
+        "python",
+        "test/verify.py",
+        "--unit-only",
+        "--selection",
+        "/workspace/cp-top-k-bulk/selection.json",
+        "--cxx",
+        "g++",
+        "/workspace/cp-binomial-study/bin/clang++",
+        "--jobs",
+        "2"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "python",
+        "test/verify.py",
+        "--unit-only",
+        "--sanitize",
+        "--selection",
+        "/workspace/cp-top-k-bulk/selection.json",
+        "--cxx",
+        "/workspace/cp-binomial-study/bin/clang++"
+      ],
+      "status": "passed"
+    }
+  ],
+  "randomized_steps_per_comparator": 30000,
+  "comparators": 4,
+  "driver_checks": [
+    {
+      "compiler": "g++",
+      "problem": "abc306_e",
+      "form": "header",
+      "cases": 101
+    },
+    {
+      "compiler": "g++",
+      "problem": "abc306_e",
+      "form": "bundle",
+      "cases": 101
+    },
+    {
+      "compiler": "g++",
+      "problem": "abc281_e",
+      "form": "header",
+      "cases": 102
+    },
+    {
+      "compiler": "g++",
+      "problem": "abc281_e",
+      "form": "bundle",
+      "cases": 102
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "problem": "abc306_e",
+      "form": "header",
+      "cases": 101
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "problem": "abc306_e",
+      "form": "bundle",
+      "cases": 101
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "problem": "abc281_e",
+      "form": "header",
+      "cases": 102
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "problem": "abc281_e",
+      "form": "bundle",
+      "cases": 102
+    }
+  ],
+  "site_checks": [
+    {
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/python",
+        ".verify-helper/check_profiles.py"
+      ],
+      "stdout": "Checked 229 headers, 205 identical catalog positions, 184 lightweight implementations and 29 reciprocal implementation pairs\n",
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/python",
+        ".verify-helper/check-docs.py",
+        "--selection",
+        "/workspace/cp-top-k-bulk/selection.json",
+        "--jobs",
+        "1"
+      ],
+      "stdout": "Checked documentation for 229 libraries; compiled 1 affected bundles\n",
+      "status": "passed"
+    }
+  ],
+  "site_matches_current_source": true
+}
