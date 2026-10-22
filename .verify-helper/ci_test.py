@@ -498,9 +498,9 @@ class IncrementalVerification(unittest.TestCase):
         with patch.object(Path, "read_bytes", changed):
             plan = build_plan(ROOT, previous, environment="test")
         self.assertFalse(plan["full"])
-        self.assertEqual(plan["headers"], ["data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp", "data_structure/wavelet_matrix/wavelet_matrix.hpp", "data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"])
-        self.assertEqual(plan["unit"], ["test/unit/dynamic_wavelet_matrix.cpp", "test/unit/point_set_wavelet_matrix.cpp", "test/unit/standalone.cpp", "test/unit/wavelet_matrix.cpp", "test/unit/wavelet_matrix_opt.cpp", "test/unit/wavelet_matrix_sum_bound.cpp", "test/unit/weighted_wavelet_matrix.cpp"])
-        affected = ["test/wavelet_matrix_freq.test.cpp", "test/wavelet_matrix_kth.test.cpp", "test/wavelet_matrix_sum.test.cpp", "test/weighted_wavelet_matrix_rectangle.test.cpp"]
+        self.assertEqual(plan["headers"], ["data_structure/wavelet_matrix/wavelet_matrix.hpp"])
+        self.assertEqual(plan["unit"], ["test/unit/dependency_boundaries.cpp", "test/unit/dynamic_wavelet_matrix.cpp", "test/unit/standalone.cpp", "test/unit/wavelet_matrix.cpp", "test/unit/wavelet_matrix_opt.cpp", "test/unit/wavelet_matrix_sum_bound.cpp"])
+        affected = ["test/wavelet_matrix_freq.test.cpp", "test/wavelet_matrix_kth.test.cpp", "test/wavelet_matrix_sum.test.cpp"]
         self.assertTrue(set(affected).isdisjoint(unchanged["verification"]))
         self.assertEqual(plan["verification"], sorted(set(unchanged["verification"]) | set(affected)))
 

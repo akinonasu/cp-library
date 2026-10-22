@@ -126,7 +126,7 @@ std::vector<std::uint32_t> compress(const std::vector<T> &a, std::vector<T> &val
 	std::sort(values.begin(), values.end());
 	values.erase(std::unique(values.begin(), values.end()), values.end());
 	if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-	for (int i = 0; i < n; ++i) current[i] = lower_code(values, false, a[i]);
+	for (int i = 0; i < n; ++i) current[i] = lower_code<T>(values, false, a[i]);
 	if constexpr (WithPositions) positions.clear();
 	return current;
 }

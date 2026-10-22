@@ -16,9 +16,7 @@ struct Ops {
 	using T = mint;
 	typedef unsigned int U __attribute__((may_alias));
 	static constexpr U mod = 998244353, twice = 2 * mod, one = 301989884;
-	static U reduce(unsigned long long x) {
-		return (x + (unsigned long long)(U(x) * 998244351u) * mod) >> 32;
-	}
+	static U reduce(unsigned long long x) { return T::reduce(x); }
 	static U mul(U a, U b) { return reduce((unsigned long long)a * b); }
 	static U add(U a, U b) {
 		U c = a + b;
