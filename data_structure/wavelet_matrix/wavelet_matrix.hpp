@@ -16,10 +16,10 @@
 #include "../../components/oct_bit_vector.hpp"
 #include "../../components/quad_bit_vector.hpp"
 #include "../../components/splitmix64.hpp"
+#include "../../components/wavelet_compression.hpp"
 
 template <class T = std::int64_t, class Sum = std::conditional_t<std::is_integral_v<T>, std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>, T>>
 class WaveletMatrix {
-	template <class, class, class> friend class WeightedWaveletMatrix;
 	using BitVector = OctBitVector;
 	int n = 0, levels = 0, ordered = 0;
 	std::vector<T> values;
@@ -74,22 +74,7 @@ class WaveletMatrix {
 		return a;
 	}
 	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n); }
-	std::uint32_t code(const T &x) const {
-		if (values.empty()) return 0;
-		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8)
-			if (dense) {
-				if (x <= values.front()) return 0;
-				if (values.back() < x) return static_cast<int>(values.size());
-				return std::uint64_t(x) - std::uint64_t(values.front());
-			}
-		int p = 0, length = static_cast<int>(values.size());
-		while (length > 1) {
-			int half = length / 2;
-			p += (values[p + half] < x) * half;
-			length -= half;
-		}
-		return p + (values[p] < x);
-	}
+	std::uint32_t code(const T &x) const { return wavelet_detail::lower_code(values, dense, x); }
 	std::pair<int, int> interval_scalar(int l, int r, std::uint32_t x) const {
 		for (int d = 0; d < levels; ++d) {
 			int digit = (x >> (3 * (levels - 1 - d))) & 7;
@@ -262,97 +247,7 @@ class WaveletMatrix {
 #endif
 		return neighbor_scalar<Previous>(l, r, x);
 	}
-	std::vector<std::uint32_t> compress(const std::vector<T> &a) {
-		std::vector<std::uint32_t> current(n);
-		bool ascending = std::is_sorted(a.begin(), a.end());
-		if (ascending || std::is_sorted(a.rbegin(), a.rend())) {
-			ordered = ascending ? 1 : -1;
-			values.clear();
-			values.reserve(n);
-			for (int i = 0; i < n; ++i) {
-				int j = ascending ? i : n - 1 - i;
-				if (values.empty() || values.back() != a[j]) values.push_back(a[j]);
-				current[j] = static_cast<int>(values.size()) - 1;
-			}
-			if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-			return current;
-		}
-		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8) {
-			if (n >= 1024) {
-				using U = std::make_unsigned_t<T>;
-				struct [[gnu::packed]] Item {
-					U key;
-					std::uint32_t index;
-				};
-				std::vector<Item> order(n);
-				U lo = std::numeric_limits<U>::max(), hi = 0;
-				constexpr U sign = std::is_signed_v<T> ? U(1) << (sizeof(T) * 8 - 1) : U(0);
-				for (int i = 0; i < n; ++i) {
-					U key = U(a[i]) ^ sign;
-					order[i] = {key, std::uint32_t(i)};
-					lo = std::min(lo, key);
-					hi = std::max(hi, key);
-				}
-				if (hi - lo < 65536 && std::uint64_t(hi - lo) < unsigned(n)) {
-					std::vector<int> codes(std::size_t(hi - lo) + 1, -1);
-					for (const auto &v : order) codes[v.key - lo] = 0;
-					values.clear();
-					values.reserve(codes.size());
-					for (std::size_t i = 0; i < codes.size(); ++i)
-						if (codes[i] == 0) {
-							codes[i] = static_cast<int>(values.size());
-							values.push_back(T(U(lo + U(i)) ^ sign));
-						}
-					for (const auto &v : order) current[v.index] = codes[v.key - lo];
-					if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-					return current;
-				}
-				std::vector<Item> next(n);
-				int width = std::bit_width(U(lo ^ hi)), span_width = std::bit_width(U(hi - lo));
-				if ((width + 10) / 11 > (span_width + 10) / 11) {
-					for (auto &v : order) v.key -= lo;
-					width = span_width;
-				}
-				for (int shift = 0; shift < width; shift += 11) {
-					std::array<int, 2048> offsets{};
-					for (const auto &v : order) ++offsets[(v.key >> shift) & 2047];
-					int total = 0;
-					for (int &c : offsets) {
-						int t = c;
-						c = total;
-						total += t;
-					}
-					for (const auto &v : order) next[offsets[(v.key >> shift) & 2047]++] = v;
-					order.swap(next);
-				}
-				values.clear();
-				values.reserve(n);
-				U previous = 0;
-				positions.resize(n);
-				offsets.clear();
-				offsets.reserve(std::size_t(n) + 1);
-				for (int j = 0; j < n; ++j) {
-					const auto &v = order[j];
-					if (values.empty() || v.key != previous) {
-						values.push_back(a[v.index]);
-						offsets.push_back(j);
-					}
-					previous = v.key;
-					current[v.index] = static_cast<int>(values.size()) - 1;
-					positions[j] = v.index;
-				}
-				offsets.push_back(n);
-				if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-				return current;
-			}
-		}
-		values = a;
-		std::sort(values.begin(), values.end());
-		values.erase(std::unique(values.begin(), values.end()), values.end());
-		if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-		for (int i = 0; i < n; ++i) current[i] = code(a[i]);
-		return current;
-	}
+
 	void partition(std::vector<std::uint32_t> &current, std::vector<std::uint32_t> &next, int d) const {
 		auto offset = middle[d];
 		int shift = 3 * (levels - 1 - d);
@@ -565,7 +460,7 @@ class WaveletMatrix {
 			return;
 		}
 		offsets.clear();
-		original = compress(a);
+		original = wavelet_detail::compress(a, values, ordered, positions, offsets);
 		bool indexed = !offsets.empty();
 		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8)
 			dense = std::uint64_t(values.back()) - std::uint64_t(values.front()) == values.size() - 1;

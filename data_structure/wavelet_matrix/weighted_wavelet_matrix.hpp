@@ -1,7 +1,8 @@
 #ifndef WEIGHTED_WAVELET_MATRIX_HPP
 #define WEIGHTED_WAVELET_MATRIX_HPP
 
-#include "wavelet_matrix.hpp"
+#include "../../components/wavelet_compression.hpp"
+#include "../../components/quad_bit_vector.hpp"
 #include "../../components/fenwick_sum.hpp"
 #include <numeric>
 
@@ -18,7 +19,7 @@ class WeightedWaveletMatrix {
 		Node &operator-=(const Node &x) { count -= x.count; sum -= x.sum; return *this; }
 		friend Node operator-(Node a, const Node &b) { return a -= b; }
 	};
-	WaveletMatrix<T, Sum> index;
+	wavelet_detail::ValueIndex<T> index;
 	std::vector<Count> weights;
 	std::vector<QuadBitVector> bits;
 	std::vector<std::array<int, 4>> middle;
@@ -105,11 +106,7 @@ class WeightedWaveletMatrix {
 	WeightedWaveletMatrix(const std::vector<T> &a, const std::vector<Count> &w) { build(a, w); }
 	void build(const std::vector<T> &a, const std::vector<Count> &w) {
 		assert(a.size() == w.size() && a.size() <= std::size_t(std::numeric_limits<int>::max()));
-		index = WaveletMatrix<T, Sum>();
-		index.n = static_cast<int>(a.size());
-		if (!a.empty()) index.original = index.compress(a);
-		std::vector<int>().swap(index.positions);
-		std::vector<int>().swap(index.offsets);
+		index.build(a);
 		weights = w;
 		levels = index.values.size() <= 1 ? 0 : (std::bit_width(unsigned(index.values.size() - 1)) + 1) / 2;
 		bits.clear();
