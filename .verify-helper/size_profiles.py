@@ -146,6 +146,23 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
             return catalog[name]['lightweightPage']
         return name + '.html'
 
+    def display_title(name, profile):
+        title = sources[name][0]['title']
+        if name in different:
+            lightweight = profile == LIGHTWEIGHT and catalog[name]['lightweightAvailable']
+            title += '（軽量版）' if lightweight else '（高速版）'
+        return title
+
+    def dependency_links(data, profile):
+        for key in ['_extendedDependsOn', '_extendedRequiredBy']:
+            for item in data.get(key, []):
+                target = item['path']
+                if profile == LIGHTWEIGHT and len(alias_targets.get(target, [])) == 1:
+                    target = alias_targets[target][0]
+                item['pagePath'] = route(target, profile)
+                if target in libraries:
+                    item['title'] = display_title(target, profile)
+
     def link_routes(profile):
         routes = {name + '.html': route(name, profile) for name in libraries}
         routes.update({LIGHTWEIGHT + '/' + name + '.html': route(name, LIGHTWEIGHT) for name in libraries})
@@ -174,6 +191,7 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
                     item['implementationPath'] = size['lightweightImplementation'] if profile == LIGHTWEIGHT else name
                     item['copyByteCount'] = size['copyBytes'][profile] if usable else None
                     item['pagePath'] = route(name, profile)
+                    item['title'] = display_title(name, profile)
                     entries.append(item)
                 category['pages'] = entries
             data['profileLibraryCount'] = len(catalog)
@@ -191,9 +209,8 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
             data['sharedPage'] = name not in different
             data['counterpartPage'] = None
             data['implementationKind'] = None
+            front['title'] = display_title(name, profile)
             if name in catalog:
-                normal_front = sources[name][0]
-                front['title'] = normal_front['title']
                 front['documentation_of'] = name
                 data['lightweightAvailable'] = catalog[name]['lightweightAvailable']
                 if name in different:
@@ -215,14 +232,9 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
                     redirects = [redirects]
                 legacy = '/' + LIGHTWEIGHT + '/' + name + '.html'
                 front['redirect_from'] = list(dict.fromkeys([*redirects, legacy]))
-            for key in ['_extendedDependsOn', '_extendedRequiredBy']:
-                for item in data.get(key, []):
-                    target = item['path']
-                    if profile == LIGHTWEIGHT and len(alias_targets.get(target, [])) == 1:
-                        target = alias_targets[target][0]
-                    item['pagePath'] = route(target, profile)
             for item in data.get('_extendedVerifiedWith', []):
                 item['pagePath'] = item['path'] + '.html'
+        dependency_links(data, profile)
         origin = origins.get(data.get('path', '') + '.html', origins.get(re.sub(r'\.md$', '.html', relative), relative))
         routes = link_routes(profile)
         for normal in different:
@@ -239,6 +251,8 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
         data = front.get('data', {})
         name = data.get('path')
         if not (front.get('layout') == 'toppage' or name in libraries):
+            front = copy.deepcopy(front)
+            dependency_links(front.get('data', {}), 'full')
             origin = origins.get(re.sub(r'\.md$', '.html', relative), relative)
             result[path] = render_page(front, rewrite_links(body, origin, config, targets, available, 'full', link_routes('full')))
             continue
