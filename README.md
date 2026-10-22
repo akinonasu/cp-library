@@ -159,6 +159,7 @@
 | `graph/two_sat.hpp` | 2-SAT | [使い方](docs/two_sat.md) |
 | `graph/connectivity/low_link.hpp` | Low-Link | [使い方](docs/low_link.md) |
 | `graph/connectivity/two_edge_connected_components.hpp` | 二辺連結成分分解・橋の森 | [使い方](docs/two_edge_connected_components.md) |
+| `graph/connectivity/block_cut_tree.hpp` | 二重頂点連結成分・Block Cut Tree | [使い方](docs/block_cut_tree.md) |
 
 ### データ構造
 
