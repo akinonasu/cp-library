@@ -25,6 +25,13 @@ void check(const Set &set, std::vector<typename Set::value_type> values, Compare
 	for (std::size_t i = 0; i < count; ++i) sum += static_cast<typename Set::sum_type>(values[i]);
 	assert(set.size() == values.size() && set.empty() == values.empty());
 	assert(set.selected_size() == count && set.sum() == sum);
+	typename Set::sum_type prefix = 0;
+	for (std::size_t k = 0; k <= values.size(); ++k) {
+		assert(set.sum(k) == prefix);
+		if (k < values.size()) prefix += static_cast<typename Set::sum_type>(values[k]);
+	}
+	assert(set.sum((std::numeric_limits<std::size_t>::max)()) == prefix);
+	assert(set.sum() == sum && set.selected_size() == count);
 	for (int value : {-20, -3, 0, 3, 20}) {
 		auto occurrences = static_cast<std::size_t>(std::count(values.begin(), values.end(), value));
 		assert(set.count(value) == occurrences && set.contains(value) == (occurrences != 0));
@@ -181,4 +188,27 @@ int main() {
 	wide_batch.insert(hi, 4);
 	assert(wide_batch.sum() == __int128_t(hi) * 2);
 	assert(wide_batch.erase(hi, 3) == 3 && wide_batch.sum() == hi);
+	TopKSum<> variable(std::vector<std::int64_t>{3, 1, 5, 5});
+	const auto &read = variable;
+	assert(read.sum(0) == 0 && read.sum(1) == 5 && read.sum(2) == 10 && read.sum(4) == 14);
+	assert(read.sum() == 0 && variable.k() == 0);
+	variable.set_k(3);
+	assert(read.sum() == 13 && read.sum(1) == 5 && variable.k() == 3);
+	TopKSum<> unselected(0, {hi, hi, lo, lo});
+	assert(unselected.sum() == 0 && unselected.sum(1) == hi && unselected.sum(4) == -2);
+	SmallestKSum<> negative(0, {lo, lo, hi, hi});
+	assert(negative.sum(1) == lo && negative.sum(4) == -2);
+	TopKSum<int> alternate;
+	std::vector<int> sequence(100000);
+	std::iota(sequence.begin(), sequence.end(), 1);
+	alternate.assign(sequence);
+	for (int i = 0; i < 100000; ++i) {
+		const std::size_t k = i % 2 ? 1 : sequence.size() - 1;
+		const auto expected = i % 2 ? 100000LL : 5000049999LL;
+		assert(alternate.sum(k) == expected);
+		alternate.set_k(k);
+		assert(alternate.sum() == expected);
+	}
+	for (int x : sequence) assert(alternate.erase(x));
+	assert(alternate.empty() && alternate.sum(100) == 0);
 }
