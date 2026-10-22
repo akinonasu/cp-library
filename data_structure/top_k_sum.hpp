@@ -213,6 +213,16 @@ public:
 	size_type size() const { return length(root); }
 	size_type selected_size() const { return (std::min)(limit, size()); }
 	bool empty() const { return !root; }
+	T kth(size_type k) const {
+		assert(k < size());
+		auto p = root.get();
+		for (;;) {
+			auto left = length(p->left);
+			if (k == left) return p->value;
+			if (k < left) p = p->left.get();
+			else k -= left + 1, p = p->right.get();
+		}
+	}
 	Sum sum() const { return selected_sum; }
 	Sum sum(size_type k) const {
 		Aggregate result(0);
