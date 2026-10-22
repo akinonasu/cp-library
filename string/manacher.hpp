@@ -1,0 +1,71 @@
+#ifndef MANACHER_HPP
+#define MANACHER_HPP
+
+#include <algorithm>
+#include <cassert>
+#include <cstdint>
+#include <limits>
+#include <string_view>
+#include <utility>
+#include <vector>
+
+class Manacher {
+  public:
+	std::vector<int> odd, even;
+
+	Manacher() = default;
+	explicit Manacher(std::string_view s) { build(s); }
+	template <class Sequence> requires requires(const Sequence &s) { s.size(); s[0]; }
+	explicit Manacher(const Sequence &s) { build(s); }
+	void build(std::string_view s) { build<std::string_view>(s); }
+	template <class Sequence> requires requires(const Sequence &s) { s.size(); s[0]; }
+	void build(const Sequence &s) {
+		assert(s.size() <= std::size_t(std::numeric_limits<int>::max()));
+		int n = int(s.size());
+		odd.resize(n), even.resize(n);
+		for (int i = 0, l = 0, r = -1; i < n; ++i) {
+			int k = i > r ? 1 : std::min(odd[l + (r - i)], r - i + 1);
+			while (k <= i && k < n - i && s[i - k] == s[i + k]) ++k;
+			odd[i] = k;
+			if (i + k - 1 > r) l = i - k + 1, r = i + k - 1;
+		}
+		for (int i = 0, l = 0, r = -1; i < n; ++i) {
+			int k = i > r ? 0 : std::min(even[l + (r - i) + 1], r - i + 1);
+			while (k < i && k < n - i && s[i - k - 1] == s[i + k]) ++k;
+			even[i] = k;
+			if (i + k - 1 > r) l = i - k, r = i + k - 1;
+		}
+	}
+	int size() const { return int(odd.size()); }
+	bool empty() const { return odd.empty(); }
+	bool is_palindrome(int l, int r) const {
+		assert(0 <= l && l <= r && r <= size());
+		int length = r - l, center = l + length / 2;
+		return !length || (length & 1 ? odd[center] > length / 2 : even[center] >= length / 2);
+	}
+	std::pair<int, int> longest_palindrome() const {
+		int start = 0, length = 0;
+		for (int i = 0; i < size(); ++i) {
+			int a = 2 * (odd[i] - 1) + 1, b = 2 * even[i];
+			if (a > length) start = i - odd[i] + 1, length = a;
+			if (b > length) start = i - even[i], length = b;
+		}
+		return {start, start + length};
+	}
+	std::int64_t palindrome_count() const {
+		std::int64_t result = 0;
+		for (int i = 0; i < size(); ++i) result += std::int64_t(odd[i]) + even[i];
+		return result;
+	}
+	std::vector<int> lengths() const {
+		if (empty()) return {};
+		std::vector<int> result(2 * odd.size() - 1);
+		for (int i = 0; i < size(); ++i) {
+			result[2 * std::size_t(i)] = 2 * (odd[i] - 1) + 1;
+			if (i) result[2 * std::size_t(i) - 1] = 2 * even[i];
+		}
+		return result;
+	}
+};
+
+#endif

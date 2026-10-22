@@ -220,6 +220,7 @@
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
+| `string/manacher.hpp` | Manacher・回文半径・区間の回文判定 | [使い方](docs/manacher.md) |
 | `string/eertree.hpp` | Eertree（回文木）・回文の出現回数 | [使い方](docs/eertree.md) |
 | `string/aho_corasick.hpp` | Aho–Corasick・複数パターン検索 | [使い方](docs/aho_corasick.md) |
 | `string/suffix_tree.hpp` | Suffix Tree（静的文字列） | [使い方](docs/suffix_tree.md) |
