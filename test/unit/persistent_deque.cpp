@@ -6,7 +6,43 @@
 #include <string>
 #include <vector>
 
+std::uint64_t weight(const std::string &s) { return s.size(); }
+
+void weighted_rope() {
+	PersistentRope<std::string, weight> rope;
+	auto splitter = [](const std::string &s, std::uint64_t p) { return std::pair{s.substr(0, p), s.substr(p)}; };
+	std::vector<int> roots{rope.build({"abc", "defgh", "ijk"})};
+	std::vector<std::string> values{"abcdefghijk"};
+	std::mt19937 random(876);
+	for (int t = 0; t < 5000; ++t) {
+		unsigned k = random() % roots.size();
+		auto r = roots[k]; auto text = values[k];
+		unsigned p = random() % (text.size() + 1);
+		if (t % 3 == 0) {
+			std::string value(1 + random() % 8, 'a' + random() % 26);
+			r = rope.insert(r, p, value, splitter); text.insert(p, value);
+		} else if (t % 3 == 1) {
+			unsigned q = random() % (text.size() + 1); if (p > q) std::swap(p, q);
+			r = rope.erase(r, p, q, splitter); text.erase(p, q - p);
+		} else if (p < text.size()) {
+			auto [chunk, offset] = rope.at(r, p);
+			std::string value(chunk.size(), 'A' + random() % 26);
+			r = rope.replace(r, p, value); text.replace(p - offset, chunk.size(), value);
+		}
+		roots.push_back(r); values.push_back(text);
+		k = random() % roots.size();
+		std::string actual;
+		rope.for_each(roots[k], [&](const std::string &s) { actual += s; });
+		assert(actual == values[k] && rope.size(roots[k]) == actual.size());
+		for (unsigned i = 0; i < actual.size(); ++i) {
+			auto [chunk, offset] = rope.at(roots[k], i);
+			assert(chunk[offset] == actual[i]);
+		}
+	}
+}
+
 int main() {
+	weighted_rope();
 	PersistentDeque<std::string> deque;
 	std::vector<int> roots{0};
 	std::vector<std::vector<std::string>> values(1);

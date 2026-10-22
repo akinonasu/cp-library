@@ -28,6 +28,7 @@ int main() {
 | `PersistentArray<T>(a, default_value = T{})` | `vector<T>` から初期版を構築 | $$O(n)$$ |
 | `get(root,p)` | 版 `root` の位置 `p` の値 | $$O(\log n)$$ |
 | `set(root,p,x)` | 位置 `p` を `x` にした版 | $$O(\log n)$$ |
+| `set_pair(root,p,x,q,y)` | `p` を `x`、`q` を `y` にした版。同じ位置なら `y` を使う | $$O(\log n)$$ |
 | `size()` / `empty()` | 固定長／長さが 0 か | $$O(1)$$ |
 
 `0 <= n <= INT_MAX`、`0 <= p < n` とします。`T` はコピー・代入可能な型です。デフォルト構築できない型は初期値と `default_value` を明示してください。`default_value` は内部の未作成領域の値で、配列から構築した初期版の値には影響しません。第 2 テンプレート引数 `Log`（既定値 3、範囲 1〜5）で分岐数を指定できます。
