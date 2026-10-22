@@ -1,7 +1,7 @@
 [[languages.cpp.environments]]
 CXX = "g++"
-CXXFLAGS = ["-std=c++23", "-O2", "-Wall", "-Wextra", "-DDEBUG=1"]
+CXXFLAGS = ["-std=c++23", "-O2", "-Wall", "-Wextra", "-DDEBUG=1", "-fconstexpr-depth=1024", "-fconstexpr-loop-limit=524288", "-fconstexpr-ops-limit=2097152"]
 
 [[languages.cpp.environments]]
 CXX = "clang++"
-CXXFLAGS = ["-std=c++23", "-O2", "-Wall", "-Wextra", "-DDEBUG=1"]
+CXXFLAGS = ["-std=c++23", "-O2", "-Wall", "-Wextra", "-DDEBUG=1", "-fconstexpr-depth=1024", "-fconstexpr-steps=524288"]

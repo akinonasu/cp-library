@@ -5,9 +5,13 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 
 root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(root / '.verify-helper'))
+from atcoder_flags import constexpr_flags
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--cxx", nargs="+", default=["g++", "clang++"])
 parser.add_argument("--unit-only", action="store_true")
@@ -31,7 +35,8 @@ sources = ([root / path for path in selection[source_group]] if selection is not
 def check(task):
     compiler, path, standalone = task
     with tempfile.TemporaryDirectory(prefix="kyopro-verify-") as directory:
-        flags = ["-std=c++2b", "-O2", "-Wall", "-Wextra", "-DDEBUG=1", "-I", str(root)]
+        flags = ["-std=c++2b", "-O2", "-Wall", "-Wextra", "-DDEBUG=1",
+                 *constexpr_flags(compiler), "-I", str(root)]
         if standalone:
             source = Path(directory) / "header.cpp"
             name = path.relative_to(root).as_posix()

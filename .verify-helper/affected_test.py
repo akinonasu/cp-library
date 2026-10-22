@@ -279,6 +279,12 @@ class AffectedVerification(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Non-directory include path component"):
             self.plan()
 
+    def test_constexpr_limits_require_full_verification(self):
+        self.write(".verify-helper/atcoder_flags.py", "# Changed constexpr limits.\n")
+        self.commit("constexpr limits changed")
+        with self.assertRaisesRegex(ValueError, "Check implementation/configuration changed"):
+            self.plan()
+
     def test_full_precedence_and_configuration_change(self):
         self.write("test/verify.py", "# Changed fixture runner, never executed.\n")
         head = self.commit("runner changed")

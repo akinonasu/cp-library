@@ -355,6 +355,13 @@ class IncrementalVerification(unittest.TestCase):
             self.assertEqual(plan[group], [])
         self.assertEqual(plan["bundles"], self.plan()["bundles"])
 
+    def test_constexpr_limits_invalidate_compilation_checks(self):
+        self.write(".verify-helper/atcoder_flags.py", "Changed constexpr limits\n")
+        plan = self.plan(self.previous)
+        for group in ("headers", "unit", "sanitize", "bundles"):
+            self.assertEqual(plan[group], self.plan()[group])
+        self.assertEqual(plan["verification"], [])
+
     def test_helper_package_change_does_not_invalidate_cpp_checks(self):
         environment = {group: "compiler" if group in ("headers", "unit", "sanitize") else "helper" for group in GROUPS}
         previous = self.plan(environment=environment)["state"]

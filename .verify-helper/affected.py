@@ -18,7 +18,7 @@ LIBRARIES = {"components", "convolution", "fps", "data_structure", "graph", "tre
 CHECK_INPUTS = {
     "test/verify.py", "test/requirements.txt", ".verify-helper/config.toml",
     ".verify-helper/check-docs.py", ".verify-helper/documentation.py",
-    ".verify-helper/verification.py",
+    ".verify-helper/verification.py", ".verify-helper/atcoder_flags.py",
 }
 
 

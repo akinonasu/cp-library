@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from atcoder_flags import constexpr_flags
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -15,12 +16,7 @@ class FPSCompile(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix='fps-compile-') as directory:
             for compiler in compilers:
                 with self.subTest(compiler=compiler):
-                    version = subprocess.check_output([compiler, '--version'], text=True).lower()
-                    flags = ['-fconstexpr-depth=1024']
-                    if 'clang' in version:
-                        flags += ['-fconstexpr-steps=524288']
-                    else:
-                        flags += ['-fconstexpr-loop-limit=524288', '-fconstexpr-ops-limit=2097152']
+                    flags = constexpr_flags(compiler)
                     binary = Path(directory) / 'main.exe'
                     subprocess.run([compiler, '-std=c++2b', '-O2', *flags, '-I', str(ROOT),
                                     str(ROOT / 'test/unit/fps_taylor_factorials.cpp'),
