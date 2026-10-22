@@ -5,6 +5,8 @@ documentation_of: //graph/flow/project_selection.hpp
 
 各頂点を選ぶ・選ばないの 2 通りに分け、費用の総和を最小化します。利益は負の費用として加えます。選択を `true`（1、燃やす）、非選択を `false`（0、埋める）とします。反転を指定しない頂点では、最小カットの始点側が選択側です。
 
+費用・利益には負の値も指定できます。ただし、`add_penalty`・`add_difference_cost`・`add_same_cost`・`add_same_profit`・`add_difference_profit`・`add_all_profit`・`add_any_cost` に渡す金額は非負にしてください。二変数項には、さらに後述の条件があります。
+
 ```cpp
 #include "lib/graph/flow/project_selection.hpp"
 #include <cassert>
@@ -35,15 +37,15 @@ assert(result->selected[0] && result->selected[1]);
 | `add_profit_if(v,value,profit)` | `v` の選択が `value` の場合だけ利益を加える | $$O(1)$$ |
 | `add_cost_if(u,v,a,b,cost)` | 選択 `(u,v)` が `(a,b)` の場合だけ費用を加える | 償却 $$O(1)$$ |
 | `add_profit_if(u,v,a,b,profit)` | 選択 `(u,v)` が `(a,b)` の場合だけ利益を加える | 償却 $$O(1)$$ |
-| `add_penalty(u,v,cost)` | `u` を選び `v` を選ばない場合だけ費用を加える。`cost >= 0` | 償却 $$O(1)$$ |
-| `add_difference_cost(u,v,cost)` | `u`・`v` の選択が異なる場合に費用を加える。`cost >= 0` | 償却 $$O(1)$$ |
-| `add_same_cost(u,v,cost)` | `u`・`v` の選択が同じ場合に費用を加える。`cost >= 0` | 償却 $$O(1)$$ |
-| `add_same_profit(u,v,profit)` | `u`・`v` の選択が同じ場合に利益を加える。`profit >= 0` | 償却 $$O(1)$$ |
-| `add_difference_profit(u,v,profit)` | `u`・`v` の選択が異なる場合に利益を加える。`profit >= 0` | 償却 $$O(1)$$ |
+| `add_penalty(u,v,cost)` | `u` を選び `v` を選ばない場合だけ費用を加える | 償却 $$O(1)$$ |
+| `add_difference_cost(u,v,cost)` | `u`・`v` の選択が異なる場合に費用を加える | 償却 $$O(1)$$ |
+| `add_same_cost(u,v,cost)` | `u`・`v` の選択が同じ場合に費用を加える | 償却 $$O(1)$$ |
+| `add_same_profit(u,v,profit)` | `u`・`v` の選択が同じ場合に利益を加える | 償却 $$O(1)$$ |
+| `add_difference_profit(u,v,profit)` | `u`・`v` の選択が異なる場合に利益を加える | 償却 $$O(1)$$ |
 | `add_pair_cost(u,v,c00,c01,c10,c11)` | 選択 `(u,v)` が `00,01,10,11` の各場合の費用を加える。下記の条件が必要 | 償却 $$O(1)$$ |
 | `add_pair_profit(u,v,p00,p01,p10,p11)` | 選択 `(u,v)` が `00,01,10,11` の各場合の利益を加える。下記の条件が必要 | 償却 $$O(1)$$ |
-| `add_all_profit(vertices,value,profit)` | 指定した全頂点の選択が `value` と一致する場合だけ利益を加える。`profit >= 0` | 償却 $$O(k+1)$$ |
-| `add_any_cost(vertices,value,cost)` | 指定した頂点のうち少なくとも 1 つの選択が `value` と一致する場合に、費用を 1 回だけ加える。`cost >= 0` | 償却 $$O(k+1)$$ |
+| `add_all_profit(vertices,value,profit)` | 指定した全頂点の選択が `value` と一致する場合だけ利益を加える | 償却 $$O(k)$$ |
+| `add_any_cost(vertices,value,cost)` | 指定した頂点のうち少なくとも 1 つの選択が `value` と一致する場合に、費用を 1 回だけ加える | 償却 $$O(k)$$ |
 | `force(v,value)` | `v` の選択を `value` に固定する | 償却 $$O(1)$$ |
 | `imply(u,v)` | `u` を選ぶなら `v` も選ぶという制約を加える | 償却 $$O(1)$$ |
 | `imply(u,v,a,b)` | `u` の選択が `a` なら `v` の選択が `b` という制約を加える | 償却 $$O(1)$$ |
@@ -54,20 +56,20 @@ assert(result->selected[0] && result->selected[1]);
 | `at_least_one(u,v)` | 少なくとも片方を選ぶことを必須にする | 償却 $$O(1)$$ |
 | `solve()` | 最小費用と選択を `optional<Result>` で返す。実行不能なら `nullopt` | 最大流の計算量 |
 
-`Cost` は符号付き 64 bit 以下の標準整数型です。定数項・一変数の費用と利益は負でも構いません。呼び出した項は全て加算され、既存の項を上書きしません。`Result::cost` は最小費用、`profit()` はその符号を反転した最大純利益、`selected` は長さ `n` の `vector<bool>` です。費用の合計には `__int128_t` を使い、`total_type` で参照できます。出力には [FastOutput](https://qandori.github.io/cp-library/components/fast_io.hpp.html) が使えます。
+`Cost` は符号付き 64 bit 以下の標準整数型です。呼び出した項は全て加算され、既存の項を上書きしません。`Result::cost` は最小費用、`profit()` はその符号を反転した最大純利益、`selected` は長さ `n` の `vector<bool>` です。費用の合計には `__int128_t` を使い、`total_type` で参照できます。出力には [FastOutput](https://qandori.github.io/cp-library/components/fast_io.hpp.html) が使えます。
 
 `solve()` は問題を変更しません。繰り返し呼べ、求解後に項や制約を追加した場合は、次の `solve()` で再構築して解きます。コピーした問題は独立に変更できます。最適解が複数ある場合はそのうち 1 つを返します。
 
 反転は構築時に指定し、問題の途中では変更しません。`flipped[v] == true` の頂点では、内部の変数を元の選択と逆向きに扱います。費用・利益・制約の引数と `Result::selected` は、全て元の選択の意味です。例えば `force(v,true)` は、反転指定によらず元の頂点を選ぶという制約です。
 
-二変数コストは、反転後の表で劣モジュラ条件を満たす必要があります。元の選択に対する費用の条件は次の通りです。各費用自体は負でも構いません。`add_pair_profit` は、利益の符号を反転して同じ条件を判定します。
+二変数コストは、反転後の表で劣モジュラ条件を満たす必要があります。元の選択に対する費用の条件は次の通りです。`add_pair_profit` は、利益の符号を反転して同じ条件を判定します。
 
 | `u`・`v` の反転指定 | 二変数コストの条件 |
 | --- | --- |
 | 同じ | $$c_{00}+c_{11}\leq c_{01}+c_{10}$$ |
 | 異なる | $$c_{00}+c_{11}\geq c_{01}+c_{10}$$ |
 
-`add_cost_if`・`add_profit_if` の二変数版にも同じ条件が適用されます。正の罰金なら、反転後の指定状態が異なる場合に使えます。正の報酬なら、反転後の指定状態が同じ場合に使えます。引数の額は負でも構いませんが、符号が逆なら許される指定状態も逆になります。額が 0 なら反転の制約はありません。
+`add_cost_if`・`add_profit_if` の二変数版にも同じ条件が適用されます。正の罰金なら、反転後の指定状態が異なる場合に使えます。正の報酬なら、反転後の指定状態が同じ場合に使えます。負の額を指定すると、許される指定状態も逆になります。額が 0 なら反転の制約はありません。
 
 例えば、二部グラフの辺ごとに「両方を燃やすと罰金」「両方を埋めると罰金」を加える場合、片側だけを反転します。次の `0,2` と `1,3` が二部に分かれています。
 
