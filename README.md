@@ -114,6 +114,12 @@
 | `graph/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
 | `graph/difference_constraints.hpp` | 牛ゲー（差分制約系）・解の復元・差の上下限 | [使い方](docs/difference_constraints.md) |
 
+### 最小全域木
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/kruskal.hpp` | Kruskal・最小全域木／最小全域森 | [使い方](docs/kruskal.md) |
+
 ### フロー
 
 | ファイル | 内容 | 使い方 |
