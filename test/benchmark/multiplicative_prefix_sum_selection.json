@@ -1,0 +1,22 @@
+{
+  "headers": [
+    "components/floor_quotients.hpp",
+    "math/number_theory/multiplicative_prefix_sum.hpp"
+  ],
+  "unit": [
+    "test/unit/floor_quotients.cpp",
+    "test/unit/multiplicative_prefix_sum.cpp"
+  ],
+  "sanitize": [
+    "test/unit/floor_quotients.cpp",
+    "test/unit/multiplicative_prefix_sum.cpp"
+  ],
+  "verification": [
+    "test/multiplicative_prefix_sum.test.cpp",
+    "test/multiplicative_prefix_sum_totient.test.cpp"
+  ],
+  "bundles": [
+    "components/floor_quotients.hpp",
+    "math/number_theory/multiplicative_prefix_sum.hpp"
+  ]
+}

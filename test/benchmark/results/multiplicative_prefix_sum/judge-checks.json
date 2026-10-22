@@ -1,0 +1,26 @@
+[
+  {
+    "compiler": "g++",
+    "problem": "sum_of_multiplicative_function",
+    "cases": 30,
+    "status": "passed"
+  },
+  {
+    "compiler": "g++",
+    "problem": "sum_of_totient_function",
+    "cases": 48,
+    "status": "passed"
+  },
+  {
+    "compiler": "clang++",
+    "problem": "sum_of_multiplicative_function",
+    "cases": 30,
+    "status": "passed"
+  },
+  {
+    "compiler": "clang++",
+    "problem": "sum_of_totient_function",
+    "cases": 48,
+    "status": "passed"
+  }
+]
