@@ -7,9 +7,9 @@ title: "サイズ制限と提出方法"
 | [全体サイト（256 KiB向け）](https://qandori.github.io/cp-library/) | 高速実装と軽量実装を掲載。64 KiBを超えるものも含む |
 | [軽量版サイト（64 KiB）](https://qandori.github.io/cp-library/lightweight/) | 同じ分類・項目順で、65,536 bytes以内の実装を案内。未提供の項目は高速実装へリンク |
 
-両サイトの分類・項目順と機能ごとのURLを揃えています。例えば形式的冪級数は、全体サイトの `fps/fps.hpp.html` と軽量版サイトの `lightweight/fps/fps.hpp.html` から参照できます。Taylor shift・Bostan–Mori・線形漸化式・多点評価・補間も、それぞれ同じ位置にあります。
+両サイトの分類・項目順と機能ごとのURLを揃えています。例えば形式的冪級数は、全体サイトの `fps/fps.hpp.html` と軽量版サイトの `lightweight/fps/fps.hpp.html` から参照できます。多項式 GCD・合成・合成逆元・射影・Taylor shift・Bostan–Mori・線形漸化式・多点評価・補間も、それぞれ同じ位置にあります。
 
-実装が異なる場合は「高速実装」「軽量実装」と表示し、「軽量実装はこちら」「高速実装はこちら」のリンクで相互に移動できます。**APIやinclude先が異なる場合があるため、移動先の使用例を確認してください。** FPSの軽量実装は `light_fps` と `light_fps_algorithms` を使います。実装が共通の項目は同じソース・APIです。同じ内容のページには、もう一方のサイトを見るリンクを表示しません。
+実装が異なる場合は「高速実装」「軽量実装」と表示し、「軽量実装はこちら」「高速実装はこちら」のリンクで相互に移動できます。**APIやinclude先が異なる場合があるため、移動先の使用例を確認してください。** FPSの軽量実装は `light_fps` と `light_fps_algorithms` を使います。FPSを使う畳み込みは `light_convolution` と `LightOnlineConvolution`、二項係数は `light_combinatorics` の実装を案内し、これらの依存にも通常版 FPS は含みません。実装が共通の項目は同じソース・APIです。同じ内容のページには、もう一方のサイトを見るリンクを表示しません。
 
 軽量実装がない項目も一覧の同じ位置に残し、「軽量実装なし」と明記して高速実装へリンクします。全体サイトの既存URLと、従来の `fps_light` などのページも引き続き利用できます。
 
@@ -27,7 +27,7 @@ oj-bundle -I . a.cpp > submission.cpp
 python3 tools/check_source_size.py submission.cpp --limit 64
 ```
 
-依存の展開は通常の `oj-bundle` を使います。FPS は短縮済み配布ヘッダーを同梱しているため、展開後の追加圧縮は不要です。[提出コードの生成](bundle.md)も参照してください。
+依存の展開は通常の `oj-bundle` を使います。高速 FPS は短縮済み配布ヘッダーを、軽量 FPS は通常の読みやすい C++ のヘッダーを同梱しています。どちらも展開後の追加圧縮は不要です。[提出コードの生成](bundle.md)も参照してください。
 
 ```sh
 oj-bundle -I . a.cpp > submission.cpp

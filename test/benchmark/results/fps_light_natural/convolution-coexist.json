@@ -1,0 +1,74 @@
+{
+  "completed": true,
+  "source_sha256": "62c70d9689ef81041b461200fe2e95bcb636d5cde7963c95d2c026ba5535b43c",
+  "checks": [
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DLIGHT_FIRST=0",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/convolution_light_coexist.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-generic-coexist0"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DLIGHT_FIRST=1",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/convolution_light_coexist.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-generic-coexist1"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DLIGHT_FIRST=0",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/convolution_light_coexist.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-generic-coexist0"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DLIGHT_FIRST=1",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/convolution_light_coexist.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-generic-coexist1"
+      ],
+      "status": "passed"
+    }
+  ]
+}

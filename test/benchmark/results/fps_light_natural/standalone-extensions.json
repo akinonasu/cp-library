@@ -1,0 +1,1154 @@
+{
+  "started_at": "2026-10-22T05:00:32.762744+00:00",
+  "previously_validated_unchanged": [
+    "components/fps_light_backend.hpp",
+    "components/fps_light_ntt.hpp",
+    "components/fps_light_product_tree.hpp",
+    "fps/fps_light.hpp",
+    "fps/fps_light_algorithms.hpp"
+  ],
+  "rows": [
+    {
+      "header": "components/binomial_prefix_core_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-binomial_prefix_core_light.hpp.cpp"
+      ],
+      "fixture_sha256": "5cc8b689d2c23dfbda74ee39ef3ce6918759f987030c86608d5a0a7b8afd2720",
+      "source_sha256": {
+        "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/binomial_prefix_core_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-binomial_prefix_core_light.hpp.cpp"
+      ],
+      "fixture_sha256": "5cc8b689d2c23dfbda74ee39ef3ce6918759f987030c86608d5a0a7b8afd2720",
+      "source_sha256": {
+        "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/binomial_prefix_polynomial_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-binomial_prefix_polynomial_light.hpp.cpp"
+      ],
+      "fixture_sha256": "0b47d195278c9f01b626af0e54fb69f4313497128ff374bba73cc263e17b5b84",
+      "source_sha256": {
+        "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+        "components/binomial_prefix_polynomial_light.hpp": "557d67dd4dda0e34a08f576bd92e12bc858180f5dc64473ad652e9ad6d3a43ec",
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/binomial_prefix_polynomial_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-binomial_prefix_polynomial_light.hpp.cpp"
+      ],
+      "fixture_sha256": "0b47d195278c9f01b626af0e54fb69f4313497128ff374bba73cc263e17b5b84",
+      "source_sha256": {
+        "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+        "components/binomial_prefix_polynomial_light.hpp": "557d67dd4dda0e34a08f576bd92e12bc858180f5dc64473ad652e9ad6d3a43ec",
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/factorial_table_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-factorial_table_light.hpp.cpp"
+      ],
+      "fixture_sha256": "68e6941b8e522ae757a0e57f4bce842475cc4bab26f354311def24f62a900186",
+      "source_sha256": {
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/factorial_table_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-factorial_table_light.hpp.cpp"
+      ],
+      "fixture_sha256": "68e6941b8e522ae757a0e57f4bce842475cc4bab26f354311def24f62a900186",
+      "source_sha256": {
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/fps_composition_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-fps_composition_light.hpp.cpp"
+      ],
+      "fixture_sha256": "6be34b875bb7dd4198310b3fd9b8dfbe92bd672bbd65422292477848c13073de",
+      "source_sha256": {
+        "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/fps_composition_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-fps_composition_light.hpp.cpp"
+      ],
+      "fixture_sha256": "6be34b875bb7dd4198310b3fd9b8dfbe92bd672bbd65422292477848c13073de",
+      "source_sha256": {
+        "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/polynomial_half_gcd_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-polynomial_half_gcd_light.hpp.cpp"
+      ],
+      "fixture_sha256": "19988280abc7f871f4bb15aa3a2f8bc465577c9553328aecc39fa6fa8a8d60b7",
+      "source_sha256": {
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/polynomial_half_gcd_light.hpp": "b5bfc4954a8028f35b029190b6fbdd2511d7035cb4f66ad93525891153a4563f",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "components/polynomial_half_gcd_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-components-polynomial_half_gcd_light.hpp.cpp"
+      ],
+      "fixture_sha256": "19988280abc7f871f4bb15aa3a2f8bc465577c9553328aecc39fa6fa8a8d60b7",
+      "source_sha256": {
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/polynomial_half_gcd_light.hpp": "b5bfc4954a8028f35b029190b6fbdd2511d7035cb4f66ad93525891153a4563f",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/convolution_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "c331522698acd9d5d0f30162103d01ec3e66a54f3ddd03e284d03d8f24900260",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/convolution_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "c331522698acd9d5d0f30162103d01ec3e66a54f3ddd03e284d03d8f24900260",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/cyclic_convolution_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-cyclic_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "008b77c49d5aba21afe90fecd7fdaa69f2d21eebf5acaae6e3a56d4d7e539db6",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/cyclic_convolution_light.hpp": "6617c59a192fcc4b4a086a21e674e5210460961f24cabd3776dfdaa372ebbd8c",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/cyclic_convolution_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-cyclic_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "008b77c49d5aba21afe90fecd7fdaa69f2d21eebf5acaae6e3a56d4d7e539db6",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/cyclic_convolution_light.hpp": "6617c59a192fcc4b4a086a21e674e5210460961f24cabd3776dfdaa372ebbd8c",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/max_min_convolution_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-max_min_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "54fe69ef7a1738147b87bca5b74a4eea02801997e01e4f03e6791ee9045bf26d",
+      "source_sha256": {
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "convolution/max_min_convolution_light.hpp": "ab2bade28703cbf943f614d1afecd60c6c01bcadffa4a4e2d2d05d698b5ba6e9",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/max_min_convolution_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-max_min_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "54fe69ef7a1738147b87bca5b74a4eea02801997e01e4f03e6791ee9045bf26d",
+      "source_sha256": {
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "convolution/max_min_convolution_light.hpp": "ab2bade28703cbf943f614d1afecd60c6c01bcadffa4a4e2d2d05d698b5ba6e9",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/multiplicative_convolution_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-multiplicative_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "c560aa94bb678f130f34adc48bdc1941770dc403146def95ea68904f7f869735",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/multiplicative_convolution_light.hpp": "72202f40dd6f0c43236892735f186a1cf1ee0d779b647b8762f93c14d1312de5",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+        "math/number_theory/is_prime.hpp": "12734adb63fc711c66ada779957d379ffd957e78be354b907e5ee10088059618"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/multiplicative_convolution_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-multiplicative_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "c560aa94bb678f130f34adc48bdc1941770dc403146def95ea68904f7f869735",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/multiplicative_convolution_light.hpp": "72202f40dd6f0c43236892735f186a1cf1ee0d779b647b8762f93c14d1312de5",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+        "math/number_theory/is_prime.hpp": "12734adb63fc711c66ada779957d379ffd957e78be354b907e5ee10088059618"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/multivariate_convolution_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-multivariate_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "e35c4c670cd6c8185ee67c7335a33294ed535bdaf52cae947e5916b0709a4cda",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/multivariate_convolution_light.hpp": "fa3dda224cf1e0c7f038a5fd4425df778fdb2195a37f793efe53b470fbbe6306",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/multivariate_convolution_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-multivariate_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "e35c4c670cd6c8185ee67c7335a33294ed535bdaf52cae947e5916b0709a4cda",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/multivariate_convolution_light.hpp": "fa3dda224cf1e0c7f038a5fd4425df778fdb2195a37f793efe53b470fbbe6306",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/online_convolution_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-online_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "19d2c192465a6ce9486b8b22cb191d3a4e67562d616e601141e707adfdc4eaab",
+      "source_sha256": {
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "convolution/online_convolution_light.hpp": "a4e52e516909d838d9b42a4ad3acd9811e1ab4194747ec81bf13a80de1c8a112",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/online_convolution_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-online_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "19d2c192465a6ce9486b8b22cb191d3a4e67562d616e601141e707adfdc4eaab",
+      "source_sha256": {
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "convolution/online_convolution_light.hpp": "a4e52e516909d838d9b42a4ad3acd9811e1ab4194747ec81bf13a80de1c8a112",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/ordered_convolution_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-ordered_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "df8557f148d68f170c88da017d53d84ecd916da2ead39180d7dad9d56fae1e6c",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/ordered_convolution_light.hpp": "9b565f3b4b473f73ef866a3993d4ac5473b4771fe2fb4d7c3e10ff8f15594897",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "convolution/ordered_convolution_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-convolution-ordered_convolution_light.hpp.cpp"
+      ],
+      "fixture_sha256": "df8557f148d68f170c88da017d53d84ecd916da2ead39180d7dad9d56fae1e6c",
+      "source_sha256": {
+        "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+        "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+        "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+        "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+        "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+        "convolution/ordered_convolution_light.hpp": "9b565f3b4b473f73ef866a3993d4ac5473b4771fe2fb4d7c3e10ff8f15594897",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "fps/compose_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-fps-compose_light.hpp.cpp"
+      ],
+      "fixture_sha256": "e768208cf324e7040fd260a3fe22712673284df46ce5ce9dbda472906856fb7a",
+      "source_sha256": {
+        "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/compose_light.hpp": "92ffde12abccfad590e80a6a223e8edc1edb8e777c52bad7abbd1fbe15dbf876",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "fps/compose_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-fps-compose_light.hpp.cpp"
+      ],
+      "fixture_sha256": "e768208cf324e7040fd260a3fe22712673284df46ce5ce9dbda472906856fb7a",
+      "source_sha256": {
+        "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/compose_light.hpp": "92ffde12abccfad590e80a6a223e8edc1edb8e777c52bad7abbd1fbe15dbf876",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "fps/compositional_inverse_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-fps-compositional_inverse_light.hpp.cpp"
+      ],
+      "fixture_sha256": "666f2fada97c59012433ad4247290cc717f7ac30984089e5eaf34a9e7fba699f",
+      "source_sha256": {
+        "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/compositional_inverse_light.hpp": "dd61aeff9ddfef62676a1848394975c2af18953f6dfe05007e62ef676c415de9",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "fps/compositional_inverse_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-fps-compositional_inverse_light.hpp.cpp"
+      ],
+      "fixture_sha256": "666f2fada97c59012433ad4247290cc717f7ac30984089e5eaf34a9e7fba699f",
+      "source_sha256": {
+        "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/compositional_inverse_light.hpp": "dd61aeff9ddfef62676a1848394975c2af18953f6dfe05007e62ef676c415de9",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "fps/polynomial_gcd_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-fps-polynomial_gcd_light.hpp.cpp"
+      ],
+      "fixture_sha256": "d8ac58812d99ac13eccd74abc5ec79e9f40050902b335b31cd3fea01efc19865",
+      "source_sha256": {
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/polynomial_half_gcd_light.hpp": "b5bfc4954a8028f35b029190b6fbdd2511d7035cb4f66ad93525891153a4563f",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "fps/polynomial_gcd_light.hpp": "8db912fa745481ea75c9865baabab51849173e59d6fba2440e44a09dc6bd0b13",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "fps/polynomial_gcd_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-fps-polynomial_gcd_light.hpp.cpp"
+      ],
+      "fixture_sha256": "d8ac58812d99ac13eccd74abc5ec79e9f40050902b335b31cd3fea01efc19865",
+      "source_sha256": {
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "components/polynomial_half_gcd_light.hpp": "b5bfc4954a8028f35b029190b6fbdd2511d7035cb4f66ad93525891153a4563f",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "fps/polynomial_gcd_light.hpp": "8db912fa745481ea75c9865baabab51849173e59d6fba2440e44a09dc6bd0b13",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "fps/power_projection_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-fps-power_projection_light.hpp.cpp"
+      ],
+      "fixture_sha256": "fe73e093294daed16ed81bbe3fa56ac3da13d3610f8faaf839161ce98c5bd14d",
+      "source_sha256": {
+        "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "fps/power_projection_light.hpp": "0e5cf7aa5ea5366d67f198cbb6033a17f1e503231816ec4507da190e181b7a4c",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "fps/power_projection_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-fps-power_projection_light.hpp.cpp"
+      ],
+      "fixture_sha256": "fe73e093294daed16ed81bbe3fa56ac3da13d3610f8faaf839161ce98c5bd14d",
+      "source_sha256": {
+        "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "fps/power_projection_light.hpp": "0e5cf7aa5ea5366d67f198cbb6033a17f1e503231816ec4507da190e181b7a4c",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "math/combinatorics/binomial_prefix_sum_incremental_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-math-combinatorics-binomial_prefix_sum_incremental_light.hpp.cpp"
+      ],
+      "fixture_sha256": "d06c541132467518079d763454445a5a1c1810061384a446d04853c7ffc1d15a",
+      "source_sha256": {
+        "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "math/combinatorics/binomial_prefix_sum_incremental_light.hpp": "728de79585822db04529cdf9f7c065f4bb9361a86b11322d0e8132e38f3fc6d9",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "math/combinatorics/binomial_prefix_sum_incremental_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-math-combinatorics-binomial_prefix_sum_incremental_light.hpp.cpp"
+      ],
+      "fixture_sha256": "d06c541132467518079d763454445a5a1c1810061384a446d04853c7ffc1d15a",
+      "source_sha256": {
+        "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "math/combinatorics/binomial_prefix_sum_incremental_light.hpp": "728de79585822db04529cdf9f7c065f4bb9361a86b11322d0e8132e38f3fc6d9",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "math/combinatorics/binomial_prefix_sum_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-math-combinatorics-binomial_prefix_sum_light.hpp.cpp"
+      ],
+      "fixture_sha256": "edffe71a4f4d85854c37c4c928fc945875a7125fde4fc24d0c32e359412946d8",
+      "source_sha256": {
+        "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+        "components/binomial_prefix_polynomial_light.hpp": "557d67dd4dda0e34a08f576bd92e12bc858180f5dc64473ad652e9ad6d3a43ec",
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/combinatorics/binomial_prefix_sum_light.hpp": "93048e603db62da85ff95c724ad14f5e9064a515a04ece920726a2b4991e4715",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "math/combinatorics/binomial_prefix_sum_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-math-combinatorics-binomial_prefix_sum_light.hpp.cpp"
+      ],
+      "fixture_sha256": "edffe71a4f4d85854c37c4c928fc945875a7125fde4fc24d0c32e359412946d8",
+      "source_sha256": {
+        "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+        "components/binomial_prefix_polynomial_light.hpp": "557d67dd4dda0e34a08f576bd92e12bc858180f5dc64473ad652e9ad6d3a43ec",
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+        "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+        "math/combinatorics/binomial_prefix_sum_light.hpp": "93048e603db62da85ff95c724ad14f5e9064a515a04ece920726a2b4991e4715",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "math/combinatorics/comb_light.hpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-math-combinatorics-comb_light.hpp.cpp"
+      ],
+      "fixture_sha256": "1733307b1fbe6071bb70b0acc42724fc39c53f1c1f922114d5befd2d29cc4bdf",
+      "source_sha256": {
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "math/combinatorics/comb_light.hpp": "cd1ce1b3c5422641f93dff4f6ee8a4846b1fc8a0db61990758912ce3c6f593b5",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    },
+    {
+      "header": "math/combinatorics/comb_light.hpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-fps-natural-validation/include-math-combinatorics-comb_light.hpp.cpp"
+      ],
+      "fixture_sha256": "1733307b1fbe6071bb70b0acc42724fc39c53f1c1f922114d5befd2d29cc4bdf",
+      "source_sha256": {
+        "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+        "math/combinatorics/comb_light.hpp": "cd1ce1b3c5422641f93dff4f6ee8a4846b1fc8a0db61990758912ce3c6f593b5",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+      },
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "changed_sources": []
+    }
+  ],
+  "completed": true,
+  "locks": [
+    "/tmp/cp-fps-tuning.lock",
+    "/tmp/cp-wm-opt.lock"
+  ],
+  "completed_at": "2026-10-22T05:01:12.796096+00:00"
+}

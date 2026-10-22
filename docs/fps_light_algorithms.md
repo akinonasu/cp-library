@@ -30,6 +30,8 @@ auto value = light_fps_algorithms::linear_recurrence(initial, coefficients, 10);
 
 多点評価は入力順を保ち、空の点列では空配列です。補間は `xs` と `ys` の長さが等しく、`xs` が法上で相異なることが必要です。空の補間は空配列、補間結果の長さは点数です。入力の点をソートする必要はありません。
 
-Taylor shift では階乗と逆階乗、評価と補間では [積木](https://qandori.github.io/cp-library/components/fps_light_product_tree.hpp.html) を使います。追加演算を含めた展開後のサイズと速度比較は [測定資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light.md) にあります。演算中に必要となる NTT の長さは $$2^{23}$$ 以下である必要があります。
+Taylor shift では階乗と逆階乗、評価と補間では [積木](https://qandori.github.io/cp-library/components/fps_light_product_tree.hpp.html) を使います。追加演算を含めた展開後のサイズと速度比較は [測定資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_natural.md) にあります。演算中に必要となる NTT の長さは $$2^{23}$$ 以下である必要があります。
+
+合成・合成逆元・射影・多項式 GCD は `fps/compose_light.hpp`・`fps/compositional_inverse_light.hpp`・`fps/power_projection_light.hpp`・`fps/polynomial_gcd_light.hpp` に分けています。同じ `light_fps_algorithms` 名前空間と軽量 FPS を使い、必要な演算だけを追加できます。
 
 係数数を $$n$$、点数を $$m$$、Bostan–Mori の分子・分母の最大係数数または漸化式の次数を $$d$$ とします。Taylor shift は $$O(n\log(n+1))$$ 時間・$$O(n)$$ 追加空間、Bostan–Mori と線形漸化式は $$O(d\log(d+1)\log(k+2))$$ 時間・$$O(d)$$ 追加空間です。多点評価は $$O((n+m)\log^2(n+m+1))$$、補間は $$O(m\log^2(m+1))$$ 時間で、追加空間はそれぞれ $$O((n+m)\log(n+m+1))$$、$$O(m\log(m+1))$$ です。

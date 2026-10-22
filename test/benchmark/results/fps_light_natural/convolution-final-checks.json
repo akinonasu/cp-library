@@ -1,0 +1,397 @@
+{
+  "completed": true,
+  "sources": {
+    "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+    "convolution/cyclic_convolution_light.hpp": "6617c59a192fcc4b4a086a21e674e5210460961f24cabd3776dfdaa372ebbd8c",
+    "convolution/max_min_convolution_light.hpp": "ab2bade28703cbf943f614d1afecd60c6c01bcadffa4a4e2d2d05d698b5ba6e9",
+    "convolution/multiplicative_convolution_light.hpp": "72202f40dd6f0c43236892735f186a1cf1ee0d779b647b8762f93c14d1312de5",
+    "convolution/multivariate_convolution_light.hpp": "fa3dda224cf1e0c7f038a5fd4425df778fdb2195a37f793efe53b470fbbe6306",
+    "convolution/online_convolution_light.hpp": "a4e52e516909d838d9b42a4ad3acd9811e1ab4194747ec81bf13a80de1c8a112",
+    "convolution/ordered_convolution_light.hpp": "9b565f3b4b473f73ef866a3993d4ac5473b4771fe2fb4d7c3e10ff8f15594897"
+  },
+  "checks": [
+    {
+      "stage": "standalone",
+      "header": "convolution/convolution_light.hpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/cyclic_convolution_light.hpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/max_min_convolution_light.hpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/multiplicative_convolution_light.hpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/multivariate_convolution_light.hpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/online_convolution_light.hpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/ordered_convolution_light.hpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "unit",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/convolution_light.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-convolution-light-final"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/convolution_light.hpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/cyclic_convolution_light.hpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/max_min_convolution_light.hpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/multiplicative_convolution_light.hpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/multivariate_convolution_light.hpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/online_convolution_light.hpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "standalone",
+      "header": "convolution/ordered_convolution_light.hpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-fsyntax-only",
+        "/workspace/cp-light-convolution/standalone.cpp"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "unit",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/convolution_light.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-convolution-light-final"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "sanitize",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O1",
+        "-g",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/unit/convolution_light.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/convolution-light-final-sanitize"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "coexist",
+      "light_first": false,
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-isystem",
+        "/workspace/cp-comb-generic-study/ac-library",
+        "/workspace/cp-light-convolution/coexist.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-coexistFalse"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "coexist",
+      "light_first": false,
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-isystem",
+        "/workspace/cp-comb-generic-study/ac-library",
+        "/workspace/cp-light-convolution/coexist.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-coexistFalse"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "coexist",
+      "light_first": true,
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-isystem",
+        "/workspace/cp-comb-generic-study/ac-library",
+        "/workspace/cp-light-convolution/coexist.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-coexistTrue"
+      ],
+      "status": "passed"
+    },
+    {
+      "stage": "coexist",
+      "light_first": true,
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "-isystem",
+        "/workspace/cp-comb-generic-study/ac-library",
+        "/workspace/cp-light-convolution/coexist.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-coexistTrue"
+      ],
+      "status": "passed"
+    }
+  ]
+}

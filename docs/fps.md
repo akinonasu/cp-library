@@ -20,7 +20,7 @@ oj-bundle -I . a.cpp > submit.cpp
 wc -c submit.cpp
 ```
 
-通常版・軽量版の全ヘッダーと高速 I/O を併用した例も、通常展開のまま UTF-8 で 256 KiB 未満に収まることを検査しています。公開 API・高速経路・精度上限は維持しています。[提出コードの生成](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)、[サイズ・速度・検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_plain.md)を参照してください。
+通常版の全 API 使用例と基本の `FastInput`・`FastOutput` は、通常展開のまま UTF-8 で 256 KiB 未満に収まることを検査しています。軽量版は派生演算も含めて軽量 FPS に統一し、全 FPS 演算と同じ入出力を 64 KiB 未満で使えます。公開 API・高速経路・精度上限は維持しています。[提出コードの生成](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)、[サイズ・速度・検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_plain.md)を参照してください。
 
 編集用の実装原本は各ヘッダーと同じ場所の `.inc` ファイルです。利用者が原本を展開・短縮する必要はありません。
 

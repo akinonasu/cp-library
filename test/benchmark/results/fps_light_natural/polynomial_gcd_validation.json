@@ -1,0 +1,198 @@
+{
+  "system": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "reference": "test/benchmark/polynomial_gcd.md",
+  "cases": 18,
+  "checks": [
+    {
+      "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+      "driver": "test/fps_light_polynomial_gcd.test.cpp",
+      "official_cases": [
+        "abnormal_random_00",
+        "abnormal_random_01",
+        "abnormal_random_02",
+        "abnormal_random_03",
+        "abnormal_random_04",
+        "example_00",
+        "example_01",
+        "example_02",
+        "max_random_00",
+        "max_random_01",
+        "max_random_02",
+        "max_random_03",
+        "max_random_04",
+        "random_00",
+        "random_01",
+        "random_02",
+        "random_03",
+        "random_04"
+      ]
+    },
+    {
+      "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+      "driver": "test/fps_light_polynomial_extended_gcd.test.cpp",
+      "official_cases": [
+        "abnormal_random_00",
+        "abnormal_random_01",
+        "abnormal_random_02",
+        "abnormal_random_03",
+        "abnormal_random_04",
+        "example_00",
+        "example_01",
+        "example_02",
+        "max_random_00",
+        "max_random_01",
+        "max_random_02",
+        "max_random_03",
+        "max_random_04",
+        "random_00",
+        "random_01",
+        "random_02",
+        "random_03",
+        "random_04"
+      ]
+    },
+    {
+      "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+      "driver": "test/fps_light_polynomial_inv_mod.test.cpp",
+      "official_cases": [
+        "abnormal_random_00",
+        "abnormal_random_01",
+        "abnormal_random_02",
+        "abnormal_random_03",
+        "abnormal_random_04",
+        "example_00",
+        "example_01",
+        "example_02",
+        "max_random_00",
+        "max_random_01",
+        "max_random_02",
+        "max_random_03",
+        "max_random_04",
+        "random_00",
+        "random_01",
+        "random_02",
+        "random_03",
+        "random_04"
+      ]
+    },
+    {
+      "compiler": "Debian clang version 19.1.7 (3+b1)",
+      "driver": "test/fps_light_polynomial_gcd.test.cpp",
+      "official_cases": [
+        "abnormal_random_00",
+        "abnormal_random_01",
+        "abnormal_random_02",
+        "abnormal_random_03",
+        "abnormal_random_04",
+        "example_00",
+        "example_01",
+        "example_02",
+        "max_random_00",
+        "max_random_01",
+        "max_random_02",
+        "max_random_03",
+        "max_random_04",
+        "random_00",
+        "random_01",
+        "random_02",
+        "random_03",
+        "random_04"
+      ]
+    },
+    {
+      "compiler": "Debian clang version 19.1.7 (3+b1)",
+      "driver": "test/fps_light_polynomial_extended_gcd.test.cpp",
+      "official_cases": [
+        "abnormal_random_00",
+        "abnormal_random_01",
+        "abnormal_random_02",
+        "abnormal_random_03",
+        "abnormal_random_04",
+        "example_00",
+        "example_01",
+        "example_02",
+        "max_random_00",
+        "max_random_01",
+        "max_random_02",
+        "max_random_03",
+        "max_random_04",
+        "random_00",
+        "random_01",
+        "random_02",
+        "random_03",
+        "random_04"
+      ]
+    },
+    {
+      "compiler": "Debian clang version 19.1.7 (3+b1)",
+      "driver": "test/fps_light_polynomial_inv_mod.test.cpp",
+      "official_cases": [
+        "abnormal_random_00",
+        "abnormal_random_01",
+        "abnormal_random_02",
+        "abnormal_random_03",
+        "abnormal_random_04",
+        "example_00",
+        "example_01",
+        "example_02",
+        "max_random_00",
+        "max_random_01",
+        "max_random_02",
+        "max_random_03",
+        "max_random_04",
+        "random_00",
+        "random_01",
+        "random_02",
+        "random_03",
+        "random_04"
+      ]
+    }
+  ],
+  "unit": {
+    "source": "test/unit/polynomial_gcd_light.cpp",
+    "compilers": [
+      "GCC 14.2.0",
+      "Clang 19.1.7"
+    ],
+    "flags": [
+      "-std=c++23",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror"
+    ],
+    "passed": true
+  },
+  "sanitize": {
+    "compiler": "Clang 19.1.7",
+    "flags": [
+      "-std=c++23",
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer"
+    ],
+    "UBSAN_OPTIONS": "halt_on_error=1",
+    "ASAN_OPTIONS": "detect_leaks=1",
+    "passed": true
+  },
+  "standalone": {
+    "compilers": [
+      "GCC 14.2.0",
+      "Clang 19.1.7"
+    ],
+    "double_include": true,
+    "macro_pollution_check": true,
+    "passed": true
+  },
+  "headers": {
+    "components/polynomial_half_gcd_light.hpp": {
+      "bytes": 2387,
+      "sha256": "b5bfc4954a8028f35b029190b6fbdd2511d7035cb4f66ad93525891153a4563f"
+    },
+    "fps/polynomial_gcd_light.hpp": {
+      "bytes": 1440,
+      "sha256": "8db912fa745481ea75c9865baabab51849173e59d6fba2440e44a09dc6bd0b13"
+    }
+  }
+}

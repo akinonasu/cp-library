@@ -22,12 +22,46 @@ implementation_variants:
   components/fps_backend.hpp: components/fps_light_backend.hpp
   components/ntt.hpp: components/fps_light_ntt.hpp
   components/fps_product_tree.hpp: components/fps_light_product_tree.hpp
+  fps/compose.hpp: fps/compose_light.hpp
+  fps/compositional_inverse.hpp: fps/compositional_inverse_light.hpp
+  fps/power_projection.hpp: fps/power_projection_light.hpp
+  fps/polynomial_gcd.hpp: fps/polynomial_gcd_light.hpp
+  components/fps_composition.hpp: components/fps_composition_light.hpp
+  components/fps_reversion.hpp: components/fps_composition_light.hpp
+  components/polynomial_half_gcd.hpp: components/polynomial_half_gcd_light.hpp
+  convolution/convolution.hpp: convolution/convolution_light.hpp
+  convolution/cyclic_convolution.hpp: convolution/cyclic_convolution_light.hpp
+  convolution/multiplicative_convolution.hpp: convolution/multiplicative_convolution_light.hpp
+  convolution/ordered_convolution.hpp: convolution/ordered_convolution_light.hpp
+  convolution/max_min_convolution.hpp: convolution/max_min_convolution_light.hpp
+  convolution/online_convolution.hpp: convolution/online_convolution_light.hpp
+  convolution/multivariate_convolution.hpp: convolution/multivariate_convolution_light.hpp
+  math/combinatorics/comb.hpp: math/combinatorics/comb_light.hpp
+  math/combinatorics/binomial_prefix_sum.hpp: math/combinatorics/binomial_prefix_sum_light.hpp
+  math/combinatorics/binomial_prefix_sum_incremental.hpp: math/combinatorics/binomial_prefix_sum_incremental_light.hpp
+  components/binomial_prefix_core.hpp: components/binomial_prefix_core_light.hpp
+  components/binomial_prefix_polynomial.hpp: components/binomial_prefix_polynomial_light.hpp
+  components/factorial_table.hpp: components/factorial_table_light.hpp
 implementation_variant_apis:
   fps/taylor_shift.hpp: light_fps_algorithms::taylor_shift
   fps/bostan_mori.hpp: light_fps_algorithms::bostan_mori
   fps/linear_recurrence.hpp: light_fps_algorithms::linear_recurrence
   fps/multipoint_eval.hpp: light_fps_algorithms::multipoint_eval
   fps/interpolate.hpp: light_fps_algorithms::interpolate
+  fps/compose.hpp: light_fps_algorithms::compose
+  fps/compositional_inverse.hpp: light_fps_algorithms::compositional_inverse
+  fps/power_projection.hpp: light_fps_algorithms::power_projection
+  fps/polynomial_gcd.hpp: light_fps_algorithms::polynomial_gcd
+  convolution/convolution.hpp: light_convolution::convolution
+  convolution/cyclic_convolution.hpp: light_convolution::cyclic_convolution
+  convolution/multiplicative_convolution.hpp: light_convolution::multiplicative_convolution
+  convolution/ordered_convolution.hpp: light_convolution::ordered_convolution
+  convolution/max_min_convolution.hpp: light_convolution::max_min_convolution
+  convolution/online_convolution.hpp: LightOnlineConvolution
+  convolution/multivariate_convolution.hpp: light_convolution::multivariate_convolution
+  math/combinatorics/comb.hpp: light_combinatorics::comb
+  math/combinatorics/binomial_prefix_sum.hpp: light_combinatorics::BinomialPrefixSum
+  math/combinatorics/binomial_prefix_sum_incremental.hpp: light_combinatorics::IncrementalBinomialPrefixSum
 kramdown:
   math_engine: mathjax
 exclude:

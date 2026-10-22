@@ -53,6 +53,7 @@ def check(root):
             assert light['data']['path'] == implementation
             assert light['data']['libraryPath'] == name
             assert light['data']['bundledCode'] == code, name + ': wrong implementation'
+            assert 'fps_backend.hpp"' not in code, name + ': lightweight page includes full FPS'
             assert light['data']['copyByteCount'] == light_size
             assert light['data']['counterpartPage'] == name + '.html'
             assert not light.get('redirect_from') and not light.get('permalink')
