@@ -76,6 +76,15 @@ public:
 		} else rest.insert(value);
 		balance();
 	}
+	void insert(const T &value, size_type copies) {
+		while (copies && choose(value)) {
+			insert(value);
+			--copies;
+		}
+		if (!copies) return;
+		auto hint = rest.lower_bound(value);
+		for (; copies; --copies) rest.insert(hint, value);
+	}
 
 	bool erase(const T &value) {
 		auto it = selected.find(value);
@@ -89,6 +98,25 @@ public:
 		if (it == rest.end()) return false;
 		rest.erase(it);
 		return true;
+	}
+	size_type erase(const T &value, size_type copies) {
+		if (!copies) return 0;
+		size_type removed = 0;
+		auto [first, last] = selected.equal_range(value);
+		while (copies && first != last) {
+			selected_sum -= static_cast<Sum>(*first);
+			first = selected.erase(first);
+			--copies, ++removed;
+		}
+		if (copies) {
+			auto [it, end] = rest.equal_range(value);
+			while (copies && it != end) {
+				it = rest.erase(it);
+				--copies, ++removed;
+			}
+		}
+		balance();
+		return removed;
 	}
 
 	bool replace(const T &old_value, const T &new_value) {
