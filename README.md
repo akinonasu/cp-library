@@ -235,6 +235,7 @@
 | `math/number_theory/factorize.hpp` | 素因数分解・素数判定・約数列挙 | [使い方](docs/factorize.md) |
 | `math/number_theory/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
 | `math/number_theory/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
+| `math/number_theory/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
 
 ### 組合せ
 
