@@ -1,0 +1,692 @@
+{
+  "started_at": "2026-10-22T05:04:19.266479+00:00",
+  "pytest_version": "9.1.1",
+  "method": "Unmodified oj-bundle output plus reference URL; original formatting and all platform branches",
+  "limits": {
+    "light": 65536,
+    "normal_and_basic_light": 262144
+  },
+  "source_sha256": {
+    ".verify-helper/bundle_test.py": "efec56ece5b4248b5055ba70f32d8e88df4ef58c448123673497675f3d201438",
+    "components/binomial_prefix_core_light.hpp": "71d3fdeb9a87bf9efb1c47b0dc9bcd07dccf1aa47532015584ba10ba62cea46d",
+    "components/binomial_prefix_polynomial_light.hpp": "557d67dd4dda0e34a08f576bd92e12bc858180f5dc64473ad652e9ad6d3a43ec",
+    "components/factorial_table_light.hpp": "e153ed3b8badad07e5619ebaf7ffe77087b70097d752fe31b4d3d2ae7490e733",
+    "components/fast_io.hpp": "1066b06b0288fabcdf6e94c4a7a14d590293ede48d1203071e0a1f12e3a8f16d",
+    "components/fft.hpp": "fbf555f3e9943a25fe828ed810bb2308c173dd45915def99d801ac57f125d259",
+    "components/fps_backend.hpp": "80c088e9880b0aaa021cff25bfed8b9560ca281cc726e8340f21612785738b7b",
+    "components/fps_composition_light.hpp": "07c4b02a54a9f359621687768320dacba78acfdf73a452b500605e8614532eb1",
+    "components/fps_light_backend.hpp": "64d5ba3fcb709b4ede745b20f25c51c2dcbff97b865fb25e39cb199435f772d0",
+    "components/fps_light_ntt.hpp": "ca16870a52dc6a39c8b065a49e49f6b23baec5d6ae712f0ebc06cf242c1e3d4f",
+    "components/fps_light_product_tree.hpp": "cf9b712b09dedacb3c1539b0841d0b362cf3f62d463e8e5fb595cfe5546536ee",
+    "components/montgomery.hpp": "5be93ff94b1a4c2dcc3a85fa8431fbad3452bc1322b8a97ba0bfece9cc8e511b",
+    "components/ntt_mod.hpp": "40cbfd5344aff36ab539243debfd71c2aeed397845d52963b5aefd4c1b63395d",
+    "components/polynomial_half_gcd_light.hpp": "b5bfc4954a8028f35b029190b6fbdd2511d7035cb4f66ad93525891153a4563f",
+    "convolution/convolution_fft.hpp": "ca18157bbd16c951473e0f5602dc42458cde0027134c29609f1521b9f475f492",
+    "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+    "convolution/convolution_mod.hpp": "69aaa91c1855be4c2bbeddb1829fbf82045958c218623e0c8956424cf08b7139",
+    "convolution/convolution_ring.hpp": "877f2c3cefa12dfc9db13127035e49af10dacb7a488fd3c8acb25b545ff9fd11",
+    "convolution/cyclic_convolution_light.hpp": "6617c59a192fcc4b4a086a21e674e5210460961f24cabd3776dfdaa372ebbd8c",
+    "convolution/max_min_convolution_light.hpp": "ab2bade28703cbf943f614d1afecd60c6c01bcadffa4a4e2d2d05d698b5ba6e9",
+    "convolution/multiplicative_convolution_light.hpp": "72202f40dd6f0c43236892735f186a1cf1ee0d779b647b8762f93c14d1312de5",
+    "convolution/multivariate_convolution_light.hpp": "fa3dda224cf1e0c7f038a5fd4425df778fdb2195a37f793efe53b470fbbe6306",
+    "convolution/online_convolution_light.hpp": "a4e52e516909d838d9b42a4ad3acd9811e1ab4194747ec81bf13a80de1c8a112",
+    "convolution/ordered_convolution_light.hpp": "9b565f3b4b473f73ef866a3993d4ac5473b4771fe2fb4d7c3e10ff8f15594897",
+    "fps/bostan_mori.hpp": "81197676d1837d7dc3d1990979d14201da57cb6eb3f9a8f485b5370a8afb6b5d",
+    "fps/compose.hpp": "3a32f6da689d5ffe8400e8ef98fe9f5faac888ab4ebc8cc11b416a0a51895283",
+    "fps/compose_light.hpp": "92ffde12abccfad590e80a6a223e8edc1edb8e777c52bad7abbd1fbe15dbf876",
+    "fps/compositional_inverse.hpp": "15557115c8552f692055de808404a91d55aba3a03cd281c0cc9a562664b3f50c",
+    "fps/compositional_inverse_light.hpp": "dd61aeff9ddfef62676a1848394975c2af18953f6dfe05007e62ef676c415de9",
+    "fps/fps.hpp": "5fbb6b4afe5d4f9a2460aa5c755b1516280063a95cd3afa5e4e217bdad25b432",
+    "fps/fps_light.hpp": "a5f45106d830fb2134efe959cd41725da6cc2fc9c9ab3c16fb514c72cd2324c4",
+    "fps/fps_light_algorithms.hpp": "5ffa868cc78f8cada050f3f8a25d72b02f28fd41785a4f48ef647dedcbb3c3d0",
+    "fps/interpolate.hpp": "d3dcb2af063c0c57a821728507602a5055599052541c770c0c4ecd63fd6ac1f0",
+    "fps/linear_recurrence.hpp": "9c6b8c4442d7a5cb5aa0fd2e8b6aea24b0a35dcd38cb170b04eb1843b82551e5",
+    "fps/multipoint_eval.hpp": "217d6d4e11cc590d4bbd18b98a0823285c07a26d9f195ec8f49754db2f30cbb9",
+    "fps/polynomial_gcd.hpp": "d164e93375be78f38cdc3e0ae3412426d3f675aabc211469cecf5205576753b3",
+    "fps/polynomial_gcd_light.hpp": "8db912fa745481ea75c9865baabab51849173e59d6fba2440e44a09dc6bd0b13",
+    "fps/power_projection.hpp": "0dde8e10ea40f7165d1fb2f7c934b0f4ae9ac2b13f00b95f1f26c907b3297e9d",
+    "fps/power_projection_light.hpp": "0e5cf7aa5ea5366d67f198cbb6033a17f1e503231816ec4507da190e181b7a4c",
+    "fps/taylor_shift.hpp": "b54e6fad11f6feba8f3af6685981a9daee78dd0eea89a76cf5f4c1ddfa6fd1f8",
+    "math/combinatorics/binomial_prefix_sum_incremental_light.hpp": "728de79585822db04529cdf9f7c065f4bb9361a86b11322d0e8132e38f3fc6d9",
+    "math/combinatorics/binomial_prefix_sum_light.hpp": "93048e603db62da85ff95c724ad14f5e9064a515a04ece920726a2b4991e4715",
+    "math/combinatorics/comb_light.hpp": "cd1ce1b3c5422641f93dff4f6ee8a4846b1fc8a0db61990758912ce3c6f593b5",
+    "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+    "math/number_theory/is_prime.hpp": "12734adb63fc711c66ada779957d379ffd957e78be354b907e5ee10088059618",
+    "test/unit/fps_light_public_headers.cpp": "1f2917a7b50bdd5afc041d5f161af1ccc8a92a0aa9ec198d4e0a138bbaac3e20",
+    "test/unit/fps_public_headers.cpp": "1cdd7cdff495bd826a4e14a7b811d6b0942956800018192bb375024703351662"
+  },
+  "light_headers": [
+    "components/binomial_prefix_core_light.hpp",
+    "components/binomial_prefix_polynomial_light.hpp",
+    "components/factorial_table_light.hpp",
+    "components/fps_composition_light.hpp",
+    "components/fps_light_backend.hpp",
+    "components/fps_light_ntt.hpp",
+    "components/fps_light_product_tree.hpp",
+    "components/polynomial_half_gcd_light.hpp",
+    "convolution/convolution_light.hpp",
+    "convolution/cyclic_convolution_light.hpp",
+    "convolution/max_min_convolution_light.hpp",
+    "convolution/multiplicative_convolution_light.hpp",
+    "convolution/multivariate_convolution_light.hpp",
+    "convolution/online_convolution_light.hpp",
+    "convolution/ordered_convolution_light.hpp",
+    "fps/compose_light.hpp",
+    "fps/compositional_inverse_light.hpp",
+    "fps/fps_light.hpp",
+    "fps/fps_light_algorithms.hpp",
+    "fps/polynomial_gcd_light.hpp",
+    "fps/power_projection_light.hpp",
+    "math/combinatorics/binomial_prefix_sum_incremental_light.hpp",
+    "math/combinatorics/binomial_prefix_sum_light.hpp",
+    "math/combinatorics/comb_light.hpp"
+  ],
+  "rows": [
+    {
+      "kind": "normal_and_basic_light_public_api_with_fast_io",
+      "includes": [
+        "fps/bostan_mori.hpp",
+        "fps/compose.hpp",
+        "fps/compositional_inverse.hpp",
+        "fps/fps.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "fps/interpolate.hpp",
+        "fps/linear_recurrence.hpp",
+        "fps/multipoint_eval.hpp",
+        "fps/polynomial_gcd.hpp",
+        "fps/power_projection.hpp",
+        "fps/taylor_shift.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "2c7d84d77d586fd09ded83fc73c5b3c9f0e973cb5b9f467600ce41e01623807a",
+      "bundled_sha256": "da18f1141470fac3ab21153edf671aed2ab7d987bb46496dabdeaf061b81361c",
+      "bytes": 258271,
+      "reference": "https://qandori.github.io/cp-library/fps/fps.hpp.html",
+      "copy_bytes": 258327,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp18jxn8w0/all_fps.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "components/binomial_prefix_core_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "621d672036f9cd334e4d1b548ac72e2b97800aabb5e80592fcd105731aa10cfb",
+      "bundled_sha256": "3e72768be2c6e4eae2c74c16cc7d44295106aca4d51291eec922060289806f47",
+      "bytes": 12433,
+      "reference": "https://qandori.github.io/cp-library/lightweight/components/binomial_prefix_core_light.hpp.html",
+      "copy_bytes": 12531,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "components/binomial_prefix_polynomial_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "e95e657b6858e8a34757c5b9a40612ba25cfbf8ec83fe888bbe445ec2e506210",
+      "bundled_sha256": "ce98e0ed6627b3386f5b0b56238cf7ff88665247b269b91242b74211e302da95",
+      "bytes": 52797,
+      "reference": "https://qandori.github.io/cp-library/lightweight/components/binomial_prefix_polynomial_light.hpp.html",
+      "copy_bytes": 52901,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "components/factorial_table_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "85f6fd762e4e972e66e95fd4fc0f0021381e29db67a0ca28630351871ea7ccc4",
+      "bundled_sha256": "d788ea58361ed5ba1ad365bdbc151ca552ba01a6649988c59b2e730028ba016b",
+      "bytes": 11265,
+      "reference": "https://qandori.github.io/cp-library/lightweight/components/factorial_table_light.hpp.html",
+      "copy_bytes": 11358,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "components/fps_composition_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "d9fb827d595c923681b4b72bad1b741019bfa93e2da90f37f7058120267a09d4",
+      "bundled_sha256": "6c8225d4b2c9ebc8f9ef73008e09fb38fafcab57412c4c900143fed74d959288",
+      "bytes": 48351,
+      "reference": "https://qandori.github.io/cp-library/lightweight/components/fps_composition_light.hpp.html",
+      "copy_bytes": 48444,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "components/fps_light_backend.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "6e2263443d1dfb948107555a09834baa5dfda8d89245cfb1d0c6041d1240f17e",
+      "bundled_sha256": "d20625fa71224fd7c5d74cb325f60a361f47bfc7e4dce381f0eeffaf528170fa",
+      "bytes": 41741,
+      "reference": "https://qandori.github.io/cp-library/lightweight/components/fps_light_backend.hpp.html",
+      "copy_bytes": 41830,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "components/fps_light_ntt.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "550c3fea98ed182a8624193fd482c7f26c2645326204c4bd1d45a745154ee3f3",
+      "bundled_sha256": "d476b57bbf721638de7f89dfe86091e031d5d339d0278e074060ad665516f915",
+      "bytes": 41822,
+      "reference": "https://qandori.github.io/cp-library/lightweight/components/fps_light_ntt.hpp.html",
+      "copy_bytes": 41907,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "components/fps_light_product_tree.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "9773a814011ee4d289f4773bb0f1f47347ef5b1298c497c8a2a6ebd0e043d6c5",
+      "bundled_sha256": "e864174bcd024f185f1bc0a15736b8a3488b529a5a3989f01070c01f66ffc396",
+      "bytes": 41840,
+      "reference": "https://qandori.github.io/cp-library/lightweight/components/fps_light_product_tree.hpp.html",
+      "copy_bytes": 41934,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "components/polynomial_half_gcd_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "e28e62c91749aff24d1af6fdc2c4722c1d86e104b6a598ab0a867ffb5d5e8013",
+      "bundled_sha256": "f5fbd50b15a4ca0b44c7b0feea9db68c90bd6cb8b205af8e2d10f187fdcaf071",
+      "bytes": 44099,
+      "reference": "https://qandori.github.io/cp-library/lightweight/components/polynomial_half_gcd_light.hpp.html",
+      "copy_bytes": 44196,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "convolution/convolution_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "a3d24a4441b884b125d611a70679164a446006a76299e5c689d2400bc71f198f",
+      "bundled_sha256": "aa717bbe67c930d45f8b9095832fd6bc5e84c079024b8f0d0422b462e7b3b691",
+      "bytes": 55397,
+      "reference": "https://qandori.github.io/cp-library/lightweight/convolution/convolution_light.hpp.html",
+      "copy_bytes": 55487,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "convolution/cyclic_convolution_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "2d655b8ccc88369f3332da62f5e4356a407251b4a18c6573c0d279f4c08a25d2",
+      "bundled_sha256": "15daf02344385070c3562f113cc4b7f357e016ec2bc2879a6b3ec9e06c122218",
+      "bytes": 56331,
+      "reference": "https://qandori.github.io/cp-library/lightweight/convolution/cyclic_convolution_light.hpp.html",
+      "copy_bytes": 56428,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "convolution/max_min_convolution_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "9041a05be0bd2e68bb243d2b56c3e9efa365770c44197080dd4f1fc1d9950126",
+      "bundled_sha256": "38263f3919bcf930cb65bcaa4614e6b50370fa297fbdbf1667cdf6a0b713a201",
+      "bytes": 44339,
+      "reference": "https://qandori.github.io/cp-library/lightweight/convolution/max_min_convolution_light.hpp.html",
+      "copy_bytes": 44437,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "convolution/multiplicative_convolution_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "121227f6a4deea13fc6d5323fdf925109092751b561c91d948d92bfe99f9526d",
+      "bundled_sha256": "1b64aa40cd33e2827b07cbe59ef0cc5f93a9ce48ca10270774d998bb9dc041e6",
+      "bytes": 59209,
+      "reference": "https://qandori.github.io/cp-library/lightweight/convolution/multiplicative_convolution_light.hpp.html",
+      "copy_bytes": 59314,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "convolution/multivariate_convolution_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "79bc0567d9588a2e3ef833f59e937bc3d4d32a464150aeda55d7a0f5355ed10f",
+      "bundled_sha256": "576d25de73d7c9363e2e5a067d7cda208223e6931eb107c72b1b140f3c095e12",
+      "bytes": 57864,
+      "reference": "https://qandori.github.io/cp-library/lightweight/convolution/multivariate_convolution_light.hpp.html",
+      "copy_bytes": 57967,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "convolution/online_convolution_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "d8c533346c7776a7367b23ea9ffd582f446ad96550e16d01f24f086fbf507a24",
+      "bundled_sha256": "c6abddcf6e6f3931c28c5b14e4ca74bf2187b55ff217a43dbfc9fa4f298496b7",
+      "bytes": 44638,
+      "reference": "https://qandori.github.io/cp-library/lightweight/convolution/online_convolution_light.hpp.html",
+      "copy_bytes": 44735,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "convolution/ordered_convolution_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "7a450c9f406f1ea1ffb2077a5d1a8fb9a5a4f3e4f550e44ede65d883016450c0",
+      "bundled_sha256": "72d719eb93abb3cc0e204609fc6f5eb7ff9b2b5d775cc845a0b0f55fc224bf79",
+      "bytes": 56709,
+      "reference": "https://qandori.github.io/cp-library/lightweight/convolution/ordered_convolution_light.hpp.html",
+      "copy_bytes": 56807,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "fps/compose_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "d3c92807f4708e7442285a5f7934784d4ca3523602d57596a81a925f4a794d6a",
+      "bundled_sha256": "f767eec9a787e7da291e96e1d5c27b3162b645b20e4c36eb1721787d08730edf",
+      "bytes": 48418,
+      "reference": "https://qandori.github.io/cp-library/lightweight/fps/compose_light.hpp.html",
+      "copy_bytes": 48496,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "fps/compositional_inverse_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "eb3868d3db3ee88c89a7b150201c02d81641651c85cab2eee65793f3873dc18b",
+      "bundled_sha256": "3c8c99020df12108127a0b2ebc08a5e3b2b64545fe2590546ac245fafd98b074",
+      "bytes": 48446,
+      "reference": "https://qandori.github.io/cp-library/lightweight/fps/compositional_inverse_light.hpp.html",
+      "copy_bytes": 48538,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "fps/fps_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "d74d665543d07be69abc016a9f888238db30b40097e94d6c6a7bba21f1c45abf",
+      "bundled_sha256": "a58f59a729d06a78b07e049f372bd5fc37baf2f5778b659a1dff610392158ffe",
+      "bytes": 41800,
+      "reference": "https://qandori.github.io/cp-library/lightweight/fps/fps_light.hpp.html",
+      "copy_bytes": 41874,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "fps/fps_light_algorithms.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "9e9bf9e4524d4b4ab948a708c34e8d405d9b399f9b8152534ee37f37438daa67",
+      "bundled_sha256": "b5904e06708deba18a93683c68fcf076cf79a04174d4863d785c0082886a028a",
+      "bytes": 41822,
+      "reference": "https://qandori.github.io/cp-library/lightweight/fps/fps_light_algorithms.hpp.html",
+      "copy_bytes": 41907,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "fps/polynomial_gcd_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "b77bc8ac97daf69d3867fabe55c439b79983c3e9bc512f0b198bfba11c0946ac",
+      "bundled_sha256": "d1a5f989897a672da6835f19584c18c07d6118b3594dbd5bf3599e356a18fd6c",
+      "bytes": 45458,
+      "reference": "https://qandori.github.io/cp-library/lightweight/fps/polynomial_gcd_light.hpp.html",
+      "copy_bytes": 45543,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "fps/power_projection_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "b0b115bedf67e96b4a78b436593a9f8a00dbe75022a25bb98c17a9d43e3925a4",
+      "bundled_sha256": "570999d8f2e158ec6b1561cb527faac17552c86f568045688352ca067e112089",
+      "bytes": 48436,
+      "reference": "https://qandori.github.io/cp-library/lightweight/fps/power_projection_light.hpp.html",
+      "copy_bytes": 48523,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "math/combinatorics/binomial_prefix_sum_incremental_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "65b71783bebc9bf83c4a290a1cab469d66590b6d43ab8ebe46b8338b927e984e",
+      "bundled_sha256": "b449caf704955342838c341b581acb8828774cb0a9e427a1755c8803da7840fa",
+      "bytes": 14495,
+      "reference": "https://qandori.github.io/cp-library/lightweight/math/combinatorics/binomial_prefix_sum_incremental_light.hpp.html",
+      "copy_bytes": 14612,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "math/combinatorics/binomial_prefix_sum_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "f1e41b38ebcfa79b0d262b65cd7f0d150f312c2e519b0002a6da63808a6659fb",
+      "bundled_sha256": "d73ffe3951534315342f9617a229080abd826a23b2d665116ac87382f9ff367b",
+      "bytes": 56541,
+      "reference": "https://qandori.github.io/cp-library/lightweight/math/combinatorics/binomial_prefix_sum_light.hpp.html",
+      "copy_bytes": 56646,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "single_light_with_fast_io",
+      "includes": [
+        "math/combinatorics/comb_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "234b3d4921e3a60b2c8178df105a3dd1d21bf7680cac4f387ec9019c16c49651",
+      "bundled_sha256": "c9fe4929c766ad0fa7e99238e61d62ffa85812c80a422b9168b204bc4598cd50",
+      "bytes": 12805,
+      "reference": "https://qandori.github.io/cp-library/lightweight/math/combinatorics/comb_light.hpp.html",
+      "copy_bytes": 12895,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp_ffw7vf8/light.cpp"
+      ]
+    },
+    {
+      "kind": "all_light_fps_public_api_with_fast_io",
+      "includes": [
+        "fps/compose_light.hpp",
+        "fps/compositional_inverse_light.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "fps/polynomial_gcd_light.hpp",
+        "fps/power_projection_light.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "9f77dbf046e7d7da2106d22cb9d5dd2f01cc8d5f2ee04286c2f1840b7489f07f",
+      "bundled_sha256": "40172b871761cc6f3b8923c2b4ede18d1a44cbbebca601dc8d8aeb52b0088b86",
+      "bytes": 54105,
+      "reference": "https://qandori.github.io/cp-library/lightweight/fps/fps.hpp.html",
+      "copy_bytes": 54173,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmp2bukul11/all_light_fps.cpp"
+      ]
+    }
+  ],
+  "unsupported_all_normal_and_all_light_headers": [
+    {
+      "test": "test_fps_combined_budget",
+      "includes": [
+        "fps/bostan_mori.hpp",
+        "fps/compose.hpp",
+        "fps/compose_light.hpp",
+        "fps/compositional_inverse.hpp",
+        "fps/compositional_inverse_light.hpp",
+        "fps/fps.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "fps/interpolate.hpp",
+        "fps/linear_recurrence.hpp",
+        "fps/multipoint_eval.hpp",
+        "fps/polynomial_gcd.hpp",
+        "fps/polynomial_gcd_light.hpp",
+        "fps/power_projection.hpp",
+        "fps/power_projection_light.hpp",
+        "fps/taylor_shift.hpp",
+        "components/fast_io.hpp"
+      ],
+      "fixture_sha256": "cc05da68dce1ffc7589c62a7d6e9443298c1787a6fbbf2f49d616db925693b18",
+      "bundled_sha256": "0f878140387569939a2be71b2f000342ab2b30913269b7cff73af937c920e13b",
+      "bytes": 268760,
+      "reference": "https://qandori.github.io/cp-library/fps/fps.hpp.html",
+      "copy_bytes": 268816,
+      "command": [
+        "oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/tmpohzegu4y/all_fps.cpp"
+      ]
+    }
+  ],
+  "combined_fixture_scope": {
+    "normal_headers": 10,
+    "basic_light_headers": 2,
+    "fast_io": true,
+    "public_api_usage": "test/unit/fps_public_headers.cpp",
+    "removed_unused_include": "test/fps_io.hpp",
+    "excluded_advanced_light_headers": [
+      "fps/compose_light.hpp",
+      "fps/compositional_inverse_light.hpp",
+      "fps/polynomial_gcd_light.hpp",
+      "fps/power_projection_light.hpp"
+    ],
+    "advanced_light_coverage": "all light FPS headers and test/unit/fps_light_public_headers.cpp within 64 KiB"
+  },
+  "completed": true,
+  "command": [
+    "/workspace/cp-fps-light-study/venv/bin/python",
+    "/workspace/cp-fps-natural-validation/final_bundle_regression.py",
+    "-q",
+    "/workspace/cp-library/.verify-helper/bundle_test.py"
+  ],
+  "completed_at": "2026-10-22T05:04:35.217696+00:00",
+  "returncode": 0,
+  "tests": [
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_compact_requires_line_directive",
+      "outcome": "passed",
+      "duration_seconds": 0.00010536899981161696
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_distribution_headers_are_current",
+      "outcome": "passed",
+      "duration_seconds": 8.837384128999929
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_documentation_uses_same_limit",
+      "outcome": "passed",
+      "duration_seconds": 0.2933413159998963
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_fps_normal_and_basic_light_combined_budget",
+      "outcome": "passed",
+      "duration_seconds": 0.27273561100037114
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_light_dependency_budgets",
+      "outcome": "passed",
+      "duration_seconds": 4.9287932080001156
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_light_dependency_closure_uses_readable_cpp",
+      "outcome": "passed",
+      "duration_seconds": 0.04074662199991508
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_light_fps_combined_budget",
+      "outcome": "passed",
+      "duration_seconds": 0.2458658660002584
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_light_fps_uses_readable_cpp",
+      "outcome": "passed",
+      "duration_seconds": 0.0004993020002075355
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_preprocessor_equivalence",
+      "outcome": "passed",
+      "duration_seconds": 1.092981745999623
+    },
+    {
+      "test": ".verify-helper/bundle_test.py::BundleTest::test_windows_line_endings",
+      "outcome": "passed",
+      "duration_seconds": 0.0009115620000557101
+    }
+  ],
+  "sources_changed": [],
+  "test_count": 10,
+  "subtest_count": 66,
+  "pytest_command": [
+    "/workspace/cp-fps-light-study/venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    ".verify-helper/bundle_test.py"
+  ],
+  "log_sha256": "626e3da2a103c9c761bc48a046021f9cc4d4e0a561bd1cf952f43e8d9be2a5b0",
+  "runner_sha256": "032fae07fe0a217aa2c1898f3ed82b2a76fc05338accccbf97107a836c3bb4c7"
+}

@@ -115,17 +115,17 @@ def render(names, target, *, expand):
 
 def generate():
     outputs, inputs = {}, {}
-    for light, target in [(False, 'components/fps_backend.hpp'), (True, 'components/fps_light_backend.hpp')]:
-        names = sorted(path.with_suffix('.hpp').relative_to(ROOT).as_posix()
-                       for path in (ROOT / 'fps').glob('*.inc') if ('light' in path.name) == light)
-        text, guards, sources = render(names, target, expand=True)
-        outputs[target] = text
-        inputs.update(sources)
-        for name, guard in guards.items():
-            if name == 'components/fps_asm.hpp':
-                continue
-            include = os.path.relpath(ROOT / target, (ROOT / name).parent)
-            outputs[name] = '#ifndef ' + guard + '\n#define ' + guard + '\n#include "' + include + '"\n#endif\n'
+    target = 'components/fps_backend.hpp'
+    names = sorted(path.with_suffix('.hpp').relative_to(ROOT).as_posix()
+                   for path in (ROOT / 'fps').glob('*.inc') if 'light' not in path.name)
+    text, guards, sources = render(names, target, expand=True)
+    outputs[target] = text
+    inputs.update(sources)
+    for name, guard in guards.items():
+        if name == 'components/fps_asm.hpp':
+            continue
+        include = os.path.relpath(ROOT / target, (ROOT / name).parent)
+        outputs[name] = '#ifndef ' + guard + '\n#define ' + guard + '\n#include "' + include + '"\n#endif\n'
     for name in IO:
         text, _, sources = render([name], name, expand=False)
         outputs[name] = text

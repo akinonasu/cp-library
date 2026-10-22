@@ -3,9 +3,9 @@ title: "FPS の配布実装"
 documentation_of: //components/fps_backend.hpp
 ---
 
-公開ヘッダーから読み込む共通の配布実装です。通常版と軽量版は別ファイルで、通常の `#include`・`oj-bundle` だけで使えます。利用時にコードを圧縮する処理はありません。
+公開ヘッダーから読み込む共通の配布実装です。高速実装と[軽量実装](https://qandori.github.io/cp-library/components/fps_light_backend.hpp.html)は別ファイルで、通常の `#include`・`oj-bundle` だけで使えます。利用時にコードを圧縮する処理はありません。
 
-編集用の原本は `fps/*.inc` と `components/*.inc` にあります。メンテナーが原本を変更した場合だけ、次のコマンドで配布実装を更新します。利用者には不要です。
+高速実装の編集用原本は `fps/*.inc` と `components/*.inc` にあります。軽量実装は通常の C++ のヘッダーを直接編集します。メンテナーが原本を変更した場合だけ、次のコマンドで配布実装を更新します。利用者には不要です。
 
 ```sh
 python3 tools/update_fps_headers.py

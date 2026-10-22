@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -9,7 +10,31 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 LIMIT = 256 * 1024
+LIGHT_LIMIT = 64 * 1024
 from tools.compact_fps import compact, lex
+
+
+def light_headers():
+    headers = set(ROOT.rglob('*_light.hpp'))
+    for directory in ('fps', 'components'):
+        headers.update((ROOT / directory).glob('fps_light*.hpp'))
+    return sorted(path for path in headers if path.is_file())
+
+
+def dependencies(path, seen=None):
+    seen = set() if seen is None else seen
+    path = path.resolve()
+    if path in seen:
+        return seen
+    seen.add(path)
+    for include in re.findall(r'^\s*#\s*include\s*"([^"\n]+)"', path.read_text(), re.MULTILINE):
+        target = path.parent / include
+        if not target.is_file():
+            target = ROOT / include
+        if not target.is_file():
+            raise FileNotFoundError((path, include))
+        dependencies(target, seen)
+    return seen
 
 
 class BundleTest(unittest.TestCase):
@@ -20,6 +45,67 @@ class BundleTest(unittest.TestCase):
     def test_distribution_headers_are_current(self):
         subprocess.run([sys.executable, str(ROOT / 'tools/update_fps_headers.py'), '--check'],
                        cwd=ROOT, check=True, capture_output=True)
+
+    def test_light_fps_uses_readable_cpp(self):
+        headers = ['fps/fps_light.hpp', 'fps/fps_light_algorithms.hpp',
+                   'components/fps_light_ntt.hpp', 'components/fps_light_product_tree.hpp',
+                   'components/fps_light_backend.hpp', 'math/mint.hpp']
+        for name in headers:
+            source = (ROOT / name).read_text()
+            self.assertTrue(source.isascii(), name)
+            definitions = [line for line in source.splitlines() if line.startswith('#define ')]
+            self.assertEqual(len(definitions), 1, name)
+            self.assertEqual(definitions[0].split()[1], source.splitlines()[0].split()[1])
+        self.assertGreater((ROOT / 'components/fps_light_backend.hpp').read_text().count('\n'), 500)
+
+    def test_light_dependency_closure_uses_readable_cpp(self):
+        headers = light_headers()
+        self.assertTrue(headers)
+        closure = set()
+        for header in headers:
+            dependencies(header, closure)
+        for path in sorted(closure):
+            name = path.relative_to(ROOT).as_posix()
+            with self.subTest(header=name):
+                self.assertNotEqual(name, 'components/fps_backend.hpp')
+                self.assertEqual(path.suffix, '.hpp')
+                source = path.read_text()
+                self.assertTrue(source.isascii())
+                guard = re.search(r'^\s*#\s*ifndef\s+([A-Z][A-Z0-9_]*)\s*$', source, re.MULTILINE)
+                self.assertIsNotNone(guard)
+                for definition in re.findall(r'^\s*#\s*define[^\n]*', source, re.MULTILINE):
+                    if definition.strip() == '#define ' + guard[1]:
+                        continue
+                    self.assertRegex(definition, r'^\s*#\s*define\s+[A-Z][A-Z0-9_]*\s+[0-9]+[uUlL]*\s*$')
+
+    @unittest.skipUnless(shutil.which('oj-bundle'), 'oj-bundle is unavailable')
+    def test_light_dependency_budgets(self):
+        headers = light_headers()
+        self.assertTrue(headers)
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'light.cpp'
+            for header in headers:
+                name = header.relative_to(ROOT).as_posix()
+                with self.subTest(header=name):
+                    path.write_text('#include "' + name + '"\n#include "components/fast_io.hpp"\nint main() {}\n')
+                    generated = subprocess.check_output(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT)
+                    reference = ('//https://qandori.github.io/cp-library/lightweight/' + name + '.html\n').encode()
+                    self.assertLess(len(reference + generated), LIGHT_LIMIT)
+
+    @unittest.skipUnless(shutil.which('oj-bundle'), 'oj-bundle is unavailable')
+    def test_light_fps_combined_budget(self):
+        headers = [path.relative_to(ROOT).as_posix() for path in light_headers() if path.parent == ROOT / 'fps']
+        self.assertTrue(headers)
+        source = ''.join('#include "' + header + '"\n' for header in headers)
+        source += '#include "components/fast_io.hpp"\n#include <cstdlib>\n'
+        usage = (ROOT / 'test/unit/fps_light_public_headers.cpp').read_text()
+        source += usage[usage.index('void require('):]
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'all_light_fps.cpp'
+            path.write_text(source)
+            generated = subprocess.check_output(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT)
+            reference = b'//https://qandori.github.io/cp-library/lightweight/fps/fps.hpp.html\n'
+            self.assertLess(len(reference + generated), LIGHT_LIMIT)
 
     def test_preprocessor_equivalence(self):
         compilers = [compiler for compiler in ('g++', 'clang++') if shutil.which(compiler)]
@@ -73,10 +159,12 @@ class BundleTest(unittest.TestCase):
                             self.assertEqual(outputs[0], outputs[1])
 
     @unittest.skipUnless(shutil.which('oj-bundle'), 'oj-bundle is unavailable')
-    def test_fps_combined_budget(self):
-        headers = sorted(path.relative_to(ROOT).as_posix() for path in (ROOT / 'fps').glob('*.hpp'))
+    def test_fps_normal_and_basic_light_combined_budget(self):
+        headers = ['fps/' + name + '.hpp' for name in (
+            'bostan_mori', 'compose', 'compositional_inverse', 'fps', 'fps_light', 'fps_light_algorithms',
+            'interpolate', 'linear_recurrence', 'multipoint_eval', 'polynomial_gcd', 'power_projection', 'taylor_shift')]
         source = ''.join('#include "' + header + '"\n' for header in headers)
-        source += '#include "components/fast_io.hpp"\n#include "test/fps_io.hpp"\n'
+        source += '#include "components/fast_io.hpp"\n'
         usage = (ROOT / 'test/unit/fps_public_headers.cpp').read_text()
         usage = usage[usage.index('void require('):]
         usage = usage.replace('check<mint>();', 'light_fps lf{1,2,1}; require(lf.inv(8).size()==8); check<mint>();')

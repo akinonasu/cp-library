@@ -1,0 +1,170 @@
+{
+  "completed": true,
+  "checks": [
+    {
+      "compiler": "g++",
+      "driver": "test/convolution_light.test.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-convolution_light-driver"
+      ],
+      "problem": "convolution_mod",
+      "cases_passed": 53,
+      "elapsed_seconds": 5.7590263749998485
+    },
+    {
+      "compiler": "g++",
+      "driver": "test/online_convolution_light.test.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/online_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-online_convolution_light-driver"
+      ],
+      "problem": "convolution_mod",
+      "cases_passed": 53,
+      "elapsed_seconds": 8.48647026799972
+    },
+    {
+      "compiler": "g++",
+      "driver": "test/multiplicative_convolution_light.test.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/multiplicative_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-multiplicative-final"
+      ],
+      "problem": "mul_modp_convolution",
+      "cases_passed": 40,
+      "elapsed_seconds": 1.356624966000254
+    },
+    {
+      "compiler": "g++",
+      "driver": "test/multivariate_convolution_light.test.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/workspace/cp-library/test/multivariate_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-multivariate-final"
+      ],
+      "problem": "multivariate_convolution",
+      "cases_passed": 17,
+      "elapsed_seconds": 2.978681720000168
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "driver": "test/convolution_light.test.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-convolution_light-driver"
+      ],
+      "problem": "convolution_mod",
+      "cases_passed": 53,
+      "elapsed_seconds": 5.283271997999691
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "driver": "test/online_convolution_light.test.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/online_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-online_convolution_light-driver"
+      ],
+      "problem": "convolution_mod",
+      "cases_passed": 53,
+      "elapsed_seconds": 7.370588592999866
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "driver": "test/multiplicative_convolution_light.test.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/multiplicative_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-multiplicative-final"
+      ],
+      "problem": "mul_modp_convolution",
+      "cases_passed": 40,
+      "elapsed_seconds": 1.243449629999759
+    },
+    {
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "driver": "test/multivariate_convolution_light.test.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/workspace/cp-library/test/multivariate_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-multivariate-final"
+      ],
+      "problem": "multivariate_convolution",
+      "cases_passed": 17,
+      "elapsed_seconds": 2.5104474659997322
+    }
+  ],
+  "sources": {
+    "convolution/convolution_light.hpp": "cddfc96c3f21f82012ccac0d2e79c39764f5dde26dd93ee9d5441462aba0c69c",
+    "convolution/cyclic_convolution_light.hpp": "6617c59a192fcc4b4a086a21e674e5210460961f24cabd3776dfdaa372ebbd8c",
+    "convolution/max_min_convolution_light.hpp": "ab2bade28703cbf943f614d1afecd60c6c01bcadffa4a4e2d2d05d698b5ba6e9",
+    "convolution/multiplicative_convolution_light.hpp": "72202f40dd6f0c43236892735f186a1cf1ee0d779b647b8762f93c14d1312de5",
+    "convolution/multivariate_convolution_light.hpp": "fa3dda224cf1e0c7f038a5fd4425df778fdb2195a37f793efe53b470fbbe6306",
+    "convolution/online_convolution_light.hpp": "a4e52e516909d838d9b42a4ad3acd9811e1ab4194747ec81bf13a80de1c8a112",
+    "convolution/ordered_convolution_light.hpp": "9b565f3b4b473f73ef866a3993d4ac5473b4771fe2fb4d7c3e10ff8f15594897"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "completed": true,
+  "completed_at": "2026-10-22T05:07:06.142576+00:00",
+  "generated_sources": 428,
+  "headers": 228,
+  "verification_sources": 200,
+  "catalog_positions": 204,
+  "lightweight_implementations": 183,
+  "implementation_pairs": 29,
+  "compiled_affected_bundles": 24,
+  "checks": [
+    {
+      "command": [
+        "python",
+        ".verify-helper/check_profiles.py"
+      ],
+      "status": "passed",
+      "stdout": "Checked 228 headers, 204 identical catalog positions, 183 lightweight implementations and 29 reciprocal implementation pairs"
+    },
+    {
+      "command": [
+        "python",
+        ".verify-helper/check-docs.py",
+        "--selection",
+        "/workspace/cp-fps-natural-validation/selection.json",
+        "--jobs",
+        "2"
+      ],
+      "status": "passed",
+      "stdout": "Checked documentation for 228 libraries; compiled 24 affected bundles\n"
+    }
+  ],
+  "source_sha256": {
+    ".verify-helper/docs/_config.yml": "59f1d0b54778594144c727238d106a8afb011a9ac9f1baffb96dc90d5a78dc8d",
+    ".verify-helper/check_profiles.py": "d28ac388831c4f9162ff84e9979e87f8dbac075b45d17fae50d53acaf7a033ec",
+    ".verify-helper/check-docs.py": "706f290bca482ed493b9e5a436d9cbc0c0be326074902de1ef4db602456a527e",
+    ".verify-helper/documentation.py": "28511b49579e36da628ec9625fa10cde36df421f5be5d849283c6799fd36b00d",
+    ".verify-helper/size_profiles.py": "df9ff20c7fc7e1b196ab85e9dca0ff27d25016b58f41c58d9c2f05e1b1144c5c"
+  },
+  "generated_inventory_sha256": "dec69e2c25c2a83628a28ef8be485bb2e1e0caf454d80438f6dd33860149c837"
+}

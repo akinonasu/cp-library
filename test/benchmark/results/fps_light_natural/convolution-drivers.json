@@ -1,0 +1,69 @@
+{
+  "completed": true,
+  "checks": [
+    {
+      "driver": "test/cyclic_convolution_light.test.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/workspace/cp-library/test/cyclic_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-cyclic_convolution_light-driver"
+      ],
+      "oracle_cases": 7,
+      "status": "passed"
+    },
+    {
+      "driver": "test/ordered_convolution_light.test.cpp",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/workspace/cp-library/test/ordered_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/g++-ordered_convolution_light-driver"
+      ],
+      "oracle_cases": 7,
+      "status": "passed"
+    },
+    {
+      "driver": "test/cyclic_convolution_light.test.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/workspace/cp-library/test/cyclic_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-cyclic_convolution_light-driver"
+      ],
+      "oracle_cases": 7,
+      "status": "passed"
+    },
+    {
+      "driver": "test/ordered_convolution_light.test.cpp",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/workspace/cp-library/test/ordered_convolution_light.test.cpp",
+        "-o",
+        "/workspace/cp-light-convolution/clang++-ordered_convolution_light-driver"
+      ],
+      "oracle_cases": 7,
+      "status": "passed"
+    }
+  ]
+}
