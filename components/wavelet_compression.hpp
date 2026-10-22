@@ -29,10 +29,13 @@ std::uint32_t lower_code(const std::vector<T> &values, bool dense, const T &x) {
 	return p + (values[p] < x);
 }
 
-template<class T>
+template<class T, bool WithPositions = true>
 std::vector<std::uint32_t> compress(const std::vector<T> &a, std::vector<T> &values,
 	int &ordered, std::vector<int> &positions, std::vector<int> &offsets) {
+	assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
 	const int n = static_cast<int>(a.size());
+	ordered = 0;
+	if constexpr (WithPositions) offsets.clear();
 	std::vector<std::uint32_t> current(n);
 	bool ascending = std::is_sorted(a.begin(), a.end());
 	if (ascending || std::is_sorted(a.rbegin(), a.rend())) {
@@ -45,6 +48,7 @@ std::vector<std::uint32_t> compress(const std::vector<T> &a, std::vector<T> &val
 			current[j] = static_cast<int>(values.size()) - 1;
 		}
 		if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
+		if constexpr (WithPositions) positions.clear();
 		return current;
 	}
 	if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8) {
@@ -75,6 +79,7 @@ std::vector<std::uint32_t> compress(const std::vector<T> &a, std::vector<T> &val
 					}
 				for (const auto &v : order) current[v.index] = codes[v.key - lo];
 				if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
+				if constexpr (WithPositions) positions.clear();
 				return current;
 			}
 			std::vector<Item> next(n);
@@ -98,20 +103,21 @@ std::vector<std::uint32_t> compress(const std::vector<T> &a, std::vector<T> &val
 			values.clear();
 			values.reserve(n);
 			U previous = 0;
-			positions.resize(n);
-			offsets.clear();
-			offsets.reserve(std::size_t(n) + 1);
+			if constexpr (WithPositions) {
+				positions.resize(n);
+				offsets.reserve(std::size_t(n) + 1);
+			}
 			for (int j = 0; j < n; ++j) {
 				const auto &v = order[j];
 				if (values.empty() || v.key != previous) {
 					values.push_back(a[v.index]);
-					offsets.push_back(j);
+					if constexpr (WithPositions) offsets.push_back(j);
 				}
 				previous = v.key;
 				current[v.index] = static_cast<int>(values.size()) - 1;
-				positions[j] = v.index;
+				if constexpr (WithPositions) positions[j] = v.index;
 			}
-			offsets.push_back(n);
+			if constexpr (WithPositions) offsets.push_back(n);
 			if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
 			return current;
 		}
@@ -121,6 +127,7 @@ std::vector<std::uint32_t> compress(const std::vector<T> &a, std::vector<T> &val
 	values.erase(std::unique(values.begin(), values.end()), values.end());
 	if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
 	for (int i = 0; i < n; ++i) current[i] = lower_code(values, false, a[i]);
+	if constexpr (WithPositions) positions.clear();
 	return current;
 }
 
@@ -133,7 +140,7 @@ template<class T> struct ValueIndex {
 		n = static_cast<int>(a.size());
 		int ordered = 0;
 		std::vector<int> positions, offsets;
-		original = compress(a, values, ordered, positions, offsets);
+		original = compress<T, false>(a, values, ordered, positions, offsets);
 	}
 	std::uint32_t code(const T &x) const { return lower_code(values, false, x); }
 };

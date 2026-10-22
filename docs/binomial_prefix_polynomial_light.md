@@ -9,4 +9,6 @@ documentation_of: //components/binomial_prefix_polynomial_light.hpp
 
 一般の利用者は `light_combinatorics::binomial_prefix_sum` を使います。内部の `Polynomial` には、前計算済み `Table<Mint>`、折り返した `(m,n)` の配列、元の位置と反転を記録した ID、結果の格納先を渡します。
 
+分割統治の実装は [共通多項式処理](binomial_prefix_polynomial_base.md) と共有します。
+
 最大の $$m$$ と異なる問い合わせ数の合計を $$D$$ とします。既定の `mint` で NTT を使える大きさでは $$O(D\log^2 D)$$ 時間、他の modint では $$O(D^{\log_2 3}\log D)$$ 時間です。追加空間は $$O(D\log D)$$ です。
