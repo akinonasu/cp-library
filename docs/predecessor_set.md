@@ -21,11 +21,11 @@ set.for_each(0, 8, [](int x) { (void)x; });
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `PredecessorSet(n = 0,filled = false)` | 範囲 `[0,n)` の空集合。`filled=true` なら全要素を入れる | $$O(1+n/64)$$ |
+| `PredecessorSet(n = 0,filled = false)` | 範囲 `[0,n)` の空集合。`filled=true` なら全要素を入れる | $$O(n/64)$$ |
 | `PredecessorSet(bits)` | `string_view` の 0/1 列から構築。位置 `i` が `'1'` なら `i` を入れる | $$O(n)$$ |
-| `PredecessorSet(n,words)` | `span<const uint64_t>` のビット列から構築 | $$O(1+n/64)$$ |
-| `assign(n,filled = false)` | 範囲と内容を再設定 | $$O(1+n/64)$$ |
-| `assign(bits)` / `assign(n,words)` | 0/1 列／整数のビット列から再構築 | bits: $$O(n)$$、words: $$O(1+n/64)$$ |
+| `PredecessorSet(n,words)` | `span<const uint64_t>` のビット列から構築 | $$O(n/64)$$ |
+| `assign(n,filled = false)` | 範囲と内容を再設定 | $$O(n/64)$$ |
+| `assign(bits)` / `assign(n,words)` | 0/1 列／整数のビット列から再構築 | bits: $$O(n)$$、words: $$O(n/64)$$ |
 | `universe_size()` | 管理する範囲の長さ | $$O(1)$$ |
 | `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
 | `contains(p)` | `p` が含まれるか | $$O(1)$$ |
@@ -35,11 +35,11 @@ set.for_each(0, 8, [](int x) { (void)x; });
 | `next(p)` | `p` 以上の最小要素。なければ `n` | $$O(\log_{64}n)$$ |
 | `prev(p)` | `p` 以下の最大要素。なければ -1 | $$O(\log_{64}n)$$ |
 | `min()` / `max()` | 最小／最大要素。空ならそれぞれ `n`／-1 | $$O(\log_{64}n)$$ |
-| `for_each(l,r,f)` | `[l,r)` の要素について `f(int)` を昇順に呼ぶ | $$O((k+1)\log_{64}n)$$ |
-| `for_each(f)` | 全要素について `f(int)` を昇順に呼ぶ | $$O((k+1)\log_{64}n)$$ |
-| `to_vector()` | 全要素を昇順の `vector<int>` で返す | $$O((k+1)\log_{64}n)$$ |
+| `for_each(l,r,f)` | `[l,r)` の要素について `f(int)` を昇順に呼ぶ | $$O(k\log_{64}n)$$ |
+| `for_each(f)` | 全要素について `f(int)` を昇順に呼ぶ | $$O(k\log_{64}n)$$ |
+| `to_vector()` | 全要素を昇順の `vector<int>` で返す | $$O(k\log_{64}n)$$ |
 | `words()` | 最下層のビット列への読み取り専用 `span<const uint64_t>` | $$O(1)$$ |
-| `clear()` / `fill()` | 範囲と容量を保ち、空集合／全体集合にする | $$O(1+n/64)$$ |
+| `clear()` / `fill()` | 範囲と容量を保ち、空集合／全体集合にする | $$O(n/64)$$ |
 | `swap(other)` | 範囲と内容を交換 | $$O(1)$$ |
 | `memory_usage()` | 確保済みの動的領域のバイト数 | $$O(1)$$ |
 
@@ -49,6 +49,6 @@ set.for_each(0, 8, [](int x) { (void)x; });
 
 x86_64 で AVX2 が使える場合、十分長い 0/1 列を AVX2 でまとめて変換します。実行時に判定するため、AVX2 専用のコンパイルオプションは不要です。ARM の Mac などでは通常の整数演算を使います。コピー・ムーブに対応し、移動元は範囲長 0 の空集合になります。
 
-範囲長を $$n$$ とします。整数・整数のビット列からの構築、`assign(n,...)`、`clear`・`fill` は $$O(1+n/64)$$、0/1 列からの構築・`assign(bits)` は $$O(n)$$ 時間です。`insert`・`erase`・`set`・`next`・`prev`・`min`・`max` は $$O(\log_{64}n)$$、列挙する要素数を $$k$$ として列挙・`to_vector` は $$O((k+1)\log_{64}n)$$、他のクエリ・`swap` は $$O(1)$$ です。$$n\leq1$$ では検索・更新を $$O(1)$$ とします。
+範囲長を $$n$$ とします。整数・整数のビット列からの構築、`assign(n,...)`、`clear`・`fill` は $$O(n/64)$$、0/1 列からの構築・`assign(bits)` は $$O(n)$$ 時間です。`insert`・`erase`・`set`・`next`・`prev`・`min`・`max` は $$O(\log_{64}n)$$、列挙する要素数を $$k$$ として列挙・`to_vector` は $$O(k\log_{64}n)$$、他のクエリ・`swap` は $$O(1)$$ です。$$n\leq1$$ では検索・更新を $$O(1)$$ とします。
 
-保持空間は $$O(1+n/64)$$ 語、予約容量を含む確保空間は過去の最大範囲長を $$M$$ として $$O(1+M/64)$$ 語です。`to_vector` の返り値には追加で $$O(k)$$ 空間を使います。コールバックは $$O(1)$$ とします。
+保持空間は $$O(n/64)$$ 語、予約容量を含む確保空間は過去の最大範囲長を $$M$$ として $$O(M/64)$$ 語です。`to_vector` の返り値には追加で $$O(k)$$ 空間を使います。コールバックは $$O(1)$$ とします。
