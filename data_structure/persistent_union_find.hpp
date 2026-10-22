@@ -9,30 +9,35 @@
 
 class PersistentUnionFind {
 	PersistentArray<int> parent;
+
   public:
 	struct root_type {
 		PersistentArray<int>::root_type data = 0;
 		int components = 0;
 		bool operator==(const root_type &) const = default;
 	};
+  private:
+	std::pair<int, int> leader_size(root_type root, int x) const {
+		for (;;) {
+			int p = parent.get(root.data, x);
+			if (p < 0) return {x, p};
+			x = p;
+		}
+	}
+  public:
 	explicit PersistentUnionFind(int n = 0) : parent(n, -1) {}
 	int vertex_count() const { return parent.size(); }
 	root_type initial_root() const { return {parent.initial_root(), vertex_count()}; }
-	int leader(root_type root, int x) const {
-		int p;
-		while ((p = parent.get(root.data, x)) >= 0) x = p;
-		return x;
-	}
+	int leader(root_type root, int x) const { return leader_size(root, x).first; }
 	bool same(root_type root, int a, int b) const { return leader(root, a) == leader(root, b); }
-	int size(root_type root, int x) const { return -parent.get(root.data, leader(root, x)); }
+	int size(root_type root, int x) const { return -leader_size(root, x).second; }
 	int component_count(root_type root) const { return root.components; }
 	root_type merge(root_type root, int a, int b) {
-		a = leader(root, a); b = leader(root, b);
-		if (a == b) return root;
-		int x = parent.get(root.data, a), y = parent.get(root.data, b);
-		if (x > y) { std::swap(a, b); std::swap(x, y); }
-		root.data = parent.set(root.data, a, x + y);
-		root.data = parent.set(root.data, b, a);
+		auto [u, x] = leader_size(root, a);
+		auto [v, y] = leader_size(root, b);
+		if (u == v) return root;
+		if (x > y) { std::swap(u, v); std::swap(x, y); }
+		root.data = parent.set_pair(root.data, u, x + y, v, u);
 		--root.components;
 		return root;
 	}
