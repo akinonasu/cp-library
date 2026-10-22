@@ -49,7 +49,7 @@ class SizeProfiles(unittest.TestCase):
         pages[destination / 'test/a.test.cpp.md'] = render_page({'data': {'path': 'test/a.test.cpp'}}, b'test')
         return destination, pages
 
-    def test_separate_catalogs_and_unchanged_sources(self):
+    def test_common_pages_and_unchanged_sources(self):
         destination, pages = self.fixture()
         originals = dict(pages)
         result = prepare_pages(pages, destination, CONFIG)
@@ -66,18 +66,24 @@ class SizeProfiles(unittest.TestCase):
             large = next(item for item in entries if item['path'] == 'fps/large.hpp')
             self.assertEqual(large['profileAvailable'], profile == 'full')
             self.assertEqual(large['pagePath'], 'fps/large.hpp.html')
-            self.assertEqual(entries[0]['pagePath'], ('lightweight/' if profile == LIGHTWEIGHT else '') + 'tree/a.hpp.html')
+            self.assertEqual(entries[0]['pagePath'], 'tree/a.hpp.html')
         for name in ['tree/a.hpp', 'fps/large.hpp']:
             old, _ = split_page(pages[destination / (name + '.md')])
             new, _ = split_page(result[destination / (name + '.md')])
             self.assertEqual(old['data']['bundledCode'], new['data']['bundledCode'])
             self.assertEqual(old['data']['code'], new['data']['code'])
-            self.assertEqual(old['redirect_from'], new['redirect_from'])
-        light, body = split_page(result[destination / LIGHTWEIGHT / 'tree/a.hpp.md'])
-        self.assertNotIn('redirect_from', light)
-        self.assertEqual(light['data']['_extendedDependsOn'][0]['pagePath'], 'lightweight/tree/a.hpp.html')
-        self.assertEqual(light['data']['_extendedVerifiedWith'][0]['pagePath'], 'test/a.test.cpp.html')
-        self.assertIn(b'/cp-library/lightweight/tree/a.hpp.html', body)
+            self.assertEqual(new['redirect_from'][:len(old['redirect_from'])], old['redirect_from'])
+        self.assertNotIn(destination / LIGHTWEIGHT / 'tree/a.hpp.md', result)
+        shared, body = split_page(result[destination / 'tree/a.hpp.md'])
+        self.assertIn('/lightweight/tree/a.hpp.html', shared['redirect_from'])
+        self.assertTrue(shared['data']['sharedPage'])
+        self.assertTrue(shared['data']['copyBundled'])
+        self.assertEqual(shared['code_limit'], LIMITS[LIGHTWEIGHT])
+        self.assertIsNone(shared['data']['counterpartPage'])
+        self.assertEqual(shared['data']['implementationLinks'], [])
+        self.assertEqual(shared['data']['_extendedDependsOn'][0]['pagePath'], 'tree/a.hpp.html')
+        self.assertEqual(shared['data']['_extendedVerifiedWith'][0]['pagePath'], 'test/a.test.cpp.html')
+        self.assertIn(b'/cp-library/tree/a.hpp.html', body)
         self.assertEqual(result[destination / 'test/a.test.cpp.md'], pages[destination / 'test/a.test.cpp.md'])
 
     def test_over_limit_library_keeps_its_catalog_position_and_full_link(self):
@@ -114,7 +120,7 @@ class SizeProfiles(unittest.TestCase):
         self.assertEqual(light['data']['implementationLinks'][0]['pagePath'], 'fps/large.hpp.html')
         self.assertEqual(light['data']['copyByteCount'], copy_size(original['data']['bundledCode'], page_url(config, 'fps/large.hpp.html', LIGHTWEIGHT)))
         self.assertIn(destination / 'tree/a.hpp.md', result)
-        self.assertIn(destination / LIGHTWEIGHT / 'tree/a.hpp.md', result)
+        self.assertNotIn(destination / LIGHTWEIGHT / 'tree/a.hpp.md', result)
         for page in ['index.md', 'components/index.md', 'data_structure/advanced/index.md']:
             for prefix in ['', LIGHTWEIGHT]:
                 front, _ = split_page(result[destination / prefix / page])
@@ -131,11 +137,63 @@ class SizeProfiles(unittest.TestCase):
         pages[second] = render_page(front, body)
         config = dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp', 'fps/second.hpp': 'tree/a.hpp'})
         result = prepare_pages(pages, destination, config)
-        legacy, _ = split_page(result[destination / LIGHTWEIGHT / 'tree/a.hpp.md'])
+        legacy, _ = split_page(result[destination / 'tree/a.hpp.md'])
         self.assertEqual({item['pagePath'] for item in legacy['data']['implementationLinks']}, {'fps/large.hpp.html', 'fps/second.hpp.html'})
         for name in config['implementation_variants']:
             front, _ = split_page(result[destination / LIGHTWEIGHT / (name + '.md')])
             self.assertEqual(front['data']['counterpartPage'], name + '.html')
+
+    def test_identical_variant_uses_one_page(self):
+        destination, pages = self.fixture()
+        normal = destination / 'fps/large.hpp.md'
+        front, body = split_page(pages[normal])
+        shared, _ = split_page(pages[destination / 'tree/a.hpp.md'])
+        front['data']['bundledCode'] = shared['data']['bundledCode']
+        pages[normal] = render_page(front, body)
+        result = prepare_pages(pages, destination, dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp'}))
+        self.assertNotIn(destination / LIGHTWEIGHT / 'fps/large.hpp.md', result)
+        front, _ = split_page(result[normal])
+        self.assertTrue(front['data']['sharedPage'])
+        self.assertIsNone(front['data']['counterpartPage'])
+        self.assertEqual(front['data']['implementationLinks'], [])
+        self.assertIn('/lightweight/fps/large.hpp.html', front['redirect_from'])
+        for prefix in ['', LIGHTWEIGHT]:
+            front, _ = split_page(result[destination / prefix / 'index.md'])
+            entry = front['data']['libraryCategories'][1]['pages'][0]
+            self.assertEqual(entry['pagePath'], 'fps/large.hpp.html')
+
+    def test_common_page_uses_its_shorter_canonical_url_at_limit(self):
+        destination, pages = self.fixture()
+        name = 'tree/a.hpp'
+        path = destination / (name + '.md')
+        front, body = split_page(pages[path])
+        front['data']['bundledCode'] = 'x' * (LIMITS[LIGHTWEIGHT] - copy_size('', page_url(CONFIG, name + '.html')))
+        front['redirect_from'] = '/legacy.html'
+        pages[path] = render_page(front, body)
+        result = prepare_pages(pages, destination, CONFIG)
+        shared, _ = split_page(result[path])
+        self.assertTrue(shared['data']['lightweightAvailable'])
+        self.assertEqual(shared['data']['copyByteCount'], LIMITS[LIGHTWEIGHT])
+        self.assertEqual(shared['redirect_from'], ['/legacy.html', '/lightweight/tree/a.hpp.html'])
+        self.assertNotIn(destination / LIGHTWEIGHT / (name + '.md'), result)
+
+    def test_light_variant_links_to_common_dependencies_and_legacy_urls(self):
+        destination, pages = self.fixture()
+        mint = destination / 'math/mint.hpp.md'
+        front, _ = split_page(pages[destination / 'tree/a.hpp.md'])
+        front['data']['path'] = 'math/mint.hpp'
+        front['data']['bundledCode'] = 'int mint;'
+        pages[mint] = render_page(front, b'')
+        alias = destination / 'tree/a.hpp.md'
+        front, _ = split_page(pages[alias])
+        front['data']['_extendedDependsOn'] = [{'path': 'math/mint.hpp'}]
+        pages[alias] = render_page(front, b'[mint](https://qandori.github.io/cp-library/lightweight/math/mint.hpp.html#usage) [fast](../fps/large.hpp.html)')
+        config = dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp'})
+        result = prepare_pages(pages, destination, config)
+        light, body = split_page(result[destination / LIGHTWEIGHT / 'fps/large.hpp.md'])
+        self.assertEqual(light['data']['_extendedDependsOn'][0]['pagePath'], 'math/mint.hpp.html')
+        self.assertIn(b'[mint](/cp-library/math/mint.hpp.html#usage)', body)
+        self.assertIn(b'[fast](/cp-library/fps/large.hpp.html)', body)
 
     def test_invalid_variant_pair_is_rejected(self):
         destination, pages = self.fixture()

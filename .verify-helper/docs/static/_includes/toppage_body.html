@@ -30,7 +30,9 @@
       {% elsif auxiliary %}
         {% continue %}
       {% endif %}
-      {% assign doc = site.pages | where: 'documentation_of', item.path | where: 'size_profile', page.size_profile | first %}
+      {% assign docs = site.pages | where: 'documentation_of', item.path %}
+      {% assign doc = docs | where: 'size_profile', page.size_profile | first %}
+      {% unless doc %}{% assign doc = docs | where: 'size_profile', 'full' | first %}{% endunless %}
       <li class="library-entry" data-search="{{ item.title | escape }} {{ item.path | escape }} {{ item.implementationPath | escape }} {{ doc.content | strip_html | escape }}">
         <a href="{{ item.pagePath | relative_url }}"><span>{{ item.icon }} {{ item.title | escape }}</span><small>{% if item.profileAvailable %}{{ item.implementationPath | escape }}{% else %}軽量実装なし · 高速実装はこちら{% endif %}</small></a>
       </li>

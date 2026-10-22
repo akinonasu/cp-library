@@ -9,7 +9,7 @@
 | サイト | 内容 |
 | --- | --- |
 | [全体（256 KiB向け）](https://qandori.github.io/cp-library/) | 高速実装と軽量実装を掲載 |
-| [軽量版（64 KiB）](https://qandori.github.io/cp-library/lightweight/) | 同じ分類・項目順で64 KiB以内の実装を案内 |
+| [軽量版（64 KiB）](https://qandori.github.io/cp-library/lightweight/) | 同じ分類・項目順で64 KiB以内の実装を案内。同じ実装は共通ページを共有 |
 
 [サイズ制限と提出方法](docs/source_size.md)
 
