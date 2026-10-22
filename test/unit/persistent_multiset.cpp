@@ -90,6 +90,21 @@ int main() {
 	for (int i = 0; i < 40; ++i) r0 = compact.meld(r0, r0);
 	assert(compact.size(r0) == (std::int64_t(1) << 40) && compact.top(compact.pop(r0)).x == 7);
 	assert(compact.node_count() < 5000);
+	PersistentHeap<int> deep;
+	auto perfect = deep.initial_root();
+	std::int64_t length = 0;
+	for (int i = 0; i < 63; ++i) {
+		auto old = perfect;
+		perfect = deep.push(deep.meld(perfect, perfect), 7);
+		assert(deep.size(old) == length);
+		length = 2 * length + 1;
+		assert(deep.size(perfect) == length && deep.top(perfect) == 7);
+	}
+	assert(length == std::numeric_limits<std::int64_t>::max());
+	auto shorter = deep.pop(perfect);
+	assert(deep.size(shorter) == length - 1 && deep.top(shorter) == 7);
+	auto changed = deep.push(shorter, -1);
+	assert(deep.top(changed) == -1 && deep.top(perfect) == 7 && deep.size(changed) == length);
 	PersistentMultiset<Value, Less> custom;
 	auto r1 = custom.build({Value(2), Value(1), Value(2)});
 	assert(custom.kth(r1, 0).x == 1 && custom.count(r1, Value(2)) == 2);

@@ -37,21 +37,16 @@ class PersistentDeque {
 	root_type pop_front(root_type root) { check(root); assert(!empty(root)); return rope.pop_front(root).second; }
 	root_type pop_back(root_type root) { check(root); assert(!empty(root)); return rope.pop_back(root).first; }
 	root_type insert(root_type root, int p, T value) {
-		auto [left, right] = split(root, p);
-		return concat(push_back(left, std::move(value)), right);
+		assert(0 <= p && p <= size(root) && size(root) < std::numeric_limits<int>::max());
+		return rope.insert(root, p, std::move(value), split_value);
 	}
 	root_type erase(root_type root, int l, int r) {
 		assert(0 <= l && l <= r && r <= size(root));
-		if (l == r) return root;
-		auto [left, rest] = split(root, l);
-		auto [middle, right] = split(rest, r - l);
-		(void)middle;
-		return concat(left, right);
+		return rope.erase(root, l, r, split_value);
 	}
 	root_type set(root_type root, int p, T value) {
 		assert(0 <= p && p < size(root));
-		auto [left, right] = split(root, p);
-		return concat(push_back(left, std::move(value)), pop_front(right));
+		return rope.replace(root, p, std::move(value));
 	}
 	std::vector<T> to_vector(root_type root) const {
 		std::vector<T> result;

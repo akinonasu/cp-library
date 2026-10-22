@@ -28,51 +28,66 @@ class PersistentMultiset {
 		nodes.push_back(std::move(node));
 		return result;
 	}
-	root_type balance(T value, root_type left, root_type right, std::int64_t count) {
+	root_type rebuild(root_type root, root_type left, root_type right, std::int64_t count) {
+		assert(nodes.size() < std::numeric_limits<root_type>::max());
+		auto result = static_cast<root_type>(nodes.size());
+		nodes.push_back(nodes[root]);
+		auto &node = nodes.back();
+		node.left = left; node.right = right; node.count = count;
+		node.size = count + nodes[left].size + nodes[right].size;
+		node.height = std::max(nodes[left].height, nodes[right].height) + 1;
+		return result;
+	}
+	root_type balance(root_type root, root_type left, root_type right, std::int64_t count) {
 		if (nodes[left].height > nodes[right].height + 1) {
-			Node a = nodes[left];
-			if (nodes[a.left].height >= nodes[a.right].height) {
-				auto r = make(std::move(value), a.right, right, count);
-				return make(*a.value, a.left, r, a.count);
+			auto a = nodes[left].left, b = nodes[left].right;
+			if (nodes[a].height >= nodes[b].height) {
+				auto r = rebuild(root, b, right, count);
+				return rebuild(left, a, r, nodes[left].count);
 			}
-			Node b = nodes[a.right];
-			auto l = make(*a.value, a.left, b.left, a.count);
-			auto r = make(std::move(value), b.right, right, count);
-			return make(*b.value, l, r, b.count);
+			auto l = rebuild(left, a, nodes[b].left, nodes[left].count);
+			auto r = rebuild(root, nodes[b].right, right, count);
+			return rebuild(b, l, r, nodes[b].count);
 		}
 		if (nodes[right].height > nodes[left].height + 1) {
-			Node a = nodes[right];
-			if (nodes[a.right].height >= nodes[a.left].height) {
-				auto l = make(std::move(value), left, a.left, count);
-				return make(*a.value, l, a.right, a.count);
+			auto a = nodes[right].left, b = nodes[right].right;
+			if (nodes[b].height >= nodes[a].height) {
+				auto l = rebuild(root, left, a, count);
+				return rebuild(right, l, b, nodes[right].count);
 			}
-			Node b = nodes[a.left];
-			auto l = make(std::move(value), left, b.left, count);
-			auto r = make(*a.value, b.right, a.right, a.count);
-			return make(*b.value, l, r, b.count);
+			auto l = rebuild(root, left, nodes[a].left, count);
+			auto r = rebuild(right, nodes[a].right, b, nodes[right].count);
+			return rebuild(a, l, r, nodes[a].count);
 		}
-		return make(std::move(value), left, right, count);
+		return rebuild(root, left, right, count);
+	}
+	root_type erase_first(root_type root) {
+		auto left = nodes[root].left, right = nodes[root].right;
+		if (!left) return right;
+		left = erase_first(left);
+		return balance(root, left, right, nodes[root].count);
 	}
 	root_type update(root_type root, const T &value, std::int64_t count, bool remove) {
 		if (!root) return remove ? 0 : make(value, 0, 0, count);
-		Node node = nodes[root];
-		if (comp(value, *node.value)) node.left = update(node.left, value, count, remove);
-		else if (comp(*node.value, value)) node.right = update(node.right, value, count, remove);
+		auto left = nodes[root].left, right = nodes[root].right;
+		auto next_count = nodes[root].count;
+		if (comp(value, *nodes[root].value)) left = update(left, value, count, remove);
+		else if (comp(*nodes[root].value, value)) right = update(right, value, count, remove);
 		else {
-			if (!remove) node.count += count;
-			else if (count < node.count) node.count -= count;
+			if (!remove) next_count += count;
+			else if (count < next_count) next_count -= count;
 			else {
-				if (!node.left || !node.right) return node.left ? node.left : node.right;
-				auto successor = node.right;
+				if (!left || !right) return left ? left : right;
+				auto successor = right;
 				while (nodes[successor].left) successor = nodes[successor].left;
-				Node next = nodes[successor];
-				node.value = next.value; node.count = next.count;
-				node.right = update(node.right, *next.value, next.count, true);
+				right = erase_first(right);
+				return balance(successor, left, right, nodes[successor].count);
 			}
 		}
-		if (node.left == nodes[root].left && node.right == nodes[root].right && node.count == nodes[root].count) return root;
-		return balance(*node.value, node.left, node.right, node.count);
+		if (left == nodes[root].left && right == nodes[root].right && next_count == nodes[root].count) return root;
+		return balance(root, left, right, next_count);
 	}
+
   public:
 	explicit PersistentMultiset(Compare compare = Compare{}) : comp(std::move(compare)) {}
 	root_type initial_root() const { return 0; }

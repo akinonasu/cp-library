@@ -59,6 +59,17 @@ int main() {
 			assert(tree.node_count() == before);
 		}
 	}
+	Tree shared(1024);
+	auto before = shared.node_count();
+	auto point = shared.set(0, 100, 7);
+	assert(shared.node_count() - before <= 11);
+	before = shared.node_count();
+	auto copied = shared.copy_range(0, point, 0, 512);
+	assert(shared.node_count() - before <= 1 && shared.get(copied, 100) == 7);
+	auto marked = shared.apply(point, 0, 1024, {2, 3});
+	auto branch = shared.copy_range(marked, point, 80, 120);
+	assert(shared.get(branch, 99) == 0 && shared.get(branch, 100) == 7 && shared.get(branch, 120) == 3);
+	assert(shared.get(marked, 100) == 17 && shared.get(point, 100) == 7 && shared.all_prod(0) == 0);
 	Tree huge(INT_MAX);
 	auto a = huge.apply(0, 0, INT_MAX, {1, 2});
 	auto b = huge.set(a, 123456, 99);

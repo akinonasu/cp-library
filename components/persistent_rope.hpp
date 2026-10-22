@@ -94,6 +94,51 @@ template<class T, auto weight> class PersistentRope {
 		auto [a, b] = split(x.right, p - k, splitter);
 		return {join(x.left, a), b};
 	}
+	int replace(int v, std::uint64_t p, T value) {
+		assert(p < size(v));
+		int a = nodes_[v].left, b = nodes_[v].right;
+		if (!a) { assert(std::uint64_t(weight(value)) == size(v)); return make(std::move(value)); }
+		if (p < size(a)) a = replace(a, p, std::move(value));
+		else b = replace(b, p - size(a), std::move(value));
+		return branch(a, b);
+	}
+	template<class Splitter> int insert(int v, std::uint64_t p, T value, const Splitter &splitter) {
+		assert(p <= size(v));
+		if (!v) return make(std::move(value));
+		int a = nodes_[v].left, b = nodes_[v].right;
+		if (!a) {
+			if (!p) return branch(make(std::move(value)), v);
+			if (p == size(v)) return branch(v, make(std::move(value)));
+			auto [left, right] = split(v, p, splitter);
+			int middle = make(std::move(value));
+			return join(join(left, middle), right);
+		}
+		if (p <= size(a)) a = insert(a, p, std::move(value), splitter);
+		else b = insert(b, p - size(a), std::move(value), splitter);
+		return balance(a, b);
+	}
+	template<class Splitter> int erase(int v, std::uint64_t l, std::uint64_t r, const Splitter &splitter) {
+		assert(l <= r && r <= size(v));
+		if (l == r) return v;
+		if (!l && r == size(v)) return 0;
+		int a = nodes_[v].left, b = nodes_[v].right;
+		if (!a) {
+			if (!l) return split(v, r, splitter).second;
+			if (r == size(v)) return split(v, l, splitter).first;
+			auto [left, rest] = split(v, l, splitter);
+			int right = split(rest, r - l, splitter).second;
+			return join(left, right);
+		}
+		auto k = size(a);
+		if (r <= k) a = erase(a, l, r, splitter);
+		else if (l >= k) b = erase(b, l - k, r - k, splitter);
+		else {
+			a = erase(a, l, k, splitter);
+			b = erase(b, 0, r - k, splitter);
+		}
+		return join(a, b);
+	}
+
 	T front(int v) const { assert(v); while (nodes_[v].left) v = nodes_[v].left; return value(v); }
 	T back(int v) const { assert(v); while (nodes_[v].right) v = nodes_[v].right; return value(v); }
 	std::pair<T, int> pop_front(int v) {

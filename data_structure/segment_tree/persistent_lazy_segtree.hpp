@@ -14,7 +14,7 @@ class PersistentLazySegtree {
 	using value_type = S;
 	using root_type = std::uint32_t;
   private:
-	struct Node { S value; F lazy; root_type left, right; };
+	struct Node { S value; F lazy; root_type left, right; bool pending = false; };
 	std::vector<Node> nodes{{e(), id(), 0, 0}};
 	int n_ = 0;
 	root_type initial_ = 0;
@@ -32,69 +32,83 @@ class PersistentLazySegtree {
 		auto left = build(a, l, m), right = build(a, m, r);
 		return join(left, right);
 	}
-	root_type mapped(root_type root, F f, int length) {
-		Node node = nodes[root];
-		node.value = mapping(f, node.value, length);
-		node.lazy = composition(f, node.lazy);
-		return make(std::move(node));
+	void inherit(root_type root, F &carry, bool &active) const {
+		if (nodes[root].pending) {
+			carry = active ? composition(carry, nodes[root].lazy) : nodes[root].lazy;
+			active = true;
+		}
 	}
-	root_type update(root_type root, int l, int r, int ql, int qr, F f, F carry) {
-		if (qr <= l || r <= ql) return mapped(root, carry, r - l);
-		if (ql <= l && r <= qr) return mapped(root, composition(f, carry), r - l);
-		Node node = nodes[root];
-		carry = composition(carry, node.lazy);
+	root_type mapped(root_type root, F f, int length) {
+		const auto &node = nodes[root];
+		return make({mapping(f, node.value, length), node.pending ? composition(f, node.lazy) : std::move(f), node.left, node.right, true});
+	}
+	root_type carried(root_type root, F carry, int length, bool active) {
+		return active ? mapped(root, std::move(carry), length) : root;
+	}
+	root_type update(root_type root, int l, int r, int ql, int qr, F f, F carry, bool active) {
+		if (qr <= l || r <= ql) return carried(root, std::move(carry), r - l, active);
+		if (ql <= l && r <= qr) return mapped(root, active ? composition(f, carry) : std::move(f), r - l);
+		inherit(root, carry, active);
+		auto a = nodes[root].left, b = nodes[root].right;
 		int m = l + (r - l) / 2;
-		auto left = update(node.left, l, m, ql, qr, f, carry);
-		auto right = update(node.right, m, r, ql, qr, f, carry);
+		auto left = update(a, l, m, ql, qr, f, carry, active);
+		auto right = update(b, m, r, ql, qr, std::move(f), std::move(carry), active);
 		return join(left, right);
 	}
-	root_type assign(root_type root, int l, int r, int p, S value, F carry) {
+	root_type assign(root_type root, int l, int r, int p, S value, F carry, bool active) {
 		if (r - l == 1) return make({std::move(value), id(), 0, 0});
-		Node node = nodes[root];
-		carry = composition(carry, node.lazy);
+		inherit(root, carry, active);
+		auto a = nodes[root].left, b = nodes[root].right;
 		int m = l + (r - l) / 2;
 		root_type left, right;
-		if (p < m) { left = assign(node.left, l, m, p, std::move(value), carry); right = mapped(node.right, carry, r - m); }
-		else { left = mapped(node.left, carry, m - l); right = assign(node.right, m, r, p, std::move(value), carry); }
+		if (p < m) {
+			left = assign(a, l, m, p, std::move(value), carry, active);
+			right = carried(b, std::move(carry), r - m, active);
+		} else {
+			left = carried(a, carry, m - l, active);
+			right = assign(b, m, r, p, std::move(value), std::move(carry), active);
+		}
 		return join(left, right);
 	}
-	S query(root_type root, int l, int r, int ql, int qr, F carry) const {
-		if (qr <= l || r <= ql) return e();
+	S query(root_type root, int l, int r, int ql, int qr, F carry, bool active) const {
 		const auto &node = nodes[root];
-		if (ql <= l && r <= qr) return mapping(carry, node.value, r - l);
-		carry = composition(carry, node.lazy);
+		if (ql <= l && r <= qr) return active ? mapping(carry, node.value, r - l) : node.value;
+		inherit(root, carry, active);
 		int m = l + (r - l) / 2;
-		return op(query(node.left, l, m, ql, qr, carry), query(node.right, m, r, ql, qr, carry));
+		if (qr <= m) return query(node.left, l, m, ql, qr, std::move(carry), active);
+		if (m <= ql) return query(node.right, m, r, ql, qr, std::move(carry), active);
+		return op(query(node.left, l, m, ql, qr, carry, active), query(node.right, m, r, ql, qr, carry, active));
 	}
-	root_type copy(root_type root, root_type source, int l, int r, int ql, int qr, F carry, F source_carry) {
-		if (qr <= l || r <= ql) return mapped(root, carry, r - l);
-		if (ql <= l && r <= qr) return mapped(source, source_carry, r - l);
-		Node a = nodes[root], b = nodes[source];
-		carry = composition(carry, a.lazy); source_carry = composition(source_carry, b.lazy);
+	root_type copy(root_type root, root_type source, int l, int r, int ql, int qr, F carry, F source_carry, bool active, bool source_active) {
+		if (qr <= l || r <= ql || (root == source && !active && !source_active)) return carried(root, std::move(carry), r - l, active);
+		if (ql <= l && r <= qr) return carried(source, std::move(source_carry), r - l, source_active);
+		inherit(root, carry, active); inherit(source, source_carry, source_active);
+		auto a = nodes[root].left, b = nodes[root].right, c = nodes[source].left, d = nodes[source].right;
 		int m = l + (r - l) / 2;
-		auto left = copy(a.left, b.left, l, m, ql, qr, carry, source_carry);
-		auto right = copy(a.right, b.right, m, r, ql, qr, carry, source_carry);
+		auto left = copy(a, c, l, m, ql, qr, carry, source_carry, active, source_active);
+		auto right = copy(b, d, m, r, ql, qr, std::move(carry), std::move(source_carry), active, source_active);
 		return join(left, right);
 	}
 	template <bool Right, class Pred>
-	int search(root_type root, int l, int r, int end, F carry, S &value, Pred &f) const {
+	int search(root_type root, int l, int r, int end, F carry, bool active, S &value, Pred &f) const {
 		const auto &node = nodes[root];
 		if (Right ? end <= l : r <= end) {
-			S part = mapping(carry, node.value, r - l);
+			S part = active ? mapping(carry, node.value, r - l) : node.value;
 			S next = Right ? op(value, part) : op(part, value);
 			if (f(next)) { value = std::move(next); return Right ? n_ : 0; }
 			if (r - l == 1) return Right ? l : r;
 		}
-		carry = composition(carry, node.lazy);
+		inherit(root, carry, active);
 		int m = l + (r - l) / 2;
 		if constexpr (Right) {
-			if (end < m) { int found = search<Right>(node.left, l, m, end, carry, value, f); if (found != n_) return found; }
-			return search<Right>(node.right, m, r, end, carry, value, f);
+			if (end < m) { int found = search<Right>(node.left, l, m, end, carry, active, value, f); if (found != n_) return found; }
+			return search<Right>(node.right, m, r, end, carry, active, value, f);
 		} else {
-			if (m < end) { int found = search<Right>(node.right, m, r, end, carry, value, f); if (found) return found; }
-			return search<Right>(node.left, l, m, end, carry, value, f);
+			if (m < end) { int found = search<Right>(node.right, m, r, end, carry, active, value, f); if (found) return found; }
+			return search<Right>(node.left, l, m, end, carry, active, value, f);
 		}
 	}
+
   public:
 	explicit PersistentLazySegtree(int n = 0) : n_(n) { assert(n >= 0); }
 	explicit PersistentLazySegtree(const std::vector<S> &a) {
@@ -105,15 +119,15 @@ class PersistentLazySegtree {
 	int size() const { return n_; }
 	bool empty() const { return !n_; }
 	root_type initial_root() const { return initial_; }
-	root_type set(root_type root, int p, S value) { check(root); assert(0 <= p && p < n_); return assign(root, 0, n_, p, std::move(value), id()); }
+	root_type set(root_type root, int p, S value) { check(root); assert(0 <= p && p < n_); return assign(root, 0, n_, p, std::move(value), id(), false); }
 	root_type apply(root_type root, int l, int r, F f) {
 		check(root); assert(0 <= l && l <= r && r <= n_);
-		return l == r ? root : update(root, 0, n_, l, r, std::move(f), id());
+		return l == r ? root : update(root, 0, n_, l, r, std::move(f), id(), false);
 	}
 	root_type apply(root_type root, int p, F f) { assert(0 <= p && p < n_); return apply(root, p, p + 1, std::move(f)); }
 	S prod(root_type root, int l, int r) const {
 		check(root); assert(0 <= l && l <= r && r <= n_);
-		return l == r ? e() : query(root, 0, n_, l, r, id());
+		return l == r ? e() : query(root, 0, n_, l, r, id(), false);
 	}
 	S get(root_type root, int p) const { assert(0 <= p && p < n_); return prod(root, p, p + 1); }
 	S all_prod(root_type root) const { check(root); return nodes[root].value; }
@@ -121,17 +135,17 @@ class PersistentLazySegtree {
 		check(root); check(source); assert(0 <= l && l <= r && r <= n_);
 		if (l == r || root == source) return root;
 		if (l == 0 && r == n_) return source;
-		return copy(root, source, 0, n_, l, r, id(), id());
+		return copy(root, source, 0, n_, l, r, id(), id(), false, false);
 	}
 	template <class Pred> int max_right(root_type root, int l, Pred f) const {
 		check(root); assert(0 <= l && l <= n_ && f(e()));
 		S value = e();
-		return l == n_ ? n_ : search<true>(root, 0, n_, l, id(), value, f);
+		return l == n_ ? n_ : search<true>(root, 0, n_, l, id(), false, value, f);
 	}
 	template <class Pred> int min_left(root_type root, int r, Pred f) const {
 		check(root); assert(0 <= r && r <= n_ && f(e()));
 		S value = e();
-		return r == 0 ? 0 : search<false>(root, 0, n_, r, id(), value, f);
+		return r == 0 ? 0 : search<false>(root, 0, n_, r, id(), false, value, f);
 	}
 	void reserve(std::size_t count) { assert(count < std::numeric_limits<root_type>::max()); nodes.reserve(count + 1); }
 	std::size_t node_count() const { return nodes.size() - 1; }
