@@ -28,7 +28,10 @@ void check(const Set &set, std::vector<typename Set::value_type> values, Compare
 	typename Set::sum_type prefix = 0;
 	for (std::size_t k = 0; k <= values.size(); ++k) {
 		assert(set.sum(k) == prefix);
-		if (k < values.size()) prefix += static_cast<typename Set::sum_type>(values[k]);
+		if (k < values.size()) {
+			assert(set.kth(k) == values[k]);
+			prefix += static_cast<typename Set::sum_type>(values[k]);
+		}
 	}
 	assert(set.sum((std::numeric_limits<std::size_t>::max)()) == prefix);
 	assert(set.sum() == sum && set.selected_size() == count);
@@ -109,6 +112,7 @@ void randomized(Compare compare) {
 
 int main() {
 	static_assert(std::is_same_v<TopKSum<int>::sum_type, std::int64_t>);
+	static_assert(std::is_same_v<decltype(std::declval<const TopKSum<int>&>().kth(0)), int>);
 	static_assert(std::is_same_v<decltype(std::declval<TopKSum<>&>().erase(0, 0)), TopKSum<>::size_type>);
 	TopKSum<> largest(2, {3, 1, 5, 5});
 	assert(largest.sum() == 10 && largest.count(5) == 2);
@@ -165,6 +169,7 @@ int main() {
 	assert(batch.erase(99, 100) == 0 && batch.sum() == 1);
 	batch.insert(-3, 100000);
 	assert(batch.size() == 100001 && batch.sum() == -5);
+	assert(batch.kth(0) == 1 && batch.kth(50000) == -3 && batch.kth(100000) == -3);
 	assert(batch.erase(-3, 100000) == 100000 && batch.sum() == 1);
 	batch.set_k(0);
 	batch.insert(8, 4);
@@ -178,11 +183,13 @@ int main() {
 	additive.insert(3, 4);
 	assert(additive.sum().value == 6);
 	assert(additive.erase(3, 3) == 3 && additive.sum().value == 3);
+	assert(additive.kth(0) == 3);
 	auto bucket = [](int a, int b) { return a / 10 < b / 10; };
 	TopKSum<int, long long, decltype(bucket)> equivalent(1, bucket);
 	equivalent.insert(11);
 	equivalent.insert(12);
 	equivalent.insert(31);
+	assert(equivalent.kth(0) / 10 == 1 && equivalent.kth(1) / 10 == 1 && equivalent.kth(2) == 31);
 	assert(equivalent.erase(19, 2) == 2 && equivalent.sum() == 31);
 	TopKSum<std::int64_t, __int128_t> wide_batch(2);
 	wide_batch.insert(hi, 4);
@@ -196,12 +203,15 @@ int main() {
 	assert(read.sum() == 13 && read.sum(1) == 5 && variable.k() == 3);
 	TopKSum<> unselected(0, {hi, hi, lo, lo});
 	assert(unselected.sum() == 0 && unselected.sum(1) == hi && unselected.sum(4) == -2);
+	assert(unselected.kth(0) == hi && unselected.kth(1) == hi && unselected.kth(2) == lo && unselected.kth(3) == lo);
 	SmallestKSum<> negative(0, {lo, lo, hi, hi});
 	assert(negative.sum(1) == lo && negative.sum(4) == -2);
+	assert(negative.kth(0) == lo && negative.kth(1) == lo && negative.kth(2) == hi && negative.kth(3) == hi);
 	TopKSum<int> alternate;
 	std::vector<int> sequence(100000);
 	std::iota(sequence.begin(), sequence.end(), 1);
 	alternate.assign(sequence);
+	for (std::size_t i = 0; i < sequence.size(); ++i) assert(alternate.kth(i) == 100000 - int(i));
 	for (int i = 0; i < 100000; ++i) {
 		const std::size_t k = i % 2 ? 1 : sequence.size() - 1;
 		const auto expected = i % 2 ? 100000LL : 5000049999LL;

@@ -3,7 +3,7 @@ title: "Top K Sum"
 documentation_of: //data_structure/top_k_sum.hpp
 ---
 
-多重集合のうち、大きい順または小さい順に選んだ `k` 個の和を求めます。**`sum(k)` のたびに異なる `k` を指定できます。** K を大きく変えても、各問い合わせは対数時間です。重複と負数も扱えます。
+多重集合のうち、大きい順または小さい順に選んだ `k` 個の和と、`k` 番目の値を求めます。**`sum(k)` のたびに異なる `k` を指定できます。** K を大きく変えても、各問い合わせは対数時間です。重複と負数も扱えます。
 
 ```cpp
 #include "lib/data_structure/top_k_sum.hpp"
@@ -12,18 +12,23 @@ TopKSum<> top(std::vector<std::int64_t>{3, 1, 5, 5});
 auto a = top.sum(2);          // 10: 大きい順に2個
 auto b = top.sum(1);          // 5: 次の問い合わせでは1個
 auto c = top.sum(4);          // 14: 次は4個
+auto largest = top.kth(0);   // 5: 最大値
+auto third = top.kth(2);     // 3: 大きい順に3番目
 top.erase(5);                // 5を1個だけ削除
 top.replace(1, 8);
 auto d = top.sum(2);          // 13: 8 + 5
 
 SmallestKSum<> bottom(std::vector<std::int64_t>{3, 1, 5, 5});
 auto e = bottom.sum(2);       // 4: 小さい順に2個
+auto second = bottom.kth(1); // 3: 小さい順に2番目
 
 top.insert(7, 4);            // 7を4個追加
 auto removed = top.erase(7, 3); // 3個削除。戻り値は3
 ```
 
 `k = 0` なら和は 0、`k > size()` なら全要素の和です。空集合の和も 0 です。`k` は非負の要素数で、実際に選ぶ個数は `min(k,size())` です。
+
+`kth(k)` の順位は **0 始まり**で、`0 <= k < size()` が必要です。重複も別々の要素として数えます。`TopKSum<>`・`LargestKSum<>` は大きい順、`SmallestKSum<>` は小さい順です。`const` オブジェクトでも取得でき、値を `T` として返します。集合も既定の K も変更しません。
 
 `TopKSum<T, Sum, Compare>` の既定値は `T = std::int64_t`、`Sum = std::common_type_t<T,std::int64_t>`、`Compare = std::greater<T>` です。`TopKSum<>` と `LargestKSum<>` は大きい順、`SmallestKSum<>` は小さい順に選びます。両方の別名で `T` と `Sum` を指定できます。
 
@@ -38,6 +43,7 @@ auto removed = top.erase(7, 3); // 3個削除。戻り値は3
 | `TopKSum(k,values)` | `vector<T>` または初期化子リストから構築 |
 | `TopKSum(k,compare)` / `TopKSum(k,values,compare)` | 比較関数の状態も指定 |
 | `sum(k)` | 問い合わせごとに指定した K 個の和。既定の K は変更しない。`const` オブジェクトでも使用可能 |
+| `kth(k)` | 比較順で 0 始まり `k` 番目の値を `T` で返す。`0 <= k < size()` が必要 |
 | `insert(value)` | 1個追加 |
 | `insert(value,count)` | 同じ値を `count` 個追加 |
 | `erase(value)` | 1個削除。存在すれば `true`、なければ変更せず `false` |
@@ -59,7 +65,7 @@ auto removed = top.erase(7, 3); // 3個削除。戻り値は3
 
 まとめて更新する `count` は非負の個数です。0 なら変更しません。削除は存在する分だけ行い、不足していても残りの集合を正しく保ちます。`size_type` は `std::size_t` です。`replace` は既存のノードを再利用します。削除済みの要素は保持しません。
 
-操作前後の最大要素数を $$n$$、一括構築する要素数を $$m$$ とします。`sum(k)`・`set_k`・`insert(value)`・`erase(value)`・`replace`・`contains`・`count` は $$O(\log n)$$ 時間です。K の変化幅には依存しません。引数なしの `sum()`、`k()`・`size()`・`selected_size()`・`empty()` は $$O(1)$$ 時間です。空集合・要素 1 個の操作は定数時間です。
+操作前後の最大要素数を $$n$$、一括構築する要素数を $$m$$ とします。`sum(k)`・`kth(k)`・`set_k`・`insert(value)`・`erase(value)`・`replace`・`contains`・`count` は $$O(\log n)$$ 時間です。K の変化幅には依存しません。引数なしの `sum()`、`k()`・`size()`・`selected_size()`・`empty()` は $$O(1)$$ 時間です。空集合・要素 1 個の操作は定数時間です。
 
 まとめて追加する個数を $$a$$、実際に削除する個数を $$e$$ として、`insert(value,a)` は $$O(a+\log n)$$、`erase(value,a)` は $$O(e+\log n)$$ 時間です。0 個の更新は $$O(1)$$ です。個数を圧縮する構造ではないため、追加した個数だけノードを保持します。
 
