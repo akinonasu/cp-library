@@ -1,0 +1,120 @@
+{
+  "completed": true,
+  "date": "2026-10-22T05:12:56.055295+00:00",
+  "checks": [
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/run_length_encoding.test.cpp",
+        "-o",
+        "/workspace/cp-rle-study/driver-g++-header"
+      ],
+      "cases": 103,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-rle-study/run_length_encoding.bundled.cpp",
+        "-o",
+        "/workspace/cp-rle-study/driver-g++-bundle"
+      ],
+      "cases": 103,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/run_length_encoding.test.cpp",
+        "-o",
+        "/workspace/cp-rle-study/driver-clang++-header"
+      ],
+      "cases": 103,
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-rle-study/run_length_encoding.bundled.cpp",
+        "-o",
+        "/workspace/cp-rle-study/driver-clang++-bundle"
+      ],
+      "cases": 103,
+      "status": "passed"
+    }
+  ],
+  "official_samples": 3,
+  "random_cases": 100,
+  "random_seed": 20261022,
+  "units": [
+    "GCC/Clang standalone and exhaustive unit passed",
+    "Clang ASan/UBSan unit passed"
+  ],
+  "references": {
+    "abc019_2.html": "55e9495e8729dea560464327f732b71d6e53b69f09e8530ae745bc1ca25a3cc8",
+    "editorial.pdf": "6fb4d50772af3a0771b93eea0affb6ae8d8456e3a5bf5998d3b6ee9cc516408f",
+    "reference.hpp": "5e76f83450244c5719ce275575f911a22a6bfdb7bc051106c4e62708543eb5bc"
+  },
+  "compilers": {
+    "g++": "g++ (Debian 14.2.0-19) 14.2.0",
+    "/workspace/cp-binomial-study/bin/clang++": "Debian clang version 19.1.7 (3+b1)"
+  },
+  "driver_copy_bytes": 1260,
+  "header_copy_bytes": 930,
+  "source_sha256": {
+    "sequence/run_length_encoding.hpp": "e498e11115317aa76b8950d00472e6e17df74d255d2bf9a1bae1915fc8be2948",
+    "test/unit/run_length_encoding.cpp": "aca05202f92d5ae9efabacd76bd72e01e23f315e921e18dfb5024cb412aa4771",
+    "test/run_length_encoding.test.cpp": "b16232d53823d91fb890db5ce0f3f0f327465fbbbacb3e80c540bd07de05e219"
+  },
+  "site_checks": [
+    {
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/python",
+        ".verify-helper/check_profiles.py"
+      ],
+      "stdout": "Checked 229 headers, 205 identical catalog positions, 184 lightweight implementations and 29 reciprocal implementation pairs\n",
+      "status": "passed"
+    },
+    {
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/python",
+        ".verify-helper/check-docs.py",
+        "--selection",
+        "/workspace/cp-rle-study/selection.json",
+        "--jobs",
+        "1"
+      ],
+      "stdout": "Checked documentation for 229 libraries; compiled 1 affected bundles\n",
+      "status": "passed"
+    }
+  ],
+  "site_matches_current_source": true
+}
