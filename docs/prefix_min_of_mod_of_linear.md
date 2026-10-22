@@ -13,8 +13,8 @@ auto parts = prefix_min_of_mod_of_linear(100, 100, 71, 85);
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `prefix_min_of_mod_of_linear(n,m,a,b)` | 最小値が更新される位置・値を圧縮した `vector<ModLinearPrefixMinSegment>` を返す | $$O(1+\log m)$$ |
-| `prefix_min_of_mod_of_linear(n,m,a,b,emit)` | 各区間に対して `emit(part)` を呼ぶ。出力配列を確保しない | $$O(1+\log m)$$ |
+| `prefix_min_of_mod_of_linear(n,m,a,b)` | 最小値が更新される位置・値を圧縮した `vector<ModLinearPrefixMinSegment>` を返す | $$O(\log m)$$ |
+| `prefix_min_of_mod_of_linear(n,m,a,b,emit)` | 各区間に対して `emit(part)` を呼ぶ。出力配列を確保しない | $$O(\log m)$$ |
 | `part.x` / `part.y` / `part.dx` / `part.dy` / `part.count` | 最初の位置・値／位置の増分／値の減少幅／更新点数 | $$O(1)$$ |
 | `part == other` / `part != other` | 全フィールドの比較 | $$O(1)$$ |
 
@@ -54,4 +54,4 @@ prefix_min_of_mod_of_linear(100, 100, 71, 85, [&](ModLinearPrefixMinSegment part
 });
 ```
 
-両形式とも時間 $$O(1+\log m)$$。返す区間数・vector 版の空間は $$O(1+\log m)$$、コールバック版の追加空間は $$O(1)$$ です。コールバック1回を $$O(1)$$ とします。
+両形式とも時間 $$O(\log m)$$。返す区間数・vector 版の空間は $$O(\log m)$$、コールバック版の追加空間は $$O(1)$$ です。コールバック1回を $$O(1)$$ とします。

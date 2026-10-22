@@ -34,4 +34,4 @@ Taylor shift では階乗と逆階乗、評価と補間では [積木](https://q
 
 合成・合成逆元・射影・多項式 GCD は `fps/compose_light.hpp`・`fps/compositional_inverse_light.hpp`・`fps/power_projection_light.hpp`・`fps/polynomial_gcd_light.hpp` に分けています。同じ `light_fps_algorithms` 名前空間と軽量 FPS を使い、必要な演算だけを追加できます。
 
-係数数を $$n$$、点数を $$m$$、Bostan–Mori の分子・分母の最大係数数または漸化式の次数を $$d$$ とします。Taylor shift は $$O(n\log(n+1))$$ 時間・$$O(n)$$ 追加空間、Bostan–Mori と線形漸化式は $$O(d\log(d+1)\log(k+2))$$ 時間・$$O(d)$$ 追加空間です。多点評価は $$O((n+m)\log^2(n+m+1))$$、補間は $$O(m\log^2(m+1))$$ 時間で、追加空間はそれぞれ $$O((n+m)\log(n+m+1))$$、$$O(m\log(m+1))$$ です。
+係数数を $$n$$、点数を $$m$$、Bostan–Mori の分子・分母の最大係数数または漸化式の次数を $$d$$ とします。Taylor shift は $$O(n\log n)$$ 時間・$$O(n)$$ 追加空間、Bostan–Mori と線形漸化式は $$O(d\log d\log k)$$ 時間・$$O(d)$$ 追加空間です。多点評価は $$O((n+m)\log^2(n+m))$$、補間は $$O(m\log^2 m)$$ 時間で、追加空間はそれぞれ $$O((n+m)\log(n+m))$$、$$O(m\log m)$$ です。

@@ -22,4 +22,4 @@ auto b = light_fps_algorithms::power_projection(f, 2, 4); // {0, 1, 1, 0}
 
 重み数と係数版の `n + 1` は $$2^{21}$$ 以下、`deg` は $$2^{22}$$ 以下とします。法や係数型の条件は軽量 FPS と同じです。定数項を除いた級数に二変数 Bostan–Mori を適用し、非零の定数項は二項変換で補います。[実装・検証資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_composition.md)を参照してください。
 
-重み数を $$n$$、出力数を $$m$$ として、時間は $$f_0=0$$ なら $$O(n\log^2(n+1)+m)$$、一般には $$O(n\log^2(n+1)+m\log(m+1))$$、追加空間は $$O(n\log(n+1)+m)$$ です。
+重み数を $$n$$、出力数を $$m$$ として、時間は $$f_0=0$$ なら $$O(n\log^2 n+m)$$、一般には $$O(n\log^2 n+m\log m)$$、追加空間は $$O(n\log n+m)$$ です。

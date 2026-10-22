@@ -24,7 +24,7 @@ auto cyclic = topological_sort(graph);      // std::nullopt
 | 関数 | 返り値 | 時間計算量 |
 | --- | --- | --- |
 | `topological_sort(graph)` | トポロジカル順序を格納した `optional<vector<int>>` | $$O(n+m)$$ |
-| `topological_sort<true>(graph)` | 辞書順最小のトポロジカル順序 | $$O(m+n\log(n+1))$$ |
+| `topological_sort<true>(graph)` | 辞書順最小のトポロジカル順序 | $$O(m+n\log n)$$ |
 
 入力は `vector<vector<int>>` などの隣接リストです。`graph.size()` で頂点数を取得でき、`graph[v]` が行き先の `int` を列挙できれば、`array`・`span` なども渡せます。頂点番号は `0` 以上 `n` 未満、頂点数は `INT_MAX` 以下としてください。辺 `u -> v` は `graph[u].push_back(v)` で登録します。
 
@@ -34,4 +34,4 @@ auto cyclic = topological_sort(graph);      // std::nullopt
 
 Kahn のアルゴリズムを使い、通常版では出力配列をキューとして兼用します。入力は変更せず、再帰は使いません。返された結果は入力を参照しないため、同じグラフに何度でも適用できます。
 
-頂点数を $$n$$、辺数を $$m$$ とすると、通常版は $$O(n+m)$$ 時間、辞書順最小版は $$O(m+n\log(n+1))$$ 時間です。どちらも出力を含めて $$O(n)$$ の追加空間を使います。
+頂点数を $$n$$、辺数を $$m$$ とすると、通常版は $$O(n+m)$$ 時間、辞書順最小版は $$O(m+n\log n)$$ 時間です。どちらも出力を含めて $$O(n)$$ の追加空間を使います。

@@ -9,4 +9,4 @@ documentation_of: //components/fps_composition_light.hpp
 
 通常の ASCII の C++ として直接編集できます。[実装・検証資料](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_light_composition.md)を参照してください。
 
-対象の係数数を $$n$$ として、時間は $$O(n\log^2(n+1))$$、保持する各段の分母を含む追加空間は $$O(n\log(n+1))$$ です。
+対象の係数数を $$n$$ として、時間は $$O(n\log^2 n)$$、保持する各段の分母を含む追加空間は $$O(n\log n)$$ です。

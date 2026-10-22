@@ -20,7 +20,7 @@
 | 畳み込み | 通常、巡回、乗法、順序制約、max-min / min-max、オンライン、多変数 |
 | 二項係数 | `comb`・階乗表、prefix sum、prefix sum の差分更新 |
 
-合成・射影・合成逆元は軽量 FPS の畳み込みを使う二変数 Bostan–Mori とその転置、GCD は軽量 FPS の多項式演算を使う再帰 Half-GCD です。単なる二次時間の実装へ置き換えず、それぞれ $$O(n\log^2(n+1))$$ 時間で計算します。畳み込みの任意係数型への対応、二項係数の型別キャッシュ・負の添字・法変更時の再構築も保持します。
+合成・射影・合成逆元は軽量 FPS の畳み込みを使う二変数 Bostan–Mori とその転置、GCD は軽量 FPS の多項式演算を使う再帰 Half-GCD です。単なる二次時間の実装へ置き換えず、それぞれ $$O(n\log^2 n)$$ 時間で計算します。畳み込みの任意係数型への対応、二項係数の型別キャッシュ・負の添字・法変更時の再構築も保持します。
 
 通常版と同時に include できるよう、FPS 関数は `light_fps_algorithms`、畳み込みは `light_convolution` と `LightOnlineConvolution`、二項係数は `light_combinatorics` を使います。`_light.hpp` の実装を直接選べるため、サイトや提出用の専用ツールは不要です。
 
