@@ -4,6 +4,6 @@ Bit Vector やアロケータなど、主にライブラリ内部で使う部品
 
 ライブラリをコピーするボタンを押すと 1 行目に参照 URL を含むコメント行が自動で添付されるようになっています。
 
-全体サイトと[軽量版サイト]({{ '/lightweight/' | relative_url }})は、同じ分類・項目順で構成しています。実装が同じ項目は共通ページに統一し、両方の一覧から同じページへリンクします。FPSなど実装が異なる項目だけページを分け、「高速実装」「軽量実装」として相互に案内します。軽量実装がない項目は全体サイトへリンクします。サイズはUTF-8のバイト数で、参照URLのコメントと依存ヘッダーを含みます。詳細は[サイズ制限と提出方法]({{ '/docs/source_size.html' | relative_url }})を参照してください。
+Codeforces などコード長制限が厳しいコンテスト向けに[軽量版サイト]({{ '/lightweight/' | relative_url }})を用意しています。詳細は[サイズ制限と提出方法]({{ '/docs/source_size.html' | relative_url }})を参照してください。
 
-応用的なデータ構造・木のアルゴリズムは、一覧末尾の [応用ライブラリ]({{ '/' | append: page.library_prefix | append: 'data_structure/advanced/' | relative_url }}) にまとめています。
+設計をあまり練れていない・使い方がよく分かっていないアルゴリズムは一覧末尾の [応用ライブラリ]({{ '/' | append: page.library_prefix | append: 'data_structure/advanced/' | relative_url }}) にまとめています。
