@@ -136,6 +136,12 @@
 | --- | --- | --- |
 | `graph/topological_sort.hpp` | トポロジカルソート・辞書順最小・閉路判定 | [使い方](docs/topological_sort.md) |
 
+### Functional Graph
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/functional_graph.hpp` | 閉路と木への分解・移動・到達距離 | [使い方](docs/functional_graph.md) |
+
 ### Euler 路
 
 | ファイル | 内容 | 使い方 |
