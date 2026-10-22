@@ -6,7 +6,7 @@
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 #include <sys/mman.h>
 #include <unistd.h>
-using fps_detail::Mint;
+using mint;
 namespace constant = fps_detail::multiply_detail::constant;
 static void require(bool ok) { if (!ok) std::abort(); }
 static void protect(const std::vector<Mint>& a,int mode) {

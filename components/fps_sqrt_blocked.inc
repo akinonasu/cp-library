@@ -345,7 +345,7 @@ inline void sqrt(const Transform& t, std::span<const std::uint32_t> f, std::uint
 
 }
 namespace fps_detail::blocked_poly {
-inline void native_sqrt(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, Mint constant) {
+inline void native_sqrt(const mint *in, std::size_t input, std::vector<mint> &out, std::size_t n, mint constant) {
 	const int lg = sqrt_log(n);
 	const std::size_t c = std::min(input, n);
 	Arena arena(Transform::words(lg) + Arena::footprint(c) + Arena::footprint(n) + Arena::footprint(sqrt_scratch(n)));
@@ -353,10 +353,10 @@ inline void native_sqrt(const Mint *in, std::size_t input, std::vector<Mint> &ou
 	auto f = arena.take(c), g = arena.take(n), scratch = arena.take(sqrt_scratch(n));
 	for (std::size_t i = 0; i < c; ++i) {
 		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - Mint::mod());
+		f[i] = std::min(v, v - mint::mod());
 	}
-	const std::uint32_t ct = blocked_ntt::detail::multiply_mod(std::min(constant.v, constant.v - Mint::mod()),
-		blocked_ntt::detail::power(65536, Mint::mod() - 2));
+	const std::uint32_t ct = blocked_ntt::detail::multiply_mod(std::min(constant.v, constant.v - mint::mod()),
+		blocked_ntt::detail::power(65536, mint::mod() - 2));
 	sqrt(t, f, ct, g, scratch);
 	append_scaled(g, out, 65536);
 }

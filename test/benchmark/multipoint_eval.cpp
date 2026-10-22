@@ -8,7 +8,7 @@
 #include <random>
 #include <string>
 
-using T = fps_detail::Mint;
+using T = mint;
 using F = FormalPowerSeries<T>;
 using Fn = std::vector<T> (*)(const F &, const std::vector<T> &);
 volatile std::uint64_t multipoint_sink = 0;

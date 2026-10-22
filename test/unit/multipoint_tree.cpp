@@ -64,6 +64,6 @@ void run() {
 }
 
 int main() {
-	run<fps_detail::Mint>();
+	run<mint>();
 	run<PlainMint>();
 }

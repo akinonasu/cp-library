@@ -15,7 +15,7 @@
 int main() {
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 	if (!__builtin_cpu_supports("avx2")) return 0;
-	using fps_detail::Mint;
+	using mint;
 	std::mt19937 rng(20261103);
 	const auto check = [&](const Mint* in, std::size_t input, const Mint* g, std::size_t n) {
 		Mint a = 0, b = 0;

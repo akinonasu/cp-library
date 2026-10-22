@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
 	const int mode = std::atoi(argv[1]), encoded = std::atoi(argv[3]);
 	const std::size_t n = std::strtoull(argv[2], nullptr, 10);
 	auto source = fps_detail::allocate_fps_words(n);
-	for (std::size_t i = 0; i < n; ++i) source[i] = std::uint64_t(i + 17) * 236887691 % fps_detail::Mint::mod();
+	for (std::size_t i = 0; i < n; ++i) source[i] = std::uint64_t(i + 17) * 236887691 % mint::mod();
 	Advice huge, populate;
 	Clock::time_point t1, t2, t3, t4;
 	struct rusage before{}, after{};
@@ -44,14 +44,14 @@ int main(int argc, char **argv) {
 	std::size_t capacity = 0;
 	unsigned long long checksum = 0;
 	{
-		std::vector<fps_detail::Mint> out;
+		std::vector<mint> out;
 		out.reserve(n);
 		data = reinterpret_cast<std::uintptr_t>(out.data());
 		capacity = out.capacity();
 		t1 = Clock::now();
-		if (mode & 2) huge = advise(out.data(), n * sizeof(fps_detail::Mint), 2 * 1024 * 1024, MADV_HUGEPAGE);
+		if (mode & 2) huge = advise(out.data(), n * sizeof(mint), 2 * 1024 * 1024, MADV_HUGEPAGE);
 #ifdef MADV_POPULATE_WRITE
-		if (mode & 1) populate = advise(out.data(), n * sizeof(fps_detail::Mint), 4096, MADV_POPULATE_WRITE);
+		if (mode & 1) populate = advise(out.data(), n * sizeof(mint), 4096, MADV_POPULATE_WRITE);
 #endif
 		t2 = Clock::now();
 		if (encoded) fps_detail::append_fps_words<true>(out, source.get(), n);
@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
 		t3 = Clock::now();
 		if (out.size() != n) return 2;
 		for (std::size_t i = 0; i < n; ++i) {
-			const auto expected = encoded ? fps_detail::Mint::word(source[i]) : fps_detail::Mint::raw(source[i]);
+			const auto expected = encoded ? mint::word(source[i]) : mint::raw(source[i]);
 			if (out[i] != expected) return 3;
 			checksum = (checksum ^ out[i].val()) * 0x9e3779b97f4a7c15ULL;
 		}

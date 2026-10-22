@@ -25,4 +25,4 @@ template<class T> void independent() {
  }
  std::cout << "independent adversarial " << count << " cases passed\n";
 }
-int main(){independent<fps_detail::Mint>();independent<PlainMint>();}
+int main(){independent<mint>();independent<PlainMint>();}

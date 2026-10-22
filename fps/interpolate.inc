@@ -15,12 +15,12 @@ FormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> 
 	using F = FormalPowerSeries<T>;
 	using base = std::vector<T>;
 	using O = fps_detail::Operations<T>;
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>) return O::export_work(interpolate<fps_detail::Mint>(O::import_work(xs), O::import_work(ys)));
+	if constexpr (!std::is_same_v<T, mint>) return O::export_work(interpolate<mint>(O::import_work(xs), O::import_work(ys)));
 	assert(xs.size() == ys.size());
 	const int n = static_cast<int>(xs.size());
 	if (n == 0) return {};
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (std::is_same_v<T, mint>) {
 		if (n >= 64 && n <= (1 << 23) && fps_detail::NTT::vectorized())
 			return F(fps_detail::evaluation_poly::native_interpolate(xs, ys));
 	}
@@ -66,7 +66,7 @@ FormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> 
 		f.resize(d);
 		const F &q = tree[size + i];
 #if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (d == 8 && fps_detail::NTT::vectorized()) {
 				fps_detail::NTT::interpolate_leaf8(O::words(f), O::words(q), O::words(xs) + i * block, O::words(weights) + i * block);
 				continue;
@@ -94,7 +94,7 @@ FormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> 
 			b.resize(length);
 			O::ntt(a);
 			O::ntt(b);
-			if constexpr (std::is_same_v<T, fps_detail::Mint>) fps_detail::NTT::combine(O::words(a), O::words(b), O::words(frequency[2 * i]), O::words(frequency[2 * i + 1]), length);
+			if constexpr (std::is_same_v<T, mint>) fps_detail::NTT::combine(O::words(a), O::words(b), O::words(frequency[2 * i]), O::words(frequency[2 * i + 1]), length);
 			else
 				for (int j = 0; j < length; ++j) a[j] = a[j] * frequency[2 * i + 1][j] + b[j] * frequency[2 * i][j];
 			O::intt(a);

@@ -836,12 +836,12 @@ inline std::size_t compose_scratch(std::size_t n) {
 }
 
 inline std::uint32_t outer_word(std::uint32_t x) { return x; }
-inline std::uint32_t outer_word(const Mint& x) { return std::min(x.v, x.v - Mint::mod()); }
+inline std::uint32_t outer_word(const mint& x) { return std::min(x.v, x.v - mint::mod()); }
 
 template <class Coefficient>
 void compose_imported(const Transform& t, std::span<const Coefficient> f, std::span<const std::uint32_t> g,
 					std::span<std::uint32_t> h, std::span<std::uint32_t> scratch, const Transform* shared = nullptr) {
-	static_assert(std::is_same_v<Coefficient, std::uint32_t> || std::is_same_v<Coefficient, Mint>);
+	static_assert(std::is_same_v<Coefficient, std::uint32_t> || std::is_same_v<Coefficient, mint>);
 	const std::size_t n = h.size();
 	if (f.empty() || g.size() <= 1) {
 		std::fill(h.begin(), h.end(), 0u);
@@ -872,7 +872,7 @@ void compose_imported(const Transform& t, std::span<const Coefficient> f, std::s
 			static_assert(sizeof(Coefficient) == sizeof(std::uint32_t));
 			detail::Vec x;
 			std::memcpy(&x, f.data() + size - 8 - j, sizeof(x));
-			if constexpr (std::is_same_v<Coefficient, Mint>) x = detail::reduce(x, detail::kP);
+			if constexpr (std::is_same_v<Coefficient, mint>) x = detail::reduce(x, detail::kP);
 			_mm256_storeu_si256(reinterpret_cast<detail::Vec*>(to + j), _mm256_permutevar8x32_epi32(x, reverse));
 		}
 		for (; j < size; ++j) to[j] = outer_word(f[size - 1 - j]);
@@ -1511,17 +1511,17 @@ inline void weighted_projection(const Transform& t, std::span<const std::uint32_
 }
 
 namespace composition_poly {
-inline unsigned coefficient_value(const Mint &x) {
+inline unsigned coefficient_value(const mint &x) {
 	const unsigned value = x.v;
 	const unsigned reduced = (static_cast<unsigned long long>(unsigned(value * 998244351u)) * 998244353u + value) >> 32;
 	return std::min(reduced, reduced - 998244353u);
 }
-inline void append_word(std::vector<Mint> &out, unsigned value) {
+inline void append_word(std::vector<mint> &out, unsigned value) {
 	out.emplace_back();
 	out.back().v = value;
 }
-inline void native_compose(const Mint *f, std::size_t nf, const Mint *g, std::size_t ng,
-						   std::vector<Mint> &out, std::size_t n) {
+inline void native_compose(const mint *f, std::size_t nf, const mint *g, std::size_t ng,
+						   std::vector<mint> &out, std::size_t n) {
 	nf = std::min(nf, n);
 	ng = std::min(ng, n);
 	const int lg = compose_log(n) + (n > detail::kComposeBase);
@@ -1529,13 +1529,13 @@ inline void native_compose(const Mint *f, std::size_t nf, const Mint *g, std::si
 				Arena::footprint(n) + Arena::footprint(compose_scratch(n)));
 	const Transform t(arena, lg);
 	auto a = arena.take(nf), b = arena.take(ng), c = arena.take(n);
-	for (std::size_t i = 0; i < nf; ++i) a[i] = std::min(f[i].v, f[i].v - Mint::mod());
+	for (std::size_t i = 0; i < nf; ++i) a[i] = std::min(f[i].v, f[i].v - mint::mod());
 	for (std::size_t i = 0; i < ng; ++i) b[i] = coefficient_value(g[i]);
 	compose_imported(t, std::span<const std::uint32_t>(a), b, c, arena.take(compose_scratch(n)), &t);
 	append_fps_words<true>(out, c.data(), c.size());
 }
-inline void native_weighted_projection(const Mint *g, std::size_t ng, const Mint *weights,
-		std::vector<Mint> &out, std::size_t n, std::size_t count) {
+inline void native_weighted_projection(const mint *g, std::size_t ng, const mint *weights,
+		std::vector<mint> &out, std::size_t n, std::size_t count) {
 	ng = std::min(ng, n);
 	const int lg = projection_log(n) + 1;
 	const std::size_t scratch_words = projection_scratch(n) + Arena::footprint(6 * detail::projection_length(n));
@@ -1543,11 +1543,11 @@ inline void native_weighted_projection(const Mint *g, std::size_t ng, const Mint
 	const Transform t(arena, lg);
 	auto a = arena.take(ng), b = arena.take(n), w = arena.take(n);
 	for (std::size_t i = 0; i < ng; ++i) a[i] = i ? coefficient_value(g[i]) : 0;
-	for (std::size_t i = 0; i < n; ++i) w[i] = std::min(weights[i].v, weights[i].v - Mint::mod());
+	for (std::size_t i = 0; i < n; ++i) w[i] = std::min(weights[i].v, weights[i].v - mint::mod());
 	weighted_projection(t, a, w, b, arena.take(scratch_words));
 	append_fps_words<true>(out, b.data(), count);
 }
-inline void native_projection(const Mint *g, std::size_t ng, std::vector<Mint> &out, std::size_t n) {
+inline void native_projection(const mint *g, std::size_t ng, std::vector<mint> &out, std::size_t n) {
 	ng = std::min(ng, n);
 	const int lg = projection_log(n);
 	Arena arena(Transform::words(lg) + Arena::footprint(ng) + Arena::footprint(n) +

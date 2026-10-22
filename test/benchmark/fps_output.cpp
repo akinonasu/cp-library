@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <random>
 #include <array>
-using fps_detail::Mint;
+using mint;
 using fps_detail::blocked_poly::detail::Vec;
 using namespace fps_detail::blocked_poly;
 #pragma GCC push_options

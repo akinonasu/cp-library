@@ -62,7 +62,7 @@ __attribute__((target("avx2"))) inline void factorials8(NTT::U* fact, NTT::U* in
 	for (int i = 0; i < 32; ++i) starts[i + 1] = NTT::mul(starts[i], products[i]);
 	U last = starts[32];
 	for (int i = covered; i < n; ++i) fact[i] = last, last = NTT::mul(last, NTT::in(i + 1));
-	last = Mint::word(last).inv().v;
+	last = mint::word(last).inv().v;
 	for (int i = n - 1; i >= covered; --i) last = NTT::mul(last, NTT::in(i + 1)), invfact[i] = last;
 	inverse[32] = last;
 	for (int i = 31; i >= 0; --i) inverse[i] = NTT::mul(inverse[i + 1], products[i]);
@@ -89,15 +89,15 @@ inline void factorials(NTT::U* fact, NTT::U* invfact, int n) {
 #endif
 	NTT::U value = NTT::one;
 	for (int i = 0; i < n; ++i) fact[i] = value, value = NTT::mul(value, NTT::in(i + 1));
-	value = Mint::word(fact[n - 1]).inv().v;
+	value = mint::word(fact[n - 1]).inv().v;
 	for (int i = n - 1; i >= 0; --i) invfact[i] = value, value = NTT::mul(value, NTT::in(i));
 }
 
-template<class T> requires std::is_same_v<T, Mint>
+template<class T> requires std::is_same_v<T, mint>
 inline void factorials(T* fact, T* invfact, int n) {
-	assert(0 <= n && unsigned(n) <= Mint::mod());
-	static_assert(sizeof(Mint) == sizeof(NTT::U) && std::is_trivially_copyable_v<Mint>);
-	if (unsigned(n) == Mint::mod()) {
+	assert(0 <= n && unsigned(n) <= mint::mod());
+	static_assert(sizeof(mint) == sizeof(NTT::U) && std::is_trivially_copyable_v<mint>);
+	if (unsigned(n) == mint::mod()) {
 		factorials(fact, invfact, n - 1);
 		fact[n - 1] = -fact[n - 2];
 		invfact[n - 1] = -invfact[n - 2];

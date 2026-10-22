@@ -10,7 +10,7 @@ _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
 
 namespace fps_detail::composition_poly {
-inline void native_reversion(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n) {
+inline void native_reversion(const mint *in, std::size_t input, std::vector<mint> &out, std::size_t n) {
 	input = std::min(input, n);
 	const int lg = std::max(projection_log(n), blocked_poly::power_log(n - 1));
 	const std::size_t rest = std::max(projection_scratch(n), Arena::footprint(n - 1) + blocked_poly::power_scratch(n - 1));
@@ -24,7 +24,7 @@ inline void native_reversion(const Mint *in, std::size_t input, std::vector<Mint
 	std::reverse(h.begin(), h.end());
 	const auto e = kModulus - blocked_ntt::detail::power(std::uint32_t(n - 1), kModulus - 2);
 	const auto c = in[1].inv();
-	blocked_poly::power(t, h, e, std::min(c.v, c.v - Mint::mod()), g.subspan(1),
+	blocked_poly::power(t, h, e, std::min(c.v, c.v - mint::mod()), g.subspan(1),
 						scratch.subspan(Arena::footprint(n - 1), blocked_poly::power_scratch(n - 1)));
 	prepare_fps_output(out, n);
 	out.emplace_back(0);

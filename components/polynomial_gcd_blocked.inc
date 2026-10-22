@@ -496,11 +496,11 @@ inline std::ptrdiff_t inverse_mod(Arena& arena, std::span<const std::uint32_t> f
 
 
 namespace fps_detail::blocked_poly {
-inline bool native_inv_mod(const Mint* a, std::size_t n, const Mint* b, std::size_t m, std::vector<Mint>& out) {
+inline bool native_inv_mod(const mint* a, std::size_t n, const mint* b, std::size_t m, std::vector<mint>& out) {
 	Arena arena(inverse_mod_words(n, m) + Arena::footprint(n) + Arena::footprint(m) + Arena::footprint(m));
 	auto f = arena.take(n), g = arena.take(m), h = arena.take(m);
-	for (std::size_t i = 0; i < n; ++i) f[i] = std::min(a[i].v, a[i].v - Mint::mod());
-	for (std::size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - Mint::mod());
+	for (std::size_t i = 0; i < n; ++i) f[i] = std::min(a[i].v, a[i].v - mint::mod());
+	for (std::size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - mint::mod());
 	const auto size = inverse_mod(arena, f, g, h);
 	if (size < 0) return false;
 	prepare_fps_output(out, std::size_t(size));
@@ -509,11 +509,11 @@ inline bool native_inv_mod(const Mint* a, std::size_t n, const Mint* b, std::siz
 }
 
 template<class Sink>
-inline void native_gcd_matrix(const Mint* a, std::size_t n, const Mint* b, std::size_t m, unsigned need, Sink sink) {
+inline void native_gcd_matrix(const mint* a, std::size_t n, const mint* b, std::size_t m, unsigned need, Sink sink) {
 	Arena arena(gcd_detail::HalfGcd::words(n - 1) + Arena::footprint(n) + Arena::footprint(m));
 	auto f = arena.take(n), g = arena.take(m);
-	for (std::size_t i = 0; i < n; ++i) f[i] = std::min(a[i].v, a[i].v - Mint::mod());
-	for (std::size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - Mint::mod());
+	for (std::size_t i = 0; i < n; ++i) f[i] = std::min(a[i].v, a[i].v - mint::mod());
+	for (std::size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - mint::mod());
 	gcd_detail::HalfGcd gcd(arena, n - 1);
 	auto matrix = gcd.matrix(n - 1, 0);
 	gcd.jump(f.data(), std::ptrdiff_t(n) - 1, g.data(), std::ptrdiff_t(m) - 1, std::ptrdiff_t(n) - 1, matrix, need);

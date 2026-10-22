@@ -18,7 +18,7 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 	assert(deg >= 0 && (inner.empty() || inner[0] == T(0)));
 	if (deg == 0) return {};
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (std::is_same_v<T, mint>) {
 		if (deg >= 64 && deg <= (1 << 21) && outer.size() > 8 && inner.size() > 2 &&
 			outer[std::min(outer.size(), std::size_t(deg)) - 1] != T(0) &&
 			inner[1] != T(0) && inner[2] != T(0) && fps_detail::NTT::vectorized()) {
@@ -77,7 +77,7 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 		return result;
 	}
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (std::is_same_v<T, mint>) {
 		if (fps_detail::NTT::vectorized() && deg <= (1 << 21)) {
 			F result;
 			fps_detail::composition_poly::native_compose(f.data(), f.size(), g.data(), g.size(), result, deg);
@@ -91,18 +91,18 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 	fps_detail::NTT plan(size);
 	std::vector<unsigned int> p(2 * size), q(size);
 	for (int i = 0; i < static_cast<int>(f.size()); ++i) {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) p[i] = f[i].v;
+		if constexpr (std::is_same_v<T, mint>) p[i] = f[i].v;
 		else p[i] = plan.in(f[i].val());
 	}
 	for (int i = 0; i < static_cast<int>(g.size()); ++i) {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) q[i] = g[i].v;
+		if constexpr (std::is_same_v<T, mint>) q[i] = g[i].v;
 		else q[i] = plan.in(g[i].val());
 	}
 	unsigned int a = plan.one, b = plan.one;
 	plan.compose(p.data(), q.data(), 1, size, a, b);
 	F result(deg);
 	for (int i = 0; i < deg; ++i) {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) result[i] = T::word(p[i]);
+		if constexpr (std::is_same_v<T, mint>) result[i] = T::word(p[i]);
 		else result[i] = T::raw(plan.out(p[i]));
 	}
 	return result;

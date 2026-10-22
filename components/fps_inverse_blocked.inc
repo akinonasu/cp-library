@@ -9,7 +9,7 @@ _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
 
 namespace fps_detail::blocked_poly {
-inline void append_scaled(std::span<std::uint32_t> a, std::vector<Mint> &out, std::uint32_t scale) {
+inline void append_scaled(std::span<std::uint32_t> a, std::vector<mint> &out, std::uint32_t scale) {
 	const detail::Factor factor(scale);
 	if (a.size() > out.max_size() - out.size()) throw std::length_error("fps output");
 	prepare_fps_output(out, out.size() + a.size());
@@ -18,13 +18,13 @@ inline void append_scaled(std::span<std::uint32_t> a, std::vector<Mint> &out, st
 		const auto count = std::min<std::size_t>(64, a.size() - i);
 		std::size_t j = 0;
 		for (; j + 8 <= count; j += 8)
-			detail::store(values + j, detail::reduce(detail::times(detail::load_unaligned(a.data() + i + j), factor), Mint::mod()));
+			detail::store(values + j, detail::reduce(detail::times(detail::load_unaligned(a.data() + i + j), factor), mint::mod()));
 		for (; j < count; ++j) values[j] = blocked_ntt::detail::multiply_mod(a[i + j], scale);
 		append_fps_words<true>(out, values, count);
 	}
 }
 
-inline void native_inverse(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n) {
+inline void native_inverse(const mint *in, std::size_t input, std::vector<mint> &out, std::size_t n) {
 	const int lg = inverse_log(n);
 	const std::size_t len = std::size_t(1) << lg, k = len / 2;
 	const std::size_t c = std::min(input, n), scratch_words = std::max(len, inverse_scratch(k));
@@ -33,7 +33,7 @@ inline void native_inverse(const Mint *in, std::size_t input, std::vector<Mint> 
 	auto a = arena.take(len), scratch = arena.take(scratch_words), g = arena.take(k);
 	for (std::size_t i = 0; i < c; ++i) {
 		const unsigned v = in[i].v;
-		a[i] = std::min(v, v - Mint::mod());
+		a[i] = std::min(v, v - mint::mod());
 	}
 	const std::span<const std::uint32_t> f = a.first(c);
 	const auto extend = [&](std::span<const std::uint32_t> current, std::span<std::uint32_t> to,

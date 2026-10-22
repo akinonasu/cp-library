@@ -4,7 +4,7 @@
 #include <random>
 #include <ctime>
 #include <chrono>
-using T=fps_detail::Mint;using F=FormalPowerSeries<T>;using Fn=std::vector<T>(*)(const F&,const std::vector<T>&);
+using T=mint;using F=FormalPowerSeries<T>;using Fn=std::vector<T>(*)(const F&,const std::vector<T>&);
 volatile uint64_t sink=0;
 uint64_t checksum(const std::vector<T>& a){uint64_t s=0;for(T v:a)s=s*1000003+v.val();return s;}
 double cpu(){timespec t;clock_gettime(CLOCK_PROCESS_CPUTIME_ID,&t);return t.tv_sec+t.tv_nsec*1e-9;}

@@ -4,7 +4,7 @@
 #include <cassert>
 #include <random>
 
-using M = fps_detail::Mint;
+using M = mint;
 using F = FormalPowerSeries<M>;
 
 int main() {

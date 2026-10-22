@@ -14,14 +14,14 @@
 template<class T>
 std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<T> &xs) {
 	using F = FormalPowerSeries<T>;
-	using W = FormalPowerSeries<fps_detail::Mint>;
+	using W = FormalPowerSeries<mint>;
 	using base = std::vector<T>;
 	using O = fps_detail::Operations<T>;
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>) return O::export_work(W(multipoint_eval<fps_detail::Mint>(O::import_work(f), O::import_work(xs))));
+	if constexpr (!std::is_same_v<T, mint>) return O::export_work(W(multipoint_eval<mint>(O::import_work(f), O::import_work(xs))));
 	if (xs.empty()) return {};
 	if (f.size() <= 32 || xs.size() <= 32) {
 #if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (((xs.size() >= 8 && f.size() >= 8 && (xs.size() >= 32 || f.size() >= 32)) ||
 				 (xs.size() >= 4096 && f.size() >= 4)) && fps_detail::NTT::vectorized()) {
 				base r(xs.size());
@@ -36,7 +36,7 @@ std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<
 		return r;
 	}
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (std::is_same_v<T, mint>) {
 		if (f.size() * xs.size() > (std::size_t(1) << 22) && std::max(f.size(), xs.size()) <= (1 << 23) && fps_detail::NTT::vectorized())
 			return fps_detail::evaluation_poly::native_evaluate(f, xs);
 	}
