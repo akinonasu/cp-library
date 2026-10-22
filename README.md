@@ -112,6 +112,7 @@
 | `graph/dijkstra.hpp` | Dijkstra・最短経路の復元 | [使い方](docs/dijkstra.md) |
 | `graph/bellman_ford.hpp` | 負辺の最短経路・負閉路の復元 | [使い方](docs/bellman_ford.md) |
 | `graph/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
+| `graph/difference_constraints.hpp` | 牛ゲー（差分制約系）・解の復元・差の上下限 | [使い方](docs/difference_constraints.md) |
 
 ### フロー
 
