@@ -12,15 +12,20 @@ _Pragma("GCC target(\"avx2\")")
 namespace fps_detail {
 namespace taylor_factorials {
 inline constexpr std::uint32_t kStep = 1024;
-inline constexpr auto kTable = [] {
-	std::array<std::uint32_t, 513> table{1};
+template <int Block>
+inline constexpr auto factorial_block = [] {
+	std::array<std::uint32_t, 16> result{};
 	std::uint64_t value = 1;
-	for (std::size_t i = 1; i < table.size(); ++i) {
-		for (std::uint32_t j = 1; j <= kStep; ++j) value = value * ((i - 1) * kStep + j) % 998244353;
-		table[i] = std::uint32_t(value);
+	if constexpr (Block > 0) value = factorial_block<Block - 1>.back();
+	for (int i = 0; i < 16; ++i) {
+		for (std::uint32_t j = 1; j <= kStep; ++j) value = value * ((Block * 16 + i) * kStep + j) % 998244353;
+		result[i] = std::uint32_t(value);
 	}
-	return table;
+	return result;
 }();
+inline constexpr auto kTable = []<std::size_t... I>(std::index_sequence<I...>) {
+	return std::array<std::uint32_t, 513>{1, factorial_block<I / 16>[I % 16]...};
+}(std::make_index_sequence<512>{});
 }
 namespace taylor_detail {
 namespace ntt = multiply_detail::ntt;
