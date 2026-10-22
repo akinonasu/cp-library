@@ -4,6 +4,9 @@ __pycache__/
 .verify-helper/cache/
 .verify-helper/timestamps.*.json
 .verify-helper/verified-state.json
+.verify-helper/support-state.json
+.verify-helper/documentation-cache.json
+.verify-helper/highlight-cache/
 .verify-helper/selection.json
 .verify-helper/markdown/
 .verify-helper/site/

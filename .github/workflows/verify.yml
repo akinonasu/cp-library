@@ -39,7 +39,9 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
-          cache-dependency-path: test/requirements.txt
+          cache-dependency-path: |
+            test/requirements.txt
+            .verify-helper/docs/requirements.txt
       - uses: actions/setup-python@v5
         if: steps.route.outputs.mode == 'no-cache'
         with:
@@ -51,7 +53,13 @@ jobs:
         if: steps.route.outputs.mode == 'no-cache'
         run: python -m pip install --no-cache-dir -r test/requirements.txt
       - name: Install Boost
-        run: sudo apt-get update && sudo apt-get install -y libboost-dev
+        run: |
+          if dpkg-query -W -f='${db:Status-Status}\n' libboost-dev 2>/dev/null | grep -qx installed; then
+            echo "Boost development headers are already installed"
+          else
+            sudo apt-get update
+            sudo apt-get install -y libboost-dev
+          fi
       - name: Identify cache environment
         if: steps.route.outputs.mode == 'normal'
         id: cache-environment
@@ -68,8 +76,26 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-verified-v3-${{ steps.cache-environment.outputs.image }}-refs/heads/main-
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-${{ github.ref }}-
             ${{ runner.os }}-${{ runner.arch }}-verified-v2-refs/heads/main-
+      - name: Identify CI support tests
+        id: support-key
+        run: python .verify-helper/support_tests.py key
+      - name: Restore successful CI support tests
+        if: steps.route.outputs.mode == 'normal'
+        id: support-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .verify-helper/support-state.json
+          key: support-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.support-key.outputs.key }}
       - name: Test incremental verification
-        run: python -m unittest discover -s .verify-helper -p '*_test.py'
+        env:
+          VERIFY_FULL: ${{ inputs.full == true }}
+        run: python .verify-helper/support_tests.py run
+      - name: Save successful CI support tests
+        if: steps.route.outputs.mode == 'normal' && steps.support-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .verify-helper/support-state.json
+          key: support-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.support-key.outputs.key }}
       - name: Test website copy controls
         run: node --test .verify-helper/library_code_test.cjs
       - name: Select affected libraries and tests
@@ -120,6 +146,26 @@ jobs:
         with:
           operation: save
           manifest: .verify-helper/judge-cache.json
+      - name: Install documentation dependencies
+        if: steps.route.outputs.mode == 'normal'
+        run: python -m pip install -r .verify-helper/docs/requirements.txt
+      - name: Install documentation dependencies without cache
+        if: steps.route.outputs.mode == 'no-cache'
+        run: python -m pip install --no-cache-dir -r .verify-helper/docs/requirements.txt
+      - name: Test code highlighting
+        run: python -m unittest discover -s .verify-helper -p 'code_highlight_test.py'
+      - name: Restore documentation sources
+        if: steps.route.outputs.mode == 'normal'
+        id: documentation-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .verify-helper/documentation-cache.json
+            .verify-helper/highlight-cache/
+          key: docs-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.cache-environment.outputs.image }}-${{ github.ref }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            docs-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.cache-environment.outputs.image }}-${{ github.ref }}-
+            docs-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.cache-environment.outputs.image }}-refs/heads/main-
       - name: Generate documentation
         run: python .verify-helper/ci.py docs
       - name: Check website size profiles
@@ -134,6 +180,14 @@ jobs:
         with:
           path: .verify-helper/verified-state.json
           key: ${{ steps.verification-cache.outputs.cache-primary-key }}
+      - name: Save documentation sources
+        if: steps.route.outputs.mode == 'normal'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .verify-helper/documentation-cache.json
+            .verify-helper/highlight-cache/
+          key: ${{ steps.documentation-cache.outputs.cache-primary-key }}
       - name: Build library website
         uses: actions/jekyll-build-pages@v1
         with:
