@@ -1,0 +1,3 @@
+clang++: floor_quotients.cpp
+clang++: multiplicative_prefix_sum.cpp
+Verification passed

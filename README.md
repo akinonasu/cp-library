@@ -236,6 +236,7 @@
 | `math/number_theory/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
 | `math/number_theory/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
 | `math/number_theory/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
+| `math/number_theory/multiplicative_prefix_sum.hpp` | 乗法的関数の prefix sum | [使い方](docs/multiplicative_prefix_sum.md) |
 
 ### 組合せ
 

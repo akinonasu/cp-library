@@ -1,0 +1,219 @@
+{
+  "utc": "2026-10-22T07:28:45.862060+00:00",
+  "problems": {
+    "sum_of_multiplicative_function": {
+      "listing": {
+        "count": 139,
+        "submissions": [
+          {
+            "id": 400957,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 11206656,
+            "problem_name": "sum_of_multiplicative_function",
+            "problem_title": "Sum of Multiplicative Function",
+            "status": "AC",
+            "submission_time": "2026-09-09T08:51:42.04739Z",
+            "time": 0.202,
+            "user_name": "Rohan_Kapri"
+          },
+          {
+            "id": 364205,
+            "is_latest": true,
+            "lang": "cpp20",
+            "memory": 11161600,
+            "problem_name": "sum_of_multiplicative_function",
+            "problem_title": "Sum of Multiplicative Function",
+            "status": "AC",
+            "submission_time": "2026-04-04T07:09:54.525927Z",
+            "time": 0.202,
+            "user_name": "snowy_night"
+          },
+          {
+            "id": 246013,
+            "is_latest": true,
+            "lang": "cpp20",
+            "memory": 11022336,
+            "problem_name": "sum_of_multiplicative_function",
+            "problem_title": "Sum of Multiplicative Function",
+            "status": "AC",
+            "submission_time": "2024-10-31T13:43:38.986664Z",
+            "time": 0.231
+          }
+        ]
+      },
+      "references": [
+        {
+          "id": 400957,
+          "is_latest": true,
+          "lang": "cpp",
+          "memory": 11206656,
+          "problem_name": "sum_of_multiplicative_function",
+          "problem_title": "Sum of Multiplicative Function",
+          "status": "AC",
+          "submission_time": "2026-09-09T08:51:42.04739Z",
+          "time": 0.202,
+          "user_name": "Rohan_Kapri",
+          "url": "https://judge.yosupo.jp/submission/400957",
+          "source_sha256": "c73cfbb4bfb8a3eaae35c0d653f461302a4bd2d7f3ef8bf9dced9ff5ed9ef640"
+        },
+        {
+          "id": 364205,
+          "is_latest": true,
+          "lang": "cpp20",
+          "memory": 11161600,
+          "problem_name": "sum_of_multiplicative_function",
+          "problem_title": "Sum of Multiplicative Function",
+          "status": "AC",
+          "submission_time": "2026-04-04T07:09:54.525927Z",
+          "time": 0.202,
+          "user_name": "snowy_night",
+          "url": "https://judge.yosupo.jp/submission/364205",
+          "source_sha256": "c73cfbb4bfb8a3eaae35c0d653f461302a4bd2d7f3ef8bf9dced9ff5ed9ef640"
+        }
+      ]
+    },
+    "sum_of_multiplicative_function_large": {
+      "listing": {
+        "count": 63,
+        "submissions": [
+          {
+            "id": 405757,
+            "is_latest": true,
+            "lang": "cpp20",
+            "memory": 130887680,
+            "problem_name": "sum_of_multiplicative_function_large",
+            "problem_title": "Sum of Multiplicative Function(Large)",
+            "status": "AC",
+            "submission_time": "2026-09-24T08:47:29.804179Z",
+            "time": 2.746,
+            "user_name": "Rohan_Kapri"
+          },
+          {
+            "id": 295675,
+            "is_latest": true,
+            "lang": "cpp20",
+            "memory": 156426240,
+            "problem_name": "sum_of_multiplicative_function_large",
+            "problem_title": "Sum of Multiplicative Function(Large)",
+            "status": "AC",
+            "submission_time": "2025-06-26T08:21:07.364046Z",
+            "time": 2.8
+          },
+          {
+            "id": 295664,
+            "is_latest": true,
+            "lang": "cpp20",
+            "memory": 156459008,
+            "problem_name": "sum_of_multiplicative_function_large",
+            "problem_title": "Sum of Multiplicative Function(Large)",
+            "status": "AC",
+            "submission_time": "2025-06-26T07:52:10.45806Z",
+            "time": 2.826
+          }
+        ]
+      },
+      "references": [
+        {
+          "id": 405757,
+          "is_latest": true,
+          "lang": "cpp20",
+          "memory": 130887680,
+          "problem_name": "sum_of_multiplicative_function_large",
+          "problem_title": "Sum of Multiplicative Function(Large)",
+          "status": "AC",
+          "submission_time": "2026-09-24T08:47:29.804179Z",
+          "time": 2.746,
+          "user_name": "Rohan_Kapri",
+          "url": "https://judge.yosupo.jp/submission/405757",
+          "source_sha256": "4493ec6d715aa48717a3168c32d0b08dd29201372d54f1858ece0bb12bb0eacd"
+        },
+        {
+          "id": 295675,
+          "is_latest": true,
+          "lang": "cpp20",
+          "memory": 156426240,
+          "problem_name": "sum_of_multiplicative_function_large",
+          "problem_title": "Sum of Multiplicative Function(Large)",
+          "status": "AC",
+          "submission_time": "2025-06-26T08:21:07.364046Z",
+          "time": 2.8,
+          "url": "https://judge.yosupo.jp/submission/295675",
+          "source_sha256": "4493ec6d715aa48717a3168c32d0b08dd29201372d54f1858ece0bb12bb0eacd"
+        }
+      ]
+    },
+    "sum_of_totient_function": {
+      "listing": {
+        "count": 625,
+        "submissions": [
+          {
+            "id": 199449,
+            "is_latest": true,
+            "lang": "cpp17",
+            "memory": 3371008,
+            "problem_name": "sum_of_totient_function",
+            "problem_title": "Sum of Totient Function",
+            "status": "AC",
+            "submission_time": "2024-03-28T16:03:21.633127Z",
+            "time": 0.008,
+            "user_name": "XeCtera"
+          },
+          {
+            "id": 405756,
+            "is_latest": true,
+            "lang": "cpp17",
+            "memory": 3432448,
+            "problem_name": "sum_of_totient_function",
+            "problem_title": "Sum of Totient Function",
+            "status": "AC",
+            "submission_time": "2026-09-24T08:37:34.117619Z",
+            "time": 0.009,
+            "user_name": "Rohan_Kapri"
+          },
+          {
+            "id": 376479,
+            "is_latest": true,
+            "lang": "cpp",
+            "memory": 3399680,
+            "problem_name": "sum_of_totient_function",
+            "problem_title": "Sum of Totient Function",
+            "status": "AC",
+            "submission_time": "2026-06-03T00:18:56.298892Z",
+            "time": 0.009
+          }
+        ]
+      },
+      "references": [
+        {
+          "id": 199449,
+          "is_latest": true,
+          "lang": "cpp17",
+          "memory": 3371008,
+          "problem_name": "sum_of_totient_function",
+          "problem_title": "Sum of Totient Function",
+          "status": "AC",
+          "submission_time": "2024-03-28T16:03:21.633127Z",
+          "time": 0.008,
+          "user_name": "XeCtera",
+          "url": "https://judge.yosupo.jp/submission/199449",
+          "source_sha256": "cbdc3f4f53f0f63c197f0393ff82661696889dd956f16e39b560c31a9637b27b"
+        },
+        {
+          "id": 405756,
+          "is_latest": true,
+          "lang": "cpp17",
+          "memory": 3432448,
+          "problem_name": "sum_of_totient_function",
+          "problem_title": "Sum of Totient Function",
+          "status": "AC",
+          "submission_time": "2026-09-24T08:37:34.117619Z",
+          "time": 0.009,
+          "user_name": "Rohan_Kapri",
+          "url": "https://judge.yosupo.jp/submission/405756",
+          "source_sha256": "cbdc3f4f53f0f63c197f0393ff82661696889dd956f16e39b560c31a9637b27b"
+        }
+      ]
+    }
+  }
+}

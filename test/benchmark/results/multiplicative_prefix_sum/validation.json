@@ -1,0 +1,89 @@
+{
+  "date": "2026-10-22",
+  "compilers": [
+    "GCC 14.2",
+    "Clang 19.1.7"
+  ],
+  "unit": "passed",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "floor_quotient_exhaustive_limits": [
+    0,
+    5000
+  ],
+  "floor_quotient_large_limit": 1000000000000,
+  "floor_quotient_random_checks": 10000,
+  "multiplicative_brute_models": 2525,
+  "seed": 20261022,
+  "value_types": [
+    "int64_t",
+    "mint998244353",
+    "independent modint469762049",
+    "independent modint1000000007",
+    "independent composite modint36",
+    "__int128_t",
+    "ring without equality or default construction"
+  ],
+  "extra_ndebug_type_examples": [
+    "boost::multiprecision::cpp_int",
+    "atcoder::modint1000000007",
+    "atcoder::dynamic_modint<0> with modulus 36"
+  ],
+  "judge": [
+    {
+      "compiler": "g++",
+      "problem": "sum_of_multiplicative_function",
+      "cases": 30,
+      "status": "passed"
+    },
+    {
+      "compiler": "g++",
+      "problem": "sum_of_totient_function",
+      "cases": 48,
+      "status": "passed"
+    },
+    {
+      "compiler": "clang++",
+      "problem": "sum_of_multiplicative_function",
+      "cases": 30,
+      "status": "passed"
+    },
+    {
+      "compiler": "clang++",
+      "problem": "sum_of_totient_function",
+      "cases": 48,
+      "status": "passed"
+    }
+  ],
+  "large_independent_check": {
+    "submission": 405757,
+    "n": 1000000000000,
+    "answer": 331072216,
+    "status": "passed"
+  },
+  "documentation": {
+    "size_profiles": "passed",
+    "affected_bundles_compiled": 2,
+    "constexpr_limits": "normal AtCoder limits",
+    "ndebug_examples": "passed (GCC and Clang)",
+    "source_pages": 428,
+    "library_headers": 232,
+    "copy_bytes": {
+      "components/floor_quotients.hpp": 2065,
+      "math/number_theory/multiplicative_prefix_sum.hpp": 10535
+    },
+    "shared_full_lightweight_pages": true
+  },
+  "library_checker_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "source_sha256": {
+    "components/floor_quotients.hpp": "acd8533010599c914992fdffcd050f726c32e641451a2bd7f60428e4e7aaaa93",
+    "math/number_theory/multiplicative_prefix_sum.hpp": "9f89a7a741d7d88dfcb341adabd28dbcf6b631429971d62470621e1b374ae793",
+    "test/unit/floor_quotients.cpp": "b8d97289063b60efcc47fd7d5d67009aa970e4ca3bd21e5675f1ae05721ad2b2",
+    "test/unit/multiplicative_prefix_sum.cpp": "c064a65744b6b5f2545690db6459595b6c93713a1bd6c881d6488e573d6be074",
+    "test/multiplicative_prefix_sum.test.cpp": "38d0667823935e5e68be57e5af4fe5adb56b459ea849c863623f2d60c73c5fda",
+    "test/multiplicative_prefix_sum_totient.test.cpp": "2898fe083f25d9fc61ff0d6e7e067ab558477c91a46c3b603d55afa10114b045",
+    "test/benchmark/multiplicative_prefix_sum_types.hpp": "6640972402e43c0fe340a888700092f2f3ad5a08db231d3f00ac708e3b548440"
+  }
+}
