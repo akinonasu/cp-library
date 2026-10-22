@@ -24,7 +24,7 @@ for header in headers:
     path = header.relative_to(root)
     doc = root / '.verify-helper/markdown' / (str(path) + '.md')
     data = yaml.safe_load(doc.read_text().split('---', 2)[1])
-    assert data['title'] != str(path), f'{path}: documentation is missing'
+    assert data['title'].removesuffix('（高速版）') != str(path), f'{path}: documentation is missing'
     code = data['data']['bundledCode']
     assert 'Traceback (most recent call last)' not in code, f'{path}: bundle failed'
     assert len(code.encode('utf-8')) < 256 * 1024, f'{path}: bundle exceeds 256 KiB'

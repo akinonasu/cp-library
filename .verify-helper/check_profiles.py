@@ -35,6 +35,8 @@ def check(root):
     different = {name for name, other in variants.items()
                  if full_pages[name]['data']['bundledCode'] != full_pages[other]['data']['bundledCode']}
     assert manifest['differentImplementations'] == sorted(different)
+    page_titles = {name + '.html': page['title'] for name, page in full_pages.items()}
+    documents = list(full_pages.values())
     eligible = set()
     for name, size in manifest['catalog'].items():
         implementation = variants.get(name, name)
@@ -50,6 +52,8 @@ def check(root):
         separate = name in different and size['lightweightAvailable']
         assert page.exists() == separate, name + ': lightweight page mismatch'
         full = full_pages[name]
+        if name in different:
+            assert full['title'].endswith('（高速版）'), name + ': missing implementation label'
         counterpart = full['data']['counterpartPage']
         assert counterpart == (page_path if separate else None)
         assert full['data']['sharedPage'] == (name not in different)
@@ -62,7 +66,10 @@ def check(root):
                 assert 'fps_backend.hpp"' not in full['data']['bundledCode'], name + ': common lightweight page includes full FPS'
         if page.exists():
             light, _ = split_page(page.read_bytes())
-            assert light['title'] == full['title'] and light['documentation_of'] == name
+            documents.append(light)
+            assert light['title'] == full['title'].removesuffix('（高速版）') + '（軽量版）'
+            assert light['documentation_of'] == name
+            page_titles[page_path] = light['title']
             assert light['size_profile'] == LIGHTWEIGHT and light['code_limit'] == LIMITS[LIGHTWEIGHT]
             assert light['data']['path'] == implementation
             assert light['data']['libraryPath'] == name
@@ -77,6 +84,11 @@ def check(root):
                 assert light['data']['implementationKind'] == '軽量実装'
                 assert full['data']['implementationLinks'][0]['pagePath'] == counterpart
                 assert light['data']['implementationLinks'][0]['pagePath'] == name + '.html'
+    for front in documents:
+        for key in ['_extendedDependsOn', '_extendedRequiredBy']:
+            for item in front['data'].get(key, []):
+                if item.get('pagePath') in page_titles:
+                    assert item['title'] == page_titles[item['pagePath']], item['path'] + ': dependency title differs from page'
     expected_light = eligible & different
     actual_light = {path.relative_to(destination / LIGHTWEIGHT).as_posix().removesuffix('.md')
                     for path in (destination / LIGHTWEIGHT).rglob('*.hpp.md')}
@@ -107,6 +119,7 @@ def check(root):
                 assert item['profileAvailable'] == usable
                 assert item['pagePath'] == (manifest['catalog'][name]['lightweightPage'] if profile == LIGHTWEIGHT and usable else name + '.html')
                 assert (destination / (item['pagePath'].removesuffix('.html') + '.md')).is_file(), name + ': missing link'
+                assert item['title'] == page_titles[item['pagePath']], name + ': catalog title differs from page'
         assert structures[0] == structures[1], page + ': profile structures differ'
     print(f'Checked {len(headers)} headers, {len(expected)} identical catalog positions, {len(eligible)} lightweight implementations and {len(different)} separate implementation pairs')
 

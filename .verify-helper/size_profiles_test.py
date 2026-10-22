@@ -108,7 +108,8 @@ class SizeProfiles(unittest.TestCase):
         full, _ = split_page(result[destination / 'fps/large.hpp.md'])
         light, _ = split_page(result[destination / LIGHTWEIGHT / 'fps/large.hpp.md'])
         original, _ = split_page(pages[destination / 'tree/a.hpp.md'])
-        self.assertEqual(light['title'], full['title'])
+        self.assertEqual(full['title'], 'fps/large.hpp（高速版）')
+        self.assertEqual(light['title'], 'fps/large.hpp（軽量版）')
         self.assertEqual(light['documentation_of'], 'fps/large.hpp')
         self.assertEqual(light['data']['path'], 'tree/a.hpp')
         self.assertEqual(light['data']['libraryPath'], 'fps/large.hpp')
@@ -116,6 +117,7 @@ class SizeProfiles(unittest.TestCase):
         self.assertEqual(full['data']['implementationKind'], '高速実装')
         self.assertEqual(light['data']['implementationKind'], '軽量実装')
         self.assertEqual(light['data']['_extendedDependsOn'][0]['pagePath'], 'lightweight/fps/large.hpp.html')
+        self.assertEqual(light['data']['_extendedDependsOn'][0]['title'], light['title'])
         self.assertEqual(full['data']['implementationLinks'][0]['pagePath'], 'lightweight/fps/large.hpp.html')
         self.assertEqual(light['data']['implementationLinks'][0]['pagePath'], 'fps/large.hpp.html')
         self.assertEqual(light['data']['copyByteCount'], copy_size(original['data']['bundledCode'], page_url(config, 'fps/large.hpp.html', LIGHTWEIGHT)))
@@ -127,6 +129,37 @@ class SizeProfiles(unittest.TestCase):
                 entries = [item for category in front['data']['libraryCategories'] for item in category['pages']]
                 self.assertEqual([item['path'] for item in entries], ['fps/large.hpp'])
                 self.assertTrue(entries[0]['profileAvailable'])
+                self.assertEqual(entries[0]['title'], light['title'] if prefix else full['title'])
+
+    def test_variant_titles_follow_dependency_destinations_and_fallbacks(self):
+        destination, pages = self.fixture()
+        normal = destination / 'fps/large.hpp.md'
+        front, body = split_page(pages[normal])
+        front['data']['_extendedRequiredBy'] = [{'path': 'fps/large.hpp', 'title': 'old'}]
+        pages[normal] = render_page(front, body)
+        judge = destination / 'test/a.test.cpp.md'
+        pages[judge] = render_page({'data': {'path': 'test/a.test.cpp',
+            '_extendedDependsOn': [{'path': 'fps/large.hpp', 'title': 'old'}]}}, b'test')
+        config = dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp'})
+        for available in [True, False]:
+            if not available:
+                alias = destination / 'tree/a.hpp.md'
+                front, body = split_page(pages[alias])
+                front['data']['bundledCode'] = 'y' * 65536
+                pages[alias] = render_page(front, body)
+            result = prepare_pages(pages, destination, config)
+            full, _ = split_page(result[normal])
+            self.assertEqual(full['data']['_extendedRequiredBy'][0]['title'], full['title'])
+            verification, _ = split_page(result[judge])
+            self.assertEqual(verification['data']['_extendedDependsOn'][0]['title'], full['title'])
+            index, _ = split_page(result[destination / LIGHTWEIGHT / 'index.md'])
+            entry = index['data']['libraryCategories'][1]['pages'][0]
+            linked, _ = split_page(result[destination / (entry['pagePath'].removesuffix('.html') + '.md')])
+            self.assertEqual(entry['title'], linked['title'])
+            if available:
+                self.assertEqual(linked['title'], 'fps/large.hpp（軽量版）')
+            else:
+                self.assertEqual(linked['title'], 'fps/large.hpp（高速版）')
 
     def test_shared_lightweight_header_can_back_separate_algorithm_pages(self):
         destination, pages = self.fixture()
@@ -153,6 +186,7 @@ class SizeProfiles(unittest.TestCase):
         result = prepare_pages(pages, destination, dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp'}))
         self.assertNotIn(destination / LIGHTWEIGHT / 'fps/large.hpp.md', result)
         front, _ = split_page(result[normal])
+        self.assertEqual(front['title'], 'fps/large.hpp')
         self.assertTrue(front['data']['sharedPage'])
         self.assertIsNone(front['data']['counterpartPage'])
         self.assertEqual(front['data']['implementationLinks'], [])
@@ -161,6 +195,7 @@ class SizeProfiles(unittest.TestCase):
             front, _ = split_page(result[destination / prefix / 'index.md'])
             entry = front['data']['libraryCategories'][1]['pages'][0]
             self.assertEqual(entry['pagePath'], 'fps/large.hpp.html')
+            self.assertEqual(entry['title'], 'fps/large.hpp')
 
     def test_common_page_uses_its_shorter_canonical_url_at_limit(self):
         destination, pages = self.fixture()
