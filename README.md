@@ -6,7 +6,14 @@
 
 全部爆速で動作するようにしています。
 
-[ライブラリ検索・Bundle](https://qandori.github.io/cp-library/)
+| サイト | 内容 |
+| --- | --- |
+| [全体（256 KiB向け）](https://qandori.github.io/cp-library/) | 高速実装と軽量実装を掲載 |
+| [軽量版（64 KiB）](https://qandori.github.io/cp-library/lightweight/) | 同じ分類・項目順で64 KiB以内の実装を案内 |
+
+[サイズ制限と提出方法](docs/source_size.md)
+
+[提出コードの生成とサイズ上限](docs/bundle.md)
 
 ## ライブラリ
 
@@ -60,6 +67,8 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `fps/fps.hpp` | 形式的冪級数 | [使い方](docs/fps.md) |
+| `fps/fps_light.hpp` | 軽量 FPS（64 KiB 制限向け） | [使い方](docs/fps_light.md) |
+| `fps/fps_light_algorithms.hpp` | 軽量 FPS の Taylor shift・線形漸化式・多点評価・補間 | [使い方](docs/fps_light_algorithms.md) |
 | `fps/polynomial_gcd.hpp` | 多項式 GCD・拡張 GCD・多項式の逆元 | [使い方](docs/polynomial_gcd.md) |
 | `fps/bostan_mori.hpp` | Bostan–Mori | [使い方](docs/bostan_mori.md) |
 | `fps/linear_recurrence.hpp` | 線形漸化式の第 k 項 | [使い方](docs/linear_recurrence.md) |
@@ -126,6 +135,8 @@
 | --- | --- | --- |
 | `graph/connectivity/dynamic_connectivity.hpp` | Online Dynamic Connectivity | [使い方](docs/dynamic_connectivity.md) |
 | `graph/connectivity/offline_dynamic_connectivity.hpp` | Offline Dynamic Connectivity（クエリ先読み） | [使い方](docs/offline_dynamic_connectivity.md) |
+| `graph/connectivity/scc.hpp` | 強連結成分分解（反復 SCC） | [使い方](docs/scc.md) |
+| `graph/two_sat.hpp` | 2-SAT | [使い方](docs/two_sat.md) |
 | `graph/connectivity/low_link.hpp` | Low-Link | [使い方](docs/low_link.md) |
 | `graph/connectivity/two_edge_connected_components.hpp` | 二辺連結成分分解・橋の森 | [使い方](docs/two_edge_connected_components.md) |
 
@@ -138,6 +149,8 @@
 | `data_structure/li_chao_tree.hpp` | Li Chao Tree (クエリ先読み) | [使い方](docs/li_chao_tree.md) |
 | `data_structure/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
+| `data_structure/union_find.hpp` | Union-Find・連結成分の列挙 | [使い方](docs/union_find.md) |
+| `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
 | `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
 | `data_structure/rollback_union_find.hpp` | Rollback Union Find | [使い方](docs/rollback_union_find.md) |
 
@@ -145,6 +158,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `data_structure/segment_tree/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
 | `data_structure/segment_tree/persistent_segtree.hpp` | 永続セグメント木（過去版への更新・区間コピー） | [使い方](docs/persistent_segtree.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
@@ -282,12 +296,15 @@
 | `components/dijkstra_topological.hpp` | Dijkstra のトポロジカル前処理 | [使い方](docs/dijkstra_topological.md) |
 | `components/dijkstra_unique.hpp` | Dijkstra の一意経路の探索 | [使い方](docs/dijkstra_unique.md) |
 | `components/warshall_floyd_kernel.hpp` | ワーシャルフロイド法のブロック・SIMD 演算 | [使い方](docs/warshall_floyd_kernel.md) |
+| `components/scc_core.hpp` | 反復 SCC の共通部品 | [使い方](docs/scc_core.md) |
 | `components/shortest_path_scc.hpp` | 最短路で使う到達可能部分の強連結成分分解 | [使い方](docs/shortest_path_scc.md) |
 | `components/directed_csr.hpp` | 重み付き有向グラフの CSR | [使い方](docs/directed_csr.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
 | `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
 | `components/matrix_arithmetic.hpp` | 行列の内部演算 | [使い方](docs/matrix_arithmetic.md) |
+| `components/fps_light_ntt.hpp` | 軽量 FPS の NTT・畳み込み | [使い方](docs/fps_light_ntt.md) |
+| `components/fps_light_product_tree.hpp` | 軽量 FPS の積木 | [使い方](docs/fps_light_product_tree.md) |
 | `components/fps_operations.hpp` | FPS の内部演算 | [使い方](docs/fps_operations.md) |
 | `components/fps_factorials.hpp` | 階乗・逆階乗生成 | [使い方](docs/fps_factorials.md) |
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
@@ -320,9 +337,11 @@
 
 提出には [oj-bundle](https://github.com/online-judge-tools/verification-helper) の利用を想定しています。
 
-| 提出用ツール | 説明 |
+FPS も通常の `oj-bundle` だけで展開できます。専用の圧縮ツールは不要です。
+
+| メンテナー向けツール | 説明 |
 | --- | --- |
-| [tools/compact_fps.py](tools/compact_fps.py) | FPS の結合ソースの短縮（[使い方](docs/fps.md)） |
+| [tools/update_fps_headers.py](tools/update_fps_headers.py) | FPS の編集用原本から配布ヘッダーを更新（[説明](docs/fps_backend.md)） |
 
 例えば
 

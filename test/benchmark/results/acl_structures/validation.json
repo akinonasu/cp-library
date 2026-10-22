@@ -1,0 +1,454 @@
+{
+  "started_at": "2026-10-21T12:56:13.676285+00:00",
+  "generator_commit": "1814c4e5205517e368bb57a8d1127eb961cfeaae",
+  "compilers": {
+    "g++": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "/workspace/cp-binomial-study/bin/clang++": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/cp-binomial-study/clang/toolchain/usr/lib/llvm-19/bin\n"
+  },
+  "cases": {
+    "union_find": {
+      "example_00.in": {
+        "input_sha256": "e0518cbffe61b792644f3d8a4a335904f5a6d1f2d64c9f37e0f03b852df40062",
+        "answer_sha256": "e4749bc7f4f9360cf6a2e56321b815c8de72808a8ee756a48722cc9b287ddc24"
+      },
+      "max_random_00.in": {
+        "input_sha256": "22e4ddab088f841e9e35c987eaceba2181d63e2cdb4172b89a9678edd9208ae6",
+        "answer_sha256": "81dca8f86fe4ac53a4c03650ae1607a29d8eb3a3d6badd127994c8f2f062e142"
+      },
+      "max_random_01.in": {
+        "input_sha256": "53bb15acd3f4fb15e1e1a1f828824a56f81b3b82e05e74a76d2f73c9a747755d",
+        "answer_sha256": "eb1de4f221bac8831442d01981e6c1f9b968ca7e8c023d334a17b91795f64d29"
+      },
+      "max_random_02.in": {
+        "input_sha256": "3b3f3eb155a1b0638eb8166e08b2ccca81bbe542454809e4ab8e1f3cf0a43222",
+        "answer_sha256": "8826da4f7999994e0331a80cfe53d6e62d169b137ff18fa244d26fdb35b37a4d"
+      },
+      "path_00.in": {
+        "input_sha256": "412432d3c296d117a7f6c36766feeab06d57f9532c6a40a799a1f8e2df9a1121",
+        "answer_sha256": "38618589fee0128f74fcc3e242b162f177bc49987ed94a89fa7daf2f2a950034"
+      },
+      "path_01.in": {
+        "input_sha256": "2c476bd0b8ccc48dbb2ccf5619c8b36760d485f5f12817cdf5db3c9625df2a69",
+        "answer_sha256": "38618589fee0128f74fcc3e242b162f177bc49987ed94a89fa7daf2f2a950034"
+      },
+      "path_02.in": {
+        "input_sha256": "5a9c37a5b26473d3b6875586e27a70529ec4758d9aa6f555a2c3a7ae6e42dec6",
+        "answer_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "path_03.in": {
+        "input_sha256": "9dc473904bf47085708a8223a79698e157b8d61eec279f5204a42b73b8b0d6ed",
+        "answer_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "random_00.in": {
+        "input_sha256": "e9e9198dbfefcdeedeb7f01e04906f6d44d9c7c82a1313c9a632fec2309a65c4",
+        "answer_sha256": "e1da4e8994b5a3490aa9a67bb0d0a2b82741959ce843c91c7aafcaf3204f634e"
+      },
+      "random_01.in": {
+        "input_sha256": "556a9741d87eee9ead3d51a4d6b2f6f04b7bc5d2818d4b75965e1d6ab0ba8326",
+        "answer_sha256": "7771aa7aa9389614675819e450b09202f741c496827b04713a671052052df2d4"
+      },
+      "random_02.in": {
+        "input_sha256": "78cd2365ac598642cae686539b7f34ec69b1c793c4874f76a644d5cb987b3c13",
+        "answer_sha256": "812b904362fd0ede9c1a61fdd050213fa08999b3a2f983fdb069c1374e82c4b7"
+      },
+      "random_03.in": {
+        "input_sha256": "5d94dabb319d88233c829c5252a35c76683059d57a0e8cb43c15d4119fd43bca",
+        "answer_sha256": "ccd22b3445f283950f5d9a831b24585e79b2d4415527e2bbb4c6a0cea0d5a08e"
+      },
+      "random_04.in": {
+        "input_sha256": "6e5f63b28518d59ec49e384fa013280ac571bef58b7c5cfb964c374527fdc181",
+        "answer_sha256": "3d0c81cf711561802584958d2003390689d3c5660b9df727300a53875c8fe16b"
+      },
+      "random_05.in": {
+        "input_sha256": "b69a0518056fdab9459f26bd17575e22f541b97ca86a59506ed80b492bc4e7c8",
+        "answer_sha256": "c3f24da09aea6fa99b2ccc3a38c0adf087175be7ec930000a348fbf0bc11b3c3"
+      },
+      "random_06.in": {
+        "input_sha256": "e389773915326f9824f3093481428999ff3b1d3f011a5ff269e4c8f18996af46",
+        "answer_sha256": "6ed7b5576d3a5270bf30c31038be41dc192bbf833b0ced3ffe85bfed8489b527"
+      },
+      "random_07.in": {
+        "input_sha256": "43a231be01569198dc2b8a4961a33118a58acb377800ed10d011249e85ef775c",
+        "answer_sha256": "7a549b5a773713251ab7570fdf385d7c65f08a0fbe67995f300a0749d4dbf6e2"
+      },
+      "random_08.in": {
+        "input_sha256": "68067453f91ff3a7ce291e7aacc3725ea647a46ff1caab81b83d3c0b6e03c7d1",
+        "answer_sha256": "7cca44e08ac6ab4becc74e0efbe159de304852adcb8eed431e59bdf2840a5a01"
+      },
+      "random_09.in": {
+        "input_sha256": "4656f1ee7b9fe35abd0894fa0392ad03cfe394653a56dc35009ff8bef3efa792",
+        "answer_sha256": "8b1b19dbcff5268fe6ddbc3cfa0678842549d9e8d9d28b247f9993b955641722"
+      }
+    },
+    "fenwick_tree": {
+      "example_00.in": {
+        "input_sha256": "0d296b2d52740b0220e19ebae573f0a014ea0fa2a5443e9392d35be0fb45d726",
+        "answer_sha256": "2badd49b59d53c3641d9fba525bad91fd45693234b3e7b02a93d70ffd4347a98"
+      },
+      "max_random_00.in": {
+        "input_sha256": "c158affee582730de8abe320283a51f4540e7d0cf7115fd5c297837f271a18ae",
+        "answer_sha256": "f1489c55a725f5d77f3d884932b904b4585dffe2aa196827f7a41cfb0fbe9104"
+      },
+      "max_random_01.in": {
+        "input_sha256": "de7e54457ff6f8d79674d83ac0c9e9a04c517bba82a1fb081cb76071ec6a73a7",
+        "answer_sha256": "0fb427f07256198d79ec9b27a23706ffaf7cb2a8cee23410047f9075c4c87b9e"
+      },
+      "max_random_02.in": {
+        "input_sha256": "ccd5c8bb5dcc7c2d81403c67845968637519db81b62b92267fb5bf287b9d449e",
+        "answer_sha256": "a12589ddaf77f564df4404c118a8d36bba9a09367abf7dd4af1ba51e8436e09a"
+      },
+      "max_random_03.in": {
+        "input_sha256": "b82b02f7603236142600300c76e37e4f374bde6d4d71aa7ff713efb70eb60c86",
+        "answer_sha256": "c23016217b3d1ef488f2b788153827c98a5a332de4f341c44f7a0fc0ebd7bc4f"
+      },
+      "max_random_04.in": {
+        "input_sha256": "3ca5fe8cafba94f655bd4ae9d99b717e5b48a9b42a5515f7b8f18c0f5124065c",
+        "answer_sha256": "853b62cae85ffc2907a2a527f5c8f94f0b472c953978b9818b66594a8d224fef"
+      },
+      "random_00.in": {
+        "input_sha256": "44c892c63c058d299b160bc3333ac709ab60e336bbb3a10b44532f1c446b2298",
+        "answer_sha256": "63bad5fcf1649fcfb552535bcc5df002a278c894ba27963c14c4216f955342a9"
+      },
+      "random_01.in": {
+        "input_sha256": "48b464a267f5cd775f4a0e2e3fbad796ba7776342136b9c84a24bd39e3e86d84",
+        "answer_sha256": "991221eb410e26bcd76e77af45128bb99cc17053b902fee2640d0659d6aa21fe"
+      },
+      "random_02.in": {
+        "input_sha256": "f1a50c8d24c318e967bf0ec31faf0d008b06317d3b986b2627406f5596e5e65a",
+        "answer_sha256": "2b2e109c5cea28468e9c1425c4885b65172058b8bc70712a1c904c59a2f4b669"
+      },
+      "random_03.in": {
+        "input_sha256": "c27a1d30c63b76cd16ccefe41b379b974b89f60b100d9a4de8173c28ef58a1a1",
+        "answer_sha256": "06be8252da2bc953d40fb7722756cfc3bc5fba117842081191dfeb6d0d7000a6"
+      },
+      "random_04.in": {
+        "input_sha256": "8c40e97e3f849b355dcf06120fe5c029d80da3958ba6ff6cf013753313f67ab1",
+        "answer_sha256": "b1b0cfa88e1e88dbd77b611c91c8ec33fb635edbbd8ec5c9589dfa81920e7e72"
+      },
+      "small_00.in": {
+        "input_sha256": "74b5c650c3462ce39eaa6d1fa35a9a6c04d963faf6aa5514b7247e984f65c67e",
+        "answer_sha256": "5bc3ffe3baccce1c3a56631024071ac5b758f64ebec24c19476c6344fb048c8b"
+      },
+      "small_01.in": {
+        "input_sha256": "4a552fe844dbeb1cac1a4bfaed31834d51bfa2e0ea76977340f534a79812d341",
+        "answer_sha256": "46bc033c80ea0381d41a37634e1c4b33ab974fb7d63b74e18ec161e528d3cd46"
+      },
+      "small_02.in": {
+        "input_sha256": "d9bd5661c25fa0d91493006fbdd740a0ed589c34ff06f6c56743590464470371",
+        "answer_sha256": "d5c8dd5ccd5e497244b9c5fa9e8017bff33658fd58e8749aecb9c29778113dba"
+      },
+      "small_03.in": {
+        "input_sha256": "3efea3008c8f783c319b1264f39601e709fae40a6f99ef8d825a5ea134ca0d73",
+        "answer_sha256": "27402430c6d41c909dd6e0ca7c4eceaf13875912aefbec123a137899c11e54f0"
+      },
+      "small_04.in": {
+        "input_sha256": "cea8026534a8ac6c70743b6402127b03a10b04be9772a70b51e592320126d30f",
+        "answer_sha256": "9e089e82df9e7de5471f61b9da4b39175ef2b1318b9952762d5a1ddf1400de99"
+      },
+      "small_05.in": {
+        "input_sha256": "ebe739c13345672028417271e38a9b3386e99c62dc874920de1cac4517481964",
+        "answer_sha256": "a278b3199266554af7f692533548fdc65df32c52e9b15abfc391f3a1a9c20596"
+      },
+      "small_06.in": {
+        "input_sha256": "9d93af88826b81d6f8d86894a1ff0f81ed98b2fc099d042a452076912e1b7bed",
+        "answer_sha256": "b8720f88bd0049f9a94dba765144763558831e60705f1e789f23825f055e73c8"
+      },
+      "small_07.in": {
+        "input_sha256": "3c338a384704a2babace029662d6cc0e8bcb67b582d28ce6ee122a11060af5d0",
+        "answer_sha256": "56099c915cf8ac2e1e2456f864076b55b47dd8bded3a3406ee9f48e0e755f200"
+      },
+      "small_08.in": {
+        "input_sha256": "c62928650248d908e0fcadd8cbeb11d3dddc25df64e171d0cb262874ab5d9f13",
+        "answer_sha256": "f8467794e255a454b9edf463fcb594bec42e6752b2a36d39b3ccfc8c680e90ae"
+      },
+      "small_09.in": {
+        "input_sha256": "efa558928171a3bd6d13524c70ede0c5b3b6b81af9c5c1583d3219203b3e3b30",
+        "answer_sha256": "867bcfdaee5579dca5d289442d6e615bd8ef7e2a707f95bb7b4f00d261e2b77d"
+      }
+    },
+    "lazy_segtree": {
+      "example_00.in": {
+        "input_sha256": "9dcb1104cbe15ab1e119b301842a72b2d8b8ab8e652805d32b53690a35dde5c2",
+        "answer_sha256": "b64883edb1dd3b7fd60ffed6d339f3c2fb50ab071df3d19e65c7de45883a0c8c"
+      },
+      "max_random_00.in": {
+        "input_sha256": "82c2672011db0199059704f4e0363ed6c2099f59eef48559344716dfe8e33169",
+        "answer_sha256": "e15fb826a3b6aa764275a38fe5e2b46ceb87a4df45bd2eeeebfd2843a7f1b959"
+      },
+      "max_random_01.in": {
+        "input_sha256": "0abe9cf68c2c7078288bfdf265246fb638899bad092a6acdf347776cff0f4015",
+        "answer_sha256": "a912bf6f6a718c25ad2e5a6c25714b79274795297b76e37a06351f6609c967c2"
+      },
+      "max_random_02.in": {
+        "input_sha256": "cca4ec18454a437756fd48311b5758361493ac01e3752d12fabbfc391f9fd75b",
+        "answer_sha256": "e7726dc6ac48b90791dc4df7aaf8b3f4ae7437517f1889c246b0d079a5226f42"
+      },
+      "random_00.in": {
+        "input_sha256": "d0cbdc9ccd186b9e50307e4001f71c19bf898d75751f0db5d78605db24343e59",
+        "answer_sha256": "5bd598d2214339cb4789e5065d896ee50d7fd7c0929692275d947761823b2513"
+      },
+      "random_01.in": {
+        "input_sha256": "054635fa72a569d93ddc04bed68c47047f53a1d07c6c30e46f55e6686584408f",
+        "answer_sha256": "1be9e648fae910cf81d153621d75418dfedc0c5da0b8d35d52346208eac6407e"
+      },
+      "random_02.in": {
+        "input_sha256": "a5c65034bae8fcf0a5db3da2e1f5d7092b68247176ce7a70f140e8808093bae2",
+        "answer_sha256": "43963aadbee2c503b6f50fe106d2606bde84aaa1f829121a9278aae9d24ba52f"
+      },
+      "small_00.in": {
+        "input_sha256": "9cd6ea199e401840e8f52f8a82aa747e26dc9e790285d34b92a68a4aac874b53",
+        "answer_sha256": "9af3bd553d4b121c474fc0df7465a0ce15dbf61bcaedae962aff38b90775120e"
+      },
+      "small_01.in": {
+        "input_sha256": "0034e2f63dc7ae5b6f86f566ad7748a1c4faf27d43fe8aa920341072fa3ef533",
+        "answer_sha256": "1d2bafd7323a06961114ad6591e8e9d9e615091b1cd38256bba411f7418fd75f"
+      },
+      "small_02.in": {
+        "input_sha256": "3ac9ff0e8fc188596e8c386fdc6e525ade96049053c01a77ca27b7eab76752f2",
+        "answer_sha256": "bf358fe459c60a6031d7ec22739919102f240f6b65f0fe7187e798e39ba3e024"
+      },
+      "small_03.in": {
+        "input_sha256": "c6e5464b2fb46484d778a42db5f71fdff6a38462109da2c63e47103d835f17b9",
+        "answer_sha256": "3dcc9cd82985a3d0e00cffb163705d19bd1474fd74f6bdb7790b564072ff2e0a"
+      },
+      "small_04.in": {
+        "input_sha256": "5e8aea96010fa78505db53ed5a83356c8ac01a7608351312909da089b3fc5f4d",
+        "answer_sha256": "83a9208b886e2703b2c2b9bd81f791a95a213b9935e34c10a065a14500e56405"
+      },
+      "small_05.in": {
+        "input_sha256": "f164bf4683f794699b0624a641ba656bbdd84c122b1535665b1498e82103bf7b",
+        "answer_sha256": "99808a28111f85a04251224042c12deae1257815705a52e035113b2e6d0dac29"
+      },
+      "small_06.in": {
+        "input_sha256": "11084082fdbeb508dabbf5db234ef161d90f22affa6d0d9ce05fd37664070958",
+        "answer_sha256": "f7cbda042f4406660fd1d5ae652600d5500fb294ca724ec3e093a73e50c4504f"
+      },
+      "small_07.in": {
+        "input_sha256": "38629065aef2dd659e6e816cd401ee92b1a961ccef034a5acb82725aace93cef",
+        "answer_sha256": "8892faaa6be81eb26f9d5d727378fd4445a229a418928ab6b4173e692a3457ec"
+      },
+      "small_08.in": {
+        "input_sha256": "15f5eb3b6b162a9d31991f5d42436f5f5436e85816bcf84d56552b249a2b246d",
+        "answer_sha256": "c32b824f0808f5a627f9c07082de3eff9901096b2104c3e755f5c590bb2db09e"
+      },
+      "small_09.in": {
+        "input_sha256": "2c4e9cf9e6ed8ccd1ebfb1e3cc69a76e3fab2ae20f39349a2ff226726b465621",
+        "answer_sha256": "11186efd49c86ba2eca71a991f19d05c77a3154aacf5d36aa2d90f0271329108"
+      },
+      "small_random_00.in": {
+        "input_sha256": "c4a459fa3d752569e09247382f73fd81d576b6aa27246b00a0639b0978f1ca3c",
+        "answer_sha256": "13a980cc1a856ebf0af0374ff9f4f1e80d70c12ebb2cf26c9192449f861eb113"
+      },
+      "small_random_01.in": {
+        "input_sha256": "4ce85d9dfe1a135ef259f04f00cfd34f6b543766b19cf346cfe4ec5468c2d302",
+        "answer_sha256": "a836b910c57c519f090059ab1d05f1ed6b9212b337ee571c246368b6e7f8affe"
+      }
+    },
+    "scc": {
+      "example_00.in": {
+        "input_sha256": "bbfddcdc9682155ebdbf494dc3afce91a3b18304c3655ba301c0f251b50a1809",
+        "answer_sha256": "0b1d750572fa6e02f0a0fd6d5143b3e9c1258d490135ac7e25aa34b164900885"
+      },
+      "large_cycle_00.in": {
+        "input_sha256": "9a54acdd27ebe73eed1ac4f72505cfde6503ac4d50ac325a4095ed77b89dc332",
+        "answer_sha256": "bf54f241ffc57fbbe232c2f2f82c8b36a20956d7b0b0e1d8bf1ac834d8af904f"
+      },
+      "max_random_00.in": {
+        "input_sha256": "7ec32e65a172d7e19bbf9e9d8345921ec581e68f9c9a3789f9a3e6c675a933f5",
+        "answer_sha256": "3e98ce6f27d2d42dd0263da7e286bd9e3c89a6a85251668d7b20f9c1dad8ad15"
+      },
+      "max_random_01.in": {
+        "input_sha256": "372334aca2370ad564bb54885f8783be758787da13c97346eb7f3685ce19d355",
+        "answer_sha256": "1f556d357de014fb119c9a09fad60ae027ae4d54de2a6542d72f7443b48756a2"
+      },
+      "max_random_02.in": {
+        "input_sha256": "4d5fa5c2e1cac751fb34de0f0143c9ffcc047a0e94fb7e5621feb29574de56fb",
+        "answer_sha256": "565bf3772917590ce99b73560d8ee03dc3948ef0a51f71fb07d8734e7f5ea965"
+      },
+      "max_random_03.in": {
+        "input_sha256": "817456f33384564e5f247822f45fb7b8a2285e4b01ebfa2bfa2e479a9dd98a26",
+        "answer_sha256": "8d18c30f4252f4080746b155473ff5de1b4997caf0aec4dc1d8b6469d5f9b312"
+      },
+      "max_random_04.in": {
+        "input_sha256": "95e8f08a304684b60ca2dff2da394d5ebb5a826379ec8ab2d1583c62d1c53adf",
+        "answer_sha256": "b9b46daa20298198293db492557720cef19c6de9fe55c11ffb88402646fcc6e5"
+      },
+      "random_00.in": {
+        "input_sha256": "b2c6584b61c5dc56471b1f2fa719ce187cde4e8a09d4926f526fbe9cbe5948f1",
+        "answer_sha256": "cd413269d0def923c3193089901977b956d65b208c3e56b88eea8afa8a077e8e"
+      },
+      "random_01.in": {
+        "input_sha256": "b0e03cb8b9f0bbd8b3facc8caa8182a1ae7edc58c1cc28732c9345697343992f",
+        "answer_sha256": "300a3e28153be59ea46b3ad981b41969fd33632602663f3f512901f6d289fe09"
+      },
+      "random_02.in": {
+        "input_sha256": "50e4ba5feaed4098937a47fdda9697aa7c62546443972dd6bed412ae57f35894",
+        "answer_sha256": "9fdb529e636a1033459ef3810e979916fb445b0d63bef954354217eb411c3e9b"
+      },
+      "random_03.in": {
+        "input_sha256": "5b6fb8232b7c04ed4e04d0ddb491004c89b48a9e725ef8f9391bedeec67de9f3",
+        "answer_sha256": "9137951b308b9683dacfd3c558399c5c5f334d5fb8172a0c3dace0e53e9822be"
+      },
+      "random_04.in": {
+        "input_sha256": "ea5465474e49ce9c30a0ce3452a21818ea173b7dceae2e1fcce025a85f3ecf64",
+        "answer_sha256": "635bc7373d1ac9056ad9137506fabba34c801ddcd5819359a3abdb90a99282d5"
+      }
+    },
+    "two_sat": {
+      "cycle_unsat_00.in": {
+        "input_sha256": "8c8c3790d57a85a895d39e5ffb93d6435b06c6cd08113ff0a4254daef4373ad7",
+        "answer_sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "cycle_unsat_01.in": {
+        "input_sha256": "7bca2fcdeb13b506b53245d4af7c11960867a147581ac1e0294ab557f4ec0103",
+        "answer_sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "example_00.in": {
+        "input_sha256": "25466b0e2ed4f970136edb89c91f06f58b76c425698e451dc4f11139cfd805ef",
+        "answer_sha256": "f191baf8f1717c50185084fa1eda5eca76d6f46418bd83e86eb45e8c4244bd74"
+      },
+      "example_01.in": {
+        "input_sha256": "bdcfed14408fb3f368fe82437336d283a9dedc953677460e9c7317724c5e1e58",
+        "answer_sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "long_chain_00.in": {
+        "input_sha256": "f962b54cff18f6cbfb7bcf32ebe2ecac8c09553dccd169037e8c7886086feb3e",
+        "answer_sha256": "f618525e84f0b7c761c566128e8fe6f28471b9d9150594b50ceff4ff976a36a5"
+      },
+      "long_chain_01.in": {
+        "input_sha256": "1618a29daa67db152d46739a23eb072dee00ebe384352254983bb6bb91f84171",
+        "answer_sha256": "9433dad1a560921b3fda167802d86bf3fdb77125a063765ef84b235edec7555b"
+      },
+      "long_chain_02.in": {
+        "input_sha256": "c9fad21bd9b8e594990bb48abb5d7fd34d295229fc70b0fe7f42a04487dc0c66",
+        "answer_sha256": "f618525e84f0b7c761c566128e8fe6f28471b9d9150594b50ceff4ff976a36a5"
+      },
+      "long_chain_03.in": {
+        "input_sha256": "4e0c7c6cc9464c22917812731d5e4a4becc51e09b5d6790fc51501560a42e6a9",
+        "answer_sha256": "9433dad1a560921b3fda167802d86bf3fdb77125a063765ef84b235edec7555b"
+      },
+      "max_random_00.in": {
+        "input_sha256": "836da0a52a1e8bece161ac532055d78bb67222d945d6a3a9b9336150af26575b",
+        "answer_sha256": "4ec32665b63845ff2641001bb2453a72952f72e115ebd00f2a27baa4cb2e5b44"
+      },
+      "max_random_01.in": {
+        "input_sha256": "453c3b97d2f02d5babcfdd8b705762185561a4dd39a78a23cba48cccd5ea8451",
+        "answer_sha256": "b3deb17f09f2aa3fe188b157f4591fdad66dcf2ae96f109e2344c8c13d3e74a8"
+      },
+      "max_random_02.in": {
+        "input_sha256": "fc1dbbfb171410df79061aae69fe96581740a17fddb1451bb894ce18707d44c3",
+        "answer_sha256": "4812e824db7aac78dc474aa3c9004c5e7af7c02d047fdf25605ce02c164e0936"
+      },
+      "max_random_03.in": {
+        "input_sha256": "b2ce53de1b85db08029c1549158aa768fcf50a98a38d9fa49b7b7896b8826a40",
+        "answer_sha256": "ec1f6fbaa5a28ccced08db81ec28e54837b023d01d07306d238c8e251c2d1730"
+      },
+      "max_random_04.in": {
+        "input_sha256": "89b06ca430c85621fefa5646bdb530499a693ee1b65a77615ff13255e15c983f",
+        "answer_sha256": "afa233a49d2e5feacdba78c0b9ce71e5ae415bf516b3503d1697424f68783cfa"
+      },
+      "random_00.in": {
+        "input_sha256": "a029f1e87b4932652a66ce0190cc21cd3d883f8c2e4d6d294294ae00b364d7a5",
+        "answer_sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "random_01.in": {
+        "input_sha256": "3b705485df2b13619ead244c10c9f9d58c8b9a9dcfea85d7aea1460e6a40fdd3",
+        "answer_sha256": "7fbd3eb281a425f9451fccb945047964ca6e6a9ab9a30465a91ca0472f1e3acb"
+      },
+      "random_02.in": {
+        "input_sha256": "a1a7a0f00f6c5a195a2ca591ef6972d51fc9a493b98ccf02b72899b6569598b9",
+        "answer_sha256": "bde6e1eede96772c07c8ce29fd18088863815bd043aa59a06f11f5838cf8a162"
+      },
+      "random_03.in": {
+        "input_sha256": "7cbcadec86277c60d56a67ae7127e996fe601f952712203310486be2ec634e4f",
+        "answer_sha256": "84807fed421a9f51c8c1ff5c52bd2384b234f661ae49c45419dfe820f6755ce8"
+      },
+      "random_04.in": {
+        "input_sha256": "f7da1c8e580dc29f3021ebbbeea1c9f344365ca78b72469e58e1b1e05c1fb21b",
+        "answer_sha256": "d117b73fe5ce1cd15446e75138271ae7bb7e9d654d47673e9a0d6807a3c4f2d8"
+      }
+    }
+  },
+  "results": [
+    {
+      "driver": "test/union_find.test.cpp",
+      "source_sha256": "b035203a1a0bda079410fb8531cef2b8e9488178687e7f857b47037140905127",
+      "compiler": "g++",
+      "cases_passed": 18
+    },
+    {
+      "driver": "test/union_find.test.cpp",
+      "source_sha256": "b035203a1a0bda079410fb8531cef2b8e9488178687e7f857b47037140905127",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 18
+    },
+    {
+      "driver": "test/fenwick_tree.test.cpp",
+      "source_sha256": "b0f9ff62a43118cc9d07fd77d81bb54b82ef7954e2ecbaff6b655506d165258d",
+      "compiler": "g++",
+      "cases_passed": 21
+    },
+    {
+      "driver": "test/fenwick_tree.test.cpp",
+      "source_sha256": "b0f9ff62a43118cc9d07fd77d81bb54b82ef7954e2ecbaff6b655506d165258d",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 21
+    },
+    {
+      "driver": "test/lazy_segtree.test.cpp",
+      "source_sha256": "0bbd8474f5152ccacbfa952b4e28d6126c28dc7b0f7fd24393fd9e28f97951ef",
+      "compiler": "g++",
+      "cases_passed": 19
+    },
+    {
+      "driver": "test/lazy_segtree.test.cpp",
+      "source_sha256": "0bbd8474f5152ccacbfa952b4e28d6126c28dc7b0f7fd24393fd9e28f97951ef",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 19
+    },
+    {
+      "driver": "test/scc.test.cpp",
+      "source_sha256": "c996af930cd3bec381513301e7952c806ac6808c4ea9e423a5b9ce6d8b9c8714",
+      "compiler": "g++",
+      "cases_passed": 12
+    },
+    {
+      "driver": "test/scc.test.cpp",
+      "source_sha256": "c996af930cd3bec381513301e7952c806ac6808c4ea9e423a5b9ce6d8b9c8714",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 12
+    },
+    {
+      "driver": "test/two_sat.test.cpp",
+      "source_sha256": "4cfb62be43323db974e9b1c72ea035a3e944237621059a7d99e01ca35a03a6e6",
+      "compiler": "g++",
+      "cases_passed": 18
+    },
+    {
+      "driver": "test/two_sat.test.cpp",
+      "source_sha256": "4cfb62be43323db974e9b1c72ea035a3e944237621059a7d99e01ca35a03a6e6",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "cases_passed": 18
+    }
+  ],
+  "completed": true,
+  "stack_limit": [
+    -1,
+    -1
+  ],
+  "completed_at": "2026-10-21T12:59:11.765578+00:00",
+  "unit_validation": {
+    "compilers": [
+      "GCC 14.2",
+      "Clang 19"
+    ],
+    "selection": "test/benchmark/acl_structures_selection.json",
+    "unit_source": "test/unit/acl_structures.cpp",
+    "unit_sha256": "6fe6a11fe09293e882a968a7d016f68010546a356c8985d4a57efa7ea264b9fc",
+    "gcc_clang": "passed",
+    "clang_address_undefined_sanitizers": "passed",
+    "standalone_and_double_include": "passed",
+    "documentation_examples_gcc_clang": 6,
+    "acl_modint_fenwick_gcc_clang": "10000 operations passed"
+  }
+}

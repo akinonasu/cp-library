@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-10-21T13:42:30.336107+00:00",
+  "baseline": "6bb650a9897398192042bb52a3fcaef0e8db1502",
+  "existing_library_sources_unchanged": true,
+  "timed_source_hashes_match": true,
+  "official_validation_complete": true,
+  "all_new_headers_standalone_gcc_clang": true,
+  "coexisting_with_fast_fps_gcc_clang": true,
+  "documentation_examples_gcc_clang": true,
+  "new_documentation_frontmatter_valid": true,
+  "actual_bundle_limit_passed": true,
+  "bundle_count": 15,
+  "maximum_bundle_bytes": 31664,
+  "bundle_helper_version": "5.6.0",
+  "new_source_hashes": {
+    "fps/fps_light.hpp": "d2faa3d2d2d3cea8d7ec43682bb52115bf5c6f6c8e9b137665bf1f554502edbe",
+    "fps/fps_light_algorithms.hpp": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b",
+    "components/fps_light_ntt.hpp": "3d8211e0f1c6d071897515aa1ffb5bb94382636c673d72125a1fa43f2df2a100",
+    "components/fps_light_product_tree.hpp": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c",
+    "test/unit/fps_light.cpp": "05458deff25ffa8ee001cea30ec45b6ae6e74e528ca04b32797446ac8a71db1b",
+    "test/unit/fps_light_algorithms.cpp": "06920c5c4f50ed9935fc650a24b831cad2aabcb9ef51be8d66f9ca80fe4fd0d7"
+  },
+  "selection": {
+    "headers": [
+      "fps/fps_light.hpp",
+      "fps/fps_light_algorithms.hpp",
+      "components/fps_light_ntt.hpp",
+      "components/fps_light_product_tree.hpp"
+    ],
+    "unit": [
+      "test/unit/fps_light.cpp",
+      "test/unit/fps_light_algorithms.cpp"
+    ],
+    "sanitize": [
+      "test/unit/fps_light.cpp",
+      "test/unit/fps_light_algorithms.cpp"
+    ]
+  }
+}

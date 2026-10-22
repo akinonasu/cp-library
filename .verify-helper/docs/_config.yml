@@ -12,6 +12,22 @@ main_libraries:
   - components/fft.hpp
   - components/ntt_mod.hpp
   - components/ntt.hpp
+implementation_variants:
+  fps/fps.hpp: fps/fps_light.hpp
+  fps/taylor_shift.hpp: fps/fps_light_algorithms.hpp
+  fps/bostan_mori.hpp: fps/fps_light_algorithms.hpp
+  fps/linear_recurrence.hpp: fps/fps_light_algorithms.hpp
+  fps/multipoint_eval.hpp: fps/fps_light_algorithms.hpp
+  fps/interpolate.hpp: fps/fps_light_algorithms.hpp
+  components/fps_backend.hpp: components/fps_light_backend.hpp
+  components/ntt.hpp: components/fps_light_ntt.hpp
+  components/fps_product_tree.hpp: components/fps_light_product_tree.hpp
+implementation_variant_apis:
+  fps/taylor_shift.hpp: light_fps_algorithms::taylor_shift
+  fps/bostan_mori.hpp: light_fps_algorithms::bostan_mori
+  fps/linear_recurrence.hpp: light_fps_algorithms::linear_recurrence
+  fps/multipoint_eval.hpp: light_fps_algorithms::multipoint_eval
+  fps/interpolate.hpp: light_fps_algorithms::interpolate
 kramdown:
   math_engine: mathjax
 exclude:

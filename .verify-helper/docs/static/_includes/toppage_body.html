@@ -1,3 +1,9 @@
+{% if page.size_profile == 'lightweight' %}
+<p class="profile-note">参照URLのコメントと依存ヘッダーを含め、全体サイトと同じ分類・項目順で掲載しています。64 KiB以内の実装がない項目は高速実装へリンクします。解答本体や複数ライブラリを合わせた提出コードは、合計サイズを確認してください。</p>
+{% else %}
+<p class="profile-note">高速実装と軽量実装を掲載しています。各ライブラリ単体の展開コードは256 KiB未満です。解答本体や他のライブラリを加えた提出コード全体のサイズは確認してください。</p>
+{% endif %}
+<p>{{ page.data.profileLibraryCount }}項目（補助部品を含む）{% if page.size_profile == 'lightweight' %} · 軽量実装 {{ page.data.profileAvailableCount }}件{% endif %}</p>
 <div class="library-search">
   <label for="library-search">{% if page.components %}補助部品{% elsif page.advanced %}応用ライブラリ{% else %}ライブラリ{% endif %}を検索</label>
   <input id="library-search" type="search" placeholder="{% if page.components %}例: Bit Vector / allocator / rank{% elsif page.advanced %}例: HLD / Beats / Retroactive{% else %}例: LCA / FFT / 素因数分解{% endif %}" autocomplete="off" aria-controls="library-list">
@@ -24,9 +30,9 @@
       {% elsif auxiliary %}
         {% continue %}
       {% endif %}
-      {% assign doc = site.pages | where: 'documentation_of', item.path | first %}
-      <li class="library-entry" data-search="{{ item.title | escape }} {{ item.path | escape }} {{ doc.content | strip_html | escape }}">
-        <a href="{{ item.path | append: '.html' | relative_url }}"><span>{{ item.icon }} {{ item.title | escape }}</span><small>{{ item.path | escape }}</small></a>
+      {% assign doc = site.pages | where: 'documentation_of', item.path | where: 'size_profile', page.size_profile | first %}
+      <li class="library-entry" data-search="{{ item.title | escape }} {{ item.path | escape }} {{ item.implementationPath | escape }} {{ doc.content | strip_html | escape }}">
+        <a href="{{ item.pagePath | relative_url }}"><span>{{ item.icon }} {{ item.title | escape }}</span><small>{% if item.profileAvailable %}{{ item.implementationPath | escape }}{% else %}軽量実装なし · 高速実装はこちら{% endif %}</small></a>
       </li>
       {% endfor %}
   {% endcapture %}

@@ -1,8 +1,10 @@
-{% if page.data.dependsOn.size != 0 %}
+{% assign dependencies = page.data._extendedDependsOn | uniq: 'path' %}
+{% if dependencies.size != 0 %}
 <h2>依存ライブラリ</h2>
 <ul>
-  {% for item in page.data._extendedDependsOn %}
-  <li><a href="{{ item.path | append: '.html' | relative_url }}">{{ item.title | escape }}</a></li>
+  {% for item in dependencies %}
+  {% assign dependency_page = item.path | append: '.html' %}
+  <li><a href="{{ item.pagePath | default: dependency_page | relative_url }}">{{ item.title | escape }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -11,16 +13,18 @@
   <summary>検証コード</summary>
   <ul>
     {% for item in page.data._extendedVerifiedWith %}
-    <li><a href="{{ item.path | append: '.html' | relative_url }}">{{ item.icon }} {{ item.title | escape }}</a></li>
+    {% assign verification_page = item.path | append: '.html' %}
+    <li><a href="{{ item.pagePath | default: verification_page | relative_url }}">{{ item.icon }} {{ item.title | escape }}</a></li>
     {% endfor %}
   </ul>
 </details>
 {% endif %}
 <h2>コード</h2>
-<div id="library-code">
+<div id="library-code" data-size-profile="{{ page.size_profile | escape }}" data-code-limit="{{ page.code_limit }}">
+  {% if page.size_profile == 'lightweight' %}<textarea id="code-copy-source" hidden aria-hidden="true">{{ page.data.bundledCode | escape }}</textarea>{% endif %}
   <div class="code-toolbar" hidden>
     <button id="code-bundle" type="button" aria-pressed="false" aria-controls="code-original code-bundled">Bundle</button>
-    <button id="code-copy" type="button">Copy</button>
+    <button id="code-copy" type="button">{% if page.size_profile == 'lightweight' %}展開済みをコピー{% else %}Copy{% endif %}</button>
     <span id="code-status" role="status" aria-live="polite"></span>
   </div>
   <div id="code-original">{% include highlight.html extension=page.data._pathExtension content=page.data.code %}</div>

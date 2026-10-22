@@ -1,0 +1,15 @@
+from pathlib import Path
+import shutil
+w=Path('/workspace/cp-fps-refactor-kernels-study')
+p=w/'radix_fast';p.mkdir(exist_ok=True)
+for d in ['components','fps','math','convolution']:shutil.copytree(w/'radix'/d,p/d,dirs_exist_ok=True)
+f=p/'components/fps_blocked.hpp';s=f.read_text()
+s=s.replace('Vec f0 = low(a[j]), f1 = low(a[j + h]), f2 = low(a[j + 2 * h]), f3 = low(a[j + 3 * h]);','Vec f0 = a[j], f1 = a[j + h], f2 = a[j + 2 * h], f3 = a[j + 3 * h];')
+s=s.replace('Vec amb = low(difference(f0, f1)), cmd = wz(difference(f2, f3));\n\t\t\t\tif constexpr (!identity) amb = wy(amb);','Vec amb = difference(f0, f1), cmd = wz(difference(f2, f3));\n\t\t\t\tif constexpr (!identity) amb = wy(amb); else amb = low(amb);')
+s=s.replace('f2 = low(difference(ab, cd)); f3 = low(difference(amb, cmd));\n\t\t\t\tif constexpr (!identity) f2 = wx(f2), f3 = wx(f3);','f2 = difference(ab, cd); f3 = difference(amb, cmd);\n\t\t\t\tif constexpr (!identity) f2 = wx(f2), f3 = wx(f3); else f2 = low(f2), f3 = low(f3);')
+s=s.replace('} else {\n\t\t\t\tif constexpr (!identity) f2 = wx(f2), f3 = wx(f3);','} else {\n\t\t\t\tf0 = low(f0), f1 = low(f1);\n\t\t\t\tif constexpr (!identity) f2 = wx(f2), f3 = wx(f3); else f2 = low(f2), f3 = low(f3);')
+s=s.replace('Vec bd = low(sum(f1, f3));\n\t\t\t\tif constexpr (!identity) bd = wy(bd);','Vec bd = sum(f1, f3);\n\t\t\t\tif constexpr (!identity) bd = wy(bd); else bd = low(bd);')
+s=s.replace('const Vec x = Radix4::low(a[j]), z = Radix4::low(a[j + h]);','const Vec x = a[j], z = a[j + h];')
+s=s.replace('scale(Radix4::low(Radix4::sum(x, z))), v = scale(Radix4::low(Radix4::difference(x, z)))','scale(Radix4::sum(x, z)), v = scale(Radix4::difference(x, z))')
+f.write_text(s)
+print('bytes',len(s),'saved',61005-len(s))

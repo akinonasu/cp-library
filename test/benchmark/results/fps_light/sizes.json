@@ -1,0 +1,223 @@
+{
+  "method": "custom quoted-include expansion, every local file once, all preprocessing branches and standard includes retained; one #line per local file; NOT oj-bundle",
+  "limit_bytes": 65536,
+  "rows": [
+    {
+      "source": "fps/fps_light.hpp",
+      "with_fast_io": false,
+      "expanded_bytes": 18612,
+      "expanded_sha256": "8a2a62e688a603fc4984384831707b84d41c8c5142a912dfd09509bd7affa393",
+      "dependencies": [
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp"
+      ]
+    },
+    {
+      "source": "fps/fps_light.hpp",
+      "with_fast_io": true,
+      "expanded_bytes": 26215,
+      "expanded_sha256": "f5279593e4fa401156883535fada1c3e565d03601b9def73f31d07caea361d20",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp"
+      ]
+    },
+    {
+      "source": "fps/fps_light_algorithms.hpp",
+      "with_fast_io": false,
+      "expanded_bytes": 23817,
+      "expanded_sha256": "c40b62f75b0d00b64a26f172e53c97e2d0bc72bb30537ba52fba3d250629ffcd",
+      "dependencies": [
+        "components/fps_light_ntt.hpp",
+        "components/fps_light_product_tree.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "math/mint.hpp"
+      ]
+    },
+    {
+      "source": "fps/fps_light_algorithms.hpp",
+      "with_fast_io": true,
+      "expanded_bytes": 31420,
+      "expanded_sha256": "b3701e2f2b8eb3239c5f3c964b6fa0a301888faa306c6135971dd39ce3a1989b",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "components/fps_light_product_tree.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "math/mint.hpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_convolution.test.cpp",
+      "expanded_bytes": 26962,
+      "expanded_sha256": "f8f97b448de4c2c93655de09b0e7662dbe33df7cca676301fa4ce5b26e6aeb9a",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp",
+        "test/fps_light_convolution.test.cpp",
+        "test/fps_light_io.hpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_divmod.test.cpp",
+      "expanded_bytes": 27087,
+      "expanded_sha256": "7d4d41c83c345cae75096957a2c50c9fdd208eb6fd5daf396b38f89445a9a57e",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp",
+        "test/fps_light_divmod.test.cpp",
+        "test/fps_light_io.hpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_exp.test.cpp",
+      "expanded_bytes": 26902,
+      "expanded_sha256": "066fce76f859c7e2dcea2d0cf44682a7d0493904dc1b931c733197c9180397bc",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp",
+        "test/fps_light_exp.test.cpp",
+        "test/fps_light_io.hpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_interpolate.test.cpp",
+      "expanded_bytes": 31916,
+      "expanded_sha256": "a9a22c244fddb0d93bd63c09763fda912f14fbdce508b5fd93b8ea228d5074db",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "components/fps_light_product_tree.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "math/mint.hpp",
+        "test/fps_light_interpolate.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_inv.test.cpp",
+      "expanded_bytes": 26902,
+      "expanded_sha256": "8d49ea8708e1ff6568f0026b86fe422b96bf58680778200c8847d44d6e41e736",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp",
+        "test/fps_light_inv.test.cpp",
+        "test/fps_light_io.hpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_linear_recurrence.test.cpp",
+      "expanded_bytes": 31965,
+      "expanded_sha256": "0188724aeda6e1bcdb39b61aa7ded647b04f589753c78fdf9b8d8d910fdc9215",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "components/fps_light_product_tree.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "math/mint.hpp",
+        "test/fps_light_linear_recurrence.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_log.test.cpp",
+      "expanded_bytes": 26902,
+      "expanded_sha256": "951c561007cfd87f1518567351b677b20f2742b813b29b03480e129143618942",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp",
+        "test/fps_light_io.hpp",
+        "test/fps_light_log.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_multipoint_eval.test.cpp",
+      "expanded_bytes": 31948,
+      "expanded_sha256": "c4999bc270742433ddc7344016746e1ae80d09be2bf0ecd7c20c9a8eef57db2f",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "components/fps_light_product_tree.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "math/mint.hpp",
+        "test/fps_light_multipoint_eval.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_pow.test.cpp",
+      "expanded_bytes": 26956,
+      "expanded_sha256": "df184cd702a534416225e8307d33cb22e4df26266d49255586e52aa25cd72ffa",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp",
+        "test/fps_light_io.hpp",
+        "test/fps_light_pow.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_sqrt.test.cpp",
+      "expanded_bytes": 26968,
+      "expanded_sha256": "b2c11ede2ac45f704ee81db5d44202ee9e57d1bd5903086de2b51df2db20b29c",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "fps/fps_light.hpp",
+        "math/mint.hpp",
+        "test/fps_light_io.hpp",
+        "test/fps_light_sqrt.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_taylor_shift.test.cpp",
+      "expanded_bytes": 31867,
+      "expanded_sha256": "6b2a30a59ef22f4d14264221449d31403ebda0c7b9d3080e319459b10055b7ec",
+      "dependencies": [
+        "components/fast_io.hpp",
+        "components/fps_light_ntt.hpp",
+        "components/fps_light_product_tree.hpp",
+        "fps/fps_light.hpp",
+        "fps/fps_light_algorithms.hpp",
+        "math/mint.hpp",
+        "test/fps_light_taylor_shift.test.cpp"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "fps/fps_light.hpp": "d2faa3d2d2d3cea8d7ec43682bb52115bf5c6f6c8e9b137665bf1f554502edbe",
+    "components/fps_light_ntt.hpp": "3d8211e0f1c6d071897515aa1ffb5bb94382636c673d72125a1fa43f2df2a100",
+    "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+    "components/fast_io.hpp": "eafb26953dbbabf73d90cde43ea9f9992fbcc5224fd2ca221d675710641d3eb2",
+    "fps/fps_light_algorithms.hpp": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b",
+    "components/fps_light_product_tree.hpp": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c",
+    "test/fps_light_convolution.test.cpp": "230493bd0cec1c8b205cd3c28086ef51ac916dbc3f7ccad477fb77bbda9ffd94",
+    "test/fps_light_io.hpp": "68eefea6d1edea2a66636ad3cfb8b6f0713905a7335c391df85565c9c7c71466",
+    "test/fps_light_divmod.test.cpp": "fa0079d362666f90b83a13190eccadbbf1034e9290d7f3af32e7471237223cf3",
+    "test/fps_light_exp.test.cpp": "a240e135650507ed5960846f2ea1bd8b7668614804a4f6d3176cbc3fb8ed6ada",
+    "test/fps_light_interpolate.test.cpp": "dba37fe0eca5409fe220e1d400f5bff08d5377563dce4ffff09d82b28ac28236",
+    "test/fps_light_inv.test.cpp": "83129bc0050f465c64f5d8db7f2b48ec7372f267501798e53612ff162db7a10f",
+    "test/fps_light_linear_recurrence.test.cpp": "8f0fbbd37da1cf3b38f83e53af05adb5a9c253285b1a3fbfa0da77e431f8a5e4",
+    "test/fps_light_log.test.cpp": "060e47a4fc4c38cdf9d82e6f5dd486c4d6c992d636f6b1b4a4af98ebbe3a8e2b",
+    "test/fps_light_multipoint_eval.test.cpp": "8e9cf9143ade2ea53dd9aa33ee5f535edd9db6dc7dbccbd6d62c774708aa67c7",
+    "test/fps_light_pow.test.cpp": "9616844a72065b41bb957d0c8a2840943402e98d3e941ec9785dbc0b91a3904f",
+    "test/fps_light_sqrt.test.cpp": "73fecd03b05e0b60dd66960ce7c001f28bd2a2eb4108c41d683dc0f45536537b",
+    "test/fps_light_taylor_shift.test.cpp": "4cee1c48a7bea6d439bcc0ebc63ee4d4bb7b0541bb3b971e6ff220e246771d07"
+  }
+}

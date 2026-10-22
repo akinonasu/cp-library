@@ -1,6 +1,26 @@
 from pathlib import Path
 
 
+def source_pages(pages):
+    from onlinejudge_verify.documentation.front_matter import merge_front_matter, split_front_matter
+
+    limit = 256 * 1024
+    result = {}
+    for path, content in pages.items():
+        metadata, body = split_front_matter(content)
+        data = metadata.get("data", {})
+        original = data.get("bundledCode")
+        if isinstance(original, str):
+            size = len(original.encode("utf-8"))
+            if size >= limit:
+                raise ValueError(f"{path}: {size} bytes is not below {limit} bytes")
+            data.update(bundledBytes=size, bundledLimit=limit)
+            data.pop("bundledCompressed", None)
+            content = merge_front_matter(metadata, body)
+        result[path] = content
+    return result
+
+
 def source_paths(plan, excluded):
     paths = set(plan["state"]["targets"]["headers"]) | set(plan["state"]["targets"]["verification"])
     return sorted(path for path in map(Path, paths) if not any(
@@ -31,8 +51,12 @@ def generate(plan):
         front_matter={"layout": "toppage", "title": "補助部品", "components": True},
         content=config.index_md.with_name("components.md").read_bytes(),
     ))
-    pages = build.render_pages(page_render_jobs=jobs, source_code_stats=stats, site_render_config=config)
+    pages = source_pages(build.render_pages(page_render_jobs=jobs, source_code_stats=stats, site_render_config=config))
+    from size_profiles import documentation_links, prepare_pages, remove_stale_pages
+    targets, origins = documentation_links(root, markdown)
+    pages = prepare_pages(pages, config.destination_dir, config.config_yml, targets=targets, origins=origins)
     pages.update(build.load_static_files(site_render_config=config))
+    remove_stale_pages(config.destination_dir, pages)
     for path, content in pages.items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)

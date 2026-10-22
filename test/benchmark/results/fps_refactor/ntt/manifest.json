@@ -1,0 +1,91 @@
+{
+  "baseline_commit": "32f6930f1b1170681664000211a2a667921aa010",
+  "stages": {
+    "baseline": {
+      "bytes": 78118,
+      "sha256": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e"
+    },
+    "neon": {
+      "bytes": 68137,
+      "sha256": "099f0073ca80d671c0190b9258ef36f7470bb2c85b22619f039d919b4b4c1e70"
+    },
+    "measured": {
+      "bytes": 58650,
+      "sha256": "bd11836e7486060ff3d7e50d4faeca247d2a7d501a20818b564089905ab82920"
+    },
+    "final": {
+      "bytes": 55113,
+      "sha256": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164"
+    }
+  },
+  "patches": [
+    "baseline_to_neon.patch",
+    "neon_to_measured.patch",
+    "measured_to_final.patch"
+  ],
+  "measured_vs_final": "The timing record compares baseline with measured (58,650 bytes). Final additionally removes four unreferenced methods, inverse_fold8, inverse_recover8, inverse_twist8, inverse_cubic8; final was not timed separately.",
+  "canonical_frozen_sha256": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164",
+  "reproduce": [
+    "python3 test/benchmark/results/fps_refactor/ntt/reproduce.py --work /tmp/fps-ntt-reproduce",
+    "python3 test/benchmark/results/fps_refactor/ntt/reproduce.py --work /tmp/fps-ntt-check --check --clang clang++",
+    "python3 test/benchmark/results/fps_refactor/ntt/reproduce.py --work /tmp/fps-ntt-benchmark --benchmark"
+  ],
+  "benchmark": {
+    "raw_record": "ntt_compact_screen.json",
+    "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.30\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+    "flags": [
+      "-std=c++23",
+      "-O2",
+      "-DEVAL",
+      "-DONLINE_JUDGE",
+      "-ftrivial-auto-var-init=zero",
+      "-march=haswell",
+      "-Wall",
+      "-Wextra"
+    ],
+    "driver": "test/benchmark/fps_256k_advanced.cpp",
+    "driver_sha256": "fcceb94ba846486a105b86c07f0f2e662052de7f9c94004a2dfaec7c9f5065e3",
+    "operation": "compose",
+    "sizes": [
+      131072,
+      2097153
+    ],
+    "trials": 3,
+    "cpu_affinity": [
+      2
+    ],
+    "order": "random.Random(20261021); shuffle before/after for each paired trial",
+    "locks": [
+      "/tmp/cp-fps-tuning.lock exclusive",
+      "/tmp/cp-wm-opt.lock exclusive"
+    ],
+    "initialization": "fresh process per sample; no prewarming; preparation and full canonical coefficient checksumming excluded; allocations included"
+  },
+  "checks": {
+    "raw_record": "original_validation.json",
+    "driver": "primitive_check.cpp",
+    "primitive_sizes": "2..65536, powers of two; all valid power-of-two column counts",
+    "primitive_seed": 20261021,
+    "high_level_units": [
+      "fps_algorithms",
+      "power_projection",
+      "fps_tuning_advanced"
+    ],
+    "gcc_flags": [
+      "-std=c++20",
+      "-O2",
+      "-U__linux__"
+    ],
+    "clang_flags": [
+      "-std=c++20",
+      "-O2"
+    ],
+    "portable_override": "Only in generated private tree, NTT::vectorized() returns false; fps_tuning_advanced is run with -U__linux__.",
+    "elapsed_field": "Original validation elapsed includes compilation and execution; it is not a performance measurement.",
+    "original_compiler_versions": {
+      "g++": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "/workspace/cp-binomial-study/bin/clang++": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/cp-binomial-study/clang/toolchain/usr/lib/llvm-19/bin\n"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "cpu": 2,
+  "operation": "compose",
+  "trials": 3,
+  "binaries": {
+    "before": {
+      "path": "/workspace/cp-fps-256-refactor/baseline_advanced",
+      "sha256": "8eeaee8782d7134ac7ffb1b128668dd6be5873eda338b09df9bfe7861431cca9"
+    },
+    "after": {
+      "path": "/workspace/cp-fps-256-refactor/ntt_compact_advanced",
+      "sha256": "f1784a8a0731d529666943151139865c9010fa2b9f1cf24d2c44382e12e7131a"
+    }
+  },
+  "sources": {
+    "before": {
+      "path": "/workspace/cp-fps-256-refactor/baseline/components/ntt.hpp",
+      "sha256": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e"
+    },
+    "after": {
+      "path": "/workspace/cp-fps-ntt-compact/candidate/components/ntt.hpp",
+      "sha256": "bd11836e7486060ff3d7e50d4faeca247d2a7d501a20818b564089905ab82920"
+    }
+  },
+  "results": [
+    {
+      "n": 131072,
+      "samples_ms": {
+        "before": [
+          29.64097,
+          30.479865,
+          30.457139
+        ],
+        "after": [
+          30.053467,
+          30.245534,
+          30.278052
+        ]
+      },
+      "median_ms": {
+        "before": 30.457139,
+        "after": 30.245534
+      },
+      "after_over_before": 0.9930523677880577,
+      "answer": [
+        "131072",
+        "0",
+        "0",
+        "10714928928189380852"
+      ]
+    },
+    {
+      "n": 2097153,
+      "samples_ms": {
+        "before": [
+          2973.02015,
+          3024.397993,
+          2967.398885
+        ],
+        "after": [
+          3102.327114,
+          3093.768731,
+          3075.345634
+        ]
+      },
+      "median_ms": {
+        "before": 2973.02015,
+        "after": 3093.768731
+      },
+      "after_over_before": 1.0406147872896188,
+      "answer": [
+        "2097153",
+        "0",
+        "0",
+        "8397320579553689100"
+      ]
+    }
+  ],
+  "completed": true
+}

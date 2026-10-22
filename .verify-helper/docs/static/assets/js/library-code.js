@@ -3,6 +3,22 @@
   const bundled = document.getElementById('code-bundled');
   const bundle = document.getElementById('code-bundle');
   const status = document.getElementById('code-status');
+  const container = document.getElementById('library-code');
+  const lightweight = container.dataset.sizeProfile === 'lightweight';
+  const limit = Number(container.dataset.codeLimit);
+  const source = () => {
+    const code = lightweight ? document.getElementById('code-copy-source').value : (original.hidden ? bundled : original).querySelector('code').textContent;
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = '';
+    return `//${url.href}\n${code}`;
+  };
+  if (lightweight) {
+    original.hidden = true;
+    bundled.hidden = false;
+    bundle.setAttribute('aria-pressed', 'true');
+    bundle.textContent = 'Unbundle';
+  }
   document.querySelector('.code-toolbar').hidden = false;
   bundle.addEventListener('click', () => {
     document.getElementById('code-copy-fallback')?.remove();
@@ -14,11 +30,12 @@
   });
   document.getElementById('code-copy').addEventListener('click', async () => {
     document.getElementById('code-copy-fallback')?.remove();
-    const code = (original.hidden ? bundled : original).querySelector('code');
-    const url = new URL(window.location.href);
-    url.search = '';
-    url.hash = '';
-    const text = `//${url.href}\n${code.textContent}`;
+    const text = source();
+    const bytes = new TextEncoder().encode(text).length;
+    if (limit && bytes > limit) {
+      status.textContent = `参照URLを含めて${limit / 1024} KiBを超えるためコピーできません`;
+      return;
+    }
     let copied = false;
     try {
       await navigator.clipboard.writeText(text);

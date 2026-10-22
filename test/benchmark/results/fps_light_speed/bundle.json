@@ -1,0 +1,297 @@
+{
+  "started_at": "2026-10-21T14:09:43.950642+00:00",
+  "method": "oj-bundle -I ROOT source.cpp, original formatting and all platform branches, no compacting",
+  "limit_bytes": 65536,
+  "bundle": {
+    "path": "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+    "sha256": "90f022d09a7763a8e70cc7bb0470e8d266fdded58fbe52200a05e461f95b0dbd"
+  },
+  "rows": [
+    {
+      "source": "fps/fps_light.hpp",
+      "with_fast_io": false,
+      "source_sha256": "0749c549bfcb6f266dfc53090af7b90be54d3a3576b2261c99d5b4954a62bbf7",
+      "bytes": 31130,
+      "sha256": "d0b25e85cb0a68403bc89e8120e7fe6df78b5dde49083f161dc607871b0edf8a",
+      "remaining_bytes": 34406,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/fps-light-bundle-ulamxr47/fps_light.cpp"
+      ]
+    },
+    {
+      "source": "fps/fps_light.hpp",
+      "with_fast_io": true,
+      "source_sha256": "d74d665543d07be69abc016a9f888238db30b40097e94d6c6a7bba21f1c45abf",
+      "bytes": 38729,
+      "sha256": "5a25cceb6344b0071cc4d14a4a85bc2ade0848bc5b0c2243647bed7ce1857bbe",
+      "remaining_bytes": 26807,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/fps-light-bundle-ulamxr47/fps_light_io.cpp"
+      ]
+    },
+    {
+      "source": "fps/fps_light_algorithms.hpp",
+      "with_fast_io": false,
+      "source_sha256": "179f814350092e28abd8ceb1c24924f2bc0eeae85404d63c86d0548870558603",
+      "bytes": 36136,
+      "sha256": "5e46ea89afa80dca2be1a46abfad2c1ef175fc17744a7fc24432269920645e4f",
+      "remaining_bytes": 29400,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/fps-light-bundle-ulamxr47/fps_light_algorithms.cpp"
+      ]
+    },
+    {
+      "source": "fps/fps_light_algorithms.hpp",
+      "with_fast_io": true,
+      "source_sha256": "9e9bf9e4524d4b4ab948a708c34e8d405d9b399f9b8152534ee37f37438daa67",
+      "bytes": 43735,
+      "sha256": "ec00cf3225ef663f2df3f87e5706f7e88561210ad53d6ff5549ddb0010ca4701",
+      "remaining_bytes": 21801,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/tmp/fps-light-bundle-ulamxr47/fps_light_algorithms_io.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_convolution.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "230493bd0cec1c8b205cd3c28086ef51ac916dbc3f7ccad477fb77bbda9ffd94",
+      "bytes": 39433,
+      "sha256": "584b68b921a39fba03d4673492eef83f13b8112eb923ea19121e9e243c1f8b6c",
+      "remaining_bytes": 26103,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_convolution.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_divmod.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "fa0079d362666f90b83a13190eccadbbf1034e9290d7f3af32e7471237223cf3",
+      "bytes": 39553,
+      "sha256": "643af49d9dcb9d4b9bc2d30bbd556f9c5d688d15fd680c52861611c34726716f",
+      "remaining_bytes": 25983,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_divmod.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_exp.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "a240e135650507ed5960846f2ea1bd8b7668614804a4f6d3176cbc3fb8ed6ada",
+      "bytes": 39365,
+      "sha256": "0f0bc943c2d2ae3fe7095002d8d92c7675ecffea7b4dffe90cd791c9d005e688",
+      "remaining_bytes": 26171,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_exp.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_interpolate.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "dba37fe0eca5409fe220e1d400f5bff08d5377563dce4ffff09d82b28ac28236",
+      "bytes": 44208,
+      "sha256": "c5ac01420b917e01b74fba5224a32142967b6e6f2be10cf98c05b3a416808647",
+      "remaining_bytes": 21328,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_interpolate.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_inv.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "83129bc0050f465c64f5d8db7f2b48ec7372f267501798e53612ff162db7a10f",
+      "bytes": 39365,
+      "sha256": "1898a8014bba0fcca3ba8860423fd29d4d85e6712de4e6d14a07b6821554055b",
+      "remaining_bytes": 26171,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_inv.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_linear_recurrence.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "8f0fbbd37da1cf3b38f83e53af05adb5a9c253285b1a3fbfa0da77e431f8a5e4",
+      "bytes": 44263,
+      "sha256": "16891be7b0be85b0ac0b038e4e73f81cf7464e42a3ea191b43946094557eb55e",
+      "remaining_bytes": 21273,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_linear_recurrence.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_log.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "060e47a4fc4c38cdf9d82e6f5dd486c4d6c992d636f6b1b4a4af98ebbe3a8e2b",
+      "bytes": 39365,
+      "sha256": "85bf85ca446122cae05274e8e37b51cda670a7bb9fca68f38340999adafce068",
+      "remaining_bytes": 26171,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_log.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_multipoint_eval.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "8e9cf9143ade2ea53dd9aa33ee5f535edd9db6dc7dbccbd6d62c774708aa67c7",
+      "bytes": 44244,
+      "sha256": "5fb67f401d9f08f7a03af3b69c74ae71f21bf8b9fd8e0de626fd2c2afd82fea3",
+      "remaining_bytes": 21292,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_multipoint_eval.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_pow.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "9616844a72065b41bb957d0c8a2840943402e98d3e941ec9785dbc0b91a3904f",
+      "bytes": 39419,
+      "sha256": "5a407952648ad5f2c957deeb9a3e2369c36f504851ceda364248c0003474971c",
+      "remaining_bytes": 26117,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_pow.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_sqrt.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "73fecd03b05e0b60dd66960ce7c001f28bd2a2eb4108c41d683dc0f45536537b",
+      "bytes": 39432,
+      "sha256": "5dcb429a142497527f228862e6f2b31126da55872fdad6be3d8d00cbb413ba3d",
+      "remaining_bytes": 26104,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_sqrt.test.cpp"
+      ]
+    },
+    {
+      "source": "test/fps_light_taylor_shift.test.cpp",
+      "with_fast_io": null,
+      "source_sha256": "4cee1c48a7bea6d439bcc0ebc63ee4d4bb7b0541bb3b971e6ff220e246771d07",
+      "bytes": 44160,
+      "sha256": "7b6ed2b28e244b848a45ee64b5e118731d4ecc0c40bf710f78be50a78ff29841",
+      "remaining_bytes": 21376,
+      "command": [
+        "/workspace/cp-fps-light-study/venv/bin/oj-bundle",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-library/test/fps_light_taylor_shift.test.cpp"
+      ]
+    }
+  ],
+  "compilers": {
+    "g++": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "/workspace/cp-binomial-study/bin/clang++": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/cp-binomial-study/clang/toolchain/usr/lib/llvm-19/bin\n"
+  },
+  "checks": [
+    {
+      "source": "test/fps_light_exp.test.cpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/tmp/fps-light-bundle-ulamxr47/fps_light_exp.test.bundled.cpp",
+        "-o",
+        "/tmp/fps-light-bundle-ulamxr47/driver"
+      ],
+      "status": "passed"
+    },
+    {
+      "source": "test/fps_light_exp.test.cpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/tmp/fps-light-bundle-ulamxr47/fps_light_exp.test.bundled.cpp",
+        "-o",
+        "/tmp/fps-light-bundle-ulamxr47/driver"
+      ],
+      "status": "passed"
+    },
+    {
+      "source": "test/fps_light_linear_recurrence.test.cpp",
+      "compiler": "g++",
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/tmp/fps-light-bundle-ulamxr47/fps_light_linear_recurrence.test.bundled.cpp",
+        "-o",
+        "/tmp/fps-light-bundle-ulamxr47/driver"
+      ],
+      "status": "passed"
+    },
+    {
+      "source": "test/fps_light_linear_recurrence.test.cpp",
+      "compiler": "/workspace/cp-binomial-study/bin/clang++",
+      "command": [
+        "/workspace/cp-binomial-study/bin/clang++",
+        "-std=c++23",
+        "-O2",
+        "-DNDEBUG",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/tmp/fps-light-bundle-ulamxr47/fps_light_linear_recurrence.test.bundled.cpp",
+        "-o",
+        "/tmp/fps-light-bundle-ulamxr47/driver"
+      ],
+      "status": "passed"
+    }
+  ],
+  "completed": true,
+  "completed_at": "2026-10-21T14:09:54.831615+00:00"
+}

@@ -1,0 +1,310 @@
+{
+  "started_at": "2026-10-21T14:10:58.914583+00:00",
+  "baseline_revision": "5e7f6ecd2a74d7ba96bb694fdacaf6953b6eece2",
+  "candidate_revision": "5e7f6ecd2a74d7ba96bb694fdacaf6953b6eece2",
+  "suite": "algorithms",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.30\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+  "affinity": [
+    2
+  ],
+  "flags": [
+    "-std=c++23",
+    "-O2",
+    "-DEVAL",
+    "-DONLINE_JUDGE",
+    "-ftrivial-auto-var-init=zero",
+    "-Wall",
+    "-Wextra",
+    "-march=haswell"
+  ],
+  "trials": 9,
+  "sizes": [
+    1024,
+    32768
+  ],
+  "seed": 731,
+  "execution_order_seed": 20261021,
+  "harness_sha256": "ff02f192d720f5e6abecc8b09e125baacedb0904ca0ee19f9bf69be65bb865e0",
+  "initialization": "fresh process for every sample; no transform prewarming; input construction and canonical coefficient checksumming outside timing; allocation included; sqrt constant17^2; distinct evaluation points0..n-1; recurrence k=10^18",
+  "results": [
+    {
+      "operation": "taylor_shift",
+      "n": 1024,
+      "median_ms": {
+        "before": 0.087451,
+        "after": 0.043054,
+        "heavy": 0.042493
+      },
+      "before_over_after": 2.031193385051331,
+      "after_over_heavy": 1.013202174475796,
+      "answer": [
+        1024,
+        -1,
+        "15416944051634522773"
+      ]
+    },
+    {
+      "operation": "multipoint_eval",
+      "n": 1024,
+      "median_ms": {
+        "before": 1.782921,
+        "after": 0.740609,
+        "heavy": 0.170626
+      },
+      "before_over_after": 2.4073715010214567,
+      "after_over_heavy": 4.340540128702542,
+      "answer": [
+        1024,
+        -1,
+        "10441733034473657251"
+      ]
+    },
+    {
+      "operation": "interpolate",
+      "n": 1024,
+      "median_ms": {
+        "before": 2.265575,
+        "after": 0.941531,
+        "heavy": 0.161662
+      },
+      "before_over_after": 2.4062670267893465,
+      "after_over_heavy": 5.824071210302978,
+      "answer": [
+        1024,
+        -1,
+        "4107252132562798569"
+      ]
+    },
+    {
+      "operation": "linear_recurrence",
+      "n": 1024,
+      "median_ms": {
+        "before": 9.067287,
+        "after": 2.18245,
+        "heavy": 0.377696
+      },
+      "before_over_after": 4.154636761437835,
+      "after_over_heavy": 5.7783243666864355,
+      "answer": [
+        1,
+        -1,
+        "7698571065829939957"
+      ]
+    },
+    {
+      "operation": "taylor_shift",
+      "n": 32768,
+      "median_ms": {
+        "before": 2.658744,
+        "after": 1.224916,
+        "heavy": 0.372237
+      },
+      "before_over_after": 2.1705521031646255,
+      "after_over_heavy": 3.290688459234305,
+      "answer": [
+        32768,
+        -1,
+        "4103816465047815736"
+      ]
+    },
+    {
+      "operation": "multipoint_eval",
+      "n": 32768,
+      "median_ms": {
+        "before": 97.452236,
+        "after": 32.880379,
+        "heavy": 3.035642
+      },
+      "before_over_after": 2.963841627251316,
+      "after_over_heavy": 10.831441586326713,
+      "answer": [
+        32768,
+        -1,
+        "7919448420662952333"
+      ]
+    },
+    {
+      "operation": "interpolate",
+      "n": 32768,
+      "median_ms": {
+        "before": 121.415036,
+        "after": 40.777502,
+        "heavy": 3.831741
+      },
+      "before_over_after": 2.977500583532557,
+      "after_over_heavy": 10.64202982404082,
+      "answer": [
+        32768,
+        -1,
+        "16954411032589104896"
+      ]
+    },
+    {
+      "operation": "linear_recurrence",
+      "n": 32768,
+      "median_ms": {
+        "before": 323.077116,
+        "after": 96.617339,
+        "heavy": 12.438553
+      },
+      "before_over_after": 3.3438833996452746,
+      "after_over_heavy": 7.767570633014949,
+      "answer": [
+        1,
+        -1,
+        "10648528090887803636"
+      ]
+    }
+  ],
+  "binaries": {
+    "before": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-march=haswell",
+        "-DLIGHT_FPS",
+        "-I",
+        "/workspace/cp-fps-light-speed-study/baseline",
+        "/workspace/cp-fps-light-speed-study/baseline/test/benchmark/fps_light_algorithms.cpp",
+        "-o",
+        "/tmp/fps-light-speed-v64r6ttt/before"
+      ],
+      "sha256": "15877dad3f24b1d085b6d7dd71d45abab010b12be52416eea09bccaa7a810942",
+      "bytes": 54856,
+      "compiler_stdout": "",
+      "compiler_stderr": ""
+    },
+    "after": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-march=haswell",
+        "-DLIGHT_FPS",
+        "-I",
+        "/workspace/cp-library",
+        "/workspace/cp-fps-light-speed-study/baseline/test/benchmark/fps_light_algorithms.cpp",
+        "-o",
+        "/tmp/fps-light-speed-v64r6ttt/after"
+      ],
+      "sha256": "cb28ed06d8e5fa3b7ba3ba0960a3eb346a16dd18f85e3d417a528c42fc10647f",
+      "bytes": 87992,
+      "compiler_stdout": "",
+      "compiler_stderr": ""
+    },
+    "heavy": {
+      "command": [
+        "g++",
+        "-std=c++23",
+        "-O2",
+        "-DEVAL",
+        "-DONLINE_JUDGE",
+        "-ftrivial-auto-var-init=zero",
+        "-Wall",
+        "-Wextra",
+        "-march=haswell",
+        "-I",
+        "/workspace/cp-fps-light-speed-study/baseline",
+        "/workspace/cp-fps-light-speed-study/baseline/test/benchmark/fps_light_algorithms.cpp",
+        "-o",
+        "/tmp/fps-light-speed-v64r6ttt/heavy"
+      ],
+      "sha256": "8069b3ababb503415f673d378b9fc804e3a1a70439c30bf8790cc06982bfecb4",
+      "bytes": 662928,
+      "compiler_stdout": "",
+      "compiler_stderr": ""
+    }
+  },
+  "sources": {
+    "baseline": {
+      "root": "/workspace/cp-fps-light-speed-study/baseline",
+      "sha256": {
+        "test/benchmark/fps_light_algorithms.cpp": "071cbb7be0428db0a4f179406e9edb224223dfd169c1259eb9630bdf186d1b20",
+        "fps/fps_light_algorithms.hpp": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b",
+        "fps/fps_light.hpp": "d2faa3d2d2d3cea8d7ec43682bb52115bf5c6f6c8e9b137665bf1f554502edbe",
+        "components/fps_light_ntt.hpp": "3d8211e0f1c6d071897515aa1ffb5bb94382636c673d72125a1fa43f2df2a100",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+        "components/fps_light_product_tree.hpp": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c",
+        "fps/taylor_shift.hpp": "6aa8bfeb57500cd8c46dc79c50e148b456e73f84a7a68598f37815c6a71f8fb7",
+        "fps/fps.hpp": "750945cc34405caa95b245a4e6eb39a035a4513446d8a69434efedf50f94e429",
+        "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+        "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+        "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+        "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+        "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+        "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+        "components/fps_blocked.hpp": "f2fd3a8e88ed8ddce9c663a6fa62c5848b4e78ccf46ad19de1f7b9f19db76cfa",
+        "components/fps_asm.hpp": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde",
+        "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+        "components/fps_exp_blocked.hpp": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2",
+        "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+        "components/fps_sqrt_blocked.hpp": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5",
+        "components/fps_convolution.hpp": "9553bd866393d26325dba88a6d779749a9e26a0ff02536ba568fcc0bd91c2bc1",
+        "components/fps_convolution_unbalanced.hpp": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd",
+        "components/fps_convolution_constant.hpp": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6",
+        "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+        "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+        "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+        "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+        "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/bostan_mori.hpp": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6",
+        "components/fps_bostan.hpp": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258"
+      }
+    },
+    "candidate": {
+      "root": "/workspace/cp-library",
+      "sha256": {
+        "test/benchmark/fps_light_algorithms.cpp": "071cbb7be0428db0a4f179406e9edb224223dfd169c1259eb9630bdf186d1b20",
+        "fps/fps_light_algorithms.hpp": "c697cb5e2230c39bd2ec7b79c2e1ae40a6a1778714838209caa7285d6d16966b",
+        "fps/fps_light.hpp": "9b6accf46850e7a07f8c406deb48c4cc8832fcff6dc138447aa0a7899b9c057c",
+        "components/fps_light_ntt.hpp": "c6eb39d76a61a69a61c0193c74fa7a4243cf83ab4c9573d2514836ec473bb85c",
+        "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc",
+        "components/fps_light_product_tree.hpp": "d89e6df0f4370fba02bc958b57cea44fef1cd5f5ccba73da69e0272409530a3c",
+        "fps/taylor_shift.hpp": "6aa8bfeb57500cd8c46dc79c50e148b456e73f84a7a68598f37815c6a71f8fb7",
+        "fps/fps.hpp": "750945cc34405caa95b245a4e6eb39a035a4513446d8a69434efedf50f94e429",
+        "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+        "components/ntt.hpp": "8d878ad0344cd69871ad491ed79fdfb20b061a4abc722c403727a9214306de5e",
+        "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+        "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+        "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+        "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+        "components/fps_blocked.hpp": "f2fd3a8e88ed8ddce9c663a6fa62c5848b4e78ccf46ad19de1f7b9f19db76cfa",
+        "components/fps_asm.hpp": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde",
+        "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+        "components/fps_exp_blocked.hpp": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2",
+        "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+        "components/fps_sqrt_blocked.hpp": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5",
+        "components/fps_convolution.hpp": "9553bd866393d26325dba88a6d779749a9e26a0ff02536ba568fcc0bd91c2bc1",
+        "components/fps_convolution_unbalanced.hpp": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd",
+        "components/fps_convolution_constant.hpp": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6",
+        "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+        "components/fps_taylor_blocked.hpp": "67147f252b9ed42d3bd5c21c2e32f7f1cd0ebe465983215f31394a53fb201ae4",
+        "fps/multipoint_eval.hpp": "ff36220cf08b1001bdd030827dc34714b74551eb96bde51e38ebb31ba5cb20b3",
+        "components/fps_product_tree.hpp": "d72a0a371bcf404028ca1fd970355b01efc097dbc7431a59c26ad3be347d9d58",
+        "components/fps_direct_eval.hpp": "73f3c335566cad50271ed5a0c8336ec10c57c6ec2c69a193c463939d15136380",
+        "components/fps_evaluation.hpp": "11405cf9fe37b4c42ad72d31086731f86a601ac16a70a178cf8519d1fbc858b5",
+        "fps/interpolate.hpp": "69ebf5efab40449c4f13d03fd6f1f33c75e9dde0b69f1a706057279440851d8a",
+        "fps/linear_recurrence.hpp": "dc99057fe2a38c66d8d7feb9a5508d7e7b6501815d3d0efbe967b5cb3445e553",
+        "fps/bostan_mori.hpp": "4177aa77be9db4af684eba23d2ba07cd092e8628e308079c29f81858e18128d6",
+        "components/fps_bostan.hpp": "bda7e2f7b2189023cc5da6b695eddc5bcde4ff81eb8407d933c0cf18fb13e258"
+      }
+    }
+  },
+  "completed": true,
+  "completed_at": "2026-10-21T14:14:27.186167+00:00"
+}

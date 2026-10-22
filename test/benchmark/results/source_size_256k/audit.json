@@ -1,0 +1,2440 @@
+{
+  "checked_at": "2026-10-21T15:50:18.121767+00:00",
+  "candidate_parent_revision": "cc114631628709c548c1f95b808c611191e61781",
+  "completed": true,
+  "canonical_cpp_unchanged": true,
+  "source_sha256": {
+    ".verify-helper/bundle_test.py": "3cf45e2ced8dabccd011fa22ee0cb583fbbb33d6aa9ce316946038c9f70c6383",
+    ".verify-helper/check-docs.py": "706f290bca482ed493b9e5a436d9cbc0c0be326074902de1ef4db602456a527e",
+    ".verify-helper/ci.py": "f6cc4ac2d8b8571cad0d16616d02822078b866e67145eb3b9431ec6f0679602e",
+    ".verify-helper/docs/static/_includes/document_body.html": "79f60204335ece00431cf4cd41dfb2de3544b685f3feaf1bd23323579b70c4ac",
+    ".verify-helper/docs/static/assets/js/library-code.js": "a364b7ca23cfbd1297123c0f33f690fd425938889f67b74e5d51f2a6f54f5bbd",
+    ".verify-helper/documentation.py": "5fc998d38fc006878a3f1cd01a898d8b4c326d429c0ab5a9f4b65be90082d06e",
+    "README.md": "2aa3a99d16451e4ea2c3ee5f785aadf4167440c17dc773a66218d99fda782ea9",
+    "docs/bundle.md": "31b6d74e5b63fa98a1c52b59cbe27dc62310bd96462ef83fcf909e96fc1d6fc0",
+    "docs/fps.md": "e03e691e1f8dd770286d235d0bbf9e16322468428b82fc71224942eacd0bae66",
+    "test/benchmark/fps_compact.md": "8891204c5739c809c4081c92b6d799c990fbdf360315c13ddce23576e40c6171",
+    "test/benchmark/source_size_256k.md": "323ba5bebbea11d6856ab7ea48afcbff5ca6439e19e831d7df55809ca09a7e86",
+    "test/benchmark/source_size_budget.py": "abeb26b978d80438f01ca1ae3dc3c66d812a3fafbc5dff4b732cb0113d0ce1d5",
+    "tools/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tools/bundle.py": "bcfe284e9af89300843e8c6596baaba3a1a9010c3bef22c47dbe09bf35fa6248",
+    "tools/compact_fps.py": "f8bcc23e12250f0e43f30200e2918b1bd26eed8f450ce7a319cd63784635daff"
+  },
+  "bundle_cases": 593,
+  "header_count": 206,
+  "public_headers": 120,
+  "judge_count": 181,
+  "maximum_generated_bytes": 261222,
+  "maximum_header_with_fast_io_bytes": 248788,
+  "preprocessor_pairs": 79,
+  "identical_executable_pairs": 39,
+  "current_generator_replay_rows": 66,
+  "current_generator_ast_matches_replay": true,
+  "current_bundle_api_ast_matches_measurement": true,
+  "site_source_count": 387,
+  "out_of_scope_local_generated_pages_ignored": [
+    "test/fast_set.test.cpp",
+    "test/virtual_tree.test.cpp",
+    "graph/min_cost_flow.hpp",
+    "graph/hungarian.hpp",
+    "graph/centroid_decomposition.hpp",
+    "graph/general_matching.hpp",
+    "graph/general_weighted_matching.hpp",
+    "graph/low_link.hpp",
+    "graph/rerooting.hpp",
+    "graph/lca.hpp",
+    "graph/max_flow.hpp",
+    "graph/auxiliary_tree.hpp",
+    "graph/virtual_tree.hpp",
+    "graph/two_edge_connected_components.hpp",
+    "graph/static_top_tree.hpp",
+    "graph/hld.hpp",
+    "string/lis.hpp",
+    "tree/centroid_decomposition.hpp",
+    "tree/static_top_tree.hpp",
+    "tree/hld.hpp",
+    "math/stern_brocot_tree.hpp",
+    "math/discrete_log.hpp",
+    "math/is_prime.hpp",
+    "math/prefix_min_of_mod_of_linear.hpp",
+    "math/kth_root.hpp",
+    "math/mod_inv.hpp",
+    "math/prime_sieve.hpp",
+    "math/binomial_prefix_sum.hpp",
+    "math/min_of_mod_of_linear.hpp",
+    "math/xor_basis.hpp",
+    "math/generalized_floor_sum.hpp",
+    "math/mod_sqrt.hpp",
+    "math/comb.hpp",
+    "math/partition_mod_of_linear.hpp",
+    "math/matrix.hpp",
+    "math/factorize.hpp",
+    "math/mod_pow.hpp",
+    "math/monoid_floor_sum.hpp",
+    "data_structure/dynamic_wavelet_matrix.hpp",
+    "data_structure/generic_segtree_beats.hpp",
+    "data_structure/point_set_wavelet_matrix.hpp",
+    "data_structure/segtree_beats.hpp",
+    "data_structure/dynamic_segtree.hpp",
+    "data_structure/fast_set.hpp",
+    "data_structure/dynamic_connectivity.hpp",
+    "data_structure/wavelet_matrix.hpp",
+    "data_structure/partially_retroactive_priority_queue.hpp",
+    "data_structure/sortable_segtree.hpp",
+    "data_structure/permutation_tree.hpp",
+    "data_structure/link_cut_tree.hpp",
+    "data_structure/sparse_table.hpp",
+    "data_structure/weighted_wavelet_matrix.hpp",
+    "data_structure/retroactive_priority_queue.hpp",
+    "data_structure/disjoint_sparse_table.hpp",
+    "data_structure/priority_queue/partially_retroactive_priority_queue.hpp",
+    "data_structure/priority_queue/retroactive_priority_queue.hpp",
+    "data_structure/segment_tree/generic_segtree_beats.hpp",
+    "data_structure/segment_tree/segtree_beats.hpp"
+  ],
+  "site_sources": [
+    {
+      "source": "test/fps_compositional_inverse.test.cpp",
+      "bytes": 260544,
+      "copied_bytes": 260628,
+      "sha256": "b3c6d7e7714c1f42f70bbc1e71d9c61fc898c76529cf5fed14aa801130ceedf5"
+    },
+    {
+      "source": "test/hld_path_sum.test.cpp",
+      "bytes": 17910,
+      "copied_bytes": 17981,
+      "sha256": "9428d85f4bb950100c28ec3b37346204ec6d326de7b9476471f51527991bdb68"
+    },
+    {
+      "source": "test/rolling_hash.test.cpp",
+      "bytes": 5155,
+      "copied_bytes": 5226,
+      "sha256": "1703e98252a890f8c32d64b0ffe24344afee9f85f33625bd7071dff2c9550d6c"
+    },
+    {
+      "source": "test/online_convolution.test.cpp",
+      "bytes": 93730,
+      "copied_bytes": 93807,
+      "sha256": "551bff22669dca37183c43c9c5cbd31d7915d2d82eccd2022467aa38819319b9"
+    },
+    {
+      "source": "test/inversion_count.test.cpp",
+      "bytes": 10151,
+      "copied_bytes": 10225,
+      "sha256": "d3b8de0236703924fa20e181ed2e863fe6a106e0ac4b9b4ba11cd340f3e325c2"
+    },
+    {
+      "source": "test/eulerian_trail_undirected.test.cpp",
+      "bytes": 12391,
+      "copied_bytes": 12475,
+      "sha256": "ada9e4f018d92cfdf0f429d5fad4d74cdd8a4bc2318bd35cd3f8e41a30ecb292"
+    },
+    {
+      "source": "test/link_cut_tree_sum.test.cpp",
+      "bytes": 5962,
+      "copied_bytes": 6038,
+      "sha256": "81fa166f37e3cb78278671414da6c075bf4a4d7dd864884518d617e3b8bd02d5"
+    },
+    {
+      "source": "test/fps_bostan_mori.test.cpp",
+      "bytes": 226324,
+      "copied_bytes": 226398,
+      "sha256": "951d678d458d6b9b0bc866d1cc956f7da3147d0ec46e0859010ef16db6aecdd8"
+    },
+    {
+      "source": "test/topological_sort.test.cpp",
+      "bytes": 9472,
+      "copied_bytes": 9547,
+      "sha256": "dafd50be95a782282fbde12bd396162b23c5808d55d850b901f7641cc281bb26"
+    },
+    {
+      "source": "test/li_chao_tree_line.test.cpp",
+      "bytes": 6546,
+      "copied_bytes": 6622,
+      "sha256": "c1da6aea35c72d7cd4715fa1eff1208996e20195a23845ea35995f1855d2652c"
+    },
+    {
+      "source": "test/weighted_wavelet_matrix_rectangle.test.cpp",
+      "bytes": 68924,
+      "copied_bytes": 69016,
+      "sha256": "a4c82f8edf10eba049ec3900bf24a1a54693461b5d137b0ed604654c1785f08e"
+    },
+    {
+      "source": "test/geometry_circle_line.test.cpp",
+      "bytes": 24115,
+      "copied_bytes": 24194,
+      "sha256": "a042dfc880794ec3e49438a2679c8d9ae74e3bd275fa9bb9632b3b4ae848dfa9"
+    },
+    {
+      "source": "test/fps_light_convolution.test.cpp",
+      "bytes": 39433,
+      "copied_bytes": 39513,
+      "sha256": "584b68b921a39fba03d4673492eef83f13b8112eb923ea19121e9e243c1f8b6c"
+    },
+    {
+      "source": "test/dijkstra_topological.test.cpp",
+      "bytes": 44321,
+      "copied_bytes": 44400,
+      "sha256": "09772ff4edd798b90be6fc8b2e5923e12d1203c51e8c2706809503076c90aca4"
+    },
+    {
+      "source": "test/convolution_mod.test.cpp",
+      "bytes": 8791,
+      "copied_bytes": 8865,
+      "sha256": "1a7195c357c365b94c347f0723db44a477e2126de11d69813ad4b384d296e7e6"
+    },
+    {
+      "source": "test/kth_root.test.cpp",
+      "bytes": 10542,
+      "copied_bytes": 10609,
+      "sha256": "0c508f5e7acd0268e9b36266186ca6b3c57730dd27a70323ebd327e38dadfcfa"
+    },
+    {
+      "source": "test/offline_dynamic_connectivity.test.cpp",
+      "bytes": 9028,
+      "copied_bytes": 9115,
+      "sha256": "485feb1888051f8bc7d612d194b683b8a529252a9c0dfa0b831d40cd30529fbb"
+    },
+    {
+      "source": "test/generic_segtree_beats.test.cpp",
+      "bytes": 17240,
+      "copied_bytes": 17320,
+      "sha256": "33955be0c8cbd777c466811194513848b1ebaaf3386d606e76b342abe31b462f"
+    },
+    {
+      "source": "test/disjoint_sparse_table_affine.test.cpp",
+      "bytes": 8602,
+      "copied_bytes": 8689,
+      "sha256": "ca82400e66dbf2515516be191f3afc22640273a0444a2038eb475cd5e6ace1ce"
+    },
+    {
+      "source": "test/partially_retroactive_priority_queue.test.cpp",
+      "bytes": 13128,
+      "copied_bytes": 13223,
+      "sha256": "60c0dda0d53c696b496344bc18abcc16eaf11c76dfeb9941d9925761167b5578"
+    },
+    {
+      "source": "test/cyclic_convolution.test.cpp",
+      "bytes": 213509,
+      "copied_bytes": 213586,
+      "sha256": "e5067ffb0de6a9dec946f553d50e0118b73ce4dbeb5e9840818607142d65da51"
+    },
+    {
+      "source": "test/low_link_bridge.test.cpp",
+      "bytes": 4079,
+      "copied_bytes": 4153,
+      "sha256": "b63a9318019a1be466132e521e3d1b982e438cc4b3ec1e399555305a48602fb8"
+    },
+    {
+      "source": "test/geometry_furthest_pair.test.cpp",
+      "bytes": 32028,
+      "copied_bytes": 32109,
+      "sha256": "15043da3e17180fe9515afacf7e67db693e0eac1b05b235eb9e25d1106b823ae"
+    },
+    {
+      "source": "test/dynamic_wavelet_matrix_kth.test.cpp",
+      "bytes": 82864,
+      "copied_bytes": 82949,
+      "sha256": "38e3f185c0af8350592b7dddd4ba57fae5ede7a33613c50da392dc7c6f2dbdc4"
+    },
+    {
+      "source": "test/point_set_tree_path_composite_sum.test.cpp",
+      "bytes": 29928,
+      "copied_bytes": 30020,
+      "sha256": "2a386c83dd7c41881b601a3bde41562c16be14ae21d431ba63f4691feae80e7a"
+    },
+    {
+      "source": "test/fps_light_inv.test.cpp",
+      "bytes": 39365,
+      "copied_bytes": 39437,
+      "sha256": "1898a8014bba0fcca3ba8860423fd29d4d85e6712de4e6d14a07b6821554055b"
+    },
+    {
+      "source": "test/fps_inv.test.cpp",
+      "bytes": 223065,
+      "copied_bytes": 223131,
+      "sha256": "19339811bfa1fa5ddedd403b557225cf08742b22c617a5c62df888e47cab4cbb"
+    },
+    {
+      "source": "test/dynamic_li_chao_tree_line.test.cpp",
+      "bytes": 13717,
+      "copied_bytes": 13801,
+      "sha256": "a514c7f9d23f2080424c51d1cca30a84a701f8c27976478e569cf3f3a89a00e8"
+    },
+    {
+      "source": "test/sparse_table_min.test.cpp",
+      "bytes": 3963,
+      "copied_bytes": 4038,
+      "sha256": "2872ae0eff9554f7e712aade2f1d4a157388b7b267089a3fc31cef933434a3a7"
+    },
+    {
+      "source": "test/lazy_reversible_treap_affine.test.cpp",
+      "bytes": 22226,
+      "copied_bytes": 22313,
+      "sha256": "7f3cbe00dd193ac4c1e896b6c591fbc6428f3046f0277d321eedb826f5ce89ef"
+    },
+    {
+      "source": "test/wavelet_matrix_sum.test.cpp",
+      "bytes": 55655,
+      "copied_bytes": 55732,
+      "sha256": "98773d395b3bd005446792a17f7d85d9e0a971cc88f481b43aa79246e10bcacc"
+    },
+    {
+      "source": "test/fps_light_log.test.cpp",
+      "bytes": 39365,
+      "copied_bytes": 39437,
+      "sha256": "85bf85ca446122cae05274e8e37b51cda670a7bb9fca68f38340999adafce068"
+    },
+    {
+      "source": "test/general_matching.test.cpp",
+      "bytes": 12799,
+      "copied_bytes": 12874,
+      "sha256": "d3a12b4bb7a13ce1d323d039682b82b9d4ee1ca7abfcee61ab29a587346012a5"
+    },
+    {
+      "source": "test/matrix_solve.test.cpp",
+      "bytes": 41570,
+      "copied_bytes": 41641,
+      "sha256": "0524549193c648ad1ad6cc533a56f37a48ce48a37dcd8248da4069658a654f79"
+    },
+    {
+      "source": "test/prefix_min_of_mod_of_linear.test.cpp",
+      "bytes": 2864,
+      "copied_bytes": 2950,
+      "sha256": "680a958d7dfd3ffc49c3783a4c781e57540e0c568b7ba917f1f5495ba3002c4b"
+    },
+    {
+      "source": "test/dynamic_pattern_matching_array.test.cpp",
+      "bytes": 43412,
+      "copied_bytes": 43501,
+      "sha256": "a795725b60fa13c80c5ebcf099f5e6c5055f4a933569c1ce950006ee52bbe744"
+    },
+    {
+      "source": "test/rerooting.test.cpp",
+      "bytes": 17883,
+      "copied_bytes": 17951,
+      "sha256": "acfc00d7a9aba7e608e7ad9eeeee8b70821b437686caf1924ec7f28d56e1f017"
+    },
+    {
+      "source": "test/link_cut_tree_composite.test.cpp",
+      "bytes": 10167,
+      "copied_bytes": 10249,
+      "sha256": "70b118be740748288253ca804c42df698c18df443d25c42addc3188ef9888ea3"
+    },
+    {
+      "source": "test/hld_path_composite.test.cpp",
+      "bytes": 22217,
+      "copied_bytes": 22294,
+      "sha256": "7d9a80e3bc0390dc079952cd8d80f12b7813391b0e1e96431b8fceea1c3322ff"
+    },
+    {
+      "source": "test/matrix_characteristic_polynomial.test.cpp",
+      "bytes": 41254,
+      "copied_bytes": 41345,
+      "sha256": "1986775a5c68386acf46c34acf82d62b24dcf9fbba73f1daceb85842affd7d4c"
+    },
+    {
+      "source": "test/multipoint_eval.test.cpp",
+      "bytes": 256802,
+      "copied_bytes": 256876,
+      "sha256": "bc92da941f24c9e28ecfb9c0c1c8f31940e9f91ae849fe3bc695b4822aacef19"
+    },
+    {
+      "source": "test/smawk.test.cpp",
+      "bytes": 2292,
+      "copied_bytes": 2356,
+      "sha256": "fd1aad87776f91efc3967f15b8c2e8542950220314154f4a5b60c88fbd9c3acf"
+    },
+    {
+      "source": "test/suffix_tree_substrings.test.cpp",
+      "bytes": 28985,
+      "copied_bytes": 29066,
+      "sha256": "c929eb0e9dc1e635e356bba2306b1037151ae1c7a0d7eae49bf1505f4e0c5c9b"
+    },
+    {
+      "source": "test/lowest_common_ancestor.test.cpp",
+      "bytes": 6394,
+      "copied_bytes": 6475,
+      "sha256": "9ebf363ca4977587d55de07fea01fe0d1a13d3b89615ce7d85e0b432e888b23d"
+    },
+    {
+      "source": "test/fps_compose_large.test.cpp",
+      "bytes": 260356,
+      "copied_bytes": 260432,
+      "sha256": "de22474571074eb0703d0eda1bf11bb93f340dd0a1cfa45e35f14037b70ba94b"
+    },
+    {
+      "source": "test/eulerian_trail_directed.test.cpp",
+      "bytes": 12383,
+      "copied_bytes": 12465,
+      "sha256": "e1cba6662cea6f5c995b401cc91c41c051bfd8a7bae2d5a611c54d7532e4e984"
+    },
+    {
+      "source": "test/fps_exp.test.cpp",
+      "bytes": 223066,
+      "copied_bytes": 223132,
+      "sha256": "1585705ab5c6242c09c2ae4c3f2d6d0d3236cc48dea795b7011318b205604b3a"
+    },
+    {
+      "source": "test/ntt.test.cpp",
+      "bytes": 82819,
+      "copied_bytes": 82881,
+      "sha256": "4e9c67da3be75ab16b69339f8c6a0a550fb55287519656f5c01a00f5d8b63903"
+    },
+    {
+      "source": "test/bitwise_and_convolution.test.cpp",
+      "bytes": 9196,
+      "copied_bytes": 9278,
+      "sha256": "8c2ab014d97e183a66e1514102cd7c80886b4d9205ab6a94c6d518c4f8cc86bb"
+    },
+    {
+      "source": "test/dynamic_lazy_segtree_large.test.cpp",
+      "bytes": 20321,
+      "copied_bytes": 20406,
+      "sha256": "86679e9e7402807c295ca68342c7a627c95bd302a69ed9d660ee3a63de834630"
+    },
+    {
+      "source": "test/low_link_articulation.test.cpp",
+      "bytes": 3867,
+      "copied_bytes": 3947,
+      "sha256": "a6f9cdb72227920c39d2abd549f9df037cda5254ea8594adb5f7e126465fa030"
+    },
+    {
+      "source": "test/dynamic_wavelet_matrix_freq.test.cpp",
+      "bytes": 83037,
+      "copied_bytes": 83123,
+      "sha256": "5bf97423205017454a9cf691ea819596473d210579b36e100dbc8032cd40a5f4"
+    },
+    {
+      "source": "test/fps_linear_recurrence.test.cpp",
+      "bytes": 227245,
+      "copied_bytes": 227325,
+      "sha256": "86b46a6886cac355f117ae7b7152ea4dab1a755ba56dbff8ae0f364799b3a955"
+    },
+    {
+      "source": "test/matrix_adjugate.test.cpp",
+      "bytes": 41114,
+      "copied_bytes": 41188,
+      "sha256": "0939908a3c6f4071e0aca0245f2dc391d6ec2f79208b1eca52600fb31fa9e549"
+    },
+    {
+      "source": "test/lcs_restore.test.cpp",
+      "bytes": 13544,
+      "copied_bytes": 13614,
+      "sha256": "1b07ea689393e2cbbdfe40b81399b13c8c88241db69867bace217bc9af06ccdd"
+    },
+    {
+      "source": "test/power_projection.test.cpp",
+      "bytes": 261222,
+      "copied_bytes": 261297,
+      "sha256": "091fbb0387925ca5cc524e297f922e151d61de2d004b5debeec3aa2815d0920a"
+    },
+    {
+      "source": "test/cartesian_tree.test.cpp",
+      "bytes": 9402,
+      "copied_bytes": 9475,
+      "sha256": "d51d668dc3a6d9a078bdd7be57017a5faadc33012341b1e91cb0f618c70dbc2f"
+    },
+    {
+      "source": "test/geometry_segment_distance.test.cpp",
+      "bytes": 12769,
+      "copied_bytes": 12853,
+      "sha256": "49dc05a00c5cb886101af62dd579c9a5a8bbe05684bbacc901b77b6ca59ac496"
+    },
+    {
+      "source": "test/geometry_convex_hull.test.cpp",
+      "bytes": 32072,
+      "copied_bytes": 32151,
+      "sha256": "604d3395ace0691ac3921d640f9ed03553d64b0eaec877830291ce459ba16935"
+    },
+    {
+      "source": "test/monoid_floor_sum.test.cpp",
+      "bytes": 2253,
+      "copied_bytes": 2328,
+      "sha256": "53829d360234020a669053943916e923f7281dc15be5e074517141d0893d9e13"
+    },
+    {
+      "source": "test/matrix_inverse.test.cpp",
+      "bytes": 41172,
+      "copied_bytes": 41245,
+      "sha256": "7fd7c400a870dfe17a06174c339bf3c79394f5d5057ef79172cbcacc7128e7cb"
+    },
+    {
+      "source": "test/dijkstra.test.cpp",
+      "bytes": 23956,
+      "copied_bytes": 24023,
+      "sha256": "f6a1318905585d33b7e8987ad7199c82ba6f03cf4b9c30714238f419ebc3ec89"
+    },
+    {
+      "source": "test/gcd_convolution.test.cpp",
+      "bytes": 8984,
+      "copied_bytes": 9058,
+      "sha256": "51ffcb7cc7c27fd9150058d67f49bccc5221e6b10ee8a04bdee1adbd12abf27a"
+    },
+    {
+      "source": "test/wavelet_matrix_freq.test.cpp",
+      "bytes": 55553,
+      "copied_bytes": 55631,
+      "sha256": "e9dc7bd4ef17205b13b2fecb9e18d74ff82bfaacee8ad82f77a9d65bdbeea062"
+    },
+    {
+      "source": "test/fps_light_pow.test.cpp",
+      "bytes": 39419,
+      "copied_bytes": 39491,
+      "sha256": "5a407952648ad5f2c957deeb9a3e2369c36f504851ceda364248c0003474971c"
+    },
+    {
+      "source": "test/lazy_reversible_treap_reverse.test.cpp",
+      "bytes": 17728,
+      "copied_bytes": 17816,
+      "sha256": "61033a773f388c722eaf55e7b2cc6ac6cccceba55d768d0b56be479e68afe5d3"
+    },
+    {
+      "source": "test/hld_jump.test.cpp",
+      "bytes": 6811,
+      "copied_bytes": 6878,
+      "sha256": "0b479d4cb4c7363621c7e381b639e9d3e57c9dbeb05122c2c772ab4535a79503"
+    },
+    {
+      "source": "test/matrix_product.test.cpp",
+      "bytes": 41182,
+      "copied_bytes": 41255,
+      "sha256": "6f5e35c94dc9628843e492e0f590bc87ab5c8360fedd4714518ee8c158007811"
+    },
+    {
+      "source": "test/fps_light_multipoint_eval.test.cpp",
+      "bytes": 44244,
+      "copied_bytes": 44328,
+      "sha256": "5fb67f401d9f08f7a03af3b69c74ae71f21bf8b9fd8e0de626fd2c2afd82fea3"
+    },
+    {
+      "source": "test/bipartite_matching.test.cpp",
+      "bytes": 21310,
+      "copied_bytes": 21387,
+      "sha256": "9a6f7d1bd7112614bd3e984ff8acef49f825db72eb9739ac2f97e46ab1f1d813"
+    },
+    {
+      "source": "test/fps_light_linear_recurrence.test.cpp",
+      "bytes": 44263,
+      "copied_bytes": 44349,
+      "sha256": "16891be7b0be85b0ac0b038e4e73f81cf7464e42a3ea191b43946094557eb55e"
+    },
+    {
+      "source": "test/rolling_hash_lcp.test.cpp",
+      "bytes": 5070,
+      "copied_bytes": 5145,
+      "sha256": "288f2da129867106fc675ef30ce46456fb94a70a3a471bf0587f20bead2366b1"
+    },
+    {
+      "source": "test/min_cost_b_flow.test.cpp",
+      "bytes": 24519,
+      "copied_bytes": 24593,
+      "sha256": "bd0ad64789d5d45db3728229e611e429fb4b66bd65092ca23206e5e9eaab9185"
+    },
+    {
+      "source": "test/eertree.test.cpp",
+      "bytes": 12018,
+      "copied_bytes": 12084,
+      "sha256": "b8295e8b3c6d914a9d8f00499802e8384d3086ef00226cb1bf0e2d76e7834baa"
+    },
+    {
+      "source": "test/segtree_beats.test.cpp",
+      "bytes": 14786,
+      "copied_bytes": 14858,
+      "sha256": "e428c6947891f36b7589e0b369ee64a8f797fcc999fc86c0e2e54b218d804565"
+    },
+    {
+      "source": "test/dsu_on_tree_subtree_sum.test.cpp",
+      "bytes": 13924,
+      "copied_bytes": 14006,
+      "sha256": "4db6cddeaf059e29acaa85daaa3d553cce467f69e41804b6e62258c4172cb515"
+    },
+    {
+      "source": "test/max_flow.test.cpp",
+      "bytes": 16246,
+      "copied_bytes": 16313,
+      "sha256": "0e571b09db78a4d1a0fd677bb475ff69f701a52711ac2cd2735dc9f94f521da2"
+    },
+    {
+      "source": "test/mod_sqrt.test.cpp",
+      "bytes": 13471,
+      "copied_bytes": 13538,
+      "sha256": "28e4d8b025e8baf27cea1b06cc11dd6f62a0d780b77121f14971911ed9f443f9"
+    },
+    {
+      "source": "test/fps_compositional_inverse_large.test.cpp",
+      "bytes": 260568,
+      "copied_bytes": 260658,
+      "sha256": "1a0a76065499cb0c723582711a3db20b6540343e59b2758bffdcde5b906683db"
+    },
+    {
+      "source": "test/two_sat.test.cpp",
+      "bytes": 13434,
+      "copied_bytes": 13500,
+      "sha256": "2978af2c78c71332c2fdd90164b2d09f6260e06f363186fce86423222d2489a8"
+    },
+    {
+      "source": "test/dsu_on_tree_mode.test.cpp",
+      "bytes": 13683,
+      "copied_bytes": 13758,
+      "sha256": "82dcaca85bde6b1c85c1de40df788bf52fae200737beb3005792247df52d9bdc"
+    },
+    {
+      "source": "test/generalized_floor_sum_yuki.test.cpp",
+      "bytes": 21331,
+      "copied_bytes": 21416,
+      "sha256": "e3e413b909991141b7ff1ac4d64cc1d81059e2ea1ba1215748d19fadf28e069c"
+    },
+    {
+      "source": "test/binomial_prefix_sum_offline.test.cpp",
+      "bytes": 219501,
+      "copied_bytes": 219587,
+      "sha256": "2e204dc77cc3f54ae6d2378ef8ffe2492e4a333ad6620cf92d09023e05bceb3d"
+    },
+    {
+      "source": "test/matrix_det.test.cpp",
+      "bytes": 41094,
+      "copied_bytes": 41163,
+      "sha256": "4d47c0f3729bbed16800ec7bbb2f3919cc8fb976009c12e0e9ceba7aa9390af5"
+    },
+    {
+      "source": "test/dynamic_lazy_segtree.test.cpp",
+      "bytes": 20366,
+      "copied_bytes": 20445,
+      "sha256": "f522a5c4626a5b981369bb18c549422c5d6fe0554c304a015b044ac88b2fbd35"
+    },
+    {
+      "source": "test/weighted_union_find.test.cpp",
+      "bytes": 5801,
+      "copied_bytes": 5879,
+      "sha256": "9eca69090709f2209417ffa520c4d9a19aec3d7ec6e0fd29939fa1efd1149251"
+    },
+    {
+      "source": "test/multiplicative_convolution.test.cpp",
+      "bytes": 217299,
+      "copied_bytes": 217384,
+      "sha256": "886e8c1d24a6ecf35e90c8ff67f4d8ab58e4b9545c8cf1bb315023759f396e3f"
+    },
+    {
+      "source": "test/xor_basis_intersection.test.cpp",
+      "bytes": 20959,
+      "copied_bytes": 21040,
+      "sha256": "0c43f78ec76a39a32c29aa829cafc9facdea9efb1027217011bc11e73383fbec"
+    },
+    {
+      "source": "test/dynamic_segtree_composite.test.cpp",
+      "bytes": 15829,
+      "copied_bytes": 15913,
+      "sha256": "02798ec97db982c39134e86dd5c2f373222108f09fd4bbaa8de568d364f6ce0c"
+    },
+    {
+      "source": "test/lcm_convolution.test.cpp",
+      "bytes": 8984,
+      "copied_bytes": 9058,
+      "sha256": "064501f238ea6cb249971239058f45993e539cd91cd709c193242c6763564c91"
+    },
+    {
+      "source": "test/topological_sort_lexicographical.test.cpp",
+      "bytes": 9644,
+      "copied_bytes": 9735,
+      "sha256": "b5dbced8514245becdb9a24eca0ed42508da27674db599f75d08987a8dc3a902"
+    },
+    {
+      "source": "test/multivariate_convolution.test.cpp",
+      "bytes": 214491,
+      "copied_bytes": 214574,
+      "sha256": "e9f6b5e7443e97dde4a8e34897f65f1d81ff90b14146aadf05a646029bdcd1c4"
+    },
+    {
+      "source": "test/fps_taylor_shift.test.cpp",
+      "bytes": 233973,
+      "copied_bytes": 234048,
+      "sha256": "b71162f098192db0e9bf3ebcc3d8f34ea1f529074ad33213a260b5ef7e4f9ee7"
+    },
+    {
+      "source": "test/li_chao_tree_segment.test.cpp",
+      "bytes": 6751,
+      "copied_bytes": 6830,
+      "sha256": "a6cb2d2a70c069780ef45b283ba93154d4acb0a2d4b49faedf159644c3b78b38"
+    },
+    {
+      "source": "test/fps_sqrt.test.cpp",
+      "bytes": 223004,
+      "copied_bytes": 223071,
+      "sha256": "d8fb7bf00e1543a995842117262bfe7b56027be66ac5d6714a15add5aa8dedeb"
+    },
+    {
+      "source": "test/auxiliary_tree.test.cpp",
+      "bytes": 18217,
+      "copied_bytes": 18290,
+      "sha256": "55febbae3e2dab19f9509638fedcfb26b035ab43f12b2276ad225e585dffd13b"
+    },
+    {
+      "source": "test/lis.test.cpp",
+      "bytes": 11403,
+      "copied_bytes": 11465,
+      "sha256": "2f7d855ff6a17a56c21dc3351e34487250563505ce07419ae81ad5b91c12b657"
+    },
+    {
+      "source": "test/dynamic_li_chao_tree_segment.test.cpp",
+      "bytes": 13886,
+      "copied_bytes": 13973,
+      "sha256": "cbc5ae50e947e3bc0daf129a4a35cb045943e611cb8458fc7463dd63121536eb"
+    },
+    {
+      "source": "test/geometry_convex_cut.test.cpp",
+      "bytes": 16116,
+      "copied_bytes": 16194,
+      "sha256": "103216857e43bbddfe92ac294495c831f6f13adf507a76d362be2a0ffcddc9e9"
+    },
+    {
+      "source": "test/online_convolution_inv.test.cpp",
+      "bytes": 93705,
+      "copied_bytes": 93786,
+      "sha256": "0e920e28937e12bb65ced186c69ca74f7698e0a9bbfebb401e55b0f0853c5297"
+    },
+    {
+      "source": "test/dynamic_connectivity.test.cpp",
+      "bytes": 20706,
+      "copied_bytes": 20785,
+      "sha256": "a22dd84f616bdcdf30e2ee6099e21d08c0837854cf854c478d8636eead8ac63d"
+    },
+    {
+      "source": "test/warshall_floyd.test.cpp",
+      "bytes": 26154,
+      "copied_bytes": 26227,
+      "sha256": "495a3330da2351b94800d933f39bcb369101f707cfdc53e7d21237cabad066ee"
+    },
+    {
+      "source": "test/general_weighted_matching.test.cpp",
+      "bytes": 17919,
+      "copied_bytes": 18003,
+      "sha256": "bc93b6e16b4ec7a9ade7a381a18a483d3dfb435bd1c31356513872699bf8073a"
+    },
+    {
+      "source": "test/max_flow_yuki.test.cpp",
+      "bytes": 16284,
+      "copied_bytes": 16356,
+      "sha256": "edc9a1100a7b6b93d1bd6d3f773badd5ee89256e66f2392dcf00083da9b5166d"
+    },
+    {
+      "source": "test/binomial_prefix_sum_incremental_arc190_b.test.cpp",
+      "bytes": 98823,
+      "copied_bytes": 98922,
+      "sha256": "467327250bfb4c731354c5aa28b022c5a0be069989ca0eb055ab04b84f5a5cd8"
+    },
+    {
+      "source": "test/stern_brocot_tree.test.cpp",
+      "bytes": 15221,
+      "copied_bytes": 15297,
+      "sha256": "025da0059ab90776cfe0b89772614bb104b3ce1e277c3153710b582ce5eb0937"
+    },
+    {
+      "source": "test/factorize.test.cpp",
+      "bytes": 6702,
+      "copied_bytes": 6770,
+      "sha256": "1d6e2b25120ceb7c56c07e40cd144a68dba5491ca42239fe505bb647c61c6a70"
+    },
+    {
+      "source": "test/sortable_segtree.test.cpp",
+      "bytes": 25344,
+      "copied_bytes": 25419,
+      "sha256": "d50376ce6e4a323f7daf1e79f1e0a58c90c4ca16577b088db4db1954b6e1524c"
+    },
+    {
+      "source": "test/discrete_log.test.cpp",
+      "bytes": 18650,
+      "copied_bytes": 18721,
+      "sha256": "5a5971695ca42afda666ab82ad60b1c2c77b043767edbc504c50dcee070ec5e7"
+    },
+    {
+      "source": "test/suffix_tree_array.test.cpp",
+      "bytes": 29071,
+      "copied_bytes": 29147,
+      "sha256": "e6846c1a7658a660cb9400ae606fa1b596522d7f4a1fbeeb5e4ce1dc80ff651f"
+    },
+    {
+      "source": "test/fps_light_exp.test.cpp",
+      "bytes": 39365,
+      "copied_bytes": 39437,
+      "sha256": "0f0bc943c2d2ae3fe7095002d8d92c7675ecffea7b4dffe90cd791c9d005e688"
+    },
+    {
+      "source": "test/geometry_polygon_contains.test.cpp",
+      "bytes": 23603,
+      "copied_bytes": 23687,
+      "sha256": "ca60511fa7e3f21fea8697be91a073b854a40b8ef378ff68ca4df345378fa721"
+    },
+    {
+      "source": "test/polynomial_inv_mod.test.cpp",
+      "bytes": 241346,
+      "copied_bytes": 241423,
+      "sha256": "e15852444d5edd16918b2d46a97aba07e68c1a73cdfbc6bf78448717a37bc590"
+    },
+    {
+      "source": "test/matrix_rank.test.cpp",
+      "bytes": 41111,
+      "copied_bytes": 41181,
+      "sha256": "08e65fc9550467677b30addb4569037d92d727a55a8c91dca27c8cac8249d03b"
+    },
+    {
+      "source": "test/min_cost_flow.test.cpp",
+      "bytes": 23483,
+      "copied_bytes": 23555,
+      "sha256": "878d5813da5c4940546a64eb56a66658823192460f21233f99a03b3f9b6f7f98"
+    },
+    {
+      "source": "test/fraction.test.cpp",
+      "bytes": 7324,
+      "copied_bytes": 7391,
+      "sha256": "eafad822ec94b08fc56b79846cb72fa6673bbdd51e1fad73318091a36e4bdb3c"
+    },
+    {
+      "source": "test/fenwick_tree.test.cpp",
+      "bytes": 9980,
+      "copied_bytes": 10051,
+      "sha256": "73efdc8ffeaed3f2f1c5746d8132d5f45fbe360fe7cff9fb3023d2a44ea48f61"
+    },
+    {
+      "source": "test/fps_compose.test.cpp",
+      "bytes": 260332,
+      "copied_bytes": 260402,
+      "sha256": "cdc4c6bef5068c36665b04c7fde83c9c7f9c741144bb1777287d3ed3121e4761"
+    },
+    {
+      "source": "test/min_plus_concave.test.cpp",
+      "bytes": 5053,
+      "copied_bytes": 5128,
+      "sha256": "68168aca603690bdd0597cc828441f499819aad3198e45553abb393aa85805ba"
+    },
+    {
+      "source": "test/fps_exp_sparse.test.cpp",
+      "bytes": 223052,
+      "copied_bytes": 223125,
+      "sha256": "9809038e9430fab1da2896d3c11c20ce64a9d6d6b0775ab5b47ff8dd65f9df7c"
+    },
+    {
+      "source": "test/dynamic_segtree_sum.test.cpp",
+      "bytes": 11501,
+      "copied_bytes": 11579,
+      "sha256": "31f5b1b50072f443a1c6bfb4d0ed6eb495f09652df0cb2b3a94a55117c06d4d5"
+    },
+    {
+      "source": "test/fps_light_taylor_shift.test.cpp",
+      "bytes": 44160,
+      "copied_bytes": 44241,
+      "sha256": "7b6ed2b28e244b848a45ee64b5e118731d4ecc0c40bf710f78be50a78ff29841"
+    },
+    {
+      "source": "test/comb.test.cpp",
+      "bytes": 90076,
+      "copied_bytes": 90139,
+      "sha256": "14e83ce4c4b2df3440840e27d427f02db161f1025ffa9fe1f20da8a4700fe257"
+    },
+    {
+      "source": "test/fps_pow.test.cpp",
+      "bytes": 222986,
+      "copied_bytes": 223052,
+      "sha256": "f99c1d435f77e3a636f6749fd08fd94df83c98e73f04a78b85844125d176896e"
+    },
+    {
+      "source": "test/wavelet_matrix_kth.test.cpp",
+      "bytes": 55523,
+      "copied_bytes": 55600,
+      "sha256": "c2993c8cea20e405f2405037c2245b58b20948bbe72e8e52c001afca928d1fa5"
+    },
+    {
+      "source": "test/hungarian.test.cpp",
+      "bytes": 13675,
+      "copied_bytes": 13743,
+      "sha256": "9f76ac739146d0812a4628c31144c78f379d06ec4d9f0403e84744f9f6195136"
+    },
+    {
+      "source": "test/fps_divmod.test.cpp",
+      "bytes": 223063,
+      "copied_bytes": 223132,
+      "sha256": "50911a827e741bb9a61d37efd04a34b89b9601772b03c56648392190233e3f15"
+    },
+    {
+      "source": "test/generalized_floor_sum.test.cpp",
+      "bytes": 17083,
+      "copied_bytes": 17163,
+      "sha256": "0514b9de6cab1f8a1df3621a7e0272a30156c1cb063a74fbe0f04a9665ad9ed8"
+    },
+    {
+      "source": "test/rerooting_diameter.test.cpp",
+      "bytes": 14200,
+      "copied_bytes": 14277,
+      "sha256": "9ea5f6514ef176be6d09ca145fefb0e853da4ac2678b8c9f589ba43fdf97e4cf"
+    },
+    {
+      "source": "test/persistent_segtree_rectangle.test.cpp",
+      "bytes": 8223,
+      "copied_bytes": 8310,
+      "sha256": "b4e3e8729024014fb8d75d70a0a135adb3d9492f91566c861c3fc844657dd43a"
+    },
+    {
+      "source": "test/edit_distance.test.cpp",
+      "bytes": 14631,
+      "copied_bytes": 14703,
+      "sha256": "68081c2ff3710a5d5386586f50f8e9a346da908d68d0c116544ed2d5b9bbcc67"
+    },
+    {
+      "source": "test/bellman_ford.test.cpp",
+      "bytes": 24443,
+      "copied_bytes": 24514,
+      "sha256": "f9c305bae0d796b7ee610ac6a7f7942db504db2b78586e19cc71b24fc9040871"
+    },
+    {
+      "source": "test/hld_subtree_sum.test.cpp",
+      "bytes": 17863,
+      "copied_bytes": 17937,
+      "sha256": "075b0a3fec632c29fd61f3a58742d4f76ddb2777d73b336708f84ee9eb501df7"
+    },
+    {
+      "source": "test/geometry_circle_polygon.test.cpp",
+      "bytes": 23925,
+      "copied_bytes": 24007,
+      "sha256": "928d5161ef8371fcf8a3712ec611ca32fb8e7838be1d195c9d4720b1e4630d9e"
+    },
+    {
+      "source": "test/fps_log.test.cpp",
+      "bytes": 223066,
+      "copied_bytes": 223132,
+      "sha256": "91b737b0d4e20cdac28fac861589d0eb3751a020aeeb5408de6653b4e813fa4b"
+    },
+    {
+      "source": "test/longest_common_substring.test.cpp",
+      "bytes": 16482,
+      "copied_bytes": 16565,
+      "sha256": "fdbf7390ce4425539356b010fcdac61ff3b109dcdb559aac54000ef97cb3e430"
+    },
+    {
+      "source": "test/union_find.test.cpp",
+      "bytes": 9219,
+      "copied_bytes": 9288,
+      "sha256": "ba1d20bf9fc78c96a428f62cb9cdadf20472796afc81f2c8dd0d1b3afc47f562"
+    },
+    {
+      "source": "test/disjoint_sparse_table_min.test.cpp",
+      "bytes": 4169,
+      "copied_bytes": 4253,
+      "sha256": "5b9012acb93b93ed9c6442ecdbc19c9059311b44f695fd480044b40c9d203222"
+    },
+    {
+      "source": "test/dijkstra_bigint_yuki.test.cpp",
+      "bytes": 31728,
+      "copied_bytes": 31807,
+      "sha256": "dbf974df11cb0629cb1f63585d71c8fa095bb0351e06befeabb75138ec964110"
+    },
+    {
+      "source": "test/dual_segtree.test.cpp",
+      "bytes": 15282,
+      "copied_bytes": 15353,
+      "sha256": "17753671b9eda134c7e45f2c889b377d7c8dbed0266c74a65c2d44d80cbe969d"
+    },
+    {
+      "source": "test/matrix_pow.test.cpp",
+      "bytes": 41132,
+      "copied_bytes": 41201,
+      "sha256": "f32a31379c34f2cccbcba5359a568d244472cf6038d9c718e856da5cfe82c8be"
+    },
+    {
+      "source": "test/geometry_argument_sort.test.cpp",
+      "bytes": 13191,
+      "copied_bytes": 13272,
+      "sha256": "27471b4f84649e7b36da0299cabf12766de68ebbf30da27331e3e0ad041852bf"
+    },
+    {
+      "source": "test/binomial_prefix_sum_online.test.cpp",
+      "bytes": 219451,
+      "copied_bytes": 219536,
+      "sha256": "1f77f783a7bcd540c6baf920c2b496fd249fe8c85fd4f3c3da4747cd75cc3bbd"
+    },
+    {
+      "source": "test/rollback_union_find.test.cpp",
+      "bytes": 8868,
+      "copied_bytes": 8946,
+      "sha256": "53071e4f1fd932900adbcf141f0513279892b6ea3a9cf349ce59fab42e9d3056"
+    },
+    {
+      "source": "test/two_edge_connected_components.test.cpp",
+      "bytes": 13422,
+      "copied_bytes": 13510,
+      "sha256": "ec2b6157a96dcce212a00c26388474d36715d0955817bd903fe715507ff3497b"
+    },
+    {
+      "source": "test/fps_light_interpolate.test.cpp",
+      "bytes": 44208,
+      "copied_bytes": 44288,
+      "sha256": "c5ac01420b917e01b74fba5224a32142967b6e6f2be10cf98c05b3a416808647"
+    },
+    {
+      "source": "test/fps_interpolate.test.cpp",
+      "bytes": 256836,
+      "copied_bytes": 256910,
+      "sha256": "070c200a251755f2534635e4c4f0686b651b4df5c1d87c4641f27abec8a10b37"
+    },
+    {
+      "source": "test/online_convolution_exp.test.cpp",
+      "bytes": 93807,
+      "copied_bytes": 93888,
+      "sha256": "aceacd604c0689b3d777e5761ae8487b0760526e6eebcc08254d606f74bcb81e"
+    },
+    {
+      "source": "test/run_enumerate.test.cpp",
+      "bytes": 22591,
+      "copied_bytes": 22663,
+      "sha256": "7e3429126026f619204382e5fa3ea2dfcd3c17605248356657bb5e1e3c5a5cc7"
+    },
+    {
+      "source": "test/aho_corasick.test.cpp",
+      "bytes": 13715,
+      "copied_bytes": 13786,
+      "sha256": "e67b12e8d39705f3c56c32f544e80eb8a7bd1c987c1cde7a73c9971238395002"
+    },
+    {
+      "source": "test/geometry_closest_pair.test.cpp",
+      "bytes": 32024,
+      "copied_bytes": 32104,
+      "sha256": "2d8b7b6e7ed64569211858894cb3749ccc1d2e0a070e2a98d257d90ff64b59ee"
+    },
+    {
+      "source": "test/convolution_ring.test.cpp",
+      "bytes": 2213,
+      "copied_bytes": 2288,
+      "sha256": "69c6d6cbc45840dd739a5a8cc2ad5390c2810f16fa819334d354b631e6f4b9b8"
+    },
+    {
+      "source": "test/bitwise_xor_convolution.test.cpp",
+      "bytes": 9196,
+      "copied_bytes": 9278,
+      "sha256": "593a038682762f14aec1dc1feb254030143a324d100fcaafba7ffb6a88e87a89"
+    },
+    {
+      "source": "test/permutation_tree.test.cpp",
+      "bytes": 18500,
+      "copied_bytes": 18575,
+      "sha256": "6197b66a6fbb5d08fa186ab66b1348aa0e09e7bad2d41ecbd77027c99069042c"
+    },
+    {
+      "source": "test/fps_light_sqrt.test.cpp",
+      "bytes": 39432,
+      "copied_bytes": 39505,
+      "sha256": "5dcb429a142497527f228862e6f2b31126da55872fdad6be3d8d00cbb413ba3d"
+    },
+    {
+      "source": "test/geometry_projection.test.cpp",
+      "bytes": 12811,
+      "copied_bytes": 12889,
+      "sha256": "722602059b55ccec75aab78a7419ecbacc56f44f324e4be6875e743fdb15b5ef"
+    },
+    {
+      "source": "test/fps_light_divmod.test.cpp",
+      "bytes": 39553,
+      "copied_bytes": 39628,
+      "sha256": "643af49d9dcb9d4b9bc2d30bbd556f9c5d688d15fd680c52861611c34726716f"
+    },
+    {
+      "source": "test/convolution_fft.test.cpp",
+      "bytes": 2751,
+      "copied_bytes": 2825,
+      "sha256": "10da71fb0ea7f55fd17d390a71511ff3e6dfe05d1d56468c2b29307fdd378b23"
+    },
+    {
+      "source": "test/kinetic_tournament.test.cpp",
+      "bytes": 19144,
+      "copied_bytes": 19221,
+      "sha256": "e7a2b80c617455ab9ba1adb5f7d3f299c4c29e6f7b185587af1e01d086338640"
+    },
+    {
+      "source": "test/subset_convolution.test.cpp",
+      "bytes": 7144,
+      "copied_bytes": 7221,
+      "sha256": "8f05f6493fb26561267c4adf5d1a53f752848da14a98018b7c473553afe78b86"
+    },
+    {
+      "source": "test/interval_set_predecessor.test.cpp",
+      "bytes": 15060,
+      "copied_bytes": 15143,
+      "sha256": "933fe8f8d13dae64526d4159a232ee68e2cebfafda60f82dcde21d00574176bd"
+    },
+    {
+      "source": "test/project_selection.test.cpp",
+      "bytes": 21329,
+      "copied_bytes": 21405,
+      "sha256": "b1d1ae200ea233da1f3950d768d20ddbd2233bb9252b1bfec1508c5850d1540e"
+    },
+    {
+      "source": "test/point_set_tree_path_composite_sum_fixed_root.test.cpp",
+      "bytes": 29920,
+      "copied_bytes": 30023,
+      "sha256": "c6925d9d3b33888863e0b1cfb3bfd660e9e9bd48ba007ef3d42411847146d95d"
+    },
+    {
+      "source": "test/mod_pow_log.test.cpp",
+      "bytes": 18994,
+      "copied_bytes": 19064,
+      "sha256": "e6b258c373f3a3aa2bc1790edec836aad587a48f7b18a89779799668e0dc2dbb"
+    },
+    {
+      "source": "test/persistent_segtree_unionfind.test.cpp",
+      "bytes": 7762,
+      "copied_bytes": 7849,
+      "sha256": "9291a731f29c9a84c2aa9834a3fe732199dc01ea7287c1db73fd3a1ce06da2ec"
+    },
+    {
+      "source": "test/min_plus_convex.test.cpp",
+      "bytes": 5048,
+      "copied_bytes": 5122,
+      "sha256": "cd7e8061df00bda52e0b89ac54a139b0349fd7ed223138946423fff2fe6fbf53"
+    },
+    {
+      "source": "test/predecessor_set.test.cpp",
+      "bytes": 15704,
+      "copied_bytes": 15778,
+      "sha256": "a9f6530e1ffdc29de5a71c6cd7f3febf8b1364d9c9299ea9189eb8e8ae7405b0"
+    },
+    {
+      "source": "test/lcs.test.cpp",
+      "bytes": 13520,
+      "copied_bytes": 13582,
+      "sha256": "00d40c342224636b8fac3235c2811c3d90faa1237c5dc04a66a3f88bb769a94e"
+    },
+    {
+      "source": "test/dijkstra_path.test.cpp",
+      "bytes": 44193,
+      "copied_bytes": 44265,
+      "sha256": "922131b18757def1e27378929e15630152169f7ababed60141b24be38c11c0a0"
+    },
+    {
+      "source": "test/comb_prime_mod.test.cpp",
+      "bytes": 99160,
+      "copied_bytes": 99233,
+      "sha256": "0d6979c5f5de75df5a088155f0640163fb8d90e59e6401dd92b2521d44a252a3"
+    },
+    {
+      "source": "test/min_of_mod_of_linear.test.cpp",
+      "bytes": 1703,
+      "copied_bytes": 1782,
+      "sha256": "99a4463a2f58667561779871d590c8c0b7814efc3c4f6c514d8410c41647e309"
+    },
+    {
+      "source": "test/bellman_ford_path.test.cpp",
+      "bytes": 24564,
+      "copied_bytes": 24640,
+      "sha256": "47f1ca0fe61b54e6a281e31e407d5b55563a54c71125d2490f3c88d6a738dcfc"
+    },
+    {
+      "source": "test/slope_trick.test.cpp",
+      "bytes": 6966,
+      "copied_bytes": 7036,
+      "sha256": "578e6dc99db99a76c1b216766ab33d5dc3197d959feadcb62041e1be15db97ad"
+    },
+    {
+      "source": "test/fps_inv_sparse.test.cpp",
+      "bytes": 223050,
+      "copied_bytes": 223123,
+      "sha256": "3b1875224c939fcc71f0daff2776795f0ed3abf12c29bb7c4104d53031616d7e"
+    },
+    {
+      "source": "test/scc.test.cpp",
+      "bytes": 12162,
+      "copied_bytes": 12224,
+      "sha256": "bb9350ac4bcc6d3d16ee86c93f4c212947ffe254d76ee9887a83f3c69a7390ef"
+    },
+    {
+      "source": "test/centroid_decomposition_contour.test.cpp",
+      "bytes": 7294,
+      "copied_bytes": 7383,
+      "sha256": "560ec34c3ca891c491037adfec01874485b6a329e173093da13587e3022029fa"
+    },
+    {
+      "source": "test/is_prime.test.cpp",
+      "bytes": 2567,
+      "copied_bytes": 2634,
+      "sha256": "4eb1ea0d97e79de78a955ea92abbf42d183eeb97b37e59874c68df54cec82e29"
+    },
+    {
+      "source": "test/convolution.test.cpp",
+      "bytes": 229975,
+      "copied_bytes": 230045,
+      "sha256": "f440c6e6057f3c887a46317bc227cf3f7cb5b2e771d676acb3125554a7c28e6b"
+    },
+    {
+      "source": "test/lazy_segtree.test.cpp",
+      "bytes": 17102,
+      "copied_bytes": 17173,
+      "sha256": "7b3d8f9d28102cc6efb182023380b2984ec0f12ea1755388274d08babc02323b"
+    },
+    {
+      "source": "test/ordered_convolution.test.cpp",
+      "bytes": 213739,
+      "copied_bytes": 213817,
+      "sha256": "9220c30c5af53a709ddee5ad4f48aade65e20feb6c424275aa417a8a8b652d1a"
+    },
+    {
+      "source": "test/monotone_minima.test.cpp",
+      "bytes": 9890,
+      "copied_bytes": 9964,
+      "sha256": "7d5dd715b24eb19d888a524d8cde8d203dffe97a9ca24a1cfd96126e6fdd7912"
+    },
+    {
+      "source": "sequence/inversion_count.hpp",
+      "bytes": 2194,
+      "copied_bytes": 2267,
+      "sha256": "acfeec25b52a2d1c3aa98de35da03fce91843dcfcdef1be664b1b718abed8d39"
+    },
+    {
+      "source": "sequence/lis.hpp",
+      "bytes": 3365,
+      "copied_bytes": 3426,
+      "sha256": "a7cf2d560228bde9966da89e581c2e28240f90c0bc8c48f6bc331b9ff206b15a"
+    },
+    {
+      "source": "geometry/geometry.hpp",
+      "bytes": 35110,
+      "copied_bytes": 35176,
+      "sha256": "ad893dac740bd6441a8ebb479a5c8be11f1ba31ab7a23a5df88a566556956298"
+    },
+    {
+      "source": "geometry/circle.hpp",
+      "bytes": 23360,
+      "copied_bytes": 23424,
+      "sha256": "fcf2354175ecbbab0c8238ba3f12d689c3da9792582617b277d6ce28d8c9abb1"
+    },
+    {
+      "source": "geometry/point.hpp",
+      "bytes": 4937,
+      "copied_bytes": 5000,
+      "sha256": "4f0b9bae2b2c995e318436e23409f0db009a9f3612b2e56c185fbcddbb09b95d"
+    },
+    {
+      "source": "geometry/linear.hpp",
+      "bytes": 12192,
+      "copied_bytes": 12256,
+      "sha256": "2cfa078ad3f91d3ae56504e321d87da00e4a248d84b52b440e16622816e2f36c"
+    },
+    {
+      "source": "geometry/convex.hpp",
+      "bytes": 23922,
+      "copied_bytes": 23986,
+      "sha256": "ce5e5d4ac7b9207a7c5fa4b70ec14c2f5b8a03e52ff9f2859baaf3eda165b4ec"
+    },
+    {
+      "source": "geometry/polygon.hpp",
+      "bytes": 15467,
+      "copied_bytes": 15532,
+      "sha256": "2f05de3dab3dad6905b919d954398325edb6a03f90505e81b566a977b19b2083"
+    },
+    {
+      "source": "convolution/cyclic_convolution.hpp",
+      "bytes": 213096,
+      "copied_bytes": 213175,
+      "sha256": "bb9bbaf92ff04de34d83e0bafdf3f39bcad59400117dc41d020dc591052e4798"
+    },
+    {
+      "source": "convolution/subset_convolution.hpp",
+      "bytes": 2537,
+      "copied_bytes": 2616,
+      "sha256": "2f2af22e46c14f4914042ba1692448b691e9ef8d8042f3afb0f472fb0b76dc70"
+    },
+    {
+      "source": "convolution/convolution_mod.hpp",
+      "bytes": 8277,
+      "copied_bytes": 8353,
+      "sha256": "76f9ad22fa7b311aa3a4578b88195a2af0437c6f0a4ee481a9bcc31906dc0986"
+    },
+    {
+      "source": "convolution/bitwise_convolution.hpp",
+      "bytes": 4567,
+      "copied_bytes": 4647,
+      "sha256": "692e58d212c6ff7e811032eda6083bdf0b050d4ef052ea89c138dcdfe9468fad"
+    },
+    {
+      "source": "convolution/boolean_convolution.hpp",
+      "bytes": 15381,
+      "copied_bytes": 15461,
+      "sha256": "e462b56a4a2b57f8a2bef277d8fcb0aeb65e55d1d9cb8bc84bda82e058b2f417"
+    },
+    {
+      "source": "convolution/max_min_convolution.hpp",
+      "bytes": 207145,
+      "copied_bytes": 207225,
+      "sha256": "17988688637f5b595df3c4265aa666136ab9cc487df39ec277b1b740d8d32396"
+    },
+    {
+      "source": "convolution/ordered_convolution.hpp",
+      "bytes": 213204,
+      "copied_bytes": 213284,
+      "sha256": "e0fa6dca732a376de6b10c66c75ffabed43187c275e8194116f80166aa14c8df"
+    },
+    {
+      "source": "convolution/convolution_fft.hpp",
+      "bytes": 2161,
+      "copied_bytes": 2237,
+      "sha256": "03cb389b44047aa67a9d2d653b3c05a25e0aa84a04dc752648d8d534e9cd5907"
+    },
+    {
+      "source": "convolution/multivariate_convolution.hpp",
+      "bytes": 213921,
+      "copied_bytes": 214006,
+      "sha256": "c098e049642df54fc5e201ae6bfb1d7e126276fa34096552f09b0fe18e1387c6"
+    },
+    {
+      "source": "convolution/multiplicative_convolution.hpp",
+      "bytes": 216860,
+      "copied_bytes": 216947,
+      "sha256": "1987fa55cbbeb6b5332eb03c50a05253ab80129be805d098fd579a6364c5474f"
+    },
+    {
+      "source": "convolution/gcd_lcm_convolution.hpp",
+      "bytes": 4361,
+      "copied_bytes": 4441,
+      "sha256": "0f10bf5c361b920d3daedc2b07f1543c9a7c78237a2878514159c7c713e92be4"
+    },
+    {
+      "source": "convolution/convolution_ring.hpp",
+      "bytes": 1630,
+      "copied_bytes": 1707,
+      "sha256": "4d0e61c1e2a0b0a9f7cec91b689fcea26f4064559db3872b70ed094496c3a553"
+    },
+    {
+      "source": "convolution/online_convolution.hpp",
+      "bytes": 85507,
+      "copied_bytes": 85586,
+      "sha256": "5dfa651de31a326c78c9ca7cbaf8b02a1a8948f453f6a99eef21651f1d4ee093"
+    },
+    {
+      "source": "convolution/min_plus_convolution.hpp",
+      "bytes": 4524,
+      "copied_bytes": 4605,
+      "sha256": "b62a420d210fb4a1bae57289c171feb7bbb3a11b40123fe7b3749b8ccd0085c3"
+    },
+    {
+      "source": "convolution/convolution.hpp",
+      "bytes": 212609,
+      "copied_bytes": 212681,
+      "sha256": "cc02c55b481aaabb6807fac2d60630a4959c9b0a348faa20e5f87fb93b760f85"
+    },
+    {
+      "source": "graph/bellman_ford.hpp",
+      "bytes": 16165,
+      "copied_bytes": 16232,
+      "sha256": "a8ab43bed0a5ae8da6eb5d2e8bf7589468045994f78fdcd4a3aeefd141a1a208"
+    },
+    {
+      "source": "graph/warshall_floyd.hpp",
+      "bytes": 17788,
+      "copied_bytes": 17857,
+      "sha256": "948bfbca6d774ed52d6b953f5f6f7896ae1edc4709b907cffbdc7af364c9d232"
+    },
+    {
+      "source": "graph/two_sat.hpp",
+      "bytes": 5098,
+      "copied_bytes": 5160,
+      "sha256": "569eb7f4b8a4f1b5b5efd82e06edc4c474743caea0f3c487ebe88120f6701a67"
+    },
+    {
+      "source": "graph/topological_sort.hpp",
+      "bytes": 1407,
+      "copied_bytes": 1478,
+      "sha256": "9450fa812fa93c41411804f66ffdf622bbf11fdc4ff91e6efe4381b27e7a2b41"
+    },
+    {
+      "source": "graph/eulerian_trail.hpp",
+      "bytes": 3913,
+      "copied_bytes": 3982,
+      "sha256": "967fb4331bcd9daa4e135fcf2bbff852c977ca7a647c30ad4f294419277bc662"
+    },
+    {
+      "source": "graph/dijkstra.hpp",
+      "bytes": 22847,
+      "copied_bytes": 22910,
+      "sha256": "4143a71a070d169ff45af3e02d407b28779a8e359265781c267b5e2a7f4c470d"
+    },
+    {
+      "source": "components/suffix_range.hpp",
+      "bytes": 24385,
+      "copied_bytes": 24457,
+      "sha256": "fa41e9d671d8c8e51a20c269cd20d22173042defdd33bec03973bcf23ba13d4d"
+    },
+    {
+      "source": "components/fps_convolution_unbalanced.hpp",
+      "bytes": 101156,
+      "copied_bytes": 101242,
+      "sha256": "03d1d3dae9b45242a0e5dbd2688e63883c81091a5ddb29c19984985e33392b80"
+    },
+    {
+      "source": "components/dijkstra_queue.hpp",
+      "bytes": 5482,
+      "copied_bytes": 5556,
+      "sha256": "930707d9b23fa348b7097586e3ca9988d38ca5b7814b43e5e347b44adf4d8794"
+    },
+    {
+      "source": "components/fps_reversion.hpp",
+      "bytes": 197713,
+      "copied_bytes": 197786,
+      "sha256": "44b05b450cb5dd9699e62624c9bc2b6ec30d4eb61cef0b4a6d1d17336036d6f1"
+    },
+    {
+      "source": "components/weighted_blossom.hpp",
+      "bytes": 6815,
+      "copied_bytes": 6891,
+      "sha256": "6e6c943a7199f57cf66a81b8014998085e005cbe9e8419e3885c2ae9a80da8f5"
+    },
+    {
+      "source": "components/fps_sqrt_blocked.hpp",
+      "bytes": 117801,
+      "copied_bytes": 117877,
+      "sha256": "7dd1039dee947bc13ac425c0b48444090c5a5a8a6cf3c2b40641725a496a3073"
+    },
+    {
+      "source": "components/fps_light_ntt.hpp",
+      "bytes": 14850,
+      "copied_bytes": 14923,
+      "sha256": "bf626753a5bb10c3a428c9f69ce08b8abc77dddf884e6447a9bc90774bbe853c"
+    },
+    {
+      "source": "components/binomial_prefix_core.hpp",
+      "bytes": 88209,
+      "copied_bytes": 88289,
+      "sha256": "4ff7c591123d34901d71425a679a18985bcb484a0c4dc10e9eb696010efd01e2"
+    },
+    {
+      "source": "components/static_top_tree_structure.hpp",
+      "bytes": 9600,
+      "copied_bytes": 9685,
+      "sha256": "9ea6762f877903c4557b1477e416cc86ad9315cee0faa0cf167c3830826a37f6"
+    },
+    {
+      "source": "components/scc_core.hpp",
+      "bytes": 2977,
+      "copied_bytes": 3045,
+      "sha256": "22e3555a29fdb8f6efa79c1e99996a5b14600b92988da00f629b86709155a456"
+    },
+    {
+      "source": "components/fps_product_tree.hpp",
+      "bytes": 209746,
+      "copied_bytes": 209822,
+      "sha256": "e4050cea2c74841dddcb50f3bcc9035c666550bf93f9bf3843f1a0da79e50233"
+    },
+    {
+      "source": "components/polynomial_half_gcd.hpp",
+      "bytes": 211889,
+      "copied_bytes": 211968,
+      "sha256": "5dc69648895ebd48b8ce92331b733b5acc6d0be29e0150f3f03a317103aa39fc"
+    },
+    {
+      "source": "components/fps_workspace.hpp",
+      "bytes": 1386,
+      "copied_bytes": 1459,
+      "sha256": "6013abf3108f27c7bec1589588a6650689457232c613ef5d7654c7ec4ba0cacb"
+    },
+    {
+      "source": "components/small_vector.hpp",
+      "bytes": 4910,
+      "copied_bytes": 4982,
+      "sha256": "bb923ee464f3b81f1b9bbcefa5cbad7cd2fdd3e0545a7429241aa0feea5263d8"
+    },
+    {
+      "source": "components/fps_inverse_blocked.hpp",
+      "bytes": 102336,
+      "copied_bytes": 102415,
+      "sha256": "c5971bede52610e79c06d4dea8a167df5946e21431c3a3101eaf75cccff0e92e"
+    },
+    {
+      "source": "components/fps_exp_blocked.hpp",
+      "bytes": 119378,
+      "copied_bytes": 119453,
+      "sha256": "001cb6cc5f71dc7ae62819ef855749e6ac16b3bb25cb8681f2d4dbb7b6c70ce5"
+    },
+    {
+      "source": "components/dijkstra_topological.hpp",
+      "bytes": 8831,
+      "copied_bytes": 8911,
+      "sha256": "43f256132f1dcbdfba9a569dc6d9b1401bf795ec6783a103d2994b03e43b9d8f"
+    },
+    {
+      "source": "components/fps_factorials.hpp",
+      "bytes": 86251,
+      "copied_bytes": 86325,
+      "sha256": "59338d38bb0d9c562c4e79cd3387f6308abf041ba8c26d18fe0f5586107f48d6"
+    },
+    {
+      "source": "components/RadixHeap.hpp",
+      "bytes": 2157,
+      "copied_bytes": 2226,
+      "sha256": "a3c96293da21a8f3295e0d3386f88018cb7403d70b4c5ac3b92cb75fd23a81f3"
+    },
+    {
+      "source": "components/sequence_match.hpp",
+      "bytes": 6575,
+      "copied_bytes": 6649,
+      "sha256": "196ff2790ef3f7a3b848b642e5e26281c6e7ab57975f63f3a9b4da0f06e424e4"
+    },
+    {
+      "source": "components/fps_division_blocked.hpp",
+      "bytes": 122712,
+      "copied_bytes": 122792,
+      "sha256": "2c768a3e6b2dd20f1ed4ad44342f80b42f7528795bc44657c3d88a8bafbc034f"
+    },
+    {
+      "source": "components/undirected_csr.hpp",
+      "bytes": 1109,
+      "copied_bytes": 1183,
+      "sha256": "d418c741e9d76061f8e6e10da974414ef0a012d24909445a62fbdc6c41b20d1c"
+    },
+    {
+      "source": "components/dynamic_quad_wavelet.hpp",
+      "bytes": 51161,
+      "copied_bytes": 51241,
+      "sha256": "a802ad965b387ac37879e837c4d4a60328110588f8e05523fd373913f21c7165"
+    },
+    {
+      "source": "components/push_relabel.hpp",
+      "bytes": 4506,
+      "copied_bytes": 4578,
+      "sha256": "73d49ca24eeee1d99315c89c6b2b8cf81cb2e7b0b55ffef6984c6a83c81703fb"
+    },
+    {
+      "source": "components/fast_io_bulk.hpp",
+      "bytes": 20472,
+      "copied_bytes": 20544,
+      "sha256": "7384637ca771f411e9e7547cad52ee56d0ac3ddc1c9639aded2d48365a433204"
+    },
+    {
+      "source": "components/mo_order.hpp",
+      "bytes": 2867,
+      "copied_bytes": 2935,
+      "sha256": "5b98577b3d9946f060f23cbcb95176921d6b049fb7ff70cf665adcfce8961748"
+    },
+    {
+      "source": "components/bipartite_matching_core.hpp",
+      "bytes": 8382,
+      "copied_bytes": 8465,
+      "sha256": "e510fe772da6f60659cb7bb0c1667d4e79489d13f8b626b45195432b897ffea9"
+    },
+    {
+      "source": "components/fast_io.hpp",
+      "bytes": 7559,
+      "copied_bytes": 7626,
+      "sha256": "c8468b8a304e0294a0db1bb7cda1e547554378ca40c7f512410b43b743c06f46"
+    },
+    {
+      "source": "components/fps_direct_eval.hpp",
+      "bytes": 83635,
+      "copied_bytes": 83710,
+      "sha256": "71d3f447e822ee62eae8a47d88c79bff7d15e4755bbd2a608ebf08dc29ec3b4d"
+    },
+    {
+      "source": "components/fps_asm.hpp",
+      "bytes": 1227,
+      "copied_bytes": 1294,
+      "sha256": "f4c171c0cedd5a33113cafc09b8e8511d25067314420bbc7227ea3f763649b84"
+    },
+    {
+      "source": "components/fps_convolution.hpp",
+      "bytes": 168036,
+      "copied_bytes": 168111,
+      "sha256": "6e66293892046d9c429e619abe08fa4384a836b126dd01014113e110e957c15f"
+    },
+    {
+      "source": "components/min_cost_circulation.hpp",
+      "bytes": 7884,
+      "copied_bytes": 7964,
+      "sha256": "f0aed33a3d1157cdec12123c0ddce8c7e4d9bb60dd8502a75c4e401bb750835e"
+    },
+    {
+      "source": "components/fps_taylor_blocked.hpp",
+      "bytes": 183505,
+      "copied_bytes": 183583,
+      "sha256": "4a570f9b3f55e4be6f26401dfa4f918c5043d0b788595d772e39897d5f3396dc"
+    },
+    {
+      "source": "components/fps_operations.hpp",
+      "bytes": 91924,
+      "copied_bytes": 91998,
+      "sha256": "4e7e90186285905d3a4db863abc706bd07a59a1bd2230a940e8ca1b981c6ac4c"
+    },
+    {
+      "source": "components/fenwick_sum.hpp",
+      "bytes": 1737,
+      "copied_bytes": 1808,
+      "sha256": "b4b28f03c11107ebf7178d8ed027b304f661497de69d5542596619dce1111d86"
+    },
+    {
+      "source": "components/fps_log.hpp",
+      "bytes": 89123,
+      "copied_bytes": 89190,
+      "sha256": "4a0c7aaf82ddb3920d5bd2c8b77070f53eac976df1a6a423c54cf7a25963a04e"
+    },
+    {
+      "source": "components/directed_csr.hpp",
+      "bytes": 5121,
+      "copied_bytes": 5193,
+      "sha256": "543a61d027c91b070162ba722268378ef3a46f0dace4267274b60c193790b408"
+    },
+    {
+      "source": "components/persistent_rope.hpp",
+      "bytes": 4428,
+      "copied_bytes": 4503,
+      "sha256": "5f697df57f957248ad33048ce6c5215d79ba0810609de5a73210099840cb145f"
+    },
+    {
+      "source": "components/fps_convolution_constant.hpp",
+      "bytes": 102069,
+      "copied_bytes": 102153,
+      "sha256": "1a96a2f2ba821238d9a5c6eb235b27aecd6d7e22816f208cd53c84cc3f77e8ed"
+    },
+    {
+      "source": "components/limb_arithmetic.hpp",
+      "bytes": 3157,
+      "copied_bytes": 3232,
+      "sha256": "014d39397fadaf38b39c2349246f0c184688362ff63ceb3fccc0233a1d516c9f"
+    },
+    {
+      "source": "components/kinetic_tournament_monoid.hpp",
+      "bytes": 1864,
+      "copied_bytes": 1949,
+      "sha256": "a0478bbea8ad054b2da17773878d33f8450e200ed463278dbcab3a037c281af4"
+    },
+    {
+      "source": "components/mod_linear_prefix_min.hpp",
+      "bytes": 1100,
+      "copied_bytes": 1181,
+      "sha256": "73bc4dbddbb3d34d78d2e9eea7ba4ed0b1f376c5d4ba44fb091eb643d665c523"
+    },
+    {
+      "source": "components/fps_evaluation.hpp",
+      "bytes": 163730,
+      "copied_bytes": 163804,
+      "sha256": "5f94dff6b5f75fbff0b9537f44c8e1c57400c26621b2a119b388e19657afd9cf"
+    },
+    {
+      "source": "components/montgomery.hpp",
+      "bytes": 801,
+      "copied_bytes": 871,
+      "sha256": "ae84db7639acf0026f7ccc020f846b44ef3370fd138aa21c7d8085519603ade4"
+    },
+    {
+      "source": "components/shortest_path_scc.hpp",
+      "bytes": 1542,
+      "copied_bytes": 1619,
+      "sha256": "a81da55861662ca70a36f385f469808e4746c8fcf77e1bf06e84c20788c88a50"
+    },
+    {
+      "source": "components/divisor_zeta.hpp",
+      "bytes": 3299,
+      "copied_bytes": 3371,
+      "sha256": "d9cdb4b9d09a2e83ec5f3efd04a869511345a50c23163d8f43f6d0e5fb07279f"
+    },
+    {
+      "source": "components/dynamic_quad_vector.hpp",
+      "bytes": 39339,
+      "copied_bytes": 39418,
+      "sha256": "3ae198a27ec698423f496e36399766b172660347547a58dadddfdd487a8a6cad"
+    },
+    {
+      "source": "components/smawk.hpp",
+      "bytes": 1589,
+      "copied_bytes": 1654,
+      "sha256": "3f33870808d906bf70b64bd3cc474efbd502b0d341299a4de6480b87900d62f1"
+    },
+    {
+      "source": "components/binary_search.hpp",
+      "bytes": 458,
+      "copied_bytes": 531,
+      "sha256": "ece9b228f749bdc1532dbe8367a57406778e2d0429eb191b08980e68f00c9da1"
+    },
+    {
+      "source": "components/fps_output.hpp",
+      "bytes": 6797,
+      "copied_bytes": 6867,
+      "sha256": "81c6413388725119e3419f34e1a405294b1a257cfc9e838c9b10ba7529082554"
+    },
+    {
+      "source": "components/default_init_allocator.hpp",
+      "bytes": 443,
+      "copied_bytes": 525,
+      "sha256": "86622e604aec15f90160fdd3c642917a4d9ea3b05f6140dfda39796e35c753f8"
+    },
+    {
+      "source": "components/factorial_table.hpp",
+      "bytes": 87233,
+      "copied_bytes": 87308,
+      "sha256": "34f368d8367ce146361dccf5e88bbc9546dae67c7f7e86c43157523041f8d3bc"
+    },
+    {
+      "source": "components/static_range_min.hpp",
+      "bytes": 5345,
+      "copied_bytes": 5421,
+      "sha256": "41091ec1466018ebd545d9c94fd8be703cb17ee20acee6136230be60f8c088c2"
+    },
+    {
+      "source": "components/splitmix64.hpp",
+      "bytes": 429,
+      "copied_bytes": 499,
+      "sha256": "1b2ce2606f8a0feea83a259228f39a08fec53e4df2b3a993f03b3a0e969c03c6"
+    },
+    {
+      "source": "components/fps_bostan.hpp",
+      "bytes": 84106,
+      "copied_bytes": 84176,
+      "sha256": "648bbe3639ca28c3271b372f856a119c47b8376eb32fc0e51353ebad7b44be97"
+    },
+    {
+      "source": "components/offline_time_segments.hpp",
+      "bytes": 2011,
+      "copied_bytes": 2092,
+      "sha256": "3a06aca5708942638f17f0647f682d40b1d57f076c6ab36ca19f50c43d28e9ed"
+    },
+    {
+      "source": "components/walsh_hadamard.hpp",
+      "bytes": 1444,
+      "copied_bytes": 1518,
+      "sha256": "254b8b4ea2fd6c24defd19b9e2a05362aa5a34358790780d04e087a50c82f0eb"
+    },
+    {
+      "source": "components/xor_basis_core.hpp",
+      "bytes": 1384,
+      "copied_bytes": 1458,
+      "sha256": "9b7695803db086ff5b5d51198008a3c036f2d09cdf31ae9e7f80fbdf1c0340fd"
+    },
+    {
+      "source": "components/fps_horner.hpp",
+      "bytes": 85273,
+      "copied_bytes": 85343,
+      "sha256": "e58f2396dfe4f490900b286a4f6163ecc30338dec1aba51652ef0107fc98b4c7"
+    },
+    {
+      "source": "components/dijkstra_unique.hpp",
+      "bytes": 1732,
+      "copied_bytes": 1807,
+      "sha256": "5bb954751796685c6af52351978cae7ea2c2a32547b1904b090380f012b8c572"
+    },
+    {
+      "source": "components/oct_bit_vector.hpp",
+      "bytes": 6766,
+      "copied_bytes": 6840,
+      "sha256": "f43f9a7c86d827c12a81c89dec2d41020a1378ff7b884d8d5d9a120f487c307c"
+    },
+    {
+      "source": "components/dynamic_bit_vector.hpp",
+      "bytes": 20238,
+      "copied_bytes": 20316,
+      "sha256": "6f3eb59c0997254411ed771df1eda2f48b1a8b4218b403ee802e7ff86534fb70"
+    },
+    {
+      "source": "components/fps_blocked.hpp",
+      "bytes": 99283,
+      "copied_bytes": 99354,
+      "sha256": "6a308d53cd31f818b8bca3cd1e7211016237f1d98c692f0c099cb2f2aff3eff7"
+    },
+    {
+      "source": "components/montgomery32.hpp",
+      "bytes": 1048,
+      "copied_bytes": 1120,
+      "sha256": "4cf394e767a9eea08bd78ed040bcd9e9d751d4d406797e12605840f3f01f962f"
+    },
+    {
+      "source": "components/fps_light_product_tree.hpp",
+      "bytes": 32441,
+      "copied_bytes": 32523,
+      "sha256": "7a4e246ce516b9a662562b725716d4363472ba842636c47bd1ae6dad2bb665d9"
+    },
+    {
+      "source": "components/fps_composition.hpp",
+      "bytes": 176062,
+      "copied_bytes": 176137,
+      "sha256": "a58cb35c4dc01518226286866600376aaeaafd1994ee7fb90741ee290fbe13a9"
+    },
+    {
+      "source": "components/flow_graph.hpp",
+      "bytes": 1290,
+      "copied_bytes": 1360,
+      "sha256": "d8868301e57dbbb94a0984a595294b40c20730fb953347c1c54d9f09824ff809"
+    },
+    {
+      "source": "components/ntt_mod.hpp",
+      "bytes": 4546,
+      "copied_bytes": 4613,
+      "sha256": "09cfbc01865d39ef0c1ba4fd59932035604b43a49cb6514833bb9a2f5f528e75"
+    },
+    {
+      "source": "components/binomial_prefix_polynomial.hpp",
+      "bytes": 211715,
+      "copied_bytes": 211801,
+      "sha256": "b85587c240864e1e012610f3d2b65e3f5fa6b70df7e5c5842994e177f11a0978"
+    },
+    {
+      "source": "components/matrix_arithmetic.hpp",
+      "bytes": 16688,
+      "copied_bytes": 16765,
+      "sha256": "a46a20a98526b3ae2c2a2579bff679e0db9414ee453b00d1588090b3452ab9c8"
+    },
+    {
+      "source": "components/ntt.hpp",
+      "bytes": 82179,
+      "copied_bytes": 82242,
+      "sha256": "9bf86801e88982b6576be83818b8eedc8aff764e2640ac5d0fc7bb7fc78e4e56"
+    },
+    {
+      "source": "components/predecessor_set.hpp",
+      "bytes": 7662,
+      "copied_bytes": 7737,
+      "sha256": "7aa40d2054741fb67bf7b945c8edea33a01cbd8a1081a2db73d0d74b501da440"
+    },
+    {
+      "source": "components/monotone_minima.hpp",
+      "bytes": 1603,
+      "copied_bytes": 1678,
+      "sha256": "4e95e19003e081d3d0475a6652a1e0e3d028d6e29a3993a243f4f7c457f5dee9"
+    },
+    {
+      "source": "components/barrett32.hpp",
+      "bytes": 741,
+      "copied_bytes": 810,
+      "sha256": "8bcf62da49390096d38724831ca8ee2045b2a076d972ae1fcbcf6dac8c0364b9"
+    },
+    {
+      "source": "components/bitwise_zeta.hpp",
+      "bytes": 1633,
+      "copied_bytes": 1705,
+      "sha256": "710ab654ad16451f36043a5c66d06ea2ff4e6f9b35d3f1a7535b0872f31bd129"
+    },
+    {
+      "source": "components/quad_bit_vector.hpp",
+      "bytes": 3539,
+      "copied_bytes": 3614,
+      "sha256": "c3af865df46712e448ae5bbbf1eb4856c76f1e53acbd72e956de1bc01a01c94a"
+    },
+    {
+      "source": "components/fps_io.hpp",
+      "bytes": 35602,
+      "copied_bytes": 35668,
+      "sha256": "39da9e39e143216bca6ff279cca3fc96b88e4f86818f9a5b6036f4dae749a96a"
+    },
+    {
+      "source": "components/warshall_floyd_kernel.hpp",
+      "bytes": 13199,
+      "copied_bytes": 13280,
+      "sha256": "567c1ab9eed8f9f8bbfb9f83320f67febba819d86b73c7e35575f911b1a32a1d"
+    },
+    {
+      "source": "components/suffix_array.hpp",
+      "bytes": 2826,
+      "copied_bytes": 2898,
+      "sha256": "e77d9509a4a55fed0ae76c80f1af89f9c713c25b0df665d825cd8336840f3124"
+    },
+    {
+      "source": "components/sequence_compare.hpp",
+      "bytes": 3785,
+      "copied_bytes": 3861,
+      "sha256": "1942bc4e7f23a07675dae8ffddb081bbc33381f1491dc457028c84199e0ef085"
+    },
+    {
+      "source": "components/mod_fast_core.hpp",
+      "bytes": 2398,
+      "copied_bytes": 2471,
+      "sha256": "69b3412b15a03e9645b88a50dc648c21ea33d65ce33b7e0a46d39c1f7003ee4b"
+    },
+    {
+      "source": "components/stern_brocot_path.hpp",
+      "bytes": 490,
+      "copied_bytes": 567,
+      "sha256": "31a36be9b635582204b83eab45f1a77b81943290d691d5766e01e8a6dae1a69f"
+    },
+    {
+      "source": "components/polynomial_gcd_blocked.hpp",
+      "bytes": 144227,
+      "copied_bytes": 144309,
+      "sha256": "7affc65165a1ff43d553b9a72b7669a415331d0029300625d0e07bff01d6669e"
+    },
+    {
+      "source": "components/fft.hpp",
+      "bytes": 1029,
+      "copied_bytes": 1092,
+      "sha256": "4f814735dce5b8815ef844dfba72f00e789083adacdb9410ad8b3af71a2b8324"
+    },
+    {
+      "source": "components/radix_sort.hpp",
+      "bytes": 1436,
+      "copied_bytes": 1506,
+      "sha256": "dbbbbd90d9f8aa325f162171c05d039eced195442d8bb2091954c58fcb92001b"
+    },
+    {
+      "source": "components/d_ary_heap.hpp",
+      "bytes": 2397,
+      "copied_bytes": 2467,
+      "sha256": "36f4494f8c17af4892cb1c4c82c5b01d72d0d4c0494542d9c7a49e18668b471f"
+    },
+    {
+      "source": "string/dynamic_pattern_matching.hpp",
+      "bytes": 35478,
+      "copied_bytes": 35558,
+      "sha256": "450edd2ed58e97233f7f0a6b6408e63af4864b3f3012a7146b9335f63d2ec1fb"
+    },
+    {
+      "source": "string/lcs.hpp",
+      "bytes": 13140,
+      "copied_bytes": 13199,
+      "sha256": "60a0ffb76f9d065d68e19f6f2b35a2d7e6c61fba0cc4ed863f48d295e2dcd6be"
+    },
+    {
+      "source": "string/longest_common_substring.hpp",
+      "bytes": 8428,
+      "copied_bytes": 8508,
+      "sha256": "6a51bbf812547850f66e4f0e74fc54c82197c71e55f543e2f0d20933968a6e1b"
+    },
+    {
+      "source": "string/suffix_tree.hpp",
+      "bytes": 21197,
+      "copied_bytes": 21264,
+      "sha256": "b02de18da8e9d199d4a873cd42b97e9f003a2a4ef8163bb8049b28af845e50e1"
+    },
+    {
+      "source": "string/eertree.hpp",
+      "bytes": 3768,
+      "copied_bytes": 3831,
+      "sha256": "73cbc89a98b309fdcb8c89a5f6fb0ab986bf5aacb80c1be4853c1a7da44f3c3b"
+    },
+    {
+      "source": "string/run_enumerate.hpp",
+      "bytes": 14686,
+      "copied_bytes": 14755,
+      "sha256": "df9731db16ebfd65db231c15a6ee6957692249e7fb7a01010236101a6356e9ba"
+    },
+    {
+      "source": "string/aho_corasick.hpp",
+      "bytes": 5389,
+      "copied_bytes": 5457,
+      "sha256": "80d8492cbf21696d1d81ca6bf66771fb44026b9b26e72e268c923a714d6410e3"
+    },
+    {
+      "source": "string/edit_distance.hpp",
+      "bytes": 14286,
+      "copied_bytes": 14355,
+      "sha256": "d8a4f79bc6e191ea02a2b78e5b25758c3bc947ddb64a67969e4761242ae0c074"
+    },
+    {
+      "source": "string/rolling_hash.hpp",
+      "bytes": 4658,
+      "copied_bytes": 4726,
+      "sha256": "e6ed74db0116b9378ba6f772f5530f5dac1df1405c855207df9094e05c74623d"
+    },
+    {
+      "source": "tree/dsu_on_tree.hpp",
+      "bytes": 4846,
+      "copied_bytes": 4911,
+      "sha256": "b5d52787ebcc77cc3d3e8fdde4f3515e79fcefc85cbbe7ab8c1732636b997cc7"
+    },
+    {
+      "source": "tree/rerooting.hpp",
+      "bytes": 5187,
+      "copied_bytes": 5250,
+      "sha256": "30af73d9740c562c830aa5d4da0f07f0bc4eb3bb2f20a0bdeeba9096cd5cdd71"
+    },
+    {
+      "source": "tree/lca.hpp",
+      "bytes": 5864,
+      "copied_bytes": 5921,
+      "sha256": "1f8170ef8cf782720727f8277c3052d6200dad0b5c7eb2748543f480cee41e77"
+    },
+    {
+      "source": "tree/auxiliary_tree.hpp",
+      "bytes": 4336,
+      "copied_bytes": 4404,
+      "sha256": "b361db183ba458049cb421c5759213cc08fa0acd6d4a7d1a27211d646365f41e"
+    },
+    {
+      "source": "tree/permutation_tree.hpp",
+      "bytes": 10170,
+      "copied_bytes": 10240,
+      "sha256": "cb9a1a47e916e4ddbc1b8981c4d95864c3e88f8905cc3d8d68bb8a30c6015e13"
+    },
+    {
+      "source": "tree/link_cut_tree.hpp",
+      "bytes": 4924,
+      "copied_bytes": 4991,
+      "sha256": "5d1d99129052e8e3e497c133f8444b692316fdb3be2ee2fd177e0b6f98549a0d"
+    },
+    {
+      "source": "tree/cartesian_tree.hpp",
+      "bytes": 1343,
+      "copied_bytes": 1411,
+      "sha256": "9f39aa568636c502b4ac59343023b665041f9a79edb32ba05124717f081583b2"
+    },
+    {
+      "source": "tree/prufer_code.hpp",
+      "bytes": 2262,
+      "copied_bytes": 2327,
+      "sha256": "4b821d1bb67dcbd6c59491c6cf8f96963c7cb37e80a56d29bbf102d89ce034c5"
+    },
+    {
+      "source": "math/fraction.hpp",
+      "bytes": 6014,
+      "copied_bytes": 6076,
+      "sha256": "bb1aac1878423e1624a8168484d621cbd07af577616a98f98d22d87f5b59d560"
+    },
+    {
+      "source": "math/mint.hpp",
+      "bytes": 4080,
+      "copied_bytes": 4138,
+      "sha256": "6216d9f3ceb74adbba8f5f8f481c15cf8590c941d7379f731c284c4d9b227833"
+    },
+    {
+      "source": "data_structure/interval_set.hpp",
+      "bytes": 6588,
+      "copied_bytes": 6664,
+      "sha256": "37c234d8434a5ea3fd8b64e1819002db0b6f96993176763df73eeeff6f674b14"
+    },
+    {
+      "source": "data_structure/dynamic_li_chao_tree.hpp",
+      "bytes": 5454,
+      "copied_bytes": 5538,
+      "sha256": "0983dd69ca7f3662b9f053f22ac489cc5ec5aff17cea66c19f5b3c3bc7bb5f0c"
+    },
+    {
+      "source": "data_structure/lazy_reversible_treap.hpp",
+      "bytes": 9319,
+      "copied_bytes": 9404,
+      "sha256": "0330ed47092ffa15189ec9903589b2238b6dbf37c82be07eb20a80dda30f8715"
+    },
+    {
+      "source": "data_structure/fenwick_tree.hpp",
+      "bytes": 1876,
+      "copied_bytes": 1952,
+      "sha256": "832ff1745426753409b4148693e63ee9f45735c854f943336782ef9d51ac3531"
+    },
+    {
+      "source": "data_structure/slope_trick.hpp",
+      "bytes": 6436,
+      "copied_bytes": 6511,
+      "sha256": "ed52730cd9033942cf0f72f0dbb04153051dc13ca22055776efb43f7b6b89793"
+    },
+    {
+      "source": "data_structure/weighted_union_find.hpp",
+      "bytes": 1108,
+      "copied_bytes": 1191,
+      "sha256": "2c80b2186a02ee4f1fcf282348da796b97b012cf7830c49362395859a33d3e5e"
+    },
+    {
+      "source": "data_structure/rollback_union_find.hpp",
+      "bytes": 1998,
+      "copied_bytes": 2081,
+      "sha256": "5c8040e5aa1e8128c9f5fdc665ed3426ceba30fcfc5c1670f90e640d393bc057"
+    },
+    {
+      "source": "data_structure/li_chao_tree.hpp",
+      "bytes": 5298,
+      "copied_bytes": 5374,
+      "sha256": "4e4c8598b1cbfa8ffcc702fbf80d5b94b207db468f5e72393a2d8f6fd9a0b81b"
+    },
+    {
+      "source": "data_structure/union_find.hpp",
+      "bytes": 1232,
+      "copied_bytes": 1306,
+      "sha256": "ee8fd6cadb17a9769e2fa394c01f2dfbb21eff3e942a69fc4743d310938542a3"
+    },
+    {
+      "source": "fps/fps_light_algorithms.hpp",
+      "bytes": 36056,
+      "copied_bytes": 36129,
+      "sha256": "645a5ec87feb2d138b239551897e542ae9efcb87bfe6c0ff240a1d7a03054145"
+    },
+    {
+      "source": "fps/linear_recurrence.hpp",
+      "bytes": 209739,
+      "copied_bytes": 209809,
+      "sha256": "87534e4117631f2af7dc3b9a69bc1a0dcfb70a9a6dcce52f3aa728cbd16c1537"
+    },
+    {
+      "source": "fps/interpolate.hpp",
+      "bytes": 239333,
+      "copied_bytes": 239397,
+      "sha256": "2f7acc47ae08c39beef4ccec9d7590b6a370e9b2ac07d8c70ca28992d0079e77"
+    },
+    {
+      "source": "fps/polynomial_gcd.hpp",
+      "bytes": 223872,
+      "copied_bytes": 223939,
+      "sha256": "440a246929d80947b5df05d76197c7b93b5f21823283e2b1ad4cda1989677c37"
+    },
+    {
+      "source": "fps/power_projection.hpp",
+      "bytes": 243597,
+      "copied_bytes": 243666,
+      "sha256": "5f9fd88f11913e506662e31769303c08fb29b94d99d824fa3bd41cd9c3985442"
+    },
+    {
+      "source": "fps/compose.hpp",
+      "bytes": 242914,
+      "copied_bytes": 242974,
+      "sha256": "390021d939b5394d25986ee402ee43cbc6f6bea5a5177749215c472506807801"
+    },
+    {
+      "source": "fps/taylor_shift.hpp",
+      "bytes": 216497,
+      "copied_bytes": 216562,
+      "sha256": "c65541a06e545fc79a95643d67e24e8facded7288d6399f0accfb1faa2d336d7"
+    },
+    {
+      "source": "fps/bostan_mori.hpp",
+      "bytes": 208803,
+      "copied_bytes": 208867,
+      "sha256": "a3d94ea2acb5a3a95cf2af5f8569e5536b7ffb2b955e5b9cb4f6e92169d05d28"
+    },
+    {
+      "source": "fps/compositional_inverse.hpp",
+      "bytes": 243069,
+      "copied_bytes": 243143,
+      "sha256": "cc7793e26513f549e921436ff42d8c3c9975149dbf5f17ba8a57a53b840290b0"
+    },
+    {
+      "source": "fps/fps_light.hpp",
+      "bytes": 31061,
+      "copied_bytes": 31123,
+      "sha256": "e3c723af2fa1a3e7dec848bf07b8562bd434827fe5b193e22cbc0e819bd57f13"
+    },
+    {
+      "source": "fps/multipoint_eval.hpp",
+      "bytes": 239293,
+      "copied_bytes": 239361,
+      "sha256": "5adf06f2410fd27db7e50a95402636fa7418e8e9fe02e1d2e709749d625f0f20"
+    },
+    {
+      "source": "fps/fps.hpp",
+      "bytes": 205638,
+      "copied_bytes": 205694,
+      "sha256": "f0af901a6aebd0ebe59469a83cbaea97f059df8571bb93ad47219a8bfbc416c2"
+    },
+    {
+      "source": "graph/connectivity/low_link.hpp",
+      "bytes": 3354,
+      "copied_bytes": 3430,
+      "sha256": "80e29d4352927d7d27c78183d5bddba5bbe1d98691715f59c359f4082d968e01"
+    },
+    {
+      "source": "graph/connectivity/scc.hpp",
+      "bytes": 4023,
+      "copied_bytes": 4094,
+      "sha256": "db2606adbcafa655c87d246462719333ab73fa0d92cf2664dcca973f8f21d06e"
+    },
+    {
+      "source": "graph/connectivity/dynamic_connectivity.hpp",
+      "bytes": 12285,
+      "copied_bytes": 12373,
+      "sha256": "df7d6409187a365b921cfe8ea17c4eae9967c9809b157aae0422de6734f74d73"
+    },
+    {
+      "source": "graph/connectivity/offline_dynamic_connectivity.hpp",
+      "bytes": 10111,
+      "copied_bytes": 10207,
+      "sha256": "f0ad3896f068c3e7902c3729f4a3ffcfaf29b051d5945607be18b29d775bc5ee"
+    },
+    {
+      "source": "graph/connectivity/two_edge_connected_components.hpp",
+      "bytes": 5086,
+      "copied_bytes": 5183,
+      "sha256": "e097381251ccd457ed07d7eca175ac7db34798830bedb4a6f17b51b6a6e692b1"
+    },
+    {
+      "source": "graph/matching/hungarian.hpp",
+      "bytes": 5613,
+      "copied_bytes": 5686,
+      "sha256": "c8bffd9c194d2c44d832924153c97256da602c4582c685ceaf7a79782b320887"
+    },
+    {
+      "source": "graph/matching/general_matching.hpp",
+      "bytes": 4696,
+      "copied_bytes": 4776,
+      "sha256": "10b0ddd22c653f7a86054e65e2266894b8ec7ec8eca408b19698693ad1524dac"
+    },
+    {
+      "source": "graph/matching/bipartite_matching.hpp",
+      "bytes": 13199,
+      "copied_bytes": 13281,
+      "sha256": "42100c7bd52c662ae58434adebd6e1b2b791eb508484cdef5da497cb9d0f4331"
+    },
+    {
+      "source": "graph/matching/general_weighted_matching.hpp",
+      "bytes": 9766,
+      "copied_bytes": 9855,
+      "sha256": "802731c01574d0a96b900165319e5f619bcf5fe13e4bb5483f6351137815e41b"
+    },
+    {
+      "source": "graph/flow/min_cost_flow.hpp",
+      "bytes": 15270,
+      "copied_bytes": 15343,
+      "sha256": "f49692881999ebf25e178402e803d41986aa53edbf7215ddbdd8165336ca73eb"
+    },
+    {
+      "source": "graph/flow/project_selection.hpp",
+      "bytes": 12834,
+      "copied_bytes": 12911,
+      "sha256": "4b096a072043d814728e3af3a0ae82a75371233466169371f569b437a9b2a131"
+    },
+    {
+      "source": "graph/flow/max_flow.hpp",
+      "bytes": 8165,
+      "copied_bytes": 8233,
+      "sha256": "ac6ed53d4bba4529c323aa110f0d158178e51fca9c3dadf13a34af087f107e6a"
+    },
+    {
+      "source": "math/floor_sum/prefix_min_of_mod_of_linear.hpp",
+      "bytes": 2325,
+      "copied_bytes": 2416,
+      "sha256": "6d287b8ed6cd0e4a2add3e97957ff008642f69e56f710d0daedefcee7ae634ee"
+    },
+    {
+      "source": "math/floor_sum/min_of_mod_of_linear.hpp",
+      "bytes": 1299,
+      "copied_bytes": 1383,
+      "sha256": "48633eccb9a1b95e439a8812a2be203c633e2e98dcd6b158f2259b0814800743"
+    },
+    {
+      "source": "math/floor_sum/generalized_floor_sum.hpp",
+      "bytes": 8922,
+      "copied_bytes": 9007,
+      "sha256": "a23fd5cc8eb3014f21fe033841a334d1140449d2444a71d77aa2c75132793a48"
+    },
+    {
+      "source": "math/floor_sum/partition_mod_of_linear.hpp",
+      "bytes": 4440,
+      "copied_bytes": 4527,
+      "sha256": "8f11c53153fbfbb5b5c4fe0b4eea66752c0a7b9377f74016341377f95f24a86c"
+    },
+    {
+      "source": "math/floor_sum/monoid_floor_sum.hpp",
+      "bytes": 1230,
+      "copied_bytes": 1310,
+      "sha256": "cbbbb0442742f4949b4c454fe46f5367bb88c3555bb47696bae14622320d24bc"
+    },
+    {
+      "source": "math/combinatorics/binomial_prefix_sum.hpp",
+      "bytes": 213966,
+      "copied_bytes": 214053,
+      "sha256": "fcdffd8ab40fd353139914dd2287c2dfc22231451aabecc182dc07c723fc6789"
+    },
+    {
+      "source": "math/combinatorics/binomial_prefix_sum_incremental.hpp",
+      "bytes": 90302,
+      "copied_bytes": 90401,
+      "sha256": "00b1fdd2a8f04e1ae816f362085c7651a2c12cb2f8cd5c3faf02893aeab57372"
+    },
+    {
+      "source": "math/combinatorics/comb.hpp",
+      "bytes": 89698,
+      "copied_bytes": 89770,
+      "sha256": "aa4bc26c1f495955cacff3a4e4c48871f68792a2e672620465b150a4d4310a4d"
+    },
+    {
+      "source": "math/number_theory/stern_brocot_tree.hpp",
+      "bytes": 5829,
+      "copied_bytes": 5914,
+      "sha256": "7ef70c80e6463fc672f6ab95dd4968e8c0a9ed01a1dd0af5b12e0843f4123883"
+    },
+    {
+      "source": "math/number_theory/discrete_log.hpp",
+      "bytes": 10623,
+      "copied_bytes": 10703,
+      "sha256": "b739c7ad199ed6c5d984d0938cd26ed78aa450ec73ba3e8b0f106c8ec17bca2c"
+    },
+    {
+      "source": "math/number_theory/is_prime.hpp",
+      "bytes": 2221,
+      "copied_bytes": 2297,
+      "sha256": "0040f532da9d69de92c8098464ea91ca0292c96b0b6d1ffb984c49cd0c1366ab"
+    },
+    {
+      "source": "math/number_theory/kth_root.hpp",
+      "bytes": 2657,
+      "copied_bytes": 2733,
+      "sha256": "af7b65d4d67c68166e8060f012c0306b122fd5bcc457febf77325ed17da87468"
+    },
+    {
+      "source": "math/number_theory/mod_inv.hpp",
+      "bytes": 5637,
+      "copied_bytes": 5712,
+      "sha256": "3bddb23302a3f894bf2174395d978ddce7ff3f9250e8b714b06389f508e8f828"
+    },
+    {
+      "source": "math/number_theory/prime_sieve.hpp",
+      "bytes": 2552,
+      "copied_bytes": 2631,
+      "sha256": "9979ee315db9ff6d08f9108387f51c3d874e44a117976c5b3c63921ac6696073"
+    },
+    {
+      "source": "math/number_theory/mod_sqrt.hpp",
+      "bytes": 5557,
+      "copied_bytes": 5633,
+      "sha256": "558b7b868b0df4847c1b4fa66e2d3b112d4b87ec5f7bee702448f08d77fdaf15"
+    },
+    {
+      "source": "math/number_theory/factorize.hpp",
+      "bytes": 6210,
+      "copied_bytes": 6287,
+      "sha256": "6e9788d32faf821c780f96d17c818d863827b86353e14366d984c368bf1c822b"
+    },
+    {
+      "source": "math/number_theory/mod_pow.hpp",
+      "bytes": 11006,
+      "copied_bytes": 11081,
+      "sha256": "b4fa1be5d6ea9da6725b805e3ad21832363d18dadaaab02c415d23344a0e4163"
+    },
+    {
+      "source": "math/linear_algebra/xor_basis.hpp",
+      "bytes": 12750,
+      "copied_bytes": 12828,
+      "sha256": "dd78e8f780b802ce2d5e910581de66d8383be67475b4382d6cdb01e13b9265e6"
+    },
+    {
+      "source": "math/linear_algebra/matrix.hpp",
+      "bytes": 28669,
+      "copied_bytes": 28744,
+      "sha256": "a150629b2ae7da756980a66604a0ed552d67cfa177580d7e2be0d4ec3dfa0fa7"
+    },
+    {
+      "source": "data_structure/segment_tree/dynamic_segtree.hpp",
+      "bytes": 10690,
+      "copied_bytes": 10782,
+      "sha256": "46d951c4e613f17891c506a0ac6b0b51f0103046eadcbd3de479eee0ef17d657"
+    },
+    {
+      "source": "data_structure/segment_tree/dual_segtree.hpp",
+      "bytes": 2731,
+      "copied_bytes": 2820,
+      "sha256": "babdfd4d47eadb54d7546c51b6a0068ba4ebd3d7181039f8bf340da96acdd397"
+    },
+    {
+      "source": "data_structure/segment_tree/sortable_segtree.hpp",
+      "bytes": 16820,
+      "copied_bytes": 16913,
+      "sha256": "17444d75484bb9244841aaf57d1b1c9a05e8bfda79539ce4ce204158266b2904"
+    },
+    {
+      "source": "data_structure/segment_tree/dynamic_lazy_segtree.hpp",
+      "bytes": 7565,
+      "copied_bytes": 7662,
+      "sha256": "2a71159ff868d8c72d7fba6cc7bddab26c31bc8ac187cabdbbdf0f5d6e19db77"
+    },
+    {
+      "source": "data_structure/segment_tree/lazy_segtree.hpp",
+      "bytes": 4416,
+      "copied_bytes": 4505,
+      "sha256": "cf679e523cc835393065670419c18cb0a545d6a2677f8f9d7003addb88d2266a"
+    },
+    {
+      "source": "data_structure/segment_tree/persistent_segtree.hpp",
+      "bytes": 6626,
+      "copied_bytes": 6721,
+      "sha256": "481a3cfadb9003cad9a2745b01328d55b5b6198514d483e21f79918c5d1dde66"
+    },
+    {
+      "source": "data_structure/range_query/sparse_table.hpp",
+      "bytes": 3433,
+      "copied_bytes": 3521,
+      "sha256": "61a1de8b7b210ee144f286a3fa9b4e47c63c5458962987ae2be3e5a962cf4080"
+    },
+    {
+      "source": "data_structure/range_query/disjoint_sparse_table.hpp",
+      "bytes": 3443,
+      "copied_bytes": 3540,
+      "sha256": "d964a2c641d64fbc717b989ec78de5fb27c7abd935fb23bf1f7e7d5a94b450bd"
+    },
+    {
+      "source": "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp",
+      "bytes": 82303,
+      "copied_bytes": 82404,
+      "sha256": "7c42369700339ebf9a7af9755cf67072a1a26825715e3a012428ad1db7a6a5d3"
+    },
+    {
+      "source": "data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp",
+      "bytes": 63884,
+      "copied_bytes": 63987,
+      "sha256": "c93aca8e7e0d8a0b0dc3c87852c133380384b777154d6743aa868ca54ab3af49"
+    },
+    {
+      "source": "data_structure/wavelet_matrix/wavelet_matrix.hpp",
+      "bytes": 47460,
+      "copied_bytes": 47553,
+      "sha256": "e41bdf162e146cdb196caf1a2643ff5a1bd4daa331b4b6f35c70462998e23142"
+    },
+    {
+      "source": "data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp",
+      "bytes": 59651,
+      "copied_bytes": 59753,
+      "sha256": "91596bd55113f21328eb7d45e390d670fcf709412c185df3961d2e63396d9229"
+    },
+    {
+      "source": "data_structure/advanced/centroid_decomposition.hpp",
+      "bytes": 5166,
+      "copied_bytes": 5261,
+      "sha256": "7bd71858f5ed96c4154622d969c67d25ff49e45da677ef6915ab52fe2cea83be"
+    },
+    {
+      "source": "data_structure/advanced/generic_segtree_beats.hpp",
+      "bytes": 4593,
+      "copied_bytes": 4687,
+      "sha256": "768ce3ba889452663b78ba2740d653edd39f116815361f95e9cfbba6ff0baba4"
+    },
+    {
+      "source": "data_structure/advanced/segtree_beats.hpp",
+      "bytes": 6560,
+      "copied_bytes": 6646,
+      "sha256": "87600a71e462fa111f5c3ececd8d1cdb9932112d6aa198138aff955314c9bceb"
+    },
+    {
+      "source": "data_structure/advanced/partially_retroactive_priority_queue.hpp",
+      "bytes": 11848,
+      "copied_bytes": 11957,
+      "sha256": "ff5813d7a125de50ae578fcc22a5e84d95043713f0c98453c39150840b07d31d"
+    },
+    {
+      "source": "data_structure/advanced/static_top_tree.hpp",
+      "bytes": 15190,
+      "copied_bytes": 15278,
+      "sha256": "f79e2e06f21b3c05933a199229f18b9a478af1dd9b58a7d24c5767c392c75de0"
+    },
+    {
+      "source": "data_structure/advanced/hld.hpp",
+      "bytes": 6349,
+      "copied_bytes": 6425,
+      "sha256": "747bd9b88b8dfc992c281e5fa7741bf9519ac424a6607202e4d06deec64c8598"
+    },
+    {
+      "source": "data_structure/advanced/kinetic_tournament.hpp",
+      "bytes": 10935,
+      "copied_bytes": 11026,
+      "sha256": "8ec85c2f155c30391fca55c8817371bf48f79b4cbbb422a7e2cf0ed3d4c37f85"
+    },
+    {
+      "source": "data_structure/advanced/retroactive_priority_queue.hpp",
+      "bytes": 14074,
+      "copied_bytes": 14173,
+      "sha256": "115967a8f1d4c392c74935bfa2e654f4d3e30712100b0308f94431d8ca90ba96"
+    }
+  ],
+  "docs_compile_count": 206,
+  "tests": {
+    "final-unit.log": "64 -> 64 bytes\n....\n----------------------------------------------------------------------\nRan 4 tests in 5.703s\n\nOK\n",
+    "ci-unit.log": "...........................................Judge tests: verified 1, reused 1\nJudge tests: verified 0, reused 2\n...\n----------------------------------------------------------------------\nRan 46 tests in 3.052s\n\nOK\n",
+    "docs-check.log": "Checked documentation for 206 libraries; compiled 206 affected bundles\n",
+    "cli-direct-final.log": "64 -> 64 bytes\n.\n----------------------------------------------------------------------\nRan 1 test in 0.580s\n\nOK\n",
+    "preprocessor-last.log": ".\n----------------------------------------------------------------------\nRan 1 test in 4.073s\n\nOK\n"
+  },
+  "compiler_versions": {
+    "g++": "g++ (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "/workspace/cp-binomial-study/bin/clang++": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/cp-binomial-study/clang/toolchain/usr/lib/llvm-19/bin\n"
+  },
+  "artifact_sha256": {
+    "generic.json": "06a1d5224d6c8b62da4762016e08a393d5aee25fe7c27d0a3f0d61d4d4f754f5",
+    "measured_compact.py": "745fccfd255ab18dba4fe24d6ce865267c3f6271b1b47063619a77f590bc475c",
+    "replay.json": "50aee9afb957b87f2ceb14d35533013a966137d588f373ab0f2085a29145b492",
+    "result.json": "738fa0666ffff4044a74d674c1686fd8464b3ef8e09b44b630efb46658f0442c",
+    "replayed_compact.py": "f8bcc23e12250f0e43f30200e2918b1bd26eed8f450ce7a319cd63784635daff",
+    "measured_bundle.py": "97622d6d7189ed56c278d58b83b1ea23af8e197c204e6a4cd961c565847c556c"
+  },
+  "note": "Main measurement uses measured_compact.py and measured_bundle.py snapshots. Final-generator byte regeneration is replay.json; final CLI additionally forces UTF-8/LF binary output and has separately tested identical generator/API ASTs. Generic x86-64 adds3 binary/preprocessor pairs. No canonical C++ algorithm changes."
+}

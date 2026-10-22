@@ -1,0 +1,26 @@
+{
+  "input_headers": {
+    "components/fps_asm.hpp": "142336338c4cde7802fc835b707a2f439b63d6a797369ab4343542236069ddde",
+    "components/fps_blocked.hpp": "3e54e262d883460b1a98de62e1c3431ed0073fad76e0cff1111aa4f6497a4c07",
+    "components/fps_convolution.hpp": "e1ed8a22fc003c3e0680d9b4da95e57b717712e7c6da27ced642f3f7fbae7046",
+    "components/fps_convolution_constant.hpp": "bf6976669ca416df9c5cb8999814a164fc04502eaa8be900061684674df01ca6",
+    "components/fps_convolution_unbalanced.hpp": "3aacf4fe4c90cadc05cfe64be13f0e2fd40e68d73532a2903fdb26b4f895abdd",
+    "components/fps_division_blocked.hpp": "9295aeb26c2835e22b2b013404c7343c7c096c41a384ea26e8e6ff81d0f51037",
+    "components/fps_exp_blocked.hpp": "5c1aaaa34f92f859f55ba245475b4d8ac98832f149c8fe6b1b5323d097dcb4d2",
+    "components/fps_factorials.hpp": "7cf1ce71c3239042540e407d580a1b85c27da88ee7cd95108a0fb76e82c1bd33",
+    "components/fps_horner.hpp": "5279573f85dcdf3504cebed5c97f04afb4662707f949aaa0aa9dd50708b06e25",
+    "components/fps_inverse_blocked.hpp": "e6e8680fb90e12ebd703314f8d44823bb3a1cf4db30dc7be3880d2a790d92685",
+    "components/fps_log.hpp": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+    "components/fps_operations.hpp": "f318a3825777e5f093ba4e93c0fee2df6bd97c298c2ee92d4da18795d7ad0051",
+    "components/fps_output.hpp": "2445c9f712a04013e613740bbd0dcd989ef7dc9a8d4d841183c6704654e7dedd",
+    "components/fps_sqrt_blocked.hpp": "a6b1339fff22e03a1d1ec3ab40672af2bf1b1431bf3ed4290beeb890b7656fc5",
+    "components/fps_workspace.hpp": "74c6d3646d8f20a9b3a3df15bba26c25ad7b01cca032c7d0567b8f4b65b31923",
+    "components/ntt.hpp": "7182f44905e9578c01043363dc90bcd329c757b9342571314607fc9f656a0164",
+    "fps/fps.hpp": "e1b9678b7983434fe012cc095238856b883eada371ecc5a3c87fdc50a6e317a7",
+    "math/mint.hpp": "733ff4a2ef2ac34b0174980ec373570c45429731301dcf55f72e768011d748fc"
+  },
+  "inverse_candidate_bytes": 30819,
+  "inverse_source_removed_bytes": 812,
+  "inverse_candidate_decision": "Rejected: retain the optimized inverse_newton8 path.",
+  "inverse_candidate_maintained_precision": "No precision or native Linux >=512 dispatch changes in either candidate."
+}

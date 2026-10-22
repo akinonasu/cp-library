@@ -1,0 +1,18 @@
+{
+  "headers": [
+    "fps/fps_light.hpp",
+    "fps/fps_light_algorithms.hpp",
+    "components/fps_light_ntt.hpp",
+    "components/fps_light_product_tree.hpp"
+  ],
+  "unit": [
+    "test/unit/fps_light.cpp",
+    "test/unit/fps_light_algorithms.cpp",
+    "test/unit/fps_light_ntt.cpp"
+  ],
+  "sanitize": [
+    "test/unit/fps_light.cpp",
+    "test/unit/fps_light_algorithms.cpp",
+    "test/unit/fps_light_ntt.cpp"
+  ]
+}

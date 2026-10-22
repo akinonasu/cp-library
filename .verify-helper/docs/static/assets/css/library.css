@@ -12,6 +12,9 @@
 .library-entry span, .library-entry small { display: block; }
 .library-entry small { margin-top: 4px; overflow-wrap: anywhere; }
 .source-path { overflow-wrap: anywhere; }
+.profile-note { padding: 12px 14px; border-left: 3px solid #267cb9; background: #f3f8fc; }
+.size-warning { color: #9c3b10; }
+.library-nav a[aria-current="page"] { font-weight: 700; }
 .verification-list { margin: 24px 0; }
 .verification-list summary { cursor: pointer; }
 .verification-list ul { margin-top: 12px; }

@@ -1,0 +1,29 @@
+{
+  "change": "Remove an unreachable Linux/GCC LogTransform fallback and its transitive include; keep the standalone LogTransform component and explicitly include it in its existing unit test.",
+  "before_fps_sha256": "750945cc34405caa95b245a4e6eb39a035a4513446d8a69434efedf50f94e429",
+  "after_fps_sha256": "bbd61a92acde166c09b5b2041f881a73551417fd830c2c87978193e69bd0e0bc",
+  "before_fps_bytes": 34027,
+  "after_fps_bytes": 31574,
+  "removed_specialization_original_bytes": 2417,
+  "removed_dependency": "components/fps_log.hpp",
+  "dependency_bytes": 6969,
+  "dependency_sha256": "28e49dc386a8c0fefab327b80fec8f7cd18f3ca0b0e514dfa68d23fdb721531d",
+  "line_numbers_preserved": false,
+  "native_condition": "Linux && x86_64 && GCC && !Clang && T == fps_detail::Mint && 256 <= deg <= 2^24 && this->size() >= 64 && NTT::vectorized()",
+  "old_fallback_condition": "x86 && T == fps_detail::Mint && 256 <= deg <= 2^24 && this->size() >= 64 && NTT::vectorized()",
+  "reachability": "On Linux x86_64 GCC every true condition of the removed old path was handled by native_log immediately before it and returned. When the native predicate was false, the same shared predicate of the old path was also false.",
+  "portable_behavior": "Clang/x86 now reaches the already-existing derivative.div_series fallback; ARM already used that generic fallback. Precision checks and mathematical result stay unchanged.",
+  "unit_dependency": "test/unit/fps_log.cpp explicitly includes components/fps_log.hpp to continue direct LogTransform testing.",
+  "validation": {
+    "gcc": "308 combinations of input size and precision: inv and log checked against independent naive recurrences; checksum 7082398734240149962",
+    "clang19": "same 308 combinations and checksum; assertions active",
+    "binary_comparison": "not identical: unused legacy LogTransform bodies had been emitted by GCC, and removing them reduces text size from 407249 B to 386012 B for focused driver",
+    "driver": "driver.cpp",
+    "snapshots": "/workspace/cp-fps-256-fallback-study",
+    "inverse_candidate": "Rejected: generic Newton fallback microbenchmark slows small-precision inverse by up to 1.62x; existing inverse_newton8 retained. See inverse_benchmark.json.",
+    "snapshots_note": "Original isolated headers remain at /workspace/cp-fps-256-fallback-study; their complete SHA-256 list is snapshot.json.",
+    "maximum_precision_clang": "Final frozen source, assertions enabled, f=1+x+...+x^64, log precision2^24: all coefficients satisfy i*log[i]=(i%65?1:-64), with log[0]=0. Checksum15647648346265480621; peakRSS344912KiB. See log_precision.json."
+  },
+  "raw_transitive_source_reduction": 9422,
+  "after_gap_trim": "Blank logical lines temporarily preserved for binary comparison removed; no token changes."
+}
