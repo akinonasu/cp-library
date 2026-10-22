@@ -1,7 +1,0 @@
-{
-  "headers": ["graph/centroid_decomposition.hpp"],
-  "unit": ["test/unit/centroid_decomposition.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/centroid_decomposition.cpp", "test/unit/standalone.cpp"],
-  "verification": ["test/centroid_decomposition_contour.test.cpp"],
-  "bundles": ["graph/centroid_decomposition.hpp"]
-}

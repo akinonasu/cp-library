@@ -1,8 +1,0 @@
-built before
-built range_import
-built resize_control
-built reference
-max_random_00 {'before': 12.20193, 'range_import': 12.608296, 'resize_control': 12.488207, 'reference': 10.065235} {'range_import': -0.1896330000000006, 'resize_control': -0.1329469999999997} {'range_import': 3, 'resize_control': 4}
-max_random_01 {'before': 12.113309, 'range_import': 12.29609, 'resize_control': 12.392186, 'reference': 9.838289} {'range_import': -0.19209599999999938, 'resize_control': -0.3415500000000016} {'range_import': 3, 'resize_control': 3}
-small_and_large_03 {'before': 9.611368, 'range_import': 9.692038, 'resize_control': 9.619011, 'reference': 8.365942} {'range_import': -0.37670199999999987, 'resize_control': -0.35353800000000035} {'range_import': 3, 'resize_control': 3}
-medium_02 {'before': 1.419757, 'range_import': 1.444293, 'resize_control': 1.413908, 'reference': 1.203665} {'range_import': -0.02576899999999993, 'resize_control': -0.007991999999999999} {'range_import': 2, 'resize_control': 4}

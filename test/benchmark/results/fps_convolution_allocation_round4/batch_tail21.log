@@ -1,8 +1,0 @@
-built before
-built batch_construct
-built tail_store
-built reference
-max_random_00 {'before': 12.091757, 'batch_construct': 12.052908, 'tail_store': 11.946721, 'reference': 9.725459} {'batch_construct': -0.07327800000000018, 'tail_store': 0.013099000000000416} {'batch_construct': 9, 'tail_store': 11}
-max_random_01 {'before': 12.088271, 'batch_construct': 12.079809, 'tail_store': 12.17505, 'reference': 9.823335} {'batch_construct': 0.10932199999999881, 'tail_store': -0.04642999999999908} {'batch_construct': 12, 'tail_store': 9}
-small_and_large_03 {'before': 9.556286, 'batch_construct': 9.609286, 'tail_store': 9.429028, 'reference': 8.089679} {'batch_construct': 0.040910999999999476, 'tail_store': 0.04181200000000018} {'batch_construct': 12, 'tail_store': 13}
-medium_02 {'before': 1.423251, 'batch_construct': 1.405365, 'tail_store': 1.417513, 'reference': 1.17403} {'batch_construct': 0.012318999999999969, 'tail_store': -0.01966000000000001} {'batch_construct': 12, 'tail_store': 10}

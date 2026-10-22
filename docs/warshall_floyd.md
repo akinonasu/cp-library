@@ -46,7 +46,7 @@ assert(ok && d[0][2] == -2);
 
 `WARSHALL_FLOYD_DISABLE_AVX512`、`WARSHALL_FLOYD_DISABLE_SIMD`、`WARSHALL_FLOYD_DISABLE_NARROWING` を include 前に定義すると、それぞれ AVX-512・明示的な SIMD・64 bit から 32 bit への変換を無効にできます。
 
-[2秒の処理規模と測定条件](https://github.com/qandori/cp-library/blob/main/test/benchmark/warshall_floyd.md)を別に記録しています。CPU・重みの範囲・負辺の有無・入出力で変わるため、提出先での一律の保証ではありません。
+実行時間は CPU・重みの範囲・負辺の有無・入出力に依存します。
 
 頂点数を $$n$$、32 の倍数に切り上げた頂点数を $$p=32\lceil n/32\rceil$$ とします。
 

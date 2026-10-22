@@ -1,7 +1,0 @@
-{
-  "headers": ["components/mod_fast_core.hpp", "math/mod_inv.hpp", "math/mod_pow.hpp"],
-  "unit": ["test/unit/mod_fast.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/mod_fast.cpp", "test/unit/standalone.cpp"],
-  "verification": ["test/mod_pow_log.test.cpp"],
-  "bundles": ["components/mod_fast_core.hpp", "math/mod_inv.hpp", "math/mod_pow.hpp"]
-}

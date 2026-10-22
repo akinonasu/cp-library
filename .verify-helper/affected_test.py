@@ -165,11 +165,11 @@ class AffectedVerification(unittest.TestCase):
         self.assertIn("test/unit/unrelated.cpp", plan["state"]["targets"]["unit"])
 
     def test_package_only_change_does_not_invent_source_scope(self):
-        self.write("test/benchmark/package/candidate.json", '{"candidate":"derived-only"}\n')
+        self.write("notes/package/candidate.json", '{"candidate":"derived-only"}\n')
         self.commit("package-only experiment")
         plan = self.plan()
         self.assertTrue(all(plan[group] == [] for group in ci.GROUPS))
-        self.assertIn("test/benchmark/package/candidate.json", plan["reviewed_extra_paths"])
+        self.assertIn("notes/package/candidate.json", plan["reviewed_extra_paths"])
         self.assertEqual(len(plan["state"]["targets"]["unit"]), 5)
 
     def test_cumulative_selection_and_exact_binding_after_helper_only_commit(self):
@@ -521,7 +521,7 @@ class AffectedVerification(unittest.TestCase):
 
     def test_workflow_package_and_source_changes_all_need_rebinding(self):
         good_head = self.change_bits()
-        for name in (".github/workflows/new.yml", "test/benchmark/package/manifest.json", "math/unrelated.hpp"):
+        for name in (".github/workflows/new.yml", "notes/package/manifest.json", "math/unrelated.hpp"):
             self.git("checkout", "--quiet", good_head)
             self.write(name, "changed substantive bytes\n")
             self.commit("unreviewed substantive change", bind=False)

@@ -1,7 +1,7 @@
 #include "convolution/subset_convolution.hpp"
 #include "convolution/boolean_convolution.hpp"
 #include "math/mint.hpp"
-#include "test/benchmark/subset_convolution_baseline.hpp"
+#include "test/fixtures/subset_convolution_reference.hpp"
 #include <array>
 #include <cassert>
 #include <cstdint>

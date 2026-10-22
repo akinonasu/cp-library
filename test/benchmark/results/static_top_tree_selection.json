@@ -1,6 +1,0 @@
-{
-  "headers": ["components/static_top_tree_structure.hpp", "graph/static_top_tree.hpp"],
-  "unit": ["test/unit/static_top_tree.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/static_top_tree.cpp", "test/unit/standalone.cpp"],
-  "verification": ["test/point_set_tree_path_composite_sum_fixed_root.test.cpp", "test/point_set_tree_path_composite_sum.test.cpp"]
-}

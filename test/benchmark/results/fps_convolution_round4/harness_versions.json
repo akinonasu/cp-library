@@ -1,9 +1,0 @@
-{
-  "executed_harness_sha256": "330d590cc40741b654c1b4d7ac4f73e8d8fc0a9481dbb8953ac6cc587e2ef8e1",
-  "executed_harness": "harness.py",
-  "canonical_harness_sha256": "dbf52812fbbe4770ba9e0ec97d7a65638baaba26223dc4c5b27eb336dcd90fac",
-  "change": "Only REPLAY embedded string gained checks against primary conditions, data, checker and compiler. Measurement code is unchanged. Saved harness.py remains exactly the executed version.",
-  "replay_sha256": "dc34a86c02a78560bdd1c164b928ac5b9ed45017e055aad5146592cd36d21d0d",
-  "ast_equal_except_REPLAY": true,
-  "measurement_code_unchanged": true
-}

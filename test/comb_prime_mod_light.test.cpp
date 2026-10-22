@@ -2,7 +2,7 @@
 #define COMB_MAX 9999999
 #include "math/combinatorics/comb_light.hpp"
 #include "components/fast_io.hpp"
-#include "test/benchmark/comb_modint_types.hpp"
+#include "test/fixtures/comb_modint_types.hpp"
 
 int main() {
 	FastInput input;

@@ -1,7 +1,0 @@
-g++: standalone string/run_enumerate.hpp
-g++: run_enumerate.cpp
-clang++: standalone string/run_enumerate.hpp
-clang++: run_enumerate.cpp
-/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone string/run_enumerate.hpp
-/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: run_enumerate.cpp
-Verification passed

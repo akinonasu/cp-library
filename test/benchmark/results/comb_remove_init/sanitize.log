@@ -1,4 +1,0 @@
-clang++: comb.cpp
-clang++: comb_zero.cpp
-clang++: comb_factorials.cpp
-Verification passed

@@ -1,2 +1,0 @@
-{'case': 'small', 'count': 10000, 'trial_ms': 28.107289, 'sorted_ms': 4.236303, 'unsorted_ms': 3.424709, 'reused_ms': 1.118816, 'reused_unsorted_ms': 0.440746}
-{'case': 'random32', 'count': 2000, 'trial_ms': 338.817609, 'sorted_ms': 2.048993, 'unsorted_ms': 1.709627, 'reused_ms': 0.422869, 'reused_unsorted_ms': 0.102167}

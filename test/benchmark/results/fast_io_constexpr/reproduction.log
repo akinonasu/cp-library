@@ -1,9 +1,0 @@
-In file included from ./data_structure/wavelet_matrix.hpp:5,
-                 from ./data_structure/weighted_wavelet_matrix.hpp:4,
-                 from ./data_structure/point_set_wavelet_matrix.hpp:4,
-                 from test/benchmark/abc467_g.cpp:4:
-./components/fast_io.hpp:157:3:   in 'constexpr' expansion of '<lambda closure object>FastOutput::<lambda()>().FastOutput::<lambda()>()'
-./components/fast_io.hpp:154:43:   in 'constexpr' expansion of '(& table.std::array<std::array<char, 4>, 10000>::operator[](((std::array<std::array<char, 4>, 10000>::size_type)i)))->std::array<char, 4>::operator[](((std::array<char, 4>::size_type)j))'
-/var/tmp/cp-audit-tools/env/lib/gcc/x86_64-conda-linux-gnu/15.2.0/include/c++/array:211:24: error: 'constexpr' evaluation operation count exceeds limit of 2097152 (use '-fconstexpr-ops-limit=' to increase the limit)
-  211 |         return _M_elems[__n];
-      |                ~~~~~~~~^

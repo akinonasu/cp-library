@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/bitwise_and_convolution.test.cpp"
-  ]
-}

@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/multivariate_convolution.test.cpp"
-  ]
-}

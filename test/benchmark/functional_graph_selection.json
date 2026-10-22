@@ -1,7 +1,0 @@
-{
-  "headers": ["graph/functional_graph.hpp"],
-  "unit": ["test/unit/functional_graph.cpp"],
-  "sanitize": ["test/unit/functional_graph.cpp"],
-  "verification": ["test/functional_graph_jump.test.cpp"],
-  "bundles": ["graph/functional_graph.hpp"]
-}

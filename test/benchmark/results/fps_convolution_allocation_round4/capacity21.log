@@ -1,8 +1,0 @@
-built before
-built capacity_1m
-built capacity_2m
-built reference
-max_random_00 {'before': 12.146955, 'capacity_1m': 12.109139, 'capacity_2m': 12.2761, 'reference': 9.764308} {'capacity_1m': 0.12336499999999972, 'capacity_2m': -0.3287300000000002} {'capacity_1m': 12, 'capacity_2m': 8}
-max_random_01 {'before': 12.183374, 'capacity_1m': 12.049615, 'capacity_2m': 12.083015, 'reference': 9.746889} {'capacity_1m': 0.2169749999999997, 'capacity_2m': 0.18848200000000048} {'capacity_1m': 13, 'capacity_2m': 15}
-small_and_large_03 {'before': 9.40633, 'capacity_1m': 9.403608, 'capacity_2m': 9.518319, 'reference': 7.927567} {'capacity_1m': 0.04127100000000006, 'capacity_2m': -0.07658400000000043} {'capacity_1m': 11, 'capacity_2m': 8}
-medium_02 {'before': 1.565093, 'capacity_1m': 1.513927, 'capacity_2m': 1.49609, 'reference': 1.29543} {'capacity_1m': 0.013269999999999893, 'capacity_2m': -0.0066589999999999705} {'capacity_1m': 12, 'capacity_2m': 10}

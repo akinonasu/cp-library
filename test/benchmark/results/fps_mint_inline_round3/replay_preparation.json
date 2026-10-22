@@ -1,9 +1,0 @@
-{
-  "baseline": "bd951dce6fdcb3ea9db4fcef342147012a8ab0c0",
-  "archive_sha256": "edfd44dfb0ebf195d02251210b9c344f2b2b9f6bc6e6b052863a9945f31fc20d",
-  "snapshot_sha256": "45b097c9a29f10b03fb0de574002fb690b2edd58f5063f017ac194a3709b5f9b",
-  "snapshot_patch_sha256": "455de76484b04593de372ccbc32b08fc02cbd37ccce3d33f0ee2b2636b3976a4",
-  "candidate_patch_sha256": "1025d24fbdcbeb0c9aac708919562ed217167e4cf4ea81fff2445d41c6892e03",
-  "all_recorded_headers_and_drivers_match": true,
-  "prepare_only": true
-}

@@ -1,5 +1,0 @@
-waiting EX
-acquired EX
-1 {'base': 4.077877998, 'ifma_inline_g1': 8.092546463, 'ifma_inline_g2': 8.311684608, 'ifma_inline': 8.708633423, 'base_call': 4.585607529, 'ifma_call': 8.778957367, 'dispatch': 8.460928917, 'forced_fallback': 4.597566605}
-128 {'base': 4.019034386, 'ifma_inline_g1': 8.13194561, 'ifma_inline_g2': 8.075325966, 'ifma_inline': 8.647238731, 'base_call': 4.71145153, 'ifma_call': 8.719376564, 'dispatch': 8.738527298, 'forced_fallback': 4.714795113}
-4096 {'base': 4.154782295, 'ifma_inline_g1': 8.072968483, 'ifma_inline_g2': 8.201075554, 'ifma_inline': 8.782748222, 'base_call': 4.768146515, 'ifma_call': 8.829529762, 'dispatch': 8.804944992, 'forced_fallback': 4.702712059}

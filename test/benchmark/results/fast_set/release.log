@@ -1,6 +1,0 @@
-NDEBUG: test/unit/predecessor_set.cpp
-NDEBUG: test/unit/fast_set.cpp
-NDEBUG: test/unit/sortable_segtree.cpp
-Example: fast_set 0
-Example: predecessor_set 0
-Bundled NDEBUG driver: all 22 official cases passed

@@ -1,8 +1,0 @@
-test/fps_bostan_mori.test.cpp 20 passed
-test/fps_compositional_inverse.test.cpp 23 passed
-test/fps_exp.test.cpp 26 passed
-test/fps_inv.test.cpp 25 passed
-test/fps_log.test.cpp 25 passed
-test/fps_taylor_shift.test.cpp 38 passed
-test/multivariate_convolution.test.cpp 17 passed
-test/power_projection.test.cpp 28 passed

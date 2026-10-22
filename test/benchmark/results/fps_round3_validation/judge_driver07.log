@@ -1,7 +1,0 @@
-dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/disjoint_sparse_table_affine.test.cpp
-disjoint_sparse_table_affine.test.o: \
- /workspace/cp-library/test/disjoint_sparse_table_affine.test.cpp \
- /workspace/cp-library/test/../data_structure/disjoint_sparse_table.hpp \
- /workspace/cp-library/test/../data_structure/../components/default_init_allocator.hpp \
- /workspace/cp-library/test/../math/mint.hpp
-Reused successful driver: actual dependencies, source, flags, compiler and official data hashes match.

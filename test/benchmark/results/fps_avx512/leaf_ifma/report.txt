@@ -1,7 +1,0 @@
-Rejected: best IFMA inline median 8.073-8.093 ns/leaf versus AVX2 inline 4.019-4.155 ns/leaf.
-21 shuffled trials per mode and working set; 504 measured samples.
-Original/IFMA/scalar raw equality: 200000 windows, 1600000 lanes.
-Alignment check: alignas(32), actual address mod64=32, 10000 windows, 80000 lanes passed.
-No 64-byte alignment dependency and no additional padding requirement.
-No production source changed. No whole-process speed claim.
-Fresh git-archive reconstruction matched all 175 headers in each of three trees.

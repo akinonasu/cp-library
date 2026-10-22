@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/lcm_convolution.test.cpp"
-  ]
-}

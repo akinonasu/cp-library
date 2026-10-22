@@ -13,5 +13,3 @@ python3 tools/update_fps_headers.py --check
 ```
 
 共通する記述を一時的な内部マクロにまとめ、通常版の内部変数名を短くしています。内部マクロはヘッダー末尾で解除します。演算、入力の const 性、境界検査、CPU の実行時判定、他環境の分岐は原本と同じです。短縮されたレイアウトに由来する `misleading-indentation` 診断だけを配布実装の内部で抑制し、ヘッダーの末尾で診断設定を復元します。
-
-[測定と検証](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_plain.md)を参照してください。

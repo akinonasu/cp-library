@@ -1,3 +1,0 @@
-test/online_convolution.test.cpp 53 passed
-test/online_convolution_exp.test.cpp 26 passed
-test/online_convolution_inv.test.cpp 25 passed

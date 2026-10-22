@@ -1,7 +1,0 @@
-{'case': 'random', 'baseline_ms': 68.010539, 'library_ms': 57.79429}
-{'case': 'full', 'baseline_ms': 43.403972, 'library_ms': 3.54073}
-{'case': 'point', 'baseline_ms': 4.986738, 'library_ms': 5.165786}
-{'case': 'prefix', 'baseline_ms': 58.69175, 'library_ms': 37.835928}
-{'case': 'query_heavy', 'baseline_ms': 36.213132, 'library_ms': 25.361383}
-{'case': 'hot', 'baseline_ms': 4.768738, 'library_ms': 2.317119}
-{'case': 'add', 'baseline_ms': 64.676934, 'library_ms': 54.96599, 'commutative_ms': 23.495547}

@@ -1,6 +1,0 @@
-clang++: convolution.cpp
-clang++: fps.cpp
-clang++: fps_algorithms.cpp
-clang++: ordered_convolution.cpp
-clang++: standalone.cpp
-Verification passed

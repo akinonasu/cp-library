@@ -1,9 +1,0 @@
-g++: standalone math/number_theory/multiplicative_prefix_sum.hpp
-g++: standalone components/floor_quotients.hpp
-clang++: standalone components/floor_quotients.hpp
-clang++: standalone math/number_theory/multiplicative_prefix_sum.hpp
-g++: floor_quotients.cpp
-g++: multiplicative_prefix_sum.cpp
-clang++: floor_quotients.cpp
-clang++: multiplicative_prefix_sum.cpp
-Verification passed

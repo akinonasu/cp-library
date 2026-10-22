@@ -1,7 +1,0 @@
-{
-  "headers": ["graph/difference_constraints.hpp"],
-  "unit": ["test/unit/difference_constraints.cpp"],
-  "sanitize": ["test/unit/difference_constraints.cpp"],
-  "verification": ["test/difference_constraints.test.cpp"],
-  "bundles": ["graph/difference_constraints.hpp"]
-}

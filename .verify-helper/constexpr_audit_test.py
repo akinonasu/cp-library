@@ -1,5 +1,4 @@
 import contextlib
-import importlib.util
 import io
 import json
 from pathlib import Path
@@ -10,9 +9,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
-spec = importlib.util.spec_from_file_location('constexpr_audit', ROOT / 'test/benchmark/constexpr_audit.py')
-audit = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(audit)
+import constexpr_audit as audit
 
 
 class ConstexprAudit(unittest.TestCase):

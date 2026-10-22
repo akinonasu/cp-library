@@ -1,7 +1,0 @@
-/usr/bin/g++: fps_composition_blocked.cpp
-/usr/bin/g++: fps_composition_tables.cpp
-/usr/bin/g++: fps_division_blocked.cpp
-/usr/bin/g++: fps_exp_import.cpp
-exp import derivative/lazy/tail/readonly checks passed
-/usr/bin/g++: fps_inverse_blocked.cpp
-Verification passed

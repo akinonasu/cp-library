@@ -2819,7 +2819,7 @@ F a(n),b(n),ş;ç Ө(Ȯ(a),Ȯ(b),n);Ű Ŏ(Ȯ(a),Ȯ(a),Ȯ(f),n);Ø ˁ(a ü,a Ƃ);
 
 #line 4 "fps/linear_recurrence.hpp"
 
-#line 1 "test/fps_io.hpp"
+#line 1 "test/fixtures/fps_io.hpp"
 
 
 
@@ -3104,7 +3104,7 @@ namespace fps_io_fields{namespace detail{struct alignas(32)Ë{Ó lane[8];};Î Ë
 #pragma GCC diagnostic pop
 #endif
 
-#line 7 "test/fps_io.hpp"
+#line 7 "test/fixtures/fps_io.hpp"
 
 inline fps read_fps(FastInput &input, int n) {
 	fps result;

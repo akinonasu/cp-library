@@ -68,6 +68,6 @@ exclude:
   - README.md
   - AGENTS.md
   - test/unit
-  - test/benchmark
+  - test/README.md
   - test/verify.py
   - test/verify_edit_distance_simd.py

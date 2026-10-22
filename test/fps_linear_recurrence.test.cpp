@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/kth_term_of_linearly_recurrent_sequence"
 #include "fps/linear_recurrence.hpp"
-#include "fps_io.hpp"
+#include "fixtures/fps_io.hpp"
 
 int main() {
 	FastInput input;

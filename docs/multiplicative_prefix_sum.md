@@ -59,6 +59,6 @@ auto at10 = sieve.get(prefix, 10); // 32
 
 上限 0 では表は空で、`sum` と `get(table,0)` は 0 です。上限 1 では `sum` は 1 です。呼び出しはオブジェクトや入力の表を変更しないため、別の関数や異なる素数冪の値で計算領域を再利用できます。コピーは独立し、ムーブ後の元は上限 0 の状態になります。必要な領域は入力に応じて増えるため、時間とメモリに収まる範囲で使ってください。
 
-商の表と素数篩を共有し、素数上の表は Min_25 篩で作ります。小さい引数は商が同じになる範囲をまとめ、商の添字を使って除算を減らします。`sum` は Black algorithm の列挙を使い、残りが素数と素数の二つの積に限られる部分をまとめます。`prefix_sum` は逆順の素数から高い冪を復元する Min_25 篩を使います。測定結果は [ベンチマーク](https://github.com/qandori/cp-library/blob/main/test/benchmark/multiplicative_prefix_sum.md)を参照してください。
+商の表と素数篩を共有し、素数上の表は Min_25 篩で作ります。小さい引数は商が同じになる範囲をまとめ、商の添字を使って除算を減らします。`sum` は Black algorithm の列挙を使い、残りが素数と素数の二つの積に限られる部分をまとめます。`prefix_sum` は逆順の素数から高い冪を復元する Min_25 篩を使います。
 
 `T` の演算とコールバックを $$O(1)$$ とすると、構築は $$\displaystyle O(\sqrt n\log\log n)$$ 時間・$$\displaystyle O(\sqrt n)$$ 空間です。`prime_sum`・`prime_sum_linear`・`sum`・`prefix_sum` はそれぞれ $$\displaystyle O\!\left(\frac{n^{3/4}}{\log n}\right)$$ 時間、保持する表と作業領域は $$\displaystyle O(\sqrt n)$$ です。表の参照は $$O(1)$$、コピーは $$\displaystyle O(\sqrt n)$$ 時間・空間です。`n <= 1` は定数時間で処理します。

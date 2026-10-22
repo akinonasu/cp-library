@@ -1,6 +1,0 @@
-ASan/UBSan passed
-g++ range_affine_range_sum 19 official cases passed
-clang++ range_affine_range_sum 19 official cases passed
-g++ range_affine_range_sum_large_array 31 official cases passed
-clang++ range_affine_range_sum_large_array 31 official cases passed
-Official cases, bundle and examples passed

@@ -1,8 +1,0 @@
-[32mINFO[0m:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}[0m
-[INFO] slowest: 1.952673 sec  (for random_n_max_q_max_many_pop_01)
-[INFO] max memory: 97.084000 MB  (for random_n_max_q_max_only_type01_00)
-[SUCCESS] test success: 18 cases
-[INFO] slowest: 2.436601 sec  (for random_n_max_q_max_many_pop_00)
-[INFO] max memory: 97.196000 MB  (for random_n_max_q_max_00)
-[SUCCESS] test success: 18 cases
-[32mINFO[0m:onlinejudge_verify.verify:all tests succeeded[0m

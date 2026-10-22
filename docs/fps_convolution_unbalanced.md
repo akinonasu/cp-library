@@ -15,5 +15,3 @@ Linux x86_64 / GCC の AVX2 用内部部品です。公開の `fps::multiply` �
 短辺の通常剰余の変換を一度作り、長辺を幅 $$L-m+1$$ のブロックに分けます。$$L=8\operatorname{bitceil}(m)$$ とし、各ブロックの循環積を線形積として復元し、隣接ブロックの重なり $$m-1$$ 項を加算します。長辺は Montgomery 表現のまま計算し、返す係数も正規化した Montgomery 表現です。
 
 入力を変更せず、公開入力に alignment や padding を要求しません。作業配列は `Arena` が所有し、出力は独立した `vector<Mint>` の生存中の要素として構築します。同じ入力を二回渡しても安全です。追加の作業空間は $$O(m)$$、返す配列は $$O(n+m)$$ です。
-
-測定と採用条件の根拠は [非対称畳み込みのブロック化](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_convolution_unbalanced_round4.md) にあります。

@@ -1,8 +1,0 @@
-gcc15 g++ (conda-forge gcc 15.2.0-20) 15.2.0
-gcc15 PASS
-clang clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)
-clang PASS
-gcc13 x86_64-conda-linux-gnu-g++ (conda-forge gcc 13.4.0-20) 13.4.0
-gcc13 PASS
-sanitize clang version 21.1.8 (https://github.com/conda-forge/clangdev-feedstock 0586bae95bd818412431982353f925478061d031)
-sanitize PASS

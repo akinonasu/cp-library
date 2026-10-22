@@ -1,5 +1,5 @@
 #include "components/factorial_table.hpp"
-#include "test/benchmark/comb_modint_types.hpp"
+#include "test/fixtures/comb_modint_types.hpp"
 #include <cassert>
 #include <cstdint>
 

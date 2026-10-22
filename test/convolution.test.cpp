@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/convolution_mod"
 #include "../convolution/convolution.hpp"
-#include "fps_io.hpp"
+#include "fixtures/fps_io.hpp"
 
 int main() {
 	FastInput input;

@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series"
 #include "fps/compositional_inverse_light.hpp"
-#include "fps_light_io.hpp"
+#include "fixtures/fps_light_io.hpp"
 
 int main() {
 	FastInput input;

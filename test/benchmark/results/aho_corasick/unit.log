@@ -1,5 +1,0 @@
-g++: standalone string/aho_corasick.hpp
-g++: aho_corasick.cpp
-clang++: standalone string/aho_corasick.hpp
-clang++: aho_corasick.cpp
-Verification passed

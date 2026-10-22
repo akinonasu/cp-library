@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/fps_sqrt.test.cpp"
-  ]
-}

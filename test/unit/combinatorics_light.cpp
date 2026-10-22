@@ -5,7 +5,7 @@
 #include "math/combinatorics/comb.hpp"
 #include "math/combinatorics/binomial_prefix_sum.hpp"
 #include "math/combinatorics/binomial_prefix_sum_incremental.hpp"
-#include "test/benchmark/comb_modint_types.hpp"
+#include "test/fixtures/comb_modint_types.hpp"
 #include <random>
 
 template<unsigned P> struct Field {

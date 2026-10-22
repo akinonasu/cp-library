@@ -1,7 +1,0 @@
-g++: standalone data_structure/segment_tree/dual_segtree.hpp
-g++: dual_segtree.cpp
-g++: standalone.cpp
-clang++: standalone data_structure/segment_tree/dual_segtree.hpp
-clang++: dual_segtree.cpp
-clang++: standalone.cpp
-Verification passed

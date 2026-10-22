@@ -1,7 +1,0 @@
-{
-  "headers": ["components/offline_time_segments.hpp", "components/radix_sort.hpp", "graph/connectivity/offline_dynamic_connectivity.hpp"],
-  "unit": ["test/unit/offline_time_segments.cpp", "test/unit/radix_sort.cpp", "test/unit/offline_dynamic_connectivity.cpp"],
-  "sanitize": ["test/unit/offline_time_segments.cpp", "test/unit/radix_sort.cpp", "test/unit/offline_dynamic_connectivity.cpp"],
-  "verification": ["test/offline_dynamic_connectivity.test.cpp"],
-  "bundles": ["components/offline_time_segments.hpp", "components/radix_sort.hpp", "graph/connectivity/offline_dynamic_connectivity.hpp", "test/offline_dynamic_connectivity.test.cpp"]
-}
