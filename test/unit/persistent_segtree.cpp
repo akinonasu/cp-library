@@ -34,13 +34,15 @@ int main() {
 	Tree empty_vector(std::vector<long long>{});
 	assert(empty_vector.all_prod(empty_vector.initial_root()) == 0);
 	std::mt19937 random(20261021);
-	for (int n : {1, 2, 3, 7, 8, 9, 31, 32, 33, 99}) {
+	for (int n : {1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 17, 31, 32, 33, 63, 64, 65, 99, 255, 256, 257, 1025}) {
 		for (bool sparse : {false, true}) {
 			std::vector<long long> a(n);
 			if (!sparse) for (auto &x : a) x = random() % 10;
 			Tree seg = sparse ? Tree(n) : Tree(a);
 			assert(seg.size() == n && !seg.empty());
-			assert(seg.node_count() == (sparse ? 0u : std::size_t(2 * n - 1)));
+			std::size_t built = 0;
+			for (unsigned count = n; count; count = count == 1 ? 0 : (count + 3) / 4) built += count;
+			assert(seg.node_count() == (sparse ? 0u : built));
 			std::vector<Tree::root_type> roots{seg.initial_root()};
 			std::vector<std::vector<long long>> versions{a};
 			for (int t = 0; t < 800; ++t) {
@@ -90,7 +92,7 @@ int main() {
 			for (int p = 0; p < n; ++p) assert(seg.get(roots[0], p) == a[p]);
 		}
 	}
-	for (int n : {1, 3, 16, 35}) {
+	for (int n : {1, 3, 4, 5, 15, 16, 17, 35, 63, 64, 65}) {
 		Strings seg(n);
 		std::vector<Strings::root_type> roots{seg.initial_root()};
 		std::vector<std::vector<std::string>> versions{std::vector<std::string>(n)};
@@ -118,6 +120,13 @@ int main() {
 			assert(seg.max_right(root, l, f) == end && seg.min_left(root, r, f) == start);
 		}
 	}
+	Tree shared(257);
+	auto base = shared.set(0, 200, 5);
+	auto changed = shared.set(base, 17, 9);
+	auto before_restore = shared.node_count();
+	auto restored = shared.copy_range(changed, base, 17, 18);
+	assert(restored == base && shared.node_count() == before_restore);
+	assert(shared.get(changed, 17) == 9 && shared.get(base, 17) == 0);
 	Tree huge(INT_MAX);
 	auto h0 = huge.initial_root(), h1 = huge.set(h0, INT_MAX - 1, 7), h2 = huge.set(h1, 0, 11);
 	assert(huge.prod(h2, 0, INT_MAX) == 18 && huge.all_prod(h0) == 0);
@@ -125,6 +134,19 @@ int main() {
 	assert(huge.min_left(h2, INT_MAX, [](long long x) { return x <= 7; }) == 1);
 	auto h3 = huge.copy_range(h2, h0, 0, INT_MAX - 1);
 	assert(huge.all_prod(h3) == 7 && huge.all_prod(h2) == 18);
+	for (int n : {INT_MAX, INT_MAX - 1, 1 << 30, (1 << 30) + 1, (1 << 29) + 1}) {
+		Tree seg(n);
+		auto initial = seg.initial_root();
+		auto left = seg.set(initial, 0, 3), right = seg.set(initial, n - 1, 5);
+		auto combined = seg.copy_range(left, right, n - 1, n);
+		assert(seg.all_prod(combined) == 8 && seg.all_prod(left) == 3 && seg.all_prod(right) == 5);
+		assert(seg.prod(combined, 0, n - 1) == 3 && seg.get(combined, n - 1) == 5);
+		assert(seg.max_right(combined, 1, [](long long x) { return x <= 4; }) == n - 1);
+		assert(seg.min_left(combined, n - 1, [](long long x) { return x <= 2; }) == 1);
+		assert(seg.max_right(right, n - 1, [](long long x) { return x <= 5; }) == n);
+		assert(seg.min_left(left, 1, [](long long x) { return x <= 3; }) == 0);
+		assert(seg.copy_range(combined, initial, 0, n) == initial);
+	}
 	PersistentSegtree<Value, sum, identity> no_default(std::vector<Value>{Value(2), Value(5)});
 	auto v0 = no_default.initial_root(), v1 = no_default.multiply(v0, 1, Value(7));
 	assert(no_default.prod(v0, 0, 2).x == 7 && no_default.all_prod(v1).x == 14);
