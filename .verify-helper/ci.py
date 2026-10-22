@@ -168,12 +168,12 @@ def build_plan(root, previous=None, *, environment, force=False):
         return result
 
     settings = {
-        "headers": ("test/verify.py",),
-        "unit": ("test/verify.py",),
-        "sanitize": ("test/verify.py",),
+        "headers": ("test/verify.py", ".verify-helper/atcoder_flags.py"),
+        "unit": ("test/verify.py", ".verify-helper/atcoder_flags.py"),
+        "sanitize": ("test/verify.py", ".verify-helper/atcoder_flags.py"),
         "verification": (".verify-helper/config.toml", "test/requirements.txt",
                          ".verify-helper/ci.py", ".verify-helper/verification.py", ".verify-helper/judge_data.py"),
-        "bundles": (".verify-helper/check-docs.py", ".verify-helper/documentation.py", ".verify-helper/verification.py",
+        "bundles": (".verify-helper/check-docs.py", ".verify-helper/atcoder_flags.py", ".verify-helper/documentation.py", ".verify-helper/verification.py",
                     ".verify-helper/config.toml", "test/requirements.txt", ".verify-helper/size_profiles.py",
                     ".verify-helper/check_profiles.py"),
     }

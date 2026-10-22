@@ -9,6 +9,7 @@ import tempfile
 import threading
 import unittest
 from unittest.mock import patch
+from atcoder_flags import constexpr_flags
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -16,13 +17,17 @@ ROOT = Path(__file__).resolve().parent.parent
 
 class ParallelVerification(unittest.TestCase):
     def run_checks(self, selection, run, *flags):
+        constexpr_flags.cache_clear()
+        self.addCleanup(constexpr_flags.cache_clear)
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "selection.json"
             path.write_text(json.dumps(selection))
             arguments = ["verify.py", "--unit-only", "--jobs", "2", "--selection", str(path), *flags]
             with patch.object(sys, "argv", arguments), patch("subprocess.run", side_effect=run), \
+                    patch("subprocess.check_output", side_effect=lambda command, **kwargs: command[0]), \
                     contextlib.redirect_stdout(io.StringIO()):
                 runpy.run_path(str(ROOT / "test/verify.py"), run_name="__main__")
+        constexpr_flags.cache_clear()
 
     def test_headers_compile_concurrently_without_sharing_files(self):
         barrier = threading.Barrier(2, timeout=5)
@@ -77,6 +82,16 @@ class ParallelVerification(unittest.TestCase):
         self.assertEqual(len(commands), 2)
         self.assertIn("-fsanitize=address,undefined", commands[0])
         self.assertNotIn("-fsyntax-only", commands[0])
+        self.assertIn("-fconstexpr-depth=1024", commands[0])
+        self.assertIn("-fconstexpr-steps=524288", commands[0])
+
+    def test_gcc_uses_atcoder_limits(self):
+        commands = []
+        self.run_checks({"headers": ["tree/dsu_on_tree.hpp"], "unit": []},
+                        lambda command, **kwargs: commands.append(command), "--cxx", "g++")
+        self.assertEqual(len(commands), 1)
+        for flag in ("-fconstexpr-depth=1024", "-fconstexpr-loop-limit=524288", "-fconstexpr-ops-limit=2097152"):
+            self.assertIn(flag, commands[0])
 
     def test_workflow_prefers_the_matching_image_cache(self):
         import yaml

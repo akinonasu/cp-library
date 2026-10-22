@@ -6,6 +6,7 @@ import re
 import subprocess
 
 import yaml
+from atcoder_flags import constexpr_flags
 
 
 root = pathlib.Path(__file__).resolve().parents[1]
@@ -35,7 +36,8 @@ for header in headers:
 
 
 def check(code):
-    subprocess.run(['g++', '-std=c++23', '-fsyntax-only', '-x', 'c++', '-'], input=code, text=True, check=True, cwd=root)
+    subprocess.run(['g++', '-std=c++23', *constexpr_flags('g++'), '-fsyntax-only', '-x', 'c++', '-'],
+                   input=code, text=True, check=True, cwd=root)
 
 
 with ThreadPoolExecutor(max_workers=args.jobs) as pool:
