@@ -13,6 +13,8 @@ fps inverse = f.inv(10);
 
 mod は 998244353、係数は定数項から順に格納します。`fps` は `std::vector<mint>` と同様に扱えます。`deg` は返す係数の個数で、省略時は元のサイズです。
 
+`FormalPowerSeries<atcoder::modint998244353>` として、ACL の型を公開する係数型に指定することもできます。`<atcoder/modint>` を別途 include してください。主な FPS 演算は内部で独自の Montgomery 表現へ変換して処理するため、型を指定した場合も内部では独自 modint を使います。変換の追加や、型ごとの SIMD 経路による差については [係数型の速度比較](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_modint.md) を参照してください。
+
 通常の `oj-bundle` で提出コードを生成できます。配布ヘッダー自体を短くしてあるため、専用スクリプトや展開後の追加圧縮は不要です。通常版の合成・補間・GCD なども同じ配布実装にまとめています。
 
 ```sh

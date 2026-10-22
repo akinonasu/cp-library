@@ -1,0 +1,554 @@
+{
+  "public_headers": {
+    "test": "test/unit/fps_public_headers.cpp",
+    "define": "CP_FPS_HEADERS_ACL",
+    "compilers": [
+      "g++ 14.2",
+      "clang++ 19.1.7"
+    ],
+    "passed": true
+  },
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "sanitizer_flags": [
+    "-std=c++23",
+    "-O1",
+    "-march=haswell",
+    "-fsanitize=address,undefined",
+    "-fno-omit-frame-pointer",
+    "-DBENCH_ACL_MODINT",
+    "-fconstexpr-depth=1024",
+    "-fconstexpr-steps=524288"
+  ],
+  "sanitized_comparisons": [
+    {
+      "operation": "multiply",
+      "n": 2,
+      "answer": [
+        3,
+        0,
+        14474182617601486368
+      ],
+      "coefficient_sha256": "2a084758e3efec2badbc9219834cac81f40822d06a3d5ccac46a28d85e2132ad"
+    },
+    {
+      "operation": "square",
+      "n": 2,
+      "answer": [
+        3,
+        0,
+        18305812551084953291
+      ],
+      "coefficient_sha256": "7272748432d9d073b0d98e02c2f8e0046ddb979ffbc2d925a37f8b5c5c684f2f"
+    },
+    {
+      "operation": "inv",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        12266072643827260103
+      ],
+      "coefficient_sha256": "16a62c3be75df0afbec369935dc07c46c5e2cbbc8c1b41d5382ad7b57ff197a9"
+    },
+    {
+      "operation": "log",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        1965913787490283475
+      ],
+      "coefficient_sha256": "4aac1ad691129330de530f6e12a568c96cce2c0091ce9dc3f41803ff1ec0ac5d"
+    },
+    {
+      "operation": "exp",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        9698814473130603662
+      ],
+      "coefficient_sha256": "a3ac2c3689daa95fb7c8f695ff8da80c106a4b0ef9ea93c3e0090359761a0578"
+    },
+    {
+      "operation": "sqrt",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        4569186708007053734
+      ],
+      "coefficient_sha256": "91de7ca3faabcea68a9dff49994604bf893680aaf2f25208df1ec9c86ba6831e"
+    },
+    {
+      "operation": "pow",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        10626378270303467747
+      ],
+      "coefficient_sha256": "c23a1988efb451bed6818df5ab711e93bafbaf344f506ad3836a33a5fda9853f"
+    },
+    {
+      "operation": "div_series",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        9049510960843191393
+      ],
+      "coefficient_sha256": "b685e197b1f1825e3a1089ed98928f7790f92e2d666b9d815d19e956beb5f5e6"
+    },
+    {
+      "operation": "divmod",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        16835007463919115979
+      ],
+      "coefficient_sha256": "70b14b65098e01c9c964698e17e9568a15876d37e5784075c1cadd69185ff2bc"
+    },
+    {
+      "operation": "scale",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        15758368154380570013
+      ],
+      "coefficient_sha256": "be6be2d370c4c34b68555c8d5322f2f6f481b021fb1a98365dcb52af79f407e2"
+    },
+    {
+      "operation": "diff",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        3211858556626198855
+      ],
+      "coefficient_sha256": "ef2078ba045f2a72f77c8b9088c41ba8377c524ff085a81d0267fd115a93322e"
+    },
+    {
+      "operation": "integral",
+      "n": 2,
+      "answer": [
+        2,
+        0,
+        9177016801914184290
+      ],
+      "coefficient_sha256": "43c638f8ca9446d9589fd4625fea77cdd2e87b86e55d213f4839ff9f1672aa8e"
+    },
+    {
+      "operation": "eval",
+      "n": 2,
+      "answer": [
+        1,
+        0,
+        3957828629301582533
+      ],
+      "coefficient_sha256": "4c589761f242d00f0a7b7ca79993bfa468f1e3c39843935d7328f1b09ded8e88"
+    },
+    {
+      "operation": "multiply",
+      "n": 33,
+      "answer": [
+        65,
+        0,
+        10398240019162998906
+      ],
+      "coefficient_sha256": "57f8fb0de3816892fcdc9c8b1d4137d013581859f027b44c113509840074aacf"
+    },
+    {
+      "operation": "square",
+      "n": 33,
+      "answer": [
+        65,
+        0,
+        758100727506290014
+      ],
+      "coefficient_sha256": "dee3b07503fcfc96370115030e46bb0bd60cb07edb2086c70798c6b587961a8d"
+    },
+    {
+      "operation": "inv",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        4693119035913530016
+      ],
+      "coefficient_sha256": "791920f6eeae0eae9273c6d54a16efb58a3f6c8ad5ae12e689e1853f5487194d"
+    },
+    {
+      "operation": "log",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        1354186637374185103
+      ],
+      "coefficient_sha256": "90188f089febce81fee8d328d93c47413b96bc33490800676fcf8ec5a757841a"
+    },
+    {
+      "operation": "exp",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        2317390873173547417
+      ],
+      "coefficient_sha256": "953b2a918899f06bbaafe5ad316fc0edbd2ee5b5fe7184028a2dc731ae3da2ec"
+    },
+    {
+      "operation": "sqrt",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        5535613210570838597
+      ],
+      "coefficient_sha256": "dd1818cfeca4f716f27640388bd3afa54680ad608204eb3d36f43025ebdba7d9"
+    },
+    {
+      "operation": "pow",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        6939833210833938662
+      ],
+      "coefficient_sha256": "2f89aa3ea33d7175cd065457c3044b9dc3cbdd725f09d04386b640e28ba8b8c5"
+    },
+    {
+      "operation": "div_series",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        9293600493759440066
+      ],
+      "coefficient_sha256": "16ce2a99d4351b7c081fd9987b53277d65d164fa5259ed1d8347fe728dbbd4ca"
+    },
+    {
+      "operation": "divmod",
+      "n": 33,
+      "answer": [
+        18,
+        15,
+        5005427984390714134
+      ],
+      "coefficient_sha256": "8503e1ef9074f398c08a3cc5656ce8d6a7580ab16e9610ebf75e9d23433b2dfd"
+    },
+    {
+      "operation": "scale",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        10314093120646503797
+      ],
+      "coefficient_sha256": "7ebc9cc414e5027090e2f84edfe21933fe3877e8025b2c1fd822dfa7b163b395"
+    },
+    {
+      "operation": "diff",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        9163865293282941463
+      ],
+      "coefficient_sha256": "719255988cd4dc3aaa072d8aea9cd3b0b8d571d5cec9883b211cda183b072122"
+    },
+    {
+      "operation": "integral",
+      "n": 33,
+      "answer": [
+        33,
+        0,
+        2500226746917712981
+      ],
+      "coefficient_sha256": "296f40528d070092df7dac75efa2d8ac1314e811eac02321fb2cffb27bb32430"
+    },
+    {
+      "operation": "eval",
+      "n": 33,
+      "answer": [
+        1,
+        0,
+        5414904598724363639
+      ],
+      "coefficient_sha256": "544660b0a3a9d7ef1441293618c61e53ee0e440465e8923abedfd1d3afb940e3"
+    },
+    {
+      "operation": "multiply",
+      "n": 513,
+      "answer": [
+        1025,
+        0,
+        18374895111675768715
+      ],
+      "coefficient_sha256": "5f38faea6b5a35275f1733687181e2fda551567bf0606599a0da355cbcce7aab"
+    },
+    {
+      "operation": "square",
+      "n": 513,
+      "answer": [
+        1025,
+        0,
+        16673398409941995990
+      ],
+      "coefficient_sha256": "53d05f699c7d146b6082dfded57a5f1b43e0485c4ec708f1116a80e092cbce3e"
+    },
+    {
+      "operation": "inv",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        16431435202655495199
+      ],
+      "coefficient_sha256": "cbf6fc0904e84c8471ac5c56f4ff373cb6938f2e351314460cacd3c103f1d5ed"
+    },
+    {
+      "operation": "log",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        12404453202411979129
+      ],
+      "coefficient_sha256": "4e1d1ec9b6cf99f8e818c0ba51579a2810bcadf4bd1a7e78981c5163287386ed"
+    },
+    {
+      "operation": "exp",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        12627345705125939034
+      ],
+      "coefficient_sha256": "e0b29dff88da6e0170575846a621df01995e61286b11254542fbb58c83787ec6"
+    },
+    {
+      "operation": "sqrt",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        10921897342266836958
+      ],
+      "coefficient_sha256": "12924c42f67a84ceb7f845f37bf2c53849f20cd2296ebff3c9f3cb03fcb02e05"
+    },
+    {
+      "operation": "pow",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        14613884233824581911
+      ],
+      "coefficient_sha256": "a77546f1dec14e9e0c78a41fdce39e1035638052a2cc6f2800fa22503e5e7ee1"
+    },
+    {
+      "operation": "div_series",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        7356622095345319341
+      ],
+      "coefficient_sha256": "692d1d484b3a667fedb599d5b8f165eeea186605abbdf814c193361af7286921"
+    },
+    {
+      "operation": "divmod",
+      "n": 513,
+      "answer": [
+        258,
+        255,
+        8889879893456367683
+      ],
+      "coefficient_sha256": "a1b49967861ca42562f9d4b5493056c0ddef8ba9b40b0b733a3023fc4d1c8a89"
+    },
+    {
+      "operation": "scale",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        13719666091688515376
+      ],
+      "coefficient_sha256": "52f8f1056d3930cd332a55e6c5753eb92cd3845e3ce2cb3403ddb9a68ba1ab95"
+    },
+    {
+      "operation": "diff",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        8561947525783894955
+      ],
+      "coefficient_sha256": "8a18947402004e59a05e66e9c3d642793cb06666370c66359a0f80383ce4158a"
+    },
+    {
+      "operation": "integral",
+      "n": 513,
+      "answer": [
+        513,
+        0,
+        6696721344823569766
+      ],
+      "coefficient_sha256": "befd273a96da59728c50d57ad9512a2883e3fd48f0a8248edada3bad0141e23a"
+    },
+    {
+      "operation": "eval",
+      "n": 513,
+      "answer": [
+        1,
+        0,
+        799852040717882644
+      ],
+      "coefficient_sha256": "a0f9978a57efdf925a297bdc23aaeccf7b8b9efcf835f08a48853ab76d4df6d3"
+    },
+    {
+      "operation": "multiply",
+      "n": 1024,
+      "answer": [
+        2047,
+        0,
+        5568774458977791298
+      ],
+      "coefficient_sha256": "e9fd70e1a89202aa0571c9ae1aaf60a4412dba3371d61ae30925da1ec70ef695"
+    },
+    {
+      "operation": "square",
+      "n": 1024,
+      "answer": [
+        2047,
+        0,
+        4132424393213501762
+      ],
+      "coefficient_sha256": "e866001edb864467c119aaabf3836ed52a2c6e35fd7640e9fb845cfa3a95df4c"
+    },
+    {
+      "operation": "inv",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        15969795644576498889
+      ],
+      "coefficient_sha256": "f24067654b3cee1cb442a81c3188bf778ea39e32a78b7de318ce8b191161f9fc"
+    },
+    {
+      "operation": "log",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        13873593880529912636
+      ],
+      "coefficient_sha256": "04123cb61d4cde88b53793f9df961eb563a930b4c5eec0e93b7a4b154f6919ef"
+    },
+    {
+      "operation": "exp",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        17082681039966735970
+      ],
+      "coefficient_sha256": "c54c62e8e154b4a800982c91c08502f9770e31e8d226b10b003a117d586770eb"
+    },
+    {
+      "operation": "sqrt",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        15725451596305707618
+      ],
+      "coefficient_sha256": "ea632fcc9703ef0dcba7a1dca98d6c6c730aad3eb32da12b74e7ea1083d606f7"
+    },
+    {
+      "operation": "pow",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        3247306303566372527
+      ],
+      "coefficient_sha256": "d2cf316539fc13f19fd5c3f12a44a60239f1817e331d1dd87890c28161d820fd"
+    },
+    {
+      "operation": "div_series",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        8836476700082409887
+      ],
+      "coefficient_sha256": "ddf6417a8ddd759099f2de33f4341db3149bbc0639ee3c89c727e63e9b9d35c3"
+    },
+    {
+      "operation": "divmod",
+      "n": 1024,
+      "answer": [
+        513,
+        511,
+        11012627324158518342
+      ],
+      "coefficient_sha256": "2b2bbb3935a63775a8c8ac93c31f1874cdfe3b1cc966ed36f9cac6acf09c5062"
+    },
+    {
+      "operation": "scale",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        7719361830763203458
+      ],
+      "coefficient_sha256": "cb75b9d82aa30d9696a3cb9e5e69869371e1823a882296b39d22fb1249beed4a"
+    },
+    {
+      "operation": "diff",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        16536307132689686396
+      ],
+      "coefficient_sha256": "ce3c10c175134cb56a817d0681268a2b18c8d027baa71e3cc22ddd47f4cce0cb"
+    },
+    {
+      "operation": "integral",
+      "n": 1024,
+      "answer": [
+        1024,
+        0,
+        13429826683030745261
+      ],
+      "coefficient_sha256": "33f591e291908ea7f540075154c9447f4c3ebb31725b8648266da413b0457fbb"
+    },
+    {
+      "operation": "eval",
+      "n": 1024,
+      "answer": [
+        1,
+        0,
+        3831634813253004620
+      ],
+      "coefficient_sha256": "9e16dd8ba13daf10fb8bf059578403d3f2fe4ef9b5b6021b815077fc56183fac"
+    }
+  ],
+  "sources": {
+    "test/unit/fps_public_headers.cpp": "1cdd7cdff495bd826a4e14a7b811d6b0942956800018192bb375024703351662",
+    "test/benchmark/fps_modint.cpp": "7ae34df32e498689b29fc00ced9cc9a020535086e24a9f45026803194d676565",
+    "test/benchmark/fps_modint.py": "72cc23ed5d4a13475af70597a0bdd9b90af668c47c50fb8445bb308bc4b15c37",
+    "components/fps_backend.hpp": "cca7da8acc38e0e03d0b324962f8a7309243083aedba8b0c60c5ac4744a7bb43",
+    "math/mint.hpp": "f37a5fcd8f198757afcac0e1248e93f5eb2b48ccdb4012ca2020ba9e0e85bc4a"
+  }
+}
