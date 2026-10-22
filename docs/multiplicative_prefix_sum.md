@@ -12,17 +12,41 @@ documentation_of: //math/number_theory/multiplicative_prefix_sum.hpp
 #include "lib/math/mint.hpp"
 
 MultiplicativePrefixSum<mint> sieve(100);
-auto primes = sieve.prime_sum_linear(mint(-1), mint(1));
+auto prime_prefix = sieve.prime_sum_linear(mint(-1), mint(1));
 auto phi = [](std::uint64_t p, unsigned, std::uint64_t pe) {
     return mint(pe - pe / p);
 };
 
-auto answer = sieve.sum(primes, phi); // 3044
-auto prefix = sieve.prefix_sum(primes, phi);
+auto answer = sieve.sum(prime_prefix, phi); // 3044
+auto prefix = sieve.prefix_sum(prime_prefix, phi);
 auto at10 = sieve.get(prefix, 10); // 32
 ```
 
-利用には、素数上の prefix sum $$\displaystyle G(x)=\sum_{p\leq x,\ p\text{ prime}} f(p)$$ の表と、素数冪に対する値を返す関数が必要です。`prime_sum_linear(a,b)` は $$f(p)=a+bp$$ の場合の素数上の表を作ります。上の例では $$f(p)=p-1$$ です。引数・返り値は元の整数に対する値で、1 に対する値は内部で加えます。
+利用には、素数上の prefix sum の表 `prime_prefix` と、素数冪に対する値を返す関数 `prime_power` が必要です。
+
+## prime_prefix に渡すもの
+
+`prime_prefix` は長さ `sieve.size()` の `std::vector<T>` です。`q = sieve.quotients()` とすると、各要素に次の値を入れます。
+
+$$\displaystyle \texttt{prime\_prefix}[i]=G(q_i)=\sum_{\substack{p\leq q_i\\p\text{ prime}}} f(p).$$
+
+**`quotients()[i]` 以下の素数だけについて、`f(p)` を合計した値**です。1 や合成数の寄与は含めません。添字 `i` は `quotients()` の添字で、素数の番号や整数値そのものではありません。全体の累積和への復元は `prefix_sum` が行い、`f(1) = 1` と高い素数冪・異なる素数の積の寄与を加えます。
+
+例えば `n = 10` で、冒頭と同じトーティエント関数を使う場合は、素数上の値が $$f(p)=p-1$$ なので、渡す表は次のようになります。
+
+| `i` | `quotients()[i]` | 合計する値 | `prime_prefix[i]` |
+| --- | ---: | --- | ---: |
+| 0 | 10 | `(2-1)+(3-1)+(5-1)+(7-1)` | 13 |
+| 1 | 5 | `(2-1)+(3-1)+(5-1)` | 7 |
+| 2 | 3 | `(2-1)+(3-1)` | 3 |
+| 3 | 2 | `2-1` | 1 |
+| 4 | 1 | 素数なし | 0 |
+
+つまり、この場合の引数は `std::vector<T>{13, 7, 3, 1, 0}` です。`prime_power(p,e,pe)` に `T(pe-pe/p)` を返す関数を渡すと、`prefix_sum` の返す表は `{32, 10, 4, 2, 1}` になります。
+
+素数上の値が $$f(p)=a+bp$$ なら、`sieve.prime_sum_linear(a,b)` の戻り値をそのまま渡せます。最初のトーティエントの例では $$f(p)=p-1$$ なので、`prime_sum_linear(T(-1),T(1))` で作ります。他の形では `prime_sum` で作った表の線形結合や、自分で用意した正しい表を渡せます。同じ上限 `n` の `quotients()` に合わせた表を使ってください。
+
+## API
 
 | 操作 | 内容・返り値 |
 | --- | --- |
@@ -54,6 +78,8 @@ auto at10 = sieve.get(prefix, 10); // 32
 | 平方数なら 1 | `prime_sum_linear(T(0),T(0))` | `T(e%2 == 0)` |
 
 `prime_sum(integer_prefix)` では、補助関数 $$g$$ が完全乗法的、すなわち互いに素という制約なしに $$g(ab)=g(a)g(b)$$、かつ $$g(1)=1$$ であることが必要です。`integer_prefix(x)` に $$\displaystyle\sum_{i=1}^x g(i)$$ を与えると、各点で $$\displaystyle\sum_{p\leq x,\ p\text{ prime}}g(p)$$ を返します。`g(i)=1,i,i^2` や Dirichlet 指標などが使えます。返された表の線形結合を作れば、素数上の値が多項式などで表せる関数にも対応できます。別の方法で作った正しい素数上の表を `sum`・`prefix_sum` に渡しても構いません。
+
+## 範囲と計算量
 
 `n` は非負の `std::uint64_t` です。全ての表は `quotients()` と同じ長さ・順序です。`get`・`index` の正の引数はこの列に含まれる値だけに限ります。特に 1〜整数平方根までは全て含まれます。`prefix_sum` は長さ `n` の配列を作る操作ではありません。任意の上限 `m` の和は、上限 `m` のオブジェクトを構築して `sum` で求められます。
 
