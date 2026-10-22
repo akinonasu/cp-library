@@ -27,10 +27,10 @@
 #pragma GCC optimize("O3")
 #endif
 
-template <class T = fps_mint>
+template <class T = mint>
 struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	static_assert(T::mod() == 998244353, "FormalPowerSeries supports only mod 998244353");
-	using W = FormalPowerSeries<fps_detail::Mint>;
+	using W = FormalPowerSeries<mint>;
 	using base = std::vector<T>;
 	using F = FormalPowerSeries;
 	using base::base;
@@ -48,7 +48,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	static F multiply(const F &a, const F &b) {
 		if (a.empty() || b.empty()) return {};
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (!std::is_same_v<T, mint>) {
 			W x = import_work(a);
 			return export_work(&a == &b ? W::multiply(x, x) : W::multiply(x, import_work(b)));
 		}
@@ -56,7 +56,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			F r(a.size() + b.size() - 1);
 			const F &small = a.size() < b.size() ? a : b;
 			const F &large = a.size() < b.size() ? b : a;
-			if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+			if constexpr (std::is_same_v<T, mint>) {
 				for (int j = 0; j < static_cast<int>(small.size()); ++j)
 					fps_detail::NTT::add_scaled(words(r) + j, words(large), large.size(), small[j].val());
 			} else
@@ -68,7 +68,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		while (n < size) n <<= 1;
 		assert(n <= (1 << 23));
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (fps_detail::NTT::vectorized()) return F(fps_detail::multiply_detail::multiply(a, b));
 		}
 #endif
@@ -119,7 +119,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	F &operator-=(T x) { return *this += -x; }
 	F &operator*=(const F &g) { return *this = multiply(*this, g); }
 	F &operator*=(T x) {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			scale_words(*this, x);
 			return *this;
 		}
@@ -197,14 +197,14 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	F div_series(const F &g, int deg = -1) const {
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) return export_work(import_work(*this).div_series(import_work(g), deg));
+		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).div_series(import_work(g), deg));
 		if (deg < 0) deg = this->size();
 		assert(deg >= 0);
 		if (!deg) return {};
 		assert(!g.empty() && g[0] != T(0));
 		if (this->empty()) return F(deg);
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 129 && deg <= (1 << 23) && g.size() >= 64 && fps_detail::NTT::vectorized()) {
 				F r;
 				fps_detail::blocked_poly::native_div_series(this->data(), this->size(), g.data(), g.size(), r, deg);
@@ -276,7 +276,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	F inv(int deg = -1) const {
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) return export_work(import_work(*this).inv(deg));
+		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).inv(deg));
 		if (deg < 0) deg = static_cast<int>(this->size());
 		assert(deg >= 0);
 		if (deg == 0) return {};
@@ -296,7 +296,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		}
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 512 && deg <= (1 << 23) && fps_detail::NTT::vectorized()) {
 				F result;
 				const int block = 1 << (std::bit_width(static_cast<unsigned>(deg)) - 1), tail = deg - block;
@@ -383,7 +383,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	F sqrt(int deg = -1) const {
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) return export_work(import_work(*this).sqrt(deg));
+		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).sqrt(deg));
 		if (deg < 0) deg = static_cast<int>(this->size());
 		assert(deg >= 0);
 		int last = static_cast<int>(std::min<std::size_t>(deg, this->size())), first = 0;
@@ -400,7 +400,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		}
 		const int shift = first / 2, target = deg - shift;
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (target >= 256 && target <= (1 << 23) && fps_detail::NTT::vectorized()) {
 				F result;
 				fps_detail::blocked_poly::native_sqrt(this->data() + first, last - first, result, target, constant);
@@ -523,7 +523,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	T eval(T x) const {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) return fps_detail::horner(this->data(), this->size(), x);
+		if constexpr (std::is_same_v<T, mint>) return fps_detail::horner(this->data(), this->size(), x);
 		T ans = 0;
 		for (auto it = this->rbegin(); it != this->rend(); ++it) ans = ans * x + *it;
 		return ans;
@@ -549,7 +549,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	F diff() const {
 		const int n = static_cast<int>(this->size());
 		F r(n);
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (n > 1) fps_detail::NTT::weighted(words(r), words(*this) + 1, n - 1, 1);
 		} else
 			for (int i = 1; i < n; ++i) r[i - 1] = (*this)[i] * i;
@@ -560,7 +560,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(unsigned(n) < unsigned(T::mod()));
 		F r(n);
 		const auto &inv = inverses(n);
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (n > 1) fps_detail::NTT::product(words(r) + 1, words(*this), words(inv) + 1, n - 1);
 		} else
 			for (int i = 1; i < n; ++i) r[i] = (*this)[i - 1] * inv[i];
@@ -568,7 +568,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	F log(int deg = -1) const {
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) return export_work(import_work(*this).log(deg));
+		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).log(deg));
 		if (deg < 0) deg = static_cast<int>(this->size());
 		assert(deg >= 0);
 		if (deg == 0) return {};
@@ -577,12 +577,12 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	F exp(int deg = -1) const {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) return exp_impl<false>(deg);
+		if constexpr (std::is_same_v<T, mint>) return exp_impl<false>(deg);
 		else return export_work(import_work(*this).exp(deg));
 	}
 
 	F pow(long long k) const {
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) return export_work(import_work(*this).pow(k));
+		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).pow(k));
 		assert(k >= 0);
 		const int n = static_cast<int>(this->size());
 		if (n == 0) return {};
@@ -603,7 +603,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		const int len = n - shift;
 		const T lead = (*this)[first];
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (len >= 256 && len <= (1 << 24) && fps_detail::NTT::vectorized()) {
 				F r;
 				fps_detail::blocked_poly::native_power(this->data() + first, this->size() - first, r, len, T(k).val(), lead.pow(k));
@@ -624,7 +624,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	std::pair<F, F> divmod(const F &divisor) const {
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (!std::is_same_v<T, mint>) {
 			auto [q, r] = import_work(*this).divmod(import_work(divisor));
 			return {export_work(q), export_work(r)};
 		}
@@ -636,7 +636,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		const int qn = n - m + 1;
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (m > 2 && (std::size_t)m * qn > 4096 && n <= (1 << 23) && fps_detail::NTT::vectorized()) {
 				F q, r;
 				fps_detail::blocked_poly::native_divide(this->data(), n, divisor.data(), m, q, r);
@@ -719,7 +719,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	F log_derivative(int deg, bool integrate = false) const {
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 256 && deg <= (1 << 24) && this->size() >= 64 && fps_detail::NTT::vectorized()) {
 				F r;
 				fps_detail::blocked_poly::native_log(this->data(), this->size(), r, deg, integrate);
@@ -764,7 +764,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return g;
 		}
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 256 && deg <= (1 << 24) && fps_detail::NTT::vectorized()) {
 				F r;
 				fps_detail::blocked_poly::native_exp(this->data(), this->size(), r, deg, differentiated);
@@ -911,7 +911,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 };
 
-using fps = FormalPowerSeries<fps_mint>;
+using fps = FormalPowerSeries<mint>;
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

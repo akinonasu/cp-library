@@ -141,7 +141,7 @@ inline constexpr std::size_t kTextBytes = 10 * kBlock;
 
 namespace fps_detail {
 [[gnu::always_inline]] inline __m256i io_values(__m256i x) {
-	const auto p = _mm256_set1_epi32(Mint::mod()), ni = _mm256_set1_epi32(998244351);
+	const auto p = _mm256_set1_epi32(mint::mod()), ni = _mm256_set1_epi32(998244351);
 	auto even = _mm256_and_si256(x, _mm256_set1_epi64x(0xffffffffULL));
 	auto odd = _mm256_srli_epi64(x, 32);
 	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
@@ -150,7 +150,7 @@ namespace fps_detail {
 	return _mm256_min_epu32(value, _mm256_sub_epi32(value, p));
 }
 
-inline void read_coefficients(FastInput &input, std::vector<Mint> &out, std::size_t n) {
+inline void read_coefficients(FastInput &input, std::vector<mint> &out, std::size_t n) {
 	if (!n) return;
 	if (n > out.max_size() - out.size()) throw std::length_error("fps input");
 	prepare_fps_output(out, out.size() + n);
@@ -159,7 +159,7 @@ inline void read_coefficients(FastInput &input, std::vector<Mint> &out, std::siz
 	});
 }
 
-inline void write_coefficients(FastOutput &output, const Mint *in, std::size_t n) {
+inline void write_coefficients(FastOutput &output, const mint *in, std::size_t n) {
 	alignas(32) unsigned values[25600];
 	alignas(32) char text[256000];
 	const auto &k = fps_io_fields::detail::kConstants;

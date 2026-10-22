@@ -17,7 +17,7 @@ template<class Mint> struct Table {
 	void build(int n) {
 		assert(0 <= n && n < std::numeric_limits<int>::max() && std::uint64_t(n) < Mint::mod() && Mint::mod() > 1);
 		factorial.resize(n + 1), inverse_factorial.resize(n + 1), power2.resize(n + 1);
-		if constexpr (std::is_same_v<Mint, fps_mint>) {
+		if constexpr (std::is_same_v<Mint, mint>) {
 			fps_detail::factorials(factorial.data(), inverse_factorial.data(), n + 1);
 			power2[0] = Mint(1);
 			for (int i = 1; i <= n; ++i) power2[i] = power2[i - 1] + power2[i - 1];
@@ -39,7 +39,7 @@ template<class Mint> struct Table {
 	}
 	Mint range(int n, int l, int r) const {
 		assert(0 <= l && l <= r && r <= n + 1);
-		if constexpr (std::is_same_v<Mint, fps_mint>) {
+		if constexpr (std::is_same_v<Mint, mint>) {
 			__uint128_t sum = 0;
 			for (int i = l; i < r; ++i) sum += std::uint64_t(inverse_factorial[i].v) * inverse_factorial[n - i].v;
 			return factorial[n] * Mint::word(Mint::reduce(std::uint64_t(sum % Mint::mod())));

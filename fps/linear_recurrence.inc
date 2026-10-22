@@ -17,18 +17,18 @@ T linear_recurrence(const std::vector<T> &initial, const std::vector<T> &coeffic
 	if (k < d) return initial[k];
 	int order = d;
 	auto zero = [](T x) {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) return x == T(0);
+		if constexpr (std::is_same_v<T, mint>) return x == T(0);
 		else return x.val() == 0;
 	};
 	while (order && zero(coefficients[order - 1])) --order;
 	if (order == 0) return 0;
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (!std::is_same_v<T, mint>) {
 		typename O::W a(order), c(order);
 		for (int i = 0; i < order; ++i) {
-			a[i] = fps_detail::Mint::raw(initial[d - order + i].val());
-			c[i] = fps_detail::Mint::raw(coefficients[i].val());
+			a[i] = mint::raw(initial[d - order + i].val());
+			c[i] = mint::raw(coefficients[i].val());
 		}
-		return T::raw(linear_recurrence<fps_detail::Mint>(a, c, k - d + order).val());
+		return T::raw(linear_recurrence<mint>(a, c, k - d + order).val());
 	}
 	if (order == 1) return initial[d - 1] * coefficients[0].pow(k - d + 1);
 	F q(order + 1);

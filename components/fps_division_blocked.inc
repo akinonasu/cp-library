@@ -185,10 +185,10 @@ inline Vec montgomery_reduce(Vec even, Vec odd) {
 }
 
 inline std::uint32_t input_word(std::uint32_t x) { return x; }
-inline std::uint32_t input_word(Mint x) { return std::min(x.v, x.v - Mint::mod()); }
+inline std::uint32_t input_word(mint x) { return std::min(x.v, x.v - mint::mod()); }
 inline Vec load_any(const std::uint32_t* p) { return _mm256_loadu_si256(reinterpret_cast<const Vec*>(p)); }
-inline Vec load_any(const Mint* p) {
-	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
+inline Vec load_any(const mint* p) {
+	static_assert(sizeof(mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<mint>);
 	Vec value;
 	std::memcpy(&value, p, sizeof(value));
 	return reduce(value, kP);
@@ -196,24 +196,24 @@ inline Vec load_any(const Mint* p) {
 inline void store_any(std::uint32_t* p, Vec x) { _mm256_storeu_si256(reinterpret_cast<Vec*>(p), x); }
 inline Vec reversed(Vec x) { return _mm256_permutevar8x32_epi32(x, _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0)); }
 
-inline void append_words(std::vector<Mint>& out, const std::uint32_t* values, std::size_t n, std::uint32_t factor = 1) {
+inline void append_words(std::vector<mint>& out, const std::uint32_t* values, std::size_t n, std::uint32_t factor = 1) {
 	const Factor scale(factor);
 	std::size_t i = 0;
 	for (; i + 8 <= n; i += 8) {
 		Vec word = load_any(values + i);
 		if (factor != 1) word = times(word, scale);
-		Mint block[8];
-		static_assert(sizeof(block) == sizeof(word) && std::is_trivially_copyable_v<Mint>);
+		mint block[8];
+		static_assert(sizeof(block) == sizeof(word) && std::is_trivially_copyable_v<mint>);
 		std::memcpy(static_cast<void*>(block), &word, sizeof(block));
 		out.insert(out.end(), block, block + 8);
 	}
-	for (; i < n; ++i) out.emplace_back(Mint::word(factor == 1 ? values[i] : blocked_ntt::detail::multiply_mod(values[i], factor)));
+	for (; i < n; ++i) out.emplace_back(mint::word(factor == 1 ? values[i] : blocked_ntt::detail::multiply_mod(values[i], factor)));
 }
 
-inline void append_division_words(std::vector<Mint>& out, const std::uint32_t* values, std::size_t n, std::uint32_t factor = 1) {
-	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
+inline void append_division_words(std::vector<mint>& out, const std::uint32_t* values, std::size_t n, std::uint32_t factor = 1) {
+	static_assert(sizeof(mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<mint>);
 	const Factor scale(factor);
-	std::array<Mint, 64> batch;
+	std::array<mint, 64> batch;
 	std::size_t i = 0;
 	for (; i + 64 <= n; i += 64) {
 		if (factor == 1) std::memcpy(static_cast<void*>(batch.data()), values + i, sizeof(batch));
@@ -476,22 +476,22 @@ inline void divide(Arena& arena, std::span<const std::uint32_t> f, std::span<con
 
 
 namespace fps_detail::blocked_poly {
-inline void native_divide(const Mint* a, std::size_t n, const Mint* b, std::size_t m,
-						  std::vector<Mint>& quotient, std::vector<Mint>& remainder) {
+inline void native_divide(const mint* a, std::size_t n, const mint* b, std::size_t m,
+						  std::vector<mint>& quotient, std::vector<mint>& remainder) {
 	const division_detail::DivisionPlan plan(n, m);
 	const std::size_t k = quotient_size(n, m), d = remainder_size(n, m);
 	Arena arena(plan.words() + Arena::footprint(m) + Arena::footprint(k) + Arena::footprint(d));
-	const std::span<const Mint> f(a, n);
+	const std::span<const mint> f(a, n);
 	auto g = arena.take(m), q = arena.take(k), r = arena.take(d);
-	for (std::size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - Mint::mod());
+	for (std::size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - mint::mod());
 	division_detail::divide(arena, plan, f, g, q, r);
 	prepare_fps_output(quotient, k), prepare_fps_output(remainder, d);
 	division_detail::append_division_words(quotient, q.data(), q.size(), blocked_ntt::detail::kR);
 	division_detail::append_division_words(remainder, r.data(), r.size());
 }
 
-inline void native_div_series(const Mint* a, std::size_t input, const Mint* b, std::size_t divisor,
-							  std::vector<Mint>& out, std::size_t n) {
+inline void native_div_series(const mint* a, std::size_t input, const mint* b, std::size_t divisor,
+							  std::vector<mint>& out, std::size_t n) {
 	using namespace division_detail;
 	const std::size_t count = std::min(divisor, n), degree = count - 1;
 	QuotientPlan plan;
@@ -511,8 +511,8 @@ inline void native_div_series(const Mint* a, std::size_t input, const Mint* b, s
 		Arena::footprint(len) + Arena::footprint(std::max(inverse_scratch(precision), later)));
 	const Transform t(arena, lg);
 	auto f = arena.take(numerator), g = arena.take(count), ht = arena.take(len);
-	for (std::size_t i = 0; i < numerator; ++i) f[i] = std::min(a[i].v, a[i].v - Mint::mod());
-	for (std::size_t i = 0; i < count; ++i) g[i] = std::min(b[i].v, b[i].v - Mint::mod());
+	for (std::size_t i = 0; i < numerator; ++i) f[i] = std::min(a[i].v, a[i].v - mint::mod());
+	for (std::size_t i = 0; i < count; ++i) g[i] = std::min(b[i].v, b[i].v - mint::mod());
 	auto scratch = arena.take(std::max(inverse_scratch(precision), later));
 	inverse(t, g.first(std::min(count, precision)), ht.first(precision), scratch);
 	t.forward(ht.first(precision), 0, ht);

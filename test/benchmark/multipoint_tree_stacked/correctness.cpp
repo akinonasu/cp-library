@@ -41,4 +41,4 @@ if(n>32&&m>32){int length=8;while(length<std::max(n,m))length*=2;int old=length/
 for(auto [n,m]:std::vector<std::pair<int,int>>{{32768,33},{131072,129},{33,32768},{1025,1025}}){FormalPowerSeries<T>f(n);std::vector<T>x(m,0);assert(baseline_eval(f,x)==multipoint_eval(f,x));}
 printf("correctness %zu shapes passed\n",count);
 }
-int main(){run<fps_detail::Mint>();run<PlainMint>();}
+int main(){run<mint>();run<PlainMint>();}

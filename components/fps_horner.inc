@@ -31,11 +31,11 @@ inline T scalar(const T* a, std::size_t n, T x) {
 
 #if defined(__x86_64__) || defined(__i386__)
 template<int K>
-__attribute__((target("avx2"))) inline Mint vector(const Mint* a, std::size_t n, Mint x) {
+__attribute__((target("avx2"))) inline mint vector(const mint* a, std::size_t n, mint x) {
 	static_assert(K == 1 || K == 2 || K == 4);
 	using V = NTT::I8;
-	static_assert(std::is_trivially_copyable_v<Mint> && sizeof(Mint) == sizeof(unsigned));
-	Mint step = x;
+	static_assert(std::is_trivially_copyable_v<mint> && sizeof(mint) == sizeof(unsigned));
+	mint step = x;
 	for (int i = 0; i < 3; ++i) step *= step;
 	const unsigned x8 = step.val();
 	for (int i = 1; i < K; i *= 2) step *= step;
@@ -46,8 +46,8 @@ __attribute__((target("avx2"))) inline Mint vector(const Mint* a, std::size_t n,
 	constexpr std::size_t width = 8 * K;
 	std::size_t groups = n / width, tail = n % width;
 	if (tail) {
-		alignas(32) Mint block[width]{};
-		std::memcpy(static_cast<void*>(block), a + groups * width, tail * sizeof(Mint));
+		alignas(32) mint block[width]{};
+		std::memcpy(static_cast<void*>(block), a + groups * width, tail * sizeof(mint));
 		for (int i = 0; i < K; ++i) std::memcpy(&sum[i], block + 8 * i, sizeof(V));
 	} else if (groups) {
 		--groups;
@@ -64,18 +64,18 @@ __attribute__((target("avx2"))) inline Mint vector(const Mint* a, std::size_t n,
 	const V step8 = _mm256_set1_epi32(x8), quotient8 = _mm256_set1_epi32(NTT::quotient(x8));
 	V joined = sum[K - 1];
 	for (int i = K - 1; i-- > 0;) joined = NTT::add8(NTT::fixed_mul8(joined, step8, quotient8), sum[i]);
-	alignas(32) Mint word[8];
+	alignas(32) mint word[8];
 	std::memcpy(static_cast<void*>(word), &joined, sizeof(joined));
-	Mint result = 0;
+	mint result = 0;
 	for (int i = 8; i-- > 0;) result = result * x + word[i];
 	return result;
 }
 #endif
 }
 
-inline Mint horner(const Mint* a, std::size_t n, Mint x) {
-	if (!n) return Mint(0);
-	if (x == Mint(0)) return a[0];
+inline mint horner(const mint* a, std::size_t n, mint x) {
+	if (!n) return mint(0);
+	if (x == mint(0)) return a[0];
 #if defined(__x86_64__) || defined(__i386__)
 	if (n >= 32 && NTT::vectorized()) {
 		if (n < 64) return horner_detail::vector<1>(a, n, x);
@@ -83,7 +83,7 @@ inline Mint horner(const Mint* a, std::size_t n, Mint x) {
 	}
 #endif
 	if (n >= 32) return horner_detail::scalar<8>(a, n, x);
-	Mint result = 0;
+	mint result = 0;
 	while (n) result = result * x + a[--n];
 	return result;
 }

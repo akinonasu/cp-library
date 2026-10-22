@@ -18,7 +18,7 @@ harness='''
 #include <chrono>
 #include <cstdio>
 #include <random>
-using M=fps_detail::Mint;
+using M=mint;
 volatile unsigned long long sink;
 int main(int argc,char **argv){
  int op=atoi(argv[1]),n=atoi(argv[2]);
@@ -35,22 +35,22 @@ int main(int argc,char **argv){
 '''
 current='''#include "fps/multipoint_eval.hpp"
 #include "fps/interpolate.hpp"
-auto run(int op,const std::vector<fps_detail::Mint>&a,const std::vector<fps_detail::Mint>&b){
- if(op==0)return multipoint_eval(FormalPowerSeries<fps_detail::Mint>(a),b);
- return std::vector<fps_detail::Mint>(interpolate(b,a));
+auto run(int op,const std::vector<mint>&a,const std::vector<mint>&b){
+ if(op==0)return multipoint_eval(FormalPowerSeries<mint>(a),b);
+ return std::vector<mint>(interpolate(b,a));
 }
 '''
 adapter='''
 #include "math/mint.hpp"
 #include <vector>
-std::vector<fps_detail::Mint> run(int op,const std::vector<fps_detail::Mint>&a,const std::vector<fps_detail::Mint>&b){
+std::vector<mint> run(int op,const std::vector<mint>&a,const std::vector<mint>&b){
  using namespace poly;
  const size_t n=a.size();
  Arena arena((op?interpolate_words(n):evaluate_words(n,n))+3*Arena::footprint(n));
  auto f=arena.take(n),x=arena.take(n),y=arena.take(n);
  for(size_t i=0;i<n;i++) f[i]=a[i].val(),x[i]=b[i].val();
  if(op)interpolate(arena,x,f,y);else evaluate(arena,f,x,y);
- std::vector<fps_detail::Mint>r;r.reserve(n);for(auto v:y)r.emplace_back(fps_detail::Mint::raw(v));return r;
+ std::vector<mint>r;r.reserve(n);for(auto v:y)r.emplace_back(mint::raw(v));return r;
 }
 '''
 

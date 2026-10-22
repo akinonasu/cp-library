@@ -1659,8 +1659,8 @@ struct SideProductBottom {
 
 inline std::size_t log_buffers(std::size_t n) { return std::max<std::size_t>(log_blocks(n) + 2, 3); }
 
-inline unsigned mint_scalar(Mint x) { return std::min(x.v, x.v - Mint::mod()); }
-inline Vec mint_load(std::span<const Mint> f, std::size_t at) {
+inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
+inline Vec mint_load(std::span<const mint> f, std::size_t at) {
 	if (at + 8 <= f.size()) {
 		Vec value;
 		std::memcpy(&value, f.data() + at, sizeof(value));
@@ -1672,7 +1672,7 @@ inline Vec mint_load(std::span<const Mint> f, std::size_t at) {
 }
 class MintSource {
 public:
-	explicit MintSource(std::span<const Mint> f) : f_(f), full_(f.size() / 8), touched_((f.size() + 7) / 8) {}
+	explicit MintSource(std::span<const mint> f) : f_(f), full_(f.size() / 8), touched_((f.size() + 7) / 8) {}
 	Vec operator()(std::size_t v) const {
 		if (v < full_) {
 			Vec value;
@@ -1684,8 +1684,8 @@ public:
 	}
 	bool within(std::size_t lo, std::size_t hi) const { return touched_ == 0 || (lo == 0 && touched_ <= hi); }
 private:
-	[[gnu::noinline]] static Vec edge(std::span<const Mint> f, std::size_t at) { return mint_load(f, at); }
-	std::span<const Mint> f_;
+	[[gnu::noinline]] static Vec edge(std::span<const mint> f, std::size_t at) { return mint_load(f, at); }
+	std::span<const mint> f_;
 	std::size_t full_, touched_;
 };
 [[gnu::noinline]] inline void mint_forward_top4(MintSource in, Vec* out, std::size_t h, const std::uint32_t* roots) {
@@ -1695,7 +1695,7 @@ private:
 	forward_top2_body(in, out, h);
 }
 
-inline void mint_forward(const Transform& t, std::span<const Mint> f, std::span<std::uint32_t> out) {
+inline void mint_forward(const Transform& t, std::span<const mint> f, std::span<std::uint32_t> out) {
 	const MintSource in(f);
 	const detail::Recursion recursion(t.roots(), t.inverse_roots(), ForwardBottom{t.roots()});
 	const std::size_t nv = out.size() / 8;
@@ -1711,7 +1711,7 @@ inline void mint_forward(const Transform& t, std::span<const Mint> f, std::span<
 		recursion.visit(out.data() + 8 * h, h, 1);
 	}
 }
-inline void mint_derivative(std::span<const Mint> f, std::span<std::uint32_t> d) {
+inline void mint_derivative(std::span<const mint> f, std::span<std::uint32_t> d) {
 	using namespace detail;
 	const std::size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
 	Indices index(1);
@@ -1721,7 +1721,7 @@ inline void mint_derivative(std::span<const Mint> f, std::span<std::uint32_t> d)
 		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(std::uint32_t(i + 1), mint_scalar(f[i + 1])) : 0;
 }
 
-inline void mint_subtract_from_derivative(std::span<const Mint> f, std::size_t first, std::size_t count,
+inline void mint_subtract_from_derivative(std::span<const mint> f, std::size_t first, std::size_t count,
 									std::uint32_t* out, std::size_t size) {
 	const std::size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
 	Indices index(first + 1);
@@ -1751,14 +1751,14 @@ template <class Input, class Sink, class Transformed>
 	t.forward(ht.first(k), 0, ht);
 	for (std::size_t s = 1; s < blocks; ++s) {
 		const std::size_t from = std::min(f.size(), (s - 1) * k);
-		if constexpr (std::is_same_v<Input, std::span<const Mint>>) mint_forward(t, f.subspan(from, std::min(f.size() - from, len)), window(s));
+		if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_forward(t, f.subspan(from, std::min(f.size() - from, len)), window(s));
 		else t.forward(f.subspan(from, std::min(f.size() - from, len)), 0, window(s));
 	}
 	for (std::size_t j = 0; j < blocks; ++j) {
 		const std::size_t first = j * k, count = std::min(k, n - 1 - first);
 		const std::span<std::uint32_t> work = j == 0 ? q0 : buffer(blocks + 1);
 		if (j == 0) {
-			if constexpr (std::is_same_v<Input, std::span<const Mint>>) mint_derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
+			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
 			else derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
 		} else {
 			if (j == 1) {
@@ -1774,7 +1774,7 @@ template <class Input, class Sink, class Transformed>
 				const InverseProductBottom product{{t.roots(), t.inverse_roots(), work.data()}, window(1).data()};
 				t.inverse_with(SideProductBottom{product, window(3).data()}, work, Half::kUpper);
 			}
-			if constexpr (std::is_same_v<Input, std::span<const Mint>>) mint_subtract_from_derivative(f, first, count, work.data(), k);
+			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_subtract_from_derivative(f, first, count, work.data(), k);
 			else subtract_from_derivative(f, first, count, work.data(), k);
 		}
 		t.cyclic_product(work.first(count), 0, work, ht, Half::kLower);
@@ -1793,7 +1793,7 @@ template <class Sink, class Transformed = NoLogTransform>
 }
 
 template <class Sink, class Transformed = NoLogTransform>
-[[gnu::always_inline]] inline void mint_log_derivative(const Transform& t, std::span<const Mint> f, std::size_t n,
+[[gnu::always_inline]] inline void mint_log_derivative(const Transform& t, std::span<const mint> f, std::size_t n,
 		std::span<std::uint32_t> scratch, std::span<const std::uint32_t> prefix, const Sink& sink, const Transformed& transformed = {}) {
 	log_derivative_impl(t, f, n, scratch, prefix, sink, transformed);
 }
@@ -1826,7 +1826,7 @@ inline void log(const Transform& t, std::span<const std::uint32_t> f, std::span<
 }
 
 namespace blocked_poly {
-inline void native_log(const Mint *in, std::size_t input, std::vector<Mint> &out, std::size_t n, bool integrate) {
+inline void native_log(const mint *in, std::size_t input, std::vector<mint> &out, std::size_t n, bool integrate) {
 	prepare_fps_output(out, n);
 	out.emplace_back(0);
 	const std::size_t c = std::min(input, n);
@@ -1838,7 +1838,7 @@ inline void native_log(const Mint *in, std::size_t input, std::vector<Mint> &out
 	auto f = arena.take(prefix_size), scratch = arena.take(log_scratch(n));
 	for (std::size_t i = 0; i < prefix_size; ++i) {
 		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - Mint::mod());
+		f[i] = std::min(v, v - mint::mod());
 	}
 	const auto sink = [&out, integrate, n](std::size_t first, std::span<const std::uint32_t> q) __attribute__((target("avx2"))) {
 		if (integrate) {

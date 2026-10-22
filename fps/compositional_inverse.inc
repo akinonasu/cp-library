@@ -18,8 +18,8 @@ FormalPowerSeries<T> compositional_inverse(const FormalPowerSeries<T> &f, int de
 	if (deg == 0) return {};
 	if (deg == 1) return F(1);
 	assert(f.size() >= 2 && f[1] != T(0));
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>)
-		return O::export_work(compositional_inverse<fps_detail::Mint>(O::import_work(f), deg));
+	if constexpr (!std::is_same_v<T, mint>)
+		return O::export_work(compositional_inverse<mint>(O::import_work(f), deg));
 	else {
 		T w = f[1].inv();
 		int length = std::min<int>(deg, f.size());

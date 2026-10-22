@@ -11,7 +11,7 @@
 
 namespace fps_detail {
 struct PolynomialHalfGCD {
-	using T = Mint;
+	using T = mint;
 	using F = FormalPowerSeries<T>;
 	using O = Operations<T>;
 	static constexpr int direct_limit = 64;

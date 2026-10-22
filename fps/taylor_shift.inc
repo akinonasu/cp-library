@@ -14,8 +14,8 @@ template<class T>
 FormalPowerSeries<T> taylor_shift(FormalPowerSeries<T> f, std::type_identity_t<T> c) {
 	using F = FormalPowerSeries<T>;
 	using O = fps_detail::Operations<T>;
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>)
-		return O::export_work(taylor_shift<fps_detail::Mint>(O::import_work(f), fps_detail::Mint::raw(c.val())));
+	if constexpr (!std::is_same_v<T, mint>)
+		return O::export_work(taylor_shift<mint>(O::import_work(f), mint::raw(c.val())));
 	else {
 		const int n = static_cast<int>(f.size());
 		if (n <= 1 || c == T(0)) return f;

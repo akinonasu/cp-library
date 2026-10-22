@@ -12,7 +12,7 @@ void operator delete(void*p)noexcept{release(p);}void operator delete[](void*p)n
 #include "fps/multipoint_eval.hpp"
 #include "baseline.hpp"
 #include <random>
-using T=fps_detail::Mint;using F=FormalPowerSeries<T>;
+using T=mint;using F=FormalPowerSeries<T>;
 int main(int argc,char**argv){
  if(argc!=4)return 1;int n=std::atoi(argv[1]),m=std::atoi(argv[2]),variant=std::atoi(argv[3]);
  F f(n);std::vector<T>x(m);std::mt19937 rng(761);for(auto&v:f)v=rng();for(auto&v:x)v=rng();

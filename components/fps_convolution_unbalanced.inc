@@ -18,7 +18,7 @@ inline bool fits(std::size_t n, std::size_t m) {
 	const auto shorter = std::min(n, m), longer = std::max(n, m);
 	return shorter > 32 && longer >= 32768 && shorter <= longer / 32;
 }
-inline std::vector<Mint> multiply(std::span<const Mint> a, std::span<const Mint> b) {
+inline std::vector<mint> multiply(std::span<const mint> a, std::span<const mint> b) {
 	const std::size_t len = 8 * std::bit_ceil(std::min(a.size(), b.size()));
 	const auto& x = a.size() >= b.size() ? a : b;
 	const auto& y = a.size() >= b.size() ? b : a;
@@ -29,19 +29,19 @@ inline std::vector<Mint> multiply(std::span<const Mint> a, std::span<const Mint>
 	auto bt = arena.take(len), in = arena.take(len), out = arena.take(len);
 	for (std::size_t i = 0; i < m; ++i) in[i] = y[i].val();
 	t.forward(in.first(m), 0, bt);
-	std::vector<Mint> result;
+	std::vector<mint> result;
 	fps_detail::prepare_fps_output(result, n + m - 1);
 	for (std::size_t p = 0; p < n; p += stride) {
 		const std::size_t count = std::min(stride, n - p);
 		for (std::size_t i = 0; i < count; ++i) {
 			const unsigned v = x[p + i].v;
-			in[i] = std::min(v, v - Mint::mod());
+			in[i] = std::min(v, v - mint::mod());
 		}
 		t.cyclic_product(in.first(count), 0, out, bt);
 		const std::size_t overlap = p == 0 ? 0 : m - 1;
 		for (std::size_t i = 0; i < overlap; ++i) {
 			const unsigned v = result[p + i].v + out[i];
-			result[p + i] = Mint::word(std::min(v, v - Mint::mod()));
+			result[p + i] = mint::word(std::min(v, v - mint::mod()));
 		}
 		fps_detail::append_fps_words<true>(result, out.data() + overlap, count + m - 1 - overlap);
 	}

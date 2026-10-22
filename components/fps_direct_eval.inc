@@ -14,8 +14,8 @@ __attribute__((target("avx2"))) inline void evaluate_direct(NTT::U *dst, const N
 		const std::size_t count = std::min<std::size_t>(32, m - i);
 		if (count < 8) {
 			for (std::size_t k = 0; k < count; ++k) {
-				Mint value = 0, x = Mint::word(points[i + k]);
-				for (std::size_t j = n; j-- > 0;) value = value * x + Mint::word(f[j]);
+				mint value = 0, x = mint::word(points[i + k]);
+				for (std::size_t j = n; j-- > 0;) value = value * x + mint::word(f[j]);
 				dst[i + k] = value.v;
 			}
 			break;

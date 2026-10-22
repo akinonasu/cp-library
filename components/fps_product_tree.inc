@@ -21,7 +21,7 @@ struct ProductTree {
 							  std::vector<base> &frequency, int size, int block, F root, bool consume = false) {
 		base result(points.size());
 #if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (block == 8 && fps_detail::NTT::vectorized()) {
 				const int total = size * block;
 				auto &plan = O::transform(std::max(1, total / 2));
@@ -70,7 +70,7 @@ struct ProductTree {
 			const int length = (r - l) * block, half = length / 2;
 			if (r - l == 1 || length <= 8) {
 #if defined(__x86_64__) || defined(__i386__)
-				if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+				if constexpr (std::is_same_v<T, mint>) {
 					if (length == 8 && fps_detail::NTT::vectorized()) {
 						const int count = std::min<int>(8, points.size() - l * block);
 						fps_detail::NTT::evaluate_leaf8(O::words(result) + l * block, O::words(cur), O::words(tree[node]), tree[node].size(), O::words(points) + l * block, count);
@@ -115,7 +115,7 @@ struct ProductTree {
 				right.resize(half);
 				bool done = false;
 #if defined(__x86_64__) || defined(__i386__)
-				if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+				if constexpr (std::is_same_v<T, mint>) {
 					if (length == 16 && fps_detail::NTT::vectorized()) {
 						fps_detail::NTT::evaluate_middle8(O::words(left), O::words(right), O::words(cur), O::words(tree[2 * node + 1]), tree[2 * node + 1].size(), O::words(tree[2 * node]), tree[2 * node].size());
 						done = true;
@@ -196,7 +196,7 @@ struct ProductTree {
 				const int n = (int)(tree[2 * i].size() + tree[2 * i + 1].size() - 1);
 				tree[i].resize(n);
 				const T inv = T::raw(T::mod() - (T::mod() - 1) / length);
-				if constexpr (std::is_same_v<T, fps_detail::Mint>) fps_detail::NTT::scale_copy(O::words(tree[i]), O::words(c), std::min(n, length), inv.val());
+				if constexpr (std::is_same_v<T, mint>) fps_detail::NTT::scale_copy(O::words(tree[i]), O::words(c), std::min(n, length), inv.val());
 				else
 					for (int j = 0; j < std::min(n, length); ++j) tree[i][j] = c[j] * inv;
 				if (n == length + 1) {

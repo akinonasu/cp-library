@@ -18,10 +18,10 @@ FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, const Forma
 	assert(deg >= 0 && deg <= (1 << 22) && weights.size() <= (1U << 21));
 	if (deg == 0) return {};
 	if (deg == 1) return F{weights.empty() ? T(0) : weights[0]};
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (!std::is_same_v<T, mint>) {
 		typename O::W inner(std::min(f.size(), weights.size()));
-		for (int i = 0; i < static_cast<int>(inner.size()); ++i) inner[i] = fps_detail::Mint::raw(f[i].val());
-		return O::export_work(power_projection<fps_detail::Mint>(inner, O::import_work(weights), deg));
+		for (int i = 0; i < static_cast<int>(inner.size()); ++i) inner[i] = mint::raw(f[i].val());
+		return O::export_work(power_projection<mint>(inner, O::import_work(weights), deg));
 	} else {
 		int n = static_cast<int>(weights.size());
 		while (n && weights[n - 1] == T(0)) --n;
@@ -118,7 +118,7 @@ template<class T>
 FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, int n, int deg = -1) {
 	assert(n >= 0 && n < (1 << 21));
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-	if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (std::is_same_v<T, mint>) {
 		if (n >= 64 && f.size() > 2 && f[0] == T(0) && f[1] != T(0) && f[2] != T(0) &&
 			fps_detail::NTT::vectorized()) {
 			const int count = deg < 0 ? n + 1 : deg;

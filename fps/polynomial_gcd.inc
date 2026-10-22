@@ -41,7 +41,7 @@ template<class T>
 FormalPowerSeries<T> polynomial_gcd(FormalPowerSeries<T> a, FormalPowerSeries<T> b) {
 	using H = fps_detail::PolynomialHalfGCD;
 	using O = fps_detail::Operations<T>;
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>)
+	if constexpr (!std::is_same_v<T, mint>)
 		return O::export_work(polynomial_gcd(O::import_work(a), O::import_work(b)));
 	else {
 		O::trim(a), O::trim(b);
@@ -64,7 +64,7 @@ template<class T>
 PolynomialExtendedGCD<T> polynomial_extended_gcd(FormalPowerSeries<T> a, FormalPowerSeries<T> b) {
 	using H = fps_detail::PolynomialHalfGCD;
 	using O = fps_detail::Operations<T>;
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (!std::is_same_v<T, mint>) {
 		auto result = polynomial_extended_gcd(O::import_work(a), O::import_work(b));
 		return {O::export_work(result.gcd), O::export_work(result.x), O::export_work(result.y)};
 	} else {
@@ -93,7 +93,7 @@ std::optional<FormalPowerSeries<T>> polynomial_inv_mod(FormalPowerSeries<T> a, F
 	if (modulus.size() == 1) return FormalPowerSeries<T>{};
 	using H = fps_detail::PolynomialHalfGCD;
 	using O = fps_detail::Operations<T>;
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>) {
+	if constexpr (!std::is_same_v<T, mint>) {
 		auto result = polynomial_inv_mod(O::import_work(a), O::import_work(modulus));
 		if (!result) return std::nullopt;
 		return O::export_work(*result);

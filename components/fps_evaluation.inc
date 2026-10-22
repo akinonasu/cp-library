@@ -1291,7 +1291,7 @@ inline void interpolate(Arena& arena, std::span<const std::uint32_t> points, std
 }
 }
 namespace evaluation_poly {
-inline void import_words(std::span<const Mint> in, std::span<std::uint32_t> out) {
+inline void import_words(std::span<const mint> in, std::span<std::uint32_t> out) {
 	using namespace detail;
 	std::size_t i = 0;
 	for (; i + 8 <= in.size(); i += 8) {
@@ -1300,18 +1300,18 @@ inline void import_words(std::span<const Mint> in, std::span<std::uint32_t> out)
 	}
 	for (; i < in.size(); ++i) out[i] = in[i].val();
 }
-inline void import_montgomery(std::span<const Mint> in, std::span<std::uint32_t> out) {
+inline void import_montgomery(std::span<const mint> in, std::span<std::uint32_t> out) {
 	for (std::size_t i = 0; i < in.size(); ++i) {
 		const unsigned x = in[i].v;
-		out[i] = std::min(x, x - Mint::mod());
+		out[i] = std::min(x, x - mint::mod());
 	}
 }
-inline std::vector<Mint> export_words(std::span<const std::uint32_t> in) {
-	std::vector<Mint> out;
+inline std::vector<mint> export_words(std::span<const std::uint32_t> in) {
+	std::vector<mint> out;
 	append_fps_words<true>(out, in.data(), in.size());
 	return out;
 }
-inline std::vector<Mint> native_evaluate(std::span<const Mint> f, std::span<const Mint> points) {
+inline std::vector<mint> native_evaluate(std::span<const mint> f, std::span<const mint> points) {
 	Arena arena(evaluate_words(f.size(), points.size()) + Arena::footprint(f.size()) + 2 * Arena::footprint(points.size()));
 	auto a = arena.take(f.size()), x = arena.take(points.size()), y = arena.take(points.size());
 	import_montgomery(f, a);
@@ -1319,7 +1319,7 @@ inline std::vector<Mint> native_evaluate(std::span<const Mint> f, std::span<cons
 	evaluate(arena, a, x, y);
 	return export_words(y);
 }
-inline std::vector<Mint> native_interpolate(std::span<const Mint> points, std::span<const Mint> values) {
+inline std::vector<mint> native_interpolate(std::span<const mint> points, std::span<const mint> values) {
 	const std::size_t n = points.size();
 	Arena arena(interpolate_words(n) + 3 * Arena::footprint(n));
 	auto x = arena.take(n), y = arena.take(n), c = arena.take(n);

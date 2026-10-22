@@ -17,7 +17,7 @@ template<class T> struct FormalPowerSeries;
 
 namespace fps_detail {
 
-template<class T, class Work = Mint>
+template<class T, class Work = mint>
 struct Operations {
 	using F = FormalPowerSeries<T>;
 	using W = FormalPowerSeries<Work>;
@@ -26,7 +26,7 @@ struct Operations {
 
 	static W import_work(const base &a) {
 		W r(a.size());
-		for (int i = 0; i < static_cast<int>(a.size()); ++i) r[i] = fps_detail::Mint::raw(a[i].val());
+		for (int i = 0; i < static_cast<int>(a.size()); ++i) r[i] = mint::raw(a[i].val());
 		return r;
 	}
 	static F export_work(const W &a) {
@@ -46,7 +46,7 @@ struct Operations {
 		assert(n && !(n & (n - 1)) && n <= (1 << 23));
 		auto &t = transform(std::max(1, n / 2));
 		t.template fft<inverse>(words(a), n);
-		if constexpr (!std::is_same_v<T, fps_detail::Mint>) t.normalize(words(a), n);
+		if constexpr (!std::is_same_v<T, mint>) t.normalize(words(a), n);
 	}
 	static void ntt(base &a) { transform_inplace<false>(a); }
 	static void ntt_half(Word *a, int n) {
@@ -61,14 +61,14 @@ struct Operations {
 	static void ntt_inverse(base &a) { transform_inplace<true>(a); }
 	static void scale_words(base &a, T factor) {
 		if (a.empty()) return;
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			auto &t = transform(1);
 			t.scale(words(a), a.size(), factor.val());
 		} else
 			for (T &x : a) x *= factor;
 	}
 	static void geometric_scale(base &a, T first, T step) {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) fps_detail::NTT::geometric(words(a), a.size(), first.v, step.v);
+		if constexpr (std::is_same_v<T, mint>) fps_detail::NTT::geometric(words(a), a.size(), first.v, step.v);
 		else
 			for (T &x : a) {
 				x *= first;
@@ -78,7 +78,7 @@ struct Operations {
 	static void batch_inverse(base &dst, const base &src) {
 		int n = src.size();
 #if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (n >= 128 && fps_detail::NTT::vectorized()) {
 				fps_detail::NTT::batch_inverse8(words(dst), words(src), n);
 				return;
@@ -96,7 +96,7 @@ struct Operations {
 		}
 	}
 	static void pointwise(base &r, const base &a, const base &b, int n) {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) fps_detail::NTT::product(words(r), words(a), words(b), n);
+		if constexpr (std::is_same_v<T, mint>) fps_detail::NTT::product(words(r), words(a), words(b), n);
 		else
 			for (int i = 0; i < n; ++i) r[i] = a[i] * b[i];
 	}
@@ -166,7 +166,7 @@ struct Operations {
 	static T dot(const T *a, const T *b, int n) {
 
 #if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			if (n >= 64 && fps_detail::NTT::vectorized())
 				return T::word(fps_detail::NTT::reverse_dot8(reinterpret_cast<const Word *>(a), reinterpret_cast<const Word *>(b), n));
 		}
@@ -185,12 +185,12 @@ struct Operations {
 		int stride = 0;
 		for (auto &[j, x] : terms) {
 			stride = std::gcd(stride, j);
-			if constexpr (std::is_same_v<T, fps_detail::Mint>) if (x.v >= T::mod()) x.v -= T::mod();
+			if constexpr (std::is_same_v<T, mint>) if (x.v >= T::mod()) x.v -= T::mod();
 		}
 		return stride;
 	}
 	static T sparse_dot(const std::vector<std::pair<int, T>> &terms, const F &g, int i) {
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			static_assert(7ULL * (T::mod() - 1) * (2ULL * T::mod() - 1) + 0xffffffffULL * T::mod() < ~0ULL);
 			unsigned long long sum = 0;
 			Word result = 0;
@@ -259,7 +259,7 @@ struct Operations {
 		assert(unsigned(n) < unsigned(T::mod()));
 		static std::vector<T> inv{0, 1};
 #if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, fps_detail::Mint>) {
+		if constexpr (std::is_same_v<T, mint>) {
 			int first = inv.size(), count = (n + 1 - first) / 8 * 8;
 			if (count >= 256 && fps_detail::NTT::vectorized()) {
 				inv.reserve(n + 1);

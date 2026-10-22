@@ -232,7 +232,7 @@ private:
 	FpsWords storage_;
 	std::array<std::uint32_t, kLanes + 1> factorial_, inverse_start_;
 };
-inline void shift(std::vector<Mint> &f, Mint c) {
+inline void shift(std::vector<mint> &f, mint c) {
 	TaylorShift t(f.size());
 	std::size_t i = 0;
 	for (; i + 8 <= f.size(); i += 8) {
@@ -244,7 +244,7 @@ inline void shift(std::vector<Mint> &f, Mint c) {
 	i = 0;
 	for (; i + 8 <= f.size(); i += 8)
 		blocked_poly::detail::store_unaligned(reinterpret_cast<unsigned *>(f.data() + i), load(out + i));
-	for (; i < f.size(); ++i) f[i] = Mint::word(out[i]);
+	for (; i < f.size(); ++i) f[i] = mint::word(out[i]);
 }
 }
 }

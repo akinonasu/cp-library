@@ -87,64 +87,64 @@ inline void forward_radix8(Vec* f, std::size_t q, const std::uint32_t* roots) {
 		f[j + 6 * q] = add(v0, zv1), f[j + 7 * q] = diff(v0, zv1);
 	}
 }
-inline void copy_input(const std::vector<Mint> &in, std::uint32_t *out, std::size_t len) {
+inline void copy_input(const std::vector<mint> &in, std::uint32_t *out, std::size_t len) {
 	std::size_t i = 0;
-	const auto p = _mm256_set1_epi32(Mint::mod());
+	const auto p = _mm256_set1_epi32(mint::mod());
 	for (; i + 8 <= in.size(); i += 8) {
 		const auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(in.data() + i));
 		_mm256_store_si256(reinterpret_cast<__m256i *>(out + i), _mm256_min_epu32(x, _mm256_sub_epi32(x, p)));
 	}
-	for (; i < in.size(); ++i) out[i] = std::min(in[i].v, in[i].v - Mint::mod());
+	for (; i < in.size(); ++i) out[i] = std::min(in[i].v, in[i].v - mint::mod());
 	std::fill(out + i, out + (i <= len / 2 ? len / 2 : len), 0);
 	std::fill(out + len, out + len + 16, 0);
 }
 
 
-inline void copy_input_mint(const std::vector<Mint>& in, Mint* out) {
-	static_assert(sizeof(Mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<Mint>);
+inline void copy_input_mint(const std::vector<mint>& in, mint* out) {
+	static_assert(sizeof(mint) == sizeof(std::uint32_t) && std::is_trivially_copyable_v<mint>);
 	std::size_t i = 0;
-	const auto p = _mm256_set1_epi32(Mint::mod());
+	const auto p = _mm256_set1_epi32(mint::mod());
 	for (; i + 8 <= in.size(); i += 8) {
 		__m256i x;
 		std::memcpy(&x, in.data() + i, sizeof(x));
 		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
 		std::memcpy(static_cast<void*>(out + i), &x, sizeof(x));
 	}
-	for (; i < in.size(); ++i) out[i] = Mint::word(std::min(in[i].v, in[i].v - Mint::mod()));
+	for (; i < in.size(); ++i) out[i] = mint::word(std::min(in[i].v, in[i].v - mint::mod()));
 }
 
 template <class Plan>
-inline std::vector<Mint> run_borrowed_as(const std::vector<Mint>& a, const std::vector<Mint>& b) {
+inline std::vector<mint> run_borrowed_as(const std::vector<mint>& a, const std::vector<mint>& b) {
 	const std::size_t len = std::size_t(1) << std::max(6, int(std::bit_width(a.size() + b.size() - 2)));
 	constexpr std::size_t alignment = 32;
-	const std::size_t words = len + 16 + alignment / sizeof(Mint) - 1, size = a.size() + b.size() - 1;
-	std::vector<Mint> result;
+	const std::size_t words = len + 16 + alignment / sizeof(mint) - 1, size = a.size() + b.size() - 1;
+	std::vector<mint> result;
 	prepare_fps_output(result, words);
-	result.assign(words, Mint::word(0));
+	result.assign(words, mint::word(0));
 	const auto address = reinterpret_cast<std::uintptr_t>(result.data());
-	const std::size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(Mint);
-	Mint* const to = result.data() + offset;
+	const std::size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(mint);
+	mint* const to = result.data() + offset;
 	Plan plan(a.size(), b.size(), reinterpret_cast<std::uint32_t*>(to));
 	copy_input_mint(a, to);
 	copy_input(b, plan.b(), len);
 	plan.multiply();
-	if (offset) std::memmove(static_cast<void*>(result.data()), to, size * sizeof(Mint));
+	if (offset) std::memmove(static_cast<void*>(result.data()), to, size * sizeof(mint));
 	result.resize(size);
 	return result;
 }
 
-inline std::vector<Mint> run_borrowed(const std::vector<Mint>& a, const std::vector<Mint>& b) {
+inline std::vector<mint> run_borrowed(const std::vector<mint>& a, const std::vector<mint>& b) {
 	return run_borrowed_as<Product>(a, b);
 }
 
 template <class Plan>
-inline std::vector<Mint> run(const std::vector<Mint> &a, const std::vector<Mint> &b) {
+inline std::vector<mint> run(const std::vector<mint> &a, const std::vector<mint> &b) {
 	Plan plan(a.size(), b.size());
 	const auto len = std::size_t(1) << std::max(6, int(std::bit_width(a.size() + b.size() - 2)));
 	copy_input(a, plan.a(), len);
 	copy_input(b, plan.b(), len);
 	const auto *p = plan.multiply();
-	std::vector<Mint> result;
+	std::vector<mint> result;
 	const std::size_t size = a.size() + b.size() - 1;
 	prepare_fps_output(result, size);
 	append_fps_words<true>(result, p, size);
@@ -152,7 +152,7 @@ inline std::vector<Mint> run(const std::vector<Mint> &a, const std::vector<Mint>
 }
 
 
-inline std::vector<Mint> multiply(const std::vector<Mint>& a, const std::vector<Mint>& b) {
+inline std::vector<mint> multiply(const std::vector<mint>& a, const std::vector<mint>& b) {
 	assert(!a.empty() && !b.empty() && a.size() + b.size() - 1 <= (1 << 23));
 	if (constant::fits(a, b)) return constant::multiply(a, b);
 	if (unbalanced::fits(a.size(), b.size())) return unbalanced::multiply(a, b);

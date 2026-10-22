@@ -24,7 +24,7 @@
 
 namespace fps_detail {
 struct NTT {
-	using T = Mint;
+	using T = mint;
 	typedef unsigned int U __attribute__((may_alias));
 	using V = std::vector<unsigned int>;
 	static constexpr U mod = 998244353, twice = 2 * mod, one = 301989884;
@@ -1451,7 +1451,7 @@ inline NTT &ntt_plan(int size) {
 
 }
 
-inline void ntt(std::vector<fps_mint> &a, bool inverse = false) {
+inline void ntt(std::vector<mint> &a, bool inverse = false) {
 	assert(!a.empty() && !(a.size() & (a.size() - 1)) && a.size() <= (1U << 23));
 	int n = static_cast<int>(a.size());
 	auto &t = fps_detail::ntt_plan(std::max(1, n / 2));
@@ -1463,12 +1463,12 @@ inline void ntt(std::vector<fps_mint> &a, bool inverse = false) {
 			if (i < j) std::swap(a[i], a[j]);
 		}
 	};
-	static_assert(sizeof(fps_mint) == sizeof(fps_detail::NTT::U) && std::is_trivially_copyable_v<fps_mint>);
+	static_assert(sizeof(mint) == sizeof(fps_detail::NTT::U) && std::is_trivially_copyable_v<mint>);
 	auto *words = reinterpret_cast<fps_detail::NTT::U *>(a.data());
 	if (inverse) {
 		reorder();
 		t.fft<true>(words, n);
-		t.scale(words, n, fps_mint(n).inv().val());
+		t.scale(words, n, mint(n).inv().val());
 	} else {
 		t.fft<false>(words, n);
 		reorder();

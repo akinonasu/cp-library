@@ -15,8 +15,8 @@ T bostan_mori(FormalPowerSeries<T> p, FormalPowerSeries<T> q, long long k) {
 	using base = std::vector<T>;
 	using O = fps_detail::Operations<T>;
 	using Word = typename fps_detail::Operations<T>::Word;
-	if constexpr (!std::is_same_v<T, fps_detail::Mint>) {
-		return T::raw(bostan_mori<fps_detail::Mint>(O::import_work(p), O::import_work(q), k).val());
+	if constexpr (!std::is_same_v<T, mint>) {
+		return T::raw(bostan_mori<mint>(O::import_work(p), O::import_work(q), k).val());
 	} else {
 		assert(k >= 0 && !q.empty() && q[0] != T(0));
 		O::trim(p);
