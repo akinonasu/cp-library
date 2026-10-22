@@ -1,0 +1,17 @@
+{
+  "headers": [
+    "math/number_theory/prime_count.hpp"
+  ],
+  "unit": [
+    "test/unit/prime_count.cpp"
+  ],
+  "sanitize": [
+    "test/unit/prime_count.cpp"
+  ],
+  "verification": [
+    "test/prime_count.test.cpp"
+  ],
+  "bundles": [
+    "math/number_theory/prime_count.hpp"
+  ]
+}
