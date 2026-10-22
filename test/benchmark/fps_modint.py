@@ -76,7 +76,7 @@ def main():
     def save():
         args.output.write_text(json.dumps(report, indent=2) + '\n')
         with args.output.with_suffix('.csv').open('w') as stream:
-            writer = csv.DictWriter(stream, fieldnames=['operation', 'n', 'variant', 'trial', 'ms', 'answer'])
+            writer = csv.DictWriter(stream, fieldnames=['operation', 'n', 'variant', 'trial', 'ms', 'answer'], lineterminator='\n')
             writer.writeheader()
             writer.writerows(samples)
 

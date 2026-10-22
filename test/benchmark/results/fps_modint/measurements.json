@@ -46,7 +46,7 @@
     "fps/fps.hpp": "5fbb6b4afe5d4f9a2460aa5c755b1516280063a95cd3afa5e4e217bdad25b432",
     "components/fps_backend.hpp": "cca7da8acc38e0e03d0b324962f8a7309243083aedba8b0c60c5ac4744a7bb43",
     "math/mint.hpp": "f37a5fcd8f198757afcac0e1248e93f5eb2b48ccdb4012ca2020ba9e0e85bc4a",
-    "test/benchmark/fps_modint.py": "72cc23ed5d4a13475af70597a0bdd9b90af668c47c50fb8445bb308bc4b15c37"
+    "test/benchmark/fps_modint.py": "adc2ae0a9aebef3387728cb65ae3efcf9914fd6dafb1df3e1f78ec1f41daff2b"
   },
   "timing": "fresh process; construction and I/O excluded; roots not prewarmed; allocation included; linear operations average max(4,131072/n) repetitions with a compiler memory barrier",
   "validation": [
@@ -3643,5 +3643,7 @@
     }
   },
   "completed": true,
-  "completed_at": "2026-10-22T10:00:29.728281+00:00"
+  "completed_at": "2026-10-22T10:00:29.728281+00:00",
+  "executed_script_sha256": "72cc23ed5d4a13475af70597a0bdd9b90af668c47c50fb8445bb308bc4b15c37",
+  "reporting_change": "The reporting script and saved CSV use LF line endings. Measurement code and samples are unchanged; executed_script_sha256 identifies the script used for measurement."
 }
