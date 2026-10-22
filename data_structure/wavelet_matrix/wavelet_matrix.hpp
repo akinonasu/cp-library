@@ -459,7 +459,6 @@ class WaveletMatrix {
 			sum_ready = with_sum;
 			return;
 		}
-		offsets.clear();
 		original = wavelet_detail::compress(a, values, ordered, positions, offsets);
 		bool indexed = !offsets.empty();
 		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8)
@@ -471,7 +470,6 @@ class WaveletMatrix {
 			for (int i = 0; i < static_cast<int>(values.size()); ++i) offsets[i + 1] += offsets[i];
 		}
 		if (ordered) {
-			positions.clear();
 			bits.clear();
 			middle.clear();
 			if constexpr (supports_sum)

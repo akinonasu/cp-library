@@ -1,7 +1,7 @@
 #ifndef CP_COMPONENTS_FPS_OUTPUT_HPP
 #define CP_COMPONENTS_FPS_OUTPUT_HPP
 
-#include "../math/mint.hpp"
+#include "mint_arithmetic.hpp"
 #include <array>
 #include <cstring>
 #include <cstdint>
@@ -17,15 +17,6 @@ _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
 
 namespace fps_detail {
-namespace fps_output_detail {
-inline __m256i montgomery(__m256i a) {
-	const auto b = _mm256_set1_epi32(932051910u), ni = _mm256_set1_epi32(998244351u), p = _mm256_set1_epi32(mint::mod());
-	auto even = _mm256_mul_epu32(a, b), odd = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), b);
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
-}
-}
 
 inline void prepare_fps_output(std::vector<mint> &out, std::size_t n) {
 	if (n <= out.capacity()) return;
@@ -58,7 +49,7 @@ inline void append_fps_words(std::vector<mint> &out, const unsigned *in, std::si
 		else {
 #pragma GCC unroll 8
 			for (int j = 0; j < 64; j += 8) {
-				const auto x = fps_output_detail::montgomery(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(in + i + j)));
+				const auto x = mint_detail::Ops::mul8(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(in + i + j)), _mm256_set1_epi32(932051910u));
 				std::memcpy(static_cast<void *>(batch.data() + j), &x, sizeof(x));
 			}
 		}

@@ -2,7 +2,7 @@
 #define CP_FPS_TAYLOR_SHIFT_HPP
 
 #include "fps.hpp"
-#include "../components/fps_factorials.hpp"
+#include "../components/mint_factorials.hpp"
 #include "../components/fps_taylor_blocked.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
@@ -27,7 +27,7 @@ FormalPowerSeries<T> taylor_shift(FormalPowerSeries<T> f, std::type_identity_t<T
 		}
 #endif
 		F a(n), b(n), weights;
-		fps_detail::factorials(O::words(a), O::words(b), n);
+		mint_detail::factorials(O::words(a), O::words(b), n);
 		fps_detail::NTT::product(O::words(a), O::words(a), O::words(f), n);
 		std::reverse(a.begin(), a.end());
 		weights = b;

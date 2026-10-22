@@ -3,6 +3,7 @@
 #include "math/combinatorics/binomial_prefix_sum_incremental.hpp"
 #include "components/factorial_table.hpp"
 #include "components/fps_factorials.hpp"
+#include "components/binomial_prefix_polynomial_base.hpp"
 #include "components/fps_horner.hpp"
 #include "components/fps_direct_eval.hpp"
 #include "data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"

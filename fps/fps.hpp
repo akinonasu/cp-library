@@ -3,7 +3,7 @@
 
 #include "../components/fps_operations.hpp"
 #include "../components/fps_horner.hpp"
-#include "../components/fps_factorials.hpp"
+#include "../components/mint_factorials.hpp"
 #include "../components/fps_workspace.hpp"
 
 #include "../components/fps_blocked.hpp"
@@ -599,7 +599,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			g[0] = 1;
 			if (terms.size() == 1 && stride == 1 && deg >= 256) {
 				base fact(deg);
-				fps_detail::factorials(words(fact), words(g), deg);
+				mint_detail::factorials(words(fact), words(g), deg);
 				geometric_scale(g, T(1), terms[0].second);
 				return g;
 			}

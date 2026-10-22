@@ -13,4 +13,6 @@ $$\displaystyle P_{a,b}(x)=\prod_{j=a}^{b-1}(x-j),\qquad H_{a,b}(x)=\sum_{i=a}^{
 
 既定の `mint` には FPS の乗算・多項式剰余を使います。他の `Mint` は加減乗算・逆元だけを使う Karatsuba 乗算と Newton 法で処理し、`val()`・整数への変換・単項マイナス・等値比較を要求しません。既定の `mint` でも NTT の上限を超える演算にはこの演算を使います。Mo 法との切り替えはありません。
 
+分割統治の実装は [共通多項式処理](binomial_prefix_polynomial_base.md) と共有します。
+
 前計算済みの $$n$$ の上限を $$N$$、入力点数を $$Q$$、重複を除いた点数を $$U$$、$$m$$ の最大値を $$M$$、$$D=M+U$$ とします。NTT を使える場合は $$O(Q\log Q+D\log^2 D)$$ 時間、その他は $$O(Q\log Q+D^{\log_2 3}\log D)$$ 時間です。追加空間は $$O(Q+D\log D)$$、`Table` は別途 $$O(N)$$ 空間です。
