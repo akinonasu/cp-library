@@ -301,6 +301,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `math/number_theory/linear_congruence.hpp` | 一次合同式 ax ≡ b (mod m) の全解 | [使い方](docs/linear_congruence.md) |
 | `math/number_theory/mod_inv.hpp` | 定数時間 mod inv | [使い方](docs/mod_inv.md) |
 | `math/number_theory/mod_pow.hpp` | 定数時間 mod pow・離散対数 | [使い方](docs/mod_pow.md) |
 | `math/number_theory/mod_sqrt.hpp` | 任意の素数 mod の平方根 | [使い方](docs/mod_sqrt.md) |
