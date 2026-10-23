@@ -14,6 +14,8 @@ auto value = wm.kth_smallest(0, 5, 2);
 
 区間は $$[l,r)$$、添字と `kth_*`・`select` の $$k$$ は 0 始まりです。
 
+対応する CPU では AVX2・AVX-512 を自動的に利用します。追加の指定は不要です。
+
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `WaveletMatrix()` / `WaveletMatrix(a)` | 空／配列から構築 | 空: $$O(1)$$、整数列: $$O(n\log\sigma)$$、その他: $$O(n\log n)$$ |

@@ -53,6 +53,8 @@ int main() {
 		check(a, random);
 	}
 	check(std::vector<std::int64_t>{0, INT64_MAX, 1, INT64_MAX, 0, 13}, random);
+	check(std::vector<std::int64_t>{0, 9, 1, 20, 0, 7}, random);
+	check(std::vector<std::uint64_t>{0, std::uint64_t(INT64_MAX) - 10, 1, 3}, random);
 	check(std::vector<std::uint64_t>{0, UINT64_MAX, UINT64_MAX - 1, 1, 0}, random);
 	std::puts("Wavelet Matrix sum bounds OK");
 }

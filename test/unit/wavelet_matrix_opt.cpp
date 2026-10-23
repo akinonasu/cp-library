@@ -130,8 +130,49 @@ struct Key {
 	bool operator==(const Key &other) const { return value == other.value; }
 };
 
+struct ExplicitSum {
+	std::int64_t value;
+	explicit ExplicitSum(std::int64_t value = 0) : value(value) {}
+	friend ExplicitSum operator+(ExplicitSum a, ExplicitSum b) { return ExplicitSum(a.value + b.value); }
+	friend ExplicitSum operator-(ExplicitSum a, ExplicitSum b) { return ExplicitSum(a.value - b.value); }
+	friend ExplicitSum operator*(ExplicitSum a, int b) { return ExplicitSum(a.value * b); }
+};
+
+void check_query_paths(std::mt19937_64 &random) {
+	for (int sigma : {1025, 4097})
+		for (int copies : {1, 8, 9}) {
+			std::vector<int> a(sigma * copies);
+			for (int i = 0; i < int(a.size()); ++i) a[i] = 3 * (i % sigma);
+			std::shuffle(a.begin(), a.end(), random);
+			WaveletMatrix<int> wm(a), eager(a, true);
+			for (int repeat = 0; repeat < 64; ++repeat) {
+				int l = random() % a.size(), r = random() % a.size();
+				if (l > r) std::swap(l, r);
+				++r;
+				std::vector<int> sorted(a.begin() + l, a.begin() + r);
+				std::sort(sorted.begin(), sorted.end());
+				for (int low : {-1, 0, 3 * int(random() % sigma), 3 * sigma}) {
+					int high = low + int(random() % (3 * sigma + 1));
+					auto first = std::lower_bound(sorted.begin(), sorted.end(), low);
+					auto last = std::lower_bound(sorted.begin(), sorted.end(), high);
+					std::optional<int> previous, next;
+					if (first != sorted.begin()) previous = first[-1];
+					if (first != sorted.end()) next = *first;
+					for (const auto *index : {&wm, &eager}) {
+						require(index->range_freq(l, r, low, high) == last - first);
+						require(index->prev_value(l, r, low) == previous);
+						require(index->next_value(l, r, low) == next);
+					}
+				}
+			}
+		}
+	WaveletMatrix<int, ExplicitSum> custom(std::vector<int>{3, 1, 4, 2}, true);
+	require(custom.kth_smallest(0, 4, 2) == 3);
+}
+
 int main() {
 	std::mt19937_64 random(20261019);
+	check_query_paths(random);
 	for (int n : {0, 1, 31, 32, 33, 63, 64, 65}) {
 		std::vector<int> a(n);
 		for (int i = 0; i < n; ++i) a[i] = 2 * i - n;
