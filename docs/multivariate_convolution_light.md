@@ -3,7 +3,7 @@ title: "多変数の切り捨て畳み込み（軽量実装）"
 documentation_of: //convolution/multivariate_convolution_light.hpp
 ---
 
-`light_convolution` 名前空間で呼び出します。法 998244353 の計算は軽量 FPS を使い、通常の FPS は読み込みません。高速実装と同時に include できます。
+`light_convolution` 名前空間で呼び出します。法 998244353 の計算は軽量 NTT を使い、FPS 本体は読み込みません。高速実装と同時に include できます。
 
 ```cpp
 #include "lib/convolution/multivariate_convolution_light.hpp"

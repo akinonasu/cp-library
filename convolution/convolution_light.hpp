@@ -1,7 +1,7 @@
 #ifndef CONVOLUTION_LIGHT_HPP
 #define CONVOLUTION_LIGHT_HPP
 
-#include "../fps/fps_light.hpp"
+#include "../components/fps_light_ntt.hpp"
 #include "convolution_fft.hpp"
 #include "convolution_mod.hpp"
 #include "convolution_ring.hpp"
@@ -21,13 +21,13 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
 		if constexpr (T::mod() == 998244353) {
 			if constexpr (std::is_same_v<T, mint>) return fps_light_detail::multiply(a, b);
-			light_fps x(a.size()), y;
+			std::vector<mint> x(a.size()), y;
 			for (std::size_t i = 0; i < a.size(); ++i) x[i] = mint::raw(a[i].val());
 			if (&a != &b) {
 				y.resize(b.size());
 				for (std::size_t i = 0; i < b.size(); ++i) y[i] = mint::raw(b[i].val());
 			}
-			auto values = &a == &b ? light_fps::multiply(x, x) : light_fps::multiply(x, y);
+			auto values = &a == &b ? fps_light_detail::multiply(x, x) : fps_light_detail::multiply(x, y);
 			std::vector<T> result;
 			result.reserve(values.size());
 			for (auto value : values) result.push_back(T::raw(value.val()));

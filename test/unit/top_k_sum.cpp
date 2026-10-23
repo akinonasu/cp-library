@@ -47,6 +47,7 @@ void check(const Set &set, std::vector<typename Set::value_type> values, Compare
 	assert(set.sum_largest((std::numeric_limits<typename Set::size_type>::max)()) == large_sum);
 	for (int value : {-20, -3, 0, 3, 20}) {
 		auto occurrences = std::count(values.begin(), values.end(), value);
+		assert(set.order_of_key(value) == std::lower_bound(values.begin(), values.end(), value, compare) - values.begin());
 		assert(set.count(value) == occurrences && set.contains(value) == (occurrences != 0));
 		auto ascending_compare = [&](const auto &a, const auto &b) {
 			if constexpr (std::is_same_v<Compare, std::greater<typename Set::value_type>>) return compare(b, a);
@@ -201,6 +202,60 @@ int main() {
 	assert(additive.sum_smallest(3).value == 5 && additive.sum_largest(3).value == 9);
 	assert(additive.erase_all(1) == 2);
 	assert(additive.erase(3, 3) == 3 && additive.sum(2).value == 3);
+
+	SmallestKSum<std::int8_t> bytes{-128, -1, 0, 127};
+	assert(bytes.kth(0) == -128 && bytes.kth(3) == 127 && bytes.order_of_key(0) == 2);
+	SmallestKSum<std::uint16_t> shorts{0, 32768, 65535};
+	assert(shorts.sum(3) == 98303 && shorts.lower_bound(32769) == 65535);
+	SmallestKSum<std::uint64_t, __uint128_t> wide_unsigned{0, std::uint64_t(1) << 63, (std::numeric_limits<std::uint64_t>::max)()};
+	assert(wide_unsigned.order_of_key(std::uint64_t(1) << 63) == 1);
+	assert(wide_unsigned.kth(2) == (std::numeric_limits<std::uint64_t>::max)());
+	assert(wide_unsigned.sum(3) == (__uint128_t(3) << 63) - 1);
+	assert(wide_unsigned.erase(std::uint64_t(1) << 63));
+	assert(wide_unsigned.sum(2) == (std::numeric_limits<std::uint64_t>::max)());
+
+	std::mt19937_64 full_range_rng(783105);
+	std::vector<std::uint64_t> full_range(512);
+	for (auto &value : full_range) value = full_range_rng();
+	std::sort(full_range.begin(), full_range.end());
+	SmallestKSum<std::uint64_t, __uint128_t> full_width(full_range);
+	__uint128_t full_prefix = 0;
+	for (std::size_t i = 0; i < full_range.size(); ++i) {
+		assert(full_width.order_of_key(full_range[i]) == static_cast<std::int64_t>(i));
+		assert(full_width.kth(i) == full_range[i]);
+		assert(full_width.lower_bound(full_range[i]) == full_range[i]);
+		assert(full_width.upper_bound(full_range[i]) == (i + 1 == full_range.size() ? std::nullopt : std::optional(full_range[i + 1])));
+		full_prefix += full_range[i];
+		assert(full_width.sum(i + 1) == full_prefix);
+	}
+	for (std::size_t i = 0; i < full_range.size(); i += 2) assert(full_width.erase(full_range[i]));
+	for (std::size_t i = 1; i < full_range.size(); i += 2) assert(full_width.kth(i / 2) == full_range[i]);
+
+	std::vector<std::int64_t> shuffled(12000);
+	std::iota(shuffled.begin(), shuffled.end(), -6000);
+	std::mt19937 rng(31249);
+	std::shuffle(shuffled.begin(), shuffled.end(), rng);
+	SmallestKSum<std::int64_t, __int128_t> blocks;
+	std::vector<std::int64_t> remaining;
+	for (auto value : shuffled) { blocks.insert(value, 3); remaining.push_back(value); }
+	std::sort(remaining.begin(), remaining.end());
+	for (auto value : shuffled) {
+		auto it = std::lower_bound(remaining.begin(), remaining.end(), value);
+		assert(blocks.order_of_key(value) == 3 * (it - remaining.begin()));
+		assert(blocks.erase_all(value) == 3);
+		remaining.erase(it);
+		if (!remaining.empty()) {
+			int k = rng() % remaining.size();
+			assert(blocks.kth(3 * k) == remaining[k]);
+			__int128_t expected = 0;
+			for (int i = 0; i < k; ++i) expected += 3 * __int128_t(remaining[i]);
+			assert(blocks.sum(3 * k) == expected);
+			assert(blocks.lower_bound(remaining[k]) == remaining[k]);
+		}
+	}
+	assert(blocks.empty());
+	for (auto value : shuffled) blocks.insert(value);
+	assert(blocks.size() == static_cast<std::int64_t>(shuffled.size()));
 
 	TopKSum<int> alternate;
 	alternate.reserve(100000);

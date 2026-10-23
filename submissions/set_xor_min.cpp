@@ -1,200 +1,419 @@
 #line 1 "test/set_xor_min.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/set_xor_min"
-#line 1 "string/trie.hpp"
+#line 1 "data_structure/xor_set.hpp"
 
 
 
-#include <array>
+#line 1 "components/predecessor_set.hpp"
+
+
+
+#line 1 "components/xor_select.hpp"
+
+
+
+#include <bit>
 #include <cassert>
 #include <cstdint>
-#include <limits>
-#include <optional>
-#include <stdexcept>
-#include <string>
-#include <string_view>
-#include <vector>
 
-namespace trie_detail {
-struct Empty {};
+namespace xor_select_detail {
+inline unsigned argmin(std::uint64_t word, unsigned key) {
+	assert(word && key < 64);
+	if (std::has_single_bit(word)) return std::countr_zero(word);
+	if ((word >> key) & 1) return key;
+	unsigned shift = key & 32;
+	word = std::rotl(word, shift);
+	shift = key & 16;
+	word = ((word & 0x0000ffff0000ffffULL) << shift) | ((word & 0xffff0000ffff0000ULL) >> shift);
+	shift = key & 8;
+	word = ((word & 0x00ff00ff00ff00ffULL) << shift) | ((word & 0xff00ff00ff00ff00ULL) >> shift);
+	shift = key & 4;
+	word = ((word & 0x0f0f0f0f0f0f0f0fULL) << shift) | ((word & 0xf0f0f0f0f0f0f0f0ULL) >> shift);
+	shift = key & 2;
+	word = ((word & 0x3333333333333333ULL) << shift) | ((word & 0xccccccccccccccccULL) >> shift);
+	shift = key & 1;
+	word = ((word & 0x5555555555555555ULL) << shift) | ((word & 0xaaaaaaaaaaaaaaaaULL) >> shift);
+	return std::countr_zero(word) ^ key;
+}
 }
 
-template<int Alphabet = 26, int First = 'a', class Data = trie_detail::Empty>
-class Trie {
-	static_assert(0 < Alphabet && 0 <= First && First <= 255 && Alphabet <= 256 - First);
-	struct Node {
-		std::array<int, Alphabet> next;
-		int parent, depth;
-		char letter;
-		std::int64_t count = 0, terminal = 0;
-		[[no_unique_address]] Data data{};
-		Node(int p = -1, int d = 0, char c = 0) : parent(p), depth(d), letter(c) { next.fill(-1); }
-	};
-	std::vector<Node> nodes_;
-	int distinct_ = 0;
-	static int symbol_(char c) { return int(static_cast<unsigned char>(c)) - First; }
-	void check_([[maybe_unused]] int v) const { assert(0 <= v && v < node_count()); }
-	void check_count_(std::int64_t copies) const {
-		assert(copies > 0);
-		if (copies > std::numeric_limits<std::int64_t>::max() - size()) throw std::overflow_error("Trie count");
+
+#line 5 "components/predecessor_set.hpp"
+#include <algorithm>
+#include <array>
+#line 9 "components/predecessor_set.hpp"
+#include <cstddef>
+#line 11 "components/predecessor_set.hpp"
+#include <cstring>
+#include <limits>
+#include <span>
+#include <string_view>
+#include <utility>
+#include <vector>
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+#include <immintrin.h>
+#endif
+
+namespace predecessor_set_detail {
+inline void pack_scalar(const char *src, std::uint64_t *dst, std::size_t words) {
+	for (std::size_t i = 0; i < words; ++i) {
+		std::uint64_t word = 0;
+		if constexpr (std::endian::native == std::endian::little) {
+			for (int j = 0; j < 8; ++j) {
+				std::uint64_t x;
+				std::memcpy(&x, src + i * 64 + j * 8, 8);
+				assert((x & 0xfefefefefefefefeULL) == 0x3030303030303030ULL);
+				word |= ((x & 0x0101010101010101ULL) * 0x0102040810204080ULL >> 56) << (j * 8);
+			}
+		} else {
+			for (int j = 0; j < 64; ++j) {
+				assert(src[i * 64 + j] == '0' || src[i * 64 + j] == '1');
+				word |= std::uint64_t(src[i * 64 + j] - '0') << j;
+			}
+		}
+		dst[i] = word;
 	}
-	int add_(int v, std::int64_t copies) {
-		if (!nodes_[v].terminal) ++distinct_;
-		nodes_[v].terminal += copies;
-		for (int u = v; u != -1; u = nodes_[u].parent) nodes_[u].count += copies;
-		return v;
+}
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2"))) inline void pack_avx2(const char *src, std::uint64_t *dst, std::size_t words) {
+	const auto ones = _mm256_set1_epi8('1');
+	for (std::size_t i = 0; i < words; ++i) {
+		auto a = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(src + i * 64));
+		auto b = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(src + i * 64 + 32));
+		assert(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_and_si256(a, _mm256_set1_epi8(-2)), _mm256_set1_epi8('0'))) == -1);
+		assert(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_and_si256(b, _mm256_set1_epi8(-2)), _mm256_set1_epi8('0'))) == -1);
+		auto low = std::uint32_t(_mm256_movemask_epi8(_mm256_cmpeq_epi8(a, ones)));
+		auto high = std::uint32_t(_mm256_movemask_epi8(_mm256_cmpeq_epi8(b, ones)));
+		dst[i] = low | (std::uint64_t(high) << 32);
+	}
+}
+#endif
+inline void pack(const char *src, std::uint64_t *dst, std::size_t words) {
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+	if (words >= 4 && __builtin_cpu_supports("avx2")) return pack_avx2(src, dst, words);
+#endif
+	pack_scalar(src, dst, words);
+}
+}
+
+class PredecessorSet {
+	int n = 0, count = 0, height = 0;
+	std::array<int, 6> offset{}, length{};
+	std::vector<std::uint64_t> data;
+	void mask_tail() {
+		int bits = n;
+		for (int h = 0; h < height; ++h) {
+			if (bits & 63) data[offset[h] + length[h] - 1] &= ~std::uint64_t(0) >> (64 - (bits & 63));
+			bits = length[h];
+		}
+	}
+	void rebuild() {
+		count = 0;
+		for (int i = 0; i < length[0]; ++i) count += std::popcount(data[i]);
+		for (int h = 1; h < height; ++h)
+			for (int i = 0; i < length[h - 1]; ++i)
+				if (data[offset[h - 1] + i]) data[offset[h] + (i >> 6)] |= std::uint64_t(1) << (i & 63);
 	}
 
-  public:
-	static constexpr int root = 0;
-	Trie() { nodes_.emplace_back(); }
-	std::int64_t size() const { return nodes_[root].count; }
-	bool empty() const { return size() == 0; }
-	int distinct_size() const { return distinct_; }
-	int node_count() const { return static_cast<int>(nodes_.size()); }
-	void reserve(int total_length) {
-		assert(0 <= total_length && total_length < std::numeric_limits<int>::max());
-		nodes_.reserve(std::size_t(total_length) + 1);
-	}
-	void clear() { nodes_.clear(), nodes_.emplace_back(); distinct_ = 0; }
-	int ensure(std::string_view s) {
-		assert(s.size() < std::size_t(std::numeric_limits<int>::max()));
-		int v = root;
-		for (char c : s) {
-			int x = symbol_(c);
-			assert(0 <= x && x < Alphabet);
-			int u = nodes_[v].next[x];
-			if (u == -1) {
-				assert(node_count() < std::numeric_limits<int>::max());
-				u = node_count();
-				nodes_.emplace_back(v, nodes_[v].depth + 1, c);
-				nodes_[v].next[x] = u;
-			}
-			v = u;
+public:
+	int argmin_xor(std::uint32_t x) const {
+		if (!count) return -1;
+		std::uint64_t p = std::uint64_t(x) & ((std::uint64_t(1) << (height * 6)) - 1);
+		for (int h = 0; h < height; ++h, p >>= 6) {
+			auto index = p >> 6;
+			if (index >= unsigned(length[h])) continue;
+			auto word = data[offset[h] + index];
+			if (!word) continue;
+			p = index * 64 + xor_select_detail::argmin(word, p & 63);
+			while (h--) p = p * 64 + xor_select_detail::argmin(data[offset[h] + p], (x >> (h * 6)) & 63);
+			return int(p);
 		}
-		return v;
+		return -1;
 	}
-	int insert(std::string_view s, std::int64_t copies = 1) {
-		check_count_(copies);
-		return add_(ensure(s), copies);
+	int argmax_xor(std::uint32_t x) const { return argmin_xor(~x); }
+	explicit PredecessorSet(int n = 0, bool filled = false) { assign(n, filled); }
+	explicit PredecessorSet(std::string_view bits) { assign(bits); }
+	PredecessorSet(int n, std::span<const std::uint64_t> words) { assign(n, words); }
+	PredecessorSet(const PredecessorSet &) = default;
+	PredecessorSet &operator=(const PredecessorSet &) = default;
+	PredecessorSet(PredecessorSet &&other) noexcept : PredecessorSet() { swap(other); }
+	PredecessorSet &operator=(PredecessorSet &&other) noexcept {
+		if (this != &other) { PredecessorSet moved(std::move(other)); swap(moved); }
+		return *this;
 	}
-	int insert_node(int v, std::int64_t copies = 1) {
-		check_(v), check_count_(copies);
-		return add_(v, copies);
+	void assign(int length, bool filled = false) {
+		assert(length >= 0);
+		n = length; count = filled ? n : 0; height = 0;
+		offset.fill(0); this->length.fill(0);
+		int total = 0;
+		for (std::size_t bits = n; bits;) {
+			std::size_t words = (bits + 63) / 64;
+			offset[height] = total; this->length[height++] = words;
+			total += words;
+			if (words == 1) break;
+			bits = words;
+		}
+		data.assign(total, filled ? ~std::uint64_t(0) : 0);
+		if (filled) mask_tail();
 	}
-	bool erase_node(int v, std::int64_t copies = 1) {
-		check_(v), assert(copies > 0);
-		if (nodes_[v].terminal < copies) return false;
-		nodes_[v].terminal -= copies;
-		if (!nodes_[v].terminal) --distinct_;
-		for (int u = v; u != -1; u = nodes_[u].parent) nodes_[u].count -= copies;
+	void assign(std::string_view bits) {
+		assert(bits.size() <= std::size_t(std::numeric_limits<int>::max()));
+		PredecessorSet next(static_cast<int>(bits.size()));
+		std::size_t words = bits.size() / 64;
+		predecessor_set_detail::pack(bits.data(), next.data.data(), words);
+		for (std::size_t i = words * 64; i < bits.size(); ++i) {
+			assert(bits[i] == '0' || bits[i] == '1');
+			next.data[i >> 6] |= std::uint64_t(bits[i] - '0') << (i & 63);
+		}
+		next.rebuild(); swap(next);
+	}
+	void assign(int n, std::span<const std::uint64_t> words) {
+		assert(n >= 0 && words.size() == (std::size_t(n) + 63) / 64);
+		PredecessorSet next(n);
+		std::copy(words.begin(), words.end(), next.data.begin());
+		if (n & 63) next.data[next.length[0] - 1] &= ~std::uint64_t(0) >> (64 - (n & 63));
+		next.rebuild(); swap(next);
+	}
+	int universe_size() const { return n; }
+	int size() const { return count; }
+	bool empty() const { return count == 0; }
+	bool contains(int p) const { assert(0 <= p && p < n); return data[p >> 6] >> (p & 63) & 1; }
+	bool insert(int p) {
+		assert(0 <= p && p < n);
+		if (contains(p)) return false;
+		++count;
+		for (int h = 0; h < height; ++h) {
+			auto &word = data[offset[h] + (p >> 6)];
+			auto before = word;
+			word |= std::uint64_t(1) << (p & 63);
+			if (before) break;
+			p >>= 6;
+		}
 		return true;
 	}
-	bool erase(std::string_view s, std::int64_t copies = 1) {
-		assert(copies > 0);
-		int v = find(s);
-		return v != -1 && erase_node(v, copies);
-	}
-	int parent(int v) const { check_(v); return nodes_[v].parent; }
-	int depth(int v) const { check_(v); return nodes_[v].depth; }
-	char letter(int v) const { check_(v); assert(v != root); return nodes_[v].letter; }
-	const std::array<int, Alphabet> &children(int v) const { check_(v); return nodes_[v].next; }
-	int child(int v, char c) const {
-		check_(v);
-		int x = symbol_(c);
-		return 0 <= x && x < Alphabet ? nodes_[v].next[x] : -1;
-	}
-	std::int64_t terminal_count(int v) const { check_(v); return nodes_[v].terminal; }
-	std::int64_t prefix_count(int v) const { check_(v); return nodes_[v].count; }
-	Data &data(int v) { check_(v); return nodes_[v].data; }
-	const Data &data(int v) const { check_(v); return nodes_[v].data; }
-	int walk(int v, std::string_view s) const {
-		check_(v);
-		for (char c : s) { v = child(v, c); if (v == -1) break; }
-		return v;
-	}
-	int find(std::string_view s) const { return walk(root, s); }
-	std::int64_t count(std::string_view s) const { int v = find(s); return v == -1 ? 0 : nodes_[v].terminal; }
-	bool contains(std::string_view s) const { return count(s) != 0; }
-	std::int64_t prefix_count(std::string_view s) const { int v = find(s); return v == -1 ? 0 : nodes_[v].count; }
-	std::string restore(int v) const {
-		check_(v);
-		std::string s(nodes_[v].depth, '\0');
-		for (int i = int(s.size()); i > 0; v = nodes_[v].parent) s[--i] = nodes_[v].letter;
-		return s;
-	}
-	template<class F>
-	void for_each_ancestor(int v, F &&visit) const {
-		check_(v);
-		for (; v != -1; v = nodes_[v].parent) visit(v);
-	}
-	template<class F>
-	void for_each_prefix(std::string_view s, F &&visit) const {
-		int v = root;
-		if (nodes_[v].terminal) visit(v);
-		for (char c : s) {
-			v = child(v, c);
-			if (v == -1 || !nodes_[v].count) break;
-			if (nodes_[v].terminal) visit(v);
+	bool erase(int p) {
+		assert(0 <= p && p < n);
+		if (!contains(p)) return false;
+		--count;
+		for (int h = 0; h < height; ++h) {
+			auto &word = data[offset[h] + (p >> 6)];
+			word &= ~(std::uint64_t(1) << (p & 63));
+			if (word) break;
+			p >>= 6;
 		}
+		return true;
 	}
-	int longest_prefix(std::string_view s) const {
-		int v = -1;
-		for_each_prefix(s, [&](int u) { v = u; });
-		return v;
-	}
-	int lcp(std::string_view s) const {
-		int v = root, length = 0;
-		for (char c : s) {
-			v = child(v, c);
-			if (v == -1 || !nodes_[v].count) break;
-			++length;
-		}
-		return length;
-	}
-	std::int64_t lcp_sum(std::string_view s) const {
-		int v = root;
-		std::int64_t sum = 0;
-		for (char c : s) {
-			v = child(v, c);
-			if (v == -1 || !nodes_[v].count) break;
-			if (nodes_[v].count > std::numeric_limits<std::int64_t>::max() - sum) throw std::overflow_error("Trie LCP sum");
-			sum += nodes_[v].count;
-		}
-		return sum;
-	}
-	std::int64_t order_of_key(std::string_view s) const {
-		int v = root;
-		std::int64_t rank = 0;
-		for (char c : s) {
-			rank += nodes_[v].terminal;
-			int x = symbol_(c);
-			for (int j = 0; j < Alphabet && j < x; ++j) {
-				int u = nodes_[v].next[j];
-				if (u != -1) rank += nodes_[u].count;
+	int next(int p) const {
+		p = std::max(p, 0);
+		if (p >= n || !count) return n;
+		for (int h = 0; h < height; ++h) {
+			if ((p >> 6) >= length[h]) return n;
+			auto word = data[offset[h] + (p >> 6)] >> (p & 63);
+			if (word) {
+				p += std::countr_zero(word);
+				while (h--) p = p * 64 + std::countr_zero(data[offset[h] + p]);
+				return p;
 			}
-			if (x < 0 || x >= Alphabet) break;
-			v = nodes_[v].next[x];
-			if (v == -1) break;
+			p = (p >> 6) + 1;
 		}
-		return rank;
+		return n;
 	}
-	int kth_node(std::int64_t k) const {
-		if (k < 0 || k >= size()) return -1;
-		int v = root;
-		while (true) {
-			if (k < nodes_[v].terminal) return v;
-			k -= nodes_[v].terminal;
-			for (int u : nodes_[v].next) if (u != -1) {
-				if (k < nodes_[u].count) { v = u; break; }
-				k -= nodes_[u].count;
+	int prev(int p) const {
+		p = std::min(p, n - 1);
+		if (p < 0 || !count) return -1;
+		for (int h = 0; h < height; ++h) {
+			auto word = data[offset[h] + (p >> 6)] << (63 - (p & 63));
+			if (word) {
+				p -= std::countl_zero(word);
+				while (h--) p = p * 64 + 63 - std::countl_zero(data[offset[h] + p]);
+				return p;
+			}
+			p = (p >> 6) - 1;
+			if (p < 0) return -1;
+		}
+		return -1;
+	}
+	bool set(int p, bool present) { return present ? insert(p) : erase(p); }
+	int min() const { return next(0); }
+	int max() const { return prev(n - 1); }
+	void clear() { std::fill(data.begin(), data.end(), 0); count = 0; }
+	void fill() {
+		std::fill(data.begin(), data.end(), ~std::uint64_t(0));
+		mask_tail();
+		count = n;
+	}
+	template <class F> void for_each(int l, int r, F &&f) const {
+		assert(0 <= l && l <= r && r <= n);
+		for (int p = next(l); p < r;) {
+			int base = p & ~63;
+			auto word = data[p >> 6] & (~std::uint64_t(0) << (p & 63));
+			if (r - base < 64) word &= ~std::uint64_t(0) >> (64 - (r - base));
+			while (word) { f(base + std::countr_zero(word)); word &= word - 1; }
+			if (r - base <= 64) break;
+			p = next(base + 64);
+		}
+	}
+	template <class F> void for_each(F &&f) const { for_each(0, n, f); }
+	std::vector<int> to_vector() const {
+		std::vector<int> out; out.reserve(count);
+		for_each([&](int x) { out.push_back(x); }); return out;
+	}
+	std::span<const std::uint64_t> words() const & { return {data.data(), std::size_t(length[0])}; }
+	void words() const && = delete;
+	void swap(PredecessorSet &other) noexcept {
+		using std::swap;
+		swap(n, other.n); swap(count, other.count); swap(height, other.height);
+		offset.swap(other.offset); length.swap(other.length); data.swap(other.data);
+	}
+	std::size_t memory_usage() const { return data.capacity() * sizeof(std::uint64_t); }
+};
+
+
+#line 13 "data_structure/xor_set.hpp"
+
+template <int Bits = 30>
+class XorSet {
+	static_assert(1 <= Bits && Bits <= 31);
+	static constexpr int leaf_bits = std::min(Bits, 9);
+	static constexpr std::uint32_t leaf_mask = (std::uint32_t(1) << leaf_bits) - 1;
+	static constexpr std::uint32_t block_count = std::uint32_t(1) << (Bits - leaf_bits);
+	static constexpr std::uint32_t singleton = std::uint32_t(1) << 31;
+	struct alignas(64) Leaf {
+		std::array<std::uint64_t, 8> words{};
+	};
+	std::vector<std::uint32_t> directory;
+	PredecessorSet occupied;
+	std::vector<Leaf> leaves;
+	std::uint32_t free_leaf = 0, all_xor = 0;
+	std::int64_t count = 0;
+	void ensure_storage() {
+		if (!directory.empty()) return;
+		std::vector<std::uint32_t> next(block_count);
+		PredecessorSet index(block_count);
+		directory.swap(next);
+		occupied.swap(index);
+	}
+	std::uint32_t make_leaf() {
+		if (free_leaf) {
+			auto id = free_leaf;
+			free_leaf = std::uint32_t(leaves[id].words[0]);
+			leaves[id] = Leaf{};
+			return id;
+		}
+		if (leaves.empty()) leaves.emplace_back();
+		leaves.emplace_back();
+		return std::uint32_t(leaves.size() - 1);
+	}
+	void release_leaf(std::uint32_t id) {
+		leaves[id].words[0] = free_leaf;
+		free_leaf = id;
+	}
+	static void check([[maybe_unused]] std::uint32_t value) { assert(value < (std::uint32_t(1) << Bits)); }
+public:
+	using value_type = std::uint32_t;
+	XorSet() = default;
+	XorSet(const XorSet &) = default;
+	XorSet &operator=(const XorSet &other) {
+		if (this != &other) { XorSet copy(other); swap(copy); }
+		return *this;
+	}
+	XorSet(XorSet &&other) noexcept
+		: directory(std::move(other.directory)), occupied(std::move(other.occupied)), leaves(std::move(other.leaves)),
+		free_leaf(std::exchange(other.free_leaf, 0)), all_xor(std::exchange(other.all_xor, 0)), count(std::exchange(other.count, 0)) {
+		other.directory.clear(); other.leaves.clear();
+	}
+	XorSet &operator=(XorSet &&other) noexcept {
+		if (this != &other) { XorSet moved(std::move(other)); swap(moved); }
+		return *this;
+	}
+	std::int64_t size() const { return count; }
+	bool empty() const { return count == 0; }
+	bool contains(std::uint32_t value) const {
+		check(value);
+		if (empty()) return false;
+		auto entry = directory[value >> leaf_bits];
+		if (!entry) return false;
+		if (entry & singleton) return entry == (singleton | (value & leaf_mask));
+		return leaves[entry].words[(value & leaf_mask) >> 6] >> (value & 63) & 1;
+	}
+	bool insert(std::uint32_t value) {
+		check(value);
+		ensure_storage();
+		auto &entry = directory[value >> leaf_bits];
+		auto suffix = value & leaf_mask;
+		if (!entry) {
+			occupied.insert(value >> leaf_bits);
+			entry = singleton | suffix;
+		} else if (entry & singleton) {
+			auto old = entry ^ singleton;
+			if (old == suffix) return false;
+			auto id = make_leaf();
+			leaves[id].words[old >> 6] = std::uint64_t(1) << (old & 63);
+			leaves[id].words[suffix >> 6] |= std::uint64_t(1) << (suffix & 63);
+			entry = id;
+		} else {
+			auto &word = leaves[entry].words[suffix >> 6];
+			auto bit = std::uint64_t(1) << (suffix & 63);
+			if (word & bit) return false;
+			word |= bit;
+		}
+		++count; all_xor ^= value;
+		return true;
+	}
+	bool erase(std::uint32_t value) {
+		check(value);
+		if (empty()) return false;
+		auto &entry = directory[value >> leaf_bits];
+		if (!entry) return false;
+		if (entry & singleton) {
+			if (entry != (singleton | (value & leaf_mask))) return false;
+			entry = 0;
+			occupied.erase(value >> leaf_bits);
+		} else {
+			auto &leaf = leaves[entry];
+			auto &word = leaf.words[(value & leaf_mask) >> 6];
+			auto bit = std::uint64_t(1) << (value & 63);
+			if (!(word & bit)) return false;
+			word ^= bit;
+			std::uint64_t any = 0;
+			for (auto part : leaf.words) any |= part;
+			if (!any) {
+				release_leaf(entry);
+				entry = 0;
+				occupied.erase(value >> leaf_bits);
 			}
 		}
+		--count; all_xor ^= value;
+		return true;
 	}
-	std::optional<std::string> kth(std::int64_t k) const {
-		int v = kth_node(k);
-		return v == -1 ? std::nullopt : std::optional<std::string>(restore(v));
+	std::uint32_t argmin_xor(std::uint32_t value) const {
+		assert(!empty());
+		if (count == 1) return all_xor;
+		auto prefix = (value >> leaf_bits) & (block_count - 1);
+		if (!directory[prefix]) prefix = occupied.argmin_xor(value >> leaf_bits);
+		auto entry = directory[prefix];
+		if (entry & singleton) return (prefix << leaf_bits) | (entry ^ singleton);
+		const auto &leaf = leaves[entry];
+		auto preferred = (value & leaf_mask) >> 6;
+		for (unsigned distance = 0; distance < 8; ++distance) {
+			auto i = preferred ^ distance;
+			if (leaf.words[i]) return (prefix << leaf_bits) | (i << 6) | xor_select_detail::argmin(leaf.words[i], value & 63);
+		}
+		std::unreachable();
 	}
-	std::optional<std::string> lower_bound(std::string_view s) const { return kth(order_of_key(s)); }
+	std::uint32_t argmax_xor(std::uint32_t value) const { return argmin_xor(~value); }
+	std::uint32_t min_xor(std::uint32_t value) const { return argmin_xor(value) ^ value; }
+	std::uint32_t max_xor(std::uint32_t value) const { return argmax_xor(value) ^ value; }
+	void clear() {
+		std::fill(directory.begin(), directory.end(), 0);
+		occupied.clear(); leaves.clear();
+		free_leaf = all_xor = 0; count = 0;
+	}
+	void swap(XorSet &other) noexcept {
+		directory.swap(other.directory); occupied.swap(other.occupied); leaves.swap(other.leaves);
+		std::swap(free_leaf, other.free_leaf); std::swap(all_xor, other.all_xor); std::swap(count, other.count);
+	}
+	std::size_t memory_usage() const { return directory.capacity() * sizeof(std::uint32_t) + occupied.memory_usage() + leaves.capacity() * sizeof(Leaf); }
 };
 
 
@@ -202,16 +421,14 @@ class Trie {
 
 
 
-#include <algorithm>
-#line 6 "components/fast_io.hpp"
-#include <bit>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
-#include <cstddef>
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
-#include <cstring>
+#line 13 "components/fast_io.hpp"
 #include <memory>
+#include <stdexcept>
+#include <string>
 #line 17 "components/fast_io.hpp"
 #include <type_traits>
 #if defined(__unix__) || defined(__APPLE__)
@@ -433,36 +650,20 @@ public:
 };
 
 
-#line 6 "test/set_xor_min.test.cpp"
+#line 4 "test/set_xor_min.test.cpp"
 
 int main() {
 	FastInput input;
 	FastOutput output;
 	int q = 0;
 	input.read(q);
-	Trie<2, '0'> trie;
+	XorSet<> set;
 	while (q--) {
 		int type = 0;
 		unsigned x = 0;
 		input.read(type), input.read(x);
-		std::array<char, 30> digits;
-		for (int i = 0; i < 30; ++i) digits[i] = '0' + ((x >> (29 - i)) & 1);
-		const std::string_view key(digits.data(), digits.size());
-		if (type == 0) {
-			if (!trie.contains(key)) trie.insert(key);
-		} else if (type == 1) trie.erase(key);
-		else {
-			int node = trie.root;
-			unsigned answer = 0;
-			for (int i = 0; i < 30; ++i) {
-				int next = trie.child(node, digits[i]);
-				if (next == -1 || !trie.prefix_count(next)) {
-					next = trie.child(node, char(digits[i] ^ 1));
-					answer |= 1U << (29 - i);
-				}
-				node = next;
-			}
-			output.println(answer);
-		}
+		if (type == 0) set.insert(x);
+		else if (type == 1) set.erase(x);
+		else output.println(set.min_xor(x));
 	}
 }

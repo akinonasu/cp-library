@@ -12,6 +12,7 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+#include "../components/ordered_multiset_btree.hpp"
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>, class Compare = std::greater<T>>
 class TopKSum {
@@ -25,6 +26,11 @@ private:
 	static constexpr bool descending = std::is_same_v<Compare, std::greater<T>> || std::is_same_v<Compare, std::greater<void>>;
 	static constexpr bool widen = std::is_integral_v<Sum> && sizeof(Sum) <= 8;
 	using Aggregate = std::conditional_t<widen, std::conditional_t<std::is_signed_v<Sum>, __int128_t, __uint128_t>, Sum>;
+	static constexpr bool blocked = std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8
+		&& (std::is_integral_v<Sum> || std::is_same_v<Sum, __int128_t> || std::is_same_v<Sum, __uint128_t>)
+		&& (descending || std::is_same_v<Compare, std::less<T>> || std::is_same_v<Compare, std::less<void>>);
+	struct EmptyBackend {};
+	using Backend = std::conditional_t<blocked, ordered_multiset_detail::BTree<T, Sum, Aggregate>, EmptyBackend>;
 	static Aggregate contribution(const T &value, size_type copies) {
 		auto converted = static_cast<Aggregate>(static_cast<Sum>(value));
 		return copies == 1 ? converted : converted * copies;
@@ -37,6 +43,7 @@ private:
 		Node(const T &value, size_type copies) : total(contribution(value, copies)), value(value), copies(copies), size(copies) {}
 	};
 	[[no_unique_address]] Compare order;
+	[[no_unique_address]] Backend backend;
 	std::vector<Node> nodes;
 	int root = -1, free = -1;
 
@@ -151,6 +158,7 @@ private:
 	}
 	template<bool Reverse> T kth_impl(size_type k) const {
 		assert(0 <= k && k < size());
+		if constexpr (blocked) return backend.kth(Reverse != descending ? size() - 1 - k : k);
 		int p = root;
 		for (;;) {
 			const auto &node = nodes[p];
@@ -163,6 +171,11 @@ private:
 	}
 	template<bool Reverse> Sum sum_impl(size_type k) const {
 		assert(k >= 0);
+		if constexpr (blocked) {
+			k = (std::min)(k, size());
+			if constexpr (Reverse != descending) return result(backend.sum_all() - backend.sum(size() - k));
+			else return result(backend.sum(k));
+		}
 		Aggregate answer(0);
 		int p = root;
 		while (p >= 0 && k) {
@@ -182,6 +195,7 @@ private:
 		return result(answer);
 	}
 	template<bool Strict> std::optional<T> bound(const T &value) const {
+		if constexpr (blocked) return backend.template bound<Strict>(value);
 		int p = root, candidate = -1;
 		while (p >= 0) {
 			const auto &node = nodes[p];
@@ -200,13 +214,14 @@ public:
 	TopKSum(std::initializer_list<T> values, Compare compare = Compare{}) : TopKSum(std::vector<T>(values), std::move(compare)) {}
 	TopKSum(const TopKSum &) = default;
 	TopKSum(TopKSum &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>)
-		: order(other.order), nodes(std::move(other.nodes)), root(std::exchange(other.root, -1)), free(std::exchange(other.free, -1)) { other.nodes.clear(); }
+		: order(other.order), backend(std::move(other.backend)), nodes(std::move(other.nodes)), root(std::exchange(other.root, -1)), free(std::exchange(other.free, -1)) { other.nodes.clear(); }
 	TopKSum &operator=(TopKSum other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		swap(other);
 		return *this;
 	}
 	void assign(std::vector<T> values) {
 		assert(values.size() <= std::size_t((std::numeric_limits<size_type>::max)()));
+		if constexpr (blocked) { Backend next; next.assign(std::move(values)); backend.swap(next); return; }
 		std::sort(values.begin(), values.end(), order);
 		std::vector<size_type> counts;
 		std::size_t distinct = 0;
@@ -223,14 +238,20 @@ public:
 		next.root = next.build(values, counts, 0, static_cast<int>(distinct));
 		swap(next);
 	}
-	void reserve(std::size_t distinct) { assert(distinct <= std::size_t((std::numeric_limits<int>::max)())); nodes.reserve(distinct); }
+	void reserve(std::size_t distinct) {
+		assert(distinct <= std::size_t((std::numeric_limits<int>::max)()));
+		if constexpr (blocked) backend.reserve(distinct);
+		else nodes.reserve(distinct);
+	}
 	void insert(const T &value, size_type copies = 1) {
 		assert(copies >= 0 && copies <= (std::numeric_limits<size_type>::max)() - size());
-		if (copies) root = insert_node(root, value, copies);
+		if constexpr (blocked) { if (copies) backend.insert(value, copies); }
+		else if (copies) root = insert_node(root, value, copies);
 	}
 	bool erase(const T &value) { return erase(value, 1) != 0; }
 	size_type erase(const T &value, size_type copies) {
 		assert(copies >= 0);
+		if constexpr (blocked) return copies ? backend.erase(value, copies) : 0;
 		size_type removed = 0;
 		if (copies) root = erase_node(root, value, copies, removed);
 		return removed;
@@ -241,8 +262,8 @@ public:
 		insert(new_value);
 		return true;
 	}
-	size_type size() const { return length(root); }
-	bool empty() const { return root < 0; }
+	size_type size() const { if constexpr (blocked) return backend.size(); else return length(root); }
+	bool empty() const { return size() == 0; }
 	T kth(size_type k) const { return kth_impl<false>(k); }
 	T kth_smallest(size_type k) const { return kth_impl<descending>(k); }
 	T kth_largest(size_type k) const { return kth_impl<!descending>(k); }
@@ -251,8 +272,23 @@ public:
 	Sum sum_largest(size_type k) const { return sum_impl<!descending>(k); }
 	std::optional<T> lower_bound(const T &value) const { return bound<false>(value); }
 	std::optional<T> upper_bound(const T &value) const { return bound<true>(value); }
-	Sum sum_all() const { return root < 0 ? Sum(0) : result(nodes[root].total); }
+	Sum sum_all() const { if constexpr (blocked) return result(backend.sum_all()); else return root < 0 ? Sum(0) : result(nodes[root].total); }
+	size_type order_of_key(const T &value) const {
+		if constexpr (blocked) {
+			if constexpr (descending) return size() - backend.template order_of_key<true>(value);
+			else return backend.order_of_key(value);
+		}
+		size_type answer = 0;
+		int p = root;
+		while (p >= 0) {
+			const auto &node = nodes[p];
+			if (order(*node.value, value)) { answer += length(node.left) + node.copies; p = node.right; }
+			else p = node.left;
+		}
+		return answer;
+	}
 	size_type count(const T &value) const {
+		if constexpr (blocked) return backend.count(value);
 		int p = root;
 		while (p >= 0) {
 			if (order(value, *nodes[p].value)) p = nodes[p].left;
@@ -262,9 +298,13 @@ public:
 		return 0;
 	}
 	bool contains(const T &value) const { return count(value) != 0; }
-	void clear() { nodes.clear(); root = free = -1; }
+	void clear() {
+		if constexpr (blocked) backend.clear();
+		else { nodes.clear(); root = free = -1; }
+	}
 	void swap(TopKSum &other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		using std::swap;
+		if constexpr (blocked) backend.swap(other.backend);
 		swap(order, other.order); nodes.swap(other.nodes);
 		swap(root, other.root); swap(free, other.free);
 	}
