@@ -45,6 +45,26 @@ void check(AuxiliaryTree<Tree> &vt, const Tree &tree, const std::vector<int> &ke
 		}
 		vp[i] = node.parent;
 	}
+	const auto &view = vt;
+	auto graph = view.to_graph();
+	require(graph.size() == nodes.size());
+	std::vector<int> graph_parent(vt.size(), -2), order;
+	if (!vt.empty()) graph_parent[vt.root()] = -1, order.push_back(vt.root());
+	std::size_t arcs = 0;
+	for (std::size_t i = 0; i < order.size(); ++i) {
+		int v = order[i], upward = 0;
+		arcs += graph[v].size();
+		for (int to : graph[v]) {
+			require(0 <= to && to < vt.size());
+			if (to == graph_parent[v]) { ++upward; continue; }
+			require(graph_parent[to] == -2);
+			graph_parent[to] = v;
+			order.push_back(to);
+		}
+		require(upward == (v == vt.root() ? 0 : 1));
+	}
+	require(order.size() == nodes.size() && graph_parent == vp);
+	require(arcs == (vt.empty() ? 0 : 2 * std::size_t(vt.size() - 1)));
 	for (int i = vt.size() - 2; i >= 0; --i) vd[i] = vd[vp[i]] + 1;
 	for (int u : closure) for (int v : closure) {
 		int w = naive_lca(vp, vd, index[u], index[v]);
@@ -78,7 +98,26 @@ int main() {
 	LCA empty;
 	empty.build();
 	AuxiliaryTree empty_vt(empty);
+	require(empty_vt.to_graph().empty());
 	require(empty_vt.build({}).empty() && empty_vt.root() == -1);
+	require(empty_vt.to_graph().empty());
+	{
+		LCA tree(5);
+		for (auto [u, v] : std::vector<std::pair<int, int>>{ {0, 1}, {1, 2}, {1, 3}, {3, 4} }) tree.add_edge(u, v);
+		tree.build();
+		AuxiliaryTree vt(tree);
+		vt.build(std::vector<int>{2, 4});
+		auto graph = vt.to_graph();
+		require(graph.size() == 3);
+		auto saved = graph;
+		graph[vt.root()].clear();
+		require(vt.to_graph() == saved);
+		vt.build(std::vector<int>{4});
+		require(vt.to_graph() == std::vector<std::vector<int>>(1));
+		require(saved.size() == 3 && !saved.back().empty());
+		vt.build({});
+		require(vt.to_graph().empty() && !saved.back().empty());
+	}
 	std::mt19937 rng(413708);
 	{
 		LCA tree(8192);
