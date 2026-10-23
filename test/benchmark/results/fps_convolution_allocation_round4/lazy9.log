@@ -1,7 +1,0 @@
-built before
-built range_lazy
-built reference
-max_random_00 {'before': 11.915335, 'range_lazy': 12.151145, 'reference': 9.902784} {'range_lazy': -0.19759399999999872} {'range_lazy': 3}
-max_random_01 {'before': 12.270072, 'range_lazy': 12.186418, 'reference': 9.779831} {'range_lazy': -0.019439000000000206} {'range_lazy': 4}
-small_and_large_03 {'before': 9.537269, 'range_lazy': 10.265665, 'reference': 8.191963} {'range_lazy': -0.20840000000000103} {'range_lazy': 3}
-medium_02 {'before': 1.465836, 'range_lazy': 1.457453, 'reference': 1.166369} {'range_lazy': 0.00479699999999994} {'range_lazy': 5}

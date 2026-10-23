@@ -1,4 +1,4 @@
-#include "graph/bellman_ford.hpp"
+#include "graph/shortest_path/bellman_ford.hpp"
 #include <numeric>
 #include <random>
 

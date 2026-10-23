@@ -1,5 +1,5 @@
 #include "convolution/ordered_convolution.hpp"
-#include "../benchmark/ordered_convolution_baseline.hpp"
+#include "../fixtures/ordered_convolution_reference.hpp"
 #include <cassert>
 #include <cstdint>
 #include <random>

@@ -40,6 +40,6 @@ auto answer = wm.min_count_largest(0, 5, 12);
 
 和の境界探索 `min_count_*`・`max_count_*` には初期値と登録した候補全てが非負であることが必要です。前者は `target <= 0` なら 0、後者は `budget < 0` なら -1 を返します。その他のクエリは負の値も扱えます。
 
-[ABC467 G](https://atcoder.jp/contests/abc467/tasks/abc467_g) は更新候補を登録した後、各クエリで `wm.set(c,x)` と `wm.min_count_largest(l,r,k)` を呼べば解けます。[提出用コード](https://github.com/qandori/cp-library/blob/main/test/benchmark/abc467_g.cpp)もあります。
+[ABC467 G](https://atcoder.jp/contests/abc467/tasks/abc467_g) は更新候補を登録した後、各クエリで `wm.set(c,x)` と `wm.min_count_largest(l,r,k)` を呼べば解けます。
 
 異なる登録 `(位置,値)` の総数を $$m$$、異なる値の数を $$\sigma$$ として、構築は $$O(m\log m)$$ 時間、空間は $$O(m\log\sigma)$$ です。更新と区間の順位・和の探索は $$O(\log m\log\sigma)$$、値域を指定しない区間和は $$O(\log m)$$、候補の確認は $$O(\log m)$$、サイズと要素取得は $$O(1)$$ です。

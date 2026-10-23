@@ -1,4 +1,0 @@
-clang++: standalone graph/matching/bipartite_matching.hpp
-clang++: standalone components/bipartite_matching_core.hpp
-clang++: bipartite_matching.cpp
-Verification passed

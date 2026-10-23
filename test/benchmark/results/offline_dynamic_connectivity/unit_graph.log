@@ -1,3 +1,0 @@
-g++ [] passed
-clang++ [] passed
-clang++ ['-fsanitize=address,undefined', '-fno-omit-frame-pointer', '-g'] passed

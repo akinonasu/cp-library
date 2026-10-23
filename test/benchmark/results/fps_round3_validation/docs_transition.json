@@ -1,9 +1,0 @@
-{
-  "utc": "2026-10-19T04:16:22.785111+00:00",
-  "authorized_source_change": [
-    "docs/fps_convolution.md"
-  ],
-  "prepared_sha256": "17ddb1252cc08717dfc58437e9a9756fa2a8e3fef1f51f3d07edd6cb92b45573",
-  "canonical_sha256": "eb33003540c4428f6c9d7dfc834a49eda0ad7ddb656ab8eb023abef74e7eca42",
-  "note": "Generation began before the final convolution documentation update. Source collection and compiled bundles are unaffected. This captures canonical source hashes after the owner declared docs complete; final generated body/source equality will be checked. Original generation-start hashes are retained in docs_sources_prepared.json."
-}

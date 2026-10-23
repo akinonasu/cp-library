@@ -1,6 +1,0 @@
-all_same_00 read {'own_raw': 2.700985, 'own_mint': 3.104375, 'ref_scalar': 3.130272, 'ref_bulk': 1.754589, 'ref_fixed': 1.069744, 'ref_transposed': 1.879331}
-all_same_00 write {'own_raw': 6.223415, 'own_mint': 6.551227, 'ref_scalar': 3.686974, 'ref_fields': 2.143983}
-all_same_01 read {'own_raw': 7.01543, 'own_mint': 7.827205, 'ref_scalar': 3.156258, 'ref_bulk': 1.873368, 'ref_fixed': 1.65509, 'ref_transposed': 1.966489}
-all_same_01 write {'own_raw': 8.616396, 'own_mint': 9.105585, 'ref_scalar': 4.239384, 'ref_fields': 2.096982}
-max_random_00 read {'own_raw': 7.547292, 'own_mint': 8.246418, 'ref_scalar': 3.347614, 'ref_bulk': 1.918163, 'ref_fixed': 1.86725, 'ref_transposed': 1.91064}
-max_random_00 write {'own_raw': 8.859616, 'own_mint': 9.612622, 'ref_scalar': 4.201462, 'ref_fields': 2.07096}

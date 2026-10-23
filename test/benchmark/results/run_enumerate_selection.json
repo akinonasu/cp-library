@@ -1,8 +1,0 @@
-{
-  "headers": ["components/sequence_match.hpp", "string/run_enumerate.hpp"],
-  "unit": ["test/unit/sequence_match.cpp", "test/unit/run_enumerate.cpp"],
-  "sanitize": ["test/unit/sequence_match.cpp", "test/unit/run_enumerate.cpp"],
-  "verification": ["test/run_enumerate.test.cpp"],
-  "bundles": ["components/sequence_match.hpp", "string/run_enumerate.hpp"],
-  "state": {"targets": {"verification": {"test/run_enumerate.test.cpp": "run_enumerate"}}}
-}

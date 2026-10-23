@@ -1,9 +1,0 @@
-g++: standalone components/mod_linear_prefix_min.hpp
-g++: standalone math/prefix_min_of_mod_of_linear.hpp
-g++: prefix_min_of_mod_of_linear.cpp
-g++: standalone.cpp
-clang++: standalone components/mod_linear_prefix_min.hpp
-clang++: standalone math/prefix_min_of_mod_of_linear.hpp
-clang++: prefix_min_of_mod_of_linear.cpp
-clang++: standalone.cpp
-Verification passed

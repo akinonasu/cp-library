@@ -17,5 +17,3 @@ Linux x86_64 / GCC の AVX2 用内部部品です。公開の `fps::multiply` �
 各列の係数を $$a_0,b_0$$ とすると、出力の第 $$i$$ 係数は $$a_0b_0\min(i+1,n,m,n+m-1-i)$$ です。正規化した Montgomery 表現の積から等差列を生成し、反対側へ反転して書き、中央の一定区間を埋めます。零の場合も公開サイズを保ち、返すすべての係数を $$[0,p)$$ に正規化します。
 
 入力を変更せず、alignment や padding を要求しません。同一入力や長短の交換にも対応します。結果は独立した `vector<Mint>` の生存中の要素として構築し、SIMD による入力・出力の受け渡しには `memcpy` を使います。返す配列を除く追加作業領域は $$O(1)$$、返す配列は $$O(n+m)$$ です。
-
-採用時の測定と検証は [定数係数畳み込み](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_convolution_constant_round4.md) にあります。

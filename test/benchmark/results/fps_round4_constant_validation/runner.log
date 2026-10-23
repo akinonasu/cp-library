@@ -1,8 +1,0 @@
-selected {'headers': 21, 'unit': 28, 'sanitize': 28, 'verification': 24, 'bundles': 21} core {'headers': 4, 'unit': 2, 'sanitize': 2, 'verification': 0, 'bundles': 0}
-dependencies clang19 normal
-dependencies gcc14 normal
-dependencies gcc14 sanitize
-clang19 0 12.135270111000864
-gcc14 0 23.42078614499769
-gcc14-sanitize 0 91.96281190200534
-passed

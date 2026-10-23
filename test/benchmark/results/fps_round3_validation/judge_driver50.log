@@ -1,7 +1,0 @@
-test/rerooting.test.cpp 16 passed
-dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/rerooting.test.cpp
-rerooting.test.o: /workspace/cp-library/test/rerooting.test.cpp \
- /workspace/cp-library/graph/rerooting.hpp \
- /workspace/cp-library/graph/../components/undirected_csr.hpp \
- /workspace/cp-library/components/fast_io.hpp \
- /workspace/cp-library/math/mint.hpp

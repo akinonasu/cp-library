@@ -1,5 +1,0 @@
-#include <chrono>
-#include <cstdio>
-#include <random>
-#include <vector>
-int main(int argc,char**argv){const std::size_t n=argc>1?std::atoi(argv[1]):500000;std::mt19937 rng(20261019);std::vector<std::uint32_t>input(n);for(auto&x:input)x=rng()%poly::kModulus;input[0]=1;auto begin=std::chrono::steady_clock::now();int lg=poly::inverse_log(n);std::size_t len=std::size_t(1)<<lg,k=len/2,scratch_words=std::max(len,poly::inverse_scratch(k));poly::Arena arena(poly::Transform::words(lg)+poly::Arena::footprint(len)+poly::Arena::footprint(scratch_words)+poly::Arena::footprint(k));const poly::Transform t(arena,lg);auto a=arena.take(len),scratch=arena.take(scratch_words),g=arena.take(k);std::copy(input.begin(),input.end(),a.begin());auto f=a.first(n);if(n<=k)poly::inverse(t,f,g.first(n),scratch);else{poly::inverse(t,f,g,scratch);poly::inverse_step(t,f,g,a.subspan(k,n-k),scratch.first(len),a);}auto end=std::chrono::steady_clock::now();unsigned long long h=0;for(std::size_t i=0;i<n;++i)h=h*0x9e3779b97f4a7c15ULL+(i<k?g[i]:a[i]);std::printf("%.9f %llu\n",std::chrono::duration<double,std::milli>(end-begin).count(),h);}

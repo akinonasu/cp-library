@@ -1,9 +1,6 @@
 #ifndef CP_FPS_LIGHT_BACKEND_HPP
 #define CP_FPS_LIGHT_BACKEND_HPP
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmisleading-indentation"
-#endif
+
 #include <algorithm>
 #include <bit>
 #include <cassert>
@@ -15,266 +12,754 @@
 #include <utility>
 #include <vector>
 #include "../math/mint.hpp"
-#define À std::size_t
-#define Á ;fps_light_detail::transform
-#define Â fps_light_detail::
-#define Ã std::
-#define Ä result
-#define Å return
-#define Ç LightFormalPowerSeries
-#define È const
-#define É reinterpret_cast<
-#define Ê __attribute__((target("avx2")))
-#define Ë inverse
-#define Ì error
-#define Í this->
-#define Ï friend F operator
-#define Ð operator
-#define Ñ begin()
-#define Ò .resize
-#define Ó _mm256_blend_epi32
-#define Õ __m256i
-#define Ö static_cast<
-#define Ø _mm256_set1_epi32
-#define Ù =_mm256_loadu_si256
-#define Ú ;for
-#define Û ;if constexpr(!Ã is_same_v<T,mint>)Å from_native
-#define Ü È int n=precision(deg);if(!n)Å{};
-#define Ý T sum=0 Ú(int j=1;j<=i&&À(j)<Í size();++j)sum+=
-#define Þ À i=0;i<
-#define ß ;Â pointwise(Ì,Ë)Á(Ì,true)
-#define à [j]*Ä[i-j];Ä[i]=
-#define á initial
-#define â mint
-#define ã _mm256_storeu_si256
-#define ä assert
-#define å if constexpr
-#define æ value
-#define ç ;Â pointwise
-#define è vectorized
-#define é product
-#define ê _mm256_srli_epi64
-#define ë À i=
-#define ì Ã vector<T>
-#define î template<class T
-#define ï length
-#define ð auto
-#define ñ shrink()
-#define ò multiply
-#define ó int
-#define ô Í size()
-#define õ [i]
-#define ö ::mod()
-#define ø Å Ä;
-#define ù ;i<n;++i
-#define ú .data()
-#define û _mm256_mul_epu32
-#define ü ;++i
-#define ý _mm256_permute2x128_si256
-#define þ .size()
-#define ÿ y=_mm256_shuffle_epi32(x,0xb1);x=Ó(sum_vec(x,y),diff_vec(y,x),0xaa);
-#define Ā È F&
-#define ā T(0)
-#define Ă T æ=À(i)<ô?(*this)õ:ā Ú(ó j=1;j<=i&&À(j)<g þ;++j)æ-=g à æ*
-#define ă {T æ=À(i)<f þ?f õ:ā Ú(ó j=1;j<i;++j)æ-=Ä à æ*factor;}
-#define Ą Ö unsigned long long>
-#define ą empty()
-#define Ć forward
-#define ć first
-#define Ĉ template<bool Inverse>
-#define ĉ work=newton_precision
-#define Ċ reciprocal
-#define ċ _mm256_sub_epi32
-#define Č fixed_product
-#define č denominator
-#define Ď Ä.insert(Ä.Ñ,shift,ā);ø
-#define ď frequency
-#define Đ ó i=
-#define đ Ì.Ñ
-#define Ē using F=Ç<T>;
-#define ē difference
-#define Ĕ _mm256_mullo_epi32
-#define ĕ roots
-#define Ė *this
-#define ė ð x Ù(É È Õ*>(a+i));
-#define Ę Ã move
-#define ę inline void
-#define Ě Ã vector<â>
-#define ě work
-#define Ĝ _mm256_min_epu32
-#define ĝ _mm256_add_epi32
-#define Ğ [[maybe_unused]]bool è
-#define ğ simd_available()
-#define Ġ ;Ã fill
-#define ġ Ã min
-#define Ģ div_series
-#define ģ É È __m128i*>
-#define Ĥ if(ô<g þ)Í resize(g þ)Ú(Þ g þ ü)
-#define ĥ Å Ė
+#include "polynomial_product_tree.hpp"
+
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 #include <immintrin.h>
 #endif
+
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
-namespace fps_light_detail{static_assert(sizeof(â)==sizeof(unsigned)&&Ã is_trivially_copyable_v<â>);inline bool ğ{
+
+namespace fps_light_detail {
+static_assert(sizeof(mint) == sizeof(unsigned) && std::is_trivially_copyable_v<mint>);
+inline bool simd_available() {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-Å __builtin_cpu_supports("avx2");
+	return __builtin_cpu_supports("avx2");
 #else
-Å false;
+	return false;
 #endif
-}Ĉ void scalar_stage(â*a,À n,À h,È â*ĕ){for(À start=0;start<n;start+=h*2)for(À j=0;j<h;++j){â x=a[start+j],y=a[start+j+h];å(Inverse)y*=ĕ[j];a[start+j]=x+y;a[start+j+h]=x-y;å(!Inverse)a[start+j+h]*=ĕ[j];}}
+}
+template<bool Inverse>
+void scalar_stage(mint *a, std::size_t n, std::size_t h, const mint *roots) {
+	for (std::size_t start = 0; start < n; start += h * 2)
+		for (std::size_t j = 0; j < h; ++j) {
+			mint x = a[start + j], y = a[start + j + h];
+			if constexpr (Inverse) y *= roots[j];
+			a[start + j] = x + y;
+			a[start + j + h] = x - y;
+			if constexpr (!Inverse) a[start + j + h] *= roots[j];
+		}
+}
+
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-Ê inline Õ é(Õ x,Õ y){È ð p=Ø(â ö);ð even=û(x,y);ð odd=û(ê(x,32),ê(y,32));ð q=Ĕ(Ĕ(x,y),Ø(998244351));even=ê(_mm256_add_epi64(even,û(q,p)),32);odd=_mm256_add_epi64(odd,û(ê(q,32),p));Å Ó(even,odd,0xaa);}Ê inline Õ Č(Õ x,Õ w,Õ q){ð even=û(x,q);ð odd=û(ê(x,32),ê(q,32));q=Ó(ê(even,32),odd,0xaa);Å ċ(Ĕ(x,w),Ĕ(q,Ø(â ö)));}Ê ę pointwise_avx2(â*a,È â*b,À n){ë 0 Ú(;i+8<=n;i+=8){ė ð y Ù(É È Õ*>(b+i));ã(É Õ*>(a+i),é(x,y));}for(ù)a õ*=b õ;}Ê ę scale_avx2(â*a,À n,â factor){ë 0;unsigned æ=factor.val();È ð f=Ø(æ);È ð q=Ø((Ą(æ)<<32)/â ö)Ú(;i+8<=n;i+=8){ė ã(É Õ*>(a+i),Č(x,f,q));}for(ù)a õ*=factor;}Ê inline Õ sum_vec(Õ x,Õ y){ð z=ĝ(x,y);Å Ĝ(z,ċ(z,Ø(2*â ö)));}Ê inline Õ diff_vec(Õ x,Õ y){ð z=ċ(x,y);Å Ĝ(z,ĝ(z,Ø(2*â ö)));}Ĉ Ê void leaf8(â*a,À n,È â*ĕ){alignas(32)unsigned values[8],quotients[8]Ú(Đ 0;i<8 ü){values õ=ĕ õ.val();quotients õ=(Ą(values õ)<<32)/â ö;}È ð w2=_mm256_broadcastq_epi64(_mm_loadl_epi64(ģ(values+2)));È ð w4=_mm256_broadcastsi128_si256(_mm_loadu_si128(ģ(values+4)));È ð q2=_mm256_broadcastq_epi64
-(_mm_loadl_epi64(ģ(quotients+2)));È ð q4=_mm256_broadcastsi128_si256(_mm_loadu_si128(ģ(quotients+4)))Ú(Þ n;i+=8){ė å(!Inverse){ð y=ý(x,x,1);x=Ó(sum_vec(x,y),Č(diff_vec(y,x),w4,q4),0xf0);y=_mm256_shuffle_epi32(x,0x4e);x=Ó(sum_vec(x,y),Č(diff_vec(y,x),w2,q2),0xcc);ÿ}else{ð ÿ x=Ó(x,Č(x,w2,q2),0xcc);y=_mm256_shuffle_epi32(x,0x4e);x=Ó(sum_vec(x,y),diff_vec(y,x),0xcc);x=Ó(x,Č(x,w4,q4),0xf0);y=ý(x,x,1);x=Ó(sum_vec(x,y),diff_vec(y,x),0xf0);}ã(É Õ*>(a+i),x);}}Ê ę expand_roots(â*out,È â*previous,À n,â step){È ð factor=Ø(step.v)Ú(Þ n;i+=8){ð x Ù(É È Õ*>(previous+i));ð y=é(x,factor);ð low=_mm256_unpacklo_epi32(x,y),high=_mm256_unpackhi_epi32(x,y);ã(É Õ*>(out+2*i),ý(low,high,0x20));ã(É Õ*>(out+2*i+8),ý(low,high,0x31));}}Ĉ Ê void vector_stage(â*a,À n,À h,È â*ĕ){È ð p=Ø(2*â ö)Ú(À start=0;start<n;start+=h*2)for(À j=0;j<h;j+=8){ð*ć=É Õ*>(a+start+j);ð*last=É Õ*>(a+start+j+h);ð x Ù(ć),y Ù(last);ð w Ù(É È Õ*>(ĕ+j));å(Inverse)y=é(y,w);ð sum=ĝ(x,y),ē=ċ(x,y);sum=Ĝ(sum,ċ(sum,p));ē=Ĝ(ē,ĝ(ē,p));å(!Inverse)ē=é(ē
-,w);ã(ć,sum);ã(last,ē);}}
+__attribute__((target("avx2")))
+inline __m256i product(__m256i x, __m256i y) {
+	const auto p = _mm256_set1_epi32(mint::mod());
+	auto even = _mm256_mul_epu32(x, y);
+	auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32));
+	auto q = _mm256_mullo_epi32(_mm256_mullo_epi32(x, y), _mm256_set1_epi32(998244351));
+	even = _mm256_srli_epi64(_mm256_add_epi64(even, _mm256_mul_epu32(q, p)), 32);
+	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(q, 32), p));
+	return _mm256_blend_epi32(even, odd, 0xaa);
+}
+
+__attribute__((target("avx2")))
+inline __m256i fixed_product(__m256i x, __m256i w, __m256i q) {
+	auto even = _mm256_mul_epu32(x, q);
+	auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(q, 32));
+	q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+	return _mm256_sub_epi32(_mm256_mullo_epi32(x, w), _mm256_mullo_epi32(q, _mm256_set1_epi32(mint::mod())));
+}
+
+__attribute__((target("avx2")))
+inline void pointwise_avx2(mint *a, const mint *b, std::size_t n) {
+	std::size_t i = 0;
+	for (; i + 8 <= n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), product(x, y));
+	}
+	for (; i < n; ++i) a[i] *= b[i];
+}
+
+__attribute__((target("avx2")))
+inline void scale_avx2(mint *a, std::size_t n, mint factor) {
+	std::size_t i = 0;
+	unsigned value = factor.val();
+	const auto f = _mm256_set1_epi32(value);
+	const auto q = _mm256_set1_epi32((static_cast<unsigned long long>(value) << 32) / mint::mod());
+	for (; i + 8 <= n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), fixed_product(x, f, q));
+	}
+	for (; i < n; ++i) a[i] *= factor;
+}
+
+__attribute__((target("avx2")))
+inline __m256i sum_vec(__m256i x, __m256i y) {
+	auto z = _mm256_add_epi32(x, y);
+	return _mm256_min_epu32(z, _mm256_sub_epi32(z, _mm256_set1_epi32(2 * mint::mod())));
+}
+
+__attribute__((target("avx2")))
+inline __m256i diff_vec(__m256i x, __m256i y) {
+	auto z = _mm256_sub_epi32(x, y);
+	return _mm256_min_epu32(z, _mm256_add_epi32(z, _mm256_set1_epi32(2 * mint::mod())));
+}
+
+template<bool Inverse>
+__attribute__((target("avx2")))
+void leaf8(mint *a, std::size_t n, const mint *roots) {
+	alignas(32) unsigned values[8], quotients[8];
+	for (int i = 0; i < 8; ++i) {
+		values[i] = roots[i].val();
+		quotients[i] = (static_cast<unsigned long long>(values[i]) << 32) / mint::mod();
+	}
+	const auto w2 = _mm256_broadcastq_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(values + 2)));
+	const auto w4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(values + 4)));
+	const auto q2 = _mm256_broadcastq_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(quotients + 2)));
+	const auto q4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(quotients + 4)));
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		if constexpr (!Inverse) {
+			auto y = _mm256_permute2x128_si256(x, x, 1);
+			x = _mm256_blend_epi32(sum_vec(x, y), fixed_product(diff_vec(y, x), w4, q4), 0xf0);
+			y = _mm256_shuffle_epi32(x, 0x4e);
+			x = _mm256_blend_epi32(sum_vec(x, y), fixed_product(diff_vec(y, x), w2, q2), 0xcc);
+			y = _mm256_shuffle_epi32(x, 0xb1);
+			x = _mm256_blend_epi32(sum_vec(x, y), diff_vec(y, x), 0xaa);
+		} else {
+			auto y = _mm256_shuffle_epi32(x, 0xb1);
+			x = _mm256_blend_epi32(sum_vec(x, y), diff_vec(y, x), 0xaa);
+			x = _mm256_blend_epi32(x, fixed_product(x, w2, q2), 0xcc);
+			y = _mm256_shuffle_epi32(x, 0x4e);
+			x = _mm256_blend_epi32(sum_vec(x, y), diff_vec(y, x), 0xcc);
+			x = _mm256_blend_epi32(x, fixed_product(x, w4, q4), 0xf0);
+			y = _mm256_permute2x128_si256(x, x, 1);
+			x = _mm256_blend_epi32(sum_vec(x, y), diff_vec(y, x), 0xf0);
+		}
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+}
+
+__attribute__((target("avx2")))
+inline void expand_roots(mint *out, const mint *previous, std::size_t n, mint step) {
+	const auto factor = _mm256_set1_epi32(step.v);
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(previous + i));
+		auto y = product(x, factor);
+		auto low = _mm256_unpacklo_epi32(x, y), high = _mm256_unpackhi_epi32(x, y);
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(out + 2 * i), _mm256_permute2x128_si256(low, high, 0x20));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(out + 2 * i + 8), _mm256_permute2x128_si256(low, high, 0x31));
+	}
+}
+
+template<bool Inverse>
+__attribute__((target("avx2")))
+void vector_stage(mint *a, std::size_t n, std::size_t h, const mint *roots) {
+	const auto p = _mm256_set1_epi32(2 * mint::mod());
+	for (std::size_t start = 0; start < n; start += h * 2)
+		for (std::size_t j = 0; j < h; j += 8) {
+			auto *first = reinterpret_cast<__m256i *>(a + start + j);
+			auto *last = reinterpret_cast<__m256i *>(a + start + j + h);
+			auto x = _mm256_loadu_si256(first), y = _mm256_loadu_si256(last);
+			auto w = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
+			if constexpr (Inverse) y = product(y, w);
+			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
+			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
+			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
+			if constexpr (!Inverse) difference = product(difference, w);
+			_mm256_storeu_si256(first, sum);
+			_mm256_storeu_si256(last, difference);
+		}
+}
 #endif
-struct Roots{Ě Ć{0,1},Ë{0,1};void prepare(À n){À begin=Ć þ;if(begin>=n)Å;Ć Ò(n),Ë Ò(n)Ú(À h=begin;h<n;h*=2){â step=â(3).pow((â ö-1)/(h*2));
+
+struct Roots {
+	std::vector<mint> forward{0, 1}, inverse{0, 1};
+	void prepare(std::size_t n) {
+		std::size_t begin = forward.size();
+		if (begin >= n) return;
+		forward.resize(n), inverse.resize(n);
+		for (std::size_t h = begin; h < n; h *= 2) {
+			mint step = mint(3).pow((mint::mod() - 1) / (h * 2));
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-if(ğ&&h>=16)expand_roots(Ć ú+h,Ć ú+h/2,h/2,step);else
+			if (simd_available() && h >= 16) expand_roots(forward.data() + h, forward.data() + h / 2, h / 2, step);
+			else
 #endif
-for(À j=0;j<h/2;++j){Ć[h+2*j]=Ć[h/2+j];Ć[h+2*j+1]=Ć[h/2+j]*step;}Ë[h]=1 Ú(À j=1;j<h;++j)Ë[h+j]=-Ć[2*h-j];}}};ę pointwise(Ě&a,È Ě&b,Ğ=ğ){ä(a þ==b þ);
+			for (std::size_t j = 0; j < h / 2; ++j) {
+				forward[h + 2 * j] = forward[h / 2 + j];
+				forward[h + 2 * j + 1] = forward[h / 2 + j] * step;
+			}
+			inverse[h] = 1;
+			for (std::size_t j = 1; j < h; ++j) inverse[h + j] = -forward[2 * h - j];
+		}
+	}
+};
+
+inline void pointwise(std::vector<mint> &a, const std::vector<mint> &b, [[maybe_unused]] bool vectorized = simd_available()) {
+	assert(a.size() == b.size());
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-if(è)Å pointwise_avx2(a ú,b ú,a þ);
+	if (vectorized) return pointwise_avx2(a.data(), b.data(), a.size());
 #endif
-for(Þ a þ ü)a õ*=b õ;}ę scale(Ě&a,â factor,Ğ=ğ){
+	for (std::size_t i = 0; i < a.size(); ++i) a[i] *= b[i];
+}
+
+inline void scale(std::vector<mint> &a, mint factor, [[maybe_unused]] bool vectorized = simd_available()) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-if(è)Å scale_avx2(a ú,a þ,factor);
+	if (vectorized) return scale_avx2(a.data(), a.size(), factor);
 #endif
-for(ð&x:a)x*=factor;}Ĉ void stage(â*a,À n,À h,È â*ĕ,Ğ){
+	for (auto &x : a) x *= factor;
+}
+
+template<bool Inverse>
+void stage(mint *a, std::size_t n, std::size_t h, const mint *roots, [[maybe_unused]] bool vectorized) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-if(è&&h>=8)Å vector_stage<Inverse>(a,n,h,ĕ);
+	if (vectorized && h >= 8) return vector_stage<Inverse>(a, n, h, roots);
 #endif
-scalar_stage<Inverse>(a,n,h,ĕ);}ę transform(Ě&a,bool Ë=false){À n=a þ;ä(Ã has_single_bit(n)&&n<=(À(1)<<23));static Roots ĕ;ĕ.prepare(n);bool è=false;
+	scalar_stage<Inverse>(a, n, h, roots);
+}
+
+inline void transform(std::vector<mint> &a, bool inverse = false) {
+	std::size_t n = a.size();
+	assert(std::has_single_bit(n) && n <= (std::size_t(1) << 23));
+	static Roots roots;
+	roots.prepare(n);
+	bool vectorized = false;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-è=__builtin_cpu_supports("avx2");
+	vectorized = __builtin_cpu_supports("avx2");
 #endif
-if(Ë){À h=1;
+	if (inverse) {
+		std::size_t h = 1;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-if(è&&n>=8)leaf8<true>(a ú,n,ĕ.Ë ú),h=8;
+		if (vectorized && n >= 8) leaf8<true>(a.data(), n, roots.inverse.data()), h = 8;
 #endif
-for(;h<n;h*=2)stage<true>(a ú,n,h,ĕ.Ë ú+h,è);scale(a,â(n).inv());}else{À h=n/2 Ú(;h>=8;h/=2)stage<false>(a ú,n,h,ĕ.Ć ú+h,è);
+		for (; h < n; h *= 2) stage<true>(a.data(), n, h, roots.inverse.data() + h, vectorized);
+		scale(a, mint(n).inv());
+	} else {
+		std::size_t h = n / 2;
+		for (; h >= 8; h /= 2) stage<false>(a.data(), n, h, roots.forward.data() + h, vectorized);
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-if(è&&n>=8)Å leaf8<false>(a ú,n,ĕ.Ć ú);
+		if (vectorized && n >= 8) return leaf8<false>(a.data(), n, roots.forward.data());
 #endif
-for(;h;h/=2)stage<false>(a ú,n,h,ĕ.Ć ú+h,è);}}inline Ě ò(È Ě&a,È Ě&b){if(a.ą||b.ą)Å{};[[maybe_unused]]constexpr À limit=À(1)<<23;ä(a þ<=limit&&b þ<=limit&&a þ+b þ-1<=limit);À ï=a þ+b þ-1;if(ġ(a þ,b þ)<=32){Ě Ä(ï)Ú(Þ a þ ü)for(À j=0;j<b þ;++j)Ä[i+j]+=a õ*b[j];ø}À n=Ã bit_ceil(ï);Ě x=a;x Ò(n);transform(x);if(&a==&b){pointwise(x,x);}else{Ě y=b;y Ò(n);transform(y);pointwise(x,y);}transform(x,true);x Ò(ï);Å x;}}
+		for (; h; h /= 2) stage<false>(a.data(), n, h, roots.forward.data() + h, vectorized);
+	}
+}
+
+inline std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<mint> &b) {
+	if (a.empty() || b.empty()) return {};
+	[[maybe_unused]] constexpr std::size_t limit = std::size_t(1) << 23;
+	assert(a.size() <= limit && b.size() <= limit && a.size() + b.size() - 1 <= limit);
+	std::size_t length = a.size() + b.size() - 1;
+	if (std::min(a.size(), b.size()) <= 32) {
+		std::vector<mint> result(length);
+		for (std::size_t i = 0; i < a.size(); ++i)
+			for (std::size_t j = 0; j < b.size(); ++j) result[i + j] += a[i] * b[j];
+		return result;
+	}
+	std::size_t n = std::bit_ceil(length);
+	std::vector<mint> x = a;
+	x.resize(n);
+	transform(x);
+	if (&a == &b) {
+		pointwise(x, x);
+	} else {
+		std::vector<mint> y = b;
+		y.resize(n);
+		transform(y);
+		pointwise(x, y);
+	}
+	transform(x, true);
+	x.resize(length);
+	return x;
+}
+}
+
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options
 #endif
+
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
-î=â>struct Ç:ì{static_assert(T ö==998244353);using base=ì;using F=Ç;using base::base;Ç()=default;Ç(base a):base(Ę(a)){}F&Ð=(base a){base::Ð=(Ę(a));ĥ;}F&Ð=(Ã initializer_list<T>a){base::Ð=(a);ĥ;}static F ò(Ā a,Ā b){å(Ã is_same_v<T,â>)Å Â ò(a,b);else{Ě x(a þ),y Ú(Þ a þ ü)x õ=â::raw(a õ.val());if(&a!=&b){y Ò(b þ)Ú(Þ b þ ü)y õ=â::raw(b õ.val());}ð z=Â ò(x,&a==&b?x:y);F Ä(z þ)Ú(Þ z þ ü)Ä õ=T::raw(z õ.val());ø}}F Ð-()È{F r=Ė Ú(T&x:r)x=-x;Å r;}F&Ð+=(Ā g){Ĥ(Ė)õ+=g õ;ĥ;}F&Ð-=(Ā g){Ĥ(Ė)õ-=g õ;ĥ;}F&Ð+=(T x){if(Í ą)Í resize(1);(Ė)[0]+=x;ĥ;}F&Ð-=(T x){ĥ+=-x;}F&Ð*=(Ā g){ĥ=ò(Ė,g);}F&Ð/=(Ā g){ĥ=Ģ(g);}F&Ð%=(Ā g){ĥ=divmod(g).second;}F&Ð*=(T x){for(T&v:Ė)v*=x;ĥ;}F&Ð/=(T x){ĥ*=x.inv();}Ï+(F a,Ā b){Å a+=b;}Ï-(F a,Ā b){Å a-=b;}Ï*(Ā a,Ā b){Å ò(a,b);}Ï/(Ā a,Ā b){Å a.Ģ(b);}Ï%(Ā a,Ā b){Å a.divmod(b).second;}Ï+(F a,T b){Å a+=b;}Ï-(F a,T b){Å a-=b;}Ï*(F a,T b){Å a*=b;}Ï/(F a,T b){Å a/=b;}Ï+(T a,F b){Å b+=a;}Ï-(T a,Ā b){Å-b+a;}Ï*(T a,F b){Å b*=a;}F&Ð<<=(ó d){ä(d>=0);È ð n=ô;if(À(d)>=n)ĥ=F(n);Í insert(Í Ñ,d,ā);Í resize
-(n);ĥ;}F&Ð>>=(ó d){ä(d>=0);È ð n=ô;Í erase(Í Ñ,Í Ñ+ġ(n,À(d)));Í resize(n);ĥ;}Ï<<(F a,ó d){Å a<<=d;}Ï>>(F a,ó d){Å a>>=d;}F pre(ó n)È{ä(n>=0);Å F(Í Ñ,Í Ñ+ġ(À(n),ô));}void ñ{while(!Í ą&&Í back()==ā)Í pop_back();}void trim(){ñ;}T eval(T x)È{T Ä=0 Ú(ð it=Í rbegin();it!=Í rend();++it)Ä=Ä*x+*it;ø}F diff()È{F Ä(ô)Ú(ë 1;i<ô ü)Ä[i-1]=(Ė)õ*T(i);ø}F integral()È{ä(ô<T ö);F Ä(ô);È ð&inv=inverses(Ö ó>(ô))Ú(ë 1;i<ô ü)Ä õ=(Ė)[i-1]*inv õ;ø}void onemul(ó d,T c){ä(d>=0);if(!d){Ė*=T(1)+c;Å;}for(ë ô;i>À(d);--i)(Ė)[i-1]+=(Ė)[i-1-d]*c;}void onediv(ó d,T c){ä(d>=0);if(!d){Ė/=T(1)+c;Å;}for(ë d;i<ô ü)(Ė)õ-=(Ė)[i-d]*c;}F inv(ó deg=-1)È{Ü ä(!Í ą&&(Ė)[0]!=ā)Û(native().inv(n));else{È ó ĉ(n),á=ġ(ě,32);F Ä(á);È T Ë=(Ė)[0].inv();Ä[0]=Ë Ú(Đ 1;i<á ü){Ý(Ė)à-sum*Ë;}for(ó k=á;k<ě;k*=2)inverse_step(Ė,Ä,ġ(k*2,ě));Ä Ò(n)Ú(Đ ě ù){Ý(Ė)à-sum*Ë;}ø}}F Ģ(Ā g,ó deg=-1)È{Ü ä(!g.ą&&g[0]!=ā)Û(native().Ģ(g.native(),n));else{if(n<=32){F Ä(n);È T Ë=g[0].inv()Ú(Đ 0 ù){Ă Ë;}ø}È ó ĉ(n),k=Ã bit_floor(unsigned(ě-1)),ï=k*2;F Ë=g.inv(k),Ä=pre(k)
-;È T constant=Ë[0];Ë Ò(ï),Ä Ò(ï)Á(Ë)Á(Ä)ç(Ä,Ë)Á(Ä,true)Ġ(Ä.Ñ+k,Ä.end(),ā);F quotient=Ä,Ì=g.pre(ě);Ì Ò(ï)Á(quotient)Á(Ì)ç(Ì,quotient)Á(Ì,true)Ġ(đ,đ+k,ā)Ú(Đ k;i<ě ü)Ì õ=(À(i)<ô?(Ė)õ:ā)-Ì õ Ġ(đ+ě,Ì.end(),ā)Á(Ì)ß;Ä Ò(n);Ã copy(đ+k,đ+ě,Ä.Ñ+k)Ú(Đ ě ù){Ă constant;}ø}}F log(ó deg=-1)È{Ü ä(!Í ą&&(Ė)[0]==T(1))Û(native().log(n));else{F Ä=pre(n).diff().pre(n-1).Ģ(pre(n),n-1);Ä Ò(n);Å Ä.integral();}}F exp(ó deg=-1)È{Ü ä(Í ą||(Ė)[0]==ā)Û(native().exp(n));else{È ó ĉ(n),á=ġ(ě,32);È ð&inv=inverses(n);F Ä(á);Ä[0]=T(1)Ú(Đ 1;i<á ü){Ý T(j)*(Ė)à sum*inv õ;}if(ě==n&&á==n)ø F Ċ=Ä.inv(á)Ú(ó k=á;k<ě;k*=2){È ó ï=k*2,m=ġ(ï,ě);if(Ċ þ<À(k))inverse_step(Ä,Ċ,k);F ď=Ä,Ë=Ċ,Ì(ï);ď Ò(ï),Ë Ò(ï)Á(ď)Á(Ë)Ú(Đ 1;i<m&&À(i)<ô ü)Ì[i-1]=(Ė)õ*T(i)Á(Ì)ç(Ì,ď)Á(Ì,true)Ġ(đ,đ+k-1,ā)Ġ(đ+m-1,Ì.end(),ā)Á(Ì)ß Ú(Đ m-1;i>=k;--i)Ì õ=Ì[i-1]*inv õ Ġ(đ,đ+k,ā)Ġ(đ+m,Ì.end(),ā)Á(Ì)ç(Ì,ď)Á(Ì,true);Ä Ò(m);Ã copy(đ+k,đ+m,Ä.Ñ+k);}Ä Ò(n)Ú(Đ ě ù){Ý T(j)*(Ė)à sum*inv õ;}ø}}F sqrt(ó deg=-1)È{È ó n=precision(deg);if(!n)Å{}Û(native().sqrt(n));else{ó ć=0,last=
-Ö ó>(ġ(ô,À(n)));while(ć<last&&(Ė)[ć]==ā)++ć;if(ć==last)Å F(n);if(ć&1)Å{};ð constant=scalar_sqrt((Ė)[ć]);if(!constant)Å{};È ó shift=ć/2,target=n-shift,ĉ(target),á=ġ(ě,32);F f(Í Ñ+ć,Í Ñ+last),Ä(á);È T half=T(2).inv(),factor=(T(2)**constant).inv();Ä[0]=*constant Ú(Đ 1;i<á ü)ă if(á==target){Ď}F Ċ=Ä.inv(á)Ú(ó k=á;k<ě;k*=2){È ó ï=k*2,m=ġ(ï,ě);F Ì;if(Ċ þ<À(k))inverse_step(Ä,Ċ,k,&Ì);if(Ì.ą){Ì=Ä Á(Ì);}F Ë=Ċ ç(Ì,Ì)Á(Ì,true);Ì Ò(ï),Ë Ò(ï)Ú(Đ 0;i<m-k ü){T low=À(i)<f þ?f õ:ā;T high=À(k+i)<f þ?f[k+i]:ā;Ì õ=(low+high-Ì õ)*half;}Ã fill(đ+m-k,Ì.end(),ā)Á(Ì)Á(Ë)ß;Ä Ò(m);Ã copy_n(đ,m-k,Ä.Ñ+k);}Ä Ò(target)Ú(Đ ě;i<target ü)ă Ď}}F pow(long long k)È{ä(k>=0);È ó n=precision(-1);if(!n)Å{};if(!k){F Ä(n);Ä[0]=1;ø}if(k==1)ĥ;ó ć=0;while(ć<n&&(Ė)[ć]==ā)++ć;if(ć==n||ć>(n-1)/k)Å F(n);È ó shift=Ö ó>(ć*k),len=n-shift;È T lead=(Ė)[ć];F f(Í Ñ+ć,Í end());f Ò(len);f/=lead;F Ä=(f.log(len)*T(k)).exp(len)*lead.pow(k);Ď}Ã pair<F,F>divmod(Ā divisor)È{F a=Ė,b=divisor;a.ñ,b.ñ;ä(!b.ą);if(a þ<b þ)Å{{},Ę(a)};ä(a þ<=(À(1)<<22));È ó qn
-=Ö ó>(a þ-b þ+1),m=Ö ó>(b þ);if(m<=32||À(m)*qn<=2048){F q(qn);È T Ë=b.back().inv()Ú(Đ qn-1;i>=0;--i){T æ=q õ=a[i+m-1]*Ë Ú(ó j=0;j<m;++j)a[i+j]-=æ*b[j];}a Ò(m-1);a.ñ,q.ñ;Å{Ę(q),Ę(a)};}F ra(a.rbegin(),a.rend()),rb(b.rbegin(),b.rend());F q=ra.Ģ(rb,qn);Ã reverse(q.Ñ,q.end());F r=a-ò(q,b);r Ò(m-1);r.ñ,q.ñ;Å{Ę(q),Ę(r)};}private:static ó newton_precision(ó n){È ó prefix=Ã bit_floor(unsigned(n));Å prefix>=4096&&n-prefix<=4?prefix:n;}using Native=Ç<â>;Native native()È{Native Ä(ô)Ú(Þ ô ü)Ä õ=â::raw((Ė)õ.val());ø}static F from_native(È Native&a){F Ä(a þ)Ú(Þ a þ ü)Ä õ=T::raw(a õ.val());ø}static void inverse_step(Ā f,F&Ä,ó n,F*ď=nullptr){È ó k=Ö ó>(Ä þ),ï=k*2;ä(k>0&&Ã has_single_bit(unsigned(k))&&k<n&&n<=ï);F Ì=f.pre(n),Ë=Ä;Ì Ò(ï),Ë Ò(ï)Á(Ì);if(ď)*ď=Ì Á(Ë)ß Ġ(đ,đ+k,ā)Á(Ì)ß;Ä Ò(n)Ú(Đ k ù)Ä õ=-Ì õ;}ó precision(ó deg)È{ä(ô<=À(Ã numeric_limits<ó>::max()));ó n=deg<0?Ö ó>(ô):deg;ä(0<=n&&n<=(1<<22));Å n;}static È ì&inverses(ó n){static ì inv{ā,T(1)}Ú(Đ Ö ó>(inv þ)ù)inv.push_back(T(T ö-T ö/i)*inv[T ö%i]);Å
- inv;}static Ã optional<T>scalar_sqrt(T a){if(a==ā)Å ā;if(a.pow((T ö-1)/2)!=T(1))Å Ã nullopt;constexpr ó q=119;T x=a.pow((q+1)/2),t=a.pow(q),c=T(3).pow(q);ó m=23;while(t!=T(1)){Đ 1;T next=t*t;while(i<m&&next!=T(1))next*=next,++i;ä(i<m);T b=c.pow(1LL<<(m-i-1));x*=b;c=b*b;t*=c;m=i;}Å T::raw(ġ(x.val(),T ö-x.val()));}};using light_fps=Ç<>;using LightFPS=light_fps;
+
+template<class T = mint>
+struct LightFormalPowerSeries : std::vector<T> {
+	static_assert(T::mod() == 998244353);
+	using base = std::vector<T>;
+	using F = LightFormalPowerSeries;
+	using base::base;
+	LightFormalPowerSeries() = default;
+	LightFormalPowerSeries(base a) : base(std::move(a)) {}
+	F &operator=(base a) { base::operator=(std::move(a)); return *this; }
+	F &operator=(std::initializer_list<T> a) { base::operator=(a); return *this; }
+	static F multiply(const F &a, const F &b) {
+		if constexpr (std::is_same_v<T, mint>) return fps_light_detail::multiply(a, b);
+		else {
+			auto x = a.native();
+			return from_native(&a == &b ? Native::multiply(x, x) : Native::multiply(x, b.native()));
+		}
+	}
+	F operator-() const { F r = *this; for (T &x : r) x = -x; return r; }
+	F &operator+=(const F &g) {
+		if (this->size() < g.size()) this->resize(g.size());
+		for (std::size_t i = 0; i < g.size(); ++i) (*this)[i] += g[i];
+		return *this;
+	}
+	F &operator-=(const F &g) {
+		if (this->size() < g.size()) this->resize(g.size());
+		for (std::size_t i = 0; i < g.size(); ++i) (*this)[i] -= g[i];
+		return *this;
+	}
+	F &operator+=(T x) { if (this->empty()) this->resize(1); (*this)[0] += x; return *this; }
+	F &operator-=(T x) { return *this += -x; }
+	F &operator*=(const F &g) { return *this = multiply(*this, g); }
+	F &operator/=(const F &g) { return *this = div_series(g); }
+	F &operator%=(const F &g) { return *this = divmod(g).second; }
+	F &operator*=(T x) { for (T &v : *this) v *= x; return *this; }
+	F &operator/=(T x) { return *this *= x.inv(); }
+	friend F operator+(F a, const F &b) { return a += b; }
+	friend F operator-(F a, const F &b) { return a -= b; }
+	friend F operator*(const F &a, const F &b) { return multiply(a, b); }
+	friend F operator/(const F &a, const F &b) { return a.div_series(b); }
+	friend F operator%(const F &a, const F &b) { return a.divmod(b).second; }
+	friend F operator+(F a, T b) { return a += b; }
+	friend F operator-(F a, T b) { return a -= b; }
+	friend F operator*(F a, T b) { return a *= b; }
+	friend F operator/(F a, T b) { return a /= b; }
+	friend F operator+(T a, F b) { return b += a; }
+	friend F operator-(T a, const F &b) { return -b + a; }
+	friend F operator*(T a, F b) { return b *= a; }
+	F &operator<<=(int d) {
+		assert(d >= 0);
+		const auto n = this->size();
+		if (std::size_t(d) >= n) return *this = F(n);
+		this->insert(this->begin(), d, T(0));
+		this->resize(n);
+		return *this;
+	}
+	F &operator>>=(int d) {
+		assert(d >= 0);
+		const auto n = this->size();
+		this->erase(this->begin(), this->begin() + std::min(n, std::size_t(d)));
+		this->resize(n);
+		return *this;
+	}
+	friend F operator<<(F a, int d) { return a <<= d; }
+	friend F operator>>(F a, int d) { return a >>= d; }
+	F pre(int n) const {
+		assert(n >= 0);
+		return F(this->begin(), this->begin() + std::min(std::size_t(n), this->size()));
+	}
+	void shrink() { while (!this->empty() && this->back() == T(0)) this->pop_back(); }
+	void trim() { shrink(); }
+	T eval(T x) const {
+		T result = 0;
+		for (auto it = this->rbegin(); it != this->rend(); ++it) result = result * x + *it;
+		return result;
+	}
+	F diff() const {
+		F result(this->size());
+		for (std::size_t i = 1; i < this->size(); ++i) result[i - 1] = (*this)[i] * T(i);
+		return result;
+	}
+	F integral() const {
+		assert(this->size() < T::mod());
+		F result(this->size());
+		const auto &inv = inverses(static_cast<int>(this->size()));
+		for (std::size_t i = 1; i < this->size(); ++i) result[i] = (*this)[i - 1] * inv[i];
+		return result;
+	}
+	void onemul(int d, T c) {
+		assert(d >= 0);
+		if (!d) { *this *= T(1) + c; return; }
+		for (std::size_t i = this->size(); i > std::size_t(d); --i) (*this)[i - 1] += (*this)[i - 1 - d] * c;
+	}
+	void onediv(int d, T c) {
+		assert(d >= 0);
+		if (!d) { *this /= T(1) + c; return; }
+		for (std::size_t i = d; i < this->size(); ++i) (*this)[i] -= (*this)[i - d] * c;
+	}
+	F inv(int deg = -1) const {
+		const int n = precision(deg);
+		if (!n) return {};
+		assert(!this->empty() && (*this)[0] != T(0));
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().inv(n));
+		else {
+			const int work = newton_precision(n), initial = std::min(work, 32);
+			F result(initial);
+			const T inverse = (*this)[0].inv();
+			result[0] = inverse;
+			for (int i = 1; i < initial; ++i) {
+				T sum = 0;
+				for (int j = 1; j <= i && std::size_t(j) < this->size(); ++j) sum += (*this)[j] * result[i - j];
+				result[i] = -sum * inverse;
+			}
+			for (int k = initial; k < work; k *= 2) inverse_step(*this, result, std::min(k * 2, work));
+			result.resize(n);
+			for (int i = work; i < n; ++i) {
+				T sum = 0;
+				for (int j = 1; j <= i && std::size_t(j) < this->size(); ++j) sum += (*this)[j] * result[i - j];
+				result[i] = -sum * inverse;
+			}
+			return result;
+		}
+	}
+	F div_series(const F &g, int deg = -1) const {
+		const int n = precision(deg);
+		if (!n) return {};
+		assert(!g.empty() && g[0] != T(0));
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().div_series(g.native(), n));
+		else {
+			if (n <= 32) {
+				F result(n);
+				const T inverse = g[0].inv();
+				for (int i = 0; i < n; ++i) {
+					T value = std::size_t(i) < this->size() ? (*this)[i] : T(0);
+					for (int j = 1; j <= i && std::size_t(j) < g.size(); ++j) value -= g[j] * result[i - j];
+					result[i] = value * inverse;
+				}
+				return result;
+			}
+			const int work = newton_precision(n), k = std::bit_floor(unsigned(work - 1)), length = k * 2;
+			F inverse = g.inv(k), result = pre(k);
+			const T constant = inverse[0];
+			inverse.resize(length), result.resize(length);
+			fps_light_detail::transform(inverse);
+			fps_light_detail::transform(result);
+			fps_light_detail::pointwise(result, inverse);
+			fps_light_detail::transform(result, true);
+			std::fill(result.begin() + k, result.end(), T(0));
+			F quotient = result, error = g.pre(work);
+			error.resize(length);
+			fps_light_detail::transform(quotient);
+			fps_light_detail::transform(error);
+			fps_light_detail::pointwise(error, quotient);
+			fps_light_detail::transform(error, true);
+			std::fill(error.begin(), error.begin() + k, T(0));
+			for (int i = k; i < work; ++i) error[i] = (std::size_t(i) < this->size() ? (*this)[i] : T(0)) - error[i];
+			std::fill(error.begin() + work, error.end(), T(0));
+			fps_light_detail::transform(error);
+			fps_light_detail::pointwise(error, inverse);
+			fps_light_detail::transform(error, true);
+			result.resize(n);
+			std::copy(error.begin() + k, error.begin() + work, result.begin() + k);
+			for (int i = work; i < n; ++i) {
+				T value = std::size_t(i) < this->size() ? (*this)[i] : T(0);
+				for (int j = 1; j <= i && std::size_t(j) < g.size(); ++j) value -= g[j] * result[i - j];
+				result[i] = value * constant;
+			}
+			return result;
+		}
+	}
+	F log(int deg = -1) const {
+		const int n = precision(deg);
+		if (!n) return {};
+		assert(!this->empty() && (*this)[0] == T(1));
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().log(n));
+		else {
+			F result = pre(n).diff().pre(n - 1).div_series(pre(n), n - 1);
+			result.resize(n);
+			return result.integral();
+		}
+	}
+	F exp(int deg = -1) const {
+		const int n = precision(deg);
+		if (!n) return {};
+		assert(this->empty() || (*this)[0] == T(0));
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().exp(n));
+		else {
+			const int work = newton_precision(n), initial = std::min(work, 32);
+			const auto &inv = inverses(n);
+			F result(initial);
+			result[0] = T(1);
+			for (int i = 1; i < initial; ++i) {
+				T sum = 0;
+				for (int j = 1; j <= i && std::size_t(j) < this->size(); ++j) sum += T(j) * (*this)[j] * result[i - j];
+				result[i] = sum * inv[i];
+			}
+			if (work == n && initial == n) return result;
+			F reciprocal = result.inv(initial);
+			for (int k = initial; k < work; k *= 2) {
+				const int length = k * 2, m = std::min(length, work);
+				if (reciprocal.size() < std::size_t(k)) inverse_step(result, reciprocal, k);
+				F frequency = result, inverse = reciprocal, error(length);
+				frequency.resize(length), inverse.resize(length);
+				fps_light_detail::transform(frequency);
+				fps_light_detail::transform(inverse);
+				for (int i = 1; i < m && std::size_t(i) < this->size(); ++i) error[i - 1] = (*this)[i] * T(i);
+				fps_light_detail::transform(error);
+				fps_light_detail::pointwise(error, frequency);
+				fps_light_detail::transform(error, true);
+				std::fill(error.begin(), error.begin() + k - 1, T(0));
+				std::fill(error.begin() + m - 1, error.end(), T(0));
+				fps_light_detail::transform(error);
+				fps_light_detail::pointwise(error, inverse);
+				fps_light_detail::transform(error, true);
+				for (int i = m - 1; i >= k; --i) error[i] = error[i - 1] * inv[i];
+				std::fill(error.begin(), error.begin() + k, T(0));
+				std::fill(error.begin() + m, error.end(), T(0));
+				fps_light_detail::transform(error);
+				fps_light_detail::pointwise(error, frequency);
+				fps_light_detail::transform(error, true);
+				result.resize(m);
+				std::copy(error.begin() + k, error.begin() + m, result.begin() + k);
+			}
+			result.resize(n);
+			for (int i = work; i < n; ++i) {
+				T sum = 0;
+				for (int j = 1; j <= i && std::size_t(j) < this->size(); ++j) sum += T(j) * (*this)[j] * result[i - j];
+				result[i] = sum * inv[i];
+			}
+			return result;
+		}
+	}
+	F sqrt(int deg = -1) const {
+		const int n = precision(deg);
+		if (!n) return {};
+		if constexpr (!std::is_same_v<T, mint>) return from_native(native().sqrt(n));
+		else {
+			int first = 0, last = static_cast<int>(std::min(this->size(), std::size_t(n)));
+			while (first < last && (*this)[first] == T(0)) ++first;
+			if (first == last) return F(n);
+			if (first & 1) return {};
+			auto constant = scalar_sqrt((*this)[first]);
+			if (!constant) return {};
+			const int shift = first / 2, target = n - shift, work = newton_precision(target), initial = std::min(work, 32);
+			F f(this->begin() + first, this->begin() + last), result(initial);
+			const T half = T(2).inv(), factor = (T(2) * *constant).inv();
+			result[0] = *constant;
+			for (int i = 1; i < initial; ++i) {
+				T value = std::size_t(i) < f.size() ? f[i] : T(0);
+				for (int j = 1; j < i; ++j) value -= result[j] * result[i - j];
+				result[i] = value * factor;
+			}
+			if (initial == target) {
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+			F reciprocal = result.inv(initial);
+			for (int k = initial; k < work; k *= 2) {
+				const int length = k * 2, m = std::min(length, work);
+				F error;
+				if (reciprocal.size() < std::size_t(k)) inverse_step(result, reciprocal, k, &error);
+				if (error.empty()) { error = result; fps_light_detail::transform(error); }
+				F inverse = reciprocal;
+				fps_light_detail::pointwise(error, error);
+				fps_light_detail::transform(error, true);
+				error.resize(length), inverse.resize(length);
+				for (int i = 0; i < m - k; ++i) {
+					T low = std::size_t(i) < f.size() ? f[i] : T(0);
+					T high = std::size_t(k + i) < f.size() ? f[k + i] : T(0);
+					error[i] = (low + high - error[i]) * half;
+				}
+				std::fill(error.begin() + m - k, error.end(), T(0));
+				fps_light_detail::transform(error);
+				fps_light_detail::transform(inverse);
+				fps_light_detail::pointwise(error, inverse);
+				fps_light_detail::transform(error, true);
+				result.resize(m);
+				std::copy_n(error.begin(), m - k, result.begin() + k);
+			}
+			result.resize(target);
+			for (int i = work; i < target; ++i) {
+				T value = std::size_t(i) < f.size() ? f[i] : T(0);
+				for (int j = 1; j < i; ++j) value -= result[j] * result[i - j];
+				result[i] = value * factor;
+			}
+			result.insert(result.begin(), shift, T(0));
+			return result;
+		}
+	}
+	F pow(long long k) const {
+		assert(k >= 0);
+		const int n = precision(-1);
+		if (!n) return {};
+		if (!k) { F result(n); result[0] = 1; return result; }
+		if (k == 1) return *this;
+		int first = 0;
+		while (first < n && (*this)[first] == T(0)) ++first;
+		if (first == n || first > (n - 1) / k) return F(n);
+		const int shift = static_cast<int>(first * k), len = n - shift;
+		const T lead = (*this)[first];
+		F f(this->begin() + first, this->end());
+		f.resize(len);
+		f /= lead;
+		F result = (f.log(len) * T(k)).exp(len) * lead.pow(k);
+		result.insert(result.begin(), shift, T(0));
+		return result;
+	}
+	std::pair<F, F> divmod(const F &divisor) const {
+		F a = *this, b = divisor;
+		a.shrink(), b.shrink();
+		assert(!b.empty());
+		if (a.size() < b.size()) return {{}, std::move(a)};
+		assert(a.size() <= (std::size_t(1) << 22));
+		const int qn = static_cast<int>(a.size() - b.size() + 1), m = static_cast<int>(b.size());
+		if (m <= 32 || std::size_t(m) * qn <= 2048) {
+			F q(qn);
+			const T inverse = b.back().inv();
+			for (int i = qn - 1; i >= 0; --i) {
+				T value = q[i] = a[i + m - 1] * inverse;
+				for (int j = 0; j < m; ++j) a[i + j] -= value * b[j];
+			}
+			a.resize(m - 1);
+			a.shrink(), q.shrink();
+			return {std::move(q), std::move(a)};
+		}
+		F ra(a.rbegin(), a.rend()), rb(b.rbegin(), b.rend());
+		F q = ra.div_series(rb, qn);
+		std::reverse(q.begin(), q.end());
+		F r = a - multiply(q, b);
+		r.resize(m - 1);
+		r.shrink(), q.shrink();
+		return {std::move(q), std::move(r)};
+	}
+
+  private:
+	static int newton_precision(int n) {
+		const int prefix = std::bit_floor(unsigned(n));
+		return prefix >= 4096 && n - prefix <= 4 ? prefix : n;
+	}
+	using Native = LightFormalPowerSeries<mint>;
+	Native native() const {
+		Native result(this->size());
+		for (std::size_t i = 0; i < this->size(); ++i) result[i] = mint::raw((*this)[i].val());
+		return result;
+	}
+	static F from_native(const Native &a) {
+		F result(a.size());
+		for (std::size_t i = 0; i < a.size(); ++i) result[i] = T::raw(a[i].val());
+		return result;
+	}
+	static void inverse_step(const F &f, F &result, int n, F *frequency = nullptr) {
+		const int k = static_cast<int>(result.size()), length = k * 2;
+		assert(k > 0 && std::has_single_bit(unsigned(k)) && k < n && n <= length);
+		F error = f.pre(n), inverse = result;
+		error.resize(length), inverse.resize(length);
+		fps_light_detail::transform(error);
+		if (frequency) *frequency = error;
+		fps_light_detail::transform(inverse);
+		fps_light_detail::pointwise(error, inverse);
+		fps_light_detail::transform(error, true);
+		std::fill(error.begin(), error.begin() + k, T(0));
+		fps_light_detail::transform(error);
+		fps_light_detail::pointwise(error, inverse);
+		fps_light_detail::transform(error, true);
+		result.resize(n);
+		for (int i = k; i < n; ++i) result[i] = -error[i];
+	}
+	int precision(int deg) const {
+		assert(this->size() <= std::size_t(std::numeric_limits<int>::max()));
+		int n = deg < 0 ? static_cast<int>(this->size()) : deg;
+		assert(0 <= n && n <= (1 << 22));
+		return n;
+	}
+	static const std::vector<T> &inverses(int n) {
+		static std::vector<T> inv{T(0), T(1)};
+		for (int i = static_cast<int>(inv.size()); i < n; ++i) inv.push_back(T(T::mod() - T::mod() / i) * inv[T::mod() % i]);
+		return inv;
+	}
+	static std::optional<T> scalar_sqrt(T a) {
+		if (a == T(0)) return T(0);
+		if (a.pow((T::mod() - 1) / 2) != T(1)) return std::nullopt;
+		constexpr int q = 119;
+		T x = a.pow((q + 1) / 2), t = a.pow(q), c = T(3).pow(q);
+		int m = 23;
+		while (t != T(1)) {
+			int i = 1;
+			T next = t * t;
+			while (i < m && next != T(1)) next *= next, ++i;
+			assert(i < m);
+			T b = c.pow(1LL << (m - i - 1));
+			x *= b;
+			c = b * b;
+			t *= c;
+			m = i;
+		}
+		return T::raw(std::min(x.val(), T::mod() - x.val()));
+	}
+};
+
+using light_fps = LightFormalPowerSeries<>;
+using LightFPS = light_fps;
+
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options
 #endif
-namespace fps_light_detail{î>struct ProductTree{Ē À size=1,count;Ã vector<F>é;explicit ProductTree(È ì&xs):count(xs þ){ä(count<(À(1)<<23));while(size<count)size<<=1;é Ò(2*size)Ú(Þ size ü)é[size+i]=i<count?F{-xs õ,T(1)}:F{T(1)}Ú(ë size;--i;)é õ=é[2*i+1]þ==1?é[2*i]:F::ò(é[2*i],é[2*i+1]);}ì evaluate(Ā f)È{ì Ä(count);if(!count)ø ð remainder=[](Ā a,Ā b){Å a þ<b þ?a:a.divmod(b).second;};ð visit=[&](ð&&self,À node,Ā æ)->void{if(æ.ą)Å;if(node>=size){Ä[node-size]=æ[0];Å;}self(self,node*2,remainder(æ,é[node*2]));if(é[node*2+1]þ>1)self(self,node*2+1,remainder(æ,é[node*2+1]));};F æ=f;æ.ñ;visit(visit,1,remainder(æ,é[1]));ø}};}namespace light_fps_algorithms{î>Ç<T>taylor_shift(Ç<T>f,Ã type_identity_t<T>c){Ē È À n=f þ;if(n<=1||c==ā)Å f;ä(n<T ö);F factorial(n,T(1)),Ë(n,T(1)),a(n),b(n)Ú(ë 1 ù)factorial õ=factorial[i-1]*T(i);Ë[n-1]=factorial[n-1].inv()Ú(ë n-1;i;--i)Ë[i-1]=Ë õ*T(i);T power=1 Ú(Þ n ü){a[n-1-i]=f õ*factorial õ;b õ=power*Ë õ;power*=c;}a=F::ò(a,b)Ú(Þ n ü)f õ=a[n-1-i]*Ë õ;Å f;}î>T bostan_mori(
-Ç<T>p,Ç<T>q,long long k){Ē ä(k>=0&&!q.ą&&q[0]!=ā);p.ñ;q.ñ;while(k&&!p.ą&&q þ>1){F opposite=q Ú(ë 1;i<opposite þ;i+=2)opposite õ=-opposite õ;F numerator=F::ò(p,opposite),č=F::ò(q,opposite);p Ò((numerator þ+1-À(k&1))/2)Ú(Þ p þ ü)p õ=numerator[2*i+À(k&1)];q Ò((č þ+1)/2)Ú(Þ q þ ü)q õ=č[2*i];p.ñ;q.ñ;k>>=1;}Å Ą(k)<p þ?p[À(k)]/q[0]:ā;}î>T linear_recurrence(È ì&á,È ì&coefficients,long long k){Ē ä(k>=0&&á þ==coefficients þ);È À n=á þ;if(Ą(k)<n)Å á[À(k)];if(!n)Å ā;F q(n+1);q[0]=T(1)Ú(Þ n ü)q[i+1]=-coefficients õ;F p=F::ò(F(á.Ñ,á.end()),q).pre(Ö ó>(n));Å bostan_mori(Ę(p),Ę(q),k);}î>ì multipoint_eval(È Ç<T>&f,È ì&xs){if(f þ<=32||xs þ<=32){ì Ä;Ä.reserve(xs þ)Ú(T x:xs)Ä.push_back(f.eval(x));ø}Å Â ProductTree<T>(xs).evaluate(f);}î>Ç<T>interpolate(È ì&xs,È ì&ys){Ē ä(xs þ==ys þ);È À n=xs þ;if(!n)Å{};Â ProductTree<T>tree(xs);F derivative=tree.é[1].diff();derivative.ñ;ì č=tree.evaluate(derivative),prefix(n+1,T(1))Ú(Þ n ü){ä(č õ!=ā);prefix[i+1]=prefix õ*č õ;}T Ë=prefix[n].inv();Ã vector<F>æ(2*tree.size)Ú(
-ë n;i--;){æ[tree.size+i]=F{ys õ*Ë*prefix õ};Ë*=č õ;}for(ë tree.size;--i;){æ õ=F::ò(æ[2*i],tree.é[2*i+1])+F::ò(æ[2*i+1],tree.é[2*i]);æ[2*i]=F();æ[2*i+1]=F();}æ[1]Ò(n);Å Ę(æ[1]);}}
-#undef À
-#undef Á
-#undef Â
-#undef Ã
-#undef Ä
-#undef Å
-#undef Ç
-#undef È
-#undef É
-#undef Ê
-#undef Ë
-#undef Ì
-#undef Í
-#undef Ï
-#undef Ð
-#undef Ñ
-#undef Ò
-#undef Ó
-#undef Õ
-#undef Ö
-#undef Ø
-#undef Ù
-#undef Ú
-#undef Û
-#undef Ü
-#undef Ý
-#undef Þ
-#undef ß
-#undef à
-#undef á
-#undef â
-#undef ã
-#undef ä
-#undef å
-#undef æ
-#undef ç
-#undef è
-#undef é
-#undef ê
-#undef ë
-#undef ì
-#undef î
-#undef ï
-#undef ð
-#undef ñ
-#undef ò
-#undef ó
-#undef ô
-#undef õ
-#undef ö
-#undef ø
-#undef ù
-#undef ú
-#undef û
-#undef ü
-#undef ý
-#undef þ
-#undef ÿ
-#undef Ā
-#undef ā
-#undef Ă
-#undef ă
-#undef Ą
-#undef ą
-#undef Ć
-#undef ć
-#undef Ĉ
-#undef ĉ
-#undef Ċ
-#undef ċ
-#undef Č
-#undef č
-#undef Ď
-#undef ď
-#undef Đ
-#undef đ
-#undef Ē
-#undef ē
-#undef Ĕ
-#undef ĕ
-#undef Ė
-#undef ė
-#undef Ę
-#undef ę
-#undef Ě
-#undef ě
-#undef Ĝ
-#undef ĝ
-#undef Ğ
-#undef ğ
-#undef Ġ
-#undef ġ
-#undef Ģ
-#undef ģ
-#undef Ĥ
-#undef ĥ
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
+
+namespace fps_light_detail {
+template<class T>
+using ProductTree = polynomial_detail::ProductTree<LightFormalPowerSeries<T>>;
+}
+
+namespace light_fps_algorithms {
+template<class T>
+LightFormalPowerSeries<T> taylor_shift(LightFormalPowerSeries<T> f, std::type_identity_t<T> c) {
+	using F = LightFormalPowerSeries<T>;
+	const std::size_t n = f.size();
+	if (n <= 1 || c == T(0)) return f;
+	assert(n < T::mod());
+	F factorial(n, T(1)), inverse(n, T(1)), a(n), b(n);
+	for (std::size_t i = 1; i < n; ++i) factorial[i] = factorial[i - 1] * T(i);
+	inverse[n - 1] = factorial[n - 1].inv();
+	for (std::size_t i = n - 1; i; --i) inverse[i - 1] = inverse[i] * T(i);
+	T power = 1;
+	for (std::size_t i = 0; i < n; ++i) {
+		a[n - 1 - i] = f[i] * factorial[i];
+		b[i] = power * inverse[i];
+		power *= c;
+	}
+	a = F::multiply(a, b);
+	for (std::size_t i = 0; i < n; ++i) f[i] = a[n - 1 - i] * inverse[i];
+	return f;
+}
+
+template<class T>
+T bostan_mori(LightFormalPowerSeries<T> p, LightFormalPowerSeries<T> q, long long k) {
+	using F = LightFormalPowerSeries<T>;
+	assert(k >= 0 && !q.empty() && q[0] != T(0));
+	p.shrink();
+	q.shrink();
+	while (k && !p.empty() && q.size() > 1) {
+		F opposite = q;
+		for (std::size_t i = 1; i < opposite.size(); i += 2) opposite[i] = -opposite[i];
+		F numerator = F::multiply(p, opposite), denominator = F::multiply(q, opposite);
+		p.resize((numerator.size() + 1 - std::size_t(k & 1)) / 2);
+		for (std::size_t i = 0; i < p.size(); ++i) p[i] = numerator[2 * i + std::size_t(k & 1)];
+		q.resize((denominator.size() + 1) / 2);
+		for (std::size_t i = 0; i < q.size(); ++i) q[i] = denominator[2 * i];
+		p.shrink();
+		q.shrink();
+		k >>= 1;
+	}
+	return static_cast<unsigned long long>(k) < p.size() ? p[std::size_t(k)] / q[0] : T(0);
+}
+
+template<class T>
+T linear_recurrence(const std::vector<T> &initial, const std::vector<T> &coefficients, long long k) {
+	using F = LightFormalPowerSeries<T>;
+	assert(k >= 0 && initial.size() == coefficients.size());
+	const std::size_t n = initial.size();
+	if (static_cast<unsigned long long>(k) < n) return initial[std::size_t(k)];
+	if (!n) return T(0);
+	F q(n + 1);
+	q[0] = T(1);
+	for (std::size_t i = 0; i < n; ++i) q[i + 1] = -coefficients[i];
+	F p = F::multiply(F(initial.begin(), initial.end()), q).pre(static_cast<int>(n));
+	return bostan_mori(std::move(p), std::move(q), k);
+}
+
+template<class T>
+std::vector<T> multipoint_eval(const LightFormalPowerSeries<T> &f, const std::vector<T> &xs) {
+	if (f.size() <= 32 || xs.size() <= 32) {
+		std::vector<T> result;
+		result.reserve(xs.size());
+		for (T x : xs) result.push_back(f.eval(x));
+		return result;
+	}
+	return fps_light_detail::ProductTree<T>(xs).evaluate(f);
+}
+
+template<class T>
+LightFormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> &ys) {
+	assert(xs.size() == ys.size());
+	return fps_light_detail::ProductTree<T>(xs).interpolate(ys);
+}
+}
+
 #endif

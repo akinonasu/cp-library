@@ -16,10 +16,10 @@
 #include "../../components/oct_bit_vector.hpp"
 #include "../../components/quad_bit_vector.hpp"
 #include "../../components/splitmix64.hpp"
+#include "../../components/wavelet_compression.hpp"
 
 template <class T = std::int64_t, class Sum = std::conditional_t<std::is_integral_v<T>, std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>, T>>
 class WaveletMatrix {
-	template <class, class, class> friend class WeightedWaveletMatrix;
 	using BitVector = OctBitVector;
 	int n = 0, levels = 0, ordered = 0;
 	std::vector<T> values;
@@ -29,6 +29,7 @@ class WaveletMatrix {
 	mutable std::vector<BitVector> bits;
 	mutable std::vector<std::array<int, 8>> middle;
 	bool vectorized = BitVector::has_avx2();
+	bool wide_vectorized = BitVector::has_avx512();
 	mutable bool quaternary = false;
 	mutable int sum_levels = 0;
 	mutable std::vector<QuadBitVector> sum_bits;
@@ -74,22 +75,7 @@ class WaveletMatrix {
 		return a;
 	}
 	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n); }
-	std::uint32_t code(const T &x) const {
-		if (values.empty()) return 0;
-		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8)
-			if (dense) {
-				if (x <= values.front()) return 0;
-				if (values.back() < x) return static_cast<int>(values.size());
-				return std::uint64_t(x) - std::uint64_t(values.front());
-			}
-		int p = 0, length = static_cast<int>(values.size());
-		while (length > 1) {
-			int half = length / 2;
-			p += (values[p + half] < x) * half;
-			length -= half;
-		}
-		return p + (values[p] < x);
-	}
+	std::uint32_t code(const T &x) const { return wavelet_detail::lower_code(values, dense, x); }
 	std::pair<int, int> interval_scalar(int l, int r, std::uint32_t x) const {
 		for (int d = 0; d < levels; ++d) {
 			int digit = (x >> (3 * (levels - 1 - d))) & 7;
@@ -124,7 +110,7 @@ class WaveletMatrix {
 			for (int i = l; i < r; ++i) answer += original[i] < x;
 			return answer;
 		}
-		for (int d = 0; d < levels; ++d) {
+		for (int d = 0; d + 1 < levels; ++d) {
 			int digit = (x >> (3 * (levels - 1 - d))) & 7;
 			int a = bits[d].rank(l, digit), b = bits[d].rank(r, digit);
 			if (digit == 7) answer += r - l - b + a;
@@ -132,7 +118,8 @@ class WaveletMatrix {
 			l = middle[d][digit] + a;
 			r = middle[d][digit] + b;
 		}
-		return answer;
+		int digit = x & 7;
+		return answer + (bits.back().below(r, digit) - bits.back().below(l, digit));
 	}
 #if defined(__x86_64__) || defined(__i386__)
 	__attribute__((target("avx2,popcnt"))) int less_than_avx2(int l, int r, std::uint32_t x) const {
@@ -144,7 +131,7 @@ class WaveletMatrix {
 			for (int i = l; i < r; ++i) answer += original[i] < x;
 			return answer;
 		}
-		for (int d = 0; d < levels; ++d) {
+		for (int d = 0; d + 1 < levels; ++d) {
 			int digit = (x >> (3 * (levels - 1 - d))) & 7;
 			int a = bits[d].rank(l, digit), b = bits[d].rank(r, digit);
 			if (digit == 7) answer += r - l - b + a;
@@ -152,7 +139,8 @@ class WaveletMatrix {
 			l = middle[d][digit] + a;
 			r = middle[d][digit] + b;
 		}
-		return answer;
+		int digit = x & 7;
+		return answer + (bits.back().below(r, digit) - bits.back().below(l, digit));
 	}
 #endif
 	int less_than(int l, int r, std::uint32_t x) const {
@@ -162,6 +150,35 @@ class WaveletMatrix {
 #endif
 		return less_than_scalar(l, r, x);
 	}
+	[[gnu::always_inline]] int between_impl(int l, int r, std::uint32_t low, std::uint32_t high) const {
+		int common = levels - 1 - (std::bit_width(low ^ high) - 1) / 3;
+		int d = 0;
+		for (; d < common; ++d) {
+			int digit = (low >> (3 * (levels - 1 - d))) & 7;
+			l = middle[d][digit] + bits[d].rank(l, digit);
+			r = middle[d][digit] + bits[d].rank(r, digit);
+		}
+		int shift = 3 * (levels - 1 - d), a = (low >> shift) & 7, b = (high >> shift) & 7;
+		int answer = bits[d].below(r, b) - bits[d].below(l, b) - bits[d].below(r, a) + bits[d].below(l, a);
+		if (d + 1 == levels) return answer;
+		int ll = middle[d][a] + bits[d].rank(l, a), lr = middle[d][a] + bits[d].rank(r, a);
+		int hl = middle[d][b] + bits[d].rank(l, b), hr = middle[d][b] + bits[d].rank(r, b);
+		for (++d; d + 1 < levels; ++d) {
+			shift = 3 * (levels - 1 - d), a = (low >> shift) & 7, b = (high >> shift) & 7;
+			answer += bits[d].below(hr, b) - bits[d].below(hl, b) - bits[d].below(lr, a) + bits[d].below(ll, a);
+			ll = middle[d][a] + bits[d].rank(ll, a);
+			lr = middle[d][a] + bits[d].rank(lr, a);
+			hl = middle[d][b] + bits[d].rank(hl, b);
+			hr = middle[d][b] + bits[d].rank(hr, b);
+		}
+		return answer + (bits.back().below(hr, high & 7) - bits.back().below(hl, high & 7))
+			- (bits.back().below(lr, low & 7) - bits.back().below(ll, low & 7));
+	}
+#if defined(__x86_64__) || defined(__i386__)
+	__attribute__((target("avx2,popcnt"))) int between_avx2(int l, int r, std::uint32_t low, std::uint32_t high) const {
+		return between_impl(l, r, low, high);
+	}
+#endif
 	template <bool Previous>
 	std::optional<T> neighbor_scalar(int l, int r, std::uint32_t x) const {
 		if (r - l <= 8) {
@@ -256,103 +273,22 @@ class WaveletMatrix {
 #endif
 	template <bool Previous>
 	std::optional<T> neighbor(int l, int r, std::uint32_t x) const {
+		if (values.size() >= 1024 && values.size() >= std::size_t(n) / 8 && r - l >= n / 8) {
+			int c = static_cast<int>(x);
+			for (int repeat = 0; repeat < 4 && c >= 0 && c < static_cast<int>(values.size()); ++repeat, c += Previous ? -1 : 1) {
+				int start = offsets[c], end = offsets[c + 1];
+				if (end - start > 8) break;
+				for (int i = start; i < end; ++i)
+					if (unsigned(positions[i] - l) < unsigned(r - l)) return values[c];
+			}
+		}
 		if (quaternary) return quad_neighbor<Previous>(l, r, x);
 #if defined(__x86_64__) || defined(__i386__)
 		if (vectorized) return neighbor_avx2<Previous>(l, r, x);
 #endif
 		return neighbor_scalar<Previous>(l, r, x);
 	}
-	std::vector<std::uint32_t> compress(const std::vector<T> &a) {
-		std::vector<std::uint32_t> current(n);
-		bool ascending = std::is_sorted(a.begin(), a.end());
-		if (ascending || std::is_sorted(a.rbegin(), a.rend())) {
-			ordered = ascending ? 1 : -1;
-			values.clear();
-			values.reserve(n);
-			for (int i = 0; i < n; ++i) {
-				int j = ascending ? i : n - 1 - i;
-				if (values.empty() || values.back() != a[j]) values.push_back(a[j]);
-				current[j] = static_cast<int>(values.size()) - 1;
-			}
-			if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-			return current;
-		}
-		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8) {
-			if (n >= 1024) {
-				using U = std::make_unsigned_t<T>;
-				struct [[gnu::packed]] Item {
-					U key;
-					std::uint32_t index;
-				};
-				std::vector<Item> order(n);
-				U lo = std::numeric_limits<U>::max(), hi = 0;
-				constexpr U sign = std::is_signed_v<T> ? U(1) << (sizeof(T) * 8 - 1) : U(0);
-				for (int i = 0; i < n; ++i) {
-					U key = U(a[i]) ^ sign;
-					order[i] = {key, std::uint32_t(i)};
-					lo = std::min(lo, key);
-					hi = std::max(hi, key);
-				}
-				if (hi - lo < 65536 && std::uint64_t(hi - lo) < unsigned(n)) {
-					std::vector<int> codes(std::size_t(hi - lo) + 1, -1);
-					for (const auto &v : order) codes[v.key - lo] = 0;
-					values.clear();
-					values.reserve(codes.size());
-					for (std::size_t i = 0; i < codes.size(); ++i)
-						if (codes[i] == 0) {
-							codes[i] = static_cast<int>(values.size());
-							values.push_back(T(U(lo + U(i)) ^ sign));
-						}
-					for (const auto &v : order) current[v.index] = codes[v.key - lo];
-					if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-					return current;
-				}
-				std::vector<Item> next(n);
-				int width = std::bit_width(U(lo ^ hi)), span_width = std::bit_width(U(hi - lo));
-				if ((width + 10) / 11 > (span_width + 10) / 11) {
-					for (auto &v : order) v.key -= lo;
-					width = span_width;
-				}
-				for (int shift = 0; shift < width; shift += 11) {
-					std::array<int, 2048> offsets{};
-					for (const auto &v : order) ++offsets[(v.key >> shift) & 2047];
-					int total = 0;
-					for (int &c : offsets) {
-						int t = c;
-						c = total;
-						total += t;
-					}
-					for (const auto &v : order) next[offsets[(v.key >> shift) & 2047]++] = v;
-					order.swap(next);
-				}
-				values.clear();
-				values.reserve(n);
-				U previous = 0;
-				positions.resize(n);
-				offsets.clear();
-				offsets.reserve(std::size_t(n) + 1);
-				for (int j = 0; j < n; ++j) {
-					const auto &v = order[j];
-					if (values.empty() || v.key != previous) {
-						values.push_back(a[v.index]);
-						offsets.push_back(j);
-					}
-					previous = v.key;
-					current[v.index] = static_cast<int>(values.size()) - 1;
-					positions[j] = v.index;
-				}
-				offsets.push_back(n);
-				if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-				return current;
-			}
-		}
-		values = a;
-		std::sort(values.begin(), values.end());
-		values.erase(std::unique(values.begin(), values.end()), values.end());
-		if (values.capacity() > 2 * values.size()) values.shrink_to_fit();
-		for (int i = 0; i < n; ++i) current[i] = code(a[i]);
-		return current;
-	}
+
 	void partition(std::vector<std::uint32_t> &current, std::vector<std::uint32_t> &next, int d) const {
 		auto offset = middle[d];
 		int shift = 3 * (levels - 1 - d);
@@ -376,18 +312,34 @@ class WaveletMatrix {
 	void partition_sum(std::vector<std::vector<S>> &prefix, std::vector<std::uint32_t> &current, std::vector<std::uint32_t> &next, int d) const
 		requires supports_sum
 	{
-		int zero = 0, one = sum_middle[d][2], shift = 2 * (sum_levels - 1 - d);
-		for (std::uint32_t x : current) {
-			bool high = (x >> (shift + 1)) & 1;
-			int p = high ? one : zero;
-			one += high;
-			zero += !high;
-			next[p] = x;
+		int base = 3 * d + 1, shift = 2 * (sum_levels - 1 - d);
+		if constexpr (std::is_integral_v<S> && sizeof(S) <= 8) {
+			auto &row = prefix[base];
+			row.resize(std::size_t(sum_middle[d][2]) + 1);
+			auto offset = sum_middle[d];
+			int zero = 0;
+			S total = 0;
+			for (std::uint32_t x : current) {
+				int digit = (x >> shift) & 3;
+				next[offset[digit]++] = x;
+				total += S(values[x]) * (digit < 2);
+				zero += digit < 2;
+				row[zero] = total;
+			}
+			current.swap(next);
+		} else {
+			int zero = 0, one = sum_middle[d][2];
+			for (std::uint32_t x : current) {
+				bool high = (x >> (shift + 1)) & 1;
+				int p = high ? one : zero;
+				one += high;
+				zero += !high;
+				next[p] = x;
+			}
+			prefix_sum(prefix[base], next, 0, sum_middle[d][2]);
+			current.swap(next);
+			partition_for_sum(current, next, d);
 		}
-		int base = 3 * d + 1;
-		prefix_sum(prefix[base], next, 0, sum_middle[d][2]);
-		current.swap(next);
-		partition_for_sum(current, next, d);
 		prefix_sum(prefix[base + 1], current, 0, sum_middle[d][1]);
 		prefix_sum(prefix[base + 2], current, sum_middle[d][2], sum_middle[d][3]);
 	}
@@ -427,7 +379,7 @@ class WaveletMatrix {
 			for (int i = l; i < r; ++i) answer += original[i] < x;
 			return answer;
 		}
-		for (int d = 0; d < sum_levels; ++d) {
+		for (int d = 0; d + 1 < sum_levels; ++d) {
 			int digit = (x >> (2 * (sum_levels - 1 - d))) & 3;
 			int a = sum_bits[d].rank(l, digit), b = sum_bits[d].rank(r, digit);
 			if (digit == 3) answer += r - l - b + a;
@@ -435,7 +387,8 @@ class WaveletMatrix {
 			l = sum_middle[d][digit] + a;
 			r = sum_middle[d][digit] + b;
 		}
-		return answer;
+		int digit = x & 3;
+		return answer + (sum_bits.back().below(r, digit) - sum_bits.back().below(l, digit));
 	}
 	template <bool Previous>
 	[[gnu::noinline]] std::optional<T> quad_neighbor(int l, int r, std::uint32_t x) const {
@@ -498,14 +451,14 @@ class WaveletMatrix {
 	}
 	[[gnu::noinline]] T quad_kth(int l, int r, int k) const {
 		std::uint32_t x = 0;
-		for (int d = 0; d < sum_levels; ++d) {
+		for (int d = 0; d + 1 < sum_levels; ++d) {
 			auto step = quad_route(l, r, k, d);
 			x = (x << 2) | step.digit;
 			k = step.k;
 			l = sum_middle[d][step.digit] + step.a;
 			r = sum_middle[d][step.digit] + step.b;
 		}
-		return values[x];
+		return values[(x << 2) | quad_route(l, r, k, sum_levels - 1).digit];
 	}
 	using Route = typename BitVector::Route;
 	[[gnu::always_inline]] Route route_scalar(int l, int r, int k, int d) const {
@@ -564,8 +517,7 @@ class WaveletMatrix {
 			sum_ready = with_sum;
 			return;
 		}
-		offsets.clear();
-		original = compress(a);
+		original = wavelet_detail::compress(a, values, ordered, positions, offsets);
 		bool indexed = !offsets.empty();
 		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8)
 			dense = std::uint64_t(values.back()) - std::uint64_t(values.front()) == values.size() - 1;
@@ -576,7 +528,6 @@ class WaveletMatrix {
 			for (int i = 0; i < static_cast<int>(values.size()); ++i) offsets[i + 1] += offsets[i];
 		}
 		if (ordered) {
-			positions.clear();
 			bits.clear();
 			middle.clear();
 			if constexpr (supports_sum)
@@ -689,17 +640,19 @@ class WaveletMatrix {
 
 	template <bool Largest, bool Lower, class S>
 	int sum_bound(const std::vector<std::vector<S>> &prefix, int l, int r, Sum target) const {
-		Sum total = Sum(prefix[0][r]) - Sum(prefix[0][l]);
+		Sum sum = Sum(prefix[0][r]) - Sum(prefix[0][l]);
 		if constexpr (Lower) {
-			if (total < target) return -1;
-		} else if (total <= target) return r - l;
+			if (sum < target) return -1;
+		} else if (sum <= target) return r - l;
+		using Work = std::conditional_t<can_narrow && std::is_same_v<S, std::int64_t>, std::int64_t, Sum>;
+		Work total = Work(sum), remaining = Work(target);
 		int answer = 0;
 		std::uint32_t x = 0;
-		auto choose = [&](Sum zero, int count) {
-			Sum preferred = Largest ? total - zero : zero;
+		auto choose = [&](Work zero, int count) {
+			Work preferred = Largest ? total - zero : zero;
 			int length = Largest ? r - l - count : count;
-			bool skip = Lower ? preferred < target : preferred <= target;
-			if (skip) target -= preferred, answer += length;
+			bool skip = Lower ? preferred < remaining : preferred <= remaining;
+			if (skip) remaining -= preferred, answer += length;
 			bool one = Largest != skip;
 			total = one ? total - zero : zero;
 			return one;
@@ -707,18 +660,18 @@ class WaveletMatrix {
 		for (int d = 0; d < sum_levels; ++d) {
 			const auto &row = sum_bits[d];
 			int a = row.below(l, 2), b = row.below(r, 2), base = 3 * d + 1;
-			bool high = choose(Sum(prefix[base][b]) - Sum(prefix[base][a]), b - a);
+			bool high = choose(Work(prefix[base][b]) - Work(prefix[base][a]), b - a);
 			int high_l = high ? l - a : a, high_r = high ? r - b : b;
 			int c = row.rank(l, 2 * high), e = row.rank(r, 2 * high);
 			l = high_l, r = high_r;
-			bool low = choose(Sum(prefix[base + 1 + high][e]) - Sum(prefix[base + 1 + high][c]), e - c);
+			bool low = choose(Work(prefix[base + 1 + high][e]) - Work(prefix[base + 1 + high][c]), e - c);
 			int digit = 2 * high + low;
 			x = (x << 2) | digit;
 			l = sum_middle[d][digit] + (low ? high_l - c : c);
 			r = sum_middle[d][digit] + (low ? high_r - e : e);
 		}
-		Sum value = Sum(values[x]);
-		return answer + int(target / value) + (Lower && target % value != 0);
+		Work value = Work(values[x]);
+		return answer + int(remaining / value) + (Lower && remaining % value != 0);
 	}
 	template <bool Largest, bool Lower>
 	int sum_bound(int l, int r, Sum target) const
@@ -775,6 +728,17 @@ class WaveletMatrix {
 			r = middle[d][step.digit] + step.b;
 		}
 		return values[(x << 3) | bits.back().select_avx2(l, r, k)];
+	}
+	__attribute__((target("avx2,popcnt,avx512f,avx512vl,avx512vpopcntdq"))) T kth_avx512(int l, int r, int k) const {
+		std::uint32_t x = 0;
+		for (int d = 0; d + 1 < levels; ++d) {
+			auto step = bits[d].route_avx512(l, r, k);
+			x = (x << 3) | step.digit;
+			k = step.k;
+			l = middle[d][step.digit] + step.a;
+			r = middle[d][step.digit] + step.b;
+		}
+		return values[(x << 3) | bits.back().select_avx512(l, r, k)];
 	}
 #endif
 
@@ -863,6 +827,7 @@ class WaveletMatrix {
 		if (r - l <= 8) return values[small_codes(l, r)[k]];
 		if (quaternary) return quad_kth(l, r, k);
 #if defined(__x86_64__) || defined(__i386__)
+		if (wide_vectorized) return kth_avx512(l, r, k);
 		if (vectorized) return kth_avx2(l, r, k);
 #endif
 		return kth_scalar(l, r, k);
@@ -879,7 +844,13 @@ class WaveletMatrix {
 	int range_freq(int l, int r, const T &lower, const T &upper) const {
 		check(l, r);
 		if (!(lower < upper)) return 0;
-		return less_than(l, r, code(upper)) - less_than(l, r, code(lower));
+		auto lo = code(lower), hi = code(upper);
+		if (lo == hi || l == r) return 0;
+		if (quaternary || ordered || r - l <= 8 || !lo || hi >= values.size()) return less_than(l, r, hi) - less_than(l, r, lo);
+#if defined(__x86_64__) || defined(__i386__)
+		if (vectorized) return between_avx2(l, r, lo, hi);
+#endif
+		return between_impl(l, r, lo, hi);
 	}
 	void prepare_sum() const
 		requires supports_sum

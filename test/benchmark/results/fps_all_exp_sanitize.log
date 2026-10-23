@@ -1,4 +1,0 @@
-ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=halt_on_error=1
-g++: fps_exp_blocked.cpp
-g++: fps_log.cpp
-Verification passed

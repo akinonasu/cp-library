@@ -11,7 +11,7 @@
 template <class T = mint>
 class OnlineConvolution {
 	static_assert(T::mod() == 998244353);
-	using M = fps_mint;
+	using M = mint;
 	using NTT = fps_detail::NTT;
 	using V = std::vector<M>;
 	struct Prefix { V a, b; };

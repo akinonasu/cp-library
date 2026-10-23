@@ -1,7 +1,0 @@
-g++: standalone data_structure/dynamic_li_chao_tree.hpp
-g++: dynamic_li_chao_tree.cpp
-g++: standalone.cpp
-clang++: standalone data_structure/dynamic_li_chao_tree.hpp
-clang++: dynamic_li_chao_tree.cpp
-clang++: standalone.cpp
-Verification passed

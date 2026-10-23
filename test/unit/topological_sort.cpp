@@ -4,6 +4,7 @@
 #include <cassert>
 #include <deque>
 #include <numeric>
+#include <queue>
 #include <random>
 #include <span>
 
@@ -31,6 +32,20 @@ std::optional<std::vector<int>> reference(const Graph &graph) {
 		if (valid(graph, order)) return order;
 	} while (std::next_permutation(order.begin(), order.end()));
 	return std::nullopt;
+}
+
+std::optional<std::vector<int>> priority_reference(const Graph &graph) {
+	std::vector<std::size_t> indegree(graph.size());
+	for (const auto &row : graph) for (int v : row) ++indegree[v];
+	std::priority_queue<int, std::vector<int>, std::greater<int>> ready;
+	for (int v = 0; v < int(graph.size()); ++v) if (!indegree[v]) ready.push(v);
+	std::vector<int> result;
+	while (!ready.empty()) {
+		int v = ready.top(); ready.pop(); result.push_back(v);
+		for (int to : graph[v]) if (!--indegree[to]) ready.push(to);
+	}
+	if (result.size() != graph.size()) return std::nullopt;
+	return result;
 }
 
 void check(const Graph &graph) {
@@ -76,6 +91,37 @@ int main() {
 	std::vector<std::deque<int>> deques{ {1, 1}, {}, {1} };
 	assert(valid(deques, *topological_sort(deques)));
 	assert((topological_sort<true>(deques) == std::vector<int>{0, 2, 1}));
+	for (int width : {31, 32, 33, 127, 128, 129, 257}) {
+		const int n = 1 + 4 * (width + 1);
+		std::vector<int> label(n);
+		std::iota(label.begin(), label.end(), 0);
+		std::shuffle(label.begin(), label.end(), rng);
+		Graph layers(n);
+		for (int block = 0; block < 4; ++block) {
+			int before = block * (width + 1), after = before + width + 1;
+			for (int v = before + 1; v < after; ++v) {
+				layers[label[before]].push_back(label[v]);
+				layers[label[v]].push_back(label[after]);
+			}
+		}
+		assert(topological_sort<true>(layers) == priority_reference(layers));
+	}
+	for (int trial = 0; trial < 120; ++trial) {
+		int n = 128 + rng() % 1921;
+		Graph graph(n);
+		std::vector<int> label(n);
+		std::iota(label.begin(), label.end(), 0);
+		std::shuffle(label.begin(), label.end(), rng);
+		for (int i = 0, m = (trial % 9) * n; i < m; ++i) {
+			int a = rng() % n, b = rng() % n;
+			if (a > b) std::swap(a, b);
+			if (a != b) graph[label[a]].push_back(label[b]);
+		}
+		assert(topological_sort<true>(graph) == priority_reference(graph));
+		graph[label[0]].push_back(label[0]);
+		assert(topological_sort<true>(graph) == priority_reference(graph));
+	}
+
 	const int n = 500000;
 	Graph path(n);
 	for (int v = n - 1; v > 0; --v) path[v].push_back(v - 1);

@@ -6,6 +6,7 @@ import re
 import subprocess
 
 import yaml
+from atcoder_flags import constexpr_flags
 
 
 root = pathlib.Path(__file__).resolve().parents[1]
@@ -23,7 +24,7 @@ for header in headers:
     path = header.relative_to(root)
     doc = root / '.verify-helper/markdown' / (str(path) + '.md')
     data = yaml.safe_load(doc.read_text().split('---', 2)[1])
-    assert data['title'] != str(path), f'{path}: documentation is missing'
+    assert data['title'].removesuffix('（高速版）') != str(path), f'{path}: documentation is missing'
     code = data['data']['bundledCode']
     assert 'Traceback (most recent call last)' not in code, f'{path}: bundle failed'
     assert len(code.encode('utf-8')) < 256 * 1024, f'{path}: bundle exceeds 256 KiB'
@@ -35,7 +36,8 @@ for header in headers:
 
 
 def check(code):
-    subprocess.run(['g++', '-std=c++23', '-fsyntax-only', '-x', 'c++', '-'], input=code, text=True, check=True, cwd=root)
+    subprocess.run(['g++', '-std=c++23', *constexpr_flags('g++'), '-fsyntax-only', '-x', 'c++', '-'],
+                   input=code, text=True, check=True, cwd=root)
 
 
 with ThreadPoolExecutor(max_workers=args.jobs) as pool:

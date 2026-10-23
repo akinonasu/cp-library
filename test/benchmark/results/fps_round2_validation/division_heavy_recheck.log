@@ -1,7 +1,0 @@
-Waiting for exclusive timing lock
-Lock acquired; parent binaries, drivers, and snapshots verified
-v_random_01 {'before': 10.931947, 'current': 10.700272, 'reference': 8.305942} paired 0.283633 wins 16
-v_random_02 {'before': 13.995994, 'current': 13.263833, 'reference': 11.911978} paired 0.6512510000000002 wins 17
-v_random_03 {'before': 11.708566, 'current': 11.414257, 'reference': 9.726821} paired 0.3439730000000001 wins 16
-n_max_00 {'before': 13.211967, 'current': 12.725341, 'reference': 10.285593} paired 0.45901500000000084 wins 21
-All 264 official checker calls passed; source/binary snapshots unchanged

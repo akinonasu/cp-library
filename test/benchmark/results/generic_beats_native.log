@@ -1,7 +1,0 @@
-mixed {'generic': {'build_ms': 16.809696, 'query_ms': 181.121471}, 'dedicated': {'build_ms': 6.914943, 'query_ms': 64.76101}, 'reference': {'build_ms': 9.025073, 'query_ms': 168.624739}}
-short {'generic': {'build_ms': 17.512814, 'query_ms': 96.861318}, 'dedicated': {'build_ms': 6.934716, 'query_ms': 67.15187}, 'reference': {'build_ms': 9.828389, 'query_ms': 85.410956}}
-assign {'generic': {'build_ms': 17.170226, 'query_ms': 186.105754}, 'dedicated': {'build_ms': 6.892776, 'query_ms': 69.679128}}
-uniform {'generic': {'build_ms': 16.275926, 'query_ms': 44.821284}, 'dedicated': {'build_ms': 5.648128, 'query_ms': 1.348121}, 'reference': {'build_ms': 8.344871, 'query_ms': 42.706638}}
-division_mixed {'generic': {'build_ms': 23.758626, 'query_ms': 111.692802}, 'uniform': {'build_ms': 12.842177, 'query_ms': 56.482228}}
-division_short {'generic': {'build_ms': 23.57703, 'query_ms': 52.50835}, 'uniform': {'build_ms': 12.498061, 'query_ms': 29.821244}}
-division_decay {'generic': {'build_ms': 23.648854, 'query_ms': 101.292527}, 'uniform': {'build_ms': 12.544244, 'query_ms': 38.069903}}

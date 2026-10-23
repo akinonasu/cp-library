@@ -1,7 +1,0 @@
-{
-  "headers": ["data_structure/dynamic_wavelet_matrix.hpp"],
-  "unit": ["test/unit/dynamic_wavelet_matrix.cpp", "test/unit/dynamic_wavelet_count.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/dynamic_wavelet_matrix.cpp", "test/unit/dynamic_wavelet_count.cpp"],
-  "verification": ["test/dynamic_wavelet_matrix_freq.test.cpp", "test/dynamic_wavelet_matrix_kth.test.cpp"],
-  "bundles": ["data_structure/dynamic_wavelet_matrix.hpp"]
-}

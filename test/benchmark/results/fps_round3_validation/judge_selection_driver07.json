@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/disjoint_sparse_table_affine.test.cpp"
-  ]
-}

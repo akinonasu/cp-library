@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/pow_of_formal_power_series"
-#include "fps_io.hpp"
+#include "fixtures/fps_io.hpp"
 
 int main() {
 	FastInput input;

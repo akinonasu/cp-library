@@ -1,7 +1,0 @@
-test/hld_path_composite.test.cpp 20 passed
-dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/hld_path_composite.test.cpp
-hld_path_composite.test.o: \
- /workspace/cp-library/test/hld_path_composite.test.cpp \
- /workspace/cp-library/test/../data_structure/dynamic_segtree.hpp \
- /workspace/cp-library/test/../graph/hld.hpp \
- /workspace/cp-library/test/../math/mint.hpp

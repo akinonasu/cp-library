@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/multiplicative_convolution.test.cpp"
-  ]
-}

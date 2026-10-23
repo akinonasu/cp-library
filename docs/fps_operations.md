@@ -18,7 +18,7 @@ documentation_of: //components/fps_operations.hpp
 | `batch_inverse(dst,src)` | 各非零要素の逆元を一括計算 | $$O(n)$$ |
 | `pointwise(r,a,b,n)` | 先頭 `n` 個の要素ごとの積 | $$O(n)$$ |
 | `accumulate_products<count,first>(dst,a,b,n)` | `count` 組の先頭 `n` 個の要素ごとの積を加算。`first` が真なら上書き、偽なら `dst` へ加算 | $$O(n)$$ |
-| `accumulate_products8<count,first>(dst,a,b,n)` | `accumulate_products` の AVX2 版 | $$O(n)$$ |
+| `accumulate_products8<count,first>(dst,a,b,n)` | `accumulate_products` と同じ演算を AVX2 を有効にして実行 | $$O(n)$$ |
 | `join_windows(blocks,length,count)` | 連続する `count` 個の変換済みブロックを接続。前半に直前のブロックを加え、後半から引く | $$O(\mathrm{length}\cdot\mathrm{count})$$ |
 | `join_windows_strided(blocks,length,count,pitch)` | 要素数 `pitch` の間隔で並べたブロックを接続 | $$O(\mathrm{length}\cdot\mathrm{count})$$ |
 | `inverse_extend(h,a,cache)` | キャッシュした変換を使って逆数の精度を倍化 | $$O(n\log n)$$ |

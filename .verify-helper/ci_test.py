@@ -104,7 +104,7 @@ class IncrementalVerification(unittest.TestCase):
 
     def test_unchanged_and_documentation_only(self):
         self.write("docs/comb.md", "Updated documentation\n")
-        self.write("test/benchmark/result.md", "Updated benchmark\n")
+        self.write("notes/result.md", "Updated notes\n")
         self.write("math/mint.hpp", "#pragma once\n")
         plan = self.plan(self.previous)
         for group in GROUPS:
@@ -355,6 +355,13 @@ class IncrementalVerification(unittest.TestCase):
             self.assertEqual(plan[group], [])
         self.assertEqual(plan["bundles"], self.plan()["bundles"])
 
+    def test_constexpr_limits_invalidate_compilation_checks(self):
+        self.write(".verify-helper/atcoder_flags.py", "Changed constexpr limits\n")
+        plan = self.plan(self.previous)
+        for group in ("headers", "unit", "sanitize", "bundles"):
+            self.assertEqual(plan[group], self.plan()[group])
+        self.assertEqual(plan["verification"], [])
+
     def test_helper_package_change_does_not_invalidate_cpp_checks(self):
         environment = {group: "compiler" if group in ("headers", "unit", "sanitize") else "helper" for group in GROUPS}
         previous = self.plan(environment=environment)["state"]
@@ -441,7 +448,7 @@ class IncrementalVerification(unittest.TestCase):
             record_success(self.previous, self.plan(), ["unknown"])
 
     def test_documentation_only_discovers_libraries_and_judge_drivers(self):
-        self.write("test/benchmark/comb.cpp", '#include "math/combinatorics/comb.hpp"\n')
+        self.write("tools/example.cpp", '#include "math/combinatorics/comb.hpp"\n')
         self.write("test/verify.py", "raise RuntimeError('must not be analyzed')\n")
         paths = source_paths(self.plan(), [])
         self.assertEqual(paths, sorted(map(Path, ["tree/lca.hpp", "math/combinatorics/comb.hpp", "math/mint.hpp",
@@ -491,9 +498,9 @@ class IncrementalVerification(unittest.TestCase):
         with patch.object(Path, "read_bytes", changed):
             plan = build_plan(ROOT, previous, environment="test")
         self.assertFalse(plan["full"])
-        self.assertEqual(plan["headers"], ["data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp", "data_structure/wavelet_matrix/wavelet_matrix.hpp", "data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"])
-        self.assertEqual(plan["unit"], ["test/unit/dynamic_wavelet_matrix.cpp", "test/unit/point_set_wavelet_matrix.cpp", "test/unit/standalone.cpp", "test/unit/wavelet_matrix.cpp", "test/unit/wavelet_matrix_opt.cpp", "test/unit/wavelet_matrix_sum_bound.cpp", "test/unit/weighted_wavelet_matrix.cpp"])
-        affected = ["test/wavelet_matrix_freq.test.cpp", "test/wavelet_matrix_kth.test.cpp", "test/wavelet_matrix_sum.test.cpp", "test/weighted_wavelet_matrix_rectangle.test.cpp"]
+        self.assertEqual(plan["headers"], ["data_structure/wavelet_matrix/wavelet_matrix.hpp"])
+        self.assertEqual(plan["unit"], ["test/unit/dependency_boundaries.cpp", "test/unit/dynamic_wavelet_matrix.cpp", "test/unit/standalone.cpp", "test/unit/wavelet_matrix.cpp", "test/unit/wavelet_matrix_opt.cpp", "test/unit/wavelet_matrix_sum_bound.cpp"])
+        affected = ["test/wavelet_matrix_freq.test.cpp", "test/wavelet_matrix_kth.test.cpp", "test/wavelet_matrix_sum.test.cpp"]
         self.assertTrue(set(affected).isdisjoint(unchanged["verification"]))
         self.assertEqual(plan["verification"], sorted(set(unchanged["verification"]) | set(affected)))
 

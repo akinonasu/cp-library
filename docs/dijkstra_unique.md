@@ -3,7 +3,7 @@ title: "Dijkstra の一意経路の探索"
 documentation_of: //components/dijkstra_unique.hpp
 ---
 
-[Dijkstra](https://qandori.github.io/cp-library/graph/dijkstra.hpp.html) が内部で使う、各頂点の入次数が高々 1 の場合の探索です。通常は `graph/dijkstra.hpp` を include し、CSR に対して `dijkstra_path(g,start,target)` を呼びます。条件の判定と使い分けは自動で行います。
+[Dijkstra](https://qandori.github.io/cp-library/graph/shortest_path/dijkstra.hpp.html) が内部で使う、各頂点の入次数が高々 1 の場合の探索です。通常は `graph/shortest_path/dijkstra.hpp` を include し、CSR に対して `dijkstra_path(g,start,target)` を呼びます。条件の判定と使い分けは自動で行います。
 
 各頂点へ入る辺が高々 1 本なら、始点から各頂点へ向かう単純経路も高々 1 本です。距離の大小による取り出し順を決める必要がないため、優先度付きキューを省けます。出辺が 1 本の区間は直接たどり、分岐した先だけを配列へ保存します。
 

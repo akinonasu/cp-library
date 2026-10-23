@@ -1,12 +1,15 @@
 ---
 title: ワーシャルフロイド法
-documentation_of: //graph/warshall_floyd.hpp
+documentation_of: //graph/shortest_path/warshall_floyd.hpp
+redirect_from:
+  - /graph/warshall_floyd.hpp.html
+  - /lightweight/graph/warshall_floyd.hpp.html
 ---
 
 重み付き有向グラフの全点対最短距離を求めます。負辺・多重辺・自己辺に対応し、グラフ全体の負閉路を検出します。頂点番号は 0 始まりです。
 
 ```cpp
-#include "lib/graph/warshall_floyd.hpp"
+#include "lib/graph/shortest_path/warshall_floyd.hpp"
 
 int main() {
 	WarshallFloyd<> graph(4);
@@ -46,7 +49,7 @@ assert(ok && d[0][2] == -2);
 
 `WARSHALL_FLOYD_DISABLE_AVX512`、`WARSHALL_FLOYD_DISABLE_SIMD`、`WARSHALL_FLOYD_DISABLE_NARROWING` を include 前に定義すると、それぞれ AVX-512・明示的な SIMD・64 bit から 32 bit への変換を無効にできます。
 
-[2秒の処理規模と測定条件](https://github.com/qandori/cp-library/blob/main/test/benchmark/warshall_floyd.md)を別に記録しています。CPU・重みの範囲・負辺の有無・入出力で変わるため、提出先での一律の保証ではありません。
+実行時間は CPU・重みの範囲・負辺の有無・入出力に依存します。
 
 頂点数を $$n$$、32 の倍数に切り上げた頂点数を $$p=32\lceil n/32\rceil$$ とします。
 

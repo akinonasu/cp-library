@@ -1,6 +1,0 @@
-{
-  "source_sha256": "8136233d7c37f2892b17209a32826fd15304145e06261a959aa29f64f18a939e",
-  "target_sha256": "0414aa2a0c0abacd8f1ebac1a6390f0075cf614a0d92237095a01ad40b9c3ba2",
-  "seed": 2026101905,
-  "method": "Python random.Random(seed).shuffle(edge lines), keeping header and edges unchanged"
-}

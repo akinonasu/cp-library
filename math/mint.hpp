@@ -10,7 +10,7 @@
 #pragma GCC optimize("O3")
 #endif
 
-namespace fps_detail {
+namespace mint_detail {
 template <class I>
 constexpr bool mint_integral = std::is_integral_v<I>
 #if defined(__SIZEOF_INT128__)
@@ -127,10 +127,10 @@ struct Mint {
 		return r * a7;
 	}
 };
-} // namespace fps_detail
+} // namespace mint_detail
 
-using fps_mint = fps_detail::Mint;
-using mint = fps_mint;
+using mint = mint_detail::Mint;
+using fps_mint = mint;
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

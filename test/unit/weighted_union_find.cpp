@@ -1,4 +1,4 @@
-#include "data_structure/weighted_union_find.hpp"
+#include "data_structure/union_find/weighted_union_find.hpp"
 #include "math/mint.hpp"
 #include <cassert>
 #include <cstdint>

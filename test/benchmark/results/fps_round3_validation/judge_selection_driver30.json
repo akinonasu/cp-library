@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/matrix_adjugate.test.cpp"
-  ]
-}

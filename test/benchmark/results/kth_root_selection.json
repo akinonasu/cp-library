@@ -1,7 +1,0 @@
-{
-  "headers": ["math/kth_root.hpp"],
-  "unit": ["test/unit/kth_root.cpp"],
-  "sanitize": ["test/unit/kth_root.cpp"],
-  "verification": ["test/kth_root.test.cpp"],
-  "bundles": ["math/kth_root.hpp"]
-}

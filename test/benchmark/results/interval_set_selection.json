@@ -1,7 +1,0 @@
-{
-  "headers": ["data_structure/interval_set.hpp"],
-  "unit": ["test/unit/interval_set.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/interval_set.cpp", "test/unit/standalone.cpp"],
-  "verification": ["test/interval_set_predecessor.test.cpp"],
-  "bundles": ["data_structure/interval_set.hpp"]
-}

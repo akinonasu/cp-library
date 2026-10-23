@@ -1,8 +1,0 @@
-{
-  "headers": ["data_structure/dynamic_connectivity.hpp"],
-  "unit": ["test/unit/dynamic_connectivity.cpp", "test/unit/standalone.cpp"],
-  "sanitize": ["test/unit/dynamic_connectivity.cpp"],
-  "verification": ["test/dynamic_connectivity.test.cpp"],
-  "bundles": ["data_structure/dynamic_connectivity.hpp"],
-  "state": {"targets": {"verification": {"test/dynamic_connectivity.test.cpp": "dynamic_connectivity"}}}
-}

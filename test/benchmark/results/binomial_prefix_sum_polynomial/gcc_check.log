@@ -1,5 +1,0 @@
-g++: standalone components/binomial_prefix_polynomial.hpp
-g++: standalone math/combinatorics/binomial_prefix_sum.hpp
-g++: binomial_prefix_sum.cpp
-g++: standalone.cpp
-Verification passed

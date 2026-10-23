@@ -1,8 +1,0 @@
-built before
-built borrow32_assign
-built reference
-checked borrow32_assign 53
-max_random_00 {'before': 15.083999, 'borrow32_assign': 14.448691, 'reference': 11.644571} {'borrow32_assign': 0.5429790000000008} {'borrow32_assign': 37}
-max_random_01 {'before': 14.949278, 'borrow32_assign': 14.779314, 'reference': 11.517692} {'borrow32_assign': 0.3282500000000006} {'borrow32_assign': 29}
-small_and_large_03 {'before': 10.877517, 'borrow32_assign': 10.598611, 'reference': 8.966747} {'borrow32_assign': 0.37311599999999956} {'borrow32_assign': 30}
-medium_02 {'before': 1.405956, 'borrow32_assign': 1.403352, 'reference': 1.159159} {'borrow32_assign': 0.01482300000000003} {'borrow32_assign': 26}

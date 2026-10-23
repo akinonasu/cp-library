@@ -1,6 +1,0 @@
-clang++: sequence_compare.cpp
-clang++: sequence_match.cpp
-clang++: lcs.cpp
-clang++: edit_distance.cpp
-clang++: run_enumerate.cpp
-Verification passed

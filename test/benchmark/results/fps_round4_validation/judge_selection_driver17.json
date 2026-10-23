@@ -1,5 +1,0 @@
-{
-  "verification": [
-    "test/fps_taylor_shift.test.cpp"
-  ]
-}

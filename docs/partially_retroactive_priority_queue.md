@@ -65,7 +65,7 @@ queue.erase(30, changed);        // sum = 3
 
 通知中の参照はその呼び出し中だけ有効です。コールバックから同じキューを参照・変更したり、例外を投げたりしないでください。通知なしの API は従来どおり使えます。
 
-[ABC363 G](https://atcoder.jp/contests/abc363/tasks/abc363_g) の例は [検証コード](https://github.com/qandori/cp-library/blob/main/test/benchmark/retroactive_priority_queue_scheduling.cpp) と [実装](https://github.com/qandori/cp-library/blob/main/test/fixtures/retroactive_scheduling.hpp) にあります。日付を後ろから処理して最大報酬の仕事を pop する履歴を作り、`全報酬 - 現在残る報酬和` を答えにします。報酬 0 の予備要素を `N` 個入れると、仕事がない日の pop も有効になります。締切変更は旧時刻の取消と新時刻への挿入、報酬だけの変更は `set` で処理します。ライブラリ内部の変更は不要です。
+仕事の選択に使う例は [テスト用の実装](https://github.com/qandori/cp-library/blob/main/test/fixtures/retroactive_scheduling.hpp) にあります。日付を後ろから処理して最大報酬の仕事を pop する履歴を作り、`全報酬 - 現在残る報酬和` を答えにします。報酬 0 の予備要素を `N` 個入れると、仕事がない日の pop も有効になります。締切変更は旧時刻の取消と新時刻への挿入、報酬だけの変更は `set` で処理します。ライブラリ内部の変更は不要です。
 
 `updates` は `std::vector<Queue::update_type>` で、要素は `{時刻, std::optional<T>}`、`nullopt` は削除操作です。順不同で渡せます。`Queue(updates, compare = Compare{}, seed = 0)` による構築には有効な履歴を渡します。空列の構築は `Queue(compare = Compare{}, seed = 0)` です。`top_ptr()` の戻り値は次の変更操作まで使用できます。削除ノードは再利用し、`clear()` は確保容量を残します。
 

@@ -1,4 +1,5 @@
-#include "test/fps_io.hpp"
+#include "test/fixtures/fps_io.hpp"
+#include "components/fps_io.hpp"
 #include <cstdio>
 #include <cstdlib>
 #include <random>
@@ -8,6 +9,27 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
+
+static fps read_series(FastInput& input, int n) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (__builtin_cpu_supports("avx2")) {
+		fps result;
+		fps_detail::read_coefficients(input, result, n);
+		return result;
+	}
+#endif
+	return read_fps(input, n);
+}
+
+static void write_series(FastOutput& output, const fps& series) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (__builtin_cpu_supports("avx2")) {
+		fps_detail::write_coefficients(output, series.data(), series.size());
+		return;
+	}
+#endif
+	write_fps(output, series);
+}
 
 static void require(bool value) { if (!value) std::abort(); }
 
@@ -79,7 +101,7 @@ static void check_chunks() {
 #endif
 
 static void check(FastInput &input, const std::vector<unsigned> &values) {
-	const fps actual = read_fps(input, values.size());
+	const fps actual = read_series(input, values.size());
 	require(actual.size() == values.size());
 	for (std::size_t i = 0; i < values.size(); ++i) require(actual[i] == mint::raw(values[i]));
 	unsigned last = 0;
@@ -88,7 +110,7 @@ static void check(FastInput &input, const std::vector<unsigned> &values) {
 	require(file != nullptr);
 	{
 		FastOutput output(file);
-		write_fps(output, actual);
+		write_series(output, actual);
 		require(output.flush());
 	}
 	std::rewind(file);
@@ -113,7 +135,7 @@ static void check_parallel() {
 	const auto run = [&] {
 		for (int rep = 0; rep < 3; ++rep) {
 			FastInput input{std::string_view(text)};
-			const fps result = read_fps(input, values.size());
+			const fps result = read_series(input, values.size());
 			for (std::size_t i = 0; i < values.size(); ++i) require(result[i] == mint::raw(values[i]));
 		}
 	};
@@ -128,7 +150,7 @@ static void check_parallel() {
 	{
 		FastOutput output(file);
 		output.println(71);
-		write_fps(output, series);
+		write_series(output, series);
 		output.println(72);
 		require(output.flush());
 	}
@@ -156,14 +178,14 @@ static void check_parallel() {
 		std::string leading;
 		for (int i = 0; i < 2000; ++i) leading += "00000000000000000000000000000000000000000000000000000000000000001 ";
 		FastInput input{std::string_view(leading)};
-		const fps parsed = read_fps(input, 2000);
+		const fps parsed = read_series(input, 2000);
 		for (auto x : parsed) require(x == mint(1));
 		FILE *full = std::fopen("/dev/full", "w");
 		if (full) {
 			bool failed = false;
 			{
 				FastOutput output(full);
-				try { write_fps(output, series); }
+				try { write_series(output, series); }
 				catch (const std::runtime_error &) { failed = true; }
 			}
 			require(failed);

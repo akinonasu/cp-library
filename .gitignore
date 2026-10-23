@@ -4,20 +4,13 @@ __pycache__/
 .verify-helper/cache/
 .verify-helper/timestamps.*.json
 .verify-helper/verified-state.json
+.verify-helper/support-state.json
+.verify-helper/documentation-cache.json
+.verify-helper/highlight-cache/
 .verify-helper/selection.json
 .verify-helper/markdown/
 .verify-helper/site/
 .sass-cache/
-
-/test/benchmark/results/portable_optimization/
-/test/benchmark/bitwise_transforms_reference.json
-/test/benchmark/bitwise_transforms_results.csv
-/test/benchmark/bitwise_transforms_small_repeat.csv
-/test/benchmark/prime_sieve_memory.csv
-/test/benchmark/prime_sieve_results.csv
-/test/benchmark/prime_sieve_results_shared_load.csv
-
-/test/benchmark/results/wavelet_matrix_neighbors/
 
 .verify-helper/judge-cache.json
 .verify-helper/cache-tool/node_modules/

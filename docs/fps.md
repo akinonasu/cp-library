@@ -13,16 +13,18 @@ fps inverse = f.inv(10);
 
 mod は 998244353、係数は定数項から順に格納します。`fps` は `std::vector<mint>` と同様に扱えます。`deg` は返す係数の個数で、省略時は元のサイズです。
 
-通常の `oj-bundle` で提出コードを生成できます。配布ヘッダー自体を短くしてあるため、専用スクリプトや展開後の追加圧縮は不要です。通常版の合成・補間・GCD なども同じ配布実装にまとめています。
+`FormalPowerSeries<atcoder::modint998244353>` として、ACL の型を公開する係数型に指定することもできます。`<atcoder/modint>` を別途 include してください。主な FPS 演算は内部で独自の Montgomery 表現へ変換して処理するため、型を指定した場合も内部では独自 modint を使います。
+
+通常の `oj-bundle` で提出コードを生成できます。FPS 本体は `fps/fps.hpp`、合成・補間・GCD などの追加演算はそれぞれの公開ヘッダーを include します。必要な依存だけを展開し、共通部品は一度だけ出力します。
 
 ```sh
 oj-bundle -I . a.cpp > submit.cpp
 wc -c submit.cpp
 ```
 
-通常版・軽量版の全ヘッダーと高速 I/O を併用した例も、通常展開のまま UTF-8 で 256 KiB 未満に収まることを検査しています。公開 API・高速経路・精度上限は維持しています。[提出コードの生成](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)、[サイズ・速度・検証結果](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_plain.md)を参照してください。
+通常版は各 FPS 公開ヘッダーの API 使用例と基本の `FastInput`・`FastOutput` を合わせて、通常展開のまま 256 KiB 未満になることを検査しています。軽量版は派生演算も含めて軽量 FPS に統一し、全 FPS 演算と同じ入出力を 64 KiB 未満で使えます。複数の通常版ライブラリを併用する場合や解答本体を追加した場合は、最終ソースのサイズを確認してください。[提出コードの生成](https://github.com/qandori/cp-library/blob/main/docs/bundle.md)を参照してください。
 
-編集用の実装原本は各ヘッダーと同じ場所の `.inc` ファイルです。利用者が原本を展開・短縮する必要はありません。
+高速実装・軽量実装ともに `.hpp` を直接編集できます。型エイリアス・関数・テンプレートで実装を共有し、短縮用の辞書マクロや配布コード生成の手順はありません。
 
 `fps{1,2,3}` は $$1+2x+3x^2$$ を表します。係数 `f[i]` は `mint` なので、整数として取り出すには `f[i].val()` を使います。`f.inv(10)` などの 10 は最高次数ではなく返す長さで、$$x^0$$ から $$x^9$$ までを計算します。
 
@@ -51,7 +53,7 @@ wc -c submit.cpp
 | `f.eval(x)` | 一点評価 | $$O(n)$$ |
 | `f.onemul(d,c)` / `f.onediv(d,c)` | $$1+cx^d$$ を掛ける／割る。`d >= 0`、自身のサイズを保つ。除算で `d = 0` なら `c != -1` | $$O(n)$$ |
 
-[Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html)、[線形漸化式](https://qandori.github.io/cp-library/fps/linear_recurrence.hpp.html)、[合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)、[合成逆元](https://qandori.github.io/cp-library/fps/compositional_inverse.hpp.html)、[多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html)、[補間](https://qandori.github.io/cp-library/fps/interpolate.hpp.html)、[Taylor shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) の使い方は、各ページを参照してください。関連する公開ヘッダーは同じ配布実装を共有しています。
+[Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html)、[線形漸化式](https://qandori.github.io/cp-library/fps/linear_recurrence.hpp.html)、[合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)、[合成逆元](https://qandori.github.io/cp-library/fps/compositional_inverse.hpp.html)、[多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html)、[補間](https://qandori.github.io/cp-library/fps/interpolate.hpp.html)、[Taylor shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) の使い方は、各ページを参照してください。関連する公開ヘッダーは、必要な内部部品を共有しています。
 
 Linux x86_64 / GCC では AVX2 対応を実行時に確認し、積・逆数・対数・指数・冪・平方根・除算に専用のブロック変換を使います。部分木内で変換と積を融合し、Newton 更新や隣接区間の中間結果を再利用します。係数を内部の Montgomery 表現に保ち、結果の二重初期化や不要な入力コピーを省きます。疎な入力や小さな次数には既存の専用経路を使います。他の環境でも同じ API で動作します。
 

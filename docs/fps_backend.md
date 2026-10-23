@@ -1,17 +1,10 @@
 ---
-title: "FPS の配布実装"
+title: "FPS の互換ヘッダー"
 documentation_of: //components/fps_backend.hpp
 ---
 
-公開ヘッダーから読み込む共通の配布実装です。通常版と軽量版は別ファイルで、通常の `#include`・`oj-bundle` だけで使えます。利用時にコードを圧縮する処理はありません。
+[FPS 本体](https://qandori.github.io/cp-library/fps/fps.hpp.html)を読み込む互換ヘッダーです。新しいコードでは `fps/fps.hpp` を直接 include してください。合成・補間・GCD などの追加演算は、それぞれの公開ヘッダーを include します。
 
-編集用の原本は `fps/*.inc` と `components/*.inc` にあります。メンテナーが原本を変更した場合だけ、次のコマンドで配布実装を更新します。利用者には不要です。
+高速実装と軽量実装は、どちらも通常の C++ の `.hpp` ファイルを直接編集します。共通の型・演算は型エイリアス、関数、テンプレートにまとめ、必要な部品だけを読み込みます。短縮用の辞書マクロや、配布コードを生成する手順はありません。
 
-```sh
-python3 tools/update_fps_headers.py
-python3 tools/update_fps_headers.py --check
-```
-
-共通する記述を一時的な内部マクロにまとめ、通常版の内部変数名を短くしています。内部マクロはヘッダー末尾で解除します。演算、入力の const 性、境界検査、CPU の実行時判定、他環境の分岐は原本と同じです。短縮されたレイアウトに由来する `misleading-indentation` 診断だけを配布実装の内部で抑制し、ヘッダーの末尾で診断設定を復元します。
-
-[測定と検証](https://github.com/qandori/cp-library/blob/main/test/benchmark/fps_plain.md)を参照してください。
+利用時は通常の `#include`・`oj-bundle` を使います。[提出コードの生成とサイズ上限](bundle.md)も参照してください。

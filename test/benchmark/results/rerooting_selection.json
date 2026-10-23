@@ -1,7 +1,0 @@
-{
-  "headers": ["graph/rerooting.hpp"],
-  "unit": ["test/unit/rerooting.cpp"],
-  "sanitize": ["test/unit/rerooting.cpp"],
-  "verification": ["test/rerooting.test.cpp", "test/rerooting_diameter.test.cpp"],
-  "bundles": ["graph/rerooting.hpp"]
-}

@@ -1,5 +1,0 @@
-{
-  "headers": ["string/longest_common_substring.hpp"],
-  "unit": ["test/unit/longest_common_substring.cpp"],
-  "sanitize": ["test/unit/longest_common_substring.cpp"]
-}

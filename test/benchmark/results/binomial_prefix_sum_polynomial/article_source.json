@@ -1,9 +1,0 @@
-{
-  "url": "https://www.cnblogs.com/zkyJuruo/p/16995141.html",
-  "retrieved_at": "2026-10-19T22:59:56.589297+00:00",
-  "html_sha256": "9b3d764ef5a166d6f9e1e1bf1e8edd5ec803d27467b9add021c1e6c1e47e7829",
-  "title": "\u7ec4\u5408\u6570\u524d\u7f00\u548c",
-  "published": "2022-12-20",
-  "inclusive_prefix": true,
-  "claimed_order": "O((M+Q) log^2(M+Q)) polynomial remainder divide and conquer; no implementation in article"
-}

@@ -3,7 +3,7 @@ title: ワーシャルフロイド法の内部演算
 documentation_of: //components/warshall_floyd_kernel.hpp
 ---
 
-[ワーシャルフロイド法](https://qandori.github.io/cp-library/graph/warshall_floyd.hpp.html)の内部部品です。通常は数値範囲の判定と変換を行う `WarshallFloyd` を使います。
+[ワーシャルフロイド法](https://qandori.github.io/cp-library/graph/shortest_path/warshall_floyd.hpp.html)の内部部品です。通常は数値範囲の判定と変換を行う `WarshallFloyd` を使います。
 
 `warshall_floyd_detail::Storage<T>` は先頭を 64 バイト境界に配置する配列です。行列は `B * B` 要素のブロックを行優先に並べ、各ブロック内も行優先で保持します。実装本体では `B = 32` です。端数の頂点は独立した仮頂点で埋め、対角を 0、他を `inf` にします。
 

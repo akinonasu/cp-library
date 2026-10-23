@@ -1,5 +1,0 @@
-max_random_00 {'baseline': 15.940556, 'candidate': 16.119902, 'reference': 15.410083} {'baseline': 13.621016, 'candidate': 13.802868} paired 0.21380800000000022 wins 15
-max_random_01 {'baseline': 16.343445, 'candidate': 16.387421, 'reference': 15.598595} {'baseline': 13.822436, 'candidate': 13.764681} paired 0.10484700000000302 wins 13
-max_random_02 {'baseline': 15.70936, 'candidate': 15.631414, 'reference': 15.072531} {'baseline': 13.470271, 'candidate': 13.453056} paired 0.10999399999999859 wins 14
-abnormal_random_00 {'baseline': 1.746063, 'candidate': 1.71039, 'reference': 1.566645} {'baseline': 0.342761, 'candidate': 0.318295} paired 0.05888699999999991 wins 13
-abnormal_random_01 {'baseline': 1.674626, 'candidate': 1.641928, 'reference': 1.482129} {'baseline': 0.324684, 'candidate': 0.320989} paired 0.008982999999999963 wins 11

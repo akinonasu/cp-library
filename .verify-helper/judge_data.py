@@ -1,4 +1,5 @@
 import argparse
+from contextlib import contextmanager
 import hashlib
 import json
 import os
@@ -14,6 +15,8 @@ from ci import affected_inventory, read_json, write_json
 
 
 def urls_for(root, plan):
+    from verification import check_judges
+    check_judges(root, plan["verification"])
     result = {}
     for name in plan['verification']:
         source = (root / name).read_text()
@@ -85,6 +88,21 @@ def normalize_sources(repo, problem):
             os.utime(repo / name.decode(), ns=(0, 0))
 
 
+@contextmanager
+def generator_stack():
+    try:
+        import resource
+    except ImportError:
+        yield
+        return
+    limits = resource.getrlimit(resource.RLIMIT_STACK)
+    resource.setrlimit(resource.RLIMIT_STACK, (limits[1], limits[1]))
+    try:
+        yield
+    finally:
+        resource.setrlimit(resource.RLIMIT_STACK, limits)
+
+
 def prepare_selected(root, plan, manifest_path, drivers=None):
     manifest = read_json(manifest_path)
     if manifest is None or {url: sorted(names) for url, names in urls_for(root, plan).items()} != {
@@ -96,7 +114,8 @@ def prepare_selected(root, plan, manifest_path, drivers=None):
             continue
         problem = Path(item['problem'])
         normalize_sources(repo, problem)
-        subprocess.run([sys.executable, str(repo / 'generate.py'), str(problem / 'info.toml'), '--compile-checker'], check=True)
+        with generator_stack():
+            subprocess.run([sys.executable, str(repo / 'generate.py'), str(problem / 'info.toml'), '--compile-checker'], check=True)
         cases = Path(item['cases'])
         if cases.exists():
             shutil.rmtree(cases)

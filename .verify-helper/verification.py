@@ -1,32 +1,25 @@
-import hashlib
-import os
 from pathlib import Path
-import subprocess
-import tempfile
+import re
 from urllib.parse import urlparse
 
 
-def prepare_samples(root, paths):
-    from judge_data import urls_for
+def check_judges(root, paths):
+    for name in paths:
+        source = (root / name).read_text()
+        for url in re.findall(r'^\s*#\s*define\s+PROBLEM\s+"([^"\n]+)"', source, re.M):
+            host = (urlparse(url).hostname or "").lower().rstrip(".")
+            if host == "atcoder.jp" or host.endswith(".atcoder.jp"):
+                raise ValueError("AtCoder judge tests are not allowed: " + str(name))
 
-    if os.environ.get("DROPBOX_TOKEN"):
-        return
-    for url in urls_for(root, {"verification": paths}):
-        if urlparse(url).hostname != "atcoder.jp":
-            continue
-        directory = root / ".verify-helper/cache" / hashlib.md5(url.encode()).hexdigest() / "test"
-        if directory.exists() and any(directory.iterdir()):
-            continue
-        directory.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.TemporaryDirectory(dir=directory.parent) as temporary:
-            cases = Path(temporary) / "test"
-            subprocess.run(["oj", "download", "-d", str(cases), "--silent", url], check=True)
-            inputs = list(cases.glob("*.in"))
-            if not inputs or any(not path.with_suffix(".out").is_file() for path in inputs):
-                raise RuntimeError("Incomplete AtCoder samples: " + url)
-            if directory.exists():
-                directory.rmdir()
-            cases.rename(directory)
+
+def time_limit(root, paths):
+    limit = 10
+    for name in paths:
+        source = (root / name).read_text()
+        match = re.search(r'^\s*#\s*define\s+TIME_LIMIT\s+(\d+)\s*$', source, re.M)
+        if match:
+            limit = max(limit, int(match[1]))
+    return limit
 
 
 def get_marker():

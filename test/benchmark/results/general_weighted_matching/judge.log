@@ -1,8 +1,0 @@
-INFO:onlinejudge_verify.config:config file loaded: .verify-helper/config.toml: {'languages': {'cpp': {'environments': [{'CXX': 'g++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}, {'CXX': 'clang++', 'CXXFLAGS': ['-std=c++23', '-O2', '-Wall', '-Wextra', '-DDEBUG=1']}]}}}
-[INFO] slowest: 0.186333 sec  (for complete_plane_01)
-[INFO] max memory: 22.056000 MB  (for complete_plane_01)
-[SUCCESS] test success: 24 cases
-[INFO] slowest: 0.182993 sec  (for complete_plane_01)
-[INFO] max memory: 22.032000 MB  (for complete_00)
-[SUCCESS] test success: 24 cases
-INFO:onlinejudge_verify.verify:all tests succeeded

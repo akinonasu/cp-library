@@ -1,11 +1,12 @@
 import json
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
-from judge_data import build_manifest, mark_ready, normalize_sources, prepare_selected, problem_fingerprint
+from judge_data import build_manifest, generator_stack, mark_ready, normalize_sources, prepare_selected, problem_fingerprint
 
 
 class JudgeDataTests(unittest.TestCase):
@@ -73,6 +74,43 @@ class JudgeDataTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_manifest(self.root, {**self.plan, 'mode': 'affected-no-cache-v1'}, self.repo, '')
 
+    def test_generator_stack_uses_hard_limit_and_restores_original_limit(self):
+        for hard in (-1, 64 * 1024 * 1024):
+            with self.subTest(hard=hard):
+                resource = Mock()
+                resource.getrlimit.return_value = (8 * 1024 * 1024, hard)
+                with patch.dict('sys.modules', resource=resource):
+                    with generator_stack():
+                        resource.setrlimit.assert_called_once_with(resource.RLIMIT_STACK, (hard, hard))
+                    self.assertEqual(resource.setrlimit.call_args.args,
+                                     (resource.RLIMIT_STACK, (8 * 1024 * 1024, hard)))
+
+    def test_generator_stack_restores_limit_after_failure(self):
+        resource = Mock()
+        resource.getrlimit.return_value = (8 * 1024 * 1024, -1)
+        with patch.dict('sys.modules', resource=resource):
+            with self.assertRaisesRegex(RuntimeError, 'generator failed'):
+                with generator_stack():
+                    raise RuntimeError('generator failed')
+        self.assertEqual(resource.setrlimit.call_args.args,
+                         (resource.RLIMIT_STACK, (8 * 1024 * 1024, -1)))
+
+    def test_generator_stack_without_resource_module(self):
+        with patch.dict('sys.modules', resource=None):
+            with generator_stack():
+                pass
+
+    @unittest.skipUnless(__import__('importlib.util').util.find_spec('resource'), 'Requires resource')
+    def test_generator_child_inherits_stack_limit(self):
+        import resource
+
+        before = resource.getrlimit(resource.RLIMIT_STACK)
+        with generator_stack():
+            actual = subprocess.check_output([sys.executable, '-c',
+                'import json, resource; print(json.dumps(resource.getrlimit(resource.RLIMIT_STACK)))'], text=True)
+        self.assertEqual(json.loads(actual), [before[1], before[1]])
+        self.assertEqual(resource.getrlimit(resource.RLIMIT_STACK), before)
+
     @unittest.skipUnless(__import__('importlib.util').util.find_spec('onlinejudge'), 'Requires helper')
     def test_prepare_uses_hardlinks_and_preserves_unselected_data(self):
         manifest = self.manifest()
@@ -81,8 +119,10 @@ class JudgeDataTests(unittest.TestCase):
         for name, data in [('in/example_00.in', b'1\n'), ('out/example_00.out', b'2\n')]:
             path = problem / name; path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(data)
         path = self.root / 'manifest.json'; path.write_text(json.dumps(manifest))
-        with patch('judge_data.subprocess.run') as run, patch('judge_data.normalize_sources'):
+        with patch('judge_data.subprocess.run') as run, patch('judge_data.normalize_sources'), \
+                patch('judge_data.generator_stack') as stack:
             prepare_selected(self.root, self.plan, path)
+        stack.assert_called_once_with()
         self.assertEqual(run.call_count, 1)
         cases = Path(item['cases'])
         self.assertEqual((cases / 'example_00.in').stat().st_ino, (problem / 'in/example_00.in').stat().st_ino)

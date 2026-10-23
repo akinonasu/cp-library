@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/division_of_polynomials"
-#include "fps_io.hpp"
+#include "fixtures/fps_io.hpp"
 
 int main() {
 	FastInput input;

@@ -1,7 +1,0 @@
-clang++: interval_set.cpp
-/mnt/c/Users/yukiz/Desktop/cp-library/test/unit/interval_set.cpp:116:7: warning: explicitly assigning value of variable of type 'IntervalSet<>' to itself [-Wself-assign-overloaded]
-  116 |         copy = copy;
-      |         ~~~~ ^ ~~~~
-1 warning generated.
-clang++: standalone.cpp
-Verification passed

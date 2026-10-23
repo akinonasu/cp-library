@@ -1,9 +1,0 @@
-built base
-built tile64
-built tile1024
-built reference
-waiting EX
-acquired EX
-max_random_00 {'base': 11.80884, 'tile64': 11.96564, 'tile1024': 11.92793, 'reference': 9.72831}
-max_random_01 {'base': 11.87732, 'tile64': 11.9691, 'tile1024': 11.94778, 'reference': 9.69374}
-all_same_00 {'base': 12.73778, 'tile64': 13.11803, 'tile1024': 12.76014, 'reference': 8.32865}

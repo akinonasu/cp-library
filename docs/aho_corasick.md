@@ -38,7 +38,7 @@ int main() {
 | `AhoCorasick<Alphabet, First>()` | 空の Trie。既定は英小文字26文字、`First='a'` | $$O(\sigma)$$ |
 | `reserve(total_length, patterns=0)` | パターンの長さの合計と個数を目安に領域を確保。呼び出しは任意 | $$O(V\sigma+P)$$ |
 | `clear()` | パターン・構築結果を全て削除。確保済み領域は保持 | $$O(V+P)$$ |
-| `add(pattern)` | `string_view` のパターンを追加し、パターン ID を返す。構築前のみ | 償却 $$O(\lvert pattern\rvert+K\sigma+1)$$ |
+| `add(pattern)` | `string_view` のパターンを追加し、パターン ID を返す。構築前のみ | 償却 $$O(\lvert pattern\rvert+K\sigma)$$ |
 | `build()` | suffix link・output link・全遷移を構築。構築済みなら何もしない | 初回 $$O(V\sigma)$$、以降 $$O(1)$$ |
 | `size()` / `empty()` | パターンの個数／パターンが未登録か | $$O(1)$$ |
 | `node_count()` / `built()` | 根を含む Trie の頂点数／構築済みか | $$O(1)$$ |
@@ -51,9 +51,9 @@ int main() {
 | `match_count(v)` | 頂点 `v` の文字列の末尾で一致するパターン数。自身・重複・空文字列も含む | $$O(1)$$ |
 | `transition(v,c)` | 状態 `v` で1文字読み込んだ次の状態。文字が範囲外なら根へ戻る | $$O(1)$$ |
 | `walk(v,text)` | 状態 `v` から本文を読み進め、最後の状態を返す | $$O(\lvert text\rvert)$$ |
-| `for_each_match(v,visit)` | 状態 `v` で一致する各パターン ID に `visit(id)` を呼ぶ | $$O(1+Z_v)$$ |
-| `find_all(text,visit)` | 全一致について `visit(end,id)` を呼ぶ。`end` は `size_t` の右端を含まない位置 | $$O(n+1+Z)$$ |
-| `count_matches(text)` | 全パターンの出現回数の合計を `uint64_t` で返す。列挙しない | $$O(n+1)$$ |
+| `for_each_match(v,visit)` | 状態 `v` で一致する各パターン ID に `visit(id)` を呼ぶ | $$O(Z_v)$$ |
+| `find_all(text,visit)` | 全一致について `visit(end,id)` を呼ぶ。`end` は `size_t` の右端を含まない位置 | $$O(n+Z)$$ |
+| `count_matches(text)` | 全パターンの出現回数の合計を `uint64_t` で返す。列挙しない | $$O(n)$$ |
 | `occurrences(text)` | 各パターン ID の出現回数を `vector<uint64_t>` で返す。列挙しない | $$O(n+V+P)$$ |
 | `bfs_order()` | 根からの幅優先順を `const vector<int>&` で返す。根を含み、suffix link の行き先が先に来る | $$O(1)$$ |
 | `propagate(values)` | 頂点ごとの値を suffix link の行き先へ、幅優先順の逆順で `+=` する | $$O(V)$$ |
@@ -73,4 +73,4 @@ int main() {
 
 遷移は配列で完成させるため、検索中は suffix link をたどらず1回の配列参照で移動します。一致 ID のリストは suffix link 間でコピーせず、output link を使います。再帰は使いません。既定の26文字では、頂点の配列と幅優先順だけで1頂点あたり約132バイトを使います。大きな文字集合を指定すると、その分メモリが増えます。
 
-パターンの長さの合計を $$L$$、個数を $$P$$、Trie の頂点数を $$V\leq L+1$$、文字集合の大きさを $$\sigma$$、本文の長さを $$n$$ とします。登録・構築は合計 $$O(L+P+V\sigma)$$ 時間、保持する空間は $$O(V\sigma+P)$$ です。`occurrences` は $$O(n+V+P)$$ 時間・$$O(V+P)$$ 追加空間、`count_matches` は $$O(n+1)$$ 時間・$$O(1)$$ 追加空間、全列挙は一致数を $$Z$$ として $$O(n+1+Z)$$ 時間・$$O(1)$$ 追加空間です。コールバックと `+=` の計算量は1回あたり $$O(1)$$ としています。
+パターンの長さの合計を $$L$$、個数を $$P$$、Trie の頂点数を $$V\leq L+1$$、文字集合の大きさを $$\sigma$$、本文の長さを $$n$$ とします。登録・構築は合計 $$O(L+P+V\sigma)$$ 時間、保持する空間は $$O(V\sigma+P)$$ です。`occurrences` は $$O(n+V+P)$$ 時間・$$O(V+P)$$ 追加空間、`count_matches` は $$O(n)$$ 時間・$$O(1)$$ 追加空間、全列挙は一致数を $$Z$$ として $$O(n+Z)$$ 時間・$$O(1)$$ 追加空間です。コールバックと `+=` の計算量は1回あたり $$O(1)$$ としています。

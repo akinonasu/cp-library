@@ -11,7 +11,7 @@ template<class Mint = mint> class IncrementalBinomialPrefixSum {
 	int n_ = 0, k_ = 0;
 	Mint value_ = Mint(0);
 	Mint halve(Mint value) const {
-		if constexpr (std::is_same_v<Mint, fps_mint>) return Mint::word((value.v + (value.v & 1) * Mint::mod()) >> 1);
+		if constexpr (std::is_same_v<Mint, mint>) return Mint::word((value.v + (value.v & 1) * Mint::mod()) >> 1);
 		else return value * table_->half;
 	}
 

@@ -20,14 +20,14 @@
 </details>
 {% endif %}
 <h2>コード</h2>
-<div id="library-code" data-size-profile="{{ page.size_profile | escape }}" data-code-limit="{{ page.code_limit }}">
-  {% if page.size_profile == 'lightweight' %}<textarea id="code-copy-source" hidden aria-hidden="true">{{ page.data.bundledCode | escape }}</textarea>{% endif %}
+<div id="library-code" data-size-profile="{% if page.data.copyBundled %}lightweight{% else %}{{ page.size_profile | escape }}{% endif %}" data-code-limit="{{ page.code_limit }}">
+  {% if page.data.copyBundled %}<textarea id="code-copy-source" hidden aria-hidden="true">{{ page.data.bundledCode | escape }}</textarea>{% endif %}
   <div class="code-toolbar" hidden>
     <button id="code-bundle" type="button" aria-pressed="false" aria-controls="code-original code-bundled">Bundle</button>
-    <button id="code-copy" type="button">{% if page.size_profile == 'lightweight' %}展開済みをコピー{% else %}Copy{% endif %}</button>
+    <button id="code-copy" type="button">{% if page.data.copyBundled %}展開済みをコピー{% else %}Copy{% endif %}</button>
     <span id="code-status" role="status" aria-live="polite"></span>
   </div>
-  <div id="code-original">{% include highlight.html extension=page.data._pathExtension content=page.data.code %}</div>
-  <div id="code-bundled" hidden>{% include highlight.html extension=page.data._pathExtension content=page.data.bundledCode %}</div>
+  <div id="code-original">{% if page.data.codeHighlight %}{% include {{ page.data.codeHighlight }} %}{% else %}{% include highlight.html extension=page.data._pathExtension content=page.data.code %}{% endif %}</div>
+  <div id="code-bundled" hidden>{% if page.data.bundleHighlight %}{% include {{ page.data.bundleHighlight }} %}{% else %}{% include highlight.html extension=page.data._pathExtension content=page.data.bundledCode %}{% endif %}</div>
 </div>
 <script defer src="{{ '/assets/js/library-code.js' | relative_url }}"></script>

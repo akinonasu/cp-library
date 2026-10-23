@@ -118,6 +118,8 @@ def build_plan(root, previous=None, *, environment, force=False):
         "unit": sorted(path.relative_to(root).as_posix() for path in (root / "test/unit").rglob("*.cpp")),
         "verification": sorted(path.relative_to(root).as_posix() for path in (root / "test").rglob("*.test.cpp")),
     }
+    from verification import check_judges
+    check_judges(root, targets["verification"])
     targets["sanitize"] = targets["unit"]
     targets["bundles"] = targets["headers"]
     contents = {}
@@ -168,12 +170,12 @@ def build_plan(root, previous=None, *, environment, force=False):
         return result
 
     settings = {
-        "headers": ("test/verify.py",),
-        "unit": ("test/verify.py",),
-        "sanitize": ("test/verify.py",),
+        "headers": ("test/verify.py", ".verify-helper/atcoder_flags.py"),
+        "unit": ("test/verify.py", ".verify-helper/atcoder_flags.py"),
+        "sanitize": ("test/verify.py", ".verify-helper/atcoder_flags.py"),
         "verification": (".verify-helper/config.toml", "test/requirements.txt",
                          ".verify-helper/ci.py", ".verify-helper/verification.py", ".verify-helper/judge_data.py"),
-        "bundles": (".verify-helper/check-docs.py", ".verify-helper/documentation.py", ".verify-helper/verification.py",
+        "bundles": (".verify-helper/check-docs.py", ".verify-helper/atcoder_flags.py", ".verify-helper/documentation.py", ".verify-helper/verification.py",
                     ".verify-helper/config.toml", "test/requirements.txt", ".verify-helper/size_profiles.py",
                     ".verify-helper/check_profiles.py"),
     }
@@ -358,7 +360,7 @@ def main():
         elif args.command == "judge":
             import onlinejudge.service
             from onlinejudge_verify import verify
-            from verification import get_marker, prepare_samples
+            from verification import check_judges, get_marker, time_limit
 
             logging.basicConfig(level=logging.INFO)
             if affected and list((ROOT / ".verify-helper").glob("timestamps.*.json")):
@@ -374,8 +376,8 @@ def main():
                     from judge_data import mark_ready
                     mark_ready(Path(os.environ["VERIFY_JUDGE_CACHE"]), name)
             def run(paths):
-                prepare_samples(ROOT, paths)
-                return verify.main(paths, marker=verification, timeout=3000, tle=10, jobs=2)
+                check_judges(ROOT, paths)
+                return verify.main(paths, marker=verification, timeout=3000, tle=time_limit(ROOT, paths), jobs=2)
             with verification:
                 verify_selected(plan, verification, run,
                     completed=None if affected else completed, starting=None if affected else starting)

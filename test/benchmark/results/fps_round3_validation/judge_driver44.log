@@ -1,8 +1,0 @@
-test/online_convolution_inv.test.cpp 25 passed
-dependency command: g++ -std=c++23 -O2 -Wall -Wextra -DEVAL -DONLINE_JUDGE -I /workspace/cp-library -MM /workspace/cp-library/test/online_convolution_inv.test.cpp
-online_convolution_inv.test.o: \
- /workspace/cp-library/test/online_convolution_inv.test.cpp \
- /workspace/cp-library/test/../convolution/online_convolution.hpp \
- /workspace/cp-library/test/../convolution/../components/ntt.hpp \
- /workspace/cp-library/test/../convolution/../components/../math/mint.hpp \
- /workspace/cp-library/test/../components/fast_io.hpp

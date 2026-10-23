@@ -2,7 +2,7 @@
 #include "components/walsh_hadamard.hpp"
 #include "convolution/bitwise_convolution.hpp"
 #include "math/mint.hpp"
-#include "test/benchmark/bitwise_transforms_baseline.hpp"
+#include "test/fixtures/bitwise_transforms_reference.hpp"
 #include <array>
 #include <bit>
 #include <cassert>

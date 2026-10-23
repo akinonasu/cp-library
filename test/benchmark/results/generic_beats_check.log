@@ -1,7 +1,0 @@
-g++: standalone data_structure/generic_segtree_beats.hpp
-g++: generic_segtree_beats.cpp
-clang++: standalone data_structure/generic_segtree_beats.hpp
-clang++: generic_segtree_beats.cpp
-/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: standalone data_structure/generic_segtree_beats.hpp
-/var/tmp/cp-matrix-gcc13/bin/x86_64-conda-linux-gnu-g++: generic_segtree_beats.cpp
-Verification passed

@@ -1,7 +1,0 @@
-built before
-built range_inplace
-built reference
-max_random_00 {'before': 11.969624, 'range_inplace': 12.25459, 'reference': 9.752349} {'range_inplace': -0.13201600000000013} {'range_inplace': 2}
-max_random_01 {'before': 11.861112, 'range_inplace': 12.152547, 'reference': 9.627914} {'range_inplace': -0.21976800000000019} {'range_inplace': 2}
-small_and_large_03 {'before': 9.494324, 'range_inplace': 9.570027, 'reference': 8.033787} {'range_inplace': -0.1375340000000005} {'range_inplace': 1}
-medium_02 {'before': 1.403202, 'range_inplace': 1.39526, 'reference': 1.197285} {'range_inplace': 0.0037160000000000526} {'range_inplace': 5}

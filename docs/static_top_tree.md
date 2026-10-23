@@ -70,7 +70,7 @@ DP には次の型と static 関数を定義します。値はコピー・代入
 
 辺を更新する場合は、子の `Vertex` に親辺の値を保存し、`edge_vertex(e)` で子を求めて `set` します。根の仮想的な親辺は、DP に応じた単位元にします。`subtree_prod(v)` にも `Vertex` に保存した `v` の親辺の作用が含まれます。
 
-`prod(v)` は経路上の頂点だけを集約する操作ではありません。経路外の枝を `Point` として畳み、**全頂点を含む**根から `v` へのクラスタを返します。`Path` に両方向の情報を持たせれば、指定した頂点を根とする全方位の値も取り出せます。逆方向の辺・頂点の作用も DP 側で定義します。[一次関数合成の全方位 DP](https://github.com/qandori/cp-library/blob/main/test/static_top_tree_dp.hpp) と [可変根の使用例](https://github.com/qandori/cp-library/blob/main/test/point_set_tree_path_composite_sum.test.cpp) を参照してください。独立集合のように枝の方向を反転させる処理が必要な DP では、固定根の `Path` をそのまま逆順にするだけでは全方位の答えになりません。
+`prod(v)` は経路上の頂点だけを集約する操作ではありません。経路外の枝を `Point` として畳み、**全頂点を含む**根から `v` へのクラスタを返します。`Path` に両方向の情報を持たせれば、指定した頂点を根とする全方位の値も取り出せます。逆方向の辺・頂点の作用も DP 側で定義します。[一次関数合成の全方位 DP](https://github.com/qandori/cp-library/blob/main/test/fixtures/static_top_tree_dp.hpp) と [可変根の使用例](https://github.com/qandori/cp-library/blob/main/test/point_set_tree_path_composite_sum.test.cpp) を参照してください。独立集合のように枝の方向を反転させる処理が必要な DP では、固定根の `Path` をそのまま逆順にするだけでは全方位の答えになりません。
 
 `all_prod`・`subtree_prod` も `Path` を返すため、固定根の答えとして使う際には DP に応じた取り出し方を使います。例えば行列を `Path` にする DP では、末尾に空の子の状態を作用させます。`dp` はその処理を `add_edge` で行う場合に使えます。
 

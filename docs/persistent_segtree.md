@@ -1,12 +1,15 @@
 ---
 title: 永続セグメント木
-documentation_of: //data_structure/segment_tree/persistent_segtree.hpp
+documentation_of: //data_structure/persistent/persistent_segtree.hpp
+redirect_from:
+  - /data_structure/segment_tree/persistent_segtree.hpp.html
+  - /lightweight/data_structure/segment_tree/persistent_segtree.hpp.html
 ---
 
 配列の過去の状態を残したまま、一点更新・区間積・境界探索を行います。任意の過去版から分岐でき、別の版の区間をコピーすることもできます。遅延伝搬による区間更新は扱いません。
 
 ```cpp
-#include "lib/data_structure/segment_tree/persistent_segtree.hpp"
+#include "lib/data_structure/persistent/persistent_segtree.hpp"
 #include <cassert>
 #include <vector>
 
@@ -60,6 +63,6 @@ int main() {
 
 `get`・`prod`・`all_prod`・境界探索は読み取り専用で、ノードを増やしません。区間コピーは部分木を共有し、全区間のコピー、空区間のコピー、同じ版からのコピーはノードを作りません。版ごとのノード解放は行わず、使わなくなった版のノードも木を破棄するまで保持します。
 
-配列からの構築は、長さが正ならちょうど $$2n-1$$ ノードを作ります。一点更新の追加ノード数は最大 $$\lceil\log_2 n\rceil+1$$ 個です。`reserve` の引数は更新回数ではなく、既存分を含むノード数なので、更新回数からこの上限を見積もって予約できます。ノード数の上限は $$2^{32}-2$$ 個です。
+長さが正のとき、$$h=\lceil\log_4 n\rceil$$ とすると、配列からの構築は $$\displaystyle\sum_{i=0}^{h}\lceil n/4^i\rceil$$ ノード、一点更新は $$h+1$$ ノードを作ります。`reserve` の引数は更新回数ではなく、既存分を含むノード数なので、更新回数からこの上限を見積もって予約できます。ノード数の上限は $$2^{32}-2$$ 個です。
 
 演算・値のコピーを $$O(1)$$ とした計算量です。構築は $$O(n)$$、一点更新・区間積・境界探索・区間コピーは $$O(\log n)$$、更新の領域確保を含む時間は償却計算量です。長さ 0・1 の操作は $$O(1)$$ です。構築後に更新・区間コピーを合計 $$u$$ 回行うと、空間は $$O(n+u\log n)$$、長さだけを指定した疎な初期版では $$O(u\log n)$$ です。予約容量が大きい場合はその容量分を使います。

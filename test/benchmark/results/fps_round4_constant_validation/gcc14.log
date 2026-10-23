@@ -1,9 +1,0 @@
-/usr/bin/g++: standalone components/fps_convolution.hpp
-/usr/bin/g++: standalone components/fps_convolution_constant.hpp
-/usr/bin/g++: standalone convolution/convolution.hpp
-/usr/bin/g++: standalone fps/fps.hpp
-/usr/bin/g++: fps.cpp
-fps_mint: scalar_cases=960 division_cases=192 adjacent_cases=666
-NontrivialMint: scalar_cases=960 division_cases=192 adjacent_cases=666
-PASS scalar checks=1037502
-Verification passed

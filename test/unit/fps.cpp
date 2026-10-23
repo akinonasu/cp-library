@@ -192,7 +192,7 @@ template<class T> void run_type(const char *name) {
 	std::cout << name << ": scalar_cases=" << scalar_cases << " division_cases=" << division_cases
 		<< " adjacent_cases=" << adjacent_cases << '\n';
 }
-static_assert(std::is_same_v<fps_mint, fps_detail::Mint>);
+static_assert(std::is_same_v<fps_mint, mint>);
 void run() {
 	run_type<fps_mint>("fps_mint");
 	run_type<NontrivialMint>("NontrivialMint");
