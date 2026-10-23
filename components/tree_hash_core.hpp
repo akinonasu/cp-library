@@ -76,21 +76,28 @@ inline Rooting root_tree(const std::vector<std::vector<int>> &graph, int root) {
 	return result;
 }
 
+inline TreeHashValue salt_at(int height, std::uint64_t seed) {
+	SplitMix64 random(seed + std::uint64_t(height) * 2 * 0x9e3779b97f4a7c15ULL);
+	return { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
+}
+
+inline void append(TreeHashValue &hash, const TreeHashValue &child, const TreeHashValue &salt) {
+	for (int k = 0; k < 2; ++k) {
+		std::uint64_t factor = salt.value[k] + child.value[k];
+		if (factor >= mod) factor -= mod;
+		hash.value[k] = mul(hash.value[k], factor);
+	}
+}
+
 inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &graph, const Rooting &tree, std::uint64_t seed) {
-	std::vector<TreeHashValue> result(graph.size()), salt;
+	std::vector<TreeHashValue> result(graph.size(), TreeHashValue{ {1, 1} });
+	if (graph.empty()) return result;
+	std::vector<TreeHashValue> salt(tree.height[tree.order[0]] + 1);
 	SplitMix64 random(seed);
-	for (auto it = tree.order.rbegin(); it != tree.order.rend(); ++it) {
-		int v = *it, height = tree.height[v];
-		while (salt.size() <= std::size_t(height)) salt.push_back({ {random() % (mod - 1) + 1, random() % (mod - 1) + 1} });
-		TreeHashValue hash{ {1, 1} };
-		for (int u : graph[v]) if (u != tree.parent[v]) {
-			for (int k = 0; k < 2; ++k) {
-				std::uint64_t factor = salt[height].value[k] + result[u].value[k];
-				if (factor >= mod) factor -= mod;
-				hash.value[k] = mul(hash.value[k], factor);
-			}
-		}
-		result[v] = hash;
+	for (auto &value : salt) value = { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
+	for (auto it = tree.order.rbegin(); it + 1 != tree.order.rend(); ++it) {
+		int v = *it, p = tree.parent[v];
+		append(result[p], result[v], salt[tree.height[p]]);
 	}
 	return result;
 }

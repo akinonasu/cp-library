@@ -84,7 +84,12 @@ class PersistentArray {
 	explicit PersistentArray(const std::vector<T> &a, T default_value = T{}) : PersistentArray(0, std::move(default_value)) {
 		assert(a.size() <= static_cast<std::size_t>(std::numeric_limits<int>::max()));
 		n_ = static_cast<int>(a.size());
-		if (n_) initial_ = build(a, 0, 1);
+		if (n_) {
+			std::size_t count = a.size();
+			for (auto rest = (a.size() - 1) >> Log; rest; rest >>= Log) count += rest;
+			reserve(count);
+			initial_ = build(a, 0, 1);
+		}
 	}
 	int size() const { return n_; }
 	bool empty() const { return !n_; }
