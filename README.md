@@ -80,6 +80,7 @@
 | `fps/polynomial_gcd_light.hpp` | 軽量 FPS の多項式 GCD・拡張 GCD・逆元 | [使い方](docs/polynomial_gcd_light.md) |
 | `fps/bostan_mori.hpp` | Bostan–Mori | [使い方](docs/bostan_mori.md) |
 | `fps/linear_recurrence.hpp` | 線形漸化式の第 k 項 | [使い方](docs/linear_recurrence.md) |
+| `fps/berlekamp_massey.hpp` | 線形漸化式の復元（Berlekamp–Massey） | [使い方](docs/berlekamp_massey.md) |
 | `fps/compose.hpp` | 形式的冪級数の合成 | [使い方](docs/compose.md) |
 | `fps/compose_light.hpp` | 軽量 FPS の合成 | [使い方](docs/compose_light.md) |
 | `fps/power_projection.hpp` | Power Projection | [使い方](docs/power_projection.md) |
@@ -342,6 +343,7 @@
 | `components/sequence_match.hpp` | 前方・後方の一致比較 | [使い方](docs/sequence_match.md) |
 | `components/z_algorithm.hpp` | Z algorithm・接頭辞一致の列挙 | [使い方](docs/z_algorithm.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
+| `components/field_arithmetic.hpp` | 体の演算・内積・配列の定数倍と加算 | [使い方](docs/field_arithmetic.md) |
 | `components/factorial_table.hpp` | 型を指定する階乗・逆階乗テーブル | [使い方](docs/factorial_table.md) |
 | `components/factorial_table_light.hpp` | 軽量版の階乗・逆階乗生成 | [使い方](docs/factorial_table_light.md) |
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |
