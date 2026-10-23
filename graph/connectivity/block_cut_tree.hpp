@@ -5,7 +5,7 @@
 #include <algorithm>
 
 class BlockCutTree {
-	struct Frame { int v, parent, next; };
+	struct Frame { int v, next, low; };
 	bool built_ = false;
 	std::vector<int> vertices_, boundaries_;
 	void check_([[maybe_unused]] int v) const { assert(built_ && 0 <= v && v < n); }
@@ -29,8 +29,8 @@ class BlockCutTree {
 	}
 	void build() {
 		built_ = false;
-		UndirectedCSR graph(n, edges);
-		std::vector<int> ord(n, -1), low(n), active;
+		UndirectedVertexCSR graph(n, edges);
+		std::vector<int> ord(n, -1), active;
 		std::vector<Frame> stack;
 		active.reserve(n), stack.reserve(n);
 		vertices_.clear(), boundaries_.assign(1, 0);
@@ -42,13 +42,14 @@ class BlockCutTree {
 			node_id[v] = node_id[v] == -1 ? block : -2;
 		};
 		for (int root = 0; root < n; ++root) if (ord[root] == -1) {
-			ord[root] = low[root] = timer++;
+			ord[root] = timer++;
 			active.push_back(root);
-			stack.push_back({root, -1, graph.start[root]});
+			stack.push_back({root, graph.start[root], ord[root]});
 			while (!stack.empty()) {
 				auto& frame = stack.back();
 				int v = frame.v;
 				if (frame.next == graph.start[v + 1]) {
+					int value = frame.low;
 					stack.pop_back();
 					if (stack.empty()) {
 						active.pop_back();
@@ -58,8 +59,8 @@ class BlockCutTree {
 						}
 					} else {
 						int p = stack.back().v;
-						low[p] = std::min(low[p], low[v]);
-						if (low[v] >= ord[p]) {
+						stack.back().low = std::min(stack.back().low, value);
+						if (value >= ord[p]) {
 							int block = static_cast<int>(boundaries_.size()) - 1, u;
 							append(p, block);
 							do {
@@ -72,13 +73,15 @@ class BlockCutTree {
 					}
 					continue;
 				}
-				auto [to, id] = graph.adj[frame.next++];
-				if (id == frame.parent) continue;
-				if (ord[to] != -1) low[v] = std::min(low[v], ord[to]);
-				else {
-					ord[to] = low[to] = timer++;
-					active.push_back(to);
-					stack.push_back({to, id, graph.start[to]});
+				while (frame.next != graph.start[v + 1]) {
+					int to = graph.adj[frame.next++];
+					if (ord[to] != -1) frame.low = std::min(frame.low, ord[to]);
+					else {
+						ord[to] = timer++;
+						active.push_back(to);
+						stack.push_back({to, graph.start[to], ord[to]});
+						break;
+					}
 				}
 			}
 		}

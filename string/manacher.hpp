@@ -23,17 +23,29 @@ class Manacher {
 		assert(s.size() <= std::size_t(std::numeric_limits<int>::max()));
 		int n = int(s.size());
 		odd.resize(n), even.resize(n);
-		for (int i = 0, l = 0, r = -1; i < n; ++i) {
-			int k = i > r ? 1 : std::min(odd[l + (r - i)], r - i + 1);
-			while (k <= i && k < n - i && s[i - k] == s[i + k]) ++k;
+		for (int i = 0, k = 1; i < n;) {
+			int limit = std::min(i + 1, n - i);
+			while (k < limit && s[i - k] == s[i + k]) ++k;
 			odd[i] = k;
-			if (i + k - 1 > r) l = i - k + 1, r = i + k - 1;
+			int j = 1;
+			while (j < k && odd[i - j] != k - j) {
+				odd[i + j] = std::min(odd[i - j], k - j);
+				++j;
+			}
+			i += j;
+			k = std::max(k - j, 1);
 		}
-		for (int i = 0, l = 0, r = -1; i < n; ++i) {
-			int k = i > r ? 0 : std::min(even[l + (r - i) + 1], r - i + 1);
-			while (k < i && k < n - i && s[i - k - 1] == s[i + k]) ++k;
+		for (int i = 0, k = 0; i < n;) {
+			int limit = std::min(i, n - i);
+			while (k < limit && s[i - k - 1] == s[i + k]) ++k;
 			even[i] = k;
-			if (i + k - 1 > r) l = i - k, r = i + k - 1;
+			int j = 1;
+			while (j < k && even[i - j] != k - j) {
+				even[i + j] = std::min(even[i - j], k - j);
+				++j;
+			}
+			i += j;
+			k = std::max(k - j, 0);
 		}
 	}
 	int size() const { return int(odd.size()); }

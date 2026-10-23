@@ -10,24 +10,25 @@ inline std::array<TreeHashValue, 2> tree_hash(const std::vector<std::vector<int>
 	if (graph.empty()) return result;
 	auto tree = tree_hash_detail::root_tree(graph, 0);
 	const int n = static_cast<int>(graph.size());
-	std::array<int, 2> centroid{};
-	int count = 0;
-	for (int v = 0; v < n; ++v) {
-		int largest = n - tree.size[v];
-		for (int u : graph[v]) if (tree.parent[u] == v) largest = std::max(largest, tree.size[u]);
-		if (largest <= n / 2) {
-			assert(count < 2);
-			centroid[count++] = v;
-		}
+	int first = 0;
+	for (int v = 1; v < n; ++v)
+		if (tree.size[v] >= n / 2 + n % 2 && tree.size[v] < tree.size[first]) first = v;
+	int second = tree.size[first] == n / 2 ? tree.parent[first] : -1;
+	if (first != 0) tree = tree_hash_detail::root_tree(graph, first);
+	auto hashes = tree_hash_detail::hashes(graph, tree, seed);
+	result[0] = hashes[first];
+	if (second == -1) result[1] = result[0];
+	else {
+		int height = 0;
+		for (int u : graph[first]) if (u != second) height = std::max(height, tree.height[u] + 1);
+		auto salt = tree_hash_detail::salt_at(height, seed);
+		TreeHashValue branch{ {1, 1} };
+		for (int u : graph[first]) if (u != second) tree_hash_detail::append(branch, hashes[u], salt);
+		salt = tree_hash_detail::salt_at(std::max(tree.height[second], height + 1), seed);
+		result[1] = { {1, 1} };
+		for (int u : graph[second]) tree_hash_detail::append(result[1], u == first ? branch : hashes[u], salt);
+		if (result[1] < result[0]) std::swap(result[0], result[1]);
 	}
-	assert(count >= 1);
-	for (int i = 0; i < count; ++i) {
-		int root = centroid[i];
-		if (tree.parent[root] != -1) tree = tree_hash_detail::root_tree(graph, root);
-		result[i] = tree_hash_detail::hashes(graph, tree, seed)[root];
-	}
-	if (count == 1) result[1] = result[0];
-	else if (result[1] < result[0]) std::swap(result[0], result[1]);
 	return result;
 }
 

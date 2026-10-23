@@ -29,16 +29,16 @@ template<class T, auto weight> class PersistentRope {
 	}
 	int balance(int a, int b) {
 		if (height(a) > height(b) + 1) {
-			auto x = nodes_[a];
-			if (height(x.left) >= height(x.right)) return branch(x.left, branch(x.right, b));
-			auto y = nodes_[x.right];
-			return branch(branch(x.left, y.left), branch(y.right, b));
+			int left = nodes_[a].left, right = nodes_[a].right;
+			if (height(left) >= height(right)) return branch(left, branch(right, b));
+			int middle_left = nodes_[right].left, middle_right = nodes_[right].right;
+			return branch(branch(left, middle_left), branch(middle_right, b));
 		}
 		if (height(b) > height(a) + 1) {
-			auto x = nodes_[b];
-			if (height(x.right) >= height(x.left)) return branch(branch(a, x.left), x.right);
-			auto y = nodes_[x.left];
-			return branch(branch(a, y.left), branch(y.right, x.right));
+			int left = nodes_[b].left, right = nodes_[b].right;
+			if (height(right) >= height(left)) return branch(branch(a, left), right);
+			int middle_left = nodes_[left].left, middle_right = nodes_[left].right;
+			return branch(branch(a, middle_left), branch(middle_right, right));
 		}
 		return branch(a, b);
 	}
@@ -56,12 +56,12 @@ template<class T, auto weight> class PersistentRope {
 	int join(int a, int b) {
 		if (!a || !b) return a ? a : b;
 		if (height(a) > height(b) + 1) {
-			auto x = nodes_[a];
-			return balance(x.left, join(x.right, b));
+			int left = nodes_[a].left, right = nodes_[a].right;
+			return balance(left, join(right, b));
 		}
 		if (height(b) > height(a) + 1) {
-			auto x = nodes_[b];
-			return balance(join(a, x.left), x.right);
+			int left = nodes_[b].left, right = nodes_[b].right;
+			return balance(join(a, left), right);
 		}
 		return branch(a, b);
 	}
@@ -79,20 +79,21 @@ template<class T, auto weight> class PersistentRope {
 		assert(p <= size(v));
 		if (!p) return {0, v};
 		if (p == size(v)) return {v, 0};
-		auto x = nodes_[v];
-		if (!x.left) {
-			auto [a, b] = splitter(x.value, p);
+		int left = nodes_[v].left, right = nodes_[v].right;
+		if (!left) {
+			T value = nodes_[v].value;
+			auto [a, b] = splitter(value, p);
 			int l = make(std::move(a)), r = make(std::move(b));
 			return {l, r};
 		}
-		auto k = size(x.left);
-		if (p == k) return {x.left, x.right};
+		auto k = size(left);
+		if (p == k) return {left, right};
 		if (p < k) {
-			auto [a, b] = split(x.left, p, splitter);
-			return {a, join(b, x.right)};
+			auto [a, b] = split(left, p, splitter);
+			return {a, join(b, right)};
 		}
-		auto [a, b] = split(x.right, p - k, splitter);
-		return {join(x.left, a), b};
+		auto [a, b] = split(right, p - k, splitter);
+		return {join(left, a), b};
 	}
 	int replace(int v, std::uint64_t p, T value) {
 		assert(p < size(v));
@@ -143,24 +144,25 @@ template<class T, auto weight> class PersistentRope {
 	T back(int v) const { assert(v); while (nodes_[v].right) v = nodes_[v].right; return value(v); }
 	std::pair<T, int> pop_front(int v) {
 		assert(v);
-		auto x = nodes_[v];
-		if (!x.left) return {x.value, 0};
-		auto [value, rest] = pop_front(x.left);
-		return {value, join(rest, x.right)};
+		int left = nodes_[v].left, right = nodes_[v].right;
+		if (!left) return {value(v), 0};
+		auto [value, rest] = pop_front(left);
+		return {std::move(value), join(rest, right)};
 	}
 	std::pair<int, T> pop_back(int v) {
 		assert(v);
-		auto x = nodes_[v];
-		if (!x.right) return {0, x.value};
-		auto [rest, value] = pop_back(x.right);
-		return {join(x.left, rest), value};
+		int left = nodes_[v].left, right = nodes_[v].right;
+		if (!right) return {0, value(v)};
+		auto [rest, value] = pop_back(right);
+		return {join(left, rest), std::move(value)};
 	}
 	std::pair<T, std::uint64_t> at(int v, std::uint64_t p) const {
 		assert(p < size(v));
-		while (!leaf(v)) {
-			auto x = nodes_[v];
-			if (p < size(x.left)) v = x.left;
-			else p -= size(x.left), v = x.right;
+		while (int left = nodes_[v].left) {
+			int right = nodes_[v].right;
+			auto length = size(left);
+			if (p < length) v = left;
+			else p -= length, v = right;
 		}
 		return {value(v), p};
 	}

@@ -67,6 +67,9 @@ struct Registry {
 		RootedTreeHash tree(graph, root, seed);
 		assert(tree.size() == static_cast<int>(graph.size()));
 		assert(tree.root == root && tree.seed() == seed && tree.get() == tree[root]);
+		std::vector<Hash> salt(graph.size());
+		SplitMix64 random(seed);
+		for (auto &value : salt) value = { {random() % (tree_hash_detail::mod - 1) + 1, random() % (tree_hash_detail::mod - 1) + 1} };
 		std::function<std::pair<int, int>(int, int)> visit = [&](int v, int p) {
 			assert(tree.parent[v] == p);
 			int height = 0, size = 1;
@@ -76,6 +79,11 @@ struct Registry {
 				size += s;
 			}
 			assert(tree.height[v] == height && tree.subtree_size[v] == size);
+			Hash expected{ {1, 1} };
+			for (int u : graph[v]) if (u != p)
+				for (int k = 0; k < 2; ++k)
+					expected.value[k] = __uint128_t(expected.value[k]) * (salt[height].value[k] + tree[u].value[k]) % tree_hash_detail::mod;
+			assert(tree[v] == expected);
 			auto shape = canonical(graph, v, p);
 			assert(rooted.try_emplace(shape, tree[v]).first->second == tree.get(v));
 			assert(rooted_inverse.try_emplace(tree[v], shape).first->second == shape);

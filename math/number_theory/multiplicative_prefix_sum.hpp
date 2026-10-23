@@ -71,8 +71,38 @@ template<class T> class MultiplicativePrefixSum {
 				return result;
 			}
 		}
-		auto result = prime_sum([](std::uint64_t x) { return T(x); });
-		auto weighted = prime_sum(identity_prefix);
+		std::vector<T> result, weighted;
+		result.reserve(size()), weighted.reserve(size());
+		for (auto x : quotients()) {
+			result.push_back(T(x) - T(1));
+			weighted.push_back(identity_prefix(x) - T(1));
+		}
+		const std::uint64_t n = max_n(), root = quotients_.root();
+		const std::size_t large = quotients_.large_size(), length = size();
+		for (std::uint64_t p : primes_) {
+			const T weight = T(p), before = result[length - p + 1], weighted_before = weighted[length - p + 1];
+			const auto end = std::min<std::uint64_t>(large, n / (p * p));
+			const auto split = std::min<std::uint64_t>(end, large / p);
+			std::uint64_t i = 1;
+			for (; i <= split; ++i) {
+				result[i - 1] -= result[i * p - 1] - before;
+				weighted[i - 1] -= weight * (weighted[i * p - 1] - weighted_before);
+			}
+			for (; i <= end; ++i) {
+				const auto target = length - n / (i * p);
+				result[i - 1] -= result[target] - before;
+				weighted[i - 1] -= weight * (weighted[target] - weighted_before);
+			}
+			std::uint64_t x = root;
+			for (std::uint64_t q = root / p; q >= p; --q) {
+				const T delta = result[length - q] - before;
+				const T weighted_delta = weight * (weighted[length - q] - weighted_before);
+				for (const auto stop = q * p; x >= stop; --x) {
+					result[length - x] -= delta;
+					weighted[length - x] -= weighted_delta;
+				}
+			}
+		}
 		for (std::size_t i = 0; i < size(); ++i) result[i] = result[i] * constant + weighted[i] * linear;
 		return result;
 	}
@@ -110,13 +140,14 @@ template<class T> class MultiplicativePrefixSum {
 			second.push_back(prime_power(p, 2, p * p));
 		}
 		T result = prime_prefix[0] + T(1);
+		const auto length = size(), large = quotients_.large_size();
 		auto dfs = [&](auto&& self, std::size_t i, unsigned e, std::uint64_t product, std::uint64_t power, T coefficient) -> void {
 			const std::uint64_t p = primes_[i], limit = max_n() / product;
 			result += coefficient * (e == 1 ? second[i] : prime_power(p, e + 1, power * p));
 			if (p * p <= limit) self(self, i, e + 1, product * p, power * p, coefficient);
 			coefficient *= e == 1 ? first[i] : e == 2 ? second[i] : prime_power(p, e, power);
 			if constexpr (requires { coefficient == T(0); }) if (coefficient == T(0)) return;
-			result += coefficient * (prime_prefix[index(limit)] - prime_prefix[index(p)]);
+			result += coefficient * (prime_prefix[product <= large ? product - 1 : length - limit] - prime_prefix[length - p]);
 			std::size_t j = i + 1;
 			for (; j < primes_.size(); ++j) {
 				const std::uint64_t q = primes_[j];
@@ -126,7 +157,7 @@ template<class T> class MultiplicativePrefixSum {
 			for (; j < primes_.size(); ++j) {
 				const std::uint64_t q = primes_[j];
 				if (q * q > limit) break;
-				result += coefficient * (second[j] + first[j] * (prime_prefix[index(limit / q)] - prime_prefix[index(q)]));
+				result += coefficient * (second[j] + first[j] * (prime_prefix[quotients_.divided_index(0, product * q)] - prime_prefix[length - q]));
 			}
 		};
 		for (std::size_t i = 0; i < primes_.size(); ++i) dfs(dfs, i, 1, primes_[i], primes_[i], T(1));
