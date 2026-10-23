@@ -124,6 +124,7 @@ class BundleTest(unittest.TestCase):
         examples = {
             'fps': '',
             'bostan_mori': 'require(bostan_mori(F{0, 1}, F{1, -1, -1}, 50) == T(12586269025LL));',
+            'rational_fps_coefficients': 'require(rational_fps_coefficients(F{1}, F{1, -1, -1}, 10, 15) == F({89, 144, 233, 377, 610}));',
             'compose': 'require(compose(a, inner, 5) == F({1, 2, 5, 6, 3})); require(compose(F{}, F{}, 0).empty());',
             'compositional_inverse': 'auto reverse = compositional_inverse(inner, 129); require(reverse.size() == 129 && reverse[1] == T(1)); require(compositional_inverse(F{}, 0).empty());',
             'multipoint_eval': 'require(multipoint_eval(a, xs) == ys); require(multipoint_eval(F{}, xs) == std::vector<T>(xs.size()));',

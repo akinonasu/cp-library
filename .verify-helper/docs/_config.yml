@@ -17,6 +17,7 @@ implementation_variants:
   fps/taylor_shift.hpp: fps/fps_light_algorithms.hpp
   fps/bostan_mori.hpp: fps/fps_light_algorithms.hpp
   fps/linear_recurrence.hpp: fps/fps_light_algorithms.hpp
+  fps/rational_fps_coefficients.hpp: fps/rational_fps_coefficients_light.hpp
   fps/multipoint_eval.hpp: fps/fps_light_algorithms.hpp
   fps/interpolate.hpp: fps/fps_light_algorithms.hpp
   components/fps_backend.hpp: components/fps_light_backend.hpp
@@ -46,6 +47,7 @@ implementation_variant_apis:
   fps/taylor_shift.hpp: light_fps_algorithms::taylor_shift
   fps/bostan_mori.hpp: light_fps_algorithms::bostan_mori
   fps/linear_recurrence.hpp: light_fps_algorithms::linear_recurrence
+  fps/rational_fps_coefficients.hpp: light_fps_algorithms::rational_fps_coefficients
   fps/multipoint_eval.hpp: light_fps_algorithms::multipoint_eval
   fps/interpolate.hpp: light_fps_algorithms::interpolate
   fps/compose.hpp: light_fps_algorithms::compose

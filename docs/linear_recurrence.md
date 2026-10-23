@@ -14,6 +14,8 @@ auto value = linear_recurrence(initial, coefficients, 10); // 55
 
 係数が未知で先頭の数項が分かっている場合は、[線形漸化式の復元](berlekamp_massey.md)で係数を求められます。
 
+連続する複数の項は [有理 FPS の区間係数取得](rational_fps_coefficients.md) でまとめて計算できます。
+
 `initial` は `{a[0],a[1],...,a[d-1]}` の順、`coefficients[0]` は一つ前の項に掛ける係数です。例は `a[0]=0, a[1]=1, a[n]=a[n-1]+a[n-2]` の Fibonacci 数列です。`k` は 0 始まりなので、10 を渡すと `a[10]=55` を返します。戻り値も `mint` です。
 
 | 操作 | 内容・返り値 | 計算量 |
