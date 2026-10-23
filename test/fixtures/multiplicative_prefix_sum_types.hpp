@@ -5,6 +5,7 @@
 
 template<unsigned Mod> struct MultiplicativeSumModint {
 	unsigned v = 0;
+	static constexpr unsigned mod() { return Mod; }
 	MultiplicativeSumModint() = default;
 	MultiplicativeSumModint(long long x) { auto r = x % Mod; v = r < 0 ? r + Mod : r; }
 	unsigned val() const { return v; }

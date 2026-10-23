@@ -353,6 +353,7 @@
 | `components/montgomery.hpp` | Montgomery 64 | [使い方](docs/montgomery.md) |
 | `components/montgomery32.hpp` | Montgomery 32 | [使い方](docs/montgomery32.md) |
 | `components/mod_fast_core.hpp` | 定数時間 mod 演算の内部部品 | [使い方](docs/mod_fast_core.md) |
+| `components/multiplicative_sum_backend.hpp` | 乗法的関数の和の内部処理 | [使い方](docs/multiplicative_sum_backend.md) |
 | `components/splitmix64.hpp` | SplitMix64 | [使い方](docs/splitmix64.md) |
 | `components/tree_hash_core.hpp` | 木ハッシュの共通部品 | [使い方](docs/tree_hash_core.md) |
 | `components/d_ary_heap.hpp` | D-ary Heap | [使い方](docs/d_ary_heap.md) |
