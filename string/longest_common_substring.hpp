@@ -3,6 +3,7 @@
 
 #include "../components/sequence_compare.hpp"
 #include "../components/suffix_array.hpp"
+#include "../components/substring_seed.hpp"
 #include <algorithm>
 #include <cassert>
 #include <limits>
@@ -20,6 +21,8 @@ inline LongestCommonSubstringResult longest_common_substring(std::string_view s,
 	int n = int(s.size()), m = int(t.size()), bound = std::min(n, m);
 	LongestCommonSubstringResult best{0, 0, sequence_compare_detail::prefix(s.data(), t.data(), bound)};
 	if (best.length == bound) return best;
+	if (auto match = substring_seed_detail::search(s, t, {best.s_pos, best.t_pos, best.length}))
+		return {match->first, match->second, match->length};
 	struct Joined {
 		std::string_view s, t;
 		int split;

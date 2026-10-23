@@ -1,8 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum"
-#ifndef OFFLINE_CONNECTIVITY_HEADER
-#define OFFLINE_CONNECTIVITY_HEADER "graph/connectivity/offline_dynamic_connectivity.hpp"
-#endif
-#include OFFLINE_CONNECTIVITY_HEADER
+#include "graph/connectivity/offline_dynamic_connectivity.hpp"
 #include "components/fast_io.hpp"
 #include <cstdint>
 #include <vector>

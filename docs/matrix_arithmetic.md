@@ -3,7 +3,7 @@ title: "行列の内部演算"
 documentation_of: //components/matrix_arithmetic.hpp
 ---
 
-`math/linear_algebra/matrix.hpp` が使う連続配列の行列積・消去処理です。通常は公開側の `Matrix<T>` を使います。
+`math/linear_algebra/matrix.hpp` が使う連続配列の行列積・消去処理です。通常は公開側の `Matrix<T>` を使います。体の演算・内積・配列の定数倍と加算は [体の内部演算](field_arithmetic.md) と共有しています。
 
 | 操作 | 内容 | 計算量 |
 | --- | --- | --- |
@@ -16,5 +16,7 @@ documentation_of: //components/matrix_arithmetic.hpp
 | `Ops::scale(a,n,x)` / `Ops::axpy(a,b,n,x)` | 連続領域の定数倍／`a += x*b` | $$O(n)$$ |
 
 `Field<T>` は通常の体の演算、`ModularField<T>` は固定法の modint を標準表現の `uint32_t` に変換して扱います。後者の AVX2 処理は対応する CPU でのみ呼びます。
+
+行列積は対応 CPU で AVX512 を使い、非対応なら AVX2 または通常処理を使います。剰余は整数で補正するため、浮動小数点の近似商を使う経路でも結果は厳密です。`MATRIX_DISABLE_AVX2` を定義すると両方の SIMD 経路を無効にできます。
 
 整数の行列式は時間 $$O(n^3)$$、追加空間 $$O(n^2)$$。行列積は時間 $$O(nkm)$$、追加空間 $$O(nk+km+nm)$$。消去は時間 $$O(h\cdot\mathrm{stride}\cdot\min(h,\mathrm{columns}))$$、ピボット列の空間は $$O(\min(h,\mathrm{columns}))$$。配列の変換は時間・追加空間ともに要素数に比例し、行の定数倍・加算は時間 $$O(n)$$、追加空間 $$O(1)$$ です。要素の演算・コピーを $$O(1)$$ とします。

@@ -4,6 +4,7 @@
 #include "fps/compositional_inverse_light.hpp"
 #include "fps/polynomial_gcd_light.hpp"
 #include "fps/power_projection_light.hpp"
+#include "fps/rational_fps_coefficients_light.hpp"
 #include "components/fps_light_ntt.hpp"
 #include "components/fps_light_product_tree.hpp"
 #include "components/fast_io.hpp"
@@ -38,6 +39,7 @@ int main() {
 	require(A::multipoint_eval(f, xs) == ys);
 	require(A::interpolate(xs, ys) == f);
 	require(A::bostan_mori(F{1}, F{1, -1}, 100) == mint(1));
+	require(A::rational_fps_coefficients(F{1}, F{1, -1, -1}, 10, 15) == F({89, 144, 233, 377, 610}));
 	require(A::linear_recurrence(std::vector<mint>{0, 1}, std::vector<mint>{1, 1}, 10) == mint(55));
 	F inverse = A::compositional_inverse(g, 33);
 	F identity = A::compose(g, inverse, 33);

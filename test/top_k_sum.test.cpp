@@ -15,7 +15,7 @@ int main() {
 		std::cin >> type;
 		if (type == 0) { int x; std::cin >> x; values.insert(x); }
 		else {
-			auto x = values.kth(type == 1 ? values.size() - 1 : 0);
+			auto x = type == 1 ? values.kth_smallest(0) : values.kth_largest(0);
 			std::cout << x << '\n';
 			values.erase(static_cast<int>(x));
 		}

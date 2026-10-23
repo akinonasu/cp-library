@@ -5,6 +5,7 @@
 #include <bit>
 #include <cstddef>
 #include <vector>
+#include "../components/subset_convolution_modular.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -15,6 +16,11 @@ template <class T>
 std::vector<T> subset_convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	if (a.empty() || b.empty()) return {};
 	std::size_t n = std::bit_ceil(std::max(a.size(), b.size()));
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	if constexpr (subset_convolution_detail::SmallModint<T>::value)
+		if (n >= 256 && n <= (std::size_t(1) << 20) && subset_convolution_detail::avx2())
+			return subset_convolution_detail::Modular<T::mod()>::convolution(a, b, int(n));
+#endif
 	int levels = std::bit_width(n) - 1, width = levels + 1;
 	std::vector<T> x(n * width, T(0)), y(n * width, T(0)), result(n, T(0));
 	for (std::size_t i = 0; i < a.size(); ++i) x[i * width + std::popcount(i)] = a[i];

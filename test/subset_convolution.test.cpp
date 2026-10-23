@@ -1,17 +1,18 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/subset_convolution"
 #include "../convolution/subset_convolution.hpp"
 #include "../math/mint.hpp"
-#include <iostream>
+#include "../components/fast_io.hpp"
 #include <vector>
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int exponent;
-	std::cin >> exponent;
+	FastInput input;
+	FastOutput output;
+	int exponent = 0;
+	input.read(exponent);
 	int n = 1 << exponent;
 	std::vector<mint> a(n), b(n);
-	for (auto &x : a) std::cin >> x;
-	for (auto &x : b) std::cin >> x;
-	for (auto x : subset_convolution(a, b)) std::cout << x << ' ';
-	std::cout << '\n';
+	for (auto &x : a) { unsigned value = 0; input.read(value); x = mint::raw(value); }
+	for (auto &x : b) { unsigned value = 0; input.read(value); x = mint::raw(value); }
+	for (auto x : subset_convolution(a, b)) { output.write(x.val()); output.write(' '); }
+	output.write('\n');
 }

@@ -79,7 +79,10 @@
 | `fps/polynomial_gcd.hpp` | 多項式 GCD・拡張 GCD・多項式の逆元 | [使い方](docs/polynomial_gcd.md) |
 | `fps/polynomial_gcd_light.hpp` | 軽量 FPS の多項式 GCD・拡張 GCD・逆元 | [使い方](docs/polynomial_gcd_light.md) |
 | `fps/bostan_mori.hpp` | Bostan–Mori | [使い方](docs/bostan_mori.md) |
+| `fps/rational_fps_coefficients.hpp` | 有理 FPS の区間係数取得 | [使い方](docs/rational_fps_coefficients.md) |
+| `fps/rational_fps_coefficients_light.hpp` | 軽量 FPS の有理 FPS 区間係数取得 | [使い方](docs/rational_fps_coefficients_light.md) |
 | `fps/linear_recurrence.hpp` | 線形漸化式の第 k 項 | [使い方](docs/linear_recurrence.md) |
+| `fps/berlekamp_massey.hpp` | 線形漸化式の復元（Berlekamp–Massey） | [使い方](docs/berlekamp_massey.md) |
 | `fps/compose.hpp` | 形式的冪級数の合成 | [使い方](docs/compose.md) |
 | `fps/compose_light.hpp` | 軽量 FPS の合成 | [使い方](docs/compose_light.md) |
 | `fps/power_projection.hpp` | Power Projection | [使い方](docs/power_projection.md) |
@@ -101,7 +104,7 @@
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
-| `tree/auxiliary_tree.hpp` | Auxiliary Tree | [使い方](docs/auxiliary_tree.md) |
+| `tree/auxiliary_tree.hpp` | Auxiliary Tree・圧縮木の隣接リスト | [使い方](docs/auxiliary_tree.md) |
 | `tree/rerooting.hpp` | 全方位木 DP | [使い方](docs/rerooting.md) |
 | `tree/dsu_on_tree.hpp` | DSU on Tree | [使い方](docs/dsu_on_tree.md) |
 
@@ -175,7 +178,8 @@
 | `data_structure/slope_trick.hpp` | Slope Trick | [使い方](docs/slope_trick.md) |
 | `data_structure/lazy_reversible_treap.hpp` | 遅延伝搬・反転可能な乱択平衡二分木 | [使い方](docs/lazy_reversible_treap.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
-| `data_structure/top_k_sum.hpp` | Top K Sum（クエリごとの k・大小 k 個の和・k 番目の値・重複個数） | [使い方](docs/top_k_sum.md) |
+| `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
+| `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
 | `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
 
 ### Union-Find
@@ -250,6 +254,7 @@
 | `string/longest_common_substring.hpp` | 最長共通部分文字列 | [使い方](docs/longest_common_substring.md) |
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
+| `string/concatenation_order.hpp` | 文字列結合の辞書順比較・並べ替え | [使い方](docs/concatenation_order.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
 | `string/manacher.hpp` | Manacher・回文半径・区間の回文判定 | [使い方](docs/manacher.md) |
 | `string/eertree.hpp` | Eertree（回文木）・回文の出現回数 | [使い方](docs/eertree.md) |
@@ -296,6 +301,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `math/floor_sum/floor_sum.hpp` | Floor Sum（一次式の床関数の総和） | [使い方](docs/floor_sum.md) |
 | `math/floor_sum/generalized_floor_sum.hpp` | 一般化 floor sum | [使い方](docs/generalized_floor_sum.md) |
 | `math/floor_sum/monoid_floor_sum.hpp` | monoid floor sum | [使い方](docs/monoid_floor_sum.md) |
 | `math/floor_sum/min_of_mod_of_linear.hpp` | Mod of Linear の最小値 | [使い方](docs/min_of_mod_of_linear.md) |
@@ -307,6 +313,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `math/linear_algebra/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
+| `math/linear_algebra/matrix_light.hpp` | 軽量な行列演算 | [使い方](docs/matrix_light.md) |
 | `math/linear_algebra/xor_basis.hpp` | XOR 基底・順序統計・共通部分・復元・ロールバック・区間クエリ | [使い方](docs/xor_basis.md) |
 
 ## 補助部品
@@ -325,6 +332,7 @@
 | `components/undirected_csr.hpp` | 無向グラフの CSR | [使い方](docs/undirected_csr.md) |
 | `components/push_relabel.hpp` | Push-Relabel の内部演算 | [使い方](docs/push_relabel.md) |
 | `components/min_cost_circulation.hpp` | 最小費用流の容量スケーリング | [使い方](docs/min_cost_circulation.md) |
+| `components/min_cost_simplex.hpp` | 最小費用流の Network Simplex | [使い方](docs/min_cost_simplex.md) |
 | `components/small_vector.hpp` | Small Vector | [使い方](docs/small_vector.md) |
 | `components/limb_arithmetic.hpp` | Limb Arithmetic | [使い方](docs/limb_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
@@ -336,10 +344,20 @@
 | `components/oct_bit_vector.hpp` | Oct Bit Vector | [使い方](docs/oct_bit_vector.md) |
 | `components/fenwick_sum.hpp` | Fenwick Sum | [使い方](docs/fenwick_sum.md) |
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |
-| `components/sequence_match.hpp` | 前方・後方の一致比較と Z algorithm | [使い方](docs/sequence_match.md) |
+| `components/sequence_match.hpp` | 前方・後方の一致比較 | [使い方](docs/sequence_match.md) |
+| `components/z_algorithm.hpp` | Z algorithm・接頭辞一致の列挙 | [使い方](docs/z_algorithm.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
+| `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |
+| `components/field_arithmetic.hpp` | 体の演算・内積・配列の定数倍と加算 | [使い方](docs/field_arithmetic.md) |
+| `components/field_base.hpp` | 汎用型の体の演算 | [使い方](docs/field_base.md) |
+| `components/matrix_core.hpp` | 行列の共通クラス | [使い方](docs/matrix_core.md) |
+| `components/matrix_base_arithmetic.hpp` | 行列の基本演算 | [使い方](docs/matrix_base_arithmetic.md) |
+| `components/matrix_power.hpp` | 行列累乗の内部演算 | [使い方](docs/matrix_power.md) |
+| `components/rational_fps_coefficients.hpp` | 有理 FPS の区間係数取得の共通処理 | [使い方](docs/rational_fps_coefficients_core.md) |
 | `components/factorial_table.hpp` | 型を指定する階乗・逆階乗テーブル | [使い方](docs/factorial_table.md) |
 | `components/factorial_table_light.hpp` | 軽量版の階乗・逆階乗生成 | [使い方](docs/factorial_table_light.md) |
+| `components/closest_pair.hpp` | 最近点対の整数座標用処理 | [使い方](docs/closest_pair_core.md) |
+| `components/subset_convolution_modular.hpp` | Subset 畳み込みの modint 用処理 | [使い方](docs/subset_convolution_modular.md) |
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |
 | `components/static_range_min.hpp` | ブロック分割による静的 RMQ | [使い方](docs/static_range_min.md) |
 | `components/static_top_tree_structure.hpp` | Static Top Tree の構造 | [使い方](docs/static_top_tree_structure.md) |

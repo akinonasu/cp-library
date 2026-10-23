@@ -10,6 +10,11 @@
 #include <utility>
 #include <vector>
 
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
 template <class S, auto op, auto e, class F, auto mapping, auto composition, auto id, bool commutative = false>
 class LazyReversibleTreap {
 	struct Empty {};
@@ -45,7 +50,7 @@ class LazyReversibleTreap {
 		}
 	}
 	void flip(int x) {
-		if (!x) return;
+		if (!x || count(x) == 1) return;
 		auto &v = t[x];
 		std::swap(v.left, v.right);
 		if constexpr (!commutative) std::swap(v.product, v.back);
@@ -54,7 +59,11 @@ class LazyReversibleTreap {
 	void act(int x, const F &f) {
 		if (!x) return;
 		auto &v = t[x];
-		v.value = mapping(f, v.value, 1);
+		if (count(x) == 1) {
+			v.value = v.product = mapping(f, v.product, 1);
+			if constexpr (!commutative) v.back = v.product;
+			return;
+		}
 		v.product = mapping(f, v.product, count(x));
 		if constexpr (!commutative) v.back = mapping(f, v.back, count(x));
 		v.lazy = v.pending ? composition(f, v.lazy) : f;
@@ -68,6 +77,7 @@ class LazyReversibleTreap {
 			v.reversed = 0;
 		}
 		if (v.pending) {
+			v.value = mapping(v.lazy, v.value, 1);
 			act(v.left, v.lazy);
 			act(v.right, v.lazy);
 			v.pending = false;
@@ -277,5 +287,9 @@ class LazyReversibleTreap {
 	}
 	std::vector<S> to_vector() { std::vector<S> values; values.reserve(size()); collect(root, values); return values; }
 };
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 
 #endif

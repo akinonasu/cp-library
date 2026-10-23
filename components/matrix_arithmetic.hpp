@@ -1,9 +1,11 @@
 #ifndef MATRIX_ARITHMETIC_HPP
 #define MATRIX_ARITHMETIC_HPP
 
+#include "matrix_base_arithmetic.hpp"
+#include "field_arithmetic.hpp"
+
 #include <algorithm>
 #include <cassert>
-#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -15,116 +17,10 @@
 #endif
 
 namespace matrix_detail {
-template <class T>
-inline constexpr bool integer = std::is_integral_v<T> || std::is_same_v<T, __int128_t> || std::is_same_v<T, __uint128_t>;
-
-template <class T, class = void>
-struct SmallModint : std::false_type {};
-
-template <class T>
-struct SmallModint<T, std::void_t<decltype(std::integral_constant<std::uint32_t, T::mod()>{}),
-	decltype(std::declval<T>().val()), decltype(T::raw(std::uint32_t{}))>>
-	: std::bool_constant<(T::mod() > 1 && T::mod() < (std::uint32_t(1) << 31))
-		&& std::is_convertible_v<decltype(std::declval<T>().val()), std::uint32_t>
-		&& std::is_same_v<decltype(T::raw(std::uint32_t{})), T>> {};
-
-template <class T>
-inline constexpr bool small_modint = SmallModint<T>::value;
-
-inline bool avx2() {
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(MATRIX_DISABLE_AVX2)
-	static const bool enabled = __builtin_cpu_supports("avx2");
-	return enabled;
-#else
-	return false;
-#endif
-}
-
-template <class T>
-struct Field {
-	using V = T;
-	static T add(T a, T b) { return a + b; }
-	static T mul(T a, T b) { return a * b; }
-	static T neg(T a) { return -a; }
-	static T inv(T a) { return T(1) / a; }
-	static bool zero(T a, long double eps) {
-		if constexpr (std::is_floating_point_v<T>) return std::abs(a) <= eps;
-		else { (void)eps; return a == T(0); }
-	}
-	static bool better(T a, T b) {
-		if constexpr (std::is_floating_point_v<T>) return std::abs(a) > std::abs(b);
-		else { (void)a; (void)b; return false; }
-	}
-	static void scale(T *a, int n, T x) { for (int i = 0; i < n; ++i) a[i] *= x; }
-	static void axpy(T *a, const T *b, int n, T x) { for (int i = 0; i < n; ++i) a[i] += x * b[i]; }
-};
-
-template <class T>
-struct ModularField {
-	using V = std::uint32_t;
-	static constexpr V mod = T::mod();
-	static V add(V a, V b) { V c = a + b; return c < mod ? c : c - mod; }
-	static V mul(V a, V b) { return std::uint64_t(a) * b % mod; }
-	static V neg(V a) { return a ? mod - a : 0; }
-	static V dot(const V *a, const V *b, int n) {
-		constexpr int step = mod <= (V(1) << 30) ? 16 : 4;
-		std::uint64_t sum = 0;
-		for (int i = 0; i < n; i += step) {
-			for (int j = i; j < std::min(n, i + step); ++j) sum += std::uint64_t(a[j]) * b[j];
-			sum %= mod;
-		}
-		return sum;
-	}
-	static V inv(V a) { return (T(1) / T::raw(a)).val(); }
-	static bool zero(V a, long double) { return !a; }
-	static bool better(V, V) { return false; }
-	static V product(V a, V x, V q) {
-		V r = a * x - V((std::uint64_t(a) * q) >> 32) * mod;
-		return r < mod ? r : r - mod;
-	}
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-	__attribute__((target("avx2"))) static __m256i product8(__m256i a, __m256i x, __m256i q) {
-		__m256i p = _mm256_set1_epi32(mod);
-		__m256i even = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
-		__m256i odd = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), q);
-		__m256i high = _mm256_or_si256(even, _mm256_slli_epi64(_mm256_srli_epi64(odd, 32), 32));
-		__m256i r = _mm256_sub_epi32(_mm256_mullo_epi32(a, x), _mm256_mullo_epi32(high, p));
-		return _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
-	}
-	template <bool add_to>
-	__attribute__((target("avx2"))) static void apply8(V *a, const V *b, int n, V x, V q) {
-		__m256i vx = _mm256_set1_epi32(x), vq = _mm256_set1_epi32(q), p = _mm256_set1_epi32(mod);
-		int i = 0;
-		for (; i + 8 <= n; i += 8) {
-			__m256i r = product8(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i)), vx, vq);
-			if constexpr (add_to) {
-				r = _mm256_add_epi32(r, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i)));
-				r = _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
-			}
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), r);
-		}
-		for (; i < n; ++i) {
-			V r = product(b[i], x, q);
-			if constexpr (add_to) a[i] = add(a[i], r);
-			else a[i] = r;
-		}
-	}
-#endif
-	template <bool add_to>
-	static void apply(V *a, const V *b, int n, V x) {
-		V q = (std::uint64_t(x) << 32) / mod;
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-		if (n >= 16 && avx2()) { apply8<add_to>(a, b, n, x, q); return; }
-#endif
-		for (int i = 0; i < n; ++i) {
-			V r = product(b[i], x, q);
-			if constexpr (add_to) a[i] = add(a[i], r);
-			else a[i] = r;
-		}
-	}
-	static void scale(V *a, int n, V x) { apply<false>(a, a, n, x); }
-	static void axpy(V *a, const V *b, int n, V x) { apply<true>(a, b, n, x); }
-};
+using field_detail::SmallModint;
+using field_detail::small_modint;
+using field_detail::avx2;
+using field_detail::ModularField;
 
 template <class T, class F>
 auto field(std::vector<T> &a, F &&f) {
@@ -138,83 +34,10 @@ auto field(std::vector<T> &a, F &&f) {
 	} else return f.template operator()<Field<T>>(a);
 }
 
-template <class Ops>
-struct Elimination {
-	std::vector<int> pivots;
-	typename Ops::V determinant = 1;
-};
-
-template <class Ops, bool exact = false>
-Elimination<Ops> eliminate(std::vector<typename Ops::V> &a, int h, int stride, int columns, bool reduced, long double eps) {
-	using V = typename Ops::V;
-	Elimination<Ops> result;
-	result.pivots.reserve(std::min(h, columns));
-	int rank = 0;
-	for (int col = 0; col < columns && rank < h; ++col) {
-		int p = -1;
-		for (int i = rank; i < h; ++i) {
-			V x = a[std::size_t(i) * stride + col];
-			if (!Ops::zero(x, eps) && (p < 0 || Ops::better(x, a[std::size_t(p) * stride + col]))) p = i;
-		}
-		if (p < 0) continue;
-		V *row = a.data() + std::size_t(rank) * stride;
-		if (p != rank) {
-			std::swap_ranges(row, row + stride, a.data() + std::size_t(p) * stride);
-			result.determinant = Ops::neg(result.determinant);
-		}
-		result.determinant = Ops::mul(result.determinant, row[col]);
-		Ops::scale(row + col + 1, stride - col - 1, Ops::inv(row[col]));
-		row[col] = V(1);
-		for (int i = rank + 1; i < h; ++i) {
-			V *dst = a.data() + std::size_t(i) * stride;
-			V x = dst[col];
-			if (!Ops::zero(x, eps)) Ops::axpy(dst + col + 1, row + col + 1, stride - col - 1, Ops::neg(x));
-			dst[col] = V(0);
-		}
-		result.pivots.push_back(col);
-		++rank;
-	}
-	bool full = exact && rank == columns;
-	if (reduced) for (int k = rank - 1; k >= 0; --k) {
-		int col = result.pivots[k], start = full ? columns : col + 1;
-		const V *row = a.data() + std::size_t(k) * stride;
-		for (int i = 0; i < k; ++i) {
-			V *dst = a.data() + std::size_t(i) * stride;
-			V x = dst[col];
-			if (!Ops::zero(x, eps) && (!full || start < stride)) Ops::axpy(dst + start, row + start, stride - start, Ops::neg(x));
-			dst[col] = V(0);
-		}
-	}
-	return result;
-}
-
-template <class T>
-[[gnu::noinline]] T integer_determinant(const std::vector<T> &a, int n) {
-	static_assert(std::numeric_limits<T>::is_signed);
-	using W = __int128_t;
-	std::vector<W> work(a.begin(), a.end());
-	W previous = 1, sign = 1;
-	if (!n) return T(1);
-	for (int k = 0; k + 1 < n; ++k) {
-		int pivot = k;
-		while (pivot < n && work[std::size_t(pivot) * n + k] == 0) ++pivot;
-		if (pivot == n) return T(0);
-		if (pivot != k) { for (int j = 0; j < n; ++j) std::swap(work[std::size_t(k) * n + j], work[std::size_t(pivot) * n + j]); sign = -sign; }
-		W p = work[std::size_t(k) * n + k];
-		for (int i = k + 1; i < n; ++i) {
-			for (int j = k + 1; j < n; ++j) {
-				W value = work[std::size_t(i) * n + j] * p - work[std::size_t(i) * n + k] * work[std::size_t(k) * n + j];
-				assert(value % previous == 0);
-				work[std::size_t(i) * n + j] = value / previous;
-			}
-			work[std::size_t(i) * n + k] = 0;
-		}
-		previous = p;
-	}
-	W result = sign * work.back();
-	assert(result >= std::numeric_limits<T>::lowest() && result <= std::numeric_limits<T>::max());
-	return T(result);
-}
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
 
 template <std::uint32_t mod>
 void product_scalar(const std::uint32_t *a, const std::uint32_t *b, std::uint32_t *c, int n, int inner, int m) {
@@ -234,6 +57,58 @@ void product_scalar(const std::uint32_t *a, const std::uint32_t *b, std::uint32_
 }
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+inline bool avx512_product() {
+	static const bool supported = __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512dq");
+	return avx2() && supported;
+}
+
+template <std::uint32_t mod>
+__attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512i sum) {
+	const auto p = _mm512_set1_epi64(mod);
+	const auto q = _mm512_cvt_roundpd_epi64(
+		_mm512_mul_pd(_mm512_cvtepi64_pd(sum), _mm512_set1_pd(1.0 / mod)),
+		_MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC);
+	auto r = _mm512_sub_epi64(sum, _mm512_mullo_epi64(q, p));
+	r = _mm512_mask_add_epi64(r, _mm512_cmp_epi64_mask(r, _mm512_setzero_si512(), _MM_CMPINT_LT), r, p);
+	return _mm512_mask_sub_epi64(r, _mm512_cmp_epi64_mask(r, p, _MM_CMPINT_NLT), r, p);
+}
+
+template <std::uint32_t mod, int rows = 4>
+__attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
+	constexpr std::int64_t radius = mod / 2;
+	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - (mod - 1)) / (radius * radius)));
+	int i = 0;
+	for (; i + rows <= n; i += rows) {
+		for (int j = 0; j < m; j += 16) {
+			const int width = std::min(16, m - j);
+			const __mmask16 active = (1u << width) - 1;
+			for (int k = 0; k < inner; k += step) {
+				__m512i sums[rows][2];
+				for (int r = 0; r < rows; ++r) sums[r][0] = sums[r][1] = _mm512_setzero_si512();
+				for (int t = k; t < std::min(inner, k + step); ++t) {
+					auto x = _mm512_maskz_loadu_epi32(active, b + std::size_t(j) * inner + std::size_t(t) * width);
+					auto y = _mm512_srli_epi64(x, 32);
+					for (int r = 0; r < rows; ++r) {
+						auto z = _mm512_set1_epi32(a[std::size_t(i + r) * inner + t]);
+						sums[r][0] = _mm512_add_epi64(sums[r][0], _mm512_mul_epi32(x, z));
+						sums[r][1] = _mm512_add_epi64(sums[r][1], _mm512_mul_epi32(y, z));
+					}
+				}
+				for (int r = 0; r < rows; ++r) {
+					auto *dst = c + std::size_t(i + r) * m + j;
+					auto previous = _mm512_maskz_loadu_epi32(active, dst);
+					auto even = reduce_product_avx512<mod>(_mm512_add_epi64(sums[r][0], _mm512_and_si512(previous, _mm512_set1_epi64(0xffffffffu))));
+					auto odd = reduce_product_avx512<mod>(_mm512_add_epi64(sums[r][1], _mm512_srli_epi64(previous, 32)));
+					_mm512_mask_storeu_epi32(dst, active, _mm512_or_si512(even, _mm512_slli_epi64(odd, 32)));
+				}
+			}
+		}
+	}
+	if constexpr (rows == 4) {
+		if (i < n) product_packed_avx512<mod, 1>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
+	}
+}
+
 template <std::uint32_t mod>
 __attribute__((target("avx2"))) void product_avx2(const std::uint32_t *a, const std::uint32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr int step = mod <= (std::uint32_t(1) << 30) ? 16 : 4;
@@ -369,6 +244,7 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 		if (std::uint64_t(n) * m <= 128u / unsigned(inner)) { basic(); return c; }
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 		if (n >= 4 && inner >= 16 && m >= 8 && avx2()) {
+			const int block = avx512_product() ? 16 : 8;
 			std::vector<std::int32_t> x(a.size()), y(b.size());
 			std::vector<std::uint32_t> z(c.size());
 			auto center = [](std::uint32_t value) {
@@ -376,12 +252,13 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 				return v <= std::int32_t((T::mod() - 1) / 2) ? v : v - std::int32_t(T::mod());
 			};
 			for (std::size_t i = 0; i < a.size(); ++i) x[i] = center(a[i].val());
-			for (int j = 0; j < m; j += 8) {
-				int width = std::min(8, m - j);
+			for (int j = 0; j < m; j += block) {
+				int width = std::min(block, m - j);
 				for (int k = 0; k < inner; ++k) for (int s = 0; s < width; ++s)
 					y[std::size_t(j) * inner + std::size_t(k) * width + s] = center(b[std::size_t(k) * m + j + s].val());
 			}
-			product_packed_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
+			if (block == 16) product_packed_avx512<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
+			else product_packed_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
 			for (std::size_t i = 0; i < c.size(); ++i) c[i] = T::raw(z[i]);
 			return c;
 		}
@@ -398,6 +275,10 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 	} else basic();
 	return c;
 }
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 }
 
 #endif
