@@ -31,9 +31,31 @@ void check(const Set &set, std::vector<typename Set::value_type> values, Compare
 	}
 	assert(set.sum((std::numeric_limits<typename Set::size_type>::max)()) == prefix);
 	assert(set.sum_all() == prefix);
+	auto ascending = values;
+	if constexpr (std::is_same_v<Compare, std::greater<typename Set::value_type>>) std::reverse(ascending.begin(), ascending.end());
+	typename Set::sum_type small_sum = 0, large_sum = 0;
+	for (std::size_t k = 0; k <= ascending.size(); ++k) {
+		assert(set.sum_smallest(k) == small_sum && set.sum_largest(k) == large_sum);
+		if (k < ascending.size()) {
+			assert(set.kth_smallest(k) == ascending[k]);
+			assert(set.kth_largest(k) == ascending[ascending.size() - 1 - k]);
+			small_sum += static_cast<typename Set::sum_type>(ascending[k]);
+			large_sum += static_cast<typename Set::sum_type>(ascending[ascending.size() - 1 - k]);
+		}
+	}
+	assert(set.sum_smallest((std::numeric_limits<typename Set::size_type>::max)()) == small_sum);
+	assert(set.sum_largest((std::numeric_limits<typename Set::size_type>::max)()) == large_sum);
 	for (int value : {-20, -3, 0, 3, 20}) {
 		auto occurrences = std::count(values.begin(), values.end(), value);
 		assert(set.count(value) == occurrences && set.contains(value) == (occurrences != 0));
+		auto ascending_compare = [&](const auto &a, const auto &b) {
+			if constexpr (std::is_same_v<Compare, std::greater<typename Set::value_type>>) return compare(b, a);
+			else return compare(a, b);
+		};
+		auto lower = std::lower_bound(ascending.begin(), ascending.end(), value, ascending_compare);
+		auto upper = std::upper_bound(ascending.begin(), ascending.end(), value, ascending_compare);
+		assert(set.lower_bound(value) == (lower == ascending.end() ? std::nullopt : std::optional(*lower)));
+		assert(set.upper_bound(value) == (upper == ascending.end() ? std::nullopt : std::optional(*upper)));
 	}
 }
 
@@ -116,6 +138,10 @@ int main() {
 	const auto &read = largest;
 	assert(read.sum(0) == 0 && read.sum(1) == 5 && read.sum(2) == 10 && read.sum(4) == 14);
 	assert(read.sum(100) == 14 && read.sum_all() == 14);
+	assert(read.kth_smallest(0) == 1 && read.kth_largest(0) == 5);
+	assert(read.sum_smallest(2) == 4 && read.sum_largest(2) == 10);
+	assert(read.lower_bound(4) == 5 && read.upper_bound(3) == 5);
+	assert(!read.lower_bound(6) && !read.upper_bound(5));
 	assert(largest.erase(5) && read.sum(2) == 8);
 	assert(largest.replace(1, 8) && read.sum(2) == 13);
 	assert(!largest.replace(99, 1) && read.sum(2) == 13);
@@ -140,8 +166,12 @@ int main() {
 	TopKSum<> mixed{lo, lo, hi, hi};
 	assert(mixed.sum(1) == hi && mixed.sum(4) == -2);
 	assert(mixed.kth(0) == hi && mixed.kth(3) == lo);
+	assert(mixed.sum_smallest(1) == lo && mixed.sum_largest(1) == hi);
+	assert(mixed.lower_bound(lo) == lo && mixed.upper_bound(lo) == hi);
+	assert(mixed.lower_bound(hi) == hi && !mixed.upper_bound(hi));
 	SmallestKSum<> negative{lo, lo, hi, hi};
 	assert(negative.sum(1) == lo && negative.sum_all() == -2);
+	assert(negative.sum_smallest(1) == lo && negative.sum_largest(1) == hi);
 	TopKSum<std::int64_t, __int128_t> wide{lo, lo, hi, hi};
 	assert(wide.sum(2) == __int128_t(hi) * 2 && wide.sum(3) == __int128_t(hi) * 2 + lo);
 	wide.insert(hi, 1000000000000LL);
@@ -156,13 +186,20 @@ int main() {
 	maximum.insert(lo, 1000000000000LL);
 	assert(maximum.sum(1) == lo && maximum.kth(999999999999LL) == lo);
 	assert(maximum.erase_all(lo) == 1000000000000LL && maximum.empty());
+	assert(maximum.sum_smallest(1) == 0 && maximum.sum_largest(1) == 0);
+	assert(!maximum.lower_bound(lo) && !maximum.upper_bound(hi));
 	TopKSum<unsigned, std::uint64_t> unsigned_values{0, 3, 5, 7};
 	assert(unsigned_values.sum(2) == 12 && unsigned_values.erase(7) && unsigned_values.sum(2) == 8);
+	assert(unsigned_values.lower_bound(0) == 0 && unsigned_values.upper_bound(0) == 3);
+	assert(!unsigned_values.lower_bound((std::numeric_limits<unsigned>::max)()));
 	TopKSum<double> decimals{1.25, -0.5, 3.5};
 	assert(decimals.sum(2) == 4.75 && decimals.replace(3.5, -4.0) && decimals.sum(2) == 0.75);
 	TopKSum<int, AdditiveSum> additive;
 	additive.insert(3, 4);
 	assert(additive.sum(2).value == 6 && additive.sum_all().value == 12);
+	additive.insert(1, 2);
+	assert(additive.sum_smallest(3).value == 5 && additive.sum_largest(3).value == 9);
+	assert(additive.erase_all(1) == 2);
 	assert(additive.erase(3, 3) == 3 && additive.sum(2).value == 3);
 
 	TopKSum<int> alternate;
