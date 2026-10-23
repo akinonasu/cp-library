@@ -297,6 +297,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `math/floor_sum/floor_sum.hpp` | Floor Sum（一次式の床関数の総和） | [使い方](docs/floor_sum.md) |
 | `math/floor_sum/generalized_floor_sum.hpp` | 一般化 floor sum | [使い方](docs/generalized_floor_sum.md) |
 | `math/floor_sum/monoid_floor_sum.hpp` | monoid floor sum | [使い方](docs/monoid_floor_sum.md) |
 | `math/floor_sum/min_of_mod_of_linear.hpp` | Mod of Linear の最小値 | [使い方](docs/min_of_mod_of_linear.md) |
