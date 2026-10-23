@@ -95,8 +95,10 @@ void check_large(const vector<T> &a) {
 		assert(lazy.count(l, r, x) == std::count(sorted.begin(), sorted.end(), x));
 		auto bound = lower_bound(sorted.begin(), sorted.end(), x);
 		int below = bound - sorted.begin();
-		assert((lazy.range_sum_with_count(l, r, x) == pair<__int128_t, int>{prefix[below], below}));
-		assert((eager.range_sum_with_count(l, r, x) == pair<__int128_t, int>{prefix[below], below}));
+		auto [lazy_sum, lazy_count] = lazy.range_sum_with_count(l, r, x);
+		auto [eager_sum, eager_count] = eager.range_sum_with_count(l, r, x);
+		assert(lazy_sum == prefix[below] && lazy_count == below);
+		assert(eager_sum == prefix[below] && eager_count == below);
 		optional<T> previous, next;
 		if (bound != sorted.begin()) previous = *prev(bound);
 		if (bound != sorted.end()) next = *bound;
