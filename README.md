@@ -191,6 +191,7 @@
 | `data_structure/sliding_window_aggregation.hpp` | Sliding Window Aggregation（キューの集約） | [使い方](docs/sliding_window_aggregation.md) |
 | `data_structure/xor_set.hpp` | XOR の最小値・最大値を求める整数集合 | [使い方](docs/xor_set.md) |
 | `data_structure/offline_rectangle_sum.hpp` | 静的矩形和（クエリ先読み） | [使い方](docs/offline_rectangle_sum.md) |
+| `data_structure/priority_search_tree.hpp` | Priority Search Tree（三辺矩形内の点の列挙・点の更新） | [使い方](docs/priority_search_tree.md) |
 | `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
 | `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
 
