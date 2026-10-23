@@ -1,12 +1,15 @@
 ---
 title: 一次合同式
-documentation_of: //math/number_theory/linear_congruence.hpp
+documentation_of: //math/util/linear_congruence.hpp
+redirect_from:
+- /math/number_theory/linear_congruence.hpp.html
+- /lightweight/math/number_theory/linear_congruence.hpp.html
 ---
 
 $$ax\equiv b\pmod m$$ を満たす整数 $$x$$ を求めます。法は素数でなくてもよく、$$a,b$$ は負でも構いません。前計算は不要です。
 
 ```cpp
-#include "lib/math/number_theory/linear_congruence.hpp"
+#include "lib/math/util/linear_congruence.hpp"
 #include <cassert>
 
 // 6x ≡ 4 (mod 10): x = 4 + 5k
