@@ -1,6 +1,6 @@
 # Library Checker 提出用コード
 
-135 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
+136 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
 
 同じ問題に複数の検証実装がある場合は、代表実装を 1 つ掲載しています。
 
@@ -23,6 +23,7 @@
 | [Composition of Formal Power Series (Large)](https://judge.yosupo.jp/problem/composition_of_formal_power_series_large) | [composition_of_formal_power_series_large.cpp](composition_of_formal_power_series_large.cpp) | [fps_compose_large.test.cpp](../test/fps_compose_large.test.cpp) |
 | [Compositional Inverse of Formal Power Series](https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series) | [compositional_inverse_of_formal_power_series.cpp](compositional_inverse_of_formal_power_series.cpp) | [fps_compositional_inverse.test.cpp](../test/fps_compositional_inverse.test.cpp) |
 | [Compositional Inverse of Formal Power Series (Large)](https://judge.yosupo.jp/problem/compositional_inverse_of_formal_power_series_large) | [compositional_inverse_of_formal_power_series_large.cpp](compositional_inverse_of_formal_power_series_large.cpp) | [fps_compositional_inverse_large.test.cpp](../test/fps_compositional_inverse_large.test.cpp) |
+| [Consecutive Terms of Linear Recurrent Sequence](https://judge.yosupo.jp/problem/consecutive_terms_of_linear_recurrent_sequence) | [consecutive_terms_of_linear_recurrent_sequence.cpp](consecutive_terms_of_linear_recurrent_sequence.cpp) | [fps_rational_coefficients.test.cpp](../test/fps_rational_coefficients.test.cpp) |
 | [Convolution](https://judge.yosupo.jp/problem/convolution_mod) | [convolution_mod.cpp](convolution_mod.cpp) | [convolution.test.cpp](../test/convolution.test.cpp) |
 | [Convolution (Mod 1,000,000,007)](https://judge.yosupo.jp/problem/convolution_mod_1000000007) | [convolution_mod_1000000007.cpp](convolution_mod_1000000007.cpp) | [convolution_mod.test.cpp](../test/convolution_mod.test.cpp) |
 | [Counting Primes](https://judge.yosupo.jp/problem/counting_primes) | [counting_primes.cpp](counting_primes.cpp) | [prime_count.test.cpp](../test/prime_count.test.cpp) |
