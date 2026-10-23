@@ -257,6 +257,7 @@
 | `data_structure/range_query/offline_range_count_distinct.hpp` | 区間の異なる値の個数（クエリ一括処理） | [使い方](docs/offline_range_count_distinct.md) |
 | `data_structure/range_query/offline_range_sum.hpp` | 値の上限付き区間和（クエリ一括処理） | [使い方](docs/offline_range_sum.md) |
 | `data_structure/range_query/offline_range_kth_smallest.hpp` | 区間の k 番目の値（クエリ一括処理） | [使い方](docs/offline_range_kth_smallest.md) |
+| `data_structure/range_query/range_lis_query.hpp` | Range LIS Query（区間の最長増加部分列） | [使い方](docs/range_lis_query.md) |
 
 ### 列アルゴリズム
 
@@ -365,6 +366,7 @@
 | `components/dynamic_quad_vector.hpp` | Dynamic Quad Vector | [使い方](docs/dynamic_quad_vector.md) |
 | `components/dynamic_quad_wavelet.hpp` | Dynamic Quad Wavelet Matrix | [使い方](docs/dynamic_quad_wavelet.md) |
 | `components/quad_bit_vector.hpp` | Quad Bit Vector | [使い方](docs/quad_bit_vector.md) |
+| `components/range_lis.hpp` | Range LIS の前計算 | [使い方](docs/range_lis_component.md) |
 | `components/oct_bit_vector.hpp` | Oct Bit Vector | [使い方](docs/oct_bit_vector.md) |
 | `components/fenwick_sum.hpp` | Fenwick Sum | [使い方](docs/fenwick_sum.md) |
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |
