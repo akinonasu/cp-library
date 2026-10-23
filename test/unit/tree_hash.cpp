@@ -117,6 +117,33 @@ struct Registry {
 };
 
 int main() {
+	{
+		std::mt19937 random(117);
+		for (int n = 0; n < 150; ++n) {
+			Graph graph(n);
+			std::vector<int> parents(n, -1), labels(n);
+			std::iota(labels.begin(), labels.end(), 0);
+			std::shuffle(labels.begin(), labels.end(), random);
+			for (int i = 1; i < n; ++i) {
+				int v = labels[i], p = labels[random() % i];
+				parents[v] = p;
+				graph[v].push_back(p), graph[p].push_back(v);
+			}
+			RootedTreeHash from_parents;
+			from_parents.build_parents(parents, 3);
+			RootedTreeHash from_graph(graph, n ? labels[0] : 0, 3);
+			assert(from_parents.hash == from_graph.hash && from_parents.parent == from_graph.parent);
+			assert(from_parents.height == from_graph.height && from_parents.subtree_size == from_graph.subtree_size);
+			auto groups = from_parents.classify();
+			int count = 0;
+			for (int v = 0; v < n; ++v) {
+				assert(0 <= groups[v] && groups[v] <= count);
+				count = std::max(count, groups[v] + 1);
+				for (int u = 0; u < v; ++u) assert((groups[u] == groups[v]) == (from_parents[u] == from_parents[v]));
+			}
+		}
+	}
+
 	std::mt19937_64 random(20261022);
 	const auto mod = tree_hash_detail::mod;
 	for (auto a : {std::uint64_t(0), std::uint64_t(1), mod / 2, mod - 2, mod - 1})

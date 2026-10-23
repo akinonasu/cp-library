@@ -197,6 +197,17 @@ static void check_parallel() {
 
 int main() {
 	check_parallel();
+	for (int n : {0, 1, 15, 16, 17, 31, 32, 33, 47, 48, 49, 25601, 51201}) for (int pattern = 0; pattern < 3; ++pattern) {
+		std::vector<unsigned> values(n);
+		std::string text;
+		for (int i = 0; i < n; ++i) {
+			if ((pattern == 1 && (i / 16) % 2) || (pattern == 2 && i % 17 == 0)) values[i] = 998244352;
+			text += std::to_string(values[i]) + " ";
+		}
+		text += "1234567";
+		FastInput input{std::string_view(text)};
+		check(input, values);
+	}
 	std::mt19937 rng(20261018);
 	for (bool single : {false, true}) {
 		std::vector<unsigned> values(20000);

@@ -15,7 +15,7 @@ documentation_of: //components/matrix_arithmetic.hpp
 | `Ops::zero(a,eps)` / `Ops::better(a,b)` | 0 判定／ピボットの比較 | $$O(1)$$ |
 | `Ops::scale(a,n,x)` / `Ops::axpy(a,b,n,x)` | 連続領域の定数倍／`a += x*b` | $$O(n)$$ |
 
-`Field<T>` は通常の体の演算、`ModularField<T>` は固定法の modint を標準表現の `uint32_t` に変換して扱います。後者の AVX2 処理は対応する CPU でのみ呼びます。
+`Field<T>` は通常の体の演算、`ModularField<T>` は固定法の modint を標準表現の `uint32_t` に変換して扱います。後者の AVX2・AVX512 処理は対応する CPU でのみ呼びます。
 
 行列積は対応 CPU で AVX512 を使い、非対応なら AVX2 または通常処理を使います。剰余は整数で補正するため、浮動小数点の近似商を使う経路でも結果は厳密です。`MATRIX_DISABLE_AVX2` を定義すると両方の SIMD 経路を無効にできます。
 

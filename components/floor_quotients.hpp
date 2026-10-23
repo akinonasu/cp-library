@@ -5,8 +5,21 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <utility>
 #include <vector>
+
+namespace floor_quotient_detail {
+inline std::uint64_t divide(std::uint64_t n, std::uint64_t divisor) {
+	if constexpr (std::numeric_limits<double>::is_iec559 && std::numeric_limits<double>::radix == 2 && std::numeric_limits<double>::digits >= 53) {
+		if (n <= (std::uint64_t(1) << 53)) {
+			std::uint64_t value = double(n) / double(divisor);
+			return value - (value * divisor > n);
+		}
+	}
+	return n / divisor;
+}
+}
 
 class FloorQuotients {
 	std::uint64_t n_, root_ = 0;
@@ -21,7 +34,7 @@ class FloorQuotients {
 		while (__uint128_t(root_ + 1) * (root_ + 1) <= n) ++root_;
 		large_ = n / (root_ + 1);
 		values_.reserve(large_ + root_);
-		for (std::size_t i = 1; i <= large_; ++i) values_.push_back(n / i);
+		for (std::size_t i = 1; i <= large_; ++i) values_.push_back(floor_quotient_detail::divide(n, i));
 		for (auto x = root_; x; --x) values_.push_back(x);
 	}
 	FloorQuotients(const FloorQuotients&) = default;

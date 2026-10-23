@@ -1,166 +1,487 @@
-#line 1 "test/rolling_hash_lcp.test.cpp"
+#line 1 "test/z_algorithm.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/zalgorithm"
-#line 1 "string/rolling_hash.hpp"
+#line 1 "string/z_algorithm.hpp"
 
 
 
-#line 1 "components/splitmix64.hpp"
+#line 1 "components/sequence_match.hpp"
 
 
 
-#include <cstdint>
-
-inline std::uint64_t splitmix64(std::uint64_t x) {
-	x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
-	x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
-	return x ^ (x >> 31);
-}
-class SplitMix64 {
-	std::uint64_t state;
-
-  public:
-	explicit SplitMix64(std::uint64_t seed = 0) : state(seed) {}
-	std::uint64_t operator()() { return splitmix64(state += 0x9e3779b97f4a7c15ULL); }
-};
+#line 1 "components/sequence_compare.hpp"
 
 
-#line 5 "string/rolling_hash.hpp"
-#include <algorithm>
-#include <cassert>
-#include <chrono>
+
+#include <bit>
 #include <cstddef>
-#line 10 "string/rolling_hash.hpp"
-#include <limits>
-#include <string_view>
+#include <cstdint>
+#include <cstring>
 #include <type_traits>
+#if defined(__x86_64__)
+#include <immintrin.h>
+#endif
+
+namespace sequence_compare_detail {
+#if defined(__x86_64__)
+__attribute__((target("avx2"))) inline std::size_t forward_avx2(const unsigned char *a, const unsigned char *b, std::size_t size) {
+	std::size_t i = 0;
+	for (; size - i >= 32; i += 32) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		auto difference = ~std::uint32_t(_mm256_movemask_epi8(_mm256_cmpeq_epi8(x, y)));
+		if (difference) return i + std::countr_zero(difference);
+	}
+	while (i < size && a[i] == b[i]) ++i;
+	return i;
+}
+
+__attribute__((target("avx2"))) inline std::size_t backward_avx2(const unsigned char *a, const unsigned char *b, std::size_t size) {
+	std::size_t i = 0;
+	for (; size - i >= 32; i += 32) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a - i - 32));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b - i - 32));
+		auto difference = ~std::uint32_t(_mm256_movemask_epi8(_mm256_cmpeq_epi8(x, y)));
+		if (difference) return i + std::countl_zero(difference);
+	}
+	while (i < size && a[-std::ptrdiff_t(i) - 1] == b[-std::ptrdiff_t(i) - 1]) ++i;
+	return i;
+}
+#endif
+
+template<bool Vectorize = true, class T>
+inline int prefix(const T *first, const T *second, int limit) {
+	if (!limit) return 0;
+	int matched = 0;
+	if constexpr (std::is_integral_v<T> && std::has_unique_object_representations_v<T>) {
+		const auto *a = reinterpret_cast<const unsigned char *>(first);
+		const auto *b = reinterpret_cast<const unsigned char *>(second);
+		std::size_t offset = 0, size = std::size_t(limit) * sizeof(T);
+		while (size - offset >= 8) {
+			std::uint64_t x, y;
+			std::memcpy(&x, a + offset, 8);
+			std::memcpy(&y, b + offset, 8);
+			auto difference = x ^ y;
+			if (difference) {
+				int bits = std::endian::native == std::endian::little ? std::countr_zero(difference) : std::countl_zero(difference);
+				return static_cast<int>((offset + bits / 8) / sizeof(T));
+			}
+			offset += 8;
+#if defined(__x86_64__)
+			if constexpr (Vectorize) if (size - offset >= 64 && __builtin_cpu_supports("avx2"))
+				return static_cast<int>((offset + forward_avx2(a + offset, b + offset, size - offset)) / sizeof(T));
+#endif
+		}
+		matched = static_cast<int>(offset / sizeof(T));
+	}
+	while (matched < limit && first[matched] == second[matched]) ++matched;
+	return matched;
+}
+
+template<bool Vectorize = true, class T>
+inline int suffix(const T *first_end, const T *second_end, int limit) {
+	if (!limit) return 0;
+	int matched = 0;
+	if constexpr (std::is_integral_v<T> && std::has_unique_object_representations_v<T>) {
+		const auto *a = reinterpret_cast<const unsigned char *>(first_end);
+		const auto *b = reinterpret_cast<const unsigned char *>(second_end);
+		std::size_t offset = 0, size = std::size_t(limit) * sizeof(T);
+		while (size - offset >= 8) {
+			std::uint64_t x, y;
+			std::memcpy(&x, a - offset - 8, 8);
+			std::memcpy(&y, b - offset - 8, 8);
+			auto difference = x ^ y;
+			if (difference) {
+				int bits = std::endian::native == std::endian::little ? std::countl_zero(difference) : std::countr_zero(difference);
+				return static_cast<int>((offset + bits / 8) / sizeof(T));
+			}
+			offset += 8;
+#if defined(__x86_64__)
+			if constexpr (Vectorize) if (size - offset >= 64 && __builtin_cpu_supports("avx2"))
+				return static_cast<int>((offset + backward_avx2(a - offset, b - offset, size - offset)) / sizeof(T));
+#endif
+		}
+		matched = static_cast<int>(offset / sizeof(T));
+	}
+	while (matched < limit && first_end[-matched - 1] == second_end[-matched - 1]) ++matched;
+	return matched;
+}
+}
+
+
+#line 1 "components/z_algorithm.hpp"
+
+
+
+namespace sequence_match_detail {
+template <class F>
+void z_table(int n, int *z, F match) {
+	if (!n) return;
+	z[0] = n;
+	for (int i = 1, base = 0, end = 0; i < n; ++i) {
+		int length = 0;
+		if (i < end) {
+			length = z[i - base];
+			if (length < end - i) {
+				z[i] = length;
+				continue;
+			}
+			length = end - i;
+		}
+		length += match(length, i + length, n - i - length);
+		z[i] = length;
+		if (i + length > end) base = i, end = i + length;
+	}
+}
+
+template <class F, class Emit>
+void prefix_matches(int n, int m, const int *z, F match, Emit emit) {
+	for (int i = 0, base = 0, end = 0; i < n; ++i) {
+		int length = 0;
+		if (i < end) {
+			length = z[i - base];
+			if (length < end - i) {
+				emit(i, length);
+				continue;
+			}
+			length = end - i;
+		}
+		length += match(length, i + length, m - length);
+		if (i + length > end) base = i, end = i + length;
+		emit(i, length);
+	}
+}
+}
+
+
+#line 6 "components/sequence_match.hpp"
+#include <algorithm>
+#include <array>
+#include <span>
+#include <utility>
 #include <vector>
 
-class RollingHash {
-  public:
-	using Hash = std::uint64_t;
-	struct Value {
-		Hash hash = 0;
-		int length = 0;
-		bool operator==(const Value &) const = default;
-	};
-	static constexpr Hash mod = (Hash(1) << 61) - 1;
-	static Hash base() {
-		static const Hash value = splitmix64(Hash(std::chrono::steady_clock::now().time_since_epoch().count()) ^ Hash(reinterpret_cast<std::uintptr_t>(&powers))) % (mod - 512) + 256;
-		return value;
+namespace sequence_match_detail {
+#if defined(__x86_64__)
+using sequence_compare_detail::forward_avx2;
+using sequence_compare_detail::backward_avx2;
+#endif
+
+template <class T, bool Vectorize = true>
+class Matcher {
+	const T *data;
+	std::vector<std::array<int, 2>> runs;
+public:
+	explicit Matcher(std::span<const T> values) : data(values.data()) {}
+	void index_runs(int n) {
+		runs.resize(n);
+		for (int first = 0, last; first < n; first = last) {
+			last = first + 1;
+			while (last < n && data[first] == data[last]) ++last;
+			for (int i = first; i < last; ++i) runs[i] = {first, last};
+		}
+	}
+	std::pair<int, int> forward_counted(int i, int j, int limit) const {
+		if (runs.empty() || !limit || data[i] != data[j]) {
+			int length = forward(i, j, limit);
+			return {length, length};
+		}
+		int a = runs[i][1] - i, b = runs[j][1] - j, skip = std::min({limit, a, b});
+		if (a != b || skip == limit) return {skip, 1};
+		int length = forward(i + skip, j + skip, limit - skip);
+		return {skip + length, length + 1};
+	}
+	std::pair<int, int> backward_counted(int i, int j, int limit) const {
+		if (runs.empty() || !limit || data[i - 1] != data[j - 1]) {
+			int length = backward(i, j, limit);
+			return {length, length};
+		}
+		int a = i - runs[i - 1][0], b = j - runs[j - 1][0], skip = std::min({limit, a, b});
+		if (a != b || skip == limit) return {skip, 1};
+		int length = backward(i - skip, j - skip, limit - skip);
+		return {skip + length, length + 1};
+	}
+	int forward(int i, int j, int limit) const {
+		if (!limit) return 0;
+		return sequence_compare_detail::prefix<Vectorize>(data + i, data + j, limit);
+	}
+	int backward(int i, int j, int limit) const {
+		if (!limit) return 0;
+		return sequence_compare_detail::suffix<Vectorize>(data + i, data + j, limit);
+	}
+};
+
+}
+
+
+#line 5 "string/z_algorithm.hpp"
+#include <cassert>
+#include <limits>
+#line 8 "string/z_algorithm.hpp"
+#include <string_view>
+#line 10 "string/z_algorithm.hpp"
+
+template <class T>
+std::vector<int> z_algorithm(std::span<const T> sequence) {
+	assert(sequence.size() <= std::size_t(std::numeric_limits<int>::max()));
+	std::vector<int> result(sequence.size());
+	sequence_match_detail::Matcher<T> match(sequence);
+	sequence_match_detail::z_table(int(sequence.size()), result.data(), [&](int a, int b, int limit) { return match.forward(a, b, limit); });
+	return result;
+}
+
+inline std::vector<int> z_algorithm(std::string_view sequence) {
+	return z_algorithm(std::span<const char>(sequence.data(), sequence.size()));
+}
+
+template <class T, class Allocator>
+std::vector<int> z_algorithm(const std::vector<T, Allocator> &sequence) {
+	return z_algorithm(std::span<const T>(sequence.data(), sequence.size()));
+}
+
+
+#line 1 "components/fast_io.hpp"
+
+
+
+#line 8 "components/fast_io.hpp"
+#include <charconv>
+#line 11 "components/fast_io.hpp"
+#include <cstdio>
+#line 13 "components/fast_io.hpp"
+#include <memory>
+#include <stdexcept>
+#include <string>
+#line 18 "components/fast_io.hpp"
+#if defined(__unix__) || defined(__APPLE__)
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
+namespace fast_io_detail { struct BulkInput; struct BulkOutput; }
+
+class FastInput {
+	friend struct fast_io_detail::BulkInput;
+	static constexpr std::size_t capacity = 1 << 16;
+	FILE *file = nullptr;
+	std::unique_ptr<char[]> buffer;
+	const char *current = "", *end = current;
+	std::string scratch;
+	void *mapping = nullptr;
+	std::size_t mapped_size = 0;
+	bool refill() {
+		if (!file) return false;
+		std::size_t n = std::fread(buffer.get(), 1, capacity, file);
+		current = buffer.get();
+		end = current + n;
+		return n;
+	}
+	static const char *scan(const char *p, const char *end) {
+		while (end - p >= 8) {
+			std::uint64_t x;
+			std::memcpy(&x, p, 8);
+			if ((x - 0x2121212121212121ULL) & ~x & 0x8080808080808080ULL) break;
+			p += 8;
+		}
+		while (p != end && static_cast<unsigned char>(*p) > ' ') ++p;
+		return p;
 	}
 
-  private:
-	inline static std::vector<Hash> powers{1};
-	std::vector<Hash> prefix;
-	static Hash reduce(__uint128_t value) {
-		Hash result = (Hash(value) & mod) + Hash(value >> 61);
-		return result >= mod ? result - mod : result;
-	}
-	static Hash mul(Hash a, Hash b) { return reduce(__uint128_t(a) * b); }
-	static void ensure_powers(int n) {
-		std::size_t old = powers.size();
-		if (std::size_t(n) < old) return;
-		powers.resize(std::size_t(n) + 1);
-		Hash b = base();
-		std::size_t i = old;
-		for (; i < powers.size() && i < old + 4; ++i) powers[i] = mul(powers[i - 1], b);
-		if (i == powers.size()) return;
-		Hash step = powers[4];
-		for (; i + 4 <= powers.size(); i += 4) {
-			powers[i] = mul(powers[i - 4], step);
-			powers[i + 1] = mul(powers[i - 3], step);
-			powers[i + 2] = mul(powers[i - 2], step);
-			powers[i + 3] = mul(powers[i - 1], step);
+public:
+	explicit FastInput(FILE *input = stdin) {
+#if defined(__unix__) || defined(__APPLE__)
+		struct stat status;
+		int fd = fileno(input);
+		auto offset = ftello(input);
+		if (fd >= 0 && offset >= 0 && !fstat(fd, &status) && S_ISREG(status.st_mode) && status.st_size > offset) {
+			mapped_size = status.st_size;
+			mapping = mmap(nullptr, mapped_size, PROT_READ, MAP_PRIVATE, fd, 0);
+			if (mapping != MAP_FAILED) {
+				current = static_cast<const char *>(mapping) + offset;
+				end = static_cast<const char *>(mapping) + mapped_size;
+				return;
+			}
+			mapping = nullptr;
 		}
-		for (; i < powers.size(); ++i) powers[i] = mul(powers[i - 4], step);
+#endif
+		file = input;
+		buffer = std::make_unique_for_overwrite<char[]>(capacity);
+	}
+	explicit FastInput(std::string_view input) : current(input.empty() ? "" : input.data()), end(current + input.size()) {}
+	FastInput(const FastInput &) = delete;
+	FastInput &operator=(const FastInput &) = delete;
+	~FastInput() {
+#if defined(__unix__) || defined(__APPLE__)
+		if (mapping) munmap(mapping, mapped_size);
+#endif
+	}
+	std::string_view token() {
+		while (true) {
+			while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+			if (current != end) break;
+			if (!refill()) return {};
+		}
+		const char *begin = current;
+		current = scan(current, end);
+		if (current != end || !file) return {begin, std::size_t(current - begin)};
+		scratch.assign(begin, end);
+		while (refill()) {
+			current = scan(current, end);
+			scratch.append(buffer.get(), std::size_t(current - buffer.get()));
+			if (current != end) break;
+		}
+		return scratch;
 	}
 	template <class T>
-	static Hash encode(T value) {
-		static_assert(std::is_integral_v<T> && sizeof(T) <= 8);
-		if constexpr (std::is_same_v<T, char>) return static_cast<unsigned char>(value) + 1;
-		else if constexpr (sizeof(T) <= 4) {
-			if constexpr (std::is_signed_v<T>) return value >= -1 ? Hash(std::int64_t(value) + 1) : Hash(std::int64_t(value) + std::int64_t(mod) + 1);
-			else return Hash(value) + 1;
-		} else {
-			Hash result;
-			if constexpr (std::is_signed_v<T>) {
-				std::int64_t x = std::int64_t(value) % std::int64_t(mod);
-				result = x < 0 ? Hash(x + std::int64_t(mod)) : Hash(x);
-			} else result = Hash(value) % mod;
-			return result == mod - 1 ? 0 : result + 1;
+	bool read(T &value) {
+		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool>) {
+			while (true) {
+				while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+				if (current != end) break;
+				if (!refill()) return false;
+			}
+			if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4 && std::endian::native == std::endian::little) {
+				if (end - current >= 11) {
+					std::uint64_t x;
+					std::memcpy(&x, current, 8);
+					if (!(((x + 0x4646464646464646ULL) | (x - 0x3030303030303030ULL)) & 0x8080808080808080ULL)) {
+						x &= 0x0f0f0f0f0f0f0f0fULL;
+						x = (x * 10 + (x >> 8)) & 0x00ff00ff00ff00ffULL;
+						x = (x * 100 + (x >> 16)) & 0x0000ffff0000ffffULL;
+						std::uint64_t v = std::uint32_t(x * 10000 + (x >> 32));
+						int n = 8;
+						for (; n < 10 && static_cast<unsigned char>(current[n]) - unsigned('0') < 10; ++n)
+							v = v * 10 + (current[n] - '0');
+						if (static_cast<unsigned char>(current[n]) <= ' ' && v <= 0xffffffffULL) {
+							current += n;
+							value = T(v);
+							return true;
+						}
+					}
+				}
+			}
+			T parsed{};
+			auto result = std::from_chars(current, end, parsed);
+			if (result.ec == std::errc{} && (result.ptr != end ? static_cast<unsigned char>(*result.ptr) <= ' ' : !file)) {
+				current = result.ptr;
+				value = parsed;
+				return true;
+			}
 		}
+		auto s = token();
+		if (s.empty()) return false;
+		if constexpr (std::is_same_v<T, bool>) {
+			assert(s == "0" || s == "1");
+			value = s[0] == '1';
+		} else if constexpr (std::is_integral_v<T>) {
+			auto result = std::from_chars(s.data(), s.data() + s.size(), value);
+			assert(result.ec == std::errc{} && result.ptr == s.data() + s.size());
+			(void)result;
+		} else value = T(s);
+		return true;
 	}
-	template <class Range>
-	void build_range(const Range &values) {
-		assert(values.size() <= std::size_t(std::numeric_limits<int>::max()));
-		int n = int(values.size());
-		ensure_powers(n);
-		prefix.resize(std::size_t(n) + 1);
-		Hash value = 0, b = base();
-		prefix[0] = 0;
-		int i = 0;
-		for (typename Range::value_type x : values) prefix[++i] = value = reduce(__uint128_t(value) * b + encode(x));
+};
+
+class FastOutput {
+	friend struct fast_io_detail::BulkOutput;
+	inline static constexpr auto quads = [] {
+		std::array<std::array<char, 4>, 10000> table{};
+		for (int i = 0; i < 10000; ++i)
+			table[i] = {char('0' + i / 1000), char('0' + i / 100 % 10), char('0' + i / 10 % 10), char('0' + i % 10)};
+		return table;
+	}();
+	FILE *file;
+	std::unique_ptr<char[]> buffer = std::make_unique_for_overwrite<char[]>(1 << 16);
+	std::size_t capacity = 1 << 16, length = 0;
+	char *reserve(std::size_t n) {
+		if (n > capacity - length) {
+			if (!flush()) throw std::runtime_error("output failed");
+			if (n > capacity) {
+				std::size_t next = std::max(n, 2 * capacity);
+				buffer = std::make_unique_for_overwrite<char[]>(next);
+				capacity = next;
+			}
+		}
+		return buffer.get() + length;
 	}
 
-  public:
-	RollingHash() = default;
-	explicit RollingHash(std::string_view s) { build(s); }
-	template <class T>
-	explicit RollingHash(const std::vector<T> &values) { build(values); }
-	void build(std::string_view s) { build_range(s); }
-	template <class T>
-	void build(const std::vector<T> &values) { build_range(values); }
-	int size() const { return prefix.empty() ? 0 : int(prefix.size() - 1); }
-	bool empty() const { return !size(); }
-	static void reserve(int n) {
-		assert(n >= 0);
-		ensure_powers(n);
-	}
-	template <class T>
-	static Value single(T x) { return {encode(x), 1}; }
-	static Value e() { return {}; }
-	static Value op(Value left, Value right) {
-		assert(left.length >= 0 && right.length >= 0 && left.length <= std::numeric_limits<int>::max() - right.length);
-		if (!left.length) return right;
-		if (!right.length) return left;
-		return {concat(left.hash, right.hash, right.length), left.length + right.length};
-	}
-	Hash get() const { return prefix.empty() ? 0 : prefix.back(); }
-	Hash get(int l, int r) const {
-		assert(0 <= l && l <= r && r <= size());
-		if (!l) return r ? prefix[r] : 0;
-		Hash value = prefix[r] + mod - mul(prefix[l], powers[r - l]);
-		return value >= mod ? value - mod : value;
-	}
-	Value value() const { return {get(), size()}; }
-	Value value(int l, int r) const { return {get(l, r), r - l}; }
-	static Hash concat(Hash left, Hash right, int right_length) {
-		assert(left < mod && right < mod && right_length >= 0);
-		ensure_powers(right_length);
-		return reduce(__uint128_t(left) * powers[right_length] + right);
-	}
-	int lcp(int l, int r, const RollingHash &other, int other_l, int other_r) const {
-		assert(0 <= l && l <= r && r <= size() && 0 <= other_l && other_l <= other_r && other_r <= other.size());
-		int low = 0, high = std::min(r - l, other_r - other_l);
-		while (low < high) {
-			int mid = high - (high - low) / 2;
-			if (get(l, l + mid) == other.get(other_l, other_l + mid)) low = mid;
-			else high = mid - 1;
+public:
+	explicit FastOutput(FILE *output = stdout) : file(output) {}
+	FastOutput(const FastOutput &) = delete;
+	FastOutput &operator=(const FastOutput &) = delete;
+	~FastOutput() { flush(); }
+	bool flush() {
+		std::size_t offset = 0;
+		while (offset < length) {
+			auto n = std::fwrite(buffer.get() + offset, 1, length - offset, file);
+			if (!n) {
+				std::memmove(buffer.get(), buffer.get() + offset, length - offset);
+				length -= offset;
+				return false;
+			}
+			offset += n;
 		}
-		return low;
+		length = 0;
+		return std::fflush(file) == 0;
 	}
-	int lcp(int l, const RollingHash &other, int other_l) const { return lcp(l, size(), other, other_l, other.size()); }
+	void write(char c) { *reserve(1) = c; ++length; }
+	void write(__uint128_t value) {
+		char digits[40];
+		char *end = digits + sizeof(digits), *begin = end;
+		do { *--begin = char('0' + value % 10); value /= 10; } while (value);
+		write(std::string_view(begin, end - begin));
+	}
+	void write(__int128_t value) {
+		__uint128_t magnitude = __uint128_t(value);
+		if (value < 0) write('-'), magnitude = 0 - magnitude;
+		write(magnitude);
+	}
+	void write(std::string_view s) {
+		char *out = reserve(s.size());
+		if (!s.empty()) std::memcpy(out, s.data(), s.size());
+		length += s.size();
+	}
+	template <class T> requires std::is_integral_v<T>
+	void write(T value) {
+		char *out = reserve(32);
+		if constexpr (std::is_same_v<T, bool>) *out = '0' + value, ++length;
+		else if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4) {
+			char *p = out;
+			if (value >= 100000000) {
+				auto high = value / 100000000, low = value % 100000000;
+				p = std::to_chars(p, p + 2, high).ptr;
+				std::memcpy(p, quads[low / 10000].data(), 4);
+				std::memcpy(p + 4, quads[low % 10000].data(), 4);
+				p += 8;
+			} else if (value >= 10000) {
+				p = std::to_chars(p, p + 4, value / 10000).ptr;
+				std::memcpy(p, quads[value % 10000].data(), 4);
+				p += 4;
+			} else p = std::to_chars(p, p + 4, value).ptr;
+			length += p - out;
+		} else length += std::to_chars(out, out + 32, value).ptr - out;
+	}
+	template <class T> requires requires(const T &value, char *out) { value.decimal_capacity(); value.to_chars(out); }
+	void write(const T &value) {
+		char *out = reserve(value.decimal_capacity());
+		length += value.to_chars(out) - out;
+	}
+	template <class T>
+	void println(const T &value) { write(value); write('\n'); }
 };
 
 
-#line 3 "test/rolling_hash_lcp.test.cpp"
-#include <iostream>
-#include <string>
+#line 4 "test/z_algorithm.test.cpp"
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
+	FastInput input;
+	FastOutput output;
 	std::string s;
-	std::cin >> s;
-	RollingHash hash(s);
-	for (int i = 0; i < hash.size(); ++i) std::cout << hash.lcp(0, hash, i) << (i + 1 == hash.size() ? '\n' : ' ');
+	input.read(s);
+	auto z = z_algorithm(s);
+	for (int i = 0; i < int(z.size()); ++i) {
+		if (i) output.write(' ');
+		output.write(z[i]);
+	}
+	output.write('\n');
 }

@@ -1,9 +1,7 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum"
 #include "../tree/link_cut_tree.hpp"
 #include <cstdint>
-#include <iostream>
-#include <set>
-#include <tuple>
+#include "components/fast_io.hpp"
 #include <vector>
 
 using namespace std;
@@ -12,33 +10,33 @@ int64_t op(int64_t a, int64_t b) { return a + b; }
 int64_t e() { return 0; }
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
+	FastInput input;
+	FastOutput output;
 	int n, q;
-	cin >> n >> q;
+	input.read(n), input.read(q);
 	vector<int64_t> values(n);
-	for (auto &v : values) cin >> v;
+	for (auto &v : values) input.read(v);
 	LinkCutTree<int64_t, op, e, true> tree(values);
-	for (int repeat_index = 0; repeat_index < (n - 1); ++repeat_index) {
-		int u, v;
-		cin >> u >> v;
-		tree.link(u, v);
-	}
+	std::vector<std::pair<int, int>> edges(n - 1);
+	for (auto &[u, v] : edges) input.read(u), input.read(v);
+	tree.build_forest(edges);
+
 	for (int repeat_index = 0; repeat_index < q; ++repeat_index) {
 		int type, u;
-		cin >> type >> u;
+		input.read(type), input.read(u);
 		if (type == 0) {
 			int v, w, x;
-			cin >> v >> w >> x;
+			input.read(v), input.read(w), input.read(x);
 			tree.cut(u, v);
 			tree.link(w, x);
 		} else if (type == 1) {
 			int64_t x;
-			cin >> x;
+			input.read(x);
 			tree.set(u, tree.get(u) + x);
 		} else {
 			int v;
-			cin >> v;
-			cout << tree.prod(u, v) << '\n';
+			input.read(v);
+			output.println(tree.prod(u, v));
 		}
 	}
 }

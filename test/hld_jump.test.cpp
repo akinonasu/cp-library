@@ -1,20 +1,14 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/jump_on_tree"
 #include "../data_structure/advanced/hld.hpp"
-#include <iostream>
+#include "components/fast_io_bulk.hpp"
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
+	FastInput input;
+	FastOutput output;
 	int n, q;
-	std::cin >> n >> q;
+	input.read(n), input.read(q);
 	HLD tree(n);
-	for (int i = 1, u, v; i < n; ++i) {
-		std::cin >> u >> v;
-		tree.add_edge(u, v);
-	}
+	read_unsigned_records<2>(input, n - 1, [&](unsigned u, unsigned v) { tree.add_edge(u, v); });
 	tree.build();
-	while (q--) {
-		int u, v, k;
-		std::cin >> u >> v >> k;
-		std::cout << tree.jump(u, v, k) << '\n';
-	}
+	read_unsigned_records<3>(input, q, [&](unsigned u, unsigned v, unsigned k) { output.println(tree.jump(u, v, k)); });
 }

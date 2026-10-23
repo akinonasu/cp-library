@@ -409,11 +409,14 @@ class SparseTable {
 
 #line 14 "components/static_range_min.hpp"
 
-template <class T = int> class StaticRangeMin {
+template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 	static T minimum(T a, T b) { return b < a ? b : a; }
 	std::vector<T> values_;
 	std::vector<std::uint32_t, DefaultInitAllocator<std::uint32_t>> masks_;
 	SparseTable<T, minimum> blocks_;
+	struct Boundaries { std::vector<T> prefix, suffix; };
+	struct Empty {};
+	[[no_unique_address]] std::conditional_t<FastBoundaries, Boundaries, Empty> boundaries_;
 	T within(int l, int r) const {
 		auto mask = masks_[r - 1] & (~std::uint32_t(0) << (l & 31));
 		return values_[(l & ~31) + std::countr_zero(mask)];
@@ -438,9 +441,19 @@ template <class T = int> class StaticRangeMin {
 			}
 			first = last;
 		}
+		if constexpr (FastBoundaries) {
+			boundaries_.prefix = values_, boundaries_.suffix = values_;
+			for (int first = 0; first < n;) {
+				int last = first + std::min(32, n - first);
+				for (int i = first + 1; i < last; ++i) boundaries_.prefix[i] = minimum(boundaries_.prefix[i - 1], values_[i]);
+				for (int i = last - 1; i > first; --i) boundaries_.suffix[i - 1] = minimum(values_[i - 1], boundaries_.suffix[i]);
+				first = last;
+			}
+		}
 		blocks_.build(n ? (n - 1) / 32 + 1 : 0, [&](int i) {
 			int last = i * 32 + std::min(32, n - i * 32);
-			return within(i * 32, last);
+			if constexpr (FastBoundaries) return T(boundaries_.prefix[last - 1]);
+			else return within(i * 32, last);
 		});
 	}
 	int size() const { return static_cast<int>(values_.size()); }
@@ -453,7 +466,10 @@ template <class T = int> class StaticRangeMin {
 		assert(0 <= l && l < r && r <= size());
 		int a = l / 32, b = (r - 1) / 32;
 		if (a == b) return within(l, r);
-		T value = minimum(within(l, (a + 1) * 32), within(b * 32, r));
+		T value = [&] {
+			if constexpr (FastBoundaries) return minimum(boundaries_.suffix[l], boundaries_.prefix[r - 1]);
+			else return minimum(within(l, (a + 1) * 32), within(b * 32, r));
+		}();
 		if (a + 1 < b) value = minimum(value, blocks_.prod_unchecked(a + 1, b));
 		return value;
 	}

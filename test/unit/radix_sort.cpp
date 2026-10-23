@@ -33,12 +33,30 @@ int main() {
 			}
 			auto expected = values;
 			std::stable_sort(expected.begin(), expected.end(), [](const Item &a, const Item &b) { return a.key < b.key; });
+			for (int bits : {1, 8, 11, 16}) {
+				auto copy = values;
+				if (bits == 1) stable_radix_sort<1>(copy, [](const Item &item) { return item.key; });
+				if (bits == 8) stable_radix_sort<Item>(copy, [](const Item &item) { return item.key; });
+				if (bits == 11) stable_radix_sort<11>(copy, [](const Item &item) { return item.key; });
+				if (bits == 16) stable_radix_sort<16>(copy, [](const Item &item) { return item.key; });
+				require(copy == expected);
+			}
 			stable_radix_sort(values, [](const Item &item) { return item.key; });
 			require(values == expected);
 			stable_radix_sort(values, [](const Item &item) { return item.key; });
 			require(values == expected);
 		}
 	}
+	struct CopyOnlyKey {
+		CopyOnlyKey() = default;
+		CopyOnlyKey(const CopyOnlyKey &) = default;
+		CopyOnlyKey(CopyOnlyKey &&) = delete;
+		std::uint64_t operator()(const Item &item) const { return item.key; }
+	} key;
+	std::vector<Item> explicit_type(300);
+	for (int i = 0; i < 300; ++i) explicit_type[i] = {std::uint64_t(300 - i), i};
+	stable_radix_sort<Item, CopyOnlyKey>(explicit_type, key);
+	for (int i = 0; i < 300; ++i) require(explicit_type[i].key == std::uint64_t(i + 1));
 	std::vector<std::uint32_t> small(1000);
 	for (auto &x : small) x = rng();
 	auto expected = small;

@@ -1,201 +1,454 @@
 #line 1 "test/fraction.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/rational_approximation"
-#line 1 "math/fraction.hpp"
+#line 1 "math/number_theory/stern_brocot_tree.hpp"
+
+
+
+#line 1 "components/stern_brocot_path.hpp"
 
 
 
 #include <cassert>
-#include <compare>
 #include <concepts>
-#include <cstdint>
-#include <istream>
-#include <limits>
-#include <numeric>
-#include <ostream>
-#include <type_traits>
 
-template <std::signed_integral Int = std::int64_t>
-requires (sizeof(Int) <= sizeof(std::int64_t))
-class Fraction {
-	using U = std::make_unsigned_t<Int>;
-	using W = std::conditional_t<(sizeof(Int) <= 4), std::int64_t, __int128_t>;
-	Int num = 0, den = 1;
-	static constexpr U magnitude(Int x) { return x < 0 ? U(0) - U(x) : U(x); }
-	static constexpr U gcd(U a, U b) {
-		if (a == 1 || b == 1) return 1;
-		return std::gcd(a, b);
+namespace stern_brocot_detail {
+template <std::unsigned_integral U>
+class Path {
+	U a, b;
+public:
+	Path(U numerator, U denominator) : a(numerator), b(denominator) { assert(a && b); }
+	bool empty() const { return a == b; }
+	bool right() const { return a > b; }
+	U pop() {
+		assert(!empty());
+		if (right()) { U k = (a - 1) / b; a -= k * b; return k; }
+		U k = (b - 1) / a; b -= k * a; return k;
 	}
-	static constexpr Fraction reduced(W n, W d) {
-		assert(std::numeric_limits<Int>::min() <= n && n <= std::numeric_limits<Int>::max());
-		assert(0 < d && d <= std::numeric_limits<Int>::max());
-		Fraction result;
-		result.num = static_cast<Int>(n);
-		result.den = static_cast<Int>(d);
-		return result;
+};
+}
+
+
+#line 5 "math/number_theory/stern_brocot_tree.hpp"
+#include <algorithm>
+#line 8 "math/number_theory/stern_brocot_tree.hpp"
+#include <cstdint>
+#include <limits>
+#include <optional>
+#include <span>
+#include <type_traits>
+#include <utility>
+#include <vector>
+
+template <std::integral Int = std::uint64_t>
+requires (sizeof(Int) <= 8 && !std::is_same_v<Int, bool>)
+class SternBrocotTree {
+public:
+	using value_type = std::pair<Int, Int>;
+	using count_type = std::make_unsigned_t<Int>;
+	using distance_type = std::conditional_t<(sizeof(Int) <= 4), std::uint64_t, __uint128_t>;
+	struct Run {
+		char direction;
+		count_type count;
+		bool operator==(const Run &) const = default;
+	};
+	using path_type = std::vector<Run>;
+private:
+	using U = count_type;
+	using W = distance_type;
+	using Path = stern_brocot_detail::Path<U>;
+	Int ln = 0, ld = 1, rn = 1, rd = 0;
+	U level = 0;
+	void advance(bool right, U k) {
+		if (right) { ln += k * U(rn); ld += k * U(rd); }
+		else { rn += k * U(ln); rd += k * U(ld); }
+		level += k;
 	}
-	static constexpr Int divide(Int n, U d) {
-		if (d > U(std::numeric_limits<Int>::max())) return -1;
-		return n / static_cast<Int>(d);
+	bool move(bool right, U k) {
+		W n = W(numerator()) + W(k) * U(right ? rn : ln);
+		W d = W(denominator()) + W(k) * U(right ? rd : ld);
+		if (n > W(std::numeric_limits<Int>::max()) || d > W(std::numeric_limits<Int>::max())) return false;
+		advance(right, k); return true;
 	}
-	constexpr bool assign(Int n, Int d) {
-		if (!d) return false;
-		if (!n) { num = 0, den = 1; return true; }
-		U a = magnitude(n), b = magnitude(d), g = gcd(a, b);
-		a /= g, b /= g;
-		bool negative = (n < 0) != (d < 0);
-		if (b > U(std::numeric_limits<Int>::max())
-			|| a > U(std::numeric_limits<Int>::max()) + U(negative)) return false;
-		num = negative ? Int(-static_cast<Int>(a - 1) - 1) : static_cast<Int>(a);
-		den = static_cast<Int>(b);
+public:
+	SternBrocotTree() = default;
+	SternBrocotTree(Int numerator, Int denominator) {
+		assert(numerator > 0 && denominator > 0);
+		Path path{U(numerator), U(denominator)};
+		while (!path.empty()) { bool right = path.right(); advance(right, path.pop()); }
+	}
+	explicit SternBrocotTree(value_type value) : SternBrocotTree(value.first, value.second) {}
+	Int numerator() const { return ln + rn; }
+	Int denominator() const { return ld + rd; }
+	value_type value() const { return {numerator(), denominator()}; }
+	value_type lower_bound() const { return {ln, ld}; }
+	value_type upper_bound() const { return {rn, rd}; }
+	std::pair<value_type, value_type> range() const { return {lower_bound(), upper_bound()}; }
+	U depth() const { return level; }
+	bool is_root() const { return level == 0; }
+	bool operator==(const SternBrocotTree &) const = default;
+	bool move_left(U k = 1) { return move(false, k); }
+	bool move_right(U k = 1) { return move(true, k); }
+	bool move_up(U k = 1) {
+		if (k > level) return false;
+		level -= k;
+		while (k) {
+			bool right = ln >= rn;
+			U step = k == 1 ? 1 : std::min<U>(k, right ? U(ln) / U(rn) : U(rd) / U(ld));
+			if (right) { ln -= step * U(rn); ld -= step * U(rd); }
+			else { rn -= step * U(ln); rd -= step * U(ld); }
+			k -= step;
+		}
 		return true;
 	}
-	template <bool subtract>
-	constexpr Fraction add(Fraction b) const {
-		if (!b.num) return *this;
-		if (!num) {
-			if constexpr (subtract) return -b;
-			else return b;
-		}
-		U g = gcd(U(den), U(b.den));
-		Int left = den / static_cast<Int>(g), right = b.den / static_cast<Int>(g);
-		W n;
-		if constexpr (subtract) n = W(num) * right - W(b.num) * left;
-		else n = W(num) * right + W(b.num) * left;
-		if (!n) return {};
-		U h = 1;
-		if (g > 1) {
-			U remainder;
-			if (std::numeric_limits<Int>::min() <= n && n <= std::numeric_limits<Int>::max())
-				remainder = magnitude(static_cast<Int>(n)) % g;
-			else {
-				W r = n % W(g);
-				remainder = static_cast<U>(r < 0 ? -r : r);
-			}
-			h = gcd(remainder, g);
-		}
-		if (h > 1) n /= W(h);
-		return reduced(n, W(left) * (b.den / static_cast<Int>(h)));
+	std::optional<SternBrocotTree> left(U k = 1) const {
+		auto result = *this;
+		if (!result.move_left(k)) return std::nullopt;
+		return result;
 	}
-
-  public:
-	constexpr Fraction() = default;
-	constexpr Fraction(Int n) : num(n) {}
-	constexpr Fraction(Int n, Int d) {
-		bool valid = assign(n, d);
-		assert(valid);
-		(void)valid;
+	std::optional<SternBrocotTree> right(U k = 1) const {
+		auto result = *this;
+		if (!result.move_right(k)) return std::nullopt;
+		return result;
 	}
-	constexpr Int numerator() const { return num; }
-	constexpr Int denominator() const { return den; }
-	constexpr Fraction operator+() const { return *this; }
-	constexpr Fraction operator-() const { return reduced(-W(num), den); }
-	constexpr bool operator==(const Fraction &) const = default;
-	constexpr std::strong_ordering operator<=>(Fraction b) const { return W(num) * b.den <=> W(b.num) * den; }
-	friend constexpr Fraction operator+(Fraction a, Fraction b) { return a.template add<false>(b); }
-	friend constexpr Fraction operator-(Fraction a, Fraction b) { return a.template add<true>(b); }
-	friend constexpr Fraction operator*(Fraction a, Fraction b) {
-		if (!a.num || !b.num) return {};
-		U g = gcd(magnitude(a.num), U(b.den)), h = gcd(magnitude(b.num), U(a.den));
-		return reduced(W(divide(a.num, g)) * divide(b.num, h),
-			W(a.den / static_cast<Int>(h)) * (b.den / static_cast<Int>(g)));
+	std::optional<SternBrocotTree> parent() const {
+		auto result = *this;
+		if (!result.move_up()) return std::nullopt;
+		return result;
 	}
-	friend constexpr Fraction operator/(Fraction a, Fraction b) {
-		assert(b.num != 0);
-		if (!a.num) return {};
-		U g = gcd(magnitude(a.num), magnitude(b.num)), h = gcd(U(a.den), U(b.den));
-		W n = W(divide(a.num, g)) * (b.den / static_cast<Int>(h));
-		W d = W(a.den / static_cast<Int>(h)) * divide(b.num, g);
-		if (d < 0) n = -n, d = -d;
-		return reduced(n, d);
+	bool contains(value_type x) const {
+		assert(x.first > 0 && x.second > 0);
+		return W(ln) * U(x.second) < W(ld) * U(x.first) && W(x.first) * U(rd) < W(x.second) * U(rn);
 	}
-	constexpr Fraction &operator+=(Fraction b) { return *this = *this + b; }
-	constexpr Fraction &operator-=(Fraction b) { return *this = *this - b; }
-	constexpr Fraction &operator*=(Fraction b) { return *this = *this * b; }
-	constexpr Fraction &operator/=(Fraction b) { return *this = *this / b; }
-	constexpr Fraction &operator++() { return *this += 1; }
-	constexpr Fraction &operator--() { return *this -= 1; }
-	constexpr Fraction operator++(int) { Fraction old = *this; ++*this; return old; }
-	constexpr Fraction operator--(int) { Fraction old = *this; --*this; return old; }
-	constexpr explicit operator bool() const { return num != 0; }
-	constexpr explicit operator Int() const { return num / den; }
-	template <std::floating_point F>
-	constexpr explicit operator F() const { return F(num) / F(den); }
-	constexpr Int floor() const { return num / den - (num % den < 0); }
-	constexpr Int ceil() const { return num / den + (num % den > 0); }
-	constexpr Fraction inv() const {
-		assert(num != 0);
-		return num < 0 ? reduced(-W(den), -W(num)) : reduced(den, num);
+	bool is_ancestor(const SternBrocotTree &other) const { return contains(other.value()); }
+	path_type path() const { return encode(numerator(), denominator()); }
+	template <class Emit>
+	static void encode(Int numerator, Int denominator, Emit &&emit) {
+		assert(numerator > 0 && denominator > 0);
+		Path path{U(numerator), U(denominator)};
+		while (!path.empty()) { char direction = path.right() ? 'R' : 'L'; emit(direction, path.pop()); }
 	}
-	constexpr Fraction pow(std::uint64_t k) const {
-		Fraction result(1), base = *this;
-		while (k) {
-			if (k & 1) result *= base;
-			k >>= 1;
-			if (k) base *= base;
+	static path_type encode(Int numerator, Int denominator) {
+		path_type result;
+		encode(numerator, denominator, [&](char direction, U count) { result.push_back({direction, count}); });
+		return result;
+	}
+	static std::optional<SternBrocotTree> decode(std::span<const Run> path) {
+		SternBrocotTree result;
+		for (auto [direction, count] : path) {
+			if (direction != 'L' && direction != 'R') return std::nullopt;
+			if (!result.move(direction == 'R', count)) return std::nullopt;
 		}
 		return result;
 	}
-	friend constexpr Fraction abs(Fraction x) { return x.num < 0 ? -x : x; }
-	friend constexpr Int floor(Fraction x) { return x.floor(); }
-	friend constexpr Int ceil(Fraction x) { return x.ceil(); }
-	friend constexpr Fraction pow(Fraction x, std::uint64_t k) { return x.pow(k); }
-	friend std::ostream &operator<<(std::ostream &os, Fraction x) {
-		return os << std::int64_t(x.num) << '/' << std::int64_t(x.den);
+	static std::optional<SternBrocotTree> ancestor(value_type x, U depth) {
+		assert(x.first > 0 && x.second > 0);
+		SternBrocotTree result;
+		Path path{U(x.first), U(x.second)};
+		while (depth && !path.empty()) {
+			bool right = path.right();
+			U step = std::min(depth, path.pop());
+			result.advance(right, step); depth -= step;
+		}
+		if (depth) return std::nullopt;
+		return result;
 	}
-	friend std::istream &operator>>(std::istream &is, Fraction &x) {
-		std::int64_t n, d = 1;
-		if (!(is >> n)) return is;
-		if (!is.eof() && is.peek() == '/') {
-			is.get();
-			if (!(is >> d)) return is;
+	std::optional<SternBrocotTree> ancestor(U depth) const {
+		if (depth > level) return std::nullopt;
+		return ancestor(value(), depth);
+	}
+	static SternBrocotTree lca(value_type x, value_type y) {
+		assert(x.first > 0 && x.second > 0 && y.first > 0 && y.second > 0);
+		SternBrocotTree result;
+		Path a{U(x.first), U(x.second)}, b{U(y.first), U(y.second)};
+		while (!a.empty() && !b.empty() && a.right() == b.right()) {
+			bool right = a.right();
+			U k = a.pop(), l = b.pop();
+			result.advance(right, std::min(k, l));
+			if (k != l) break;
 		}
-		Fraction value;
-		if (!d || n < std::numeric_limits<Int>::min() || n > std::numeric_limits<Int>::max()
-			|| d < std::numeric_limits<Int>::min() || d > std::numeric_limits<Int>::max()
-			|| !value.assign(static_cast<Int>(n), static_cast<Int>(d))) {
-			is.setstate(std::ios::failbit);
-			return is;
+		return result;
+	}
+	SternBrocotTree lca(const SternBrocotTree &other) const { return lca(value(), other.value()); }
+	W distance(const SternBrocotTree &other) const { return W(level) + other.level - 2 * W(lca(other).level); }
+	static std::pair<value_type, value_type> approximate(Int numerator, Int denominator, Int max_numerator, Int max_denominator) {
+		assert(numerator > 0 && denominator > 0 && max_numerator > 0 && max_denominator > 0);
+		U a = numerator, b = denominator, ln = 0, ld = 1, rn = 1, rd = 0;
+		U n = max_numerator, d = max_denominator;
+		while (a != b) {
+			bool right = a > b;
+			U k = right ? (a - 1) / b : (b - 1) / a;
+			U step = k;
+			if (right ? W(ln) + W(k) * rn > n || W(ld) + W(k) * rd > d
+				: W(rn) + W(k) * ln > n || W(rd) + W(k) * ld > d) {
+				step = right ? (n - ln) / rn : (d - rd) / ld;
+				if (right && rd) step = std::min<U>(step, (d - ld) / rd);
+				if (!right && ln) step = std::min<U>(step, (n - rn) / ln);
+			}
+			if (right) { ln += step * rn; ld += step * rd; a -= step * b; }
+			else { rn += step * ln; rd += step * ld; b -= step * a; }
+			if (step < k) break;
 		}
-		x = value;
-		return is;
+		if (a == b && W(ln) + rn <= n && W(ld) + rd <= d) {
+			value_type exact{Int(ln + rn), Int(ld + rd)};
+			return {exact, exact};
+		}
+		return {{Int(ln), Int(ld)}, {Int(rn), Int(rd)}};
+	}
+	static std::pair<value_type, value_type> approximate(Int numerator, Int denominator, Int bound) {
+		return approximate(numerator, denominator, bound, bound);
 	}
 };
 
-using fraction = Fraction<>;
+
+#line 1 "components/fast_io.hpp"
 
 
-#line 3 "test/fraction.test.cpp"
-#include <algorithm>
-#line 5 "test/fraction.test.cpp"
-#include <iostream>
 
-int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int t;
-	std::cin >> t;
-	while (t--) {
-		std::int64_t n, x, y;
-		std::cin >> n >> x >> y;
-		Fraction target(x, y);
-		x = target.numerator(), y = target.denominator();
-		std::int64_t a = 0, b = 1, c = 1, d = 0;
-		while (a + c <= n && b + d <= n) {
-			Fraction middle(a + c, b + d);
-			if (middle == target) { a = c = middle.numerator(); b = d = middle.denominator(); break; }
-			if (middle < target) {
-				std::int64_t k = (__int128_t(x) * b - __int128_t(y) * a) / (__int128_t(y) * c - __int128_t(x) * d);
-				if (c) k = std::min(k, (n - a) / c);
-				if (d) k = std::min(k, (n - b) / d);
-				a += k * c, b += k * d;
-				if (Fraction(a, b) == target) { c = a, d = b; break; }
-			} else {
-				std::int64_t k = (__int128_t(y) * c - __int128_t(x) * d) / (__int128_t(x) * b - __int128_t(y) * a);
-				if (a) k = std::min(k, (n - c) / a);
-				if (b) k = std::min(k, (n - d) / b);
-				c += k * a, d += k * b;
-				if (Fraction(c, d) == target) { a = c, b = d; break; }
+#line 5 "components/fast_io.hpp"
+#include <array>
+#include <bit>
+#line 8 "components/fast_io.hpp"
+#include <charconv>
+#include <cstddef>
+#line 11 "components/fast_io.hpp"
+#include <cstdio>
+#include <cstring>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#line 18 "components/fast_io.hpp"
+#if defined(__unix__) || defined(__APPLE__)
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
+namespace fast_io_detail { struct BulkInput; struct BulkOutput; }
+
+class FastInput {
+	friend struct fast_io_detail::BulkInput;
+	static constexpr std::size_t capacity = 1 << 16;
+	FILE *file = nullptr;
+	std::unique_ptr<char[]> buffer;
+	const char *current = "", *end = current;
+	std::string scratch;
+	void *mapping = nullptr;
+	std::size_t mapped_size = 0;
+	bool refill() {
+		if (!file) return false;
+		std::size_t n = std::fread(buffer.get(), 1, capacity, file);
+		current = buffer.get();
+		end = current + n;
+		return n;
+	}
+	static const char *scan(const char *p, const char *end) {
+		while (end - p >= 8) {
+			std::uint64_t x;
+			std::memcpy(&x, p, 8);
+			if ((x - 0x2121212121212121ULL) & ~x & 0x8080808080808080ULL) break;
+			p += 8;
+		}
+		while (p != end && static_cast<unsigned char>(*p) > ' ') ++p;
+		return p;
+	}
+
+public:
+	explicit FastInput(FILE *input = stdin) {
+#if defined(__unix__) || defined(__APPLE__)
+		struct stat status;
+		int fd = fileno(input);
+		auto offset = ftello(input);
+		if (fd >= 0 && offset >= 0 && !fstat(fd, &status) && S_ISREG(status.st_mode) && status.st_size > offset) {
+			mapped_size = status.st_size;
+			mapping = mmap(nullptr, mapped_size, PROT_READ, MAP_PRIVATE, fd, 0);
+			if (mapping != MAP_FAILED) {
+				current = static_cast<const char *>(mapping) + offset;
+				end = static_cast<const char *>(mapping) + mapped_size;
+				return;
+			}
+			mapping = nullptr;
+		}
+#endif
+		file = input;
+		buffer = std::make_unique_for_overwrite<char[]>(capacity);
+	}
+	explicit FastInput(std::string_view input) : current(input.empty() ? "" : input.data()), end(current + input.size()) {}
+	FastInput(const FastInput &) = delete;
+	FastInput &operator=(const FastInput &) = delete;
+	~FastInput() {
+#if defined(__unix__) || defined(__APPLE__)
+		if (mapping) munmap(mapping, mapped_size);
+#endif
+	}
+	std::string_view token() {
+		while (true) {
+			while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+			if (current != end) break;
+			if (!refill()) return {};
+		}
+		const char *begin = current;
+		current = scan(current, end);
+		if (current != end || !file) return {begin, std::size_t(current - begin)};
+		scratch.assign(begin, end);
+		while (refill()) {
+			current = scan(current, end);
+			scratch.append(buffer.get(), std::size_t(current - buffer.get()));
+			if (current != end) break;
+		}
+		return scratch;
+	}
+	template <class T>
+	bool read(T &value) {
+		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool>) {
+			while (true) {
+				while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+				if (current != end) break;
+				if (!refill()) return false;
+			}
+			if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4 && std::endian::native == std::endian::little) {
+				if (end - current >= 11) {
+					std::uint64_t x;
+					std::memcpy(&x, current, 8);
+					if (!(((x + 0x4646464646464646ULL) | (x - 0x3030303030303030ULL)) & 0x8080808080808080ULL)) {
+						x &= 0x0f0f0f0f0f0f0f0fULL;
+						x = (x * 10 + (x >> 8)) & 0x00ff00ff00ff00ffULL;
+						x = (x * 100 + (x >> 16)) & 0x0000ffff0000ffffULL;
+						std::uint64_t v = std::uint32_t(x * 10000 + (x >> 32));
+						int n = 8;
+						for (; n < 10 && static_cast<unsigned char>(current[n]) - unsigned('0') < 10; ++n)
+							v = v * 10 + (current[n] - '0');
+						if (static_cast<unsigned char>(current[n]) <= ' ' && v <= 0xffffffffULL) {
+							current += n;
+							value = T(v);
+							return true;
+						}
+					}
+				}
+			}
+			T parsed{};
+			auto result = std::from_chars(current, end, parsed);
+			if (result.ec == std::errc{} && (result.ptr != end ? static_cast<unsigned char>(*result.ptr) <= ' ' : !file)) {
+				current = result.ptr;
+				value = parsed;
+				return true;
 			}
 		}
-		std::cout << a << ' ' << b << ' ' << c << ' ' << d << '\n';
+		auto s = token();
+		if (s.empty()) return false;
+		if constexpr (std::is_same_v<T, bool>) {
+			assert(s == "0" || s == "1");
+			value = s[0] == '1';
+		} else if constexpr (std::is_integral_v<T>) {
+			auto result = std::from_chars(s.data(), s.data() + s.size(), value);
+			assert(result.ec == std::errc{} && result.ptr == s.data() + s.size());
+			(void)result;
+		} else value = T(s);
+		return true;
+	}
+};
+
+class FastOutput {
+	friend struct fast_io_detail::BulkOutput;
+	inline static constexpr auto quads = [] {
+		std::array<std::array<char, 4>, 10000> table{};
+		for (int i = 0; i < 10000; ++i)
+			table[i] = {char('0' + i / 1000), char('0' + i / 100 % 10), char('0' + i / 10 % 10), char('0' + i % 10)};
+		return table;
+	}();
+	FILE *file;
+	std::unique_ptr<char[]> buffer = std::make_unique_for_overwrite<char[]>(1 << 16);
+	std::size_t capacity = 1 << 16, length = 0;
+	char *reserve(std::size_t n) {
+		if (n > capacity - length) {
+			if (!flush()) throw std::runtime_error("output failed");
+			if (n > capacity) {
+				std::size_t next = std::max(n, 2 * capacity);
+				buffer = std::make_unique_for_overwrite<char[]>(next);
+				capacity = next;
+			}
+		}
+		return buffer.get() + length;
+	}
+
+public:
+	explicit FastOutput(FILE *output = stdout) : file(output) {}
+	FastOutput(const FastOutput &) = delete;
+	FastOutput &operator=(const FastOutput &) = delete;
+	~FastOutput() { flush(); }
+	bool flush() {
+		std::size_t offset = 0;
+		while (offset < length) {
+			auto n = std::fwrite(buffer.get() + offset, 1, length - offset, file);
+			if (!n) {
+				std::memmove(buffer.get(), buffer.get() + offset, length - offset);
+				length -= offset;
+				return false;
+			}
+			offset += n;
+		}
+		length = 0;
+		return std::fflush(file) == 0;
+	}
+	void write(char c) { *reserve(1) = c; ++length; }
+	void write(__uint128_t value) {
+		char digits[40];
+		char *end = digits + sizeof(digits), *begin = end;
+		do { *--begin = char('0' + value % 10); value /= 10; } while (value);
+		write(std::string_view(begin, end - begin));
+	}
+	void write(__int128_t value) {
+		__uint128_t magnitude = __uint128_t(value);
+		if (value < 0) write('-'), magnitude = 0 - magnitude;
+		write(magnitude);
+	}
+	void write(std::string_view s) {
+		char *out = reserve(s.size());
+		if (!s.empty()) std::memcpy(out, s.data(), s.size());
+		length += s.size();
+	}
+	template <class T> requires std::is_integral_v<T>
+	void write(T value) {
+		char *out = reserve(32);
+		if constexpr (std::is_same_v<T, bool>) *out = '0' + value, ++length;
+		else if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4) {
+			char *p = out;
+			if (value >= 100000000) {
+				auto high = value / 100000000, low = value % 100000000;
+				p = std::to_chars(p, p + 2, high).ptr;
+				std::memcpy(p, quads[low / 10000].data(), 4);
+				std::memcpy(p + 4, quads[low % 10000].data(), 4);
+				p += 8;
+			} else if (value >= 10000) {
+				p = std::to_chars(p, p + 4, value / 10000).ptr;
+				std::memcpy(p, quads[value % 10000].data(), 4);
+				p += 4;
+			} else p = std::to_chars(p, p + 4, value).ptr;
+			length += p - out;
+		} else length += std::to_chars(out, out + 32, value).ptr - out;
+	}
+	template <class T> requires requires(const T &value, char *out) { value.decimal_capacity(); value.to_chars(out); }
+	void write(const T &value) {
+		char *out = reserve(value.decimal_capacity());
+		length += value.to_chars(out) - out;
+	}
+	template <class T>
+	void println(const T &value) { write(value); write('\n'); }
+};
+
+
+#line 5 "test/fraction.test.cpp"
+
+int main() {
+	FastInput input;
+	FastOutput output;
+	int t = 0;
+	input.read(t);
+	while (t--) {
+		std::uint32_t n = 0, x = 0, y = 0;
+		input.read(n), input.read(x), input.read(y);
+		auto [lower, upper] = SternBrocotTree<std::uint32_t>::approximate(x, y, n);
+		output.write(lower.first), output.write(' '), output.write(lower.second), output.write(' ');
+		output.write(upper.first), output.write(' '), output.println(upper.second);
 	}
 }

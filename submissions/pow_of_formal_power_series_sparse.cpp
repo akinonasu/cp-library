@@ -1,6 +1,6 @@
 #line 1 "test/fps_pow_sparse.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/pow_of_formal_power_series_sparse"
-#line 1 "test/fixtures/fps_io.hpp"
+#line 1 "test/fixtures/fps_bulk_io.hpp"
 
 
 
@@ -1341,39 +1341,6 @@ struct Operations {
 		}
 		return T::raw(result);
 	}
-	static int prepare_sparse(std::vector<std::pair<int, T>> &terms) {
-		int stride = 0;
-		for (auto &[j, x] : terms) {
-			stride = std::gcd(stride, j);
-			if constexpr (std::is_same_v<T, mint>) if (x.v >= T::mod()) x.v -= T::mod();
-		}
-		return stride;
-	}
-	static T sparse_dot(const std::vector<std::pair<int, T>> &terms, const F &g, int i) {
-		if constexpr (std::is_same_v<T, mint>) {
-			static_assert(7ULL * (T::mod() - 1) * (2ULL * T::mod() - 1) + 0xffffffffULL * T::mod() < ~0ULL);
-			unsigned long long sum = 0;
-			Word result = 0;
-			int count = 0;
-			for (auto [j, x] : terms) {
-				if (j > i) break;
-				sum += (unsigned long long)x.v * g[i - j].v;
-				if (++count == 7) {
-					result = NTT::add(result, NTT::reduce(sum) % T::mod());
-					sum = 0;
-					count = 0;
-				}
-			}
-			return T::word(NTT::add(result, NTT::reduce(sum) % T::mod()));
-		} else {
-			T result = 0;
-			for (auto [j, x] : terms) {
-				if (j > i) break;
-				result += x * g[i - j];
-			}
-			return result;
-		}
-	}
 
 	static void intt(base &a) {
 		ntt_inverse(a);
@@ -1536,118 +1503,6 @@ inline mint horner(const mint* a, std::size_t n, mint x) {
 #endif
 
 
-#line 1 "components/mint_factorials.hpp"
-
-
-
-#line 5 "components/mint_factorials.hpp"
-
-namespace mint_detail {
-
-#if defined(__x86_64__) || defined(__i386__)
-
-__attribute__((target("avx2"))) inline void factorial_transpose(Ops::I8 (&x)[8]) {
-	Ops::I8 a[8], b[8];
-	for (int i = 0; i < 8; i += 2) {
-		a[i] = _mm256_unpacklo_epi32(x[i], x[i + 1]);
-		a[i + 1] = _mm256_unpackhi_epi32(x[i], x[i + 1]);
-	}
-	for (int i = 0; i < 8; i += 4) {
-		b[i] = _mm256_unpacklo_epi64(a[i], a[i + 2]);
-		b[i + 1] = _mm256_unpackhi_epi64(a[i], a[i + 2]);
-		b[i + 2] = _mm256_unpacklo_epi64(a[i + 1], a[i + 3]);
-		b[i + 3] = _mm256_unpackhi_epi64(a[i + 1], a[i + 3]);
-	}
-	for (int i = 0; i < 4; ++i) {
-		x[i] = _mm256_permute2x128_si256(b[i], b[i + 4], 0x20);
-		x[i + 4] = _mm256_permute2x128_si256(b[i], b[i + 4], 0x31);
-	}
-}
-
-template<bool reverse>
-__attribute__((target("avx2"))) inline void factorial_chain(Ops::U* out, int chunk, Ops::I8 value, Ops::I8 factor) {
-	using I = Ops::I8;
-	I step = _mm256_set1_epi32(Ops::one);
-	I order = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
-	for (int j = 0; j < chunk; j += 8) {
-		I block[8];
-		for (int k = 0; k < 8; ++k) {
-			block[k] = value;
-			value = Ops::mul8(value, factor);
-			if constexpr (reverse) factor = Ops::sub8(factor, step);
-			else factor = Ops::add8(factor, step);
-		}
-		factorial_transpose(block);
-		for (int k = 0; k < 8; ++k) {
-			if constexpr (reverse) Ops::store8(out + (k + 1) * chunk - j - 8, _mm256_permutevar8x32_epi32(block[k], order));
-			else Ops::store8(out + k * chunk + j, block[k]);
-		}
-	}
-}
-
-__attribute__((target("avx2"))) inline void factorials8(Ops::U* fact, Ops::U* invfact, int n) {
-	using I = Ops::I8;
-	using U = Ops::U;
-	const int chunk = n / 256 * 8, covered = chunk * 32;
-	alignas(32) U factor[32], products[32], starts[33], inverse[33];
-	I p[4], x[4], step = _mm256_set1_epi32(Ops::one);
-	for (int i = 0; i < 32; ++i) factor[i] = Ops::in(i * chunk + 1);
-	for (int k = 0; k < 4; ++k) p[k] = _mm256_set1_epi32(Ops::one), x[k] = Ops::load8(factor + 8 * k);
-	for (int i = 0; i < chunk; ++i) {
-		for (int k = 0; k < 4; ++k) p[k] = Ops::mul8(p[k], x[k]), x[k] = Ops::add8(x[k], step);
-	}
-	for (int k = 0; k < 4; ++k) Ops::store8(products + 8 * k, p[k]);
-	starts[0] = Ops::one;
-	for (int i = 0; i < 32; ++i) starts[i + 1] = Ops::mul(starts[i], products[i]);
-	U last = starts[32];
-	for (int i = covered; i < n; ++i) fact[i] = last, last = Ops::mul(last, Ops::in(i + 1));
-	last = mint::word(last).inv().v;
-	for (int i = n - 1; i >= covered; --i) last = Ops::mul(last, Ops::in(i + 1)), invfact[i] = last;
-	inverse[32] = last;
-	for (int i = 31; i >= 0; --i) inverse[i] = Ops::mul(inverse[i + 1], products[i]);
-	for (int k = 0; k < 4; ++k) {
-		factorial_chain<false>(fact + 8 * k * chunk, chunk, Ops::load8(starts + 8 * k), Ops::load8(factor + 8 * k));
-		alignas(32) U values[8], factors[8];
-		for (int j = 0; j < 8; ++j) {
-			const int end = (8 * k + j + 1) * chunk;
-			values[j] = Ops::mul(inverse[8 * k + j + 1], Ops::in(end));
-			factors[j] = Ops::in(end - 1);
-		}
-		factorial_chain<true>(invfact + 8 * k * chunk, chunk, Ops::load8(values), Ops::load8(factors));
-	}
-}
-#endif
-
-inline void factorials(Ops::U* fact, Ops::U* invfact, int n) {
-	if (!n) return;
-#if defined(__x86_64__) || defined(__i386__)
-	if (n >= 256 && Ops::vectorized()) {
-		factorials8(fact, invfact, n);
-		return;
-	}
-#endif
-	Ops::U value = Ops::one;
-	for (int i = 0; i < n; ++i) fact[i] = value, value = Ops::mul(value, Ops::in(i + 1));
-	value = mint::word(fact[n - 1]).inv().v;
-	for (int i = n - 1; i >= 0; --i) invfact[i] = value, value = Ops::mul(value, Ops::in(i));
-}
-
-template<class T> requires std::is_same_v<T, mint>
-inline void factorials(T* fact, T* invfact, int n) {
-	assert(0 <= n && unsigned(n) <= mint::mod());
-	static_assert(sizeof(mint) == sizeof(Ops::U) && std::is_trivially_copyable_v<mint>);
-	if (unsigned(n) == mint::mod()) {
-		factorials(fact, invfact, n - 1);
-		fact[n - 1] = -fact[n - 2];
-		invfact[n - 1] = -invfact[n - 2];
-		return;
-	}
-	factorials(reinterpret_cast<Ops::U*>(fact), reinterpret_cast<Ops::U*>(invfact), n);
-}
-
-}
-
-
 #line 1 "components/fps_workspace.hpp"
 
 
@@ -1697,6 +1552,288 @@ inline FpsWords allocate_fps_words(std::size_t count) {
 
 }
 
+
+#line 1 "components/fps_sparse.hpp"
+
+
+
+#line 7 "components/fps_sparse.hpp"
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+#line 1 "components/fps_sparse_core.hpp"
+
+
+
+#line 10 "components/fps_sparse_core.hpp"
+
+namespace fps_detail {
+template <class E> struct SparseBase {
+	using Series = std::vector<mint>;
+	using Terms = std::vector<std::pair<int, mint>>;
+	enum class Kind { inverse, logarithm, exponential, power };
+	static Terms collect(const mint *f, int size, int n, int limit = 12) {
+		Terms terms;
+		for (int i = 1; i < std::min(size, n) && int(terms.size()) <= limit; ++i)
+			if (f[i] != mint(0)) terms.emplace_back(i, f[i]);
+		return terms;
+	}
+	static Terms multiply(const Terms &a, const Terms &b, int n) {
+		Terms result;
+		for (auto [i, x] : a) for (auto [j, y] : b) if (i < n - j) result.emplace_back(i + j, x * y);
+		std::sort(result.begin(), result.end(), [](auto a, auto b) { return a.first < b.first; });
+		std::size_t used = 0;
+		for (auto [i, x] : result) {
+			if (used && result[used - 1].first == i) result[used - 1].second += x;
+			else result[used++] = {i, x};
+		}
+		result.resize(used);
+		result.erase(std::remove_if(result.begin(), result.end(), [](auto term) { return term.second == mint(0); }), result.end());
+		return result;
+	}
+	template <Kind kind>
+	static Series get(Terms terms, int n, mint initial, mint exponent, const mint *(*inverses)(int)) {
+		assert(n >= 0 && terms.size() <= 64);
+		if constexpr (kind != Kind::inverse) assert(unsigned(n) < mint::mod());
+		if (!n) return {};
+		if (terms.empty()) { Series out(n); out[0] = initial; return out; }
+		if constexpr (kind == Kind::power) {
+			unsigned e = exponent.val();
+			if (e <= 4 && terms.size() <= 12 && (n >= 4096 || terms.size() <= 3)) {
+				Terms power{{0, 1}}, f{{0, 1}};
+				f.insert(f.end(), terms.begin(), terms.end());
+				while (e) {
+					if (e & 1) power = multiply(power, f, n);
+					e >>= 1;
+					if (e) f = multiply(f, f, n);
+				}
+				Series out(n);
+				for (auto [i, x] : power) out[i] = x * initial;
+				return out;
+			}
+		}
+		int stride = 0;
+		for (auto term : terms) stride = std::gcd(stride, term.first);
+		const int count = (n - 1) / stride + 1;
+		for (auto &term : terms) term.first /= stride;
+		const mint *inv = nullptr;
+		if constexpr (kind != Kind::inverse) inv = inverses(count);
+		Series compressed;
+		if (terms.size() == 1 && kind != Kind::power) {
+			compressed.resize(count);
+			if constexpr (kind == Kind::exponential) {
+				E::template geometric<true>(compressed, initial, terms[0].second, inv);
+			} else {
+				E::geometric(compressed, kind == Kind::logarithm ? mint(-1) : initial, -terms[0].second);
+				if constexpr (kind == Kind::logarithm) compressed[0] = 0, E::scale(compressed, inv);
+			}
+		} else compressed = E::template solve<kind>(terms, count, initial, exponent, inv);
+		if (stride == 1) return compressed;
+		Series out(n);
+		for (int i = 0; i < count; ++i) out[i * stride] = compressed[i];
+		return out;
+	}
+};
+}
+
+#line 13 "components/fps_sparse.hpp"
+
+namespace fps_detail {
+struct SparseSeries : SparseBase<SparseSeries> {
+	struct Tap { int degree; std::uint32_t constant, slope; };
+	using O = mint_detail::Ops;
+	using U = O::U;
+	static_assert(12ULL * (O::mod - 1) * (O::mod - 1) + 0xffffffffULL * O::mod < ~0ULL);
+	static U canonical(U x) { return x < O::mod ? x : x - O::mod; }
+#if defined(__x86_64__) || defined(__i386__)
+	using V = O::I8;
+	__attribute__((target("avx2"))) static V canonical8(V x) {
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::twice)));
+		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::mod)));
+	}
+	__attribute__((target("avx2"))) static V reduce8(V even, V odd) {
+		const V ni = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(O::mod);
+		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
+		return canonical8(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa));
+	}
+	__attribute__((target("avx2"), always_inline)) static inline V triangular(V x, const U *f) {
+		const V lower = _mm256_permute2x128_si256(x, x, 0x08);
+		V shifted[8] = {x, _mm256_alignr_epi8(x, lower, 12), _mm256_alignr_epi8(x, lower, 8), _mm256_alignr_epi8(x, lower, 4),
+			lower, _mm256_slli_si256(lower, 4), _mm256_slli_si256(lower, 8), _mm256_slli_si256(lower, 12)};
+		V even = _mm256_setzero_si256(), odd = even;
+#pragma GCC unroll 7
+		for (int j = 1; j < 8; ++j) if (f[j]) {
+			V factor = _mm256_set1_epi32(f[j]);
+			even = _mm256_add_epi64(even, _mm256_mul_epu32(shifted[j], factor));
+			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(shifted[j], 32), factor));
+		}
+		return canonical8(O::add8(x, reduce8(even, odd)));
+	}
+	template <Kind kind>
+	__attribute__((target("avx2"), always_inline)) static inline void block(U *out, int i, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
+		V total = _mm256_setzero_si256(), slope = total;
+		const V lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+		for (int first = 0; first < count; first += 12) {
+			V ce = _mm256_setzero_si256(), co = ce, se = ce, so = ce;
+			for (int j = first; j < std::min(count, first + 12); ++j) {
+				V x = O::load8(out + i - taps[j].degree);
+				if (j < near) x = _mm256_and_si256(x, _mm256_cmpgt_epi32(_mm256_set1_epi32(taps[j].degree), lanes));
+				V odd = _mm256_srli_epi64(x, 32), c = _mm256_set1_epi32(taps[j].constant);
+				ce = _mm256_add_epi64(ce, _mm256_mul_epu32(x, c));
+				co = _mm256_add_epi64(co, _mm256_mul_epu32(odd, c));
+				if constexpr (kind == Kind::power) {
+					V factor = _mm256_set1_epi32(taps[j].slope);
+					se = _mm256_add_epi64(se, _mm256_mul_epu32(x, factor));
+					so = _mm256_add_epi64(so, _mm256_mul_epu32(odd, factor));
+				}
+			}
+			total = O::add8(total, reduce8(ce, co));
+			if constexpr (kind == Kind::power) slope = O::add8(slope, reduce8(se, so));
+		}
+		V value = canonical8(total);
+		if constexpr (kind == Kind::power) {
+			const V offsets = _mm256_setr_epi32(0, O::one, O::in(2), O::in(3), O::in(4), O::in(5), O::in(6), O::in(7));
+			V index = O::add8(_mm256_set1_epi32(O::in(i)), offsets);
+			value = O::add8(value, O::mul8(index, slope));
+		}
+		if constexpr (kind == Kind::logarithm) value = O::add8(value, O::load8(out + i));
+		if constexpr (kind == Kind::power || kind == Kind::exponential) {
+			if (near) value = triangular(canonical8(value), q);
+			value = O::mul8(value, O::load8(inv + i));
+		}
+		if (near) value = triangular(canonical8(value), p);
+		O::store8(out + i, canonical8(value));
+	}
+	template <Kind kind>
+	__attribute__((target("avx2"))) static int blocks(U *out, int i, int end, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
+		for (; end - i >= 8; i += 8) block<kind>(out, i, taps, near, count, inv, p, q);
+		return i;
+	}
+	__attribute__((target("avx2"))) static int scale8(U *out, const U *factors, int n) {
+		int i = 1;
+		for (; n - i >= 8; i += 8) O::store8(out + i, O::mul8(O::load8(out + i), O::load8(factors + i)));
+		return i;
+	}
+	template <bool exponential = false>
+	__attribute__((target("avx2"))) static void geometric8(U *out, int n, U initial, U ratio, const U *inv = nullptr) {
+		std::uint32_t first[8];
+		U step = O::one;
+		first[0] = initial;
+		for (int j = 0; j < 8; ++j) {
+			step = O::mul(step, ratio);
+			if (j) {
+				first[j] = O::mul(first[j - 1], ratio);
+				if constexpr (exponential) first[j] = O::mul(first[j], inv[j]);
+			}
+		}
+		V value = O::load8(first), multiplier = _mm256_set1_epi32(step);
+		O::store8(out, value);
+		int i = 8;
+		for (; n - i >= 8; i += 8) {
+			value = O::mul8(value, multiplier);
+			if constexpr (exponential) {
+				V factors[4];
+#pragma GCC unroll 4
+				for (int j = 0; j < 4; ++j) factors[j] = O::mul8(O::load8(inv + i - 2 * j), O::load8(inv + i - 2 * j - 1));
+				value = O::mul8(value, O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
+			}
+			O::store8(out + i, value);
+		}
+		for (; i < n; ++i) {
+			out[i] = O::mul(out[i - 1], ratio);
+			if constexpr (exponential) out[i] = O::mul(out[i], inv[i]);
+		}
+	}
+
+#endif
+	template <bool exponential = false>
+	static void geometric(Series &out, mint initial, mint ratio, const mint *inv = nullptr) {
+#if defined(__x86_64__) || defined(__i386__)
+		if (out.size() >= 8 && O::vectorized()) {
+			geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
+			return;
+		}
+#endif
+		for (int i = 0; i < int(out.size()); ++i) {
+			out[i] = initial;
+			initial *= ratio;
+			if constexpr (exponential) if (i + 1 < int(out.size())) initial *= inv[i + 1];
+		}
+	}
+	static void scale(Series &out, const mint *factors) {
+		int i = 1;
+#if defined(__x86_64__) || defined(__i386__)
+		if (O::vectorized()) i = scale8(reinterpret_cast<U *>(out.data()), reinterpret_cast<const U *>(factors), out.size());
+#endif
+		for (; i < int(out.size()); ++i) out[i] *= factors[i];
+	}
+	template <Kind kind>
+	static Series solve(const Terms &terms, int n, mint initial, mint exponent, const mint *inverses) {
+		std::vector<Tap> taps;
+		Series result(n);
+		U *out = reinterpret_cast<U *>(result.data());
+		const U *inv = reinterpret_cast<const U *>(inverses);
+		for (auto [j, x] : terms) {
+			mint c = 0, s = 0;
+			if constexpr (kind == Kind::inverse || kind == Kind::logarithm) c = -x;
+			if constexpr (kind == Kind::exponential) c = x * mint(j);
+			if constexpr (kind == Kind::power) c = (exponent + mint(1)) * mint(j) * x, s = -x;
+			taps.push_back({j, canonical(c.v), canonical(s.v)});
+			if constexpr (kind == Kind::logarithm) out[j] = canonical((x * mint(j)).v);
+		}
+		std::array<std::uint32_t, 8> p{}, q{};
+		p[0] = q[0] = O::one;
+		if (n >= 8) for (int i = 1; i < 8; ++i) {
+			mint a = 0, b = 0;
+			for (const auto &tap : taps) {
+				int j = tap.degree;
+				if (j > i) break;
+				mint c = mint::word(tap.constant), s = mint::word(tap.slope);
+				a += (c + mint(i) * s) * mint::word(p[i - j]);
+				b += (-c + mint(i - j) * s) * mint::word(q[i - j]);
+			}
+			if constexpr (kind == Kind::power || kind == Kind::exponential) a *= inverses[i], b *= inverses[i];
+			p[i] = canonical(a.v), q[i] = canonical(b.v);
+		}
+		out[0] = canonical(initial.v);
+		int active = 0, near = 0, i = 1;
+		while (i < n) {
+			while (active < int(taps.size()) && taps[active].degree <= i) {
+				near += taps[active].degree < 8;
+				++active;
+			}
+			int end = active < int(taps.size()) ? taps[active].degree : n;
+#if defined(__x86_64__) || defined(__i386__)
+			if (O::vectorized()) i = blocks<kind>(out, i, end, taps.data(), near, active, inv, p.data(), q.data());
+#endif
+			for (; i < end; ++i) {
+				U x = 0;
+				for (int first = 0; first < active; first += 12) {
+					std::uint64_t total = 0;
+					for (int j = first; j < std::min(active, first + 12); ++j) {
+						U c = taps[j].constant;
+						if constexpr (kind == Kind::power) c = canonical(O::add(c, O::mul(O::in(i), taps[j].slope)));
+						total += std::uint64_t(c) * out[i - taps[j].degree];
+					}
+					x = O::add(x, O::reduce(total) % O::mod);
+				}
+				if constexpr (kind == Kind::logarithm) x = O::add(x, out[i]);
+				if constexpr (kind == Kind::power || kind == Kind::exponential) x = O::mul(x, inv[i]);
+				out[i] = canonical(x);
+			}
+		}
+		if constexpr (kind == Kind::logarithm) scale(result, inverses);
+		return result;
+	}
+
+};
+}
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 
 #line 8 "fps/fps.hpp"
 
@@ -4792,6 +4929,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using W = FormalPowerSeries<mint>;
 	using base = std::vector<T>;
 	using F = FormalPowerSeries;
+	using Sparse = fps_detail::SparseSeries;
 	using base::base;
 
 	FormalPowerSeries() = default;
@@ -4976,17 +5114,14 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] != T(0));
 		F g{(*this)[0].inv()};
-		auto terms = sparse_terms(deg, 32);
-		int stride = terms.size() <= 32 ? prepare_sparse(terms) : 1;
-		if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
-			g.resize(deg);
-			if (terms.size() == 1 && stride == 1) {
-				std::fill(g.begin(), g.end(), g[0]);
-				geometric_scale(g, T(1), -terms[0].second * g[0]);
-				return g;
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg, 32);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
+				for (auto &[j, x] : terms) x *= g[0];
+				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), deg, g[0], T(0), nullptr));
 			}
-			for (long long i = stride; stride && i < deg; i += stride) g[i] = -sparse_dot(terms, g, static_cast<int>(i)) * g[0];
-			return g;
 		}
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -5086,6 +5221,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return result;
 		}
 		const int shift = first / 2, target = deg - shift;
+		if constexpr (std::is_same_v<T, mint>) if (target >= 256 && unsigned(target) < T::mod()) {
+			auto terms = Sparse::collect(this->data() + first, last - first, target);
+			if (terms.size() <= 12) {
+				const T inverse = (*this)[first].inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
@@ -5198,6 +5343,10 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] == T(1));
+		if constexpr (std::is_same_v<T, mint>) if (deg >= 256 && unsigned(deg) < T::mod()) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg);
+			if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inverse_table));
+		}
 		return log_derivative(deg, true);
 	}
 
@@ -5217,16 +5366,27 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return r;
 		}
 		if (k == 1) return *this;
-		if (k <= 4) {
-			F square = multiply(*this, *this).pre(n);
-			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
-		}
 		int first = 0;
 		while (first < n && (*this)[first] == T(0)) ++first;
 		if (first == n || first > (n - 1) / k) return F(n);
 		const int shift = first * k;
 		const int len = n - shift;
 		const T lead = (*this)[first];
+		if constexpr (std::is_same_v<T, mint>) if (unsigned(len) < T::mod()) {
+			auto terms = Sparse::collect(this->data() + first, this->size() - first, len);
+			if (terms.size() <= 12) {
+				const T inverse = lead.inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
+		if (k <= 4) {
+			F square = multiply(*this, *this).pre(n);
+			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
+		}
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (len >= 256 && len <= (1 << 24) && NTT::vectorized()) {
@@ -5313,8 +5473,6 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using O::pointwise;
 	using O::inverse_extend;
 	using O::dot;
-	using O::prepare_sparse;
-	using O::sparse_dot;
 	using O::intt;
 	using O::mod_sqrt;
 	using O::inverse_ntt_roots;
@@ -5351,25 +5509,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(this->empty() || (*this)[0] == T(0));
-		auto terms = sparse_terms(deg, 64);
-		int stride = terms.size() <= 64 ? prepare_sparse(terms) : 1;
-		if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
-			F g(deg);
-			g[0] = 1;
-			if (terms.size() == 1 && stride == 1 && deg >= 256) {
-				base fact(deg);
-				mint_detail::factorials(words(fact), words(g), deg);
-				geometric_scale(g, T(1), terms[0].second);
-				return g;
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg, 64);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
+				if constexpr (differentiated) for (auto &[j, x] : terms) x /= T(j);
+				return F(Sparse::get<Sparse::Kind::exponential>(std::move(terms), deg, T(1), T(0), inverse_table));
 			}
-			if (!stride) return g;
-			const auto &iv = inverses((deg - 1) / stride);
-			T factor = differentiated ? T(stride).inv() : T(1);
-			for (auto &[j, x] : terms) x *= differentiated ? factor : T(j / stride);
-			prepare_sparse(terms);
-			for (long long i = stride; i < deg; i += stride) g[i] = sparse_dot(terms, g, static_cast<int>(i)) * iv[i / stride];
-			return g;
 		}
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 256 && deg <= (1 << 24) && NTT::vectorized()) {
@@ -5440,12 +5589,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		return g;
 	}
 
-	std::vector<std::pair<int, T>> sparse_terms(int deg, int limit) const {
-		std::vector<std::pair<int, T>> terms;
-		for (int i = 1; i < std::min<int>(deg, this->size()) && static_cast<int>(terms.size()) <= limit; ++i)
-			if ((*this)[i] != T(0)) terms.emplace_back(i, (*this)[i]);
-		return terms;
-	}
+	static const mint *inverse_table(int n) { return fps_detail::Operations<mint>::inverses(n).data(); }
 
 	void trim() { O::trim(*this); }
 
@@ -5458,16 +5602,554 @@ using fps = FormalPowerSeries<mint>;
 #endif
 
 
-#line 6 "test/fixtures/fps_io.hpp"
+#line 1 "components/fps_io.hpp"
+
+
+#line 1 "components/fast_io_bulk.hpp"
+
+
+
+#line 8 "components/fast_io_bulk.hpp"
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#include <immintrin.h>
+#pragma GCC push_options
+_Pragma("GCC target(\"avx2\")")
+#pragma GCC optimize("O3")
+namespace fast_io_detail {
+struct BulkInput {
+	alignas(32) static inline constexpr auto rows = [] {
+		std::array<std::array<unsigned char, 16>, 11> r{};
+		for (int n = 0; n <= 10; ++n)
+			for (int i = 0; i < 16; ++i) r[n][i] = i < 16 - n ? 128 : i - (16 - n);
+		return r;
+	}();
+	static constexpr std::size_t kChunk = 1 << 17, kCapacity = kChunk / 4 + 66;
+
+	static unsigned separators(__m256i bytes) {
+		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
+	}
+
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
+		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
+		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+			invalid = _mm256_set1_epi32(-1);
+			p += std::min(b + 1, 32u);
+			return _mm256_setzero_si256();
+		}
+		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
+		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
+		p += b + 1;
+		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
+	}
+
+	static std::uint32_t one(const char *&p, bool &bad) {
+		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
+		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
+		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
+		if (n < 1 || n > 10) [[unlikely]] {
+			bad = true;
+			p += std::min(n + 1, 16u);
+			return 0;
+		}
+		const auto digits = _mm_shuffle_epi8(_mm_sub_epi8(bytes, _mm_set1_epi8('0')),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[n].data())));
+		const auto invalid = _mm_subs_epu8(digits, _mm_set1_epi8(9));
+		bad |= !_mm_testz_si128(invalid, invalid);
+		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
+		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
+		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
+		bad |= value > 0xffffffffULL;
+		p += n + 1;
+		return std::uint32_t(value);
+	}
+
+	static const char *after_separator(const char *p) {
+		const unsigned mask = separators(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(p)));
+		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
+	}
+
+	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
+		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
+		std::size_t done = 0;
+		for (;;) {
+			std::ptrdiff_t left = end[0] - p[0];
+			for (int k = 1; k < 4; ++k) left = std::min(left, end[k] - p[k]);
+			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
+			if (steps <= 0) break;
+			for (auto j = steps; j; --j, done += 2) {
+				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				const auto k = _mm256_set1_epi32(0x00012710);
+				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
+				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
+				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
+				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				invalid = _mm256_or_si256(invalid, overflow);
+				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
+				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
+				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
+				_mm_storeh_pd(reinterpret_cast<double *>(out[1] + done), _mm_castsi128_pd(q01));
+				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[2] + done), q23);
+				_mm_storeh_pd(reinterpret_cast<double *>(out[3] + done), _mm_castsi128_pd(q23));
+			}
+		}
+		for (int k = 0; k < 4; ++k) streams[k] = p[k];
+		return done;
+	}
+
+	template <class Emit>
+	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
+		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
+		const std::size_t stream = bytes / 4;
+		const char *p1 = after_separator(p + stream), *p2 = after_separator(p + 2 * stream);
+		const char *p3 = after_separator(p + 3 * stream), *last = after_separator(p + bytes);
+		if (!p1 || !p2 || !p3 || !last) return 0;
+		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
+		auto invalid = _mm256_setzero_si256();
+		const auto done = lockstep(s, end, out, invalid);
+		bool bad = !_mm256_testz_si256(invalid, invalid);
+		std::size_t n[4];
+		for (int k = 0; k < 4; ++k) {
+			n[k] = done;
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			bad |= s[k] != end[k];
+		}
+		const auto parsed = n[0] + n[1] + n[2] + n[3];
+		if (bad || parsed > count) return 0;
+		for (int k = 0; k < 4; ++k) emit(out[k], n[k]);
+		p = last;
+		return parsed;
+	}
+
+	static std::size_t chunk(const char *&p, const char *limit, unsigned *dst, std::size_t count, unsigned *scratch) {
+		unsigned *const out[4] = {dst, scratch, scratch + kCapacity, scratch + 2 * kCapacity};
+		bool first = true;
+		unsigned *next = dst;
+		return chunk_blocks(p, limit, count, out, [&](const unsigned *values, std::size_t n) {
+			if (!first) std::memcpy(next, values, n * sizeof(unsigned));
+			first = false;
+			next += n;
+		});
+	}
+
+	template <class Emit>
+	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
+		std::unique_ptr<unsigned[]> scratch;
+		std::size_t done = 0;
+		bool chunks = true;
+		while (done < count) {
+			const char *p = in.current;
+			while (p != in.end && static_cast<unsigned char>(*p) <= ' ') ++p;
+			while (chunks && count - done >= 1024 && in.end - p >= 1088) {
+				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
+				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
+				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+				if (!parsed) {
+					chunks = false;
+					break;
+				}
+				done += parsed;
+			}
+			unsigned tail[64];
+			std::size_t used = 0;
+			while (done + 2 <= count && in.end - p >= 32) {
+				const char *next = p;
+				auto invalid = _mm256_setzero_si256();
+				const auto groups = two(next, invalid);
+				if (!_mm256_testz_si256(invalid, invalid)) break;
+				const auto halves = _mm256_madd_epi16(_mm256_packus_epi32(groups, groups), _mm256_set1_epi32(0x00012710));
+				const unsigned h0 = _mm256_extract_epi32(halves, 0), l0 = _mm256_extract_epi32(halves, 1);
+				const unsigned h1 = _mm256_extract_epi32(halves, 4), l1 = _mm256_extract_epi32(halves, 5);
+				if (h0 > 42 || (h0 == 42 && l0 > 94967295) || h1 > 42 || (h1 == 42 && l1 > 94967295)) break;
+				tail[used++] = h0 * 100000000 + l0;
+				tail[used++] = h1 * 100000000 + l1;
+				if (used == 64) {
+					emit(tail, used);
+					used = 0;
+				}
+				done += 2;
+				p = next;
+			}
+			if (used) emit(tail, used);
+			in.current = p;
+			if (done < count) {
+				unsigned value = 0;
+				in.read(value);
+				emit(&value, 1);
+				++done;
+			}
+		}
+	}
+
+	static void read(FastInput &in, unsigned *out, std::size_t count) {
+		read_blocks(in, count, [&](const unsigned *values, std::size_t n) {
+			std::memcpy(out, values, n * sizeof(unsigned));
+			out += n;
+		});
+	}
+
+};
+}
+#pragma GCC pop_options
+#endif
+
+namespace fast_io_detail {
+struct BulkOutput {
+	static char *small(char *out, std::uint32_t value) {
+		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
+		if constexpr (std::endian::native == std::endian::little) {
+			std::uint32_t word;
+			std::memcpy(&word, FastOutput::quads[value].data(), 4);
+			word >>= (4 - n) * 8;
+			std::memcpy(out, &word, 4);
+		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
+		return out + n;
+	}
+	static char *number(char *out, std::uint32_t value) {
+		if (value >= 100000000) {
+			out = small(out, value / 100000000);
+			value %= 100000000;
+			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
+			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
+			return out + 8;
+		}
+		if (value >= 10000) {
+			out = small(out, value / 10000);
+			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
+			return out + 4;
+		}
+		return small(out, value);
+	}
+	template<std::size_t Fields, class Read>
+#if defined(__GNUC__) || defined(__clang__)
+	[[gnu::noinline]]
+#endif
+	static void records(FastOutput &out, std::size_t count, Read read) {
+		constexpr auto bytes = 11 * Fields;
+		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
+		for (std::size_t base = 0; base < count;) {
+			const auto n = std::min(count - base, block);
+			char *begin = out.reserve(n * bytes), *p = begin;
+			for (std::size_t i = 0; i < n; ++i) {
+				auto values = read(base + i);
+				for (std::size_t j = 0; j < Fields; ++j) {
+					p = number(p, std::uint32_t(values[j]));
+					*p++ = j + 1 == Fields ? '\n' : ' ';
+				}
+			}
+			out.length += p - begin;
+			base += n;
+		}
+	}
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
+}
+
+namespace fast_io_detail {
+template <class Emit, std::size_t... I>
+void emit_record(Emit &emit, const std::uint32_t *values, std::index_sequence<I...>) {
+	emit(values[I]...);
+}
+}
+
+template <class Emit>
+void read_unsigned_blocks(FastInput &input, std::size_t count, Emit emit) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (__builtin_cpu_supports("avx2")) {
+		fast_io_detail::BulkInput::read_blocks(input, count, emit);
+		return;
+	}
+#endif
+	std::uint32_t values[64];
+	while (count) {
+		const auto n = std::min<std::size_t>(count, 64);
+		for (std::size_t i = 0; i < n; ++i) input.read(values[i]);
+		emit(values, n);
+		count -= n;
+	}
+}
+
+inline void read_unsigned(FastInput &input, std::span<std::uint32_t> out) {
+	read_unsigned_blocks(input, out.size(), [&](const std::uint32_t *values, std::size_t count) {
+		std::memcpy(out.data(), values, count * sizeof(std::uint32_t));
+		out = out.subspan(count);
+	});
+}
+
+template <std::size_t Fields, class Emit>
+void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
+	static_assert(Fields > 0);
+	if (count > std::numeric_limits<std::size_t>::max() / Fields) throw std::length_error("input size");
+	std::array<std::uint32_t, Fields> pending;
+	std::size_t used = 0;
+	constexpr auto indices = std::make_index_sequence<Fields>();
+	read_unsigned_blocks(input, count * Fields, [&](const std::uint32_t *values, std::size_t n) {
+		std::size_t i = 0;
+		if (used) {
+			while (used < Fields && i < n) pending[used++] = values[i++];
+			if (used == Fields) {
+				fast_io_detail::emit_record(emit, pending.data(), indices);
+				used = 0;
+			}
+		}
+		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
+		while (i < n) pending[used++] = values[i++];
+	});
+}
+
+template<std::size_t Fields, class Read>
+void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
+	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
+	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
+}
+
+
+#line 7 "components/fps_io.hpp"
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#include <immintrin.h>
+#pragma GCC push_options
+_Pragma("GCC target(\"avx2\")")
+#pragma GCC optimize("O3")
+namespace fps_io_fields {
+
+namespace detail {
+
+struct alignas(32) Lanes {
+	std::uint32_t lane[8];
+};
+
+constexpr Lanes all(std::uint32_t x) { return {{x, x, x, x, x, x, x, x}}; }
+constexpr Lanes all16(std::uint32_t x) { return all(x * 0x10001); }
+
+constexpr int Z = 0x80;
+
+constexpr Lanes shuffle(const int (&b)[16]) {
+	Lanes t{};
+	for (int i = 0; i < 32; ++i) t.lane[i / 4] |= std::uint32_t(b[i % 16] & 0xFF) << 8 * (i % 4);
+	return t;
+}
+
+struct Constants {
+	Lanes div10 = all(429496730);
+	Lanes div10e5 = all(1407374884);
+	Lanes pack = all(1 - 10000 * 65536u);
+	Lanes ten = all(10);
+	Lanes tail = all(' ' << 8 | '0');
+	Lanes by100 = all16(5243), hundred = all16(100);
+	Lanes by10 = all16(6554);
+	Lanes tens_out = all16(2559);
+	Lanes ones = all(~0u), zero = all(0x30303030), space = all(0x20202020);
+
+	Lanes chunk0[2] = {shuffle({0, 1, 2, 3, 4, 5, 6, 7, Z, Z, 8, 9, 10, 11, 12, 13}),
+					shuffle({Z, Z, Z, Z, Z, Z, Z, Z, 0, 1, Z, Z, Z, Z, Z, Z})};
+	Lanes chunk1[3] = {shuffle({14, 15, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z}),
+					shuffle({Z, Z, 4, 5, Z, Z, Z, Z, Z, Z, Z, Z, 8, 9, Z, Z}),
+					shuffle({Z, Z, Z, Z, 0, 1, 2, 3, 4, 5, 6, 7, Z, Z, 8, 9})};
+	Lanes chunk2[3] = {shuffle({10, 11, 12, 13, 14, 15, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z}),
+					shuffle({Z, Z, Z, Z, Z, Z, 12, 13, Z, Z, Z, Z, Z, Z, Z, Z}),
+					shuffle({Z, Z, Z, Z, Z, Z, Z, Z, 0, 1, 2, 3, 4, 5, 6, 7})};
+	Lanes chunk3[3] = {shuffle({0, 1, Z, Z, Z, Z, Z, Z, Z, Z, 4, 5, Z, Z, Z, Z}),
+					shuffle({Z, Z, 8, 9, 10, 11, 12, 13, 14, 15, Z, Z, Z, Z, Z, Z}),
+					shuffle({Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, 0, 1, 2, 3})};
+	Lanes chunk4[2] = {shuffle({4, 5, 6, 7, Z, Z, 8, 9, 10, 11, 12, 13, 14, 15, Z, Z}),
+					shuffle({Z, Z, Z, Z, 8, 9, Z, Z, Z, Z, Z, Z, Z, Z, 12, 13})};
+};
+
+inline constexpr Constants kConstants{};
+
+[[gnu::always_inline]] inline __m256i load(const Lanes& l) {
+	return _mm256_load_si256(reinterpret_cast<const __m256i*>(&l));
+}
+
+[[gnu::always_inline]] inline __m256i shuffle(__m256i x, const Lanes& control) {
+	return _mm256_shuffle_epi8(x, load(control));
+}
+
+struct Divided {
+	__m256i halves, tail;
+};
+
+[[gnu::always_inline]] inline Divided divide(__m256i v, __m256i odd, const Constants& k) {
+	const __m256i w = _mm256_blend_epi32(_mm256_srli_epi64(_mm256_mul_epu32(v, load(k.div10)), 32),
+										_mm256_mul_epu32(odd, load(k.div10)), 0xAA);
+	const __m256i h = _mm256_blend_epi32(_mm256_srli_epi64(_mm256_mul_epu32(v, load(k.div10e5)), 47),
+										_mm256_srli_epi64(_mm256_mul_epu32(odd, load(k.div10e5)), 15), 0xAA);
+	const __m256i halves = _mm256_add_epi32(_mm256_slli_epi32(w, 16), _mm256_mullo_epi32(h, load(k.pack)));
+	const __m256i tail = _mm256_sub_epi32(_mm256_add_epi32(v, load(k.tail)), _mm256_mullo_epi32(w, load(k.ten)));
+	return {halves, tail};
+}
+
+[[gnu::always_inline]] inline __m256i two_digits(__m256i z, const Constants& k) {
+	const __m256i tens = _mm256_mulhi_epu16(z, load(k.by10));
+	return _mm256_sub_epi16(_mm256_slli_epi16(z, 8), _mm256_mullo_epi16(tens, load(k.tens_out)));
+}
+
+[[gnu::always_inline]] inline __m256i text(__m256i digits, const Constants& k) {
+	const __m256i upto = _mm256_xor_si256(digits, _mm256_add_epi64(digits, load(k.ones)));
+	return _mm256_blendv_epi8(_mm256_or_si256(digits, load(k.zero)), load(k.space), upto);
+}
+
+[[gnu::always_inline]] inline void digits(const Divided& d, __m256i& lo, __m256i& hi, const Constants& k) {
+	const __m256i hundreds = _mm256_srli_epi16(_mm256_mulhi_epu16(d.halves, load(k.by100)), 3);
+	const __m256i rest = _mm256_sub_epi16(d.halves, _mm256_mullo_epi16(hundreds, load(k.hundred)));
+	lo = text(two_digits(_mm256_unpacklo_epi16(hundreds, rest), k), k);
+	hi = text(two_digits(_mm256_unpackhi_epi16(hundreds, rest), k), k);
+}
+
+[[gnu::always_inline]] inline void store(char* p, const Divided& lo, const Divided& hi, const Constants& k) {
+	__m256i d01, d23, d45, d67;
+	const auto either = [&](__m256i a, __m256i b) __attribute__((target("avx2"))) { return _mm256_or_si256(a, b); };
+	digits(lo, d01, d23, k);
+	digits(hi, d45, d67, k);
+	const __m256i c0 = either(shuffle(d01, k.chunk0[0]), shuffle(lo.tail, k.chunk0[1]));
+	const __m256i c1 = either(either(shuffle(d01, k.chunk1[0]), shuffle(lo.tail, k.chunk1[1])), shuffle(d23, k.chunk1[2]));
+	const __m256i c2 = either(either(shuffle(d23, k.chunk2[0]), shuffle(lo.tail, k.chunk2[1])), shuffle(d45, k.chunk2[2]));
+	const __m256i c3 = either(either(shuffle(hi.tail, k.chunk3[0]), shuffle(d45, k.chunk3[1])), shuffle(d67, k.chunk3[2]));
+	const __m256i c4 = either(shuffle(d67, k.chunk4[0]), shuffle(hi.tail, k.chunk4[1]));
+
+	const auto whole = [p](int c, __m256i chunk) __attribute__((target("avx2"))) { _mm256_storeu_si256(reinterpret_cast<__m256i*>(p + 64 + 16 * c), chunk); };
+	const auto low = [p](int c, __m256i chunk) __attribute__((target("avx2"))) { _mm_store_si128(reinterpret_cast<__m128i*>(p + 16 * c), _mm256_castsi256_si128(chunk)); };
+	whole(4, c4), whole(3, c3), whole(2, c2), whole(1, c1), whole(0, c0);
+	low(0, c0), low(1, c1), low(2, c2), low(3, c3), low(4, c4);
+}
+
+[[gnu::always_inline]] inline void divide16(const std::uint32_t* x, Divided& lo, Divided& hi, const Constants& k) {
+	const auto at = [x](int i) __attribute__((target("avx2"))) { return _mm256_loadu_si256(reinterpret_cast<const __m256i*>(x + i)); };
+	const auto both = [x](int i) __attribute__((target("avx2"))) { return _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i*>(x + i))); };
+	const __m256i l = _mm256_blend_epi32(at(0), both(8), 0xF0), h = _mm256_blend_epi32(at(8), both(4), 0x0F);
+	lo = divide(l, _mm256_srli_epi64(l, 32), k);
+	hi = divide(h, _mm256_srli_epi64(h, 32), k);
+}
+
+inline void format(char* p, const std::uint32_t* x, std::size_t count, const Constants& k) {
+	Divided dl, dh;
+	divide16(x, dl, dh, k);
+	for (std::size_t i = 16; i < count; i += 16, p += 160) {
+		Divided nl, nh;
+		divide16(x + i, nl, nh, k);
+		store(p, dl, dh, k);
+		dl = nl, dh = nh;
+	}
+	store(p, dl, dh, k);
+}
+
+}
+
+inline constexpr std::size_t kBlock = 25600;
+inline constexpr std::size_t kTextBytes = 10 * kBlock;
+
+}
+
+namespace fps_detail {
+[[gnu::always_inline]] inline __m256i io_values(__m256i x) {
+	const auto p = _mm256_set1_epi32(mint::mod()), ni = _mm256_set1_epi32(998244351);
+	auto even = _mm256_and_si256(x, _mm256_set1_epi64x(0xffffffffULL));
+	auto odd = _mm256_srli_epi64(x, 32);
+	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
+	const auto value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+	return _mm256_min_epu32(value, _mm256_sub_epi32(value, p));
+}
+
+inline void read_coefficients(FastInput &input, std::vector<mint> &out, std::size_t n) {
+	if (!n) return;
+	if (n > out.max_size() - out.size()) throw std::length_error("fps input");
+	prepare_fps_output(out, out.size() + n);
+	fast_io_detail::BulkInput::read_blocks(input, n, [&](const unsigned *values, std::size_t count) {
+		append_fps_words<false>(out, values, count);
+	});
+}
+
+inline void write_coefficients(FastOutput &output, const mint *in, std::size_t n) {
+	alignas(32) unsigned values[25600];
+	alignas(32) char text[256000];
+	const auto &k = fps_io_fields::detail::kConstants;
+	for (std::size_t i = 0; i < n; i += 25600) {
+		const auto count = std::min<std::size_t>(25600, n - i), full = count / 16 * 16;
+		std::size_t j = 0;
+		for (; j + 8 <= count; j += 8) {
+			alignas(32) unsigned words[8];
+			std::memcpy(words, in + i + j, sizeof(words));
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(values + j), io_values(_mm256_load_si256(reinterpret_cast<const __m256i *>(words))));
+		}
+		for (; j < count; ++j) values[j] = in[i + j].val();
+		char *end = text;
+		static constexpr char zeros[] = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+		auto zero = [&](std::size_t at) __attribute__((target("avx2"))) {
+			auto x = _mm256_or_si256(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + at)), _mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + at + 8)));
+			return _mm256_testz_si256(x, x);
+		};
+		std::size_t at = 0;
+		while (at < full) {
+			if (zero(at)) { std::memcpy(end, zeros, 32); end += 32; at += 16; }
+			else {
+				const auto first = at;
+				do at += 16; while (at < full && !zero(at));
+				fps_io_fields::detail::format(end, values + first, at - first, k);
+				end += 10 * (at - first);
+			}
+		}
+		if (full < count) {
+			alignas(32) unsigned rest[16] = {};
+			alignas(16) char last[160];
+			std::copy_n(values + full, count - full, rest);
+			bool empty = true;
+			for (auto x : rest) empty &= x == 0;
+			if (empty) { std::memcpy(end, zeros, 2 * (count - full)); end += 2 * (count - full); }
+			else {
+				fps_io_fields::detail::format(last, rest, 16, k);
+				std::memcpy(end, last, 10 * (count - full));
+				end += 10 * (count - full);
+			}
+		}
+		if (i + count == n) end[-1] = '\n';
+		fast_io_detail::BulkOutput::write(output, std::string_view(text, end - text));
+	}
+	if (!n) output.write('\n');
+}
+}
+#pragma GCC pop_options
+#endif
+
+#line 7 "test/fixtures/fps_bulk_io.hpp"
 
 inline fps read_fps(FastInput &input, int n) {
 	fps result;
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (fps_detail::NTT::vectorized()) {
+		fps_detail::read_coefficients(input, result, n);
+		return result;
+	}
+#endif
 	result.resize(n);
 	for (auto &x : result) { unsigned value = 0; input.read(value); x = mint::raw(value); }
 	return result;
 }
 
 inline void write_fps(FastOutput &output, const fps &f) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (fps_detail::NTT::vectorized()) {
+		fps_detail::write_coefficients(output, f.data(), f.size());
+		return;
+	}
+#endif
 	for (auto x : f) { output.write(x.val()); output.write(' '); }
 	output.write('\n');
 }

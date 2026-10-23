@@ -1,8 +1,8 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_set_path_composite"
-#include "../data_structure/segment_tree/dynamic_segtree.hpp"
+#include "../data_structure/segment_tree/segtree.hpp"
 #include "../data_structure/advanced/hld.hpp"
 #include "../math/mint.hpp"
-#include <iostream>
+#include "components/fast_io.hpp"
 #include <vector>
 
 struct S {
@@ -12,38 +12,42 @@ S op(S x, S y) { return {x.a * y.a, x.b * y.a + y.b, y.reverse_b * x.a + x.rever
 S e() { return {1, 0, 0}; }
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
+	FastInput input;
+	FastOutput output;
 	int n, q;
-	std::cin >> n >> q;
+	input.read(n), input.read(q);
 	std::vector<S> values(n);
 	for (auto &f : values) {
-		std::cin >> f.a >> f.b;
+		unsigned a, b;
+		input.read(a), input.read(b);
+		f.a = a, f.b = b;
 		f.reverse_b = f.b;
 	}
 	HLD tree(n);
 	for (int i = 1, u, v; i < n; ++i) {
-		std::cin >> u >> v;
+		input.read(u), input.read(v);
 		tree.add_edge(u, v);
 	}
 	tree.build();
-	DynamicSegtree<S, op, e> seg(n);
-	seg.reserve(n);
-	for (int v = 0; v < n; ++v) seg.set(tree.in[v], values[v]);
+	std::vector<S> ordered(n);
+	for (int v = 0; v < n; ++v) ordered[tree.in[v]] = values[v];
+	Segtree<S, op, e> seg(ordered);
 	while (q--) {
 		int type, u, v;
-		std::cin >> type >> u;
+		input.read(type), input.read(u);
 		if (type == 0) {
-			mint a, b;
-			std::cin >> a >> b;
+			unsigned a, b;
+			input.read(a), input.read(b);
 			seg.set(tree.in[u], {a, b, b});
 		} else {
-			mint x;
-			std::cin >> v >> x;
+			unsigned initial;
+			input.read(v), input.read(initial);
+			mint x = initial;
 			tree.for_each_path(u, v, [&](int l, int r, bool reverse) {
 				auto f = seg.prod(l, r);
 				x = f.a * x + (reverse ? f.reverse_b : f.b);
 			});
-			std::cout << x << '\n';
+			output.println(x.val());
 		}
 	}
 }

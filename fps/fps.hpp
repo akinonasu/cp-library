@@ -3,8 +3,8 @@
 
 #include "../components/fps_operations.hpp"
 #include "../components/fps_horner.hpp"
-#include "../components/mint_factorials.hpp"
 #include "../components/fps_workspace.hpp"
+#include "../components/fps_sparse.hpp"
 
 #include "../components/fps_blocked.hpp"
 #include "../components/fps_exp_blocked.hpp"
@@ -33,6 +33,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using W = FormalPowerSeries<mint>;
 	using base = std::vector<T>;
 	using F = FormalPowerSeries;
+	using Sparse = fps_detail::SparseSeries;
 	using base::base;
 
 	FormalPowerSeries() = default;
@@ -217,17 +218,14 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] != T(0));
 		F g{(*this)[0].inv()};
-		auto terms = sparse_terms(deg, 32);
-		int stride = terms.size() <= 32 ? prepare_sparse(terms) : 1;
-		if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
-			g.resize(deg);
-			if (terms.size() == 1 && stride == 1) {
-				std::fill(g.begin(), g.end(), g[0]);
-				geometric_scale(g, T(1), -terms[0].second * g[0]);
-				return g;
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg, 32);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
+				for (auto &[j, x] : terms) x *= g[0];
+				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), deg, g[0], T(0), nullptr));
 			}
-			for (long long i = stride; stride && i < deg; i += stride) g[i] = -sparse_dot(terms, g, static_cast<int>(i)) * g[0];
-			return g;
 		}
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -327,6 +325,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return result;
 		}
 		const int shift = first / 2, target = deg - shift;
+		if constexpr (std::is_same_v<T, mint>) if (target >= 256 && unsigned(target) < T::mod()) {
+			auto terms = Sparse::collect(this->data() + first, last - first, target);
+			if (terms.size() <= 12) {
+				const T inverse = (*this)[first].inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
@@ -439,6 +447,10 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] == T(1));
+		if constexpr (std::is_same_v<T, mint>) if (deg >= 256 && unsigned(deg) < T::mod()) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg);
+			if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inverse_table));
+		}
 		return log_derivative(deg, true);
 	}
 
@@ -458,16 +470,27 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return r;
 		}
 		if (k == 1) return *this;
-		if (k <= 4) {
-			F square = multiply(*this, *this).pre(n);
-			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
-		}
 		int first = 0;
 		while (first < n && (*this)[first] == T(0)) ++first;
 		if (first == n || first > (n - 1) / k) return F(n);
 		const int shift = first * k;
 		const int len = n - shift;
 		const T lead = (*this)[first];
+		if constexpr (std::is_same_v<T, mint>) if (unsigned(len) < T::mod()) {
+			auto terms = Sparse::collect(this->data() + first, this->size() - first, len);
+			if (terms.size() <= 12) {
+				const T inverse = lead.inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
+		if (k <= 4) {
+			F square = multiply(*this, *this).pre(n);
+			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
+		}
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (len >= 256 && len <= (1 << 24) && NTT::vectorized()) {
@@ -554,8 +577,6 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using O::pointwise;
 	using O::inverse_extend;
 	using O::dot;
-	using O::prepare_sparse;
-	using O::sparse_dot;
 	using O::intt;
 	using O::mod_sqrt;
 	using O::inverse_ntt_roots;
@@ -592,25 +613,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(this->empty() || (*this)[0] == T(0));
-		auto terms = sparse_terms(deg, 64);
-		int stride = terms.size() <= 64 ? prepare_sparse(terms) : 1;
-		if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
-			F g(deg);
-			g[0] = 1;
-			if (terms.size() == 1 && stride == 1 && deg >= 256) {
-				base fact(deg);
-				mint_detail::factorials(words(fact), words(g), deg);
-				geometric_scale(g, T(1), terms[0].second);
-				return g;
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg, 64);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
+				if constexpr (differentiated) for (auto &[j, x] : terms) x /= T(j);
+				return F(Sparse::get<Sparse::Kind::exponential>(std::move(terms), deg, T(1), T(0), inverse_table));
 			}
-			if (!stride) return g;
-			const auto &iv = inverses((deg - 1) / stride);
-			T factor = differentiated ? T(stride).inv() : T(1);
-			for (auto &[j, x] : terms) x *= differentiated ? factor : T(j / stride);
-			prepare_sparse(terms);
-			for (long long i = stride; i < deg; i += stride) g[i] = sparse_dot(terms, g, static_cast<int>(i)) * iv[i / stride];
-			return g;
 		}
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 256 && deg <= (1 << 24) && NTT::vectorized()) {
@@ -681,12 +693,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		return g;
 	}
 
-	std::vector<std::pair<int, T>> sparse_terms(int deg, int limit) const {
-		std::vector<std::pair<int, T>> terms;
-		for (int i = 1; i < std::min<int>(deg, this->size()) && static_cast<int>(terms.size()) <= limit; ++i)
-			if ((*this)[i] != T(0)) terms.emplace_back(i, (*this)[i]);
-		return terms;
-	}
+	static const mint *inverse_table(int n) { return fps_detail::Operations<mint>::inverses(n).data(); }
 
 	void trim() { O::trim(*this); }
 

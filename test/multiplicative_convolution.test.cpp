@@ -1,16 +1,16 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/mul_modp_convolution"
-#include "../convolution/multiplicative_convolution.hpp"
-#include "../math/mint.hpp"
-#include <iostream>
+#include "convolution/multiplicative_convolution.hpp"
+#include "test/fixtures/mint_io.hpp"
 #include <vector>
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int n;
-	std::cin >> n;
+	FastInput input;
+	FastOutput output;
+	int n = 0;
+	input.read(n);
 	std::vector<mint> a(n), b(n);
-	for (auto &x : a) std::cin >> x;
-	for (auto &x : b) std::cin >> x;
-	for (auto x : multiplicative_convolution(a, b)) std::cout << x << ' ';
-	std::cout << '\n';
+	read_mints(input, a);
+	read_mints(input, b);
+	auto result = multiplicative_convolution(a, b);
+	write_mints(output, result);
 }

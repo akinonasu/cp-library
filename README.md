@@ -112,6 +112,7 @@
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `tree/auxiliary_tree.hpp` | Auxiliary Tree・圧縮木の隣接リスト | [使い方](docs/auxiliary_tree.md) |
+| `tree/tree_diameter.hpp` | 木の直径・最長パスの復元 | [使い方](docs/tree_diameter.md) |
 | `tree/rerooting.hpp` | 全方位木 DP | [使い方](docs/rerooting.md) |
 | `tree/dsu_on_tree.hpp` | DSU on Tree | [使い方](docs/dsu_on_tree.md) |
 
@@ -186,6 +187,8 @@
 | `data_structure/lazy_reversible_treap.hpp` | 遅延伝搬・反転可能な乱択平衡二分木 | [使い方](docs/lazy_reversible_treap.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
+| `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列） | [使い方](docs/flat_hash_map.md) |
+| `data_structure/sliding_window_aggregation.hpp` | Sliding Window Aggregation（キューの集約） | [使い方](docs/sliding_window_aggregation.md) |
 | `data_structure/xor_set.hpp` | XOR の最小値・最大値を求める整数集合 | [使い方](docs/xor_set.md) |
 | `data_structure/offline_rectangle_sum.hpp` | 静的矩形和（クエリ先読み） | [使い方](docs/offline_rectangle_sum.md) |
 | `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
@@ -225,6 +228,8 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `data_structure/segment_tree/range_affine_range_sum.hpp` | 区間アフィン変換・区間和 | [使い方](docs/range_affine_range_sum.md) |
+| `data_structure/segment_tree/range_add_range_min.hpp` | 区間加算・区間最小値 | [使い方](docs/range_add_range_min.md) |
+| `data_structure/segment_tree/segtree.hpp` | セグメント木・一点更新・区間集約・境界検索 | [使い方](docs/segtree.md) |
 | `data_structure/segment_tree/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
@@ -240,13 +245,17 @@
 | `data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp` | 一点代入 Wavelet Matrix (クエリ先読み) | [使い方](docs/point_set_wavelet_matrix.md) |
 | `data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp` | Dynamic Wavelet Matrix | [使い方](docs/dynamic_wavelet_matrix.md) |
 
-### 静的な区間クエリ
+### 区間クエリ
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `data_structure/range_query/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
 | `data_structure/range_query/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
 | `data_structure/range_query/mo_order.hpp` | Mo 法 | [使い方](docs/mo_order.md) |
+| `data_structure/range_query/offline_range_frequency.hpp` | 区間頻度（一点更新・クエリ一括処理） | [使い方](docs/offline_range_frequency.md) |
+| `data_structure/range_query/offline_range_count_distinct.hpp` | 区間の異なる値の個数（クエリ一括処理） | [使い方](docs/offline_range_count_distinct.md) |
+| `data_structure/range_query/offline_range_sum.hpp` | 値の上限付き区間和（クエリ一括処理） | [使い方](docs/offline_range_sum.md) |
+| `data_structure/range_query/offline_range_kth_smallest.hpp` | 区間の k 番目の値（クエリ一括処理） | [使い方](docs/offline_range_kth_smallest.md) |
 
 ### 列アルゴリズム
 
@@ -265,6 +274,7 @@
 | `string/longest_common_substring.hpp` | 最長共通部分文字列 | [使い方](docs/longest_common_substring.md) |
 | `string/edit_distance.hpp` | 編集距離 | [使い方](docs/edit_distance.md) |
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
+| `string/z_algorithm.hpp` | Z algorithm | [使い方](docs/z_algorithm.md) |
 | `string/concatenation_order.hpp` | 文字列結合の辞書順比較・並べ替え | [使い方](docs/concatenation_order.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
 | `string/manacher.hpp` | Manacher・回文半径・区間の回文判定 | [使い方](docs/manacher.md) |
@@ -295,6 +305,7 @@
 | `math/number_theory/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
 | `math/number_theory/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
 | `math/number_theory/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
+| `math/number_theory/totient_sum.hpp` | Euler φ関数の prefix sum | [使い方](docs/totient_sum.md) |
 | `math/number_theory/multiplicative_prefix_sum.hpp` | 乗法的関数の prefix sum | [使い方](docs/multiplicative_prefix_sum.md) |
 
 ### 組合せ
@@ -356,14 +367,20 @@
 | `components/fenwick_sum.hpp` | Fenwick Sum | [使い方](docs/fenwick_sum.md) |
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |
 | `components/sequence_match.hpp` | 前方・後方の一致比較 | [使い方](docs/sequence_match.md) |
-| `components/z_algorithm.hpp` | Z algorithm・接頭辞一致の列挙 | [使い方](docs/z_algorithm.md) |
+| `components/z_algorithm.hpp` | Z algorithm・接頭辞一致の列挙 | [使い方](docs/z_algorithm_core.md) |
+| `components/fenwick_bitset.hpp` | 更新可能ビット列の区間個数 | [使い方](docs/fenwick_bitset.md) |
+| `components/incremental_prefix_count.hpp` | 一点加算・接頭辞個数 | [使い方](docs/incremental_prefix_count.md) |
+| `components/offline_range_kth.hpp` | 区間順位の一括処理 | [使い方](docs/offline_range_kth.md) |
+| `components/insert_only_prefix_count_sum.hpp` | 挿入のみの区間和・個数 | [使い方](docs/insert_only_prefix_count_sum.md) |
+| `components/packed_convex_hull.hpp` | 整数点の凸包 | [使い方](docs/packed_convex_hull.md) |
+| `components/min_plus_convolution_envelope.hpp` | 凹列と任意列の畳み込み | [使い方](docs/min_plus_convolution_envelope.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
 | `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |
 | `components/field_arithmetic.hpp` | 体の演算・内積・配列の定数倍と加算 | [使い方](docs/field_arithmetic.md) |
 | `components/field_base.hpp` | 汎用型の体の演算 | [使い方](docs/field_base.md) |
 | `components/matrix_core.hpp` | 行列の共通クラス | [使い方](docs/matrix_core.md) |
 | `components/matrix_base_arithmetic.hpp` | 行列の基本演算 | [使い方](docs/matrix_base_arithmetic.md) |
-| `components/matrix_power.hpp` | 行列累乗の内部演算 | [使い方](docs/matrix_power.md) |
+| `components/matrix_power.hpp` | 行列累乗・特性多項式の内部演算 | [使い方](docs/matrix_power.md) |
 | `components/rational_fps_coefficients.hpp` | 有理 FPS の区間係数取得の共通処理 | [使い方](docs/rational_fps_coefficients_core.md) |
 | `components/factorial_table.hpp` | 型を指定する階乗・逆階乗テーブル | [使い方](docs/factorial_table.md) |
 | `components/factorial_table_light.hpp` | 軽量版の階乗・逆階乗生成 | [使い方](docs/factorial_table_light.md) |
@@ -398,9 +415,13 @@
 | `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
 | `components/matrix_arithmetic.hpp` | 行列の内部演算 | [使い方](docs/matrix_arithmetic.md) |
+| `components/matrix_elimination_modular.hpp` | 固定法の行列消去 | [使い方](docs/matrix_elimination_modular.md) |
 | `components/fps_light_ntt.hpp` | 軽量 FPS の NTT・畳み込み | [使い方](docs/fps_light_ntt.md) |
 | `components/fps_light_product_tree.hpp` | 軽量 FPS の積木 | [使い方](docs/fps_light_product_tree.md) |
 | `components/fps_operations.hpp` | FPS の内部演算 | [使い方](docs/fps_operations.md) |
+| `components/fps_sparse.hpp` | 疎 FPS の共通演算 | [使い方](docs/fps_sparse.md) |
+| `components/fps_sparse_core.hpp` | 疎 FPS の次数圧縮・前処理 | [使い方](docs/fps_sparse_core.md) |
+| `components/fps_sparse_scalar.hpp` | 軽量 FPS の疎演算 | [使い方](docs/fps_sparse_scalar.md) |
 | `components/fps_factorials.hpp` | 階乗・逆階乗生成 | [使い方](docs/fps_factorials.md) |
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
 | `components/fps_log.hpp` | FPS の対数の内部変換 | [使い方](docs/fps_log.md) |

@@ -35,6 +35,30 @@ void check() {
 		}
 #endif
 	}
+	for (int n : {1, 2, 4, 8, 16, 128, 4096}) {
+		std::vector<std::uint32_t> a(n), b(n), expected(n);
+		for (int i = 0; i < n; ++i) {
+			a[i] = i % 3 == 0 ? mod - 1 : rng() % mod;
+			b[i] = i % 3 == 1 ? mod - 1 : rng() % mod;
+			expected[i] = std::uint64_t(a[i]) * b[i] % mod;
+		}
+		auto scalar = a, vectorized = a;
+		ntt_mod_detail::pointwise<mod>(scalar, b, false);
+		std::uint32_t radix = (std::uint64_t(1) << 32) % mod;
+		ntt_mod_detail::scale<mod>(scalar, radix, false);
+		assert(scalar == expected);
+#if defined(__x86_64__) || defined(__i386__)
+		if (__builtin_cpu_supports("avx2")) {
+			ntt_mod_detail::pointwise<mod>(vectorized, b, true);
+			ntt_mod_detail::scale<mod>(vectorized, radix, true);
+			assert(vectorized == expected);
+			ntt_mod_detail::pointwise<mod>(vectorized, vectorized, true);
+			ntt_mod_detail::scale<mod>(vectorized, radix, true);
+			for (int i = 0; i < n; ++i) assert(vectorized[i] == std::uint64_t(expected[i]) * expected[i] % mod);
+		}
+#endif
+	}
+
 	for (int n = 1; n <= 131072 && (mod - 1) % n == 0; n *= 2) {
 		std::vector<std::uint32_t> a(n);
 		for (auto &x : a) x = rng() % mod;
@@ -53,6 +77,8 @@ void check() {
 int main() {
 	check<3, 2>();
 	check<17, 3>();
+	check<257, 3>();
+	check<65537, 3>();
 	check<998244353, 3>();
 	check<754974721, 11>();
 	check<1224736769, 3>();

@@ -65,6 +65,32 @@ struct ModularField {
 		__m256i r = _mm256_sub_epi32(_mm256_mullo_epi32(a, x), _mm256_mullo_epi32(high, p));
 		return _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
 	}
+	__attribute__((target("avx512f"))) static __m512i product16(__m512i a, __m512i x, __m512i q) {
+		const auto p = _mm512_set1_epi32(mod);
+		auto even = _mm512_srli_epi64(_mm512_mul_epu32(a, q), 32);
+		auto odd = _mm512_mul_epu32(_mm512_srli_epi64(a, 32), q);
+		auto high = _mm512_mask_blend_epi32(0xaaaa, even, odd);
+		auto r = _mm512_sub_epi32(_mm512_mullo_epi32(a, x), _mm512_mullo_epi32(high, p));
+		return _mm512_min_epu32(r, _mm512_sub_epi32(r, p));
+	}
+	template <bool add_to>
+	__attribute__((target("avx512f"))) static void apply16(V *a, const V *b, int n, V x, V q) {
+		const auto vx = _mm512_set1_epi32(x), vq = _mm512_set1_epi32(q), p = _mm512_set1_epi32(mod);
+		int i = 0;
+		for (; i + 16 <= n; i += 16) {
+			auto r = product16(_mm512_loadu_si512(b + i), vx, vq);
+			if constexpr (add_to) {
+				r = _mm512_add_epi32(r, _mm512_loadu_si512(a + i));
+				r = _mm512_min_epu32(r, _mm512_sub_epi32(r, p));
+			}
+			_mm512_storeu_si512(a + i, r);
+		}
+		for (; i < n; ++i) {
+			V r = product(b[i], x, q);
+			if constexpr (add_to) a[i] = add(a[i], r);
+			else a[i] = r;
+		}
+	}
 	template <bool add_to>
 	__attribute__((target("avx2"))) static void apply8(V *a, const V *b, int n, V x, V q) {
 		__m256i vx = _mm256_set1_epi32(x), vq = _mm256_set1_epi32(q), p = _mm256_set1_epi32(mod);
@@ -88,6 +114,7 @@ struct ModularField {
 	static void apply(V *a, const V *b, int n, V x) {
 		V q = (std::uint64_t(x) << 32) / mod;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (n >= 64 && avx2() && __builtin_cpu_supports("avx512f")) { apply16<add_to>(a, b, n, x, q); return; }
 		if (n >= 16 && avx2()) { apply8<add_to>(a, b, n, x, q); return; }
 #endif
 		for (int i = 0; i < n; ++i) {

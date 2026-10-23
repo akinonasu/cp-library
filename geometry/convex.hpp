@@ -3,6 +3,7 @@
 
 #include "polygon.hpp"
 #include "../components/closest_pair.hpp"
+#include "../components/packed_convex_hull.hpp"
 #include <algorithm>
 #include <cassert>
 #include <limits>
@@ -20,6 +21,25 @@ struct PointPair {
 template <class T>
 std::vector<int> convex_hull_indices(const std::vector<Point<T>> &points, bool keep_collinear = false, Real eps = epsilon) {
 	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if constexpr (integer<T> && sizeof(T) <= 8) {
+		if (points.size() >= 64) {
+			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
+			for (auto p : points) {
+				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
+				min_y = std::min(min_y, p.y), max_y = std::max(max_y, p.y);
+			}
+			if (wide_t<T>(max_x) - min_x <= INT32_MAX && wide_t<T>(max_y) - min_y <= INT32_MAX) {
+				std::vector<packed_convex_hull_detail::Entry> order(points.size());
+				for (int i = 0; i < int(points.size()); ++i)
+					order[i] = {(std::uint64_t(wide_t<T>(points[i].x) - min_x) << 32) | std::uint32_t(wide_t<T>(points[i].y) - min_y), i};
+				auto hull = packed_convex_hull_detail::build(std::move(order), keep_collinear);
+				std::vector<int> result;
+				result.reserve(hull.size());
+				for (auto value : hull) result.push_back(value.index);
+				return result;
+			}
+		}
+	}
 	std::vector<int> order(points.size());
 	std::iota(order.begin(), order.end(), 0);
 	std::sort(order.begin(), order.end(), [&](int a, int b) { return points[a] < points[b]; });
@@ -46,12 +66,51 @@ std::vector<int> convex_hull_indices(const std::vector<Point<T>> &points, bool k
 }
 
 template <class T>
+std::vector<Point<T>> convex_hull(std::vector<Point<T>> &&points, bool keep_collinear = false, Real eps = epsilon) {
+	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if constexpr (integer<T> && sizeof(T) <= 8) {
+		if (points.size() >= 64) {
+			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
+			for (auto p : points) {
+				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
+				min_y = std::min(min_y, p.y), max_y = std::max(max_y, p.y);
+			}
+			if (wide_t<T>(max_x) - min_x <= INT32_MAX && wide_t<T>(max_y) - min_y <= INT32_MAX) {
+				std::vector<std::uint64_t> order(points.size());
+				for (int i = 0; i < int(points.size()); ++i)
+					order[i] = (std::uint64_t(wide_t<T>(points[i].x) - min_x) << 32) | std::uint32_t(wide_t<T>(points[i].y) - min_y);
+				auto hull = packed_convex_hull_detail::build(std::move(order), keep_collinear);
+				points.clear();
+				for (auto value : hull) points.emplace_back(T(wide_t<T>(min_x) + (value >> 32)), T(wide_t<T>(min_y) + std::uint32_t(value)));
+				return std::move(points);
+			}
+		}
+	}
+	std::sort(points.begin(), points.end());
+	points.erase(std::unique(points.begin(), points.end()), points.end());
+	if (points.size() <= 2 || (keep_collinear && std::all_of(points.begin() + 2, points.end(), [&](auto p) {
+		return !orientation(points[0], points[1], p, eps);
+	}))) return std::move(points);
+	std::vector<Point<T>> hull;
+	hull.reserve(points.size() * 2);
+	auto append = [&](Point<T> p, std::size_t base) {
+		while (hull.size() >= base) {
+			int turn = orientation(hull[hull.size() - 2], hull.back(), p, eps);
+			if (turn > 0 || (keep_collinear && !turn)) break;
+			hull.pop_back();
+		}
+		hull.push_back(p);
+	};
+	for (auto p : points) append(p, 2);
+	std::size_t base = hull.size() + 1;
+	for (std::size_t i = points.size() - 1; i-- > 0;) append(points[i], base);
+	hull.pop_back();
+	return hull;
+}
+
+template <class T>
 std::vector<Point<T>> convex_hull(const std::vector<Point<T>> &points, bool keep_collinear = false, Real eps = epsilon) {
-	auto indices = convex_hull_indices(points, keep_collinear, eps);
-	std::vector<Point<T>> result;
-	result.reserve(indices.size());
-	for (int i : indices) result.push_back(points[i]);
-	return result;
+	return convex_hull(std::vector<Point<T>>(points), keep_collinear, eps);
 }
 
 template <class T>
@@ -102,13 +161,16 @@ wide_t<T> diameter_squared(const std::vector<Point<T>> &polygon, Real eps = epsi
 template <class T>
 std::optional<PointPair<T>> furthest_pair(const std::vector<Point<T>> &points, Real eps = epsilon) {
 	if (points.size() < 2) return std::nullopt;
-	auto ids = convex_hull_indices(points, false, eps);
-	if (ids.size() == 1) return PointPair<T>{0, 1, 0};
-	std::vector<Point<T>> polygon;
-	polygon.reserve(ids.size());
-	for (int i : ids) polygon.push_back(points[i]);
+	auto polygon = convex_hull(points, false, eps);
+	if (polygon.size() == 1) return PointPair<T>{0, 1, 0};
 	auto result = *convex_diameter(polygon, eps);
-	result.first = ids[result.first], result.second = ids[result.second];
+	auto a = polygon[result.first], b = polygon[result.second];
+	result.first = result.second = -1;
+	for (int i = 0; i < int(points.size()); ++i) {
+		if (points[i] == a) result.first = i;
+		if (points[i] == b) result.second = i;
+		if (result.first >= 0 && result.second >= 0) break;
+	}
 	return result;
 }
 

@@ -1,10 +1,40 @@
-#line 1 "test/hld_path_sum.test.cpp"
+#line 1 "test/lca_path_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_path_sum"
-#line 1 "data_structure/segment_tree/dynamic_segtree.hpp"
+#line 1 "tree/lca.hpp"
 
 
+
+#line 1 "components/static_range_min.hpp"
+
+
+
+#line 1 "components/default_init_allocator.hpp"
+
+
+
+#include <memory>
+#include <new>
+
+template <class T>
+struct DefaultInitAllocator : std::allocator<T> {
+	template <class U>
+	struct rebind {
+		using other = DefaultInitAllocator<U>;
+	};
+	DefaultInitAllocator() = default;
+	template <class U>
+	DefaultInitAllocator(const DefaultInitAllocator<U> &) noexcept {}
+	template <class U>
+	void construct(U *p) { ::new (static_cast<void *>(p)) U; }
+};
+
+
+#line 1 "data_structure/range_query/sparse_table.hpp"
+
+
+
+#line 5 "data_structure/range_query/sparse_table.hpp"
 #include <algorithm>
-#include <array>
 #include <bit>
 #include <cassert>
 #include <cstddef>
@@ -14,491 +44,882 @@
 #include <utility>
 #include <vector>
 
-template <class S, auto op, auto e, class Coord = std::int64_t>
-class DynamicSegtree {
-	static_assert(std::is_integral_v<Coord> && !std::is_same_v<Coord, bool> && sizeof(Coord) <= 8);
-	static constexpr unsigned B = 8, limit = (1u << 26) - 1;
-	using U = std::make_unsigned_t<Coord>;
-	static constexpr unsigned tag = 1u << 31;
-	static constexpr U sign = std::is_signed_v<Coord> ? U(1) << (std::numeric_limits<U>::digits - 1) : U(0);
-	template <std::size_t... I>
-	static auto units(std::index_sequence<I...>) { return std::array<S, sizeof...(I)>{(void(I), e())...}; }
-	struct Leaf {
-		std::array<U, B> keys{};
-		std::array<S, B> values = units(std::make_index_sequence<B>{});
-		S product = e();
-		unsigned count = 0;
-	};
-	struct Node {
-		U middle = 0;
-		unsigned left = 0, right = 0;
-		S product = e();
-	};
-	std::vector<Leaf> leaves;
-	std::vector<Node> nodes{Node{}};
-	unsigned root = 0, points = 0;
-	Coord first, last;
-	static U encode(Coord x) { return U(x) ^ sign; }
-	static Coord decode(U x) { return Coord(x ^ sign); }
-	Leaf &leaf(unsigned id) { return leaves[id & ~tag]; }
-	const Leaf &leaf(unsigned id) const { return leaves[id & ~tag]; }
-	const S &product(unsigned id) const { return id & tag ? leaf(id).product : nodes[id].product; }
-	unsigned make_leaf() {
-		leaves.emplace_back();
-		return unsigned(leaves.size() - 1) | tag;
-	}
-	unsigned make_node(U middle, unsigned left, unsigned right) {
-		S value = op(product(left), product(right));
-		nodes.push_back({middle, left, right, std::move(value)});
-		return unsigned(nodes.size() - 1);
-	}
-	template <unsigned N>
-	[[gnu::always_inline]] static inline S fold(const S *values, unsigned count) {
-		if constexpr (N == 1) return values[0];
-		else {
-			if (count <= N / 2) return fold<N / 2>(values, count);
-			return op(fold<N / 2>(values, N / 2), fold<N / 2>(values + N / 2, count - N / 2));
-		}
-	}
-	static void pull(Leaf &node) { node.product = fold<B>(node.values.data(), node.count); }
-
-	template <bool Append>
-	static void write(Leaf &node, unsigned p, U key, S value) {
-		if (p < node.count && node.keys[p] == key) {
-			if constexpr (Append) node.values[p] = op(node.values[p], value);
-			else node.values[p] = std::move(value);
-		} else {
-			std::move_backward(node.keys.begin() + p, node.keys.begin() + node.count, node.keys.begin() + node.count + 1);
-			std::move_backward(node.values.begin() + p, node.values.begin() + node.count, node.values.begin() + node.count + 1);
-			node.keys[p] = key;
-			node.values[p] = std::move(value);
-			++node.count;
-		}
-		pull(node);
-	}
-	template <bool Append>
-	void update(U key, S value) {
-		if (!root) {
-			root = make_leaf();
-			write<Append>(leaf(root), 0, key, std::move(value));
-			++points;
-			return;
-		}
-		std::array<unsigned, 64> path;
-		unsigned depth = 0, id = root;
-		bool outside = false;
-		while (!(id & tag)) {
-			unsigned h = std::countr_zero(nodes[id].middle);
-			if (((key ^ nodes[id].middle) >> h) > 1) { outside = true; break; }
-			assert(depth < path.size());
-			path[depth++] = id;
-			id = key < nodes[id].middle ? nodes[id].left : nodes[id].right;
-		}
-		unsigned replacement = id;
-		if (outside) {
-			assert(points < limit);
-			unsigned added = make_leaf();
-			write<Append>(leaf(added), 0, key, std::move(value));
-			unsigned h = std::bit_width(U(key ^ nodes[id].middle)) - 1;
-			U middle = ((key | nodes[id].middle) >> h) << h;
-			replacement = key < middle ? make_node(middle, added, id) : make_node(middle, id, added);
-			++points;
-		} else {
-			auto &node = leaf(id);
-			unsigned p = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, key) - node.keys.begin();
-			bool exists = p < node.count && node.keys[p] == key;
-			assert(exists || points < limit);
-			if (exists || node.count < B) write<Append>(node, p, key, std::move(value));
-			else {
-				U low = std::min(key, node.keys[0]), high = std::max(key, node.keys[B - 1]);
-				unsigned h = std::bit_width(U(low ^ high)) - 1;
-				U middle = ((low | high) >> h) << h;
-				unsigned cut = std::lower_bound(node.keys.begin(), node.keys.end(), middle) - node.keys.begin();
-				unsigned added = make_leaf();
-				auto &a = leaf(id), &b = leaf(added);
-				b.count = B - cut;
-				for (unsigned i = 0; i < b.count; ++i) b.keys[i] = a.keys[cut + i], b.values[i] = std::move(a.values[cut + i]);
-				a.count = cut;
-				if (key < middle) write<Append>(a, p, key, std::move(value));
-				else write<Append>(b, p - cut, key, std::move(value));
-				if (key < middle) pull(b);
-				else pull(a);
-				replacement = make_node(middle, id, added);
-			}
-			points += !exists;
-		}
-		if (depth) {
-			auto parent = path[depth - 1];
-			if (key < nodes[parent].middle) nodes[parent].left = replacement;
-			else nodes[parent].right = replacement;
-		} else root = replacement;
-		while (depth) {
-			unsigned k = path[--depth];
-			nodes[k].product = op(product(nodes[k].left), product(nodes[k].right));
-		}
-	}
-	S prefix(unsigned id, U r) const {
-		S result = e();
-		while (!(id & tag)) {
-			if (r <= nodes[id].middle) id = nodes[id].left;
-			else { result = op(result, product(nodes[id].left)); id = nodes[id].right; }
-		}
-		const auto &node = leaf(id);
-		for (unsigned i = 0; i < node.count && node.keys[i] < r; ++i) result = op(result, node.values[i]);
-		return result;
-	}
-	S suffix(unsigned id, U l) const {
-		S result = e();
-		while (!(id & tag)) {
-			if (nodes[id].middle <= l) id = nodes[id].right;
-			else { result = op(product(nodes[id].right), result); id = nodes[id].left; }
-		}
-		const auto &node = leaf(id);
-		for (unsigned i = node.count; i && l <= node.keys[i - 1];) result = op(node.values[--i], result);
-		return result;
-	}
-	template <class Pred>
-	bool search_right(unsigned id, U lower, U l, S &value, Pred &f, Coord &answer) const {
-		if (l <= lower) {
-			S next = op(value, product(id));
-			if (f(next)) { value = std::move(next); return false; }
-		}
-		if (id & tag) {
-			const auto &node = leaf(id);
-			unsigned p = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, l) - node.keys.begin();
-			for (; p < node.count; ++p) {
-				S next = op(value, node.values[p]);
-				if (!f(next)) { answer = decode(node.keys[p]); return true; }
-				value = std::move(next);
-			}
-			return false;
-		}
-		U middle = nodes[id].middle;
-		if (l < middle && search_right(nodes[id].left, lower, l, value, f, answer)) return true;
-		return search_right(nodes[id].right, middle, l, value, f, answer);
-	}
-	template <class Pred>
-	bool search_left(unsigned id, U upper, U r, S &value, Pred &f, Coord &answer) const {
-		if (upper <= r) {
-			S next = op(product(id), value);
-			if (f(next)) { value = std::move(next); return false; }
-		}
-		if (id & tag) {
-			const auto &node = leaf(id);
-			unsigned p = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, r) - node.keys.begin();
-			while (p) {
-				S next = op(node.values[--p], value);
-				if (!f(next)) { answer = decode(node.keys[p]) + 1; return true; }
-				value = std::move(next);
-			}
-			return false;
-		}
-		U middle = nodes[id].middle;
-		if (middle < r && search_left(nodes[id].right, upper, r, value, f, answer)) return true;
-		return search_left(nodes[id].left, middle, r, value, f, answer);
+template <class S, auto op, auto e = nullptr>
+class SparseTable {
+	using Value = std::conditional_t<std::is_same_v<S, bool>, std::uint8_t, S>;
+	using Reference = std::conditional_t<std::is_same_v<S, bool>, bool, const S &>;
+	int n = 0;
+	std::vector<std::vector<Value, DefaultInitAllocator<Value>>> data;
+	static decltype(auto) combine(const Value &a, const Value &b) {
+		if constexpr (std::is_same_v<S, bool> || !std::is_invocable_v<decltype(op), const S &, const S &>) return S(op(S(a), S(b)));
+		else return op(a, b);
 	}
 
   public:
-	using value_type = S;
-	using coordinate_type = Coord;
-	explicit DynamicSegtree(Coord n = 0) : DynamicSegtree(0, n) {}
-	DynamicSegtree(Coord l, Coord r) : first(l), last(r) { assert(l <= r); }
-	DynamicSegtree(const DynamicSegtree &) = default;
-	DynamicSegtree &operator=(const DynamicSegtree &) = default;
-	DynamicSegtree(DynamicSegtree &&other) : DynamicSegtree(other.first, other.last) { swap(other); }
-	DynamicSegtree &operator=(DynamicSegtree &&other) {
-		if (this != &other) { DynamicSegtree moved(std::move(other)); swap(moved); }
+	SparseTable() = default;
+	SparseTable(const SparseTable &) = default;
+	SparseTable &operator=(const SparseTable &) = default;
+	SparseTable(SparseTable &&other) noexcept : n(std::exchange(other.n, 0)), data(std::move(other.data)) {}
+	SparseTable &operator=(SparseTable &&other) noexcept {
+		if (this != &other) {
+			n = std::exchange(other.n, 0);
+			data = std::move(other.data);
+		}
 		return *this;
 	}
-	void swap(DynamicSegtree &other) noexcept {
-		leaves.swap(other.leaves);
-		nodes.swap(other.nodes);
-		std::swap(root, other.root);
-		std::swap(points, other.points);
-		std::swap(first, other.first);
-		std::swap(last, other.last);
+	explicit SparseTable(const std::vector<S> &a) { build(a); }
+	void clear() {
+		data.clear();
+		n = 0;
 	}
-	void reserve(std::size_t n) {
-		assert(n <= limit);
-		std::size_t capacity = (3 * n + 2 * B - 1) / (2 * B);
-		leaves.reserve(capacity);
-		nodes.reserve(capacity + 1);
+	void build(const std::vector<S> &a) {
+		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
+		build(static_cast<int>(a.size()), [&](int i) -> S { return a[i]; });
 	}
-	std::size_t node_count() const { return points; }
-	std::size_t memory_usage() const { return leaves.capacity() * sizeof(Leaf) + nodes.capacity() * sizeof(Node); }
-	U size() const { return U(last) - U(first); }
-	Coord left_bound() const { return first; }
-	Coord right_bound() const { return last; }
-	void clear() { leaves.clear(); nodes.erase(nodes.begin() + 1, nodes.end()); root = points = 0; }
-	void set(Coord p, S value) { assert(first <= p && p < last); update<false>(encode(p), std::move(value)); }
-	void multiply(Coord p, S value) { assert(first <= p && p < last); update<true>(encode(p), std::move(value)); }
-	S get(Coord p) const {
-		assert(first <= p && p < last);
-		if (!root) return e();
-		U key = encode(p);
-		unsigned id = root;
-		while (!(id & tag)) id = key < nodes[id].middle ? nodes[id].left : nodes[id].right;
-		const auto &node = leaf(id);
-		unsigned i = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, key) - node.keys.begin();
-		return i < node.count && node.keys[i] == key ? node.values[i] : e();
-	}
-	S prod(Coord l, Coord r) const {
-		assert(first <= l && l <= r && r <= last);
-		if (!root || l == r) return e();
-		if (l == first && r == last) return product(root);
-		U a = encode(l), b = encode(r);
-		unsigned id = root;
-		while (!(id & tag)) {
-			U middle = nodes[id].middle;
-			if (b <= middle) id = nodes[id].left;
-			else if (middle <= a) id = nodes[id].right;
-			else return op(suffix(nodes[id].left, a), prefix(nodes[id].right, b));
+	template <class F>
+	void build(int size, F value) {
+		assert(size >= 0);
+		n = size;
+		data.resize(std::bit_width(unsigned(n)));
+		if (!n) return;
+		if constexpr (std::is_default_constructible_v<Value>) {
+			data[0].resize(n);
+			for (int i = 0; i < n; ++i) data[0][i] = value(i);
+		} else {
+			data[0].clear();
+			data[0].reserve(n);
+			for (int i = 0; i < n; ++i) data[0].push_back(value(i));
 		}
-		const auto &node = leaf(id);
-		unsigned i = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, a) - node.keys.begin();
-		S result = e();
-		for (; i < node.count && node.keys[i] < b; ++i) result = op(result, node.values[i]);
-		return result;
+		for (int k = 1; k < std::bit_width(unsigned(n)); ++k) {
+			int length = n - (1U << k) + 1, half = 1U << (k - 1);
+			if constexpr (std::is_default_constructible_v<Value>) {
+				data[k].resize(length);
+				for (int i = 0; i < length; ++i) data[k][i] = combine(data[k - 1][i], data[k - 1][i + half]);
+			} else {
+				data[k].clear();
+				data[k].reserve(length);
+				for (int i = 0; i < length; ++i) data[k].push_back(combine(data[k - 1][i], data[k - 1][i + half]));
+			}
+		}
 	}
-	S all_prod() const { return root ? product(root) : e(); }
-	template <class Pred>
-	Coord max_right(Coord l, Pred f) const {
-		assert(first <= l && l <= last && f(e()));
-		Coord answer = last;
-		if (root && l != last) { S value = e(); search_right(root, encode(first), encode(l), value, f, answer); }
-		return answer;
+	int size() const { return n; }
+	bool empty() const { return n == 0; }
+	Reference operator[](int i) const {
+		assert(0 <= i && i < n);
+		return data[0][i];
 	}
-	template <class Pred>
-	Coord min_left(Coord r, Pred f) const {
-		assert(first <= r && r <= last && f(e()));
-		Coord answer = first;
-		if (root && r != first) { S value = e(); search_left(root, encode(last), encode(r), value, f, answer); }
-		return answer;
+	[[gnu::always_inline]] S prod(int l, int r) const {
+		assert(0 <= l && l <= r && r <= n);
+		if constexpr (std::is_same_v<decltype(e), std::nullptr_t>) assert(l < r);
+		else if (l == r) return e();
+		return prod_unchecked(l, r);
 	}
+	[[gnu::always_inline]] S prod_unchecked(int l, int r) const {
+		int k = std::bit_width(unsigned(r - l)) - 1;
+		return combine(data[k][l], data[k][r - (1U << k)]);
+	}
+	S all_prod() const { return prod(0, n); }
 };
 
-#line 1 "data_structure/advanced/hld.hpp"
 
+#line 14 "components/static_range_min.hpp"
 
-
-#line 11 "data_structure/advanced/hld.hpp"
-
-class HLD {
-	int shape_ = 0, center_ = 0;
-	struct Node { int position, head, parent, offset; };
-	std::vector<Node> nodes;
-	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && int(in.size()) == n); }
+template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
+	static T minimum(T a, T b) { return b < a ? b : a; }
+	std::vector<T> values_;
+	std::vector<std::uint32_t, DefaultInitAllocator<std::uint32_t>> masks_;
+	SparseTable<T, minimum> blocks_;
+	struct Boundaries { std::vector<T> prefix, suffix; };
+	struct Empty {};
+	[[no_unique_address]] std::conditional_t<FastBoundaries, Boundaries, Empty> boundaries_;
+	T within(int l, int r) const {
+		auto mask = masks_[r - 1] & (~std::uint32_t(0) << (l & 31));
+		return values_[(l & ~31) + std::countr_zero(mask)];
+	}
 
   public:
-	struct Segment {
-		int l, r;
-		bool reversed;
-	};
+	StaticRangeMin() = default;
+	explicit StaticRangeMin(std::vector<T> values) { build(std::move(values)); }
+	void build(std::vector<T> values) {
+		assert(values.size() <= std::size_t(std::numeric_limits<int>::max()));
+		values_ = std::move(values);
+		int n = size();
+		masks_.resize(n);
+		for (int first = 0; first < n;) {
+			int last = first + std::min(32, n - first);
+			std::uint32_t mask = 0;
+			for (int i = first; i < last; ++i) {
+				while (mask && !(values_[first + std::bit_width(mask) - 1] < values_[i]))
+					mask &= ~(std::uint32_t(1) << (std::bit_width(mask) - 1));
+				mask |= std::uint32_t(1) << (i - first);
+				masks_[i] = mask;
+			}
+			first = last;
+		}
+		if constexpr (FastBoundaries) {
+			boundaries_.prefix = values_, boundaries_.suffix = values_;
+			for (int first = 0; first < n;) {
+				int last = first + std::min(32, n - first);
+				for (int i = first + 1; i < last; ++i) boundaries_.prefix[i] = minimum(boundaries_.prefix[i - 1], values_[i]);
+				for (int i = last - 1; i > first; --i) boundaries_.suffix[i - 1] = minimum(values_[i - 1], boundaries_.suffix[i]);
+				first = last;
+			}
+		}
+		blocks_.build(n ? (n - 1) / 32 + 1 : 0, [&](int i) {
+			int last = i * 32 + std::min(32, n - i * 32);
+			if constexpr (FastBoundaries) return T(boundaries_.prefix[last - 1]);
+			else return within(i * 32, last);
+		});
+	}
+	int size() const { return static_cast<int>(values_.size()); }
+	bool empty() const { return values_.empty(); }
+	std::conditional_t<std::is_same_v<T, bool>, bool, const T &> operator[](int i) const {
+		assert(0 <= i && i < size());
+		return values_[i];
+	}
+	T prod(int l, int r) const {
+		assert(0 <= l && l < r && r <= size());
+		int a = l / 32, b = (r - 1) / 32;
+		if (a == b) return within(l, r);
+		T value = [&] {
+			if constexpr (FastBoundaries) return minimum(boundaries_.suffix[l], boundaries_.prefix[r - 1]);
+			else return minimum(within(l, (a + 1) * 32), within(b * 32, r));
+		}();
+		if (a + 1 < b) value = minimum(value, blocks_.prod_unchecked(a + 1, b));
+		return value;
+	}
+	T all_prod() const { return prod(0, size()); }
+};
+
+
+#line 11 "tree/lca.hpp"
+
+class LCA {
+	std::vector<int> in, out, order;
+	StaticRangeMin<int, true> table;
+	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && static_cast<int>(in.size()) == n); }
+
+  public:
 	int n;
 	std::vector<std::pair<int, int>> edges;
-	std::vector<int> parent, depth, size, heavy, head, in, out, order;
-	explicit HLD(int n = 0) : n(n) {
+	std::vector<int> parent, depth;
+	explicit LCA(int n = 0) : n(n) {
 		assert(0 <= n && n <= std::numeric_limits<int>::max() / 2);
 		edges.reserve(std::max(0, n - 1));
 	}
 	int add_edge(int u, int v) {
 		assert(0 <= u && u < n && 0 <= v && v < n);
 		edges.emplace_back(u, v);
-		return int(edges.size()) - 1;
+		return static_cast<int>(edges.size()) - 1;
 	}
 	void build(int root = 0) {
 		assert(n >= 0 && edges.size() == std::size_t(std::max(0, n - 1)));
 		assert(!n || (0 <= root && root < n));
+		in.resize(n);
+		out.resize(n);
+		order.resize(n);
 		parent.assign(n, -1);
 		depth.assign(n, 0);
-		size.assign(n, 1);
-		heavy.assign(n, -1);
-		head.resize(n), in.resize(n), out.resize(n), order.resize(n);
-		nodes.resize(n);
+		table = StaticRangeMin<int, true>();
 		if (!n) return;
-		std::vector<int> degree(n), neighbors(n);
-		for (auto [u, v] : edges) {
-			++degree[u], ++degree[v];
-			neighbors[u] ^= v, neighbors[v] ^= u;
+		std::vector<int> start(std::size_t(n) + 1);
+		for (auto [u, v] : edges) ++start[u + 1], ++start[v + 1];
+		for (int v = 0; v < n; ++v) start[v + 1] += start[v];
+		std::vector<int> adj(2 * edges.size());
+		std::copy(start.begin(), start.end() - 1, out.begin());
+		for (auto [u, v] : edges) adj[out[u]++] = v, adj[out[v]++] = u;
+		std::fill(out.begin(), out.end(), 1);
+		int timer = 0, top = n - 1;
+		order[top] = root;
+		parent[root] = root;
+		while (top < n) {
+			int v = order[top++];
+			in[v] = timer;
+			order[timer++] = v;
+			for (int i = start[v]; i < start[v + 1]; ++i) {
+				int to = adj[i];
+				if (to == parent[v]) continue;
+				assert(parent[to] == -1);
+				parent[to] = v;
+				depth[to] = depth[v] + 1;
+				order[--top] = to;
+			}
 		}
-		center_ = int(std::max_element(degree.begin(), degree.end()) - degree.begin());
-		shape_ = degree[center_] <= 2 ? 1 : degree[center_] == n - 1 ? 2 : 0;
-		degree[root] += 2;
-		int count = 0;
-		for (int v = 0; v < n; ++v) if (degree[v] == 1) order[count++] = v;
-		for (int i = 0; i < count; ++i) {
-			int v = order[i], p = neighbors[v];
-			parent[v] = p;
-			size[p] += size[v];
-			if (heavy[p] == -1 || size[heavy[p]] < size[v]) heavy[p] = v;
-			neighbors[p] ^= v;
-			if (--degree[p] == 1) order[count++] = p;
-		}
-		assert(count == n - 1);
-		in[root] = 0, out[root] = n, head[root] = root;
-		for (int i = n - 2; i >= 0; --i) {
-			int v = order[i], p = parent[v];
-			depth[v] = depth[p] + 1;
-			if (heavy[p] == v) in[v] = in[p] + 1, head[v] = head[p];
-			else in[v] = out[p] -= size[v], head[v] = v;
-			out[v] = in[v] + size[v];
-		}
-		for (int v = 0; v < n; ++v) out[v] = in[v] + size[v], order[in[v]] = v;
+		assert(timer == n);
+		for (int i = n - 1; i >= 1; --i) out[parent[order[i]]] += out[order[i]];
+		for (int v = 0; v < n; ++v) out[v] += in[v];
+		std::vector<int> values(n);
+		for (int i = 1; i < n; ++i) values[i] = in[parent[order[i]]];
+		table.build(std::move(values));
 		parent[root] = -1;
-		for (int v = 0; v < n; ++v) nodes[v] = {in[v], in[head[v]], parent[head[v]], depth[v] - in[v]};
 	}
 	int lca(int u, int v) const {
-		check(u), check(v);
-		if (shape_ == 1) return head[u] != head[v] ? order[0] : in[u] < in[v] ? u : v;
-		if (shape_ == 2) return u == v ? u : u == order[0] || v == order[0] ? order[0] : center_;
-		while (nodes[u].head != nodes[v].head) {
-			if (nodes[u].position > nodes[v].position) u = nodes[u].parent;
-			else v = nodes[v].parent;
-		}
-		return nodes[u].position < nodes[v].position ? u : v;
+		check(u);
+		check(v);
+		int l = in[u], r = in[v];
+		if (l == r) return u;
+		if (l > r) std::swap(l, r);
+		++l;
+		return order[table.prod(l, r + 1)];
 	}
 	int dist(int u, int v) const {
 		int w = lca(u, v);
 		return depth[u] + depth[v] - 2 * depth[w];
 	}
 	bool is_ancestor(int u, int v) const {
-		check(u), check(v);
+		check(u);
+		check(v);
 		return in[u] <= in[v] && in[v] < out[u];
 	}
-	int ancestor(int v, int k) const {
+	std::pair<int, int> subtree(int v) const {
 		check(v);
-		if (shape_) {
-			if (k < 0 || k > depth[v]) return -1;
-			if (!k) return v;
-			if (k == depth[v]) return order[0];
-			return shape_ == 2 ? parent[v] : order[in[v] - k];
-		}
-		if (k < 0) return -1;
-		int target = nodes[v].position + nodes[v].offset - k;
-		if (target < 0) return -1;
-		while (nodes[v].head + nodes[v].offset > target) v = nodes[v].parent;
-		return order[target - nodes[v].offset];
-	}
-	int jump(int u, int v, int k) const {
-		check(u), check(v);
-		if (k < 0) return -1;
-		if (!k) return u;
-		if (shape_ == 1) {
-			if (head[u] == head[v]) {
-				int delta = in[v] - in[u];
-				if (k > (delta < 0 ? -delta : delta)) return -1;
-				return order[in[u] + (delta < 0 ? -k : k)];
-			}
-			int a = depth[u], b = depth[v];
-			if (k > a + b) return -1;
-			if (k == a) return order[0];
-			return k < a ? order[in[u] - k] : order[in[v] - (a + b - k)];
-		}
-		if (shape_ == 2) {
-			int d = (u != center_) + (v != center_);
-			if (u == v || k > d) return -1;
-			return k == d ? v : center_;
-		}
-		int from = u, to = v, target = nodes[u].position + nodes[u].offset - k;
-		while (nodes[u].head != nodes[v].head) {
-			if (nodes[u].position > nodes[v].position) {
-				if (nodes[u].head + nodes[u].offset <= target) return order[target - nodes[u].offset];
-				u = nodes[u].parent;
-			} else v = nodes[v].parent;
-		}
-		int w = nodes[u].position < nodes[v].position ? u : v;
-		int d = nodes[w].position + nodes[w].offset;
-		int length = nodes[from].position + nodes[from].offset + nodes[to].position + nodes[to].offset - 2 * d;
-		if (k > length) return -1;
-		if (target >= d) return order[target - nodes[u].offset];
-		return ancestor(to, length - k);
-	}
-	std::pair<int, int> subtree(int v, bool edge = false) const {
-		check(v);
-		return {in[v] + edge, out[v]};
-	}
-	int edge_vertex(int id) const {
-		assert(0 <= id && id < int(edges.size()));
-		auto [u, v] = edges[id];
-		check(u);
-		return parent[u] == v ? u : v;
-	}
-	template <class F>
-	void for_each_path(int u, int v, F &&f, bool edge = false) const {
-		check(u), check(v);
-		if (shape_ == 1) {
-			int x = in[u], y = in[v];
-			if (head[u] == head[v]) {
-				int l = std::min(x, y) + edge, r = std::max(x, y) + 1;
-				if (l < r) f(l, r, x > y);
-			} else if (head[u] == order[0]) {
-				if (edge < x + 1) f(int(edge), x + 1, true);
-				f(in[head[v]], y + 1, false);
-			} else {
-				f(in[head[u]], x + 1, true);
-				if (edge < y + 1) f(int(edge), y + 1, false);
-			}
-			return;
-		}
-		std::array<std::array<int, 2>, 32> right;
-		int count = 0;
-		while (nodes[u].head != nodes[v].head) {
-			if (nodes[u].position > nodes[v].position) {
-				f(nodes[u].head, nodes[u].position + 1, true);
-				u = nodes[u].parent;
-			} else {
-				assert(count < int(right.size()));
-				right[count++] = {nodes[v].head, nodes[v].position + 1};
-				v = nodes[v].parent;
-			}
-		}
-		bool reversed = nodes[u].position > nodes[v].position;
-		int l = std::min(nodes[u].position, nodes[v].position) + edge, r = std::max(nodes[u].position, nodes[v].position) + 1;
-		if (l < r) f(l, r, reversed);
-		while (count) {
-			auto [a, b] = right[--count];
-			f(a, b, false);
-		}
-	}
-	std::vector<Segment> path(int u, int v, bool edge = false) const {
-		std::vector<Segment> result;
-		for_each_path(u, v, [&](int l, int r, bool reversed) { result.push_back({l, r, reversed}); }, edge);
-		return result;
+		return {in[v], out[v]};
 	}
 };
 
 
-#line 4 "test/hld_path_sum.test.cpp"
-#include <iostream>
-#line 6 "test/hld_path_sum.test.cpp"
+#line 1 "components/fenwick_sum.hpp"
 
-long long op(long long a, long long b) { return a + b; }
-long long e() { return 0; }
 
-int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int n, q;
-	std::cin >> n >> q;
-	std::vector<long long> a(n);
-	for (auto &x : a) std::cin >> x;
-	HLD tree(n);
-	for (int i = 1, u, v; i < n; ++i) {
-		std::cin >> u >> v;
-		tree.add_edge(u, v);
-	}
-	tree.build();
-	DynamicSegtree<long long, op, e> seg(n);
-	seg.reserve(n);
-	for (int v = 0; v < n; ++v) seg.set(tree.in[v], a[v]);
-	while (q--) {
-		int type, u;
-		long long v;
-		std::cin >> type >> u >> v;
-		if (type == 0) seg.multiply(tree.in[u], v);
-		else {
-			long long result = 0;
-			tree.for_each_path(u, int(v), [&](int l, int r, bool) { result += seg.prod(l, r); });
-			std::cout << result << '\n';
+
+#line 8 "components/fenwick_sum.hpp"
+
+template <class T>
+class FenwickSum {
+	std::vector<T> data;
+
+  public:
+	FenwickSum() = default;
+	explicit FenwickSum(int n) { assert(n >= 0); data.resize(n); }
+	explicit FenwickSum(const std::vector<T> &a) { build(a); }
+	void build(const std::vector<T> &a) {
+		assert(a.size() <= static_cast<unsigned>(std::numeric_limits<int>::max()));
+		data = a;
+		for (unsigned i = 1; i <= data.size(); ++i) {
+			unsigned p = i + (i & -i);
+			if (p <= data.size()) data[p - 1] += data[i - 1];
 		}
 	}
+	int size() const { return static_cast<int>(data.size()); }
+	void add(int p, const T &x) {
+		assert(0 <= p && p < size());
+		for (unsigned i = unsigned(p) + 1; i <= data.size(); i += i & -i) data[i - 1] += x;
+	}
+	void add_pair(int p, const T &x, int q, const T &y) {
+		assert(0 <= p && p < size() && 0 <= q && q < size());
+		unsigned a = unsigned(p) + 1, b = unsigned(q) + 1;
+		while (a != b && (a <= data.size() || b <= data.size())) {
+			if (a < b) data[a - 1] += x, a += a & -a;
+			else data[b - 1] += y, b += b & -b;
+		}
+		T both = x;
+		both += y;
+		for (; a <= data.size(); a += a & -a) data[a - 1] += both;
+	}
+	T prefix(int r) const {
+		assert(0 <= r && r <= size());
+		T result{};
+		for (; r; r &= r - 1) result += data[r - 1];
+		return result;
+	}
+	template <class Accum>
+	Accum prod_as(int l, int r) const {
+		assert(0 <= l && l <= r && r <= size());
+		Accum result{};
+		if (l == r) return result;
+		unsigned shared = unsigned(l) & (std::numeric_limits<unsigned>::max() << std::bit_width(unsigned(l ^ r)));
+		for (; unsigned(l) != shared; l &= l - 1) result -= data[l - 1];
+		for (; unsigned(r) != shared; r &= r - 1) result += data[r - 1];
+		return result;
+	}
+	T prod(int l, int r) const { return prod_as<T>(l, r); }
+};
+
+
+#line 1 "components/fast_io_bulk.hpp"
+
+
+
+#line 1 "components/fast_io.hpp"
+
+
+
+#line 5 "components/fast_io.hpp"
+#include <array>
+#line 8 "components/fast_io.hpp"
+#include <charconv>
+#line 11 "components/fast_io.hpp"
+#include <cstdio>
+#include <cstring>
+#line 14 "components/fast_io.hpp"
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#line 18 "components/fast_io.hpp"
+#if defined(__unix__) || defined(__APPLE__)
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
+namespace fast_io_detail { struct BulkInput; struct BulkOutput; }
+
+class FastInput {
+	friend struct fast_io_detail::BulkInput;
+	static constexpr std::size_t capacity = 1 << 16;
+	FILE *file = nullptr;
+	std::unique_ptr<char[]> buffer;
+	const char *current = "", *end = current;
+	std::string scratch;
+	void *mapping = nullptr;
+	std::size_t mapped_size = 0;
+	bool refill() {
+		if (!file) return false;
+		std::size_t n = std::fread(buffer.get(), 1, capacity, file);
+		current = buffer.get();
+		end = current + n;
+		return n;
+	}
+	static const char *scan(const char *p, const char *end) {
+		while (end - p >= 8) {
+			std::uint64_t x;
+			std::memcpy(&x, p, 8);
+			if ((x - 0x2121212121212121ULL) & ~x & 0x8080808080808080ULL) break;
+			p += 8;
+		}
+		while (p != end && static_cast<unsigned char>(*p) > ' ') ++p;
+		return p;
+	}
+
+public:
+	explicit FastInput(FILE *input = stdin) {
+#if defined(__unix__) || defined(__APPLE__)
+		struct stat status;
+		int fd = fileno(input);
+		auto offset = ftello(input);
+		if (fd >= 0 && offset >= 0 && !fstat(fd, &status) && S_ISREG(status.st_mode) && status.st_size > offset) {
+			mapped_size = status.st_size;
+			mapping = mmap(nullptr, mapped_size, PROT_READ, MAP_PRIVATE, fd, 0);
+			if (mapping != MAP_FAILED) {
+				current = static_cast<const char *>(mapping) + offset;
+				end = static_cast<const char *>(mapping) + mapped_size;
+				return;
+			}
+			mapping = nullptr;
+		}
+#endif
+		file = input;
+		buffer = std::make_unique_for_overwrite<char[]>(capacity);
+	}
+	explicit FastInput(std::string_view input) : current(input.empty() ? "" : input.data()), end(current + input.size()) {}
+	FastInput(const FastInput &) = delete;
+	FastInput &operator=(const FastInput &) = delete;
+	~FastInput() {
+#if defined(__unix__) || defined(__APPLE__)
+		if (mapping) munmap(mapping, mapped_size);
+#endif
+	}
+	std::string_view token() {
+		while (true) {
+			while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+			if (current != end) break;
+			if (!refill()) return {};
+		}
+		const char *begin = current;
+		current = scan(current, end);
+		if (current != end || !file) return {begin, std::size_t(current - begin)};
+		scratch.assign(begin, end);
+		while (refill()) {
+			current = scan(current, end);
+			scratch.append(buffer.get(), std::size_t(current - buffer.get()));
+			if (current != end) break;
+		}
+		return scratch;
+	}
+	template <class T>
+	bool read(T &value) {
+		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool>) {
+			while (true) {
+				while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+				if (current != end) break;
+				if (!refill()) return false;
+			}
+			if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4 && std::endian::native == std::endian::little) {
+				if (end - current >= 11) {
+					std::uint64_t x;
+					std::memcpy(&x, current, 8);
+					if (!(((x + 0x4646464646464646ULL) | (x - 0x3030303030303030ULL)) & 0x8080808080808080ULL)) {
+						x &= 0x0f0f0f0f0f0f0f0fULL;
+						x = (x * 10 + (x >> 8)) & 0x00ff00ff00ff00ffULL;
+						x = (x * 100 + (x >> 16)) & 0x0000ffff0000ffffULL;
+						std::uint64_t v = std::uint32_t(x * 10000 + (x >> 32));
+						int n = 8;
+						for (; n < 10 && static_cast<unsigned char>(current[n]) - unsigned('0') < 10; ++n)
+							v = v * 10 + (current[n] - '0');
+						if (static_cast<unsigned char>(current[n]) <= ' ' && v <= 0xffffffffULL) {
+							current += n;
+							value = T(v);
+							return true;
+						}
+					}
+				}
+			}
+			T parsed{};
+			auto result = std::from_chars(current, end, parsed);
+			if (result.ec == std::errc{} && (result.ptr != end ? static_cast<unsigned char>(*result.ptr) <= ' ' : !file)) {
+				current = result.ptr;
+				value = parsed;
+				return true;
+			}
+		}
+		auto s = token();
+		if (s.empty()) return false;
+		if constexpr (std::is_same_v<T, bool>) {
+			assert(s == "0" || s == "1");
+			value = s[0] == '1';
+		} else if constexpr (std::is_integral_v<T>) {
+			auto result = std::from_chars(s.data(), s.data() + s.size(), value);
+			assert(result.ec == std::errc{} && result.ptr == s.data() + s.size());
+			(void)result;
+		} else value = T(s);
+		return true;
+	}
+};
+
+class FastOutput {
+	friend struct fast_io_detail::BulkOutput;
+	inline static constexpr auto quads = [] {
+		std::array<std::array<char, 4>, 10000> table{};
+		for (int i = 0; i < 10000; ++i)
+			table[i] = {char('0' + i / 1000), char('0' + i / 100 % 10), char('0' + i / 10 % 10), char('0' + i % 10)};
+		return table;
+	}();
+	FILE *file;
+	std::unique_ptr<char[]> buffer = std::make_unique_for_overwrite<char[]>(1 << 16);
+	std::size_t capacity = 1 << 16, length = 0;
+	char *reserve(std::size_t n) {
+		if (n > capacity - length) {
+			if (!flush()) throw std::runtime_error("output failed");
+			if (n > capacity) {
+				std::size_t next = std::max(n, 2 * capacity);
+				buffer = std::make_unique_for_overwrite<char[]>(next);
+				capacity = next;
+			}
+		}
+		return buffer.get() + length;
+	}
+
+public:
+	explicit FastOutput(FILE *output = stdout) : file(output) {}
+	FastOutput(const FastOutput &) = delete;
+	FastOutput &operator=(const FastOutput &) = delete;
+	~FastOutput() { flush(); }
+	bool flush() {
+		std::size_t offset = 0;
+		while (offset < length) {
+			auto n = std::fwrite(buffer.get() + offset, 1, length - offset, file);
+			if (!n) {
+				std::memmove(buffer.get(), buffer.get() + offset, length - offset);
+				length -= offset;
+				return false;
+			}
+			offset += n;
+		}
+		length = 0;
+		return std::fflush(file) == 0;
+	}
+	void write(char c) { *reserve(1) = c; ++length; }
+	void write(__uint128_t value) {
+		char digits[40];
+		char *end = digits + sizeof(digits), *begin = end;
+		do { *--begin = char('0' + value % 10); value /= 10; } while (value);
+		write(std::string_view(begin, end - begin));
+	}
+	void write(__int128_t value) {
+		__uint128_t magnitude = __uint128_t(value);
+		if (value < 0) write('-'), magnitude = 0 - magnitude;
+		write(magnitude);
+	}
+	void write(std::string_view s) {
+		char *out = reserve(s.size());
+		if (!s.empty()) std::memcpy(out, s.data(), s.size());
+		length += s.size();
+	}
+	template <class T> requires std::is_integral_v<T>
+	void write(T value) {
+		char *out = reserve(32);
+		if constexpr (std::is_same_v<T, bool>) *out = '0' + value, ++length;
+		else if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4) {
+			char *p = out;
+			if (value >= 100000000) {
+				auto high = value / 100000000, low = value % 100000000;
+				p = std::to_chars(p, p + 2, high).ptr;
+				std::memcpy(p, quads[low / 10000].data(), 4);
+				std::memcpy(p + 4, quads[low % 10000].data(), 4);
+				p += 8;
+			} else if (value >= 10000) {
+				p = std::to_chars(p, p + 4, value / 10000).ptr;
+				std::memcpy(p, quads[value % 10000].data(), 4);
+				p += 4;
+			} else p = std::to_chars(p, p + 4, value).ptr;
+			length += p - out;
+		} else length += std::to_chars(out, out + 32, value).ptr - out;
+	}
+	template <class T> requires requires(const T &value, char *out) { value.decimal_capacity(); value.to_chars(out); }
+	void write(const T &value) {
+		char *out = reserve(value.decimal_capacity());
+		length += value.to_chars(out) - out;
+	}
+	template <class T>
+	void println(const T &value) { write(value); write('\n'); }
+};
+
+
+#line 6 "components/fast_io_bulk.hpp"
+#include <span>
+#line 8 "components/fast_io_bulk.hpp"
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#include <immintrin.h>
+#pragma GCC push_options
+_Pragma("GCC target(\"avx2\")")
+#pragma GCC optimize("O3")
+namespace fast_io_detail {
+struct BulkInput {
+	alignas(32) static inline constexpr auto rows = [] {
+		std::array<std::array<unsigned char, 16>, 11> r{};
+		for (int n = 0; n <= 10; ++n)
+			for (int i = 0; i < 16; ++i) r[n][i] = i < 16 - n ? 128 : i - (16 - n);
+		return r;
+	}();
+	static constexpr std::size_t kChunk = 1 << 17, kCapacity = kChunk / 4 + 66;
+
+	static unsigned separators(__m256i bytes) {
+		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
+	}
+
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
+		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
+		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+			invalid = _mm256_set1_epi32(-1);
+			p += std::min(b + 1, 32u);
+			return _mm256_setzero_si256();
+		}
+		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
+		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
+		p += b + 1;
+		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
+	}
+
+	static std::uint32_t one(const char *&p, bool &bad) {
+		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
+		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
+		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
+		if (n < 1 || n > 10) [[unlikely]] {
+			bad = true;
+			p += std::min(n + 1, 16u);
+			return 0;
+		}
+		const auto digits = _mm_shuffle_epi8(_mm_sub_epi8(bytes, _mm_set1_epi8('0')),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[n].data())));
+		const auto invalid = _mm_subs_epu8(digits, _mm_set1_epi8(9));
+		bad |= !_mm_testz_si128(invalid, invalid);
+		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
+		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
+		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
+		bad |= value > 0xffffffffULL;
+		p += n + 1;
+		return std::uint32_t(value);
+	}
+
+	static const char *after_separator(const char *p) {
+		const unsigned mask = separators(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(p)));
+		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
+	}
+
+	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
+		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
+		std::size_t done = 0;
+		for (;;) {
+			std::ptrdiff_t left = end[0] - p[0];
+			for (int k = 1; k < 4; ++k) left = std::min(left, end[k] - p[k]);
+			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
+			if (steps <= 0) break;
+			for (auto j = steps; j; --j, done += 2) {
+				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				const auto k = _mm256_set1_epi32(0x00012710);
+				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
+				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
+				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
+				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				invalid = _mm256_or_si256(invalid, overflow);
+				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
+				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
+				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
+				_mm_storeh_pd(reinterpret_cast<double *>(out[1] + done), _mm_castsi128_pd(q01));
+				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[2] + done), q23);
+				_mm_storeh_pd(reinterpret_cast<double *>(out[3] + done), _mm_castsi128_pd(q23));
+			}
+		}
+		for (int k = 0; k < 4; ++k) streams[k] = p[k];
+		return done;
+	}
+
+	template <class Emit>
+	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
+		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
+		const std::size_t stream = bytes / 4;
+		const char *p1 = after_separator(p + stream), *p2 = after_separator(p + 2 * stream);
+		const char *p3 = after_separator(p + 3 * stream), *last = after_separator(p + bytes);
+		if (!p1 || !p2 || !p3 || !last) return 0;
+		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
+		auto invalid = _mm256_setzero_si256();
+		const auto done = lockstep(s, end, out, invalid);
+		bool bad = !_mm256_testz_si256(invalid, invalid);
+		std::size_t n[4];
+		for (int k = 0; k < 4; ++k) {
+			n[k] = done;
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			bad |= s[k] != end[k];
+		}
+		const auto parsed = n[0] + n[1] + n[2] + n[3];
+		if (bad || parsed > count) return 0;
+		for (int k = 0; k < 4; ++k) emit(out[k], n[k]);
+		p = last;
+		return parsed;
+	}
+
+	static std::size_t chunk(const char *&p, const char *limit, unsigned *dst, std::size_t count, unsigned *scratch) {
+		unsigned *const out[4] = {dst, scratch, scratch + kCapacity, scratch + 2 * kCapacity};
+		bool first = true;
+		unsigned *next = dst;
+		return chunk_blocks(p, limit, count, out, [&](const unsigned *values, std::size_t n) {
+			if (!first) std::memcpy(next, values, n * sizeof(unsigned));
+			first = false;
+			next += n;
+		});
+	}
+
+	template <class Emit>
+	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
+		std::unique_ptr<unsigned[]> scratch;
+		std::size_t done = 0;
+		bool chunks = true;
+		while (done < count) {
+			const char *p = in.current;
+			while (p != in.end && static_cast<unsigned char>(*p) <= ' ') ++p;
+			while (chunks && count - done >= 1024 && in.end - p >= 1088) {
+				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
+				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
+				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+				if (!parsed) {
+					chunks = false;
+					break;
+				}
+				done += parsed;
+			}
+			unsigned tail[64];
+			std::size_t used = 0;
+			while (done + 2 <= count && in.end - p >= 32) {
+				const char *next = p;
+				auto invalid = _mm256_setzero_si256();
+				const auto groups = two(next, invalid);
+				if (!_mm256_testz_si256(invalid, invalid)) break;
+				const auto halves = _mm256_madd_epi16(_mm256_packus_epi32(groups, groups), _mm256_set1_epi32(0x00012710));
+				const unsigned h0 = _mm256_extract_epi32(halves, 0), l0 = _mm256_extract_epi32(halves, 1);
+				const unsigned h1 = _mm256_extract_epi32(halves, 4), l1 = _mm256_extract_epi32(halves, 5);
+				if (h0 > 42 || (h0 == 42 && l0 > 94967295) || h1 > 42 || (h1 == 42 && l1 > 94967295)) break;
+				tail[used++] = h0 * 100000000 + l0;
+				tail[used++] = h1 * 100000000 + l1;
+				if (used == 64) {
+					emit(tail, used);
+					used = 0;
+				}
+				done += 2;
+				p = next;
+			}
+			if (used) emit(tail, used);
+			in.current = p;
+			if (done < count) {
+				unsigned value = 0;
+				in.read(value);
+				emit(&value, 1);
+				++done;
+			}
+		}
+	}
+
+	static void read(FastInput &in, unsigned *out, std::size_t count) {
+		read_blocks(in, count, [&](const unsigned *values, std::size_t n) {
+			std::memcpy(out, values, n * sizeof(unsigned));
+			out += n;
+		});
+	}
+
+};
+}
+#pragma GCC pop_options
+#endif
+
+namespace fast_io_detail {
+struct BulkOutput {
+	static char *small(char *out, std::uint32_t value) {
+		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
+		if constexpr (std::endian::native == std::endian::little) {
+			std::uint32_t word;
+			std::memcpy(&word, FastOutput::quads[value].data(), 4);
+			word >>= (4 - n) * 8;
+			std::memcpy(out, &word, 4);
+		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
+		return out + n;
+	}
+	static char *number(char *out, std::uint32_t value) {
+		if (value >= 100000000) {
+			out = small(out, value / 100000000);
+			value %= 100000000;
+			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
+			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
+			return out + 8;
+		}
+		if (value >= 10000) {
+			out = small(out, value / 10000);
+			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
+			return out + 4;
+		}
+		return small(out, value);
+	}
+	template<std::size_t Fields, class Read>
+#if defined(__GNUC__) || defined(__clang__)
+	[[gnu::noinline]]
+#endif
+	static void records(FastOutput &out, std::size_t count, Read read) {
+		constexpr auto bytes = 11 * Fields;
+		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
+		for (std::size_t base = 0; base < count;) {
+			const auto n = std::min(count - base, block);
+			char *begin = out.reserve(n * bytes), *p = begin;
+			for (std::size_t i = 0; i < n; ++i) {
+				auto values = read(base + i);
+				for (std::size_t j = 0; j < Fields; ++j) {
+					p = number(p, std::uint32_t(values[j]));
+					*p++ = j + 1 == Fields ? '\n' : ' ';
+				}
+			}
+			out.length += p - begin;
+			base += n;
+		}
+	}
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
+}
+
+namespace fast_io_detail {
+template <class Emit, std::size_t... I>
+void emit_record(Emit &emit, const std::uint32_t *values, std::index_sequence<I...>) {
+	emit(values[I]...);
+}
+}
+
+template <class Emit>
+void read_unsigned_blocks(FastInput &input, std::size_t count, Emit emit) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (__builtin_cpu_supports("avx2")) {
+		fast_io_detail::BulkInput::read_blocks(input, count, emit);
+		return;
+	}
+#endif
+	std::uint32_t values[64];
+	while (count) {
+		const auto n = std::min<std::size_t>(count, 64);
+		for (std::size_t i = 0; i < n; ++i) input.read(values[i]);
+		emit(values, n);
+		count -= n;
+	}
+}
+
+inline void read_unsigned(FastInput &input, std::span<std::uint32_t> out) {
+	read_unsigned_blocks(input, out.size(), [&](const std::uint32_t *values, std::size_t count) {
+		std::memcpy(out.data(), values, count * sizeof(std::uint32_t));
+		out = out.subspan(count);
+	});
+}
+
+template <std::size_t Fields, class Emit>
+void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
+	static_assert(Fields > 0);
+	if (count > std::numeric_limits<std::size_t>::max() / Fields) throw std::length_error("input size");
+	std::array<std::uint32_t, Fields> pending;
+	std::size_t used = 0;
+	constexpr auto indices = std::make_index_sequence<Fields>();
+	read_unsigned_blocks(input, count * Fields, [&](const std::uint32_t *values, std::size_t n) {
+		std::size_t i = 0;
+		if (used) {
+			while (used < Fields && i < n) pending[used++] = values[i++];
+			if (used == Fields) {
+				fast_io_detail::emit_record(emit, pending.data(), indices);
+				used = 0;
+			}
+		}
+		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
+		while (i < n) pending[used++] = values[i++];
+	});
+}
+
+template<std::size_t Fields, class Read>
+void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
+	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
+	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
+}
+
+
+#line 5 "test/lca_path_sum.test.cpp"
+
+int main() {
+	FastInput input;
+	FastOutput output;
+	int n, q;
+	input.read(n), input.read(q);
+	std::vector<long long> values(n);
+	int vertex = 0;
+	read_unsigned_records<1>(input, n, [&](unsigned value) { values[vertex++] = value; });
+	LCA tree(n);
+	read_unsigned_records<2>(input, n - 1, [&](unsigned u, unsigned v) { tree.add_edge(u, v); });
+	tree.build();
+	std::vector<int> first(n), last(n);
+	std::vector<long long> difference(n);
+	for (int v = 0; v < n; ++v) {
+		auto [l, r] = tree.subtree(v);
+		first[v] = l, last[v] = r;
+		difference[l] += values[v];
+		if (r < n) difference[r] -= values[v];
+	}
+	FenwickSum<long long> sums(difference);
+	read_unsigned_records<3>(input, q, [&](unsigned type, unsigned u, unsigned x) {
+		if (!type) {
+			values[u] += x;
+			if (last[u] < n) sums.add_pair(first[u], x, last[u], -static_cast<long long>(x));
+			else sums.add(first[u], x);
+		} else {
+			int w = tree.lca(u, x);
+			long long answer = sums.prefix(first[u] + 1) + sums.prefix(first[x] + 1) - 2 * sums.prefix(first[w] + 1) + values[w];
+			output.println(answer);
+		}
+	});
 }

@@ -48,6 +48,12 @@ int main() {
 		check(U(1) << 63, k);
 	}
 	std::mt19937_64 rng(64329614);
+	for (U r = 1; r <= 2642245; ++r) {
+		U cube = r * r * r;
+		check(cube - 1, 3, r - 1);
+		check(cube, 3, r);
+		check(cube + 1, 3);
+	}
 	for (U k = 2; k <= 63; ++k) {
 		U max_root = 1;
 		while (reference_leq(max_root * 2, k, maximum)) max_root *= 2;
