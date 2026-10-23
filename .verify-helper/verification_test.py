@@ -9,10 +9,19 @@ import time
 import unittest
 from unittest.mock import patch
 
-from verification import check_judges, get_marker
+from verification import check_judges, get_marker, time_limit
 
 
 class JudgePolicy(unittest.TestCase):
+    def test_time_limit_is_selected_per_driver(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "normal.cpp").write_text("int main() {}\n")
+            (root / "large.cpp").write_text("#define TIME_LIMIT 30\n")
+            self.assertEqual(time_limit(root, ["normal.cpp"]), 10)
+            self.assertEqual(time_limit(root, ["large.cpp"]), 30)
+            self.assertEqual(time_limit(root, ["normal.cpp", "large.cpp"]), 30)
+
     def test_repository_has_no_atcoder_drivers(self):
         root = Path(__file__).resolve().parents[1]
         check_judges(root, (root / "test").rglob("*.test.cpp"))
