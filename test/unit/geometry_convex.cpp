@@ -49,14 +49,14 @@ int main() {
 		for (bool collinear : {false, true}) {
 			auto result = convex_hull(points, collinear);
 			auto ids = convex_hull_indices(points, collinear);
-			std::vector<FPoint> real;
-			for (auto p : points) real.emplace_back(Real(__int128_t(p.x) - INT64_MIN), Real(__int128_t(p.y) - INT64_MAX));
-			auto reference = convex_hull(real, collinear, 0);
+			std::vector<Point<__int128_t>> wide;
+			for (auto p : points) wide.emplace_back(p.x, p.y);
+			auto reference = convex_hull(wide, collinear);
 			assert(ids.size() == result.size() && reference.size() == result.size());
 			for (std::size_t i = 0; i < result.size(); ++i) {
 				assert(points[ids[i]] == result[i]);
-				assert(reference[i].x == Real(__int128_t(result[i].x) - INT64_MIN));
-				assert(reference[i].y == Real(__int128_t(result[i].y) - INT64_MAX));
+				assert(reference[i].x == result[i].x);
+				assert(reference[i].y == result[i].y);
 			}
 			auto copy = points;
 			assert(convex_hull(std::move(copy), collinear) == result);
