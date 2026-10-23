@@ -44,8 +44,8 @@ class SegtreeBeats {
 	};
 	int n = 0;
 	mutable std::vector<Node, DefaultInitAllocator<Node>> tree;
-	static int left(int k) { return k + 1; }
-	static int right(int k, int l, int m) { return k + 2 * (m - l); }
+	static Node *left(Node *p) { return p + 1; }
+	static Node *right(Node *p, int l, int m) { return p + 2 * (m - l); }
 	static void fill(Node &a, T x, int len) {
 		a = {Sum(x) * len, x, x, inf, neg_inf, 0, len, len};
 	}
@@ -69,9 +69,9 @@ class SegtreeBeats {
 		else if (a.hi2 == a.lo) a.hi2 = x;
 		a.lo = x;
 	}
-	void pull(int k, int lc, int rc) {
-		auto &a = tree[k];
-		const auto &b = tree[lc], &c = tree[rc];
+	static void pull(Node *p, Node *lc, Node *rc) {
+		auto &a = *p;
+		const auto &b = *lc, &c = *rc;
 		a.sum = b.sum + c.sum;
 		if (b.lo < c.lo) a.lo = b.lo, a.lo2 = std::min(b.lo2, c.lo), a.nlo = b.nlo;
 		else if (b.lo > c.lo) a.lo = c.lo, a.lo2 = std::min(b.lo, c.lo2), a.nlo = c.nlo;
@@ -80,8 +80,8 @@ class SegtreeBeats {
 		else if (b.hi < c.hi) a.hi = c.hi, a.hi2 = std::max(b.hi, c.hi2), a.nhi = c.nhi;
 		else a.hi = b.hi, a.hi2 = std::max(b.hi2, c.hi2), a.nhi = b.nhi + c.nhi;
 	}
-	void push(int k, int l, int m, int r) const {
-		auto &a = tree[k], &b = tree[left(k)], &c = tree[right(k, l, m)];
+	static void push(Node *p, int l, int m, int r) {
+		auto &a = *p, &b = *left(p), &c = *right(p, l, m);
 		if (a.lo == a.hi) {
 			fill(b, a.lo, m - l);
 			fill(c, a.lo, r - m);
@@ -99,17 +99,18 @@ class SegtreeBeats {
 		if (c.lo < a.lo) raise(c, a.lo);
 	}
 	template <class F>
-	void build(int k, int l, int r, const F &f) {
-		if (r - l == 1) return fill(tree[k], f(l), 1);
-		int m = (l + r) / 2, lc = left(k), rc = right(k, l, m);
+	static void build(Node *p, int l, int r, const F &f) {
+		if (r - l == 1) return fill(*p, f(l), 1);
+		int m = (l + r) / 2;
+		auto lc = left(p), rc = right(p, l, m);
 		build(lc, l, m, f);
 		build(rc, m, r, f);
-		tree[k].add = 0;
-		pull(k, lc, rc);
+		p->add = 0;
+		pull(p, lc, rc);
 	}
 	template <int op>
-	void update(int k, int l, int r, int ql, int qr, T x) {
-		auto &a = tree[k];
+	static void update(Node *p, int l, int r, int ql, int qr, T x) {
+		auto &a = *p;
 		if constexpr (op == 0) { if (a.hi <= x) return; }
 		if constexpr (op == 1) { if (a.lo >= x) return; }
 		if constexpr (op == 3) { if (a.lo == x && a.hi == x) return; }
@@ -125,17 +126,18 @@ class SegtreeBeats {
 			if constexpr (op == 2) return add_node(a, x, r - l);
 			if constexpr (op == 3) return fill(a, x, r - l);
 		}
-		int m = (l + r) / 2, lc = left(k), rc = right(k, l, m);
-		push(k, l, m, r);
+		int m = (l + r) / 2;
+		auto lc = left(p), rc = right(p, l, m);
+		push(p, l, m, r);
 		if (ql < m) update<op>(lc, l, m, ql, qr, x);
 		if (m < qr) update<op>(rc, m, r, ql, qr, x);
-		pull(k, lc, rc);
+		pull(p, lc, rc);
 	}
 	template <int op>
 	using Result = std::conditional_t<op == 0, Sum, T>;
 	template <int op>
-	Result<op> query(int k, int l, int r, int ql, int qr) const {
-		const auto &a = tree[k];
+	static Result<op> query(Node *p, int l, int r, int ql, int qr) {
+		const auto &a = *p;
 		if (ql <= l && r <= qr) {
 			if constexpr (op == 0) return a.sum;
 			if constexpr (op == 1) return a.lo;
@@ -146,42 +148,42 @@ class SegtreeBeats {
 			else return a.lo;
 		}
 		int m = (l + r) / 2;
-		push(k, l, m, r);
-		if (qr <= m) return query<op>(left(k), l, m, ql, qr);
-		if (m <= ql) return query<op>(right(k, l, m), m, r, ql, qr);
-		auto b = query<op>(left(k), l, m, ql, qr), c = query<op>(right(k, l, m), m, r, ql, qr);
+		push(p, l, m, r);
+		if (qr <= m) return query<op>(left(p), l, m, ql, qr);
+		if (m <= ql) return query<op>(right(p, l, m), m, r, ql, qr);
+		auto b = query<op>(left(p), l, m, ql, qr), c = query<op>(right(p, l, m), m, r, ql, qr);
 		if constexpr (op == 0) return b + c;
 		if constexpr (op == 1) return std::min(b, c);
 		if constexpr (op == 2) return std::max(b, c);
 	}
-	void collect(int k, int l, int r, std::vector<T> &a) const {
-		if (tree[k].lo == tree[k].hi) {
-			std::fill(a.begin() + l, a.begin() + r, tree[k].lo);
+	static void collect(Node *p, int l, int r, std::vector<T> &a) {
+		if (p->lo == p->hi) {
+			std::fill(a.begin() + l, a.begin() + r, p->lo);
 			return;
 		}
 		int m = (l + r) / 2;
-		push(k, l, m, r);
-		collect(left(k), l, m, a);
-		collect(right(k, l, m), m, r, a);
+		push(p, l, m, r);
+		collect(left(p), l, m, a);
+		collect(right(p, l, m), m, r, a);
 	}
 	void check(int l, int r) const { assert(0 <= l && l <= r && r <= n); (void)l; (void)r; }
 public:
 	SegtreeBeats() = default;
 	explicit SegtreeBeats(int n, T x = 0) : n(n), tree(n > 0 ? 2 * std::size_t(n) - 1 : 0) {
 		assert(n >= 0);
-		if (n) build(0, 0, n, [x](int) { return x; });
+		if (n) build(tree.data(), 0, n, [x](int) { return x; });
 	}
 	explicit SegtreeBeats(const std::vector<T> &a) : n(int(a.size())), tree(n ? 2 * std::size_t(n) - 1 : 0) {
-		if (n) build(0, 0, n, [&](int i) { return a[i]; });
+		if (n) build(tree.data(), 0, n, [&](int i) { return a[i]; });
 	}
 	int size() const { return n; }
-	void chmin(int l, int r, T x) { check(l, r); if (l < r) update<0>(0, 0, n, l, r, x); }
-	void chmax(int l, int r, T x) { check(l, r); if (l < r) update<1>(0, 0, n, l, r, x); }
-	void add(int l, int r, T x) { check(l, r); if (l < r && x) update<2>(0, 0, n, l, r, x); }
-	void assign(int l, int r, T x) { check(l, r); if (l < r) update<3>(0, 0, n, l, r, x); }
-	Sum sum(int l, int r) const { check(l, r); return l < r ? query<0>(0, 0, n, l, r) : Sum(0); }
-	T min(int l, int r) const { check(l, r); return l < r ? query<1>(0, 0, n, l, r) : inf; }
-	T max(int l, int r) const { check(l, r); return l < r ? query<2>(0, 0, n, l, r) : neg_inf; }
+	void chmin(int l, int r, T x) { check(l, r); if (l < r) update<0>(tree.data(), 0, n, l, r, x); }
+	void chmax(int l, int r, T x) { check(l, r); if (l < r) update<1>(tree.data(), 0, n, l, r, x); }
+	void add(int l, int r, T x) { check(l, r); if (l < r && x) update<2>(tree.data(), 0, n, l, r, x); }
+	void assign(int l, int r, T x) { check(l, r); if (l < r) update<3>(tree.data(), 0, n, l, r, x); }
+	Sum sum(int l, int r) const { check(l, r); return l < r ? query<0>(tree.data(), 0, n, l, r) : Sum(0); }
+	T min(int l, int r) const { check(l, r); return l < r ? query<1>(tree.data(), 0, n, l, r) : inf; }
+	T max(int l, int r) const { check(l, r); return l < r ? query<2>(tree.data(), 0, n, l, r) : neg_inf; }
 	Sum all_sum() const { return n ? tree[0].sum : Sum(0); }
 	T all_min() const { return n ? tree[0].lo : inf; }
 	T all_max() const { return n ? tree[0].hi : neg_inf; }
@@ -189,7 +191,7 @@ public:
 	void set(int p, T x) { assert(0 <= p && p < n); assign(p, p + 1, x); }
 	std::vector<T> values() const {
 		std::vector<T> a(n);
-		if (n) collect(0, 0, n, a);
+		if (n) collect(tree.data(), 0, n, a);
 		return a;
 	}
 };

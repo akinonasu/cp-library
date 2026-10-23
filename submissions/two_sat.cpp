@@ -87,12 +87,17 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 		while (!stack.empty()) {
 			auto &frame = stack.back();
 			int v = frame.vertex;
-			if (frame.next < offset[v + 1]) {
-				int to = adjacency[frame.next++];
-				if (degree[to] == -1) enter(to);
-				else frame.low = std::min(frame.low, degree[to]);
+			int next = frame.next, low = frame.low, end = offset[v + 1];
+			for (; next < end; ++next) {
+				int to = adjacency[next];
+				if (degree[to] == -1) break;
+				low = std::min(low, degree[to]);
+			}
+			frame.low = low;
+			if (next < end) {
+				frame.next = next + 1;
+				enter(adjacency[next]);
 			} else {
-				int low = frame.low;
 				stack.pop_back();
 				if (low == degree[v]) {
 					int u;
