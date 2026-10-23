@@ -1,24 +1,21 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/lca"
 #include "../tree/lca.hpp"
-#include <iostream>
+#include "components/fast_io_bulk.hpp"
 #include <tuple>
 
 using namespace std;
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
+	FastInput input;
+	FastOutput output;
 	int n, q;
-	cin >> n >> q;
+	input.read(n), input.read(q);
 	LCA tree(n);
-	for (int v = 1; v < n; ++v) {
-		int p;
-		cin >> p;
-		tree.add_edge(p, v);
-	}
+	int vertex = 1;
+	read_unsigned_records<1>(input, n - 1, [&](unsigned p) { tree.add_edge(p, vertex++); });
 	tree.build();
-	for (int repeat_index = 0; repeat_index < q; ++repeat_index) {
-		int u, v;
-		cin >> u >> v;
-		cout << tree.lca(u, v) << '\n';
-	}
+	std::vector<unsigned> answers;
+	answers.reserve(q);
+	read_unsigned_records<2>(input, q, [&](unsigned u, unsigned v) { answers.push_back(tree.lca(u, v)); });
+	write_unsigned_records<1>(output, answers.size(), [&](std::size_t i) { return std::array{answers[i]}; });
 }

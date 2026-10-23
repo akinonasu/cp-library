@@ -1,6 +1,7 @@
 #include "components/floor_quotients.hpp"
 #include <algorithm>
 #include <cassert>
+#include <cfenv>
 #include <random>
 #include <utility>
 
@@ -38,4 +39,19 @@ int main() {
 	assert(moved.values() == large.values());
 	copy = std::move(moved);
 	assert(moved.max_n() == 0 && moved.size() == 0 && copy.values() == large.values());
+	for (int mode : {FE_TONEAREST, FE_DOWNWARD, FE_UPWARD, FE_TOWARDZERO}) {
+		if (std::fesetround(mode)) continue;
+		for (int trial = 0; trial < 100000; ++trial) {
+			const auto n = trial % 3 == 0 ? (std::uint64_t(1) << 53) - random() % 1000 : random();
+			const auto d = trial % 3 == 1 ? 1 + random() % 100000 : random() | 1;
+			assert(floor_quotient_detail::divide(n, d) == n / d);
+		}
+		for (auto n : {std::uint64_t(1) << 53, (std::uint64_t(1) << 53) - 1, (std::uint64_t(1) << 53) + 1}) {
+			for (std::uint64_t d = 1; d <= 10000; ++d) {
+				const auto value = n / d * d;
+				for (auto x : {value - 1, value, value + 1}) assert(floor_quotient_detail::divide(x, d) == x / d);
+			}
+		}
+	}
+	std::fesetround(FE_TONEAREST);
 }

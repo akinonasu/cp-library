@@ -98,6 +98,26 @@ int main() {
 	}
 	check(std::vector<std::int64_t>{INT64_MIN, -1, 0, 1, INT64_MAX, INT64_MIN, INT64_MAX}, random);
 	check(std::vector<std::uint64_t>{0, 1, UINT64_MAX, UINT64_MAX - 1, std::uint64_t(1) << 63, 0}, random);
+	WeightedWaveletMatrix<int, std::int64_t, __int128_t> counts_only({7, -3, 12, 7}, {4, 2, 0, 1}, false);
+	counts_only.add_weight(2, 3);
+	counts_only.move_weight(0, 1, 2);
+	require(counts_only.count(0, 4) == 10 && counts_only.range_freq(0, 4, 0) == 4);
+	require(counts_only.kth_smallest(0, 4, 4) == 7);
+	auto copied_counts = counts_only;
+	counts_only.prepare_sum();
+	require(counts_only.range_sum(0, 4) == 45);
+	counts_only.add_weight(1, -1);
+	require(counts_only.range_sum(0, 4) == 48);
+	copied_counts.prepare_sum();
+	require(copied_counts.range_sum(0, 4) == 45);
+	copied_counts.build({1, 2, 3}, {1, 2, 3}, false);
+	copied_counts.set_weight(1, 4);
+	copied_counts.prepare_sum();
+	require(copied_counts.range_sum(0, 3) == 18);
+	copied_counts.build({}, {}, false);
+	copied_counts.prepare_sum();
+	require(copied_counts.empty() && copied_counts.count(0, 0) == 0 && copied_counts.range_sum(0, 0) == 0);
+
 	WeightedWaveletMatrix<int, std::int64_t, __int128_t> huge({0, 5, 7}, {1, INT64_MAX / 4, INT64_MAX / 4});
 	require(huge.min_count_largest(0, 3, __int128_t(7) * (INT64_MAX / 4)) == INT64_MAX / 4);
 	require(huge.max_count_smallest(0, 3, __int128_t(5) * (INT64_MAX / 4)) == INT64_MAX / 4 + 1);

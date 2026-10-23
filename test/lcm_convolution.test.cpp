@@ -1,17 +1,17 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/lcm_convolution"
-#include "../convolution/gcd_lcm_convolution.hpp"
-#include "../math/mint.hpp"
-#include <iostream>
+#include "convolution/gcd_lcm_convolution.hpp"
+#include "test/fixtures/mint_io.hpp"
+#include <span>
 #include <vector>
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int n;
-	std::cin >> n;
+	FastInput input;
+	FastOutput output;
+	int n = 0;
+	input.read(n);
 	std::vector<mint> a(n + 1), b(n + 1);
-	for (int i = 1; i <= n; ++i) std::cin >> a[i];
-	for (int i = 1; i <= n; ++i) std::cin >> b[i];
-	auto c = lcm_convolution(a, b);
-	for (int i = 1; i <= n; ++i) std::cout << c[i] << ' ';
-	std::cout << '\n';
+	read_mints(input, std::span(a).subspan(1));
+	read_mints(input, std::span(b).subspan(1));
+	auto result = lcm_convolution(a, b);
+	write_mints(output, std::span(result).subspan(1));
 }

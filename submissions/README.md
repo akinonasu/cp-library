@@ -9,7 +9,7 @@
 | [Adjugate Matrix](https://judge.yosupo.jp/problem/adjugate_matrix) | [adjugate_matrix.cpp](adjugate_matrix.cpp) | [matrix_adjugate.test.cpp](../test/matrix_adjugate.test.cpp) |
 | [Aho Corasick](https://judge.yosupo.jp/problem/aho_corasick) | [aho_corasick.cpp](aho_corasick.cpp) | [aho_corasick.test.cpp](../test/aho_corasick.test.cpp) |
 | [Assignment Problem](https://judge.yosupo.jp/problem/assignment) | [assignment.cpp](assignment.cpp) | [hungarian.test.cpp](../test/hungarian.test.cpp) |
-| [Associative Array](https://judge.yosupo.jp/problem/associative_array) | [associative_array.cpp](associative_array.cpp) | [interval_map.test.cpp](../test/interval_map.test.cpp) |
+| [Associative Array](https://judge.yosupo.jp/problem/associative_array) | [associative_array.cpp](associative_array.cpp) | [flat_hash_map.test.cpp](../test/flat_hash_map.test.cpp) |
 | [Biconnected Components](https://judge.yosupo.jp/problem/biconnected_components) | [biconnected_components.cpp](biconnected_components.cpp) | [biconnected_components.test.cpp](../test/biconnected_components.test.cpp) |
 | [Binomial Coefficient (Prime Mod)](https://judge.yosupo.jp/problem/binomial_coefficient_prime_mod) | [binomial_coefficient_prime_mod.cpp](binomial_coefficient_prime_mod.cpp) | [comb_prime_mod_light.test.cpp](../test/comb_prime_mod_light.test.cpp) |
 | [Matching on Bipartite Graph](https://judge.yosupo.jp/problem/bipartitematching) | [bipartitematching.cpp](bipartitematching.cpp) | [bipartite_matching.test.cpp](../test/bipartite_matching.test.cpp) |
@@ -27,7 +27,7 @@
 | [Convolution](https://judge.yosupo.jp/problem/convolution_mod) | [convolution_mod.cpp](convolution_mod.cpp) | [convolution.test.cpp](../test/convolution.test.cpp) |
 | [Convolution (Mod 1,000,000,007)](https://judge.yosupo.jp/problem/convolution_mod_1000000007) | [convolution_mod_1000000007.cpp](convolution_mod_1000000007.cpp) | [convolution_mod.test.cpp](../test/convolution_mod.test.cpp) |
 | [Counting Primes](https://judge.yosupo.jp/problem/counting_primes) | [counting_primes.cpp](counting_primes.cpp) | [prime_count.test.cpp](../test/prime_count.test.cpp) |
-| [Deque](https://judge.yosupo.jp/problem/deque) | [deque.cpp](deque.cpp) | [persistent_deque.test.cpp](../test/persistent_deque.test.cpp) |
+| [Deque](https://judge.yosupo.jp/problem/deque) | [deque.cpp](deque.cpp) | [deque.test.cpp](../test/deque.test.cpp) |
 | [Discrete Logarithm (Fixed Mod)](https://judge.yosupo.jp/problem/discrete_logarithm_fixed_mod) | [discrete_logarithm_fixed_mod.cpp](discrete_logarithm_fixed_mod.cpp) | [mod_pow_log.test.cpp](../test/mod_pow_log.test.cpp) |
 | [Discrete Logarithm](https://judge.yosupo.jp/problem/discrete_logarithm_mod) | [discrete_logarithm_mod.cpp](discrete_logarithm_mod.cpp) | [discrete_log.test.cpp](../test/discrete_log.test.cpp) |
 | [Division of Polynomials](https://judge.yosupo.jp/problem/division_of_polynomials) | [division_of_polynomials.cpp](division_of_polynomials.cpp) | [fps_divmod.test.cpp](../test/fps_divmod.test.cpp) |
@@ -78,14 +78,14 @@
 | [Multipoint Evaluation](https://judge.yosupo.jp/problem/multipoint_evaluation) | [multipoint_evaluation.cpp](multipoint_evaluation.cpp) | [multipoint_eval.test.cpp](../test/multipoint_eval.test.cpp) |
 | [Multidimensional Convolution (Truncated)](https://judge.yosupo.jp/problem/multivariate_convolution) | [multivariate_convolution.cpp](multivariate_convolution.cpp) | [multivariate_convolution.test.cpp](../test/multivariate_convolution.test.cpp) |
 | [Number of Substrings](https://judge.yosupo.jp/problem/number_of_substrings) | [number_of_substrings.cpp](number_of_substrings.cpp) | [suffix_tree_substrings.test.cpp](../test/suffix_tree_substrings.test.cpp) |
-| [Ordered Set](https://judge.yosupo.jp/problem/ordered_set) | [ordered_set.cpp](ordered_set.cpp) | [persistent_multiset.test.cpp](../test/persistent_multiset.test.cpp) |
+| [Ordered Set](https://judge.yosupo.jp/problem/ordered_set) | [ordered_set.cpp](ordered_set.cpp) | [ordered_set.test.cpp](../test/ordered_set.test.cpp) |
 | [Persistent Queue](https://judge.yosupo.jp/problem/persistent_queue) | [persistent_queue.cpp](persistent_queue.cpp) | [persistent_queue.test.cpp](../test/persistent_queue.test.cpp) |
 | [Persistent Range Affine Range Sum](https://judge.yosupo.jp/problem/persistent_range_affine_range_sum) | [persistent_range_affine_range_sum.cpp](persistent_range_affine_range_sum.cpp) | [persistent_lazy_segtree.test.cpp](../test/persistent_lazy_segtree.test.cpp) |
 | [Persistent Unionfind](https://judge.yosupo.jp/problem/persistent_unionfind) | [persistent_unionfind.cpp](persistent_unionfind.cpp) | [persistent_union_find.test.cpp](../test/persistent_union_find.test.cpp) |
 | [Point Add Range Sum](https://judge.yosupo.jp/problem/point_add_range_sum) | [point_add_range_sum.cpp](point_add_range_sum.cpp) | [fenwick_tree.test.cpp](../test/fenwick_tree.test.cpp) |
 | [Point Add Rectangle Sum](https://judge.yosupo.jp/problem/point_add_rectangle_sum) | [point_add_rectangle_sum.cpp](point_add_rectangle_sum.cpp) | [weighted_wavelet_matrix_rectangle.test.cpp](../test/weighted_wavelet_matrix_rectangle.test.cpp) |
-| [Point Set Range Composite](https://judge.yosupo.jp/problem/point_set_range_composite) | [point_set_range_composite.cpp](point_set_range_composite.cpp) | [dynamic_segtree_composite.test.cpp](../test/dynamic_segtree_composite.test.cpp) |
-| [Point Set Range Frequency](https://judge.yosupo.jp/problem/point_set_range_frequency) | [point_set_range_frequency.cpp](point_set_range_frequency.cpp) | [dynamic_wavelet_matrix_freq.test.cpp](../test/dynamic_wavelet_matrix_freq.test.cpp) |
+| [Point Set Range Composite](https://judge.yosupo.jp/problem/point_set_range_composite) | [point_set_range_composite.cpp](point_set_range_composite.cpp) | [segtree_composite.test.cpp](../test/segtree_composite.test.cpp) |
+| [Point Set Range Frequency](https://judge.yosupo.jp/problem/point_set_range_frequency) | [point_set_range_frequency.cpp](point_set_range_frequency.cpp) | [offline_point_set_range_frequency.test.cpp](../test/offline_point_set_range_frequency.test.cpp) |
 | [Point Set Range Sort Range Composite](https://judge.yosupo.jp/problem/point_set_range_sort_range_composite) | [point_set_range_sort_range_composite.cpp](point_set_range_sort_range_composite.cpp) | [sortable_segtree.test.cpp](../test/sortable_segtree.test.cpp) |
 | [Point Set Tree Path Composite Sum](https://judge.yosupo.jp/problem/point_set_tree_path_composite_sum) | [point_set_tree_path_composite_sum.cpp](point_set_tree_path_composite_sum.cpp) | [point_set_tree_path_composite_sum.test.cpp](../test/point_set_tree_path_composite_sum.test.cpp) |
 | [Point Set Tree Path Composite Sum (Fixed Root)](https://judge.yosupo.jp/problem/point_set_tree_path_composite_sum_fixed_root) | [point_set_tree_path_composite_sum_fixed_root.cpp](point_set_tree_path_composite_sum_fixed_root.cpp) | [point_set_tree_path_composite_sum_fixed_root.test.cpp](../test/point_set_tree_path_composite_sum_fixed_root.test.cpp) |
@@ -96,16 +96,16 @@
 | [Pow of Matrix](https://judge.yosupo.jp/problem/pow_of_matrix) | [pow_of_matrix.cpp](pow_of_matrix.cpp) | [matrix_pow.test.cpp](../test/matrix_pow.test.cpp) |
 | [Predecessor Problem](https://judge.yosupo.jp/problem/predecessor_problem) | [predecessor_problem.cpp](predecessor_problem.cpp) | [predecessor_set.test.cpp](../test/predecessor_set.test.cpp) |
 | [Primality Test](https://judge.yosupo.jp/problem/primality_test) | [primality_test.cpp](primality_test.cpp) | [is_prime.test.cpp](../test/is_prime.test.cpp) |
-| [Queue Operate All Composite](https://judge.yosupo.jp/problem/queue_operate_all_composite) | [queue_operate_all_composite.cpp](queue_operate_all_composite.cpp) | [disjoint_sparse_table_affine.test.cpp](../test/disjoint_sparse_table_affine.test.cpp) |
-| [Range Add Range Min](https://judge.yosupo.jp/problem/range_add_range_min) | [range_add_range_min.cpp](range_add_range_min.cpp) | [kinetic_tournament.test.cpp](../test/kinetic_tournament.test.cpp) |
-| [Range Affine Point Get](https://judge.yosupo.jp/problem/range_affine_point_get) | [range_affine_point_get.cpp](range_affine_point_get.cpp) | [dual_segtree.test.cpp](../test/dual_segtree.test.cpp) |
-| [Range Affine Range Sum](https://judge.yosupo.jp/problem/range_affine_range_sum) | [range_affine_range_sum.cpp](range_affine_range_sum.cpp) | [lazy_segtree.test.cpp](../test/lazy_segtree.test.cpp) |
-| [Range Affine Range Sum (Large Array)](https://judge.yosupo.jp/problem/range_affine_range_sum_large_array) | [range_affine_range_sum_large_array.cpp](range_affine_range_sum_large_array.cpp) | [dynamic_lazy_segtree_large.test.cpp](../test/dynamic_lazy_segtree_large.test.cpp) |
+| [Queue Operate All Composite](https://judge.yosupo.jp/problem/queue_operate_all_composite) | [queue_operate_all_composite.cpp](queue_operate_all_composite.cpp) | [sliding_window_aggregation.test.cpp](../test/sliding_window_aggregation.test.cpp) |
+| [Range Add Range Min](https://judge.yosupo.jp/problem/range_add_range_min) | [range_add_range_min.cpp](range_add_range_min.cpp) | [range_add_range_min.test.cpp](../test/range_add_range_min.test.cpp) |
+| [Range Affine Point Get](https://judge.yosupo.jp/problem/range_affine_point_get) | [range_affine_point_get.cpp](range_affine_point_get.cpp) | [range_affine_point_get.test.cpp](../test/range_affine_point_get.test.cpp) |
+| [Range Affine Range Sum](https://judge.yosupo.jp/problem/range_affine_range_sum) | [range_affine_range_sum.cpp](range_affine_range_sum.cpp) | [range_affine_range_sum.test.cpp](../test/range_affine_range_sum.test.cpp) |
+| [Range Affine Range Sum (Large Array)](https://judge.yosupo.jp/problem/range_affine_range_sum_large_array) | [range_affine_range_sum_large_array.cpp](range_affine_range_sum_large_array.cpp) | [compressed_lazy_segtree_large.test.cpp](../test/compressed_lazy_segtree_large.test.cpp) |
 | [Range Chmin Chmax Add Range Sum](https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum) | [range_chmin_chmax_add_range_sum.cpp](range_chmin_chmax_add_range_sum.cpp) | [segtree_beats.test.cpp](../test/segtree_beats.test.cpp) |
-| [Range Kth Smallest](https://judge.yosupo.jp/problem/range_kth_smallest) | [range_kth_smallest.cpp](range_kth_smallest.cpp) | [wavelet_matrix_kth.test.cpp](../test/wavelet_matrix_kth.test.cpp) |
+| [Range Kth Smallest](https://judge.yosupo.jp/problem/range_kth_smallest) | [range_kth_smallest.cpp](range_kth_smallest.cpp) | [offline_range_kth_smallest.test.cpp](../test/offline_range_kth_smallest.test.cpp) |
 | [Range Reverse Range Sum](https://judge.yosupo.jp/problem/range_reverse_range_sum) | [range_reverse_range_sum.cpp](range_reverse_range_sum.cpp) | [lazy_reversible_treap_reverse.test.cpp](../test/lazy_reversible_treap_reverse.test.cpp) |
 | [Rational Approximation](https://judge.yosupo.jp/problem/rational_approximation) | [rational_approximation.cpp](rational_approximation.cpp) | [fraction.test.cpp](../test/fraction.test.cpp) |
-| [Rectangle Sum](https://judge.yosupo.jp/problem/rectangle_sum) | [rectangle_sum.cpp](rectangle_sum.cpp) | [persistent_segtree_rectangle.test.cpp](../test/persistent_segtree_rectangle.test.cpp) |
+| [Rectangle Sum](https://judge.yosupo.jp/problem/rectangle_sum) | [rectangle_sum.cpp](rectangle_sum.cpp) | [offline_rectangle_sum.test.cpp](../test/offline_rectangle_sum.test.cpp) |
 | [Rooted Tree Isomorphism Classification](https://judge.yosupo.jp/problem/rooted_tree_isomorphism_classification) | [rooted_tree_isomorphism_classification.cpp](rooted_tree_isomorphism_classification.cpp) | [rooted_tree_hash.test.cpp](../test/rooted_tree_hash.test.cpp) |
 | [Run Enumerate](https://judge.yosupo.jp/problem/runenumerate) | [runenumerate.cpp](runenumerate.cpp) | [run_enumerate.test.cpp](../test/run_enumerate.test.cpp) |
 | [Strongly Connected Components](https://judge.yosupo.jp/problem/scc) | [scc.cpp](scc.cpp) | [scc.test.cpp](../test/scc.test.cpp) |
@@ -118,11 +118,11 @@
 | [Sqrt of Formal Power Series (Sparse)](https://judge.yosupo.jp/problem/sqrt_of_formal_power_series_sparse) | [sqrt_of_formal_power_series_sparse.cpp](sqrt_of_formal_power_series_sparse.cpp) | [fps_sqrt_sparse.test.cpp](../test/fps_sqrt_sparse.test.cpp) |
 | [Static Convex Hull](https://judge.yosupo.jp/problem/static_convex_hull) | [static_convex_hull.cpp](static_convex_hull.cpp) | [geometry_convex_hull.test.cpp](../test/geometry_convex_hull.test.cpp) |
 | [Static Range Count Distinct](https://judge.yosupo.jp/problem/static_range_count_distinct) | [static_range_count_distinct.cpp](static_range_count_distinct.cpp) | [static_range_count_distinct.test.cpp](../test/static_range_count_distinct.test.cpp) |
-| [Static Range Frequency](https://judge.yosupo.jp/problem/static_range_frequency) | [static_range_frequency.cpp](static_range_frequency.cpp) | [wavelet_matrix_freq.test.cpp](../test/wavelet_matrix_freq.test.cpp) |
+| [Static Range Frequency](https://judge.yosupo.jp/problem/static_range_frequency) | [static_range_frequency.cpp](static_range_frequency.cpp) | [offline_range_frequency.test.cpp](../test/offline_range_frequency.test.cpp) |
 | [Static Range Inversions Query](https://judge.yosupo.jp/problem/static_range_inversions_query) | [static_range_inversions_query.cpp](static_range_inversions_query.cpp) | [mo_inversions.test.cpp](../test/mo_inversions.test.cpp) |
 | [Static Range Sum](https://judge.yosupo.jp/problem/static_range_sum) | [static_range_sum.cpp](static_range_sum.cpp) | [static_range_sum.test.cpp](../test/static_range_sum.test.cpp) |
-| [Static Range Sum with Upper Bound](https://judge.yosupo.jp/problem/static_range_sum_with_upper_bound) | [static_range_sum_with_upper_bound.cpp](static_range_sum_with_upper_bound.cpp) | [wavelet_matrix_sum.test.cpp](../test/wavelet_matrix_sum.test.cpp) |
-| [Static RMQ](https://judge.yosupo.jp/problem/staticrmq) | [staticrmq.cpp](staticrmq.cpp) | [sparse_table_min.test.cpp](../test/sparse_table_min.test.cpp) |
+| [Static Range Sum with Upper Bound](https://judge.yosupo.jp/problem/static_range_sum_with_upper_bound) | [static_range_sum_with_upper_bound.cpp](static_range_sum_with_upper_bound.cpp) | [offline_range_sum.test.cpp](../test/offline_range_sum.test.cpp) |
+| [Static RMQ](https://judge.yosupo.jp/problem/staticrmq) | [staticrmq.cpp](staticrmq.cpp) | [static_range_min.test.cpp](../test/static_range_min.test.cpp) |
 | [Stern–Brocot Tree](https://judge.yosupo.jp/problem/stern_brocot_tree) | [stern_brocot_tree.cpp](stern_brocot_tree.cpp) | [stern_brocot_tree.test.cpp](../test/stern_brocot_tree.test.cpp) |
 | [Subset Convolution](https://judge.yosupo.jp/problem/subset_convolution) | [subset_convolution.cpp](subset_convolution.cpp) | [subset_convolution.test.cpp](../test/subset_convolution.test.cpp) |
 | [Suffix Array](https://judge.yosupo.jp/problem/suffixarray) | [suffixarray.cpp](suffixarray.cpp) | [suffix_tree_array.test.cpp](../test/suffix_tree_array.test.cpp) |
@@ -131,17 +131,17 @@
 | [Sum of Multiplicative Function(Large)](https://judge.yosupo.jp/problem/sum_of_multiplicative_function_large) | [sum_of_multiplicative_function_large.cpp](sum_of_multiplicative_function_large.cpp) | [multiplicative_prefix_sum_large.test.cpp](../test/multiplicative_prefix_sum_large.test.cpp) |
 | [Sum of Totient Function](https://judge.yosupo.jp/problem/sum_of_totient_function) | [sum_of_totient_function.cpp](sum_of_totient_function.cpp) | [multiplicative_prefix_sum_totient.test.cpp](../test/multiplicative_prefix_sum_totient.test.cpp) |
 | [System of Linear Equations](https://judge.yosupo.jp/problem/system_of_linear_equations) | [system_of_linear_equations.cpp](system_of_linear_equations.cpp) | [matrix_solve.test.cpp](../test/matrix_solve.test.cpp) |
-| [Tree Diameter](https://judge.yosupo.jp/problem/tree_diameter) | [tree_diameter.cpp](tree_diameter.cpp) | [rerooting_diameter.test.cpp](../test/rerooting_diameter.test.cpp) |
+| [Tree Diameter](https://judge.yosupo.jp/problem/tree_diameter) | [tree_diameter.cpp](tree_diameter.cpp) | [tree_diameter.test.cpp](../test/tree_diameter.test.cpp) |
 | [Tree Path Composite Sum](https://judge.yosupo.jp/problem/tree_path_composite_sum) | [tree_path_composite_sum.cpp](tree_path_composite_sum.cpp) | [rerooting.test.cpp](../test/rerooting.test.cpp) |
 | [Two-Edge-Connected Components](https://judge.yosupo.jp/problem/two_edge_connected_components) | [two_edge_connected_components.cpp](two_edge_connected_components.cpp) | [two_edge_connected_components.test.cpp](../test/two_edge_connected_components.test.cpp) |
 | [2 Sat](https://judge.yosupo.jp/problem/two_sat) | [two_sat.cpp](two_sat.cpp) | [two_sat.test.cpp](../test/two_sat.test.cpp) |
 | [Unionfind](https://judge.yosupo.jp/problem/unionfind) | [unionfind.cpp](unionfind.cpp) | [union_find.test.cpp](../test/union_find.test.cpp) |
 | [Unionfind with Potential](https://judge.yosupo.jp/problem/unionfind_with_potential) | [unionfind_with_potential.cpp](unionfind_with_potential.cpp) | [weighted_union_find.test.cpp](../test/weighted_union_find.test.cpp) |
-| [Vertex Add Path Sum](https://judge.yosupo.jp/problem/vertex_add_path_sum) | [vertex_add_path_sum.cpp](vertex_add_path_sum.cpp) | [hld_path_sum.test.cpp](../test/hld_path_sum.test.cpp) |
+| [Vertex Add Path Sum](https://judge.yosupo.jp/problem/vertex_add_path_sum) | [vertex_add_path_sum.cpp](vertex_add_path_sum.cpp) | [lca_path_sum.test.cpp](../test/lca_path_sum.test.cpp) |
 | [Vertex Add Range Contour Sum on Tree](https://judge.yosupo.jp/problem/vertex_add_range_contour_sum_on_tree) | [vertex_add_range_contour_sum_on_tree.cpp](vertex_add_range_contour_sum_on_tree.cpp) | [centroid_decomposition_contour.test.cpp](../test/centroid_decomposition_contour.test.cpp) |
 | [Vertex Add Subtree Sum](https://judge.yosupo.jp/problem/vertex_add_subtree_sum) | [vertex_add_subtree_sum.cpp](vertex_add_subtree_sum.cpp) | [hld_subtree_sum.test.cpp](../test/hld_subtree_sum.test.cpp) |
 | [Vertex Set Path Composite](https://judge.yosupo.jp/problem/vertex_set_path_composite) | [vertex_set_path_composite.cpp](vertex_set_path_composite.cpp) | [hld_path_composite.test.cpp](../test/hld_path_composite.test.cpp) |
-| [Z Algorithm](https://judge.yosupo.jp/problem/zalgorithm) | [zalgorithm.cpp](zalgorithm.cpp) | [rolling_hash_lcp.test.cpp](../test/rolling_hash_lcp.test.cpp) |
+| [Z Algorithm](https://judge.yosupo.jp/problem/zalgorithm) | [zalgorithm.cpp](zalgorithm.cpp) | [z_algorithm.test.cpp](../test/z_algorithm.test.cpp) |
 
 更新時は、表の元の検証コードを通常の `oj-bundle` で展開します。
 

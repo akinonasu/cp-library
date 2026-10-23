@@ -1,37 +1,35 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_subtree_sum"
-#include "../data_structure/segment_tree/dynamic_segtree.hpp"
+#include "../data_structure/fenwick_tree.hpp"
 #include "../data_structure/advanced/hld.hpp"
-#include <iostream>
+#include "components/fast_io.hpp"
 #include <vector>
 
-long long op(long long a, long long b) { return a + b; }
-long long e() { return 0; }
-
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
+	FastInput input;
+	FastOutput output;
 	int n, q;
-	std::cin >> n >> q;
+	input.read(n), input.read(q);
 	std::vector<long long> a(n);
-	for (auto &x : a) std::cin >> x;
+	for (auto &x : a) input.read(x);
 	HLD tree(n);
 	for (int v = 1, p; v < n; ++v) {
-		std::cin >> p;
+		input.read(p);
 		tree.add_edge(p, v);
 	}
 	tree.build();
-	DynamicSegtree<long long, op, e> seg(n);
-	seg.reserve(n);
-	for (int v = 0; v < n; ++v) seg.set(tree.in[v], a[v]);
+	std::vector<long long> ordered(n);
+	for (int v = 0; v < n; ++v) ordered[tree.in[v]] = a[v];
+	FenwickTree<long long> seg(ordered);
 	while (q--) {
 		int type, v;
-		std::cin >> type >> v;
+		input.read(type), input.read(v);
 		if (type == 0) {
 			long long x;
-			std::cin >> x;
-			seg.multiply(tree.in[v], x);
+			input.read(x);
+			seg.add(tree.in[v], x);
 		} else {
 			auto [l, r] = tree.subtree(v);
-			std::cout << seg.prod(l, r) << '\n';
+			output.println(seg.sum(l, r));
 		}
 	}
 }

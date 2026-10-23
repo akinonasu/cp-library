@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/consecutive_terms_of_linear_recurrent_sequence"
 #include "fps/rational_fps_coefficients.hpp"
-#include "fixtures/fps_io.hpp"
+#include "fixtures/fps_bulk_io.hpp"
 
 int main() {
 	FastInput input;

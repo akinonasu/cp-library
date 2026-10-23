@@ -34,6 +34,14 @@ int main() {
 	std::vector<IPoint> points{IPoint{}, IPoint{1, 0}, IPoint{-1, 0}, IPoint{0, 1}, IPoint{0, -1}};
 	std::mt19937_64 random(731);
 	for (int i = 0; i < 10000; ++i) points.emplace_back(std::int64_t(random() % 200001) - 100000, std::int64_t(random() % 200001) - 100000);
+	std::vector<Point<std::int32_t>> compact;
+	for (auto point : points) compact.emplace_back(point);
+	compact.emplace_back(INT_MIN, INT_MIN); compact.emplace_back(INT_MAX, INT_MIN);
+	compact.emplace_back(INT_MIN, INT_MAX); compact.emplace_back(INT_MAX, INT_MAX);
+	for (int trial = 0; trial < 10000; ++trial) {
+		auto a = compact[random() % compact.size()], b = compact[random() % compact.size()];
+		assert(PolarLess<std::int32_t>{}(a, b) == PolarLess<std::int64_t>{}(IPoint(a), IPoint(b)));
+	}
 	std::sort(points.begin(), points.end(), PolarLess<std::int64_t>{});
 	assert(points.front() == IPoint{});
 	Real previous = 0;

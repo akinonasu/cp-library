@@ -34,10 +34,14 @@ std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::ve
 	while (std::any_of(factors.begin(), factors.end(), [&](auto q) { return power(root, (p - 1) / q) == 1; })) ++root;
 	std::vector<T> x(p - 1), y(p - 1), result(p, T(0));
 	std::uint64_t value = 1;
-	for (std::uint32_t i = 0; i < p - 1; ++i, value = value * root % p) x[i] = a[value], y[i] = b[value];
+	std::vector<std::uint32_t> powers(p - 1);
+	for (std::uint32_t i = 0; i < p - 1; ++i, value = value * root % p) {
+		powers[i] = value;
+		x[i] = a[value], y[i] = b[value];
+	}
 	auto product = light_convolution::convolution(x, y);
-	value = 1;
-	for (const T &v : product) result[value] += v, value = value * root % p;
+	for (std::size_t i = p - 1; i < product.size(); ++i) product[i - (p - 1)] += product[i];
+	for (std::uint32_t i = 0; i < p - 1; ++i) result[powers[i]] = product[i];
 	T sum_a(0), sum_b(0);
 	for (std::size_t i = 1; i < a.size(); ++i) sum_a += a[i];
 	for (const T &v : b) sum_b += v;

@@ -2,6 +2,8 @@
 #define MIN_PLUS_CONVOLUTION_HPP
 
 #include "../components/smawk.hpp"
+#include "../components/min_plus_convolution_integral.hpp"
+#include "../components/min_plus_convolution_envelope.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -9,6 +11,8 @@
 #include <functional>
 #include <limits>
 #include <numeric>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 namespace min_plus_convolution_detail {
@@ -16,7 +20,10 @@ namespace min_plus_convolution_detail {
 template <class T, class Compare>
 std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, Compare compare) {
 	if (a.empty() || b.empty()) return {};
-	assert(a.size() + b.size() <= std::size_t(std::numeric_limits<int>::max()));
+	assert(a.size() <= std::size_t(std::numeric_limits<int>::max()) && b.size() <= std::size_t(std::numeric_limits<int>::max()) - a.size());
+	if constexpr (min_plus_convolution_integral_detail::supported<T>
+		&& (std::is_same_v<Compare, std::less<T>> || std::is_same_v<Compare, std::greater<T>>))
+		if (auto result = min_plus_convolution_integral_detail::multiply<T, std::is_same_v<Compare, std::less<T>>>(a, b)) return std::move(*result);
 	int n = a.size(), m = b.size(), length = n + m - 1;
 	std::vector<int> columns(m);
 	std::iota(columns.begin(), columns.end(), 0);
@@ -34,7 +41,10 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, Compar
 template <class T, class Compare>
 std::vector<T> opposite(const std::vector<T> &a, const std::vector<T> &b, Compare compare) {
 	if (a.empty() || b.empty()) return {};
-	assert(a.size() + b.size() <= std::size_t(std::numeric_limits<int>::max()));
+	assert(a.size() <= std::size_t(std::numeric_limits<int>::max()) && b.size() <= std::size_t(std::numeric_limits<int>::max()) - a.size());
+	if constexpr (min_plus_convolution_integral_detail::supported<T>
+		&& (std::is_same_v<Compare, std::less<T>> || std::is_same_v<Compare, std::greater<T>>))
+		if (auto result = min_plus_convolution_envelope_detail::multiply<T, std::is_same_v<Compare, std::less<T>>>(a, b)) return std::move(*result);
 	int n = a.size(), m = b.size(), length = n + m - 1;
 	std::vector<T> result(length, a[0] + b[0]);
 	std::vector<std::uint8_t> done(length);

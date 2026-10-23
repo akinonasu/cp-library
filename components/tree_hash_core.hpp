@@ -76,6 +76,36 @@ inline Rooting root_tree(const std::vector<std::vector<int>> &graph, int root) {
 	return result;
 }
 
+inline Rooting root_parents(const std::vector<int> &parent) {
+	assert(parent.size() <= std::size_t(std::numeric_limits<int>::max()));
+	const int n = static_cast<int>(parent.size());
+	Rooting result;
+	result.parent = parent;
+	result.height.assign(n, 0);
+	result.size.assign(n, 1);
+	result.order.reserve(n);
+	std::vector<int> degree(n);
+	int root = -1;
+	for (int v = 0; v < n; ++v) {
+		int p = parent[v];
+		assert(p == -1 || (0 <= p && p < n && p != v));
+		if (p == -1) { assert(root == -1); root = v; }
+		else ++degree[p];
+	}
+	assert(!n || root != -1);
+	for (int v = 0; v < n; ++v) if (!degree[v]) result.order.push_back(v);
+	for (std::size_t i = 0; i < result.order.size(); ++i) {
+		int v = result.order[i], p = parent[v];
+		if (p == -1) continue;
+		result.height[p] = std::max(result.height[p], result.height[v] + 1);
+		result.size[p] += result.size[v];
+		if (!--degree[p]) result.order.push_back(p);
+	}
+	assert(result.order.size() == parent.size());
+	std::reverse(result.order.begin(), result.order.end());
+	return result;
+}
+
 inline TreeHashValue salt_at(int height, std::uint64_t seed) {
 	SplitMix64 random(seed + std::uint64_t(height) * 2 * 0x9e3779b97f4a7c15ULL);
 	return { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
@@ -89,9 +119,9 @@ inline void append(TreeHashValue &hash, const TreeHashValue &child, const TreeHa
 	}
 }
 
-inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &graph, const Rooting &tree, std::uint64_t seed) {
-	std::vector<TreeHashValue> result(graph.size(), TreeHashValue{ {1, 1} });
-	if (graph.empty()) return result;
+inline std::vector<TreeHashValue> hashes(const Rooting &tree, std::uint64_t seed) {
+	std::vector<TreeHashValue> result(tree.parent.size(), TreeHashValue{ {1, 1} });
+	if (result.empty()) return result;
 	std::vector<TreeHashValue> salt(tree.height[tree.order[0]] + 1);
 	SplitMix64 random(seed);
 	for (auto &value : salt) value = { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
@@ -100,6 +130,11 @@ inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &gr
 		append(result[p], result[v], salt[tree.height[p]]);
 	}
 	return result;
+}
+
+inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &graph, const Rooting &tree, std::uint64_t seed) {
+	assert(graph.size() == tree.parent.size());
+	return hashes(tree, seed);
 }
 
 }

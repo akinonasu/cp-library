@@ -108,6 +108,27 @@ void pair_check(P x, P y) {
 	assert(a.is_ancestor(b) == (expected == a));
 }
 
+void approximation_check(U x, U y, U n, U d) {
+	auto [l, r] = Tree::approximate(x, y, n, d);
+	assert(l.first <= n && l.second <= d && r.first <= n && r.second <= d);
+	assert(std::gcd(l.first, l.second) == 1 && std::gcd(r.first, r.second) == 1);
+	assert(W(l.first) * y <= W(x) * l.second && W(x) * r.second <= W(r.first) * y);
+	if (l == r) assert(W(l.first) * y == W(x) * l.second);
+	else {
+		assert(W(l.first) * y < W(x) * l.second && W(x) * r.second < W(r.first) * y);
+		assert(W(r.first) * l.second - W(l.first) * r.second == 1);
+		assert(W(l.first) + r.first > n || W(l.second) + r.second > d);
+	}
+	if (n == d) assert(Tree::approximate(x, y, n) == std::pair(l, r));
+	if (n <= 12 && d <= 12) {
+		for (U a = 0; a <= n; ++a) for (U b = 0; b <= d; ++b) {
+			if (!a && !b) continue;
+			if (W(a) * y <= W(x) * b) assert(W(a) * l.second <= W(l.first) * b);
+			if (W(a) * y >= W(x) * b) assert(W(r.first) * b <= W(a) * r.second);
+		}
+	}
+}
+
 int main() {
 	std::mt19937_64 rng(519214);
 	Tree root;
@@ -153,6 +174,15 @@ int main() {
 	assert(small.distance(SternBrocotTree<std::uint32_t>(1, UINT32_MAX)) == 2 * (std::uint64_t(UINT32_MAX) - 1));
 	SternBrocotTree<std::int16_t> narrow(INT16_MAX, 1);
 	assert(!narrow.move_right() && narrow.move_up(INT16_MAX - 1) && narrow.is_root());
+	for (U x = 1; x <= 25; ++x) for (U y = 1; y <= 25; ++y)
+		for (U n = 1; n <= 12; ++n) for (U d = 1; d <= 12; ++d) approximation_check(x, y, n, d);
+	for (int i = 0; i < 10000; ++i) approximation_check(rng() | 1, rng() | 1, rng() | 1, rng() | 1);
+	for (U x : {U(1), U(2), UINT64_MAX / 2, UINT64_MAX - 1, UINT64_MAX})
+		for (U y : {U(1), U(2), UINT64_MAX - 1, UINT64_MAX})
+			for (U n : {U(1), U(2), UINT64_MAX / 2, UINT64_MAX - 1, UINT64_MAX})
+				for (U d : {U(1), U(2), UINT64_MAX - 1, UINT64_MAX}) approximation_check(x, y, n, d);
+	assert((SternBrocotTree<std::int16_t>::approximate(5, 3, 2) == std::pair(std::pair<std::int16_t, std::int16_t>(1, 1), std::pair<std::int16_t, std::int16_t>(2, 1))));
+	assert((SternBrocotTree<std::uint32_t>::approximate(UINT32_MAX, UINT32_MAX - 1, UINT32_MAX).first == std::pair(UINT32_MAX, UINT32_MAX - 1)));
 	fraction rational(22, 14);
 	assert(Tree(rational.numerator(), rational.denominator()).value() == P(11, 7));
 }

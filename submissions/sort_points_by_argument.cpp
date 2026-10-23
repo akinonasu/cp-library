@@ -122,8 +122,15 @@ struct PolarLess {
 		if (a == Point<T>{} || b == Point<T>{}) return a == Point<T>{} && b != Point<T>{};
 		auto half = [](Point<T> p) { return p.y < 0 || (p.y == 0 && p.x < 0); };
 		if (half(a) != half(b)) return half(a) < half(b);
-		if (auto c = cross(a, b); c != 0) return c > 0;
-		return norm2(a) < norm2(b);
+		if constexpr (integer<T> && sizeof(T) <= 4) {
+			auto c = std::int64_t(a.x) * b.y - std::int64_t(a.y) * b.x;
+			if (c) return c > 0;
+			auto norm = [](Point<T> p) { return std::uint64_t(std::int64_t(p.x) * p.x) + std::uint64_t(std::int64_t(p.y) * p.y); };
+			return norm(a) < norm(b);
+		} else {
+			if (auto c = cross(a, b); c != 0) return c > 0;
+			return norm2(a) < norm2(b);
+		}
 	}
 };
 }
@@ -373,9 +380,9 @@ int main() {
 	FastInput input;
 	FastOutput output;
 	int n = 0; input.read(n);
-	std::vector<geometry::IPoint> points(n);
+	std::vector<geometry::Point<std::int32_t>> points(n);
 	for (auto &p : points) input.read(p.x), input.read(p.y);
-	std::sort(points.begin(), points.end(), geometry::PolarLess<std::int64_t>{});
+	std::sort(points.begin(), points.end(), geometry::PolarLess<std::int32_t>{});
 	auto lower = std::find_if(points.begin(), points.end(), [](auto p) { return p.y < 0; });
 	std::rotate(points.begin(), lower, points.end());
 	for (auto p : points) output.write(p.x), output.write(' '), output.println(p.y);

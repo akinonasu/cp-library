@@ -4,43 +4,15 @@
 
 
 
-#include <bit>
 #include <cassert>
-#include <complex>
 #include <cstddef>
-#include <cstdint>
-#include <type_traits>
 #include <vector>
-
-#line 1 "convolution/convolution.hpp"
-
-
-
-#line 5 "convolution/convolution.hpp"
-#include <limits>
-#line 8 "convolution/convolution.hpp"
-
-#line 1 "fps/fps.hpp"
-
-
-
-#line 1 "components/fps_operations.hpp"
-
-
-
-#line 1 "components/ntt.hpp"
+#line 1 "components/multivariate_convolution_core.hpp"
 
 
 
 #include <algorithm>
-#line 7 "components/ntt.hpp"
-#include <initializer_list>
-#include <memory>
-#include <new>
-#line 11 "components/ntt.hpp"
-#include <utility>
-#line 13 "components/ntt.hpp"
-
+#include <bit>
 #line 1 "components/mint_arithmetic.hpp"
 
 
@@ -51,7 +23,7 @@
 #line 4 "math/mint.hpp"
 #include <istream>
 #include <ostream>
-#line 7 "math/mint.hpp"
+#include <type_traits>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -69,7 +41,7 @@ struct Mint {
 	using mint = Mint;
 	unsigned v = 0;
 	static constexpr unsigned mod() { return 998244353; }
-	static unsigned reduce(unsigned long long x) {
+	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -79,17 +51,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	static Mint raw(unsigned x) {
+	[[gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	static Mint word(unsigned x) {
+	[[gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	unsigned val() const {
+	[[gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -101,17 +73,17 @@ struct Mint {
 	friend std::ostream &operator<<(std::ostream &os, const Mint &x) {
 		return os << x.val();
 	}
-	Mint &operator+=(Mint b) {
+	[[gnu::always_inline]] Mint &operator+=(Mint b) {
 		v += b.v;
 		if (v >= 2 * mod()) v -= 2 * mod();
 		return *this;
 	}
-	Mint &operator-=(Mint b) {
+	[[gnu::always_inline]] Mint &operator-=(Mint b) {
 		v -= b.v;
 		if (v >> 31) v += 2 * mod();
 		return *this;
 	}
-	Mint &operator*=(Mint b) {
+	[[gnu::always_inline]] Mint &operator*=(Mint b) {
 		v = reduce((unsigned long long)v * b.v);
 		return *this;
 	}
@@ -128,14 +100,14 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	Mint operator+() const { return *this; }
-	Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	Mint operator+(Mint b) const { return Mint(*this) += b; }
-	Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[gnu::always_inline]] Mint operator+() const { return *this; }
+	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
 	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	bool operator!=(Mint b) const { return !(*this == b); }
+	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
 	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
@@ -273,6 +245,695 @@ struct Ops {
 #pragma GCC pop_options
 #endif
 
+
+#line 9 "components/multivariate_convolution_core.hpp"
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+namespace multivariate_convolution_detail {
+struct Core : mint_detail::Ops {
+	static int modulus(int k) {
+		for (int m : {1, 2, 4, 7, 8, 14, 16, 17, 28, 32})
+			if (m >= k) return m;
+		return int(std::bit_ceil(unsigned(k)));
+	}
+	static bool available() {
+#if (defined(__x86_64__) || defined(__i386__)) && !defined(MULTIVARIATE_CONVOLUTION_DISABLE_AVX2)
+		return vectorized();
+#else
+		return false;
+#endif
+	}
+#if defined(__x86_64__) || defined(__i386__)
+	__attribute__((target("avx2"))) static void row8(std::vector<mint> &out, const std::vector<std::vector<mint>> &a, const std::vector<std::vector<mint>> &b, int row, const std::vector<int> &parts) {
+		const auto p = _mm256_set1_epi32(mod), r = _mm256_set1_epi32(998244351), two = _mm256_set1_epi32(twice);
+		for (std::size_t i = 0; i < out.size(); i += 8) {
+			auto sum = _mm256_setzero_si256();
+			for (std::size_t j = 0; j < parts.size(); j += 8) {
+				auto even = _mm256_setzero_si256(), odd = even;
+				for (std::size_t k = j; k < std::min(j + 8, parts.size()); ++k) {
+					auto x = load8(reinterpret_cast<const U *>(a[parts[k]].data() + i));
+					auto y = load8(reinterpret_cast<const U *>(b[row - parts[k]].data() + i));
+					x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+					y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
+					even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
+					odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
+				}
+				even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, r), p));
+				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, r), p));
+				auto value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+				value = _mm256_min_epu32(value, _mm256_sub_epi32(value, two));
+				sum = add8(sum, value);
+			}
+			store8(reinterpret_cast<U *>(out.data() + i), sum);
+		}
+	}
+#endif
+	static void row(std::vector<mint> &out, const std::vector<std::vector<mint>> &a, const std::vector<std::vector<mint>> &b, int index, const std::vector<int> &parts) {
+#if defined(__x86_64__) || defined(__i386__)
+		if (out.size() >= 8 && available()) return row8(out, a, b, index, parts);
+#endif
+		std::fill(out.begin(), out.end(), mint(0));
+		for (int p : parts)
+			for (std::size_t i = 0; i < out.size(); ++i) out[i] += a[p][i] * b[index - p][i];
+	}
+	template <class Transform, class Product>
+	static std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<mint> &b, std::vector<int> dims, Transform transform, Product product) {
+		int n = a.size();
+		std::vector<int> order(dims.size());
+		for (int j = 0; j < int(order.size()); ++j) order[j] = j;
+		std::stable_sort(order.begin(), order.end(), [&](int x, int y) { return dims[x] > dims[y]; });
+		std::vector<int> sorted;
+		for (int j : order) sorted.push_back(dims[j]);
+		int split = sorted.size(), inner = n, outer = 1;
+		double best = 1e300, pairs = 1;
+		for (int k = int(sorted.size()), q = 1, size = n; k; size /= sorted[--k], q *= sorted[k]) {
+			int length = std::bit_ceil(unsigned(2 * size - 1));
+			double cost = modulus(k) * length * (3.0 * q * std::bit_width(unsigned(length)) + pairs * 5.0);
+			if (cost < best) best = cost, split = k, inner = size, outer = q;
+			pairs *= sorted[k - 1] * (sorted[k - 1] + 1.0) / 2;
+			if (q > 128 / sorted[k - 1]) break;
+		}
+		std::vector<int> target(dims.size());
+		for (int j = 0, s = 1; j < int(dims.size()); s *= sorted[j++]) target[order[j]] = s;
+		std::vector<int> permutation(n), digit(dims.size());
+		for (int i = 0, p = 0; i < n; ++i) {
+			permutation[i] = p;
+			for (int j = 0; j < int(dims.size()); ++j) {
+				p += target[j];
+				if (++digit[j] < dims[j]) break;
+				digit[j] = 0, p -= target[j] * dims[j];
+			}
+		}
+		std::vector<mint> f(n), g(n), result(n), output(n);
+		for (int i = 0; i < n; ++i) f[permutation[i]] = a[i], g[permutation[i]] = b[i];
+		int m = modulus(split), length = std::bit_ceil(unsigned(2 * inner - 1));
+		std::vector<unsigned char> ranks(inner);
+		for (int base = sorted[0], j = 1; j < split; base *= sorted[j++])
+			for (int i = 0; i < inner; ++i) ranks[i] = (ranks[i] + i / base) % m;
+		std::vector<std::vector<int>> parts(outer);
+		for (int e = 0; e < outer; ++e)
+			for (int x = 0; x <= e; ++x) {
+				bool valid = true;
+				for (int j = split, u = x, v = e; j < int(sorted.size()); u /= sorted[j], v /= sorted[j++])
+					if (u % sorted[j] > v % sorted[j]) { valid = false; break; }
+				if (valid) parts[e].push_back(x);
+			}
+		std::vector<std::vector<mint>> x(outer, std::vector<mint>(outer == 1 ? inner : length)), y = x;
+		std::vector<mint> z(length), weights(m), inverse(m);
+		mint root = mint(3).pow((mod - 1) / m), scale = mint(m).inv();
+		for (int s = 0; s < m; ++s) {
+			mint step = root.pow(s), back = step.inv();
+			weights[0] = 1, inverse[0] = scale;
+			for (int j = 1; j < m; ++j) weights[j] = weights[j - 1] * step, inverse[j] = inverse[j - 1] * back;
+			for (int row = 0; row < outer; ++row) {
+				std::fill(x[row].begin() + inner, x[row].end(), mint(0));
+				std::fill(y[row].begin() + inner, y[row].end(), mint(0));
+				for (int i = 0; i < inner; ++i) x[row][i] = f[row * inner + i] * weights[ranks[i]], y[row][i] = g[row * inner + i] * weights[ranks[i]];
+				if (outer != 1) transform(x[row], false), transform(y[row], false);
+			}
+			for (int row = outer; row-- > 0;) {
+				if (outer == 1) z = product(x[0], y[0]);
+				else Core::row(z, x, y, row, parts[row]), transform(z, true);
+				for (int i = 0; i < inner; ++i) result[row * inner + i] += z[i] * inverse[ranks[i]];
+			}
+		}
+		for (int i = 0; i < n; ++i) output[i] = result[permutation[i]];
+		return output;
+	}
+};
+}
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
+
+
+#line 1 "components/multivariate_ranked.hpp"
+
+
+
+#line 5 "components/multivariate_ranked.hpp"
+#include <array>
+#line 7 "components/multivariate_ranked.hpp"
+#include <cstdint>
+#include <cstring>
+#include <iterator>
+#include <ranges>
+#line 13 "components/multivariate_ranked.hpp"
+
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#include <immintrin.h>
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+namespace multivariate_ranked_detail {
+using u32 = std::uint32_t;
+using u64 = std::uint64_t;
+using Vec = __m256i;
+constexpr u32 kP = 998244353;
+constexpr u32 kPInverse = [] {
+	u32 x = kP;
+	for (int i = 0; i < 5; ++i) x *= 2 - kP * x;
+	return x;
+}();
+constexpr u32 k2To32 = u32((u64(1) << 32) % kP);
+constexpr u32 multiply_mod(u32 a, u32 b) { return u32(u64(a) * b % kP); }
+constexpr u32 power_mod(u32 a, u64 e) {
+	u32 r = 1;
+	for (; e; e >>= 1, a = multiply_mod(a, a))
+		if (e & 1) r = multiply_mod(r, a);
+	return r;
+}
+constexpr u32 inverse_mod(u32 a) { return power_mod(a, kP - 2); }
+constexpr u32 montgomery(u32 a) { return multiply_mod(a, k2To32); }
+__attribute__((target("avx2"))) inline Vec all(u32 x) { return _mm256_set1_epi32(int(x)); }
+__attribute__((target("avx2"))) inline Vec load(const void* p) { return _mm256_loadu_si256(static_cast<const Vec*>(p)); }
+__attribute__((target("avx2"))) inline void store(void* p, Vec x) { _mm256_storeu_si256(static_cast<Vec*>(p), x); }
+__attribute__((target("avx2"))) inline Vec add_mod(Vec x, Vec y) {
+	const Vec s = _mm256_add_epi32(x, y);
+	return _mm256_min_epu32(s, _mm256_sub_epi32(s, all(kP)));
+}
+__attribute__((target("avx2"))) inline Vec sub_mod(Vec x, Vec y) {
+	const Vec d = _mm256_sub_epi32(x, y);
+	return _mm256_min_epu32(d, _mm256_add_epi32(d, all(kP)));
+}
+template <bool Wide>
+__attribute__((target("avx2"))) inline Vec reduce(Vec even, Vec odd) {
+	Vec high = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
+	if constexpr (Wide) {
+		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, all(2 * kP)));
+		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, all(2 * kP)));
+		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, all(kP)));
+	}
+	const Vec qe = _mm256_mul_epu32(even, all(kPInverse)), qo = _mm256_mul_epu32(odd, all(kPInverse));
+	const Vec me = _mm256_mul_epu32(qe, all(kP)), mo = _mm256_mul_epu32(qo, all(kP));
+	const Vec r = _mm256_sub_epi32(high, _mm256_blend_epi32(_mm256_srli_epi64(me, 32), mo, 0xAA));
+	return _mm256_min_epu32(r, _mm256_add_epi32(r, all(kP)));
+}
+__attribute__((target("avx2"))) inline Vec fold(Vec s) {
+	return _mm256_add_epi64(_mm256_and_si256(s, _mm256_set1_epi64x(0xFFFFFFFF)),
+		_mm256_mul_epu32(_mm256_srli_epi64(s, 32), _mm256_set1_epi64x(k2To32)));
+}
+__attribute__((target("avx2"))) inline Vec montgomery_multiply(Vec x, Vec y) {
+	const Vec even = _mm256_mul_epu32(x, y);
+	const Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32));
+	return reduce<false>(even, odd);
+}
+struct Buffer {
+	Vec* data;
+	explicit Buffer(std::size_t n) : data(new Vec[n]()) {}
+	Buffer(const Buffer&) = delete;
+	Buffer& operator=(const Buffer&) = delete;
+	~Buffer() { delete[] data; }
+};
+constexpr int kMaxRank = 24;
+__attribute__((target("avx2"))) inline Vec by_popcount(const Vec* x) {
+	const Vec low = _mm256_blend_epi32(x[0], x[1], 0x16);
+	return _mm256_blend_epi32(_mm256_blend_epi32(low, x[2], 0x68), x[3], 0x80);
+}
+template <bool Inverse>
+__attribute__((target("avx2"))) inline Vec lanes_transform(Vec x) {
+	if constexpr (Inverse) {
+		x = sub_mod(x, _mm256_slli_epi64(x, 32));
+		x = sub_mod(x, _mm256_slli_si256(x, 8));
+		return sub_mod(x, _mm256_permute2x128_si256(x, x, 0x08));
+	} else {
+		x = add_mod(x, _mm256_slli_epi64(x, 32));
+		x = add_mod(x, _mm256_slli_si256(x, 8));
+		return add_mod(x, _mm256_permute2x128_si256(x, x, 0x08));
+	}
+}
+template <bool Inverse, int N>
+__attribute__((target("avx2"))) inline void evaluate_line(Vec* v, int stride) {
+	Vec &a0 = v[0], &a1 = v[stride];
+	if constexpr (N == 2) {
+		a1 = Inverse ? sub_mod(a1, a0) : add_mod(a1, a0);
+	} else if constexpr (!Inverse) {
+		Vec& a2 = v[2 * stride];
+		const Vec s = add_mod(a0, a2);
+		a2 = sub_mod(s, a1), a1 = add_mod(s, a1);
+	} else {
+		Vec& a2 = v[2 * stride];
+		const Vec f0 = add_mod(a0, a0), f1 = a1, f2 = a2;
+		a0 = f0, a1 = sub_mod(f1, f2), a2 = sub_mod(add_mod(f1, f2), f0);
+	}
+}
+template <bool Inverse, int A, int B>
+__attribute__((target("avx2"))) inline void variable_step(Vec* p, std::size_t sa, std::size_t sb, int first, int last) {
+	for (int r = first; r <= last; ++r) {
+		Vec v[A * B];
+#pragma GCC unroll 9
+		for (int j = 0; j < B; ++j)
+#pragma GCC unroll 3
+			for (int i = 0; i < A; ++i) v[i + A * j] = p[r + i * sa + j * sb];
+#pragma GCC unroll 3
+		for (int j = 0; j < B; ++j) evaluate_line<Inverse, A>(v + A * j, 1);
+		if constexpr (B > 1)
+#pragma GCC unroll 3
+			for (int i = 0; i < A; ++i) evaluate_line<Inverse, B>(v + i, A);
+#pragma GCC unroll 9
+		for (int j = 0; j < B; ++j)
+#pragma GCC unroll 3
+			for (int i = 0; i < A; ++i) p[r + i * sa + j * sb] = v[i + A * j];
+	}
+}
+__attribute__((target("avx2"))) inline void add_row(Vec* dst, const Vec* src, std::size_t count, bool negative, bool first) {
+	const Vec zero = _mm256_setzero_si256();
+	if (first && negative)
+		for (std::size_t i = 0; i < count; ++i) store(dst + i, sub_mod(zero, load(src + i)));
+	else if (first)
+		for (std::size_t i = 0; i < count; ++i) store(dst + i, load(src + i));
+	else if (negative)
+		for (std::size_t i = 0; i < count; ++i) store(dst + i, sub_mod(load(dst + i), load(src + i)));
+	else
+		for (std::size_t i = 0; i < count; ++i) store(dst + i, add_mod(load(dst + i), load(src + i)));
+}
+struct Term {
+	u32 row;
+	bool negative;
+	std::uint8_t rank;
+	bool first = false;
+};
+class Ranked {
+public:
+	Ranked(const std::vector<u32>& n, std::size_t size) : size_(size) {
+		const std::size_t k = n.size();
+		std::vector<u32> order;
+		for (std::size_t l = 0; l < k && order.size() < 3; ++l)
+			if (n[l] == 2) order.push_back(u32(l));
+		for (std::size_t l = 0; l < k; ++l)
+			if (std::ranges::find(order, u32(l)) == order.end()) order.push_back(u32(l));
+		for (u32 l : order) size_of_.push_back(n[l]);
+		for (u32 x : n) rank_ += int(x) - 1, threes_ += x == 3;
+		bottom_ = 3, bottom_size_ = 8;
+		while (bottom_ < k && 8 * std::size_t(rank_ + 1) * bottom_size_ * size_of_[bottom_] <= (640 << 10))
+			bottom_size_ *= size_of_[bottom_++];
+		top_size_ = size_ / bottom_size_;
+		int top_rank = 0;
+		for (std::size_t l = bottom_; l < k; ++l) top_rank += int(size_of_[l]) - 1;
+		planes_ = top_rank + 1;
+		if (!std::ranges::is_sorted(order)) {
+			std::vector<u32> stride(k + 1);
+			for (std::size_t l = 0, s = 1; l <= k; s *= l < k ? n[l] : 1, ++l) stride[l] = u32(s);
+			for (int w = 0; w < 8; ++w)
+				lane_offset_[w] = (w & 1 ? stride[order[0]] : 0) + (w & 2 ? stride[order[1]] : 0) + (w & 4 ? stride[order[2]] : 0);
+			std::vector<u32> base{0};
+			for (u32 l = 0; l < order[2]; ++l) {
+				if (l == order[0] || l == order[1]) continue;
+				const std::size_t count = base.size();
+				for (u32 d = 1; d < n[l]; ++d)
+					for (std::size_t i = 0; i < count; ++i) base.push_back(base[i] + d * stride[l]);
+			}
+			block_base_ = std::move(base);
+		}
+		describe_vectors();
+		describe_ranges();
+		describe_top();
+	}
+	__attribute__((target("avx2"))) void multiply(u32* f, u32* g, u32* c) {
+		std::vector<u32> scratch_storage(reordered() ? 8 * block_base_.size() : 0);
+		u32* scratch = scratch_storage.data();
+		to_our_order(f, scratch);
+		to_our_order(g, scratch);
+		const u32 *fo = f, *go = g;
+		u32* co = c;
+		const std::size_t vectors = bottom_size_ / 8, plane = std::size_t(planes_) * vectors;
+		const std::size_t rows = vectors / group_;
+		Buffer top_f_storage(plane), top_g_storage(plane), a_storage(std::size_t(rank_ + 1) * vectors), b_storage(std::size_t(rank_ + 1) * vectors);
+		Vec *top_f = top_f_storage.data, *top_g = top_g_storage.data, *a = a_storage.data, *b = b_storage.data;
+		for (std::size_t t = 0; t < top_size_; ++t) {
+			evaluate_top(fo, t, top_f);
+			evaluate_top(go, t, top_g);
+			if (const int z = top_zeros3_[t]) {
+				const Vec factor = all(montgomery(power_mod(2, z)));
+				for (std::size_t i = 0; i < plane; ++i) top_f[i] = montgomery_multiply(top_f[i], factor);
+			}
+			const int forward_extra = top_cap_[t] + 3, inverse_extra = planes_ + 2;
+			for (std::size_t s = 0; s < vectors; s += group_) {
+				spread(top_f, a, s);
+				steps<false>(a, forward_, 0, forward_.split, s, 1, group_, forward_extra);
+				spread(top_g, b, s);
+				steps<false>(b, forward_, 0, forward_.split, s, 1, group_, forward_extra);
+			}
+			for (std::size_t s = 0; s < group_; ++s) {
+				steps<false>(a, forward_, forward_.split, forward_.steps.size(), s, group_, rows, forward_extra);
+				steps<false>(b, forward_, forward_.split, forward_.steps.size(), s, group_, rows, forward_extra);
+				pointwise(a, b, s, group_, rows, top_cap_[t], top_nz_[t]);
+				steps<true>(a, inverse_, 0, inverse_.split, s, group_, rows, inverse_extra);
+			}
+			for (std::size_t s = 0; s < vectors; s += group_) {
+				steps<true>(a, inverse_, inverse_.split, inverse_.steps.size(), s, 1, group_, inverse_extra);
+				gather(a, top_f, s);
+			}
+			interpolate_top(top_f, t, co);
+		}
+		const Vec scale = all(montgomery(multiply_mod(k2To32, power_mod(inverse_mod(2), threes_))));
+		if (!reordered()) {
+			for (std::size_t i = 0; i < size_; i += 8) store(c + i, montgomery_multiply(load(c + i), scale));
+			return;
+		}
+		const std::size_t block = 8 * block_base_.size();
+		for (std::size_t s = 0; s < size_; s += block) {
+			std::memcpy(scratch, c + s, block * sizeof(u32));
+			for (std::size_t u = 0; u < block_base_.size(); ++u) {
+				alignas(32) u32 x[8];
+				store(x, montgomery_multiply(load(scratch + 8 * u), scale));
+				for (int w = 0; w < 8; ++w) c[s + block_base_[u] + lane_offset_[w]] = x[w];
+			}
+		}
+	}
+private:
+	struct Range {
+		std::uint8_t first, span;
+	};
+	struct Step {
+		u32 first, width;
+		std::size_t stride;
+	};
+	struct Pass {
+		std::vector<Step> steps;
+		std::size_t split = 0;
+		std::vector<Range> ranges;
+	};
+	bool reordered() const { return !block_base_.empty(); }
+	__attribute__((target("avx2"))) void to_our_order(u32* x, u32* scratch) const {
+		if (!reordered()) return;
+		const std::size_t block = 8 * block_base_.size();
+		const Vec offset = load(lane_offset_.data());
+		for (std::size_t s = 0; s < size_; s += block) {
+			std::memcpy(scratch, x + s, block * sizeof(u32));
+			for (std::size_t u = 0; u < block_base_.size(); ++u)
+				store(x + s + 8 * u,
+					  _mm256_i32gather_epi32(reinterpret_cast<const int*>(scratch + block_base_[u]), offset, 4));
+		}
+	}
+	void describe_vectors() {
+		const std::size_t count = bottom_size_ / 8;
+		vector_sum_.resize(count), vector_cap_.resize(count), vector_nz_.resize(count);
+		std::vector<u32> digit(bottom_, 0);
+		int sum = 0, cap = 0, nz = 0;
+		for (std::size_t u = 0; u < count; ++u) {
+			vector_sum_[u] = std::uint8_t(sum), vector_cap_[u] = std::uint8_t(cap), vector_nz_[u] = std::uint8_t(nz);
+			for (std::size_t l = 3; l < bottom_; ++l) {
+				const int n = int(size_of_[l]);
+				if (++digit[l] < u32(n)) {
+					++sum;
+					if (digit[l] == 1) cap += n - 1, ++nz;
+					break;
+				}
+				digit[l] = 0, sum -= n - 1, cap -= n - 1, --nz;
+			}
+		}
+	}
+	void describe_ranges() {
+		const std::size_t count = bottom_size_ / 8;
+		std::size_t boundary = 3;
+		for (group_ = 1; group_ * group_ < count; group_ *= size_of_[boundary++]) {
+		}
+		const auto pairs = [this](std::size_t from, std::size_t to, bool inverse) {
+			std::vector<Step> steps;
+			for (std::size_t l = from; l < to;) {
+				const bool pair = l + 1 < to && (!inverse || (size_of_[l] == 2 && size_of_[l + 1] == 2));
+				steps.push_back({u32(l), pair ? 2u : 1u, 0});
+				l += pair ? 2 : 1;
+			}
+			if (inverse) std::ranges::reverse(steps);
+			return steps;
+		};
+		forward_.steps = pairs(3, boundary, false);
+		forward_.split = forward_.steps.size();
+		std::ranges::copy(pairs(boundary, bottom_, false), std::back_inserter(forward_.steps));
+		inverse_.steps = pairs(boundary, bottom_, true);
+		inverse_.split = inverse_.steps.size();
+		std::ranges::copy(pairs(3, boundary, true), std::back_inserter(inverse_.steps));
+		for (const bool inverse : {false, true}) {
+			Pass& pass = inverse ? inverse_ : forward_;
+			for (Step& step : pass.steps) {
+				step.stride = 1;
+				for (std::size_t m = 3; m < step.first; ++m) step.stride *= size_of_[m];
+			}
+			pass.ranges.resize(pass.steps.size() * count);
+			std::vector<u32> digit(bottom_, 0);
+			for (std::size_t u = 0; u < count; ++u) {
+				for (std::size_t k = 0; k < pass.steps.size(); ++k) {
+					const std::size_t l = pass.steps[k].first, e = l + pass.steps[k].width - 1;
+					int above = 0, cap = 0, own = 0, up_to = 0;
+					for (std::size_t m = 3; m < bottom_; ++m) {
+						const int d = int(digit[m]), n = int(size_of_[m]);
+						if (m > e) above += d;
+						if (m < l) cap += d ? n - 1 : 0;
+						if (m >= l && m <= e) own += n - 1;
+						if (m <= e) up_to += n - 1;
+					}
+					pass.ranges[k * count + u] = inverse ? Range{std::uint8_t(above), std::uint8_t(up_to)}
+														 : Range{std::uint8_t(above), std::uint8_t(own + cap)};
+				}
+				for (std::size_t l = 3; l < bottom_ && ++digit[l] == size_of_[l]; ++l) digit[l] = 0;
+			}
+		}
+	}
+	void describe_top() {
+		struct Entry {
+			u32 digit;
+			bool negative;
+		};
+		static constexpr Entry kEvaluate[2][3][3] = {
+			{{{0, false}}, {{0, false}, {1, false}}, {}},
+			{{{0, false}}, {{0, false}, {1, false}, {2, false}}, {{0, false}, {1, true}, {2, false}}}};
+		static constexpr Entry kInterpolate[2][3][3] = {
+			{{{0, false}, {1, true}}, {{1, false}}, {}},
+			{{{0, false}, {2, true}}, {{1, false}, {2, false}}, {{1, true}, {2, false}}}};
+		static constexpr int kEvaluateCount[2][3] = {{1, 2, 0}, {1, 3, 3}};
+		static constexpr int kInterpolateCount[2][3] = {{2, 1, 0}, {2, 2, 2}};
+		const std::size_t k = size_of_.size();
+		evaluate_start_.push_back(0), interpolate_start_.push_back(0);
+		std::vector<u32> point(k, 0);
+		for (std::size_t t = 0; t < top_size_; ++t) {
+			std::vector<Term> evaluate{{0, false, 0}}, interpolate{{0, false, 0}};
+			int cap = 0, nz = 0, zeros3 = 0;
+			u32 stride = 1;
+			for (std::size_t l = bottom_; l < k; stride *= size_of_[l++]) {
+				const u32 p = point[l];
+				const bool three = size_of_[l] == 3;
+				if (p) cap += int(size_of_[l]) - 1, ++nz;
+				zeros3 += three && p == 0;
+				const auto extend = [&](std::vector<Term>& terms, const Entry* table, int count) {
+					std::vector<Term> next;
+					for (const Term& x : terms)
+						for (int e = 0; e < count; ++e) {
+							const u32 d = table[e].digit;
+							next.push_back({x.row + d * stride, x.negative != table[e].negative, std::uint8_t(x.rank + d)});
+						}
+					terms = std::move(next);
+				};
+				extend(evaluate, kEvaluate[three][p], kEvaluateCount[three][p]);
+				extend(interpolate, kInterpolate[three][p], kInterpolateCount[three][p]);
+			}
+			std::vector<bool> seen(planes_, false);
+			for (Term& term : evaluate) term.first = !seen[term.rank], seen[term.rank] = true;
+			terms_.insert(terms_.end(), evaluate.begin(), evaluate.end());
+			evaluate_start_.push_back(u32(terms_.size()));
+			inverse_terms_.insert(inverse_terms_.end(), interpolate.begin(), interpolate.end());
+			interpolate_start_.push_back(u32(inverse_terms_.size()));
+			top_cap_.push_back(std::uint8_t(cap)), top_nz_.push_back(std::uint8_t(nz));
+			top_zeros3_.push_back(std::uint8_t(zeros3));
+			for (std::size_t l = bottom_; l < k && ++point[l] == size_of_[l]; ++l) point[l] = 0;
+		}
+	}
+	__attribute__((target("avx2"))) void evaluate_top(const u32* x, std::size_t t, Vec* planes) const {
+		const std::size_t vectors = bottom_size_ / 8, filled = top_cap_[t] + std::size_t(1);
+		std::memset(static_cast<void*>(planes + filled * vectors), 0, (planes_ - filled) * vectors * sizeof(Vec));
+		for (u32 i = evaluate_start_[t]; i < evaluate_start_[t + 1]; ++i) {
+			const Term& term = terms_[i];
+			add_row(planes + term.rank * vectors, reinterpret_cast<const Vec*>(x + term.row * bottom_size_), vectors,
+					term.negative, term.first);
+		}
+	}
+	__attribute__((target("avx2"))) void interpolate_top(const Vec* planes, std::size_t t, u32* c) const {
+		const std::size_t vectors = bottom_size_ / 8;
+		for (u32 i = interpolate_start_[t]; i < interpolate_start_[t + 1]; ++i) {
+			const Term& term = inverse_terms_[i];
+			add_row(reinterpret_cast<Vec*>(c + term.row * bottom_size_), planes + term.rank * vectors, vectors,
+				term.negative, false);
+		}
+	}
+	template <bool Inverse>
+	__attribute__((target("avx2"))) void steps(Vec* x, const Pass& pass, std::size_t begin, std::size_t end, std::size_t o, std::size_t sigma,
+			   std::size_t count, int extra) const {
+		for (std::size_t k = begin; k < end; ++k) {
+			const Step& s = pass.steps[k];
+			const Range* range = pass.ranges.data() + k * (bottom_size_ / 8);
+			const u32 a = size_of_[s.first], b = s.width == 2 ? size_of_[s.first + 1] : 1;
+			switch (a * 4 + b) {
+			case 9: block_step<Inverse, 2, 1>(x, s.stride, range, extra, o, sigma, count); break;
+			case 13: block_step<Inverse, 3, 1>(x, s.stride, range, extra, o, sigma, count); break;
+			case 10: block_step<Inverse, 2, 2>(x, s.stride, range, extra, o, sigma, count); break;
+			case 11: block_step<Inverse, 2, 3>(x, s.stride, range, extra, o, sigma, count); break;
+			case 14: block_step<Inverse, 3, 2>(x, s.stride, range, extra, o, sigma, count); break;
+			default: block_step<Inverse, 3, 3>(x, s.stride, range, extra, o, sigma, count); break;
+			}
+		}
+	}
+	template <bool Inverse, int A, int B>
+	__attribute__((target("avx2"))) void block_step(Vec* x, std::size_t stride, const Range* range, int extra, std::size_t o, std::size_t sigma,
+					std::size_t count) const {
+		const std::size_t ranks = std::size_t(rank_ + 1), inner = stride / sigma;
+		for (std::size_t base = 0; base < count; base += inner * A * B)
+			for (std::size_t q = base; q < base + inner; ++q) {
+				const std::size_t u = o + sigma * q;
+				variable_step<Inverse, A, B>(x + u * ranks, stride * ranks, stride * A * ranks, range[u].first,
+											 std::min(rank_, range[u].first + range[u].span + extra));
+			}
+	}
+	__attribute__((target("avx2"))) void spread(const Vec* planes, Vec* out, std::size_t s) const {
+		const std::size_t vectors = bottom_size_ / 8;
+		const Vec zero = _mm256_setzero_si256();
+		Vec p[kMaxRank + 8];
+		for (int i = 0; i < 3; ++i) p[i] = p[3 + planes_ + i] = zero;
+		for (std::size_t u = s; u < s + group_; ++u) {
+			for (int rho = 0; rho < planes_; ++rho) p[3 + rho] = planes[rho * vectors + u];
+			const int d = vector_sum_[u], last = std::min(rank_, d + planes_ + 2);
+			Vec* ranks = out + u * (rank_ + 1);
+			for (int r = 0; r < d; ++r) ranks[r] = zero;
+			for (int r = d; r <= last; ++r) {
+				const Vec* q = p + 3 + r - d;
+				const Vec x[4] = {q[0], q[-1], q[-2], q[-3]};
+				ranks[r] = lanes_transform<false>(by_popcount(x));
+			}
+			for (int r = last + 1; r <= rank_; ++r) ranks[r] = zero;
+		}
+	}
+	__attribute__((target("avx2"))) void gather(const Vec* in, Vec* planes, std::size_t s) const {
+		const std::size_t vectors = bottom_size_ / 8;
+		Vec m[kMaxRank + 4];
+		for (std::size_t u = s; u < s + group_; ++u) {
+			const int d = vector_sum_[u], last = std::min(rank_, d + planes_ + 2);
+			for (int r = d; r <= last; ++r) m[r - d] = lanes_transform<true>(in[u * (rank_ + 1) + r]);
+			for (int k = last - d + 1; k < planes_ + 3; ++k) m[k] = _mm256_setzero_si256();
+			for (int rho = 0; rho < planes_; ++rho) planes[rho * vectors + u] = by_popcount(m + rho);
+		}
+	}
+	__attribute__((target("avx2"))) void pointwise(Vec* a, const Vec* b, std::size_t o, std::size_t sigma, std::size_t count, int top_cap,
+				   int top_nz) const {
+		const Vec zero = _mm256_setzero_si256();
+		Vec ae[kMaxRank], ao[kMaxRank], be[kMaxRank + 2 * kPad], bo[kMaxRank + 2 * kPad];
+		for (int i = 0; i < kPad; ++i) be[i] = bo[i] = zero;
+		for (std::size_t u = o; u < o + sigma * count; u += sigma) {
+			const int cap = std::min(rank_, top_cap + vector_cap_[u] + 3);
+			const int first = top_nz + vector_nz_[u], last = std::min(rank_, 2 * cap);
+			Vec* x = a + u * (rank_ + 1);
+			const Vec* y = b + u * (rank_ + 1);
+			for (int i = 0; i <= cap; ++i) {
+				ae[i] = x[i], ao[i] = _mm256_srli_epi64(ae[i], 32);
+				be[kPad + i] = y[i], bo[kPad + i] = _mm256_srli_epi64(y[i], 32);
+			}
+			for (int i = cap + 1; i <= cap + kPad; ++i) be[kPad + i] = bo[kPad + i] = zero;
+			for (int r = first; r <= last; r += kBlock) {
+				const int lo = std::max(0, r - cap), count = std::min(r + kBlock - 1, cap) - lo + 1;
+				Vec even[kBlock], odd[kBlock];
+				block_sums(ae + lo, be + kPad + r - lo, count, even);
+				block_sums(ao + lo, bo + kPad + r - lo, count, odd);
+				for (int k = 0; k < kBlock && r + k <= last; ++k) x[r + k] = reduce<true>(even[k], odd[k]);
+			}
+		}
+	}
+	static constexpr int kBlock = 4, kPad = kBlock;
+	__attribute__((target("avx2"))) static void block_sums(const Vec* x, const Vec* y, int count, Vec* sum) {
+		Vec s0 = _mm256_setzero_si256(), s1 = s0, s2 = s0, s3 = s0;
+		Vec w0 = y[0], w1 = y[1], w2 = y[2], w3 = y[3];
+		const auto term = [&](Vec a, Vec y0, Vec y1, Vec y2, Vec y3) __attribute__((always_inline, target("avx2"))) {
+			s0 = _mm256_add_epi64(s0, _mm256_mul_epu32(a, y0));
+			s1 = _mm256_add_epi64(s1, _mm256_mul_epu32(a, y1));
+			s2 = _mm256_add_epi64(s2, _mm256_mul_epu32(a, y2));
+			s3 = _mm256_add_epi64(s3, _mm256_mul_epu32(a, y3));
+			asm("" : "+x"(s0), "+x"(s1), "+x"(s2), "+x"(s3));
+		};
+		const auto run = [&](int n) __attribute__((always_inline, target("avx2"))) {
+			for (; n >= 4; n -= 4, x += 4, y -= 4) {
+				term(x[0], w0, w1, w2, w3), w3 = y[-1];
+				term(x[1], w3, w0, w1, w2), w2 = y[-2];
+				term(x[2], w2, w3, w0, w1), w1 = y[-3];
+				term(x[3], w1, w2, w3, w0), w0 = y[-4];
+			}
+			if (n >= 1) term(x[0], w0, w1, w2, w3);
+			if (n >= 2) term(x[1], y[-1], w0, w1, w2);
+			if (n >= 3) term(x[2], y[-2], y[-1], w0, w1);
+		};
+		if (count <= 18) {
+			run(count);
+		} else {
+			run(16);
+
+			s0 = fold(s0), s1 = fold(s1), s2 = fold(s2), s3 = fold(s3);
+			run(count - 16);
+		}
+		sum[0] = s0, sum[1] = s1, sum[2] = s2, sum[3] = s3;
+	}
+	std::size_t size_, bottom_size_ = 0, top_size_ = 0, bottom_ = 0;
+	int rank_ = 0, planes_ = 0, threes_ = 0;
+	std::vector<u32> size_of_;
+	alignas(32) std::array<u32, 8> lane_offset_{};
+	std::vector<u32> block_base_;
+	std::vector<std::uint8_t> vector_sum_, vector_cap_, vector_nz_;
+	std::size_t group_ = 1;
+	Pass forward_, inverse_;
+	std::vector<std::uint8_t> top_cap_, top_nz_, top_zeros3_;
+	std::vector<Term> terms_, inverse_terms_;
+	std::vector<u32> evaluate_start_, interpolate_start_;
+};
+
+__attribute__((target("avx2"))) inline std::vector<mint> multiply(const std::vector<mint>& a, const std::vector<mint>& b, const std::vector<int>& dimensions) {
+	std::vector<u32> dims(dimensions.begin(), dimensions.end()), f(a.size()), g(b.size()), result(a.size());
+	for (std::size_t i = 0; i < a.size(); ++i) f[i] = a[i].val(), g[i] = b[i].val();
+	Ranked(dims, a.size()).multiply(f.data(), g.data(), result.data());
+	std::vector<mint> out;
+	out.reserve(result.size());
+	for (u32 x : result) out.push_back(mint::raw(x));
+	return out;
+}
+}
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC pop_options
+#endif
+#endif
+
+
+#line 9 "convolution/multivariate_convolution.hpp"
+
+#line 1 "convolution/convolution.hpp"
+
+
+
+#include <complex>
+#include <limits>
+#line 8 "convolution/convolution.hpp"
+
+#line 1 "fps/fps.hpp"
+
+
+
+#line 1 "components/fps_operations.hpp"
+
+
+
+#line 1 "components/ntt.hpp"
+
+
+
+#line 7 "components/ntt.hpp"
+#include <initializer_list>
+#include <memory>
+#include <new>
+#line 11 "components/ntt.hpp"
+#include <utility>
+#line 13 "components/ntt.hpp"
 
 #line 15 "components/ntt.hpp"
 
@@ -1121,39 +1782,6 @@ struct Operations {
 		}
 		return T::raw(result);
 	}
-	static int prepare_sparse(std::vector<std::pair<int, T>> &terms) {
-		int stride = 0;
-		for (auto &[j, x] : terms) {
-			stride = std::gcd(stride, j);
-			if constexpr (std::is_same_v<T, mint>) if (x.v >= T::mod()) x.v -= T::mod();
-		}
-		return stride;
-	}
-	static T sparse_dot(const std::vector<std::pair<int, T>> &terms, const F &g, int i) {
-		if constexpr (std::is_same_v<T, mint>) {
-			static_assert(7ULL * (T::mod() - 1) * (2ULL * T::mod() - 1) + 0xffffffffULL * T::mod() < ~0ULL);
-			unsigned long long sum = 0;
-			Word result = 0;
-			int count = 0;
-			for (auto [j, x] : terms) {
-				if (j > i) break;
-				sum += (unsigned long long)x.v * g[i - j].v;
-				if (++count == 7) {
-					result = NTT::add(result, NTT::reduce(sum) % T::mod());
-					sum = 0;
-					count = 0;
-				}
-			}
-			return T::word(NTT::add(result, NTT::reduce(sum) % T::mod()));
-		} else {
-			T result = 0;
-			for (auto [j, x] : terms) {
-				if (j > i) break;
-				result += x * g[i - j];
-			}
-			return result;
-		}
-	}
 
 	static void intt(base &a) {
 		ntt_inverse(a);
@@ -1224,9 +1852,7 @@ struct Operations {
 
 
 
-#line 5 "components/fps_horner.hpp"
-#include <array>
-#include <cstring>
+#line 7 "components/fps_horner.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -1318,118 +1944,6 @@ inline mint horner(const mint* a, std::size_t n, mint x) {
 #endif
 
 
-#line 1 "components/mint_factorials.hpp"
-
-
-
-#line 5 "components/mint_factorials.hpp"
-
-namespace mint_detail {
-
-#if defined(__x86_64__) || defined(__i386__)
-
-__attribute__((target("avx2"))) inline void factorial_transpose(Ops::I8 (&x)[8]) {
-	Ops::I8 a[8], b[8];
-	for (int i = 0; i < 8; i += 2) {
-		a[i] = _mm256_unpacklo_epi32(x[i], x[i + 1]);
-		a[i + 1] = _mm256_unpackhi_epi32(x[i], x[i + 1]);
-	}
-	for (int i = 0; i < 8; i += 4) {
-		b[i] = _mm256_unpacklo_epi64(a[i], a[i + 2]);
-		b[i + 1] = _mm256_unpackhi_epi64(a[i], a[i + 2]);
-		b[i + 2] = _mm256_unpacklo_epi64(a[i + 1], a[i + 3]);
-		b[i + 3] = _mm256_unpackhi_epi64(a[i + 1], a[i + 3]);
-	}
-	for (int i = 0; i < 4; ++i) {
-		x[i] = _mm256_permute2x128_si256(b[i], b[i + 4], 0x20);
-		x[i + 4] = _mm256_permute2x128_si256(b[i], b[i + 4], 0x31);
-	}
-}
-
-template<bool reverse>
-__attribute__((target("avx2"))) inline void factorial_chain(Ops::U* out, int chunk, Ops::I8 value, Ops::I8 factor) {
-	using I = Ops::I8;
-	I step = _mm256_set1_epi32(Ops::one);
-	I order = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
-	for (int j = 0; j < chunk; j += 8) {
-		I block[8];
-		for (int k = 0; k < 8; ++k) {
-			block[k] = value;
-			value = Ops::mul8(value, factor);
-			if constexpr (reverse) factor = Ops::sub8(factor, step);
-			else factor = Ops::add8(factor, step);
-		}
-		factorial_transpose(block);
-		for (int k = 0; k < 8; ++k) {
-			if constexpr (reverse) Ops::store8(out + (k + 1) * chunk - j - 8, _mm256_permutevar8x32_epi32(block[k], order));
-			else Ops::store8(out + k * chunk + j, block[k]);
-		}
-	}
-}
-
-__attribute__((target("avx2"))) inline void factorials8(Ops::U* fact, Ops::U* invfact, int n) {
-	using I = Ops::I8;
-	using U = Ops::U;
-	const int chunk = n / 256 * 8, covered = chunk * 32;
-	alignas(32) U factor[32], products[32], starts[33], inverse[33];
-	I p[4], x[4], step = _mm256_set1_epi32(Ops::one);
-	for (int i = 0; i < 32; ++i) factor[i] = Ops::in(i * chunk + 1);
-	for (int k = 0; k < 4; ++k) p[k] = _mm256_set1_epi32(Ops::one), x[k] = Ops::load8(factor + 8 * k);
-	for (int i = 0; i < chunk; ++i) {
-		for (int k = 0; k < 4; ++k) p[k] = Ops::mul8(p[k], x[k]), x[k] = Ops::add8(x[k], step);
-	}
-	for (int k = 0; k < 4; ++k) Ops::store8(products + 8 * k, p[k]);
-	starts[0] = Ops::one;
-	for (int i = 0; i < 32; ++i) starts[i + 1] = Ops::mul(starts[i], products[i]);
-	U last = starts[32];
-	for (int i = covered; i < n; ++i) fact[i] = last, last = Ops::mul(last, Ops::in(i + 1));
-	last = mint::word(last).inv().v;
-	for (int i = n - 1; i >= covered; --i) last = Ops::mul(last, Ops::in(i + 1)), invfact[i] = last;
-	inverse[32] = last;
-	for (int i = 31; i >= 0; --i) inverse[i] = Ops::mul(inverse[i + 1], products[i]);
-	for (int k = 0; k < 4; ++k) {
-		factorial_chain<false>(fact + 8 * k * chunk, chunk, Ops::load8(starts + 8 * k), Ops::load8(factor + 8 * k));
-		alignas(32) U values[8], factors[8];
-		for (int j = 0; j < 8; ++j) {
-			const int end = (8 * k + j + 1) * chunk;
-			values[j] = Ops::mul(inverse[8 * k + j + 1], Ops::in(end));
-			factors[j] = Ops::in(end - 1);
-		}
-		factorial_chain<true>(invfact + 8 * k * chunk, chunk, Ops::load8(values), Ops::load8(factors));
-	}
-}
-#endif
-
-inline void factorials(Ops::U* fact, Ops::U* invfact, int n) {
-	if (!n) return;
-#if defined(__x86_64__) || defined(__i386__)
-	if (n >= 256 && Ops::vectorized()) {
-		factorials8(fact, invfact, n);
-		return;
-	}
-#endif
-	Ops::U value = Ops::one;
-	for (int i = 0; i < n; ++i) fact[i] = value, value = Ops::mul(value, Ops::in(i + 1));
-	value = mint::word(fact[n - 1]).inv().v;
-	for (int i = n - 1; i >= 0; --i) invfact[i] = value, value = Ops::mul(value, Ops::in(i));
-}
-
-template<class T> requires std::is_same_v<T, mint>
-inline void factorials(T* fact, T* invfact, int n) {
-	assert(0 <= n && unsigned(n) <= mint::mod());
-	static_assert(sizeof(mint) == sizeof(Ops::U) && std::is_trivially_copyable_v<mint>);
-	if (unsigned(n) == mint::mod()) {
-		factorials(fact, invfact, n - 1);
-		fact[n - 1] = -fact[n - 2];
-		invfact[n - 1] = -invfact[n - 2];
-		return;
-	}
-	factorials(reinterpret_cast<Ops::U*>(fact), reinterpret_cast<Ops::U*>(invfact), n);
-}
-
-}
-
-
 #line 1 "components/fps_workspace.hpp"
 
 
@@ -1477,6 +1991,288 @@ inline FpsWords allocate_fps_words(std::size_t count) {
 
 }
 
+
+#line 1 "components/fps_sparse.hpp"
+
+
+
+#line 7 "components/fps_sparse.hpp"
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+#line 1 "components/fps_sparse_core.hpp"
+
+
+
+#line 10 "components/fps_sparse_core.hpp"
+
+namespace fps_detail {
+template <class E> struct SparseBase {
+	using Series = std::vector<mint>;
+	using Terms = std::vector<std::pair<int, mint>>;
+	enum class Kind { inverse, logarithm, exponential, power };
+	static Terms collect(const mint *f, int size, int n, int limit = 12) {
+		Terms terms;
+		for (int i = 1; i < std::min(size, n) && int(terms.size()) <= limit; ++i)
+			if (f[i] != mint(0)) terms.emplace_back(i, f[i]);
+		return terms;
+	}
+	static Terms multiply(const Terms &a, const Terms &b, int n) {
+		Terms result;
+		for (auto [i, x] : a) for (auto [j, y] : b) if (i < n - j) result.emplace_back(i + j, x * y);
+		std::sort(result.begin(), result.end(), [](auto a, auto b) { return a.first < b.first; });
+		std::size_t used = 0;
+		for (auto [i, x] : result) {
+			if (used && result[used - 1].first == i) result[used - 1].second += x;
+			else result[used++] = {i, x};
+		}
+		result.resize(used);
+		result.erase(std::remove_if(result.begin(), result.end(), [](auto term) { return term.second == mint(0); }), result.end());
+		return result;
+	}
+	template <Kind kind>
+	static Series get(Terms terms, int n, mint initial, mint exponent, const mint *(*inverses)(int)) {
+		assert(n >= 0 && terms.size() <= 64);
+		if constexpr (kind != Kind::inverse) assert(unsigned(n) < mint::mod());
+		if (!n) return {};
+		if (terms.empty()) { Series out(n); out[0] = initial; return out; }
+		if constexpr (kind == Kind::power) {
+			unsigned e = exponent.val();
+			if (e <= 4 && terms.size() <= 12 && (n >= 4096 || terms.size() <= 3)) {
+				Terms power{{0, 1}}, f{{0, 1}};
+				f.insert(f.end(), terms.begin(), terms.end());
+				while (e) {
+					if (e & 1) power = multiply(power, f, n);
+					e >>= 1;
+					if (e) f = multiply(f, f, n);
+				}
+				Series out(n);
+				for (auto [i, x] : power) out[i] = x * initial;
+				return out;
+			}
+		}
+		int stride = 0;
+		for (auto term : terms) stride = std::gcd(stride, term.first);
+		const int count = (n - 1) / stride + 1;
+		for (auto &term : terms) term.first /= stride;
+		const mint *inv = nullptr;
+		if constexpr (kind != Kind::inverse) inv = inverses(count);
+		Series compressed;
+		if (terms.size() == 1 && kind != Kind::power) {
+			compressed.resize(count);
+			if constexpr (kind == Kind::exponential) {
+				E::template geometric<true>(compressed, initial, terms[0].second, inv);
+			} else {
+				E::geometric(compressed, kind == Kind::logarithm ? mint(-1) : initial, -terms[0].second);
+				if constexpr (kind == Kind::logarithm) compressed[0] = 0, E::scale(compressed, inv);
+			}
+		} else compressed = E::template solve<kind>(terms, count, initial, exponent, inv);
+		if (stride == 1) return compressed;
+		Series out(n);
+		for (int i = 0; i < count; ++i) out[i * stride] = compressed[i];
+		return out;
+	}
+};
+}
+
+#line 13 "components/fps_sparse.hpp"
+
+namespace fps_detail {
+struct SparseSeries : SparseBase<SparseSeries> {
+	struct Tap { int degree; std::uint32_t constant, slope; };
+	using O = mint_detail::Ops;
+	using U = O::U;
+	static_assert(12ULL * (O::mod - 1) * (O::mod - 1) + 0xffffffffULL * O::mod < ~0ULL);
+	static U canonical(U x) { return x < O::mod ? x : x - O::mod; }
+#if defined(__x86_64__) || defined(__i386__)
+	using V = O::I8;
+	__attribute__((target("avx2"))) static V canonical8(V x) {
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::twice)));
+		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::mod)));
+	}
+	__attribute__((target("avx2"))) static V reduce8(V even, V odd) {
+		const V ni = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(O::mod);
+		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
+		return canonical8(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa));
+	}
+	__attribute__((target("avx2"), always_inline)) static inline V triangular(V x, const U *f) {
+		const V lower = _mm256_permute2x128_si256(x, x, 0x08);
+		V shifted[8] = {x, _mm256_alignr_epi8(x, lower, 12), _mm256_alignr_epi8(x, lower, 8), _mm256_alignr_epi8(x, lower, 4),
+			lower, _mm256_slli_si256(lower, 4), _mm256_slli_si256(lower, 8), _mm256_slli_si256(lower, 12)};
+		V even = _mm256_setzero_si256(), odd = even;
+#pragma GCC unroll 7
+		for (int j = 1; j < 8; ++j) if (f[j]) {
+			V factor = _mm256_set1_epi32(f[j]);
+			even = _mm256_add_epi64(even, _mm256_mul_epu32(shifted[j], factor));
+			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(shifted[j], 32), factor));
+		}
+		return canonical8(O::add8(x, reduce8(even, odd)));
+	}
+	template <Kind kind>
+	__attribute__((target("avx2"), always_inline)) static inline void block(U *out, int i, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
+		V total = _mm256_setzero_si256(), slope = total;
+		const V lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+		for (int first = 0; first < count; first += 12) {
+			V ce = _mm256_setzero_si256(), co = ce, se = ce, so = ce;
+			for (int j = first; j < std::min(count, first + 12); ++j) {
+				V x = O::load8(out + i - taps[j].degree);
+				if (j < near) x = _mm256_and_si256(x, _mm256_cmpgt_epi32(_mm256_set1_epi32(taps[j].degree), lanes));
+				V odd = _mm256_srli_epi64(x, 32), c = _mm256_set1_epi32(taps[j].constant);
+				ce = _mm256_add_epi64(ce, _mm256_mul_epu32(x, c));
+				co = _mm256_add_epi64(co, _mm256_mul_epu32(odd, c));
+				if constexpr (kind == Kind::power) {
+					V factor = _mm256_set1_epi32(taps[j].slope);
+					se = _mm256_add_epi64(se, _mm256_mul_epu32(x, factor));
+					so = _mm256_add_epi64(so, _mm256_mul_epu32(odd, factor));
+				}
+			}
+			total = O::add8(total, reduce8(ce, co));
+			if constexpr (kind == Kind::power) slope = O::add8(slope, reduce8(se, so));
+		}
+		V value = canonical8(total);
+		if constexpr (kind == Kind::power) {
+			const V offsets = _mm256_setr_epi32(0, O::one, O::in(2), O::in(3), O::in(4), O::in(5), O::in(6), O::in(7));
+			V index = O::add8(_mm256_set1_epi32(O::in(i)), offsets);
+			value = O::add8(value, O::mul8(index, slope));
+		}
+		if constexpr (kind == Kind::logarithm) value = O::add8(value, O::load8(out + i));
+		if constexpr (kind == Kind::power || kind == Kind::exponential) {
+			if (near) value = triangular(canonical8(value), q);
+			value = O::mul8(value, O::load8(inv + i));
+		}
+		if (near) value = triangular(canonical8(value), p);
+		O::store8(out + i, canonical8(value));
+	}
+	template <Kind kind>
+	__attribute__((target("avx2"))) static int blocks(U *out, int i, int end, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
+		for (; end - i >= 8; i += 8) block<kind>(out, i, taps, near, count, inv, p, q);
+		return i;
+	}
+	__attribute__((target("avx2"))) static int scale8(U *out, const U *factors, int n) {
+		int i = 1;
+		for (; n - i >= 8; i += 8) O::store8(out + i, O::mul8(O::load8(out + i), O::load8(factors + i)));
+		return i;
+	}
+	template <bool exponential = false>
+	__attribute__((target("avx2"))) static void geometric8(U *out, int n, U initial, U ratio, const U *inv = nullptr) {
+		std::uint32_t first[8];
+		U step = O::one;
+		first[0] = initial;
+		for (int j = 0; j < 8; ++j) {
+			step = O::mul(step, ratio);
+			if (j) {
+				first[j] = O::mul(first[j - 1], ratio);
+				if constexpr (exponential) first[j] = O::mul(first[j], inv[j]);
+			}
+		}
+		V value = O::load8(first), multiplier = _mm256_set1_epi32(step);
+		O::store8(out, value);
+		int i = 8;
+		for (; n - i >= 8; i += 8) {
+			value = O::mul8(value, multiplier);
+			if constexpr (exponential) {
+				V factors[4];
+#pragma GCC unroll 4
+				for (int j = 0; j < 4; ++j) factors[j] = O::mul8(O::load8(inv + i - 2 * j), O::load8(inv + i - 2 * j - 1));
+				value = O::mul8(value, O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
+			}
+			O::store8(out + i, value);
+		}
+		for (; i < n; ++i) {
+			out[i] = O::mul(out[i - 1], ratio);
+			if constexpr (exponential) out[i] = O::mul(out[i], inv[i]);
+		}
+	}
+
+#endif
+	template <bool exponential = false>
+	static void geometric(Series &out, mint initial, mint ratio, const mint *inv = nullptr) {
+#if defined(__x86_64__) || defined(__i386__)
+		if (out.size() >= 8 && O::vectorized()) {
+			geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
+			return;
+		}
+#endif
+		for (int i = 0; i < int(out.size()); ++i) {
+			out[i] = initial;
+			initial *= ratio;
+			if constexpr (exponential) if (i + 1 < int(out.size())) initial *= inv[i + 1];
+		}
+	}
+	static void scale(Series &out, const mint *factors) {
+		int i = 1;
+#if defined(__x86_64__) || defined(__i386__)
+		if (O::vectorized()) i = scale8(reinterpret_cast<U *>(out.data()), reinterpret_cast<const U *>(factors), out.size());
+#endif
+		for (; i < int(out.size()); ++i) out[i] *= factors[i];
+	}
+	template <Kind kind>
+	static Series solve(const Terms &terms, int n, mint initial, mint exponent, const mint *inverses) {
+		std::vector<Tap> taps;
+		Series result(n);
+		U *out = reinterpret_cast<U *>(result.data());
+		const U *inv = reinterpret_cast<const U *>(inverses);
+		for (auto [j, x] : terms) {
+			mint c = 0, s = 0;
+			if constexpr (kind == Kind::inverse || kind == Kind::logarithm) c = -x;
+			if constexpr (kind == Kind::exponential) c = x * mint(j);
+			if constexpr (kind == Kind::power) c = (exponent + mint(1)) * mint(j) * x, s = -x;
+			taps.push_back({j, canonical(c.v), canonical(s.v)});
+			if constexpr (kind == Kind::logarithm) out[j] = canonical((x * mint(j)).v);
+		}
+		std::array<std::uint32_t, 8> p{}, q{};
+		p[0] = q[0] = O::one;
+		if (n >= 8) for (int i = 1; i < 8; ++i) {
+			mint a = 0, b = 0;
+			for (const auto &tap : taps) {
+				int j = tap.degree;
+				if (j > i) break;
+				mint c = mint::word(tap.constant), s = mint::word(tap.slope);
+				a += (c + mint(i) * s) * mint::word(p[i - j]);
+				b += (-c + mint(i - j) * s) * mint::word(q[i - j]);
+			}
+			if constexpr (kind == Kind::power || kind == Kind::exponential) a *= inverses[i], b *= inverses[i];
+			p[i] = canonical(a.v), q[i] = canonical(b.v);
+		}
+		out[0] = canonical(initial.v);
+		int active = 0, near = 0, i = 1;
+		while (i < n) {
+			while (active < int(taps.size()) && taps[active].degree <= i) {
+				near += taps[active].degree < 8;
+				++active;
+			}
+			int end = active < int(taps.size()) ? taps[active].degree : n;
+#if defined(__x86_64__) || defined(__i386__)
+			if (O::vectorized()) i = blocks<kind>(out, i, end, taps.data(), near, active, inv, p.data(), q.data());
+#endif
+			for (; i < end; ++i) {
+				U x = 0;
+				for (int first = 0; first < active; first += 12) {
+					std::uint64_t total = 0;
+					for (int j = first; j < std::min(active, first + 12); ++j) {
+						U c = taps[j].constant;
+						if constexpr (kind == Kind::power) c = canonical(O::add(c, O::mul(O::in(i), taps[j].slope)));
+						total += std::uint64_t(c) * out[i - taps[j].degree];
+					}
+					x = O::add(x, O::reduce(total) % O::mod);
+				}
+				if constexpr (kind == Kind::logarithm) x = O::add(x, out[i]);
+				if constexpr (kind == Kind::power || kind == Kind::exponential) x = O::mul(x, inv[i]);
+				out[i] = canonical(x);
+			}
+		}
+		if constexpr (kind == Kind::logarithm) scale(result, inverses);
+		return result;
+	}
+
+};
+}
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 
 #line 8 "fps/fps.hpp"
 
@@ -4574,6 +5370,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using W = FormalPowerSeries<mint>;
 	using base = std::vector<T>;
 	using F = FormalPowerSeries;
+	using Sparse = fps_detail::SparseSeries;
 	using base::base;
 
 	FormalPowerSeries() = default;
@@ -4758,17 +5555,14 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] != T(0));
 		F g{(*this)[0].inv()};
-		auto terms = sparse_terms(deg, 32);
-		int stride = terms.size() <= 32 ? prepare_sparse(terms) : 1;
-		if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
-			g.resize(deg);
-			if (terms.size() == 1 && stride == 1) {
-				std::fill(g.begin(), g.end(), g[0]);
-				geometric_scale(g, T(1), -terms[0].second * g[0]);
-				return g;
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg, 32);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
+				for (auto &[j, x] : terms) x *= g[0];
+				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), deg, g[0], T(0), nullptr));
 			}
-			for (long long i = stride; stride && i < deg; i += stride) g[i] = -sparse_dot(terms, g, static_cast<int>(i)) * g[0];
-			return g;
 		}
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -4868,6 +5662,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return result;
 		}
 		const int shift = first / 2, target = deg - shift;
+		if constexpr (std::is_same_v<T, mint>) if (target >= 256 && unsigned(target) < T::mod()) {
+			auto terms = Sparse::collect(this->data() + first, last - first, target);
+			if (terms.size() <= 12) {
+				const T inverse = (*this)[first].inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
@@ -4980,6 +5784,10 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] == T(1));
+		if constexpr (std::is_same_v<T, mint>) if (deg >= 256 && unsigned(deg) < T::mod()) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg);
+			if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inverse_table));
+		}
 		return log_derivative(deg, true);
 	}
 
@@ -4999,16 +5807,27 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return r;
 		}
 		if (k == 1) return *this;
-		if (k <= 4) {
-			F square = multiply(*this, *this).pre(n);
-			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
-		}
 		int first = 0;
 		while (first < n && (*this)[first] == T(0)) ++first;
 		if (first == n || first > (n - 1) / k) return F(n);
 		const int shift = first * k;
 		const int len = n - shift;
 		const T lead = (*this)[first];
+		if constexpr (std::is_same_v<T, mint>) if (unsigned(len) < T::mod()) {
+			auto terms = Sparse::collect(this->data() + first, this->size() - first, len);
+			if (terms.size() <= 12) {
+				const T inverse = lead.inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
+		if (k <= 4) {
+			F square = multiply(*this, *this).pre(n);
+			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
+		}
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (len >= 256 && len <= (1 << 24) && NTT::vectorized()) {
@@ -5095,8 +5914,6 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using O::pointwise;
 	using O::inverse_extend;
 	using O::dot;
-	using O::prepare_sparse;
-	using O::sparse_dot;
 	using O::intt;
 	using O::mod_sqrt;
 	using O::inverse_ntt_roots;
@@ -5133,25 +5950,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(this->empty() || (*this)[0] == T(0));
-		auto terms = sparse_terms(deg, 64);
-		int stride = terms.size() <= 64 ? prepare_sparse(terms) : 1;
-		if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
-			F g(deg);
-			g[0] = 1;
-			if (terms.size() == 1 && stride == 1 && deg >= 256) {
-				base fact(deg);
-				mint_detail::factorials(words(fact), words(g), deg);
-				geometric_scale(g, T(1), terms[0].second);
-				return g;
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg, 64);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
+				if constexpr (differentiated) for (auto &[j, x] : terms) x /= T(j);
+				return F(Sparse::get<Sparse::Kind::exponential>(std::move(terms), deg, T(1), T(0), inverse_table));
 			}
-			if (!stride) return g;
-			const auto &iv = inverses((deg - 1) / stride);
-			T factor = differentiated ? T(stride).inv() : T(1);
-			for (auto &[j, x] : terms) x *= differentiated ? factor : T(j / stride);
-			prepare_sparse(terms);
-			for (long long i = stride; i < deg; i += stride) g[i] = sparse_dot(terms, g, static_cast<int>(i)) * iv[i / stride];
-			return g;
 		}
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 256 && deg <= (1 << 24) && NTT::vectorized()) {
@@ -5222,12 +6030,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		return g;
 	}
 
-	std::vector<std::pair<int, T>> sparse_terms(int deg, int limit) const {
-		std::vector<std::pair<int, T>> terms;
-		for (int i = 1; i < std::min<int>(deg, this->size()) && static_cast<int>(terms.size()) <= limit; ++i)
-			if ((*this)[i] != T(0)) terms.emplace_back(i, (*this)[i]);
-		return terms;
-	}
+	static const mint *inverse_table(int n) { return fps_detail::Operations<mint>::inverses(n).data(); }
 
 	void trim() { O::trim(*this); }
 
@@ -5372,50 +6175,308 @@ void butterfly_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 }
 #endif
 
+template <std::uint32_t mod>
+std::uint32_t shoup(std::uint32_t value, std::uint32_t factor, std::uint32_t quotient) {
+	std::uint32_t q = std::uint64_t(value) * quotient >> 32;
+	std::uint32_t result = value * factor - q * mod;
+	return result < mod ? result : result - mod;
+}
+
+
+template <std::uint32_t mod>
+void forward_stage(std::uint32_t *a, std::size_t n, std::size_t half,
+		const std::uint32_t *roots, const std::uint32_t *quotients) {
+	for (std::size_t start = 0; start < n; start += 2 * half)
+		for (std::size_t j = 0; j < half; ++j) {
+			std::uint32_t x = a[start + j], y = a[start + j + half];
+			a[start + j] = x + y < mod ? x + y : x + y - mod;
+			std::uint32_t difference = x >= y ? x - y : x + mod - y;
+			a[start + j + half] = shoup<mod>(difference, roots[j], quotients[j]);
+		}
+}
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+__attribute__((target("avx2")))
+void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
+		const std::uint32_t *roots, const std::uint32_t *quotients) {
+	const auto p = _mm256_set1_epi32(mod);
+	for (std::size_t start = 0; start < n; start += 2 * half)
+		for (std::size_t j = 0; j < half; j += 8) {
+			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
+			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
+			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
+			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
+			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
+			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
+			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
+			auto even = _mm256_mul_epu32(difference, q);
+			auto odd = _mm256_mul_epu32(_mm256_srli_epi64(difference, 32), _mm256_srli_epi64(q, 32));
+			q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+			difference = _mm256_sub_epi32(_mm256_mullo_epi32(difference, r), _mm256_mullo_epi32(q, p));
+			difference = _mm256_min_epu32(difference, _mm256_sub_epi32(difference, p));
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), sum);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
+		}
+}
+#endif
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+struct Vector {
+	__attribute__((target("avx2"), always_inline))
+	static inline __m256i add(__m256i x, __m256i y) {
+		auto sum = _mm256_add_epi32(x, y);
+		return _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(mod)));
+	}
+	__attribute__((target("avx2"), always_inline))
+	static inline __m256i subtract(__m256i x, __m256i y) {
+		auto difference = _mm256_sub_epi32(x, y);
+		return _mm256_min_epu32(difference, _mm256_add_epi32(difference, _mm256_set1_epi32(mod)));
+	}
+	__attribute__((target("avx2"), always_inline))
+	static inline __m256i multiply(__m256i x, __m256i factor, __m256i quotient) {
+		auto even = _mm256_mul_epu32(x, quotient);
+		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(quotient, 32));
+		auto q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+		auto result = _mm256_sub_epi32(_mm256_mullo_epi32(x, factor), _mm256_mullo_epi32(q, _mm256_set1_epi32(mod)));
+		return _mm256_min_epu32(result, _mm256_sub_epi32(result, _mm256_set1_epi32(mod)));
+	}
+};
+
+template <std::uint32_t mod, bool inverse>
+__attribute__((target("avx2")))
+void leaf_avx2(std::uint32_t *a, std::size_t n, const std::uint32_t *roots, const std::uint32_t *quotients) {
+	using V = Vector<mod>;
+	auto r4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(roots + 4)));
+	auto q4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(quotients + 4)));
+	auto r2 = _mm256_setr_epi32(roots[2], roots[3], roots[2], roots[3], roots[2], roots[3], roots[2], roots[3]);
+	auto q2 = _mm256_setr_epi32(quotients[2], quotients[3], quotients[2], quotients[3], quotients[2], quotients[3], quotients[2], quotients[3]);
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		if constexpr (!inverse) {
+			auto y = _mm256_permute2x128_si256(x, x, 1);
+			x = _mm256_blend_epi32(V::add(x, y), V::multiply(V::subtract(y, x), r4, q4), 0xf0);
+			y = _mm256_shuffle_epi32(x, 0x4e);
+			x = _mm256_blend_epi32(V::add(x, y), V::multiply(V::subtract(y, x), r2, q2), 0xcc);
+			y = _mm256_shuffle_epi32(x, 0xb1);
+			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xaa);
+		} else {
+			auto y = _mm256_shuffle_epi32(x, 0xb1);
+			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xaa);
+			x = _mm256_blend_epi32(x, V::multiply(x, r2, q2), 0xcc);
+			y = _mm256_shuffle_epi32(x, 0x4e);
+			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xcc);
+			x = _mm256_blend_epi32(x, V::multiply(x, r4, q4), 0xf0);
+			y = _mm256_permute2x128_si256(x, x, 1);
+			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xf0);
+		}
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+}
+
+template <std::uint32_t mod, bool inverse>
+__attribute__((target("avx2")))
+void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32_t *roots, const std::uint32_t *quotients) {
+	using V = Vector<mod>;
+	for (std::size_t start = 0; start < n; start += 4 * h)
+		for (std::size_t j = 0; j < h; j += 8) {
+			auto x0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
+			auto x1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + h));
+			auto x2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + 2 * h));
+			auto x3 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + 3 * h));
+			auto r0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + 2 * h + j));
+			auto q0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + 2 * h + j));
+			auto r1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + 3 * h + j));
+			auto q1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + 3 * h + j));
+			auto r2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + h + j));
+			auto q2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + h + j));
+			if constexpr (!inverse) {
+				auto y0 = V::add(x0, x2), y1 = V::add(x1, x3);
+				auto y2 = V::multiply(V::subtract(x0, x2), r0, q0);
+				auto y3 = V::multiply(V::subtract(x1, x3), r1, q1);
+				x0 = V::add(y0, y1); x1 = V::multiply(V::subtract(y0, y1), r2, q2);
+				x2 = V::add(y2, y3); x3 = V::multiply(V::subtract(y2, y3), r2, q2);
+			} else {
+				x1 = V::multiply(x1, r2, q2); x3 = V::multiply(x3, r2, q2);
+				auto y0 = V::add(x0, x1), y1 = V::subtract(x0, x1);
+				auto y2 = V::multiply(V::add(x2, x3), r0, q0);
+				auto y3 = V::multiply(V::subtract(x2, x3), r1, q1);
+				x0 = V::add(y0, y2); x2 = V::subtract(y0, y2);
+				x1 = V::add(y1, y3); x3 = V::subtract(y1, y3);
+			}
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), x0);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + h), x1);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 2 * h), x2);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 3 * h), x3);
+		}
+}
+#endif
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+__attribute__((target("avx2")))
+void build_roots_avx2(std::uint32_t *roots, std::uint32_t *quotients, std::size_t half, std::uint32_t step) {
+	std::uint32_t initial[8], w = 1;
+	for (int i = 0; i < 8; ++i) {
+		initial[i] = w;
+		w = std::uint64_t(w) * step % mod;
+	}
+	auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(initial));
+	auto factor = _mm256_set1_epi32(w), quotient = _mm256_set1_epi32((std::uint64_t(w) << 32) / mod);
+	for (std::size_t j = 0; j < half; j += 8) {
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(roots + j), x);
+		for (int k = 0; k < 8; ++k) quotients[j + k] = (std::uint64_t(roots[j + k]) << 32) / mod;
+		x = Vector<mod>::multiply(x, factor, quotient);
+	}
+}
+#endif
+
 template <std::uint32_t mod, std::uint32_t root>
-void transform(std::vector<std::uint32_t> &a, bool inverse, [[maybe_unused]] bool vectorized) {
-	static_assert(mod > 2 && mod < (std::uint32_t(1) << 31));
-	std::size_t n = a.size();
-	assert(std::has_single_bit(n) && (mod - 1) % n == 0);
-	for (std::size_t i = 1, j = 0; i < n; ++i) {
-		std::size_t bit = n >> 1;
+struct Plan {
+	std::vector<std::uint32_t> roots, quotients;
+	explicit Plan(std::size_t n, [[maybe_unused]] bool vectorized = false) : roots(n), quotients(n) {
+		static_assert(mod > 2 && mod < (std::uint32_t(1) << 31));
+		assert(std::has_single_bit(n) && (mod - 1) % n == 0);
+		if (n == 1) return;
+		std::size_t half = n / 2;
+		std::uint32_t step = power<mod>(root, (mod - 1) / n), w = 1;
+#if defined(__x86_64__) || defined(__i386__)
+		if (vectorized && half >= 8) build_roots_avx2<mod>(roots.data() + half, quotients.data() + half, half, step);
+		else
+#endif
+		for (std::size_t j = 0; j < half; ++j) {
+			roots[half + j] = w;
+			quotients[half + j] = (std::uint64_t(w) << 32) / mod;
+			w = std::uint64_t(w) * step % mod;
+		}
+		for (half /= 2; half; half /= 2)
+			for (std::size_t j = 0; j < half; ++j) {
+				roots[half + j] = roots[2 * half + 2 * j];
+				quotients[half + j] = quotients[2 * half + 2 * j];
+			}
+	}
+};
+
+template <std::uint32_t mod, std::uint32_t root>
+void forward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[maybe_unused]] bool vectorized) {
+	std::size_t half = a.size() / 2;
+#if defined(__x86_64__) || defined(__i386__)
+	if (vectorized && a.size() >= 8) {
+		for (; half >= 16; half /= 4) pair_avx2<mod, false>(a.data(), a.size(), half / 2, plan.roots.data(), plan.quotients.data());
+		if (half == 8) forward_stage_avx2<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
+		leaf_avx2<mod, false>(a.data(), a.size(), plan.roots.data(), plan.quotients.data());
+		return;
+	}
+#endif
+	for (; half; half /= 2) forward_stage<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
+}
+
+template <std::uint32_t mod, std::uint32_t root>
+void backward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[maybe_unused]] bool vectorized) {
+	std::size_t half = 1;
+#if defined(__x86_64__) || defined(__i386__)
+	if (vectorized && a.size() >= 8) {
+		leaf_avx2<mod, true>(a.data(), a.size(), plan.roots.data(), plan.quotients.data());
+		half = 8;
+		for (; 2 * half < a.size(); half *= 4) pair_avx2<mod, true>(a.data(), a.size(), half, plan.roots.data(), plan.quotients.data());
+		if (half < a.size()) butterfly_avx2<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
+		return;
+	}
+#endif
+	for (; half < a.size(); half *= 2) butterfly<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
+}
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+__attribute__((target("avx2")))
+void scale_avx2(std::uint32_t *a, std::size_t n, std::uint32_t factor, std::uint32_t quotient) {
+	auto r = _mm256_set1_epi32(factor), q = _mm256_set1_epi32(quotient);
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), Vector<mod>::multiply(x, r, q));
+	}
+}
+#endif
+
+template <std::uint32_t mod>
+void scale(std::vector<std::uint32_t> &a, std::uint32_t factor, [[maybe_unused]] bool vectorized) {
+	std::uint32_t quotient = (std::uint64_t(factor) << 32) / mod;
+#if defined(__x86_64__) || defined(__i386__)
+	if (vectorized && a.size() >= 8) {
+		scale_avx2<mod>(a.data(), a.size(), factor, quotient);
+		return;
+	}
+#endif
+	for (auto &x : a) x = shoup<mod>(x, factor, quotient);
+}
+
+inline void bit_reverse(std::vector<std::uint32_t> &a) {
+	for (std::size_t i = 1, j = 0; i < a.size(); ++i) {
+		std::size_t bit = a.size() >> 1;
 		for (; j & bit; bit >>= 1) j ^= bit;
 		j ^= bit;
 		if (i < j) std::swap(a[i], a[j]);
 	}
-	std::vector<std::uint32_t> roots(n > 16 ? n / 2 : 0), quotients(roots.size());
-	for (std::size_t width = 2; width <= n; width *= 2) {
-		std::uint32_t step = ntt_mod_detail::power<mod>(root, (mod - 1) / width);
-		if (inverse) step = ntt_mod_detail::power<mod>(step, mod - 2);
-		if (n <= 16) {
-			for (std::size_t start = 0; start < n; start += width) {
-				std::uint32_t w = 1;
-				for (std::size_t j = 0; j < width / 2; ++j) {
-					std::uint32_t x = a[start + j], y = std::uint64_t(a[start + j + width / 2]) * w % mod;
-					a[start + j] = x + y < mod ? x + y : x + y - mod;
-					a[start + j + width / 2] = x >= y ? x - y : x + mod - y;
-					w = std::uint64_t(w) * step % mod;
-				}
-			}
-			continue;
-		}
-		std::uint32_t w = 1;
-		for (std::size_t j = 0; j < width / 2; ++j) {
-			roots[j] = w;
-			quotients[j] = (std::uint64_t(w) << 32) / mod;
-			w = std::uint64_t(w) * step % mod;
-		}
-#if defined(__x86_64__) || defined(__i386__)
-		if (vectorized && width >= 16) ntt_mod_detail::butterfly_avx2<mod>(a.data(), n, width / 2, roots.data(), quotients.data());
-		else
-#endif
-		ntt_mod_detail::butterfly<mod>(a.data(), n, width / 2, roots.data(), quotients.data());
-	}
+}
+
+template <std::uint32_t mod, std::uint32_t root>
+void transform(std::vector<std::uint32_t> &a, bool inverse, bool vectorized) {
+	Plan<mod, root> plan(a.size(), vectorized);
 	if (inverse) {
-		std::uint32_t inv = ntt_mod_detail::power<mod>(n, mod - 2);
-		for (auto &x : a) x = std::uint64_t(x) * inv % mod;
+		bit_reverse(a);
+		backward(a, plan, vectorized);
+		std::reverse(a.begin() + 1, a.end());
+		scale<mod>(a, power<mod>(a.size(), mod - 2), vectorized);
+	} else {
+		forward(a, plan, vectorized);
+		bit_reverse(a);
 	}
 }
+
+template <std::uint32_t mod>
+constexpr std::uint32_t negative_inverse = [] {
+	std::uint32_t value = mod;
+	for (int i = 0; i < 5; ++i) value *= 2 - mod * value;
+	return 0 - value;
+}();
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+__attribute__((target("avx2")))
+void pointwise_avx2(std::uint32_t *a, const std::uint32_t *b, std::size_t n) {
+	auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(negative_inverse<mod>);
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		auto even = _mm256_mul_epu32(x, y);
+		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32));
+		auto qe = _mm256_mul_epu32(even, inverse), qo = _mm256_mul_epu32(odd, inverse);
+		even = _mm256_srli_epi64(_mm256_add_epi64(even, _mm256_mul_epu32(qe, p)), 32);
+		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(qo, p));
+		x = _mm256_blend_epi32(even, odd, 0xaa);
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+}
+#endif
+
+template <std::uint32_t mod>
+void pointwise(std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b, [[maybe_unused]] bool vectorized) {
+#if defined(__x86_64__) || defined(__i386__)
+	if (vectorized && a.size() >= 8) {
+		pointwise_avx2<mod>(a.data(), b.data(), a.size());
+		return;
+	}
+#endif
+	for (std::size_t i = 0; i < a.size(); ++i) {
+		std::uint64_t product = std::uint64_t(a[i]) * b[i];
+		std::uint32_t q = std::uint32_t(product) * negative_inverse<mod>;
+		std::uint32_t value = (product + std::uint64_t(q) * mod) >> 32;
+		a[i] = value < mod ? value : value - mod;
+	}
+}
+
 }
 
 template <std::uint32_t mod, std::uint32_t root>
@@ -5441,23 +6502,42 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 	};
 	for (std::size_t i = 0; i < a.size(); ++i) x[i] = reduce(a[i]);
 	for (std::size_t i = 0; i < b.size(); ++i) y[i] = reduce(b[i]);
-	ntt_mod<mod, root>(x, false);
+	if (std::min(a.size(), b.size()) <= 32) {
+		std::vector<std::uint32_t> result(length);
+		for (std::size_t i = 0; i < a.size(); ++i)
+			for (std::size_t j = 0; j < b.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * y[j]) % mod;
+		return result;
+	}
+	bool vectorized = false;
+#if defined(__x86_64__) || defined(__i386__)
+	vectorized = __builtin_cpu_supports("avx2");
+#endif
+	ntt_mod_detail::Plan<mod, root> plan(n, vectorized);
+	ntt_mod_detail::forward(x, plan, vectorized);
 	if (&a == &b) y = x;
-	else ntt_mod<mod, root>(y, false);
-	for (std::size_t i = 0; i < n; ++i) x[i] = std::uint64_t(x[i]) * y[i] % mod;
-	ntt_mod<mod, root>(x, true);
+	else ntt_mod_detail::forward(y, plan, vectorized);
+	ntt_mod_detail::pointwise<mod>(x, y, vectorized);
+	ntt_mod_detail::backward(x, plan, vectorized);
+	std::reverse(x.begin() + 1, x.end());
+	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod;
+	ntt_mod_detail::scale<mod>(x, scale, vectorized);
 	x.resize(length);
 	return x;
 }
 inline constexpr std::uint32_t p = 754974721, q = 1224736769, r = 2013265921;
 inline constexpr __uint128_t modulus = __uint128_t(p) * q * r;
-inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
+struct Reconstruction { std::uint64_t low; std::uint32_t high; };
+inline Reconstruction reconstruct(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
 	static const std::uint32_t inverse_p = ntt_mod_detail::power<q>(p, q - 2);
 	static const std::uint32_t inverse_pq = ntt_mod_detail::power<r>(std::uint64_t(p) * q % r, r - 2);
 	std::uint64_t x = std::uint64_t(b + q - a) * inverse_p % q;
 	std::uint64_t low = a + std::uint64_t(p) * x;
 	std::uint64_t y = std::uint64_t(c + r - low % r) * inverse_pq % r;
-	return low + __uint128_t(p) * q * y;
+	return {low, std::uint32_t(y)};
+}
+inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
+	auto [low, high] = reconstruct(a, b, c);
+	return low + __uint128_t(p) * q * high;
 }
 }
 
@@ -5490,6 +6570,7 @@ std::vector<std::uint32_t> convolution_mod(const std::vector<T> &a, const std::v
 	assert(mod > 0);
 	if (a.empty() || b.empty()) return {};
 	assert(a.size() + b.size() - 1 <= std::size_t(1) << 24);
+	if (mod == 1) return std::vector<std::uint32_t>(a.size() + b.size() - 1);
 	std::vector<std::uint32_t> x(a.size()), y(&a == &b ? 0 : b.size());
 	auto reduce = [=](T value) {
 		__int128_t r = __int128_t(value) % mod;
@@ -5498,11 +6579,22 @@ std::vector<std::uint32_t> convolution_mod(const std::vector<T> &a, const std::v
 	std::transform(a.begin(), a.end(), x.begin(), reduce);
 	if (&a != &b) std::transform(b.begin(), b.end(), y.begin(), reduce);
 	const auto &other = &a == &b ? x : y;
+
+	if (std::min(x.size(), other.size()) <= 32) {
+		std::vector<std::uint32_t> result(x.size() + other.size() - 1);
+		for (std::size_t i = 0; i < x.size(); ++i)
+			for (std::size_t j = 0; j < other.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * other[j]) % mod;
+		return result;
+	}
 	if (mod == 998244353 && x.size() + other.size() - 1 <= std::size_t(1) << 23) return convolution_mod_detail::multiply<998244353, 3>(x, other);
 	auto p = convolution_mod_detail::multiply<convolution_mod_detail::p, 11>(x, other);
 	auto q = convolution_mod_detail::multiply<convolution_mod_detail::q, 3>(x, other);
 	auto r = convolution_mod_detail::multiply<convolution_mod_detail::r, 31>(x, other);
-	for (std::size_t i = 0; i < p.size(); ++i) p[i] = convolution_mod_detail::restore(p[i], q[i], r[i]) % mod;
+	std::uint64_t pq_mod = std::uint64_t(convolution_mod_detail::p) * convolution_mod_detail::q % mod;
+	for (std::size_t i = 0; i < p.size(); ++i) {
+		auto [low, high] = convolution_mod_detail::reconstruct(p[i], q[i], r[i]);
+		p[i] = (low % mod + pq_mod * high) % mod;
+	}
 	return p;
 }
 
@@ -5593,7 +6685,7 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 }
 
 
-#line 14 "convolution/multivariate_convolution.hpp"
+#line 12 "convolution/multivariate_convolution.hpp"
 
 template <class T>
 std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vector<T> &b, const std::vector<int> &dimensions) {
@@ -5607,45 +6699,49 @@ std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vect
 	}
 	assert(a.size() == size && b.size() == size);
 	if (bases.empty()) return {a[0] * b[0]};
+	if (bases.size() == 1) {
+		auto result = convolution(a, b);
+		result.resize(size);
+		return result;
+	}
 	int colors = bases.size();
+
+	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
+		if constexpr (T::mod() == 998244353) {
+			assert(size <= std::size_t(1) << 22);
+			std::vector<mint> x(size), y(size);
+			std::vector<int> dims;
+			for (int d : dimensions) if (d > 1) dims.push_back(d);
+			for (std::size_t i = 0; i < size; ++i) x[i] = mint::raw(a[i].val()), y[i] = mint::raw(b[i].val());
+			std::unique_ptr<fps_detail::NTT> ntt;
+			auto transform = [&](std::vector<mint> &v, bool inverse) {
+				using NTT = fps_detail::NTT;
+				if (!ntt) ntt = std::make_unique<NTT>(v.size() / 2, false);
+				auto *p = reinterpret_cast<NTT::U *>(v.data());
+				if (inverse) ntt->fft<true>(p, v.size()), ntt->scale(p, v.size(), 998244353 - 998244352 / v.size());
+				else ntt->fft<false>(p, v.size());
+			};
+			auto product = [&] {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+				int degree = 0;
+				bool small = true;
+				for (int d : dims) degree += d - 1, small &= d <= 3;
+				if (small && degree < 24 && std::count(dims.begin(), dims.end(), 2) >= 3 && multivariate_convolution_detail::Core::available())
+					return multivariate_ranked_detail::multiply(x, y, dims);
+#endif
+				return multivariate_convolution_detail::Core::multiply(x, y, dims, transform, convolution<mint>);
+			}();
+			std::vector<T> result;
+			result.reserve(size);
+			for (auto v : product) result.push_back(T::raw(v.val()));
+			return result;
+		}
+	}
 	std::vector<int> rank(size);
 	for (std::size_t i = 0; i < size; ++i) {
 		std::size_t value = 0;
 		for (std::size_t base : bases) value += i / base;
 		rank[i] = value % colors;
-	}
-	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
-		if constexpr (T::mod() == 998244353) {
-			assert(size <= std::size_t(1) << 22);
-			std::size_t length = std::bit_ceil(2 * size - 1);
-			using NTT = fps_detail::NTT;
-			NTT transform(length / 2, false);
-			std::vector<std::vector<std::uint32_t>> x(colors, std::vector<std::uint32_t>(length)), y = x;
-			for (std::size_t i = 0; i < size; ++i) x[rank[i]][i] = NTT::in(a[i].val()), y[rank[i]][i] = NTT::in(b[i].val());
-			for (int i = 0; i < colors; ++i) {
-				transform.fft<false>(x[i].data(), length);
-				transform.fft<false>(y[i].data(), length);
-			}
-			std::vector<std::uint32_t> row(colors);
-			for (std::size_t k = 0; k < length; ++k) {
-				for (int c = 0; c < colors; ++c) {
-					std::uint32_t value = 0;
-					for (int i = 0; i < colors; ++i) {
-						value = NTT::add(value, NTT::mul(x[i][k], y[(c - i + colors) % colors][k]));
-					}
-					row[c] = value;
-				}
-				for (int c = 0; c < colors; ++c) x[c][k] = row[c];
-			}
-			for (auto &v : x) {
-				transform.fft<true>(v.data(), length);
-				transform.scale(v.data(), length, 998244353 - 998244352 / length);
-			}
-			std::vector<T> result;
-			result.reserve(size);
-			for (std::size_t i = 0; i < size; ++i) result.push_back(T::raw(NTT::out(x[rank[i]][i])));
-			return result;
-		}
 	}
 	std::size_t stride = 2 * colors - 1;
 	assert(size <= std::size_t(-1) / stride / 2);
@@ -5662,20 +6758,45 @@ std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vect
 
 
 #line 3 "test/multivariate_convolution.test.cpp"
-#include <functional>
-#include <iostream>
-#line 7 "test/multivariate_convolution.test.cpp"
-
+#include <cstdio>
+#include <charconv>
+#line 8 "test/multivariate_convolution.test.cpp"
+[[gnu::always_inline]] inline int read() {
+	static char buffer[1 << 16];
+	static std::size_t pos = 0, size = 0;
+	if (std::endian::native == std::endian::little && size - pos >= 16) {
+		std::uint64_t digits;
+		std::memcpy(&digits, buffer + pos, 8);
+		digits ^= 0x3030303030303030ULL;
+		if (!(digits & 0xf0f0f0f0f0f0f0f0ULL)) {
+			digits = (digits * 2561 >> 8) & 0x00ff00ff00ff00ffULL;
+			digits = (digits * 6553601 >> 16) & 0x0000ffff0000ffffULL;
+			int x = digits * 42949672960001ULL >> 32;
+			for (pos += 8; buffer[pos] >= '0' && buffer[pos] <= '9'; ++pos) x = x * 10 + buffer[pos] - '0';
+			++pos;
+			return x;
+		}
+	}
+	auto next = [&]() { if (pos == size) size = fread(buffer, 1, sizeof(buffer), stdin), pos = 0; return size ? buffer[pos++] : char(0); };
+	char c;
+	do c = next(); while (c && c <= ' ');
+	int x = 0;
+	while (c >= '0' && c <= '9') x = x * 10 + c - '0', c = next();
+	return x;
+}
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int k;
-	std::cin >> k;
+	int k = read(), n = 1;
 	std::vector<int> dimensions(k);
-	for (auto &d : dimensions) std::cin >> d;
-	int n = std::accumulate(dimensions.begin(), dimensions.end(), 1, std::multiplies<int>{});
+	for (int &d : dimensions) d = read(), n *= d;
 	std::vector<mint> a(n), b(n);
-	for (auto &x : a) std::cin >> x;
-	for (auto &x : b) std::cin >> x;
-	for (auto x : multivariate_convolution(a, b, dimensions)) std::cout << x << ' ';
-	std::cout << '\n';
+	for (auto &x : a) x = mint::raw(read());
+	for (auto &x : b) x = mint::raw(read());
+	auto result = multivariate_convolution(a, b, dimensions);
+	std::vector<char> output(std::size_t(n) * 11);
+	char *end = output.data();
+	for (auto x : result) {
+		end = std::to_chars(end, end + 10, x.val()).ptr;
+		*end++ = ' ';
+	}
+	fwrite(output.data(), 1, end - output.data(), stdout);
 }

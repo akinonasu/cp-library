@@ -1,18 +1,18 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_range_contour_sum_on_tree"
 #include "data_structure/advanced/centroid_decomposition.hpp"
 #include <cstdint>
-#include <iostream>
+#include "components/fast_io.hpp"
 
 int main() {
-	std::ios::sync_with_stdio(false);
-	std::cin.tie(nullptr);
+	FastInput input;
+	FastOutput output;
 	int n, q;
-	std::cin >> n >> q;
+	input.read(n), input.read(q);
 	std::vector<std::int64_t> values(n);
-	for (auto& x : values) std::cin >> x;
+	for (auto& x : values) input.read(x);
 	CentroidDecomposition<> tree(n);
 	for (int i = 1, u, v; i < n; ++i) {
-		std::cin >> u >> v;
+		input.read(u), input.read(v);
 		tree.add_edge(u, v);
 	}
 	tree.build();
@@ -43,23 +43,23 @@ int main() {
 	};
 	while (q--) {
 		int type, v;
-		std::cin >> type >> v;
+		input.read(type), input.read(v);
 		if (type == 0) {
 			std::int64_t x;
-			std::cin >> x;
+			input.read(x);
 			tree.for_each_ancestor(v, [&](int c, int d, int b) {
 				add(c, d, x);
 				if (b != -1) add(n + b, d, x);
 			});
 		} else {
 			int l, r;
-			std::cin >> l >> r;
+			input.read(l), input.read(r);
 			std::int64_t answer = 0;
 			tree.for_each_ancestor(v, [&](int c, int d, int b) {
 				answer += prefix(c, r - d) - prefix(c, l - d);
 				if (b != -1) answer -= prefix(n + b, r - d) - prefix(n + b, l - d);
 			});
-			std::cout << answer << '\n';
+			output.println(answer);
 		}
 	}
 }

@@ -27,4 +27,6 @@ int main() {
 		tree.build(a);
 		require(tree.prod(0, n) == std::accumulate(a.begin(), a.end(), std::int64_t(0)));
 	}
+	FenwickSum<std::int64_t> extremes(std::vector<std::int64_t>{INT64_MIN, INT64_MAX});
+	if (extremes.prod_as<__int128_t>(1, 2) != INT64_MAX) std::abort();
 }

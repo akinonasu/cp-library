@@ -4,7 +4,9 @@
 #include "convolution/ordered_convolution_light.hpp"
 #include "convolution/max_min_convolution_light.hpp"
 #include "convolution/multivariate_convolution_light.hpp"
+#include "components/multivariate_ranked.hpp"
 #include <cassert>
+#include <array>
 #include <random>
 
 struct OtherMint {
@@ -31,7 +33,31 @@ std::vector<T> naive(const std::vector<T> &a, const std::vector<T> &b) {
 	return result;
 }
 
+void unaligned_ranked_rows() {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	if (!multivariate_convolution_detail::Core::available()) return;
+	namespace D = multivariate_ranked_detail;
+	alignas(32) std::array<std::uint32_t, 24> source{}, destination{};
+	for (unsigned i = 0; i < source.size(); ++i) source[i] = mint::mod() - 1 - i * 757771;
+	const auto saved = source;
+	for (bool negative : {false, true}) for (bool first : {false, true}) {
+		for (unsigned i = 0; i < destination.size(); ++i) destination[i] = i * 17 + 3;
+		const auto original = destination;
+		D::add_row(reinterpret_cast<D::Vec *>(destination.data() + 1), reinterpret_cast<const D::Vec *>(source.data() + 1), 2, negative, first);
+		for (int i = 1; i <= 16; ++i) {
+			unsigned x = first ? 0 : original[i], y = source[i];
+			unsigned expected = negative ? (x >= y ? x - y : x + mint::mod() - y) : (x + y) % mint::mod();
+			assert(destination[i] == expected);
+		}
+		assert(destination[0] == original[0]);
+		for (int i = 17; i < int(destination.size()); ++i) assert(destination[i] == original[i]);
+		assert(source == saved);
+	}
+#endif
+}
+
 int main() {
+	unaligned_ranked_rows();
 	std::mt19937 rng(290931);
 	for (int n : {0, 1, 2, 31, 32, 33, 65, 129, 257}) {
 		for (int m : {0, 1, 2, 31, 32, 33, 65, 129}) {
@@ -86,7 +112,7 @@ int main() {
 		for (int i = 0; i < p; ++i) for (int j = 0; j < p; ++j) expected[i * j % p] += a[i] * b[j];
 		assert(light_convolution::multiplicative_convolution(a, b) == expected);
 	}
-	for (const std::vector<int> &dims : {std::vector<int>{}, {1}, {2, 3, 2}, {3, 1, 7}, {3, 4, 5}}) {
+	for (const std::vector<int> &dims : {std::vector<int>{}, {1}, {2, 3, 2}, {3, 1, 7}, {3, 4, 5}, {3, 2, 3, 2, 2}, {2, 2, 2, 3, 3, 3}, {4, 3, 2, 5, 2}}) {
 		int n = 1;
 		for (int d : dims) n *= d;
 		std::vector<mint> a(n), b(n), expected(n);

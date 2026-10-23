@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/scc"
 #include "graph/connectivity/scc.hpp"
-#include "components/fast_io.hpp"
+#include "components/fast_io_bulk.hpp"
 
 int main() {
 	FastInput in;
@@ -9,14 +9,11 @@ int main() {
 	in.read(n), in.read(m);
 	SCCGraph graph(n);
 	graph.reserve(m);
-	while (m--) {
-		int from = 0, to = 0;
-		in.read(from), in.read(to);
-		graph.add_edge(from, to);
-	}
-	auto groups = graph.scc();
+	read_unsigned_records<2>(in, m, [&](unsigned from, unsigned to) { graph.add_edge(from, to); });
+	auto groups = graph.decomposition();
 	out.println(groups.size());
-	for (const auto &group : groups) {
+	for (int component = 0; component < groups.size(); ++component) {
+		auto group = groups[component];
 		out.write(group.size());
 		for (int v : group) { out.write(' '); out.write(v); }
 		out.write('\n');

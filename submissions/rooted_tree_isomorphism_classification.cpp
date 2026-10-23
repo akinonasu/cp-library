@@ -103,6 +103,36 @@ inline Rooting root_tree(const std::vector<std::vector<int>> &graph, int root) {
 	return result;
 }
 
+inline Rooting root_parents(const std::vector<int> &parent) {
+	assert(parent.size() <= std::size_t(std::numeric_limits<int>::max()));
+	const int n = static_cast<int>(parent.size());
+	Rooting result;
+	result.parent = parent;
+	result.height.assign(n, 0);
+	result.size.assign(n, 1);
+	result.order.reserve(n);
+	std::vector<int> degree(n);
+	int root = -1;
+	for (int v = 0; v < n; ++v) {
+		int p = parent[v];
+		assert(p == -1 || (0 <= p && p < n && p != v));
+		if (p == -1) { assert(root == -1); root = v; }
+		else ++degree[p];
+	}
+	assert(!n || root != -1);
+	for (int v = 0; v < n; ++v) if (!degree[v]) result.order.push_back(v);
+	for (std::size_t i = 0; i < result.order.size(); ++i) {
+		int v = result.order[i], p = parent[v];
+		if (p == -1) continue;
+		result.height[p] = std::max(result.height[p], result.height[v] + 1);
+		result.size[p] += result.size[v];
+		if (!--degree[p]) result.order.push_back(p);
+	}
+	assert(result.order.size() == parent.size());
+	std::reverse(result.order.begin(), result.order.end());
+	return result;
+}
+
 inline TreeHashValue salt_at(int height, std::uint64_t seed) {
 	SplitMix64 random(seed + std::uint64_t(height) * 2 * 0x9e3779b97f4a7c15ULL);
 	return { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
@@ -116,9 +146,9 @@ inline void append(TreeHashValue &hash, const TreeHashValue &child, const TreeHa
 	}
 }
 
-inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &graph, const Rooting &tree, std::uint64_t seed) {
-	std::vector<TreeHashValue> result(graph.size(), TreeHashValue{ {1, 1} });
-	if (graph.empty()) return result;
+inline std::vector<TreeHashValue> hashes(const Rooting &tree, std::uint64_t seed) {
+	std::vector<TreeHashValue> result(tree.parent.size(), TreeHashValue{ {1, 1} });
+	if (result.empty()) return result;
 	std::vector<TreeHashValue> salt(tree.height[tree.order[0]] + 1);
 	SplitMix64 random(seed);
 	for (auto &value : salt) value = { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
@@ -129,10 +159,17 @@ inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &gr
 	return result;
 }
 
+inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &graph, const Rooting &tree, std::uint64_t seed) {
+	assert(graph.size() == tree.parent.size());
+	return hashes(tree, seed);
+}
+
 }
 
 
 #line 5 "tree/rooted_tree_hash.hpp"
+#include <bit>
+#include <stdexcept>
 #include <utility>
 
 class RootedTreeHash {
@@ -157,6 +194,31 @@ class RootedTreeHash {
 		this->root = graph.empty() ? -1 : root;
 		seed_ = seed;
 	}
+	void build_parents(const std::vector<int> &parents, std::uint64_t seed = default_seed()) {
+		auto tree = tree_hash_detail::root_parents(parents);
+		hash = tree_hash_detail::hashes(tree, seed);
+		root = tree.order.empty() ? -1 : tree.order[0];
+		parent = std::move(tree.parent);
+		height = std::move(tree.height);
+		subtree_size = std::move(tree.size);
+		seed_ = seed;
+	}
+	std::vector<int> classify() const {
+		std::vector<int> result(size());
+		if (empty()) return result;
+		if (std::size_t(size()) > std::numeric_limits<std::size_t>::max() / 4) throw std::length_error("RootedTreeHash classify");
+		std::size_t capacity = std::bit_ceil(std::size_t(size()) * 2);
+		std::vector<int> table(capacity, -1);
+		TreeHashValue::Hasher hasher;
+		int count = 0;
+		for (int v = 0; v < size(); ++v) {
+			std::size_t slot = hasher(hash[v]) & (capacity - 1);
+			while (table[slot] != -1 && hash[table[slot]] != hash[v]) slot = (slot + 1) & (capacity - 1);
+			if (table[slot] == -1) table[slot] = v, result[v] = count++;
+			else result[v] = result[table[slot]];
+		}
+		return result;
+	}
 	int size() const { return static_cast<int>(hash.size()); }
 	bool empty() const { return hash.empty(); }
 	std::uint64_t seed() const { return seed_; }
@@ -173,15 +235,13 @@ class RootedTreeHash {
 
 
 
-#line 6 "components/fast_io.hpp"
-#include <bit>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>
 #include <memory>
-#include <stdexcept>
+#line 15 "components/fast_io.hpp"
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -405,26 +465,20 @@ public:
 
 
 #line 4 "test/rooted_tree_hash.test.cpp"
-#include <unordered_map>
+
 
 int main() {
 	FastInput input;
 	FastOutput output;
 	int n = 0;
 	input.read(n);
-	std::vector<std::vector<int>> graph(n);
-	for (int v = 1; v < n; ++v) {
-		int p = 0;
-		input.read(p);
-		graph[p].push_back(v);
-		graph[v].push_back(p);
-	}
-	RootedTreeHash tree(graph);
-	std::unordered_map<TreeHashValue, int, TreeHashValue::Hasher> ids;
-	ids.reserve(n);
-	std::vector<int> answer(n);
-	for (int v = 0; v < n; ++v) answer[v] = ids.try_emplace(tree[v], static_cast<int>(ids.size())).first->second;
-	output.write(static_cast<int>(ids.size()));
+	std::vector<int> parents(n, -1);
+	for (int v = 1; v < n; ++v) input.read(parents[v]);
+	RootedTreeHash tree;
+	tree.build_parents(parents);
+	auto answer = tree.classify();
+	int count = *std::max_element(answer.begin(), answer.end()) + 1;
+	output.write(count);
 	output.write('\n');
 	for (int v = 0; v < n; ++v) {
 		output.write(answer[v]);

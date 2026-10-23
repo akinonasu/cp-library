@@ -2,6 +2,8 @@
 #define KTH_ROOT_HPP
 
 #include <array>
+#include <algorithm>
+#include <limits>
 #include <bit>
 #include <cassert>
 #include <cmath>
@@ -20,6 +22,39 @@ inline constexpr auto thresholds = [] {
 	}
 	return table;
 }();
+
+inline std::uint64_t cube(std::uint64_t n) {
+	if constexpr (std::numeric_limits<double>::is_iec559 && std::numeric_limits<double>::digits == 53 && sizeof(double) == sizeof(std::uint64_t)) {
+		static constexpr auto inverse_roots = [] {
+			std::array<double, 64> result{};
+			for (int i = 0; i < 64; ++i) {
+				double a = 1 + (i + 0.5) / 64, x = 1;
+				for (int j = 0; j < 8; ++j) x += x * (1 - a * x * x * x) / 3;
+				result[i] = x;
+			}
+			return result;
+		}();
+		double a = double(n);
+		std::uint64_t bits = std::bit_cast<std::uint64_t>(a);
+		unsigned exponent = unsigned(bits >> 52) - 1023;
+		constexpr double factor[] = {1, 0.79370052598409973738, 0.62996052494743658238};
+		double x = inverse_roots[(bits >> 46) & 63] * factor[exponent % 3]
+			* std::bit_cast<double>(std::uint64_t(1023 - exponent / 3) << 52);
+		{
+			double h = 1 - a * x * x * x;
+			x += x * h * (1.0 / 3 + h * (2.0 / 9 + h * (14.0 / 81)));
+		}
+		std::uint64_t r = std::min(std::uint64_t(1 / x), std::uint64_t(2642245));
+		while (r * r * r > n) --r;
+		while (r < 2642245 && (r + 1) * (r + 1) * (r + 1) <= n) ++r;
+		return r;
+	} else {
+		std::uint64_t r = std::cbrt(double(n));
+		while (__uint128_t(r) * r * r > n) --r;
+		while (__uint128_t(r + 1) * (r + 1) * (r + 1) <= n) ++r;
+		return r;
+	}
+}
 
 template <unsigned K>
 inline std::uint64_t small(std::uint64_t n) {
@@ -76,7 +111,7 @@ inline std::uint64_t kth_root(std::uint64_t n, std::uint64_t k) {
 		return lo - 1;
 	}
 	switch (k) {
-	case 3: return kth_root_detail::small<3>(n);
+	case 3: return kth_root_detail::cube(n);
 	case 4: return kth_root_detail::small<4>(n);
 	case 5: return kth_root_detail::small<5>(n);
 	case 6: return kth_root_detail::small<6>(n);

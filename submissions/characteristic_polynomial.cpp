@@ -454,6 +454,32 @@ struct ModularField {
 		__m256i r = _mm256_sub_epi32(_mm256_mullo_epi32(a, x), _mm256_mullo_epi32(high, p));
 		return _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
 	}
+	__attribute__((target("avx512f"))) static __m512i product16(__m512i a, __m512i x, __m512i q) {
+		const auto p = _mm512_set1_epi32(mod);
+		auto even = _mm512_srli_epi64(_mm512_mul_epu32(a, q), 32);
+		auto odd = _mm512_mul_epu32(_mm512_srli_epi64(a, 32), q);
+		auto high = _mm512_mask_blend_epi32(0xaaaa, even, odd);
+		auto r = _mm512_sub_epi32(_mm512_mullo_epi32(a, x), _mm512_mullo_epi32(high, p));
+		return _mm512_min_epu32(r, _mm512_sub_epi32(r, p));
+	}
+	template <bool add_to>
+	__attribute__((target("avx512f"))) static void apply16(V *a, const V *b, int n, V x, V q) {
+		const auto vx = _mm512_set1_epi32(x), vq = _mm512_set1_epi32(q), p = _mm512_set1_epi32(mod);
+		int i = 0;
+		for (; i + 16 <= n; i += 16) {
+			auto r = product16(_mm512_loadu_si512(b + i), vx, vq);
+			if constexpr (add_to) {
+				r = _mm512_add_epi32(r, _mm512_loadu_si512(a + i));
+				r = _mm512_min_epu32(r, _mm512_sub_epi32(r, p));
+			}
+			_mm512_storeu_si512(a + i, r);
+		}
+		for (; i < n; ++i) {
+			V r = product(b[i], x, q);
+			if constexpr (add_to) a[i] = add(a[i], r);
+			else a[i] = r;
+		}
+	}
 	template <bool add_to>
 	__attribute__((target("avx2"))) static void apply8(V *a, const V *b, int n, V x, V q) {
 		__m256i vx = _mm256_set1_epi32(x), vq = _mm256_set1_epi32(q), p = _mm256_set1_epi32(mod);
@@ -477,6 +503,7 @@ struct ModularField {
 	static void apply(V *a, const V *b, int n, V x) {
 		V q = (std::uint64_t(x) << 32) / mod;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (n >= 64 && avx2() && __builtin_cpu_supports("avx512f")) { apply16<add_to>(a, b, n, x, q); return; }
 		if (n >= 16 && avx2()) { apply8<add_to>(a, b, n, x, q); return; }
 #endif
 		for (int i = 0; i < n; ++i) {
@@ -769,7 +796,165 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 
 
 
-#line 6 "components/matrix_power.hpp"
+#line 1 "components/matrix_elimination_modular.hpp"
+
+
+
+#line 6 "components/matrix_elimination_modular.hpp"
+
+namespace matrix_detail {
+template <class Ops>
+struct ModularElimination {
+	using V = typename Ops::V;
+	static constexpr int batch = int(std::min<std::uint64_t>(8, (std::numeric_limits<std::int64_t>::max() - (Ops::mod - 1)) / (std::uint64_t(Ops::mod - 1) * (Ops::mod - 1))));
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	__attribute__((target("avx512f,avx512dq"))) static __m512i reduce512(__m512i sum) {
+		constexpr V negative_inverse = [] { V v = Ops::mod; for (int i = 0; i < 4; ++i) v *= 2 - Ops::mod * v; return V(0) - v; }();
+		sum = _mm512_add_epi64(sum, _mm512_mul_epu32(_mm512_mul_epu32(sum, _mm512_set1_epi32(negative_inverse)), _mm512_set1_epi32(Ops::mod)));
+		sum = _mm512_srli_epi64(sum, 32);
+		for (int i = 0; i < 2; ++i) sum = _mm512_min_epu32(sum, _mm512_sub_epi32(sum, _mm512_set1_epi32(Ops::mod)));
+		return sum;
+	}
+	__attribute__((target("avx512f,avx512dq"))) static void update512(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
+		std::array<V, batch> encoded;
+		for (int k = 0; k < count; ++k) encoded[k] = std::uint64_t(coeff[k]) * ((std::uint64_t(1) << 32) % Ops::mod) % Ops::mod;
+		int j = 0;
+		for (; j + 16 <= length; j += 16) {
+			auto x = _mm512_loadu_si512(dst + j);
+			auto even = _mm512_setzero_si512(), odd = even;
+			for (int k = 0; k < count; ++k) {
+				auto a = _mm512_loadu_si512(src[k] + first + j), b = _mm512_set1_epi32(Ops::mod % 2 ? encoded[k] : coeff[k]);
+				even = _mm512_add_epi64(even, _mm512_mul_epu32(a, b));
+				odd = _mm512_add_epi64(odd, _mm512_mul_epu32(_mm512_srli_epi64(a, 32), b));
+			}
+			if constexpr (Ops::mod % 2) even = reduce512(even), odd = reduce512(odd);
+			else even = reduce_product_avx512<Ops::mod>(even), odd = reduce_product_avx512<Ops::mod>(odd);
+			x = _mm512_add_epi32(x, _mm512_or_si512(even, _mm512_slli_epi64(odd, 32)));
+			_mm512_storeu_si512(dst + j, _mm512_min_epu32(x, _mm512_sub_epi32(x, _mm512_set1_epi32(Ops::mod))));
+		}
+		for (; j < length; ++j) {
+			std::uint64_t sum = dst[j];
+			for (int k = 0; k < count; ++k) sum += std::uint64_t(src[k][first + j]) * coeff[k];
+			dst[j] = sum % Ops::mod;
+		}
+	}
+	__attribute__((target("avx2"))) static __m256i reduce256(__m256i sum) {
+		constexpr V negative_inverse = [] { V v = Ops::mod; for (int i = 0; i < 4; ++i) v *= 2 - Ops::mod * v; return V(0) - v; }();
+		sum = _mm256_add_epi64(sum, _mm256_mul_epu32(_mm256_mul_epu32(sum, _mm256_set1_epi32(negative_inverse)), _mm256_set1_epi32(Ops::mod)));
+		sum = _mm256_srli_epi64(sum, 32);
+		for (int i = 0; i < 2; ++i) sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(Ops::mod)));
+		return sum;
+	}
+	__attribute__((target("avx2"))) static void update256(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
+		std::array<V, batch> encoded;
+		for (int k = 0; k < count; ++k) encoded[k] = std::uint64_t(coeff[k]) * ((std::uint64_t(1) << 32) % Ops::mod) % Ops::mod;
+		int j = 0;
+		for (; j + 8 <= length; j += 8) {
+			auto even = _mm256_setzero_si256(), odd = even;
+			for (int k = 0; k < count; ++k) {
+				auto a = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(src[k] + first + j));
+				auto b = _mm256_set1_epi32(Ops::mod % 2 ? encoded[k] : coeff[k]);
+				even = _mm256_add_epi64(even, _mm256_mul_epu32(a, b));
+				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(a, 32), b));
+			}
+			if constexpr (Ops::mod % 2) {
+				even = reduce256(even), odd = reduce256(odd);
+				auto value = _mm256_add_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(dst + j)), _mm256_or_si256(even, _mm256_slli_epi64(odd, 32)));
+				_mm256_storeu_si256(reinterpret_cast<__m256i *>(dst + j), _mm256_min_epu32(value, _mm256_sub_epi32(value, _mm256_set1_epi32(Ops::mod))));
+			} else {
+				std::uint64_t x[4], y[4];
+				_mm256_storeu_si256(reinterpret_cast<__m256i *>(x), even);
+				_mm256_storeu_si256(reinterpret_cast<__m256i *>(y), odd);
+				for (int k = 0; k < 4; ++k) {
+					dst[j + 2 * k] = (x[k] + dst[j + 2 * k]) % Ops::mod;
+					dst[j + 2 * k + 1] = (y[k] + dst[j + 2 * k + 1]) % Ops::mod;
+				}
+			}
+		}
+		for (; j < length; ++j) {
+			std::uint64_t sum = dst[j];
+			for (int k = 0; k < count; ++k) sum += std::uint64_t(src[k][first + j]) * coeff[k];
+			dst[j] = sum % Ops::mod;
+		}
+	}
+#endif
+	static void update(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
+		if (!count || !length) return;
+		if (count == 1) { if (coeff[0]) Ops::axpy(dst, src[0] + first, length, coeff[0]); return; }
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (length >= 32 && avx512_product()) { update512(dst, src, coeff, count, first, length); return; }
+		if (length >= 16 && avx2()) { update256(dst, src, coeff, count, first, length); return; }
+#endif
+		for (int j = 0; j < length; ++j) {
+			std::uint64_t sum = dst[j];
+			for (int k = 0; k < count; ++k) sum += std::uint64_t(src[k][first + j]) * coeff[k];
+			dst[j] = sum % Ops::mod;
+		}
+	}
+	static Elimination<Ops> run(std::vector<V> &a, int h, int stride, int columns, bool reduced) {
+		Elimination<Ops> result;
+		result.pivots.reserve(std::min(h, columns));
+		std::vector<std::array<V, batch>> factors(h);
+		std::array<const V *, batch> source;
+		int rank = 0;
+		for (int first = 0; first < columns && rank < h; first += batch) {
+			int end = std::min(columns, first + batch), start = rank;
+			for (int i = rank; i < h; ++i) factors[i].fill(0);
+			for (int col = first; col < end && rank < h; ++col) {
+				int p = rank;
+				while (p < h && !a[std::size_t(p) * stride + col]) ++p;
+				if (p == h) continue;
+				V *row = a.data() + std::size_t(rank) * stride;
+				if (p != rank) {
+					std::swap_ranges(row, row + stride, a.data() + std::size_t(p) * stride);
+					std::swap(factors[p], factors[rank]);
+					result.determinant = Ops::neg(result.determinant);
+				}
+				update(row + end, source.data(), factors[rank].data(), rank - start, end, stride - end);
+				result.determinant = Ops::mul(result.determinant, row[col]);
+				Ops::scale(row + col + 1, stride - col - 1, Ops::inv(row[col]));
+				row[col] = 1;
+				source[rank - start] = row;
+				for (int i = rank + 1; i < h; ++i) {
+					V *dst = a.data() + std::size_t(i) * stride;
+					V x = factors[i][rank - start] = Ops::neg(dst[col]);
+					if (x) Ops::axpy(dst + col + 1, row + col + 1, end - col - 1, x);
+					dst[col] = 0;
+				}
+				result.pivots.push_back(col);
+				++rank;
+			}
+			for (int i = rank; i < h; ++i) update(a.data() + std::size_t(i) * stride + end, source.data(), factors[i].data(), rank - start, end, stride - end);
+		}
+		bool full = rank == columns;
+		if (reduced) for (int end = rank; end > 0;) {
+			int start = std::max(0, end - batch);
+			for (int k = end - 1; k >= start; --k) {
+				int col = result.pivots[k], first = full ? columns : col + 1;
+				const V *row = a.data() + std::size_t(k) * stride;
+				for (int i = start; i < k; ++i) {
+					V *dst = a.data() + std::size_t(i) * stride;
+					if (V x = dst[col]) Ops::axpy(dst + first, row + first, stride - first, Ops::neg(x));
+					dst[col] = 0;
+				}
+			}
+			int first = full ? columns : result.pivots[start] + 1;
+			for (int k = start; k < end; ++k) source[k - start] = a.data() + std::size_t(k) * stride;
+			for (int i = 0; i < start; ++i) {
+				V *dst = a.data() + std::size_t(i) * stride;
+				for (int k = start; k < end; ++k) factors[i][k - start] = Ops::neg(dst[result.pivots[k]]);
+				update(dst + first, source.data(), factors[i].data(), end - start, first, stride - first);
+				for (int k = start; k < end; ++k) dst[result.pivots[k]] = 0;
+			}
+			end = start;
+		}
+		return result;
+	}
+};
+}
+
+
+#line 7 "components/matrix_power.hpp"
 #include <optional>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
@@ -810,22 +995,38 @@ struct FrobeniusPower {
 	}
 	Row apply(const Row &x) const {
 		Row result(n);
-		for (int i = 0; i < n; ++i) if (x[i]) Ops::axpy(result.data(), transpose.data() + std::size_t(i) * n, n, x[i]);
+		constexpr int count = ModularElimination<Ops>::batch;
+		std::array<const V *, count> source;
+		for (int i = 0; i < n; i += count) {
+			int used = std::min(count, n - i);
+			for (int j = 0; j < used; ++j) source[j] = transpose.data() + std::size_t(i + j) * n;
+			ModularElimination<Ops>::update(result.data(), source.data(), x.data() + i, used, 0, n);
+		}
 		return result;
 	}
-	std::optional<Row> chain(Row x) {
+	std::optional<Row> chain(Row x, int first = 0) {
 		while (++work <= 4 * n) {
 			const int m = int(basis.size());
 			Row y = x, factors(m);
-			for (int j = 0; j < m; ++j) {
-				int p = pivots[j];
-				V factor = factors[j] = y[p];
-				if (factor) Ops::axpy(y.data() + p, reduced[j].data() + p, n - p, Ops::neg(factor));
+			constexpr int count = ModularElimination<Ops>::batch;
+			std::array<const V *, count> source;
+			std::array<V, count> coeff;
+			for (int j = 0; j < m; j += count) {
+				int used = std::min(count, m - j);
+				for (int u = 0; u < used; ++u) {
+					int p = pivots[j + u];
+					std::uint64_t value = y[p];
+					for (int k = 0; k < u; ++k) value += std::uint64_t(source[k][p]) * coeff[k];
+					V factor = factors[j + u] = value % Ops::mod;
+					coeff[u] = Ops::neg(factor);
+					source[u] = reduced[j + u].data();
+				}
+				ModularElimination<Ops>::update(y.data(), source.data(), coeff.data(), used, 0, n);
 			}
 			int p = 0;
 			while (p < n && !y[p]) ++p;
 			if (p == n) {
-				for (int i = m - 1; i >= 0; --i) {
+				for (int i = m - 1; i >= first; --i) {
 					V sum = Ops::dot(upper.data() + std::size_t(i) * n + i + 1, factors.data() + i + 1, m - i - 1);
 					factors[i] = Ops::mul(Ops::add(factors[i], Ops::neg(sum)), inverses[i]);
 				}
@@ -870,7 +1071,7 @@ struct FrobeniusPower {
 		p.resize(d);
 		return p;
 	}
-	std::optional<std::vector<T>> run(std::uint64_t exponent) {
+	std::optional<std::vector<Row>> decompose(bool diagonal = true) {
 		for (int attempt = 0; attempt < 3; ++attempt) {
 			basis.clear(), reduced.clear(), pivots.clear();
 			work = 0;
@@ -878,18 +1079,21 @@ struct FrobeniusPower {
 			bool valid = true;
 			while (int(basis.size()) < n) {
 				const int start = int(basis.size());
-				auto rec = chain(seed());
+				Row x = seed();
+				if (!diagonal) for (int p : pivots) x[p] = 0;
+				auto rec = chain(std::move(x), diagonal ? 0 : start);
 				if (!rec) { valid = false; break; }
 				if (int(basis.size()) == start) {
 					Row x(n);
 					int p = 0;
 					while (std::find(pivots.begin(), pivots.end(), p) != pivots.end()) ++p;
 					x[p] = 1;
-					rec = chain(std::move(x));
+					rec = chain(std::move(x), diagonal ? 0 : start);
 					if (!rec) { valid = false; break; }
 				}
 				const int d = int(basis.size()) - start;
-				if (std::any_of(rec->begin(), rec->begin() + start, [](V v) { return v != 0; })) {
+				if (!diagonal && !start && d <= 2) return std::nullopt;
+				if (diagonal && std::any_of(rec->begin(), rec->begin() + start, [](V v) { return v != 0; })) {
 					Row remainder = *rec, quotient(start + 1);
 					for (int i = int(remainder.size()) - 1; i >= d; --i) {
 						V factor = remainder[i];
@@ -910,6 +1114,48 @@ struct FrobeniusPower {
 				relations.push_back(std::move(relation));
 			}
 			if (!valid) continue;
+			return relations;
+		}
+		return std::nullopt;
+	}
+	std::optional<std::vector<T>> characteristic() {
+		bool upper_triangular = true, lower_triangular = true;
+		for (int i = 0; i < n && (upper_triangular || lower_triangular); ++i) for (int j = 0; j < i; ++j) {
+			upper_triangular &= transpose[std::size_t(j) * n + i] == 0;
+			lower_triangular &= transpose[std::size_t(i) * n + j] == 0;
+		}
+		if (upper_triangular || lower_triangular) {
+			Row p{1};
+			for (int i = 0; i < n; ++i) {
+				Row next(p.size() + 1);
+				std::copy(p.begin(), p.end(), next.begin() + 1);
+				Ops::axpy(next.data(), p.data(), int(p.size()), Ops::neg(transpose[std::size_t(i) * n + i]));
+				p = std::move(next);
+			}
+			std::vector<T> result(p.size());
+			for (std::size_t i = 0; i < p.size(); ++i) result[i] = T::raw(p[i]);
+			return result;
+		}
+		auto relations = decompose(false);
+		if (!relations) return std::nullopt;
+		Row p{1};
+		for (const auto &relation : *relations) {
+			const int d = int(relation.size());
+			Row next(p.size() + d);
+			for (int i = 0; i < int(p.size()); ++i) {
+				next[i + d] = Ops::add(next[i + d], p[i]);
+				if (p[i]) Ops::axpy(next.data() + i, relation.data(), d, Ops::neg(p[i]));
+			}
+			p = std::move(next);
+		}
+		std::vector<T> result(p.size());
+		for (std::size_t i = 0; i < p.size(); ++i) result[i] = T::raw(p[i]);
+		return result;
+	}
+	std::optional<std::vector<T>> run(std::uint64_t exponent) {
+		auto relation_blocks = decompose();
+		if (!relation_blocks) return std::nullopt;
+		const auto &relations = *relation_blocks;
 			std::vector<T> b(std::size_t(n) * n), companion(b.size());
 			for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
 				b[std::size_t(j) * n + i] = T::raw(basis[i][j]);
@@ -943,9 +1189,7 @@ struct FrobeniusPower {
 			}
 			for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
 				result[std::size_t(i) * n + pivots[j]] = T::raw(columns[std::size_t(j) * n + i]);
-			return result;
-		}
-		return std::nullopt;
+		return result;
 	}
 };
 }
@@ -955,16 +1199,27 @@ struct FrobeniusPower {
 #endif
 
 
-#line 6 "math/linear_algebra/matrix.hpp"
+#line 7 "math/linear_algebra/matrix.hpp"
 
 namespace matrix_detail {
 template <class T>
 struct FastMatrixArithmetic {
 	static constexpr bool modular = small_modint<T>;
+	template <class Ops>
+	static auto eliminate(std::vector<typename Ops::V> &a, int h, int stride, int columns, bool reduced, long double eps) {
+		if constexpr (modular) if (h >= 32 && columns >= 32) return ModularElimination<Ops>::run(a, h, stride, columns, reduced);
+		return matrix_detail::eliminate<Ops, modular>(a, h, stride, columns, reduced, eps);
+	}
 	template <class F>
 	static auto field(std::vector<T> &a, F &&f) { return matrix_detail::field(a, std::forward<F>(f)); }
 	static std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n, int inner, int m) {
 		return matrix_detail::multiply(a, b, n, inner, m);
+	}
+	static std::optional<std::vector<T>> characteristic(const std::vector<T> &a, int n) {
+		if constexpr (small_modint<T>) if constexpr (prime_modulus(T::mod())) {
+			if (n >= 32) return FrobeniusPower<T>(a, n).characteristic();
+		}
+		return std::nullopt;
 	}
 	static std::optional<std::vector<T>> power(const std::vector<T> &a, int n, std::uint64_t exponent) {
 		if constexpr (small_modint<T>) if constexpr (prime_modulus(T::mod())) {
@@ -1003,7 +1258,11 @@ class Matrix {
 	std::pair<T, std::vector<int>> reduce(int columns, bool reduced, long double eps) {
 		assert(eps >= 0);
 		return Arithmetic::field(a, [&]<class Ops>(auto &work) {
-			auto result = matrix_detail::eliminate<Ops, Arithmetic::modular>(work, h, w, columns, reduced, eps);
+			auto result = [&] {
+				if constexpr (requires { Arithmetic::template eliminate<Ops>(work, h, w, columns, reduced, eps); })
+					return Arithmetic::template eliminate<Ops>(work, h, w, columns, reduced, eps);
+				else return matrix_detail::eliminate<Ops, Arithmetic::modular>(work, h, w, columns, reduced, eps);
+			}();
 			return std::pair{T(result.determinant), std::move(result.pivots)};
 		});
 	}
@@ -1186,6 +1445,8 @@ class Matrix {
 	}
 	std::vector<T> characteristic_polynomial(long double eps = default_epsilon) const {
 		assert(h == w && eps >= 0);
+		if constexpr (requires { Arithmetic::characteristic(a, h); })
+			if (auto result = Arithmetic::characteristic(a, h)) return std::move(*result);
 		auto work = a;
 		return Arithmetic::field(work, [&]<class Ops>(auto &b) {
 			using V = typename Ops::V;
@@ -1271,7 +1532,7 @@ class Matrix {
 };
 
 
-#line 26 "math/linear_algebra/matrix.hpp"
+#line 38 "math/linear_algebra/matrix.hpp"
 
 
 #line 1 "math/mint.hpp"
@@ -1298,7 +1559,7 @@ struct Mint {
 	using mint = Mint;
 	unsigned v = 0;
 	static constexpr unsigned mod() { return 998244353; }
-	static unsigned reduce(unsigned long long x) {
+	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -1308,17 +1569,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	static Mint raw(unsigned x) {
+	[[gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	static Mint word(unsigned x) {
+	[[gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	unsigned val() const {
+	[[gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -1330,17 +1591,17 @@ struct Mint {
 	friend std::ostream &operator<<(std::ostream &os, const Mint &x) {
 		return os << x.val();
 	}
-	Mint &operator+=(Mint b) {
+	[[gnu::always_inline]] Mint &operator+=(Mint b) {
 		v += b.v;
 		if (v >= 2 * mod()) v -= 2 * mod();
 		return *this;
 	}
-	Mint &operator-=(Mint b) {
+	[[gnu::always_inline]] Mint &operator-=(Mint b) {
 		v -= b.v;
 		if (v >> 31) v += 2 * mod();
 		return *this;
 	}
-	Mint &operator*=(Mint b) {
+	[[gnu::always_inline]] Mint &operator*=(Mint b) {
 		v = reduce((unsigned long long)v * b.v);
 		return *this;
 	}
@@ -1357,14 +1618,14 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	Mint operator+() const { return *this; }
-	Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	Mint operator+(Mint b) const { return Mint(*this) += b; }
-	Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[gnu::always_inline]] Mint operator+() const { return *this; }
+	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
 	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	bool operator!=(Mint b) const { return !(*this == b); }
+	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
 	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>

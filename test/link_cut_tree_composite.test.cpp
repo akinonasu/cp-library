@@ -2,9 +2,7 @@
 #include "../tree/link_cut_tree.hpp"
 #include "../math/mint.hpp"
 #include <array>
-#include <iostream>
-#include <set>
-#include <tuple>
+#include "components/fast_io.hpp"
 #include <vector>
 
 using namespace std;
@@ -14,35 +12,41 @@ S op(const S &a, const S &b) { return {a[0] * b[0], a[1] * b[0] + b[1]}; }
 S e() { return {1, 0}; }
 
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
+	FastInput input;
+	FastOutput output;
 	int n, q;
-	cin >> n >> q;
+	input.read(n), input.read(q);
 	vector<S> values(n);
-	for (auto &v : values) cin >> v[0] >> v[1];
-	LinkCutTree<S, op, e> tree(values);
-	for (int repeat_index = 0; repeat_index < (n - 1); ++repeat_index) {
-		int u, v;
-		cin >> u >> v;
-		tree.link(u, v);
+	for (auto &v : values) {
+		unsigned a, b;
+		input.read(a), input.read(b);
+		v = {a, b};
 	}
+	LinkCutTree<S, op, e> tree(values);
+	std::vector<std::pair<int, int>> edges(n - 1);
+	for (auto &[u, v] : edges) input.read(u), input.read(v);
+	tree.build_forest(edges);
+
 	for (int repeat_index = 0; repeat_index < q; ++repeat_index) {
 		int type, u;
-		cin >> type >> u;
+		input.read(type), input.read(u);
 		if (type == 0) {
 			int v, w, x;
-			cin >> v >> w >> x;
+			input.read(v), input.read(w), input.read(x);
 			tree.cut(u, v);
 			tree.link(w, x);
 		} else if (type == 1) {
-			S f;
-			cin >> f[0] >> f[1];
+			unsigned a, b;
+			input.read(a), input.read(b);
+			S f{a, b};
 			tree.set(u, f);
 		} else {
 			int v;
-			mint x;
-			cin >> v >> x;
+			unsigned initial;
+			input.read(v), input.read(initial);
+			mint x = initial;
 			auto f = tree.prod(u, v);
-			cout << f[0] * x + f[1] << '\n';
+			output.println((f[0] * x + f[1]).val());
 		}
 	}
 }

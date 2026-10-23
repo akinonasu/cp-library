@@ -18,6 +18,6 @@ documentation_of: //components/field_arithmetic.hpp
 
 `Ops::V` が配列の要素型です。`ModularField<T>` は固定法が $$2\le p<2^{31}$$ の modint 用で、`val()` と `raw()` に対応する型を使います。逆元を求める値は可逆である必要があります。
 
-AVX2 は対応する CPU でのみ使用し、非対応環境では通常の計算に切り替えます。`FIELD_DISABLE_AVX2` を定義すると AVX2 を無効にできます。
+AVX2・AVX512 は対応する CPU でのみ使用し、非対応環境では通常の計算に切り替えます。`FIELD_DISABLE_AVX2` を定義すると両方の SIMD 経路を無効にできます。
 
 体の演算を $$O(1)$$ として、配列の各操作は時間 $$O(n)$$、追加空間は $$O(1)$$ です。

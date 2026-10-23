@@ -18,13 +18,9 @@ class ModPow : public ModInv {
 			for (std::uint32_t i = 0; i < order; ++i, x = modulus_.mul(x, root_)) logarithm_[x] = i;
 			return;
 		}
-		std::vector<std::uint32_t> factor(limit + 1), primes;
-		for (std::uint32_t i = 2; i <= limit; ++i) {
-			if (!factor[i]) factor[i] = i, primes.push_back(i);
-			for (auto q : primes) {
-				if (q > factor[i] || std::uint64_t(i) * q > limit) break;
-				factor[i * q] = q;
-			}
+		std::vector<std::uint16_t> factor(limit + 1);
+		for (std::uint32_t q = 2; std::uint64_t(q) * q <= limit; ++q) if (!factor[q]) {
+			for (std::uint32_t i = q * q; i <= limit; i += q) if (!factor[i]) factor[i] = q;
 		}
 		std::uint32_t step = std::min(order, 4 * (mask_ + 1)), capacity = std::bit_ceil(2 * step);
 		std::vector<std::uint64_t> baby(capacity);
@@ -54,22 +50,25 @@ class ModPow : public ModInv {
 		SplitMix64 rng((std::uint64_t(p) << 32) | root_);
 		for (std::uint32_t i = 2; i <= limit; ++i) {
 			std::uint32_t result = 0;
-			if (factor[i] != i) result = order_.reduce(std::uint64_t(logarithm_[center_ + factor[i]]) + logarithm_[center_ + i / factor[i]]);
+			if (factor[i]) result = order_.reduce(std::uint64_t(logarithm_[center_ + factor[i]]) + logarithm_[center_ + i / factor[i]]);
 			else if (std::uint64_t(i) * i > p) {
 				result = order_.reduce(std::uint64_t(logarithm_[center_ + p % i]) + order / 2 + order - logarithm_[center_ + p / i]);
 			} else {
 				bool found = false;
 				if (i >= 100) for (int attempt = 0; attempt < 64 && !found; ++attempt) {
 					std::uint32_t k = order_.reduce(rng()), x = modulus_.mul(i, power_(k));
-					std::uint64_t sum = order - k;
-					for (std::uint32_t q : {2, 3, 5, 7, 11, 13, 17, 19})
-						while (x % q == 0) x /= q, sum += logarithm_[center_ + q];
-					if (x <= limit) {
-						while (x > 1 && factor[x] < i) {
-							sum += logarithm_[center_ + factor[x]], x /= factor[x];
+					auto [a, b] = fractions_.fraction(x);
+					std::uint64_t sum = order - k + (a < 0 ? order / 2 : 0);
+					auto accumulate = [&](std::uint32_t value, bool subtract) {
+						while (value > 1) {
+							std::uint32_t q = factor[value] ? factor[value] : value;
+							if (q >= i) return false;
+							sum += subtract ? order - logarithm_[center_ + q] : logarithm_[center_ + q];
+							value /= q;
 						}
-						if (x == 1) found = true, result = order_.reduce(sum);
-					}
+						return true;
+					};
+					if (accumulate(a < 0 ? -a : a, false) && accumulate(b, true)) found = true, result = order_.reduce(sum);
 				}
 				if (!found) result = bsgs(i);
 			}

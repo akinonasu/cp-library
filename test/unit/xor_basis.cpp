@@ -224,6 +224,12 @@ void intersections(std::mt19937_64 &random) {
 		std::shuffle(a.begin(), a.end(), random); std::shuffle(b.begin(), b.end(), random);
 		XorBasis<U, B> x(a), y(b);
 		assert((x & y) == expected && (y & x) == expected);
+		assert(x.intersection(b) == expected && y.intersection(a) == expected);
+		assert(x.intersection({}).empty());
+		a.push_back(0); b.push_back(0);
+		if (a.size() > 1) a.push_back(a.front());
+		if (b.size() > 1) b.push_back(b.front());
+		assert(x.intersection(b) == expected && y.intersection(a) == expected);
 		assert((x | y).rank() + expected.rank() == x.rank() + y.rank());
 		auto perpendicular = x.orthogonal_complement();
 		assert(perpendicular.rank() + x.rank() == B && perpendicular.orthogonal_complement() == x);

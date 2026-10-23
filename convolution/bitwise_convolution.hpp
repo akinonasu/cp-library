@@ -3,6 +3,8 @@
 
 #include "../components/bitwise_zeta.hpp"
 #include "../components/walsh_hadamard.hpp"
+#include "../components/bitwise_convolution_modular.hpp"
+#include <type_traits>
 #include <algorithm>
 #include <bit>
 #include <cassert>
@@ -19,6 +21,14 @@ std::vector<T> multiply(std::vector<T> a, std::vector<T> b) {
 	std::size_t n = std::bit_ceil(std::max(a.size(), b.size()));
 	a.resize(n, T(0));
 	b.resize(n, T(0));
+#if (defined(__x86_64__) || defined(__i386__)) && !defined(BITWISE_CONVOLUTION_DISABLE_AVX2)
+	if constexpr (std::is_same_v<T, mint>) {
+		if (n >= 8 && Modular::vectorized()) {
+			Modular::multiply<kind>(a, b);
+			return a;
+		}
+	}
+#endif
 	if constexpr (kind == 2) {
 		walsh_hadamard(a);
 		walsh_hadamard(b);

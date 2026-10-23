@@ -43,37 +43,111 @@ struct Montgomery64 {
 };
 
 
-#line 5 "math/number_theory/is_prime.hpp"
+#line 1 "components/montgomery32.hpp"
+
+
+
+#line 6 "components/montgomery32.hpp"
+
+struct Montgomery32 {
+	using U = std::uint32_t;
+	using W = std::uint64_t;
+	U mod, inverse = 1, r2, one;
+
+	explicit Montgomery32(U n) : mod(n), r2(-W(n) % n) {
+		for (int i = 0; i < 5; ++i) inverse *= 2 - n * inverse;
+		assert(n > 1 && (n & 1));
+		one = reduce(r2);
+	}
+	U reduce(W x) const {
+		U a = x >> 32, b = (W(U(x) * inverse) * mod) >> 32;
+		return a < b ? a - b + mod : a - b;
+	}
+	U in(U x) const { return reduce(W(x) * r2); }
+	U mul(U a, U b) const { return reduce(W(a) * b); }
+	U add(U a, U b) const {
+		U c = a + b;
+		return c < a || c >= mod ? c - mod : c;
+	}
+	U pow(U a, U e) const {
+		U r = one;
+		if (mod < (U(1) << 30)) {
+			U inverse = -this->inverse;
+			auto product = [&](U a, U b) {
+				W x = W(a) * b;
+				return U((x + W(U(x) * inverse) * mod) >> 32);
+			};
+			for (; e; e >>= 1, a = product(a, a)) if (e & 1) r = product(r, a);
+			return r < mod ? r : r - mod;
+		}
+		for (; e; e >>= 1, a = mul(a, a)) if (e & 1) r = mul(r, a);
+		return r;
+	}
+};
+
+
+#line 6 "math/number_theory/is_prime.hpp"
+#include <array>
 #include <bit>
-#line 7 "math/number_theory/is_prime.hpp"
+#line 9 "math/number_theory/is_prime.hpp"
 #include <initializer_list>
 
 namespace is_prime_detail {
 using U = std::uint64_t;
 inline constexpr std::uint64_t small_primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
 
-inline bool prime(const Montgomery64 &m) {
-	U n = m.mod, d = n - 1;
-	int s = std::countr_zero(d);
-	d >>= s;
-	auto witness = [&](U a) {
-		if (!(a %= n)) return true;
-		U x = m.pow(m.in(a), d);
-		if (x == m.one || x == n - m.one) return true;
-		for (int i = 1; i < s; ++i) {
-			x = m.mul(x, x);
-			if (x == n - m.one) return true;
+template <class Montgomery, std::size_t Count, class Multiply>
+inline bool witnesses(const Montgomery &m, typename Montgomery::U d, int s,
+	const std::array<typename Montgomery::U, Count> &bases, Multiply multiply) {
+	using V = typename Montgomery::U;
+	std::array<V, Count> a, x;
+	for (std::size_t i = 0; i < Count; ++i) a[i] = x[i] = m.in(bases[i] % m.mod);
+	for (V e = d >> 1; e; e >>= 1) {
+		for (std::size_t i = 0; i < Count; ++i) a[i] = multiply(a[i], a[i]);
+		if (e & 1) for (std::size_t i = 0; i < Count; ++i) x[i] = multiply(x[i], a[i]);
+	}
+	for (std::size_t i = 0; i < Count; ++i) {
+		V y = x[i] >= m.mod ? x[i] - m.mod : x[i];
+		if (!y && bases[i] % m.mod == 0) continue;
+		if (y == m.one || y == m.mod - m.one) continue;
+		bool passed = false;
+		for (int j = 1; j < s; ++j) {
+			y = multiply(y, y);
+			if (y >= m.mod) y -= m.mod;
+			if (y == m.mod - m.one) { passed = true; break; }
 		}
-		return false;
-	};
-	if (n < (U(1) << 32)) {
-		for (U a : {2, 7, 61})
-			if (!witness(a)) return false;
-	} else {
-		for (U a : {2, 325, 9375, 28178, 450775, 9780504, 1795265022})
-			if (!witness(a)) return false;
+		if (!passed) return false;
 	}
 	return true;
+}
+
+inline bool prime(const Montgomery32 &m) {
+	using V = Montgomery32::U;
+	V d = m.mod - 1;
+	int s = std::countr_zero(d);
+	d >>= s;
+	auto multiply = [&](V a, V b) { return m.mul(a, b); };
+	return witnesses(m, d, s, std::array<V, 1>{2}, multiply)
+		&& witnesses(m, d, s, std::array<V, 2>{7, 61}, multiply);
+}
+
+inline bool prime(const Montgomery64 &m) {
+	if (m.mod < (U(1) << 32)) return prime(Montgomery32(m.mod));
+	U d = m.mod - 1;
+	int s = std::countr_zero(d);
+	d >>= s;
+	auto check = [&](auto multiply) {
+		return witnesses(m, d, s, std::array<U, 1>{2}, multiply)
+			&& witnesses(m, d, s, std::array<U, 6>{325, 9375, 28178, 450775, 9780504, 1795265022}, multiply);
+	};
+	if (m.mod < (U(1) << 62)) {
+		U inverse = -m.inverse;
+		return check([&](U a, U b) {
+			__uint128_t x = __uint128_t(a) * b;
+			return U((x + __uint128_t(U(x) * inverse) * m.mod) >> 64);
+		});
+	}
+	return check([&](U a, U b) { return m.mul(a, b); });
 }
 }
 
@@ -91,7 +165,9 @@ inline bool is_prime(std::uint64_t n) {
 	if (n % 29 == 0) return n == 29;
 	if (n % 31 == 0) return n == 31;
 	if (n % 37 == 0) return n == 37;
-	return n < 1681 || is_prime_detail::prime(Montgomery64(n));
+	if (n < 1681) return true;
+	if (n < (std::uint64_t(1) << 32)) return is_prime_detail::prime(Montgomery32(n));
+	return is_prime_detail::prime(Montgomery64(n));
 }
 
 
@@ -134,7 +210,63 @@ struct Factorizer {
 	std::vector<U> result;
 	explicit Factorizer(U n) : rng(n ^ 0x9e3779b97f4a7c15ULL) { result.reserve(64); }
 	U random() { return rng(); }
+
+	struct RhoArithmetic {
+		U mod, inverse, one;
+		explicit RhoArithmetic(const Montgomery64 &m) : mod(m.mod), inverse(m.inverse), one(m.one) {}
+		U mul(U a, U b) const {
+			W x = W(a) * b;
+			return U(x >> 64) + mod - U((W(U(x) * inverse) * mod) >> 64);
+		}
+		U step(U x, U c) const {
+			return mul(x, x) + c;
+		}
+	};
+
+	U rho_parallel(const Montgomery64 &original) {
+		RhoArithmetic m(original);
+		const U n = m.mod;
+		bool first = true;
+		for (;;) {
+			U y1 = first ? 1 : random() % n, y2 = first ? 2 : random() % n;
+			const U c1 = first ? 1 : (random() & 31) + 1, c2 = first ? 2 : (random() & 31) + 1;
+			first = false;
+			bool restart = false;
+			for (int length = 64; length <= (1 << 18) && !restart; length <<= 1) {
+				const U x1 = y1 + 2 * n, x2 = y2 + 2 * n;
+				for (int k = 0; k < length; k += 1024) {
+					const U saved1 = y1, saved2 = y2;
+					U q1 = m.one, q2 = m.one;
+					const int count = std::min(1024, length - k);
+					y1 = m.step(y1, c1), y2 = m.step(y2, c2);
+					for (int i = 0; i < count; ++i) {
+						const U d1 = x1 - y1, d2 = x2 - y2;
+						y1 = m.step(y1, c1), y2 = m.step(y2, c2);
+						q1 = m.mul(q1, d1), q2 = m.mul(q2, d2);
+					}
+					q1 = m.mul(q1, x1 - y1), q2 = m.mul(q2, x2 - y2);
+					const U g = std::gcd(m.mul(q1, q2), n);
+					if (g == 1) continue;
+					if (g != n) return g;
+					const U g1 = std::gcd(q1, n), g2 = std::gcd(q2, n);
+					if (g1 > 1 && g1 < n) return g1;
+					if (g2 > 1 && g2 < n) return g2;
+					U y = g1 == n ? saved1 : saved2;
+					const U x = g1 == n ? x1 : x2, c = g1 == n ? c1 : c2;
+					for (int i = 0; i <= count; ++i) {
+						y = m.step(y, c);
+						const U d = std::gcd(x - y, n);
+						if (d > 1 && d < n) return d;
+						if (d == n) break;
+					}
+					restart = true;
+					break;
+				}
+			}
+		}
+	}
 	U rho(const Montgomery64 &m) {
+		if ((m.mod >> 32) && m.mod < (U(1) << 61)) return rho_parallel(m);
 		U n = m.mod;
 		for (;;) {
 			U y = m.in(random() % (n - 1) + 1), c = m.in(random() % (n - 1) + 1);

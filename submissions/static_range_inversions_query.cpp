@@ -1,23 +1,108 @@
 #line 1 "test/mo_inversions.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_inversions_query"
-#line 1 "data_structure/range_query/mo_order.hpp"
+#line 1 "sequence/static_range_inversions.hpp"
 
+
+
+#line 1 "sequence/inversion_count.hpp"
+
+
+
+#include <algorithm>
+#include <cassert>
+#include <cstddef>
+#include <cstdint>
+#include <functional>
+#include <limits>
+#include <ranges>
+#include <type_traits>
+#include <vector>
+
+template<class Range, class Compare = std::less<>>
+	requires std::ranges::random_access_range<const Range> && std::ranges::sized_range<const Range>
+std::int64_t inversion_count(const Range &a, Compare compare = {}) {
+	assert(std::ranges::size(a) <= std::size_t(std::numeric_limits<int>::max()));
+	const std::size_t n = std::ranges::size(a);
+	auto first = std::ranges::begin(a);
+	std::size_t ordered = 1;
+	while (ordered < n && !compare(first[ordered], first[ordered - 1])) ++ordered;
+	if (ordered >= n) return 0;
+	std::int64_t equal_pairs = 0;
+	std::size_t run = 1, reversed = 1;
+	for (; reversed < n && !compare(first[reversed - 1], first[reversed]); ++reversed) {
+		if (compare(first[reversed], first[reversed - 1])) run = 1;
+		else equal_pairs += static_cast<std::int64_t>(run++);
+	}
+	if (reversed == n) return static_cast<std::int64_t>(n) * (n - 1) / 2 - equal_pairs;
+	using T = std::ranges::range_value_t<const Range>;
+	constexpr bool cached = std::is_trivially_copyable_v<T> && sizeof(T) <= 16 &&
+		std::is_default_constructible_v<T> && std::is_copy_constructible_v<T> &&
+		std::is_copy_assignable_v<T> && !std::is_same_v<T, bool>;
+	using Stored = std::conditional_t<cached, T, int>;
+	std::vector<Stored> current(n), buffer(n);
+	for (std::size_t i = 0; i < n; ++i) {
+		if constexpr (cached) current[i] = first[i];
+		else current[i] = static_cast<int>(i);
+	}
+	auto value = [&](const Stored &x) -> decltype(auto) {
+		if constexpr (cached) return (x);
+		else return first[x];
+	};
+	std::int64_t result = 0;
+	constexpr std::size_t block = 8;
+	for (std::size_t l = 0; l < n; l += block) {
+		const auto end = std::min(l + block, n);
+		for (std::size_t i = l + 1; i < end; ++i) {
+			Stored x = current[i];
+			std::size_t j = i;
+			while (j > l && compare(value(x), value(current[j - 1]))) current[j] = current[j - 1], --j;
+			current[j] = x;
+			result += static_cast<std::int64_t>(i - j);
+		}
+	}
+	for (std::size_t width = block; width < n; width *= 2) {
+		for (std::size_t l = 0; l < n; l += 2 * width) {
+			const auto mid = std::min(l + width, n), r = std::min(l + 2 * width, n);
+			if (mid == r || !compare(value(current[mid]), value(current[mid - 1]))) {
+				std::copy(current.begin() + l, current.begin() + r, buffer.begin() + l);
+				continue;
+			}
+			if (compare(value(current[r - 1]), value(current[l]))) {
+				result += static_cast<std::int64_t>(mid - l) * (r - mid);
+				std::copy(current.begin() + mid, current.begin() + r, buffer.begin() + l);
+				std::copy(current.begin() + l, current.begin() + mid, buffer.begin() + (l + r - mid));
+				continue;
+			}
+			std::size_t i = l, j = mid, k = l;
+			while (i < mid && j < r) {
+				if (compare(value(current[j]), value(current[i]))) {
+					buffer[k++] = current[j++];
+					result += static_cast<std::int64_t>(mid - i);
+				} else buffer[k++] = current[i++];
+			}
+			std::copy(current.begin() + i, current.begin() + mid, buffer.begin() + k);
+			std::copy(current.begin() + j, current.begin() + r, buffer.begin() + (k + mid - i));
+		}
+		current.swap(buffer);
+	}
+	return result;
+}
 
 
 #line 1 "components/radix_sort.hpp"
 
 
 
-#include <algorithm>
+#line 5 "components/radix_sort.hpp"
 #include <array>
-#include <cstddef>
-#include <cstdint>
-#include <type_traits>
+#line 9 "components/radix_sort.hpp"
 #include <utility>
-#include <vector>
+#line 11 "components/radix_sort.hpp"
 
-template <class T, class Key>
-void stable_radix_sort(std::vector<T> &values, Key key) {
+template <int Bits, class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key &&key) {
+	static_assert(1 <= Bits && Bits <= 16);
+	constexpr unsigned buckets = 1U << Bits, mask = buckets - 1;
 	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
 	static_assert(std::is_integral_v<K> && std::is_unsigned_v<K> && sizeof(K) <= sizeof(std::uint64_t));
 	if (values.size() < 2) return;
@@ -35,26 +120,37 @@ void stable_radix_sort(std::vector<T> &values, Key key) {
 	}
 	if (sorted) return;
 	std::vector<T> scratch(values.size());
-	for (int shift = 0; shift < 64; shift += 8) {
-		if (!((varying >> shift) & 255)) continue;
-		std::array<std::size_t, 256> count{};
-		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & 255];
+	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
+	Counts count = [] {
+		if constexpr (Bits <= 11) return Counts{};
+		else return Counts(buckets);
+	}();
+	for (int shift = 0; shift < 64; shift += Bits) {
+		if (!((varying >> shift) & mask)) continue;
+		std::fill(count.begin(), count.end(), 0);
+		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask];
 		std::size_t sum = 0;
 		for (auto &x : count) {
 			auto n = x;
 			x = sum, sum += n;
 		}
-		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & 255]++] = std::move(value);
+		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask]++] = std::move(value);
 		values.swap(scratch);
 	}
 }
 
+template <class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key key) {
+	stable_radix_sort<8>(values, std::move(key));
+}
 
-#line 6 "data_structure/range_query/mo_order.hpp"
-#include <cassert>
+
+#line 1 "data_structure/range_query/mo_order.hpp"
+
+
+
+#line 7 "data_structure/range_query/mo_order.hpp"
 #include <cmath>
-#line 9 "data_structure/range_query/mo_order.hpp"
-#include <limits>
 #line 12 "data_structure/range_query/mo_order.hpp"
 
 inline std::vector<int> mo_order(const std::vector<std::pair<int, int>>& ranges, int block_size = 0) {
@@ -84,65 +180,96 @@ inline std::vector<int> mo_order(const std::vector<std::pair<int, int>>& ranges,
 }
 
 
-#line 1 "data_structure/fenwick_tree.hpp"
+#line 13 "sequence/static_range_inversions.hpp"
+#include <numeric>
+#line 18 "sequence/static_range_inversions.hpp"
 
-
-
-#line 9 "data_structure/fenwick_tree.hpp"
-
-namespace fenwick_tree_detail {
-template<class T, bool = std::is_integral_v<T>> struct Storage { using type = T; };
-template<class T> struct Storage<T, true> { using type = std::make_unsigned_t<T>; };
-#if defined(__SIZEOF_INT128__)
-template<> struct Storage<__int128_t, false> { using type = __uint128_t; };
-#endif
-}
-
-template<class T, bool Padded = true> class FenwickTree {
-	static_assert(!std::is_same_v<T, bool>);
-	using U = typename fenwick_tree_detail::Storage<T>::type;
-	std::vector<U> data_;
-	int n_ = 0;
-	static std::size_t index(unsigned i) {
-		if constexpr (Padded) return std::size_t(i) + (i >> 10);
-		else return i;
+template<class Range, class Compare = std::less<>>
+	requires std::ranges::random_access_range<const Range> && std::ranges::sized_range<const Range>
+std::vector<std::int64_t> static_range_inversion_counts(const Range &values,
+	const std::vector<std::pair<int, int>> &ranges, Compare compare = {}) {
+	assert(std::ranges::size(values) <= std::size_t(std::numeric_limits<int>::max()));
+	assert(ranges.size() <= std::size_t(std::numeric_limits<int>::max()));
+	const int n = int(std::ranges::size(values)), q = int(ranges.size());
+	for ([[maybe_unused]] auto [l, r] : ranges) assert(0 <= l && l <= r && r <= n);
+	std::vector<std::int64_t> answer(q);
+	if (!q || n < 2) return answer;
+	auto first = std::ranges::begin(values);
+	if (q == 1) {
+		auto [l, r] = ranges[0];
+		answer[0] = inversion_count(std::ranges::subrange(first + l, first + r), compare);
+		return answer;
 	}
-
-  public:
-	explicit FenwickTree(int n = 0) : n_(n) {
-		assert(n >= 0);
-		data_.resize(index(unsigned(n)) + 1);
+	using T = std::ranges::range_value_t<const Range>;
+	std::vector<int> ordered(n), rank(n);
+	std::iota(ordered.begin(), ordered.end(), 0);
+	if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8 &&
+		(std::is_same_v<Compare, std::less<>> || std::is_same_v<Compare, std::greater<>>)) {
+		using U = std::make_unsigned_t<T>;
+		stable_radix_sort(ordered, [&](int i) {
+			U key = U(first[i]);
+			if constexpr (std::is_signed_v<T>) key ^= U(1) << (std::numeric_limits<U>::digits - 1);
+			if constexpr (std::is_same_v<Compare, std::greater<>>) key = U(~key);
+			return key;
+		});
+	} else {
+		std::sort(ordered.begin(), ordered.end(), [&](int a, int b) {
+			if (compare(first[a], first[b])) return true;
+			return !compare(first[b], first[a]) && a < b;
+		});
 	}
-	explicit FenwickTree(const std::vector<T> &a) {
-		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
-		n_ = static_cast<int>(a.size());
-		data_.resize(index(unsigned(n_)) + 1);
-		for (unsigned i = 1; i <= unsigned(n_); ++i) {
-			data_[index(i)] += U(a[i - 1]);
-			unsigned p = i + (i & -i);
-			if (p <= unsigned(n_)) data_[index(p)] += data_[index(i)];
+	for (int i = 0; i < n; ++i) rank[ordered[i]] = i;
+	auto queries = mo_order(ranges);
+	struct Event {
+		std::size_t next;
+		int left, right, query, kind;
+	};
+	constexpr std::size_t none = std::numeric_limits<std::size_t>::max();
+	std::vector<std::size_t> heads(n, none);
+	std::vector<Event> events;
+	events.reserve(std::size_t(q) * 2);
+	auto add = [&](int sweep, int l, int r, int sign, bool length, int query) {
+		if (sweep >= 0) {
+			events.push_back({heads[sweep], l, r, query, sign * (1 + int(length))});
+			heads[sweep] = events.size() - 1;
+		}
+	};
+	int left = 0, right = 0;
+	for (int i : queries) {
+		auto [l, r] = ranges[i];
+		if (right < r) add(left - 1, right, r, 1, false, i), right = r;
+		if (l < left) add(right - 1, l, left, 1, true, i), left = l;
+		if (r < right) add(left - 1, r, right, -1, false, i), right = r;
+		if (left < l) add(right - 1, left, l, -1, true, i), left = l;
+	}
+	int shift = 0;
+	while ((std::uint64_t(1) << (2 * shift + 2)) <= std::uint64_t(n)) ++shift;
+	const int block = 1 << shift;
+	std::vector<int> direct(n), lazy((std::size_t(n) + block - 1) >> shift);
+	std::vector<std::int64_t> prefix(std::size_t(n) + 1), delta(q);
+	for (int sweep = 0; sweep < n; ++sweep) {
+		const int key = rank[sweep], group = key >> shift;
+		prefix[sweep + 1] = prefix[sweep] + direct[key] + lazy[group];
+		for (int i = 0; i < group; ++i) ++lazy[i];
+		for (int i = group << shift; i <= key; ++i) ++direct[i];
+		for (std::size_t i = heads[sweep]; i != none; i = events[i].next) {
+			const auto &event = events[i];
+			std::int64_t sum = 0;
+			for (int p = event.left; p < event.right; ++p) {
+				int key = rank[p];
+				sum += int(event.kind == 2 || event.kind == -2) * (sweep - p + 1) - direct[key] - lazy[key >> shift];
+			}
+			delta[event.query] += event.kind > 0 ? sum : -sum;
 		}
 	}
-	int size() const { return n_; }
-	void add(int p, T x) {
-		assert(0 <= p && p < n_);
-		for (unsigned i = unsigned(p) + 1; i <= unsigned(n_); i += i & -i) data_[index(i)] += U(x);
+	std::int64_t sum = 0;
+	for (int i : queries) {
+		sum += delta[i];
+		auto [l, r] = ranges[i];
+		answer[i] = sum + prefix[r] - prefix[l];
 	}
-	T sum(int r) const {
-		assert(0 <= r && r <= n_);
-		U result{};
-		for (unsigned i = unsigned(r); i; i &= i - 1) result += data_[index(i)];
-		return T(result);
-	}
-	T sum(int l, int r) const {
-		assert(0 <= l && l <= r && r <= n_);
-		U result{};
-		unsigned a = unsigned(l), b = unsigned(r);
-		while (b > a) result += data_[index(b)], b &= b - 1;
-		while (a > b) result -= data_[index(a)], a &= a - 1;
-		return T(result);
-	}
-};
+	return answer;
+}
 
 
 #line 1 "components/fast_io.hpp"
@@ -380,7 +507,7 @@ public:
 };
 
 
-#line 6 "test/mo_inversions.test.cpp"
+#line 5 "test/mo_inversions.test.cpp"
 
 int main() {
 	FastInput input;
@@ -389,23 +516,8 @@ int main() {
 	input.read(n), input.read(q);
 	std::vector<int> a(n);
 	for (auto &x : a) input.read(x);
-	auto values = a;
-	std::sort(values.begin(), values.end());
-	values.erase(std::unique(values.begin(), values.end()), values.end());
-	for (auto &x : a) x = std::lower_bound(values.begin(), values.end(), x) - values.begin();
 	std::vector<std::pair<int, int>> ranges(q);
 	for (auto &[l, r] : ranges) input.read(l), input.read(r);
-	std::vector<std::int64_t> answer(q);
-	FenwickTree<int> counts(values.size());
-	int l = 0, r = 0;
-	std::int64_t inversions = 0;
-	for (int i : mo_order(ranges)) {
-		const auto [left, right] = ranges[i];
-		while (l > left) { const int x = a[--l]; inversions += counts.sum(x); counts.add(x, 1); }
-		while (r < right) { const int x = a[r]; inversions += r - l - counts.sum(x + 1); counts.add(x, 1); ++r; }
-		while (l < left) { const int x = a[l++]; counts.add(x, -1); inversions -= counts.sum(x); }
-		while (r > right) { const int x = a[--r]; counts.add(x, -1); inversions -= r - l - counts.sum(x + 1); }
-		answer[i] = inversions;
-	}
+	auto answer = static_range_inversion_counts(a, ranges);
 	for (auto x : answer) output.println(x);
 }

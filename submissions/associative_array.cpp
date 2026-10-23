@@ -1,181 +1,161 @@
-#line 1 "test/interval_map.test.cpp"
+#line 1 "test/flat_hash_map.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/associative_array"
-#line 1 "data_structure/interval_map.hpp"
+#line 1 "data_structure/flat_hash_map.hpp"
 
 
 
 #include <algorithm>
-#include <cassert>
+#include <bit>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
-#include <initializer_list>
-#include <iterator>
 #include <limits>
-#include <map>
 #include <optional>
+#include <stdexcept>
 #include <type_traits>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
-template<class T = std::int64_t, class V = std::int64_t, class Size = std::conditional_t<
-	std::is_integral_v<T> && sizeof(T) <= 8, std::uint64_t,
-	std::conditional_t<std::is_same_v<T, __int128_t>, __uint128_t, T>>, class Equal = std::equal_to<V>>
-class IntervalMap {
-	static_assert(std::numeric_limits<T>::is_integer && !std::is_same_v<T, bool>);
-	static_assert(std::numeric_limits<Size>::is_integer && !std::is_same_v<Size, bool>);
+namespace flat_hash_map_detail {
+template<class K, class V, class Hash, class Equal>
+inline constexpr bool packed = std::is_integral_v<K> && !std::is_same_v<K, bool> && sizeof(K) <= 8 &&
+	std::is_same_v<Hash, std::hash<K>> && std::is_same_v<Equal, std::equal_to<K>> &&
+	std::is_trivially_copyable_v<V> && std::is_nothrow_default_constructible_v<V> &&
+	std::is_nothrow_copy_constructible_v<V> && std::is_nothrow_copy_assignable_v<V>;
 
+template<class K, class V, class Hash, class Equal, bool = packed<K, V, Hash, Equal>>
+class Table {
+	std::unordered_map<K, V, Hash, Equal> values;
 public:
-	using coordinate_type = T;
-	using mapped_type = V;
-	using size_type = Size;
-	using value_equal = Equal;
-	struct interval_type { T left, right; V value; };
-	struct segment_type { T right; V value; };
-	using const_iterator = typename std::map<T, segment_type>::const_iterator;
-	using const_reverse_iterator = typename std::map<T, segment_type>::const_reverse_iterator;
+	Table() = default;
+	Table(const Table &) = default;
+	Table(Table &&other) : Table() { swap(other); }
+	Table &operator=(Table other) { swap(other); return *this; }
+	void swap(Table &other) noexcept(noexcept(values.swap(other.values))) { values.swap(other.values); }
+	std::size_t size() const { return values.size(); }
+	bool empty() const { return values.empty(); }
+	V *find(const K &key) { auto it = values.find(key); return it == values.end() ? nullptr : &it->second; }
+	const V *find(const K &key) const { auto it = values.find(key); return it == values.end() ? nullptr : &it->second; }
+	V &operator[](const K &key) { return values[key]; }
+	void set(const K &key, const V &value) { values.insert_or_assign(key, value); }
+	bool erase(const K &key) { return values.erase(key); }
+	void reserve(std::size_t n) { values.reserve(n); }
+	void clear() { values.clear(); }
+};
 
-private:
-	std::map<T, segment_type> ranges;
-	Size total = 0;
-	[[no_unique_address]] Equal equal;
-	static Size length(const T &l, const T &r) { return static_cast<Size>(r) - static_cast<Size>(l); }
-	auto split(const T &x) {
-		auto it = ranges.lower_bound(x);
-		if (it != ranges.end() && it->first == x) return it;
-		if (it == ranges.begin()) return it;
-		auto previous = std::prev(it);
-		if (previous->second.right <= x) return it;
-		auto next = ranges.emplace_hint(it, x, segment_type{previous->second.right, previous->second.value});
-		previous->second.right = x;
-		return next;
+template<class K, class V, class Hash, class Equal>
+class Table<K, V, Hash, Equal, true> {
+	std::vector<K> keys;
+	std::vector<V> values;
+	std::vector<unsigned char> states;
+	std::size_t count = 0, deleted = 0;
+	unsigned shift = 64;
+	std::uint64_t salt = std::chrono::steady_clock::now().time_since_epoch().count();
+	std::size_t index(K key) const {
+		return ((static_cast<std::uint64_t>(key) ^ salt) * UINT64_C(11400714819323198485)) >> shift;
 	}
-
-public:
-	explicit IntervalMap(Equal compare = Equal{}) : equal(std::move(compare)) {}
-	IntervalMap(T l, T r, const V &value, Equal compare = Equal{}) : IntervalMap(std::move(compare)) { assign(l, r, value); }
-	explicit IntervalMap(std::vector<interval_type> intervals, Equal compare = Equal{}) : IntervalMap(std::move(compare)) { assign(std::move(intervals)); }
-	IntervalMap(std::initializer_list<interval_type> intervals, Equal compare = Equal{}) : IntervalMap(std::vector<interval_type>(intervals), std::move(compare)) {}
-	IntervalMap(const IntervalMap &) = default;
-	IntervalMap(IntervalMap &&other) noexcept(std::is_nothrow_copy_constructible_v<Equal> && std::is_nothrow_constructible_v<Size, int> && std::is_nothrow_swappable_v<Size> && std::is_nothrow_swappable_v<Equal>)
-		: equal(other.equal) { swap(other); }
-	IntervalMap &operator=(IntervalMap other) noexcept(std::is_nothrow_swappable_v<Size> && std::is_nothrow_swappable_v<Equal>) { swap(other); return *this; }
-
-	void assign(T l, T r, const V &value) {
-		assert(l <= r);
-		if (l == r) return;
-		auto existing = find(l);
-		if (existing != end() && r <= existing->second.right && equal(existing->second.value, value)) return;
-		V stored(value);
-		auto last = split(r), first = split(l);
-		for (auto it = first; it != last; ++it) total -= length(it->first, it->second.right);
-		ranges.erase(first, last);
-		auto it = ranges.emplace_hint(last, l, segment_type{r, std::move(stored)});
-		total += length(l, r);
-		if (it != ranges.begin()) {
-			auto previous = std::prev(it);
-			if (previous->second.right == l && equal(previous->second.value, it->second.value)) {
-				previous->second.right = r;
-				ranges.erase(it);
-				it = previous;
-			}
-		}
-		auto next = std::next(it);
-		if (next != ranges.end() && it->second.right == next->first && equal(it->second.value, next->second.value)) {
-			it->second.right = next->second.right;
-			ranges.erase(next);
-		}
+	std::size_t locate(K key) const {
+		std::size_t p = index(key), mask = states.size() - 1;
+		while (states[p] && (states[p] != 1 || keys[p] != key)) p = (p + 1) & mask;
+		return p;
 	}
-	void assign(std::vector<interval_type> intervals) {
-		IntervalMap next(equal);
-		for (const auto &[l, r, value] : intervals) next.assign(l, r, value);
+	void rehash(std::size_t capacity) {
+		Table next;
+		next.salt = salt;
+		next.keys.resize(capacity), next.values.resize(capacity), next.states.resize(capacity);
+		next.shift = 64 - std::countr_zero(capacity);
+		for (std::size_t i = 0; i < states.size(); ++i) if (states[i] == 1) {
+			std::size_t p = next.locate(keys[i]);
+			next.keys[p] = keys[i], next.values[p] = values[i], next.states[p] = 1;
+		}
+		next.count = count;
 		swap(next);
 	}
-	void set(T x, const V &value) {
-		if constexpr (std::numeric_limits<T>::is_bounded) assert(x < (std::numeric_limits<T>::max)());
-		assign(x, static_cast<T>(x + 1), value);
-	}
-	size_type erase(T l, T r) {
-		assert(l <= r);
-		if (l == r) return 0;
-		auto last = split(r), first = split(l);
-		size_type removed = 0;
-		for (auto it = first; it != last; ++it) removed += length(it->first, it->second.right);
-		ranges.erase(first, last);
-		total -= removed;
-		return removed;
-	}
-	size_type erase(T x) {
-		if constexpr (std::numeric_limits<T>::is_bounded) if (x == (std::numeric_limits<T>::max)()) return 0;
-		return erase(x, static_cast<T>(x + 1));
-	}
-	const_iterator find(T x) const {
-		auto it = ranges.upper_bound(x);
-		if (it == ranges.begin()) return ranges.end();
-		--it;
-		return x < it->second.right ? it : ranges.end();
-	}
-	const_iterator lower_bound(T x) const {
-		auto it = ranges.upper_bound(x);
-		if (it != ranges.begin() && x < std::prev(it)->second.right) --it;
-		return it;
-	}
-	std::optional<V> get(T x) const {
-		auto it = find(x);
-		return it == end() ? std::nullopt : std::optional<V>(it->second.value);
-	}
-	const V &at(T x) const { auto it = find(x); assert(it != end()); return it->second.value; }
-	bool contains(T x) const { return find(x) != end(); }
-	bool contains(T l, T r) const {
-		assert(l <= r);
-		if (l == r) return true;
-		auto it = find(l);
-		if (it == end()) return false;
-		T right = it->second.right;
-		while (right < r) {
-			++it;
-			if (it == end() || right != it->first) return false;
-			right = it->second.right;
+	void prepare() {
+		if (states.empty()) rehash(16);
+		else if (count + deleted == states.size() / 2) {
+			if (deleted > count / 2) rehash(states.size());
+			else {
+				if (states.size() > states.max_size() / 2 || states.size() > keys.max_size() / 2 || states.size() > values.max_size() / 2)
+					throw std::length_error("FlatHashMap capacity");
+				rehash(states.size() * 2);
+			}
 		}
+	}
+	std::size_t insert(K key) {
+		prepare();
+		std::size_t p = index(key), first = states.size(), mask = states.size() - 1;
+		while (states[p]) {
+			if (states[p] == 1 && keys[p] == key) return p;
+			if (states[p] == 2 && first == states.size()) first = p;
+			p = (p + 1) & mask;
+		}
+		if (first != states.size()) p = first, --deleted;
+		keys[p] = key, values[p] = V{}, states[p] = 1;
+		++count;
+		return p;
+	}
+public:
+	Table() = default;
+	Table(const Table &) = default;
+	Table(Table &&other) noexcept { swap(other); }
+	Table &operator=(Table other) noexcept { swap(other); return *this; }
+	void swap(Table &other) noexcept {
+		keys.swap(other.keys), values.swap(other.values), states.swap(other.states);
+		std::swap(count, other.count), std::swap(deleted, other.deleted), std::swap(shift, other.shift), std::swap(salt, other.salt);
+	}
+	std::size_t size() const { return count; }
+	bool empty() const { return !count; }
+	V *find(K key) { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &values[p] : nullptr; }
+	const V *find(K key) const { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &values[p] : nullptr; }
+	V &operator[](K key) { return values[insert(key)]; }
+	void set(K key, const V &value) { V copy = value; values[insert(key)] = copy; }
+	bool erase(K key) {
+		if (states.empty()) return false;
+		std::size_t p = locate(key);
+		if (!states[p]) return false;
+		states[p] = 2, --count, ++deleted;
 		return true;
 	}
-	bool contains(T l, T r, const V &value) const {
-		assert(l <= r);
-		if (l == r) return true;
-		auto it = find(l);
-		return it != end() && r <= it->second.right && equal(it->second.value, value);
+	void reserve(std::size_t n) {
+		if (n <= states.size() / 2) return;
+		std::size_t limit = std::min({states.max_size(), keys.max_size(), values.max_size()});
+		if (n > limit / 2) throw std::length_error("FlatHashMap capacity");
+		std::size_t capacity = std::bit_ceil(std::max(std::size_t(16), 2 * n));
+		if (capacity > limit) throw std::length_error("FlatHashMap capacity");
+		rehash(capacity);
 	}
-	bool intersects(T l, T r) const {
-		assert(l <= r);
-		if (l == r) return false;
-		auto it = lower_bound(l);
-		return it != end() && it->first < r;
-	}
-	template<class F> void for_each(T l, T r, F &&visit) const {
-		assert(l <= r);
-		if (l == r) return;
-		for (auto it = lower_bound(l); it != end() && it->first < r; ++it)
-			std::invoke(visit, (std::max)(l, it->first), (std::min)(r, it->second.right), it->second.value);
-	}
-	size_type count(T l, T r) const {
-		size_type result = 0;
-		for_each(l, r, [&](const T &a, const T &b, const V &) { result += length(a, b); });
-		return result;
-	}
-	size_type size() const { return total; }
-	std::size_t interval_count() const { return ranges.size(); }
-	bool empty() const { return ranges.empty(); }
-	const_iterator begin() const { return ranges.begin(); }
-	const_iterator end() const { return ranges.end(); }
-	const_reverse_iterator rbegin() const { return ranges.rbegin(); }
-	const_reverse_iterator rend() const { return ranges.rend(); }
-	void clear() { ranges.clear(); total = 0; }
-	void swap(IntervalMap &other) noexcept(std::is_nothrow_swappable_v<Size> && std::is_nothrow_swappable_v<Equal>) {
-		ranges.swap(other.ranges);
-		using std::swap;
-		swap(total, other.total); swap(equal, other.equal);
-	}
-	friend void swap(IntervalMap &a, IntervalMap &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
+	void clear() { std::fill(states.begin(), states.end(), 0); count = deleted = 0; }
+};
+}
+
+template<class Key, class T, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>>
+class FlatHashMap {
+	flat_hash_map_detail::Table<Key, T, Hash, KeyEqual> table;
+public:
+	using key_type = Key;
+	using mapped_type = T;
+	using size_type = std::size_t;
+	FlatHashMap() = default;
+	explicit FlatHashMap(size_type n) { reserve(n); }
+	bool empty() const { return table.empty(); }
+	size_type size() const { return table.size(); }
+	T *find(const Key &key) { return table.find(key); }
+	const T *find(const Key &key) const { return table.find(key); }
+	bool contains(const Key &key) const { return find(key) != nullptr; }
+	size_type count(const Key &key) const { return contains(key); }
+	std::optional<T> get(const Key &key) const { const T *p = find(key); return p ? std::optional<T>(*p) : std::nullopt; }
+	T &at(const Key &key) { T *p = find(key); if (!p) throw std::out_of_range("FlatHashMap key"); return *p; }
+	const T &at(const Key &key) const { const T *p = find(key); if (!p) throw std::out_of_range("FlatHashMap key"); return *p; }
+	T &operator[](const Key &key) { return table[key]; }
+	void set(const Key &key, const T &value) { table.set(key, value); }
+	bool erase(const Key &key) { return table.erase(key); }
+	void reserve(size_type n) { table.reserve(n); }
+	void clear() { table.clear(); }
+	void swap(FlatHashMap &other) noexcept(noexcept(table.swap(other.table))) { table.swap(other.table); }
+	friend void swap(FlatHashMap &a, FlatHashMap &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
 };
 
 
@@ -185,14 +165,14 @@ public:
 
 #line 5 "components/fast_io.hpp"
 #include <array>
-#include <bit>
-#line 8 "components/fast_io.hpp"
+#line 7 "components/fast_io.hpp"
+#include <cassert>
 #include <charconv>
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>
 #include <memory>
-#include <stdexcept>
+#line 15 "components/fast_io.hpp"
 #include <string>
 #include <string_view>
 #line 18 "components/fast_io.hpp"
@@ -415,14 +395,15 @@ public:
 };
 
 
-#line 4 "test/interval_map.test.cpp"
+#line 5 "test/flat_hash_map.test.cpp"
 
 int main() {
 	FastInput input;
 	FastOutput output;
 	int q = 0;
 	input.read(q);
-	IntervalMap<std::uint64_t, std::uint64_t> values;
+	FlatHashMap<std::uint64_t, std::uint64_t> values;
+	values.reserve(q);
 	while (q--) {
 		int type = 0;
 		std::uint64_t key = 0;
@@ -431,6 +412,9 @@ int main() {
 			std::uint64_t value = 0;
 			input.read(value);
 			values.set(key, value);
-		} else output.println(values.get(key).value_or(0));
+		} else {
+			const auto *value = values.find(key);
+			output.println(value ? *value : 0);
+		}
 	}
 }

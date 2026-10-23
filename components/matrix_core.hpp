@@ -32,7 +32,11 @@ class Matrix {
 	std::pair<T, std::vector<int>> reduce(int columns, bool reduced, long double eps) {
 		assert(eps >= 0);
 		return Arithmetic::field(a, [&]<class Ops>(auto &work) {
-			auto result = matrix_detail::eliminate<Ops, Arithmetic::modular>(work, h, w, columns, reduced, eps);
+			auto result = [&] {
+				if constexpr (requires { Arithmetic::template eliminate<Ops>(work, h, w, columns, reduced, eps); })
+					return Arithmetic::template eliminate<Ops>(work, h, w, columns, reduced, eps);
+				else return matrix_detail::eliminate<Ops, Arithmetic::modular>(work, h, w, columns, reduced, eps);
+			}();
 			return std::pair{T(result.determinant), std::move(result.pivots)};
 		});
 	}
@@ -215,6 +219,8 @@ class Matrix {
 	}
 	std::vector<T> characteristic_polynomial(long double eps = default_epsilon) const {
 		assert(h == w && eps >= 0);
+		if constexpr (requires { Arithmetic::characteristic(a, h); })
+			if (auto result = Arithmetic::characteristic(a, h)) return std::move(*result);
 		auto work = a;
 		return Arithmetic::field(work, [&]<class Ops>(auto &b) {
 			using V = typename Ops::V;

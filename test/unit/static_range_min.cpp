@@ -9,9 +9,9 @@
 
 void require(bool condition) { if (!condition) std::abort(); }
 
-template <class T>
-void check(const std::vector<T> &values) {
-	StaticRangeMin range(values);
+template <class T, bool Cached>
+void check_once(const std::vector<T> &values) {
+	StaticRangeMin<T, Cached> range(values);
 	require(range.size() == int(values.size()) && range.empty() == values.empty());
 	for (int l = 0; l < range.size(); ++l) {
 		require(!(range[l] < values[l]) && !(values[l] < range[l]));
@@ -38,6 +38,12 @@ void check(const std::vector<T> &values) {
 	require(range.size() == int(values.size()));
 }
 
+template <class T>
+void check(const std::vector<T> &values) {
+	check_once<T, false>(values);
+	check_once<T, true>(values);
+}
+
 struct Value {
 	int value;
 	explicit Value(int value) : value(value) {}
@@ -45,6 +51,7 @@ struct Value {
 };
 
 int main() {
+	static_assert(std::is_same_v<decltype(StaticRangeMin(std::vector<int>{})), StaticRangeMin<int>>);
 	std::mt19937 rng(37192);
 	for (int n : {0, 1, 2, 15, 16, 17, 31, 32, 33, 63, 64, 65, 95, 96, 97, 127, 128, 129, 1023}) {
 		for (int kind = 0; kind < 5; ++kind) {

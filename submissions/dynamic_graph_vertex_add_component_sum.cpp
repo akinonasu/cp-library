@@ -76,8 +76,10 @@ class OfflineTimeSegments {
 #include <type_traits>
 #line 11 "components/radix_sort.hpp"
 
-template <class T, class Key>
-void stable_radix_sort(std::vector<T> &values, Key key) {
+template <int Bits, class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key &&key) {
+	static_assert(1 <= Bits && Bits <= 16);
+	constexpr unsigned buckets = 1U << Bits, mask = buckets - 1;
 	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
 	static_assert(std::is_integral_v<K> && std::is_unsigned_v<K> && sizeof(K) <= sizeof(std::uint64_t));
 	if (values.size() < 2) return;
@@ -95,18 +97,28 @@ void stable_radix_sort(std::vector<T> &values, Key key) {
 	}
 	if (sorted) return;
 	std::vector<T> scratch(values.size());
-	for (int shift = 0; shift < 64; shift += 8) {
-		if (!((varying >> shift) & 255)) continue;
-		std::array<std::size_t, 256> count{};
-		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & 255];
+	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
+	Counts count = [] {
+		if constexpr (Bits <= 11) return Counts{};
+		else return Counts(buckets);
+	}();
+	for (int shift = 0; shift < 64; shift += Bits) {
+		if (!((varying >> shift) & mask)) continue;
+		std::fill(count.begin(), count.end(), 0);
+		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask];
 		std::size_t sum = 0;
 		for (auto &x : count) {
 			auto n = x;
 			x = sum, sum += n;
 		}
-		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & 255]++] = std::move(value);
+		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask]++] = std::move(value);
 		values.swap(scratch);
 	}
+}
+
+template <class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key key) {
+	stable_radix_sort<8>(values, std::move(key));
 }
 
 

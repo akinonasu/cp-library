@@ -31,6 +31,10 @@ int main(int argc, char **) {
 	for (std::size_t block : {32768, 33495})
 		for (std::size_t b = 1; b <= (extended ? 32 : 8); ++b)
 			for (int delta = -17; delta <= 17; ++delta) check(2 * block * b + delta);
+	for (std::size_t boundary : {65537, 30 * 1001 * 3, 30 * 1001 * 32, 30 * 1001 * 64, 30 * 1001 * 128})
+		for (int delta = -32; delta <= 32; ++delta) check(boundary + delta);
+	for (std::size_t base : {65760, 90120, 960960, 1921920})
+		for (std::size_t tail = 0; tail < 240; ++tail) check(base + tail);
 	for (std::size_t p : expected) {
 		if (p * p + 2 >= limit) break;
 		if (!extended && p > 257 && p != 509 && p != 521 && p != 1021 && p != 2039) continue;

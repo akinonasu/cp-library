@@ -1,286 +1,129 @@
 #line 1 "test/hld_path_composite.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_set_path_composite"
-#line 1 "data_structure/segment_tree/dynamic_segtree.hpp"
+#line 1 "data_structure/segment_tree/segtree.hpp"
 
 
-#include <algorithm>
-#include <array>
+
 #include <bit>
 #include <cassert>
 #include <cstddef>
-#include <cstdint>
 #include <limits>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
-template <class S, auto op, auto e, class Coord = std::int64_t>
-class DynamicSegtree {
-	static_assert(std::is_integral_v<Coord> && !std::is_same_v<Coord, bool> && sizeof(Coord) <= 8);
-	static constexpr unsigned B = 8, limit = (1u << 26) - 1;
-	using U = std::make_unsigned_t<Coord>;
-	static constexpr unsigned tag = 1u << 31;
-	static constexpr U sign = std::is_signed_v<Coord> ? U(1) << (std::numeric_limits<U>::digits - 1) : U(0);
-	template <std::size_t... I>
-	static auto units(std::index_sequence<I...>) { return std::array<S, sizeof...(I)>{(void(I), e())...}; }
-	struct Leaf {
-		std::array<U, B> keys{};
-		std::array<S, B> values = units(std::make_index_sequence<B>{});
-		S product = e();
-		unsigned count = 0;
-	};
-	struct Node {
-		U middle = 0;
-		unsigned left = 0, right = 0;
-		S product = e();
-	};
-	std::vector<Leaf> leaves;
-	std::vector<Node> nodes{Node{}};
-	unsigned root = 0, points = 0;
-	Coord first, last;
-	static U encode(Coord x) { return U(x) ^ sign; }
-	static Coord decode(U x) { return Coord(x ^ sign); }
-	Leaf &leaf(unsigned id) { return leaves[id & ~tag]; }
-	const Leaf &leaf(unsigned id) const { return leaves[id & ~tag]; }
-	const S &product(unsigned id) const { return id & tag ? leaf(id).product : nodes[id].product; }
-	unsigned make_leaf() {
-		leaves.emplace_back();
-		return unsigned(leaves.size() - 1) | tag;
-	}
-	unsigned make_node(U middle, unsigned left, unsigned right) {
-		S value = op(product(left), product(right));
-		nodes.push_back({middle, left, right, std::move(value)});
-		return unsigned(nodes.size() - 1);
-	}
-	template <unsigned N>
-	[[gnu::always_inline]] static inline S fold(const S *values, unsigned count) {
-		if constexpr (N == 1) return values[0];
-		else {
-			if (count <= N / 2) return fold<N / 2>(values, count);
-			return op(fold<N / 2>(values, N / 2), fold<N / 2>(values + N / 2, count - N / 2));
-		}
-	}
-	static void pull(Leaf &node) { node.product = fold<B>(node.values.data(), node.count); }
-
-	template <bool Append>
-	static void write(Leaf &node, unsigned p, U key, S value) {
-		if (p < node.count && node.keys[p] == key) {
-			if constexpr (Append) node.values[p] = op(node.values[p], value);
-			else node.values[p] = std::move(value);
-		} else {
-			std::move_backward(node.keys.begin() + p, node.keys.begin() + node.count, node.keys.begin() + node.count + 1);
-			std::move_backward(node.values.begin() + p, node.values.begin() + node.count, node.values.begin() + node.count + 1);
-			node.keys[p] = key;
-			node.values[p] = std::move(value);
-			++node.count;
-		}
-		pull(node);
-	}
-	template <bool Append>
-	void update(U key, S value) {
-		if (!root) {
-			root = make_leaf();
-			write<Append>(leaf(root), 0, key, std::move(value));
-			++points;
-			return;
-		}
-		std::array<unsigned, 64> path;
-		unsigned depth = 0, id = root;
-		bool outside = false;
-		while (!(id & tag)) {
-			unsigned h = std::countr_zero(nodes[id].middle);
-			if (((key ^ nodes[id].middle) >> h) > 1) { outside = true; break; }
-			assert(depth < path.size());
-			path[depth++] = id;
-			id = key < nodes[id].middle ? nodes[id].left : nodes[id].right;
-		}
-		unsigned replacement = id;
-		if (outside) {
-			assert(points < limit);
-			unsigned added = make_leaf();
-			write<Append>(leaf(added), 0, key, std::move(value));
-			unsigned h = std::bit_width(U(key ^ nodes[id].middle)) - 1;
-			U middle = ((key | nodes[id].middle) >> h) << h;
-			replacement = key < middle ? make_node(middle, added, id) : make_node(middle, id, added);
-			++points;
-		} else {
-			auto &node = leaf(id);
-			unsigned p = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, key) - node.keys.begin();
-			bool exists = p < node.count && node.keys[p] == key;
-			assert(exists || points < limit);
-			if (exists || node.count < B) write<Append>(node, p, key, std::move(value));
-			else {
-				U low = std::min(key, node.keys[0]), high = std::max(key, node.keys[B - 1]);
-				unsigned h = std::bit_width(U(low ^ high)) - 1;
-				U middle = ((low | high) >> h) << h;
-				unsigned cut = std::lower_bound(node.keys.begin(), node.keys.end(), middle) - node.keys.begin();
-				unsigned added = make_leaf();
-				auto &a = leaf(id), &b = leaf(added);
-				b.count = B - cut;
-				for (unsigned i = 0; i < b.count; ++i) b.keys[i] = a.keys[cut + i], b.values[i] = std::move(a.values[cut + i]);
-				a.count = cut;
-				if (key < middle) write<Append>(a, p, key, std::move(value));
-				else write<Append>(b, p - cut, key, std::move(value));
-				if (key < middle) pull(b);
-				else pull(a);
-				replacement = make_node(middle, id, added);
-			}
-			points += !exists;
-		}
-		if (depth) {
-			auto parent = path[depth - 1];
-			if (key < nodes[parent].middle) nodes[parent].left = replacement;
-			else nodes[parent].right = replacement;
-		} else root = replacement;
-		while (depth) {
-			unsigned k = path[--depth];
-			nodes[k].product = op(product(nodes[k].left), product(nodes[k].right));
-		}
-	}
-	S prefix(unsigned id, U r) const {
-		S result = e();
-		while (!(id & tag)) {
-			if (r <= nodes[id].middle) id = nodes[id].left;
-			else { result = op(result, product(nodes[id].left)); id = nodes[id].right; }
-		}
-		const auto &node = leaf(id);
-		for (unsigned i = 0; i < node.count && node.keys[i] < r; ++i) result = op(result, node.values[i]);
-		return result;
-	}
-	S suffix(unsigned id, U l) const {
-		S result = e();
-		while (!(id & tag)) {
-			if (nodes[id].middle <= l) id = nodes[id].right;
-			else { result = op(product(nodes[id].right), result); id = nodes[id].left; }
-		}
-		const auto &node = leaf(id);
-		for (unsigned i = node.count; i && l <= node.keys[i - 1];) result = op(node.values[--i], result);
-		return result;
-	}
-	template <class Pred>
-	bool search_right(unsigned id, U lower, U l, S &value, Pred &f, Coord &answer) const {
-		if (l <= lower) {
-			S next = op(value, product(id));
-			if (f(next)) { value = std::move(next); return false; }
-		}
-		if (id & tag) {
-			const auto &node = leaf(id);
-			unsigned p = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, l) - node.keys.begin();
-			for (; p < node.count; ++p) {
-				S next = op(value, node.values[p]);
-				if (!f(next)) { answer = decode(node.keys[p]); return true; }
-				value = std::move(next);
-			}
-			return false;
-		}
-		U middle = nodes[id].middle;
-		if (l < middle && search_right(nodes[id].left, lower, l, value, f, answer)) return true;
-		return search_right(nodes[id].right, middle, l, value, f, answer);
-	}
-	template <class Pred>
-	bool search_left(unsigned id, U upper, U r, S &value, Pred &f, Coord &answer) const {
-		if (upper <= r) {
-			S next = op(product(id), value);
-			if (f(next)) { value = std::move(next); return false; }
-		}
-		if (id & tag) {
-			const auto &node = leaf(id);
-			unsigned p = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, r) - node.keys.begin();
-			while (p) {
-				S next = op(node.values[--p], value);
-				if (!f(next)) { answer = decode(node.keys[p]) + 1; return true; }
-				value = std::move(next);
-			}
-			return false;
-		}
-		U middle = nodes[id].middle;
-		if (middle < r && search_left(nodes[id].right, upper, r, value, f, answer)) return true;
-		return search_left(nodes[id].left, middle, r, value, f, answer);
+template<class S, auto op, auto e> class Segtree {
+	int n_ = 0;
+	unsigned base_ = 1;
+	std::vector<S> data_;
+	void pull(unsigned k) { data_[k] = op(data_[k * 2], data_[k * 2 + 1]); }
+	void allocate(int n) {
+		assert(n >= 0);
+		n_ = n;
+		base_ = std::bit_ceil(unsigned(n) ? unsigned(n) : 1U);
+		data_.assign(std::size_t(base_) * 2, e());
 	}
 
   public:
-	using value_type = S;
-	using coordinate_type = Coord;
-	explicit DynamicSegtree(Coord n = 0) : DynamicSegtree(0, n) {}
-	DynamicSegtree(Coord l, Coord r) : first(l), last(r) { assert(l <= r); }
-	DynamicSegtree(const DynamicSegtree &) = default;
-	DynamicSegtree &operator=(const DynamicSegtree &) = default;
-	DynamicSegtree(DynamicSegtree &&other) : DynamicSegtree(other.first, other.last) { swap(other); }
-	DynamicSegtree &operator=(DynamicSegtree &&other) {
-		if (this != &other) { DynamicSegtree moved(std::move(other)); swap(moved); }
+	explicit Segtree(int n = 0) { allocate(n); }
+	explicit Segtree(const std::vector<S> &a) {
+		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
+		allocate(static_cast<int>(a.size()));
+		for (int i = 0; i < n_; ++i) data_[base_ + unsigned(i)] = a[i];
+		for (unsigned k = base_ - 1; k; --k) pull(k);
+	}
+	Segtree(const Segtree &) = default;
+	Segtree &operator=(const Segtree &other) {
+		if (this != &other) { Segtree copy(other); swap(copy); }
 		return *this;
 	}
-	void swap(DynamicSegtree &other) noexcept {
-		leaves.swap(other.leaves);
-		nodes.swap(other.nodes);
-		std::swap(root, other.root);
-		std::swap(points, other.points);
-		std::swap(first, other.first);
-		std::swap(last, other.last);
-	}
-	void reserve(std::size_t n) {
-		assert(n <= limit);
-		std::size_t capacity = (3 * n + 2 * B - 1) / (2 * B);
-		leaves.reserve(capacity);
-		nodes.reserve(capacity + 1);
-	}
-	std::size_t node_count() const { return points; }
-	std::size_t memory_usage() const { return leaves.capacity() * sizeof(Leaf) + nodes.capacity() * sizeof(Node); }
-	U size() const { return U(last) - U(first); }
-	Coord left_bound() const { return first; }
-	Coord right_bound() const { return last; }
-	void clear() { leaves.clear(); nodes.erase(nodes.begin() + 1, nodes.end()); root = points = 0; }
-	void set(Coord p, S value) { assert(first <= p && p < last); update<false>(encode(p), std::move(value)); }
-	void multiply(Coord p, S value) { assert(first <= p && p < last); update<true>(encode(p), std::move(value)); }
-	S get(Coord p) const {
-		assert(first <= p && p < last);
-		if (!root) return e();
-		U key = encode(p);
-		unsigned id = root;
-		while (!(id & tag)) id = key < nodes[id].middle ? nodes[id].left : nodes[id].right;
-		const auto &node = leaf(id);
-		unsigned i = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, key) - node.keys.begin();
-		return i < node.count && node.keys[i] == key ? node.values[i] : e();
-	}
-	S prod(Coord l, Coord r) const {
-		assert(first <= l && l <= r && r <= last);
-		if (!root || l == r) return e();
-		if (l == first && r == last) return product(root);
-		U a = encode(l), b = encode(r);
-		unsigned id = root;
-		while (!(id & tag)) {
-			U middle = nodes[id].middle;
-			if (b <= middle) id = nodes[id].left;
-			else if (middle <= a) id = nodes[id].right;
-			else return op(suffix(nodes[id].left, a), prefix(nodes[id].right, b));
+	Segtree(Segtree &&other) noexcept
+		: n_(std::exchange(other.n_, 0)), base_(std::exchange(other.base_, 1)), data_(std::move(other.data_)) {}
+	Segtree &operator=(Segtree &&other) noexcept {
+		if (this != &other) {
+			n_ = std::exchange(other.n_, 0);
+			base_ = std::exchange(other.base_, 1);
+			data_ = std::move(other.data_);
 		}
-		const auto &node = leaf(id);
-		unsigned i = std::lower_bound(node.keys.begin(), node.keys.begin() + node.count, a) - node.keys.begin();
-		S result = e();
-		for (; i < node.count && node.keys[i] < b; ++i) result = op(result, node.values[i]);
-		return result;
+		return *this;
 	}
-	S all_prod() const { return root ? product(root) : e(); }
-	template <class Pred>
-	Coord max_right(Coord l, Pred f) const {
-		assert(first <= l && l <= last && f(e()));
-		Coord answer = last;
-		if (root && l != last) { S value = e(); search_right(root, encode(first), encode(l), value, f, answer); }
-		return answer;
+	void swap(Segtree &other) noexcept {
+		std::swap(n_, other.n_), std::swap(base_, other.base_);
+		data_.swap(other.data_);
 	}
-	template <class Pred>
-	Coord min_left(Coord r, Pred f) const {
-		assert(first <= r && r <= last && f(e()));
-		Coord answer = first;
-		if (root && r != first) { S value = e(); search_left(root, encode(last), encode(r), value, f, answer); }
-		return answer;
+	int size() const { return n_; }
+	void set(int p, S value) {
+		assert(0 <= p && p < n_);
+		unsigned k = base_ + unsigned(p);
+		data_[k] = std::move(value);
+		for (k >>= 1; k; k >>= 1) pull(k);
+	}
+	S get(int p) const {
+		assert(0 <= p && p < n_);
+		return data_[base_ + unsigned(p)];
+	}
+	S all_prod() const { return n_ ? data_[1] : e(); }
+	S prod(int l, int r) const {
+		assert(0 <= l && l <= r && r <= n_);
+		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r);
+		S left = e(), right = e();
+		while (a < b) {
+			if (a & 1) left = op(left, data_[a++]);
+			if (b & 1) right = op(data_[--b], right);
+			a >>= 1, b >>= 1;
+		}
+		return op(left, right);
+	}
+	template<class Pred> int max_right(int l, Pred f) const {
+		assert(0 <= l && l <= n_ && f(e()));
+		if (l == n_) return n_;
+		unsigned k = base_ + unsigned(l);
+		S value = e();
+		do {
+			while (!(k & 1)) k >>= 1;
+			S next = op(value, data_[k]);
+			if (!f(next)) {
+				while (k < base_) {
+					k *= 2;
+					next = op(value, data_[k]);
+					if (f(next)) value = std::move(next), ++k;
+				}
+				return static_cast<int>(k - base_);
+			}
+			value = std::move(next);
+			++k;
+		} while ((k & -k) != k);
+		return n_;
+	}
+	template<class Pred> int min_left(int r, Pred f) const {
+		assert(0 <= r && r <= n_ && f(e()));
+		if (!r) return 0;
+		unsigned k = base_ + unsigned(r);
+		S value = e();
+		do {
+			--k;
+			while (k > 1 && (k & 1)) k >>= 1;
+			S next = op(data_[k], value);
+			if (!f(next)) {
+				while (k < base_) {
+					k = k * 2 + 1;
+					next = op(data_[k], value);
+					if (f(next)) value = std::move(next), --k;
+				}
+				return static_cast<int>(k + 1 - base_);
+			}
+			value = std::move(next);
+		} while ((k & -k) != k);
+		return 0;
 	}
 };
+
 
 #line 1 "data_structure/advanced/hld.hpp"
 
 
 
+#include <algorithm>
+#include <array>
 #line 11 "data_structure/advanced/hld.hpp"
 
 class HLD {
@@ -474,7 +317,7 @@ class HLD {
 #line 4 "math/mint.hpp"
 #include <istream>
 #include <ostream>
-#line 7 "math/mint.hpp"
+#include <type_traits>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -492,7 +335,7 @@ struct Mint {
 	using mint = Mint;
 	unsigned v = 0;
 	static constexpr unsigned mod() { return 998244353; }
-	static unsigned reduce(unsigned long long x) {
+	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -502,17 +345,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	static Mint raw(unsigned x) {
+	[[gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	static Mint word(unsigned x) {
+	[[gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	unsigned val() const {
+	[[gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -524,17 +367,17 @@ struct Mint {
 	friend std::ostream &operator<<(std::ostream &os, const Mint &x) {
 		return os << x.val();
 	}
-	Mint &operator+=(Mint b) {
+	[[gnu::always_inline]] Mint &operator+=(Mint b) {
 		v += b.v;
 		if (v >= 2 * mod()) v -= 2 * mod();
 		return *this;
 	}
-	Mint &operator-=(Mint b) {
+	[[gnu::always_inline]] Mint &operator-=(Mint b) {
 		v -= b.v;
 		if (v >> 31) v += 2 * mod();
 		return *this;
 	}
-	Mint &operator*=(Mint b) {
+	[[gnu::always_inline]] Mint &operator*=(Mint b) {
 		v = reduce((unsigned long long)v * b.v);
 		return *this;
 	}
@@ -551,14 +394,14 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	Mint operator+() const { return *this; }
-	Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	Mint operator+(Mint b) const { return Mint(*this) += b; }
-	Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[gnu::always_inline]] Mint operator+() const { return *this; }
+	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
 	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	bool operator!=(Mint b) const { return !(*this == b); }
+	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
 	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
@@ -608,8 +451,240 @@ using fps_mint = mint;
 #endif
 
 
-#line 5 "test/hld_path_composite.test.cpp"
-#include <iostream>
+#line 1 "components/fast_io.hpp"
+
+
+
+#line 8 "components/fast_io.hpp"
+#include <charconv>
+#line 10 "components/fast_io.hpp"
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#line 18 "components/fast_io.hpp"
+#if defined(__unix__) || defined(__APPLE__)
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
+namespace fast_io_detail { struct BulkInput; struct BulkOutput; }
+
+class FastInput {
+	friend struct fast_io_detail::BulkInput;
+	static constexpr std::size_t capacity = 1 << 16;
+	FILE *file = nullptr;
+	std::unique_ptr<char[]> buffer;
+	const char *current = "", *end = current;
+	std::string scratch;
+	void *mapping = nullptr;
+	std::size_t mapped_size = 0;
+	bool refill() {
+		if (!file) return false;
+		std::size_t n = std::fread(buffer.get(), 1, capacity, file);
+		current = buffer.get();
+		end = current + n;
+		return n;
+	}
+	static const char *scan(const char *p, const char *end) {
+		while (end - p >= 8) {
+			std::uint64_t x;
+			std::memcpy(&x, p, 8);
+			if ((x - 0x2121212121212121ULL) & ~x & 0x8080808080808080ULL) break;
+			p += 8;
+		}
+		while (p != end && static_cast<unsigned char>(*p) > ' ') ++p;
+		return p;
+	}
+
+public:
+	explicit FastInput(FILE *input = stdin) {
+#if defined(__unix__) || defined(__APPLE__)
+		struct stat status;
+		int fd = fileno(input);
+		auto offset = ftello(input);
+		if (fd >= 0 && offset >= 0 && !fstat(fd, &status) && S_ISREG(status.st_mode) && status.st_size > offset) {
+			mapped_size = status.st_size;
+			mapping = mmap(nullptr, mapped_size, PROT_READ, MAP_PRIVATE, fd, 0);
+			if (mapping != MAP_FAILED) {
+				current = static_cast<const char *>(mapping) + offset;
+				end = static_cast<const char *>(mapping) + mapped_size;
+				return;
+			}
+			mapping = nullptr;
+		}
+#endif
+		file = input;
+		buffer = std::make_unique_for_overwrite<char[]>(capacity);
+	}
+	explicit FastInput(std::string_view input) : current(input.empty() ? "" : input.data()), end(current + input.size()) {}
+	FastInput(const FastInput &) = delete;
+	FastInput &operator=(const FastInput &) = delete;
+	~FastInput() {
+#if defined(__unix__) || defined(__APPLE__)
+		if (mapping) munmap(mapping, mapped_size);
+#endif
+	}
+	std::string_view token() {
+		while (true) {
+			while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+			if (current != end) break;
+			if (!refill()) return {};
+		}
+		const char *begin = current;
+		current = scan(current, end);
+		if (current != end || !file) return {begin, std::size_t(current - begin)};
+		scratch.assign(begin, end);
+		while (refill()) {
+			current = scan(current, end);
+			scratch.append(buffer.get(), std::size_t(current - buffer.get()));
+			if (current != end) break;
+		}
+		return scratch;
+	}
+	template <class T>
+	bool read(T &value) {
+		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool>) {
+			while (true) {
+				while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+				if (current != end) break;
+				if (!refill()) return false;
+			}
+			if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4 && std::endian::native == std::endian::little) {
+				if (end - current >= 11) {
+					std::uint64_t x;
+					std::memcpy(&x, current, 8);
+					if (!(((x + 0x4646464646464646ULL) | (x - 0x3030303030303030ULL)) & 0x8080808080808080ULL)) {
+						x &= 0x0f0f0f0f0f0f0f0fULL;
+						x = (x * 10 + (x >> 8)) & 0x00ff00ff00ff00ffULL;
+						x = (x * 100 + (x >> 16)) & 0x0000ffff0000ffffULL;
+						std::uint64_t v = std::uint32_t(x * 10000 + (x >> 32));
+						int n = 8;
+						for (; n < 10 && static_cast<unsigned char>(current[n]) - unsigned('0') < 10; ++n)
+							v = v * 10 + (current[n] - '0');
+						if (static_cast<unsigned char>(current[n]) <= ' ' && v <= 0xffffffffULL) {
+							current += n;
+							value = T(v);
+							return true;
+						}
+					}
+				}
+			}
+			T parsed{};
+			auto result = std::from_chars(current, end, parsed);
+			if (result.ec == std::errc{} && (result.ptr != end ? static_cast<unsigned char>(*result.ptr) <= ' ' : !file)) {
+				current = result.ptr;
+				value = parsed;
+				return true;
+			}
+		}
+		auto s = token();
+		if (s.empty()) return false;
+		if constexpr (std::is_same_v<T, bool>) {
+			assert(s == "0" || s == "1");
+			value = s[0] == '1';
+		} else if constexpr (std::is_integral_v<T>) {
+			auto result = std::from_chars(s.data(), s.data() + s.size(), value);
+			assert(result.ec == std::errc{} && result.ptr == s.data() + s.size());
+			(void)result;
+		} else value = T(s);
+		return true;
+	}
+};
+
+class FastOutput {
+	friend struct fast_io_detail::BulkOutput;
+	inline static constexpr auto quads = [] {
+		std::array<std::array<char, 4>, 10000> table{};
+		for (int i = 0; i < 10000; ++i)
+			table[i] = {char('0' + i / 1000), char('0' + i / 100 % 10), char('0' + i / 10 % 10), char('0' + i % 10)};
+		return table;
+	}();
+	FILE *file;
+	std::unique_ptr<char[]> buffer = std::make_unique_for_overwrite<char[]>(1 << 16);
+	std::size_t capacity = 1 << 16, length = 0;
+	char *reserve(std::size_t n) {
+		if (n > capacity - length) {
+			if (!flush()) throw std::runtime_error("output failed");
+			if (n > capacity) {
+				std::size_t next = std::max(n, 2 * capacity);
+				buffer = std::make_unique_for_overwrite<char[]>(next);
+				capacity = next;
+			}
+		}
+		return buffer.get() + length;
+	}
+
+public:
+	explicit FastOutput(FILE *output = stdout) : file(output) {}
+	FastOutput(const FastOutput &) = delete;
+	FastOutput &operator=(const FastOutput &) = delete;
+	~FastOutput() { flush(); }
+	bool flush() {
+		std::size_t offset = 0;
+		while (offset < length) {
+			auto n = std::fwrite(buffer.get() + offset, 1, length - offset, file);
+			if (!n) {
+				std::memmove(buffer.get(), buffer.get() + offset, length - offset);
+				length -= offset;
+				return false;
+			}
+			offset += n;
+		}
+		length = 0;
+		return std::fflush(file) == 0;
+	}
+	void write(char c) { *reserve(1) = c; ++length; }
+	void write(__uint128_t value) {
+		char digits[40];
+		char *end = digits + sizeof(digits), *begin = end;
+		do { *--begin = char('0' + value % 10); value /= 10; } while (value);
+		write(std::string_view(begin, end - begin));
+	}
+	void write(__int128_t value) {
+		__uint128_t magnitude = __uint128_t(value);
+		if (value < 0) write('-'), magnitude = 0 - magnitude;
+		write(magnitude);
+	}
+	void write(std::string_view s) {
+		char *out = reserve(s.size());
+		if (!s.empty()) std::memcpy(out, s.data(), s.size());
+		length += s.size();
+	}
+	template <class T> requires std::is_integral_v<T>
+	void write(T value) {
+		char *out = reserve(32);
+		if constexpr (std::is_same_v<T, bool>) *out = '0' + value, ++length;
+		else if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4) {
+			char *p = out;
+			if (value >= 100000000) {
+				auto high = value / 100000000, low = value % 100000000;
+				p = std::to_chars(p, p + 2, high).ptr;
+				std::memcpy(p, quads[low / 10000].data(), 4);
+				std::memcpy(p + 4, quads[low % 10000].data(), 4);
+				p += 8;
+			} else if (value >= 10000) {
+				p = std::to_chars(p, p + 4, value / 10000).ptr;
+				std::memcpy(p, quads[value % 10000].data(), 4);
+				p += 4;
+			} else p = std::to_chars(p, p + 4, value).ptr;
+			length += p - out;
+		} else length += std::to_chars(out, out + 32, value).ptr - out;
+	}
+	template <class T> requires requires(const T &value, char *out) { value.decimal_capacity(); value.to_chars(out); }
+	void write(const T &value) {
+		char *out = reserve(value.decimal_capacity());
+		length += value.to_chars(out) - out;
+	}
+	template <class T>
+	void println(const T &value) { write(value); write('\n'); }
+};
+
+
 #line 7 "test/hld_path_composite.test.cpp"
 
 struct S {
@@ -619,38 +694,42 @@ S op(S x, S y) { return {x.a * y.a, x.b * y.a + y.b, y.reverse_b * x.a + x.rever
 S e() { return {1, 0, 0}; }
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
+	FastInput input;
+	FastOutput output;
 	int n, q;
-	std::cin >> n >> q;
+	input.read(n), input.read(q);
 	std::vector<S> values(n);
 	for (auto &f : values) {
-		std::cin >> f.a >> f.b;
+		unsigned a, b;
+		input.read(a), input.read(b);
+		f.a = a, f.b = b;
 		f.reverse_b = f.b;
 	}
 	HLD tree(n);
 	for (int i = 1, u, v; i < n; ++i) {
-		std::cin >> u >> v;
+		input.read(u), input.read(v);
 		tree.add_edge(u, v);
 	}
 	tree.build();
-	DynamicSegtree<S, op, e> seg(n);
-	seg.reserve(n);
-	for (int v = 0; v < n; ++v) seg.set(tree.in[v], values[v]);
+	std::vector<S> ordered(n);
+	for (int v = 0; v < n; ++v) ordered[tree.in[v]] = values[v];
+	Segtree<S, op, e> seg(ordered);
 	while (q--) {
 		int type, u, v;
-		std::cin >> type >> u;
+		input.read(type), input.read(u);
 		if (type == 0) {
-			mint a, b;
-			std::cin >> a >> b;
+			unsigned a, b;
+			input.read(a), input.read(b);
 			seg.set(tree.in[u], {a, b, b});
 		} else {
-			mint x;
-			std::cin >> v >> x;
+			unsigned initial;
+			input.read(v), input.read(initial);
+			mint x = initial;
 			tree.for_each_path(u, v, [&](int l, int r, bool reverse) {
 				auto f = seg.prod(l, r);
 				x = f.a * x + (reverse ? f.reverse_b : f.b);
 			});
-			std::cout << x << '\n';
+			output.println(x.val());
 		}
 	}
 }

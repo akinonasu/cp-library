@@ -7,12 +7,37 @@
 #include <limits>
 #include <numeric>
 
+namespace min_mod_detail {
+inline std::uint32_t small(std::uint32_t n, std::uint32_t m, std::uint32_t a, std::uint32_t b) {
+	std::uint32_t result = 0, p = 1, q = 1;
+	bool forward = true;
+	while (a) {
+		const auto edge = (forward ? a : m) - 1, quotient = m / a, remainder = m % a;
+		const auto next = quotient * p + q;
+		if ((forward ? b + 1 : m - b) > a) {
+			const auto step = (m - b + (forward ? a : 0) - 1) / a;
+			const auto consumed = (step - forward) * p + (forward ? q : 0);
+			if (n <= consumed) {
+				if (!forward) result -= a * ((n - 1) / p);
+				return result + (forward ? b : -b);
+			}
+			n -= consumed, b += a * step - (forward ? m : 0);
+		}
+		q = next, p = next - p;
+		result += forward ? edge : -edge;
+		m = a, a = remainder, b = edge - b, forward = !forward;
+	}
+	return result + (forward ? b : -b);
+}
+}
+
 inline std::uint64_t min_of_mod_of_linear(std::uint64_t n, std::uint64_t m, std::uint64_t a, std::uint64_t b) {
 	assert(n > 0 && m > 0);
 	if (a >= m) a %= m;
 	if (b >= m) b %= m;
 	if (!a || !b || n == 1) return b;
 	if (n >= m) return b % std::gcd(a, m);
+	if (m <= (std::uint64_t(1) << 30)) return min_mod_detail::small(n, m, a, b);
 	if (m <= std::numeric_limits<std::uint32_t>::max()) {
 		std::uint64_t best = b;
 		while (a) {

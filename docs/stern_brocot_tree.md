@@ -15,6 +15,7 @@ auto ancestor = node.ancestor(2);
 auto common = node.lca(Tree(7, 4));
 auto [lower, upper] = node.range();
 bool ok = node.move_left(2);
+auto [low, high] = Tree::approximate(5, 3, 2); // 1/1, 2/1
 ```
 
 正の有理数を Stern–Brocot Tree の頂点として扱います。根は `1/1`、左の子は親より小さく、右の子は親より大きい値です。上の `5/3` は根から `R 1, L 1, R 1` と移動した頂点で、深さ 3、深さ 2 の祖先は `3/2` です。
@@ -46,11 +47,15 @@ bool ok = node.move_left(2);
 | `Tree::ancestor(value,depth)` | 指定した正の有理数の、指定した深さの祖先を `optional` で返す | $$O(\log M)$$ |
 | `lca(other)` / `Tree::lca(value1,value2)` | 最低共通祖先の頂点を返す | $$O(\log M)$$ |
 | `distance(other)` | 二頂点間の辺数を `distance_type` で返す | $$O(\log M)$$ |
+| `Tree::approximate(numerator,denominator,bound)` | 分子・分母がともに `bound` 以下の分数による最良の下側・上側近似を返す | $$O(\log M)$$ |
+| `Tree::approximate(numerator,denominator,max_numerator,max_denominator)` | 分子・分母の上限を別々に指定して最良近似を返す | $$O(\log M)$$ |
 
-分子・分母は正で `Int` に収まる値とします。構築時には自然に約分され、0 や無限大を頂点として持つことはできません。`range()` の端点のみ、0 を `{0,1}`、無限大を `{1,0}` で表します。区間には自身も含まれ、端点は含まれません。有限の有理数との四則演算には [Fraction](https://qandori.github.io/cp-library/math/fraction.hpp.html) を使えます。
+分子・分母は正で `Int` に収まる値とします。構築時には自然に約分され、0 や無限大を頂点として持つことはできません。`range()` と `approximate()` の端点では、0 を `{0,1}`、無限大を `{1,0}` で表します。`range()` の区間には自身も含まれ、端点は含まれません。有限の有理数との四則演算には [Fraction](https://qandori.github.io/cp-library/math/fraction.hpp.html) を使えます。
+
+`approximate()` は正の有理数 $$x=\displaystyle\frac{\mathrm{numerator}}{\mathrm{denominator}}$$ を挟む、最大の $$l\le x$$ と最小の $$r\ge x$$ を `pair<value_type,value_type>` で返します。返される分数は既約です。上限はすべて正とし、分子 0 または分母 0 の端点も候補に含みます。入力が上限内で表現できるときは両端ともその値になります。入力は約分されていなくても構いません。例えば `approximate(10,6,5,3)` は両端とも `5/3` です。
 
 移動回数・深さは `count_type` で指定します。0 回の移動は成功し、深さ 0 の祖先は根です。`decode()` は空の経路を根として扱い、回数 0 や同方向の連続区間も受け付けます。`encode()`・`path()` の返り値には回数 0 を含まず、方向は交互に並びます。
 
 分子・分母は元の `Int` に収まる必要がありますが、中間積には幅の広い整数型を使います。64 bit 型の二頂点間の距離は 64 bit を超える場合があるため、`distance_type` は 128 bit です。`Tree::ancestor()` と `Tree::lca()` は入力の圧縮経路を配列にせず処理し、共通部分だけが必要なときは途中で打ち切ります。
 
-分子・分母の最大値を $$M$$、圧縮経路の区間数を $$s$$ として、根の構築・値取得・範囲取得・深さ・比較・包含判定・左右への移動・子・親の取得は $$O(1)$$ です。有理数からの構築・`encode()`・`path()`・`ancestor()`・`lca()`・`distance()`・一括 `move_up()` は $$O(\log M)$$ 時間、`decode()` は $$O(s)$$ 時間です。経路を配列で返す場合の空間は $$O(\log M)$$、それ以外の追加空間と頂点一つの保持は $$O(1)$$ です。
+分子・分母の最大値を $$M$$、圧縮経路の区間数を $$s$$ として、根の構築・値取得・範囲取得・深さ・比較・包含判定・左右への移動・子・親の取得は $$O(1)$$ です。有理数からの構築・`encode()`・`path()`・`ancestor()`・`lca()`・`distance()`・`approximate()`・一括 `move_up()` は $$O(\log M)$$ 時間、`decode()` は $$O(s)$$ 時間です。経路を配列で返す場合の空間は $$O(\log M)$$、それ以外の追加空間と頂点一つの保持は $$O(1)$$ です。
