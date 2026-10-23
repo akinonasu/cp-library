@@ -1,6 +1,6 @@
 # Library Checker 提出用コード
 
-136 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
+137 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
 
 同じ問題に複数の検証実装がある場合は、代表実装を 1 つ掲載しています。
 
@@ -120,6 +120,7 @@
 | [Static Range Count Distinct](https://judge.yosupo.jp/problem/static_range_count_distinct) | [static_range_count_distinct.cpp](static_range_count_distinct.cpp) | [static_range_count_distinct.test.cpp](../test/static_range_count_distinct.test.cpp) |
 | [Static Range Frequency](https://judge.yosupo.jp/problem/static_range_frequency) | [static_range_frequency.cpp](static_range_frequency.cpp) | [offline_range_frequency.test.cpp](../test/offline_range_frequency.test.cpp) |
 | [Static Range Inversions Query](https://judge.yosupo.jp/problem/static_range_inversions_query) | [static_range_inversions_query.cpp](static_range_inversions_query.cpp) | [mo_inversions.test.cpp](../test/mo_inversions.test.cpp) |
+| [Static Range LIS Query](https://judge.yosupo.jp/problem/static_range_lis_query) | [static_range_lis_query.cpp](static_range_lis_query.cpp) | [range_lis_query.test.cpp](../test/range_lis_query.test.cpp) |
 | [Static Range Sum](https://judge.yosupo.jp/problem/static_range_sum) | [static_range_sum.cpp](static_range_sum.cpp) | [static_range_sum.test.cpp](../test/static_range_sum.test.cpp) |
 | [Static Range Sum with Upper Bound](https://judge.yosupo.jp/problem/static_range_sum_with_upper_bound) | [static_range_sum_with_upper_bound.cpp](static_range_sum_with_upper_bound.cpp) | [offline_range_sum.test.cpp](../test/offline_range_sum.test.cpp) |
 | [Static RMQ](https://judge.yosupo.jp/problem/staticrmq) | [staticrmq.cpp](staticrmq.cpp) | [static_range_min.test.cpp](../test/static_range_min.test.cpp) |
