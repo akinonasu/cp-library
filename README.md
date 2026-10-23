@@ -64,6 +64,7 @@
 | `convolution/bitwise_convolution.hpp` | AND・OR・XOR 畳み込み | [使い方](docs/bitwise_convolution.md) |
 | `convolution/gcd_lcm_convolution.hpp` | GCD-plus・LCM-plus 畳み込み | [使い方](docs/gcd_lcm_convolution.md) |
 | `convolution/boolean_convolution.hpp` | AND-OR などの論理畳み込み | [使い方](docs/boolean_convolution.md) |
+| `convolution/symmetric_group_convolution.hpp` | 対称群上の畳み込み | [使い方](docs/symmetric_group_convolution.md) |
 | `convolution/subset_convolution.hpp` | Subset 畳み込み | [使い方](docs/subset_convolution.md) |
 | `convolution/min_plus_convolution.hpp` | 凸・凹 min-plus / max-plus 畳み込み | [使い方](docs/min_plus_convolution.md) |
 | `convolution/max_min_convolution.hpp` | max-min・min-max 畳み込み | [使い方](docs/max_min_convolution.md) |
@@ -265,6 +266,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `sequence/lis.hpp` | 最長増加部分列（長さ・復元） | [使い方](docs/lis.md) |
+| `sequence/permutation_rank.hpp` | 順列の辞書順順位・復元 | [使い方](docs/permutation_rank.md) |
 | `sequence/inversion_count.hpp` | 転倒数 | [使い方](docs/inversion_count.md) |
 | `sequence/static_range_inversions.hpp` | 静的区間の転倒数 | [使い方](docs/static_range_inversions.md) |
 | `sequence/run_length_encoding.hpp` | 連長圧縮（RLE） | [使い方](docs/run_length_encoding.md) |
@@ -460,6 +462,7 @@
 | `components/fps_io.hpp` | FPS の一括入出力 | [使い方](docs/fps_io.md) |
 | `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
 | `components/polynomial_product_tree.hpp` | 多項式の共通積木 | [使い方](docs/polynomial_product_tree.md) |
+| `components/symmetric_group_fft.hpp` | 対称群 Fourier 変換 | [使い方](docs/symmetric_group_fft.md) |
 | `components/xor_basis_core.hpp` | XOR 基底の内部演算 | [使い方](docs/xor_basis_core.md) |
 
 ## 使い方
