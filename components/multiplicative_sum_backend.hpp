@@ -9,12 +9,37 @@
 #include <vector>
 
 namespace multiplicative_sum_detail {
+template<class T> struct LinearWeights {
+	T count, weighted;
+	template<class I> explicit LinearWeights(I value) : count(T(value)), weighted(T(value)) {}
+	LinearWeights(T count_, T weighted_) : count(count_), weighted(weighted_) {}
+	LinearWeights& operator+=(const LinearWeights& b) { count += b.count; weighted += b.weighted; return *this; }
+	LinearWeights& operator-=(const LinearWeights& b) { count -= b.count; weighted -= b.weighted; return *this; }
+	friend LinearWeights operator+(LinearWeights a, const LinearWeights& b) { return a += b; }
+	friend LinearWeights operator-(LinearWeights a, const LinearWeights& b) { return a -= b; }
+	friend LinearWeights operator*(const LinearWeights& a, const LinearWeights& b) { return LinearWeights(a.count * b.count, a.weighted * b.weighted); }
+};
+
+template<class T> struct LinearPrime {
+	T weighted;
+	explicit LinearPrime(const LinearWeights<T>& value) : weighted(value.weighted) {}
+	explicit LinearPrime(T value) : weighted(value) {}
+	operator LinearWeights<T>() const { return LinearWeights<T>(T(1), weighted); }
+	friend LinearPrime operator*(const LinearPrime& a, const LinearPrime& b) { return LinearPrime(a.weighted * b.weighted); }
+	friend LinearWeights<T> operator*(const LinearPrime& a, const LinearWeights<T>& b) { return LinearWeights<T>(b.count, a.weighted * b.weighted); }
+	friend LinearWeights<T> operator*(const LinearWeights<T>& a, const LinearPrime& b) { return LinearWeights<T>(a.count, a.weighted * b.weighted); }
+};
+template<class T> struct PrimeValue { using type = T; };
+template<class T> struct PrimeValue<LinearWeights<T>> { using type = LinearPrime<T>; };
+
 template<class T> class Backend {
 	using U = std::uint64_t;
 	U n, root, large;
 	std::size_t length;
 	std::vector<U> primes;
-	std::vector<T> first;
+	std::vector<typename PrimeValue<T>::type> first;
+	std::vector<T> corrections;
+	std::vector<std::size_t> offsets;
 	static U square_root(U value) {
 		U result = std::sqrt(static_cast<long double>(value));
 		while (__uint128_t(result) * result > value) --result;
@@ -51,19 +76,28 @@ template<class T> class Backend {
 			T result(0); for (std::size_t i = 1; i < data.size(); ++i) { result += data[i]; a[i - 1] = result; }
 		}
 	};
-	template<class F> T powerful(const std::vector<T>& base, std::size_t begin, U product, U limit, T coefficient, F& f) const {
-		T answer = coefficient * base[product <= large ? big(product) : small(limit)];
+	T powerful(const std::vector<T>& base, std::size_t begin, U product, U limit) const {
+		T answer = base[product <= large ? big(product) : small(limit)];
 		for (std::size_t i = begin; i < first.size(); ++i) {
 			const U p = primes[i];
-			if (p > limit / p) break;
-			U power = p * p, next_limit = limit / p;
-			T previous(0);
-			for (unsigned e = 2;; ++e) {
-				next_limit /= p;
-				previous = f(p, e, power) - first[i] * previous;
-				answer += powerful(base, i + 1, product * power, next_limit, coefficient * previous, f);
-				if (power > limit / p) break;
+			U power = p * p;
+			if (power > limit) break;
+			U next_limit = limit / power;
+			std::size_t correction = offsets[i];
+			for (;;) {
+				const T weight = corrections[correction++];
+				if constexpr (requires { weight == T(0); }) if (weight == T(0)) {
+					if (next_limit < p) break;
+					power *= p;
+					next_limit /= p;
+					continue;
+				}
+				if (i + 1 < first.size() && primes[i + 1] * primes[i + 1] <= next_limit)
+					answer += weight * powerful(base, i + 1, product * power, next_limit);
+				else answer += weight * base[product * power <= large ? big(product * power) : small(next_limit)];
+				if (next_limit < p) break;
 				power *= p;
+				next_limit /= p;
 			}
 		}
 		return answer;
@@ -162,24 +196,38 @@ template<class T> class Backend {
 	template<class F> T sum(const std::vector<T>& prefix, F& f, T inv3) {
 		if (!n) return T(0);
 		first.clear();
-		for (std::size_t i = 0; i + 1 < primes.size(); ++i) first.push_back(f(primes[i], 1, primes[i]));
+		first.reserve(primes.size() - 1);
+		corrections.clear();
+		corrections.reserve(primes.size());
+		offsets.clear();
+		offsets.reserve(primes.size() - 1);
+		for (std::size_t i = 0; i + 1 < primes.size(); ++i) {
+			const U p = primes[i];
+			first.emplace_back(f(p, 1, p));
+			offsets.push_back(corrections.size());
+			T previous(0);
+			U power = p * p, limit = n / power;
+			for (unsigned e = 2;; ++e) {
+				previous = f(p, e, power) - first[i] * previous;
+				corrections.push_back(previous);
+				if (limit < p) break;
+				power *= p;
+				limit /= p;
+			}
+		}
 		auto out = build<true>(&prefix, inv3);
-		return powerful(out, 0, 1, n, T(1), f);
+		return powerful(out, 0, 1, n);
 	}
 	template<class Prefix> std::vector<T> prime_sum(Prefix& integer_prefix, T inv3) {
 		if (!n) return {};
 		first.clear();
-		for (std::size_t i = 0; i + 1 < primes.size(); ++i) first.push_back(integer_prefix(primes[i]) - integer_prefix(primes[i] - 1));
+		for (std::size_t i = 0; i + 1 < primes.size(); ++i) first.emplace_back(integer_prefix(primes[i]) - integer_prefix(primes[i] - 1));
 		const auto base = build<false>(nullptr, inv3);
 		std::vector<T> result(length, T(0));
-		for (U i = large; i; --i) {
-			T answer = integer_prefix(n / i) - base[big(i)], previous = base[0];
-			for (U j = 2; j <= large / i; ++j) {
-				const T current = base[small(j)];
-				answer -= result[i * j - 1] * (current - previous);
-				previous = current;
-			}
-			result[i - 1] = answer;
+		for (U i = 1; i <= large; ++i) result[i - 1] = integer_prefix(n / i) - base[big(i)];
+		for (std::size_t j = 0; j < first.size() && primes[j] <= large; ++j) {
+			const U p = primes[j], end = large / p;
+			for (U i = 1; i <= end; ++i) result[i - 1] -= first[j] * result[i * p - 1];
 		}
 		T cumulative(0);
 		std::size_t j = 0;
@@ -190,17 +238,6 @@ template<class T> class Backend {
 		for (U i = 0; i < large; ++i) result[i] += cumulative;
 		return result;
 	}
-};
-
-template<class T> struct LinearWeights {
-	T count, weighted;
-	template<class I> explicit LinearWeights(I value) : count(T(value)), weighted(T(value)) {}
-	LinearWeights(T count_, T weighted_) : count(count_), weighted(weighted_) {}
-	LinearWeights& operator+=(const LinearWeights& b) { count += b.count; weighted += b.weighted; return *this; }
-	LinearWeights& operator-=(const LinearWeights& b) { count -= b.count; weighted -= b.weighted; return *this; }
-	friend LinearWeights operator+(LinearWeights a, const LinearWeights& b) { return a += b; }
-	friend LinearWeights operator-(LinearWeights a, const LinearWeights& b) { return a -= b; }
-	friend LinearWeights operator*(const LinearWeights& a, const LinearWeights& b) { return LinearWeights(a.count * b.count, a.weighted * b.weighted); }
 };
 }
 
