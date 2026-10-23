@@ -1,6 +1,7 @@
 from html.parser import HTMLParser
 from importlib.util import find_spec
 from pathlib import Path
+import re
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -8,6 +9,15 @@ from unittest.mock import patch
 from code_highlight import highlight, prepare_highlights
 from documentation import fast_front_matter
 from size_profiles import render_page, split_page
+
+
+class DocumentationExamples(unittest.TestCase):
+    def test_repository_docs_do_not_open_liquid_variables(self):
+        root = Path(__file__).resolve().parents[1]
+        for path in sorted((root / 'docs').rglob('*.md')):
+            body = re.sub(r'{%\s*raw\s*%}.*?{%\s*endraw\s*%}', '', path.read_text(), flags=re.DOTALL)
+            with self.subTest(path=path.relative_to(root).as_posix()):
+                self.assertNotIn('{{', body)
 
 
 class Text(HTMLParser):

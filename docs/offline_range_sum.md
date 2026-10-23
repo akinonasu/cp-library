@@ -9,7 +9,7 @@ documentation_of: //data_structure/range_query/offline_range_sum.hpp
 OfflineRangeSum<int> query(std::vector<int>{4, 1, 4, 2});
 query.add_query(0, 4, 4);
 query.add_query(1, 3, 5);
-auto answer = query.solve(); // {{3,2}, {5,2}} : {和, 個数}
+auto answer = query.solve(); // { {3, 2}, {5, 2} } : {和, 個数}
 ```
 
 | 操作 | 内容・返り値 |
