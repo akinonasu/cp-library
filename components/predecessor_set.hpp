@@ -1,6 +1,7 @@
 #ifndef PREDECESSOR_SET_HPP
 #define PREDECESSOR_SET_HPP
 
+#include "xor_select.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -77,7 +78,23 @@ class PredecessorSet {
 			for (int i = 0; i < length[h - 1]; ++i)
 				if (data[offset[h - 1] + i]) data[offset[h] + (i >> 6)] |= std::uint64_t(1) << (i & 63);
 	}
+
 public:
+	int argmin_xor(std::uint32_t x) const {
+		if (!count) return -1;
+		std::uint64_t p = std::uint64_t(x) & ((std::uint64_t(1) << (height * 6)) - 1);
+		for (int h = 0; h < height; ++h, p >>= 6) {
+			auto index = p >> 6;
+			if (index >= unsigned(length[h])) continue;
+			auto word = data[offset[h] + index];
+			if (!word) continue;
+			p = index * 64 + xor_select_detail::argmin(word, p & 63);
+			while (h--) p = p * 64 + xor_select_detail::argmin(data[offset[h] + p], (x >> (h * 6)) & 63);
+			return int(p);
+		}
+		return -1;
+	}
+	int argmax_xor(std::uint32_t x) const { return argmin_xor(~x); }
 	explicit PredecessorSet(int n = 0, bool filled = false) { assign(n, filled); }
 	explicit PredecessorSet(std::string_view bits) { assign(bits); }
 	PredecessorSet(int n, std::span<const std::uint64_t> words) { assign(n, words); }

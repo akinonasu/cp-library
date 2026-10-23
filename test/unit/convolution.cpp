@@ -341,7 +341,7 @@ void check_indexed() {
 			for (int j = 0; j < p; ++j) ring_expected[i * j % p] += x[i] * y[j];
 		assert(multiplicative_convolution(x, y) == ring_expected);
 	}
-	for (auto dims : vector<vector<int>>{{}, {1}, {2}, {3, 4}, {2, 2, 2, 2, 2}, {1, 3, 1, 5}}) {
+	for (auto dims : vector<vector<int>>{{}, {1}, {2}, {3, 4}, {2, 2, 2, 2, 2}, {1, 3, 1, 5}, {3, 2, 3, 2, 2}, {2, 2, 2, 3, 3, 3}, {4, 3, 2, 5, 2}}) {
 		int n = accumulate(dims.begin(), dims.end(), 1, multiplies<int>{});
 		vector<mint> a(n), b(n), expected(n);
 		vector<Ring> x(n), y(n), ring_expected(n);

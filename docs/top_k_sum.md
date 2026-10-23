@@ -33,6 +33,7 @@ values.replace(1, 8);           // 1 を 1 個 8 に置換
 | `TopKSum(values)` / `TopKSum(values,compare)` | `vector<T>` または初期化子リストから構築 |
 | `kth_smallest(k)` / `kth_largest(k)` | 小さい順／大きい順の 0 始まり `k` 番目の値を `T` で返す |
 | `sum_smallest(k)` / `sum_largest(k)` | 下位／上位 `min(k,size())` 個の和を `Sum` で返す |
+| `order_of_key(x)` | `Compare` 上で `x` より前にある要素数。重複を含む |
 | `lower_bound(x)` / `upper_bound(x)` | `x` 以上／`x` より大きい最初の値。なければ `nullopt` |
 | `sum_all()` | 全要素の和を `Sum` で返す |
 | `insert(value,copies = 1)` | `value` を `copies` 個追加 |
@@ -53,6 +54,8 @@ values.replace(1, 8);           // 1 を 1 個 8 に置換
 ## 型と範囲
 
 `TopKSum<T,Sum,Compare>` の既定値は `T = std::int64_t`、`Sum = std::common_type_t<T,std::int64_t>`、`Compare = std::greater<T>` です。`LargestKSum<T,Sum>` は `std::greater<T>`、`SmallestKSum<T,Sum>` は `std::less<T>` を使います。どちらの型でも、大小両方の順位・和と境界検索を利用できます。独自の `Compare` を指定した場合は、その比較順を小さい順として扱います。
+
+`order_of_key(x)` は `std::less` なら `x` 未満、`std::greater` なら `x` より大きい要素数を返します。
 
 `Compare` は狭義弱順序を満たす比較関数です。比較上同値な値は個数をまとめて扱うため、`Sum` へ変換しても同じ値になる必要があります。`assign`・`clear` は比較関数を維持します。
 

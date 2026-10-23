@@ -245,10 +245,38 @@ public:
 
 
 
-#line 11 "components/predecessor_set.hpp"
+#line 1 "components/xor_select.hpp"
+
+
+
+#line 7 "components/xor_select.hpp"
+
+namespace xor_select_detail {
+inline unsigned argmin(std::uint64_t word, unsigned key) {
+	assert(word && key < 64);
+	if (std::has_single_bit(word)) return std::countr_zero(word);
+	if ((word >> key) & 1) return key;
+	unsigned shift = key & 32;
+	word = std::rotl(word, shift);
+	shift = key & 16;
+	word = ((word & 0x0000ffff0000ffffULL) << shift) | ((word & 0xffff0000ffff0000ULL) >> shift);
+	shift = key & 8;
+	word = ((word & 0x00ff00ff00ff00ffULL) << shift) | ((word & 0xff00ff00ff00ff00ULL) >> shift);
+	shift = key & 4;
+	word = ((word & 0x0f0f0f0f0f0f0f0fULL) << shift) | ((word & 0xf0f0f0f0f0f0f0f0ULL) >> shift);
+	shift = key & 2;
+	word = ((word & 0x3333333333333333ULL) << shift) | ((word & 0xccccccccccccccccULL) >> shift);
+	shift = key & 1;
+	word = ((word & 0x5555555555555555ULL) << shift) | ((word & 0xaaaaaaaaaaaaaaaaULL) >> shift);
+	return std::countr_zero(word) ^ key;
+}
+}
+
+
+#line 12 "components/predecessor_set.hpp"
 #include <limits>
 #include <span>
-#line 14 "components/predecessor_set.hpp"
+#line 15 "components/predecessor_set.hpp"
 #include <utility>
 #include <vector>
 #if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
@@ -315,7 +343,23 @@ class PredecessorSet {
 			for (int i = 0; i < length[h - 1]; ++i)
 				if (data[offset[h - 1] + i]) data[offset[h] + (i >> 6)] |= std::uint64_t(1) << (i & 63);
 	}
+
 public:
+	int argmin_xor(std::uint32_t x) const {
+		if (!count) return -1;
+		std::uint64_t p = std::uint64_t(x) & ((std::uint64_t(1) << (height * 6)) - 1);
+		for (int h = 0; h < height; ++h, p >>= 6) {
+			auto index = p >> 6;
+			if (index >= unsigned(length[h])) continue;
+			auto word = data[offset[h] + index];
+			if (!word) continue;
+			p = index * 64 + xor_select_detail::argmin(word, p & 63);
+			while (h--) p = p * 64 + xor_select_detail::argmin(data[offset[h] + p], (x >> (h * 6)) & 63);
+			return int(p);
+		}
+		return -1;
+	}
+	int argmax_xor(std::uint32_t x) const { return argmin_xor(~x); }
 	explicit PredecessorSet(int n = 0, bool filled = false) { assign(n, filled); }
 	explicit PredecessorSet(std::string_view bits) { assign(bits); }
 	PredecessorSet(int n, std::span<const std::uint64_t> words) { assign(n, words); }

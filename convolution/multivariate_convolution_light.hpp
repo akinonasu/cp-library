@@ -1,13 +1,10 @@
 #ifndef MULTIVARIATE_CONVOLUTION_LIGHT_HPP
 #define MULTIVARIATE_CONVOLUTION_LIGHT_HPP
 
-#include <bit>
 #include <cassert>
-#include <complex>
 #include <cstddef>
-#include <cstdint>
-#include <type_traits>
 #include <vector>
+#include "../components/multivariate_convolution_core.hpp"
 
 #include "convolution_light.hpp"
 
@@ -24,40 +21,33 @@ std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vect
 	}
 	assert(a.size() == size && b.size() == size);
 	if (bases.empty()) return {a[0] * b[0]};
+	if (bases.size() == 1) {
+		auto result = light_convolution::convolution(a, b);
+		result.resize(size);
+		return result;
+	}
 	int colors = bases.size();
+
+	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
+		if constexpr (T::mod() == 998244353) {
+			assert(size <= std::size_t(1) << 22);
+			std::vector<mint> x(size), y(size);
+			std::vector<int> dims;
+			for (int d : dimensions) if (d > 1) dims.push_back(d);
+			for (std::size_t i = 0; i < size; ++i) x[i] = mint::raw(a[i].val()), y[i] = mint::raw(b[i].val());
+			auto transform = [](std::vector<mint> &v, bool inverse) { fps_light_detail::transform(v, inverse); };
+			auto product = multivariate_convolution_detail::Core::multiply(x, y, dims, transform, fps_light_detail::multiply);
+			std::vector<T> result;
+			result.reserve(size);
+			for (auto v : product) result.push_back(T::raw(v.val()));
+			return result;
+		}
+	}
 	std::vector<int> rank(size);
 	for (std::size_t i = 0; i < size; ++i) {
 		std::size_t value = 0;
 		for (std::size_t base : bases) value += i / base;
 		rank[i] = value % colors;
-	}
-	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
-		if constexpr (T::mod() == 998244353) {
-			assert(size <= std::size_t(1) << 22);
-			std::size_t length = std::bit_ceil(2 * size - 1);
-			std::vector<std::vector<mint>> x(colors, std::vector<mint>(length)), y = x;
-			for (std::size_t i = 0; i < size; ++i) x[rank[i]][i] = mint::raw(a[i].val()), y[rank[i]][i] = mint::raw(b[i].val());
-			for (int i = 0; i < colors; ++i) {
-				fps_light_detail::transform(x[i]);
-				fps_light_detail::transform(y[i]);
-			}
-			std::vector<mint> row(colors);
-			for (std::size_t k = 0; k < length; ++k) {
-				for (int c = 0; c < colors; ++c) {
-					mint value = 0;
-					for (int i = 0; i < colors; ++i) {
-						value += x[i][k] * y[(c - i + colors) % colors][k];
-					}
-					row[c] = value;
-				}
-				for (int c = 0; c < colors; ++c) x[c][k] = row[c];
-			}
-			for (auto &v : x) fps_light_detail::transform(v, true);
-			std::vector<T> result;
-			result.reserve(size);
-			for (std::size_t i = 0; i < size; ++i) result.push_back(T::raw(x[rank[i]][i].val()));
-			return result;
-		}
 	}
 	std::size_t stride = 2 * colors - 1;
 	assert(size <= std::size_t(-1) / stride / 2);

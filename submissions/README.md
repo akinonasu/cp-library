@@ -78,7 +78,7 @@
 | [Multipoint Evaluation](https://judge.yosupo.jp/problem/multipoint_evaluation) | [multipoint_evaluation.cpp](multipoint_evaluation.cpp) | [multipoint_eval.test.cpp](../test/multipoint_eval.test.cpp) |
 | [Multidimensional Convolution (Truncated)](https://judge.yosupo.jp/problem/multivariate_convolution) | [multivariate_convolution.cpp](multivariate_convolution.cpp) | [multivariate_convolution.test.cpp](../test/multivariate_convolution.test.cpp) |
 | [Number of Substrings](https://judge.yosupo.jp/problem/number_of_substrings) | [number_of_substrings.cpp](number_of_substrings.cpp) | [suffix_tree_substrings.test.cpp](../test/suffix_tree_substrings.test.cpp) |
-| [Ordered Set](https://judge.yosupo.jp/problem/ordered_set) | [ordered_set.cpp](ordered_set.cpp) | [persistent_multiset.test.cpp](../test/persistent_multiset.test.cpp) |
+| [Ordered Set](https://judge.yosupo.jp/problem/ordered_set) | [ordered_set.cpp](ordered_set.cpp) | [ordered_set.test.cpp](../test/ordered_set.test.cpp) |
 | [Persistent Queue](https://judge.yosupo.jp/problem/persistent_queue) | [persistent_queue.cpp](persistent_queue.cpp) | [persistent_queue.test.cpp](../test/persistent_queue.test.cpp) |
 | [Persistent Range Affine Range Sum](https://judge.yosupo.jp/problem/persistent_range_affine_range_sum) | [persistent_range_affine_range_sum.cpp](persistent_range_affine_range_sum.cpp) | [persistent_lazy_segtree.test.cpp](../test/persistent_lazy_segtree.test.cpp) |
 | [Persistent Unionfind](https://judge.yosupo.jp/problem/persistent_unionfind) | [persistent_unionfind.cpp](persistent_unionfind.cpp) | [persistent_union_find.test.cpp](../test/persistent_union_find.test.cpp) |
