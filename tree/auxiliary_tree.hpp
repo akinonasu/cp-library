@@ -95,6 +95,21 @@ template <class Tree> class AuxiliaryTree {
 		return nodes_[i];
 	}
 	const std::vector<Node> &nodes() const { return nodes_; }
+	std::vector<std::vector<int>> to_graph() const {
+		std::vector<std::vector<int>> graph(size());
+		std::vector<int> degree(size());
+		for (int i = 0; i < size(); ++i) if (nodes_[i].parent >= 0) {
+			++degree[i];
+			++degree[nodes_[i].parent];
+		}
+		for (int i = 0; i < size(); ++i) graph[i].reserve(degree[i]);
+		for (int i = 0; i < size(); ++i) if (nodes_[i].parent >= 0) {
+			int parent = nodes_[i].parent;
+			graph[i].push_back(parent);
+			graph[parent].push_back(i);
+		}
+		return graph;
+	}
 	const std::vector<Node> &build(std::span<const int> vertices) { return construct(vertices, false); }
 	const std::vector<Node> &build_sorted(std::span<const int> vertices) { return construct(vertices, true); }
 };
