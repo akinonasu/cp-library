@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/persistent_segtree.hpp"
+#include "data_structure/persistent/persistent_segtree.hpp"
 #include <algorithm>
 #include <bit>
 #include <cassert>

@@ -1,10 +1,13 @@
 ---
 title: "Dijkstra"
-documentation_of: //graph/dijkstra.hpp
+documentation_of: //graph/shortest_path/dijkstra.hpp
+redirect_from:
+  - /graph/dijkstra.hpp.html
+  - /lightweight/graph/dijkstra.hpp.html
 ---
 
 ```cpp
-#include "lib/graph/dijkstra.hpp"
+#include "lib/graph/shortest_path/dijkstra.hpp"
 
 std::vector<std::vector<std::pair<int, std::int64_t>>> g(3);
 g[0].emplace_back(1, 5);

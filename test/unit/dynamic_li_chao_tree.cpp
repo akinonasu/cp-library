@@ -1,4 +1,4 @@
-#include "data_structure/dynamic_li_chao_tree.hpp"
+#include "data_structure/li_chao_tree/dynamic_li_chao_tree.hpp"
 #include <array>
 #include <random>
 

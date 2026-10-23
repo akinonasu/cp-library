@@ -1,12 +1,15 @@
 ---
 title: 永続併合可能ヒープ
-documentation_of: //data_structure/persistent_heap.hpp
+documentation_of: //data_structure/persistent/persistent_heap.hpp
+redirect_from:
+  - /data_structure/persistent_heap.hpp.html
+  - /lightweight/data_structure/persistent_heap.hpp.html
 ---
 
 過去版を残して要素の追加・最小値の削除・ヒープ同士の併合を行います。既定は最小ヒープです。最大ヒープには `PersistentHeap<T, std::greater<T>>` を使います。
 
 ```cpp
-#include "lib/data_structure/persistent_heap.hpp"
+#include "lib/data_structure/persistent/persistent_heap.hpp"
 #include <cassert>
 
 int main() {

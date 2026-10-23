@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/persistent_range_affine_range_sum"
-#include "../data_structure/segment_tree/persistent_lazy_segtree.hpp"
+#include "../data_structure/persistent/persistent_lazy_segtree.hpp"
 #include "../math/mint.hpp"
 #include <iostream>
 #include <vector>

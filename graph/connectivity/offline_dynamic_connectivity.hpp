@@ -3,7 +3,7 @@
 
 #include "../../components/offline_time_segments.hpp"
 #include "../../components/radix_sort.hpp"
-#include "../../data_structure/rollback_union_find.hpp"
+#include "../../data_structure/union_find/rollback_union_find.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>

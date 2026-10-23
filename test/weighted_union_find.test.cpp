@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/unionfind_with_potential"
-#include "../data_structure/weighted_union_find.hpp"
+#include "../data_structure/union_find/weighted_union_find.hpp"
 #include "../math/mint.hpp"
 #include <iostream>
 #include <tuple>

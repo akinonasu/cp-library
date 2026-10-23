@@ -1,12 +1,15 @@
 ---
 title: ワーシャルフロイド法
-documentation_of: //graph/warshall_floyd.hpp
+documentation_of: //graph/shortest_path/warshall_floyd.hpp
+redirect_from:
+  - /graph/warshall_floyd.hpp.html
+  - /lightweight/graph/warshall_floyd.hpp.html
 ---
 
 重み付き有向グラフの全点対最短距離を求めます。負辺・多重辺・自己辺に対応し、グラフ全体の負閉路を検出します。頂点番号は 0 始まりです。
 
 ```cpp
-#include "lib/graph/warshall_floyd.hpp"
+#include "lib/graph/shortest_path/warshall_floyd.hpp"
 
 int main() {
 	WarshallFloyd<> graph(4);

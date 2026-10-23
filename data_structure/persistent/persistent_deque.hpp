@@ -1,7 +1,7 @@
 #ifndef PERSISTENT_DEQUE_HPP
 #define PERSISTENT_DEQUE_HPP
 
-#include "../components/persistent_rope.hpp"
+#include "../../components/persistent_rope.hpp"
 #include <cassert>
 #include <cstddef>
 #include <limits>

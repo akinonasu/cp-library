@@ -1,5 +1,5 @@
 #define PROBLEM "https://onlinejudge.u-aizu.ac.jp/problems/GRL_1_B"
-#include "graph/difference_constraints.hpp"
+#include "graph/shortest_path/difference_constraints.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

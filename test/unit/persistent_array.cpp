@@ -1,5 +1,5 @@
-#include "../../data_structure/persistent_array.hpp"
-#include "../../data_structure/persistent_union_find.hpp"
+#include "../../data_structure/persistent/persistent_array.hpp"
+#include "../../data_structure/persistent/persistent_union_find.hpp"
 #include <algorithm>
 #include <cassert>
 #include <climits>

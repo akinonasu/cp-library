@@ -1,12 +1,15 @@
 ---
 title: 永続 Deque・分割連結可能な列
-documentation_of: //data_structure/persistent_deque.hpp
+documentation_of: //data_structure/persistent/persistent_deque.hpp
+redirect_from:
+  - /data_structure/persistent_deque.hpp.html
+  - /lightweight/data_structure/persistent_deque.hpp.html
 ---
 
 両端の追加・削除に加え、添字アクセス、一点代入、途中への挿入・削除、列の分割・連結を行います。同じ列を自分自身と連結することもできます。区間積には [永続セグメント木](persistent_segtree.md)、区間更新には [永続遅延セグメント木](persistent_lazy_segtree.md) を使います。
 
 ```cpp
-#include "lib/data_structure/persistent_deque.hpp"
+#include "lib/data_structure/persistent/persistent_deque.hpp"
 #include <cassert>
 
 int main() {

@@ -3,7 +3,7 @@ title: Dijkstra の内部キュー
 documentation_of: //components/dijkstra_queue.hpp
 ---
 
-`shortest_path_detail::RadixQueue<T>` は [Dijkstra](https://qandori.github.io/cp-library/graph/dijkstra.hpp.html) が使う単調優先度キューです。通常は `dijkstra`・`dijkstra_path` を使います。`T` は 64 bit 以下の整数型、キーは非負です。頂点番号は非負の `int` です。
+`shortest_path_detail::RadixQueue<T>` は [Dijkstra](https://qandori.github.io/cp-library/graph/shortest_path/dijkstra.hpp.html) が使う単調優先度キューです。通常は `dijkstra`・`dijkstra_path` を使います。`T` は 64 bit 以下の整数型、キーは非負です。頂点番号は非負の `int` です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

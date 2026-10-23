@@ -1,9 +1,9 @@
 #ifndef BELLMAN_FORD_HPP
 #define BELLMAN_FORD_HPP
 
-#include "../components/shortest_path_scc.hpp"
-#include "../components/directed_csr.hpp"
-#include "../components/RadixHeap.hpp"
+#include "../../components/shortest_path_scc.hpp"
+#include "../../components/directed_csr.hpp"
+#include "../../components/RadixHeap.hpp"
 #include <cstdint>
 #include <functional>
 #include <stdexcept>
