@@ -5,6 +5,8 @@ documentation_of: //components/field_arithmetic.hpp
 
 行列と線形漸化式の復元で共有する、体の演算と連続配列の計算です。
 
+汎用の `Field<T>` は [体の基本演算](field_base.md) と共有しています。
+
 | 操作 | 内容 | 計算量 |
 | --- | --- | --- |
 | `field_detail::Field<T>` | 通常の型 `T` を使う演算 | — |

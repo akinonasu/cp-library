@@ -13,6 +13,7 @@ main_libraries:
   - components/ntt_mod.hpp
   - components/ntt.hpp
 implementation_variants:
+  math/linear_algebra/matrix.hpp: math/linear_algebra/matrix_light.hpp
   fps/fps.hpp: fps/fps_light.hpp
   fps/taylor_shift.hpp: fps/fps_light_algorithms.hpp
   fps/bostan_mori.hpp: fps/fps_light_algorithms.hpp
@@ -44,6 +45,7 @@ implementation_variants:
   components/binomial_prefix_polynomial.hpp: components/binomial_prefix_polynomial_light.hpp
   components/factorial_table.hpp: components/factorial_table_light.hpp
 implementation_variant_apis:
+  math/linear_algebra/matrix.hpp: LightMatrix<T>
   fps/taylor_shift.hpp: light_fps_algorithms::taylor_shift
   fps/bostan_mori.hpp: light_fps_algorithms::bostan_mori
   fps/linear_recurrence.hpp: light_fps_algorithms::linear_recurrence

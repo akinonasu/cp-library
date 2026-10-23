@@ -313,6 +313,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `math/linear_algebra/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
+| `math/linear_algebra/matrix_light.hpp` | 軽量な行列演算 | [使い方](docs/matrix_light.md) |
 | `math/linear_algebra/xor_basis.hpp` | XOR 基底・順序統計・共通部分・復元・ロールバック・区間クエリ | [使い方](docs/xor_basis.md) |
 
 ## 補助部品
@@ -346,6 +347,9 @@
 | `components/z_algorithm.hpp` | Z algorithm・接頭辞一致の列挙 | [使い方](docs/z_algorithm.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
 | `components/field_arithmetic.hpp` | 体の演算・内積・配列の定数倍と加算 | [使い方](docs/field_arithmetic.md) |
+| `components/field_base.hpp` | 汎用型の体の演算 | [使い方](docs/field_base.md) |
+| `components/matrix_core.hpp` | 行列の共通クラス | [使い方](docs/matrix_core.md) |
+| `components/matrix_base_arithmetic.hpp` | 行列の基本演算 | [使い方](docs/matrix_base_arithmetic.md) |
 | `components/matrix_power.hpp` | 行列累乗の内部演算 | [使い方](docs/matrix_power.md) |
 | `components/rational_fps_coefficients.hpp` | 有理 FPS の区間係数取得の共通処理 | [使い方](docs/rational_fps_coefficients_core.md) |
 | `components/factorial_table.hpp` | 型を指定する階乗・逆階乗テーブル | [使い方](docs/factorial_table.md) |

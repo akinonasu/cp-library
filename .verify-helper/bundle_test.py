@@ -151,6 +151,58 @@ class BundleTest(unittest.TestCase):
                     reference = ('//https://qandori.github.io/cp-library/' + header + '.html\n').encode()
                     self.assertLess(len(reference + generated), LIMIT)
 
+    @unittest.skipUnless(shutil.which('oj-bundle') and shutil.which('g++'), 'C++ bundle tools are unavailable')
+    def test_fps_matrix_budgets(self):
+        from atcoder_flags import constexpr_flags
+
+        program = '''#include "components/fast_io.hpp"
+using F = POLYNOMIAL;
+using M = MATRIX<F>;
+int main() {
+    FastInput input;
+    FastOutput output;
+    int n = 0, degree = 0;
+    std::uint64_t k = 0;
+    if (!input.read(n)) return 0;
+    input.read(degree); input.read(k);
+    M a(n);
+    for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j) {
+        a(i, j).resize(degree);
+        for (auto &x : a(i, j)) {
+            unsigned value = 0;
+            input.read(value);
+            x = mint::raw(value);
+        }
+    }
+    auto b = a.pow(k, [degree](M &m) {
+        for (int i = 0; i < m.rows(); ++i) for (int j = 0; j < m.cols(); ++j)
+            if (m(i, j).size() > std::size_t(degree)) m(i, j).resize(degree);
+    });
+    for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
+        for (int d = 0; d < degree; ++d) {
+            output.write(d < int(b(i, j).size()) ? b(i, j)[d].val() : 0u);
+            output.write(' ');
+        }
+}
+'''
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'fps_matrix.cpp'
+            for light in (False, True):
+                with self.subTest(lightweight=light):
+                    header = 'math/linear_algebra/matrix_light.hpp' if light else 'math/linear_algebra/matrix.hpp'
+                    polynomial = 'fps/fps_light.hpp' if light else 'fps/fps.hpp'
+                    source = '#include "' + header + '"\n#include "' + polynomial + '"\n'
+                    source += program.replace('POLYNOMIAL', 'light_fps' if light else 'fps').replace('MATRIX', 'LightMatrix' if light else 'Matrix')
+                    path.write_text(source)
+                    generated = subprocess.check_output(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT)
+                    reference = ('//https://qandori.github.io/cp-library/' + header + '.html\n').encode()
+                    self.assertLess(len(reference + generated), LIGHT_LIMIT if light else LIMIT)
+                    path.write_bytes(reference + generated)
+                    executable = Path(temporary) / 'fps_matrix'
+                    subprocess.run(['g++', '-std=c++23', '-O2', *constexpr_flags('g++'), str(path), '-o', str(executable)], check=True)
+                    actual = subprocess.check_output([str(executable)], input=b'2 2 3\n1 0 0 1 0 1 1 0\n')
+                    self.assertEqual(actual.split(), [b'1', b'0', b'0', b'3', b'0', b'3', b'1', b'0'])
+
     def test_documentation_uses_same_limit(self):
         from documentation import source_pages
         from onlinejudge_verify.documentation.front_matter import merge_front_matter, split_front_matter

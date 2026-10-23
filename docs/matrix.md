@@ -40,6 +40,7 @@ auto polynomial = a.characteristic_polynomial();
 | `a == b` / `a != b` | 形と全要素を比較 | $$O(nm)$$ |
 | `a * vector<T>` | 行列と列ベクトルの積。ベクトル長は列数 | $$O(nm)$$ |
 | `pow(k)` | 正方行列の非負整数乗。`k` は `uint64_t`、0 乗は単位行列 | 固定の素数 modint で分解成功時: $$O(n^3+n^2\log k)$$、その他・最悪: $$O(n^3\log k)$$ |
+| `pow(k,normalize)` | 単位行列・入力行列・各積の結果に `normalize(Matrix&)` を適用して累乗 | $$O(n^3\log k)$$ ＋ `normalize` の処理時間 |
 | `trace()` | 正方行列の対角成分の和 | $$O(n)$$ |
 | `det(eps = default_epsilon)` | 行列式。特異なら 0、0 行 0 列なら 1 | $$O(n^3)$$ |
 | `inverse(eps = default_epsilon)` | 逆行列を `optional<Matrix<T>>` で返す。特異なら `nullopt` | $$O(n^3)$$ |
@@ -69,5 +70,7 @@ auto polynomial = a.characteristic_polynomial();
 `mod()` がコンパイル時定数で $$1<\mathrm{mod}<2^{31}$$、`val()`・`raw()` を持つ modint は専用の処理を使います。AVX2・AVX512 は実行時に判定し、使えない環境では通常処理に切り替えます。
 
 大きな累乗では、上記の modint の法が素数なら Frobenius 分解を使います。基底の独立性と各ブロックの関係式を確認し、確認できない場合は繰り返し二乗法に切り替えます。合成数 mod・整数・浮動小数点でも `pow` を使えます。
+
+FPS も要素型にでき、`Matrix<fps>` の単位行列の対角成分は定数 FPS の `{1}` になります。$$x^D$$ を法として計算するときは、`pow(k,normalize)` のコールバックで各要素を先頭 `D` 項に打ち切ってください。この累乗は繰り返し二乗法を使います。例は [軽量版の行列](matrix_light.md) にあります。FPS と行列を組み合わせて 64 KiB 制限で使う場合は `LightMatrix<light_fps>` を使います。
 
 $$n\times m$$ 行列について、構築・加減算・スカラー演算・転置は $$O(nm)$$、行列積 $$n\times k$$ と $$k\times m$$ は $$O(nkm)$$、行列とベクトルの積は $$O(nm)$$、trace は $$O(n)$$ です。正方行列の累乗は固定の素数 modint で分解に成功すれば $$O(n^3+n^2\log k)$$、最悪や他の型で $$O(n^3\log k)$$、行列式・逆行列・特性多項式・余因子行列は $$O(n^3)$$ です。長方行列の rank・掃き出し・方程式・核は、基底の出力も含めて $$O(nm\min(n,m)+m^2)$$ です。rank・掃き出しだけなら $$O(nm\min(n,m))$$ です。追加空間は行列式・rank・掃き出しが $$O(nm)$$、方程式・核は $$O(nm+m^2)$$、正方行列の各操作は $$O(n^2)$$ です。行列積は入力の変換と出力を含めて $$O(nk+km+nm)$$ です。要素の演算・コピーを $$O(1)$$ とします。

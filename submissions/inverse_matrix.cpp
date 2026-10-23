@@ -249,41 +249,18 @@ public:
 
 
 
-#line 1 "components/field_arithmetic.hpp"
+#line 1 "components/matrix_base_arithmetic.hpp"
 
 
 
-#line 5 "components/field_arithmetic.hpp"
+#line 1 "components/field_base.hpp"
+
+
+
 #include <cmath>
-#line 8 "components/field_arithmetic.hpp"
-#include <utility>
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-#include <immintrin.h>
-#endif
+#line 6 "components/field_base.hpp"
 
 namespace field_detail {
-template <class T, class = void>
-struct SmallModint : std::false_type {};
-
-template <class T>
-struct SmallModint<T, std::void_t<decltype(std::integral_constant<std::uint32_t, T::mod()>{}),
-	decltype(std::declval<T>().val()), decltype(T::raw(std::uint32_t{}))>>
-	: std::bool_constant<(T::mod() > 1 && T::mod() < (std::uint32_t(1) << 31))
-		&& std::is_convertible_v<decltype(std::declval<T>().val()), std::uint32_t>
-		&& std::is_same_v<decltype(T::raw(std::uint32_t{})), T>> {};
-
-template <class T>
-inline constexpr bool small_modint = SmallModint<T>::value;
-
-inline bool avx2() {
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(FIELD_DISABLE_AVX2) && !defined(MATRIX_DISABLE_AVX2)
-	static const bool enabled = __builtin_cpu_supports("avx2");
-	return enabled;
-#else
-	return false;
-#endif
-}
-
 template <class T>
 struct Field {
 	using V = T;
@@ -308,107 +285,20 @@ struct Field {
 	static void axpy(T *a, const T *b, int n, T x) { for (int i = 0; i < n; ++i) a[i] += x * b[i]; }
 };
 
-template <class T>
-struct ModularField {
-	using V = std::uint32_t;
-	static constexpr V mod = T::mod();
-	static V add(V a, V b) { V c = a + b; return c < mod ? c : c - mod; }
-	static V mul(V a, V b) { return std::uint64_t(a) * b % mod; }
-	static V neg(V a) { return a ? mod - a : 0; }
-	static V dot(const V *a, const V *b, int n) {
-		constexpr int step = mod <= (V(1) << 30) ? 16 : 4;
-		std::uint64_t sum = 0;
-		for (int i = 0; i < n; i += step) {
-			for (int j = i; j < std::min(n, i + step); ++j) sum += std::uint64_t(a[j]) * b[j];
-			sum %= mod;
-		}
-		return sum;
-	}
-	static V inv(V a) { return (T(1) / T::raw(a)).val(); }
-	static bool zero(V a, long double) { return !a; }
-	static bool better(V, V) { return false; }
-	static V product(V a, V x, V q) {
-		V r = a * x - V((std::uint64_t(a) * q) >> 32) * mod;
-		return r < mod ? r : r - mod;
-	}
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-	__attribute__((target("avx2"))) static __m256i product8(__m256i a, __m256i x, __m256i q) {
-		__m256i p = _mm256_set1_epi32(mod);
-		__m256i even = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
-		__m256i odd = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), q);
-		__m256i high = _mm256_or_si256(even, _mm256_slli_epi64(_mm256_srli_epi64(odd, 32), 32));
-		__m256i r = _mm256_sub_epi32(_mm256_mullo_epi32(a, x), _mm256_mullo_epi32(high, p));
-		return _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
-	}
-	template <bool add_to>
-	__attribute__((target("avx2"))) static void apply8(V *a, const V *b, int n, V x, V q) {
-		__m256i vx = _mm256_set1_epi32(x), vq = _mm256_set1_epi32(q), p = _mm256_set1_epi32(mod);
-		int i = 0;
-		for (; i + 8 <= n; i += 8) {
-			__m256i r = product8(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i)), vx, vq);
-			if constexpr (add_to) {
-				r = _mm256_add_epi32(r, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i)));
-				r = _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
-			}
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), r);
-		}
-		for (; i < n; ++i) {
-			V r = product(b[i], x, q);
-			if constexpr (add_to) a[i] = add(a[i], r);
-			else a[i] = r;
-		}
-	}
-#endif
-	template <bool add_to>
-	static void apply(V *a, const V *b, int n, V x) {
-		V q = (std::uint64_t(x) << 32) / mod;
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-		if (n >= 16 && avx2()) { apply8<add_to>(a, b, n, x, q); return; }
-#endif
-		for (int i = 0; i < n; ++i) {
-			V r = product(b[i], x, q);
-			if constexpr (add_to) a[i] = add(a[i], r);
-			else a[i] = r;
-		}
-	}
-	static void scale(V *a, int n, V x) { apply<false>(a, a, n, x); }
-	static void axpy(V *a, const V *b, int n, V x) { apply<true>(a, b, n, x); }
-};
-
 }
 
 
-#line 5 "components/matrix_arithmetic.hpp"
-
-#line 10 "components/matrix_arithmetic.hpp"
+#line 9 "components/matrix_base_arithmetic.hpp"
 #include <limits>
-#line 13 "components/matrix_arithmetic.hpp"
+#line 11 "components/matrix_base_arithmetic.hpp"
+#include <utility>
 #include <vector>
-#if defined(__x86_64__) || defined(__i386__)
-#include <immintrin.h>
-#endif
 
 namespace matrix_detail {
 template <class T>
 inline constexpr bool integer = std::is_integral_v<T> || std::is_same_v<T, __int128_t> || std::is_same_v<T, __uint128_t>;
 
-using field_detail::SmallModint;
-using field_detail::small_modint;
-using field_detail::avx2;
 using field_detail::Field;
-using field_detail::ModularField;
-
-template <class T, class F>
-auto field(std::vector<T> &a, F &&f) {
-	static_assert(!integer<T>);
-	if constexpr (small_modint<T>) {
-		std::vector<std::uint32_t> work(a.size());
-		for (std::size_t i = 0; i < a.size(); ++i) work[i] = a[i].val();
-		auto result = f.template operator()<ModularField<T>>(work);
-		for (std::size_t i = 0; i < a.size(); ++i) a[i] = T::raw(work[i]);
-		return result;
-	} else return f.template operator()<Field<T>>(a);
-}
 
 template <class Ops>
 struct Elimination {
@@ -486,6 +376,145 @@ template <class T>
 	W result = sign * work.back();
 	assert(result >= std::numeric_limits<T>::lowest() && result <= std::numeric_limits<T>::max());
 	return T(result);
+}
+
+template <class T>
+std::vector<T> basic_multiply(const std::vector<T> &a, const std::vector<T> &b, int n, int inner, int m) {
+	std::vector<T> c(std::size_t(n) * m, T(0));
+	for (int i = 0; i < n; ++i) for (int k = 0; k < inner; ++k) {
+		const T &x = a[std::size_t(i) * inner + k];
+		for (int j = 0; j < m; ++j) c[std::size_t(i) * m + j] += x * b[std::size_t(k) * m + j];
+	}
+	return c;
+}
+}
+
+
+#line 1 "components/field_arithmetic.hpp"
+
+
+
+#line 9 "components/field_arithmetic.hpp"
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#include <immintrin.h>
+#endif
+
+namespace field_detail {
+template <class T, class = void>
+struct SmallModint : std::false_type {};
+
+template <class T>
+struct SmallModint<T, std::void_t<decltype(std::integral_constant<std::uint32_t, T::mod()>{}),
+	decltype(std::declval<T>().val()), decltype(T::raw(std::uint32_t{}))>>
+	: std::bool_constant<(T::mod() > 1 && T::mod() < (std::uint32_t(1) << 31))
+		&& std::is_convertible_v<decltype(std::declval<T>().val()), std::uint32_t>
+		&& std::is_same_v<decltype(T::raw(std::uint32_t{})), T>> {};
+
+template <class T>
+inline constexpr bool small_modint = SmallModint<T>::value;
+
+inline bool avx2() {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(FIELD_DISABLE_AVX2) && !defined(MATRIX_DISABLE_AVX2)
+	static const bool enabled = __builtin_cpu_supports("avx2");
+	return enabled;
+#else
+	return false;
+#endif
+}
+
+template <class T>
+struct ModularField {
+	using V = std::uint32_t;
+	static constexpr V mod = T::mod();
+	static V add(V a, V b) { V c = a + b; return c < mod ? c : c - mod; }
+	static V mul(V a, V b) { return std::uint64_t(a) * b % mod; }
+	static V neg(V a) { return a ? mod - a : 0; }
+	static V dot(const V *a, const V *b, int n) {
+		constexpr int step = mod <= (V(1) << 30) ? 16 : 4;
+		std::uint64_t sum = 0;
+		for (int i = 0; i < n; i += step) {
+			for (int j = i; j < std::min(n, i + step); ++j) sum += std::uint64_t(a[j]) * b[j];
+			sum %= mod;
+		}
+		return sum;
+	}
+	static V inv(V a) { return (T(1) / T::raw(a)).val(); }
+	static bool zero(V a, long double) { return !a; }
+	static bool better(V, V) { return false; }
+	static V product(V a, V x, V q) {
+		V r = a * x - V((std::uint64_t(a) * q) >> 32) * mod;
+		return r < mod ? r : r - mod;
+	}
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	__attribute__((target("avx2"))) static __m256i product8(__m256i a, __m256i x, __m256i q) {
+		__m256i p = _mm256_set1_epi32(mod);
+		__m256i even = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
+		__m256i odd = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), q);
+		__m256i high = _mm256_or_si256(even, _mm256_slli_epi64(_mm256_srli_epi64(odd, 32), 32));
+		__m256i r = _mm256_sub_epi32(_mm256_mullo_epi32(a, x), _mm256_mullo_epi32(high, p));
+		return _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
+	}
+	template <bool add_to>
+	__attribute__((target("avx2"))) static void apply8(V *a, const V *b, int n, V x, V q) {
+		__m256i vx = _mm256_set1_epi32(x), vq = _mm256_set1_epi32(q), p = _mm256_set1_epi32(mod);
+		int i = 0;
+		for (; i + 8 <= n; i += 8) {
+			__m256i r = product8(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i)), vx, vq);
+			if constexpr (add_to) {
+				r = _mm256_add_epi32(r, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i)));
+				r = _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
+			}
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), r);
+		}
+		for (; i < n; ++i) {
+			V r = product(b[i], x, q);
+			if constexpr (add_to) a[i] = add(a[i], r);
+			else a[i] = r;
+		}
+	}
+#endif
+	template <bool add_to>
+	static void apply(V *a, const V *b, int n, V x) {
+		V q = (std::uint64_t(x) << 32) / mod;
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (n >= 16 && avx2()) { apply8<add_to>(a, b, n, x, q); return; }
+#endif
+		for (int i = 0; i < n; ++i) {
+			V r = product(b[i], x, q);
+			if constexpr (add_to) a[i] = add(a[i], r);
+			else a[i] = r;
+		}
+	}
+	static void scale(V *a, int n, V x) { apply<false>(a, a, n, x); }
+	static void axpy(V *a, const V *b, int n, V x) { apply<true>(a, b, n, x); }
+};
+
+}
+
+
+#line 6 "components/matrix_arithmetic.hpp"
+
+#line 15 "components/matrix_arithmetic.hpp"
+#if defined(__x86_64__) || defined(__i386__)
+#include <immintrin.h>
+#endif
+
+namespace matrix_detail {
+using field_detail::SmallModint;
+using field_detail::small_modint;
+using field_detail::avx2;
+using field_detail::ModularField;
+
+template <class T, class F>
+auto field(std::vector<T> &a, F &&f) {
+	static_assert(!integer<T>);
+	if constexpr (small_modint<T>) {
+		std::vector<std::uint32_t> work(a.size());
+		for (std::size_t i = 0; i < a.size(); ++i) work[i] = a[i].val();
+		auto result = f.template operator()<ModularField<T>>(work);
+		for (std::size_t i = 0; i < a.size(); ++i) a[i] = T::raw(work[i]);
+		return result;
+	} else return f.template operator()<Field<T>>(a);
 }
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
@@ -926,11 +955,35 @@ struct FrobeniusPower {
 #endif
 
 
-#line 10 "math/linear_algebra/matrix.hpp"
+#line 6 "math/linear_algebra/matrix.hpp"
+
+namespace matrix_detail {
+template <class T>
+struct FastMatrixArithmetic {
+	static constexpr bool modular = small_modint<T>;
+	template <class F>
+	static auto field(std::vector<T> &a, F &&f) { return matrix_detail::field(a, std::forward<F>(f)); }
+	static std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n, int inner, int m) {
+		return matrix_detail::multiply(a, b, n, inner, m);
+	}
+	static std::optional<std::vector<T>> power(const std::vector<T> &a, int n, std::uint64_t exponent) {
+		if constexpr (small_modint<T>) if constexpr (prime_modulus(T::mod())) {
+			if (n >= 16 && exponent >= 256) return FrobeniusPower<T>(a, n).run(exponent);
+		}
+		return std::nullopt;
+	}
+};
+}
+
+#line 1 "components/matrix_core.hpp"
+
+
+
+#line 9 "components/matrix_core.hpp"
 #include <initializer_list>
-#line 13 "math/linear_algebra/matrix.hpp"
+#line 12 "components/matrix_core.hpp"
 #include <span>
-#line 17 "math/linear_algebra/matrix.hpp"
+#line 16 "components/matrix_core.hpp"
 
 template <class T>
 struct LinearSolution {
@@ -938,15 +991,19 @@ struct LinearSolution {
 	std::vector<std::vector<T>> basis;
 };
 
-template <class T>
+namespace matrix_detail {
+template <class T> struct FastMatrixArithmetic;
+}
+
+template <class T, class Arithmetic = matrix_detail::FastMatrixArithmetic<T>>
 class Matrix {
 	static_assert(!std::is_same_v<T, bool>);
 	int h = 0, w = 0;
 	std::vector<T> a;
 	std::pair<T, std::vector<int>> reduce(int columns, bool reduced, long double eps) {
 		assert(eps >= 0);
-		return matrix_detail::field(a, [&]<class Ops>(auto &work) {
-			auto result = matrix_detail::eliminate<Ops, matrix_detail::small_modint<T>>(work, h, w, columns, reduced, eps);
+		return Arithmetic::field(a, [&]<class Ops>(auto &work) {
+			auto result = matrix_detail::eliminate<Ops, Arithmetic::modular>(work, h, w, columns, reduced, eps);
 			return std::pair{T(result.determinant), std::move(result.pivots)};
 		});
 	}
@@ -957,7 +1014,7 @@ class Matrix {
 		basis.reserve(variables - pivots.size());
 		for (int col = 0; col < variables; ++col) if (!pivot[col]) {
 			std::vector<T> v(variables, T(0));
-			v[col] = T(1);
+			v[col] = T{1};
 			for (int i = 0; i < int(pivots.size()); ++i) v[pivots[i]] = -r(i, col);
 			basis.push_back(std::move(v));
 		}
@@ -969,7 +1026,7 @@ class Matrix {
 		Matrix work(h, w * 2);
 		for (int i = 0; i < h; ++i) {
 			std::copy((*this)[i].begin(), (*this)[i].end(), work[i].begin());
-			work(i, w + i) = T(1);
+			work(i, w + i) = T{1};
 		}
 		return work;
 	}
@@ -1016,7 +1073,7 @@ class Matrix {
 	bool operator==(const Matrix &) const = default;
 	static Matrix identity(int n) {
 		Matrix result(n);
-		for (int i = 0; i < n; ++i) result(i, i) = T(1);
+		for (int i = 0; i < n; ++i) result(i, i) = T{1};
 		return result;
 	}
 	void fill(T value) { std::fill(a.begin(), a.end(), value); }
@@ -1037,14 +1094,14 @@ class Matrix {
 	Matrix &operator-=(const Matrix &b) { assert(h == b.h && w == b.w); for (std::size_t i = 0; i < a.size(); ++i) a[i] -= b.a[i]; return *this; }
 	Matrix &operator*=(const Matrix &b) { return *this = *this * b; }
 	Matrix &operator*=(T x) { for (auto &v : a) v *= x; return *this; }
-	Matrix &operator/=(T x) { static_assert(!matrix_detail::integer<T>); assert(x != T(0)); return *this *= T(1) / x; }
+	Matrix &operator/=(T x) { static_assert(!matrix_detail::integer<T>); assert(x != T(0)); return *this *= T{1} / x; }
 	friend Matrix operator+(Matrix a, const Matrix &b) { a += b; return a; }
 	friend Matrix operator-(Matrix a, const Matrix &b) { a -= b; return a; }
 	friend Matrix operator*(const Matrix &a, const Matrix &b) {
 		assert(a.w == b.h);
 		Matrix result;
 		result.h = a.h; result.w = b.w;
-		result.a = matrix_detail::multiply(a.a, b.a, a.h, a.w, b.w);
+		result.a = Arithmetic::multiply(a.a, b.a, a.h, a.w, b.w);
 		return result;
 	}
 	friend Matrix operator*(Matrix a, T x) { a *= x; return a; }
@@ -1052,26 +1109,37 @@ class Matrix {
 	friend Matrix operator/(Matrix a, T x) { a /= x; return a; }
 	std::vector<T> operator*(const std::vector<T> &v) const {
 		assert(int(v.size()) == w);
-		return matrix_detail::multiply(a, v, h, w, 1);
+		return Arithmetic::multiply(a, v, h, w, 1);
 	}
 	Matrix pow(std::uint64_t exponent) const {
 		assert(h == w);
-		if constexpr (matrix_detail::small_modint<T>) if constexpr (matrix_detail::prime_modulus(T::mod())) {
-			if (h >= 16 && exponent >= 256) if (auto power = matrix_detail::FrobeniusPower<T>(a, h).run(exponent)) {
-				Matrix result(h);
-				result.a = std::move(*power);
-				return result;
-			}
+		if (auto power = Arithmetic::power(a, h, exponent)) {
+			Matrix result(h);
+			result.a = std::move(*power);
+			return result;
 		}
+		return pow(exponent, [](Matrix &) {});
+	}
+	template <class Normalize>
+	Matrix pow(std::uint64_t exponent, Normalize normalize) const {
+		assert(h == w);
 		Matrix result = identity(h), x = *this;
+		normalize(result);
+		normalize(x);
 		while (exponent) {
-			if (exponent & 1) result *= x;
+			if (exponent & 1) {
+				result *= x;
+				normalize(result);
+			}
 			exponent >>= 1;
-			if (exponent) x *= x;
+			if (exponent) {
+				x *= x;
+				normalize(x);
+			}
 		}
 		return result;
 	}
-	T trace() const { assert(h == w); T result = 0; for (int i = 0; i < h; ++i) result += (*this)(i, i); return result; }
+	T trace() const { assert(h == w); T result = T(0); for (int i = 0; i < h; ++i) result += (*this)(i, i); return result; }
 	T det(long double eps = default_epsilon) const {
 		assert(h == w);
 		if constexpr (matrix_detail::integer<T>) {
@@ -1119,10 +1187,10 @@ class Matrix {
 	std::vector<T> characteristic_polynomial(long double eps = default_epsilon) const {
 		assert(h == w && eps >= 0);
 		auto work = a;
-		return matrix_detail::field(work, [&]<class Ops>(auto &b) {
+		return Arithmetic::field(work, [&]<class Ops>(auto &b) {
 			using V = typename Ops::V;
 			std::vector<V> factors;
-			if constexpr (matrix_detail::small_modint<T>) if (h >= 16) factors.resize(h);
+			if constexpr (Arithmetic::modular) if (h >= 16) factors.resize(h);
 			for (int k = 1; k < h; ++k) {
 				int pivot = -1;
 				for (int i = k; i < h; ++i) if (!Ops::zero(b[std::size_t(i) * w + k - 1], eps)
@@ -1133,7 +1201,7 @@ class Matrix {
 					for (int i = 0; i < h; ++i) std::swap(b[std::size_t(i) * w + k], b[std::size_t(i) * w + pivot]);
 				}
 				V inverse = Ops::inv(b[std::size_t(k) * w + k - 1]);
-				if constexpr (matrix_detail::small_modint<T>) if (h >= 16) {
+				if constexpr (Arithmetic::modular) if (h >= 16) {
 					bool any = false;
 					for (int i = k + 1; i < h; ++i) {
 						V factor = factors[i] = Ops::mul(b[std::size_t(i) * w + k - 1], inverse);
@@ -1187,7 +1255,7 @@ class Matrix {
 		for (int i = 1; i < h; ++i) if (work(h - 1, w + row) == T(0) || matrix_detail::Field<T>::better(work(h - 1, w + i), work(h - 1, w + row))) row = i;
 		if (work(h - 1, w + row) == T(0)) return result;
 		std::vector<T> left(h);
-		T inverse = T(1) / work(h - 1, w + row);
+		T inverse = T{1} / work(h - 1, w + row);
 		for (int i = 0; i < h; ++i) left[i] = work(h - 1, w + i) * inverse;
 		while (std::find(pivots.begin(), pivots.end(), col) != pivots.end()) ++col;
 		Matrix minor(h - 1);
@@ -1201,6 +1269,9 @@ class Matrix {
 		return result;
 	}
 };
+
+
+#line 26 "math/linear_algebra/matrix.hpp"
 
 
 #line 1 "math/mint.hpp"
