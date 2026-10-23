@@ -346,6 +346,7 @@
 | `components/z_algorithm.hpp` | Z algorithm・接頭辞一致の列挙 | [使い方](docs/z_algorithm.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
 | `components/field_arithmetic.hpp` | 体の演算・内積・配列の定数倍と加算 | [使い方](docs/field_arithmetic.md) |
+| `components/matrix_power.hpp` | 行列累乗の内部演算 | [使い方](docs/matrix_power.md) |
 | `components/rational_fps_coefficients.hpp` | 有理 FPS の区間係数取得の共通処理 | [使い方](docs/rational_fps_coefficients_core.md) |
 | `components/factorial_table.hpp` | 型を指定する階乗・逆階乗テーブル | [使い方](docs/factorial_table.md) |
 | `components/factorial_table_light.hpp` | 軽量版の階乗・逆階乗生成 | [使い方](docs/factorial_table_light.md) |

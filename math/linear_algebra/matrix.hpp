@@ -2,6 +2,7 @@
 #define MATRIX_HPP
 
 #include "../../components/matrix_arithmetic.hpp"
+#include "../../components/matrix_power.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -138,6 +139,13 @@ class Matrix {
 	}
 	Matrix pow(std::uint64_t exponent) const {
 		assert(h == w);
+		if constexpr (matrix_detail::small_modint<T>) if constexpr (matrix_detail::prime_modulus(T::mod())) {
+			if (h >= 16 && exponent >= 256) if (auto power = matrix_detail::FrobeniusPower<T>(a, h).run(exponent)) {
+				Matrix result(h);
+				result.a = std::move(*power);
+				return result;
+			}
+		}
 		Matrix result = identity(h), x = *this;
 		while (exponent) {
 			if (exponent & 1) result *= x;

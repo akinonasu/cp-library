@@ -115,6 +115,11 @@ template <class T>
 	return T(result);
 }
 
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
 template <std::uint32_t mod>
 void product_scalar(const std::uint32_t *a, const std::uint32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr int step = mod <= (std::uint32_t(1) << 30) ? 16 : 4;
@@ -133,6 +138,58 @@ void product_scalar(const std::uint32_t *a, const std::uint32_t *b, std::uint32_
 }
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+inline bool avx512_product() {
+	static const bool supported = __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512dq");
+	return avx2() && supported;
+}
+
+template <std::uint32_t mod>
+__attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512i sum) {
+	const auto p = _mm512_set1_epi64(mod);
+	const auto q = _mm512_cvt_roundpd_epi64(
+		_mm512_mul_pd(_mm512_cvtepi64_pd(sum), _mm512_set1_pd(1.0 / mod)),
+		_MM_FROUND_TO_NEG_INF | _MM_FROUND_NO_EXC);
+	auto r = _mm512_sub_epi64(sum, _mm512_mullo_epi64(q, p));
+	r = _mm512_mask_add_epi64(r, _mm512_cmp_epi64_mask(r, _mm512_setzero_si512(), _MM_CMPINT_LT), r, p);
+	return _mm512_mask_sub_epi64(r, _mm512_cmp_epi64_mask(r, p, _MM_CMPINT_NLT), r, p);
+}
+
+template <std::uint32_t mod, int rows = 4>
+__attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
+	constexpr std::int64_t radius = mod / 2;
+	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - (mod - 1)) / (radius * radius)));
+	int i = 0;
+	for (; i + rows <= n; i += rows) {
+		for (int j = 0; j < m; j += 16) {
+			const int width = std::min(16, m - j);
+			const __mmask16 active = (1u << width) - 1;
+			for (int k = 0; k < inner; k += step) {
+				__m512i sums[rows][2];
+				for (int r = 0; r < rows; ++r) sums[r][0] = sums[r][1] = _mm512_setzero_si512();
+				for (int t = k; t < std::min(inner, k + step); ++t) {
+					auto x = _mm512_maskz_loadu_epi32(active, b + std::size_t(j) * inner + std::size_t(t) * width);
+					auto y = _mm512_srli_epi64(x, 32);
+					for (int r = 0; r < rows; ++r) {
+						auto z = _mm512_set1_epi32(a[std::size_t(i + r) * inner + t]);
+						sums[r][0] = _mm512_add_epi64(sums[r][0], _mm512_mul_epi32(x, z));
+						sums[r][1] = _mm512_add_epi64(sums[r][1], _mm512_mul_epi32(y, z));
+					}
+				}
+				for (int r = 0; r < rows; ++r) {
+					auto *dst = c + std::size_t(i + r) * m + j;
+					auto previous = _mm512_maskz_loadu_epi32(active, dst);
+					auto even = reduce_product_avx512<mod>(_mm512_add_epi64(sums[r][0], _mm512_and_si512(previous, _mm512_set1_epi64(0xffffffffu))));
+					auto odd = reduce_product_avx512<mod>(_mm512_add_epi64(sums[r][1], _mm512_srli_epi64(previous, 32)));
+					_mm512_mask_storeu_epi32(dst, active, _mm512_or_si512(even, _mm512_slli_epi64(odd, 32)));
+				}
+			}
+		}
+	}
+	if constexpr (rows == 4) {
+		if (i < n) product_packed_avx512<mod, 1>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
+	}
+}
+
 template <std::uint32_t mod>
 __attribute__((target("avx2"))) void product_avx2(const std::uint32_t *a, const std::uint32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr int step = mod <= (std::uint32_t(1) << 30) ? 16 : 4;
@@ -268,6 +325,7 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 		if (std::uint64_t(n) * m <= 128u / unsigned(inner)) { basic(); return c; }
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 		if (n >= 4 && inner >= 16 && m >= 8 && avx2()) {
+			const int block = avx512_product() ? 16 : 8;
 			std::vector<std::int32_t> x(a.size()), y(b.size());
 			std::vector<std::uint32_t> z(c.size());
 			auto center = [](std::uint32_t value) {
@@ -275,12 +333,13 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 				return v <= std::int32_t((T::mod() - 1) / 2) ? v : v - std::int32_t(T::mod());
 			};
 			for (std::size_t i = 0; i < a.size(); ++i) x[i] = center(a[i].val());
-			for (int j = 0; j < m; j += 8) {
-				int width = std::min(8, m - j);
+			for (int j = 0; j < m; j += block) {
+				int width = std::min(block, m - j);
 				for (int k = 0; k < inner; ++k) for (int s = 0; s < width; ++s)
 					y[std::size_t(j) * inner + std::size_t(k) * width + s] = center(b[std::size_t(k) * m + j + s].val());
 			}
-			product_packed_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
+			if (block == 16) product_packed_avx512<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
+			else product_packed_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
 			for (std::size_t i = 0; i < c.size(); ++i) c[i] = T::raw(z[i]);
 			return c;
 		}
@@ -297,6 +356,10 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 	} else basic();
 	return c;
 }
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 }
 
 #endif
