@@ -73,6 +73,25 @@ class PersistentLazySegtree {
 		}
 		return join(left, right);
 	}
+	template <bool Prefix>
+	S fold(root_type root, int l, int r, int end, F carry, bool active) const {
+		S result = e();
+		while (Prefix ? end < r : l < end) {
+			inherit(root, carry, active);
+			const auto &node = nodes[root];
+			int m = l + (r - l) / 2;
+			bool right = Prefix ? m < end : m <= end;
+			if (Prefix ? right : !right) {
+				auto child = right ? node.left : node.right;
+				S part = active ? mapping(carry, nodes[child].value, right ? m - l : r - m) : nodes[child].value;
+				result = Prefix ? op(std::move(result), std::move(part)) : op(std::move(part), std::move(result));
+			}
+			if (right) { root = node.right; l = m; }
+			else { root = node.left; r = m; }
+		}
+		S part = active ? mapping(carry, nodes[root].value, r - l) : nodes[root].value;
+		return Prefix ? op(std::move(result), std::move(part)) : op(std::move(part), std::move(result));
+	}
 	S query(root_type root, int l, int r, int ql, int qr, F carry, bool active) const {
 		const auto &node = nodes[root];
 		if (ql <= l && r <= qr) return active ? mapping(carry, node.value, r - l) : node.value;
@@ -80,7 +99,7 @@ class PersistentLazySegtree {
 		int m = l + (r - l) / 2;
 		if (qr <= m) return query(node.left, l, m, ql, qr, std::move(carry), active);
 		if (m <= ql) return query(node.right, m, r, ql, qr, std::move(carry), active);
-		return op(query(node.left, l, m, ql, qr, carry, active), query(node.right, m, r, ql, qr, carry, active));
+		return op(fold<false>(node.left, l, m, ql, carry, active), fold<true>(node.right, m, r, qr, carry, active));
 	}
 	root_type copy(root_type root, root_type source, int l, int r, int ql, int qr, F carry, F source_carry, bool active, bool source_active) {
 		if (qr <= l || r <= ql || (root == source && !active && !source_active)) return carried(root, std::move(carry), r - l, active);
