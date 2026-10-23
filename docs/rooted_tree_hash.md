@@ -22,6 +22,8 @@ int size = tree.subtree_size[1]; // 4
 | --- | --- |
 | `RootedTreeHash(graph,root = 0,seed = default_seed())` | 根付き木と全ての部分木のハッシュを構築 |
 | `build(graph,root = 0,seed = default_seed())` | 指定した木で構築し直す |
+| `build_parents(parents,seed = default_seed())` | 親配列から構築し直す |
+| `classify()` | 部分木のハッシュの同値類 ID を頂点順の `vector<int>` で返す |
 | `get()` | 指定した根での木全体のハッシュ。空なら `TreeHashValue{}` |
 | `get(v)` / `operator[](v)` / `hash[v]` | 頂点 `v` 以下の部分木のハッシュ |
 | `root` | 根の頂点番号。空なら `-1` |
@@ -32,7 +34,17 @@ int size = tree.subtree_size[1]; // 4
 | `seed()` | 構築に使った seed |
 | `RootedTreeHash::default_seed()` | プロセス内で共通の既定 seed |
 
-入力は `std::vector<std::vector<int>>` の無向木です。頂点数は `INT_MAX` 以下とし、各辺を両方向に 1 回ずつ入れ、連結・自己ループなし・多重辺なしとしてください。非空なら `0 <= root < size()` が必要です。空の木では根の引数は `0` または `-1` とし、結果の各配列は空になります。既定構築も空の状態です。
+`graph` は `std::vector<std::vector<int>>` の無向木です。頂点数は `INT_MAX` 以下とし、各辺を両方向に 1 回ずつ入れ、連結・自己ループなし・多重辺なしとしてください。非空なら `0 <= root < size()` が必要です。空の木では根の引数は `0` または `-1` とし、結果の各配列は空になります。既定構築も空の状態です。
+
+`build_parents` の親配列は長さが頂点数で、根の親だけを `-1` とし、親子関係が 1 本の根付き木になるようにしてください。頂点番号の大小に制約はありません。空配列にも対応します。
+
+```cpp
+RootedTreeHash tree;
+tree.build_parents(std::vector<int>{-1, 0, 0});
+auto ids = tree.classify(); // {0, 1, 1}
+```
+
+`classify()` の ID は 0 始まりで、同じハッシュなら同じ ID になります。新しい ID は頂点番号の小さい順に割り当てます。空の木では空列です。
 
 構築結果は入力を参照せず、入力を変更しません。コピーして独立に保持できます。公開フィールドは構築結果を参照するためのものです。
 
@@ -61,4 +73,4 @@ $$H_k(v)=\displaystyle\prod_{u\text{ は }v\text{ の子}}\bigl(R_k[h(v)]+H_k(u)
 
 走査は再帰を使いません。子のソートや、同じ実行中に処理した他の木に依存する ID の割り当ても行いません。
 
-頂点数を $$n$$ として、構築・`build` は $$O(n)$$ 時間・空間です。ハッシュの取得・比較、各配列の参照は $$O(1)$$ 時間です。
+頂点数を $$n$$ として、構築・`build`・`build_parents` は $$O(n)$$ 時間・空間、`classify()` は期待 $$O(n)$$ 時間・$$O(n)$$ 追加空間です。ハッシュの取得・比較、各配列の参照は $$O(1)$$ 時間です。

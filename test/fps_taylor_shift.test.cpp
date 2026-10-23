@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/polynomial_taylor_shift"
 #include "fps/taylor_shift.hpp"
-#include "fixtures/fps_io.hpp"
+#include "fixtures/fps_bulk_io.hpp"
 
 int main() {
 	FastInput input;

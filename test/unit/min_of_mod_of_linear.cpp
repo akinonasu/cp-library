@@ -63,6 +63,10 @@ int main() {
 				}
 			}
 	std::mt19937_64 random(713);
+	for (int i = 0; i < 10000; ++i) {
+		U m = i % 2 ? (U(1) << 30) - random() % 128 : 1 + random() % (U(1) << 30);
+		check(1 + random() % m, m, random(), random());
+	}
 	for (int i = 0; i < 20000; ++i) {
 		U n = random() % 128 + 1, m = random() | 1, a = random(), b = random();
 		assert(min_of_mod_of_linear(n, m, a, b) == naive(n, m, a, b));

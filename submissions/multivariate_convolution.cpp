@@ -1782,39 +1782,6 @@ struct Operations {
 		}
 		return T::raw(result);
 	}
-	static int prepare_sparse(std::vector<std::pair<int, T>> &terms) {
-		int stride = 0;
-		for (auto &[j, x] : terms) {
-			stride = std::gcd(stride, j);
-			if constexpr (std::is_same_v<T, mint>) if (x.v >= T::mod()) x.v -= T::mod();
-		}
-		return stride;
-	}
-	static T sparse_dot(const std::vector<std::pair<int, T>> &terms, const F &g, int i) {
-		if constexpr (std::is_same_v<T, mint>) {
-			static_assert(7ULL * (T::mod() - 1) * (2ULL * T::mod() - 1) + 0xffffffffULL * T::mod() < ~0ULL);
-			unsigned long long sum = 0;
-			Word result = 0;
-			int count = 0;
-			for (auto [j, x] : terms) {
-				if (j > i) break;
-				sum += (unsigned long long)x.v * g[i - j].v;
-				if (++count == 7) {
-					result = NTT::add(result, NTT::reduce(sum) % T::mod());
-					sum = 0;
-					count = 0;
-				}
-			}
-			return T::word(NTT::add(result, NTT::reduce(sum) % T::mod()));
-		} else {
-			T result = 0;
-			for (auto [j, x] : terms) {
-				if (j > i) break;
-				result += x * g[i - j];
-			}
-			return result;
-		}
-	}
 
 	static void intt(base &a) {
 		ntt_inverse(a);
@@ -1977,118 +1944,6 @@ inline mint horner(const mint* a, std::size_t n, mint x) {
 #endif
 
 
-#line 1 "components/mint_factorials.hpp"
-
-
-
-#line 5 "components/mint_factorials.hpp"
-
-namespace mint_detail {
-
-#if defined(__x86_64__) || defined(__i386__)
-
-__attribute__((target("avx2"))) inline void factorial_transpose(Ops::I8 (&x)[8]) {
-	Ops::I8 a[8], b[8];
-	for (int i = 0; i < 8; i += 2) {
-		a[i] = _mm256_unpacklo_epi32(x[i], x[i + 1]);
-		a[i + 1] = _mm256_unpackhi_epi32(x[i], x[i + 1]);
-	}
-	for (int i = 0; i < 8; i += 4) {
-		b[i] = _mm256_unpacklo_epi64(a[i], a[i + 2]);
-		b[i + 1] = _mm256_unpackhi_epi64(a[i], a[i + 2]);
-		b[i + 2] = _mm256_unpacklo_epi64(a[i + 1], a[i + 3]);
-		b[i + 3] = _mm256_unpackhi_epi64(a[i + 1], a[i + 3]);
-	}
-	for (int i = 0; i < 4; ++i) {
-		x[i] = _mm256_permute2x128_si256(b[i], b[i + 4], 0x20);
-		x[i + 4] = _mm256_permute2x128_si256(b[i], b[i + 4], 0x31);
-	}
-}
-
-template<bool reverse>
-__attribute__((target("avx2"))) inline void factorial_chain(Ops::U* out, int chunk, Ops::I8 value, Ops::I8 factor) {
-	using I = Ops::I8;
-	I step = _mm256_set1_epi32(Ops::one);
-	I order = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
-	for (int j = 0; j < chunk; j += 8) {
-		I block[8];
-		for (int k = 0; k < 8; ++k) {
-			block[k] = value;
-			value = Ops::mul8(value, factor);
-			if constexpr (reverse) factor = Ops::sub8(factor, step);
-			else factor = Ops::add8(factor, step);
-		}
-		factorial_transpose(block);
-		for (int k = 0; k < 8; ++k) {
-			if constexpr (reverse) Ops::store8(out + (k + 1) * chunk - j - 8, _mm256_permutevar8x32_epi32(block[k], order));
-			else Ops::store8(out + k * chunk + j, block[k]);
-		}
-	}
-}
-
-__attribute__((target("avx2"))) inline void factorials8(Ops::U* fact, Ops::U* invfact, int n) {
-	using I = Ops::I8;
-	using U = Ops::U;
-	const int chunk = n / 256 * 8, covered = chunk * 32;
-	alignas(32) U factor[32], products[32], starts[33], inverse[33];
-	I p[4], x[4], step = _mm256_set1_epi32(Ops::one);
-	for (int i = 0; i < 32; ++i) factor[i] = Ops::in(i * chunk + 1);
-	for (int k = 0; k < 4; ++k) p[k] = _mm256_set1_epi32(Ops::one), x[k] = Ops::load8(factor + 8 * k);
-	for (int i = 0; i < chunk; ++i) {
-		for (int k = 0; k < 4; ++k) p[k] = Ops::mul8(p[k], x[k]), x[k] = Ops::add8(x[k], step);
-	}
-	for (int k = 0; k < 4; ++k) Ops::store8(products + 8 * k, p[k]);
-	starts[0] = Ops::one;
-	for (int i = 0; i < 32; ++i) starts[i + 1] = Ops::mul(starts[i], products[i]);
-	U last = starts[32];
-	for (int i = covered; i < n; ++i) fact[i] = last, last = Ops::mul(last, Ops::in(i + 1));
-	last = mint::word(last).inv().v;
-	for (int i = n - 1; i >= covered; --i) last = Ops::mul(last, Ops::in(i + 1)), invfact[i] = last;
-	inverse[32] = last;
-	for (int i = 31; i >= 0; --i) inverse[i] = Ops::mul(inverse[i + 1], products[i]);
-	for (int k = 0; k < 4; ++k) {
-		factorial_chain<false>(fact + 8 * k * chunk, chunk, Ops::load8(starts + 8 * k), Ops::load8(factor + 8 * k));
-		alignas(32) U values[8], factors[8];
-		for (int j = 0; j < 8; ++j) {
-			const int end = (8 * k + j + 1) * chunk;
-			values[j] = Ops::mul(inverse[8 * k + j + 1], Ops::in(end));
-			factors[j] = Ops::in(end - 1);
-		}
-		factorial_chain<true>(invfact + 8 * k * chunk, chunk, Ops::load8(values), Ops::load8(factors));
-	}
-}
-#endif
-
-inline void factorials(Ops::U* fact, Ops::U* invfact, int n) {
-	if (!n) return;
-#if defined(__x86_64__) || defined(__i386__)
-	if (n >= 256 && Ops::vectorized()) {
-		factorials8(fact, invfact, n);
-		return;
-	}
-#endif
-	Ops::U value = Ops::one;
-	for (int i = 0; i < n; ++i) fact[i] = value, value = Ops::mul(value, Ops::in(i + 1));
-	value = mint::word(fact[n - 1]).inv().v;
-	for (int i = n - 1; i >= 0; --i) invfact[i] = value, value = Ops::mul(value, Ops::in(i));
-}
-
-template<class T> requires std::is_same_v<T, mint>
-inline void factorials(T* fact, T* invfact, int n) {
-	assert(0 <= n && unsigned(n) <= mint::mod());
-	static_assert(sizeof(mint) == sizeof(Ops::U) && std::is_trivially_copyable_v<mint>);
-	if (unsigned(n) == mint::mod()) {
-		factorials(fact, invfact, n - 1);
-		fact[n - 1] = -fact[n - 2];
-		invfact[n - 1] = -invfact[n - 2];
-		return;
-	}
-	factorials(reinterpret_cast<Ops::U*>(fact), reinterpret_cast<Ops::U*>(invfact), n);
-}
-
-}
-
-
 #line 1 "components/fps_workspace.hpp"
 
 
@@ -2136,6 +1991,288 @@ inline FpsWords allocate_fps_words(std::size_t count) {
 
 }
 
+
+#line 1 "components/fps_sparse.hpp"
+
+
+
+#line 7 "components/fps_sparse.hpp"
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+#line 1 "components/fps_sparse_core.hpp"
+
+
+
+#line 10 "components/fps_sparse_core.hpp"
+
+namespace fps_detail {
+template <class E> struct SparseBase {
+	using Series = std::vector<mint>;
+	using Terms = std::vector<std::pair<int, mint>>;
+	enum class Kind { inverse, logarithm, exponential, power };
+	static Terms collect(const mint *f, int size, int n, int limit = 12) {
+		Terms terms;
+		for (int i = 1; i < std::min(size, n) && int(terms.size()) <= limit; ++i)
+			if (f[i] != mint(0)) terms.emplace_back(i, f[i]);
+		return terms;
+	}
+	static Terms multiply(const Terms &a, const Terms &b, int n) {
+		Terms result;
+		for (auto [i, x] : a) for (auto [j, y] : b) if (i < n - j) result.emplace_back(i + j, x * y);
+		std::sort(result.begin(), result.end(), [](auto a, auto b) { return a.first < b.first; });
+		std::size_t used = 0;
+		for (auto [i, x] : result) {
+			if (used && result[used - 1].first == i) result[used - 1].second += x;
+			else result[used++] = {i, x};
+		}
+		result.resize(used);
+		result.erase(std::remove_if(result.begin(), result.end(), [](auto term) { return term.second == mint(0); }), result.end());
+		return result;
+	}
+	template <Kind kind>
+	static Series get(Terms terms, int n, mint initial, mint exponent, const mint *(*inverses)(int)) {
+		assert(n >= 0 && terms.size() <= 64);
+		if constexpr (kind != Kind::inverse) assert(unsigned(n) < mint::mod());
+		if (!n) return {};
+		if (terms.empty()) { Series out(n); out[0] = initial; return out; }
+		if constexpr (kind == Kind::power) {
+			unsigned e = exponent.val();
+			if (e <= 4 && terms.size() <= 12 && (n >= 4096 || terms.size() <= 3)) {
+				Terms power{{0, 1}}, f{{0, 1}};
+				f.insert(f.end(), terms.begin(), terms.end());
+				while (e) {
+					if (e & 1) power = multiply(power, f, n);
+					e >>= 1;
+					if (e) f = multiply(f, f, n);
+				}
+				Series out(n);
+				for (auto [i, x] : power) out[i] = x * initial;
+				return out;
+			}
+		}
+		int stride = 0;
+		for (auto term : terms) stride = std::gcd(stride, term.first);
+		const int count = (n - 1) / stride + 1;
+		for (auto &term : terms) term.first /= stride;
+		const mint *inv = nullptr;
+		if constexpr (kind != Kind::inverse) inv = inverses(count);
+		Series compressed;
+		if (terms.size() == 1 && kind != Kind::power) {
+			compressed.resize(count);
+			if constexpr (kind == Kind::exponential) {
+				E::template geometric<true>(compressed, initial, terms[0].second, inv);
+			} else {
+				E::geometric(compressed, kind == Kind::logarithm ? mint(-1) : initial, -terms[0].second);
+				if constexpr (kind == Kind::logarithm) compressed[0] = 0, E::scale(compressed, inv);
+			}
+		} else compressed = E::template solve<kind>(terms, count, initial, exponent, inv);
+		if (stride == 1) return compressed;
+		Series out(n);
+		for (int i = 0; i < count; ++i) out[i * stride] = compressed[i];
+		return out;
+	}
+};
+}
+
+#line 13 "components/fps_sparse.hpp"
+
+namespace fps_detail {
+struct SparseSeries : SparseBase<SparseSeries> {
+	struct Tap { int degree; std::uint32_t constant, slope; };
+	using O = mint_detail::Ops;
+	using U = O::U;
+	static_assert(12ULL * (O::mod - 1) * (O::mod - 1) + 0xffffffffULL * O::mod < ~0ULL);
+	static U canonical(U x) { return x < O::mod ? x : x - O::mod; }
+#if defined(__x86_64__) || defined(__i386__)
+	using V = O::I8;
+	__attribute__((target("avx2"))) static V canonical8(V x) {
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::twice)));
+		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::mod)));
+	}
+	__attribute__((target("avx2"))) static V reduce8(V even, V odd) {
+		const V ni = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(O::mod);
+		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
+		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
+		return canonical8(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa));
+	}
+	__attribute__((target("avx2"), always_inline)) static inline V triangular(V x, const U *f) {
+		const V lower = _mm256_permute2x128_si256(x, x, 0x08);
+		V shifted[8] = {x, _mm256_alignr_epi8(x, lower, 12), _mm256_alignr_epi8(x, lower, 8), _mm256_alignr_epi8(x, lower, 4),
+			lower, _mm256_slli_si256(lower, 4), _mm256_slli_si256(lower, 8), _mm256_slli_si256(lower, 12)};
+		V even = _mm256_setzero_si256(), odd = even;
+#pragma GCC unroll 7
+		for (int j = 1; j < 8; ++j) if (f[j]) {
+			V factor = _mm256_set1_epi32(f[j]);
+			even = _mm256_add_epi64(even, _mm256_mul_epu32(shifted[j], factor));
+			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(shifted[j], 32), factor));
+		}
+		return canonical8(O::add8(x, reduce8(even, odd)));
+	}
+	template <Kind kind>
+	__attribute__((target("avx2"), always_inline)) static inline void block(U *out, int i, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
+		V total = _mm256_setzero_si256(), slope = total;
+		const V lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+		for (int first = 0; first < count; first += 12) {
+			V ce = _mm256_setzero_si256(), co = ce, se = ce, so = ce;
+			for (int j = first; j < std::min(count, first + 12); ++j) {
+				V x = O::load8(out + i - taps[j].degree);
+				if (j < near) x = _mm256_and_si256(x, _mm256_cmpgt_epi32(_mm256_set1_epi32(taps[j].degree), lanes));
+				V odd = _mm256_srli_epi64(x, 32), c = _mm256_set1_epi32(taps[j].constant);
+				ce = _mm256_add_epi64(ce, _mm256_mul_epu32(x, c));
+				co = _mm256_add_epi64(co, _mm256_mul_epu32(odd, c));
+				if constexpr (kind == Kind::power) {
+					V factor = _mm256_set1_epi32(taps[j].slope);
+					se = _mm256_add_epi64(se, _mm256_mul_epu32(x, factor));
+					so = _mm256_add_epi64(so, _mm256_mul_epu32(odd, factor));
+				}
+			}
+			total = O::add8(total, reduce8(ce, co));
+			if constexpr (kind == Kind::power) slope = O::add8(slope, reduce8(se, so));
+		}
+		V value = canonical8(total);
+		if constexpr (kind == Kind::power) {
+			const V offsets = _mm256_setr_epi32(0, O::one, O::in(2), O::in(3), O::in(4), O::in(5), O::in(6), O::in(7));
+			V index = O::add8(_mm256_set1_epi32(O::in(i)), offsets);
+			value = O::add8(value, O::mul8(index, slope));
+		}
+		if constexpr (kind == Kind::logarithm) value = O::add8(value, O::load8(out + i));
+		if constexpr (kind == Kind::power || kind == Kind::exponential) {
+			if (near) value = triangular(canonical8(value), q);
+			value = O::mul8(value, O::load8(inv + i));
+		}
+		if (near) value = triangular(canonical8(value), p);
+		O::store8(out + i, canonical8(value));
+	}
+	template <Kind kind>
+	__attribute__((target("avx2"))) static int blocks(U *out, int i, int end, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
+		for (; end - i >= 8; i += 8) block<kind>(out, i, taps, near, count, inv, p, q);
+		return i;
+	}
+	__attribute__((target("avx2"))) static int scale8(U *out, const U *factors, int n) {
+		int i = 1;
+		for (; n - i >= 8; i += 8) O::store8(out + i, O::mul8(O::load8(out + i), O::load8(factors + i)));
+		return i;
+	}
+	template <bool exponential = false>
+	__attribute__((target("avx2"))) static void geometric8(U *out, int n, U initial, U ratio, const U *inv = nullptr) {
+		std::uint32_t first[8];
+		U step = O::one;
+		first[0] = initial;
+		for (int j = 0; j < 8; ++j) {
+			step = O::mul(step, ratio);
+			if (j) {
+				first[j] = O::mul(first[j - 1], ratio);
+				if constexpr (exponential) first[j] = O::mul(first[j], inv[j]);
+			}
+		}
+		V value = O::load8(first), multiplier = _mm256_set1_epi32(step);
+		O::store8(out, value);
+		int i = 8;
+		for (; n - i >= 8; i += 8) {
+			value = O::mul8(value, multiplier);
+			if constexpr (exponential) {
+				V factors[4];
+#pragma GCC unroll 4
+				for (int j = 0; j < 4; ++j) factors[j] = O::mul8(O::load8(inv + i - 2 * j), O::load8(inv + i - 2 * j - 1));
+				value = O::mul8(value, O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
+			}
+			O::store8(out + i, value);
+		}
+		for (; i < n; ++i) {
+			out[i] = O::mul(out[i - 1], ratio);
+			if constexpr (exponential) out[i] = O::mul(out[i], inv[i]);
+		}
+	}
+
+#endif
+	template <bool exponential = false>
+	static void geometric(Series &out, mint initial, mint ratio, const mint *inv = nullptr) {
+#if defined(__x86_64__) || defined(__i386__)
+		if (out.size() >= 8 && O::vectorized()) {
+			geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
+			return;
+		}
+#endif
+		for (int i = 0; i < int(out.size()); ++i) {
+			out[i] = initial;
+			initial *= ratio;
+			if constexpr (exponential) if (i + 1 < int(out.size())) initial *= inv[i + 1];
+		}
+	}
+	static void scale(Series &out, const mint *factors) {
+		int i = 1;
+#if defined(__x86_64__) || defined(__i386__)
+		if (O::vectorized()) i = scale8(reinterpret_cast<U *>(out.data()), reinterpret_cast<const U *>(factors), out.size());
+#endif
+		for (; i < int(out.size()); ++i) out[i] *= factors[i];
+	}
+	template <Kind kind>
+	static Series solve(const Terms &terms, int n, mint initial, mint exponent, const mint *inverses) {
+		std::vector<Tap> taps;
+		Series result(n);
+		U *out = reinterpret_cast<U *>(result.data());
+		const U *inv = reinterpret_cast<const U *>(inverses);
+		for (auto [j, x] : terms) {
+			mint c = 0, s = 0;
+			if constexpr (kind == Kind::inverse || kind == Kind::logarithm) c = -x;
+			if constexpr (kind == Kind::exponential) c = x * mint(j);
+			if constexpr (kind == Kind::power) c = (exponent + mint(1)) * mint(j) * x, s = -x;
+			taps.push_back({j, canonical(c.v), canonical(s.v)});
+			if constexpr (kind == Kind::logarithm) out[j] = canonical((x * mint(j)).v);
+		}
+		std::array<std::uint32_t, 8> p{}, q{};
+		p[0] = q[0] = O::one;
+		if (n >= 8) for (int i = 1; i < 8; ++i) {
+			mint a = 0, b = 0;
+			for (const auto &tap : taps) {
+				int j = tap.degree;
+				if (j > i) break;
+				mint c = mint::word(tap.constant), s = mint::word(tap.slope);
+				a += (c + mint(i) * s) * mint::word(p[i - j]);
+				b += (-c + mint(i - j) * s) * mint::word(q[i - j]);
+			}
+			if constexpr (kind == Kind::power || kind == Kind::exponential) a *= inverses[i], b *= inverses[i];
+			p[i] = canonical(a.v), q[i] = canonical(b.v);
+		}
+		out[0] = canonical(initial.v);
+		int active = 0, near = 0, i = 1;
+		while (i < n) {
+			while (active < int(taps.size()) && taps[active].degree <= i) {
+				near += taps[active].degree < 8;
+				++active;
+			}
+			int end = active < int(taps.size()) ? taps[active].degree : n;
+#if defined(__x86_64__) || defined(__i386__)
+			if (O::vectorized()) i = blocks<kind>(out, i, end, taps.data(), near, active, inv, p.data(), q.data());
+#endif
+			for (; i < end; ++i) {
+				U x = 0;
+				for (int first = 0; first < active; first += 12) {
+					std::uint64_t total = 0;
+					for (int j = first; j < std::min(active, first + 12); ++j) {
+						U c = taps[j].constant;
+						if constexpr (kind == Kind::power) c = canonical(O::add(c, O::mul(O::in(i), taps[j].slope)));
+						total += std::uint64_t(c) * out[i - taps[j].degree];
+					}
+					x = O::add(x, O::reduce(total) % O::mod);
+				}
+				if constexpr (kind == Kind::logarithm) x = O::add(x, out[i]);
+				if constexpr (kind == Kind::power || kind == Kind::exponential) x = O::mul(x, inv[i]);
+				out[i] = canonical(x);
+			}
+		}
+		if constexpr (kind == Kind::logarithm) scale(result, inverses);
+		return result;
+	}
+
+};
+}
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 
 #line 8 "fps/fps.hpp"
 
@@ -5233,6 +5370,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using W = FormalPowerSeries<mint>;
 	using base = std::vector<T>;
 	using F = FormalPowerSeries;
+	using Sparse = fps_detail::SparseSeries;
 	using base::base;
 
 	FormalPowerSeries() = default;
@@ -5417,17 +5555,14 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] != T(0));
 		F g{(*this)[0].inv()};
-		auto terms = sparse_terms(deg, 32);
-		int stride = terms.size() <= 32 ? prepare_sparse(terms) : 1;
-		if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
-			g.resize(deg);
-			if (terms.size() == 1 && stride == 1) {
-				std::fill(g.begin(), g.end(), g[0]);
-				geometric_scale(g, T(1), -terms[0].second * g[0]);
-				return g;
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg, 32);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
+				for (auto &[j, x] : terms) x *= g[0];
+				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), deg, g[0], T(0), nullptr));
 			}
-			for (long long i = stride; stride && i < deg; i += stride) g[i] = -sparse_dot(terms, g, static_cast<int>(i)) * g[0];
-			return g;
 		}
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -5527,6 +5662,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return result;
 		}
 		const int shift = first / 2, target = deg - shift;
+		if constexpr (std::is_same_v<T, mint>) if (target >= 256 && unsigned(target) < T::mod()) {
+			auto terms = Sparse::collect(this->data() + first, last - first, target);
+			if (terms.size() <= 12) {
+				const T inverse = (*this)[first].inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
@@ -5639,6 +5784,10 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(!this->empty() && (*this)[0] == T(1));
+		if constexpr (std::is_same_v<T, mint>) if (deg >= 256 && unsigned(deg) < T::mod()) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg);
+			if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inverse_table));
+		}
 		return log_derivative(deg, true);
 	}
 
@@ -5658,16 +5807,27 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 			return r;
 		}
 		if (k == 1) return *this;
-		if (k <= 4) {
-			F square = multiply(*this, *this).pre(n);
-			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
-		}
 		int first = 0;
 		while (first < n && (*this)[first] == T(0)) ++first;
 		if (first == n || first > (n - 1) / k) return F(n);
 		const int shift = first * k;
 		const int len = n - shift;
 		const T lead = (*this)[first];
+		if constexpr (std::is_same_v<T, mint>) if (unsigned(len) < T::mod()) {
+			auto terms = Sparse::collect(this->data() + first, this->size() - first, len);
+			if (terms.size() <= 12) {
+				const T inverse = lead.inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
+		if (k <= 4) {
+			F square = multiply(*this, *this).pre(n);
+			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
+		}
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (len >= 256 && len <= (1 << 24) && NTT::vectorized()) {
@@ -5754,8 +5914,6 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	using O::pointwise;
 	using O::inverse_extend;
 	using O::dot;
-	using O::prepare_sparse;
-	using O::sparse_dot;
 	using O::intt;
 	using O::mod_sqrt;
 	using O::inverse_ntt_roots;
@@ -5792,25 +5950,16 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		assert(deg >= 0);
 		if (deg == 0) return {};
 		assert(this->empty() || (*this)[0] == T(0));
-		auto terms = sparse_terms(deg, 64);
-		int stride = terms.size() <= 64 ? prepare_sparse(terms) : 1;
-		if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
-			F g(deg);
-			g[0] = 1;
-			if (terms.size() == 1 && stride == 1 && deg >= 256) {
-				base fact(deg);
-				mint_detail::factorials(words(fact), words(g), deg);
-				geometric_scale(g, T(1), terms[0].second);
-				return g;
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data(), this->size(), deg, 64);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
+				if constexpr (differentiated) for (auto &[j, x] : terms) x /= T(j);
+				return F(Sparse::get<Sparse::Kind::exponential>(std::move(terms), deg, T(1), T(0), inverse_table));
 			}
-			if (!stride) return g;
-			const auto &iv = inverses((deg - 1) / stride);
-			T factor = differentiated ? T(stride).inv() : T(1);
-			for (auto &[j, x] : terms) x *= differentiated ? factor : T(j / stride);
-			prepare_sparse(terms);
-			for (long long i = stride; i < deg; i += stride) g[i] = sparse_dot(terms, g, static_cast<int>(i)) * iv[i / stride];
-			return g;
 		}
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 256 && deg <= (1 << 24) && NTT::vectorized()) {
@@ -5881,12 +6030,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		return g;
 	}
 
-	std::vector<std::pair<int, T>> sparse_terms(int deg, int limit) const {
-		std::vector<std::pair<int, T>> terms;
-		for (int i = 1; i < std::min<int>(deg, this->size()) && static_cast<int>(terms.size()) <= limit; ++i)
-			if ((*this)[i] != T(0)) terms.emplace_back(i, (*this)[i]);
-		return terms;
-	}
+	static const mint *inverse_table(int n) { return fps_detail::Operations<mint>::inverses(n).data(); }
 
 	void trim() { O::trim(*this); }
 
@@ -6031,50 +6175,308 @@ void butterfly_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 }
 #endif
 
+template <std::uint32_t mod>
+std::uint32_t shoup(std::uint32_t value, std::uint32_t factor, std::uint32_t quotient) {
+	std::uint32_t q = std::uint64_t(value) * quotient >> 32;
+	std::uint32_t result = value * factor - q * mod;
+	return result < mod ? result : result - mod;
+}
+
+
+template <std::uint32_t mod>
+void forward_stage(std::uint32_t *a, std::size_t n, std::size_t half,
+		const std::uint32_t *roots, const std::uint32_t *quotients) {
+	for (std::size_t start = 0; start < n; start += 2 * half)
+		for (std::size_t j = 0; j < half; ++j) {
+			std::uint32_t x = a[start + j], y = a[start + j + half];
+			a[start + j] = x + y < mod ? x + y : x + y - mod;
+			std::uint32_t difference = x >= y ? x - y : x + mod - y;
+			a[start + j + half] = shoup<mod>(difference, roots[j], quotients[j]);
+		}
+}
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+__attribute__((target("avx2")))
+void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
+		const std::uint32_t *roots, const std::uint32_t *quotients) {
+	const auto p = _mm256_set1_epi32(mod);
+	for (std::size_t start = 0; start < n; start += 2 * half)
+		for (std::size_t j = 0; j < half; j += 8) {
+			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
+			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
+			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
+			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
+			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
+			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
+			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
+			auto even = _mm256_mul_epu32(difference, q);
+			auto odd = _mm256_mul_epu32(_mm256_srli_epi64(difference, 32), _mm256_srli_epi64(q, 32));
+			q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+			difference = _mm256_sub_epi32(_mm256_mullo_epi32(difference, r), _mm256_mullo_epi32(q, p));
+			difference = _mm256_min_epu32(difference, _mm256_sub_epi32(difference, p));
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), sum);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
+		}
+}
+#endif
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+struct Vector {
+	__attribute__((target("avx2"), always_inline))
+	static inline __m256i add(__m256i x, __m256i y) {
+		auto sum = _mm256_add_epi32(x, y);
+		return _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(mod)));
+	}
+	__attribute__((target("avx2"), always_inline))
+	static inline __m256i subtract(__m256i x, __m256i y) {
+		auto difference = _mm256_sub_epi32(x, y);
+		return _mm256_min_epu32(difference, _mm256_add_epi32(difference, _mm256_set1_epi32(mod)));
+	}
+	__attribute__((target("avx2"), always_inline))
+	static inline __m256i multiply(__m256i x, __m256i factor, __m256i quotient) {
+		auto even = _mm256_mul_epu32(x, quotient);
+		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(quotient, 32));
+		auto q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+		auto result = _mm256_sub_epi32(_mm256_mullo_epi32(x, factor), _mm256_mullo_epi32(q, _mm256_set1_epi32(mod)));
+		return _mm256_min_epu32(result, _mm256_sub_epi32(result, _mm256_set1_epi32(mod)));
+	}
+};
+
+template <std::uint32_t mod, bool inverse>
+__attribute__((target("avx2")))
+void leaf_avx2(std::uint32_t *a, std::size_t n, const std::uint32_t *roots, const std::uint32_t *quotients) {
+	using V = Vector<mod>;
+	auto r4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(roots + 4)));
+	auto q4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(quotients + 4)));
+	auto r2 = _mm256_setr_epi32(roots[2], roots[3], roots[2], roots[3], roots[2], roots[3], roots[2], roots[3]);
+	auto q2 = _mm256_setr_epi32(quotients[2], quotients[3], quotients[2], quotients[3], quotients[2], quotients[3], quotients[2], quotients[3]);
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		if constexpr (!inverse) {
+			auto y = _mm256_permute2x128_si256(x, x, 1);
+			x = _mm256_blend_epi32(V::add(x, y), V::multiply(V::subtract(y, x), r4, q4), 0xf0);
+			y = _mm256_shuffle_epi32(x, 0x4e);
+			x = _mm256_blend_epi32(V::add(x, y), V::multiply(V::subtract(y, x), r2, q2), 0xcc);
+			y = _mm256_shuffle_epi32(x, 0xb1);
+			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xaa);
+		} else {
+			auto y = _mm256_shuffle_epi32(x, 0xb1);
+			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xaa);
+			x = _mm256_blend_epi32(x, V::multiply(x, r2, q2), 0xcc);
+			y = _mm256_shuffle_epi32(x, 0x4e);
+			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xcc);
+			x = _mm256_blend_epi32(x, V::multiply(x, r4, q4), 0xf0);
+			y = _mm256_permute2x128_si256(x, x, 1);
+			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xf0);
+		}
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+}
+
+template <std::uint32_t mod, bool inverse>
+__attribute__((target("avx2")))
+void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32_t *roots, const std::uint32_t *quotients) {
+	using V = Vector<mod>;
+	for (std::size_t start = 0; start < n; start += 4 * h)
+		for (std::size_t j = 0; j < h; j += 8) {
+			auto x0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
+			auto x1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + h));
+			auto x2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + 2 * h));
+			auto x3 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + 3 * h));
+			auto r0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + 2 * h + j));
+			auto q0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + 2 * h + j));
+			auto r1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + 3 * h + j));
+			auto q1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + 3 * h + j));
+			auto r2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + h + j));
+			auto q2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + h + j));
+			if constexpr (!inverse) {
+				auto y0 = V::add(x0, x2), y1 = V::add(x1, x3);
+				auto y2 = V::multiply(V::subtract(x0, x2), r0, q0);
+				auto y3 = V::multiply(V::subtract(x1, x3), r1, q1);
+				x0 = V::add(y0, y1); x1 = V::multiply(V::subtract(y0, y1), r2, q2);
+				x2 = V::add(y2, y3); x3 = V::multiply(V::subtract(y2, y3), r2, q2);
+			} else {
+				x1 = V::multiply(x1, r2, q2); x3 = V::multiply(x3, r2, q2);
+				auto y0 = V::add(x0, x1), y1 = V::subtract(x0, x1);
+				auto y2 = V::multiply(V::add(x2, x3), r0, q0);
+				auto y3 = V::multiply(V::subtract(x2, x3), r1, q1);
+				x0 = V::add(y0, y2); x2 = V::subtract(y0, y2);
+				x1 = V::add(y1, y3); x3 = V::subtract(y1, y3);
+			}
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), x0);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + h), x1);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 2 * h), x2);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 3 * h), x3);
+		}
+}
+#endif
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+__attribute__((target("avx2")))
+void build_roots_avx2(std::uint32_t *roots, std::uint32_t *quotients, std::size_t half, std::uint32_t step) {
+	std::uint32_t initial[8], w = 1;
+	for (int i = 0; i < 8; ++i) {
+		initial[i] = w;
+		w = std::uint64_t(w) * step % mod;
+	}
+	auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(initial));
+	auto factor = _mm256_set1_epi32(w), quotient = _mm256_set1_epi32((std::uint64_t(w) << 32) / mod);
+	for (std::size_t j = 0; j < half; j += 8) {
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(roots + j), x);
+		for (int k = 0; k < 8; ++k) quotients[j + k] = (std::uint64_t(roots[j + k]) << 32) / mod;
+		x = Vector<mod>::multiply(x, factor, quotient);
+	}
+}
+#endif
+
 template <std::uint32_t mod, std::uint32_t root>
-void transform(std::vector<std::uint32_t> &a, bool inverse, [[maybe_unused]] bool vectorized) {
-	static_assert(mod > 2 && mod < (std::uint32_t(1) << 31));
-	std::size_t n = a.size();
-	assert(std::has_single_bit(n) && (mod - 1) % n == 0);
-	for (std::size_t i = 1, j = 0; i < n; ++i) {
-		std::size_t bit = n >> 1;
+struct Plan {
+	std::vector<std::uint32_t> roots, quotients;
+	explicit Plan(std::size_t n, [[maybe_unused]] bool vectorized = false) : roots(n), quotients(n) {
+		static_assert(mod > 2 && mod < (std::uint32_t(1) << 31));
+		assert(std::has_single_bit(n) && (mod - 1) % n == 0);
+		if (n == 1) return;
+		std::size_t half = n / 2;
+		std::uint32_t step = power<mod>(root, (mod - 1) / n), w = 1;
+#if defined(__x86_64__) || defined(__i386__)
+		if (vectorized && half >= 8) build_roots_avx2<mod>(roots.data() + half, quotients.data() + half, half, step);
+		else
+#endif
+		for (std::size_t j = 0; j < half; ++j) {
+			roots[half + j] = w;
+			quotients[half + j] = (std::uint64_t(w) << 32) / mod;
+			w = std::uint64_t(w) * step % mod;
+		}
+		for (half /= 2; half; half /= 2)
+			for (std::size_t j = 0; j < half; ++j) {
+				roots[half + j] = roots[2 * half + 2 * j];
+				quotients[half + j] = quotients[2 * half + 2 * j];
+			}
+	}
+};
+
+template <std::uint32_t mod, std::uint32_t root>
+void forward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[maybe_unused]] bool vectorized) {
+	std::size_t half = a.size() / 2;
+#if defined(__x86_64__) || defined(__i386__)
+	if (vectorized && a.size() >= 8) {
+		for (; half >= 16; half /= 4) pair_avx2<mod, false>(a.data(), a.size(), half / 2, plan.roots.data(), plan.quotients.data());
+		if (half == 8) forward_stage_avx2<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
+		leaf_avx2<mod, false>(a.data(), a.size(), plan.roots.data(), plan.quotients.data());
+		return;
+	}
+#endif
+	for (; half; half /= 2) forward_stage<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
+}
+
+template <std::uint32_t mod, std::uint32_t root>
+void backward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[maybe_unused]] bool vectorized) {
+	std::size_t half = 1;
+#if defined(__x86_64__) || defined(__i386__)
+	if (vectorized && a.size() >= 8) {
+		leaf_avx2<mod, true>(a.data(), a.size(), plan.roots.data(), plan.quotients.data());
+		half = 8;
+		for (; 2 * half < a.size(); half *= 4) pair_avx2<mod, true>(a.data(), a.size(), half, plan.roots.data(), plan.quotients.data());
+		if (half < a.size()) butterfly_avx2<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
+		return;
+	}
+#endif
+	for (; half < a.size(); half *= 2) butterfly<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
+}
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+__attribute__((target("avx2")))
+void scale_avx2(std::uint32_t *a, std::size_t n, std::uint32_t factor, std::uint32_t quotient) {
+	auto r = _mm256_set1_epi32(factor), q = _mm256_set1_epi32(quotient);
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), Vector<mod>::multiply(x, r, q));
+	}
+}
+#endif
+
+template <std::uint32_t mod>
+void scale(std::vector<std::uint32_t> &a, std::uint32_t factor, [[maybe_unused]] bool vectorized) {
+	std::uint32_t quotient = (std::uint64_t(factor) << 32) / mod;
+#if defined(__x86_64__) || defined(__i386__)
+	if (vectorized && a.size() >= 8) {
+		scale_avx2<mod>(a.data(), a.size(), factor, quotient);
+		return;
+	}
+#endif
+	for (auto &x : a) x = shoup<mod>(x, factor, quotient);
+}
+
+inline void bit_reverse(std::vector<std::uint32_t> &a) {
+	for (std::size_t i = 1, j = 0; i < a.size(); ++i) {
+		std::size_t bit = a.size() >> 1;
 		for (; j & bit; bit >>= 1) j ^= bit;
 		j ^= bit;
 		if (i < j) std::swap(a[i], a[j]);
 	}
-	std::vector<std::uint32_t> roots(n > 16 ? n / 2 : 0), quotients(roots.size());
-	for (std::size_t width = 2; width <= n; width *= 2) {
-		std::uint32_t step = ntt_mod_detail::power<mod>(root, (mod - 1) / width);
-		if (inverse) step = ntt_mod_detail::power<mod>(step, mod - 2);
-		if (n <= 16) {
-			for (std::size_t start = 0; start < n; start += width) {
-				std::uint32_t w = 1;
-				for (std::size_t j = 0; j < width / 2; ++j) {
-					std::uint32_t x = a[start + j], y = std::uint64_t(a[start + j + width / 2]) * w % mod;
-					a[start + j] = x + y < mod ? x + y : x + y - mod;
-					a[start + j + width / 2] = x >= y ? x - y : x + mod - y;
-					w = std::uint64_t(w) * step % mod;
-				}
-			}
-			continue;
-		}
-		std::uint32_t w = 1;
-		for (std::size_t j = 0; j < width / 2; ++j) {
-			roots[j] = w;
-			quotients[j] = (std::uint64_t(w) << 32) / mod;
-			w = std::uint64_t(w) * step % mod;
-		}
-#if defined(__x86_64__) || defined(__i386__)
-		if (vectorized && width >= 16) ntt_mod_detail::butterfly_avx2<mod>(a.data(), n, width / 2, roots.data(), quotients.data());
-		else
-#endif
-		ntt_mod_detail::butterfly<mod>(a.data(), n, width / 2, roots.data(), quotients.data());
-	}
+}
+
+template <std::uint32_t mod, std::uint32_t root>
+void transform(std::vector<std::uint32_t> &a, bool inverse, bool vectorized) {
+	Plan<mod, root> plan(a.size(), vectorized);
 	if (inverse) {
-		std::uint32_t inv = ntt_mod_detail::power<mod>(n, mod - 2);
-		for (auto &x : a) x = std::uint64_t(x) * inv % mod;
+		bit_reverse(a);
+		backward(a, plan, vectorized);
+		std::reverse(a.begin() + 1, a.end());
+		scale<mod>(a, power<mod>(a.size(), mod - 2), vectorized);
+	} else {
+		forward(a, plan, vectorized);
+		bit_reverse(a);
 	}
 }
+
+template <std::uint32_t mod>
+constexpr std::uint32_t negative_inverse = [] {
+	std::uint32_t value = mod;
+	for (int i = 0; i < 5; ++i) value *= 2 - mod * value;
+	return 0 - value;
+}();
+
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t mod>
+__attribute__((target("avx2")))
+void pointwise_avx2(std::uint32_t *a, const std::uint32_t *b, std::size_t n) {
+	auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(negative_inverse<mod>);
+	for (std::size_t i = 0; i < n; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		auto even = _mm256_mul_epu32(x, y);
+		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32));
+		auto qe = _mm256_mul_epu32(even, inverse), qo = _mm256_mul_epu32(odd, inverse);
+		even = _mm256_srli_epi64(_mm256_add_epi64(even, _mm256_mul_epu32(qe, p)), 32);
+		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(qo, p));
+		x = _mm256_blend_epi32(even, odd, 0xaa);
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+}
+#endif
+
+template <std::uint32_t mod>
+void pointwise(std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b, [[maybe_unused]] bool vectorized) {
+#if defined(__x86_64__) || defined(__i386__)
+	if (vectorized && a.size() >= 8) {
+		pointwise_avx2<mod>(a.data(), b.data(), a.size());
+		return;
+	}
+#endif
+	for (std::size_t i = 0; i < a.size(); ++i) {
+		std::uint64_t product = std::uint64_t(a[i]) * b[i];
+		std::uint32_t q = std::uint32_t(product) * negative_inverse<mod>;
+		std::uint32_t value = (product + std::uint64_t(q) * mod) >> 32;
+		a[i] = value < mod ? value : value - mod;
+	}
+}
+
 }
 
 template <std::uint32_t mod, std::uint32_t root>
@@ -6100,23 +6502,42 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 	};
 	for (std::size_t i = 0; i < a.size(); ++i) x[i] = reduce(a[i]);
 	for (std::size_t i = 0; i < b.size(); ++i) y[i] = reduce(b[i]);
-	ntt_mod<mod, root>(x, false);
+	if (std::min(a.size(), b.size()) <= 32) {
+		std::vector<std::uint32_t> result(length);
+		for (std::size_t i = 0; i < a.size(); ++i)
+			for (std::size_t j = 0; j < b.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * y[j]) % mod;
+		return result;
+	}
+	bool vectorized = false;
+#if defined(__x86_64__) || defined(__i386__)
+	vectorized = __builtin_cpu_supports("avx2");
+#endif
+	ntt_mod_detail::Plan<mod, root> plan(n, vectorized);
+	ntt_mod_detail::forward(x, plan, vectorized);
 	if (&a == &b) y = x;
-	else ntt_mod<mod, root>(y, false);
-	for (std::size_t i = 0; i < n; ++i) x[i] = std::uint64_t(x[i]) * y[i] % mod;
-	ntt_mod<mod, root>(x, true);
+	else ntt_mod_detail::forward(y, plan, vectorized);
+	ntt_mod_detail::pointwise<mod>(x, y, vectorized);
+	ntt_mod_detail::backward(x, plan, vectorized);
+	std::reverse(x.begin() + 1, x.end());
+	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod;
+	ntt_mod_detail::scale<mod>(x, scale, vectorized);
 	x.resize(length);
 	return x;
 }
 inline constexpr std::uint32_t p = 754974721, q = 1224736769, r = 2013265921;
 inline constexpr __uint128_t modulus = __uint128_t(p) * q * r;
-inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
+struct Reconstruction { std::uint64_t low; std::uint32_t high; };
+inline Reconstruction reconstruct(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
 	static const std::uint32_t inverse_p = ntt_mod_detail::power<q>(p, q - 2);
 	static const std::uint32_t inverse_pq = ntt_mod_detail::power<r>(std::uint64_t(p) * q % r, r - 2);
 	std::uint64_t x = std::uint64_t(b + q - a) * inverse_p % q;
 	std::uint64_t low = a + std::uint64_t(p) * x;
 	std::uint64_t y = std::uint64_t(c + r - low % r) * inverse_pq % r;
-	return low + __uint128_t(p) * q * y;
+	return {low, std::uint32_t(y)};
+}
+inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
+	auto [low, high] = reconstruct(a, b, c);
+	return low + __uint128_t(p) * q * high;
 }
 }
 
@@ -6149,6 +6570,7 @@ std::vector<std::uint32_t> convolution_mod(const std::vector<T> &a, const std::v
 	assert(mod > 0);
 	if (a.empty() || b.empty()) return {};
 	assert(a.size() + b.size() - 1 <= std::size_t(1) << 24);
+	if (mod == 1) return std::vector<std::uint32_t>(a.size() + b.size() - 1);
 	std::vector<std::uint32_t> x(a.size()), y(&a == &b ? 0 : b.size());
 	auto reduce = [=](T value) {
 		__int128_t r = __int128_t(value) % mod;
@@ -6157,11 +6579,22 @@ std::vector<std::uint32_t> convolution_mod(const std::vector<T> &a, const std::v
 	std::transform(a.begin(), a.end(), x.begin(), reduce);
 	if (&a != &b) std::transform(b.begin(), b.end(), y.begin(), reduce);
 	const auto &other = &a == &b ? x : y;
+
+	if (std::min(x.size(), other.size()) <= 32) {
+		std::vector<std::uint32_t> result(x.size() + other.size() - 1);
+		for (std::size_t i = 0; i < x.size(); ++i)
+			for (std::size_t j = 0; j < other.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * other[j]) % mod;
+		return result;
+	}
 	if (mod == 998244353 && x.size() + other.size() - 1 <= std::size_t(1) << 23) return convolution_mod_detail::multiply<998244353, 3>(x, other);
 	auto p = convolution_mod_detail::multiply<convolution_mod_detail::p, 11>(x, other);
 	auto q = convolution_mod_detail::multiply<convolution_mod_detail::q, 3>(x, other);
 	auto r = convolution_mod_detail::multiply<convolution_mod_detail::r, 31>(x, other);
-	for (std::size_t i = 0; i < p.size(); ++i) p[i] = convolution_mod_detail::restore(p[i], q[i], r[i]) % mod;
+	std::uint64_t pq_mod = std::uint64_t(convolution_mod_detail::p) * convolution_mod_detail::q % mod;
+	for (std::size_t i = 0; i < p.size(); ++i) {
+		auto [low, high] = convolution_mod_detail::reconstruct(p[i], q[i], r[i]);
+		p[i] = (low % mod + pq_mod * high) % mod;
+	}
 	return p;
 }
 

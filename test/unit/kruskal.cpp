@@ -119,6 +119,18 @@ void sorting_boundaries() {
 }
 
 int main() {
+	{
+		Kruskal<std::uint32_t, std::uint64_t> graph(3);
+		graph.add_edge(0, 1, 4'000'000'000U), graph.add_edge(1, 2, 4'000'000'000U);
+		assert(graph.solve().cost == 8'000'000'000ULL);
+		Kruskal<std::int32_t, std::int64_t> signed_graph(3);
+		signed_graph.add_edge(0, 1, -2'000'000'000), signed_graph.add_edge(1, 2, -2'000'000'000);
+		assert(signed_graph.solve().cost == -4'000'000'000LL);
+		Kruskal<std::int64_t, __int128_t> wide(3);
+		wide.add_edge(0, 1, 9'000'000'000'000'000'000LL), wide.add_edge(1, 2, 9'000'000'000'000'000'000LL);
+		assert(wide.solve().cost == __int128_t(9'000'000'000'000'000'000LL) * 2);
+	}
+
 	for (bool shuffled : {false, true}) {
 		std::vector<Edge> edges(253, {0, 1, 9});
 		edges.insert(edges.end(), { {0, 1, 1}, {1, 2, 1}, {0, 2, 1}, {2, 3, 1} });

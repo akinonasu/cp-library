@@ -15,6 +15,7 @@
 #include "polynomial_product_tree.hpp"
 
 #include "fps_light_ntt.hpp"
+#include "fps_sparse_scalar.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -26,6 +27,7 @@ struct LightFormalPowerSeries : std::vector<T> {
 	static_assert(T::mod() == 998244353);
 	using base = std::vector<T>;
 	using F = LightFormalPowerSeries;
+	using Sparse = fps_detail::ScalarSparseSeries;
 	using base::base;
 	LightFormalPowerSeries() = default;
 	LightFormalPowerSeries(base a) : base(std::move(a)) {}
@@ -124,6 +126,14 @@ struct LightFormalPowerSeries : std::vector<T> {
 		assert(!this->empty() && (*this)[0] != T(0));
 		if constexpr (!std::is_same_v<T, mint>) return from_native(native().inv(n));
 		else {
+			auto terms = Sparse::collect(this->data(), this->size(), n, 32);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 32 && (n <= 256 || terms.size() <= 12ULL * stride)) {
+				const T inverse = (*this)[0].inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), n, inverse, T(0), nullptr));
+			}
 			const int work = newton_precision(n), initial = std::min(work, 32);
 			F result(initial);
 			const T inverse = (*this)[0].inv();
@@ -196,6 +206,10 @@ struct LightFormalPowerSeries : std::vector<T> {
 		assert(!this->empty() && (*this)[0] == T(1));
 		if constexpr (!std::is_same_v<T, mint>) return from_native(native().log(n));
 		else {
+			if (n >= 256) {
+				auto terms = Sparse::collect(this->data(), this->size(), n);
+				if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), n, T(0), T(0), inverse_table));
+			}
 			F result = pre(n).diff().pre(n - 1).div_series(pre(n), n - 1);
 			result.resize(n);
 			return result.integral();
@@ -207,6 +221,11 @@ struct LightFormalPowerSeries : std::vector<T> {
 		assert(this->empty() || (*this)[0] == T(0));
 		if constexpr (!std::is_same_v<T, mint>) return from_native(native().exp(n));
 		else {
+			auto terms = Sparse::collect(this->data(), this->size(), n, 64);
+			int stride = 0;
+			for (auto term : terms) stride = std::gcd(stride, term.first);
+			if (terms.size() <= 64 && (n <= 256 || terms.size() <= 24ULL * stride))
+				return F(Sparse::get<Sparse::Kind::exponential>(std::move(terms), n, T(1), T(0), inverse_table));
 			const int work = newton_precision(n), initial = std::min(work, 32);
 			const auto &inv = inverses(n);
 			F result(initial);
@@ -264,6 +283,16 @@ struct LightFormalPowerSeries : std::vector<T> {
 			auto constant = scalar_sqrt((*this)[first]);
 			if (!constant) return {};
 			const int shift = first / 2, target = n - shift, work = newton_precision(target), initial = std::min(work, 32);
+			if (target >= 256) {
+				auto terms = Sparse::collect(this->data() + first, last - first, target);
+				if (terms.size() <= 4) {
+					const T inverse = (*this)[first].inv();
+					for (auto &[j, x] : terms) x *= inverse;
+					F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, *constant, T(2).inv(), inverse_table));
+					result.insert(result.begin(), shift, T(0));
+					return result;
+				}
+			}
 			F f(this->begin() + first, this->begin() + last), result(initial);
 			const T half = T(2).inv(), factor = (T(2) * *constant).inv();
 			result[0] = *constant;
@@ -320,6 +349,16 @@ struct LightFormalPowerSeries : std::vector<T> {
 		if (first == n || first > (n - 1) / k) return F(n);
 		const int shift = static_cast<int>(first * k), len = n - shift;
 		const T lead = (*this)[first];
+		if constexpr (std::is_same_v<T, mint>) {
+			auto terms = Sparse::collect(this->data() + first, this->size() - first, len);
+			if (terms.size() <= 12) {
+				const T inverse = lead.inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
+				result.insert(result.begin(), shift, T(0));
+				return result;
+			}
+		}
 		F f(this->begin() + first, this->end());
 		f.resize(len);
 		f /= lead;
@@ -392,6 +431,10 @@ struct LightFormalPowerSeries : std::vector<T> {
 		int n = deg < 0 ? static_cast<int>(this->size()) : deg;
 		assert(0 <= n && n <= (1 << 22));
 		return n;
+	}
+	static const mint *inverse_table(int n) {
+		if constexpr (std::is_same_v<T, mint>) return inverses(n).data();
+		else return nullptr;
 	}
 	static const std::vector<T> &inverses(int n) {
 		static std::vector<T> inv{T(0), T(1)};

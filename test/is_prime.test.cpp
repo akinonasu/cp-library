@@ -1,15 +1,16 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/primality_test"
-#include "../math/number_theory/is_prime.hpp"
+#include "math/number_theory/is_prime.hpp"
+#include "components/fast_io.hpp"
 #include <cstdint>
-#include <iostream>
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int q;
-	std::cin >> q;
+	FastInput input;
+	FastOutput output;
+	int q = 0;
+	input.read(q);
 	while (q--) {
-		std::uint64_t n;
-		std::cin >> n;
-		std::cout << (is_prime(n) ? "Yes" : "No") << '\n';
+		std::uint64_t n = 0;
+		input.read(n);
+		output.println(is_prime(n) ? "Yes" : "No");
 	}
 }

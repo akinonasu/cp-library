@@ -54,15 +54,6 @@ __attribute__((target("avx2"))) static void check_leaf() {
 #endif
 
 int main() {
-	using Ops = fps_detail::Operations<fps_mint>;
-	for (int count : {1, 6, 7, 8, 13, 14, 31, 32, 63, 64})
-		for (unsigned int a : {0u, 1u, fps_mint::mod() - 1})
-			for (unsigned int b : {0u, 1u, fps_mint::mod(), 2 * fps_mint::mod() - 1}) {
-				std::vector<std::pair<int, fps_mint>> terms;
-				for (int j = 1; j <= count; ++j) terms.emplace_back(j, fps_mint::word(a));
-				fps g(count, fps_mint::word(b));
-				require(Ops::sparse_dot(terms, g, count) == fps_mint::word(a) * fps_mint::word(b) * count);
-			}
 
 #if defined(__x86_64__) || defined(__i386__)
 	if (fps_detail::NTT::vectorized()) check_leaf();

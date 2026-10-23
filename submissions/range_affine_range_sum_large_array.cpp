@@ -1,197 +1,178 @@
-#line 1 "test/dynamic_lazy_segtree_large.test.cpp"
+#line 1 "test/compressed_lazy_segtree_large.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/range_affine_range_sum_large_array"
-#line 1 "data_structure/segment_tree/dynamic_lazy_segtree.hpp"
+#line 1 "data_structure/segment_tree/lazy_segtree.hpp"
 
 
 
-#include <algorithm>
+#include <bit>
 #include <cassert>
 #include <cstddef>
-#include <cstdint>
 #include <limits>
-#include <numeric>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
-template<class S, auto op, auto e, class F, auto mapping, auto composition, auto id,
-	auto initial = nullptr, class Coord = std::int64_t>
-class DynamicLazySegtree {
-	static_assert(std::is_integral_v<Coord> && !std::is_same_v<Coord, bool> && sizeof(Coord) <= 8);
-	using U = std::make_unsigned_t<Coord>;
-	struct Node {
-		S value;
-		F lazy;
-		int left = 0, right = 0;
-		bool dirty = false;
-	};
-	std::vector<Node> nodes{Node{e(), id()}};
-	int root = 0;
-	Coord first, last;
-	static bool leaf(Coord l, Coord r) { return U(U(r) - U(l)) == 1; }
-	static S base(Coord l, Coord r) {
-		if (l == r) return e();
-		if constexpr (std::is_same_v<decltype(initial), std::nullptr_t>) return e();
-		else return initial(l, r);
-	}
-	S value(int k, Coord l, Coord r) const { return k ? nodes[k].value : base(l, r); }
-	int make_node(Coord l, Coord r) {
-		assert(nodes.size() < std::size_t(std::numeric_limits<int>::max()));
-		nodes.push_back(Node{base(l, r), id()});
-		return static_cast<int>(nodes.size() - 1);
-	}
-	void all_apply(int k, const F &f, bool leaf) {
-		nodes[k].value = mapping(f, std::move(nodes[k].value));
-		if (!leaf) {
-			nodes[k].lazy = nodes[k].dirty ? composition(f, nodes[k].lazy) : f;
-			nodes[k].dirty = true;
+template<class S, auto op, auto e, class F, auto mapping, auto composition, auto id>
+class LazySegtree {
+	int n_ = 0;
+	unsigned base_ = 1, height_ = 0;
+	std::vector<S> data_;
+	std::vector<F> lazy_;
+	std::vector<unsigned char> dirty_;
+	void pull(unsigned k) { data_[k] = op(data_[k * 2], data_[k * 2 + 1]); }
+	void all_apply(unsigned k, const F &f) {
+		data_[k] = mapping(f, data_[k]);
+		if (k < base_) {
+			lazy_[k] = dirty_[k] ? composition(f, lazy_[k]) : f;
+			dirty_[k] = true;
 		}
 	}
-	void push(int k, Coord l, Coord m, Coord r) {
-		if (!nodes[k].dirty) return;
-		F f = nodes[k].lazy;
-		if (!nodes[k].left) nodes[k].left = make_node(l, m);
-		if (!nodes[k].right) nodes[k].right = make_node(m, r);
-		all_apply(nodes[k].left, f, leaf(l, m));
-		all_apply(nodes[k].right, f, leaf(m, r));
-		nodes[k].dirty = false;
+	void push(unsigned k) {
+		if (!dirty_[k]) return;
+		all_apply(k * 2, lazy_[k]);
+		all_apply(k * 2 + 1, lazy_[k]);
+		dirty_[k] = false;
 	}
-	void pull(int k, Coord l, Coord m, Coord r) {
-		nodes[k].value = op(value(nodes[k].left, l, m), value(nodes[k].right, m, r));
+	void push_path(unsigned p) {
+		for (unsigned i = height_; i; --i) push(p >> i);
 	}
-	int update(int k, Coord l, Coord r, Coord a, Coord b, const F &f) {
-		if (!k) k = make_node(l, r);
-		if (a == l && b == r) { all_apply(k, f, leaf(l, r)); return k; }
-		Coord m = std::midpoint(l, r);
-		push(k, l, m, r);
-		if (a < m) nodes[k].left = update(nodes[k].left, l, m, a, std::min(b, m), f);
-		if (m < b) nodes[k].right = update(nodes[k].right, m, r, std::max(a, m), b, f);
-		pull(k, l, m, r);
-		return k;
-	}
-	int write(int k, Coord l, Coord r, Coord p, const S &x) {
-		if (!k) k = make_node(l, r);
-		if (leaf(l, r)) { nodes[k].value = x; return k; }
-		Coord m = std::midpoint(l, r);
-		push(k, l, m, r);
-		if (p < m) nodes[k].left = write(nodes[k].left, l, m, p, x);
-		else nodes[k].right = write(nodes[k].right, m, r, p, x);
-		pull(k, l, m, r);
-		return k;
-	}
-	S product(int k, Coord l, Coord r, Coord a, Coord b) const {
-		if (!k) return base(a, b);
-		if (a == l && b == r) return nodes[k].value;
-		Coord m = std::midpoint(l, r);
-		S result = b <= m ? product(nodes[k].left, l, m, a, b) :
-			m <= a ? product(nodes[k].right, m, r, a, b) :
-			op(product(nodes[k].left, l, m, a, m), product(nodes[k].right, m, r, m, b));
-		return nodes[k].dirty ? mapping(nodes[k].lazy, std::move(result)) : result;
-	}
-	template<bool Right, class Pred>
-	bool search(int k, Coord l, Coord r, Coord bound, S &acc, const F *carry, Pred &f, Coord &answer) const {
-		if ((Right ? bound <= l : r <= bound)) {
-			S part = value(k, l, r);
-			if (carry) part = mapping(*carry, std::move(part));
-			S next = Right ? op(acc, part) : op(part, acc);
-			if (f(next)) { acc = std::move(next); return false; }
-			if (leaf(l, r)) { answer = Right ? l : r; return true; }
+	void push_boundaries(unsigned l, unsigned r) {
+		for (unsigned i = height_; i; --i) {
+			if ((l >> i) << i != l) push(l >> i);
+			if ((r >> i) << i != r) push((r - 1) >> i);
 		}
-		Coord m = std::midpoint(l, r);
-		auto descend = [&](const F *pending) {
-			int left = k ? nodes[k].left : 0, right = k ? nodes[k].right : 0;
-			if constexpr (Right) {
-				if (bound < m && search<Right>(left, l, m, bound, acc, pending, f, answer)) return true;
-				return search<Right>(right, m, r, bound, acc, pending, f, answer);
-			} else {
-				if (m < bound && search<Right>(right, m, r, bound, acc, pending, f, answer)) return true;
-				return search<Right>(left, l, m, bound, acc, pending, f, answer);
-			}
-		};
-		if (k && nodes[k].dirty) {
-			F pending = carry ? composition(*carry, nodes[k].lazy) : nodes[k].lazy;
-			return descend(&pending);
-		}
-		return descend(carry);
 	}
-	int build_values(const std::vector<S> &a, Coord l, Coord r) {
-		int k = make_node(l, r);
-		if (leaf(l, r)) nodes[k].value = a[std::size_t(l)];
-		else {
-			Coord m = std::midpoint(l, r);
-			int left = build_values(a, l, m), right = build_values(a, m, r);
-			nodes[k].left = left;
-			nodes[k].right = right;
-			pull(k, l, m, r);
-		}
-		return k;
+	void allocate(int n) {
+		assert(n >= 0);
+		n_ = n;
+		base_ = std::bit_ceil(unsigned(n) ? unsigned(n) : 1U);
+		height_ = std::countr_zero(base_);
+		data_.assign(std::size_t(base_) * 2, e());
+		lazy_.assign(base_, id());
+		dirty_.assign(base_, false);
 	}
-	void check([[maybe_unused]] Coord l, [[maybe_unused]] Coord r) const {
-		assert(first <= l && l <= r && r <= last);
+	void vertex([[maybe_unused]] int p) const { assert(0 <= p && p < n_); }
+	void range([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n_); }
+	S prod_rec(unsigned k, unsigned l, unsigned r, unsigned ql, unsigned qr) const {
+		if (ql <= l && r <= qr) return data_[k];
+		unsigned m = l + (r - l) / 2;
+		S value = qr <= m ? prod_rec(k * 2, l, m, ql, qr)
+			: m <= ql ? prod_rec(k * 2 + 1, m, r, ql, qr)
+			: op(prod_rec(k * 2, l, m, ql, qr), prod_rec(k * 2 + 1, m, r, ql, qr));
+		return dirty_[k] ? mapping(lazy_[k], value) : value;
 	}
 
   public:
-	using value_type = S;
-	using update_type = F;
-	using coordinate_type = Coord;
-	explicit DynamicLazySegtree(Coord n = 0) : DynamicLazySegtree(0, n) {}
-	DynamicLazySegtree(Coord l, Coord r) : first(l), last(r) { assert(l <= r); }
-	explicit DynamicLazySegtree(const std::vector<S> &a) : first(0), last(0) { build(a); }
-	DynamicLazySegtree(const DynamicLazySegtree &) = default;
-	DynamicLazySegtree &operator=(const DynamicLazySegtree &) = default;
-	DynamicLazySegtree(DynamicLazySegtree &&other) : DynamicLazySegtree(other.first, other.last) { swap(other); }
-	DynamicLazySegtree &operator=(DynamicLazySegtree &&other) {
-		if (this != &other) { DynamicLazySegtree moved(std::move(other)); swap(moved); }
-		return *this;
+	explicit LazySegtree(int n = 0) { allocate(n); }
+	explicit LazySegtree(const std::vector<S> &a) {
+		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
+		allocate(static_cast<int>(a.size()));
+		for (int i = 0; i < n_; ++i) data_[base_ + unsigned(i)] = a[i];
+		for (unsigned k = base_ - 1; k; --k) pull(k);
 	}
-	void swap(DynamicLazySegtree &other) noexcept {
-		nodes.swap(other.nodes);
-		std::swap(root, other.root);
-		std::swap(first, other.first);
-		std::swap(last, other.last);
+	int size() const { return n_; }
+	void set(int p, S value) {
+		vertex(p);
+		unsigned k = base_ + unsigned(p);
+		push_path(k);
+		data_[k] = std::move(value);
+		for (k >>= 1; k; k >>= 1) pull(k);
 	}
-	void build(const std::vector<S> &a) {
-		assert(a.size() <= std::uintmax_t(std::numeric_limits<Coord>::max()));
-		assert(a.size() < std::size_t(std::numeric_limits<int>::max()) / 2);
-		clear();
-		first = 0;
-		last = static_cast<Coord>(a.size());
-		reserve(a.empty() ? 0 : 2 * a.size() - 1);
-		if (!a.empty()) root = build_values(a, first, last);
+	S get(int p) {
+		vertex(p);
+		unsigned k = base_ + unsigned(p);
+		push_path(k);
+		return data_[k];
 	}
-	void reserve(std::size_t count) {
-		assert(count < std::size_t(std::numeric_limits<int>::max()));
-		nodes.reserve(count + 1);
+	S all_prod() const { return data_[1]; }
+	S prod(int l, int r) {
+		range(l, r);
+		if (l == r) return e();
+		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r);
+		push_boundaries(a, b);
+		S left = e(), right = e();
+		while (a < b) {
+			if (a & 1) left = op(left, data_[a++]);
+			if (b & 1) right = op(data_[--b], right);
+			a >>= 1, b >>= 1;
+		}
+		return op(left, right);
 	}
-	void clear() { nodes.erase(nodes.begin() + 1, nodes.end()); root = 0; }
-	U size() const { return U(last) - U(first); }
-	bool empty() const { return first == last; }
-	Coord left_bound() const { return first; }
-	Coord right_bound() const { return last; }
-	std::size_t node_count() const { return nodes.size() - 1; }
-	std::size_t memory_usage() const { return nodes.capacity() * sizeof(Node); }
-	S all_prod() const { return value(root, first, last); }
-	S prod(Coord l, Coord r) const { check(l, r); return l == r ? e() : product(root, first, last, l, r); }
-	S get(Coord p) const { assert(first <= p && p < last); return prod(p, Coord(p + 1)); }
-	void set(Coord p, const S &x) { assert(first <= p && p < last); root = write(root, first, last, p, x); }
-	void apply(Coord l, Coord r, const F &f) {
-		check(l, r);
-		if (l != r) root = update(root, first, last, l, r, f);
+	S prod(int l, int r) const {
+		range(l, r);
+		if (l == r) return e();
+		return prod_rec(1, 0, base_, unsigned(l), unsigned(r));
 	}
-	void apply(Coord p, const F &f) { assert(first <= p && p < last); apply(p, Coord(p + 1), f); }
-	template<class Pred>
-	Coord max_right(Coord l, Pred f) const {
-		assert(first <= l && l <= last && f(e()));
-		Coord answer = last;
-		if (l != last) { S acc = e(); search<true>(root, first, last, l, acc, nullptr, f, answer); }
-		return answer;
+	void apply(int p, F f) {
+		vertex(p);
+		unsigned k = base_ + unsigned(p);
+		push_path(k);
+		data_[k] = mapping(f, data_[k]);
+		for (k >>= 1; k; k >>= 1) pull(k);
 	}
-	template<class Pred>
-	Coord min_left(Coord r, Pred f) const {
-		assert(first <= r && r <= last && f(e()));
-		Coord answer = first;
-		if (r != first) { S acc = e(); search<false>(root, first, last, r, acc, nullptr, f, answer); }
-		return answer;
+	void apply(int l, int r, F f) {
+		range(l, r);
+		if (l == r) return;
+		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r), first = a, last = b;
+		push_boundaries(a, b);
+		while (a < b) {
+			if (a & 1) all_apply(a++, f);
+			if (b & 1) all_apply(--b, f);
+			a >>= 1, b >>= 1;
+		}
+		for (unsigned i = 1; i <= height_; ++i) {
+			if ((first >> i) << i != first) pull(first >> i);
+			if ((last >> i) << i != last) pull((last - 1) >> i);
+		}
+	}
+	template<auto predicate> int max_right(int l) { return max_right(l, predicate); }
+	template<class Pred> int max_right(int l, Pred predicate) {
+		range(l, l);
+		assert(predicate(e()));
+		if (l == n_) return n_;
+		unsigned k = base_ + unsigned(l);
+		push_path(k);
+		S acc = e();
+		do {
+			while (!(k & 1)) k >>= 1;
+			S next = op(acc, data_[k]);
+			if (!predicate(next)) {
+				while (k < base_) {
+					push(k);
+					k *= 2;
+					S part = op(acc, data_[k]);
+					if (predicate(part)) acc = std::move(part), ++k;
+				}
+				return static_cast<int>(k - base_);
+			}
+			acc = std::move(next);
+			++k;
+		} while ((k & -k) != k);
+		return n_;
+	}
+	template<auto predicate> int min_left(int r) { return min_left(r, predicate); }
+	template<class Pred> int min_left(int r, Pred predicate) {
+		range(r, r);
+		assert(predicate(e()));
+		if (!r) return 0;
+		unsigned k = base_ + unsigned(r);
+		push_path(k - 1);
+		S acc = e();
+		do {
+			--k;
+			while (k > 1 && (k & 1)) k >>= 1;
+			S next = op(data_[k], acc);
+			if (!predicate(next)) {
+				while (k < base_) {
+					push(k);
+					k = k * 2 + 1;
+					S part = op(data_[k], acc);
+					if (predicate(part)) acc = std::move(part), --k;
+				}
+				return static_cast<int>(k + 1 - base_);
+			}
+			acc = std::move(next);
+		} while ((k & -k) != k);
+		return 0;
 	}
 };
 
@@ -200,19 +181,19 @@ class DynamicLazySegtree {
 
 
 
-#line 5 "components/fast_io.hpp"
+#include <algorithm>
 #include <array>
-#include <bit>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
-#line 11 "components/fast_io.hpp"
+#line 10 "components/fast_io.hpp"
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#line 18 "components/fast_io.hpp"
+#include <type_traits>
 #if defined(__unix__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -432,6 +413,58 @@ public:
 };
 
 
+#line 1 "components/radix_sort.hpp"
+
+
+
+#line 11 "components/radix_sort.hpp"
+
+template <int Bits, class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key &&key) {
+	static_assert(1 <= Bits && Bits <= 16);
+	constexpr unsigned buckets = 1U << Bits, mask = buckets - 1;
+	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
+	static_assert(std::is_integral_v<K> && std::is_unsigned_v<K> && sizeof(K) <= sizeof(std::uint64_t));
+	if (values.size() < 2) return;
+	if (values.size() < 256) {
+		std::stable_sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
+		return;
+	}
+	std::uint64_t first = key(values.front()), previous = first, varying = 0;
+	bool sorted = true;
+	for (std::size_t i = 1; i < values.size(); ++i) {
+		std::uint64_t current = key(values[i]);
+		varying |= first ^ current;
+		sorted &= previous <= current;
+		previous = current;
+	}
+	if (sorted) return;
+	std::vector<T> scratch(values.size());
+	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
+	Counts count = [] {
+		if constexpr (Bits <= 11) return Counts{};
+		else return Counts(buckets);
+	}();
+	for (int shift = 0; shift < 64; shift += Bits) {
+		if (!((varying >> shift) & mask)) continue;
+		std::fill(count.begin(), count.end(), 0);
+		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask];
+		std::size_t sum = 0;
+		for (auto &x : count) {
+			auto n = x;
+			x = sum, sum += n;
+		}
+		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask]++] = std::move(value);
+		values.swap(scratch);
+	}
+}
+
+template <class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key key) {
+	stable_radix_sort<8>(values, std::move(key));
+}
+
+
 #line 1 "math/mint.hpp"
 
 
@@ -572,7 +605,7 @@ using fps_mint = mint;
 #endif
 
 
-#line 5 "test/dynamic_lazy_segtree_large.test.cpp"
+#line 8 "test/compressed_lazy_segtree_large.test.cpp"
 
 struct Sum { mint sum, length; };
 struct Affine { mint a, b; };
@@ -581,23 +614,45 @@ Sum e() { return {0, 0}; }
 Sum mapping(Affine f, Sum x) { return {f.a * x.sum + f.b * x.length, x.length}; }
 Affine composition(Affine f, Affine g) { return {f.a * g.a, f.a * g.b + f.b}; }
 Affine id() { return {1, 0}; }
-Sum initial(std::int64_t l, std::int64_t r) { return {0, r - l}; }
 
 int main() {
-	FastInput in;
-	FastOutput out;
-	std::int64_t n = 0;
+	FastInput input;
+	FastOutput output;
+	std::uint32_t n = 0;
 	int q = 0;
-	in.read(n); in.read(q);
-	DynamicLazySegtree<Sum, op, e, Affine, mapping, composition, id, initial> seg(n);
-	while (q--) {
-		int type = 0;
-		std::int64_t l = 0, r = 0;
-		in.read(type); in.read(l); in.read(r);
-		if (type == 0) {
-			unsigned b = 0, c = 0;
-			in.read(b); in.read(c);
-			seg.apply(l, r, Affine{mint::raw(b), mint::raw(c)});
-		} else out.println(seg.prod(l, r).sum.val());
+	input.read(n), input.read(q);
+	struct Query { int type = 0, l = 0, r = 0; Affine f; };
+	struct Endpoint { std::uint32_t value; int index; };
+	std::vector<Query> queries(q);
+	std::vector<Endpoint> endpoints;
+	endpoints.reserve(2 * std::size_t(q) + 2);
+	endpoints.push_back({0, -1}), endpoints.push_back({n, -1});
+	for (int i = 0; i < q; ++i) {
+		auto &query = queries[i];
+		std::uint32_t l = 0, r = 0;
+		input.read(query.type), input.read(l), input.read(r);
+		endpoints.push_back({l, 2 * i}), endpoints.push_back({r, 2 * i + 1});
+		if (!query.type) {
+			unsigned a = 0, b = 0;
+			input.read(a), input.read(b);
+			query.f = {mint::raw(a), mint::raw(b)};
+		}
+	}
+	stable_radix_sort<11>(endpoints, [](const Endpoint &point) { return point.value; });
+	std::vector<std::uint32_t> coordinates;
+	coordinates.reserve(endpoints.size());
+	for (auto point : endpoints) {
+		if (coordinates.empty() || coordinates.back() != point.value) coordinates.push_back(point.value);
+		if (point.index < 0) continue;
+		int index = int(coordinates.size()) - 1;
+		if (point.index & 1) queries[point.index / 2].r = index;
+		else queries[point.index / 2].l = index;
+	}
+	std::vector<Sum> values(coordinates.size() - 1);
+	for (std::size_t i = 0; i < values.size(); ++i) values[i] = {0, coordinates[i + 1] - coordinates[i]};
+	LazySegtree<Sum, op, e, Affine, mapping, composition, id> tree(values);
+	for (const auto &query : queries) {
+		if (!query.type) tree.apply(query.l, query.r, query.f);
+		else output.println(tree.prod(query.l, query.r).sum.val());
 	}
 }

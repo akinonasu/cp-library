@@ -1,330 +1,203 @@
-#line 1 "test/kinetic_tournament.test.cpp"
+#line 1 "test/range_add_range_min.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/range_add_range_min"
-#line 1 "data_structure/advanced/kinetic_tournament.hpp"
-
-
-
-#line 1 "data_structure/advanced/generic_segtree_beats.hpp"
+#line 1 "data_structure/segment_tree/range_add_range_min.hpp"
 
 
 
 #include <algorithm>
+#include <array>
 #include <bit>
 #include <cassert>
 #include <cstddef>
+#include <cstdint>
 #include <limits>
+#include <stdexcept>
+#include <type_traits>
 #include <utility>
 #include <vector>
+#if defined(__AVX2__) && defined(__x86_64__)
+#include <immintrin.h>
+#endif
 
-template <class S, auto op, auto e, class F, auto mapping, auto composition, auto id>
-class GenericSegtreeBeats {
-	int n_ = 0, base_ = 1, log_ = 0;
-	std::vector<S> data_;
-	std::vector<F> lazy_;
-	std::vector<unsigned char> dirty_;
-	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const {
-		assert(0 <= l && l <= r && r <= n_);
-	}
-	void pull(int k) { data_[k] = op(data_[2 * k], data_[2 * k + 1]); }
-	void all_apply(int k, const F &f) {
-		if (k < base_) {
-			lazy_[k] = dirty_[k] ? composition(f, lazy_[k]) : f;
-			dirty_[k] = 1;
+template<class T = std::int64_t> class RangeAddRangeMin {
+	static_assert(std::is_integral_v<T> && std::is_signed_v<T> && sizeof(T) <= 8);
+	using U = std::make_unsigned_t<T>;
+	static constexpr unsigned branch = 16;
+	static constexpr T infinity = std::numeric_limits<T>::max();
+	std::vector<T> data_;
+	std::vector<U> lazy_;
+	std::array<std::size_t, (sizeof(int) * 8 + 3) / 4 + 1> offsets_{};
+	int n_ = 0;
+	unsigned height_ = 0;
+	std::size_t width_ = 1, leaves_ = 0;
+	static T added(T value, U delta) { return std::bit_cast<T>(U(U(value) + delta)); }
+#if defined(__AVX2__) && defined(__x86_64__)
+	static __m256i minimum(__m256i a, __m256i b) { return _mm256_blendv_epi8(a, b, _mm256_cmpgt_epi64(a, b)); }
+#endif
+	static T minimum(const T *values, unsigned l, unsigned r) {
+#if defined(__AVX2__) && defined(__x86_64__)
+		if constexpr (sizeof(T) == 8) {
+			if (r - l > 3) {
+				const auto inf = _mm256_set1_epi64x(infinity);
+				auto result = inf;
+				const auto low = _mm256_set1_epi64x(static_cast<long long>(l) - 1), high = _mm256_set1_epi64x(r);
+				for (unsigned i = 0; i < branch; i += 4) {
+					auto value = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + i));
+					if (l > i || r < i + 4) {
+						const auto indices = _mm256_setr_epi64x(i, i + 1, i + 2, i + 3);
+						const auto active = _mm256_and_si256(_mm256_cmpgt_epi64(indices, low), _mm256_cmpgt_epi64(high, indices));
+						value = _mm256_blendv_epi8(inf, value, active);
+					}
+					result = minimum(result, value);
+				}
+				alignas(32) T lanes[4];
+				_mm256_store_si256(reinterpret_cast<__m256i *>(lanes), result);
+				return std::min(std::min(lanes[0], lanes[1]), std::min(lanes[2], lanes[3]));
+			}
 		}
-		if (mapping(f, data_[k])) return;
-		assert(k < base_);
-		push(k);
-		pull(k);
+#endif
+		T result = infinity;
+		for (unsigned i = l; i < r; ++i) result = std::min(result, values[i]);
+		return result;
 	}
-	void push(int k) {
-		if (!dirty_[k]) return;
-		all_apply(2 * k, lazy_[k]);
-		all_apply(2 * k + 1, lazy_[k]);
-		dirty_[k] = 0;
-	}
-	void push_path(int k) {
-		for (int h = log_; h; --h) push(k >> h);
-	}
-	void push_range(int l, int r) {
-		for (int h = log_; h; --h) {
-			if (((l >> h) << h) != l) push(l >> h);
-			if (((r >> h) << h) != r) push((r - 1) >> h);
+	void pull(std::size_t k, std::size_t children) { data_[k] = minimum(data_.data() + children, 0, branch); }
+	void add_children(std::size_t p, unsigned l, unsigned r, U delta) {
+#if defined(__AVX2__) && defined(__x86_64__)
+		if constexpr (sizeof(T) == 8) {
+			if (r - l > 3) {
+				const auto value = _mm256_set1_epi64x(std::bit_cast<T>(delta));
+				const auto low = _mm256_set1_epi64x(static_cast<long long>(l) - 1), high = _mm256_set1_epi64x(r);
+				for (unsigned i = 0; i < branch; i += 4) {
+					if (i + 4 <= l || r <= i) continue;
+					auto change = value;
+					if (l > i || r < i + 4) {
+						const auto indices = _mm256_setr_epi64x(i, i + 1, i + 2, i + 3);
+						change = _mm256_and_si256(value, _mm256_and_si256(_mm256_cmpgt_epi64(indices, low), _mm256_cmpgt_epi64(high, indices)));
+					}
+					auto *data = reinterpret_cast<__m256i *>(data_.data() + p + i);
+					_mm256_storeu_si256(data, _mm256_add_epi64(_mm256_loadu_si256(data), change));
+					if (p >= leaves_) {
+						auto *tags = reinterpret_cast<__m256i *>(lazy_.data() + p - leaves_ + i);
+						_mm256_storeu_si256(tags, _mm256_add_epi64(_mm256_loadu_si256(tags), change));
+					}
+				}
+				return;
+			}
 		}
+#endif
+		for (unsigned i = l; i < r; ++i) data_[p + i] = added(data_[p + i], delta);
+		if (p >= leaves_) for (unsigned i = l; i < r; ++i) lazy_[p - leaves_ + i] += delta;
 	}
-	void pull_range(int l, int r) {
-		for (int h = 1; h <= log_; ++h) {
-			if (((l >> h) << h) != l) pull(l >> h);
-			if (((r >> h) << h) != r) pull((r - 1) >> h);
+	void push(std::size_t k, std::size_t children) {
+		U delta = lazy_[k - leaves_];
+		if (!delta) return;
+		add_children(children, 0, branch, delta);
+		lazy_[k - leaves_] = 0;
+	}
+	void update(unsigned level, std::size_t index, std::size_t l, std::size_t width, std::size_t ql, std::size_t qr, U delta) {
+		std::size_t k = offsets_[level] + index;
+		if (ql <= l && l + width <= qr) {
+			data_[k] = added(data_[k], delta);
+			if (level) lazy_[k - leaves_] += delta;
+			return;
 		}
+		std::size_t part = width / branch, p = offsets_[level - 1] + index * branch;
+		push(k, p);
+		unsigned shift = 4 * (level - 1);
+		unsigned a = ql <= l ? 0 : unsigned((ql - l) >> shift);
+		unsigned b = qr >= l + width ? branch : unsigned(((qr - l - 1) >> shift) + 1);
+		if (a + 1 == b) update(level - 1, index * branch + a, l + a * part, part, ql, qr, delta);
+		else {
+			if (ql > l + a * part) { update(level - 1, index * branch + a, l + a * part, part, ql, qr, delta); ++a; }
+			if (qr < l + b * part) { --b; update(level - 1, index * branch + b, l + b * part, part, ql, qr, delta); }
+			add_children(p, a, b, delta);
+		}
+		pull(k, p);
 	}
+	T query(unsigned level, std::size_t index, std::size_t l, std::size_t width, std::size_t ql, std::size_t qr, U carry) const {
+		std::size_t k = offsets_[level] + index;
+		if (ql <= l && l + width <= qr) return added(data_[k], carry);
+		carry += lazy_[k - leaves_];
+		std::size_t part = width / branch, p = offsets_[level - 1] + index * branch;
+		unsigned shift = 4 * (level - 1);
+		unsigned a = ql <= l ? 0 : unsigned((ql - l) >> shift);
+		unsigned b = qr >= l + width ? branch : unsigned(((qr - l - 1) >> shift) + 1);
+		if (a + 1 == b) return query(level - 1, index * branch + a, l + a * part, part, ql, qr, carry);
+		T result = infinity;
+		if (ql > l + a * part) { result = query(level - 1, index * branch + a, l + a * part, part, ql, qr, carry); ++a; }
+		if (qr < l + b * part) { --b; result = std::min(result, query(level - 1, index * branch + b, l + b * part, part, ql, qr, carry)); }
+		if (a < b) result = std::min(result, added(minimum(data_.data() + p, a, b), carry));
+		return result;
+	}
+	void assign(unsigned level, std::size_t index, std::size_t l, std::size_t width, std::size_t pos, T value) {
+		std::size_t k = offsets_[level] + index;
+		if (!level) { data_[k] = value; return; }
+		std::size_t part = width / branch, p = offsets_[level - 1] + index * branch;
+		push(k, p);
+		unsigned child = unsigned((pos - l) >> (4 * (level - 1)));
+		assign(level - 1, index * branch + child, l + child * part, part, pos, value);
+		pull(k, p);
+	}
+	void collect(unsigned level, std::size_t index, std::size_t l, std::size_t width, U carry, std::vector<T> &result) const {
+		std::size_t k = offsets_[level] + index;
+		if (!level) { result[l] = added(data_[k], carry); return; }
+		carry += lazy_[k - leaves_];
+		std::size_t part = width / branch;
+		for (unsigned child = 0; child < branch && l + child * part < std::size_t(n_); ++child)
+			collect(level - 1, index * branch + child, l + child * part, part, carry, result);
+	}
+	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n_); }
 
   public:
-	GenericSegtreeBeats() : GenericSegtreeBeats(0) {}
-	explicit GenericSegtreeBeats(int n, const S &value = e()) {
-		assert(0 <= n && n <= std::numeric_limits<int>::max() / 4);
-		build(std::vector<S>(n, value));
-	}
-	explicit GenericSegtreeBeats(const std::vector<S> &a) { build(a); }
-	void build(const std::vector<S> &a) {
-		assert(a.size() <= std::size_t(std::numeric_limits<int>::max() / 4));
-		n_ = static_cast<int>(a.size());
-		base_ = static_cast<int>(std::bit_ceil(static_cast<unsigned>(std::max(1, n_))));
-		log_ = std::countr_zero(static_cast<unsigned>(base_));
-		data_.assign(2 * base_, e());
-		lazy_.assign(base_, id());
-		dirty_.assign(base_, 0);
-		std::copy(a.begin(), a.end(), data_.begin() + base_);
-		for (int k = base_ - 1; k; --k) pull(k);
+	using value_type = T;
+	RangeAddRangeMin() = default;
+	explicit RangeAddRangeMin(int n, T value = 0) { assert(n >= 0); build(std::vector<T>(n, value)); }
+	explicit RangeAddRangeMin(const std::vector<T> &values) { build(values); }
+	RangeAddRangeMin(const RangeAddRangeMin &) = default;
+	RangeAddRangeMin(RangeAddRangeMin &&other) noexcept { swap(other); }
+	RangeAddRangeMin &operator=(RangeAddRangeMin other) noexcept { swap(other); return *this; }
+	void build(const std::vector<T> &values) {
+		assert(values.size() <= std::size_t(std::numeric_limits<int>::max()));
+		RangeAddRangeMin next;
+		next.n_ = int(values.size());
+		decltype(offsets_) counts{};
+		std::size_t total = 0, real = std::max(std::size_t(1), values.size());
+		for (unsigned level = 0;; ++level) {
+			next.offsets_[level] = total;
+			counts[level] = real;
+			std::size_t padded = real == 1 ? 1 : (real + branch - 1) / branch * branch;
+			total += padded;
+			if (!level) next.leaves_ = padded;
+			if (real == 1) { next.height_ = level; break; }
+			real = (real + branch - 1) / branch;
+			if (next.width_ > std::numeric_limits<std::size_t>::max() / branch) throw std::length_error("RangeAddRangeMin size");
+			next.width_ *= branch;
+		}
+		next.data_.assign(total, infinity);
+		next.lazy_.resize(total - next.leaves_);
+		std::copy(values.begin(), values.end(), next.data_.begin());
+		for (unsigned level = 1; level <= next.height_; ++level)
+			for (std::size_t index = 0; index < counts[level]; ++index)
+				next.pull(next.offsets_[level] + index, next.offsets_[level - 1] + index * branch);
+		swap(next);
 	}
 	int size() const { return n_; }
 	bool empty() const { return !n_; }
-	S all_prod() const { return data_[1]; }
-	S get(int p) {
-		assert(0 <= p && p < n_);
-		int k = p + base_;
-		push_path(k);
-		return data_[k];
+	void add(int l, int r, T value) { check(l, r); if (l < r && value) update(height_, 0, 0, width_, l, r, U(value)); }
+	void apply(int l, int r, T value) { add(l, r, value); }
+	T prod(int l, int r) const { check(l, r); return l < r ? query(height_, 0, 0, width_, l, r, 0) : infinity; }
+	T min(int l, int r) const { return prod(l, r); }
+	T all_prod() const { return n_ ? data_[offsets_[height_]] : infinity; }
+	T all_min() const { return all_prod(); }
+	T get(int p) const { assert(0 <= p && p < n_); return prod(p, p + 1); }
+	void set(int p, T value) { assert(0 <= p && p < n_); assign(height_, 0, 0, width_, p, value); }
+	std::vector<T> values() const { std::vector<T> result(n_); if (n_) collect(height_, 0, 0, width_, 0, result); return result; }
+	std::size_t memory_usage() const { return data_.capacity() * sizeof(T) + lazy_.capacity() * sizeof(U); }
+	void swap(RangeAddRangeMin &other) noexcept {
+		data_.swap(other.data_), lazy_.swap(other.lazy_), offsets_.swap(other.offsets_);
+		std::swap(n_, other.n_), std::swap(height_, other.height_), std::swap(width_, other.width_), std::swap(leaves_, other.leaves_);
 	}
-	void set(int p, const S &value) {
-		assert(0 <= p && p < n_);
-		int k = p + base_;
-		push_path(k);
-		data_[k] = value;
-		while (k >>= 1) pull(k);
-	}
-	S prod(int l, int r) {
-		check(l, r);
-		if (l == r) return e();
-		l += base_, r += base_;
-		push_range(l, r);
-		S left = e(), right = e();
-		while (l < r) {
-			if (l & 1) left = op(std::move(left), data_[l++]);
-			if (r & 1) right = op(data_[--r], std::move(right));
-			l >>= 1, r >>= 1;
-		}
-		return op(std::move(left), std::move(right));
-	}
-	void apply(const F &f) { if (n_) all_apply(1, f); }
-	void apply(int p, const F &f) {
-		assert(0 <= p && p < n_);
-		int k = p + base_;
-		push_path(k);
-		all_apply(k, f);
-		while (k >>= 1) pull(k);
-	}
-	void apply(int l, int r, const F &f) {
-		check(l, r);
-		if (l == r) return;
-		l += base_, r += base_;
-		push_range(l, r);
-		int first = l, last = r;
-		while (l < r) {
-			if (l & 1) all_apply(l++, f);
-			if (r & 1) all_apply(--r, f);
-			l >>= 1, r >>= 1;
-		}
-		pull_range(first, last);
-	}
-	template <class Predicate>
-	int max_right(int l, Predicate predicate) {
-		assert(0 <= l && l <= n_ && predicate(e()));
-		if (l == n_) return n_;
-		int k = l + base_;
-		push_path(k);
-		S value = e();
-		do {
-			while (!(k & 1)) k >>= 1;
-			S next = op(value, data_[k]);
-			if (!predicate(next)) {
-				while (k < base_) {
-					push(k);
-					k *= 2;
-					next = op(value, data_[k]);
-					if (predicate(next)) value = std::move(next), ++k;
-				}
-				return std::min(k - base_, n_);
-			}
-			value = std::move(next);
-			++k;
-		} while ((k & -k) != k);
-		return n_;
-	}
-	template <class Predicate>
-	int min_left(int r, Predicate predicate) {
-		assert(0 <= r && r <= n_ && predicate(e()));
-		if (!r) return 0;
-		int k = r + base_;
-		push_path(k - 1);
-		S value = e();
-		do {
-			--k;
-			while (k > 1 && (k & 1)) k >>= 1;
-			S next = op(data_[k], value);
-			if (!predicate(next)) {
-				while (k < base_) {
-					push(k);
-					k = 2 * k + 1;
-					next = op(data_[k], value);
-					if (predicate(next)) value = std::move(next), --k;
-				}
-				return k + 1 - base_;
-			}
-			value = std::move(next);
-		} while ((k & -k) != k);
-		return 0;
-	}
-	std::vector<S> values() {
-		for (int k = 1; k < base_; ++k) push(k);
-		return std::vector<S>(data_.begin() + base_, data_.begin() + base_ + n_);
-	}
-};
-
-
-#line 1 "components/kinetic_tournament_monoid.hpp"
-
-
-
-#line 6 "components/kinetic_tournament_monoid.hpp"
-#include <cstdint>
-#line 8 "components/kinetic_tournament_monoid.hpp"
-#include <type_traits>
-
-namespace kinetic_tournament_detail {
-template<class T, bool maximize> struct Monoid {
-	static_assert(std::is_integral_v<T> && std::is_signed_v<T> && sizeof(T) <= 8);
-	using W = __int128_t;
-	using U = std::uint64_t;
-	static constexpr U never = std::numeric_limits<U>::max();
-	struct Node { T value = 0, slope = 0; U remaining = never; int index = -1; };
-	struct Tag { W steps = 0, add = 0; };
-	static Node identity() { return {}; }
-	static Tag tag_identity() { return {}; }
-	static bool better(const Node &a, const Node &b) {
-		if (a.index == -1) return false;
-		if (b.index == -1) return true;
-		if (a.value != b.value) return maximize ? a.value > b.value : a.value < b.value;
-		return maximize ? a.index > b.index : a.index < b.index;
-	}
-	static Node op(Node a, Node b) {
-		if (a.index == -1) return b;
-		if (b.index == -1) return a;
-		bool left = better(a, b);
-		Node result = left ? a : b;
-		result.remaining = std::min(a.remaining, b.remaining);
-		if (left == maximize && a.slope < b.slope) {
-			U gap = U(a.value) - U(b.value);
-			U difference = U(b.slope) - U(a.slope);
-			assert(gap > 0);
-			result.remaining = std::min(result.remaining, (gap - 1) / difference);
-		}
-		return result;
-	}
-	static bool mapping(Tag tag, Node &node) {
-		if (node.index == -1) return true;
-		if (node.remaining != never && tag.steps > W(node.remaining)) return false;
-		W value = W(node.value) + tag.steps * node.slope + tag.add;
-		assert(std::numeric_limits<T>::lowest() <= value && value <= std::numeric_limits<T>::max());
-		node.value = T(value);
-		if (node.remaining != never) node.remaining -= U(tag.steps);
-		return true;
-	}
-	static Tag composition(Tag a, Tag b) { return {a.steps + b.steps, a.add + b.add}; }
-};
-}
-
-
-#line 6 "data_structure/advanced/kinetic_tournament.hpp"
-#include <optional>
-
-template<class T = std::int64_t, bool maximize = true> class KineticTournament {
-	using M = kinetic_tournament_detail::Monoid<T, maximize>;
-	using Node = typename M::Node;
-	GenericSegtreeBeats<Node, M::op, M::identity, typename M::Tag, M::mapping, M::composition, M::tag_identity> tree_;
-	std::vector<T> slopes_;
-	std::vector<unsigned char> active_;
-	int count_ = 0;
-	void check([[maybe_unused]] int i) const { assert(0 <= i && i < size()); }
-	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= size()); }
-
-  public:
-	struct Result { int index; T value; };
-	using value_type = T;
-	KineticTournament() = default;
-	explicit KineticTournament(const std::vector<T> &slopes, T value = 0) { build(slopes, value); }
-	KineticTournament(const std::vector<T> &slopes, const std::vector<T> &values) { build(slopes, values); }
-	KineticTournament(const std::vector<T> &slopes, const std::vector<std::optional<T>> &values) { build(slopes, values); }
-	KineticTournament(const std::vector<T> &slopes, std::nullopt_t) { build(slopes, std::nullopt); }
-	KineticTournament(const KineticTournament &) = default;
-	KineticTournament &operator=(const KineticTournament &) = default;
-	KineticTournament(KineticTournament &&other) : KineticTournament() { swap(other); }
-	KineticTournament &operator=(KineticTournament &&other) {
-		if (this != &other) { KineticTournament next(std::move(other)); swap(next); }
-		return *this;
-	}
-	void swap(KineticTournament &other) noexcept {
-		std::swap(tree_, other.tree_);
-		slopes_.swap(other.slopes_); active_.swap(other.active_); std::swap(count_, other.count_);
-	}
-	void build(const std::vector<T> &slopes, const std::vector<std::optional<T>> &values) {
-		assert(slopes.size() == values.size() && slopes.size() <= std::size_t(std::numeric_limits<int>::max() / 4));
-		assert(std::is_sorted(slopes.begin(), slopes.end()));
-		slopes_ = slopes;
-		active_.assign(slopes.size(), 0);
-		count_ = 0;
-		std::vector<Node> nodes(slopes.size());
-		for (int i = 0; i < size(); ++i) if (values[i]) {
-			nodes[i] = {*values[i], slopes_[i], M::never, i};
-			active_[i] = 1; ++count_;
-		}
-		tree_.build(nodes);
-	}
-	void build(const std::vector<T> &slopes, const std::vector<T> &values) { build(slopes, std::vector<std::optional<T>>(values.begin(), values.end())); }
-	void build(const std::vector<T> &slopes, T value = 0) { build(slopes, std::vector<std::optional<T>>(slopes.size(), value)); }
-	void build(const std::vector<T> &slopes, std::nullopt_t) { build(slopes, std::vector<std::optional<T>>(slopes.size())); }
-	int size() const { return static_cast<int>(slopes_.size()); }
-	int active_size() const { return count_; }
-	bool empty() const { return count_ == 0; }
-	const std::vector<T> &slopes() const { return slopes_; }
-	void clear() { tree_.build(std::vector<Node>(size())); std::fill(active_.begin(), active_.end(), 0); count_ = 0; }
-	void set(int i, T value) {
-		check(i);
-		tree_.set(i, Node{value, slopes_[i], M::never, i});
-		count_ += !active_[i]; active_[i] = 1;
-	}
-	bool erase(int i) {
-		check(i);
-		if (!active_[i]) return false;
-		tree_.set(i, M::identity());
-		active_[i] = 0; --count_;
-		return true;
-	}
-	std::optional<T> get(int i) { check(i); return active_[i] ? std::optional<T>(tree_.get(i).value) : std::nullopt; }
-	void apply(int l, int r, T a, T b = 0) {
-		check(l, r); assert(a >= 0);
-		if (l == r || (!a && !b)) return;
-		if (!l && r == size()) tree_.apply({a, b});
-		else tree_.apply(l, r, {a, b});
-	}
-	void add(int l, int r, T value) { apply(l, r, 0, value); }
-	void advance(int l, int r, T steps = 1) { apply(l, r, steps, 0); }
-	void all_apply(T a, T b = 0) { apply(0, size(), a, b); }
-	std::optional<Result> prod(int l, int r) {
-		check(l, r);
-		if (!l && r == size()) return all_prod();
-		auto node = tree_.prod(l, r);
-		return node.index == -1 ? std::nullopt : std::optional<Result>(Result{node.index, node.value});
-	}
-	std::optional<Result> all_prod() const {
-		auto node = tree_.all_prod();
-		return node.index == -1 ? std::nullopt : std::optional<Result>(Result{node.index, node.value});
-	}
-	std::vector<std::optional<T>> values() {
-		auto nodes = tree_.values();
-		std::vector<std::optional<T>> result(size());
-		for (int i = 0; i < size(); ++i) if (active_[i]) result[i] = nodes[i].value;
-		return result;
-	}
+	friend void swap(RangeAddRangeMin &a, RangeAddRangeMin &b) noexcept { a.swap(b); }
 };
 
 
@@ -332,15 +205,13 @@ template<class T = std::int64_t, bool maximize = true> class KineticTournament {
 
 
 
-#line 5 "components/fast_io.hpp"
-#include <array>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>
 #include <memory>
-#include <stdexcept>
+#line 15 "components/fast_io.hpp"
 #include <string>
 #include <string_view>
 #line 18 "components/fast_io.hpp"
@@ -563,20 +434,20 @@ public:
 };
 
 
-#line 4 "test/kinetic_tournament.test.cpp"
+#line 6 "test/range_add_range_min.test.cpp"
 
 int main() {
-	FastInput in;
-	FastOutput out;
+	FastInput input;
+	FastOutput output;
 	int n = 0, q = 0;
-	in.read(n); in.read(q);
-	std::vector<std::int64_t> values(n), slopes(n);
-	for (auto &value : values) in.read(value);
-	KineticTournament<std::int64_t, false> tree(slopes, values);
-	for (int i = 0; i < q; ++i) {
+	input.read(n), input.read(q);
+	std::vector<std::int64_t> values(n);
+	for (auto &value : values) input.read(value);
+	RangeAddRangeMin tree(values);
+	while (q--) {
 		int type = 0, l = 0, r = 0;
-		in.read(type); in.read(l); in.read(r);
-		if (!type) { std::int64_t value = 0; in.read(value); tree.add(l, r, value); }
-		else out.println(tree.prod(l, r)->value);
+		input.read(type), input.read(l), input.read(r);
+		if (type == 0) { std::int64_t value = 0; input.read(value); tree.add(l, r, value); }
+		else output.println(tree.prod(l, r));
 	}
 }

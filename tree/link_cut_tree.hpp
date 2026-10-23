@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <span>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -54,7 +55,7 @@ class LinkCutTree {
 		}
 	}
 	void flip(int x) {
-		if (!x) return;
+		if constexpr (!scalar) if (!x) return;
 		std::swap(t[x].ch[0], t[x].ch[1]);
 		if constexpr (!commutative) std::ranges::swap(t[x].prod, t[x].back);
 		t[x].rev ^= 1;
@@ -131,6 +132,35 @@ class LinkCutTree {
 		for (const S &v : values) t.emplace_back(v);
 	}
 	int size() const { return t.empty() ? 0 : static_cast<int>(t.size()) - 1; }
+	void build_forest(std::span<const std::pair<int, int>> edges) {
+		assert(edges.size() < std::size_t(size()) || (edges.empty() && size() == 0));
+		std::vector<int> degree(size()), neighbors(size()), parent(size(), -1), order;
+		order.reserve(size());
+		for (auto [u, v] : edges) {
+			assert(0 <= u && u < size() && 0 <= v && v < size() && u != v);
+			++degree[u], ++degree[v];
+			neighbors[u] ^= v, neighbors[v] ^= u;
+		}
+		for (int v = 0; v < size(); ++v) if (degree[v] <= 1) order.push_back(v);
+		for (std::size_t i = 0; i < order.size(); ++i) {
+			int v = order[i];
+			if (!degree[v]) continue;
+			int p = neighbors[v];
+			parent[v] = p;
+			degree[v] = 0;
+			neighbors[p] ^= v;
+			if (--degree[p] == 1) order.push_back(p);
+		}
+		assert(order.size() == std::size_t(size()));
+		for (int v = 0; v < size(); ++v) {
+			auto &x = t[v + 1];
+			x.ch[0] = x.ch[1] = 0;
+			x.parent = -parent[v] - 1;
+			x.count = 1, x.rev = 0;
+			x.prod = x.value;
+			if constexpr (!commutative) x.back = x.value;
+		}
+	}
 	S get(int v) const { return t[node(v)].value; }
 	void set(int v, S value) {
 		int x = node(v);

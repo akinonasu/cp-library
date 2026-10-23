@@ -10,6 +10,23 @@
 #include <type_traits>
 
 namespace xor_basis_detail {
+template <class UInt, bool maximum = false>
+#if defined(__GNUC__) || defined(__clang__)
+__attribute__((always_inline))
+#endif
+inline UInt reduce_rows(UInt x, const UInt *row, int count) {
+	int i = 0;
+	auto step = [&](UInt value) {
+		if constexpr (maximum) x = std::max(x, UInt(x ^ value));
+		else x = std::min(x, UInt(x ^ value));
+	};
+	for (; i + 4 <= count; i += 4) {
+		step(row[i]); step(row[i + 1]); step(row[i + 2]); step(row[i + 3]);
+	}
+	for (; i < count; ++i) step(row[i]);
+	return x;
+}
+
 template <class UInt, int Bits>
 struct Core {
 	static_assert(std::is_integral_v<UInt> && std::is_unsigned_v<UInt> && !std::is_same_v<UInt, bool>);
@@ -24,19 +41,19 @@ struct Core {
 	int insert(UInt x) {
 		assert(valid(x));
 		if (dimension == Bits) return -1;
-		for (int i = 0; i < dimension; ++i) x = std::min(x, UInt(x ^ row[i]));
+		x = reduce_rows(x, row.data(), dimension);
 		if (!x) return -1;
 		row[dimension] = x; at[pivot(x)] = std::uint8_t(dimension + 1);
 		return dimension++;
 	}
 	UInt minimize(UInt x) const {
 		if (dimension == Bits) return UInt(x & UInt(~mask));
-		for (int i = 0; i < dimension; ++i) x = std::min(x, UInt(x ^ row[i]));
+		x = reduce_rows(x, row.data(), dimension);
 		return x;
 	}
 	UInt maximize(UInt x) const {
 		if (dimension == Bits) return UInt(x | mask);
-		for (int i = 0; i < dimension; ++i) x = std::max(x, UInt(x ^ row[i]));
+		x = reduce_rows<UInt, true>(x, row.data(), dimension);
 		return x;
 	}
 };

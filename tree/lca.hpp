@@ -1,7 +1,7 @@
 #ifndef LCA_HPP
 #define LCA_HPP
 
-#include "../data_structure/range_query/sparse_table.hpp"
+#include "../components/static_range_min.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -10,9 +10,8 @@
 #include <vector>
 
 class LCA {
-	static int min_op(int a, int b) { return std::min(a, b); }
 	std::vector<int> in, out, order;
-	SparseTable<int, min_op> table;
+	StaticRangeMin<int, true> table;
 	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && static_cast<int>(in.size()) == n); }
 
   public:
@@ -36,7 +35,7 @@ class LCA {
 		order.resize(n);
 		parent.assign(n, -1);
 		depth.assign(n, 0);
-		table.clear();
+		table = StaticRangeMin<int, true>();
 		if (!n) return;
 		std::vector<int> start(std::size_t(n) + 1);
 		for (auto [u, v] : edges) ++start[u + 1], ++start[v + 1];
@@ -64,7 +63,9 @@ class LCA {
 		assert(timer == n);
 		for (int i = n - 1; i >= 1; --i) out[parent[order[i]]] += out[order[i]];
 		for (int v = 0; v < n; ++v) out[v] += in[v];
-		table.build(n, [&](int i) { return i ? in[parent[order[i]]] : 0; });
+		std::vector<int> values(n);
+		for (int i = 1; i < n; ++i) values[i] = in[parent[order[i]]];
+		table.build(std::move(values));
 		parent[root] = -1;
 	}
 	int lca(int u, int v) const {
@@ -74,7 +75,7 @@ class LCA {
 		if (l == r) return u;
 		if (l > r) std::swap(l, r);
 		++l;
-		return order[table.prod_unchecked(l, r + 1)];
+		return order[table.prod(l, r + 1)];
 	}
 	int dist(int u, int v) const {
 		int w = lca(u, v);

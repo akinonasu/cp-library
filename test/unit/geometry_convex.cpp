@@ -37,6 +37,38 @@ int main() {
 	check_pairs(line);
 	check_pairs({{-1000000000000000000LL, -1000000000000000000LL}, {1000000000000000000LL, 1000000000000000000LL}, {1, 2}});
 	std::mt19937_64 random(20261021);
+	for (int trial = 0; trial < 120; ++trial) {
+		std::vector<IPoint> points(64 + random() % 200);
+		for (auto &p : points) {
+			p.x = std::int64_t(random() % (std::uint64_t(INT32_MAX) + 1));
+			p.y = std::int64_t(random() % (std::uint64_t(INT32_MAX) + 1));
+			if (trial % 3 == 0) p.y = p.x;
+			p.x += INT64_MIN + 100;
+			p.y += INT64_MAX - std::int64_t(INT32_MAX);
+		}
+		for (bool collinear : {false, true}) {
+			auto result = convex_hull(points, collinear);
+			auto ids = convex_hull_indices(points, collinear);
+			std::vector<FPoint> real;
+			for (auto p : points) real.emplace_back(Real(__int128_t(p.x) - INT64_MIN), Real(__int128_t(p.y) - INT64_MAX));
+			auto reference = convex_hull(real, collinear, 0);
+			assert(ids.size() == result.size() && reference.size() == result.size());
+			for (std::size_t i = 0; i < result.size(); ++i) {
+				assert(points[ids[i]] == result[i]);
+				assert(reference[i].x == Real(__int128_t(result[i].x) - INT64_MIN));
+				assert(reference[i].y == Real(__int128_t(result[i].y) - INT64_MAX));
+			}
+			auto copy = points;
+			assert(convex_hull(std::move(copy), collinear) == result);
+		}
+		auto near = closest_pair(points), far = furthest_pair(points);
+		auto minimum = distance_squared(points[0], points[1]), maximum = minimum;
+		for (std::size_t i = 0; i < points.size(); ++i) for (std::size_t j = i + 1; j < points.size(); ++j) {
+			auto value = distance_squared(points[i], points[j]);
+			minimum = std::min(minimum, value); maximum = std::max(maximum, value);
+		}
+		assert(near->squared_distance == minimum && far->squared_distance == maximum);
+	}
 	for (int trial = 0; trial < 1500; ++trial) {
 		std::vector<IPoint> p(random() % 60);
 		for (auto &q : p) q = {std::int64_t(random() % 101) - 50, std::int64_t(random() % 101) - 50};

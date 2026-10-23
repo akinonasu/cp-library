@@ -2,6 +2,7 @@
 #define MATRIX_POWER_HPP
 
 #include "matrix_arithmetic.hpp"
+#include "matrix_elimination_modular.hpp"
 #include <bit>
 #include <optional>
 
@@ -43,22 +44,38 @@ struct FrobeniusPower {
 	}
 	Row apply(const Row &x) const {
 		Row result(n);
-		for (int i = 0; i < n; ++i) if (x[i]) Ops::axpy(result.data(), transpose.data() + std::size_t(i) * n, n, x[i]);
+		constexpr int count = ModularElimination<Ops>::batch;
+		std::array<const V *, count> source;
+		for (int i = 0; i < n; i += count) {
+			int used = std::min(count, n - i);
+			for (int j = 0; j < used; ++j) source[j] = transpose.data() + std::size_t(i + j) * n;
+			ModularElimination<Ops>::update(result.data(), source.data(), x.data() + i, used, 0, n);
+		}
 		return result;
 	}
-	std::optional<Row> chain(Row x) {
+	std::optional<Row> chain(Row x, int first = 0) {
 		while (++work <= 4 * n) {
 			const int m = int(basis.size());
 			Row y = x, factors(m);
-			for (int j = 0; j < m; ++j) {
-				int p = pivots[j];
-				V factor = factors[j] = y[p];
-				if (factor) Ops::axpy(y.data() + p, reduced[j].data() + p, n - p, Ops::neg(factor));
+			constexpr int count = ModularElimination<Ops>::batch;
+			std::array<const V *, count> source;
+			std::array<V, count> coeff;
+			for (int j = 0; j < m; j += count) {
+				int used = std::min(count, m - j);
+				for (int u = 0; u < used; ++u) {
+					int p = pivots[j + u];
+					std::uint64_t value = y[p];
+					for (int k = 0; k < u; ++k) value += std::uint64_t(source[k][p]) * coeff[k];
+					V factor = factors[j + u] = value % Ops::mod;
+					coeff[u] = Ops::neg(factor);
+					source[u] = reduced[j + u].data();
+				}
+				ModularElimination<Ops>::update(y.data(), source.data(), coeff.data(), used, 0, n);
 			}
 			int p = 0;
 			while (p < n && !y[p]) ++p;
 			if (p == n) {
-				for (int i = m - 1; i >= 0; --i) {
+				for (int i = m - 1; i >= first; --i) {
 					V sum = Ops::dot(upper.data() + std::size_t(i) * n + i + 1, factors.data() + i + 1, m - i - 1);
 					factors[i] = Ops::mul(Ops::add(factors[i], Ops::neg(sum)), inverses[i]);
 				}
@@ -103,7 +120,7 @@ struct FrobeniusPower {
 		p.resize(d);
 		return p;
 	}
-	std::optional<std::vector<T>> run(std::uint64_t exponent) {
+	std::optional<std::vector<Row>> decompose(bool diagonal = true) {
 		for (int attempt = 0; attempt < 3; ++attempt) {
 			basis.clear(), reduced.clear(), pivots.clear();
 			work = 0;
@@ -111,18 +128,21 @@ struct FrobeniusPower {
 			bool valid = true;
 			while (int(basis.size()) < n) {
 				const int start = int(basis.size());
-				auto rec = chain(seed());
+				Row x = seed();
+				if (!diagonal) for (int p : pivots) x[p] = 0;
+				auto rec = chain(std::move(x), diagonal ? 0 : start);
 				if (!rec) { valid = false; break; }
 				if (int(basis.size()) == start) {
 					Row x(n);
 					int p = 0;
 					while (std::find(pivots.begin(), pivots.end(), p) != pivots.end()) ++p;
 					x[p] = 1;
-					rec = chain(std::move(x));
+					rec = chain(std::move(x), diagonal ? 0 : start);
 					if (!rec) { valid = false; break; }
 				}
 				const int d = int(basis.size()) - start;
-				if (std::any_of(rec->begin(), rec->begin() + start, [](V v) { return v != 0; })) {
+				if (!diagonal && !start && d <= 2) return std::nullopt;
+				if (diagonal && std::any_of(rec->begin(), rec->begin() + start, [](V v) { return v != 0; })) {
 					Row remainder = *rec, quotient(start + 1);
 					for (int i = int(remainder.size()) - 1; i >= d; --i) {
 						V factor = remainder[i];
@@ -143,6 +163,48 @@ struct FrobeniusPower {
 				relations.push_back(std::move(relation));
 			}
 			if (!valid) continue;
+			return relations;
+		}
+		return std::nullopt;
+	}
+	std::optional<std::vector<T>> characteristic() {
+		bool upper_triangular = true, lower_triangular = true;
+		for (int i = 0; i < n && (upper_triangular || lower_triangular); ++i) for (int j = 0; j < i; ++j) {
+			upper_triangular &= transpose[std::size_t(j) * n + i] == 0;
+			lower_triangular &= transpose[std::size_t(i) * n + j] == 0;
+		}
+		if (upper_triangular || lower_triangular) {
+			Row p{1};
+			for (int i = 0; i < n; ++i) {
+				Row next(p.size() + 1);
+				std::copy(p.begin(), p.end(), next.begin() + 1);
+				Ops::axpy(next.data(), p.data(), int(p.size()), Ops::neg(transpose[std::size_t(i) * n + i]));
+				p = std::move(next);
+			}
+			std::vector<T> result(p.size());
+			for (std::size_t i = 0; i < p.size(); ++i) result[i] = T::raw(p[i]);
+			return result;
+		}
+		auto relations = decompose(false);
+		if (!relations) return std::nullopt;
+		Row p{1};
+		for (const auto &relation : *relations) {
+			const int d = int(relation.size());
+			Row next(p.size() + d);
+			for (int i = 0; i < int(p.size()); ++i) {
+				next[i + d] = Ops::add(next[i + d], p[i]);
+				if (p[i]) Ops::axpy(next.data() + i, relation.data(), d, Ops::neg(p[i]));
+			}
+			p = std::move(next);
+		}
+		std::vector<T> result(p.size());
+		for (std::size_t i = 0; i < p.size(); ++i) result[i] = T::raw(p[i]);
+		return result;
+	}
+	std::optional<std::vector<T>> run(std::uint64_t exponent) {
+		auto relation_blocks = decompose();
+		if (!relation_blocks) return std::nullopt;
+		const auto &relations = *relation_blocks;
 			std::vector<T> b(std::size_t(n) * n), companion(b.size());
 			for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
 				b[std::size_t(j) * n + i] = T::raw(basis[i][j]);
@@ -176,9 +238,7 @@ struct FrobeniusPower {
 			}
 			for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
 				result[std::size_t(i) * n + pivots[j]] = T::raw(columns[std::size_t(j) * n + i]);
-			return result;
-		}
-		return std::nullopt;
+		return result;
 	}
 };
 }

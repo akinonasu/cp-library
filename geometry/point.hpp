@@ -119,8 +119,15 @@ struct PolarLess {
 		if (a == Point<T>{} || b == Point<T>{}) return a == Point<T>{} && b != Point<T>{};
 		auto half = [](Point<T> p) { return p.y < 0 || (p.y == 0 && p.x < 0); };
 		if (half(a) != half(b)) return half(a) < half(b);
-		if (auto c = cross(a, b); c != 0) return c > 0;
-		return norm2(a) < norm2(b);
+		if constexpr (integer<T> && sizeof(T) <= 4) {
+			auto c = std::int64_t(a.x) * b.y - std::int64_t(a.y) * b.x;
+			if (c) return c > 0;
+			auto norm = [](Point<T> p) { return std::uint64_t(std::int64_t(p.x) * p.x) + std::uint64_t(std::int64_t(p.y) * p.y); };
+			return norm(a) < norm(b);
+		} else {
+			if (auto c = cross(a, b); c != 0) return c > 0;
+			return norm2(a) < norm2(b);
+		}
 	}
 };
 }

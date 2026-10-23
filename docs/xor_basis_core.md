@@ -15,6 +15,7 @@ documentation_of: //components/xor_basis_core.hpp
 | `pivot(x)` | 最上位の 1 の位置。`x` は非零とする | $$O(1)$$ |
 | `insert(x)` | 基底を追加し、格納位置を返す。従属なら -1 | $$O(r)$$ |
 | `minimize(x)` / `maximize(x)` | 部分集合の XOR と `x` の XOR の最小値／最大値 | $$O(r)$$ |
+| `xor_basis_detail::reduce_rows<UInt,maximum>(x,row,count)` | 消去順の基底に沿って最小化する。`maximum=true` なら最大化 | $$O(\mathrm{count})$$ |
 
 基底は格納順に消去できる形で保持します。行の直接更新は公開ライブラリの内部からだけ行い、`at`・`dimension` も同時に更新します。
 

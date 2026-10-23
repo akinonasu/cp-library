@@ -134,8 +134,15 @@ struct PolarLess {
 		if (a == Point<T>{} || b == Point<T>{}) return a == Point<T>{} && b != Point<T>{};
 		auto half = [](Point<T> p) { return p.y < 0 || (p.y == 0 && p.x < 0); };
 		if (half(a) != half(b)) return half(a) < half(b);
-		if (auto c = cross(a, b); c != 0) return c > 0;
-		return norm2(a) < norm2(b);
+		if constexpr (integer<T> && sizeof(T) <= 4) {
+			auto c = std::int64_t(a.x) * b.y - std::int64_t(a.y) * b.x;
+			if (c) return c > 0;
+			auto norm = [](Point<T> p) { return std::uint64_t(std::int64_t(p.x) * p.x) + std::uint64_t(std::int64_t(p.y) * p.y); };
+			return norm(a) < norm(b);
+		} else {
+			if (auto c = cross(a, b); c != 0) return c > 0;
+			return norm2(a) < norm2(b);
+		}
 	}
 };
 }
@@ -491,10 +498,110 @@ inline std::optional<std::pair<std::uint64_t, std::uint64_t>> packed(std::vector
 }
 
 
-#line 8 "geometry/convex.hpp"
+#line 1 "components/packed_convex_hull.hpp"
+
+
+
+#line 1 "components/radix_sort.hpp"
+
+
+
+#line 6 "components/radix_sort.hpp"
+#include <cstddef>
+#line 11 "components/radix_sort.hpp"
+
+template <int Bits, class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key &&key) {
+	static_assert(1 <= Bits && Bits <= 16);
+	constexpr unsigned buckets = 1U << Bits, mask = buckets - 1;
+	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
+	static_assert(std::is_integral_v<K> && std::is_unsigned_v<K> && sizeof(K) <= sizeof(std::uint64_t));
+	if (values.size() < 2) return;
+	if (values.size() < 256) {
+		std::stable_sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
+		return;
+	}
+	std::uint64_t first = key(values.front()), previous = first, varying = 0;
+	bool sorted = true;
+	for (std::size_t i = 1; i < values.size(); ++i) {
+		std::uint64_t current = key(values[i]);
+		varying |= first ^ current;
+		sorted &= previous <= current;
+		previous = current;
+	}
+	if (sorted) return;
+	std::vector<T> scratch(values.size());
+	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
+	Counts count = [] {
+		if constexpr (Bits <= 11) return Counts{};
+		else return Counts(buckets);
+	}();
+	for (int shift = 0; shift < 64; shift += Bits) {
+		if (!((varying >> shift) & mask)) continue;
+		std::fill(count.begin(), count.end(), 0);
+		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask];
+		std::size_t sum = 0;
+		for (auto &x : count) {
+			auto n = x;
+			x = sum, sum += n;
+		}
+		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask]++] = std::move(value);
+		values.swap(scratch);
+	}
+}
+
+template <class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key key) {
+	stable_radix_sort<8>(values, std::move(key));
+}
+
+
+#line 8 "components/packed_convex_hull.hpp"
+
+namespace packed_convex_hull_detail {
+struct Entry {
+	std::uint64_t key;
+	int index;
+};
+inline std::int64_t cross(std::uint64_t a, std::uint64_t b, std::uint64_t c) {
+	std::int64_t x = a >> 32, y = std::uint32_t(a);
+	return (std::int64_t(b >> 32) - x) * (std::int64_t(std::uint32_t(c)) - y)
+		- (std::int64_t(std::uint32_t(b)) - y) * (std::int64_t(c >> 32) - x);
+}
+inline std::uint64_t key(std::uint64_t value) { return value; }
+inline std::uint64_t key(Entry value) { return value.key; }
+template <class Value>
+std::vector<Value> build(std::vector<Value> order, bool keep_collinear) {
+	stable_radix_sort<11>(order, [](const Value &value) { return key(value); });
+	order.erase(std::unique(order.begin(), order.end(), [](const Value &a, const Value &b) { return key(a) == key(b); }), order.end());
+	if (order.size() <= 2 || (keep_collinear && std::all_of(order.begin() + 2, order.end(), [&](const Value &value) {
+		return !cross(key(order[0]), key(order[1]), key(value));
+	}))) {
+		return order;
+	}
+	std::vector<Value> hull;
+	hull.reserve(order.size() * 2);
+	auto append = [&](Value value, std::size_t base) {
+		while (hull.size() >= base) {
+			auto turn = cross(key(hull[hull.size() - 2]), key(hull.back()), key(value));
+			if (turn > 0 || (keep_collinear && !turn)) break;
+			hull.pop_back();
+		}
+		hull.push_back(value);
+	};
+	for (auto value : order) append(value, 2);
+	std::size_t base = hull.size() + 1;
+	for (std::size_t i = order.size() - 1; i-- > 0;) append(order[i], base);
+	hull.pop_back();
+	return hull;
+}
+}
+
+
+#line 9 "geometry/convex.hpp"
 #include <limits>
 #include <numeric>
-#line 12 "geometry/convex.hpp"
+#line 13 "geometry/convex.hpp"
 
 namespace geometry {
 template <class T>
@@ -506,6 +613,25 @@ struct PointPair {
 template <class T>
 std::vector<int> convex_hull_indices(const std::vector<Point<T>> &points, bool keep_collinear = false, Real eps = epsilon) {
 	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if constexpr (integer<T> && sizeof(T) <= 8) {
+		if (points.size() >= 64) {
+			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
+			for (auto p : points) {
+				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
+				min_y = std::min(min_y, p.y), max_y = std::max(max_y, p.y);
+			}
+			if (wide_t<T>(max_x) - min_x <= INT32_MAX && wide_t<T>(max_y) - min_y <= INT32_MAX) {
+				std::vector<packed_convex_hull_detail::Entry> order(points.size());
+				for (int i = 0; i < int(points.size()); ++i)
+					order[i] = {(std::uint64_t(wide_t<T>(points[i].x) - min_x) << 32) | std::uint32_t(wide_t<T>(points[i].y) - min_y), i};
+				auto hull = packed_convex_hull_detail::build(std::move(order), keep_collinear);
+				std::vector<int> result;
+				result.reserve(hull.size());
+				for (auto value : hull) result.push_back(value.index);
+				return result;
+			}
+		}
+	}
 	std::vector<int> order(points.size());
 	std::iota(order.begin(), order.end(), 0);
 	std::sort(order.begin(), order.end(), [&](int a, int b) { return points[a] < points[b]; });
@@ -532,12 +658,51 @@ std::vector<int> convex_hull_indices(const std::vector<Point<T>> &points, bool k
 }
 
 template <class T>
+std::vector<Point<T>> convex_hull(std::vector<Point<T>> &&points, bool keep_collinear = false, Real eps = epsilon) {
+	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if constexpr (integer<T> && sizeof(T) <= 8) {
+		if (points.size() >= 64) {
+			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
+			for (auto p : points) {
+				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
+				min_y = std::min(min_y, p.y), max_y = std::max(max_y, p.y);
+			}
+			if (wide_t<T>(max_x) - min_x <= INT32_MAX && wide_t<T>(max_y) - min_y <= INT32_MAX) {
+				std::vector<std::uint64_t> order(points.size());
+				for (int i = 0; i < int(points.size()); ++i)
+					order[i] = (std::uint64_t(wide_t<T>(points[i].x) - min_x) << 32) | std::uint32_t(wide_t<T>(points[i].y) - min_y);
+				auto hull = packed_convex_hull_detail::build(std::move(order), keep_collinear);
+				points.clear();
+				for (auto value : hull) points.emplace_back(T(wide_t<T>(min_x) + (value >> 32)), T(wide_t<T>(min_y) + std::uint32_t(value)));
+				return std::move(points);
+			}
+		}
+	}
+	std::sort(points.begin(), points.end());
+	points.erase(std::unique(points.begin(), points.end()), points.end());
+	if (points.size() <= 2 || (keep_collinear && std::all_of(points.begin() + 2, points.end(), [&](auto p) {
+		return !orientation(points[0], points[1], p, eps);
+	}))) return std::move(points);
+	std::vector<Point<T>> hull;
+	hull.reserve(points.size() * 2);
+	auto append = [&](Point<T> p, std::size_t base) {
+		while (hull.size() >= base) {
+			int turn = orientation(hull[hull.size() - 2], hull.back(), p, eps);
+			if (turn > 0 || (keep_collinear && !turn)) break;
+			hull.pop_back();
+		}
+		hull.push_back(p);
+	};
+	for (auto p : points) append(p, 2);
+	std::size_t base = hull.size() + 1;
+	for (std::size_t i = points.size() - 1; i-- > 0;) append(points[i], base);
+	hull.pop_back();
+	return hull;
+}
+
+template <class T>
 std::vector<Point<T>> convex_hull(const std::vector<Point<T>> &points, bool keep_collinear = false, Real eps = epsilon) {
-	auto indices = convex_hull_indices(points, keep_collinear, eps);
-	std::vector<Point<T>> result;
-	result.reserve(indices.size());
-	for (int i : indices) result.push_back(points[i]);
-	return result;
+	return convex_hull(std::vector<Point<T>>(points), keep_collinear, eps);
 }
 
 template <class T>
@@ -588,13 +753,16 @@ wide_t<T> diameter_squared(const std::vector<Point<T>> &polygon, Real eps = epsi
 template <class T>
 std::optional<PointPair<T>> furthest_pair(const std::vector<Point<T>> &points, Real eps = epsilon) {
 	if (points.size() < 2) return std::nullopt;
-	auto ids = convex_hull_indices(points, false, eps);
-	if (ids.size() == 1) return PointPair<T>{0, 1, 0};
-	std::vector<Point<T>> polygon;
-	polygon.reserve(ids.size());
-	for (int i : ids) polygon.push_back(points[i]);
+	auto polygon = convex_hull(points, false, eps);
+	if (polygon.size() == 1) return PointPair<T>{0, 1, 0};
 	auto result = *convex_diameter(polygon, eps);
-	result.first = ids[result.first], result.second = ids[result.second];
+	auto a = polygon[result.first], b = polygon[result.second];
+	result.first = result.second = -1;
+	for (int i = 0; i < int(points.size()); ++i) {
+		if (points[i] == a) result.first = i;
+		if (points[i] == b) result.second = i;
+		if (result.first >= 0 && result.second >= 0) break;
+	}
 	return result;
 }
 
@@ -726,7 +894,6 @@ std::optional<PointPair<T>> closest_pair(const std::vector<Point<T>> &points) {
 
 #line 8 "components/fast_io.hpp"
 #include <charconv>
-#include <cstddef>
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>

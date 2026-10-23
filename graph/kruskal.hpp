@@ -8,15 +8,19 @@
 #include <stdexcept>
 #include <type_traits>
 
-template<class Cost = std::int64_t>
+template<class Cost = std::int64_t, class Sum = Cost>
 class Kruskal {
 	static_assert((std::numeric_limits<Cost>::is_integer || std::is_floating_point_v<Cost>) && !std::is_same_v<Cost, bool>);
+	static_assert((std::numeric_limits<Sum>::is_integer || std::is_floating_point_v<Sum>) && !std::is_same_v<Sum, bool>);
+	static_assert(std::numeric_limits<Cost>::is_integer == std::numeric_limits<Sum>::is_integer);
+	static_assert(std::numeric_limits<Cost>::digits <= std::numeric_limits<Sum>::digits);
+	static_assert(!std::numeric_limits<Cost>::is_signed || std::numeric_limits<Sum>::is_signed);
 	int n_;
 
   public:
 	struct Edge { int from, to; Cost cost; };
 	struct Result {
-		Cost cost = 0;
+		Sum cost = 0;
 		std::vector<int> edges;
 		int components = 0;
 		bool connected() const { return components <= 1; }
@@ -24,15 +28,15 @@ class Kruskal {
 
   private:
 	std::vector<Edge> edges_;
-	static void add_cost(Cost &sum, Cost value) {
+	static void add_cost(Sum &sum, Cost value) {
 		if constexpr (std::numeric_limits<Cost>::is_integer) {
 #if defined(__GNUC__) || defined(__clang__)
-			Cost next;
+			Sum next;
 			if (__builtin_add_overflow(sum, value, &next)) throw std::overflow_error("Kruskal cost");
 			sum = next;
 #else
-			if ((value > 0 && sum > std::numeric_limits<Cost>::max() - value) ||
-				(std::numeric_limits<Cost>::is_signed && value < 0 && sum < std::numeric_limits<Cost>::lowest() - value))
+			if ((value > 0 && sum > std::numeric_limits<Sum>::max() - value) ||
+				(std::numeric_limits<Cost>::is_signed && value < 0 && sum < std::numeric_limits<Sum>::lowest() - value))
 				throw std::overflow_error("Kruskal cost");
 			sum += value;
 #endif

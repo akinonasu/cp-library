@@ -1,104 +1,296 @@
-#line 1 "test/disjoint_sparse_table_affine.test.cpp"
+#line 1 "test/sliding_window_aggregation.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/queue_operate_all_composite"
-#line 1 "data_structure/range_query/disjoint_sparse_table.hpp"
+#line 1 "data_structure/sliding_window_aggregation.hpp"
 
 
 
-#line 1 "components/default_init_allocator.hpp"
-
-
-
-#include <memory>
-#include <new>
-
-template <class T>
-struct DefaultInitAllocator : std::allocator<T> {
-	template <class U>
-	struct rebind {
-		using other = DefaultInitAllocator<U>;
-	};
-	DefaultInitAllocator() = default;
-	template <class U>
-	DefaultInitAllocator(const DefaultInitAllocator<U> &) noexcept {}
-	template <class U>
-	void construct(U *p) { ::new (static_cast<void *>(p)) U; }
-};
-
-
-#line 5 "data_structure/range_query/disjoint_sparse_table.hpp"
-#include <algorithm>
-#include <bit>
 #include <cassert>
 #include <cstddef>
-#include <cstdint>
-#include <limits>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
-template <class S, auto op, auto e = nullptr>
-class DisjointSparseTable {
-	using Value = std::conditional_t<std::is_same_v<S, bool>, std::uint8_t, S>;
-	using Reference = std::conditional_t<std::is_same_v<S, bool>, bool, const S &>;
-	int n = 0;
-	std::vector<std::vector<Value, DefaultInitAllocator<Value>>> data;
-	static decltype(auto) combine(const Value &a, const Value &b) {
-		if constexpr (std::is_same_v<S, bool>) return bool(op(bool(a), bool(b)));
-		else return op(a, b);
+template<class S, auto op, auto e>
+class SlidingWindowAggregation {
+	struct Entry {
+		S value, product;
+		Entry(S value, S product) : value(std::move(value)), product(std::move(product)) {}
+	};
+	std::vector<Entry> left, right;
+	void transfer() {
+		left.reserve(right.size());
+		try {
+			for (auto it = right.rbegin(); it != right.rend(); ++it) {
+				S product = left.empty() ? it->value : op(it->value, left.back().product);
+				left.emplace_back(it->value, std::move(product));
+			}
+		} catch (...) {
+			left.clear();
+			throw;
+		}
+		right.clear();
+	}
+public:
+	using value_type = S;
+	using size_type = std::size_t;
+	SlidingWindowAggregation() = default;
+	explicit SlidingWindowAggregation(const std::vector<S> &values) { reserve(values.size()); for (const auto &x : values) push_back(x); }
+	SlidingWindowAggregation(const SlidingWindowAggregation &) = default;
+	SlidingWindowAggregation(SlidingWindowAggregation &&other) noexcept { swap(other); }
+	SlidingWindowAggregation &operator=(SlidingWindowAggregation other) noexcept { swap(other); return *this; }
+	bool empty() const { return left.empty() && right.empty(); }
+	size_type size() const { return left.size() + right.size(); }
+	void push_back(S value) {
+		S product = right.empty() ? value : op(right.back().product, value);
+		right.emplace_back(std::move(value), std::move(product));
+	}
+	void pop_front() { assert(!empty()); if (left.empty()) transfer(); left.pop_back(); }
+	const S &front() const { assert(!empty()); return left.empty() ? right.front().value : left.back().value; }
+	const S &back() const { assert(!empty()); return right.empty() ? left.front().value : right.back().value; }
+	S prod() const {
+		if (left.empty()) return right.empty() ? e() : right.back().product;
+		return right.empty() ? left.back().product : op(left.back().product, right.back().product);
+	}
+	void reserve(size_type n) { left.reserve(n); right.reserve(n); }
+	void clear() { left.clear(); right.clear(); }
+	void swap(SlidingWindowAggregation &other) noexcept { left.swap(other.left); right.swap(other.right); }
+	friend void swap(SlidingWindowAggregation &a, SlidingWindowAggregation &b) noexcept { a.swap(b); }
+};
+
+
+#line 1 "components/fast_io.hpp"
+
+
+
+#include <algorithm>
+#include <array>
+#include <bit>
+#line 8 "components/fast_io.hpp"
+#include <charconv>
+#line 10 "components/fast_io.hpp"
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <type_traits>
+#if defined(__unix__) || defined(__APPLE__)
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
+namespace fast_io_detail { struct BulkInput; struct BulkOutput; }
+
+class FastInput {
+	friend struct fast_io_detail::BulkInput;
+	static constexpr std::size_t capacity = 1 << 16;
+	FILE *file = nullptr;
+	std::unique_ptr<char[]> buffer;
+	const char *current = "", *end = current;
+	std::string scratch;
+	void *mapping = nullptr;
+	std::size_t mapped_size = 0;
+	bool refill() {
+		if (!file) return false;
+		std::size_t n = std::fread(buffer.get(), 1, capacity, file);
+		current = buffer.get();
+		end = current + n;
+		return n;
+	}
+	static const char *scan(const char *p, const char *end) {
+		while (end - p >= 8) {
+			std::uint64_t x;
+			std::memcpy(&x, p, 8);
+			if ((x - 0x2121212121212121ULL) & ~x & 0x8080808080808080ULL) break;
+			p += 8;
+		}
+		while (p != end && static_cast<unsigned char>(*p) > ' ') ++p;
+		return p;
 	}
 
-  public:
-	DisjointSparseTable() = default;
-	DisjointSparseTable(const DisjointSparseTable &) = default;
-	DisjointSparseTable &operator=(const DisjointSparseTable &) = default;
-	DisjointSparseTable(DisjointSparseTable &&other) noexcept : n(std::exchange(other.n, 0)), data(std::move(other.data)) {}
-	DisjointSparseTable &operator=(DisjointSparseTable &&other) noexcept {
-		if (this != &other) {
-			n = std::exchange(other.n, 0);
-			data = std::move(other.data);
+public:
+	explicit FastInput(FILE *input = stdin) {
+#if defined(__unix__) || defined(__APPLE__)
+		struct stat status;
+		int fd = fileno(input);
+		auto offset = ftello(input);
+		if (fd >= 0 && offset >= 0 && !fstat(fd, &status) && S_ISREG(status.st_mode) && status.st_size > offset) {
+			mapped_size = status.st_size;
+			mapping = mmap(nullptr, mapped_size, PROT_READ, MAP_PRIVATE, fd, 0);
+			if (mapping != MAP_FAILED) {
+				current = static_cast<const char *>(mapping) + offset;
+				end = static_cast<const char *>(mapping) + mapped_size;
+				return;
+			}
+			mapping = nullptr;
 		}
-		return *this;
+#endif
+		file = input;
+		buffer = std::make_unique_for_overwrite<char[]>(capacity);
 	}
-	explicit DisjointSparseTable(const std::vector<S> &a) { build(a); }
-	void build(const std::vector<S> &a) {
-		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
-		n = static_cast<int>(a.size());
-		int levels = std::max(1, int(std::bit_width(unsigned(std::max(0, n - 1)))));
-		data.resize(levels);
-		for (int k = 0; k < levels; ++k) {
-			std::size_t length = n, half = std::size_t(1) << k;
-			if (k && (length & (half * 2 - 1)) <= half) length &= ~(half * 2 - 1);
-			if constexpr (std::is_default_constructible_v<Value>) data[k].resize(length);
-			else data[k].assign(a.begin(), a.begin() + length);
+	explicit FastInput(std::string_view input) : current(input.empty() ? "" : input.data()), end(current + input.size()) {}
+	FastInput(const FastInput &) = delete;
+	FastInput &operator=(const FastInput &) = delete;
+	~FastInput() {
+#if defined(__unix__) || defined(__APPLE__)
+		if (mapping) munmap(mapping, mapped_size);
+#endif
+	}
+	std::string_view token() {
+		while (true) {
+			while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+			if (current != end) break;
+			if (!refill()) return {};
 		}
-		for (int i = 0; i < n; ++i) data[0][i] = a[i];
-		for (int k = 1; k < levels; ++k) {
-			Value *row = data[k].data();
-			std::size_t half = std::size_t(1) << k, block = half * 2;
-			for (std::size_t start = 0; start < data[k].size(); start += block) {
-				std::size_t mid = start + half, end = std::min(start + block, data[k].size());
-				row[mid - 1] = a[mid - 1];
-				row[mid] = a[mid];
-				for (std::size_t i = mid - 1; i > start; --i) row[i - 1] = combine(a[i - 1], row[i]);
-				for (std::size_t i = mid + 1; i < end; ++i) row[i] = combine(row[i - 1], a[i]);
+		const char *begin = current;
+		current = scan(current, end);
+		if (current != end || !file) return {begin, std::size_t(current - begin)};
+		scratch.assign(begin, end);
+		while (refill()) {
+			current = scan(current, end);
+			scratch.append(buffer.get(), std::size_t(current - buffer.get()));
+			if (current != end) break;
+		}
+		return scratch;
+	}
+	template <class T>
+	bool read(T &value) {
+		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool>) {
+			while (true) {
+				while (current != end && static_cast<unsigned char>(*current) <= ' ') ++current;
+				if (current != end) break;
+				if (!refill()) return false;
+			}
+			if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4 && std::endian::native == std::endian::little) {
+				if (end - current >= 11) {
+					std::uint64_t x;
+					std::memcpy(&x, current, 8);
+					if (!(((x + 0x4646464646464646ULL) | (x - 0x3030303030303030ULL)) & 0x8080808080808080ULL)) {
+						x &= 0x0f0f0f0f0f0f0f0fULL;
+						x = (x * 10 + (x >> 8)) & 0x00ff00ff00ff00ffULL;
+						x = (x * 100 + (x >> 16)) & 0x0000ffff0000ffffULL;
+						std::uint64_t v = std::uint32_t(x * 10000 + (x >> 32));
+						int n = 8;
+						for (; n < 10 && static_cast<unsigned char>(current[n]) - unsigned('0') < 10; ++n)
+							v = v * 10 + (current[n] - '0');
+						if (static_cast<unsigned char>(current[n]) <= ' ' && v <= 0xffffffffULL) {
+							current += n;
+							value = T(v);
+							return true;
+						}
+					}
+				}
+			}
+			T parsed{};
+			auto result = std::from_chars(current, end, parsed);
+			if (result.ec == std::errc{} && (result.ptr != end ? static_cast<unsigned char>(*result.ptr) <= ' ' : !file)) {
+				current = result.ptr;
+				value = parsed;
+				return true;
 			}
 		}
+		auto s = token();
+		if (s.empty()) return false;
+		if constexpr (std::is_same_v<T, bool>) {
+			assert(s == "0" || s == "1");
+			value = s[0] == '1';
+		} else if constexpr (std::is_integral_v<T>) {
+			auto result = std::from_chars(s.data(), s.data() + s.size(), value);
+			assert(result.ec == std::errc{} && result.ptr == s.data() + s.size());
+			(void)result;
+		} else value = T(s);
+		return true;
 	}
-	int size() const { return n; }
-	bool empty() const { return n == 0; }
-	Reference operator[](int i) const {
-		assert(0 <= i && i < n);
-		return data[0][i];
+};
+
+class FastOutput {
+	friend struct fast_io_detail::BulkOutput;
+	inline static constexpr auto quads = [] {
+		std::array<std::array<char, 4>, 10000> table{};
+		for (int i = 0; i < 10000; ++i)
+			table[i] = {char('0' + i / 1000), char('0' + i / 100 % 10), char('0' + i / 10 % 10), char('0' + i % 10)};
+		return table;
+	}();
+	FILE *file;
+	std::unique_ptr<char[]> buffer = std::make_unique_for_overwrite<char[]>(1 << 16);
+	std::size_t capacity = 1 << 16, length = 0;
+	char *reserve(std::size_t n) {
+		if (n > capacity - length) {
+			if (!flush()) throw std::runtime_error("output failed");
+			if (n > capacity) {
+				std::size_t next = std::max(n, 2 * capacity);
+				buffer = std::make_unique_for_overwrite<char[]>(next);
+				capacity = next;
+			}
+		}
+		return buffer.get() + length;
 	}
-	[[gnu::always_inline]] S prod(int l, int r) const {
-		assert(0 <= l && l <= r && r <= n);
-		if constexpr (std::is_same_v<decltype(e), std::nullptr_t>) assert(l < r);
-		else if (l == r) return e();
-		if (l == --r) return data[0][l];
-		const auto &row = data[std::bit_width(unsigned(l ^ r)) - 1];
-		return combine(row[l], row[r]);
+
+public:
+	explicit FastOutput(FILE *output = stdout) : file(output) {}
+	FastOutput(const FastOutput &) = delete;
+	FastOutput &operator=(const FastOutput &) = delete;
+	~FastOutput() { flush(); }
+	bool flush() {
+		std::size_t offset = 0;
+		while (offset < length) {
+			auto n = std::fwrite(buffer.get() + offset, 1, length - offset, file);
+			if (!n) {
+				std::memmove(buffer.get(), buffer.get() + offset, length - offset);
+				length -= offset;
+				return false;
+			}
+			offset += n;
+		}
+		length = 0;
+		return std::fflush(file) == 0;
 	}
-	S all_prod() const { return prod(0, n); }
+	void write(char c) { *reserve(1) = c; ++length; }
+	void write(__uint128_t value) {
+		char digits[40];
+		char *end = digits + sizeof(digits), *begin = end;
+		do { *--begin = char('0' + value % 10); value /= 10; } while (value);
+		write(std::string_view(begin, end - begin));
+	}
+	void write(__int128_t value) {
+		__uint128_t magnitude = __uint128_t(value);
+		if (value < 0) write('-'), magnitude = 0 - magnitude;
+		write(magnitude);
+	}
+	void write(std::string_view s) {
+		char *out = reserve(s.size());
+		if (!s.empty()) std::memcpy(out, s.data(), s.size());
+		length += s.size();
+	}
+	template <class T> requires std::is_integral_v<T>
+	void write(T value) {
+		char *out = reserve(32);
+		if constexpr (std::is_same_v<T, bool>) *out = '0' + value, ++length;
+		else if constexpr (std::is_unsigned_v<T> && sizeof(T) == 4) {
+			char *p = out;
+			if (value >= 100000000) {
+				auto high = value / 100000000, low = value % 100000000;
+				p = std::to_chars(p, p + 2, high).ptr;
+				std::memcpy(p, quads[low / 10000].data(), 4);
+				std::memcpy(p + 4, quads[low % 10000].data(), 4);
+				p += 8;
+			} else if (value >= 10000) {
+				p = std::to_chars(p, p + 4, value / 10000).ptr;
+				std::memcpy(p, quads[value % 10000].data(), 4);
+				p += 4;
+			} else p = std::to_chars(p, p + 4, value).ptr;
+			length += p - out;
+		} else length += std::to_chars(out, out + 32, value).ptr - out;
+	}
+	template <class T> requires requires(const T &value, char *out) { value.decimal_capacity(); value.to_chars(out); }
+	void write(const T &value) {
+		char *out = reserve(value.decimal_capacity());
+		length += value.to_chars(out) - out;
+	}
+	template <class T>
+	void println(const T &value) { write(value); write('\n'); }
 };
 
 
@@ -242,47 +434,32 @@ using fps_mint = mint;
 #endif
 
 
-#line 4 "test/disjoint_sparse_table_affine.test.cpp"
-#include <iostream>
-#include <tuple>
-#line 8 "test/disjoint_sparse_table_affine.test.cpp"
+#line 6 "test/sliding_window_aggregation.test.cpp"
 
-using namespace std;
-
-using S = pair<mint, mint>;
+using S = std::pair<mint, mint>;
 S op(S f, S g) { return {g.first * f.first, g.first * f.second + g.second}; }
 S e() { return {1, 0}; }
+
 int main() {
-	cin.tie(nullptr)->sync_with_stdio(false);
-	int q;
-	cin >> q;
-	struct Query {
-		int l, r;
-		mint x;
-	};
-	vector<S> a;
-	vector<Query> queries;
-	a.reserve(q);
-	queries.reserve(q);
-	int l = 0, r = 0;
-	for (int repeat_index = 0; repeat_index < q; ++repeat_index) {
-		int type;
-		cin >> type;
+	FastInput input;
+	FastOutput output;
+	int q = 0;
+	input.read(q);
+	SlidingWindowAggregation<S, op, e> queue;
+	queue.reserve(q);
+	while (q--) {
+		int type = 0;
+		input.read(type);
 		if (type == 0) {
-			S f;
-			cin >> f.first >> f.second;
-			a.push_back(f);
-			++r;
-		} else if (type == 1) ++l;
+			unsigned a = 0, b = 0;
+			input.read(a), input.read(b);
+			queue.push_back({mint::raw(a), mint::raw(b)});
+		} else if (type == 1) queue.pop_front();
 		else {
-			mint x;
-			cin >> x;
-			queries.push_back({l, r, x});
+			unsigned x = 0;
+			input.read(x);
+			auto [a, b] = queue.prod();
+			output.println((a * mint::raw(x) + b).val());
 		}
-	}
-	DisjointSparseTable<S, op, e> table(a);
-	for (auto query : queries) {
-		auto [p, q] = table.prod(query.l, query.r);
-		cout << p * query.x + q << '\n';
 	}
 }

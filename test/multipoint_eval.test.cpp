@@ -1,11 +1,11 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/multipoint_evaluation"
 #include "../fps/multipoint_eval.hpp"
-#include "fixtures/fps_io.hpp"
+#include "fixtures/fps_small_io.hpp"
 
 int main() {
-	FastInput input;
-	FastOutput output;
+	FpsInput input;
+	FpsOutput output;
 	int n = 0, m = 0; input.read(n); input.read(m);
-	auto f = read_fps(input, n), xs = read_fps(input, m);
-	write_fps(output, multipoint_eval(f, xs));
+	auto f = read_series<fps>(input, n), xs = read_series<fps>(input, m);
+	write_series(output, multipoint_eval(f, xs));
 }

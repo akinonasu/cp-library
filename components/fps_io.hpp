@@ -172,16 +172,37 @@ inline void write_coefficients(FastOutput &output, const mint *in, std::size_t n
 			_mm256_storeu_si256(reinterpret_cast<__m256i *>(values + j), io_values(_mm256_load_si256(reinterpret_cast<const __m256i *>(words))));
 		}
 		for (; j < count; ++j) values[j] = in[i + j].val();
-		if (full) fps_io_fields::detail::format(text, values, full, k);
+		char *end = text;
+		static constexpr char zeros[] = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+		auto zero = [&](std::size_t at) __attribute__((target("avx2"))) {
+			auto x = _mm256_or_si256(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + at)), _mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + at + 8)));
+			return _mm256_testz_si256(x, x);
+		};
+		std::size_t at = 0;
+		while (at < full) {
+			if (zero(at)) { std::memcpy(end, zeros, 32); end += 32; at += 16; }
+			else {
+				const auto first = at;
+				do at += 16; while (at < full && !zero(at));
+				fps_io_fields::detail::format(end, values + first, at - first, k);
+				end += 10 * (at - first);
+			}
+		}
 		if (full < count) {
 			alignas(32) unsigned rest[16] = {};
 			alignas(16) char last[160];
 			std::copy_n(values + full, count - full, rest);
-			fps_io_fields::detail::format(last, rest, 16, k);
-			std::memcpy(text + 10 * full, last, 10 * (count - full));
+			bool empty = true;
+			for (auto x : rest) empty &= x == 0;
+			if (empty) { std::memcpy(end, zeros, 2 * (count - full)); end += 2 * (count - full); }
+			else {
+				fps_io_fields::detail::format(last, rest, 16, k);
+				std::memcpy(end, last, 10 * (count - full));
+				end += 10 * (count - full);
+			}
 		}
-		if (i + count == n) text[10 * count - 1] = '\n';
-		fast_io_detail::BulkOutput::write(output, std::string_view(text, 10 * count));
+		if (i + count == n) end[-1] = '\n';
+		fast_io_detail::BulkOutput::write(output, std::string_view(text, end - text));
 	}
 	if (!n) output.write('\n');
 }

@@ -1,70 +1,5 @@
 #line 1 "test/static_range_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_sum"
-#line 1 "data_structure/fenwick_tree.hpp"
-
-
-
-#include <cassert>
-#include <cstddef>
-#include <limits>
-#include <type_traits>
-#include <vector>
-
-namespace fenwick_tree_detail {
-template<class T, bool = std::is_integral_v<T>> struct Storage { using type = T; };
-template<class T> struct Storage<T, true> { using type = std::make_unsigned_t<T>; };
-#if defined(__SIZEOF_INT128__)
-template<> struct Storage<__int128_t, false> { using type = __uint128_t; };
-#endif
-}
-
-template<class T, bool Padded = true> class FenwickTree {
-	static_assert(!std::is_same_v<T, bool>);
-	using U = typename fenwick_tree_detail::Storage<T>::type;
-	std::vector<U> data_;
-	int n_ = 0;
-	static std::size_t index(unsigned i) {
-		if constexpr (Padded) return std::size_t(i) + (i >> 10);
-		else return i;
-	}
-
-  public:
-	explicit FenwickTree(int n = 0) : n_(n) {
-		assert(n >= 0);
-		data_.resize(index(unsigned(n)) + 1);
-	}
-	explicit FenwickTree(const std::vector<T> &a) {
-		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
-		n_ = static_cast<int>(a.size());
-		data_.resize(index(unsigned(n_)) + 1);
-		for (unsigned i = 1; i <= unsigned(n_); ++i) {
-			data_[index(i)] += U(a[i - 1]);
-			unsigned p = i + (i & -i);
-			if (p <= unsigned(n_)) data_[index(p)] += data_[index(i)];
-		}
-	}
-	int size() const { return n_; }
-	void add(int p, T x) {
-		assert(0 <= p && p < n_);
-		for (unsigned i = unsigned(p) + 1; i <= unsigned(n_); i += i & -i) data_[index(i)] += U(x);
-	}
-	T sum(int r) const {
-		assert(0 <= r && r <= n_);
-		U result{};
-		for (unsigned i = unsigned(r); i; i &= i - 1) result += data_[index(i)];
-		return T(result);
-	}
-	T sum(int l, int r) const {
-		assert(0 <= l && l <= r && r <= n_);
-		U result{};
-		unsigned a = unsigned(l), b = unsigned(r);
-		while (b > a) result += data_[index(b)], b &= b - 1;
-		while (a > b) result -= data_[index(a)], a &= a - 1;
-		return T(result);
-	}
-};
-
-
 #line 1 "components/fast_io.hpp"
 
 
@@ -72,9 +7,9 @@ template<class T, bool Padded = true> class FenwickTree {
 #include <algorithm>
 #include <array>
 #include <bit>
-#line 8 "components/fast_io.hpp"
+#include <cassert>
 #include <charconv>
-#line 10 "components/fast_io.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -82,7 +17,7 @@ template<class T, bool Padded = true> class FenwickTree {
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#line 18 "components/fast_io.hpp"
+#include <type_traits>
 #if defined(__unix__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -302,19 +237,19 @@ public:
 };
 
 
-#line 5 "test/static_range_sum.test.cpp"
+#line 4 "test/static_range_sum.test.cpp"
+#include <vector>
 
 int main() {
 	FastInput input;
 	FastOutput output;
 	int n = 0, q = 0;
 	input.read(n), input.read(q);
-	std::vector<std::int64_t> a(n);
-	for (auto &x : a) input.read(x);
-	FenwickTree tree(a);
+	std::vector<std::int64_t> prefix(n + 1);
+	for (int i = 0; i < n; ++i) { std::int64_t value = 0; input.read(value); prefix[i + 1] = prefix[i] + value; }
 	while (q--) {
 		int l = 0, r = 0;
 		input.read(l), input.read(r);
-		output.println(tree.sum(l, r));
+		output.println(prefix[r] - prefix[l]);
 	}
 }

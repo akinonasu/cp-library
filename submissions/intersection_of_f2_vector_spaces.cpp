@@ -17,6 +17,23 @@
 #include <type_traits>
 
 namespace xor_basis_detail {
+template <class UInt, bool maximum = false>
+#if defined(__GNUC__) || defined(__clang__)
+__attribute__((always_inline))
+#endif
+inline UInt reduce_rows(UInt x, const UInt *row, int count) {
+	int i = 0;
+	auto step = [&](UInt value) {
+		if constexpr (maximum) x = std::max(x, UInt(x ^ value));
+		else x = std::min(x, UInt(x ^ value));
+	};
+	for (; i + 4 <= count; i += 4) {
+		step(row[i]); step(row[i + 1]); step(row[i + 2]); step(row[i + 3]);
+	}
+	for (; i < count; ++i) step(row[i]);
+	return x;
+}
+
 template <class UInt, int Bits>
 struct Core {
 	static_assert(std::is_integral_v<UInt> && std::is_unsigned_v<UInt> && !std::is_same_v<UInt, bool>);
@@ -31,19 +48,19 @@ struct Core {
 	int insert(UInt x) {
 		assert(valid(x));
 		if (dimension == Bits) return -1;
-		for (int i = 0; i < dimension; ++i) x = std::min(x, UInt(x ^ row[i]));
+		x = reduce_rows(x, row.data(), dimension);
 		if (!x) return -1;
 		row[dimension] = x; at[pivot(x)] = std::uint8_t(dimension + 1);
 		return dimension++;
 	}
 	UInt minimize(UInt x) const {
 		if (dimension == Bits) return UInt(x & UInt(~mask));
-		for (int i = 0; i < dimension; ++i) x = std::min(x, UInt(x ^ row[i]));
+		x = reduce_rows(x, row.data(), dimension);
 		return x;
 	}
 	UInt maximize(UInt x) const {
 		if (dimension == Bits) return UInt(x | mask);
-		for (int i = 0; i < dimension; ++i) x = std::max(x, UInt(x ^ row[i]));
+		x = reduce_rows<UInt, true>(x, row.data(), dimension);
 		return x;
 	}
 };
@@ -56,6 +73,7 @@ struct Core {
 #include <initializer_list>
 #line 13 "math/linear_algebra/xor_basis.hpp"
 #include <optional>
+#include <span>
 #include <utility>
 #include <vector>
 
@@ -70,6 +88,39 @@ class XorBasis {
 	friend class RollbackXorBasis<UInt, Bits>;
 	friend class PrefixXorBasis<UInt, Bits>;
 	friend class XorBasisWithWitness<UInt, Bits>;
+
+	XorBasis intersection_range(std::span<const UInt> values) const {
+		XorBasis result;
+		if (empty()) return result;
+		if (rank() == Bits) { for (UInt value : values) result.insert(value); return result; }
+		if constexpr (Bits <= 32) {
+			std::array<std::uint64_t, Bits> work;
+			int n = rank();
+			for (int i = 0; i < n; ++i) work[i] = std::uint64_t(core.row[i]) << 32;
+			for (UInt value : values) {
+				assert(Core::valid(value));
+				std::uint64_t x = (std::uint64_t(value) << 32) | value;
+				x = xor_basis_detail::reduce_rows(x, work.data(), n);
+				if (x >> 32) work[n++] = x;
+				else result.insert(UInt(x));
+			}
+			return result;
+		}
+		std::array<UInt, Bits> row{};
+		for (int i = 0; i < rank(); ++i) row[Core::pivot(core.row[i])] = core.row[i];
+		std::array<UInt, Bits> source{};
+		for (UInt value : values) {
+			assert(Core::valid(value));
+			UInt x = value, y = value;
+			while (x) {
+				int i = Core::pivot(x);
+				if (!row[i]) { row[i] = x; source[i] = y; break; }
+				x ^= row[i]; y ^= source[i];
+			}
+			if (!x) result.insert(y);
+		}
+		return result;
+	}
 
   public:
 	using value_type = UInt;
@@ -192,37 +243,13 @@ class XorBasis {
 	XorBasis intersection(const XorBasis &other) const {
 		if (core.dimension == Bits || this == &other) return other;
 		if (other.core.dimension == Bits) return *this;
-		XorBasis result;
-		if (empty() || other.empty()) return result;
 		if (rank() < other.rank()) return other.intersection(*this);
-		if constexpr (Bits <= 32) {
-			std::array<std::uint64_t, Bits> work;
-			int n = rank();
-			for (int i = 0; i < n; ++i) work[i] = std::uint64_t(core.row[i]) << 32;
-			for (int j = 0; j < other.rank(); ++j) {
-				UInt value = other.core.row[j];
-				std::uint64_t x = (std::uint64_t(value) << 32) | value;
-				for (int i = 0; i < n; ++i) x = std::min(x, x ^ work[i]);
-				if (x >> 32) work[n++] = x;
-				else result.insert(UInt(x));
-			}
-			return result;
-		}
-		std::array<UInt, Bits> row{};
-		for (int i = 0; i < rank(); ++i) row[Core::pivot(core.row[i])] = core.row[i];
-		std::array<UInt, Bits> source{};
-		for (int j = 0; j < other.rank(); ++j) {
-			UInt value = other.core.row[j];
-			UInt x = value, y = value;
-			while (x) {
-				int i = Core::pivot(x);
-				if (!row[i]) { row[i] = x; source[i] = y; break; }
-				x ^= row[i]; y ^= source[i];
-			}
-			if (!x) result.insert(y);
-		}
-		return result;
+		return intersection_range({other.core.row.data(), std::size_t(other.rank())});
 	}
+	template <class Range>
+	requires requires(const Range &values) { std::span<const UInt>(values); }
+	XorBasis intersection(const Range &values) const { return intersection_range(std::span<const UInt>(values)); }
+
 	XorBasis orthogonal_complement() const {
 		auto reduced = canonical();
 		XorBasis result;
@@ -590,19 +617,20 @@ public:
 };
 
 
-#line 5 "test/xor_basis_intersection.test.cpp"
+#line 7 "test/xor_basis_intersection.test.cpp"
 
 int main() {
 	FastInput input;
 	FastOutput output;
 	int t = 0; input.read(t);
 	while (t--) {
-		XorBasis<std::uint32_t, 30> a, b;
+		XorBasis<std::uint32_t, 30> a;
+		std::array<std::uint32_t, 30> b;
 		int n = 0, m = 0; input.read(n);
 		for (int i = 0; i < n; ++i) { std::uint32_t x = 0; input.read(x); a.insert(x); }
 		input.read(m);
-		for (int i = 0; i < m; ++i) { std::uint32_t x = 0; input.read(x); b.insert(x); }
-		auto result = (a & b).vectors();
+		for (int i = 0; i < m; ++i) input.read(b[i]);
+		auto result = a.intersection(std::span<const std::uint32_t>(b.data(), m)).vectors();
 		output.write(result.size());
 		for (auto x : result) { output.write(' '); output.write(x); }
 		output.write('\n');

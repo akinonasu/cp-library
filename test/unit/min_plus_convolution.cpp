@@ -139,6 +139,44 @@ void kernel() {
 #endif
 }
 
+void opposite() {
+	std::mt19937_64 rng(5738);
+	for (int n : {0, 1, 2, 7, 63, 64, 65, 127, 256})
+		for (int m : {0, 1, 2, 13, 65, 257}) {
+			std::vector<std::int64_t> a(n), b(m);
+			std::int64_t slope = 500;
+			for (int i = 1; i < n; ++i) {
+				slope -= rng() % 31;
+				a[i] = a[i - 1] + slope;
+			}
+			for (auto &v : b) v = std::int64_t(rng() % 100000) - 50000;
+			assert(min_plus_convolution_concave(a, b) == naive(a, b, std::less<>{}));
+			for (auto &v : a) v = -v;
+			assert(max_plus_convolution_convex(a, b) == naive(a, b, std::greater<>{}));
+		}
+	using I = std::int64_t;
+	using U = std::uint64_t;
+	I lower = std::numeric_limits<I>::min(), upper = std::numeric_limits<I>::max();
+	for (I offset : {lower + 1000000, upper - 1000000}) {
+		std::vector<I> a(130), b(140);
+		for (int i = 0; i < 130; ++i) a[i] = offset - I(i) * i;
+		for (int i = 0; i < 140; ++i) b[i] = i;
+		assert(min_plus_convolution_concave(a, b) == naive(a, b, std::less<>{}));
+	}
+	std::vector<U> a(130), b(140);
+	for (int i = 0; i < 130; ++i) a[i] = std::numeric_limits<U>::max() - I(i) * i - 1000;
+	for (int i = 0; i < 140; ++i) b[i] = i;
+	assert(min_plus_convolution_concave(a, b) == naive(a, b, std::less<>{}));
+	std::vector<I> wide(130, I(1) << 50);
+	wide.front() = wide.back() = 0;
+	assert(min_plus_convolution_concave(wide, std::vector<I>{1, -1}) == naive(wide, std::vector<I>{1, -1}, std::less<>{}));
+	std::vector<I> full(130, std::numeric_limits<std::uint32_t>::max());
+	full.front() = full.back() = 0;
+	assert(min_plus_convolution_concave(full, std::vector<I>{0, 0}) == naive(full, std::vector<I>{0, 0}, std::less<>{}));
+	std::vector<Value> generic_a{{0}, {5}, {7}, {6}}, generic_b{{3}, {-1}, {2}};
+	assert(min_plus_convolution_concave(generic_a, generic_b) == naive(generic_a, generic_b, std::less<>{}));
+}
+
 int main() {
 	static_assert(!min_plus_convolution_integral_detail::supported<bool>);
 	small_integers<std::int8_t>();
@@ -152,4 +190,5 @@ int main() {
 	boundaries();
 	generic();
 	kernel();
+	opposite();
 }

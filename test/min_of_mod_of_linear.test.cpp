@@ -1,15 +1,16 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/min_of_mod_of_linear"
-#include "../math/floor_sum/min_of_mod_of_linear.hpp"
+#include "math/floor_sum/min_of_mod_of_linear.hpp"
+#include "components/fast_io.hpp"
 #include <cstdint>
-#include <iostream>
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int t;
-	std::cin >> t;
+	FastInput input;
+	FastOutput output;
+	int t = 0;
+	input.read(t);
 	while (t--) {
-		std::uint64_t n, m, a, b;
-		std::cin >> n >> m >> a >> b;
-		std::cout << min_of_mod_of_linear(n, m, a, b) << '\n';
+		std::uint32_t n = 0, m = 0, a = 0, b = 0;
+		input.read(n), input.read(m), input.read(a), input.read(b);
+		output.println(std::uint32_t(min_of_mod_of_linear(n, m, a, b)));
 	}
 }

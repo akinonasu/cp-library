@@ -144,6 +144,33 @@ public:
 	}
 	SternBrocotTree lca(const SternBrocotTree &other) const { return lca(value(), other.value()); }
 	W distance(const SternBrocotTree &other) const { return W(level) + other.level - 2 * W(lca(other).level); }
+	static std::pair<value_type, value_type> approximate(Int numerator, Int denominator, Int max_numerator, Int max_denominator) {
+		assert(numerator > 0 && denominator > 0 && max_numerator > 0 && max_denominator > 0);
+		U a = numerator, b = denominator, ln = 0, ld = 1, rn = 1, rd = 0;
+		U n = max_numerator, d = max_denominator;
+		while (a != b) {
+			bool right = a > b;
+			U k = right ? (a - 1) / b : (b - 1) / a;
+			U step = k;
+			if (right ? W(ln) + W(k) * rn > n || W(ld) + W(k) * rd > d
+				: W(rn) + W(k) * ln > n || W(rd) + W(k) * ld > d) {
+				step = right ? (n - ln) / rn : (d - rd) / ld;
+				if (right && rd) step = std::min<U>(step, (d - ld) / rd);
+				if (!right && ln) step = std::min<U>(step, (n - rn) / ln);
+			}
+			if (right) { ln += step * rn; ld += step * rd; a -= step * b; }
+			else { rn += step * ln; rd += step * ld; b -= step * a; }
+			if (step < k) break;
+		}
+		if (a == b && W(ln) + rn <= n && W(ld) + rd <= d) {
+			value_type exact{Int(ln + rn), Int(ld + rd)};
+			return {exact, exact};
+		}
+		return {{Int(ln), Int(ld)}, {Int(rn), Int(rd)}};
+	}
+	static std::pair<value_type, value_type> approximate(Int numerator, Int denominator, Int bound) {
+		return approximate(numerator, denominator, bound, bound);
+	}
 };
 
 #endif

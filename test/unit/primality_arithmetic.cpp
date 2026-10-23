@@ -77,6 +77,7 @@ int main() {
 		assert(is_prime(n) == prime(n));
 	}
 	for (U n = (U(1) << 32) - 4096; n < (U(1) << 32) + 4096; ++n) assert(is_prime(n) == prime(n));
+	for (U n = (U(1) << 62) - 4096; n < (U(1) << 62) + 4096; ++n) assert(is_prime(n) == prime(n));
 	for (U n : {341ULL, 561ULL, 1105ULL, 1729ULL, 2047ULL, 1373653ULL, 25326001ULL,
 				3215031751ULL, 2152302898747ULL, 3474749660383ULL, 341550071728321ULL,
 				3825123056546413051ULL, 18446744073709551615ULL}) assert(!is_prime(n));

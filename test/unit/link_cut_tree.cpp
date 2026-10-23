@@ -52,6 +52,35 @@ int main() {
 	assert(empty.size() == 0);
 	mt19937 random(123);
 	for (int trial = 0; trial < 40; ++trial) {
+		int n = random() % 35;
+		std::vector<std::pair<int, int>> edges;
+		std::vector<std::vector<int>> graph(n, std::vector<int>(n));
+		std::vector<std::int64_t> values(n);
+		std::vector<std::string> words(n);
+		for (int v = 0; v < n; ++v) values[v] = v + 1, words[v] = char('A' + v % 26);
+		SumTree sums(values);
+		WordTree strings(words);
+		for (int repeat = 0; repeat < 3; ++repeat) {
+			edges.clear();
+			for (auto &row : graph) std::fill(row.begin(), row.end(), 0);
+			for (int v = 1; v < n; ++v) if (random() % 3) {
+				int p = random() % v;
+				edges.emplace_back(v, p), graph[v][p] = graph[p][v] = 1;
+			}
+			sums.build_forest(edges), strings.build_forest(edges);
+			for (int u = 0; u < n; ++u) for (int v = 0; v < n; ++v) {
+				auto route = path(graph, u, v);
+				assert(sums.same(u, v) == !route.empty() && strings.same(u, v) == !route.empty());
+				if (route.empty()) continue;
+				std::int64_t sum = 0;
+				std::string word;
+				for (int x : route) sum += values[x], word += words[x];
+				assert(sums.prod(u, v) == sum && strings.prod(u, v) == word);
+				assert(sums.path_size(u, v) == int(route.size()));
+			}
+		}
+	}
+	for (int trial = 0; trial < 40; ++trial) {
 		int n = 1 + random() % 24;
 		vector<int64_t> values(n);
 		vector<string> words(n);
