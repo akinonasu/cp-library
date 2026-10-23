@@ -9,7 +9,7 @@ redirect_from: /math/splitmix64.hpp.html
 
 SplitMix64 rng(123);
 auto random = rng();
-auto hash = splitmix64(key);
+auto hash = splitmix64(42);
 ```
 
 | 操作 | 内容・返り値 | 計算量 |

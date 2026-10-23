@@ -41,6 +41,8 @@ auto [l, r] = tree.subtree(1);
 
 `path(u,v,edge = false)` は経路を `u` から `v` の順に並べた `Segment{l,r,reversed}` の列を返します。各区間は $$[l,r)$$ で、`reversed` が真なら降順に読みます。非可換な演算では、区間の正順・逆順の積を用意して使い分けます。`for_each_path(u,v,f,edge = false)` は同じ順序で `f(l,r,reversed)` を呼び、区間列のメモリ確保を省きます。
 
+次は `in[v]` 順の値で構築した区間和のセグメント木 `seg` を使う部分です。`u`・`v` は経路の両端で、和は可換なので `reversed` を使いません。
+
 ```cpp
 long long answer = 0;
 tree.for_each_path(u, v, [&](int l, int r, bool) { answer += seg.prod(l, r); });

@@ -19,6 +19,6 @@ documentation_of: //components/binomial_prefix_core.hpp
 
 法は素数、前計算の上限は非負で `INT_MAX` 未満かつ法未満にします。各操作の `n` は前計算の範囲内で指定します。`Mint` の条件は公開ライブラリと同じです。
 
-`Mint = mint` では FPS の階乗・逆階乗生成を使い、他の型ではスカラー処理を使います。
+`Mint = mint` では [modint の階乗・逆階乗生成](mint_factorials.md)を使い、他の型ではスカラー処理を使います。NTT・FPS には依存しません。
 
 前計算は $$O(n)$$ 時間・空間と逆元計算 1 回です。`binom`・`center` は $$O(1)$$、`range` は $$O(r-l)$$ 時間・$$O(1)$$ 追加空間です。

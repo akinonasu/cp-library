@@ -12,6 +12,8 @@ title: "Segtree Beats の使い方一覧"
 SegtreeBeats seg(std::vector<long long>{1, 4, 2, 8});
 ```
 
+以下はこの `seg` に対する操作例です。`l,r` は `0 <= l <= r <= seg.size()`、`p` は `0 <= p < seg.size()` とし、`x` は更新する値です。
+
 | 更新 ＼ 取得 | 区間和 | 区間最小値 | 区間最大値 |
 | --- | --- | --- | --- |
 | 加算 | `add` + `sum` | `add` + `min` | `add` + `max` |

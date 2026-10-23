@@ -45,6 +45,12 @@ int main() {
 辺を読みながら構築する場合は、次のように `produce` を渡します。`produce` は 1 回呼ばれ、受け取った `emit` を `m` 回呼んで辺を渡します。辺を受け取る処理と出次数の集計をまとめるため、辺配列を別に用意して走査する必要がありません。
 
 ```cpp
+#include "lib/components/directed_csr.hpp"
+#include <iostream>
+
+int n, m;
+std::cin >> n >> m;
+using Graph = DirectedCSR<std::uint32_t>;
 Graph g(n, m, [&](auto emit) {
 	for (int i = 0; i < m; ++i) {
 		Graph::Edge edge;
@@ -54,7 +60,7 @@ Graph g(n, m, [&](auto emit) {
 });
 ```
 
-この例では `<iostream>` を include します。`emit` の呼び出し順が辺の入力順です。辺数が `m` と異なる場合は `std::length_error` を送出します。`produce`・辺の格納中に例外が出た場合は、指定した頂点数の辺なしグラフに戻して例外を送出します。`emit` は `produce` の呼び出し中だけ使い、保存しないでください。一時的に $$O(m)$$ の辺配列を内部で確保し、構築後に解放します。
+`emit` の呼び出し順が辺の入力順です。辺数が `m` と異なる場合は `std::length_error` を送出します。`produce`・辺の格納中に例外が出た場合は、指定した頂点数の辺なしグラフに戻して例外を送出します。`emit` は `produce` の呼び出し中だけ使い、保存しないでください。一時的に $$O(m)$$ の辺配列を内部で確保し、構築後に解放します。
 
 全頂点の出次数が高々 1 で、出辺のない頂点が高々 1 個なら、辺の格納位置を頂点番号から直接計算します。通常の CSR と同じ辺配列を使い、`g[v]` の返り値や辺の順序は変わりません。`dijkstra_path` もこの構造を自動で利用します。
 

@@ -8,7 +8,8 @@ redirect_from: /data_structure/default_init_allocator.hpp.html
 #include "lib/components/default_init_allocator.hpp"
 #include <vector>
 
-std::vector<int, DefaultInitAllocator<int>> a(n);
+std::vector<int, DefaultInitAllocator<int>> a(100);
+for (int i = 0; i < 100; ++i) a[i] = i;
 ```
 
 | 操作 | 内容・返り値 | 計算量 |

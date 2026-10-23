@@ -39,6 +39,8 @@ CSR では、各頂点の入次数が高々 1 なら、一意な経路の探索�
 静的な大きいグラフでは、[Directed CSR](https://qandori.github.io/cp-library/components/directed_csr.hpp.html) も同じ関数へ渡せます。各頂点の隣接辺を一つの配列へまとめ、頂点ごとの領域確保を省きます。
 
 ```cpp
+#include "lib/graph/shortest_path/dijkstra.hpp"
+
 using Graph = DirectedCSR<std::uint32_t>;
 std::vector<Graph::Edge> edges{ {0,1,3000000000U}, {1,2,3000000000U} };
 Graph graph(3, edges);
@@ -51,6 +53,7 @@ CSR の 32 bit 以下の整数重みは、距離を `std::int64_t` で計算し�
 入力から直接構築する場合は、CSR のコールバックと[一括入力](https://qandori.github.io/cp-library/components/fast_io_bulk.hpp.html)を組み合わせられます。次の例では `m` 本の辺を入力順に読みます。各行の形式は `始点 終点 重み` です。
 
 ```cpp
+#include "lib/graph/shortest_path/dijkstra.hpp"
 #include "lib/components/fast_io_bulk.hpp"
 
 FastInput in;

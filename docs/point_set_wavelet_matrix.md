@@ -17,6 +17,8 @@ auto answer = wm.min_count_largest(0, 5, 12);
 
 配列の一点代入と、区間内の順位・和のクエリを扱います。初期値以外に代入する全ての `(位置,値)` の事前登録が必要です。通常は構築前に更新クエリを先読みし、候補を `candidates` に集めます。初期値は自動登録されます。候補が最初から分かっていれば、更新クエリ自体の先読みは不要です。順位・和を求めるクエリは先読みせずに処理できます。区間は $$[l,r)$$、順位は 0 始まりです。
 
+一点操作と候補の位置は `0 <= i < size()`、区間は `0 <= l <= r <= size()` とします。`kth_*` は `0 <= k < r-l`、`sum_smallest`・`sum_largest` は `0 <= k <= r-l` が必要です。和の `k` は個数で、0 個の和は 0 です。重複する要素は個数分だけ数え、空区間の個数・和は 0 です。同じ候補を複数登録しても一つにまとめます。列長と異なる登録 `(位置,値)` の総数はそれぞれ `INT_MAX` 以下とします。入力は変更せず、構築後に破棄できます。
+
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `PointSetWaveletMatrix()` | 空で構築 | $$O(1)$$ |
@@ -36,7 +38,7 @@ auto answer = wm.min_count_largest(0, 5, 12);
 | `min_count_smallest(l,r,target)` / `min_count_largest(l,r,target)` | 各順序で和が `target` 以上になる最小個数。届かなければ -1 | $$O(\log m\log\sigma)$$ |
 | `max_count_smallest(l,r,budget)` / `max_count_largest(l,r,budget)` | 各順序で和が `budget` 以下の最大個数。空の選択も不可能なら -1 | $$O(\log m\log\sigma)$$ |
 
-`T` は 64 bit 以下の整数型です。`PointSetWaveletMatrix<T,Sum>` で和の型を指定できます。既定は 32 bit 以下の値なら `std::int64_t`、64 bit の値なら `__int128_t` です。
+`T` は `bool` を除く 64 bit 以下の整数型、`Sum` は符号付き整数型です。`PointSetWaveletMatrix<T,Sum>` で和の型を指定できます。既定は 32 bit 以下の値なら `std::int64_t`、64 bit の値なら `__int128_t` です。中間の部分和も `Sum` に収めてください。
 
 和の境界探索 `min_count_*`・`max_count_*` には初期値と登録した候補全てが非負であることが必要です。前者は `target <= 0` なら 0、後者は `budget < 0` なら -1 を返します。その他のクエリは負の値も扱えます。
 

@@ -480,7 +480,7 @@ oj-bundle a.cpp | pbcopy
 
 ## ライセンス
 
-[CC0 1.0 Universal](LICENSE) を採用しています。著作権表示なしで利用・変更・再配布・商用利用できます。
+[CC0 1.0 Universal](https://github.com/qandori/cp-library/blob/main/LICENSE) を採用しています。著作権表示なしで利用・変更・再配布・商用利用できます。
 
 ### 応用ライブラリ
 

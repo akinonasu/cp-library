@@ -29,6 +29,8 @@ int main() {
 行列から構築したり、既存の行列を更新したりすることもできます。対角成分は 0 と入力値の小さい方、到達不能な成分は `inf` としてください。
 
 ```cpp
+#include "lib/graph/shortest_path/warshall_floyd.hpp"
+
 std::int64_t inf = std::numeric_limits<std::int64_t>::max();
 std::vector<std::vector<std::int64_t>> d{
 	{0, 5, inf},
