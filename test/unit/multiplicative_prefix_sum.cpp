@@ -3,16 +3,18 @@
 #include "test/fixtures/multiplicative_prefix_sum_types.hpp"
 #include <array>
 #include <cassert>
+#include <functional>
+#include <memory>
 #include <random>
 #include <utility>
 
 struct Ring {
 	long long value;
 	explicit Ring(long long x) : value(x) {}
-	Ring& operator+=(Ring b) { value += b.value; return *this; }
+	void operator+=(Ring b) { value += b.value; }
 	Ring& operator-=(Ring b) { value -= b.value; return *this; }
 	Ring& operator*=(Ring b) { value *= b.value; return *this; }
-	friend Ring operator+(Ring a, Ring b) { return a += b; }
+	friend Ring operator+(Ring a, Ring b) { a += b; return a; }
 	friend Ring operator-(Ring a, Ring b) { return a -= b; }
 	friend Ring operator*(Ring a, Ring b) { return a *= b; }
 };
@@ -20,7 +22,7 @@ struct Ring {
 template<class T, class PrimePower>
 void check(std::uint64_t n, std::array<int, 3> coefficients, PrimePower power) {
 	MultiplicativePrefixSum<T> sieve(n);
-	auto constant = sieve.prime_sum([](std::uint64_t x) { return T(x); });
+	auto constant = sieve.prime_sum([](std::uint64_t x) { assert(x > 0); return T(x); });
 	auto linear = sieve.prime_sum([](std::uint64_t x) { return T(x * (x + 1) / 2); });
 	auto quadratic = sieve.prime_sum([](std::uint64_t x) { return T(x * (x + 1) * (2 * x + 1) / 6); });
 	std::vector<T> prime = constant;
@@ -45,6 +47,18 @@ void check(std::uint64_t n, std::array<int, 3> coefficients, PrimePower power) {
 	for (auto x : sieve.quotients()) assert(sieve.get(actual, x) == expected[x]);
 	assert(sieve.get(actual, 0) == T(0));
 	assert(sieve.sum(prime, power) == expected[n]);
+	if constexpr (requires { T::mod(); }) {
+		if (T::mod() % 3) {
+			const T inverse = T((std::uint64_t(T::mod()) * (T::mod() % 3 == 1 ? 2 : 1) + 1) / 3);
+			FloorQuotients quotients(n);
+			multiplicative_sum_detail::Backend<T> backend(quotients, prime_sieve(quotients.root() + 1));
+			std::function<T(std::uint64_t, unsigned, std::uint64_t)> callback = power;
+			assert(backend.sum(prime, callback, inverse) == expected[n]);
+			assert(backend.sum(prime, callback, inverse) == expected[n]);
+			std::function<T(std::uint64_t)> ones = [](std::uint64_t x) { assert(x > 0); return T(x); };
+			assert(backend.prime_sum(ones, inverse) == constant);
+		}
+	}
 	assert(prime == saved);
 	assert(sieve.sum(prime, power) == expected[n]);
 }
@@ -85,12 +99,48 @@ void cases() {
 	assert(character.sum(prime, power) == prefix(10000));
 }
 
+template<class T>
+void large_case() {
+	const std::uint64_t n = 1000003;
+	std::vector<std::uint32_t> least(n + 1);
+	for (auto p : prime_sieve(n + 1))
+		for (auto i = p; i <= n; i += p) if (!least[i]) least[i] = p;
+	auto power = [](std::uint64_t p, unsigned e, std::uint64_t pe) {
+		if (e == 1) return T(-3) + T(2) * T(p);
+		return T(static_cast<int>((pe % 17 + e * 11) % 19) - 9);
+	};
+	std::vector<T> values(n + 1, T(0));
+	values[1] = T(1);
+	for (std::uint64_t i = 2; i <= n; ++i) {
+		const auto p = least[i];
+		auto rest = i, pe = std::uint64_t(1);
+		unsigned e = 0;
+		do { rest /= p; pe *= p; ++e; } while (rest % p == 0);
+		values[i] = values[rest] * power(p, e, pe);
+	}
+	for (std::uint64_t i = 1; i <= n; ++i) values[i] += values[i - 1];
+	MultiplicativePrefixSum<T> sieve(n);
+	auto primes = sieve.prime_sum_linear(T(-3), T(2));
+	auto prefix = sieve.prefix_sum(primes, power);
+	for (auto x : sieve.quotients()) assert(sieve.get(prefix, x) == values[x]);
+	assert(sieve.sum(primes, power) == values[n]);
+	if constexpr (T::mod() % 3) {
+		FloorQuotients quotients(n);
+		multiplicative_sum_detail::Backend<T> backend(quotients, prime_sieve(quotients.root() + 1));
+		const T inverse = T((std::uint64_t(T::mod()) * (T::mod() % 3 == 1 ? 2 : 1) + 1) / 3);
+		assert(backend.sum(primes, power, inverse) == values[n]);
+	}
+}
+
 int main() {
 	cases<std::int64_t>();
 	cases<mint>();
 	cases<MultiplicativeSumModint<469762049>>();
 	cases<MultiplicativeSumModint<1000000007>>();
 	cases<MultiplicativeSumModint<36>>();
+	cases<MultiplicativeSumModint<35>>();
+	large_case<mint>();
+	large_case<MultiplicativeSumModint<36>>();
 	using Wide = __int128_t;
 	const std::uint64_t n = 100000000;
 	MultiplicativePrefixSum<Wide> sieve(n);
@@ -115,4 +165,19 @@ int main() {
 	auto phi = [](std::uint64_t p, unsigned, std::uint64_t pe) { return Ring(pe - pe / p); };
 	assert(custom.sum(prime, phi).value == 3044);
 	assert(custom.get(custom.prefix_sum(prime, phi), 10).value == 32);
+	MultiplicativePrefixSum<mint> move_only(100);
+	auto count_only = move_only.prime_sum([token = std::make_unique<int>(0)](std::uint64_t x) { return mint(x + *token); });
+	assert(move_only.sum(count_only, [token = std::make_unique<int>(1)](std::uint64_t, unsigned, std::uint64_t) { return mint(*token); }) == mint(100));
+	FloorQuotients quotients(100);
+	multiplicative_sum_detail::Backend<mint> backend(quotients, prime_sieve(11));
+	auto ones_move_only = [token = std::make_unique<int>(1)](std::uint64_t, unsigned, std::uint64_t) { return mint(*token); };
+	assert(backend.sum(count_only, ones_move_only, mint(3).inv()) == mint(100));
+	MultiplicativePrefixSum<mint> large(UINT64_C(1) << 32);
+	auto counts = large.prime_sum_linear(mint(1), mint(0));
+	assert(large.sum(counts, [](std::uint64_t, unsigned, std::uint64_t) { return mint(1); }) == mint(UINT64_C(1) << 32));
+	assert(counts == large.prime_sum([token = std::make_unique<int>(0)](std::uint64_t x) { assert(x > 0); return mint(x + *token); }));
+	auto linear = large.prime_sum([](std::uint64_t x) { return x & 1 ? mint(x) * mint(x / 2 + 1) : mint(x / 2) * (mint(x) + 1); });
+	auto together = large.prime_sum_linear(mint(-2), mint(3));
+	for (std::size_t i = 0; i < large.size(); ++i) assert(together[i] == mint(-2) * counts[i] + mint(3) * linear[i]);
+	assert(large.sum(linear, [](std::uint64_t, unsigned, std::uint64_t pe) { return mint(pe); }) == mint(UINT64_C(1) << 31) * (mint(UINT64_C(1) << 32) + 1));
 }
