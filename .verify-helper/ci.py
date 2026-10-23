@@ -360,7 +360,7 @@ def main():
         elif args.command == "judge":
             import onlinejudge.service
             from onlinejudge_verify import verify
-            from verification import check_judges, get_marker
+            from verification import check_judges, get_marker, time_limit
 
             logging.basicConfig(level=logging.INFO)
             if affected and list((ROOT / ".verify-helper").glob("timestamps.*.json")):
@@ -377,7 +377,7 @@ def main():
                     mark_ready(Path(os.environ["VERIFY_JUDGE_CACHE"]), name)
             def run(paths):
                 check_judges(ROOT, paths)
-                return verify.main(paths, marker=verification, timeout=3000, tle=10, jobs=2)
+                return verify.main(paths, marker=verification, timeout=3000, tle=time_limit(ROOT, paths), jobs=2)
             with verification:
                 verify_selected(plan, verification, run,
                     completed=None if affected else completed, starting=None if affected else starting)
