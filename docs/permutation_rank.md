@@ -26,7 +26,7 @@ assert(!permutation_unrank(4, 24));
 
 順位は $$0\le r<n!$$ です。空順列は順位 0 の 1 通りです。`permutation_unrank` は負の順位・`n!` 以上の順位には `std::nullopt`、`n < 0` には `std::invalid_argument` を送出します。`n!` 自体が `Rank` に収まる必要はありません。
 
-`Rank` には整数型を指定します。`permutation_rank` の結果が固定幅整数型に収まらない場合は `std::overflow_error` を送出します。既定型では長さ 20 まで全順列の順位が収まります。それ以上の長さでも、実際の順位が収まれば使えます。`__int128_t`・`__uint128_t`・`boost::multiprecision::cpp_int` も指定できます。Boost は利用する側で include します。
+`Rank` には整数型を指定します。`permutation_rank` の結果が固定幅整数型に収まらない場合は `std::overflow_error` を送出します。既定型では長さ 20 まで全順列の順位が収まります。それ以上の長さでも、実際の順位が収まれば使えます。`__int128_t`・`__uint128_t`・`boost::multiprecision::cpp_int` や固定幅の多倍長整数も指定できます。順列の長さが `Rank` に収まる必要はありません。Boost は利用する側で include します。
 
 ```cpp
 #include "lib/sequence/permutation_rank.hpp"

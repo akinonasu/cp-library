@@ -7,6 +7,8 @@
 #include <optional>
 #include <span>
 #include <stdexcept>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 namespace permutation_order_detail {
@@ -45,8 +47,9 @@ Rank permutation_rank(std::span<const int> permutation) {
 	auto append = [&](int digit, int base) {
 		if constexpr (std::numeric_limits<Rank>::is_integer && std::numeric_limits<Rank>::is_bounded) {
 			const Rank maximum = std::numeric_limits<Rank>::max();
-			if constexpr (std::numeric_limits<Rank>::digits < 31) {
+			if constexpr (std::numeric_limits<Rank>::digits < std::numeric_limits<int>::digits) {
 				if (digit > int(maximum) || (result != 0 && base > int(maximum))) throw std::overflow_error("permutation_rank");
+				if (base > int(maximum)) { result = Rank(digit); return; }
 			}
 			if (result != 0 && result > (maximum - digit) / base) throw std::overflow_error("permutation_rank");
 		}
@@ -86,16 +89,19 @@ std::optional<std::vector<int>> permutation_unrank(int n, Rank rank) {
 	static_assert(std::numeric_limits<Rank>::is_integer);
 	if (n < 0) throw std::invalid_argument("permutation_unrank");
 	if (rank < 0) return std::nullopt;
+	using Work = std::conditional_t<std::numeric_limits<Rank>::is_bounded &&
+		(std::numeric_limits<Rank>::digits < std::numeric_limits<int>::digits), int, Rank>;
+	Work remaining = static_cast<Work>(std::move(rank));
 	std::vector<int> result(n);
-	for (std::int64_t base = 2; base <= n; ++base) {
-		result[n - base] = int(rank % base);
-		rank /= base;
+	for (std::int64_t base = 2; base <= n && remaining != 0; ++base) {
+		result[n - base] = int(remaining % base);
+		remaining /= base;
 	}
-	if (rank != 0) return std::nullopt;
-	permutation_order_detail::Available remaining(n);
+	if (remaining != 0) return std::nullopt;
+	permutation_order_detail::Available available(n);
 	for (int &digit : result) {
-		digit = remaining.select(digit);
-		remaining.erase(digit);
+		digit = available.select(digit);
+		available.erase(digit);
 	}
 	return result;
 }

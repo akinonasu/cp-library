@@ -11,7 +11,30 @@
 using Big = boost::multiprecision::cpp_int;
 static_assert(std::is_same_v<decltype(permutation_rank(std::vector<int>{})), std::uint64_t>);
 
+template <unsigned Bits, boost::multiprecision::cpp_integer_type Sign, boost::multiprecision::cpp_int_check_type Check>
+void bounded_ranks() {
+	using Rank = boost::multiprecision::number<boost::multiprecision::cpp_int_backend<Bits, Bits, Sign, Check, void>>;
+	for (int n : {0, 1, 2, 3, 5, 6, 7, 64, 65, 255, 256, 257, 1000}) {
+		for (unsigned rank = 0; rank < (1u << Bits); ++rank) {
+			auto expected = permutation_unrank(n, std::uint64_t(rank));
+			assert(permutation_unrank(n, Rank(rank)) == expected);
+			if (expected) assert(permutation_rank<Rank>(*expected) == Rank(rank));
+		}
+		if constexpr (std::numeric_limits<Rank>::is_signed) assert(!permutation_unrank(n, Rank(-1)));
+	}
+	std::vector<int> reverse{5, 4, 3, 2, 1, 0};
+	bool caught = false;
+	try { (void)permutation_rank<Rank>(reverse); } catch (const std::overflow_error &) { caught = true; }
+	assert(caught);
+}
+
 int main() {
+	using namespace boost::multiprecision;
+	bounded_ranks<1, unsigned_magnitude, checked>();
+	bounded_ranks<8, unsigned_magnitude, checked>();
+	bounded_ranks<8, unsigned_magnitude, unchecked>();
+	bounded_ranks<8, signed_magnitude, checked>();
+	bounded_ranks<8, signed_magnitude, unchecked>();
 	for (int n = 0; n <= 8; ++n) {
 		std::vector<int> p(n);
 		std::iota(p.begin(), p.end(), 0);
