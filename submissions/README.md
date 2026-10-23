@@ -1,6 +1,6 @@
 # Library Checker 提出用コード
 
-133 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
+134 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
 
 同じ問題に複数の検証実装がある場合は、代表実装を 1 つ掲載しています。
 
@@ -9,6 +9,7 @@
 | [Adjugate Matrix](https://judge.yosupo.jp/problem/adjugate_matrix) | [adjugate_matrix.cpp](adjugate_matrix.cpp) | [matrix_adjugate.test.cpp](../test/matrix_adjugate.test.cpp) |
 | [Aho Corasick](https://judge.yosupo.jp/problem/aho_corasick) | [aho_corasick.cpp](aho_corasick.cpp) | [aho_corasick.test.cpp](../test/aho_corasick.test.cpp) |
 | [Assignment Problem](https://judge.yosupo.jp/problem/assignment) | [assignment.cpp](assignment.cpp) | [hungarian.test.cpp](../test/hungarian.test.cpp) |
+| [Associative Array](https://judge.yosupo.jp/problem/associative_array) | [associative_array.cpp](associative_array.cpp) | [interval_map.test.cpp](../test/interval_map.test.cpp) |
 | [Biconnected Components](https://judge.yosupo.jp/problem/biconnected_components) | [biconnected_components.cpp](biconnected_components.cpp) | [biconnected_components.test.cpp](../test/biconnected_components.test.cpp) |
 | [Binomial Coefficient (Prime Mod)](https://judge.yosupo.jp/problem/binomial_coefficient_prime_mod) | [binomial_coefficient_prime_mod.cpp](binomial_coefficient_prime_mod.cpp) | [comb_prime_mod_light.test.cpp](../test/comb_prime_mod_light.test.cpp) |
 | [Matching on Bipartite Graph](https://judge.yosupo.jp/problem/bipartitematching) | [bipartitematching.cpp](bipartitematching.cpp) | [bipartite_matching.test.cpp](../test/bipartite_matching.test.cpp) |
