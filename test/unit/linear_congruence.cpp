@@ -1,4 +1,4 @@
-#include "math/number_theory/linear_congruence.hpp"
+#include "math/util/linear_congruence.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 #include <array>
 #include <bit>
