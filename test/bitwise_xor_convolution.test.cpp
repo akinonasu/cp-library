@@ -1,17 +1,29 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/bitwise_xor_convolution"
 #include "../convolution/bitwise_convolution.hpp"
+#include "../components/fast_io_bulk.hpp"
 #include "../math/mint.hpp"
-#include <iostream>
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <utility>
 #include <vector>
 
 int main() {
-	std::cin.tie(nullptr)->sync_with_stdio(false);
-	int exponent;
-	std::cin >> exponent;
+	FastInput input;
+	FastOutput output;
+	int exponent = 0;
+	input.read(exponent);
 	int n = 1 << exponent;
 	std::vector<mint> a(n), b(n);
-	for (auto &x : a) std::cin >> x;
-	for (auto &x : b) std::cin >> x;
-	for (auto x : xor_convolution(a, b)) std::cout << x << ' ';
-	std::cout << '\n';
+	for (auto *values : {&a, &b}) {
+		std::size_t offset = 0;
+		read_unsigned_blocks(input, n, [&](const std::uint32_t *block, std::size_t count) {
+			for (std::size_t i = 0; i < count; ++i) (*values)[offset + i] = mint::raw(block[i]);
+			offset += count;
+		});
+	}
+	auto result = xor_convolution(std::move(a), std::move(b));
+	write_unsigned_records<1>(output, result.size(), [&](std::size_t i) {
+		return std::array<std::uint32_t, 1>{result[i].val()};
+	});
 }

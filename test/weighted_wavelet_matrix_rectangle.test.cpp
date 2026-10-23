@@ -25,7 +25,7 @@ int main() {
 		if (!coordinates.empty() && coordinates.back() == std::pair(p.x, p.y)) weights.back() += p.weight;
 		else coordinates.emplace_back(p.x, p.y), values.push_back(p.y), weights.push_back(p.weight);
 	}
-	WeightedWaveletMatrix<int, std::int64_t, __int128_t> wm(values, weights);
+	WeightedWaveletMatrix<int, std::int64_t, __int128_t> wm(values, weights, false);
 	for (auto z : queries) {
 		if (!z.type) {
 			int p = std::lower_bound(coordinates.begin(), coordinates.end(), std::pair(z.x, z.y)) - coordinates.begin();

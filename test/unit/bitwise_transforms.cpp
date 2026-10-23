@@ -114,7 +114,66 @@ void check_convolution() {
 	}
 }
 
+template <int kind>
+std::vector<mint> reference_convolution(std::vector<mint> a, std::vector<mint> b) {
+	std::size_t n = std::bit_ceil(std::max(a.size(), b.size()));
+	a.resize(n), b.resize(n);
+	if constexpr (kind == 2) {
+		bitwise_transforms_baseline::walsh_hadamard(a);
+		bitwise_transforms_baseline::walsh_hadamard(b);
+	} else {
+		bitwise_transforms_baseline::bitwise_zeta<false, kind == 0>(a);
+		bitwise_transforms_baseline::bitwise_zeta<false, kind == 0>(b);
+	}
+	for (std::size_t i = 0; i < n; ++i) a[i] *= b[i];
+	if constexpr (kind == 2) {
+		bitwise_transforms_baseline::walsh_hadamard(a);
+		for (auto &x : a) x /= mint(n);
+	} else bitwise_transforms_baseline::bitwise_zeta<true, kind == 0>(a);
+	return a;
+}
+
+void modular_convolution() {
+	constexpr unsigned p = mint::mod();
+	const std::array<unsigned, 8> values{0, 1, p - 1, p, p + 1, 2 * p - 2, 2 * p - 1, p / 2};
+	for (int n : {8, 16, 32, 64, 256, 1024, 2048, 4096}) {
+		std::vector<mint> a(n), b(n - 3);
+		for (int i = 0; i < n; ++i) a[i] = mint::word(values[i % values.size()]);
+		for (int i = 0; i < int(b.size()); ++i) b[i] = mint::word(values[(i * 5 + 3) % values.size()]);
+		assert(and_convolution(a, b) == reference_convolution<0>(a, b));
+		assert(or_convolution(a, b) == reference_convolution<1>(a, b));
+		assert(xor_convolution(a, b) == reference_convolution<2>(a, b));
+	}
+}
+
+template <int kind, bool inverse>
+void unaligned_modular_transform() {
+#if defined(__x86_64__) || defined(__i386__)
+	using Kernel = bitwise_convolution_detail::Modular;
+	if (!Kernel::vectorized()) return;
+	alignas(32) std::array<mint, 1032> storage;
+	storage.fill(mint::word(127));
+	std::vector<mint> expected(1024);
+	for (int i = 0; i < 1024; ++i) {
+		expected[i] = mint::word(unsigned((std::uint64_t(i) * 19491001) % (2 * mint::mod())));
+		storage[i + 1] = expected[i];
+	}
+	if constexpr (kind == 2) bitwise_transforms_baseline::walsh_hadamard(expected);
+	else bitwise_transforms_baseline::bitwise_zeta<inverse, kind == 0>(expected);
+	Kernel::transform<kind, inverse>(storage.data() + 1, 1024);
+	assert(storage[0].v == 127);
+	for (int i = 0; i < 1024; ++i) assert(storage[i + 1] == expected[i]);
+	for (int i = 1025; i < int(storage.size()); ++i) assert(storage[i].v == 127);
+#endif
+}
+
 int main() {
+	modular_convolution();
+	unaligned_modular_transform<0, false>();
+	unaligned_modular_transform<0, true>();
+	unaligned_modular_transform<1, false>();
+	unaligned_modular_transform<1, true>();
+	unaligned_modular_transform<2, false>();
 	std::mt19937_64 rng(20261017);
 	for (int exponent = -1; exponent <= 16; ++exponent) {
 		std::size_t n = exponent < 0 ? 0 : std::size_t(1) << exponent;

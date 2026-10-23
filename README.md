@@ -23,6 +23,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `components/bitwise_convolution_modular.hpp` | ビット演算畳み込みの modint 用共通実装 | [使い方](docs/bitwise_convolution_modular.md) |
 | `components/bitwise_zeta.hpp` | Bitwise Zeta / Möbius Transform | [使い方](docs/bitwise_zeta.md) |
 | `components/walsh_hadamard.hpp` | Walsh–Hadamard Transform | [使い方](docs/walsh_hadamard.md) |
 | `components/divisor_zeta.hpp` | Divisor Zeta / Möbius Transform | [使い方](docs/divisor_zeta.md) |
@@ -30,6 +31,8 @@
 | `components/ntt_mod.hpp` | NTT（法指定） | [使い方](docs/ntt_mod.md) |
 | `components/ntt.hpp` | NTT（998244353） | [使い方](docs/ntt.md) |
 | `components/xor_select.hpp` | 64 bit 内の XOR 順位選択 | [使い方](docs/xor_select.md) |
+| `components/min_plus_convolution_integral.hpp` | min-plus / max-plus 畳み込みの整数用共通実装 | [使い方](docs/min_plus_convolution_integral.md) |
+| `components/range_affine_sum_simd.hpp` | 区間アフィン変換・区間和の共通実装 | [使い方](docs/range_affine_sum_simd.md) |
 | `components/multivariate_convolution_core.hpp` | 多変数畳み込みの共通実装 | [使い方](docs/multivariate_convolution_core.md) |
 | `components/multivariate_ranked.hpp` | 小さい次元の多変数畳み込み | [使い方](docs/multivariate_ranked.md) |
 | `components/ordered_multiset_btree.hpp` | 順序統計多重集合の共通実装 | [使い方](docs/ordered_multiset_btree.md) |
@@ -184,6 +187,7 @@
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
 | `data_structure/xor_set.hpp` | XOR の最小値・最大値を求める整数集合 | [使い方](docs/xor_set.md) |
+| `data_structure/offline_rectangle_sum.hpp` | 静的矩形和（クエリ先読み） | [使い方](docs/offline_rectangle_sum.md) |
 | `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
 | `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
 
@@ -220,6 +224,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `data_structure/segment_tree/range_affine_range_sum.hpp` | 区間アフィン変換・区間和 | [使い方](docs/range_affine_range_sum.md) |
 | `data_structure/segment_tree/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |

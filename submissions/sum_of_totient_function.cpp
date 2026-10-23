@@ -696,7 +696,7 @@ struct Mint {
 	using mint = Mint;
 	unsigned v = 0;
 	static constexpr unsigned mod() { return 998244353; }
-	static unsigned reduce(unsigned long long x) {
+	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -706,17 +706,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	static Mint raw(unsigned x) {
+	[[gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	static Mint word(unsigned x) {
+	[[gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	unsigned val() const {
+	[[gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -728,17 +728,17 @@ struct Mint {
 	friend std::ostream &operator<<(std::ostream &os, const Mint &x) {
 		return os << x.val();
 	}
-	Mint &operator+=(Mint b) {
+	[[gnu::always_inline]] Mint &operator+=(Mint b) {
 		v += b.v;
 		if (v >= 2 * mod()) v -= 2 * mod();
 		return *this;
 	}
-	Mint &operator-=(Mint b) {
+	[[gnu::always_inline]] Mint &operator-=(Mint b) {
 		v -= b.v;
 		if (v >> 31) v += 2 * mod();
 		return *this;
 	}
-	Mint &operator*=(Mint b) {
+	[[gnu::always_inline]] Mint &operator*=(Mint b) {
 		v = reduce((unsigned long long)v * b.v);
 		return *this;
 	}
@@ -755,14 +755,14 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	Mint operator+() const { return *this; }
-	Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	Mint operator+(Mint b) const { return Mint(*this) += b; }
-	Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[gnu::always_inline]] Mint operator+() const { return *this; }
+	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
 	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	bool operator!=(Mint b) const { return !(*this == b); }
+	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
 	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>

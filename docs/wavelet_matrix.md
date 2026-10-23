@@ -31,10 +31,15 @@ auto value = wm.kth_smallest(0, 5, 2);
 | `range_freq(l,r,lower,upper)` | `lower` 以上 `upper` 未満の個数 | $$O(\log\sigma)$$ |
 | `prev_value(l,r,upper)` / `next_value(l,r,lower)` | `upper` 未満の最大値／`lower` 以上の最小値。なければ `nullopt` | $$O(\log\sigma)$$ |
 | `prepare_sum()` | 和の前処理。完了済みなら何もしない | $$O(n\log\sigma)$$、準備済み: $$O(1)$$ |
+| `range_sum(l,r,upper)` | `upper` 未満の値の和 | 準備後 $$O(\log\sigma)$$ |
+| `range_sum(l,r,lower,upper)` | `lower` 以上 `upper` 未満の値の和 | 準備後 $$O(\log\sigma)$$ |
+| `range_sum_with_count(l,r,upper)` | `upper` 未満の値の和と個数を `pair<Sum,int>` で返す | 準備後 $$O(\log\sigma)$$ |
 | `range_sum(l,r)` | 区間和。未前処理なら初回に前処理 | 準備後 $$O(1)$$ |
 | `sum_smallest(l,r,k)` / `sum_largest(l,r,k)` | 下位／上位 `k` 個の和。未前処理なら初回に前処理 | 準備後 $$O(\log\sigma)$$ |
 | `min_count_smallest(l,r,target)` / `min_count_largest(l,r,target)` | 小さい順／大きい順に加え、和が `target` 以上になる最小個数。届かなければ -1 | 準備後 $$O(\log\sigma)$$、単調配列: $$O(\log n)$$ |
 | `max_count_smallest(l,r,budget)` / `max_count_largest(l,r,budget)` | 小さい順／大きい順に加え、和が `budget` 以下の最大個数。空の選択も不可能なら -1 | 準備後 $$O(\log\sigma)$$、単調配列: $$O(\log n)$$ |
+
+`range_sum_with_count` は和と個数を一度の走査で求めます。値域を指定する和も、未前処理なら最初に和の準備を行います。
 
 和の前処理は必要時に行います。構築時に済ませる場合は `WaveletMatrix<T> wm(a, true)` とします。整数の和は 32 bit 型なら `std::int64_t`、64 bit 型なら `__int128_t` です。`WaveletMatrix<T, Sum>` で和の型を指定できます。
 
