@@ -28,6 +28,6 @@ int suffix = match.backward(2, 4, 2); // 2
 
 比較処理は [共通接頭辞・接尾辞の比較](https://qandori.github.io/cp-library/components/sequence_compare.hpp.html) と共有しています。異なる 2 配列の比較だけが必要な場合は、そちらの `prefix`・`suffix` を直接使えます。
 
-`index_runs(n)` は同一要素区間の境界を前計算します。`forward_counted`・`backward_counted` は `(一致長, 比較量)` を返し、最初の同一要素区間をまとめて飛ばします。前計算後は元の列を変更しないでください。`z_table`・`prefix_matches` は一致比較関数を受け取る内部の Z algorithm です。
+`index_runs(n)` は同一要素区間の境界を前計算します。`forward_counted`・`backward_counted` は `(一致長, 比較量)` を返し、最初の同一要素区間をまとめて飛ばします。前計算後は元の列を変更しないでください。`z_table`・`prefix_matches` だけが必要な場合は [Z algorithm の補助部品](z_algorithm.md) を直接 include できます。
 
 長さを $$n$$ として、通常の比較は最悪 $$O(\mathrm{limit})$$ 時間・$$O(1)$$ 追加空間、同一要素区間の前計算は $$O(n)$$ 時間・空間、Z algorithm は合計 $$O(n)$$ 要素比較です。
