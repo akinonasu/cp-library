@@ -1,4 +1,5 @@
 #include "string/suffix_tree.hpp"
+#include <map>
 #include <random>
 #include <set>
 
@@ -92,7 +93,80 @@ void check(const std::string &s) {
 	assert(copy.node_count() == 1 && copy.empty() && copy.occurrences("") == std::vector<int>{0});
 }
 
+void suffix_arrays() {
+	struct VirtualText {
+		std::map<int, int> symbols;
+		int operator[](int p) const {
+			auto found = symbols.find(p);
+			return found == symbols.end() ? 1 : found->second;
+		}
+	} text;
+	std::vector<int> seeds, ordered;
+	for (int i = 0; i < 128; ++i) {
+		int p = 1000 + 4 * i;
+		seeds.push_back(p);
+		text.symbols[p - 1] = 256;
+		text.symbols[p] = 1, text.symbols[p + 1] = i + 1, text.symbols[p + 2] = 1;
+	}
+	for (int p : {1000000, 1000000 + (1 << 25)}) {
+		seeds.push_back(p);
+		text.symbols[p - 1] = 256;
+		text.symbols[p] = 1, text.symbols[p + 1] = text.symbols[p + 2] = 2;
+	}
+	text.symbols[seeds.back() + 3] = 3;
+	assert(!suffix_array_detail::prefix_order(text, 1 << 28, 257, seeds, ordered));
+	std::mt19937 rng(20261023);
+	for (int n : {16, 17, 127, 128, 129, 511, 512, 1024, 4096}) {
+		for (int alphabet : {1, 2, 26, 255, 256, 1024}) {
+			std::vector<std::int64_t> symbols(n);
+			for (auto &c : symbols) c = rng() % alphabet;
+			std::vector<int> expected(n);
+			std::iota(expected.begin(), expected.end(), 0);
+			std::sort(expected.begin(), expected.end(), [&](int p, int q) {
+				return std::lexicographical_compare(symbols.begin() + p, symbols.end(), symbols.begin() + q, symbols.end());
+			});
+			assert(suffix_array_detail::induced_sort(symbols, alphabet - 1) == expected);
+			if (alphabet <= 256) {
+				std::string bytes(n, 0);
+				for (int i = 0; i < n; ++i) bytes[i] = char(symbols[i]);
+				assert(suffix_array_detail::bytes(bytes) == expected);
+			}
+		}
+	}
+}
+
+void construction_states() {
+	for (int phase = 0; phase < 3; ++phase) {
+		SuffixTree tree("mississippi");
+		auto expected = tree.suffix_array();
+		const auto *data = tree.suffix_array().data();
+		if (phase >= 1) assert(tree.distinct_substrings() == 53);
+		if (phase >= 2) assert(tree.count("issi") == 2);
+		SuffixTree copy(tree);
+		SuffixTree moved(std::move(tree));
+		assert(tree.empty() && tree.count("") == 1);
+		assert(moved.suffix_array().data() == data);
+		assert(copy.suffix_array() == expected && copy.distinct_substrings() == 53);
+		assert(copy.count("issi") == 2 && moved.count("issi") == 2);
+		assert(moved.suffix_array().data() == data);
+		copy.build(copy.text());
+		assert(copy.suffix_array() == expected && copy.lcp(1, 4) == 4);
+		copy.clear();
+		copy.swap(moved);
+		assert(copy.suffix_array() == expected && moved.empty());
+		assert(moved.distinct_substrings() == 0 && moved.node_count() == 1);
+		assert(copy.count("issi") == 2);
+	}
+	std::string all_bytes;
+	for (int c = 0; c < 256; ++c) all_bytes += char(c);
+	SuffixTree tree(all_bytes);
+	for (int i = 0; i < 256; ++i) assert(tree.suffix_array()[i + 1] == i);
+	assert(tree.distinct_substrings() == 256 * 257 / 2 && tree.count(std::string(1, char(255))) == 1);
+}
+
 int main() {
+	suffix_arrays();
+	construction_states();
 	check(""); check("banana"); check("mississippi"); check(std::string("a\0b\0a", 5));
 	for (int n = 0; n <= 8; ++n) {
 		int patterns = 1;

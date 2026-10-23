@@ -3,6 +3,7 @@
 
 #include "../../components/flow_graph.hpp"
 #include "../../components/min_cost_circulation.hpp"
+#include "../../components/min_cost_simplex.hpp"
 #include "../../components/RadixHeap.hpp"
 #include <cstdint>
 #include <type_traits>
@@ -126,11 +127,12 @@ class MinCostFlow {
 	void reset_flow() { graph_.reset_flow(); valid_ = false; }
 	const std::vector<Cost>& potentials() { initialize(); return potential_; }
 	std::pair<Cap, Total> flow(int s, int t, Cap limit = std::numeric_limits<Cap>::max()) {
-		int count = 0, budget = std::max(64, std::min(graph_.n, 512));
+		int count = 0, budget = 8;
 		auto result = run(s, t, limit, [&](Cap, Total, Cost) { ++count; }, budget);
 		if (count == budget && result.first < limit) {
-			auto extra = flow_detail::scaling_flow<Cap, Cost, Total>(graph_, cost_, s, t, limit - result.first);
-			result.first += extra.first, result.second += extra.second;
+			auto extra = flow_detail::simplex_flow<Cap, Cost, Total>(graph_, cost_, s, t, limit - result.first);
+			if (!extra) extra = flow_detail::scaling_flow<Cap, Cost, Total>(graph_, cost_, s, t, limit - result.first);
+			result.first += extra->first, result.second += extra->second;
 			valid_ = false;
 		}
 		return result;

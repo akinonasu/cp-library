@@ -380,10 +380,121 @@ std::vector<FPoint> convex_cut(const std::vector<Point<T>> &polygon, Line<T> lin
 }
 
 
-#line 7 "geometry/convex.hpp"
+#line 1 "components/closest_pair.hpp"
+
+
+
+#line 1 "components/splitmix64.hpp"
+
+
+
+#line 5 "components/splitmix64.hpp"
+
+inline std::uint64_t splitmix64(std::uint64_t x) {
+	x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9ULL;
+	x = (x ^ (x >> 27)) * 0x94d049bb133111ebULL;
+	return x ^ (x >> 31);
+}
+class SplitMix64 {
+	std::uint64_t state;
+
+  public:
+	explicit SplitMix64(std::uint64_t seed = 0) : state(seed) {}
+	std::uint64_t operator()() { return splitmix64(state += 0x9e3779b97f4a7c15ULL); }
+};
+
+
+#line 7 "components/closest_pair.hpp"
+#include <bit>
+#line 12 "components/closest_pair.hpp"
+#include <utility>
+#line 14 "components/closest_pair.hpp"
+
+namespace closest_pair_detail {
+inline std::optional<std::pair<std::uint64_t, std::uint64_t>> packed(std::vector<std::uint64_t> points, std::uint32_t max_x, std::uint64_t budget) {
+	using U = std::uint64_t;
+	assert(points.size() >= 2 && points.size() <= INT32_MAX);
+	std::uint32_t n = points.size();
+	auto distance = [](U a, U b) {
+		std::int64_t x = std::int64_t(std::uint32_t(a)) - std::uint32_t(b), y = std::int64_t(a >> 32) - std::int64_t(b >> 32);
+		return U(x * x) + U(y * y);
+	};
+	U a = points[0], b = points[1], best = distance(a, b);
+	if (!best) return std::pair{a, b};
+	SplitMix64 random(n);
+	for (std::uint32_t i = 0; i < (n + 3) / 4; ++i) {
+		auto x = std::uint32_t((__uint128_t(random()) * n) >> 64), y = std::uint32_t((__uint128_t(random()) * n) >> 64);
+		if (x == y) continue;
+		U d = distance(points[x], points[y]);
+		if (d < best) {
+			a = points[x], b = points[y], best = d;
+			if (!d) return std::pair{a, b};
+		}
+	}
+	auto limit_for = [](U d) {
+		U r = std::sqrt(double(d - 1));
+		while ((r + 1) * (r + 1) < d) ++r;
+		while (r * r >= d) --r;
+		return r;
+	};
+	U limit = limit_for(best);
+	unsigned shift = std::bit_width(limit), x_bits = std::bit_width(max_x);
+	auto key = [=](U p) { return ((p >> 32 >> shift) << x_bits) | std::uint32_t(p); };
+	U maximum = 0;
+	for (U p : points) maximum = std::max(maximum, key(p));
+	unsigned bits = std::min(11U, unsigned(std::bit_width(n))), buckets = 1U << bits, mask = buckets - 1;
+	std::vector<U> temporary(n);
+	for (unsigned digit = 0; digit < 64 && (maximum >> digit); digit += bits) {
+		std::array<std::uint32_t, 2048> count{};
+		for (U p : points) ++count[(key(p) >> digit) & mask];
+		std::uint32_t sum = 0;
+		for (unsigned i = 0; i < buckets; ++i) { auto old = count[i]; count[i] = sum; sum += old; }
+		for (U p : points) temporary[count[(key(p) >> digit) & mask]++] = p;
+		points.swap(temporary);
+	}
+	auto attempt = [&](U x, U y) {
+		U d = distance(x, y);
+		if (d < best) {
+			a = x, b = y, best = d;
+			if (d) limit = limit_for(d);
+		}
+	};
+	std::uint32_t prev_begin = 0, prev_end = 0;
+	U prev_lane = UINT64_MAX;
+	for (std::uint32_t first = 0; first < n;) {
+		U lane = points[first] >> 32 >> shift;
+		std::uint32_t end = first + 1;
+		while (end < n && (points[end] >> 32 >> shift) == lane) ++end;
+		std::uint32_t left = prev_begin;
+		bool adjacent = prev_begin < prev_end && prev_lane + 1 == lane;
+		for (std::uint32_t i = first; i < end; ++i) {
+			U p = points[i], x = std::uint32_t(p);
+			for (std::uint32_t j = i; j > first;) {
+				--j;
+				if (x - std::uint32_t(points[j]) > limit) break;
+				if (!budget--) return std::nullopt;
+				attempt(p, points[j]);
+				if (!best) return std::pair{a, b};
+			}
+			if (!adjacent || (p >> 32) - (lane << shift) + 1 > limit) continue;
+			while (left < prev_end && U(std::uint32_t(points[left])) + limit < x) ++left;
+			for (std::uint32_t j = left; j < prev_end && U(std::uint32_t(points[j])) <= x + limit; ++j) {
+				if (!budget--) return std::nullopt;
+				attempt(p, points[j]);
+				if (!best) return std::pair{a, b};
+			}
+		}
+		prev_begin = first, prev_end = end, prev_lane = lane, first = end;
+	}
+	return std::pair{a, b};
+}
+}
+
+
+#line 8 "geometry/convex.hpp"
 #include <limits>
 #include <numeric>
-#line 11 "geometry/convex.hpp"
+#line 12 "geometry/convex.hpp"
 
 namespace geometry {
 template <class T>
@@ -534,6 +645,39 @@ std::optional<PointPair<T>> closest_pair(const std::vector<Point<T>> &points) {
 	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 	int n = int(points.size());
 	if (n < 2) return std::nullopt;
+	if (n <= 32) {
+		PointPair<T> result{0, 1, distance_squared(points[0], points[1])};
+		for (int i = 1; i < n; ++i) for (int j = 0; j < i; ++j) {
+			auto d = distance_squared(points[i], points[j]);
+			if (d < result.squared_distance) result = {i, j, d};
+		}
+		return result;
+	}
+	if constexpr (integer<T> && sizeof(T) <= 8) {
+		if (n >= 64) {
+			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
+			for (auto p : points) {
+				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
+				min_y = std::min(min_y, p.y), max_y = std::max(max_y, p.y);
+			}
+			if (wide_t<T>(max_x) - min_x <= INT32_MAX && wide_t<T>(max_y) - min_y <= INT32_MAX) {
+				auto pack = [&](Point<T> p) {
+					return (std::uint64_t(wide_t<T>(p.y) - min_y) << 32) | std::uint32_t(wide_t<T>(p.x) - min_x);
+				};
+				std::vector<std::uint64_t> packed(n);
+				for (int i = 0; i < n; ++i) packed[i] = pack(points[i]);
+				if (auto pair = closest_pair_detail::packed(std::move(packed), std::uint32_t(wide_t<T>(max_x) - min_x), std::uint64_t(n) * 32)) {
+					int a = -1, b = -1;
+					for (int i = 0; i < n && (a < 0 || b < 0); ++i) {
+						auto value = pack(points[i]);
+						if (value == pair->first && a < 0) a = i;
+						else if (value == pair->second && b < 0) b = i;
+					}
+					return PointPair<T>{a, b, distance_squared(points[a], points[b])};
+				}
+			}
+		}
+	}
 	struct Entry { Point<T> point; int index; };
 	std::vector<Entry> sorted, buffer(n);
 	sorted.reserve(n);
@@ -580,8 +724,6 @@ std::optional<PointPair<T>> closest_pair(const std::vector<Point<T>> &points) {
 
 
 
-#line 6 "components/fast_io.hpp"
-#include <bit>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
 #include <cstddef>

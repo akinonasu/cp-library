@@ -101,7 +101,7 @@ std::pair<Cap, Total> scaling_flow(Graph<Cap>& graph, const std::vector<Cost>& c
 	}
 	Total total = 0;
 	for (std::size_t i = 0; i < graph.arcs.size(); ++i) {
-		if (!(i & 1)) total += (Total(graph.arcs[i].cap) - Total(work.arcs[i].cap)) * Total(costs[i]);
+		if (!(i & 1)) total += Total((Wide(graph.arcs[i].cap) - Wide(work.arcs[i].cap)) * Wide(costs[i]));
 		graph.arcs[i].cap = work.arcs[i].cap;
 	}
 	return {work.arcs.back().cap, total};
