@@ -39,13 +39,26 @@ class RollingHash {
 		if (std::size_t(n) < old) return;
 		powers.resize(std::size_t(n) + 1);
 		Hash b = base();
-		for (std::size_t i = old; i < powers.size(); ++i) powers[i] = mul(powers[i - 1], b);
+		std::size_t i = old;
+		for (; i < powers.size() && i < old + 4; ++i) powers[i] = mul(powers[i - 1], b);
+		if (i == powers.size()) return;
+		Hash step = powers[4];
+		for (; i + 4 <= powers.size(); i += 4) {
+			powers[i] = mul(powers[i - 4], step);
+			powers[i + 1] = mul(powers[i - 3], step);
+			powers[i + 2] = mul(powers[i - 2], step);
+			powers[i + 3] = mul(powers[i - 1], step);
+		}
+		for (; i < powers.size(); ++i) powers[i] = mul(powers[i - 4], step);
 	}
 	template <class T>
 	static Hash encode(T value) {
 		static_assert(std::is_integral_v<T> && sizeof(T) <= 8);
 		if constexpr (std::is_same_v<T, char>) return static_cast<unsigned char>(value) + 1;
-		else {
+		else if constexpr (sizeof(T) <= 4) {
+			if constexpr (std::is_signed_v<T>) return value >= -1 ? Hash(std::int64_t(value) + 1) : Hash(std::int64_t(value) + std::int64_t(mod) + 1);
+			else return Hash(value) + 1;
+		} else {
 			Hash result;
 			if constexpr (std::is_signed_v<T>) {
 				std::int64_t x = std::int64_t(value) % std::int64_t(mod);

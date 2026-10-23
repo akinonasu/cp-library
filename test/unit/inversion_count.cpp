@@ -80,6 +80,18 @@ int main() {
 	check(keys, [](const Key &a, const Key &b) { return a.value < b.value; });
 	check(large, [](const Large &a, const Large &b) { return a.value < b.value; });
 	check(pointers, [](const auto &a, const auto &b) { return *a < *b; });
+	std::vector<int> crossed(32);
+	std::iota(crossed.begin(), crossed.end(), 0);
+	std::rotate(crossed.begin() + 16, crossed.begin() + 24, crossed.end());
+	check(crossed);
+	std::vector<Key> grouped, waves;
+	for (int i = 0; i < 257; ++i) {
+		grouped.emplace_back(256 - i);
+		waves.emplace_back((i * 37 % 257) / 3);
+	}
+	check(grouped, [](const Key &a, const Key &b) { return a.value / 7 < b.value / 7; });
+	check(grouped, [](const Key &a, const Key &b) { return a.value / 7 > b.value / 7; });
+	check(waves, [](const Key &a, const Key &b) { return a.value < b.value; });
 	std::vector<int> big(1000000);
 	std::iota(big.begin(), big.end(), 0);
 	const std::int64_t maximum = std::int64_t(big.size()) * (big.size() - 1) / 2;

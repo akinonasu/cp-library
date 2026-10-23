@@ -17,8 +17,10 @@ struct WeightedUnionFind {
 	}
 	int leader(int x) {
 		assert(0 <= x && x < static_cast<int>(parent.size()));
-		if (parent[x] < 0) return x;
-		int r = leader(parent[x]);
+		int p = parent[x];
+		if (p < 0) return x;
+		if (parent[p] < 0) return p;
+		int r = leader(p);
 		delta[x] += delta[parent[x]];
 		return parent[x] = r;
 	}
