@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/persistent_unionfind"
 #ifndef ROLLBACK_HEADER
-#define ROLLBACK_HEADER "data_structure/rollback_union_find.hpp"
+#define ROLLBACK_HEADER "data_structure/union_find/rollback_union_find.hpp"
 #endif
 #include ROLLBACK_HEADER
 #include "components/fast_io.hpp"

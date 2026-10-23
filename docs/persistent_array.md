@@ -1,12 +1,15 @@
 ---
 title: 永続配列
-documentation_of: //data_structure/persistent_array.hpp
+documentation_of: //data_structure/persistent/persistent_array.hpp
+redirect_from:
+  - /data_structure/persistent_array.hpp.html
+  - /lightweight/data_structure/persistent_array.hpp.html
 ---
 
 過去の配列を残したまま一点を更新します。区間積も必要なら [永続セグメント木](persistent_segtree.md) を使ってください。
 
 ```cpp
-#include "lib/data_structure/persistent_array.hpp"
+#include "lib/data_structure/persistent/persistent_array.hpp"
 #include <cassert>
 
 int main() {

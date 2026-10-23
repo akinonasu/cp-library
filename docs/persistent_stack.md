@@ -1,12 +1,15 @@
 ---
 title: 永続スタック
-documentation_of: //data_structure/persistent_stack.hpp
+documentation_of: //data_structure/persistent/persistent_stack.hpp
+redirect_from:
+  - /data_structure/persistent_stack.hpp.html
+  - /lightweight/data_structure/persistent_stack.hpp.html
 ---
 
 過去版からの push・pop と、先頭から指定個数戻った要素の取得を行います。
 
 ```cpp
-#include "lib/data_structure/persistent_stack.hpp"
+#include "lib/data_structure/persistent/persistent_stack.hpp"
 #include <cassert>
 
 int main() {

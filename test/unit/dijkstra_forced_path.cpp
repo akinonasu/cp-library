@@ -1,4 +1,4 @@
-#include "graph/dijkstra.hpp"
+#include "graph/shortest_path/dijkstra.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>

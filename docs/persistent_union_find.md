@@ -1,12 +1,15 @@
 ---
 title: 永続 Union Find
-documentation_of: //data_structure/persistent_union_find.hpp
+documentation_of: //data_structure/persistent/persistent_union_find.hpp
+redirect_from:
+  - /data_structure/persistent_union_find.hpp.html
+  - /lightweight/data_structure/persistent_union_find.hpp.html
 ---
 
 過去版を残したまま連結成分を併合します。更新後も、以前の版の連結判定・成分サイズをオンラインで取得できます。更新の取り消しだけなら [Rollback Union Find](rollback_union_find.md) も使えます。
 
 ```cpp
-#include "lib/data_structure/persistent_union_find.hpp"
+#include "lib/data_structure/persistent/persistent_union_find.hpp"
 #include <cassert>
 
 int main() {

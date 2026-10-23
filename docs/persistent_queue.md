@@ -1,12 +1,15 @@
 ---
 title: 永続キュー
-documentation_of: //data_structure/persistent_queue.hpp
+documentation_of: //data_structure/persistent/persistent_queue.hpp
+redirect_from:
+  - /data_structure/persistent_queue.hpp.html
+  - /lightweight/data_structure/persistent_queue.hpp.html
 ---
 
 過去版からの末尾追加・先頭削除・先頭取得を行います。任意の位置の要素も取得できます。両端の更新や列の分割・連結には [永続 Deque](persistent_deque.md) を使います。
 
 ```cpp
-#include "lib/data_structure/persistent_queue.hpp"
+#include "lib/data_structure/persistent/persistent_queue.hpp"
 #include <cassert>
 
 int main() {

@@ -1,12 +1,15 @@
 ---
 title: 牛ゲー（差分制約系）
-documentation_of: //graph/difference_constraints.hpp
+documentation_of: //graph/shortest_path/difference_constraints.hpp
+redirect_from:
+  - /graph/difference_constraints.hpp.html
+  - /lightweight/graph/difference_constraints.hpp.html
 ---
 
 整数変数に対する差分制約を扱います。解の存在判定・復元と、変数間の差や各変数の最大値・最小値を求められます。
 
 ```cpp
-#include "lib/graph/difference_constraints.hpp"
+#include "lib/graph/shortest_path/difference_constraints.hpp"
 
 DifferenceConstraints<> system(3);
 system.add_range(0, 1, 2, 5); // 2 <= x[1] - x[0] <= 5

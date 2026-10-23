@@ -1,10 +1,10 @@
 #ifndef DIJKSTRA_HPP
 #define DIJKSTRA_HPP
 
-#include "../components/dijkstra_queue.hpp"
-#include "../components/dijkstra_topological.hpp"
-#include "../components/dijkstra_unique.hpp"
-#include "../components/directed_csr.hpp"
+#include "../../components/dijkstra_queue.hpp"
+#include "../../components/dijkstra_topological.hpp"
+#include "../../components/dijkstra_unique.hpp"
+#include "../../components/directed_csr.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>

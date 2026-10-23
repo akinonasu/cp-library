@@ -7,7 +7,7 @@ documentation_of: //components/offline_time_segments.hpp
 
 ```cpp
 #include "lib/components/offline_time_segments.hpp"
-#include "lib/data_structure/rollback_union_find.hpp"
+#include "lib/data_structure/union_find/rollback_union_find.hpp"
 #include <cassert>
 #include <utility>
 #include <vector>

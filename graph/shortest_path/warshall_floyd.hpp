@@ -1,7 +1,7 @@
 #ifndef WARSHALL_FLOYD_HPP
 #define WARSHALL_FLOYD_HPP
 
-#include "../components/warshall_floyd_kernel.hpp"
+#include "../../components/warshall_floyd_kernel.hpp"
 #include <stdexcept>
 
 template<class T = std::int64_t>

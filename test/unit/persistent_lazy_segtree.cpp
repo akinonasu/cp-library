@@ -1,4 +1,4 @@
-#include "../../data_structure/segment_tree/persistent_lazy_segtree.hpp"
+#include "../../data_structure/persistent/persistent_lazy_segtree.hpp"
 #include <algorithm>
 #include <cassert>
 #include <climits>

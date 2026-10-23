@@ -109,10 +109,10 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `graph/dijkstra.hpp` | Dijkstra・最短経路の復元 | [使い方](docs/dijkstra.md) |
-| `graph/bellman_ford.hpp` | 負辺の最短経路・負閉路の復元 | [使い方](docs/bellman_ford.md) |
-| `graph/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
-| `graph/difference_constraints.hpp` | 牛ゲー（差分制約系）・解の復元・差の上下限 | [使い方](docs/difference_constraints.md) |
+| `graph/shortest_path/dijkstra.hpp` | Dijkstra・最短経路の復元 | [使い方](docs/dijkstra.md) |
+| `graph/shortest_path/bellman_ford.hpp` | 負辺の最短経路・負閉路の復元 | [使い方](docs/bellman_ford.md) |
+| `graph/shortest_path/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
+| `graph/shortest_path/difference_constraints.hpp` | 牛ゲー（差分制約系）・解の復元・差の上下限 | [使い方](docs/difference_constraints.md) |
 
 ### 最小全域木
 
@@ -174,21 +174,38 @@
 | --- | --- | --- |
 | `data_structure/slope_trick.hpp` | Slope Trick | [使い方](docs/slope_trick.md) |
 | `data_structure/lazy_reversible_treap.hpp` | 遅延伝搬・反転可能な乱択平衡二分木 | [使い方](docs/lazy_reversible_treap.md) |
-| `data_structure/li_chao_tree.hpp` | Li Chao Tree (クエリ先読み) | [使い方](docs/li_chao_tree.md) |
-| `data_structure/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/top_k_sum.hpp` | Top K Sum（クエリごとの k・大小 k 個の和・k 番目の値・重複個数） | [使い方](docs/top_k_sum.md) |
-| `data_structure/union_find.hpp` | Union-Find・連結成分の列挙 | [使い方](docs/union_find.md) |
 | `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
-| `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
-| `data_structure/rollback_union_find.hpp` | Rollback Union Find | [使い方](docs/rollback_union_find.md) |
-| `data_structure/persistent_array.hpp` | 永続配列 | [使い方](docs/persistent_array.md) |
-| `data_structure/persistent_union_find.hpp` | 永続 Union Find | [使い方](docs/persistent_union_find.md) |
-| `data_structure/persistent_stack.hpp` | 永続スタック・祖先アクセス | [使い方](docs/persistent_stack.md) |
-| `data_structure/persistent_queue.hpp` | 永続キュー | [使い方](docs/persistent_queue.md) |
-| `data_structure/persistent_deque.hpp` | 永続 Deque・列の分割連結 | [使い方](docs/persistent_deque.md) |
-| `data_structure/persistent_multiset.hpp` | 永続順序付き多重集合・順位取得 | [使い方](docs/persistent_multiset.md) |
-| `data_structure/persistent_heap.hpp` | 永続併合可能ヒープ | [使い方](docs/persistent_heap.md) |
+
+### Union-Find
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `data_structure/union_find/union_find.hpp` | Union-Find・連結成分の列挙 | [使い方](docs/union_find.md) |
+| `data_structure/union_find/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
+| `data_structure/union_find/rollback_union_find.hpp` | Rollback Union Find | [使い方](docs/rollback_union_find.md) |
+
+### 永続データ構造
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `data_structure/persistent/persistent_array.hpp` | 永続配列 | [使い方](docs/persistent_array.md) |
+| `data_structure/persistent/persistent_union_find.hpp` | 永続 Union Find | [使い方](docs/persistent_union_find.md) |
+| `data_structure/persistent/persistent_stack.hpp` | 永続スタック・祖先アクセス | [使い方](docs/persistent_stack.md) |
+| `data_structure/persistent/persistent_queue.hpp` | 永続キュー | [使い方](docs/persistent_queue.md) |
+| `data_structure/persistent/persistent_deque.hpp` | 永続 Deque・列の分割連結 | [使い方](docs/persistent_deque.md) |
+| `data_structure/persistent/persistent_multiset.hpp` | 永続順序付き多重集合・順位取得 | [使い方](docs/persistent_multiset.md) |
+| `data_structure/persistent/persistent_heap.hpp` | 永続併合可能ヒープ | [使い方](docs/persistent_heap.md) |
+| `data_structure/persistent/persistent_segtree.hpp` | 永続セグメント木（過去版への更新・区間コピー） | [使い方](docs/persistent_segtree.md) |
+| `data_structure/persistent/persistent_lazy_segtree.hpp` | 永続遅延セグメント木・区間コピー | [使い方](docs/persistent_lazy_segtree.md) |
+
+### Li Chao Tree
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `data_structure/li_chao_tree/li_chao_tree.hpp` | Li Chao Tree (クエリ先読み) | [使い方](docs/li_chao_tree.md) |
+| `data_structure/li_chao_tree/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
 
 ### セグメント木
 
@@ -196,8 +213,6 @@
 | --- | --- | --- |
 | `data_structure/segment_tree/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
-| `data_structure/segment_tree/persistent_segtree.hpp` | 永続セグメント木（過去版への更新・区間コピー） | [使い方](docs/persistent_segtree.md) |
-| `data_structure/segment_tree/persistent_lazy_segtree.hpp` | 永続遅延セグメント木・区間コピー | [使い方](docs/persistent_lazy_segtree.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
 | `data_structure/segment_tree/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
 | `data_structure/segment_tree/sortable_segtree.hpp` | Sortable Segtree（区間ソート・区間集約） | [使い方](docs/sortable_segtree.md) |

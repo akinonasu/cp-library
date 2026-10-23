@@ -1,5 +1,5 @@
-#include "../../data_structure/persistent_multiset.hpp"
-#include "../../data_structure/persistent_heap.hpp"
+#include "../../data_structure/persistent/persistent_multiset.hpp"
+#include "../../data_structure/persistent/persistent_heap.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>

@@ -1,12 +1,15 @@
 ---
 title: 永続順序付き多重集合
-documentation_of: //data_structure/persistent_multiset.hpp
+documentation_of: //data_structure/persistent/persistent_multiset.hpp
+redirect_from:
+  - /data_structure/persistent_multiset.hpp.html
+  - /lightweight/data_structure/persistent_multiset.hpp.html
 ---
 
 重複を数えながら、過去版ごとの挿入・削除・順位・k 番目・前後の値を求めます。通常の集合として使う場合は、`contains(root,x)` が偽のときだけ挿入します。
 
 ```cpp
-#include "lib/data_structure/persistent_multiset.hpp"
+#include "lib/data_structure/persistent/persistent_multiset.hpp"
 #include <cassert>
 
 int main() {

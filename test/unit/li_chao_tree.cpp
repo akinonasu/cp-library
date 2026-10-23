@@ -1,4 +1,4 @@
-#include "data_structure/li_chao_tree.hpp"
+#include "data_structure/li_chao_tree/li_chao_tree.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>

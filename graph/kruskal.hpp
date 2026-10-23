@@ -1,7 +1,7 @@
 #ifndef KRUSKAL_HPP
 #define KRUSKAL_HPP
 
-#include "../data_structure/union_find.hpp"
+#include "../data_structure/union_find/union_find.hpp"
 #include "../components/radix_sort.hpp"
 #include <cstdint>
 #include <limits>
