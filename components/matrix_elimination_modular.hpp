@@ -8,6 +8,22 @@ namespace matrix_detail {
 template <class Ops>
 struct ModularElimination {
 	using V = typename Ops::V;
+	static void hessenberg(std::vector<V> &b, int n, int k, V inverse, std::vector<V> &factors) {
+		bool any = false;
+		for (int i = k + 1; i < n; ++i) {
+			V factor = factors[i] = Ops::mul(b[std::size_t(i) * n + k - 1], inverse);
+			if (!factor) continue;
+			any = true;
+			Ops::axpy(b.data() + std::size_t(i) * n + k, b.data() + std::size_t(k) * n + k, n - k, Ops::neg(factor));
+			b[std::size_t(i) * n + k - 1] = 0;
+		}
+		if (!any) return;
+		for (int j = 0; j < n; ++j) {
+			auto *row = b.data() + std::size_t(j) * n;
+			row[k] = Ops::add(row[k], Ops::dot(row + k + 1, factors.data() + k + 1, n - k - 1));
+		}
+	}
+
 	static constexpr int batch = int(std::min<std::uint64_t>(8, (std::numeric_limits<std::int64_t>::max() - (Ops::mod - 1)) / (std::uint64_t(Ops::mod - 1) * (Ops::mod - 1))));
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	__attribute__((target("avx512f,avx512dq"))) static __m512i reduce512(__m512i sum) {

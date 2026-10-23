@@ -64,6 +64,12 @@ class Matrix {
 		return work;
 	}
 
+	std::pair<Matrix, std::vector<int>> echelon(bool reduced, long double eps) const {
+		Matrix work = *this;
+		auto pivots = work.reduce(w, reduced, eps).second;
+		return {std::move(work), std::move(pivots)};
+	}
+
   public:
 	using value_type = T;
 	static constexpr long double default_epsilon = std::is_floating_point_v<T> ? 1e-12L : 0;
@@ -184,16 +190,9 @@ class Matrix {
 		}
 	}
 	int rank(long double eps = default_epsilon) const { Matrix work = *this; return int(work.reduce(w, false, eps).second.size()); }
-	std::pair<Matrix, std::vector<int>> row_echelon(long double eps = default_epsilon) const {
-		Matrix work = *this;
-		auto pivots = work.reduce(w, false, eps).second;
-		return {std::move(work), std::move(pivots)};
-	}
-	std::pair<Matrix, std::vector<int>> rref(long double eps = default_epsilon) const {
-		Matrix work = *this;
-		auto pivots = work.reduce(w, true, eps).second;
-		return {std::move(work), std::move(pivots)};
-	}
+	std::pair<Matrix, std::vector<int>> row_echelon(long double eps = default_epsilon) const { return echelon(false, eps); }
+	std::pair<Matrix, std::vector<int>> rref(long double eps = default_epsilon) const { return echelon(true, eps); }
+
 	std::optional<Matrix> inverse(long double eps = default_epsilon) const {
 		auto work = augmented_identity();
 		auto pivots = work.reduce(w, true, eps).second;
@@ -224,40 +223,27 @@ class Matrix {
 		auto work = a;
 		return Arithmetic::field(work, [&]<class Ops>(auto &b) {
 			using V = typename Ops::V;
+			auto at = [&](int i, int j) -> V& { return b[std::size_t(i) * w + j]; };
 			std::vector<V> factors;
-			if constexpr (Arithmetic::modular) if (h >= 16) factors.resize(h);
 			for (int k = 1; k < h; ++k) {
 				int pivot = -1;
-				for (int i = k; i < h; ++i) if (!Ops::zero(b[std::size_t(i) * w + k - 1], eps)
-					&& (pivot < 0 || Ops::better(b[std::size_t(i) * w + k - 1], b[std::size_t(pivot) * w + k - 1]))) pivot = i;
+				for (int i = k; i < h; ++i) if (!Ops::zero(at(i, k - 1), eps)
+					&& (pivot < 0 || Ops::better(at(i, k - 1), at(pivot, k - 1)))) pivot = i;
 				if (pivot < 0) continue;
 				if (pivot != k) {
-					for (int j = 0; j < w; ++j) std::swap(b[std::size_t(k) * w + j], b[std::size_t(pivot) * w + j]);
-					for (int i = 0; i < h; ++i) std::swap(b[std::size_t(i) * w + k], b[std::size_t(i) * w + pivot]);
+					for (int j = 0; j < w; ++j) std::swap(at(k, j), at(pivot, j));
+					for (int i = 0; i < h; ++i) std::swap(at(i, k), at(i, pivot));
 				}
-				V inverse = Ops::inv(b[std::size_t(k) * w + k - 1]);
-				if constexpr (Arithmetic::modular) if (h >= 16) {
-					bool any = false;
-					for (int i = k + 1; i < h; ++i) {
-						V factor = factors[i] = Ops::mul(b[std::size_t(i) * w + k - 1], inverse);
-						if (!factor) continue;
-						any = true;
-						Ops::axpy(b.data() + std::size_t(i) * w + k, b.data() + std::size_t(k) * w + k, w - k, Ops::neg(factor));
-						b[std::size_t(i) * w + k - 1] = 0;
-					}
-					if (!any) continue;
-					for (int j = 0; j < h; ++j) {
-						auto *row = b.data() + std::size_t(j) * w;
-						row[k] = Ops::add(row[k], Ops::dot(row + k + 1, factors.data() + k + 1, h - k - 1));
-					}
-					continue;
-				}
+				V inverse = Ops::inv(at(k, k - 1));
+				if constexpr (requires { Arithmetic::template hessenberg<Ops>(b, h, k, inverse, factors); })
+					if (Arithmetic::template hessenberg<Ops>(b, h, k, inverse, factors)) continue;
+
 				for (int i = k + 1; i < h; ++i) {
-					V factor = Ops::mul(b[std::size_t(i) * w + k - 1], inverse);
+					V factor = Ops::mul(at(i, k - 1), inverse);
 					if (Ops::zero(factor, eps)) continue;
 					Ops::axpy(b.data() + std::size_t(i) * w + k, b.data() + std::size_t(k) * w + k, w - k, Ops::neg(factor));
-					b[std::size_t(i) * w + k - 1] = V(0);
-					for (int j = 0; j < h; ++j) b[std::size_t(j) * w + k] = Ops::add(b[std::size_t(j) * w + k], Ops::mul(factor, b[std::size_t(j) * w + i]));
+					at(i, k - 1) = V(0);
+					for (int j = 0; j < h; ++j) at(j, k) = Ops::add(at(j, k), Ops::mul(factor, at(j, i)));
 				}
 			}
 			std::vector<std::vector<V>> p(h + 1);
@@ -265,11 +251,11 @@ class Matrix {
 			for (int n = 1; n <= h; ++n) {
 				p[n].assign(n + 1, V(0));
 				std::copy(p[n - 1].begin(), p[n - 1].end(), p[n].begin() + 1);
-				Ops::axpy(p[n].data(), p[n - 1].data(), n, Ops::neg(b[std::size_t(n - 1) * w + n - 1]));
+				Ops::axpy(p[n].data(), p[n - 1].data(), n, Ops::neg(at(n - 1, n - 1)));
 				V product = 1;
 				for (int i = n - 2; i >= 0; --i) {
-					product = Ops::mul(product, b[std::size_t(i + 1) * w + i]);
-					V factor = Ops::mul(product, b[std::size_t(i) * w + n - 1]);
+					product = Ops::mul(product, at(i + 1, i));
+					V factor = Ops::mul(product, at(i, n - 1));
 					Ops::axpy(p[n].data(), p[i].data(), i + 1, Ops::neg(factor));
 				}
 			}

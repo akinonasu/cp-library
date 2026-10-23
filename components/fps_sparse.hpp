@@ -170,7 +170,8 @@ struct SparseSeries : SparseBase<SparseSeries> {
 			p[i] = canonical(a.v), q[i] = canonical(b.v);
 		}
 		out[0] = canonical(initial.v);
-		int active = 0, near = 0, i = 1;
+		int active = 0, i = 1;
+		[[maybe_unused]] int near = 0;
 		while (i < n) {
 			while (active < int(taps.size()) && taps[active].degree <= i) {
 				near += taps[active].degree < 8;
