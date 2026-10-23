@@ -128,7 +128,7 @@ public:
 	int size() const { return active; }
 	bool empty() const { return active == 0; }
 	int point_count() const { return int(xs.size()); }
-	const X &x(int id) const { check_id(id); return xs[id]; }
+	typename std::vector<X>::const_reference x(int id) const { check_id(id); return xs[id]; }
 	const std::optional<Y> &get(int id) const { check_id(id); return ys[id]; }
 	bool contains(int id) const { check_id(id); return positions[id] != 0; }
 	void build_coordinates(const std::vector<X> &coordinates) {
