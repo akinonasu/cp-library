@@ -39,6 +39,8 @@ int size = tree.subtree_size[1]; // 4
 `build_parents` の親配列は長さが頂点数で、根の親だけを `-1` とし、親子関係が 1 本の根付き木になるようにしてください。頂点番号の大小に制約はありません。空配列にも対応します。
 
 ```cpp
+#include "lib/tree/rooted_tree_hash.hpp"
+
 RootedTreeHash tree;
 tree.build_parents(std::vector<int>{-1, 0, 0});
 auto ids = tree.classify(); // {0, 1, 1}

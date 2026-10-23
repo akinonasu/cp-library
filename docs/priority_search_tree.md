@@ -9,6 +9,7 @@ x 座標は構築時に登録し、各点を入力順の 0 始まりの ID で�
 
 ```cpp
 #include "lib/data_structure/priority_search_tree.hpp"
+#include <iostream>
 
 std::vector<std::pair<int, int>> points = { {1, 5}, {3, 2}, {3, 7}, {6, 1} };
 PrioritySearchTree<int> tree(points);

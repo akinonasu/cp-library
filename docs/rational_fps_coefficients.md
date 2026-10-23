@@ -26,6 +26,8 @@ auto a = rational_fps_coefficients(p, q, 10, 15);
 初期値と漸化式の係数から使う場合は、次のように分子と分母を作ります。
 
 ```cpp
+#include "lib/fps/rational_fps_coefficients.hpp"
+
 std::vector<mint> initial{0, 1}, coefficients{1, 1};
 int d = initial.size();
 fps q(d + 1);

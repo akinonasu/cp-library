@@ -5,8 +5,10 @@ documentation_of: //components/limb_arithmetic.hpp
 
 ```cpp
 #include "lib/components/limb_arithmetic.hpp"
-auto carry = limb_arithmetic::add<1000000000000000000ULL>(a, b, n);
-auto borrow = limb_arithmetic::subtract<1000000000000000000ULL>(a, b, n);
+
+std::uint64_t a[]{99, 1}, b[]{2, 0}; // 100 進数で 199 と 2
+auto carry = limb_arithmetic::add<100>(a, b, 2);      // a = {1,2}, carry = 0
+auto borrow = limb_arithmetic::subtract<100>(a, b, 2); // a = {99,1}, borrow = 0
 ```
 
 | 操作 | 内容・返り値 | 計算量 |
