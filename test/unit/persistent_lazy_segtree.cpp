@@ -21,6 +21,14 @@ std::string assign(Set f, std::string s, int n) { return f.c ? std::string(n, f.
 Set compose_set(Set f, Set g) { return f.c ? f : g; }
 Set id_set() { return {0}; }
 
+std::string relabel(std::string f, std::string value, int) {
+	assert(f.size() == 3);
+	for (char &c : value) c = f[c - 'a'];
+	return value;
+}
+std::string compose_relabel(std::string f, std::string g) { return relabel(std::move(f), std::move(g), 3); }
+std::string id_relabel() { return "abc"; }
+
 struct Value {
 	long long x;
 	Value() = delete;
@@ -114,7 +122,7 @@ int main() {
 	for (int n : {3, 7, 17, 67}) {
 		std::vector<std::string> initial(n);
 		for (auto &x : initial) x = std::string(1, char('a' + random() % 3));
-		decltype(text) tree(initial);
+		PersistentLazySegtree<std::string, concatenate, empty_string, std::string, relabel, compose_relabel, id_relabel> tree(initial);
 		std::vector<decltype(tree)::root_type> roots{tree.initial_root()};
 		std::vector<std::vector<std::string>> values{initial};
 		for (int i = 0; i < 200; ++i) {
@@ -124,9 +132,11 @@ int main() {
 			auto value = values[k];
 			decltype(tree)::root_type root;
 			if (i % 2) {
-				char c = char('a' + random() % 3);
-				root = tree.apply(roots[k], l, r, {c});
-				std::fill(value.begin() + l, value.begin() + r, std::string(1, c));
+				std::string f = "abc";
+				if (i % 4 == 1) f.assign(3, char('a' + random() % 3));
+				else std::shuffle(f.begin(), f.end(), random);
+				root = tree.apply(roots[k], l, r, f);
+				for (int j = l; j < r; ++j) value[j][0] = f[value[j][0] - 'a'];
 			} else {
 				root = tree.copy_range(roots[k], roots[other], l, r);
 				std::copy(values[other].begin() + l, values[other].begin() + r, value.begin() + l);
