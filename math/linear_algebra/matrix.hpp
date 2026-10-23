@@ -14,6 +14,16 @@ struct FastMatrixArithmetic {
 		if constexpr (modular) if (h >= 32 && columns >= 32) return ModularElimination<Ops>::run(a, h, stride, columns, reduced);
 		return matrix_detail::eliminate<Ops, modular>(a, h, stride, columns, reduced, eps);
 	}
+	template <class Ops>
+	static bool hessenberg(std::vector<typename Ops::V> &a, int n, int k, typename Ops::V inverse, std::vector<typename Ops::V> &factors) {
+		if constexpr (modular) if (n >= 16) {
+			factors.resize(n);
+			ModularElimination<Ops>::hessenberg(a, n, k, inverse, factors);
+			return true;
+		}
+		return false;
+	}
+
 	template <class F>
 	static auto field(std::vector<T> &a, F &&f) { return matrix_detail::field(a, std::forward<F>(f)); }
 	static std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n, int inner, int m) {

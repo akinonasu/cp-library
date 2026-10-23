@@ -14,7 +14,7 @@
 class IncrementalPrefixCount {
 	std::vector<std::vector<std::array<std::uint32_t, 16>>> levels;
 	int n = 0, total = 0;
-	bool vectorized = false;
+	[[maybe_unused]] bool vectorized = false;
 	static void add_scalar(std::uint32_t *values, int first) {
 		for (int i = first; i < 16; ++i) ++values[i];
 	}

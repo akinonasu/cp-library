@@ -2,8 +2,8 @@
 #define CP_FPS_INTERPOLATE_HPP
 
 #include "fps.hpp"
-#include "../components/fps_product_tree.hpp"
-#include "../components/fps_evaluation.hpp"
+#include "../components/polynomial_product_tree.hpp"
+#include "../components/fps_interpolation.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -24,7 +24,7 @@ FormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> 
 	}
 #endif
 
-	return fps_detail::ProductTree<T>(xs).interpolate(ys);
+	return polynomial_detail::ProductTree<FormalPowerSeries<T>>(xs).interpolate(ys);
 }
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))

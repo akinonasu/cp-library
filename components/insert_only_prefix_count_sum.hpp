@@ -25,7 +25,7 @@ class Packed {
 	__int128_t base;
 	std::uint64_t sum_mask;
 	int sum_bits;
-	bool vectorized = false;
+	[[maybe_unused]] bool vectorized = false;
 	static void add_scalar(std::uint64_t *values, int first, std::uint64_t delta) {
 		for (int i = first; i < 16; ++i) values[i] += delta;
 	}

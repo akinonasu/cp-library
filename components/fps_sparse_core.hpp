@@ -1,7 +1,7 @@
 #ifndef FPS_SPARSE_CORE_HPP
 #define FPS_SPARSE_CORE_HPP
 
-#include "../math/mint.hpp"
+#include "fps_sparse_terms.hpp"
 #include <algorithm>
 #include <cassert>
 #include <numeric>
@@ -9,16 +9,7 @@
 #include <vector>
 
 namespace fps_detail {
-template <class E> struct SparseBase {
-	using Series = std::vector<mint>;
-	using Terms = std::vector<std::pair<int, mint>>;
-	enum class Kind { inverse, logarithm, exponential, power };
-	static Terms collect(const mint *f, int size, int n, int limit = 12) {
-		Terms terms;
-		for (int i = 1; i < std::min(size, n) && int(terms.size()) <= limit; ++i)
-			if (f[i] != mint(0)) terms.emplace_back(i, f[i]);
-		return terms;
-	}
+template <class E> struct SparseBase : SparseTerms {
 	static Terms multiply(const Terms &a, const Terms &b, int n) {
 		Terms result;
 		for (auto [i, x] : a) for (auto [j, y] : b) if (i < n - j) result.emplace_back(i + j, x * y);
