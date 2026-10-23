@@ -167,4 +167,8 @@ int main() {
 	assert(extremes.min_y(lo, hi) == 0 && extremes.report(lo, hi, top).empty());
 	extremes.build_coordinates(std::vector<I>{hi, lo});
 	assert(extremes.empty() && extremes.point_count() == 2);
+	PrioritySearchTree<bool, int> boolean(std::vector<bool>{true, false, true});
+	boolean.set(0, -1);
+	boolean.set(1, 0);
+	assert(boolean.x(0) && !boolean.x(1) && boolean.min_y(false, true) == 1);
 }
