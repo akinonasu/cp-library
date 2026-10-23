@@ -57,6 +57,10 @@ void check(std::uint64_t n, std::array<int, 3> coefficients, PrimePower power) {
 			assert(backend.sum(prime, callback, inverse) == expected[n]);
 			std::function<T(std::uint64_t)> ones = [](std::uint64_t x) { assert(x > 0); return T(x); };
 			assert(backend.prime_sum(ones, inverse) == constant);
+			std::function<T(std::uint64_t)> identity = [](std::uint64_t x) { return T(x * (x + 1) / 2); };
+			assert(backend.prime_sum(identity, inverse) == linear);
+			std::function<T(std::uint64_t)> squares = [](std::uint64_t x) { return T(x * (x + 1) * (2 * x + 1) / 6); };
+			assert(backend.prime_sum(squares, inverse) == quadratic);
 		}
 	}
 	assert(prime == saved);
@@ -97,6 +101,15 @@ void cases() {
 	auto all = character.prefix_sum(prime, power);
 	for (auto x : character.quotients()) assert(character.get(all, x) == prefix(x));
 	assert(character.sum(prime, power) == prefix(10000));
+	if constexpr (requires { T::mod(); }) {
+		if (T::mod() % 3) {
+			FloorQuotients quotients(10000);
+			multiplicative_sum_detail::Backend<T> backend(quotients, prime_sieve(quotients.root() + 1));
+			const T inverse = T((std::uint64_t(T::mod()) * (T::mod() % 3 == 1 ? 2 : 1) + 1) / 3);
+			assert(backend.prime_sum(prefix, inverse) == prime);
+			assert(backend.sum(prime, power, inverse) == prefix(10000));
+		}
+	}
 }
 
 template<class T>
