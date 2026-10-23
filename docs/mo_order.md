@@ -1,12 +1,15 @@
 ---
-title: "Mo 法の処理順 (クエリ先読み)"
-documentation_of: //components/mo_order.hpp
+title: "Mo 法"
+documentation_of: //data_structure/range_query/mo_order.hpp
+redirect_from:
+  - /components/mo_order.hpp.html
+  - /lightweight/components/mo_order.hpp.html
 ---
 
 クエリを全て先読みし、区間をまとめて渡します。区間の左端をブロックに分け、右端をブロックごとに昇順・降順へ交互に並べます。区間そのものは変更せず、元のクエリ番号を処理したい順で返します。
 
 ```cpp
-#include "lib/components/mo_order.hpp"
+#include "lib/data_structure/range_query/mo_order.hpp"
 
 std::vector<std::pair<int,int>> ranges{ {0,3}, {2,5}, {0,1} };
 auto order = mo_order(ranges);

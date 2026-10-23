@@ -1,7 +1,7 @@
 #ifndef MO_ORDER_HPP
 #define MO_ORDER_HPP
 
-#include "radix_sort.hpp"
+#include "../../components/radix_sort.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
