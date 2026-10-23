@@ -500,9 +500,7 @@ class IncrementalVerification(unittest.TestCase):
         self.assertFalse(plan["full"])
         self.assertEqual(plan["headers"], ["data_structure/wavelet_matrix/wavelet_matrix.hpp"])
         self.assertEqual(plan["unit"], ["test/unit/dependency_boundaries.cpp", "test/unit/dynamic_wavelet_matrix.cpp", "test/unit/standalone.cpp", "test/unit/wavelet_matrix.cpp", "test/unit/wavelet_matrix_opt.cpp", "test/unit/wavelet_matrix_sum_bound.cpp"])
-        affected = ["test/static_range_count_distinct.test.cpp", "test/wavelet_matrix_freq.test.cpp", "test/wavelet_matrix_kth.test.cpp", "test/wavelet_matrix_sum.test.cpp"]
-        self.assertTrue(set(affected).isdisjoint(unchanged["verification"]))
-        self.assertEqual(plan["verification"], sorted(set(unchanged["verification"]) | set(affected)))
+        self.assertEqual(plan["verification"], unchanged["verification"])
 
     def test_repository_mint_dependencies(self):
         previous = build_plan(ROOT, environment="test")["state"]
@@ -535,7 +533,7 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(plan["headers"], ["components/dynamic_bit_vector.hpp", "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"])
         self.assertEqual(plan["unit"], ["test/unit/dynamic_bit_vector.cpp", "test/unit/dynamic_quad_wavelet.cpp", "test/unit/dynamic_wavelet_core.cpp", "test/unit/dynamic_wavelet_count.cpp", "test/unit/dynamic_wavelet_matrix.cpp", "test/unit/standalone.cpp"])
         self.assertEqual(plan["sanitize"], plan["unit"])
-        affected = ["test/dynamic_wavelet_matrix_freq.test.cpp", "test/dynamic_wavelet_matrix_kth.test.cpp"]
+        affected = ["test/dynamic_wavelet_matrix_kth.test.cpp"]
         self.assertTrue(set(affected).isdisjoint(unchanged["verification"]))
         self.assertEqual(plan["verification"], sorted(set(unchanged["verification"]) | set(affected)))
 

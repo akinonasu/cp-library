@@ -4,7 +4,7 @@
 #include "fps.hpp"
 #include "../components/fps_product_tree.hpp"
 #include "../components/fps_direct_eval.hpp"
-#include "../components/fps_evaluation.hpp"
+#include "../components/fps_multipoint.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options

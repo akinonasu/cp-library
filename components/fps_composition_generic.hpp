@@ -1,6 +1,7 @@
 #ifndef CP_COMPONENTS_FPS_COMPOSITION_GENERIC_HPP
 #define CP_COMPONENTS_FPS_COMPOSITION_GENERIC_HPP
 
+#include "polynomial_multiply.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -14,18 +15,7 @@ template<class F> void trim(F &f) {
 }
 
 template<class F> F multiply(const F &a, const F &b) {
-	if (a.empty() || b.empty()) return {};
-	if (a.size() + b.size() - 1 <= (std::size_t(1) << 23)) return F::multiply(a, b);
-	F result(a.size() + b.size() - 1);
-	constexpr std::size_t block = std::size_t(1) << 22;
-	for (std::size_t i = 0; i < a.size(); i += block)
-		for (std::size_t j = 0; j < b.size(); j += block) {
-			F x(a.begin() + i, a.begin() + std::min(i + block, a.size()));
-			F y(b.begin() + j, b.begin() + std::min(j + block, b.size()));
-			auto product = F::multiply(x, y);
-			for (std::size_t k = 0; k < product.size(); ++k) result[i + j + k] += product[k];
-		}
-	return result;
+	return polynomial_detail::Products<F>::multiply(a, b);
 }
 
 template<class F> struct CompositionStage {

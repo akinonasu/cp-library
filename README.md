@@ -442,6 +442,11 @@
 | `components/fps_direct_eval.hpp` | 多点評価の内部直接計算 | [使い方](docs/fps_direct_eval.md) |
 | `components/fps_division_blocked.hpp` | FPS と多項式除算の内部変換 | [使い方](docs/fps_division_blocked.md) |
 | `components/fps_evaluation.hpp` | 多点評価・補間の SIMD 木 | [使い方](docs/fps_evaluation.md) |
+| `components/fps_evaluation_common.hpp` | 多点評価・補間が共有する積の木 | [使い方](docs/fps_evaluation_common.md) |
+| `components/fps_multipoint.hpp` | 多点評価の SIMD 処理 | [使い方](docs/fps_multipoint.md) |
+| `components/fps_interpolation.hpp` | 多項式補間の SIMD 処理 | [使い方](docs/fps_interpolation.md) |
+| `components/fps_sparse_terms.hpp` | 疎 FPS の項収集・演算種別 | [使い方](docs/fps_sparse_terms.md) |
+| `components/polynomial_multiply.hpp` | 多項式の積・打ち切り積の共通処理 | [使い方](docs/polynomial_multiply.md) |
 | `components/fps_exp_blocked.hpp` | FPS の指数・冪の内部変換 | [使い方](docs/fps_exp_blocked.md) |
 | `components/fps_inverse_blocked.hpp` | FPS 逆数のブロック変換 | [使い方](docs/fps_inverse_blocked.md) |
 | `components/fps_output.hpp` | FPS の結果配列への一括変換 | [使い方](docs/fps_output.md) |
