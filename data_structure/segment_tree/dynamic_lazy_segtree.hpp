@@ -1,12 +1,12 @@
 #ifndef DYNAMIC_LAZY_SEGTREE_HPP
 #define DYNAMIC_LAZY_SEGTREE_HPP
 
+#include "../../components/ordered_midpoint.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
-#include <numeric>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -59,7 +59,7 @@ class DynamicLazySegtree {
 	int update(int k, Coord l, Coord r, Coord a, Coord b, const F &f) {
 		if (!k) k = make_node(l, r);
 		if (a == l && b == r) { all_apply(k, f, leaf(l, r)); return k; }
-		Coord m = std::midpoint(l, r);
+		Coord m = ordered_midpoint(l, r);
 		push(k, l, m, r);
 		if (a < m) nodes[k].left = update(nodes[k].left, l, m, a, std::min(b, m), f);
 		if (m < b) nodes[k].right = update(nodes[k].right, m, r, std::max(a, m), b, f);
@@ -69,7 +69,7 @@ class DynamicLazySegtree {
 	int write(int k, Coord l, Coord r, Coord p, const S &x) {
 		if (!k) k = make_node(l, r);
 		if (leaf(l, r)) { nodes[k].value = x; return k; }
-		Coord m = std::midpoint(l, r);
+		Coord m = ordered_midpoint(l, r);
 		push(k, l, m, r);
 		if (p < m) nodes[k].left = write(nodes[k].left, l, m, p, x);
 		else nodes[k].right = write(nodes[k].right, m, r, p, x);
@@ -79,7 +79,7 @@ class DynamicLazySegtree {
 	S product(int k, Coord l, Coord r, Coord a, Coord b) const {
 		if (!k) return base(a, b);
 		if (a == l && b == r) return nodes[k].value;
-		Coord m = std::midpoint(l, r);
+		Coord m = ordered_midpoint(l, r);
 		S result = b <= m ? product(nodes[k].left, l, m, a, b) :
 			m <= a ? product(nodes[k].right, m, r, a, b) :
 			op(product(nodes[k].left, l, m, a, m), product(nodes[k].right, m, r, m, b));
@@ -94,7 +94,7 @@ class DynamicLazySegtree {
 			if (f(next)) { acc = std::move(next); return false; }
 			if (leaf(l, r)) { answer = Right ? l : r; return true; }
 		}
-		Coord m = std::midpoint(l, r);
+		Coord m = ordered_midpoint(l, r);
 		auto descend = [&](const F *pending) {
 			int left = k ? nodes[k].left : 0, right = k ? nodes[k].right : 0;
 			if constexpr (Right) {
@@ -115,7 +115,7 @@ class DynamicLazySegtree {
 		int k = make_node(l, r);
 		if (leaf(l, r)) nodes[k].value = a[std::size_t(l)];
 		else {
-			Coord m = std::midpoint(l, r);
+			Coord m = ordered_midpoint(l, r);
 			int left = build_values(a, l, m), right = build_values(a, m, r);
 			nodes[k].left = left;
 			nodes[k].right = right;

@@ -36,6 +36,7 @@ auto joined = RollingHash::concat(a.get(0, 4), b.get(), b.size());
 法は $$2^{61}-1$$、`base()` は実行ごとにランダムな共通の基数です。同じ長さの区間同士でハッシュを比較します。ハッシュの衝突が起こる可能性があります。
 
 ```cpp
+#include "lib/string/rolling_hash.hpp"
 #include <atcoder/segtree>
 
 using RH = RollingHash;

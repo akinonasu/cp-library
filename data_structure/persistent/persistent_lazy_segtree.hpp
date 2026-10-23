@@ -45,14 +45,39 @@ class PersistentLazySegtree {
 	root_type carried(root_type root, F carry, int length, bool active) {
 		return active ? mapped(root, std::move(carry), length) : root;
 	}
+	template <bool Prefix>
+	root_type update_end(root_type root, int l, int r, int end, F f, F carry, bool active) {
+		if (Prefix ? r <= end : end <= l) return mapped(root, active ? composition(f, carry) : std::move(f), r - l);
+		inherit(root, carry, active);
+		auto a = nodes[root].left, b = nodes[root].right;
+		int m = l + (r - l) / 2;
+		bool right = Prefix ? m < end : m <= end;
+		root_type left, next;
+		if (right) {
+			left = Prefix ? mapped(a, active ? composition(f, carry) : f, m - l) : carried(a, carry, m - l, active);
+			next = update_end<Prefix>(b, m, r, end, std::move(f), std::move(carry), active);
+		} else {
+			left = update_end<Prefix>(a, l, m, end, f, carry, active);
+			next = Prefix ? carried(b, std::move(carry), r - m, active) : mapped(b, active ? composition(f, carry) : std::move(f), r - m);
+		}
+		return join(left, next);
+	}
 	root_type update(root_type root, int l, int r, int ql, int qr, F f, F carry, bool active) {
-		if (qr <= l || r <= ql) return carried(root, std::move(carry), r - l, active);
 		if (ql <= l && r <= qr) return mapped(root, active ? composition(f, carry) : std::move(f), r - l);
 		inherit(root, carry, active);
 		auto a = nodes[root].left, b = nodes[root].right;
 		int m = l + (r - l) / 2;
-		auto left = update(a, l, m, ql, qr, f, carry, active);
-		auto right = update(b, m, r, ql, qr, std::move(f), std::move(carry), active);
+		root_type left, right;
+		if (qr <= m) {
+			left = update(a, l, m, ql, qr, f, carry, active);
+			right = carried(b, std::move(carry), r - m, active);
+		} else if (m <= ql) {
+			left = carried(a, carry, m - l, active);
+			right = update(b, m, r, ql, qr, std::move(f), std::move(carry), active);
+		} else {
+			left = update_end<false>(a, l, m, ql, f, carry, active);
+			right = update_end<true>(b, m, r, qr, std::move(f), std::move(carry), active);
+		}
 		return join(left, right);
 	}
 	root_type assign(root_type root, int l, int r, int p, S value, F carry, bool active) {
@@ -70,6 +95,25 @@ class PersistentLazySegtree {
 		}
 		return join(left, right);
 	}
+	template <bool Prefix>
+	S fold(root_type root, int l, int r, int end, F carry, bool active) const {
+		S result = e();
+		while (Prefix ? end < r : l < end) {
+			inherit(root, carry, active);
+			const auto &node = nodes[root];
+			int m = l + (r - l) / 2;
+			bool right = Prefix ? m < end : m <= end;
+			if (Prefix ? right : !right) {
+				auto child = right ? node.left : node.right;
+				S part = active ? mapping(carry, nodes[child].value, right ? m - l : r - m) : nodes[child].value;
+				result = Prefix ? op(std::move(result), std::move(part)) : op(std::move(part), std::move(result));
+			}
+			if (right) { root = node.right; l = m; }
+			else { root = node.left; r = m; }
+		}
+		S part = active ? mapping(carry, nodes[root].value, r - l) : nodes[root].value;
+		return Prefix ? op(std::move(result), std::move(part)) : op(std::move(part), std::move(result));
+	}
 	S query(root_type root, int l, int r, int ql, int qr, F carry, bool active) const {
 		const auto &node = nodes[root];
 		if (ql <= l && r <= qr) return active ? mapping(carry, node.value, r - l) : node.value;
@@ -77,16 +121,43 @@ class PersistentLazySegtree {
 		int m = l + (r - l) / 2;
 		if (qr <= m) return query(node.left, l, m, ql, qr, std::move(carry), active);
 		if (m <= ql) return query(node.right, m, r, ql, qr, std::move(carry), active);
-		return op(query(node.left, l, m, ql, qr, carry, active), query(node.right, m, r, ql, qr, carry, active));
+		return op(fold<false>(node.left, l, m, ql, carry, active), fold<true>(node.right, m, r, qr, carry, active));
 	}
-	root_type copy(root_type root, root_type source, int l, int r, int ql, int qr, F carry, F source_carry, bool active, bool source_active) {
-		if (qr <= l || r <= ql || (root == source && !active && !source_active)) return carried(root, std::move(carry), r - l, active);
-		if (ql <= l && r <= qr) return carried(source, std::move(source_carry), r - l, source_active);
+	template <bool Prefix>
+	root_type copy_end(root_type root, root_type source, int l, int r, int end, F carry, F source_carry, bool active, bool source_active) {
+		if (Prefix ? r <= end : end <= l) return carried(source, std::move(source_carry), r - l, source_active);
+		if (root == source && !active && !source_active) return root;
 		inherit(root, carry, active); inherit(source, source_carry, source_active);
 		auto a = nodes[root].left, b = nodes[root].right, c = nodes[source].left, d = nodes[source].right;
 		int m = l + (r - l) / 2;
-		auto left = copy(a, c, l, m, ql, qr, carry, source_carry, active, source_active);
-		auto right = copy(b, d, m, r, ql, qr, std::move(carry), std::move(source_carry), active, source_active);
+		bool right = Prefix ? m < end : m <= end;
+		root_type left, next;
+		if (right) {
+			left = Prefix ? carried(c, source_carry, m - l, source_active) : carried(a, carry, m - l, active);
+			next = copy_end<Prefix>(b, d, m, r, end, std::move(carry), std::move(source_carry), active, source_active);
+		} else {
+			left = copy_end<Prefix>(a, c, l, m, end, carry, source_carry, active, source_active);
+			next = Prefix ? carried(b, std::move(carry), r - m, active) : carried(d, std::move(source_carry), r - m, source_active);
+		}
+		return join(left, next);
+	}
+	root_type copy(root_type root, root_type source, int l, int r, int ql, int qr, F carry, F source_carry, bool active, bool source_active) {
+		if (ql <= l && r <= qr) return carried(source, std::move(source_carry), r - l, source_active);
+		if (root == source && !active && !source_active) return root;
+		inherit(root, carry, active); inherit(source, source_carry, source_active);
+		auto a = nodes[root].left, b = nodes[root].right, c = nodes[source].left, d = nodes[source].right;
+		int m = l + (r - l) / 2;
+		root_type left, right;
+		if (qr <= m) {
+			left = copy(a, c, l, m, ql, qr, carry, source_carry, active, source_active);
+			right = carried(b, std::move(carry), r - m, active);
+		} else if (m <= ql) {
+			left = carried(a, carry, m - l, active);
+			right = copy(b, d, m, r, ql, qr, std::move(carry), std::move(source_carry), active, source_active);
+		} else {
+			left = copy_end<false>(a, c, l, m, ql, carry, source_carry, active, source_active);
+			right = copy_end<true>(b, d, m, r, qr, std::move(carry), std::move(source_carry), active, source_active);
+		}
 		return join(left, right);
 	}
 	template <bool Right, class Pred>

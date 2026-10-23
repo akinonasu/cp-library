@@ -21,7 +21,7 @@ auto c = berlekamp_massey(a); // {1,1}
 
 $$\displaystyle a_i=\sum_{j=0}^{d-1}c_j a_{i-j-1}$$
 
-`c[0]` は 1 つ前の項の係数です。法 998244353 なら[線形漸化式の第 k 項](linear_recurrence.md)にそのまま渡せます。初期値は `a` の先頭 `c.size()` 項を渡してください。
+`c[0]` は 1 つ前の項の係数です。法 998244353 なら[線形漸化式の第 k 項](linear_recurrence.md)にそのまま渡せます。次は上の `a`・`c` を使う例です。初期値は `a` の先頭 `c.size()` 項を渡してください。
 
 ```cpp
 #include "lib/fps/linear_recurrence.hpp"

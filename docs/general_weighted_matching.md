@@ -14,7 +14,7 @@ graph.add_edge(1, 2, 3);
 graph.add_edge(2, 3, 1);
 auto total = graph.build(); // 3
 auto count = graph.matching_size(); // 1
-auto pairs = graph.edges(); // {1,2}
+auto pairs = graph.edges(); // { {1,2} }
 auto partner = graph.mate[1]; // 2
 ```
 

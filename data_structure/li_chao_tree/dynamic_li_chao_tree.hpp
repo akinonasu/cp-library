@@ -1,12 +1,12 @@
 #ifndef DYNAMIC_LI_CHAO_TREE_HPP
 #define DYNAMIC_LI_CHAO_TREE_HPP
 
+#include "../../components/ordered_midpoint.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
-#include <numeric>
 #include <optional>
 #include <type_traits>
 #include <utility>
@@ -50,7 +50,7 @@ class DynamicLiChaoTree {
 				if (better(f.b, g.b)) g = f;
 				return result;
 			}
-			T m = std::midpoint(l, r);
+			T m = ordered_midpoint(l, r);
 			if (better(f.template eval<V>(m), g.template eval<V>(m))) std::swap(f, g);
 			if (l == r) return result;
 			bool right = better(f.a, g.a);
@@ -79,7 +79,7 @@ class DynamicLiChaoTree {
 		}
 		if (ql <= l && r <= qr) return insert<V>(k, l, r, f);
 		if (!k) k = make_node();
-		T m = std::midpoint(l, r);
+		T m = ordered_midpoint(l, r);
 		if (ql <= m) {
 			auto child = insert_segment<V>(nodes_[k].left & mask, l, m, ql, qr, f);
 			nodes_[k].left = (nodes_[k].left & present) | child;
@@ -110,7 +110,7 @@ class DynamicLiChaoTree {
 				found = true;
 			}
 			if (l == r) break;
-			T m = std::midpoint(l, r);
+			T m = ordered_midpoint(l, r);
 			if (x <= m) k = node.left & mask, r = m;
 			else k = node.right, l = T(m + 1);
 		}

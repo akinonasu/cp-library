@@ -33,6 +33,8 @@ bool connected = graph.same(0, 2);
 連結成分の集約が必要な場合は、可換かつ結合則を満たす演算 `op` と単位元 `e()` を指定します。
 
 ```cpp
+#include "lib/graph/connectivity/dynamic_connectivity.hpp"
+
 std::int64_t op(std::int64_t a, std::int64_t b) { return a + b; }
 std::int64_t e() { return 0; }
 

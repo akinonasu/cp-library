@@ -18,6 +18,8 @@ auto frequency = wm.count(0, wm.size(), 1);
 
 区間は $$[l,r)$$、添字と `kth_*`・`select` の順位は 0 始まりです。`kth_*` の `k` は区間の長さ未満とします。
 
+列長は `INT_MAX` 以下、挿入は `0 <= i <= size()`、削除・代入・取得は `0 <= i < size()`、区間は `0 <= l <= r <= size()` とします。`kth_*` は `0 <= k < r-l` が必要です。末尾の削除は非空の列に対して呼んでください。重複は個数分だけ数え、`select(x,k)` は元の列を左から数えた `k` 番目の出現位置を返します。空区間の個数・頻度は 0 です。
+
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `DynamicWaveletMatrix()` / `DynamicWaveletMatrix(a)` | 空／配列から構築 | 空: $$O(B)$$、配列: $$O(Bn)$$ |
@@ -44,7 +46,7 @@ auto frequency = wm.count(0, wm.size(), 1);
 
 `prev_value(l,r,upper)` は境界を含まず、`next_value(l,r,lower)` は境界を含みます。空区間や条件を満たす値がない場合は `nullopt` です。`select(x,k)` は `x` が値域外の場合や `k` が負の場合も `-1` を返します。
 
-既定の `DynamicBitVector<>` を使う場合、内部は [4値の動的 Wavelet Matrix](https://qandori.github.io/cp-library/components/dynamic_quad_wavelet.hpp.html) です。一段で 2 bit を処理し、段数は $$\lceil B/2\rceil$$ です。奇数 bit 幅では最上位段の有効な値が 0・1 になります。テンプレート引数と公開 API は従来と同じです。
+既定の `DynamicBitVector<>` を使う場合、内部は [4値の動的 Wavelet Matrix](https://qandori.github.io/cp-library/components/dynamic_quad_wavelet.hpp.html) です。一段で 2 bit を処理し、段数は $$\lceil B/2\rceil$$ です。奇数 bit 幅では最上位段の有効な値が 0・1 になります。
 
 各段は [Dynamic Quad Vector](https://qandori.github.io/cp-library/components/dynamic_quad_vector.hpp.html) で保持します。4値の順位をまとめて取得し、代入では削除と挿入の木の更新を共有します。全要素が同じ桁値の段や、値を変えない代入は専用の経路を使います。`prev_value`・`next_value` は境界に沿って下降し、必要な場合に候補の枝から最大値・最小値を求めます。候補が一要素になった `count`・`select` などでは残りの桁を直接照合します。
 

@@ -46,16 +46,21 @@ tree.for_each_ancestor(0, [&](int c, int d, int branch) {
 
 `Ancestor::branch` は `centroid` から対象頂点に向かう重心分解木の子の頂点番号で、自身のレコードでは `-1` です。同じ重心の同じ枝に属する頂点を除くことで、距離ごとの総和などの重複を取り除けます。枝の距離も、その親の重心から測ります。
 
-例えば非負重みの木で、各重心について有効な頂点までの最小距離 `best[c]` を保存すれば、頂点の追加と最近傍クエリを次のように書けます。`inf` は距離和より十分大きく、加算がオーバーフローしない値にします。
+例えば非負重みの木で、各重心について有効な頂点までの最小距離 `best[c]` を保存すれば、頂点の追加と最近傍クエリを書けます。次は最初の例の `tree` に対し、頂点 0 を有効にして頂点 2 からの最短距離を求めます。`inf` は距離和より十分大きく、加算がオーバーフローしない値にします。
 
 ```cpp
+const int inf = 1000000000;
+std::vector<int> best(tree.n, inf);
+int v = 0;
 tree.for_each_ancestor(v, [&](int c, int d, int) {
 	best[c] = std::min(best[c], d);
 });
+v = 2;
 int answer = inf;
 tree.for_each_ancestor(v, [&](int c, int d, int) {
 	if (best[c] != inf) answer = std::min(answer, best[c] + d);
 });
+// answer = 2
 ```
 
 `build(false)` でも重心分解木と部分木の区間は取得できます。`ancestors`・`for_each_ancestor`・`distance_to_ancestor`・`dist` には `build(true)` が必要です。`ancestors` の返す参照は再構築・辺の追加で無効になります。構築後の公開配列は参照用です。元の木の LCA が必要なら [LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) を使います。

@@ -9,7 +9,7 @@ documentation_of: //data_structure/range_query/offline_range_sum.hpp
 OfflineRangeSum<int> query(std::vector<int>{4, 1, 4, 2});
 query.add_query(0, 4, 4);
 query.add_query(1, 3, 5);
-auto answer = query.solve(); // {{3,2}, {5,2}} : {和, 個数}
+auto answer = query.solve(); // { {3, 2}, {5, 2} } : {和, 個数}
 ```
 
 | 操作 | 内容・返り値 |
@@ -20,7 +20,7 @@ auto answer = query.solve(); // {{3,2}, {5,2}} : {和, 個数}
 | `add_query(l,r,upper)` | `[l,r)` にある `value < upper` の要素の問い合わせを追加し、答えの添字を返す |
 | `solve()` | `{和,個数}` を登録順の `vector<pair<Sum,int>>` で返す |
 
-空区間の答えは `{0,0}` です。`solve()` は登録内容を変更せず、繰り返し呼び出せます。
+添字は 0 始まり、`0 <= l <= r <= size()` とします。値が `upper` と等しい要素は含めません。空区間や条件に合う要素がない場合の答えは `{0,0}` です。`solve()` は登録内容を変更せず、繰り返し呼び出せます。入力配列は変更せず、構築後に破棄できます。
 
 `T` はコピー・大小比較が可能で、`Sum` に変換できる型とします。`Sum` は `0` による初期化と加減算に対応し、集計結果が収まる型を指定します。既定の `Sum` は、64 bit 未満の整数 `T` では `int64_t`、64 bit 整数では `__int128_t`、それ以外では `T` です。列長・問い合わせ数は `INT_MAX` 以下とします。
 

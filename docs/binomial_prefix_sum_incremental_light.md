@@ -3,7 +3,7 @@ title: 軽量な二項係数の prefix sum（差分更新）
 documentation_of: //math/combinatorics/binomial_prefix_sum_incremental_light.hpp
 ---
 
-`light_combinatorics` 名前空間の差分更新版です。通常版 FPS を読み込まず、階乗・逆階乗を通常のループで前計算します。通常版と同時に include できます。
+`light_combinatorics` 名前空間の差分更新版です。階乗・逆階乗を通常のループで前計算します。通常版と同時に include できます。
 
 $$\displaystyle S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ を、直前のクエリから差分更新して求めます。右端を含みません。クエリは呼び出した順に処理します。
 
@@ -26,9 +26,9 @@ auto e = sum.binom(5, 2); // 10
 | `build(max_n)` | このオブジェクトだけ表を作り直し、状態を初期化 | $$O(N)$$ |
 | `max_n()` | 前計算の上限 | $$O(1)$$ |
 | `query(n,k)` | $$\displaystyle\sum_{i=0}^{k-1}\binom ni$$。右端を含まない | $$O(\lvert\Delta n\rvert+\lvert\Delta k\rvert)$$ |
-| `binom(n,k)` | $$\binom nk$$。`n < 0`、`k < 0`、`n < k` なら 0 | $$O(1)$$ |
+| `binom(n,k)` | $$\displaystyle\binom nk$$ を `Mint` で返す。`n < 0`、`k < 0`、`n < k` なら 0 | $$O(1)$$ |
 
-`Mint` の既定は `mint` です。素数 mod の `mod()`・`inv()` と整数からの構築・加減乗算に対応する modint を指定できます。`n` は 0 以上 `max_n` 以下、`max_n` は `mod()`・`INT_MAX` 未満とし、使用中に法を変更しないでください。`k` は `std::int64_t` で、$$[0,n+1]$$ に収めて扱います。
+`Mint` の既定は `mint` です。素数 mod の `mod()`・`inv()` と整数からの構築・加減乗算に対応する modint を指定できます。`query` の `n` は 0 以上 `max_n` 以下、`max_n` は非負で `mod()`・`INT_MAX` 未満とし、使用中に法を変更しないでください。`k` は `std::int64_t` で、内部で $$[0,n+1]$$ に切り詰めます。`k <= 0` なら 0、`k >= n+1` なら `2^n` を `Mint` で返します。`binom` も、0 を返す範囲外引数を除き `n <= max_n()` とします。
 
 `build(max_n)` は前計算と状態を作り直し、`max_n()` は前計算の上限を返します。初期状態は $$(n,k)=(0,0)$$ です。同じクエリは $$O(1)$$、離れたクエリほど更新量が増えます。
 

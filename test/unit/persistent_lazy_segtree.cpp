@@ -21,6 +21,30 @@ std::string assign(Set f, std::string s, int n) { return f.c ? std::string(n, f.
 Set compose_set(Set f, Set g) { return f.c ? f : g; }
 Set id_set() { return {0}; }
 
+std::string relabel(std::string f, std::string value, int) {
+	assert(f.size() == 3);
+	for (char &c : value) c = f[c - 'a'];
+	return value;
+}
+std::string compose_relabel(std::string f, std::string g) { return relabel(std::move(f), std::move(g), 3); }
+std::string id_relabel() { return "abc"; }
+
+struct Value {
+	long long x;
+	Value() = delete;
+	explicit Value(long long x) : x(x) {}
+};
+struct Action {
+	long long a, b;
+	Action() = delete;
+	Action(long long a, long long b) : a(a), b(b) {}
+};
+Value value_op(Value a, Value b) { return Value(a.x + b.x); }
+Value value_e() { return Value(0); }
+Value value_mapping(Action f, Value value, int n) { return Value(f.a * value.x + f.b * n); }
+Action action_composition(Action f, Action g) { return {f.a * g.a, f.a * g.b + f.b}; }
+Action action_id() { return {1, 0}; }
+
 int main() {
 	std::mt19937 random(3456);
 	for (int n : {0, 1, 2, 7, 32, 67}) {
@@ -76,10 +100,59 @@ int main() {
 	auto c = huge.copy_range(b, 0, 0, 123456);
 	assert(huge.all_prod(a) == 2LL * INT_MAX && huge.get(b, 123456) == 99 && huge.get(a, 123456) == 2);
 	assert(huge.prod(c, 0, 123457) == 99 && huge.all_prod(0) == 0);
+	PersistentLazySegtree<Value, value_op, value_e, Action, value_mapping, action_composition, action_id> sparse(67);
+	auto v1 = sparse.apply(0, 0, 67, {1, 3});
+	auto v2 = sparse.apply(v1, 7, 61, {2, 5});
+	auto v3 = sparse.copy_range(v2, 0, 15, 50);
+	auto count = sparse.node_count();
+	for (int l = 0; l <= 67; ++l) for (int r = l; r <= 67; ++r) {
+		long long expected = 0;
+		for (int i = l; i < r; ++i) if (i < 15 || i >= 50) expected += 7 <= i && i < 61 ? 11 : 3;
+		assert(sparse.prod(v3, l, r).x == expected);
+		assert(sparse.prod(v1, l, r).x == 3 * (r - l));
+		assert(sparse.prod(0, l, r).x == 0);
+	}
+	assert(sparse.node_count() == count);
 	PersistentLazySegtree<std::string, concatenate, empty_string, Set, assign, compose_set, id_set> text(std::vector<std::string>{"a", "b", "c", "d"});
 	auto s = text.apply(text.initial_root(), 1, 4, {'x'});
 	auto t = text.copy_range(s, text.initial_root(), 2, 4);
 	assert(text.all_prod(t) == "axcd" && text.all_prod(s) == "axxx");
 	auto p = [](const std::string &s) { return s.find("xc") == std::string::npos; };
 	assert(text.max_right(t, 0, p) == 2 && text.min_left(t, 4, p) == 2);
+	for (int n : {3, 7, 17, 67}) {
+		std::vector<std::string> initial(n);
+		for (auto &x : initial) x = std::string(1, char('a' + random() % 3));
+		PersistentLazySegtree<std::string, concatenate, empty_string, std::string, relabel, compose_relabel, id_relabel> tree(initial);
+		std::vector<decltype(tree)::root_type> roots{tree.initial_root()};
+		std::vector<std::vector<std::string>> values{initial};
+		for (int i = 0; i < 200; ++i) {
+			unsigned k = random() % roots.size(), other = random() % roots.size();
+			int l = random() % (n + 1), r = random() % (n + 1);
+			if (l > r) std::swap(l, r);
+			auto value = values[k];
+			decltype(tree)::root_type root;
+			if (i % 2) {
+				std::string f = "abc";
+				if (i % 4 == 1) f.assign(3, char('a' + random() % 3));
+				else std::shuffle(f.begin(), f.end(), random);
+				root = tree.apply(roots[k], l, r, f);
+				for (int j = l; j < r; ++j) value[j][0] = f[value[j][0] - 'a'];
+			} else {
+				root = tree.copy_range(roots[k], roots[other], l, r);
+				std::copy(values[other].begin() + l, values[other].begin() + r, value.begin() + l);
+			}
+			roots.push_back(root); values.push_back(value);
+			auto before = tree.node_count();
+			for (unsigned version : {k, unsigned(roots.size() - 1)}) {
+				for (int start = 0; start <= n; ++start) {
+					std::string expected;
+					for (int end = start; end <= n; ++end) {
+						assert(tree.prod(roots[version], start, end) == expected);
+						if (end < n) expected += values[version][end];
+					}
+				}
+			}
+			assert(tree.node_count() == before);
+		}
+	}
 }

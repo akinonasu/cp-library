@@ -23,7 +23,7 @@ values.replace(1, 8);           // 1 を 1 個 8 に置換
 
 `kth_smallest(k)`・`kth_largest(k)` は 0 始まりで、`0 <= k < size()` が必要です。`sum_smallest(k)`・`sum_largest(k)` は `k >= 0` とし、`k = 0` なら 0、`k > size()` なら全要素の和を返します。問い合わせはすべて `const` オブジェクトから呼べます。
 
-`lower_bound(x)` は `x` 以上の最小値、`upper_bound(x)` は `x` より大きい最小値を `std::optional<T>` で返します。該当する値がなければ `std::nullopt` です。
+`lower_bound(x)` は `x` 以上の最小値、`upper_bound(x)` は `x` より大きい最小値を `std::optional<T>` で返します。該当する値がなければ `std::nullopt` です。標準の `std::less`・`std::greater` ではどちらも値の昇順で検索し、独自の比較関数ではその比較順で検索します。
 
 ## API
 
