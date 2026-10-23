@@ -1,6 +1,6 @@
 # Library Checker 提出用コード
 
-134 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
+135 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
 
 同じ問題に複数の検証実装がある場合は、代表実装を 1 つ掲載しています。
 
@@ -44,6 +44,7 @@
 | [Exp of Formal Power Series](https://judge.yosupo.jp/problem/exp_of_formal_power_series) | [exp_of_formal_power_series.cpp](exp_of_formal_power_series.cpp) | [fps_exp.test.cpp](../test/fps_exp.test.cpp) |
 | [Exp of Formal Power Series (Sparse)](https://judge.yosupo.jp/problem/exp_of_formal_power_series_sparse) | [exp_of_formal_power_series_sparse.cpp](exp_of_formal_power_series_sparse.cpp) | [fps_exp_sparse.test.cpp](../test/fps_exp_sparse.test.cpp) |
 | [Factorize](https://judge.yosupo.jp/problem/factorize) | [factorize.cpp](factorize.cpp) | [factorize.test.cpp](../test/factorize.test.cpp) |
+| [Find Linear Recurrence](https://judge.yosupo.jp/problem/find_linear_recurrence) | [find_linear_recurrence.cpp](find_linear_recurrence.cpp) | [berlekamp_massey.test.cpp](../test/berlekamp_massey.test.cpp) |
 | [Furthest Pair of Points](https://judge.yosupo.jp/problem/furthest_pair) | [furthest_pair.cpp](furthest_pair.cpp) | [geometry_furthest_pair.test.cpp](../test/geometry_furthest_pair.test.cpp) |
 | [Gcd Convolution](https://judge.yosupo.jp/problem/gcd_convolution) | [gcd_convolution.cpp](gcd_convolution.cpp) | [gcd_convolution.test.cpp](../test/gcd_convolution.test.cpp) |
 | [Matching on General Graph](https://judge.yosupo.jp/problem/general_matching) | [general_matching.cpp](general_matching.cpp) | [general_matching.test.cpp](../test/general_matching.test.cpp) |
