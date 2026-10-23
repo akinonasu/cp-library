@@ -177,7 +177,7 @@
 | `data_structure/li_chao_tree.hpp` | Li Chao Tree (クエリ先読み) | [使い方](docs/li_chao_tree.md) |
 | `data_structure/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
-| `data_structure/top_k_sum.hpp` | Top K Sum（可変 k・大小 k 個の和・k 番目の値・重複・置換） | [使い方](docs/top_k_sum.md) |
+| `data_structure/top_k_sum.hpp` | Top K Sum（クエリごとの k・大小 k 個の和・k 番目の値・重複個数） | [使い方](docs/top_k_sum.md) |
 | `data_structure/union_find.hpp` | Union-Find・連結成分の列挙 | [使い方](docs/union_find.md) |
 | `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
 | `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
