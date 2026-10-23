@@ -87,6 +87,26 @@ template<bool maximize> void extreme_test() {
 	assert(tree.query(2) == R(high) - 1);
 }
 
+template<bool maximize> void small_domain_test() {
+	using T = std::int8_t;
+	using R = std::int64_t;
+	DynamicLiChaoTree<T, maximize> tree;
+	for (int i = -11; i <= 11; ++i) tree.add_line(T(-2 * i), T(i * i));
+	for (int x = -128; x <= 127; ++x) {
+		R expected = maximize ? std::numeric_limits<R>::lowest() : std::numeric_limits<R>::max();
+		for (int i = -11; i <= 11; ++i) {
+			R value = -2 * i * x + i * i;
+			if (maximize ? value > expected : value < expected) expected = value;
+		}
+		assert(tree.query(T(x)) == expected);
+	}
+	for (int x = -128; x <= 127; ++x) {
+		tree.clear();
+		tree.add_segment(x, x + 1, 1, -3);
+		for (int y = -128; y <= 127; ++y) assert(tree.query(T(y)) == (x == y ? std::optional<R>(x - 3) : std::nullopt));
+	}
+}
+
 int main() {
 	random_test<std::int8_t, false>();
 	random_test<std::int16_t, true>();
@@ -95,6 +115,7 @@ int main() {
 	random_test<std::int64_t, false>();
 	random_test<std::int64_t, true>();
 	extreme_test<false>(), extreme_test<true>();
+	small_domain_test<false>(), small_domain_test<true>();
 	DynamicLiChaoTree<> same(-10, 11);
 	same.reserve(1);
 	same.add_line(3, 4);

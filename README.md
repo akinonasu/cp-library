@@ -31,6 +31,7 @@
 | `components/ntt_mod.hpp` | NTT（法指定） | [使い方](docs/ntt_mod.md) |
 | `components/ntt.hpp` | NTT（998244353） | [使い方](docs/ntt.md) |
 | `components/xor_select.hpp` | 64 bit 内の XOR 順位選択 | [使い方](docs/xor_select.md) |
+| `components/ordered_midpoint.hpp` | 順序付き整数区間の中点 | [使い方](docs/ordered_midpoint.md) |
 | `components/min_plus_convolution_integral.hpp` | min-plus / max-plus 畳み込みの整数用共通実装 | [使い方](docs/min_plus_convolution_integral.md) |
 | `components/range_affine_sum_simd.hpp` | 区間アフィン変換・区間和の共通実装 | [使い方](docs/range_affine_sum_simd.md) |
 | `components/multivariate_convolution_core.hpp` | 多変数畳み込みの共通実装 | [使い方](docs/multivariate_convolution_core.md) |
