@@ -76,7 +76,13 @@ int main() {
 		} catch (const std::overflow_error &) { caught = true; }
 		assert(caught);
 	}
-	std::vector<int> invalids[] = { {0, 0}, {-1}, {1}, {0, 2} };
+	std::vector<std::vector<int>> invalids{ {0, 0}, {-1}, {1}, {0, 2} };
+	for (int n : {22, 65}) {
+		std::vector<int> p(n);
+		std::iota(p.rbegin(), p.rend(), 0);
+		p.back() = p.front();
+		invalids.push_back(p);
+	}
 	for (const auto &p : invalids) {
 		bool caught = false;
 		try { (void)permutation_rank(p); } catch (const std::invalid_argument &) { caught = true; }

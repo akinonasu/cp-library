@@ -55,19 +55,25 @@ Rank permutation_rank(std::span<const int> permutation) {
 	};
 	if (n <= 64) {
 		std::uint64_t remaining = n == 64 ? ~std::uint64_t(0) : (std::uint64_t(1) << n) - 1;
+		std::uint64_t seen = 0;
+		for (int x : permutation) {
+			if (x < 0 || x >= n || (seen & (std::uint64_t(1) << x))) throw std::invalid_argument("permutation_rank");
+			seen |= std::uint64_t(1) << x;
+		}
 		for (int i = 0; i < n; ++i) {
 			int x = permutation[i];
-			if (x < 0 || x >= n || !(remaining & (std::uint64_t(1) << x))) throw std::invalid_argument("permutation_rank");
 			append(std::popcount(remaining & ((std::uint64_t(1) << x) - 1)), n - i);
 			remaining ^= std::uint64_t(1) << x;
 		}
 	} else {
 		permutation_order_detail::Available remaining(n);
 		std::vector<bool> seen(n);
-		for (int i = 0; i < n; ++i) {
-			int x = permutation[i];
+		for (int x : permutation) {
 			if (x < 0 || x >= n || seen[x]) throw std::invalid_argument("permutation_rank");
 			seen[x] = true;
+		}
+		for (int i = 0; i < n; ++i) {
+			int x = permutation[i];
 			append(remaining.prefix(x), n - i);
 			remaining.erase(x);
 		}
