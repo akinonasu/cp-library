@@ -25,6 +25,7 @@ public:
 	using value_compare = Compare;
 
 private:
+	static constexpr bool descending = std::is_same_v<Compare, std::greater<T>> || std::is_same_v<Compare, std::greater<void>>;
 	static constexpr bool widen = std::is_integral_v<Sum> && sizeof(Sum) <= 8;
 	using Aggregate = std::conditional_t<widen, std::conditional_t<std::is_signed_v<Sum>, __int128_t, __uint128_t>, Sum>;
 	static Aggregate contribution(const T &value, size_type copies) {
@@ -151,6 +152,50 @@ private:
 		if constexpr (widen) assert(static_cast<Aggregate>((std::numeric_limits<Sum>::min)()) <= value && value <= static_cast<Aggregate>((std::numeric_limits<Sum>::max)()));
 		return static_cast<Sum>(value);
 	}
+	template<bool Reverse> T kth_impl(size_type k) const {
+		assert(0 <= k && k < size());
+		int p = root;
+		for (;;) {
+			const auto &node = nodes[p];
+			int first = Reverse ? node.right : node.left;
+			size_type before = length(first);
+			if (k < before) p = first;
+			else if (k < before + node.copies) return *node.value;
+			else { k -= before + node.copies; p = Reverse ? node.left : node.right; }
+		}
+	}
+	template<bool Reverse> Sum sum_impl(size_type k) const {
+		assert(k >= 0);
+		Aggregate answer(0);
+		int p = root;
+		while (p >= 0 && k) {
+			const auto &node = nodes[p];
+			if (k >= node.size) { answer += node.total; break; }
+			int first = Reverse ? node.right : node.left;
+			size_type before = length(first);
+			if (k <= before) p = first;
+			else {
+				if (first >= 0) answer += nodes[first].total;
+				size_type take = (std::min)(k - before, node.copies);
+				answer += contribution(*node.value, take);
+				k -= before + take;
+				p = Reverse ? node.left : node.right;
+			}
+		}
+		return result(answer);
+	}
+	template<bool Strict> std::optional<T> bound(const T &value) const {
+		int p = root, candidate = -1;
+		while (p >= 0) {
+			const auto &node = nodes[p];
+			bool found;
+			if constexpr (Strict) found = descending ? order(*node.value, value) : order(value, *node.value);
+			else found = descending ? !order(value, *node.value) : !order(*node.value, value);
+			if (found) { candidate = p; p = descending ? node.right : node.left; }
+			else p = descending ? node.left : node.right;
+		}
+		return candidate < 0 ? std::nullopt : nodes[candidate].value;
+	}
 
 public:
 	explicit TopKSum(Compare compare = Compare{}) : order(std::move(compare)) {}
@@ -201,35 +246,14 @@ public:
 	}
 	size_type size() const { return length(root); }
 	bool empty() const { return root < 0; }
-	T kth(size_type k) const {
-		assert(0 <= k && k < size());
-		int p = root;
-		for (;;) {
-			size_type left = length(nodes[p].left);
-			if (k < left) p = nodes[p].left;
-			else if (k < left + nodes[p].copies) return *nodes[p].value;
-			else { k -= left + nodes[p].copies; p = nodes[p].right; }
-		}
-	}
-	Sum sum(size_type k) const {
-		assert(k >= 0);
-		Aggregate answer(0);
-		int p = root;
-		while (p >= 0 && k) {
-			const auto &node = nodes[p];
-			if (k >= node.size) { answer += node.total; break; }
-			size_type left = length(node.left);
-			if (k <= left) p = node.left;
-			else {
-				if (node.left >= 0) answer += nodes[node.left].total;
-				size_type take = (std::min)(k - left, node.copies);
-				answer += contribution(*node.value, take);
-				k -= left + take;
-				p = node.right;
-			}
-		}
-		return result(answer);
-	}
+	T kth(size_type k) const { return kth_impl<false>(k); }
+	T kth_smallest(size_type k) const { return kth_impl<descending>(k); }
+	T kth_largest(size_type k) const { return kth_impl<!descending>(k); }
+	Sum sum(size_type k) const { return sum_impl<false>(k); }
+	Sum sum_smallest(size_type k) const { return sum_impl<descending>(k); }
+	Sum sum_largest(size_type k) const { return sum_impl<!descending>(k); }
+	std::optional<T> lower_bound(const T &value) const { return bound<false>(value); }
+	std::optional<T> upper_bound(const T &value) const { return bound<true>(value); }
 	Sum sum_all() const { return root < 0 ? Sum(0) : result(nodes[root].total); }
 	size_type count(const T &value) const {
 		int p = root;
@@ -273,7 +297,7 @@ int main() {
 		std::cin >> type;
 		if (type == 0) { int x; std::cin >> x; values.insert(x); }
 		else {
-			auto x = values.kth(type == 1 ? values.size() - 1 : 0);
+			auto x = type == 1 ? values.kth_smallest(0) : values.kth_largest(0);
 			std::cout << x << '\n';
 			values.erase(static_cast<int>(x));
 		}
