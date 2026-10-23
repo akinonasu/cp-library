@@ -44,15 +44,17 @@ class FenwickSum {
 		for (; r; r &= r - 1) result += data[r - 1];
 		return result;
 	}
-	T prod(int l, int r) const {
+	template <class Accum>
+	Accum prod_as(int l, int r) const {
 		assert(0 <= l && l <= r && r <= size());
-		T result{};
+		Accum result{};
 		if (l == r) return result;
 		unsigned shared = unsigned(l) & (std::numeric_limits<unsigned>::max() << std::bit_width(unsigned(l ^ r)));
 		for (; unsigned(l) != shared; l &= l - 1) result -= data[l - 1];
 		for (; unsigned(r) != shared; r &= r - 1) result += data[r - 1];
 		return result;
 	}
+	T prod(int l, int r) const { return prod_as<T>(l, r); }
 };
 
 #endif

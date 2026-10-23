@@ -99,13 +99,13 @@
 | [Queue Operate All Composite](https://judge.yosupo.jp/problem/queue_operate_all_composite) | [queue_operate_all_composite.cpp](queue_operate_all_composite.cpp) | [disjoint_sparse_table_affine.test.cpp](../test/disjoint_sparse_table_affine.test.cpp) |
 | [Range Add Range Min](https://judge.yosupo.jp/problem/range_add_range_min) | [range_add_range_min.cpp](range_add_range_min.cpp) | [kinetic_tournament.test.cpp](../test/kinetic_tournament.test.cpp) |
 | [Range Affine Point Get](https://judge.yosupo.jp/problem/range_affine_point_get) | [range_affine_point_get.cpp](range_affine_point_get.cpp) | [dual_segtree.test.cpp](../test/dual_segtree.test.cpp) |
-| [Range Affine Range Sum](https://judge.yosupo.jp/problem/range_affine_range_sum) | [range_affine_range_sum.cpp](range_affine_range_sum.cpp) | [lazy_segtree.test.cpp](../test/lazy_segtree.test.cpp) |
+| [Range Affine Range Sum](https://judge.yosupo.jp/problem/range_affine_range_sum) | [range_affine_range_sum.cpp](range_affine_range_sum.cpp) | [range_affine_range_sum.test.cpp](../test/range_affine_range_sum.test.cpp) |
 | [Range Affine Range Sum (Large Array)](https://judge.yosupo.jp/problem/range_affine_range_sum_large_array) | [range_affine_range_sum_large_array.cpp](range_affine_range_sum_large_array.cpp) | [dynamic_lazy_segtree_large.test.cpp](../test/dynamic_lazy_segtree_large.test.cpp) |
 | [Range Chmin Chmax Add Range Sum](https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum) | [range_chmin_chmax_add_range_sum.cpp](range_chmin_chmax_add_range_sum.cpp) | [segtree_beats.test.cpp](../test/segtree_beats.test.cpp) |
 | [Range Kth Smallest](https://judge.yosupo.jp/problem/range_kth_smallest) | [range_kth_smallest.cpp](range_kth_smallest.cpp) | [wavelet_matrix_kth.test.cpp](../test/wavelet_matrix_kth.test.cpp) |
 | [Range Reverse Range Sum](https://judge.yosupo.jp/problem/range_reverse_range_sum) | [range_reverse_range_sum.cpp](range_reverse_range_sum.cpp) | [lazy_reversible_treap_reverse.test.cpp](../test/lazy_reversible_treap_reverse.test.cpp) |
 | [Rational Approximation](https://judge.yosupo.jp/problem/rational_approximation) | [rational_approximation.cpp](rational_approximation.cpp) | [fraction.test.cpp](../test/fraction.test.cpp) |
-| [Rectangle Sum](https://judge.yosupo.jp/problem/rectangle_sum) | [rectangle_sum.cpp](rectangle_sum.cpp) | [persistent_segtree_rectangle.test.cpp](../test/persistent_segtree_rectangle.test.cpp) |
+| [Rectangle Sum](https://judge.yosupo.jp/problem/rectangle_sum) | [rectangle_sum.cpp](rectangle_sum.cpp) | [offline_rectangle_sum.test.cpp](../test/offline_rectangle_sum.test.cpp) |
 | [Rooted Tree Isomorphism Classification](https://judge.yosupo.jp/problem/rooted_tree_isomorphism_classification) | [rooted_tree_isomorphism_classification.cpp](rooted_tree_isomorphism_classification.cpp) | [rooted_tree_hash.test.cpp](../test/rooted_tree_hash.test.cpp) |
 | [Run Enumerate](https://judge.yosupo.jp/problem/runenumerate) | [runenumerate.cpp](runenumerate.cpp) | [run_enumerate.test.cpp](../test/run_enumerate.test.cpp) |
 | [Strongly Connected Components](https://judge.yosupo.jp/problem/scc) | [scc.cpp](scc.cpp) | [scc.test.cpp](../test/scc.test.cpp) |
@@ -122,7 +122,7 @@
 | [Static Range Inversions Query](https://judge.yosupo.jp/problem/static_range_inversions_query) | [static_range_inversions_query.cpp](static_range_inversions_query.cpp) | [mo_inversions.test.cpp](../test/mo_inversions.test.cpp) |
 | [Static Range Sum](https://judge.yosupo.jp/problem/static_range_sum) | [static_range_sum.cpp](static_range_sum.cpp) | [static_range_sum.test.cpp](../test/static_range_sum.test.cpp) |
 | [Static Range Sum with Upper Bound](https://judge.yosupo.jp/problem/static_range_sum_with_upper_bound) | [static_range_sum_with_upper_bound.cpp](static_range_sum_with_upper_bound.cpp) | [wavelet_matrix_sum.test.cpp](../test/wavelet_matrix_sum.test.cpp) |
-| [Static RMQ](https://judge.yosupo.jp/problem/staticrmq) | [staticrmq.cpp](staticrmq.cpp) | [sparse_table_min.test.cpp](../test/sparse_table_min.test.cpp) |
+| [Static RMQ](https://judge.yosupo.jp/problem/staticrmq) | [staticrmq.cpp](staticrmq.cpp) | [static_range_min.test.cpp](../test/static_range_min.test.cpp) |
 | [Stern–Brocot Tree](https://judge.yosupo.jp/problem/stern_brocot_tree) | [stern_brocot_tree.cpp](stern_brocot_tree.cpp) | [stern_brocot_tree.test.cpp](../test/stern_brocot_tree.test.cpp) |
 | [Subset Convolution](https://judge.yosupo.jp/problem/subset_convolution) | [subset_convolution.cpp](subset_convolution.cpp) | [subset_convolution.test.cpp](../test/subset_convolution.test.cpp) |
 | [Suffix Array](https://judge.yosupo.jp/problem/suffixarray) | [suffixarray.cpp](suffixarray.cpp) | [suffix_tree_array.test.cpp](../test/suffix_tree_array.test.cpp) |

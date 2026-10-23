@@ -49,6 +49,14 @@ class LazySegtree {
 	}
 	void vertex([[maybe_unused]] int p) const { assert(0 <= p && p < n_); }
 	void range([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n_); }
+	S prod_rec(unsigned k, unsigned l, unsigned r, unsigned ql, unsigned qr) const {
+		if (ql <= l && r <= qr) return data_[k];
+		unsigned m = l + (r - l) / 2;
+		S value = qr <= m ? prod_rec(k * 2, l, m, ql, qr)
+			: m <= ql ? prod_rec(k * 2 + 1, m, r, ql, qr)
+			: op(prod_rec(k * 2, l, m, ql, qr), prod_rec(k * 2 + 1, m, r, ql, qr));
+		return dirty_[k] ? mapping(lazy_[k], value) : value;
+	}
 
   public:
 	explicit LazySegtree(int n = 0) { allocate(n); }
@@ -85,6 +93,11 @@ class LazySegtree {
 			a >>= 1, b >>= 1;
 		}
 		return op(left, right);
+	}
+	S prod(int l, int r) const {
+		range(l, r);
+		if (l == r) return e();
+		return prod_rec(1, 0, base_, unsigned(l), unsigned(r));
 	}
 	void apply(int p, F f) {
 		vertex(p);

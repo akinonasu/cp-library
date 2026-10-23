@@ -15,13 +15,16 @@ auto value = wm.kth_smallest(0, 3, 2);
 auto count = wm.min_count_largest(0, 3, 8);
 ```
 
+個数や順位だけを問い合わせる場合は、`WeightedWaveletMatrix(a,w,false)` で和の前処理を省けます。後から和・上下位の和・和に対する個数探索を使う場合は、その前に非 const の `prepare_sum()` を呼びます。既定では構築時に準備済みとなり、和の問い合わせ中には前処理や状態の変更を行いません。
+
 値を固定し、各位置の非負整数の重みを更新します。重みは多重集合での個数を表し、重み 3 の値 `x` は `x` が 3 個あるものとして扱います。区間は $$[l,r)$$、順位は 0 始まりです。重みが 0 の位置も `size()` に含みます。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `WeightedWaveletMatrix()` | 空で構築 | $$O(1)$$ |
 | `WeightedWaveletMatrix(a)` / `build(a)` | 全位置の重みを 1 として構築／再構築 | $$O(n\log\sigma)$$ |
-| `WeightedWaveletMatrix(a,w)` / `build(a,w)` | 値と重みから構築／再構築 | $$O(n\log\sigma)$$ |
+| `WeightedWaveletMatrix(a,w,with_sum=true)` / `build(a,w,with_sum=true)` | 値と重みから構築／再構築 | $$O(n\log\sigma)$$ |
+| `prepare_sum()` | 和の前処理。準備済みなら何もしない | 初回 $$O(n\log\sigma)$$、準備済み $$O(1)$$ |
 | `size()` / `empty()` | 固定した位置の数／空判定 | $$O(1)$$ |
 | `access(i)` / `operator[](i)` | 固定した値を取得 | $$O(1)$$ |
 | `weight(i)` | 現在の重み | $$O(1)$$ |

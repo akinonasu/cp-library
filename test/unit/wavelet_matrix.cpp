@@ -52,6 +52,10 @@ void check(const vector<int64_t> &a) {
 			assert(wm.sum_largest(l, r, k) == prefix.back() - prefix[sorted.size() - k]);
 		}
 		assert(wm.range_sum(l, r) == prefix.back());
+		assert((wm.range_sum_with_count(l, r, x) == pair<__int128_t, int>{prefix[below], below}));
+		assert(wm.range_sum(l, r, x) == prefix[below]);
+		int high = lower_bound(sorted.begin(), sorted.end(), y) - sorted.begin();
+		assert(wm.range_sum(l, r, x, y) == (x < y ? prefix[high] - prefix[below] : 0));
 		if (!sorted.empty()) {
 			int k = random() % sorted.size();
 			assert(wm.kth_smallest(l, r, k) == sorted[k]);
@@ -90,6 +94,9 @@ void check_large(const vector<T> &a) {
 		assert(lazy.range_freq(l, r, x) == lower_bound(sorted.begin(), sorted.end(), x) - sorted.begin());
 		assert(lazy.count(l, r, x) == std::count(sorted.begin(), sorted.end(), x));
 		auto bound = lower_bound(sorted.begin(), sorted.end(), x);
+		int below = bound - sorted.begin();
+		assert((lazy.range_sum_with_count(l, r, x) == pair<__int128_t, int>{prefix[below], below}));
+		assert((eager.range_sum_with_count(l, r, x) == pair<__int128_t, int>{prefix[below], below}));
 		optional<T> previous, next;
 		if (bound != sorted.begin()) previous = *prev(bound);
 		if (bound != sorted.end()) next = *bound;

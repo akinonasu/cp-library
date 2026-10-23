@@ -57,6 +57,17 @@ int main() {
 	for (U n : {1ULL, 1ULL << 63, 12157665459056928801ULL, 7450580596923828125ULL,
 				1000000014000000049ULL, 18446744030759878681ULL,
 				18446743979220271189ULL, 9223372036854775807ULL}) check(n);
+	for (U p : {41ULL, 43ULL, 65537ULL, 1000000007ULL, 1073741789ULL, 2147483647ULL}) {
+		U lower = ((U(1) << 61) / p) | 1;
+		while (!is_prime(lower)) lower -= 2;
+		U upper = (((U(1) << 61) / p) + 1) | 1;
+		while (!is_prime(upper)) upper += 2;
+		for (U q : {lower, upper}) {
+			check(p * q);
+			assert((factorize(p * q) == vector<U>{min(p, q), max(p, q)}));
+		}
+	}
+	for (U p : {65537ULL, 1000003ULL, 1000033ULL}) check(p * p * p);
 	mt19937_64 random(123);
 	for (int repeat_index = 0; repeat_index < 10000; ++repeat_index) {
 		U n = random() | 1;
@@ -66,6 +77,21 @@ int main() {
 		assert(m.reduce(m.in(a)) == a);
 		assert(m.reduce(m.mul(m.in(a), m.in(b))) == W(a) * b % n);
 		assert(m.reduce(m.add(m.in(a), m.in(b))) == (W(a) + b) % n);
+	}
+	for (U n : {(U(1) << 32) + 1, (U(1) << 40) - 1, (U(1) << 61) - 3, (U(1) << 61) - 1}) {
+		Montgomery64 m(n);
+		factorize_detail::Factorizer::RhoArithmetic arithmetic(m);
+		U radix = (W(1) << 64) % n;
+		for (int i = 0; i < 64; ++i) {
+			U a = i < 2 ? 2 * n - 1 : random() % (2 * n);
+			U b = i < 2 ? (i ? 4 * n - 1 : 0) : random() % (4 * n);
+			U product = arithmetic.mul(a, b);
+			assert(product < 2 * n && W(product) * radix % n == W(a) * b % n);
+			for (U c : {1ULL, 32ULL}) {
+				U next = arithmetic.step(a, c);
+				assert(next < 2 * n && W(next) * radix % n == (W(a) * a + W(c) * radix) % n);
+			}
+		}
 	}
 	for (int repeat_index = 0; repeat_index < 1000; ++repeat_index) check(random() % 1000000000000ULL + 1);
 	for (int repeat_index = 0; repeat_index < 50; ++repeat_index) {

@@ -534,7 +534,7 @@ class WaveletMatrix {
 	}
 	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n); }
 	std::uint32_t code(const T &x) const { return wavelet_detail::lower_code(values, dense, x); }
-	std::pair<int, int> interval_scalar(int l, int r, std::uint32_t x) const {
+	[[gnu::always_inline]] std::pair<int, int> interval_scalar(int l, int r, std::uint32_t x) const {
 		for (int d = 0; d < levels; ++d) {
 			int digit = (x >> (3 * (levels - 1 - d))) & 7;
 			l = middle[d][digit] + bits[d].rank(l, digit);
@@ -543,14 +543,7 @@ class WaveletMatrix {
 		return {l, r};
 	}
 #if defined(__x86_64__) || defined(__i386__)
-	__attribute__((target("avx2,popcnt"))) std::pair<int, int> interval_avx2(int l, int r, std::uint32_t x) const {
-		for (int d = 0; d < levels; ++d) {
-			int digit = (x >> (3 * (levels - 1 - d))) & 7;
-			l = middle[d][digit] + bits[d].rank(l, digit);
-			r = middle[d][digit] + bits[d].rank(r, digit);
-		}
-		return {l, r};
-	}
+	__attribute__((target("avx2,popcnt"))) std::pair<int, int> interval_avx2(int l, int r, std::uint32_t x) const { return interval_scalar(l, r, x); }
 #endif
 	std::pair<int, int> interval(int l, int r, std::uint32_t x) const {
 		if (quaternary) return quad_interval(l, r, x);
@@ -559,7 +552,7 @@ class WaveletMatrix {
 #endif
 		return interval_scalar(l, r, x);
 	}
-	int less_than_scalar(int l, int r, std::uint32_t x) const {
+	[[gnu::always_inline]] int less_than_scalar(int l, int r, std::uint32_t x) const {
 		if (!x || l == r) return 0;
 		if (x >= values.size()) return r - l;
 		if (ordered) return std::clamp(ordered > 0 ? offsets[x] - l : r - n + offsets[x], 0, r - l);
@@ -580,26 +573,7 @@ class WaveletMatrix {
 		return answer + (bits.back().below(r, digit) - bits.back().below(l, digit));
 	}
 #if defined(__x86_64__) || defined(__i386__)
-	__attribute__((target("avx2,popcnt"))) int less_than_avx2(int l, int r, std::uint32_t x) const {
-		if (!x || l == r) return 0;
-		if (x >= values.size()) return r - l;
-		if (ordered) return std::clamp(ordered > 0 ? offsets[x] - l : r - n + offsets[x], 0, r - l);
-		int answer = 0;
-		if (r - l <= 8) {
-			for (int i = l; i < r; ++i) answer += original[i] < x;
-			return answer;
-		}
-		for (int d = 0; d + 1 < levels; ++d) {
-			int digit = (x >> (3 * (levels - 1 - d))) & 7;
-			int a = bits[d].rank(l, digit), b = bits[d].rank(r, digit);
-			if (digit == 7) answer += r - l - b + a;
-			else answer += bits[d].below(r, digit) - bits[d].below(l, digit);
-			l = middle[d][digit] + a;
-			r = middle[d][digit] + b;
-		}
-		int digit = x & 7;
-		return answer + (bits.back().below(r, digit) - bits.back().below(l, digit));
-	}
+	__attribute__((target("avx2,popcnt"))) int less_than_avx2(int l, int r, std::uint32_t x) const { return less_than_scalar(l, r, x); }
 #endif
 	int less_than(int l, int r, std::uint32_t x) const {
 		if (quaternary) return quad_less_than(l, r, x);
@@ -1041,7 +1015,7 @@ class WaveletMatrix {
 			if (with_sum) prepare_sum();
 	}
 	template <class S>
-	S sum_smallest_impl_scalar(const std::vector<std::vector<S>> &prefix, int l, int r, int k) const
+	[[gnu::always_inline]] S sum_smallest_impl_scalar(const std::vector<std::vector<S>> &prefix, int l, int r, int k) const
 		requires supports_sum
 	{
 		S answer = 0;
@@ -1066,25 +1040,7 @@ class WaveletMatrix {
 	template <class S>
 	__attribute__((target("avx2,popcnt"))) S sum_smallest_impl_avx2(const std::vector<std::vector<S>> &prefix, int l, int r, int k) const
 		requires supports_sum
-	{
-		S answer = 0;
-		std::uint32_t x = 0;
-		for (int d = 0; d < sum_levels; ++d) {
-			auto step = sum_route(l, r, k, d);
-			int base = 3 * d + 1;
-			if (step.digit & 2) answer += prefix[base][step.high_r] - prefix[base][step.high_l];
-			if (step.digit & 1) {
-				const auto &row = prefix[base + 1 + (step.digit >> 1)];
-				answer += row[step.zero_r] - row[step.zero_l];
-			}
-			k = step.k;
-			if (!k) return answer;
-			x = (x << 2) | step.digit;
-			l = sum_middle[d][step.digit] + step.a;
-			r = sum_middle[d][step.digit] + step.b;
-		}
-		return answer + S(values[x]) * k;
-	}
+	{ return sum_smallest_impl_scalar(prefix, l, r, k); }
 #endif
 	template <class S>
 	S sum_smallest_impl(const std::vector<std::vector<S>> &prefix, int l, int r, int k) const
@@ -1094,6 +1050,39 @@ class WaveletMatrix {
 		if (vectorized) return sum_smallest_impl_avx2(prefix, l, r, k);
 #endif
 		return sum_smallest_impl_scalar(prefix, l, r, k);
+	}
+
+	template <class S>
+	[[gnu::always_inline]] std::pair<Sum, int> bounded_sum(const std::vector<std::vector<S>> &prefix, int l, int r, std::uint32_t x) const
+		requires supports_sum
+	{
+		S answer = 0;
+		int count = 0;
+		for (int d = 0; d < sum_levels && l < r; ++d) {
+			int digit = (x >> (2 * (sum_levels - 1 - d))) & 3, high = digit >> 1, low = digit & 1;
+			int a = sum_bits[d].below(l, 2), b = sum_bits[d].below(r, 2), base = 3 * d + 1;
+			if (high) answer += prefix[base][b] - prefix[base][a], count += b - a;
+			int c = sum_bits[d].rank(l, 2 * high), e = sum_bits[d].rank(r, 2 * high);
+			if (low) answer += prefix[base + 1 + high][e] - prefix[base + 1 + high][c], count += e - c;
+			l = sum_middle[d][digit] + (low ? (high ? l - a : a) - c : c);
+			r = sum_middle[d][digit] + (low ? (high ? r - b : b) - e : e);
+		}
+		return {answer, count};
+	}
+#if defined(__x86_64__) || defined(__i386__)
+	template <class S>
+	__attribute__((target("avx2,popcnt"))) std::pair<Sum, int> bounded_sum_avx2(const std::vector<std::vector<S>> &prefix, int l, int r, std::uint32_t x) const
+		requires supports_sum
+	{ return bounded_sum(prefix, l, r, x); }
+#endif
+	template <class S>
+	std::pair<Sum, int> dispatch_bounded_sum(const std::vector<std::vector<S>> &prefix, int l, int r, std::uint32_t x) const
+		requires supports_sum
+	{
+#if defined(__x86_64__) || defined(__i386__)
+		if (vectorized) return bounded_sum_avx2(prefix, l, r, x);
+#endif
+		return bounded_sum(prefix, l, r, x);
 	}
 
 	template <bool Largest, bool Lower, class S>
@@ -1357,6 +1346,34 @@ class WaveletMatrix {
 		if (narrow_sums) return compact_prefix[0][r] - compact_prefix[0][l];
 		return sum_prefix[0][r] - sum_prefix[0][l];
 	}
+	std::pair<Sum, int> range_sum_with_count(int l, int r, const T &upper) const
+		requires supports_sum
+	{
+		check(l, r);
+		auto x = code(upper);
+		if (l == r || !x) return {Sum(0), 0};
+		if (x >= values.size()) return {range_sum(l, r), r - l};
+		if (ordered) {
+			int count = less_than(l, r, x);
+			return {ordered > 0 ? range_sum(l, l + count) : range_sum(r - count, r), count};
+		}
+		if (r - l <= 8) {
+			Sum answer = 0;
+			int count = 0;
+			for (int i = l; i < r; ++i) if (original[i] < x) answer += Sum(values[original[i]]), ++count;
+			return {answer, count};
+		}
+		prepare_sum();
+		if (narrow_sums) return dispatch_bounded_sum(compact_prefix, l, r, x);
+		return dispatch_bounded_sum(sum_prefix, l, r, x);
+	}
+	Sum range_sum(int l, int r, const T &upper) const
+		requires supports_sum
+	{ return range_sum_with_count(l, r, upper).first; }
+	Sum range_sum(int l, int r, const T &lower, const T &upper) const
+		requires supports_sum
+	{ check(l, r); return lower < upper ? range_sum(l, r, upper) - range_sum(l, r, lower) : Sum(0); }
+
 	Sum sum_smallest(int l, int r, int k) const
 		requires supports_sum
 	{

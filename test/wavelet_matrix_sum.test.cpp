@@ -18,8 +18,8 @@ int main() {
 		uint32_t l = 0, r = 0;
 		int64_t x = 0;
 		input.read(l); input.read(r); input.read(x);
-		int k = wm.range_freq(l, r, x) + wm.count(l, r, x);
+		auto [sum, k] = wm.range_sum_with_count(l, r, x + 1);
 		output.write(uint32_t(k)); output.write(' ');
-		output.println(wm.sum_smallest(l, r, k));
+		output.println(sum);
 	}
 }

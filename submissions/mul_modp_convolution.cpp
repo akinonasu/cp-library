@@ -140,7 +140,63 @@ struct Factorizer {
 	std::vector<U> result;
 	explicit Factorizer(U n) : rng(n ^ 0x9e3779b97f4a7c15ULL) { result.reserve(64); }
 	U random() { return rng(); }
+
+	struct RhoArithmetic {
+		U mod, inverse, one;
+		explicit RhoArithmetic(const Montgomery64 &m) : mod(m.mod), inverse(m.inverse), one(m.one) {}
+		U mul(U a, U b) const {
+			W x = W(a) * b;
+			return U(x >> 64) + mod - U((W(U(x) * inverse) * mod) >> 64);
+		}
+		U step(U x, U c) const {
+			return mul(x, x) + c;
+		}
+	};
+
+	U rho_parallel(const Montgomery64 &original) {
+		RhoArithmetic m(original);
+		const U n = m.mod;
+		bool first = true;
+		for (;;) {
+			U y1 = first ? 1 : random() % n, y2 = first ? 2 : random() % n;
+			const U c1 = first ? 1 : (random() & 31) + 1, c2 = first ? 2 : (random() & 31) + 1;
+			first = false;
+			bool restart = false;
+			for (int length = 64; length <= (1 << 18) && !restart; length <<= 1) {
+				const U x1 = y1 + 2 * n, x2 = y2 + 2 * n;
+				for (int k = 0; k < length; k += 1024) {
+					const U saved1 = y1, saved2 = y2;
+					U q1 = m.one, q2 = m.one;
+					const int count = std::min(1024, length - k);
+					y1 = m.step(y1, c1), y2 = m.step(y2, c2);
+					for (int i = 0; i < count; ++i) {
+						const U d1 = x1 - y1, d2 = x2 - y2;
+						y1 = m.step(y1, c1), y2 = m.step(y2, c2);
+						q1 = m.mul(q1, d1), q2 = m.mul(q2, d2);
+					}
+					q1 = m.mul(q1, x1 - y1), q2 = m.mul(q2, x2 - y2);
+					const U g = std::gcd(m.mul(q1, q2), n);
+					if (g == 1) continue;
+					if (g != n) return g;
+					const U g1 = std::gcd(q1, n), g2 = std::gcd(q2, n);
+					if (g1 > 1 && g1 < n) return g1;
+					if (g2 > 1 && g2 < n) return g2;
+					U y = g1 == n ? saved1 : saved2;
+					const U x = g1 == n ? x1 : x2, c = g1 == n ? c1 : c2;
+					for (int i = 0; i <= count; ++i) {
+						y = m.step(y, c);
+						const U d = std::gcd(x - y, n);
+						if (d > 1 && d < n) return d;
+						if (d == n) break;
+					}
+					restart = true;
+					break;
+				}
+			}
+		}
+	}
 	U rho(const Montgomery64 &m) {
+		if ((m.mod >> 32) && m.mod < (U(1) << 61)) return rho_parallel(m);
 		U n = m.mod;
 		for (;;) {
 			U y = m.in(random() % (n - 1) + 1), c = m.in(random() % (n - 1) + 1);
@@ -301,7 +357,7 @@ struct Mint {
 	using mint = Mint;
 	unsigned v = 0;
 	static constexpr unsigned mod() { return 998244353; }
-	static unsigned reduce(unsigned long long x) {
+	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -311,17 +367,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	static Mint raw(unsigned x) {
+	[[gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	static Mint word(unsigned x) {
+	[[gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	unsigned val() const {
+	[[gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -333,17 +389,17 @@ struct Mint {
 	friend std::ostream &operator<<(std::ostream &os, const Mint &x) {
 		return os << x.val();
 	}
-	Mint &operator+=(Mint b) {
+	[[gnu::always_inline]] Mint &operator+=(Mint b) {
 		v += b.v;
 		if (v >= 2 * mod()) v -= 2 * mod();
 		return *this;
 	}
-	Mint &operator-=(Mint b) {
+	[[gnu::always_inline]] Mint &operator-=(Mint b) {
 		v -= b.v;
 		if (v >> 31) v += 2 * mod();
 		return *this;
 	}
-	Mint &operator*=(Mint b) {
+	[[gnu::always_inline]] Mint &operator*=(Mint b) {
 		v = reduce((unsigned long long)v * b.v);
 		return *this;
 	}
@@ -360,14 +416,14 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	Mint operator+() const { return *this; }
-	Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	Mint operator+(Mint b) const { return Mint(*this) += b; }
-	Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[gnu::always_inline]] Mint operator+() const { return *this; }
+	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
 	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	bool operator!=(Mint b) const { return !(*this == b); }
+	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
 	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
