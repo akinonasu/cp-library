@@ -20,6 +20,13 @@ std::int64_t inversion_count(const Range &a, Compare compare = {}) {
 	std::size_t ordered = 1;
 	while (ordered < n && !compare(first[ordered], first[ordered - 1])) ++ordered;
 	if (ordered >= n) return 0;
+	std::int64_t equal_pairs = 0;
+	std::size_t run = 1, reversed = 1;
+	for (; reversed < n && !compare(first[reversed - 1], first[reversed]); ++reversed) {
+		if (compare(first[reversed], first[reversed - 1])) run = 1;
+		else equal_pairs += static_cast<std::int64_t>(run++);
+	}
+	if (reversed == n) return static_cast<std::int64_t>(n) * (n - 1) / 2 - equal_pairs;
 	using T = std::ranges::range_value_t<const Range>;
 	constexpr bool cached = std::is_trivially_copyable_v<T> && sizeof(T) <= 16 &&
 		std::is_default_constructible_v<T> && std::is_copy_constructible_v<T> &&
@@ -35,11 +42,28 @@ std::int64_t inversion_count(const Range &a, Compare compare = {}) {
 		else return first[x];
 	};
 	std::int64_t result = 0;
-	for (std::size_t width = 1; width < n; width *= 2) {
+	constexpr std::size_t block = 8;
+	for (std::size_t l = 0; l < n; l += block) {
+		const auto end = std::min(l + block, n);
+		for (std::size_t i = l + 1; i < end; ++i) {
+			Stored x = current[i];
+			std::size_t j = i;
+			while (j > l && compare(value(x), value(current[j - 1]))) current[j] = current[j - 1], --j;
+			current[j] = x;
+			result += static_cast<std::int64_t>(i - j);
+		}
+	}
+	for (std::size_t width = block; width < n; width *= 2) {
 		for (std::size_t l = 0; l < n; l += 2 * width) {
 			const auto mid = std::min(l + width, n), r = std::min(l + 2 * width, n);
 			if (mid == r || !compare(value(current[mid]), value(current[mid - 1]))) {
 				std::copy(current.begin() + l, current.begin() + r, buffer.begin() + l);
+				continue;
+			}
+			if (compare(value(current[r - 1]), value(current[l]))) {
+				result += static_cast<std::int64_t>(mid - l) * (r - mid);
+				std::copy(current.begin() + mid, current.begin() + r, buffer.begin() + l);
+				std::copy(current.begin() + l, current.begin() + mid, buffer.begin() + (l + r - mid));
 				continue;
 			}
 			std::size_t i = l, j = mid, k = l;
