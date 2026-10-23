@@ -2,6 +2,7 @@
 #include "convolution/boolean_convolution.hpp"
 #include "math/mint.hpp"
 #include "test/fixtures/subset_convolution_reference.hpp"
+#include "test/fixtures/recurrence_types.hpp"
 #include <array>
 #include <cassert>
 #include <cstdint>
@@ -92,6 +93,54 @@ void check_boolean() {
 	assert(subset_or_convolution(std::vector<bool>{false, true}, std::vector<bool>{true, false}) == std::vector<bool>({false, true}));
 }
 
+struct DynamicModint {
+	std::uint32_t value = 0;
+	static std::uint32_t mod() { return 998244353; }
+	DynamicModint(long long x = 0) : value((x % mod() + mod()) % mod()) {}
+	static DynamicModint raw(std::uint32_t x) { DynamicModint a; a.value = x; return a; }
+	std::uint32_t val() const { return value; }
+	DynamicModint &operator+=(DynamicModint x) { value += x.value; if (value >= mod()) value -= mod(); return *this; }
+	DynamicModint &operator-=(DynamicModint x) { value = value >= x.value ? value - x.value : value + mod() - x.value; return *this; }
+	friend DynamicModint operator*(DynamicModint a, DynamicModint b) { return raw(std::uint64_t(a.value) * b.value % mod()); }
+	bool operator==(const DynamicModint &) const = default;
+};
+
+template <class T>
+void check_modular() {
+	for (int n : {127, 128, 255, 256, 257, 511, 1023, 1024, 1025, 1800}) {
+		std::vector<T> a(n), b(n - 11);
+		for (auto &x : a) x = T::raw(rng() % T::mod());
+		for (auto &x : b) x = T::raw(rng() % T::mod());
+		assert(subset_convolution(a, b) == reference(a, b));
+	}
+	std::vector<T> a(1 << 15), b(a.size());
+	for (auto &x : a) x = T::raw(rng() % T::mod());
+	for (auto &x : b) x = T::raw(rng() % T::mod());
+	assert(subset_convolution(a, b) == subset_convolution_baseline::subset_convolution(a, b));
+}
+
+template <std::uint32_t mod>
+void check_modular_product() {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	if (!subset_convolution_detail::avx2()) return;
+	using Kernel = subset_convolution_detail::Modular<mod>;
+	for (int trial = 0; trial < 16; ++trial) {
+		std::vector<std::uint32_t> a(4 * Kernel::width), b(a.size());
+		for (auto &x : a) x = trial ? rng() % mod : mod - 1;
+		for (auto &x : b) x = trial ? rng() % mod : mod - 1;
+		auto original = a;
+		Kernel::product(a.data(), b.data(), 4);
+		for (int pos = 0; pos < 4; ++pos)
+			for (int rank = 0; rank < 20; ++rank) {
+				std::uint64_t expected = 0;
+				for (int i = 0; i < rank; ++i)
+					expected = (expected + std::uint64_t(original[pos * Kernel::width + i]) * b[pos * Kernel::width + rank - i - 1]) % mod;
+				assert(a[pos * Kernel::width + rank] == expected);
+			}
+	}
+#endif
+}
+
 int main() {
 	check<mint>();
 	check<std::uint32_t>();
@@ -100,6 +149,21 @@ int main() {
 	check<double>();
 	check<Matrix>();
 	check_boolean();
+	static_assert(subset_convolution_detail::SmallModint<RecurrenceModint<3>>::value);
+	static_assert(!subset_convolution_detail::SmallModint<RecurrenceModint<2>>::value);
+	static_assert(!subset_convolution_detail::SmallModint<RecurrenceModint<2147483647>>::value);
+	static_assert(!subset_convolution_detail::SmallModint<DynamicModint>::value);
+	check_modular<RecurrenceModint<3>>();
+	check_modular<RecurrenceModint<9>>();
+	check_modular<RecurrenceModint<15>>();
+	check_modular<RecurrenceModint<1000000007>>();
+	check_modular<RecurrenceModint<1073741823>>();
+	check_modular<RecurrenceModint<2>>();
+	check_modular<RecurrenceModint<2147483647>>();
+	check_modular<DynamicModint>();
+	check_modular_product<3>();
+	check_modular_product<998244353>();
+	check_modular_product<1073741823>();
 	std::vector<mint> a(1 << 16, mint(1));
 	auto c = subset_convolution(a, a);
 	for (std::size_t mask = 0; mask < c.size(); ++mask) assert(c[mask] == mint(2).pow(std::popcount(mask)));

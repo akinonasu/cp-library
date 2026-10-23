@@ -9,17 +9,64 @@
 
 
 #include <algorithm>
+#include <array>
+#include <bit>
+#include <cstdint>
 #include <cassert>
 #include <limits>
 #include <numeric>
 #include <string_view>
 #include <vector>
 
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
 namespace suffix_array_detail {
 template<class Sequence>
-std::vector<int> induced_sort(const Sequence &s, int upper) {
-	int n = static_cast<int>(s.size());
-	std::vector<int> sa(n);
+bool prefix_order(const Sequence &s, int n, int alphabet, const std::vector<int> &seeds, std::vector<int> &ordered) {
+	if (seeds.size() <= 64 || alphabet > 257) return false;
+	int bits = std::bit_width(unsigned(alphabet - 1)), position_bits = std::bit_width(unsigned(n));
+	int length = (64 - position_bits) / bits;
+	std::uint64_t position_mask = (std::uint64_t(1) << position_bits) - 1;
+	auto key_at = [&](int p) {
+		std::uint64_t key = 0;
+		for (int k = 0; k < length; ++k) key = (key << bits) | (k < n - p ? unsigned(s[p + k]) : 0);
+		return key;
+	};
+	std::array<std::uint64_t, 128> sample;
+	int sample_size = std::min(128, static_cast<int>(seeds.size()));
+	for (int i = 0; i < sample_size; ++i) sample[i] = key_at(seeds[i]);
+	std::sort(sample.begin(), sample.begin() + sample_size);
+	for (int i = 1; i < sample_size; ++i) if (sample[i] == sample[i - 1]) return false;
+	std::vector<std::uint64_t> entries(seeds.size()), scratch(seeds.size());
+	for (std::size_t i = 0; i < seeds.size(); ++i) entries[i] = (key_at(seeds[i]) << position_bits) | unsigned(n - seeds[i]);
+	int first_shift = std::max(position_bits, bits * length + position_bits - 33);
+	for (int shift = first_shift; shift < bits * length + position_bits; shift += 11) {
+		std::array<int, 2048> count{};
+		for (auto entry : entries) ++count[(entry >> shift) & 2047];
+		int total = 0;
+		for (int &value : count) { int next = total + value; value = total; total = next; }
+		for (auto entry : entries) scratch[count[(entry >> shift) & 2047]++] = entry;
+		entries.swap(scratch);
+	}
+	for (std::size_t first = 0; first < entries.size();) {
+		std::size_t last = first + 1;
+		while (last < entries.size() && (entries[last] >> first_shift) == (entries[first] >> first_shift)) ++last;
+		if (last - first > 64) return false;
+		std::sort(entries.begin() + first, entries.begin() + last);
+		for (std::size_t i = first + 1; i < last; ++i) if ((entries[i] >> position_bits) == (entries[i - 1] >> position_bits)) return false;
+		first = last;
+	}
+	ordered.resize(seeds.size());
+	for (std::size_t i = 0; i < entries.size(); ++i) ordered[i] = n - static_cast<int>(entries[i] & position_mask);
+	return true;
+}
+
+template<class Sequence>
+std::vector<int> encoded_sort(const Sequence &s, int n, int alphabet) {
+	std::vector<int> sa(std::size_t(n) + 1);
 	if (n < 16) {
 		std::iota(sa.begin(), sa.end(), 0);
 		std::sort(sa.begin(), sa.end(), [&](int a, int b) {
@@ -28,82 +75,134 @@ std::vector<int> induced_sort(const Sequence &s, int upper) {
 		});
 		return sa;
 	}
-	std::vector<unsigned char> small(n);
-	for (int i = n - 2; i >= 0; --i) small[i] = s[i] == s[i + 1] ? small[i + 1] : s[i] < s[i + 1];
-	std::vector<int> left(upper + 2), right(upper + 2), cursor(upper + 2);
-	for (int i = 0; i < n; ++i) {
-		if (small[i]) ++left[s[i] + 1];
-		else ++right[s[i]];
+	std::vector<unsigned char> is_seed(std::size_t(n) + 1);
+	std::vector<int> seeds;
+	bool next = true;
+	for (int i = n - 1; i >= 0; --i) {
+		bool current = s[i] == s[i + 1] ? next : s[i] < s[i + 1];
+		if (!current && next) seeds.push_back(i + 1), is_seed[i + 1] = 1;
+		next = current;
 	}
-	for (int c = 0; c <= upper; ++c) {
-		right[c] += left[c];
-		left[c + 1] += right[c];
-	}
-	auto induce = [&](const std::vector<int> &seeds) {
-		std::fill(sa.begin(), sa.end(), -1);
-		cursor = right;
-		for (int v : seeds) sa[cursor[s[v]]++] = v;
-		cursor = left;
-		sa[cursor[s[n - 1]]++] = n - 1;
-		for (int i = 0; i < n; ++i) {
-			int v = sa[i] - 1;
-			if (v >= 0 && !small[v]) sa[cursor[s[v]]++] = v;
+	std::reverse(seeds.begin(), seeds.end());
+	std::vector<std::size_t> ends(alphabet), work(alphabet);
+	for (std::size_t i = 0; i < sa.size(); ++i) ++ends[s[i]];
+	std::partial_sum(ends.begin(), ends.end(), ends.begin());
+	auto induce = [&](const std::vector<int> &ordered) {
+		std::fill(sa.begin(), sa.end(), 0);
+		work = ends;
+		for (auto i = ordered.rbegin(); i != ordered.rend(); ++i) if (*i != n) sa[--work[s[*i]]] = *i + 1;
+		work[0] = 0;
+		std::copy(ends.begin(), ends.end() - 1, work.begin() + 1);
+		int last = n;
+		if (s[n - 2] < s[n - 1]) last = -last;
+		sa[work[s[n - 1]]++] = last;
+		for (std::size_t i = 1; i < sa.size(); ++i) {
+			int p = sa[i];
+			if (p > 1) {
+				int j = p - 2, c = s[j], v = j + 1;
+				if (!j || s[j - 1] < c) v = -v;
+				sa[work[c]++] = v;
+			}
 		}
-		cursor = left;
-		for (int i = n - 1; i >= 0; --i) {
-			int v = sa[i] - 1;
-			if (v >= 0 && small[v]) sa[--cursor[s[v] + 1]] = v;
+		work = ends;
+		for (int i = n; i > 0; --i) {
+			int p = sa[i];
+			sa[i] = (p < 0 ? -p : p) - 1;
+			if (p < -1) {
+				int j = -p - 2, c = s[j], v = j + 1;
+				if (j && s[j - 1] <= c) v = -v;
+				sa[--work[c]] = v;
+			}
 		}
+		sa[0] = n;
 	};
-	std::vector<int> number(n, -1), seeds;
-	for (int i = 1; i < n; ++i) if (!small[i - 1] && small[i]) {
-		number[i] = static_cast<int>(seeds.size());
-		seeds.push_back(i);
-	}
+	std::vector<int> ordered;
+	int used = alphabet;
+	while (used > 1 && ends[used - 1] == ends[used - 2]) --used;
+	if (prefix_order(s, n, used, seeds, ordered)) { induce(ordered); return sa; }
 	induce(seeds);
 	int m = static_cast<int>(seeds.size());
-	if (!m) return sa;
 	std::vector<int> sorted;
 	sorted.reserve(m);
-	for (int v : sa) if (number[v] >= 0) sorted.push_back(v);
-	std::vector<int> reduced(m);
-	int alphabet = 0;
-	for (int i = 1; i < m; ++i) {
-		int a = sorted[i - 1], b = sorted[i];
-		int end_a = number[a] + 1 < m ? seeds[number[a] + 1] : n;
-		int end_b = number[b] + 1 < m ? seeds[number[b] + 1] : n;
-		bool equal = end_a - a == end_b - b && end_a < n && end_b < n;
-		if (equal) for (int k = 0; k <= end_a - a; ++k) if (s[a + k] != s[b + k]) { equal = false; break; }
-		if (!equal) ++alphabet;
-		reduced[number[b]] = alphabet;
+	for (int p : sa) if (is_seed[p]) sorted.push_back(p);
+	std::vector<int> names(std::size_t(n) / 2 + 1);
+	for (int i = 0; i + 1 < m; ++i) names[seeds[i] >> 1] = seeds[i + 1] - seeds[i] + 1;
+	names[n >> 1] = 1;
+	int rank = -1, previous = -1, previous_length = 0;
+	for (int p : sorted) {
+		int length = names[p >> 1];
+		bool different = previous < 0 || length != previous_length;
+		if (!different) for (int k = 0; k < length; ++k) if (s[p + k] != s[previous + k]) { different = true; break; }
+		rank += different;
+		names[p >> 1] = rank;
+		previous = p, previous_length = length;
 	}
-	std::vector<int> order(m);
-	if (alphabet + 1 == m) for (int i = 0; i < m; ++i) order[reduced[i]] = i;
-	else order = induced_sort(reduced, alphabet);
+	std::vector<int> reduced(m), order(m);
+	for (int i = 0; i < m; ++i) reduced[i] = names[seeds[i] >> 1];
+	if (rank + 1 == m) for (int i = 0; i < m; ++i) order[reduced[i]] = i;
+	else order = encoded_sort(reduced, m - 1, rank + 1);
 	for (int i = 0; i < m; ++i) sorted[i] = seeds[order[i]];
 	induce(sorted);
 	return sa;
 }
 
+template<class Sequence>
+std::vector<int> induced_sort(const Sequence &s, int upper) {
+	struct Encoded {
+		const Sequence &value;
+		int n;
+		int operator[](int i) const { return i == n ? 0 : value[i] + 1; }
+	};
+	int n = static_cast<int>(s.size());
+	if (n < 2) return n ? std::vector<int>{0} : std::vector<int>{};
+	int common = 1;
+	while (common < n && s[common] == s[0]) ++common;
+	if (common == n) {
+		std::vector<int> sa(n);
+		std::iota(sa.rbegin(), sa.rend(), 0);
+		return sa;
+	}
+	auto sa = encoded_sort(Encoded{s, n}, n, upper + 2);
+	sa.erase(sa.begin());
+	return sa;
+}
+
 inline std::vector<int> bytes(std::string_view s) {
 	assert(s.size() <= std::size_t(std::numeric_limits<int>::max()));
-	struct Bytes {
-		std::string_view value;
-		std::size_t size() const { return value.size(); }
-		unsigned char operator[](int i) const { return static_cast<unsigned char>(value[i]); }
+	if (s.empty()) return {};
+	std::array<int, 256> codes{};
+	for (unsigned char c : s) codes[c] = 1;
+	int alphabet = 0;
+	for (int &code : codes) if (code) code = ++alphabet;
+	int n = static_cast<int>(s.size());
+	if (alphabet == 1) {
+		std::vector<int> sa(n);
+		std::iota(sa.rbegin(), sa.rend(), 0);
+		return sa;
+	}
+	auto build = [&]<class Symbol>() {
+		std::vector<Symbol> text(s.size() + 1);
+		for (int i = 0; i < n; ++i) text[i] = static_cast<Symbol>(codes[static_cast<unsigned char>(s[i])]);
+		auto sa = encoded_sort(text, n, alphabet + 1);
+		sa.erase(sa.begin());
+		return sa;
 	};
-	return induced_sort(Bytes{s}, 255);
+	return alphabet < 256 ? build.template operator()<unsigned char>() : build.template operator()<std::uint16_t>();
 }
 }
+
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC pop_options
+#endif
 
 
 #line 1 "components/sequence_compare.hpp"
 
 
 
-#include <bit>
+#line 5 "components/sequence_compare.hpp"
 #include <cstddef>
-#include <cstdint>
+#line 7 "components/sequence_compare.hpp"
 #include <cstring>
 #include <type_traits>
 #if defined(__x86_64__)
@@ -362,8 +461,6 @@ template <class T = int> class StaticRangeMin {
 };
 
 
-#line 7 "string/suffix_tree.hpp"
-#include <array>
 #line 9 "string/suffix_tree.hpp"
 #include <optional>
 #include <span>
@@ -373,15 +470,86 @@ template <class T = int> class StaticRangeMin {
 class SuffixTree {
 	struct Node { int parent, depth, left, right; };
 	std::string text_;
-	std::vector<Node> nodes_;
-	std::vector<int> sa_, lcp_, rank_, terminals_, branches_, offset_, children_;
-	std::vector<unsigned char> symbols_;
-	std::array<int, 256> root_children_;
-	std::uint64_t distinct_ = 0;
+	mutable std::vector<Node> nodes_;
+	std::vector<int> sa_;
+	mutable std::vector<int> lcp_, rank_;
+	mutable std::vector<int> terminals_, branches_, offset_, children_;
+	mutable std::vector<unsigned char> symbols_;
+	mutable std::array<int, 256> root_children_{};
+	mutable bool lcp_ready_ = false, tree_ready_ = false;
+	mutable std::uint64_t distinct_ = 0;
 	mutable std::optional<StaticRangeMin<std::pair<int, int>>> index_;
-	void check([[maybe_unused]] int v) const { assert(0 <= v && v < node_count()); }
+	void check([[maybe_unused]] int v) const { prepare_tree(); assert(0 <= v && v < static_cast<int>(nodes_.size())); }
 	int range_end(int v) const { int r = nodes_[v].right; return r < 0 ? nodes_[-r - 1].right : r; }
+	void prepare_lcp() const {
+		if (lcp_ready_) return;
+		int n = size();
+		rank_.resize(n + 1);
+		for (int i = 0; i <= n; ++i) rank_[sa_[i]] = i;
+		lcp_.assign(n, 0);
+		for (int p = 0, h = 0; p < n; ++p) {
+			if (h) --h;
+			int i = rank_[p], q = sa_[i - 1];
+			h += sequence_compare_detail::prefix(text_.data() + p + h, text_.data() + q + h, std::min(n - p, n - q) - h);
+			lcp_[i - 1] = h;
+		}
+		distinct_ = std::uint64_t(n) * (n + 1) / 2;
+		for (int value : lcp_) distinct_ -= value;
+		lcp_ready_ = true;
+	}
+	void prepare_tree() const {
+		if (tree_ready_) return;
+		prepare_lcp();
+		int n = size();
+		nodes_.clear();
+		nodes_.reserve(std::size_t(n) + 1);
+		nodes_.push_back({-1, 0, 0, n + 1});
+		terminals_.assign(n + 1, 0);
+		branches_.resize(n);
+		std::vector<int> stack{0};
+		for (int i = 1; i <= n; ++i) {
+			int common = lcp_[i - 1], last = -1;
+			while (nodes_[stack.back()].depth > common) { last = stack.back(); nodes_[last].right = i; stack.pop_back(); }
+			if (nodes_[stack.back()].depth < common) {
+				int v = static_cast<int>(nodes_.size());
+				nodes_.push_back({stack.back(), common, nodes_[last].left, n + 1});
+				nodes_[last].parent = v;
+				stack.push_back(v);
+			}
+			branches_[i - 1] = stack.back();
+			int v = static_cast<int>(nodes_.size()), p = sa_[i];
+			nodes_.push_back({stack.back(), n - p, i, n + 1});
+			terminals_[p] = v;
+			stack.push_back(v);
+		}
+		int count = static_cast<int>(nodes_.size());
+		offset_.assign(nodes_.size() + 1, 0);
+		for (int v = 1; v < count; ++v) ++offset_[nodes_[v].parent + 1];
+		for (int v = 0; v < count; ++v) offset_[v + 1] += offset_[v];
+		children_.resize(nodes_.size() - 1);
+		symbols_.resize(children_.size());
+		auto cursor = offset_;
+		for (int v = 1; v < count; ++v) {
+			int p = nodes_[v].parent, i = cursor[p]++;
+			children_[i] = v;
+			symbols_[i] = static_cast<unsigned char>(text_[sa_[nodes_[v].left] + nodes_[p].depth]);
+		}
+		root_children_.fill(-1);
+		for (int i = offset_[0]; i < offset_[1]; ++i) {
+			int v = children_[i];
+			root_children_[static_cast<unsigned char>(text_[sa_[nodes_[v].left]])] = v;
+		}
+		for (int i = n; i >= 0; --i) {
+			int v = terminals_[sa_[i]];
+			if (offset_[v + 1] - offset_[v] == 1) {
+				int u = children_[offset_[v]];
+				nodes_[v].right = nodes_[u].right < 0 ? nodes_[u].right : -u - 1;
+			}
+		}
+		tree_ready_ = true;
+	}
 	void prepare_index() const {
+		prepare_tree();
 		if (index_) return;
 		std::vector<std::pair<int, int>> values(size());
 		for (int i = 0; i < size(); ++i) values[i] = {lcp_[i], branches_[i]};
@@ -420,6 +588,8 @@ class SuffixTree {
 		symbols_.swap(other.symbols_);
 		root_children_.swap(other.root_children_);
 		std::swap(distinct_, other.distinct_);
+		std::swap(lcp_ready_, other.lcp_ready_);
+		std::swap(tree_ready_, other.tree_ready_);
 		index_.swap(other.index_);
 	}
 	void build(std::string_view s) {
@@ -429,64 +599,16 @@ class SuffixTree {
 		int n = size();
 		sa_ = suffix_array_detail::bytes(text_);
 		sa_.insert(sa_.begin(), n);
-		rank_.resize(n + 1);
-		for (int i = 0; i <= n; ++i) rank_[sa_[i]] = i;
-		lcp_.assign(n, 0);
-		for (int p = 0, h = 0; p < n; ++p) {
-			if (h) --h;
-			int i = rank_[p], q = sa_[i - 1];
-			h += sequence_compare_detail::prefix(text_.data() + p + h, text_.data() + q + h, std::min(n - p, n - q) - h);
-			lcp_[i - 1] = h;
-		}
-		nodes_.clear();
-		nodes_.reserve(std::size_t(n) + 1);
-		nodes_.push_back({-1, 0, 0, n + 1});
-		terminals_.assign(n + 1, 0);
-		branches_.resize(n);
-		std::vector<int> stack{0};
-		for (int i = 1; i <= n; ++i) {
-			int common = lcp_[i - 1], last = -1;
-			while (nodes_[stack.back()].depth > common) { last = stack.back(); nodes_[last].right = i; stack.pop_back(); }
-			if (nodes_[stack.back()].depth < common) {
-				int v = node_count();
-				nodes_.push_back({stack.back(), common, nodes_[last].left, n + 1});
-				nodes_[last].parent = v;
-				stack.push_back(v);
-			}
-			branches_[i - 1] = stack.back();
-			int v = node_count(), p = sa_[i];
-			nodes_.push_back({stack.back(), n - p, i, n + 1});
-			terminals_[p] = v;
-			stack.push_back(v);
-		}
-		offset_.assign(std::size_t(node_count()) + 1, 0);
-		for (int v = 1; v < node_count(); ++v) ++offset_[nodes_[v].parent + 1];
-		for (int v = 0; v < node_count(); ++v) offset_[v + 1] += offset_[v];
-		children_.resize(node_count() - 1);
-		symbols_.resize(children_.size());
-		auto cursor = offset_;
-		for (int v = 1; v < node_count(); ++v) {
-			int p = nodes_[v].parent, i = cursor[p]++;
-			children_[i] = v;
-			symbols_[i] = static_cast<unsigned char>(text_[sa_[nodes_[v].left] + nodes_[p].depth]);
-		}
-		root_children_.fill(-1);
-		for (int v : children(0)) root_children_[static_cast<unsigned char>(text_[sa_[nodes_[v].left]])] = v;
-		for (int i = n; i >= 0; --i) {
-			int v = terminals_[sa_[i]];
-			if (offset_[v + 1] - offset_[v] == 1) {
-				int u = children_[offset_[v]];
-				nodes_[v].right = nodes_[u].right < 0 ? nodes_[u].right : -u - 1;
-			}
-		}
-		distinct_ = 0;
-		for (int v = 1; v < node_count(); ++v) distinct_ += nodes_[v].depth - nodes_[nodes_[v].parent].depth;
+		rank_.clear(); lcp_.clear();
+		lcp_ready_ = false;
+		nodes_.clear(); terminals_.clear(); branches_.clear(); offset_.clear(); children_.clear(); symbols_.clear();
+		tree_ready_ = false;
 		index_.reset();
 	}
 	void clear() { build({}); }
 	int size() const { return static_cast<int>(text_.size()); }
 	bool empty() const { return text_.empty(); }
-	int node_count() const { return static_cast<int>(nodes_.size()); }
+	int node_count() const { prepare_tree(); return static_cast<int>(nodes_.size()); }
 	std::string_view text() const { return text_; }
 	int parent(int v) const { check(v); return nodes_[v].parent; }
 	int depth(int v) const { check(v); return nodes_[v].depth; }
@@ -504,13 +626,14 @@ class SuffixTree {
 	}
 	int transition(int v, char c) const { check(v); return child(v, static_cast<unsigned char>(c)); }
 	int suffix_start(int v) const { check(v); int p = sa_[nodes_[v].left]; return size() - p == nodes_[v].depth ? p : -1; }
-	int suffix_node(int p) const { assert(0 <= p && p <= size()); return terminals_[p]; }
+	int suffix_node(int p) const { prepare_tree(); assert(0 <= p && p <= size()); return terminals_[p]; }
 	std::pair<int, int> occurrence_range(int v) const { check(v); return {nodes_[v].left, range_end(v)}; }
 	int occurrence_count(int v) const { check(v); return range_end(v) - nodes_[v].left; }
 	const std::vector<int> &suffix_array() const { return sa_; }
-	const std::vector<int> &lcp_array() const { return lcp_; }
-	std::uint64_t distinct_substrings() const { return distinct_; }
+	const std::vector<int> &lcp_array() const { prepare_lcp(); return lcp_; }
+	std::uint64_t distinct_substrings() const { prepare_lcp(); return distinct_; }
 	std::optional<Locus> find(std::string_view pattern) const {
+		prepare_tree();
 		if (pattern.size() > text_.size()) return std::nullopt;
 		int v = 0, matched = 0, length = static_cast<int>(pattern.size());
 		while (matched < length) {
@@ -559,6 +682,7 @@ class SuffixTree {
 	int lcp(int p, int q) const {
 		assert(0 <= p && p <= size() && 0 <= q && q <= size());
 		if (p == q) return size() - p;
+		prepare_lcp();
 		int a = rank_[p], b = rank_[q];
 		if (a > b) std::swap(a, b);
 		prepare_index();

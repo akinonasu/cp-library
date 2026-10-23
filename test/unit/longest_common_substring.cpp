@@ -28,7 +28,53 @@ void check(std::string_view s, std::string_view t, int expected = -1) {
 	assert(s == old_s && t == old_t);
 }
 
+void seed_matches() {
+	std::mt19937 rng(20261023);
+	int completed = 0;
+	for (int alphabet : {2, 3, 26, 256}) {
+		for (int trial = 0; trial < 12; ++trial) {
+			std::string s(256 + trial * 11, 0), t(257 + trial * 13, 0);
+			for (char &c : s) c = char(rng() % alphabet);
+			for (char &c : t) c = char(rng() % alphabet);
+			if (trial % 3 == 0) t.replace(70, 50, s.substr(30, 50));
+			int length = reference(s, t);
+			if (auto match = substring_seed_detail::search(s, t, {0, 0, 0})) {
+				++completed;
+				assert(match->length == length);
+				assert(s.substr(match->first, length) == t.substr(match->second, length));
+			}
+			check(s, t, length);
+			check(t, s, length);
+		}
+	}
+	assert(completed >= 24);
+	std::string first(512, 0), second(513, char(255));
+	for (char &c : first) c = char(rng() % 26);
+	for (std::size_t i = 1; i < second.size(); i += 2) second[i] = 0;
+	assert(!substring_seed_detail::search(first, second, {0, 0, 0}));
+	check(first, second, 1);
+	first.resize(1024), second.resize(1025);
+	for (char &c : first) c = char(rng() % 26);
+	for (char &c : second) c = char(rng() % 26);
+	std::string block;
+	for (int i = 0; i < 40; ++i) block += char('A' + i);
+	first.replace(100, block.size(), block);
+	second.replace(50, block.size(), block);
+	for (int i = 0; i + 3 <= int(block.size()); ++i) first.replace(850 + 4 * i, 3, block.substr(i, 3));
+	auto occurrences = substring_seed_detail::search(first, second, {0, 0, 0});
+	assert(occurrences && occurrences->length == reference(first, second));
+	check(first, second);
+	std::string period(512, 0), repeated;
+	for (char &c : period) c = char(rng() % 2);
+	for (int i = 0; i < 16; ++i) repeated += period;
+	auto shifted = repeated.substr(1) + repeated[0];
+	assert(!substring_seed_detail::search(repeated, shifted, {0, 0, 0}));
+	check(repeated, shifted, int(repeated.size()) - 1);
+	check(shifted, repeated, int(repeated.size()) - 1);
+}
+
 int main() {
+	seed_matches();
 	LongestCommonSubstringResult empty;
 	assert(empty.s_pos == 0 && empty.t_pos == 0 && empty.length == 0);
 	check({}, {}, 0);

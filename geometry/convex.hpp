@@ -2,6 +2,7 @@
 #define GEOMETRY_CONVEX_HPP
 
 #include "polygon.hpp"
+#include "../components/closest_pair.hpp"
 #include <algorithm>
 #include <cassert>
 #include <limits>
@@ -158,6 +159,39 @@ std::optional<PointPair<T>> closest_pair(const std::vector<Point<T>> &points) {
 	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 	int n = int(points.size());
 	if (n < 2) return std::nullopt;
+	if (n <= 32) {
+		PointPair<T> result{0, 1, distance_squared(points[0], points[1])};
+		for (int i = 1; i < n; ++i) for (int j = 0; j < i; ++j) {
+			auto d = distance_squared(points[i], points[j]);
+			if (d < result.squared_distance) result = {i, j, d};
+		}
+		return result;
+	}
+	if constexpr (integer<T> && sizeof(T) <= 8) {
+		if (n >= 64) {
+			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
+			for (auto p : points) {
+				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
+				min_y = std::min(min_y, p.y), max_y = std::max(max_y, p.y);
+			}
+			if (wide_t<T>(max_x) - min_x <= INT32_MAX && wide_t<T>(max_y) - min_y <= INT32_MAX) {
+				auto pack = [&](Point<T> p) {
+					return (std::uint64_t(wide_t<T>(p.y) - min_y) << 32) | std::uint32_t(wide_t<T>(p.x) - min_x);
+				};
+				std::vector<std::uint64_t> packed(n);
+				for (int i = 0; i < n; ++i) packed[i] = pack(points[i]);
+				if (auto pair = closest_pair_detail::packed(std::move(packed), std::uint32_t(wide_t<T>(max_x) - min_x), std::uint64_t(n) * 32)) {
+					int a = -1, b = -1;
+					for (int i = 0; i < n && (a < 0 || b < 0); ++i) {
+						auto value = pack(points[i]);
+						if (value == pair->first && a < 0) a = i;
+						else if (value == pair->second && b < 0) b = i;
+					}
+					return PointPair<T>{a, b, distance_squared(points[a], points[b])};
+				}
+			}
+		}
+	}
 	struct Entry { Point<T> point; int index; };
 	std::vector<Entry> sorted, buffer(n);
 	sorted.reserve(n);

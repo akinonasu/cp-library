@@ -69,6 +69,32 @@ int main() {
 		if (!a.empty() && trial % 3 == 0) a.push_back(a.front());
 		assert(minkowski_sum(a, b) == convex_hull(sums));
 	}
+	for (int trial = 0; trial < 240; ++trial) {
+		int n = 64 + random() % 500;
+		std::vector<IPoint> points(n);
+		std::int64_t offset = trial & 1 ? 1000000000000000000LL : -1000000000000000000LL;
+		for (int i = 0; i < n; ++i) {
+			std::int64_t x = random() % 2147483648ULL, y = random() % 2147483648ULL;
+			if (trial % 5 == 0) x = 0;
+			if (trial % 5 == 1) y = 0;
+			if (trial % 5 == 2) x = i % 16, y = i / 16;
+			points[i] = {offset + x, offset + y};
+		}
+		if (trial % 7 == 0) points[n - 1] = points[0];
+		if (trial % 7 == 1) points[0] = {offset, offset}, points[1] = {offset + 2147483647LL, offset + 2147483647LL};
+		if (trial % 7 == 2) points[0] = {offset, offset}, points[1] = {offset + 2147483648LL, offset + 2147483648LL};
+		auto expected = distance_squared(points[0], points[1]);
+		for (int i = 0; i < n; ++i) for (int j = 0; j < i; ++j) expected = std::min(expected, distance_squared(points[i], points[j]));
+		std::shuffle(points.begin(), points.end(), random);
+		auto answer = closest_pair(points);
+		assert(answer && answer->first != answer->second && answer->squared_distance == expected);
+		assert(distance_squared(points[answer->first], points[answer->second]) == expected);
+	}
+	std::vector<std::uint64_t> packed;
+	for (unsigned i = 0; i < 256; ++i) packed.push_back((std::uint64_t(i) << 32) | i);
+	assert(!closest_pair_detail::packed(packed, 255, 0));
+	auto pair = closest_pair_detail::packed(packed, 255, 32 * packed.size());
+	assert(pair && pair->first != pair->second);
 	std::vector<IPoint> vertical;
 	for (int i = 0; i < 10000; ++i) vertical.push_back({0, i});
 	assert(closest_pair(vertical)->squared_distance == 1 && furthest_pair(vertical)->squared_distance == 9999LL * 9999);

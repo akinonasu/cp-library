@@ -14,15 +14,86 @@
 class SuffixTree {
 	struct Node { int parent, depth, left, right; };
 	std::string text_;
-	std::vector<Node> nodes_;
-	std::vector<int> sa_, lcp_, rank_, terminals_, branches_, offset_, children_;
-	std::vector<unsigned char> symbols_;
-	std::array<int, 256> root_children_;
-	std::uint64_t distinct_ = 0;
+	mutable std::vector<Node> nodes_;
+	std::vector<int> sa_;
+	mutable std::vector<int> lcp_, rank_;
+	mutable std::vector<int> terminals_, branches_, offset_, children_;
+	mutable std::vector<unsigned char> symbols_;
+	mutable std::array<int, 256> root_children_{};
+	mutable bool lcp_ready_ = false, tree_ready_ = false;
+	mutable std::uint64_t distinct_ = 0;
 	mutable std::optional<StaticRangeMin<std::pair<int, int>>> index_;
-	void check([[maybe_unused]] int v) const { assert(0 <= v && v < node_count()); }
+	void check([[maybe_unused]] int v) const { prepare_tree(); assert(0 <= v && v < static_cast<int>(nodes_.size())); }
 	int range_end(int v) const { int r = nodes_[v].right; return r < 0 ? nodes_[-r - 1].right : r; }
+	void prepare_lcp() const {
+		if (lcp_ready_) return;
+		int n = size();
+		rank_.resize(n + 1);
+		for (int i = 0; i <= n; ++i) rank_[sa_[i]] = i;
+		lcp_.assign(n, 0);
+		for (int p = 0, h = 0; p < n; ++p) {
+			if (h) --h;
+			int i = rank_[p], q = sa_[i - 1];
+			h += sequence_compare_detail::prefix(text_.data() + p + h, text_.data() + q + h, std::min(n - p, n - q) - h);
+			lcp_[i - 1] = h;
+		}
+		distinct_ = std::uint64_t(n) * (n + 1) / 2;
+		for (int value : lcp_) distinct_ -= value;
+		lcp_ready_ = true;
+	}
+	void prepare_tree() const {
+		if (tree_ready_) return;
+		prepare_lcp();
+		int n = size();
+		nodes_.clear();
+		nodes_.reserve(std::size_t(n) + 1);
+		nodes_.push_back({-1, 0, 0, n + 1});
+		terminals_.assign(n + 1, 0);
+		branches_.resize(n);
+		std::vector<int> stack{0};
+		for (int i = 1; i <= n; ++i) {
+			int common = lcp_[i - 1], last = -1;
+			while (nodes_[stack.back()].depth > common) { last = stack.back(); nodes_[last].right = i; stack.pop_back(); }
+			if (nodes_[stack.back()].depth < common) {
+				int v = static_cast<int>(nodes_.size());
+				nodes_.push_back({stack.back(), common, nodes_[last].left, n + 1});
+				nodes_[last].parent = v;
+				stack.push_back(v);
+			}
+			branches_[i - 1] = stack.back();
+			int v = static_cast<int>(nodes_.size()), p = sa_[i];
+			nodes_.push_back({stack.back(), n - p, i, n + 1});
+			terminals_[p] = v;
+			stack.push_back(v);
+		}
+		int count = static_cast<int>(nodes_.size());
+		offset_.assign(nodes_.size() + 1, 0);
+		for (int v = 1; v < count; ++v) ++offset_[nodes_[v].parent + 1];
+		for (int v = 0; v < count; ++v) offset_[v + 1] += offset_[v];
+		children_.resize(nodes_.size() - 1);
+		symbols_.resize(children_.size());
+		auto cursor = offset_;
+		for (int v = 1; v < count; ++v) {
+			int p = nodes_[v].parent, i = cursor[p]++;
+			children_[i] = v;
+			symbols_[i] = static_cast<unsigned char>(text_[sa_[nodes_[v].left] + nodes_[p].depth]);
+		}
+		root_children_.fill(-1);
+		for (int i = offset_[0]; i < offset_[1]; ++i) {
+			int v = children_[i];
+			root_children_[static_cast<unsigned char>(text_[sa_[nodes_[v].left]])] = v;
+		}
+		for (int i = n; i >= 0; --i) {
+			int v = terminals_[sa_[i]];
+			if (offset_[v + 1] - offset_[v] == 1) {
+				int u = children_[offset_[v]];
+				nodes_[v].right = nodes_[u].right < 0 ? nodes_[u].right : -u - 1;
+			}
+		}
+		tree_ready_ = true;
+	}
 	void prepare_index() const {
+		prepare_tree();
 		if (index_) return;
 		std::vector<std::pair<int, int>> values(size());
 		for (int i = 0; i < size(); ++i) values[i] = {lcp_[i], branches_[i]};
@@ -61,6 +132,8 @@ class SuffixTree {
 		symbols_.swap(other.symbols_);
 		root_children_.swap(other.root_children_);
 		std::swap(distinct_, other.distinct_);
+		std::swap(lcp_ready_, other.lcp_ready_);
+		std::swap(tree_ready_, other.tree_ready_);
 		index_.swap(other.index_);
 	}
 	void build(std::string_view s) {
@@ -70,64 +143,16 @@ class SuffixTree {
 		int n = size();
 		sa_ = suffix_array_detail::bytes(text_);
 		sa_.insert(sa_.begin(), n);
-		rank_.resize(n + 1);
-		for (int i = 0; i <= n; ++i) rank_[sa_[i]] = i;
-		lcp_.assign(n, 0);
-		for (int p = 0, h = 0; p < n; ++p) {
-			if (h) --h;
-			int i = rank_[p], q = sa_[i - 1];
-			h += sequence_compare_detail::prefix(text_.data() + p + h, text_.data() + q + h, std::min(n - p, n - q) - h);
-			lcp_[i - 1] = h;
-		}
-		nodes_.clear();
-		nodes_.reserve(std::size_t(n) + 1);
-		nodes_.push_back({-1, 0, 0, n + 1});
-		terminals_.assign(n + 1, 0);
-		branches_.resize(n);
-		std::vector<int> stack{0};
-		for (int i = 1; i <= n; ++i) {
-			int common = lcp_[i - 1], last = -1;
-			while (nodes_[stack.back()].depth > common) { last = stack.back(); nodes_[last].right = i; stack.pop_back(); }
-			if (nodes_[stack.back()].depth < common) {
-				int v = node_count();
-				nodes_.push_back({stack.back(), common, nodes_[last].left, n + 1});
-				nodes_[last].parent = v;
-				stack.push_back(v);
-			}
-			branches_[i - 1] = stack.back();
-			int v = node_count(), p = sa_[i];
-			nodes_.push_back({stack.back(), n - p, i, n + 1});
-			terminals_[p] = v;
-			stack.push_back(v);
-		}
-		offset_.assign(std::size_t(node_count()) + 1, 0);
-		for (int v = 1; v < node_count(); ++v) ++offset_[nodes_[v].parent + 1];
-		for (int v = 0; v < node_count(); ++v) offset_[v + 1] += offset_[v];
-		children_.resize(node_count() - 1);
-		symbols_.resize(children_.size());
-		auto cursor = offset_;
-		for (int v = 1; v < node_count(); ++v) {
-			int p = nodes_[v].parent, i = cursor[p]++;
-			children_[i] = v;
-			symbols_[i] = static_cast<unsigned char>(text_[sa_[nodes_[v].left] + nodes_[p].depth]);
-		}
-		root_children_.fill(-1);
-		for (int v : children(0)) root_children_[static_cast<unsigned char>(text_[sa_[nodes_[v].left]])] = v;
-		for (int i = n; i >= 0; --i) {
-			int v = terminals_[sa_[i]];
-			if (offset_[v + 1] - offset_[v] == 1) {
-				int u = children_[offset_[v]];
-				nodes_[v].right = nodes_[u].right < 0 ? nodes_[u].right : -u - 1;
-			}
-		}
-		distinct_ = 0;
-		for (int v = 1; v < node_count(); ++v) distinct_ += nodes_[v].depth - nodes_[nodes_[v].parent].depth;
+		rank_.clear(); lcp_.clear();
+		lcp_ready_ = false;
+		nodes_.clear(); terminals_.clear(); branches_.clear(); offset_.clear(); children_.clear(); symbols_.clear();
+		tree_ready_ = false;
 		index_.reset();
 	}
 	void clear() { build({}); }
 	int size() const { return static_cast<int>(text_.size()); }
 	bool empty() const { return text_.empty(); }
-	int node_count() const { return static_cast<int>(nodes_.size()); }
+	int node_count() const { prepare_tree(); return static_cast<int>(nodes_.size()); }
 	std::string_view text() const { return text_; }
 	int parent(int v) const { check(v); return nodes_[v].parent; }
 	int depth(int v) const { check(v); return nodes_[v].depth; }
@@ -145,13 +170,14 @@ class SuffixTree {
 	}
 	int transition(int v, char c) const { check(v); return child(v, static_cast<unsigned char>(c)); }
 	int suffix_start(int v) const { check(v); int p = sa_[nodes_[v].left]; return size() - p == nodes_[v].depth ? p : -1; }
-	int suffix_node(int p) const { assert(0 <= p && p <= size()); return terminals_[p]; }
+	int suffix_node(int p) const { prepare_tree(); assert(0 <= p && p <= size()); return terminals_[p]; }
 	std::pair<int, int> occurrence_range(int v) const { check(v); return {nodes_[v].left, range_end(v)}; }
 	int occurrence_count(int v) const { check(v); return range_end(v) - nodes_[v].left; }
 	const std::vector<int> &suffix_array() const { return sa_; }
-	const std::vector<int> &lcp_array() const { return lcp_; }
-	std::uint64_t distinct_substrings() const { return distinct_; }
+	const std::vector<int> &lcp_array() const { prepare_lcp(); return lcp_; }
+	std::uint64_t distinct_substrings() const { prepare_lcp(); return distinct_; }
 	std::optional<Locus> find(std::string_view pattern) const {
+		prepare_tree();
 		if (pattern.size() > text_.size()) return std::nullopt;
 		int v = 0, matched = 0, length = static_cast<int>(pattern.size());
 		while (matched < length) {
@@ -200,6 +226,7 @@ class SuffixTree {
 	int lcp(int p, int q) const {
 		assert(0 <= p && p <= size() && 0 <= q && q <= size());
 		if (p == q) return size() - p;
+		prepare_lcp();
 		int a = rank_[p], b = rank_[q];
 		if (a > b) std::swap(a, b);
 		prepare_index();

@@ -18,4 +18,6 @@ auto c = subset_convolution(a, b); // {5,16,22,60}
 
 $$\displaystyle c_S = \sum_{A\subseteq S} a_A b_{S\setminus A}$$。添字を部分集合の bit 表現として扱います。係数は環の要素とし、長い方の長さを 2 の冪に切り上げた $$N$$ 個を返します。
 
+静的な奇数法が $$2^{30}$$ 未満の modint では、対応する x86 CPU で AVX2 による専用処理を選びます。その他の環・CPU でも同じ関数を使えます。
+
 時間 $$O(N \log^{2} N)$$、追加空間 $$O(N \log N)$$ です。
