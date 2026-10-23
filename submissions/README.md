@@ -124,7 +124,7 @@
 | [Stern–Brocot Tree](https://judge.yosupo.jp/problem/stern_brocot_tree) | [stern_brocot_tree.cpp](stern_brocot_tree.cpp) | [stern_brocot_tree.test.cpp](../test/stern_brocot_tree.test.cpp) |
 | [Subset Convolution](https://judge.yosupo.jp/problem/subset_convolution) | [subset_convolution.cpp](subset_convolution.cpp) | [subset_convolution.test.cpp](../test/subset_convolution.test.cpp) |
 | [Suffix Array](https://judge.yosupo.jp/problem/suffixarray) | [suffixarray.cpp](suffixarray.cpp) | [suffix_tree_array.test.cpp](../test/suffix_tree_array.test.cpp) |
-| [Sum of Floor of Linear](https://judge.yosupo.jp/problem/sum_of_floor_of_linear) | [sum_of_floor_of_linear.cpp](sum_of_floor_of_linear.cpp) | [monoid_floor_sum.test.cpp](../test/monoid_floor_sum.test.cpp) |
+| [Sum of Floor of Linear](https://judge.yosupo.jp/problem/sum_of_floor_of_linear) | [sum_of_floor_of_linear.cpp](sum_of_floor_of_linear.cpp) | [floor_sum.test.cpp](../test/floor_sum.test.cpp) |
 | [Sum of Multiplicative Function](https://judge.yosupo.jp/problem/sum_of_multiplicative_function) | [sum_of_multiplicative_function.cpp](sum_of_multiplicative_function.cpp) | [multiplicative_prefix_sum.test.cpp](../test/multiplicative_prefix_sum.test.cpp) |
 | [Sum of Multiplicative Function(Large)](https://judge.yosupo.jp/problem/sum_of_multiplicative_function_large) | [sum_of_multiplicative_function_large.cpp](sum_of_multiplicative_function_large.cpp) | [multiplicative_prefix_sum_large.test.cpp](../test/multiplicative_prefix_sum_large.test.cpp) |
 | [Sum of Totient Function](https://judge.yosupo.jp/problem/sum_of_totient_function) | [sum_of_totient_function.cpp](sum_of_totient_function.cpp) | [multiplicative_prefix_sum_totient.test.cpp](../test/multiplicative_prefix_sum_totient.test.cpp) |
