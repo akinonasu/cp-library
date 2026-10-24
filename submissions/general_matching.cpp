@@ -14,11 +14,10 @@
 
 class GeneralMatching {
 	int n, cardinality = 0, tail = 0;
-	std::uint32_t stamp = 0;
+	std::uint32_t stamp = 0, search_stamp = 0;
 	std::vector<std::pair<int, int>> input;
 	std::vector<int> start, adj, base, parent, queue;
-	std::vector<std::uint32_t> seen;
-	std::vector<signed char> state;
+	std::vector<std::uint32_t> seen, state;
 	int find(int v) {
 		while (base[v] != v) v = base[v] = base[base[v]];
 		return v;
@@ -36,7 +35,7 @@ class GeneralMatching {
 		while (find(u) != b) {
 			parent[u] = v;
 			v = mate[u];
-			if (state[v] == 1) state[v] = 0, queue[tail++] = v;
+			if (state[v] == (search_stamp | 1)) state[v] = search_stamp, queue[tail++] = v;
 			if (base[u] == u) base[u] = b;
 			if (base[v] == v) base[v] = b;
 			u = parent[v];
@@ -51,22 +50,25 @@ class GeneralMatching {
 		}
 	}
 	bool augment(int root) {
-		std::iota(base.begin(), base.end(), 0);
-		std::fill(state.begin(), state.end(), -1);
+		search_stamp += 2;
+		if (!search_stamp) std::fill(state.begin(), state.end(), 0), search_stamp = 2;
 		tail = 1;
 		queue[0] = root;
-		state[root] = 0;
+		state[root] = search_stamp;
+		base[root] = root;
 		for (int head = 0; head < tail; ++head) {
 			int u = queue[head];
 			for (int e = start[u]; e < start[u + 1]; ++e) {
 				int v = adj[e];
-				if (state[v] == -1) {
+				if ((state[v] & ~std::uint32_t(1)) != search_stamp) {
 					parent[v] = u;
-					state[v] = 1;
+					state[v] = search_stamp | 1;
+					base[v] = v;
 					if (mate[v] == -1) { flip(v); return true; }
-					state[mate[v]] = 0;
+					state[mate[v]] = search_stamp;
+					base[mate[v]] = mate[v];
 					queue[tail++] = mate[v];
-				} else if (state[v] == 0 && find(u) != find(v)) {
+				} else if (state[v] == search_stamp && find(u) != find(v)) {
 					int b = lca(u, v);
 					contract(u, v, b);
 					contract(v, u, b);

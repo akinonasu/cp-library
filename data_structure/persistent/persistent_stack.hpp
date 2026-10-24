@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <limits>
 #include <optional>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -16,9 +17,14 @@ class PersistentStack {
 	using value_type = T;
 	using root_type = std::uint32_t;
   private:
-	struct Node { std::optional<T> value; root_type next, jump; int size, jump_length; };
-	std::vector<Node> nodes{{std::nullopt, 0, 0, 0, 0}};
+	using Stored = std::conditional_t<std::is_trivially_default_constructible_v<T> && std::is_trivially_copyable_v<T>, T, std::optional<T>>;
+	struct Node { Stored value; root_type next, jump; int size, jump_length; };
+	std::vector<Node> nodes{{{}, 0, 0, 0, 0}};
 	void check([[maybe_unused]] root_type root) const { assert(root < nodes.size()); }
+	const T &value_at(root_type root) const {
+		if constexpr (std::is_same_v<Stored, T>) return nodes[root].value;
+		else return *nodes[root].value;
+	}
   public:
 	root_type initial_root() const { return 0; }
 	int size(root_type root) const { check(root); return nodes[root].size; }
@@ -36,7 +42,7 @@ class PersistentStack {
 		return result;
 	}
 	root_type pop(root_type root) const { check(root); assert(root); return nodes[root].next; }
-	T top(root_type root) const { check(root); assert(root); return *nodes[root].value; }
+	T top(root_type root) const { check(root); assert(root); return value_at(root); }
 	root_type ancestor(root_type root, int count) const {
 		check(root); assert(0 <= count && count <= size(root));
 		if (count == size(root)) return 0;
@@ -79,7 +85,7 @@ class PersistentStack {
 		}
 		std::vector<T> result;
 		result.reserve(queries.size());
-		for (root_type v : selected) result.push_back(*nodes[v].value);
+		for (root_type v : selected) result.push_back(value_at(v));
 		return result;
 	}
 	void reserve(std::size_t count) { assert(count < std::numeric_limits<root_type>::max()); nodes.reserve(count + 1); }

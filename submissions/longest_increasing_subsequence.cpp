@@ -60,8 +60,17 @@ int scan(const Range &a, Compare &compare, int *lengths) {
 	for (int i = 0; i < n; ++i) {
 		auto &&value = first[i];
 		int p = static_cast<int>(tails.size());
-		if (p && !before(tail(p - 1), value))
-			p = binary_search_detail::partition_point(p - 1, [&](int k) { return before(tail(k), value); });
+		if (p && !before(tail(p - 1), value)) {
+			if constexpr (cached) {
+				auto *begin = tails.data(), *it = begin;
+				for (unsigned width = p; width > 1;) {
+					unsigned half = width / 2;
+					width -= half;
+					it += unsigned(before(it[half - 1], value)) * half;
+				}
+				p = int(it - begin);
+			} else p = binary_search_detail::partition_point(p - 1, [&](int k) { return before(tail(k), value); });
+		}
 		if constexpr (cached) {
 			if (p == static_cast<int>(tails.size())) tails.emplace_back(value);
 			else tails[p] = value;

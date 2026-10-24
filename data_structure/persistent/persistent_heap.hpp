@@ -9,6 +9,7 @@
 #include <functional>
 #include <limits>
 #include <optional>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -18,10 +19,15 @@ class PersistentHeap {
 	using value_type = T;
 	using root_type = std::uint32_t;
   private:
-	struct Node { std::optional<T> value; root_type left, right; int rank; std::int64_t size; };
-	std::vector<Node> nodes{{std::nullopt, 0, 0, 0, 0}};
+	using Stored = std::conditional_t<std::is_trivially_default_constructible_v<T> && std::is_trivially_copyable_v<T>, T, std::optional<T>>;
+	struct Node { Stored value; root_type left, right; int rank; std::int64_t size; };
+	std::vector<Node> nodes{{{}, 0, 0, 0, 0}};
 	Compare comp;
 	void check([[maybe_unused]] root_type root) const { assert(root < nodes.size()); }
+	const T &value_at(root_type root) const {
+		if constexpr (std::is_same_v<Stored, T>) return nodes[root].value;
+		else return *nodes[root].value;
+	}
 	root_type make(Node node) {
 		assert(nodes.size() < std::numeric_limits<root_type>::max());
 		auto result = static_cast<root_type>(nodes.size());
@@ -44,7 +50,7 @@ class PersistentHeap {
 	root_type initial_root() const { return 0; }
 	std::int64_t size(root_type root) const { check(root); return nodes[root].size; }
 	bool empty(root_type root) const { return size(root) == 0; }
-	T top(root_type root) const { check(root); assert(root); return *nodes[root].value; }
+	T top(root_type root) const { check(root); assert(root); return value_at(root); }
 	root_type meld(root_type a, root_type b) {
 		check(a); check(b);
 		if (!a || !b) return a ? a : b;
@@ -52,7 +58,7 @@ class PersistentHeap {
 		std::array<root_type, 128> path;
 		int depth = 0;
 		while (a && b) {
-			if (comp(*nodes[b].value, *nodes[a].value)) std::swap(a, b);
+			if (comp(value_at(b), value_at(a))) std::swap(a, b);
 			path[depth++] = a;
 			a = nodes[a].right;
 		}
@@ -65,7 +71,7 @@ class PersistentHeap {
 		assert(size(root) < std::numeric_limits<std::int64_t>::max());
 		std::array<root_type, 64> path;
 		int depth = 0;
-		while (root && !comp(value, *nodes[root].value)) {
+		while (root && !comp(value, value_at(root))) {
 			path[depth++] = root;
 			root = nodes[root].right;
 		}

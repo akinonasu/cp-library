@@ -103,7 +103,7 @@ void overflow(Cost a, Cost b) {
 
 template<class Cost>
 void sorting_boundaries() {
-	for (int m : {255, 256, 257, 1000}) for (int mode = 0; mode < 4; ++mode) {
+	for (int m : {255, 256, 257, 1000, 65535, 65536, 65537}) for (int mode = 0; mode < 4; ++mode) {
 		Kruskal<Cost> graph(2);
 		Cost minimum = std::numeric_limits<Cost>::max();
 		int first = -1;
@@ -175,6 +175,12 @@ int main() {
 		std::vector<Edge> edges;
 		for (int i = 0; i < 500; ++i) edges.push_back({int(rng() % n), int(rng() % n), int(rng() % 101) - 50});
 		check(n, edges, false);
+	}
+	{
+		std::vector<Edge> edges;
+		for (int i = 0; i < 70000; ++i)
+			edges.push_back({int(rng() % 200), int(rng() % 200), std::int64_t(rng()) - 2147483648LL});
+		check(200, edges, false);
 	}
 	Kruskal<> graph(3);
 	graph.add_edge(0, 1, 7);
