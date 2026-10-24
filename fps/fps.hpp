@@ -10,7 +10,7 @@
 #include "../components/fps_exp_blocked.hpp"
 #include "../components/fps_inverse_blocked.hpp"
 #include "../components/fps_sqrt_blocked.hpp"
-#include "../components/fps_convolution.hpp"
+#include "../components/mint_convolution.hpp"
 #include "../components/fps_division_blocked.hpp"
 #include <algorithm>
 #include <cassert>
@@ -48,46 +48,11 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	static F multiply(const F &a, const F &b) {
-		if (a.empty() || b.empty()) return {};
-		if constexpr (!std::is_same_v<T, mint>) {
+		if constexpr (std::is_same_v<T, mint>) return F(mint_convolution_detail::multiply(a, b));
+		else {
 			W x = import_work(a);
 			return export_work(&a == &b ? W::multiply(x, x) : W::multiply(x, import_work(b)));
 		}
-		if (std::min(a.size(), b.size()) <= 32) {
-			F r(a.size() + b.size() - 1);
-			const F &small = a.size() < b.size() ? a : b;
-			const F &large = a.size() < b.size() ? b : a;
-			if constexpr (std::is_same_v<T, mint>) {
-				for (int j = 0; j < static_cast<int>(small.size()); ++j)
-					NTT::add_scaled(words(r) + j, words(large), large.size(), small[j].val());
-			} else
-				for (int j = 0; j < static_cast<int>(small.size()); ++j)
-					for (int i = 0; i < static_cast<int>(large.size()); ++i) r[i + j] += large[i] * small[j];
-			return r;
-		}
-		int n = 1, size = a.size() + b.size() - 1;
-		while (n < size) n <<= 1;
-		assert(n <= (1 << 23));
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (NTT::vectorized()) return F(fps_detail::multiply_detail::multiply(a, b));
-		}
-#endif
-		F x = a, y;
-		x.resize(n);
-		if (&a != &b) {
-			y = b;
-			y.resize(n);
-		}
-		ntt(x);
-		if (&a == &b) pointwise(x, x, x, n);
-		else {
-			ntt(y);
-			pointwise(x, x, y, n);
-		}
-		intt(x);
-		x.resize(size);
-		return x;
 	}
 
 	F operator-() const {

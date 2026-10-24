@@ -2,6 +2,7 @@
 #define AHO_CORASICK_HPP
 
 #include <array>
+#include <bit>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -9,12 +10,35 @@
 #include <string_view>
 #include <vector>
 
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+#include <immintrin.h>
+namespace aho_corasick_detail {
+template<int Alphabet>
+__attribute__((target("avx2"))) inline std::uint32_t complete(int *edges, const int *fallback) {
+	std::uint32_t mask = 0;
+	int i = 0;
+	for (; i + 8 <= Alphabet; i += 8) {
+		auto children = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(edges + i));
+		auto inherited = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(fallback + i));
+		auto missing = _mm256_cmpeq_epi32(children, _mm256_setzero_si256());
+		mask |= (std::uint32_t(~_mm256_movemask_ps(_mm256_castsi256_ps(missing))) & 255) << i;
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(edges + i), _mm256_blendv_epi8(children, inherited, missing));
+	}
+	for (; i < Alphabet; ++i) {
+		if (edges[i]) mask |= std::uint32_t(1) << i;
+		else edges[i] = fallback[i];
+	}
+	return mask;
+}
+}
+#endif
+
 template <int Alphabet = 26, int First = 'a'>
 class AhoCorasick {
 	static_assert(0 < Alphabet && 0 <= First && First + Alphabet <= 256);
 	struct alignas(Alphabet >= 16 ? 64 : alignof(int)) Node {
-		int matches = 0;
 		std::array<int, Alphabet> next{};
+		int matches = 0;
 		int parent = 0, depth = 0, link = 0, output = -1, head = -1;
 	};
 	std::vector<Node> nodes_;
@@ -64,6 +88,22 @@ class AhoCorasick {
 			int v = order_[i];
 			auto &node = nodes_[v];
 			const auto &fallback = nodes_[node.link].next;
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+			if constexpr (8 <= Alphabet && Alphabet <= 32) {
+				if (__builtin_cpu_supports("avx2")) {
+					auto mask = aho_corasick_detail::complete<Alphabet>(node.next.data(), fallback.data());
+					while (mask) {
+						int c = std::countr_zero(mask), u = node.next[c], f = v == root ? root : fallback[c];
+						mask &= mask - 1;
+						nodes_[u].link = f;
+						nodes_[u].output = nodes_[f].head != -1 ? f : nodes_[f].output;
+						nodes_[u].matches += nodes_[f].matches;
+						order_.push_back(u);
+					}
+					continue;
+				}
+			}
+#endif
 			for (int c = 0; c < Alphabet; ++c) {
 				if (int u = node.next[c]) {
 					int f = v == root ? root : fallback[c];

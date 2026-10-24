@@ -38,7 +38,39 @@ void check() {
 		}
 }
 
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t P, std::uint32_t Q, std::uint32_t R>
+void check_reconstruction() {
+	if (!__builtin_cpu_supports("avx2")) return;
+	constexpr __uint128_t bound = __uint128_t(P) * Q * R / 4;
+	auto inv = [](std::uint64_t x, std::uint32_t mod) {
+		std::uint64_t result = 1;
+		for (std::uint32_t e = mod - 2; e; e >>= 1, x = x * x % mod) if (e & 1) result = result * x % mod;
+		return result;
+	};
+	const auto ip = inv(std::uint64_t(Q) * R % P, P), iq = inv(std::uint64_t(P) * R % Q, Q), ir = inv(std::uint64_t(P) * Q % R, R);
+	std::mt19937_64 random(P);
+	for (int n : {1, 2, 7, 8, 9, 16, 17, 1024}) {
+		std::vector<std::uint32_t> a(n), b(n), c(n), expected(n);
+		for (int i = 0; i < n; ++i) {
+			__uint128_t value = (__uint128_t(random()) << 64 | random()) % bound;
+			if (i < 4) value = i == 0 ? 0 : i == 1 ? 1 : i == 2 ? bound - 1 : bound / 2;
+			a[i] = std::uint64_t(value % P) * ip % P;
+			b[i] = std::uint64_t(value % Q) * iq % Q;
+			c[i] = std::uint64_t(value % R) * ir % R;
+			expected[i] = value % 1000000007;
+		}
+		convolution_mod_detail::combine<P, Q, R>(a.data(), b.data(), c.data(), n);
+		assert(a == expected);
+	}
+}
+#endif
+
 int main() {
+#if defined(__x86_64__) || defined(__i386__)
+	check_reconstruction<167772161, 469762049, 754974721>();
+	check_reconstruction<754974721, 1224736769, 2013265921>();
+#endif
 	check<std::int64_t>();
 	check<std::uint64_t>();
 	check<std::int32_t>();

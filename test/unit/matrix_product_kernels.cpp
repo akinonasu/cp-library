@@ -17,11 +17,11 @@ template <std::uint32_t P>
 void check() {
 	std::mt19937_64 random(P);
 	using T = RecurrenceModint<P>;
-	for (const auto &[n, inner, m] : std::array<std::array<int, 3>, 20>{
+	for (const auto &[n, inner, m] : std::array<std::array<int, 3>, 22>{
 		std::array{0, 16, 32}, {4, 0, 32}, {4, 16, 0}, {1, 1, 1}, {3, 15, 7},
 		{4, 16, 8}, {5, 17, 9}, {7, 31, 15}, {8, 32, 16}, {9, 33, 17},
 		{4, 63, 31}, {5, 64, 32}, {7, 65, 33}, {8, 127, 63}, {9, 128, 64},
-		{3, 129, 65}, {5, 255, 127}, {7, 256, 128}, {9, 257, 129}, {17, 200, 200}}) {
+		{3, 129, 65}, {5, 255, 127}, {7, 256, 128}, {9, 257, 129}, {17, 200, 200}, {9, 4097, 17}, {4, 4096, 8}}) {
 		for (int kind = 0; kind < 5; ++kind) {
 			std::vector<std::uint32_t> a(std::size_t(n) * inner), b(std::size_t(inner) * m), expected(std::size_t(n) * m);
 			for (auto &x : a) x = kind == 0 ? 0 : kind == 1 ? P - 1 : kind == 2 ? P / 2 : random() % P;
@@ -49,6 +49,19 @@ void check() {
 				}
 				std::vector<std::uint32_t> actual(expected.size());
 				matrix_detail::product_packed_avx512<P>(centered_a.data(), packed_b.data(), actual.data(), n, inner, m);
+				assert(actual == expected);
+			}
+			if (matrix_detail::avx2() && n && inner && m) {
+				std::vector<std::int32_t> centered_a(a.size()), packed_b(b.size());
+				auto center = [](std::uint32_t value) { return value <= (P - 1) / 2 ? std::int32_t(value) : std::int32_t(std::int64_t(value) - P); };
+				for (std::size_t i = 0; i < a.size(); ++i) centered_a[i] = center(a[i]);
+				for (int j = 0; j < m; j += 8) {
+					int width = std::min(8, m - j);
+					for (int k = 0; k < inner; ++k) for (int q = 0; q < width; ++q)
+						packed_b[std::size_t(j) * inner + std::size_t(k) * width + q] = center(b[std::size_t(k) * m + j + q]);
+				}
+				std::vector<std::uint32_t> actual(expected.size());
+				matrix_detail::product_packed_avx2<P>(centered_a.data(), packed_b.data(), actual.data(), n, inner, m);
 				assert(actual == expected);
 			}
 #endif

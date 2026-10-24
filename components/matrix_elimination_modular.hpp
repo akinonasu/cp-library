@@ -97,7 +97,7 @@ struct ModularElimination {
 	}
 #endif
 	static void update(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
-		if (!count || !length) return;
+		if (!count || !length || std::none_of(coeff, coeff + count, [](V x) { return x != 0; })) return;
 		if (count == 1) { if (coeff[0]) Ops::axpy(dst, src[0] + first, length, coeff[0]); return; }
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 		if (length >= 32 && avx512_product()) { update512(dst, src, coeff, count, first, length); return; }

@@ -149,11 +149,79 @@ using fps_mint = mint;
 #endif
 
 
-#line 5 "components/factorial_table_light.hpp"
-#include <algorithm>
-#line 7 "components/factorial_table_light.hpp"
+#line 1 "components/factorial_table_generic.hpp"
+
+
+
+#line 1 "components/barrett32.hpp"
+
+
+
+#line 5 "components/barrett32.hpp"
 #include <cstdint>
+
+struct Barrett32 {
+	std::uint32_t mod;
+	std::uint64_t reciprocal;
+	explicit Barrett32(std::uint32_t m) : mod(m), reciprocal(m > 1 ? std::uint64_t((__uint128_t(1) << 64) / m) : 0) {
+		assert(m > 0);
+	}
+	std::uint32_t reduce(std::uint64_t x) const {
+		if (mod == 1) return 0;
+		std::uint64_t q = (__uint128_t(x) * reciprocal) >> 64, r = x - q * mod;
+		return r < mod ? r : r - mod;
+	}
+	std::uint32_t mul(std::uint32_t a, std::uint32_t b) const { return reduce(std::uint64_t(a) * b); }
+	std::uint32_t pow(std::uint32_t a, std::uint64_t e) const {
+		std::uint32_t r = mod == 1 ? 0 : 1;
+		for (; e; e >>= 1, a = mul(a, a)) if (e & 1) r = mul(r, a);
+		return r;
+	}
+};
+
+
+#line 5 "components/factorial_table_generic.hpp"
+#include <concepts>
+#line 7 "components/factorial_table_generic.hpp"
 #include <limits>
+#line 9 "components/factorial_table_generic.hpp"
+
+namespace factorial_table_detail {
+template<class Mint, bool Canonical = true> void build(Mint *factorial, Mint *inverse_factorial, int n) {
+	if constexpr (Canonical && requires(const Mint &x) { { x.val() } -> std::integral; }) {
+		const auto modulus = Mint::mod();
+		if (std::uint64_t(modulus) <= std::numeric_limits<std::uint32_t>::max()) {
+			Barrett32 arithmetic(modulus);
+			auto make = [](std::uint32_t value) { return Mint(value); };
+			std::uint32_t value = 1;
+			factorial[0] = make(value);
+			for (int i = 1; i <= n; ++i) {
+				value = arithmetic.mul(value, i);
+				factorial[i] = make(value);
+			}
+			inverse_factorial[n] = factorial[n].inv();
+			if constexpr (std::is_signed_v<decltype(inverse_factorial[n].val())>) {
+				std::int64_t residue = inverse_factorial[n].val() % std::int64_t(modulus);
+				value = residue < 0 ? residue + modulus : residue;
+			} else value = arithmetic.reduce(inverse_factorial[n].val());
+			for (int i = n; i > 0; --i) {
+				value = arithmetic.mul(value, i);
+				inverse_factorial[i - 1] = make(value);
+			}
+			return;
+		}
+	}
+	factorial[0] = Mint(1);
+	for (int i = 1; i <= n; ++i) factorial[i] = factorial[i - 1] * Mint(i);
+	inverse_factorial[n] = factorial[n].inv();
+	for (int i = n; i > 0; --i) inverse_factorial[i - 1] = inverse_factorial[i] * Mint(i);
+}
+}
+
+
+#line 6 "components/factorial_table_light.hpp"
+#include <algorithm>
+#line 11 "components/factorial_table_light.hpp"
 #include <vector>
 
 namespace light_factorial_detail {
@@ -165,10 +233,7 @@ template<class Mint> struct Table {
 		assert(0 <= max_n && max_n < std::numeric_limits<int>::max() && modulus > 1);
 		int n = static_cast<int>(std::min(std::uint64_t(max_n), std::uint64_t(modulus) - 1));
 		factorial.resize(n + 1), inverse_factorial.resize(n + 1);
-		factorial[0] = Mint(1);
-		for (int i = 1; i <= n; ++i) factorial[i] = factorial[i - 1] * Mint(i);
-		inverse_factorial[n] = factorial[n].inv();
-		for (int i = n; i > 0; --i) inverse_factorial[i - 1] = inverse_factorial[i] * Mint(i);
+		factorial_table_detail::build<Mint, !std::is_same_v<Mint, mint>>(factorial.data(), inverse_factorial.data(), n);
 	}
 };
 }

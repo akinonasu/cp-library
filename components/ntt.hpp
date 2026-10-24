@@ -372,9 +372,7 @@ struct NTT : mint_detail::Ops {
 			p = mul8(p, factor);
 			store8(dst + i, p);
 		}
-		I8 inverse = _mm256_set1_epi32(one);
-		for (U e = mod - 2; e; e >>= 1, p = mul8(p, p))
-			if (e & 1) inverse = mul8(inverse, p);
+		I8 inverse = inverse8(p);
 		for (int i = n - 8; i >= 8; i -= 8) {
 			store8(dst + i, mul8(inverse, load8(dst + i - 8)));
 			inverse = mul8(inverse, factor);
@@ -459,17 +457,13 @@ struct NTT : mint_detail::Ops {
 				e[k] = _mm256_add_epi64(e[k], _mm256_mul_epu32(z, r));
 				o[k] = _mm256_add_epi64(o[k], _mm256_mul_epu32(_mm256_srli_epi64(z, 32), r));
 			}
-		I8 ni = _mm256_set1_epi32(998244351);
 		for (int k = 0; k < count; ++k) {
-			I8 x = e[k], y = o[k];
-			x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, ni), p));
-			y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, ni), p));
-			x = _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
+			I8 x = reduce8(e[k], o[k]);
 			store8(a + 8 * k, _mm256_min_epu32(x, _mm256_sub_epi32(x, pp)));
 		}
 	}
 	__attribute__((target("avx2"))) static U reverse_dot8(const U *a, const U *b, int n) {
-		I8 p = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice), ni = _mm256_set1_epi32(998244351);
+		I8 p = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice);
 		I8 reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0), total = _mm256_setzero_si256();
 		int i = 0;
 		for (; i + 8 <= n;) {
@@ -484,9 +478,7 @@ struct NTT : mint_detail::Ops {
 				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
 				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
 			}
-			even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-			I8 value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+			I8 value = reduce8(even, odd);
 			value = _mm256_min_epu32(value, _mm256_sub_epi32(value, pp));
 			total = add8(total, value);
 		}

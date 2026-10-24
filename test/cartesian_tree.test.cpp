@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/cartesian_tree"
 #include "tree/cartesian_tree.hpp"
-#include "components/fast_io.hpp"
+#include "components/fast_io_bulk.hpp"
 
 int main() {
 	FastInput input;
@@ -8,10 +8,10 @@ int main() {
 	int n = 0;
 	input.read(n);
 	std::vector<int> values(n);
-	for (int &value : values) input.read(value);
+	int position = 0;
+	read_unsigned_records<1>(input, n, [&](unsigned value) { values[position++] = value; });
 	auto tree = cartesian_tree(values);
-	for (int v = 0; v < n; ++v) {
-		output.write(tree.parent[v] == -1 ? v : tree.parent[v]);
-		output.write(v + 1 == n ? '\n' : ' ');
-	}
+	write_unsigned_records<1>(output, n, [&](std::size_t v) {
+		return std::array{unsigned(tree.parent[v] == -1 ? int(v) : tree.parent[v])};
+	});
 }

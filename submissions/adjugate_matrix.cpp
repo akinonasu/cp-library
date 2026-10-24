@@ -583,18 +583,24 @@ __attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512
 	return _mm512_mask_sub_epi64(r, _mm512_cmp_epi64_mask(r, p, _MM_CMPINT_NLT), r, p);
 }
 
-template <std::uint32_t mod, int rows = 4>
+template <std::uint32_t mod, int rows = 8>
 __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr std::int64_t radius = mod / 2;
-	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - (mod - 1)) / (radius * radius)));
+	constexpr std::int64_t residue = (std::uint64_t(1) << 32) % mod;
+	constexpr std::int64_t folded_bound = (std::int64_t(1) << 31) * residue + 0xffffffffu;
+	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - folded_bound) / (radius * radius)));
 	int i = 0;
 	for (; i + rows <= n; i += rows) {
 		for (int j = 0; j < m; j += 16) {
 			const int width = std::min(16, m - j);
 			const __mmask16 active = (1u << width) - 1;
+			__m512i sums[rows][2];
+			for (int r = 0; r < rows; ++r) {
+				auto previous = _mm512_maskz_loadu_epi32(active, c + std::size_t(i + r) * m + j);
+				sums[r][0] = _mm512_and_si512(previous, _mm512_set1_epi64(0xffffffffu));
+				sums[r][1] = _mm512_srli_epi64(previous, 32);
+			}
 			for (int k = 0; k < inner; k += step) {
-				__m512i sums[rows][2];
-				for (int r = 0; r < rows; ++r) sums[r][0] = sums[r][1] = _mm512_setzero_si512();
 				for (int t = k; t < std::min(inner, k + step); ++t) {
 					auto x = _mm512_maskz_loadu_epi32(active, b + std::size_t(j) * inner + std::size_t(t) * width);
 					auto y = _mm512_srli_epi64(x, 32);
@@ -604,140 +610,75 @@ __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std
 						sums[r][1] = _mm512_add_epi64(sums[r][1], _mm512_mul_epi32(y, z));
 					}
 				}
-				for (int r = 0; r < rows; ++r) {
-					auto *dst = c + std::size_t(i + r) * m + j;
-					auto previous = _mm512_maskz_loadu_epi32(active, dst);
-					auto even = reduce_product_avx512<mod>(_mm512_add_epi64(sums[r][0], _mm512_and_si512(previous, _mm512_set1_epi64(0xffffffffu))));
-					auto odd = reduce_product_avx512<mod>(_mm512_add_epi64(sums[r][1], _mm512_srli_epi64(previous, 32)));
-					_mm512_mask_storeu_epi32(dst, active, _mm512_or_si512(even, _mm512_slli_epi64(odd, 32)));
+				for (int r = 0; r < rows; ++r) for (int q = 0; q < 2; ++q) {
+					auto x = sums[r][q];
+					sums[r][q] = _mm512_add_epi64(_mm512_mul_epi32(_mm512_srli_epi64(x, 32), _mm512_set1_epi32(residue)), _mm512_and_si512(x, _mm512_set1_epi64(0xffffffffu)));
 				}
 			}
-		}
-	}
-	if constexpr (rows == 4) {
-		if (i < n) product_packed_avx512<mod, 1>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
-	}
-}
-
-template <std::uint32_t mod>
-__attribute__((target("avx2"))) void product_avx2(const std::uint32_t *a, const std::uint32_t *b, std::uint32_t *c, int n, int inner, int m) {
-	constexpr int step = mod <= (std::uint32_t(1) << 30) ? 16 : 4;
-	int i = 0;
-	for (; i + 2 <= n; i += 2) {
-		int j = 0;
-		for (; j + 8 <= m; j += 8) for (int k = 0; k < inner; k += step) {
-			__m256i x0 = _mm256_setzero_si256(), x1 = x0, y0 = x0, y1 = x0;
-			for (int t = k; t < std::min(inner, k + step); ++t) {
-				__m256i row = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + std::size_t(t) * m + j));
-				__m256i odd = _mm256_srli_epi64(row, 32);
-				__m256i u = _mm256_set1_epi32(a[std::size_t(i) * inner + t]);
-				__m256i v = _mm256_set1_epi32(a[std::size_t(i + 1) * inner + t]);
-				x0 = _mm256_add_epi64(x0, _mm256_mul_epu32(u, row));
-				x1 = _mm256_add_epi64(x1, _mm256_mul_epu32(u, odd));
-				y0 = _mm256_add_epi64(y0, _mm256_mul_epu32(v, row));
-				y1 = _mm256_add_epi64(y1, _mm256_mul_epu32(v, odd));
-			}
-			std::uint64_t even[4], odd[4], even2[4], odd2[4];
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(even), x0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd), x1);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(even2), y0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd2), y1);
-			for (int s = 0; s < 4; ++s) {
-				auto *r = c + std::size_t(i) * m + j + s * 2;
-				auto *r2 = r + m;
-				r[0] = (even[s] + r[0]) % mod; r[1] = (odd[s] + r[1]) % mod;
-				r2[0] = (even2[s] + r2[0]) % mod; r2[1] = (odd2[s] + r2[1]) % mod;
+			for (int r = 0; r < rows; ++r) {
+				auto even = reduce_product_avx512<mod>(sums[r][0]), odd = reduce_product_avx512<mod>(sums[r][1]);
+				_mm512_mask_storeu_epi32(c + std::size_t(i + r) * m + j, active, _mm512_or_si512(even, _mm512_slli_epi64(odd, 32)));
 			}
 		}
-		if (j < m) for (int row = i; row < i + 2; ++row) for (int col = j; col < m; ++col) {
-			std::uint64_t sum = 0;
-			for (int k = 0; k < inner; k += step) {
-				for (int t = k; t < std::min(inner, k + step); ++t) sum += std::uint64_t(a[std::size_t(row) * inner + t]) * b[std::size_t(t) * m + col];
-				sum %= mod;
-			}
-			c[std::size_t(row) * m + col] = sum;
-		}
 	}
-	if (i < n) product_scalar<mod>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, 1, inner, m);
+	if constexpr (rows > 1) {
+		if (i < n) product_packed_avx512<mod, rows / 2>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
+	}
 }
 
 template <std::uint32_t mod, int rows = 4>
 __attribute__((target("avx2"))) void product_packed_avx2(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr std::int64_t radius = mod / 2;
-	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - (mod - 1)) / (radius * radius)));
-	auto reduce = [](std::int64_t sum, std::uint32_t c = 0) {
-		std::int64_t r = (sum + std::int64_t(c)) % std::int64_t(mod);
+	constexpr std::int64_t residue = (std::uint64_t(1) << 32) % mod;
+	constexpr std::int64_t folded_bound = (std::int64_t(1) << 31) * residue + 0xffffffffu;
+	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - folded_bound) / (radius * radius)));
+	auto reduce = [](std::int64_t sum) {
+		std::int64_t r = sum % std::int64_t(mod);
 		return std::uint32_t(r < 0 ? r + mod : r);
 	};
 	int i = 0;
 	for (; i + rows <= n; i += rows) {
-		int j = 0;
-		for (; j + 8 <= m; j += 8) for (int k = 0; k < inner; k += step) {
-			__m256i x0 = _mm256_setzero_si256(), x1 = x0, y0 = x0, y1 = x0, z0 = x0, z1 = x0, w0 = x0, w1 = x0;
-			for (int t = k; t < std::min(inner, k + step); ++t) {
-				__m256i row = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + std::size_t(j) * inner + std::size_t(t) * 8));
-				__m256i odd = _mm256_srli_epi64(row, 32);
-				__m256i u = _mm256_set1_epi32(a[std::size_t(i) * inner + t]);
-				__m256i v = _mm256_set1_epi32(a[std::size_t(i + 1) * inner + t]);
-				x0 = _mm256_add_epi64(x0, _mm256_mul_epi32(u, row));
-				x1 = _mm256_add_epi64(x1, _mm256_mul_epi32(u, odd));
-				y0 = _mm256_add_epi64(y0, _mm256_mul_epi32(v, row));
-				y1 = _mm256_add_epi64(y1, _mm256_mul_epi32(v, odd));
-				if constexpr (rows == 4) {
-					__m256i p = _mm256_set1_epi32(a[std::size_t(i + 2) * inner + t]);
-					__m256i q = _mm256_set1_epi32(a[std::size_t(i + 3) * inner + t]);
-					z0 = _mm256_add_epi64(z0, _mm256_mul_epi32(p, row));
-					z1 = _mm256_add_epi64(z1, _mm256_mul_epi32(p, odd));
-					w0 = _mm256_add_epi64(w0, _mm256_mul_epi32(q, row));
-					w1 = _mm256_add_epi64(w1, _mm256_mul_epi32(q, odd));
-				}
+		for (int j = 0; j < m; j += 8) {
+			int width = std::min(8, m - j);
+			auto active = _mm256_cmpgt_epi32(_mm256_set1_epi32(width), _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
+			__m256i sums[rows][2];
+			for (int r = 0; r < rows; ++r) {
+				auto previous = _mm256_maskload_epi32(reinterpret_cast<const int *>(c + std::size_t(i + r) * m + j), active);
+				sums[r][0] = _mm256_and_si256(previous, _mm256_set1_epi64x(0xffffffffu));
+				sums[r][1] = _mm256_srli_epi64(previous, 32);
 			}
-			std::int64_t even[4], odd[4], even2[4], odd2[4], even3[4], odd3[4], even4[4], odd4[4];
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(even), x0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd), x1);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(even2), y0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd2), y1);
-			if constexpr (rows == 4) {
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(even3), z0);
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd3), z1);
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(even4), w0);
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd4), w1);
-			}
-			for (int s = 0; s < 4; ++s) {
-				auto *r = c + std::size_t(i) * m + j + s * 2;
-				auto *r2 = r + m;
-				r[0] = reduce(even[s], r[0]); r[1] = reduce(odd[s], r[1]);
-				r2[0] = reduce(even2[s], r2[0]); r2[1] = reduce(odd2[s], r2[1]);
-				if constexpr (rows == 4) {
-					auto *r3 = r2 + m, *r4 = r3 + m;
-					r3[0] = reduce(even3[s], r3[0]); r3[1] = reduce(odd3[s], r3[1]);
-					r4[0] = reduce(even4[s], r4[0]); r4[1] = reduce(odd4[s], r4[1]);
-				}
-			}
-		}
-		if (j < m) for (int row = i; row < i + rows; ++row) for (int col = j; col < m; ++col) {
-			std::int64_t sum = 0;
 			for (int k = 0; k < inner; k += step) {
-				for (int t = k; t < std::min(inner, k + step); ++t) sum += std::int64_t(a[std::size_t(row) * inner + t]) * b[std::size_t(j) * inner + std::size_t(t) * (m - j) + col - j];
-				sum = reduce(sum);
+				for (int t = k; t < std::min(inner, k + step); ++t) {
+					auto x = _mm256_maskload_epi32(b + std::size_t(j) * inner + std::size_t(t) * width, active);
+					auto y = _mm256_srli_epi64(x, 32);
+					for (int r = 0; r < rows; ++r) {
+						auto z = _mm256_set1_epi32(a[std::size_t(i + r) * inner + t]);
+						sums[r][0] = _mm256_add_epi64(sums[r][0], _mm256_mul_epi32(x, z));
+						sums[r][1] = _mm256_add_epi64(sums[r][1], _mm256_mul_epi32(y, z));
+					}
+				}
+				for (int r = 0; r < rows; ++r) for (int q = 0; q < 2; ++q) {
+					auto x = sums[r][q];
+					sums[r][q] = _mm256_add_epi64(_mm256_mul_epi32(_mm256_srli_epi64(x, 32), _mm256_set1_epi32(residue)), _mm256_and_si256(x, _mm256_set1_epi64x(0xffffffffu)));
+				}
 			}
-			c[std::size_t(row) * m + col] = sum;
+			for (int r = 0; r < rows; ++r) {
+				std::int64_t even[4], odd[4];
+				_mm256_storeu_si256(reinterpret_cast<__m256i *>(even), sums[r][0]);
+				_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd), sums[r][1]);
+				std::uint32_t result[8];
+				for (int q = 0; q < 4; ++q) result[q * 2] = reduce(even[q]), result[q * 2 + 1] = reduce(odd[q]);
+				_mm256_maskstore_epi32(reinterpret_cast<int *>(c + std::size_t(i + r) * m + j), active, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(result)));
+			}
 		}
+
 	}
 	if constexpr (rows == 4) {
-		if (i < n) product_packed_avx2<mod, 2>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
-	} else for (; i < n; ++i) for (int j = 0; j < m; j += 8) {
-		int width = std::min(8, m - j);
-		for (int s = 0; s < width; ++s) {
-			std::int64_t sum = 0;
-			for (int k = 0; k < inner; k += step) {
-				for (int t = k; t < std::min(inner, k + step); ++t) sum += std::int64_t(a[std::size_t(i) * inner + t]) * b[std::size_t(j) * inner + std::size_t(t) * width + s];
-				sum = reduce(sum);
-			}
-			c[std::size_t(i) * m + j + s] = sum;
-		}
+		if (i < n) product_packed_avx2<mod, 1>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
 	}
 }
+
+
 #endif
 
 template <class T>
@@ -753,7 +694,7 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 	if constexpr (small_modint<T>) {
 		if (std::uint64_t(n) * m <= 128u / unsigned(inner)) { basic(); return c; }
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-		if (n >= 4 && inner >= 16 && m >= 8 && avx2()) {
+		if (inner >= 16 && m >= 8 && avx2()) {
 			const int block = avx512_product() ? 16 : 8;
 			std::vector<std::int32_t> x(a.size()), y(b.size());
 			std::vector<std::uint32_t> z(c.size());
@@ -776,10 +717,6 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 		std::vector<std::uint32_t> x(a.size()), y(b.size()), z(c.size());
 		for (std::size_t i = 0; i < a.size(); ++i) x[i] = a[i].val();
 		for (std::size_t i = 0; i < b.size(); ++i) y[i] = b[i].val();
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-		if (inner >= 16 && m >= 8 && avx2()) product_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
-		else
-#endif
 		product_scalar<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
 		for (std::size_t i = 0; i < c.size(); ++i) c[i] = T::raw(z[i]);
 	} else basic();
@@ -806,6 +743,22 @@ namespace matrix_detail {
 template <class Ops>
 struct ModularElimination {
 	using V = typename Ops::V;
+	static void hessenberg(std::vector<V> &b, int n, int k, V inverse, std::vector<V> &factors) {
+		bool any = false;
+		for (int i = k + 1; i < n; ++i) {
+			V factor = factors[i] = Ops::mul(b[std::size_t(i) * n + k - 1], inverse);
+			if (!factor) continue;
+			any = true;
+			Ops::axpy(b.data() + std::size_t(i) * n + k, b.data() + std::size_t(k) * n + k, n - k, Ops::neg(factor));
+			b[std::size_t(i) * n + k - 1] = 0;
+		}
+		if (!any) return;
+		for (int j = 0; j < n; ++j) {
+			auto *row = b.data() + std::size_t(j) * n;
+			row[k] = Ops::add(row[k], Ops::dot(row + k + 1, factors.data() + k + 1, n - k - 1));
+		}
+	}
+
 	static constexpr int batch = int(std::min<std::uint64_t>(8, (std::numeric_limits<std::int64_t>::max() - (Ops::mod - 1)) / (std::uint64_t(Ops::mod - 1) * (Ops::mod - 1))));
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	__attribute__((target("avx512f,avx512dq"))) static __m512i reduce512(__m512i sum) {
@@ -879,7 +832,7 @@ struct ModularElimination {
 	}
 #endif
 	static void update(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
-		if (!count || !length) return;
+		if (!count || !length || std::none_of(coeff, coeff + count, [](V x) { return x != 0; })) return;
 		if (count == 1) { if (coeff[0]) Ops::axpy(dst, src[0] + first, length, coeff[0]); return; }
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 		if (length >= 32 && avx512_product()) { update512(dst, src, coeff, count, first, length); return; }
@@ -980,9 +933,14 @@ struct FrobeniusPower {
 	std::vector<Row> basis, reduced;
 	std::vector<int> pivots;
 	Row transpose, upper, inverses;
+	std::vector<std::int32_t> packed;
+	int block = 0;
 	std::uint64_t random = 0x243f6a8885a308d3ULL;
 	explicit FrobeniusPower(const std::vector<T> &a, int size) : n(size), transpose(a.size()), upper(a.size()), inverses(size) {
 		for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j) transpose[std::size_t(j) * n + i] = a[std::size_t(i) * n + j].val();
+	}
+	static std::int32_t center(V x) {
+		return x <= (Ops::mod - 1) / 2 ? std::int32_t(x) : std::int32_t(std::int64_t(x) - Ops::mod);
 	}
 	Row seed() {
 		Row x(n);
@@ -995,6 +953,15 @@ struct FrobeniusPower {
 	}
 	Row apply(const Row &x) const {
 		Row result(n);
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (block) {
+			std::vector<std::int32_t> centered(n);
+			for (int i = 0; i < n; ++i) centered[i] = center(x[i]);
+			if (block == 16) product_packed_avx512<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
+			else product_packed_avx2<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
+			return result;
+		}
+#endif
 		constexpr int count = ModularElimination<Ops>::batch;
 		std::array<const V *, count> source;
 		for (int i = 0; i < n; i += count) {
@@ -1072,6 +1039,16 @@ struct FrobeniusPower {
 		return p;
 	}
 	std::optional<std::vector<Row>> decompose(bool diagonal = true) {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (n >= 32 && avx2()) {
+			block = avx512_product() ? 16 : 8;
+			packed.resize(transpose.size());
+			for (int j = 0; j < n; j += block) {
+				int width = std::min(block, n - j);
+				for (int i = 0; i < n; ++i) for (int q = 0; q < width; ++q) packed[std::size_t(j) * n + std::size_t(i) * width + q] = center(transpose[std::size_t(i) * n + j + q]);
+			}
+		}
+#endif
 		for (int attempt = 0; attempt < 3; ++attempt) {
 			basis.clear(), reduced.clear(), pivots.clear();
 			work = 0;
@@ -1203,6 +1180,9 @@ struct FrobeniusPower {
 
 namespace matrix_detail {
 template <class T>
+std::optional<std::pair<T, std::vector<T>>> block_inverse(const std::vector<T> &a, int n, bool adjugate);
+
+template <class T>
 struct FastMatrixArithmetic {
 	static constexpr bool modular = small_modint<T>;
 	template <class Ops>
@@ -1210,10 +1190,24 @@ struct FastMatrixArithmetic {
 		if constexpr (modular) if (h >= 32 && columns >= 32) return ModularElimination<Ops>::run(a, h, stride, columns, reduced);
 		return matrix_detail::eliminate<Ops, modular>(a, h, stride, columns, reduced, eps);
 	}
+	template <class Ops>
+	static bool hessenberg(std::vector<typename Ops::V> &a, int n, int k, typename Ops::V inverse, std::vector<typename Ops::V> &factors) {
+		if constexpr (modular) if (n >= 16) {
+			factors.resize(n);
+			ModularElimination<Ops>::hessenberg(a, n, k, inverse, factors);
+			return true;
+		}
+		return false;
+	}
+
 	template <class F>
 	static auto field(std::vector<T> &a, F &&f) { return matrix_detail::field(a, std::forward<F>(f)); }
 	static std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n, int inner, int m) {
 		return matrix_detail::multiply(a, b, n, inner, m);
+	}
+	static std::optional<std::pair<T, std::vector<T>>> inverse(const std::vector<T> &a, int n, bool adjugate) {
+		if constexpr (modular) return block_inverse(a, n, adjugate);
+		return std::nullopt;
 	}
 	static std::optional<std::vector<T>> characteristic(const std::vector<T> &a, int n) {
 		if constexpr (small_modint<T>) if constexpr (prime_modulus(T::mod())) {
@@ -1288,6 +1282,12 @@ class Matrix {
 			work(i, w + i) = T{1};
 		}
 		return work;
+	}
+
+	std::pair<Matrix, std::vector<int>> echelon(bool reduced, long double eps) const {
+		Matrix work = *this;
+		auto pivots = work.reduce(w, reduced, eps).second;
+		return {std::move(work), std::move(pivots)};
 	}
 
   public:
@@ -1410,17 +1410,17 @@ class Matrix {
 		}
 	}
 	int rank(long double eps = default_epsilon) const { Matrix work = *this; return int(work.reduce(w, false, eps).second.size()); }
-	std::pair<Matrix, std::vector<int>> row_echelon(long double eps = default_epsilon) const {
-		Matrix work = *this;
-		auto pivots = work.reduce(w, false, eps).second;
-		return {std::move(work), std::move(pivots)};
-	}
-	std::pair<Matrix, std::vector<int>> rref(long double eps = default_epsilon) const {
-		Matrix work = *this;
-		auto pivots = work.reduce(w, true, eps).second;
-		return {std::move(work), std::move(pivots)};
-	}
+	std::pair<Matrix, std::vector<int>> row_echelon(long double eps = default_epsilon) const { return echelon(false, eps); }
+	std::pair<Matrix, std::vector<int>> rref(long double eps = default_epsilon) const { return echelon(true, eps); }
+
 	std::optional<Matrix> inverse(long double eps = default_epsilon) const {
+		assert(h == w && eps >= 0);
+		if constexpr (requires { Arithmetic::inverse(a, h, false); }) if (auto fast = Arithmetic::inverse(a, h, false)) {
+			if (fast->second.empty()) return std::nullopt;
+			Matrix result(h);
+			result.a = std::move(fast->second);
+			return result;
+		}
 		auto work = augmented_identity();
 		auto pivots = work.reduce(w, true, eps).second;
 		if (int(pivots.size()) < h) return std::nullopt;
@@ -1450,40 +1450,27 @@ class Matrix {
 		auto work = a;
 		return Arithmetic::field(work, [&]<class Ops>(auto &b) {
 			using V = typename Ops::V;
+			auto at = [&](int i, int j) -> V& { return b[std::size_t(i) * w + j]; };
 			std::vector<V> factors;
-			if constexpr (Arithmetic::modular) if (h >= 16) factors.resize(h);
 			for (int k = 1; k < h; ++k) {
 				int pivot = -1;
-				for (int i = k; i < h; ++i) if (!Ops::zero(b[std::size_t(i) * w + k - 1], eps)
-					&& (pivot < 0 || Ops::better(b[std::size_t(i) * w + k - 1], b[std::size_t(pivot) * w + k - 1]))) pivot = i;
+				for (int i = k; i < h; ++i) if (!Ops::zero(at(i, k - 1), eps)
+					&& (pivot < 0 || Ops::better(at(i, k - 1), at(pivot, k - 1)))) pivot = i;
 				if (pivot < 0) continue;
 				if (pivot != k) {
-					for (int j = 0; j < w; ++j) std::swap(b[std::size_t(k) * w + j], b[std::size_t(pivot) * w + j]);
-					for (int i = 0; i < h; ++i) std::swap(b[std::size_t(i) * w + k], b[std::size_t(i) * w + pivot]);
+					for (int j = 0; j < w; ++j) std::swap(at(k, j), at(pivot, j));
+					for (int i = 0; i < h; ++i) std::swap(at(i, k), at(i, pivot));
 				}
-				V inverse = Ops::inv(b[std::size_t(k) * w + k - 1]);
-				if constexpr (Arithmetic::modular) if (h >= 16) {
-					bool any = false;
-					for (int i = k + 1; i < h; ++i) {
-						V factor = factors[i] = Ops::mul(b[std::size_t(i) * w + k - 1], inverse);
-						if (!factor) continue;
-						any = true;
-						Ops::axpy(b.data() + std::size_t(i) * w + k, b.data() + std::size_t(k) * w + k, w - k, Ops::neg(factor));
-						b[std::size_t(i) * w + k - 1] = 0;
-					}
-					if (!any) continue;
-					for (int j = 0; j < h; ++j) {
-						auto *row = b.data() + std::size_t(j) * w;
-						row[k] = Ops::add(row[k], Ops::dot(row + k + 1, factors.data() + k + 1, h - k - 1));
-					}
-					continue;
-				}
+				V inverse = Ops::inv(at(k, k - 1));
+				if constexpr (requires { Arithmetic::template hessenberg<Ops>(b, h, k, inverse, factors); })
+					if (Arithmetic::template hessenberg<Ops>(b, h, k, inverse, factors)) continue;
+
 				for (int i = k + 1; i < h; ++i) {
-					V factor = Ops::mul(b[std::size_t(i) * w + k - 1], inverse);
+					V factor = Ops::mul(at(i, k - 1), inverse);
 					if (Ops::zero(factor, eps)) continue;
 					Ops::axpy(b.data() + std::size_t(i) * w + k, b.data() + std::size_t(k) * w + k, w - k, Ops::neg(factor));
-					b[std::size_t(i) * w + k - 1] = V(0);
-					for (int j = 0; j < h; ++j) b[std::size_t(j) * w + k] = Ops::add(b[std::size_t(j) * w + k], Ops::mul(factor, b[std::size_t(j) * w + i]));
+					at(i, k - 1) = V(0);
+					for (int j = 0; j < h; ++j) at(j, k) = Ops::add(at(j, k), Ops::mul(factor, at(j, i)));
 				}
 			}
 			std::vector<std::vector<V>> p(h + 1);
@@ -1491,11 +1478,11 @@ class Matrix {
 			for (int n = 1; n <= h; ++n) {
 				p[n].assign(n + 1, V(0));
 				std::copy(p[n - 1].begin(), p[n - 1].end(), p[n].begin() + 1);
-				Ops::axpy(p[n].data(), p[n - 1].data(), n, Ops::neg(b[std::size_t(n - 1) * w + n - 1]));
+				Ops::axpy(p[n].data(), p[n - 1].data(), n, Ops::neg(at(n - 1, n - 1)));
 				V product = 1;
 				for (int i = n - 2; i >= 0; --i) {
-					product = Ops::mul(product, b[std::size_t(i + 1) * w + i]);
-					V factor = Ops::mul(product, b[std::size_t(i) * w + n - 1]);
+					product = Ops::mul(product, at(i + 1, i));
+					V factor = Ops::mul(product, at(i, n - 1));
 					Ops::axpy(p[n].data(), p[i].data(), i + 1, Ops::neg(factor));
 				}
 			}
@@ -1505,34 +1492,102 @@ class Matrix {
 		});
 	}
 	Matrix adjugate(long double eps = default_epsilon) const {
-		assert(h == w);
+		assert(h == w && eps >= 0);
+		if constexpr (requires { Arithmetic::inverse(a, h, true); }) if (auto fast = Arithmetic::inverse(a, h, true)) {
+			Matrix result(h);
+			result.a = std::move(fast->second);
+			return result;
+		}
 		auto work = augmented_identity();
 		auto [determinant, pivots] = work.reduce(w, true, eps);
 		if (int(pivots.size()) == h) return work.submatrix(0, h, w, w * 2) * determinant;
 		Matrix result(h);
 		if (int(pivots.size()) + 1 < h) return result;
 		auto right = nullspace(work, pivots, w)[0];
-		int row = 0, col = 0;
-		for (int i = 1; i < h; ++i) if (work(h - 1, w + row) == T(0) || matrix_detail::Field<T>::better(work(h - 1, w + i), work(h - 1, w + row))) row = i;
-		if (work(h - 1, w + row) == T(0)) return result;
-		std::vector<T> left(h);
-		T inverse = T{1} / work(h - 1, w + row);
-		for (int i = 0; i < h; ++i) left[i] = work(h - 1, w + i) * inverse;
+		int col = 0;
 		while (std::find(pivots.begin(), pivots.end(), col) != pivots.end()) ++col;
-		Matrix minor(h - 1);
-		for (int i = 0, x = 0; i < h; ++i) if (i != row) {
-			for (int j = 0, y = 0; j < w; ++j) if (j != col) minor(x, y++) = (*this)(i, j);
-			++x;
-		}
-		T scale = minor.det(eps);
-		if ((row + col) & 1) scale = -scale;
-		for (int i = 0; i < h; ++i) for (int j = 0; j < w; ++j) result(i, j) = scale * right[i] * left[j];
+		if ((h - 1 - col) & 1) determinant = -determinant;
+		for (int i = 0; i < h; ++i) for (int j = 0; j < w; ++j) result(i, j) = determinant * right[i] * work(h - 1, w + j);
 		return result;
 	}
 };
 
 
-#line 38 "math/linear_algebra/matrix.hpp"
+#line 1 "components/matrix_block_inverse.hpp"
+
+
+
+#line 7 "components/matrix_block_inverse.hpp"
+
+namespace matrix_detail {
+template <class T>
+struct GaussianMatrixArithmetic {
+	static constexpr bool modular = small_modint<T>;
+	template <class Ops>
+	static auto eliminate(std::vector<typename Ops::V> &a, int h, int stride, int columns, bool reduced, long double) {
+		return ModularElimination<Ops>::run(a, h, stride, columns, reduced);
+	}
+	template <class F>
+	static auto field(std::vector<T> &a, F &&f) { return matrix_detail::field(a, std::forward<F>(f)); }
+};
+
+template <class T>
+std::optional<std::pair<T, std::vector<T>>> block_inverse(const std::vector<T> &a, int n, bool adjugate) {
+	if (n < 112) return std::nullopt;
+	int h = n / 2, k = n - h;
+	for (int i = 0; i < h; ++i) {
+		bool row = false, column = false;
+		for (int j = 0; j < h; ++j) {
+			row |= a[std::size_t(i) * n + j] != T(0);
+			column |= a[std::size_t(j) * n + i] != T(0);
+		}
+		if (!row || !column) return std::nullopt;
+	}
+	auto extract = [&](int r, int c, int rows, int cols) {
+		std::vector<T> block(std::size_t(rows) * cols);
+		for (int i = 0; i < rows; ++i) std::copy_n(a.data() + std::size_t(r + i) * n + c, cols, block.data() + std::size_t(i) * cols);
+		return block;
+	};
+	auto solve = [](const std::vector<T> &block, int size, bool adjugate) {
+		if (auto fast = block_inverse(block, size, adjugate)) return std::move(*fast);
+		Matrix<T, GaussianMatrixArithmetic<T>> matrix(size);
+		std::copy(block.begin(), block.end(), matrix.data());
+		if (adjugate) {
+			auto result = matrix.adjugate();
+			return std::pair{matrix.det(), std::vector<T>(result.data(), result.data() + block.size())};
+		}
+		auto result = matrix.inverse();
+		if (!result) return std::pair{T(0), std::vector<T>{}};
+		return std::pair{matrix.det(), std::vector<T>(result->data(), result->data() + block.size())};
+	};
+	auto [da, ai] = solve(extract(0, 0, h, h), h, false);
+	if (ai.empty()) return std::nullopt;
+	auto b = extract(0, h, h, k), c = extract(h, 0, k, h), d = extract(h, h, k, k);
+	auto v = multiply(c, ai, k, h, h), vb = multiply(v, b, k, h, k);
+	for (std::size_t i = 0; i < d.size(); ++i) d[i] -= vb[i];
+	auto [ds, si] = solve(d, k, adjugate);
+	if (si.empty()) return std::pair{T(0), std::vector<T>{}};
+	auto u = multiply(ai, b, h, h, k);
+	auto r = multiply(u, si, h, k, k), t = multiply(si, v, k, k, h);
+	auto rv = multiply(r, v, h, k, h);
+	for (std::size_t i = 0; i < ai.size(); ++i) ai[i] = (adjugate ? ai[i] * ds : ai[i]) + rv[i];
+	std::vector<T> result(a.size());
+	for (int i = 0; i < h; ++i) {
+		std::copy_n(ai.data() + std::size_t(i) * h, h, result.data() + std::size_t(i) * n);
+		for (int j = 0; j < k; ++j) result[std::size_t(i) * n + h + j] = -r[std::size_t(i) * k + j];
+	}
+	for (int i = 0; i < k; ++i) {
+		for (int j = 0; j < h; ++j) result[std::size_t(h + i) * n + j] = -t[std::size_t(i) * h + j];
+		std::copy_n(si.data() + std::size_t(i) * k, k, result.data() + std::size_t(h + i) * n + h);
+	}
+	if (adjugate) for (auto &x : result) x *= da;
+	return std::pair{da * ds, std::move(result)};
+}
+
+}
+
+
+#line 56 "math/linear_algebra/matrix.hpp"
 
 
 #line 1 "math/mint.hpp"

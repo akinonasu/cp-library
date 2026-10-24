@@ -39,6 +39,8 @@ void check(const XorBasis<U, B> &basis, const std::vector<U> &span, U offset) {
 		assert(coordinates && basis.combine(*coordinates) == span[k]);
 	}
 	auto generators = basis.vectors();
+	auto view = basis.vectors_view();
+	assert(std::equal(view.begin(), view.end(), generators.begin(), generators.end()));
 	assert(int(generators.size()) == basis.rank());
 	assert((XorBasis<U, B>(generators) == basis));
 	auto canonical = basis.canonical();

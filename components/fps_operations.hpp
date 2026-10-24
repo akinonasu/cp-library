@@ -53,11 +53,7 @@ struct Operations {
 		std::copy_n(a, n / 2, a + n / 2);
 		transform(std::max(1, n / 2)).template fft<false>(a, n, n / 2);
 	}
-	static void ntt_half(base &a) {
-		int n = a.size();
-		std::copy_n(a.begin(), n / 2, a.begin() + n / 2);
-		transform(std::max(1, n / 2)).template fft<false>(words(a), n, n / 2);
-	}
+	static void ntt_half(base &a) { ntt_half(words(a), a.size()); }
 	static void ntt_inverse(base &a) { transform_inplace<true>(a); }
 	static void scale_words(base &a, T factor) {
 		if (a.empty()) return;

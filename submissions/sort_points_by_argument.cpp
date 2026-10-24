@@ -4,13 +4,72 @@
 
 
 
-#include <cmath>
+#line 1 "components/radix_sort.hpp"
+
+
+
+#include <algorithm>
+#include <array>
+#include <cstddef>
 #include <cstdint>
+#include <type_traits>
+#include <utility>
+#include <vector>
+
+template <int Bits, class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key &&key) {
+	static_assert(1 <= Bits && Bits <= 16);
+	constexpr unsigned buckets = 1U << Bits, mask = buckets - 1;
+	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
+	static_assert(std::is_integral_v<K> && std::is_unsigned_v<K> && sizeof(K) <= sizeof(std::uint64_t));
+	if (values.size() < 2) return;
+	if (values.size() < 256) {
+		std::stable_sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
+		return;
+	}
+	std::uint64_t first = key(values.front()), previous = first, varying = 0;
+	bool sorted = true;
+	for (std::size_t i = 1; i < values.size(); ++i) {
+		std::uint64_t current = key(values[i]);
+		varying |= first ^ current;
+		sorted &= previous <= current;
+		previous = current;
+	}
+	if (sorted) return;
+	std::vector<T> scratch(values.size());
+	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
+	Counts count = [] {
+		if constexpr (Bits <= 11) return Counts{};
+		else return Counts(buckets);
+	}();
+	for (int shift = 0; shift < 64; shift += Bits) {
+		if (!((varying >> shift) & mask)) continue;
+		std::fill(count.begin(), count.end(), 0);
+		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask];
+		std::size_t sum = 0;
+		for (auto &x : count) {
+			auto n = x;
+			x = sum, sum += n;
+		}
+		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask]++] = std::move(value);
+		values.swap(scratch);
+	}
+}
+
+template <class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key key) {
+	stable_radix_sort<8>(values, std::move(key));
+}
+
+
+#line 5 "geometry/point.hpp"
+#include <cmath>
+#line 7 "geometry/point.hpp"
 #include <istream>
 #include <numbers>
 #include <optional>
 #include <ostream>
-#include <type_traits>
+#line 12 "geometry/point.hpp"
 
 namespace geometry {
 using Real = long double;
@@ -133,6 +192,40 @@ struct PolarLess {
 		}
 	}
 };
+
+template<class T>
+void polar_sort(std::vector<Point<T>> &points) {
+	if constexpr (integer<T> && sizeof(T) <= 4) {
+		if (points.size() >= 256) {
+			struct Entry { std::uint64_t key; Point<T> point; };
+			std::vector<Entry> order;
+			order.reserve(points.size());
+			constexpr std::uint64_t scale = (std::uint64_t(1) << 61) - 1;
+			for (auto p : points) {
+				std::int64_t x = p.x, y = p.y;
+				std::uint64_t a = x < 0 ? -x : x, b = y < 0 ? -y : y;
+				unsigned quadrant = y < 0 ? (x < 0 ? 2 : 3) : (x < 0 ? 1 : 0);
+				unsigned octant = quadrant * 2 + ((a < b) ^ (quadrant & 1));
+				std::uint64_t ratio = a || b ? std::min(scale, std::uint64_t(double(std::min(a, b)) / double(std::max(a, b)) * double(scale))) : 0;
+				if (octant & 1) ratio = scale - ratio;
+				order.push_back({(std::uint64_t(octant) << 61) | ratio, p});
+			}
+			stable_radix_sort<11>(order, [](const Entry &entry) { return entry.key; });
+			for (std::size_t first = 0; first < order.size();) {
+				std::size_t last = first + 1;
+				while (last < order.size() && order[last].key == order[first].key) ++last;
+				auto less = [](const Entry &a, const Entry &b) { return PolarLess<T>{}(a.point, b.point); };
+				if (last - first <= 8 || !std::is_sorted(order.begin() + first, order.begin() + last, less))
+					std::sort(order.begin() + first, order.begin() + last, less);
+				first = last;
+			}
+			for (std::size_t i = 0; i < points.size(); ++i) points[i] = order[i].point;
+			return;
+		}
+	}
+	std::sort(points.begin(), points.end(), PolarLess<T>{});
+}
+
 }
 
 
@@ -140,12 +233,10 @@ struct PolarLess {
 
 
 
-#include <algorithm>
-#include <array>
+#line 6 "components/fast_io.hpp"
 #include <bit>
 #include <cassert>
 #include <charconv>
-#include <cstddef>
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>
@@ -373,8 +464,7 @@ public:
 };
 
 
-#line 5 "test/geometry_argument_sort.test.cpp"
-#include <vector>
+#line 6 "test/geometry_argument_sort.test.cpp"
 
 int main() {
 	FastInput input;
@@ -382,7 +472,7 @@ int main() {
 	int n = 0; input.read(n);
 	std::vector<geometry::Point<std::int32_t>> points(n);
 	for (auto &p : points) input.read(p.x), input.read(p.y);
-	std::sort(points.begin(), points.end(), geometry::PolarLess<std::int32_t>{});
+	geometry::polar_sort(points);
 	auto lower = std::find_if(points.begin(), points.end(), [](auto p) { return p.y < 0; });
 	std::rotate(points.begin(), lower, points.end());
 	for (auto p : points) output.write(p.x), output.write(' '), output.println(p.y);

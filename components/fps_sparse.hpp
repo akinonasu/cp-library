@@ -25,10 +25,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::mod)));
 	}
 	__attribute__((target("avx2"))) static V reduce8(V even, V odd) {
-		const V ni = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(O::mod);
-		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-		return canonical8(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa));
+		return canonical8(O::reduce8(even, odd));
 	}
 	__attribute__((target("avx2"), always_inline)) static inline V triangular(V x, const U *f) {
 		const V lower = _mm256_permute2x128_si256(x, x, 0x08);

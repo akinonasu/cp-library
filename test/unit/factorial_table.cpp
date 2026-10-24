@@ -1,10 +1,12 @@
 #include "components/factorial_table.hpp"
+#include "components/factorial_table_light.hpp"
 #include "test/fixtures/comb_modint_types.hpp"
 #include <cassert>
 #include <cstdint>
 
 template<class M> void check(int max_n) {
 	factorial_detail::Table<M> table(max_n);
+	light_factorial_detail::Table<M> light(max_n);
 	assert(table.modulus == M::mod());
 	int n = std::min(unsigned(max_n), M::mod() - 1);
 	assert(table.factorial.size() == std::size_t(n + 1));
@@ -13,6 +15,8 @@ template<class M> void check(int max_n) {
 	for (int i = 0; i <= n; ++i) {
 		if (i) expected = expected * i % M::mod();
 		assert(table.factorial[i].val() == expected);
+		assert(light.factorial[i].val() == expected);
+		assert(light.inverse_factorial[i].val() == table.inverse_factorial[i].val());
 		assert((table.factorial[i] * table.inverse_factorial[i]).val() == 1);
 	}
 }
@@ -23,5 +27,6 @@ int main() {
 		check<comb_test::Field<1000000007>>(n);
 		check<comb_test::Field<998244353>>(n);
 		check<comb_test::Field<17>>(n);
+		check<comb_test::Field<4294967291U>>(n);
 	}
 }

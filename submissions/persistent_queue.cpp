@@ -1,4 +1,4 @@
-#line 1 "test/persistent_queue.test.cpp"
+#line 1 "test/persistent_queue_batch.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/persistent_queue"
 #line 1 "data_structure/persistent/persistent_queue.hpp"
 
@@ -8,6 +8,7 @@
 
 
 
+#include <bit>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -54,13 +55,47 @@ class PersistentStack {
 		return root;
 	}
 	T get(root_type root, int k) const { assert(0 <= k && k < size(root)); return top(ancestor(root, k)); }
+	std::vector<T> get_many(const std::vector<std::pair<root_type, int>> &queries) const {
+		assert(queries.size() <= std::size_t(std::numeric_limits<int>::max()));
+		if (queries.empty()) return {};
+		std::uint64_t work = 0;
+		unsigned limit = std::bit_width(nodes.size());
+		for (auto [root, k] : queries) { check(root); assert(0 <= k && k < size(root)); work += unsigned(k) < limit ? unsigned(k) : limit; }
+		if (work <= 3 * std::uint64_t(nodes.size())) {
+			std::vector<T> result;
+			result.reserve(queries.size());
+			for (auto [root, k] : queries) result.push_back(get(root, k));
+			return result;
+		}
+		std::vector<root_type> first(nodes.size()), next(nodes.size()), selected(queries.size()), path;
+		std::vector<int> head(nodes.size(), -1), following(queries.size());
+		for (root_type v = 1; v < nodes.size(); ++v) {
+			root_type p = nodes[v].next;
+			next[v] = first[p]; first[p] = v;
+		}
+		for (int i = 0; i < int(queries.size()); ++i) {
+			root_type root = queries[i].first;
+			following[i] = head[root]; head[root] = i;
+		}
+		for (root_type v = first[0]; v;) {
+			path.push_back(v);
+			for (int i = head[v]; i != -1; i = following[i]) selected[i] = path[path.size() - 1 - queries[i].second];
+			if (first[v]) { v = first[v]; continue; }
+			while (v && !next[v]) { path.pop_back(); v = nodes[v].next; }
+			if (v) { path.pop_back(); v = next[v]; }
+		}
+		std::vector<T> result;
+		result.reserve(queries.size());
+		for (root_type v : selected) result.push_back(*nodes[v].value);
+		return result;
+	}
 	void reserve(std::size_t count) { assert(count < std::numeric_limits<root_type>::max()); nodes.reserve(count + 1); }
 	std::size_t node_count() const { return nodes.size() - 1; }
 	std::size_t memory_usage() const { return nodes.capacity() * sizeof(Node); }
 };
 
 
-#line 8 "data_structure/persistent/persistent_queue.hpp"
+#line 9 "data_structure/persistent/persistent_queue.hpp"
 
 template <class T>
 class PersistentQueue {
@@ -83,6 +118,22 @@ class PersistentQueue {
 	T front(root_type root) const { assert(!empty(root)); return stack.get(root.tail, root.length - 1); }
 	T back(root_type root) const { assert(!empty(root)); return stack.top(root.tail); }
 	T get(root_type root, int p) const { assert(0 <= p && p < size(root)); return stack.get(root.tail, root.length - 1 - p); }
+	std::vector<T> front_many(const std::vector<root_type> &roots) const {
+		assert(roots.size() <= std::size_t(std::numeric_limits<int>::max()));
+		std::uint64_t work = 0;
+		unsigned limit = std::bit_width(stack.node_count());
+		for (auto root : roots) { assert(!empty(root)); unsigned distance = unsigned(root.length - 1); work += distance < limit ? distance : limit; }
+		if (work <= 3 * std::uint64_t(stack.node_count())) {
+			std::vector<T> result;
+			result.reserve(roots.size());
+			for (auto root : roots) result.push_back(front(root));
+			return result;
+		}
+		std::vector<std::pair<typename PersistentStack<T>::root_type, int>> queries;
+		queries.reserve(roots.size());
+		for (auto root : roots) { assert(!empty(root)); queries.emplace_back(root.tail, root.length - 1); }
+		return stack.get_many(queries);
+	}
 	void reserve(std::size_t count) { stack.reserve(count); }
 	std::size_t node_count() const { return stack.node_count(); }
 	std::size_t memory_usage() const { return stack.memory_usage(); }
@@ -95,7 +146,6 @@ class PersistentQueue {
 
 #include <algorithm>
 #include <array>
-#include <bit>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
 #line 11 "components/fast_io.hpp"
@@ -325,7 +375,7 @@ public:
 };
 
 
-#line 5 "test/persistent_queue.test.cpp"
+#line 5 "test/persistent_queue_batch.test.cpp"
 
 int main() {
 	FastInput input;
@@ -334,11 +384,14 @@ int main() {
 	input.read(q);
 	PersistentQueue<int> queue;
 	queue.reserve(q);
-	std::vector<decltype(queue)::root_type> roots(q + 1);
+	using Root = decltype(queue)::root_type;
+	std::vector<Root> roots(q + 1), queries;
+	queries.reserve(q);
 	for (int i = 1; i <= q; ++i) {
 		int type = 0, k = 0;
 		input.read(type), input.read(k);
 		if (type == 0) { int x = 0; input.read(x); roots[i] = queue.push(roots[k + 1], x); }
-		else { output.println(queue.front(roots[k + 1])); roots[i] = queue.pop(roots[k + 1]); }
+		else { queries.push_back(roots[k + 1]); roots[i] = queue.pop(roots[k + 1]); }
 	}
+	for (int value : queue.front_many(queries)) output.println(value);
 }

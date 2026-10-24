@@ -42,6 +42,8 @@ int main() {
 		for (auto x = base; x < base + 256; ++x) count += is_prime(x);
 		assert(prime_count(base + 255) - prime_count(base - 1) == count);
 	}
+	for (std::uint64_t x : {(UINT64_C(1) << 42) - 1, UINT64_C(1) << 42, (UINT64_C(1) << 42) + 1})
+		assert(prime_count(x) == prime_count_detail::compute<false>(x));
 	const int previous = std::fegetround();
 	for (int mode : {FE_TONEAREST, FE_DOWNWARD, FE_UPWARD, FE_TOWARDZERO}) {
 		if (std::fesetround(mode)) continue;

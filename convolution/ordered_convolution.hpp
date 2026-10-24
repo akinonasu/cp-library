@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "convolution.hpp"
+#include "../components/convolution_dispatch.hpp"
 
 template <class T>
 std::vector<T> ordered_convolution(const std::vector<T> &a, const std::vector<T> &b) {

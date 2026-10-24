@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/eulerian_trail_directed"
 #include "graph/eulerian_trail.hpp"
-#include "components/fast_io.hpp"
+#include "components/fast_io_bulk.hpp"
 
 int main() {
 	FastInput input;
@@ -12,11 +12,7 @@ int main() {
 		input.read(n), input.read(m);
 		DirectedEulerianTrail graph(n);
 		graph.reserve(m);
-		for (int i = 0; i < m; ++i) {
-			int u = 0, v = 0;
-			input.read(u), input.read(v);
-			graph.add_edge(u, v);
-		}
+		if (m) read_unsigned_records<2>(input, m, [&](unsigned u, unsigned v) { graph.add_edge(u, v); });
 		auto result = graph.solve();
 		if (!result) { output.println("No"); continue; }
 		output.println("Yes");

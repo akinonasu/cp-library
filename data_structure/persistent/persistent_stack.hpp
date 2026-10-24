@@ -1,6 +1,7 @@
 #ifndef PERSISTENT_STACK_HPP
 #define PERSISTENT_STACK_HPP
 
+#include <bit>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -47,6 +48,40 @@ class PersistentStack {
 		return root;
 	}
 	T get(root_type root, int k) const { assert(0 <= k && k < size(root)); return top(ancestor(root, k)); }
+	std::vector<T> get_many(const std::vector<std::pair<root_type, int>> &queries) const {
+		assert(queries.size() <= std::size_t(std::numeric_limits<int>::max()));
+		if (queries.empty()) return {};
+		std::uint64_t work = 0;
+		unsigned limit = std::bit_width(nodes.size());
+		for (auto [root, k] : queries) { check(root); assert(0 <= k && k < size(root)); work += unsigned(k) < limit ? unsigned(k) : limit; }
+		if (work <= 3 * std::uint64_t(nodes.size())) {
+			std::vector<T> result;
+			result.reserve(queries.size());
+			for (auto [root, k] : queries) result.push_back(get(root, k));
+			return result;
+		}
+		std::vector<root_type> first(nodes.size()), next(nodes.size()), selected(queries.size()), path;
+		std::vector<int> head(nodes.size(), -1), following(queries.size());
+		for (root_type v = 1; v < nodes.size(); ++v) {
+			root_type p = nodes[v].next;
+			next[v] = first[p]; first[p] = v;
+		}
+		for (int i = 0; i < int(queries.size()); ++i) {
+			root_type root = queries[i].first;
+			following[i] = head[root]; head[root] = i;
+		}
+		for (root_type v = first[0]; v;) {
+			path.push_back(v);
+			for (int i = head[v]; i != -1; i = following[i]) selected[i] = path[path.size() - 1 - queries[i].second];
+			if (first[v]) { v = first[v]; continue; }
+			while (v && !next[v]) { path.pop_back(); v = nodes[v].next; }
+			if (v) { path.pop_back(); v = next[v]; }
+		}
+		std::vector<T> result;
+		result.reserve(queries.size());
+		for (root_type v : selected) result.push_back(*nodes[v].value);
+		return result;
+	}
 	void reserve(std::size_t count) { assert(count < std::numeric_limits<root_type>::max()); nodes.reserve(count + 1); }
 	std::size_t node_count() const { return nodes.size() - 1; }
 	std::size_t memory_usage() const { return nodes.capacity() * sizeof(Node); }

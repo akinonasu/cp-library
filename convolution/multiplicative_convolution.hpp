@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "../math/number_theory/factorize.hpp"
-#include "convolution.hpp"
+#include "../components/convolution_dispatch.hpp"
 
 template <class T>
 std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::vector<T> &b) {

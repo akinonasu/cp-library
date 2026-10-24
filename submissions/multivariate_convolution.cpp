@@ -208,13 +208,14 @@ struct Ops {
 	__attribute__((target("avx2"))) static void store8(U *a, I8 x) {
 		_mm256_storeu_si256(reinterpret_cast<I8 *>(a), x);
 	}
-	__attribute__((target("avx2"))) static I8 mul8(I8 a, I8 b) {
-		I8 x = _mm256_mul_epu32(a, b);
-		I8 y = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32));
+	__attribute__((target("avx2"), always_inline)) static inline I8 reduce8(I8 x, I8 y) {
 		I8 r = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(mod);
 		x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, r), p));
 		y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, r), p));
 		return _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
+	}
+	__attribute__((target("avx2"))) static I8 mul8(I8 a, I8 b) {
+		return reduce8(_mm256_mul_epu32(a, b), _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
 	}
 	__attribute__((target("avx2"))) static I8 fixed_mul8(I8 a, I8 r, I8 q) {
 		I8 x = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
@@ -907,19 +908,15 @@ __attribute__((target("avx2"))) inline std::vector<mint> multiply(const std::vec
 
 #line 9 "convolution/multivariate_convolution.hpp"
 
-#line 1 "convolution/convolution.hpp"
+#line 1 "components/convolution_dispatch.hpp"
 
 
 
 #include <complex>
 #include <limits>
-#line 8 "convolution/convolution.hpp"
+#line 8 "components/convolution_dispatch.hpp"
 
-#line 1 "fps/fps.hpp"
-
-
-
-#line 1 "components/fps_operations.hpp"
+#line 1 "components/mint_convolution.hpp"
 
 
 
@@ -1296,9 +1293,7 @@ struct NTT : mint_detail::Ops {
 			p = mul8(p, factor);
 			store8(dst + i, p);
 		}
-		I8 inverse = _mm256_set1_epi32(one);
-		for (U e = mod - 2; e; e >>= 1, p = mul8(p, p))
-			if (e & 1) inverse = mul8(inverse, p);
+		I8 inverse = inverse8(p);
 		for (int i = n - 8; i >= 8; i -= 8) {
 			store8(dst + i, mul8(inverse, load8(dst + i - 8)));
 			inverse = mul8(inverse, factor);
@@ -1383,17 +1378,13 @@ struct NTT : mint_detail::Ops {
 				e[k] = _mm256_add_epi64(e[k], _mm256_mul_epu32(z, r));
 				o[k] = _mm256_add_epi64(o[k], _mm256_mul_epu32(_mm256_srli_epi64(z, 32), r));
 			}
-		I8 ni = _mm256_set1_epi32(998244351);
 		for (int k = 0; k < count; ++k) {
-			I8 x = e[k], y = o[k];
-			x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, ni), p));
-			y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, ni), p));
-			x = _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
+			I8 x = reduce8(e[k], o[k]);
 			store8(a + 8 * k, _mm256_min_epu32(x, _mm256_sub_epi32(x, pp)));
 		}
 	}
 	__attribute__((target("avx2"))) static U reverse_dot8(const U *a, const U *b, int n) {
-		I8 p = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice), ni = _mm256_set1_epi32(998244351);
+		I8 p = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice);
 		I8 reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0), total = _mm256_setzero_si256();
 		int i = 0;
 		for (; i + 8 <= n;) {
@@ -1408,9 +1399,7 @@ struct NTT : mint_detail::Ops {
 				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
 				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
 			}
-			even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-			I8 value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+			I8 value = reduce8(even, odd);
 			value = _mm256_min_epu32(value, _mm256_sub_epi32(value, pp));
 			total = add8(total, value);
 		}
@@ -1628,320 +1617,10 @@ inline void ntt(std::vector<mint> &a, bool inverse = false) {
 #endif
 
 
-#line 7 "components/fps_operations.hpp"
-#include <numeric>
-#line 10 "components/fps_operations.hpp"
-
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
-#pragma GCC push_options
-#pragma GCC optimize("O3")
-#endif
-
-template<class T> struct FormalPowerSeries;
-
-namespace fps_detail {
-
-template<class T, class Work = mint>
-struct Operations {
-	using F = FormalPowerSeries<T>;
-	using W = FormalPowerSeries<Work>;
-	using base = std::vector<T>;
-	using Word = NTT::U;
-
-	static W import_work(const base &a) {
-		W r(a.size());
-		for (int i = 0; i < static_cast<int>(a.size()); ++i) r[i] = mint::raw(a[i].val());
-		return r;
-	}
-	static F export_work(const W &a) {
-		F r(a.size());
-		for (int i = 0; i < static_cast<int>(a.size()); ++i) r[i] = T::raw(a[i].val());
-		return r;
-	}
-	static NTT &transform(int n) { return ntt_plan(n); }
-	static Word *words(base &a) {
-		static_assert(sizeof(T) == sizeof(Word) && std::is_trivially_copyable_v<T>);
-		return reinterpret_cast<Word *>(a.data());
-	}
-	static const Word *words(const base &a) { return reinterpret_cast<const Word *>(a.data()); }
-	template <bool inverse>
-	static void transform_inplace(base &a) {
-		int n = a.size();
-		assert(n && !(n & (n - 1)) && n <= (1 << 23));
-		auto &t = transform(std::max(1, n / 2));
-		t.template fft<inverse>(words(a), n);
-		if constexpr (!std::is_same_v<T, mint>) t.normalize(words(a), n);
-	}
-	static void ntt(base &a) { transform_inplace<false>(a); }
-	static void ntt_half(Word *a, int n) {
-		std::copy_n(a, n / 2, a + n / 2);
-		transform(std::max(1, n / 2)).template fft<false>(a, n, n / 2);
-	}
-	static void ntt_half(base &a) {
-		int n = a.size();
-		std::copy_n(a.begin(), n / 2, a.begin() + n / 2);
-		transform(std::max(1, n / 2)).template fft<false>(words(a), n, n / 2);
-	}
-	static void ntt_inverse(base &a) { transform_inplace<true>(a); }
-	static void scale_words(base &a, T factor) {
-		if (a.empty()) return;
-		if constexpr (std::is_same_v<T, mint>) {
-			auto &t = transform(1);
-			t.scale(words(a), a.size(), factor.val());
-		} else
-			for (T &x : a) x *= factor;
-	}
-	static void geometric_scale(base &a, T first, T step) {
-		if constexpr (std::is_same_v<T, mint>) NTT::geometric(words(a), a.size(), first.v, step.v);
-		else
-			for (T &x : a) {
-				x *= first;
-				first *= step;
-			}
-	}
-	static void batch_inverse(base &dst, const base &src) {
-		int n = src.size();
-#if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (n >= 128 && NTT::vectorized()) {
-				NTT::batch_inverse8(words(dst), words(src), n);
-				return;
-			}
-		}
-#endif
-		base prefix(n);
-		T p = 1;
-		for (int i = 0; i < n; ++i) prefix[i] = p, p *= src[i];
-		assert(p != T(0));
-		p = p.inv();
-		for (int i = n - 1; i >= 0; --i) {
-			dst[i] = prefix[i] * p;
-			p *= src[i];
-		}
-	}
-	static void pointwise(base &r, const base &a, const base &b, int n) {
-		if constexpr (std::is_same_v<T, mint>) NTT::product(words(r), words(a), words(b), n);
-		else
-			for (int i = 0; i < n; ++i) r[i] = a[i] * b[i];
-	}
-	template <int count, bool first>
-	static void accumulate_products(Word *dst, const Word *const *a, const Word *const *b, int n) {
-		static_assert(count >= 1 && count <= 7);
-		for (int i = 0; i < n; ++i) {
-			Word value = 0;
-			for (int k = 0; k < count; ++k) value = NTT::add(value, NTT::mul(a[k][i], b[k][i]));
-			if constexpr (!first) value = NTT::add(value, dst[i]);
-			dst[i] = value;
-		}
-	}
-#if defined(__x86_64__) || defined(__i386__)
-	template<int count, bool first>
-	__attribute__((target("avx2"))) static void accumulate_products8(Word *dst, const Word *const *a, const Word *const *b, int n) {
-		accumulate_products<count, first>(dst, a, b, n);
-	}
-#endif
-	static void join_windows(Word *blocks, int length, int count) {
-		join_windows_strided(blocks, length, count, length);
-	}
-	static void join_windows_strided(Word *blocks, int length, int count, int pitch) {
-		for (int i = count - 1; i > 0; --i) {
-			Word *a = blocks + i * pitch;
-			const Word *b = a - pitch;
-			for (int j = 0; j < length / 2; ++j) a[j] = NTT::add(a[j], b[j]);
-			for (int j = length / 2; j < length; ++j) a[j] = NTT::sub(a[j], b[j]);
-		}
-	}
-	static void inverse_extend(F &h, const base &a, const base &cache) {
-		const int m = static_cast<int>(cache.size());
-		const T im = T::raw(T::mod() - (T::mod() - 1) / m);
-		base b(m);
-		pointwise(b, a, cache, m);
-		ntt_inverse(b);
-		std::fill(b.begin(), b.begin() + m / 2, T(0));
-		ntt(b);
-		pointwise(b, b, cache, m);
-		ntt_inverse(b);
-		h.resize(m);
-		for (int i = m / 2; i < m; ++i) h[i] = -b[i] * im * im;
-	}
-	static T dot(const T *a, const T *b, int n) {
-
-#if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (n >= 64 && NTT::vectorized())
-				return T::word(NTT::reverse_dot8(reinterpret_cast<const Word *>(a), reinterpret_cast<const Word *>(b), n));
-		}
-#endif
-		unsigned int result = 0;
-		for (int i = 0; i < n; i += 16) {
-			unsigned long long sum = 0;
-			for (int j = i; j < std::min(n, i + 16); ++j)
-				sum += (unsigned long long)a[j].val() * b[-j].val();
-			result += sum % T::mod();
-			if (result >= T::mod()) result -= T::mod();
-		}
-		return T::raw(result);
-	}
-
-	static void intt(base &a) {
-		ntt_inverse(a);
-		const T inv = T::raw(T::mod() - (T::mod() - 1) / static_cast<int>(a.size()));
-		scale_words(a, inv);
-	}
-	static T mod_sqrt(T a) {
-		if (a == T(0) || a.pow((T::mod() - 1) / 2) != T(1)) return 0;
-		T r = a.pow(60), t = a.pow(119), c = T(3).pow(119);
-		int m = 23;
-		while (t != T(1)) {
-			int i = 0;
-			for (T u = t; u != T(1); u *= u) ++i;
-			T b = c.pow(1 << (m - i - 1));
-			r *= b;
-			c = b * b;
-			t *= c;
-			m = i;
-		}
-		return r;
-	}
-	template<bool Inverse>
-	static const base &roots(int n) {
-		static base values{1};
-		while (static_cast<int>(values.size()) < n) {
-			const int m = static_cast<int>(values.size());
-			T step = T(3).pow((T::mod() - 1) / (2 * m));
-			if constexpr (Inverse) step = step.inv();
-			values.resize(2 * m);
-			for (int i = 0; i < m; ++i) values[m + i] = values[i] * step;
-		}
-		return values;
-	}
-	static const base &inverse_ntt_roots(int n) { return roots<true>(n); }
-	static const base &ntt_roots(int n) { return roots<false>(n); }
-	static const std::vector<T> &inverses(int n) {
-		assert(unsigned(n) < unsigned(T::mod()));
-		static std::vector<T> inv{0, 1};
-#if defined(__x86_64__) || defined(__i386__)
-		if constexpr (std::is_same_v<T, mint>) {
-			int first = inv.size(), count = (n + 1 - first) / 8 * 8;
-			if (count >= 256 && NTT::vectorized()) {
-				inv.reserve(n + 1);
-				inv.resize(first + count);
-				NTT::inverse_sequence8(reinterpret_cast<Word *>(inv.data()) + first, first, count);
-			}
-		}
-#endif
-		while (static_cast<int>(inv.size()) <= n) {
-			const int i = static_cast<int>(inv.size());
-			inv.push_back(-inv[T::mod() % i] * (T::mod() / i));
-		}
-		return inv;
-	}
-	static void trim(F &a) {
-		while (!a.empty() && a.back() == T(0)) a.pop_back();
-	}
-};
-
-}
-
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
-#pragma GCC pop_options
-#endif
+#line 1 "components/fps_convolution.hpp"
 
 
-#line 1 "components/fps_horner.hpp"
-
-
-
-#line 7 "components/fps_horner.hpp"
-
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
-#pragma GCC push_options
-#pragma GCC optimize("O3")
-#endif
-
-namespace fps_detail {
-using mint_detail::Ops;
-namespace horner_detail {
-template<int K, class T>
-inline T scalar(const T* a, std::size_t n, T x) {
-	static_assert(K > 0);
-	T step = 1;
-	for (int i = 0; i < K; ++i) step *= x;
-	std::array<T, K> sum{};
-	std::size_t groups = n / K, tail = n % K;
-	for (std::size_t i = 0; i < tail; ++i) sum[i] = a[groups * K + i];
-	while (groups) {
-		--groups;
-		for (int i = 0; i < K; ++i) sum[i] = sum[i] * step + a[groups * K + i];
-	}
-	T result = 0;
-	for (int i = K; i-- > 0;) result = result * x + sum[i];
-	return result;
-}
-
-#if defined(__x86_64__) || defined(__i386__)
-template<int K>
-__attribute__((target("avx2"))) inline mint vector(const mint* a, std::size_t n, mint x) {
-	static_assert(K == 1 || K == 2 || K == 4);
-	using V = Ops::I8;
-	static_assert(std::is_trivially_copyable_v<mint> && sizeof(mint) == sizeof(unsigned));
-	mint step = x;
-	for (int i = 0; i < 3; ++i) step *= step;
-	const unsigned x8 = step.val();
-	for (int i = 1; i < K; i *= 2) step *= step;
-	const unsigned value = step.val();
-	const V factor = _mm256_set1_epi32(value), quotient = _mm256_set1_epi32(Ops::quotient(value));
-	V sum[K];
-	for (auto& v : sum) v = _mm256_setzero_si256();
-	constexpr std::size_t width = 8 * K;
-	std::size_t groups = n / width, tail = n % width;
-	if (tail) {
-		alignas(32) mint block[width]{};
-		std::memcpy(static_cast<void*>(block), a + groups * width, tail * sizeof(mint));
-		for (int i = 0; i < K; ++i) std::memcpy(&sum[i], block + 8 * i, sizeof(V));
-	} else if (groups) {
-		--groups;
-		for (int i = 0; i < K; ++i) std::memcpy(&sum[i], a + groups * width + 8 * i, sizeof(V));
-	}
-	while (groups) {
-		--groups;
-		for (int i = 0; i < K; ++i) {
-			V coefficient;
-			std::memcpy(&coefficient, a + groups * width + 8 * i, sizeof(V));
-			sum[i] = Ops::add8(value == 1 ? sum[i] : Ops::fixed_mul8(sum[i], factor, quotient), coefficient);
-		}
-	}
-	const V step8 = _mm256_set1_epi32(x8), quotient8 = _mm256_set1_epi32(Ops::quotient(x8));
-	V joined = sum[K - 1];
-	for (int i = K - 1; i-- > 0;) joined = Ops::add8(Ops::fixed_mul8(joined, step8, quotient8), sum[i]);
-	alignas(32) mint word[8];
-	std::memcpy(static_cast<void*>(word), &joined, sizeof(joined));
-	mint result = 0;
-	for (int i = 8; i-- > 0;) result = result * x + word[i];
-	return result;
-}
-#endif
-}
-
-inline mint horner(const mint* a, std::size_t n, mint x) {
-	if (!n) return mint(0);
-	if (x == mint(0)) return a[0];
-#if defined(__x86_64__) || defined(__i386__)
-	if (n >= 32 && Ops::vectorized()) {
-		if (n < 64) return horner_detail::vector<1>(a, n, x);
-		return horner_detail::vector<4>(a, n, x);
-	}
-#endif
-	if (n >= 32) return horner_detail::scalar<8>(a, n, x);
-	mint result = 0;
-	while (n) result = result * x + a[--n];
-	return result;
-}
-}
-
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
-#pragma GCC pop_options
-#endif
+#line 1 "components/fps_blocked.hpp"
 
 
 #line 1 "components/fps_workspace.hpp"
@@ -1990,293 +1669,6 @@ inline FpsWords allocate_fps_words(std::size_t count) {
 }
 
 }
-
-
-#line 1 "components/fps_sparse.hpp"
-
-
-
-#line 7 "components/fps_sparse.hpp"
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
-#pragma GCC push_options
-#pragma GCC optimize("O3")
-#endif
-
-#line 1 "components/fps_sparse_core.hpp"
-
-
-
-#line 10 "components/fps_sparse_core.hpp"
-
-namespace fps_detail {
-template <class E> struct SparseBase {
-	using Series = std::vector<mint>;
-	using Terms = std::vector<std::pair<int, mint>>;
-	enum class Kind { inverse, logarithm, exponential, power };
-	static Terms collect(const mint *f, int size, int n, int limit = 12) {
-		Terms terms;
-		for (int i = 1; i < std::min(size, n) && int(terms.size()) <= limit; ++i)
-			if (f[i] != mint(0)) terms.emplace_back(i, f[i]);
-		return terms;
-	}
-	static Terms multiply(const Terms &a, const Terms &b, int n) {
-		Terms result;
-		for (auto [i, x] : a) for (auto [j, y] : b) if (i < n - j) result.emplace_back(i + j, x * y);
-		std::sort(result.begin(), result.end(), [](auto a, auto b) { return a.first < b.first; });
-		std::size_t used = 0;
-		for (auto [i, x] : result) {
-			if (used && result[used - 1].first == i) result[used - 1].second += x;
-			else result[used++] = {i, x};
-		}
-		result.resize(used);
-		result.erase(std::remove_if(result.begin(), result.end(), [](auto term) { return term.second == mint(0); }), result.end());
-		return result;
-	}
-	template <Kind kind>
-	static Series get(Terms terms, int n, mint initial, mint exponent, const mint *(*inverses)(int)) {
-		assert(n >= 0 && terms.size() <= 64);
-		if constexpr (kind != Kind::inverse) assert(unsigned(n) < mint::mod());
-		if (!n) return {};
-		if (terms.empty()) { Series out(n); out[0] = initial; return out; }
-		if constexpr (kind == Kind::power) {
-			unsigned e = exponent.val();
-			if (e <= 4 && terms.size() <= 12 && (n >= 4096 || terms.size() <= 3)) {
-				Terms power{{0, 1}}, f{{0, 1}};
-				f.insert(f.end(), terms.begin(), terms.end());
-				while (e) {
-					if (e & 1) power = multiply(power, f, n);
-					e >>= 1;
-					if (e) f = multiply(f, f, n);
-				}
-				Series out(n);
-				for (auto [i, x] : power) out[i] = x * initial;
-				return out;
-			}
-		}
-		int stride = 0;
-		for (auto term : terms) stride = std::gcd(stride, term.first);
-		const int count = (n - 1) / stride + 1;
-		for (auto &term : terms) term.first /= stride;
-		const mint *inv = nullptr;
-		if constexpr (kind != Kind::inverse) inv = inverses(count);
-		Series compressed;
-		if (terms.size() == 1 && kind != Kind::power) {
-			compressed.resize(count);
-			if constexpr (kind == Kind::exponential) {
-				E::template geometric<true>(compressed, initial, terms[0].second, inv);
-			} else {
-				E::geometric(compressed, kind == Kind::logarithm ? mint(-1) : initial, -terms[0].second);
-				if constexpr (kind == Kind::logarithm) compressed[0] = 0, E::scale(compressed, inv);
-			}
-		} else compressed = E::template solve<kind>(terms, count, initial, exponent, inv);
-		if (stride == 1) return compressed;
-		Series out(n);
-		for (int i = 0; i < count; ++i) out[i * stride] = compressed[i];
-		return out;
-	}
-};
-}
-
-#line 13 "components/fps_sparse.hpp"
-
-namespace fps_detail {
-struct SparseSeries : SparseBase<SparseSeries> {
-	struct Tap { int degree; std::uint32_t constant, slope; };
-	using O = mint_detail::Ops;
-	using U = O::U;
-	static_assert(12ULL * (O::mod - 1) * (O::mod - 1) + 0xffffffffULL * O::mod < ~0ULL);
-	static U canonical(U x) { return x < O::mod ? x : x - O::mod; }
-#if defined(__x86_64__) || defined(__i386__)
-	using V = O::I8;
-	__attribute__((target("avx2"))) static V canonical8(V x) {
-		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::twice)));
-		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::mod)));
-	}
-	__attribute__((target("avx2"))) static V reduce8(V even, V odd) {
-		const V ni = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(O::mod);
-		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-		return canonical8(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa));
-	}
-	__attribute__((target("avx2"), always_inline)) static inline V triangular(V x, const U *f) {
-		const V lower = _mm256_permute2x128_si256(x, x, 0x08);
-		V shifted[8] = {x, _mm256_alignr_epi8(x, lower, 12), _mm256_alignr_epi8(x, lower, 8), _mm256_alignr_epi8(x, lower, 4),
-			lower, _mm256_slli_si256(lower, 4), _mm256_slli_si256(lower, 8), _mm256_slli_si256(lower, 12)};
-		V even = _mm256_setzero_si256(), odd = even;
-#pragma GCC unroll 7
-		for (int j = 1; j < 8; ++j) if (f[j]) {
-			V factor = _mm256_set1_epi32(f[j]);
-			even = _mm256_add_epi64(even, _mm256_mul_epu32(shifted[j], factor));
-			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(shifted[j], 32), factor));
-		}
-		return canonical8(O::add8(x, reduce8(even, odd)));
-	}
-	template <Kind kind>
-	__attribute__((target("avx2"), always_inline)) static inline void block(U *out, int i, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
-		V total = _mm256_setzero_si256(), slope = total;
-		const V lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
-		for (int first = 0; first < count; first += 12) {
-			V ce = _mm256_setzero_si256(), co = ce, se = ce, so = ce;
-			for (int j = first; j < std::min(count, first + 12); ++j) {
-				V x = O::load8(out + i - taps[j].degree);
-				if (j < near) x = _mm256_and_si256(x, _mm256_cmpgt_epi32(_mm256_set1_epi32(taps[j].degree), lanes));
-				V odd = _mm256_srli_epi64(x, 32), c = _mm256_set1_epi32(taps[j].constant);
-				ce = _mm256_add_epi64(ce, _mm256_mul_epu32(x, c));
-				co = _mm256_add_epi64(co, _mm256_mul_epu32(odd, c));
-				if constexpr (kind == Kind::power) {
-					V factor = _mm256_set1_epi32(taps[j].slope);
-					se = _mm256_add_epi64(se, _mm256_mul_epu32(x, factor));
-					so = _mm256_add_epi64(so, _mm256_mul_epu32(odd, factor));
-				}
-			}
-			total = O::add8(total, reduce8(ce, co));
-			if constexpr (kind == Kind::power) slope = O::add8(slope, reduce8(se, so));
-		}
-		V value = canonical8(total);
-		if constexpr (kind == Kind::power) {
-			const V offsets = _mm256_setr_epi32(0, O::one, O::in(2), O::in(3), O::in(4), O::in(5), O::in(6), O::in(7));
-			V index = O::add8(_mm256_set1_epi32(O::in(i)), offsets);
-			value = O::add8(value, O::mul8(index, slope));
-		}
-		if constexpr (kind == Kind::logarithm) value = O::add8(value, O::load8(out + i));
-		if constexpr (kind == Kind::power || kind == Kind::exponential) {
-			if (near) value = triangular(canonical8(value), q);
-			value = O::mul8(value, O::load8(inv + i));
-		}
-		if (near) value = triangular(canonical8(value), p);
-		O::store8(out + i, canonical8(value));
-	}
-	template <Kind kind>
-	__attribute__((target("avx2"))) static int blocks(U *out, int i, int end, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
-		for (; end - i >= 8; i += 8) block<kind>(out, i, taps, near, count, inv, p, q);
-		return i;
-	}
-	__attribute__((target("avx2"))) static int scale8(U *out, const U *factors, int n) {
-		int i = 1;
-		for (; n - i >= 8; i += 8) O::store8(out + i, O::mul8(O::load8(out + i), O::load8(factors + i)));
-		return i;
-	}
-	template <bool exponential = false>
-	__attribute__((target("avx2"))) static void geometric8(U *out, int n, U initial, U ratio, const U *inv = nullptr) {
-		std::uint32_t first[8];
-		U step = O::one;
-		first[0] = initial;
-		for (int j = 0; j < 8; ++j) {
-			step = O::mul(step, ratio);
-			if (j) {
-				first[j] = O::mul(first[j - 1], ratio);
-				if constexpr (exponential) first[j] = O::mul(first[j], inv[j]);
-			}
-		}
-		V value = O::load8(first), multiplier = _mm256_set1_epi32(step);
-		O::store8(out, value);
-		int i = 8;
-		for (; n - i >= 8; i += 8) {
-			value = O::mul8(value, multiplier);
-			if constexpr (exponential) {
-				V factors[4];
-#pragma GCC unroll 4
-				for (int j = 0; j < 4; ++j) factors[j] = O::mul8(O::load8(inv + i - 2 * j), O::load8(inv + i - 2 * j - 1));
-				value = O::mul8(value, O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
-			}
-			O::store8(out + i, value);
-		}
-		for (; i < n; ++i) {
-			out[i] = O::mul(out[i - 1], ratio);
-			if constexpr (exponential) out[i] = O::mul(out[i], inv[i]);
-		}
-	}
-
-#endif
-	template <bool exponential = false>
-	static void geometric(Series &out, mint initial, mint ratio, const mint *inv = nullptr) {
-#if defined(__x86_64__) || defined(__i386__)
-		if (out.size() >= 8 && O::vectorized()) {
-			geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
-			return;
-		}
-#endif
-		for (int i = 0; i < int(out.size()); ++i) {
-			out[i] = initial;
-			initial *= ratio;
-			if constexpr (exponential) if (i + 1 < int(out.size())) initial *= inv[i + 1];
-		}
-	}
-	static void scale(Series &out, const mint *factors) {
-		int i = 1;
-#if defined(__x86_64__) || defined(__i386__)
-		if (O::vectorized()) i = scale8(reinterpret_cast<U *>(out.data()), reinterpret_cast<const U *>(factors), out.size());
-#endif
-		for (; i < int(out.size()); ++i) out[i] *= factors[i];
-	}
-	template <Kind kind>
-	static Series solve(const Terms &terms, int n, mint initial, mint exponent, const mint *inverses) {
-		std::vector<Tap> taps;
-		Series result(n);
-		U *out = reinterpret_cast<U *>(result.data());
-		const U *inv = reinterpret_cast<const U *>(inverses);
-		for (auto [j, x] : terms) {
-			mint c = 0, s = 0;
-			if constexpr (kind == Kind::inverse || kind == Kind::logarithm) c = -x;
-			if constexpr (kind == Kind::exponential) c = x * mint(j);
-			if constexpr (kind == Kind::power) c = (exponent + mint(1)) * mint(j) * x, s = -x;
-			taps.push_back({j, canonical(c.v), canonical(s.v)});
-			if constexpr (kind == Kind::logarithm) out[j] = canonical((x * mint(j)).v);
-		}
-		std::array<std::uint32_t, 8> p{}, q{};
-		p[0] = q[0] = O::one;
-		if (n >= 8) for (int i = 1; i < 8; ++i) {
-			mint a = 0, b = 0;
-			for (const auto &tap : taps) {
-				int j = tap.degree;
-				if (j > i) break;
-				mint c = mint::word(tap.constant), s = mint::word(tap.slope);
-				a += (c + mint(i) * s) * mint::word(p[i - j]);
-				b += (-c + mint(i - j) * s) * mint::word(q[i - j]);
-			}
-			if constexpr (kind == Kind::power || kind == Kind::exponential) a *= inverses[i], b *= inverses[i];
-			p[i] = canonical(a.v), q[i] = canonical(b.v);
-		}
-		out[0] = canonical(initial.v);
-		int active = 0, near = 0, i = 1;
-		while (i < n) {
-			while (active < int(taps.size()) && taps[active].degree <= i) {
-				near += taps[active].degree < 8;
-				++active;
-			}
-			int end = active < int(taps.size()) ? taps[active].degree : n;
-#if defined(__x86_64__) || defined(__i386__)
-			if (O::vectorized()) i = blocks<kind>(out, i, end, taps.data(), near, active, inv, p.data(), q.data());
-#endif
-			for (; i < end; ++i) {
-				U x = 0;
-				for (int first = 0; first < active; first += 12) {
-					std::uint64_t total = 0;
-					for (int j = first; j < std::min(active, first + 12); ++j) {
-						U c = taps[j].constant;
-						if constexpr (kind == Kind::power) c = canonical(O::add(c, O::mul(O::in(i), taps[j].slope)));
-						total += std::uint64_t(c) * out[i - taps[j].degree];
-					}
-					x = O::add(x, O::reduce(total) % O::mod);
-				}
-				if constexpr (kind == Kind::logarithm) x = O::add(x, out[i]);
-				if constexpr (kind == Kind::power || kind == Kind::exponential) x = O::mul(x, inv[i]);
-				out[i] = canonical(x);
-			}
-		}
-		if constexpr (kind == Kind::logarithm) scale(result, inverses);
-		return result;
-	}
-
-};
-}
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
-#pragma GCC pop_options
-#endif
-
-#line 8 "fps/fps.hpp"
-
-#line 1 "components/fps_blocked.hpp"
 
 
 #line 1 "components/fps_output.hpp"
@@ -3272,15 +2664,29 @@ void divide_by_index(size_t first, Words out, const A& a, Word factor = 1) {
 
 }
 
-inline void derivative(ConstWords f, Words d) {
+inline Word mint_scalar(Word x) { return x; }
+inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
+inline void copy_coefficients(const mint *in, Words out) {
+	for (size_t i = 0; i < out.size(); ++i) out[i] = mint_scalar(in[i]);
+}
+template <class T> inline detail::Vec coefficients(std::span<const T> f, size_t at) {
+	detail::Vec value;
+	std::memcpy(&value, f.data() + at, sizeof(value));
+	if constexpr (std::is_same_v<T, mint>) return detail::reduce(value, detail::kP);
+	else return value;
+}
+
+template <class T> inline void derivative_impl(std::span<const T> f, Words d) {
 	using namespace detail;
 	const size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
 	Indices index(1);
 	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(d.data() + i, canonical(montgomery(load_unaligned(f.data() + i + 1), index.value())));
+		store_unaligned(d.data() + i, canonical(montgomery(coefficients(f, i + 1), index.value())));
 	for (size_t i = full; i < n; ++i)
-		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), f[i + 1]) : 0;
+		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), mint_scalar(f[i + 1])) : 0;
 }
+
+inline void derivative(ConstWords f, Words d) { derivative_impl(f, d); }
 
 inline void divide_by_index(ConstWords a, size_t first, Words q) {
 	if (a.size() != q.size() || first == 0 || first + a.size() > kModulus) std::abort();
@@ -3295,7 +2701,7 @@ inline void divide_by_index(ConstWords a, size_t first, Words q) {
 
 }
 
-#line 969 "components/fps_blocked.hpp"
+#line 983 "components/fps_blocked.hpp"
 
 namespace blocked_poly {
 
@@ -3375,18 +2781,25 @@ inline size_t log_block(size_t n) {
 
 inline size_t log_blocks(size_t n) { return (n - 1 + log_block(n) - 1) / log_block(n); }
 
-inline void subtract_from_derivative(ConstWords f, size_t first, size_t count,
+template <class T> inline void subtract_derivative(std::span<const T> f, size_t first, size_t count,
 									Word* out, size_t size) {
 	const size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
 	Indices index(first + 1);
 	for (size_t c = 0; c < full; c += 8, index.next()) {
-		const Vec d = canonical(montgomery(load_unaligned(f.data() + first + 1 + c), index.value()));
+		const Vec d = canonical(montgomery(coefficients(f, first + 1 + c), index.value()));
 		store_unaligned(out + c, reduce(_mm256_sub_epi32(add(d, broadcast(kP)), load_unaligned(out + size + c)), kP));
 	}
 	for (size_t c = full; c < count; ++c) {
-		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), f[first + 1 + c]) : 0;
+		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
 		out[c] = (d + kP - out[size + c]) % kP;
 	}
+}
+inline void subtract_derivative_impl(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative(f, first, count, out, size);
+}
+
+inline void subtract_from_derivative(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative_impl(f, first, count, out, size);
 }
 
 struct ToeplitzBottom {
@@ -3457,7 +2870,6 @@ struct SideProductBottom {
 
 inline size_t log_buffers(size_t n) { return std::max<size_t>(log_blocks(n) + 2, 3); }
 
-inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
 inline Vec mint_load(std::span<const mint> f, size_t at) {
 	if (at + 8 <= f.size()) {
 		Vec value;
@@ -3509,28 +2921,9 @@ inline void mint_forward(const Transform& t, std::span<const mint> f, Words out)
 		recursion.visit(out.data() + 8 * h, h, 1);
 	}
 }
-inline void mint_derivative(std::span<const mint> f, Words d) {
-	using namespace detail;
-	const size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
-	Indices index(1);
-	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(d.data() + i, canonical(montgomery(mint_load(f, i + 1), index.value())));
-	for (size_t i = full; i < n; ++i)
-		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), mint_scalar(f[i + 1])) : 0;
-}
-
-inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count,
-									Word* out, size_t size) {
-	const size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
-	Indices index(first + 1);
-	for (size_t c = 0; c < full; c += 8, index.next()) {
-		const Vec d = canonical(montgomery(mint_load(f, first + 1 + c), index.value()));
-		store_unaligned(out + c, reduce(_mm256_sub_epi32(add(d, broadcast(kP)), load_unaligned(out + size + c)), kP));
-	}
-	for (size_t c = full; c < count; ++c) {
-		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
-		out[c] = (d + kP - out[size + c]) % kP;
-	}
+inline void mint_derivative(std::span<const mint> f, Words d) { derivative_impl(f, d); }
+inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative(f, first, count, out, size);
 }
 
 struct NoLogTransform {
@@ -3538,7 +2931,7 @@ struct NoLogTransform {
 };
 
 template <class Input, class Sink, class Transformed>
-[[gnu::always_inline]] inline void log_derivative_impl(const Transform& t, Input f, size_t n,
+[[gnu::always_inline]] inline void log_derivative(const Transform& t, Input f, size_t n,
 												Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
 	const size_t k = log_block(n), len = 2 * k, blocks = log_blocks(n);
 	const auto buffer = [&scratch, len](size_t i) __attribute__((target("avx2"))) { return scratch.subspan(i * Arena::footprint(len), len); };
@@ -3557,7 +2950,7 @@ template <class Input, class Sink, class Transformed>
 		const Words work = j == 0 ? q0 : buffer(blocks + 1);
 		if (j == 0) {
 			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
-			else derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
+			else derivative_impl(f.first(std::min(f.size(), count + 1)), work.first(count));
 		} else {
 			if (j == 1) {
 				t.inverse_product(window(1), q0, work, Half::kUpper);
@@ -3573,7 +2966,7 @@ template <class Input, class Sink, class Transformed>
 				t.inverse_with(SideProductBottom{product, window(3).data()}, work, Half::kUpper);
 			}
 			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_subtract_from_derivative(f, first, count, work.data(), k);
-			else subtract_from_derivative(f, first, count, work.data(), k);
+			else subtract_derivative_impl(f, first, count, work.data(), k);
 		}
 		t.cyclic_product(work.first(count), 0, work, ht, Half::kLower);
 		sink(first, ConstWords(work.first(count)));
@@ -3587,13 +2980,13 @@ template <class Input, class Sink, class Transformed>
 template <class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void log_derivative(const Transform& t, ConstWords f, size_t n,
 		Words scratch, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative_impl(t, f, n, scratch, f, sink, transformed);
+	log_derivative(t, f, n, scratch, f, sink, transformed);
 }
 
 template <class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void mint_log_derivative(const Transform& t, std::span<const mint> f, size_t n,
 		Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative_impl(t, f, n, scratch, prefix, sink, transformed);
+	log_derivative(t, f, n, scratch, prefix, sink, transformed);
 }
 
 inline int log_derivative_log(size_t n) { return std::countr_zero(2 * log_block(n)); }
@@ -3634,10 +3027,7 @@ inline void native_log(const mint *in, size_t input, std::vector<mint> &out, siz
 	Arena arena(Transform::words(lg) + Arena::footprint(prefix_size) + Arena::footprint(log_scratch(n)));
 	const Transform t(arena, lg);
 	auto f = arena.take(prefix_size), scratch = arena.take(log_scratch(n));
-	for (size_t i = 0; i < prefix_size; ++i) {
-		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, f);
 	const auto sink = [&out, integrate, n](size_t first, ConstWords q) __attribute__((target("avx2"))) {
 		if (integrate) {
 			auto *work = const_cast<Word *>(q.data()) + detail::log_block(n);
@@ -3654,887 +3044,6 @@ inline void native_log(const mint *in, size_t input, std::vector<mint> &out, siz
 }
 #pragma GCC pop_options
 #endif
-
-#line 1 "components/fps_exp_blocked.hpp"
-
-
-
-#line 5 "components/fps_exp_blocked.hpp"
-
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-#pragma GCC push_options
-_Pragma("GCC target(\"avx2\")")
-#pragma GCC optimize("O3")
-namespace fps_detail {
-namespace blocked_poly {
-namespace detail {
-struct Factors {
-	Vec w, q;
-};
-
-inline Vec times(Vec x, const Factors& w) {
-	const Vec even = _mm256_srli_epi64(_mm256_mul_epu32(x, w.q), 32);
-	const Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(w.q, 32));
-	const Vec q = _mm256_blend_epi32(even, odd, 0xAA);
-	return _mm256_sub_epi32(_mm256_mullo_epi32(x, w.w), _mm256_mullo_epi32(q, broadcast(kP)));
-}
-
-inline Factors entries(const Word* table, size_t k) {
-	const Word* e = table + slot(k);
-	return {load(e), load(e + 8)};
-}
-
-
-}
-}
-namespace blocked_poly {
-
-namespace detail {
-
-inline constexpr size_t kExpBase = 64;
-
-inline void exp_direct(ConstWords q, Words g) {
-	using blocked_ntt::detail::multiply_mod;
-	Word inv[kExpBase] = {0, 1};
-	for (size_t i = 2; i < g.size(); ++i) inv[i] = multiply_mod(kP - kP / Word(i), inv[kP % i]);
-	g[0] = 1;
-	for (size_t i = 1; i < g.size(); ++i) {
-		std::uint64_t sum = 0;
-		for (size_t k = 1; k <= i; ++k) sum += std::uint64_t(q[k]) * g[i - k] % kP;
-		g[i] = multiply_mod(Word(sum % kP), inv[i]);
-	}
-}
-
-inline void multiply_by_index(ConstWords a, size_t first, Words out) {
-	const size_t n = out.size(), full = n / 8 * 8;
-	Indices index(first);
-	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(out.data() + i, canonical(montgomery(load_unaligned(a.data() + i), index.value())));
-	for (size_t i = full; i < n; ++i) out[i] = blocked_ntt::detail::multiply_mod(Word((first + i) % kP), a[i]);
-}
-
-inline size_t exp_length(size_t n) {
-	return size_t(1) << std::max(Transform::kMinLog + 1, int(std::bit_width(std::max<size_t>(n, 2) - 1)));
-}
-
-}
-
-inline int exp_log(size_t n) { return std::countr_zero(detail::exp_length(n)) - 1; }
-
-namespace detail {
-
-struct QTransforms {
-	ConstWords low, block2;
-};
-struct NoQTransforms {};
-
-template <class Bottom>
-void product_to(const Transform& t, Words out, const Source& in, const Bottom& bottom,
-				Word scale, Half output, Words to) {
-	const size_t nv = out.size() / 8;
-	auto* v = reinterpret_cast<Vec*>(out.data());
-	const Recursion recursion(t.roots(), t.inverse_roots(), bottom);
-	const Factor s(scale);
-	const auto put = [to, &s](size_t j, Vec x) __attribute__((target("avx2"))) {
-		const Vec y = reduce(times(x, s), kP);
-		if (8 * j + 8 <= to.size()) return store_unaligned(to.data() + 8 * j, y);
-		if (8 * j >= to.size()) return;
-		const Vec lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
-		const Vec mask = _mm256_cmpgt_epi32(broadcast(Word(to.size() - 8 * j)), lanes);
-		_mm256_maskstore_epi32(reinterpret_cast<int*>(to.data() + 8 * j), mask, y);
-	};
-	const bool lower = output == Half::kLower;
-	if (std::countr_zero(nv) % 2 == 0) {
-		const size_t h = nv / 4;
-		if constexpr (Bottom::kForward) forward_top4(in, v, h, t.roots());
-		for (size_t q = 0; q < 4; ++q) recursion.visit(out.data() + 8 * q * h, h, q);
-		const Factor z(t.inverse_roots()[1], t.inverse_roots()[9]);
-		for (size_t j = 0; j < h; ++j) {
-			const Vec ab = low(add(v[j], v[j + h])), cd = low(add(v[j + 2 * h], v[j + 3 * h]));
-			const Vec amb = low(diff(v[j], v[j + h])), cmd = times(diff(v[j + 2 * h], v[j + 3 * h]), z);
-			put(j, lower ? add(ab, cd) : diff(ab, cd));
-			put(j + h, lower ? add(amb, cmd) : diff(amb, cmd));
-		}
-	} else {
-		const size_t h = nv / 2;
-		radix2_halves(recursion, in, out.data(), nv, t.roots());
-		for (size_t j = 0; j < h; ++j) put(j, lower ? add(v[j], v[j + h]) : diff(v[j], v[j + h]));
-	}
-}
-
-template <class Given>
-[[gnu::always_inline]] inline void exp_last_step(const Transform& t, Words lo, Words g,
-												 size_t m, bool first, Words gt,
-												 ConstWords ht, Words w,
-												 Words work, const Given& given) {
-	const size_t n = g.size(), half = m / 2, rest = n - m, count = std::min(rest, half);
-	const bool upper = rest > half;
-	const Words g0t = gt.first(m), glt = gt.subspan(m, m), own = w.first(m), r = w.subspan(m, m);
-	ConstWords qt = own, q2t = lo;
-	bool given_low = false, given_block2 = false;
-	if constexpr (std::is_same_v<Given, QTransforms>) {
-		given_low = !given.low.empty(), given_block2 = !given.block2.empty();
-		if (given_low) qt = given.low;
-		if (given_block2) q2t = given.block2;
-	}
-	const auto q = [g, n](size_t i) __attribute__((target("avx2"))) {
-		if (i + 8 <= n) return load_unaligned(g.data() + i);
-		alignas(32) Word x[8] = {};
-		std::copy(g.begin() + std::ptrdiff_t(i), g.end(), x);
-		return load(x);
-	};
-	if (first) t.forward(g.first(half), 0, g0t);
-	t.forward(g.first(m), 0, glt);
-	if (given_low) {
-		t.inverse_product(qt, glt, r, upper ? Half::kBoth : Half::kLower);
-	} else if (upper) {
-		t.forward(lo, 0, own);
-		t.inverse_product(own, glt, r);
-	} else {
-		t.cyclic_product(lo, 0, r, glt, Half::kLower);
-	}
-
-	t.forward(r.first(half), 0, work);
-	t.inverse_product(ht, work, work, Half::kLower);
-	detail::divide_by_index(m, r.first(count), [&](size_t i) __attribute__((target("avx2"))) {
-		const Vec x = reduce(add(load(work.data() + i), q(m + i)), kP);
-		return add(x, _mm256_sub_epi32(broadcast(kP), load(lo.data() + i)));
-	});
-	if (upper && !given_block2) t.forward(g.subspan(m, half), 0, lo);
-	t.forward(r.first(count), 0, work);
-	const Word scale = kInverseScales[1][std::countr_zero(m)];
-	const Source none(nullptr, 0, 0);
-	product_to(t, work, none, InverseProductBottom{{t.roots(), t.inverse_roots(), work.data()}, g0t.data()}, scale,
-			   Half::kLower, g.subspan(m, count));
-	if (!upper) return;
-
-	t.forward(g.subspan(m, half), 0, work);
-	const Transform::Pair pairs[] = {{work, qt}, {q2t, glt}};
-	t.inverse_product_sum(pairs, work, Half::kUpper);
-	Indices index(half);
-	for (size_t i = half; i < m; i += 8, index.next()) {
-		const Vec xg = montgomery(load_unaligned(g.data() + i), index.value());
-		const Vec sum = add(load(r.data() + i), load(work.data() + i));
-		store(r.data() + i, canonical(_mm256_sub_epi32(add(sum, broadcast(2 * kP)), xg)));
-	}
-	t.forward(r.subspan(half, half), 0, own);
-	t.inverse_product(ht, own, own, Half::kLower);
-	detail::divide_by_index(m + half, r.first(rest - half),
-							[&](size_t i) __attribute__((target("avx2"))) { return add(load(own.data() + i), q(m + half + i)); });
-	t.forward(r.first(rest - half), 0, own);
-	product_to(t, own, none, InverseProductBottom{{t.roots(), t.inverse_roots(), own.data()}, g0t.data()}, scale,
-			   Half::kLower, g.subspan(m + half, rest - half));
-}
-
-template <class Given = NoQTransforms>
-[[gnu::always_inline]] inline void exp_newton(const Transform& t, Words lo, Words g,
-											  Words scratch, const Given& given = {}) {
-	const size_t n = g.size(), len = 2 * lo.size();
-	const auto take = [&scratch](size_t words) __attribute__((target("avx2"))) {
-		const Words s = scratch.first(words);
-		scratch = scratch.subspan(Arena::footprint(words));
-		return s;
-	};
-	const Words h = take(len / 2), gt = take(len), ht = take(len / 2), w = take(len);
-	size_t m = kExpBase;
-	inverse_direct(g, h.first(m / 2));
-	t.forward(h.first(m / 2), 0, ht.first(m));
-	for (; 2 * m < n; m *= 2) {
-		const size_t half = m / 2;
-		const Words g_low = gt.first(m), h_low = ht.first(m), w_low = w.first(m);
-		t.forward(g.first(m), 0, g_low);
-
-		t.inverse_product(g_low, h_low, w_low, Half::kUpper);
-		const Word negated = blocked_ntt::detail::multiply_mod(kInverseScales[1][std::countr_zero(m)], kP - 1);
-		product_to(t, w_low, Source(w_low.data() + half, half, half), ProductBottom{t.roots(), t.inverse_roots(), h_low.data()},
-				   negated, Half::kUpper, h.subspan(half, half));
-
-		t.forward_product(lo.first(m), 0, w_low, g_low);
-		t.inverse(w_low, gt.subspan(m, m));
-
-		t.forward(h.first(m), 0, ht.first(2 * m));
-		t.forward_upper(gt.subspan(m, m), 0, w.subspan(m, m));
-		t.inverse_product(w.first(2 * m), ht.first(2 * m), w.first(2 * m), Half::kLower);
-
-		detail::divide_by_index(m, w.subspan(m, m), [&](size_t i) __attribute__((target("avx2"))) {
-			const Vec x = reduce(add(load(w.data() + i), load(lo.data() + m + i)), kP);
-			return add(x, _mm256_sub_epi32(broadcast(kP), load(lo.data() + i)));
-		});
-		t.forward_upper(g.first(m), 0, gt.subspan(m, m));
-		product_to(t, w.first(2 * m), Source(w.data() + m, m, m), ProductBottom{t.roots(), t.inverse_roots(), gt.data()},
-				   kInverseScales[1][std::countr_zero(2 * m)], Half::kUpper, g.subspan(m, m));
-	}
-	exp_last_step(t, lo, g, m, m == kExpBase, gt, ht, w, h, given);
-}
-
-inline size_t exp_newton_scratch(size_t n) {
-	const size_t len = exp_length(n);
-	return 2 * Arena::footprint(len) + 2 * Arena::footprint(len / 2);
-}
-
-}
-
-inline size_t exp_scratch(size_t n) {
-	return Arena::footprint(detail::exp_length(n) / 2) + detail::exp_newton_scratch(n);
-}
-
-inline void exp(const Transform& t, ConstWords f, Words g,
-				Words scratch) {
-	using namespace detail;
-	const size_t n = g.size(), m = exp_length(n) / 2, size = std::min(f.size(), n), below = std::min(size, m);
-	const Words lo = scratch.first(m);
-	multiply_by_index(f.first(below), 0, lo.first(below));
-	std::fill(lo.begin() + std::ptrdiff_t(below), lo.end(), 0);
-	if (size > m) multiply_by_index(f.subspan(m, size - m), m, g.subspan(m, size - m));
-	if (n > std::max(size, m)) std::fill(g.begin() + std::ptrdiff_t(std::max(size, m)), g.end(), 0);
-	exp_direct(lo, g.first(std::min(n, kExpBase)));
-	if (n > kExpBase) exp_newton(t, lo, g, scratch.subspan(Arena::footprint(m)));
-}
-
-}
-
-namespace blocked_poly {
-
-namespace detail {
-
-template <bool kSum>
-void times_x(const Word* roots, const Word* a, const Word* b, Word e,
-			 Word alpha, Word beta, Words out) {
-	const size_t leaves = out.size() / 8;
-	const Factor scale(e);
-	const Vec rotate = _mm256_setr_epi32(7, 0, 1, 2, 3, 4, 5, 6), odd = _mm256_setr_epi32(0, -1, 0, -1, 0, -1, 0, -1);
-	const Word constants[2] = {(alpha + beta) % kP, (alpha + kP - beta) % kP};
-	for (size_t p = 0; p < leaves; p += 8) {
-		const bool upper = p >= leaves / 2;
-
-		const Factors r = entries(roots, p / 16 * 8);
-		const Vec pick = p % 16 ? _mm256_setr_epi32(4, 4, 5, 5, 6, 6, 7, 7) : _mm256_setr_epi32(0, 0, 1, 1, 2, 2, 3, 3);
-		const Vec rw = _mm256_permutevar8x32_epi32(r.w, pick), rq = _mm256_permutevar8x32_epi32(r.q, pick);
-		const Factors w{_mm256_blend_epi32(rw, _mm256_sub_epi32(broadcast(kP), rw), 0xAA), _mm256_xor_si256(rq, odd)};
-		Vec y[8];
-#pragma GCC unroll 8
-		for (size_t i = 0; i < 8; ++i) {
-			Vec c = load(a + 8 * (p + i));
-			if constexpr (kSum) c = upper ? difference(c, load(b + 8 * (p + i))) : reduce(add(c, load(b + 8 * (p + i))), kP);
-			y[i] = reduce(times(c, scale), kP);
-		}
-
-		const Vec t01 = _mm256_unpackhi_epi32(y[0], y[1]), t23 = _mm256_unpackhi_epi32(y[2], y[3]);
-		const Vec t45 = _mm256_unpackhi_epi32(y[4], y[5]), t67 = _mm256_unpackhi_epi32(y[6], y[7]);
-		const Vec u03 = _mm256_unpackhi_epi64(t01, t23), u47 = _mm256_unpackhi_epi64(t45, t67);
-		const Vec z = canonical(add(times(_mm256_permute2x128_si256(u03, u47, 0x31), w), broadcast(constants[upper])));
-		const Vec zh = _mm256_permute2x128_si256(z, z, 0x11);
-		const Vec lane0[8] = {z,  _mm256_srli_si256(z, 4),  _mm256_srli_si256(z, 8),  _mm256_srli_si256(z, 12),
-							  zh, _mm256_srli_si256(zh, 4), _mm256_srli_si256(zh, 8), _mm256_srli_si256(zh, 12)};
-#pragma GCC unroll 8
-		for (size_t i = 0; i < 8; ++i)
-			store(out.data() + 8 * (p + i), _mm256_blend_epi32(_mm256_permutevar8x32_epi32(y[i], rotate), lane0[i], 1));
-	}
-}
-
-}
-
-inline int power_log(size_t n) { return std::max(detail::log_derivative_log(n), exp_log(n)); }
-
-inline size_t power_scratch(size_t n) {
-	return 3 * Arena::footprint(detail::exp_length(n) / 2) +
-		   std::max(detail::log_derivative_scratch(n), detail::exp_newton_scratch(n));
-}
-
-inline void power(const Transform& t, ConstWords f, Word e, Word c,
-				  Words g, Words scratch) {
-	using namespace detail;
-	const size_t n = g.size(), m = exp_length(n) / 2, k = m / 2, stride = Arena::footprint(m);
-	if (f.empty() || f[0] == 0) std::abort();
-	const Words lo = scratch.first(m), rest = scratch.subspan(3 * stride);
-	const auto q = [&](size_t i) __attribute__((target("avx2"))) { return i < m ? lo.data() + i : g.data() + i; };
-	const Factor factor(e);
-
-	const bool reuse = m >= 128 && log_block(n) == k && log_blocks(n) >= 3;
-	const bool block2 = reuse && log_blocks(n) == 4 && n - m > k;
-	const Words qt = scratch.subspan(stride, reuse ? m : 0);
-	const Words q2t = scratch.subspan(2 * stride, block2 ? m : 0);
-	const Word* d0t = nullptr;
-	lo[0] = 0;
-	if (n >= 2)
-		log_derivative(
-			t, f, n, rest,
-			[&](size_t first, ConstWords d) __attribute__((target("avx2"))) {
-				size_t i = 0;
-				for (; i + 8 <= d.size(); i += 8) {
-					const size_t at = first + 1 + i;
-					const Vec x = reduce(times(load(d.data() + i), factor), kP);
-					if (at + 8 <= m || at >= m) {
-						store_unaligned(q(at), x);
-					} else {
-						alignas(32) Word words[8];
-						store(words, x);
-						for (size_t j = 0; j < 8; ++j) *q(at + j) = words[j];
-					}
-				}
-				for (; i < d.size(); ++i) *q(first + 1 + i) = blocked_ntt::detail::multiply_mod(d[i], e);
-			},
-			[&](size_t j, ConstWords dt) __attribute__((target("avx2"))) {
-				if (j == 0) d0t = dt.data();
-				if (j == 1 && reuse) times_x<true>(t.roots(), d0t, dt.data(), e, kP - *q(m), 0, qt);
-				if (j == 2 && block2) times_x<false>(t.roots(), dt.data(), nullptr, e, *q(m), kP - *q(m + k), q2t);
-			});
-	const Words start = g.first(std::min(n, kExpBase));
-	exp_direct(lo, start);
-	for (Word& x : start) x = blocked_ntt::detail::multiply_mod(x, c);
-	if (n > kExpBase) exp_newton(t, lo, g, rest, QTransforms{qt, q2t});
-}
-
-}
-namespace blocked_poly {
-namespace detail {
-template <bool differentiated>
-[[gnu::noinline]] mint exp_tail_coefficient(const mint* in, size_t input, const mint* g, size_t n) {
-	const size_t count = std::min(n, input ? input - 1 : 0), full = count / 8 * 8;
-	const Vec reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0), ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
-	Vec total = _mm256_setzero_si256();
-	Indices index(1);
-	size_t j = 0;
-	for (; j < full;) {
-		Vec even = _mm256_setzero_si256(), odd = even;
-		const size_t end = std::min(full, j + 64);
-		for (; j < end; j += 8, index.next()) {
-			Vec a, b;
-			std::memcpy(&a, in + j + 1, sizeof(a));
-			std::memcpy(&b, g + n - j - 8, sizeof(b));
-			a = reduce(a, kP);
-			if constexpr (!differentiated) a = canonical(montgomery(a, index.value()));
-			b = _mm256_permutevar8x32_epi32(reduce(b, kP), reversed);
-			even = _mm256_add_epi64(even, _mm256_mul_epu32(a, b));
-			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
-		}
-		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-		const Vec value = canonical(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA));
-		total = low(add(total, value));
-	}
-	total = low(add(total, _mm256_permute2x128_si256(total, total, 1)));
-	total = low(add(total, _mm256_shuffle_epi32(total, 0x4E)));
-	total = low(add(total, _mm256_shuffle_epi32(total, 0xB1)));
-	mint result = mint::word(Word(_mm_cvtsi128_si32(_mm256_castsi256_si128(total))));
-	for (; j < count; ++j) {
-		mint value = in[j + 1] * g[n - j - 1];
-		if constexpr (!differentiated) value *= mint(j + 1);
-		result += value;
-	}
-	return result / mint(n);
-}
-
-template <bool differentiated>
-[[gnu::noinline]] void import_exp_input(const mint* in, size_t first, size_t count, Word* to) {
-	static_assert(sizeof(mint) == sizeof(Word) && std::is_trivially_copyable_v<mint>);
-	size_t i = 0;
-	const Factor undo(blocked_ntt::detail::power(kR, kP - 2));
-	auto index = add(broadcast(Word(first)), _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
-	for (; i + 8 <= count; i += 8, index = add(index, broadcast(8))) {
-		Vec value;
-		std::memcpy(&value, in + first + i, sizeof(value));
-		if constexpr (differentiated) store_unaligned(to + i, reduce(times(value, undo), kP));
-		else store_unaligned(to + i, reduce(montgomery(value, index), kP));
-	}
-	for (; i < count; ++i) {
-		if constexpr (differentiated) to[i] = in[first + i].val();
-		else to[i] = blocked_ntt::detail::multiply_mod(in[first + i].val(), first + i);
-	}
-}
-}
-
-inline void native_exp_regular(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool differentiated) {
-	const size_t m = detail::exp_length(n) / 2, size = std::min(input, n), below = std::min(size, m);
-	const int lg = exp_log(n);
-	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(exp_scratch(n)));
-	const Transform t(arena, lg);
-	auto g = arena.take(n), scratch = arena.take(exp_scratch(n));
-	auto lo = scratch.first(m);
-	const auto import = [&](size_t first, size_t count, Word* to) {
-		if (differentiated) detail::import_exp_input<true>(in, first, count, to);
-		else detail::import_exp_input<false>(in, first, count, to);
-	};
-	import(0, below, lo.data());
-	std::fill(lo.begin() + below, lo.end(), 0u);
-	if (size > m) import(m, size - m, g.data() + m);
-	if (n > std::max(size, m)) std::fill(g.begin() + std::max(size, m), g.end(), 0u);
-	detail::exp_direct(lo, g.first(std::min(n, detail::kExpBase)));
-	for (auto &x : g.first(std::min(n, detail::kExpBase))) x = blocked_ntt::detail::multiply_mod(x, detail::kR);
-	if (n > detail::kExpBase) detail::exp_newton(t, lo, g, scratch.subspan(Arena::footprint(m)));
-	append_fps_words<true>(out, g.data(), n);
-}
-
-inline void native_exp(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool differentiated = false) {
-	const size_t prefix = std::bit_floor(n), tail = n - prefix;
-	if (prefix >= 4096 && tail && tail <= 4) {
-		const size_t offset = out.size();
-		prepare_fps_output(out, offset + n);
-		native_exp_regular(in, input, out, prefix, differentiated);
-		for (size_t at = prefix; at < n; ++at) {
-			const mint value = differentiated ? detail::exp_tail_coefficient<true>(in, input, out.data() + offset, at)
-											 : detail::exp_tail_coefficient<false>(in, input, out.data() + offset, at);
-			out.push_back(value);
-		}
-		return;
-	}
-	native_exp_regular(in, input, out, n, differentiated);
-}
-
-inline void native_power(const mint *in, size_t input, std::vector<mint> &out, size_t n, Word e, mint c) {
-	const int lg = power_log(n);
-	const size_t size = std::min(input, n);
-	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(power_scratch(n)));
-	const Transform t(arena, lg);
-	auto g = arena.take(n), scratch = arena.take(power_scratch(n));
-	for (size_t i = 0; i < size; ++i) {
-		const auto x = in[i].v;
-		g[i] = std::min(x, x - mint::mod());
-	}
-	power(t, g.first(size), e, std::min(c.v, c.v - mint::mod()), g, scratch);
-	append_fps_words<true>(out, g.data(), n);
-}
-}
-}
-#pragma GCC pop_options
-#endif
-
-#line 1 "components/fps_inverse_blocked.hpp"
-
-
-
-#line 5 "components/fps_inverse_blocked.hpp"
-
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-#pragma GCC push_options
-_Pragma("GCC target(\"avx2\")")
-#pragma GCC optimize("O3")
-
-namespace fps_detail::blocked_poly {
-inline void append_scaled(Words a, std::vector<mint> &out, Word scale) {
-	const detail::Factor factor(scale);
-	if (a.size() > out.max_size() - out.size()) throw std::length_error("fps output");
-	prepare_fps_output(out, out.size() + a.size());
-	alignas(32) Word values[64];
-	for (size_t i = 0; i < a.size(); i += 64) {
-		const auto count = std::min<size_t>(64, a.size() - i);
-		size_t j = 0;
-		for (; j + 8 <= count; j += 8)
-			detail::store(values + j, detail::reduce(detail::times(detail::load_unaligned(a.data() + i + j), factor), mint::mod()));
-		for (; j < count; ++j) values[j] = blocked_ntt::detail::multiply_mod(a[i + j], scale);
-		append_fps_words<true>(out, values, count);
-	}
-}
-
-inline void native_inverse(const mint *in, size_t input, std::vector<mint> &out, size_t n) {
-	const int lg = inverse_log(n);
-	const size_t len = size_t(1) << lg, k = len / 2;
-	const size_t c = std::min(input, n), scratch_words = std::max(len, inverse_scratch(k));
-	Arena arena(Transform::words(lg) + Arena::footprint(len) + Arena::footprint(scratch_words) + Arena::footprint(k));
-	const Transform t(arena, lg);
-	auto a = arena.take(len), scratch = arena.take(scratch_words), g = arena.take(k);
-	for (size_t i = 0; i < c; ++i) {
-		const unsigned v = in[i].v;
-		a[i] = std::min(v, v - mint::mod());
-	}
-	const ConstWords f = a.first(c);
-	const auto extend = [&](ConstWords current, Words to,
-							Words transformed, Words work) {
-		const size_t count = current.size();
-		t.forward(current, 0, transformed);
-		t.cyclic_product(f.first(std::min(2 * count, f.size())), 0, work, transformed, Half::kUpper);
-		t.cyclic_product(work.subspan(count), count, work, transformed, Half::kUpper, 53925088);
-		if (to.data() != work.data() + count) std::copy_n(work.begin() + std::ptrdiff_t(count), to.size(), to.begin());
-	};
-	const size_t target = std::min(n, k), base = std::min(target, detail::kInverseBase);
-	detail::inverse_direct(f, g.first(base));
-	for (size_t i = 0; i < base; ++i) g[i] = blocked_ntt::detail::multiply_mod(g[i], 932051910);
-	for (size_t count = base; count < target; count *= 2) {
-		const size_t size = 2 * count;
-		extend(g.first(count), g.subspan(count, std::min(count, target - count)), scratch.first(size),
-				scratch.subspan(Arena::footprint(size), size));
-	}
-	if (n <= k) return append_fps_words<true>(out, g.data(), n);
-	extend(g, a.subspan(k, n - k), scratch.first(len), a);
-	prepare_fps_output(out, n);
-	append_fps_words<true>(out, g.data(), k);
-	append_fps_words<true>(out, a.data() + k, n - k);
-}
-}
-
-#pragma GCC pop_options
-#endif
-
-#line 1 "components/fps_sqrt_blocked.hpp"
-
-
-#line 4 "components/fps_sqrt_blocked.hpp"
-
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-#pragma GCC push_options
-_Pragma("GCC target(\"avx2\")")
-#pragma GCC optimize("O3")
-
-namespace fps_detail::blocked_poly {
-
-namespace detail {
-
-inline constexpr size_t kSqrtBase = 64;
-
-inline void sqrt_direct(ConstWords f, Word c, Words g) {
-	using blocked_ntt::detail::multiply_mod;
-	const Word inverse = blocked_ntt::detail::power(multiply_mod(2, c), kP - 2);
-	g[0] = c;
-	for (size_t i = 1; i < g.size(); ++i) {
-		std::uint64_t sum = i < f.size() ? f[i] : 0;
-		for (size_t j = 1; j < i; ++j) sum += kP - std::uint64_t(g[j]) * g[i - j] % kP;
-		g[i] = multiply_mod(Word(sum % kP), inverse);
-	}
-}
-
-inline Vec load_padded(ConstWords f, size_t at) {
-	if (at + 8 <= f.size()) return load_unaligned(f.data() + at);
-	alignas(32) Word x[8] = {};
-	if (at < f.size()) std::copy(f.begin() + std::ptrdiff_t(at), f.end(), x);
-	return load(x);
-}
-
-inline Vec first_lanes(size_t count) {
-	return _mm256_cmpgt_epi32(broadcast(Word(std::min<size_t>(count, 8))),
-							_mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
-}
-inline void store_first(Word* p, Vec x, size_t count) {
-	if (count >= 8) return store_unaligned(p, x);
-	_mm256_maskstore_epi32(reinterpret_cast<int*>(p), first_lanes(count), x);
-}
-inline Vec load_first(const Word* p, size_t count) {
-	if (count >= 8) return load_unaligned(p);
-	return _mm256_maskload_epi32(reinterpret_cast<const int*>(p), first_lanes(count));
-}
-
-[[gnu::always_inline]] inline Vec leaf_square(const Window& window) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP), p2 = broadcast(2 * kP);
-	Vec even, odd, bi, t0, t1, t2;
-	asm(R"(
-vpbroadcastd 32(%[w]), %[bi]
-	vpmuludq 36(%[w]), %[bi], %[odd]
-	vpmuludq 32(%[w]), %[bi], %[even]
-	vpbroadcastd 36(%[w]), %[bi]
-	vpmuludq 28(%[w]), %[bi], %[t0]
-	vpbroadcastd 40(%[w]), %[bi]
-	vpmuludq 28(%[w]), %[bi], %[t1]
-	vpmuludq 24(%[w]), %[bi], %[t2]
-	vpaddq %[t0], %[even], %[even]
-	vpbroadcastd 44(%[w]), %[bi]
-	vpmuludq 20(%[w]), %[bi], %[t0]
-	vpaddq %[t1], %[odd], %[odd]
-	vpaddq %[t2], %[even], %[even]
-	vpbroadcastd 48(%[w]), %[bi]
-	vpmuludq 20(%[w]), %[bi], %[t1]
-	vpmuludq 16(%[w]), %[bi], %[t2]
-	vpaddq %[t0], %[even], %[even]
-	vpbroadcastd 52(%[w]), %[bi]
-	vpmuludq 12(%[w]), %[bi], %[t0]
-	vpaddq %[t1], %[odd], %[odd]
-	vpaddq %[t2], %[even], %[even]
-	vpbroadcastd 56(%[w]), %[bi]
-	vpmuludq 12(%[w]), %[bi], %[t1]
-	vpmuludq 8(%[w]), %[bi], %[t2]
-	vpaddq %[t0], %[even], %[even]
-	vpbroadcastd 60(%[w]), %[bi]
-	vpmuludq 4(%[w]), %[bi], %[t0]
-	vpaddq %[t1], %[odd], %[odd]
-	vpaddq %[t2], %[even], %[even]
-	vpaddq %[t0], %[even], %[even]
-	vpaddq %[odd], %[odd], %[odd]
-	vpmuludq %[ni], %[even], %[t0]
-	vpmuludq %[ni], %[odd], %[t1]
-	vpmuludq %[p], %[t0], %[t0]
-	vpmuludq %[p], %[t1], %[t1]
-	vpaddq %[t0], %[even], %[even]
-	vpaddq %[t1], %[odd], %[odd]
-	vpsrlq $32, %[even], %[even]
-	vpblendd $0xaa, %[odd], %[even], %[even]
-	vpsubd %[p2], %[even], %[t0]
-	vpminud %[t0], %[even], %[even]
-)"
-		: [even] "=&x"(even), [odd] "=&x"(odd), [bi] "=&x"(bi), [t0] "=&x"(t0), [t1] "=&x"(t1), [t2] "=&x"(t2)
-		: [w] "r"(window.word), [ni] "x"(ni), [p] "x"(p), [p2] "x"(p2),
-		"m"(*reinterpret_cast<const Word(*)[17]>(window.word)));
-	return even;
-}
-
-struct InverseSquareBottom {
-	static constexpr bool kForward = false, kInverse = true;
-	const Word* roots;
-	const Word* inverse_roots;
-	const Word* a;
-
-	[[gnu::always_inline]] void prepare(size_t g, Window (&window)[4]) const {
-		const Word* leaves = a + 32 * g;
-		const Vec f[4] = {load(leaves), load(leaves + 8), load(leaves + 16), load(leaves + 24)};
-		fill_windows(window, f, roots, g);
-	}
-
-	void operator()(Word* out, size_t count, size_t first) const {
-		Window window[2][4];
-		prepare(first, window[0]);
-		for (size_t j = 0; j < count; ++j, out += 32) {
-			if (j + 1 < count) prepare(first + j + 1, window[(j + 1) & 1]);
-			Vec f[4];
-#pragma GCC unroll 4
-			for (int t = 0; t < 4; ++t) f[t] = leaf_square(window[j & 1][t]);
-			inverse_h1(f, Group(inverse_roots, first + j));
-			for (int t = 0; t < 4; ++t) store(out + 8 * t, f[t]);
-		}
-	}
-};
-
-inline bool radix4(size_t nv) { return std::countr_zero(nv) % 2 == 0; }
-
-template <class Bottom>
-void subtrees(const Recursion<Bottom>& recursion, Word* a, size_t nv) {
-	if (!radix4(nv)) {
-		recursion.visit(a, nv / 2, 0);
-		return recursion.visit(a + 4 * nv, nv / 2, 1);
-	}
-	for (size_t q = 0; q < 4; ++q) recursion.visit(a + 2 * q * nv, nv / 4, q);
-}
-
-template <class Bottom>
-void from_lower_source(const Transform& t, const Recursion<Bottom>& recursion, Word* a, size_t nv,
-					bool written = true) {
-	const Source in(a, 4 * nv, 0);
-	if (!radix4(nv)) return radix2_halves(recursion, in, a, nv, t.roots());
-	if (!written) forward_top4(in, reinterpret_cast<Vec*>(a), nv / 4, t.roots());
-	subtrees(recursion, a, nv);
-}
-
-inline void inverse_top(const Transform& t, Vec* v, size_t nv, Half output, Word scale) {
-	if (radix4(nv)) return inverse_top4(v, nv / 4, output, t.inverse_roots(), Factor(scale));
-	inverse_top2(v, nv / 2, output, scale);
-}
-
-template <Half kOutput, class Visit>
-[[gnu::always_inline]] inline void inverse_columns(const Transform& t, Vec* v, size_t nv, Word scale,
-												Visit visit) {
-	constexpr bool kLower = kOutput != Half::kUpper, kUpper = kOutput != Half::kLower;
-	const Factor s(scale);
-	if (radix4(nv)) {
-		const size_t h = nv / 4;
-		const Factor z(t.inverse_roots()[1], t.inverse_roots()[9]);
-		for (size_t j = 0; j < h; ++j) {
-			const Vec p0 = v[j], p1 = v[j + h], p2 = v[j + 2 * h], p3 = v[j + 3 * h];
-			const Vec ab = low(add(p0, p1)), cd = low(add(p2, p3));
-			const Vec amb = low(diff(p0, p1)), cmd = times(diff(p2, p3), z);
-			Vec lo[2] = {}, hi[2] = {};
-			if constexpr (kLower) lo[0] = times(add(ab, cd), s), lo[1] = times(add(amb, cmd), s);
-			if constexpr (kUpper) hi[0] = times(diff(ab, cd), s), hi[1] = times(diff(amb, cmd), s);
-			visit(std::true_type{}, j, h, lo, hi);
-		}
-		return;
-	}
-	const size_t h = nv / 2;
-	for (size_t j = 0; j < h; ++j) {
-		Vec lo[1] = {}, hi[1] = {};
-		if constexpr (kLower) lo[0] = times(add(v[j], v[j + h]), s);
-		if constexpr (kUpper) hi[0] = times(diff(v[j], v[j + h]), s);
-		visit(std::false_type{}, j, h, lo, hi);
-	}
-}
-
-[[gnu::always_inline]] inline void forward_lower4(Vec* v, size_t j, size_t h, Vec a, Vec b, const Factor& z) {
-	const Vec zb = times(b, z);
-	v[j] = add(a, b), v[j + h] = diff(a, b), v[j + 2 * h] = add(a, zb), v[j + 3 * h] = diff(a, zb);
-}
-
-[[gnu::always_inline]] inline void forward_upper4(Vec* v, size_t j, size_t h, Vec c, Vec d, const Factor& z) {
-	const Vec mc = _mm256_sub_epi32(broadcast(kP), c), zmd = times(_mm256_sub_epi32(broadcast(2 * kP), d), z);
-	v[j] = add(c, d), v[j + h] = diff(c, d), v[j + 2 * h] = add(mc, zmd), v[j + 3 * h] = diff(mc, zmd);
-}
-
-inline Factor top_root(const Transform& t) { return Factor(t.roots()[1], t.roots()[9]); }
-
-inline Vec* vectors(Words a) { return reinterpret_cast<Vec*>(a.data()); }
-
-inline Word product_scale(size_t n) { return kInverseScales[1][std::countr_zero(n)]; }
-
-inline Vec half_residual(ConstWords f, size_t m, size_t at, Vec s) {
-	const Factor half((kP + 1) / 2);
-	const Vec fs = add(load_padded(f, at), load_padded(f, m + at));
-	return reduce(times(_mm256_sub_epi32(add(s, broadcast(2 * kP)), fs), half), kP);
-}
-
-inline void half_residual(ConstWords f, size_t m, size_t first, const Word* s,
-						Word* out, size_t count) {
-	for (size_t i = 0; i < count; i += 8) store_first(out + i, half_residual(f, m, first + i, load(s + i)), count - i);
-}
-
-inline void sqrt_step(const Transform& t, ConstWords f, size_t m, Word* g,
-					Word* h, Words b, Words ht) {
-	const size_t half = m / 2, nv = m / 8;
-	const Words gt = b.first(m), w = b.subspan(m, m), work = b.first(2 * m);
-	const Factor z = top_root(t);
-	const ProductBottom with_h{t.roots(), t.inverse_roots(), ht.data()};
-	const Word scale = product_scale(m), scale2 = product_scale(2 * m);
-	t.forward(ConstWords(g, m), 0, gt);
-	Vec* v = vectors(w);
-	subtrees(Recursion(t.roots(), t.inverse_roots(), InverseProductBottom{with_h, gt.data()}), w.data(), nv);
-	inverse_columns<Half::kUpper>(t, v, nv, scale, [&](auto radix4, size_t j, size_t q, const Vec*, const Vec* e) {
-		if constexpr (radix4) forward_upper4(v, j, q, reduce(e[0], kP), e[1], z);
-		else v[j] = e[0], v[j + q] = _mm256_sub_epi32(broadcast(2 * kP), e[0]);
-	});
-	subtrees(Recursion(t.roots(), t.inverse_roots(), with_h), w.data(), nv);
-	inverse_columns<Half::kUpper>(t, v, nv, scale, [&](auto radix4, size_t j, size_t q, const Vec*, const Vec* x) {
-		store_unaligned(h + half + 8 * j, reduce(x[0], kP));
-		if constexpr (radix4) store_unaligned(h + half + 8 * (j + q), reduce(x[1], kP));
-	});
-	t.forward(ConstWords(h, m), 0, ht);
-
-	v = vectors(gt);
-	subtrees(Recursion(t.roots(), t.inverse_roots(), InverseSquareBottom{t.roots(), t.inverse_roots(), gt.data()}), gt.data(),
-			nv);
-	inverse_columns<Half::kBoth>(t, v, nv, scale, [&](auto radix4, size_t j, size_t q, const Vec* lo, const Vec* hi) {
-		if constexpr (radix4) {
-			v[j] = half_residual(f, m, 8 * j, lo[0]), v[j + q] = half_residual(f, m, 8 * (j + q), lo[1]);
-			v[j + 2 * q] = half_residual(f, m, half + 8 * j, hi[0]);
-			v[j + 3 * q] = half_residual(f, m, half + 8 * (j + q), hi[1]);
-		} else {
-			forward_lower4(v, j, q, half_residual(f, m, 8 * j, lo[0]), half_residual(f, m, half + 8 * j, hi[0]), z);
-		}
-	});
-	from_lower_source(t, Recursion(t.roots(), t.inverse_roots(), with_h), work.data(), 2 * nv);
-	inverse_columns<Half::kLower>(t, vectors(work), 2 * nv, scale2,
-								[&](auto radix4, size_t j, size_t q, const Vec* d, const Vec*) {
-									store_unaligned(g + m + 8 * j, reduce(d[0], kP));
-									if constexpr (radix4) store_unaligned(g + m + 8 * (j + q), reduce(d[1], kP));
-								});
-}
-
-}
-
-inline int sqrt_log(size_t n) {
-	return std::max(Transform::kMinLog, int(std::bit_width(std::max<size_t>(n, 2) - 1)) - 1);
-}
-
-inline size_t sqrt_scratch(size_t n) {
-	if (n <= detail::kSqrtBase) return 0;
-	return 3 * Arena::footprint(size_t(1) << sqrt_log(n));
-}
-
-inline void sqrt_steps(const Transform& t, ConstWords f, Word c, Words a,
-					Words b, Words ht) {
-	using namespace detail;
-	const size_t len = a.size();
-	if (f.empty() || f[0] == 0 || blocked_ntt::detail::multiply_mod(c, c) != f[0] || len < kSqrtBase) std::abort();
-	sqrt_direct(f, c, a.first(kSqrtBase));
-	Word* const h = a.data() + len / 2;
-	alignas(32) Word h0[kSqrtBase / 2];
-	inverse_direct(a.first(kSqrtBase / 2), h0);
-	for (Word& x : h0) x = x ? kP - x : 0;
-	t.forward(h0, 0, ht.first(kSqrtBase));
-	if (len > kSqrtBase) std::copy_n(h0, kSqrtBase / 2, h);
-	for (size_t m = kSqrtBase; m < len; m *= 2) sqrt_step(t, f, m, a.data(), h, b.first(2 * m), ht.first(2 * m));
-}
-
-inline void sqrt_last_step(const Transform& t, ConstWords f, ConstWords gt,
-						ConstWords ht, Words work, Words hi) {
-	using namespace detail;
-	const size_t m = gt.size(), half = m / 2, rest = hi.size(), nv = m / 8;
-	if (rest == 0 || rest > m) std::abort();
-	const Word scale = product_scale(m);
-	const Factor z = top_root(t);
-	const ProductBottom with_g{t.roots(), t.inverse_roots(), gt.data()}, with_h{t.roots(), t.inverse_roots(), ht.data()};
-	const Recursion product_h(t.roots(), t.inverse_roots(), with_h);
-	Vec* v = vectors(work);
-
-	const auto source = [&](auto radix4, size_t j, size_t q, auto x) {
-		if constexpr (radix4) forward_lower4(v, j, q, x(0, j), x(1, j + q), z);
-		else v[j] = x(0, j);
-	};
-
-	const auto each = [](auto radix4, size_t j, size_t q, auto put) {
-		put(0, j);
-		if constexpr (radix4) put(1, j + q);
-	};
-	const auto put = [&](Word* out, size_t count, size_t p, Vec x) __attribute__((target("avx2"))) {
-		if (8 * p < count) store_first(out + 8 * p, x, count - 8 * p);
-	};
-
-	subtrees(Recursion(t.roots(), t.inverse_roots(), InverseSquareBottom{t.roots(), t.inverse_roots(), gt.data()}),
-			work.data(), nv);
-	const bool split = rest > half;
-	inverse_top(t, v, nv, split ? Half::kBoth : Half::kLower, scale);
-	half_residual(f, m, 0, work.data(), work.data(), std::min(rest, half));
-	const size_t count = split ? rest - half : 0;
-	Word* const upper = hi.data() + (rest - count);
-	half_residual(f, m, half, work.data() + half, upper, count);
-	from_lower_source(t, product_h, work.data(), nv, false);
-	if (!split) {
-		inverse_columns<Half::kLower>(t, v, nv, scale, [&](auto radix4, size_t j, size_t q, const Vec* d, const Vec*) {
-			each(radix4, j, q, [&](int k, size_t p) { put(hi.data(), rest, p, reduce(d[k], kP)); });
-		});
-		return;
-	}
-
-	inverse_columns<Half::kLower>(t, v, nv, scale, [&](auto radix4, size_t j, size_t q, const Vec* d, const Vec*) {
-		source(radix4, j, q, [&](int k, size_t p) {
-			const Vec d0 = reduce(d[k], kP);
-			store_unaligned(hi.data() + 8 * p, d0);
-			return d0;
-		});
-	});
-
-	from_lower_source(t, Recursion(t.roots(), t.inverse_roots(), with_g), work.data(), nv);
-	inverse_columns<Half::kUpper>(t, v, nv, scale, [&](auto radix4, size_t j, size_t q, const Vec*, const Vec* x) {
-		source(radix4, j, q, [&](int k, size_t p) {
-			const size_t at = 8 * p;
-			return canonical(add(x[k], load_first(upper + std::min(at, count), at < count ? count - at : 0)));
-		});
-	});
-	from_lower_source(t, product_h, work.data(), nv);
-	inverse_columns<Half::kLower>(t, v, nv, scale, [&](auto radix4, size_t j, size_t q, const Vec* d, const Vec*) {
-		each(radix4, j, q, [&](int k, size_t p) { put(upper, count, p, reduce(d[k], kP)); });
-	});
-}
-
-inline void sqrt(const Transform& t, ConstWords f, Word c, Words g,
-				Words scratch) {
-	using namespace detail;
-	const size_t n = g.size();
-	if (f.empty() || f[0] == 0 || blocked_ntt::detail::multiply_mod(c, c) != f[0]) std::abort();
-	if (n <= kSqrtBase) return sqrt_direct(f, c, g);
-	const size_t m = size_t(1) << sqrt_log(n), words = Arena::footprint(m);
-	const Words b = scratch.first(m), ht = scratch.subspan(words, m), work = scratch.subspan(2 * words, m);
-	sqrt_steps(t, f, c, g.first(m), b, ht);
-	t.forward(g.first(m), 0, b);
-	sqrt_last_step(t, f, b, ht, work, g.subspan(m));
-}
-
-}
-namespace fps_detail::blocked_poly {
-inline void native_sqrt(const mint *in, size_t input, std::vector<mint> &out, size_t n, mint constant) {
-	const int lg = sqrt_log(n);
-	const size_t c = std::min(input, n);
-	Arena arena(Transform::words(lg) + Arena::footprint(c) + Arena::footprint(n) + Arena::footprint(sqrt_scratch(n)));
-	const Transform t(arena, lg);
-	auto f = arena.take(c), g = arena.take(n), scratch = arena.take(sqrt_scratch(n));
-	for (size_t i = 0; i < c; ++i) {
-		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - mint::mod());
-	}
-	const Word ct = blocked_ntt::detail::multiply_mod(std::min(constant.v, constant.v - mint::mod()),
-		blocked_ntt::detail::power(65536, mint::mod() - 2));
-	sqrt(t, f, ct, g, scratch);
-	append_scaled(g, out, 65536);
-}
-}
-
-#pragma GCC pop_options
-#endif
-
-#line 1 "components/fps_convolution.hpp"
-
 
 #line 1 "components/fps_convolution_unbalanced.hpp"
 
@@ -4798,1245 +3307,50 @@ inline std::vector<mint> multiply(const std::vector<mint>& a, const std::vector<
 #pragma GCC pop_options
 #endif
 
-#line 1 "components/fps_division_blocked.hpp"
-
-
-
-#line 6 "components/fps_division_blocked.hpp"
-
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-#pragma GCC push_options
-_Pragma("GCC target(\"avx2\")")
-#pragma GCC optimize("O3")
-
-namespace fps_detail::blocked_poly {
-
-inline size_t quotient_size(size_t n, size_t m) { return n >= m ? n - m + 1 : 0; }
-inline size_t remainder_size(size_t n, size_t m) { return std::min(n, m - 1); }
-
-namespace division_detail {
-using namespace detail;
-
-inline constexpr size_t kDivisionTerms = 8;
-
-inline constexpr size_t kLongDivision = size_t(1) << 12;
-
-inline constexpr size_t kDirectRemainder = 64;
-
-inline constexpr std::array<double, 26> kTransformNs = {0,    0,    0,    0,    0,    0,    0.45, 0.48, 0.51,
-														0.55, 0.6,  0.65, 0.7,  0.76, 0.81, 0.88, 0.95, 1.02,
-														1.09, 1.17, 1.23, 1.3,  1.37, 1.44, 1.51, 1.58};
-inline constexpr double kLeafProductNs = 0.92, kDirectTermNs = 0.04, kFoldNs = 0.25;
-
-inline size_t transform_length(size_t n) { return std::max<size_t>(64, std::bit_ceil(n)); }
-
-inline double transform_ns(size_t len) {
-	const auto lg = std::countr_zero(len);
-	return size_t(lg) < kTransformNs.size() ? kTransformNs[lg] * double(len) : std::numeric_limits<double>::infinity();
-}
-inline double cyclic_ns(size_t len) { return 2 * transform_ns(len) + kLeafProductNs * double(len); }
-
-inline double inverse_ns(size_t n) {
-	double ns = 0;
-	for (size_t k = kInverseBase; k < n; k *= 2) ns += transform_ns(2 * k) + 2 * cyclic_ns(2 * k);
-	return ns;
-}
-
-struct QuotientPlan {
-	size_t s = 0, blocks = 0, pad = 0, windows = 0, tail = 0;
-	bool tails = false;
-	double ns = std::numeric_limits<double>::infinity();
-
-	QuotientPlan() = default;
-
-	QuotientPlan(size_t k, size_t d, size_t block)
-		: s(block), blocks((k + block - 1) / block), pad(blocks * block - k), tail(transform_length(2 * d)),
-		  tails(d < block) {
-		const size_t len = 2 * s;
-		ns = inverse_ns(precision(k)) + transform_ns(len) + double(blocks) * cyclic_ns(len);
-		if (blocks == 1) return;
-		if (tails) {
-			ns += transform_ns(tail) + double(blocks - 1) * cyclic_ns(tail);
-			return;
-		}
-		const size_t reach = d / s + 1;
-		windows = std::min(reach, blocks - 1);
-		if (windows > kDivisionTerms) {
-			ns = std::numeric_limits<double>::infinity();
-			return;
-		}
-		double terms = 0;
-		for (size_t j = 1; j < blocks; ++j) terms += double(std::min(j, reach));
-		ns += double(windows + 2 * (blocks - 1)) * transform_ns(len) + terms * kLeafProductNs * double(len);
-	}
-
-	size_t precision(size_t k) const { return blocks == 1 ? k : s; }
-};
-
-enum class Remainder { kDirect, kWrap, kSplit, kTail };
-
-struct RemainderPlan {
-	Remainder method;
-	size_t length = 0;
-	double ns = std::numeric_limits<double>::infinity();
-
-	RemainderPlan(Remainder how, size_t n, size_t k, size_t d, const QuotientPlan& quotient) : method(how) {
-		const size_t wrap = transform_length(d);
-		switch (how) {
-			case Remainder::kDirect:
-				if (k <= kDirectRemainder) ns = double(k) * double(d) * kDirectTermNs;
-				break;
-			case Remainder::kWrap:
-				length = wrap;
-				ns = cyclic_ns(length) + transform_ns(length) + double(n + k) * kFoldNs;
-				break;
-			case Remainder::kSplit:
-				length = wrap / 2;
-				if (length >= 64 && d > length && k + (d - length) <= length + 1)
-					ns = transform_ns(length) + 2 * cyclic_ns(length) + double(n + d) * kFoldNs;
-				break;
-			case Remainder::kTail:
-				if (!quotient.tails) break;
-				ns = (quotient.blocks == 1 ? transform_ns(quotient.tail) : 0) + cyclic_ns(quotient.tail) + double(d) * kFoldNs;
-				break;
-		}
-	}
-
-	size_t buffers() const { return method == Remainder::kWrap ? 2 : method == Remainder::kSplit ? 3 : 0; }
-};
-
-struct DivisionPlan {
-	size_t n, m, k, d;
-	bool long_division;
-	QuotientPlan quotient;
-	RemainderPlan remainder;
-	int lg = Transform::kMinLog;
-
-	DivisionPlan(size_t n_, size_t m_)
-		: n(n_), m(m_), k(quotient_size(n_, m_)), d(m_ - 1), long_division(k * d <= kLongDivision),
-		  remainder(Remainder::kWrap, n, k, d, quotient) {
-		if (long_division) return;
-		double best = std::numeric_limits<double>::infinity();
-		for (size_t s = 32;; s *= 2) {
-			const QuotientPlan p(k, d, s);
-			for (Remainder how : {Remainder::kDirect, Remainder::kWrap, Remainder::kSplit, Remainder::kTail}) {
-				const RemainderPlan r(how, n, k, d, p);
-				if (p.ns + r.ns < best) best = p.ns + r.ns, quotient = p, remainder = r;
-			}
-			if (s >= k || 4 * s > (size_t(1) << Transform::kMaxLog)) break;
-		}
-		set_log();
-	}
-
-	DivisionPlan(size_t n_, size_t m_, size_t s, Remainder how)
-		: n(n_), m(m_), k(quotient_size(n_, m_)), d(m_ - 1), long_division(false), quotient(k, d, s),
-		  remainder(how, n, k, d, quotient) {
-		set_log();
-	}
-
-	bool tails() const { return quotient.tails && (quotient.blocks > 1 || remainder.method == Remainder::kTail); }
-
-	void set_log() { lg = std::countr_zero(std::max({2 * quotient.s, tails() ? quotient.tail : 0, remainder.length})); }
-
-	size_t divisor() const {
-		const QuotientPlan& p = quotient;
-		return tails() ? m : std::min(m, std::max(p.precision(k), (p.windows + 1) * p.s));
-	}
-
-	size_t quotient_words() const {
-		const QuotientPlan& p = quotient;
-		const size_t len = 2 * p.s;
-		size_t later = Arena::footprint(p.blocks * p.s + p.s);
-		if (tails()) later += 2 * Arena::footprint(p.tail);
-		if (p.windows) later += (2 * p.windows + 1) * Arena::footprint(len);
-		return Arena::footprint(divisor()) + Arena::footprint(len) + std::max(inverse_scratch(p.precision(k)), later);
-	}
-
-	size_t scratch() const { return std::max(quotient_words(), remainder.buffers() * Arena::footprint(remainder.length)); }
-
-	size_t words() const {
-		return long_division ? Arena::footprint(n) : Transform::words(lg) + Arena::footprint(scratch());
-	}
-};
-
-class Bump {
-public:
-	explicit Bump(Words memory) : memory_(memory) {}
-
-	Words take(size_t n) {
-		if (used_ > memory_.size() || Arena::footprint(n) > memory_.size() - used_) throw std::bad_alloc();
-		const Words s = memory_.subspan(used_, n);
-		used_ += Arena::footprint(n);
-		return s;
-	}
-
-	Words rest() const { return memory_.subspan(used_); }
-
-private:
-	Words memory_;
-	size_t used_ = 0;
-};
-
-inline Vec montgomery_reduce(Vec even, Vec odd) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
-}
-
-inline Word input_word(Word x) { return x; }
-inline Word input_word(mint x) { return std::min(x.v, x.v - mint::mod()); }
-inline Vec load_any(const Word* p) { return _mm256_loadu_si256(reinterpret_cast<const Vec*>(p)); }
-inline Vec load_any(const mint* p) {
-	static_assert(sizeof(mint) == sizeof(Word) && std::is_trivially_copyable_v<mint>);
-	Vec value;
-	std::memcpy(&value, p, sizeof(value));
-	return reduce(value, kP);
-}
-inline void store_any(Word* p, Vec x) { _mm256_storeu_si256(reinterpret_cast<Vec*>(p), x); }
-inline Vec reversed(Vec x) { return _mm256_permutevar8x32_epi32(x, _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0)); }
-
-inline void append_words(std::vector<mint>& out, const Word* values, size_t n, Word factor = 1) {
-	const Factor scale(factor);
-	size_t i = 0;
-	for (; i + 8 <= n; i += 8) {
-		Vec word = load_any(values + i);
-		if (factor != 1) word = times(word, scale);
-		mint block[8];
-		static_assert(sizeof(block) == sizeof(word) && std::is_trivially_copyable_v<mint>);
-		std::memcpy(static_cast<void*>(block), &word, sizeof(block));
-		out.insert(out.end(), block, block + 8);
-	}
-	for (; i < n; ++i) out.emplace_back(mint::word(factor == 1 ? values[i] : blocked_ntt::detail::multiply_mod(values[i], factor)));
-}
-
-inline void append_division_words(std::vector<mint>& out, const Word* values, size_t n, Word factor = 1) {
-	static_assert(sizeof(mint) == sizeof(Word) && std::is_trivially_copyable_v<mint>);
-	const Factor scale(factor);
-	std::array<mint, 64> batch;
-	size_t i = 0;
-	for (; i + 64 <= n; i += 64) {
-		if (factor == 1) std::memcpy(static_cast<void*>(batch.data()), values + i, sizeof(batch));
-		else {
-#pragma GCC unroll 8
-			for (size_t j = 0; j < 64; j += 8) {
-				const Vec word = times(load_any(values + i + j), scale);
-				std::memcpy(static_cast<void*>(batch.data() + j), &word, sizeof(word));
-			}
-		}
-		out.insert(out.end(), batch.begin(), batch.end());
-	}
-	if (i < n) append_words(out, values + i, n - i, factor);
-}
-
-template<class T>
-inline void subtract(const T* a, const Word* b, Word* out, size_t count) {
-	size_t i = 0;
-	for (; i + 8 <= count; i += 8) store_any(out + i, difference(load_any(a + i), load_any(b + i)));
-	for (; i < count; ++i) out[i] = (input_word(a[i]) + kP - b[i]) % kP;
-}
-
-template<class T>
-inline void reverse_difference(std::span<T> a, std::ptrdiff_t top, Word* out, size_t count,
-							   const Word* sub = nullptr) {
-	const std::ptrdiff_t size = std::ptrdiff_t(a.size());
-	const auto value = [&](size_t i) {
-		const std::ptrdiff_t p = top - std::ptrdiff_t(i);
-		const Word x = p >= 0 && p < size ? input_word(a[size_t(p)]) : 0;
-		return sub ? (x + kP - sub[i]) % kP : x;
-	};
-	size_t i = top >= size ? std::min(count, size_t(top - size + 1)) : 0;
-	if (sub) {
-		for (size_t j = 0; j < i; ++j) out[j] = value(j);
-	} else {
-		std::fill_n(out, i, 0);
-	}
-	for (; i + 8 <= count && top - std::ptrdiff_t(i) >= 7; i += 8) {
-		const Vec x = reversed(load_any(a.data() + (top - std::ptrdiff_t(i) - 7)));
-		store_any(out + i, sub ? difference(x, load_any(sub + i)) : x);
-	}
-	for (; i < count; ++i) out[i] = value(i);
-}
-
-template<class T>
-inline void fold(std::span<T> a, Words out) {
-	const size_t len = out.size();
-	std::fill(out.begin(), out.end(), 0);
-	for (size_t from = 0; from < a.size(); from += len) {
-		const size_t count = std::min(len, a.size() - from), full = count / 8 * 8;
-		const T* x = a.data() + from;
-		for (size_t j = 0; j < full; j += 8) {
-			store(out.data() + j, reduce(add(load(out.data() + j), load_any(x + j)), kP));
-		}
-		for (size_t j = full; j < count; ++j) out[j] = (out[j] + input_word(x[j])) % kP;
-	}
-}
-
-template<class T>
-inline void long_division(std::span<const T> f, ConstWords g, Words q,
-						  Words r, Words rest) {
-	using blocked_ntt::detail::multiply_mod;
-	const size_t d = g.size() - 1;
-	if constexpr (std::is_same_v<T, Word>) std::copy(f.begin(), f.end(), rest.begin());
-	else for (size_t i = 0; i < f.size(); ++i) rest[i] = input_word(f[i]);
-	const Word lead = blocked_ntt::detail::power(g[d], kP - 2);
-	for (size_t i = q.size(); i-- > 0;) {
-		const Word c = multiply_mod(rest[i + d], lead);
-		q[i] = c;
-		for (size_t t = 0; t < d; ++t) rest[i + t] = (rest[i + t] + kP - multiply_mod(c, g[t])) % kP;
-	}
-	std::copy_n(rest.begin(), r.size(), r.begin());
-}
-
-template<class T>
-inline void remainder_direct(std::span<const T> f, ConstWords g,
-							 ConstWords q, Words r) {
-	const size_t d = r.size(), k = q.size();
-	Vec factor[kDirectRemainder];
-	for (size_t i = 0; i < k; ++i) factor[i] = _mm256_set1_epi64x(std::int64_t((std::uint64_t(q[i]) << 32) % kP));
-	const auto scalar = [&](size_t j) {
-		std::uint64_t sum = 0;
-		for (size_t i = 0; i <= std::min(j, k - 1); ++i) sum = (sum + std::uint64_t(q[i]) * g[j - i]) % kP;
-		r[j] = Word((input_word(f[j]) + kP - sum) % kP);
-	};
-	size_t j = 0;
-	for (; j < std::min(d, k); ++j) scalar(j);
-	for (; j + 8 <= d; j += 8) {
-		Vec total = load_any(f.data() + j);
-		for (size_t i = 0; i < k; i += 4) {
-			Vec even = _mm256_setzero_si256(), odd = _mm256_setzero_si256();
-			for (size_t t = i; t < std::min(k, i + 4); ++t) {
-				const Vec x = load_any(g.data() + (j - t));
-				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, factor[t]));
-				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), factor[t]));
-			}
-			total = reduce(_mm256_sub_epi32(add(total, broadcast(2 * kP)), montgomery_reduce(even, odd)), 2 * kP);
-		}
-		store_any(r.data() + j, reduce(total, kP));
-	}
-	for (; j < d; ++j) scalar(j);
-}
-
-template<class T>
-inline void remainder_wrap(const Transform& t, std::span<const T> f, ConstWords g,
-						   ConstWords q, Words r, Words a,
-						   Words b) {
-	const size_t len = a.size();
-	if (q.size() <= len) {
-		t.forward(q, 0, a);
-	} else {
-		fold(q, a);
-		t.forward(a);
-	}
-	ConstWords gl = g;
-	if (g.size() > len) {
-		std::copy_n(g.begin(), len, b.begin());
-		b[0] = (b[0] + g[len]) % kP;
-		gl = b;
-	}
-	t.cyclic_product(gl, 0, b, a);
-	fold(f, a);
-	subtract(a.data(), b.data(), r.data(), r.size());
-}
-
-template<class T>
-inline void remainder_split(const Transform& t, std::span<const T> f, ConstWords g,
-							ConstWords q, Words r, Words a,
-							Words b, Words c) {
-	const size_t len = a.size(), k = q.size(), e = r.size() - len;
-	t.forward(q, 0, a);
-	t.cyclic_product(g.subspan(len + 1 - k, k + e - 1), 0, c, a);
-	subtract(f.data() + len, c.data() + (k - 1), r.data() + len, e);
-	fold(g, b);
-	t.cyclic_product(b, a);
-	fold(f, c);
-	subtract(c.data(), b.data(), r.data(), len);
-	subtract(r.data(), r.data() + len, r.data(), e);
-}
-
-template <size_t K>
-void residual_sum(const Transform& t, std::span<const Transform::Pair> pairs, Words out) {
-	InverseProductSumBottom<K> bottom{};
-	for (size_t i = 0; i < K; ++i)
-		bottom.terms[i] = {{t.roots(), t.inverse_roots(), pairs[i].b.data()}, pairs[i].a.data()};
-	t.inverse_with(bottom, out, Half::kUpper);
-}
-
-inline void residual_sum(const Transform& t, std::span<const Transform::Pair> pairs, Words out) {
-	switch (pairs.size()) {
-		case 1:
-		case 2:
-		case 3: return t.inverse_product_sum(pairs, out, Half::kUpper);
-		case 4: return residual_sum<4>(t, pairs, out);
-		case 5: return residual_sum<5>(t, pairs, out);
-		case 6: return residual_sum<6>(t, pairs, out);
-		case 7: return residual_sum<7>(t, pairs, out);
-		case 8: return residual_sum<8>(t, pairs, out);
-		default: std::abort();
-	}
-}
-
-template<class T>
-inline void subtract_reversed(const T* a, const Word* b, Word* out, size_t count) {
-	size_t j = 0;
-	for (; j + 8 <= count; j += 8) store_any(out + j, difference(load_any(a + j), reversed(load_any(b + count - 8 - j))));
-	for (; j < count; ++j) out[j] = (input_word(a[j]) + kP - b[count - 1 - j]) % kP;
-}
-
-template<class T>
-inline void divide_blocks(const Transform& t, const DivisionPlan& plan, std::span<const T> f,
-						  ConstWords g, Words q, Words r,
-						  Words scratch) {
-	const QuotientPlan& p = plan.quotient;
-	const size_t k = q.size(), s = p.s, len = 2 * s, d = plan.d;
-	const std::ptrdiff_t top = std::ptrdiff_t(f.size() - 1 + p.pad);
-	Bump bump(scratch);
-	const Words G = bump.take(plan.divisor()), ht = bump.take(len);
-	std::reverse_copy(g.end() - std::ptrdiff_t(G.size()), g.end(), G.begin());
-	const size_t precision = p.precision(k);
-	inverse(t, G.first(std::min(G.size(), precision)), ht.first(precision), bump.rest());
-	t.forward(ht.first(precision), 0, ht);
-
-	const Words qs = bump.take(p.blocks * s + s);
-	Words gt, mp, work;
-	std::array<Words, kDivisionTerms> windows{}, ring{};
-	if (plan.tails()) {
-		gt = bump.take(p.tail), mp = bump.take(p.tail);
-		t.forward(G, 0, gt);
-	}
-	if (p.windows) {
-		work = bump.take(len);
-		for (size_t i = 0; i < p.windows; ++i) {
-			windows[i] = bump.take(len), ring[i] = bump.take(len);
-			t.forward(G.subspan(i * s, std::min(len, G.size() - i * s)), 0, windows[i]);
-		}
-	}
-
-	const auto tail_product = [&](size_t j) {
-		t.cyclic_product(qs.subspan(j * s - d, d), p.tail - 2 * d, mp, gt, Half::kUpper);
-		return mp.data() + (p.tail - d);
-	};
-	for (size_t j = 0; j < p.blocks; ++j) {
-		Word* const block = qs.data() + j * s;
-		const std::ptrdiff_t from = top - std::ptrdiff_t(j * s);
-		if (j == 0) {
-			reverse_difference(f, from, block, s);
-		} else if (p.tails) {
-			reverse_difference(f, from, block, d, tail_product(j));
-			reverse_difference(f, from - std::ptrdiff_t(d), block + d, s - d);
-		} else {
-			const size_t terms = std::min(j, d / s + 1);
-			std::array<Transform::Pair, kDivisionTerms> pairs;
-			for (size_t i = 0; i < terms; ++i) pairs[i] = {windows[i], ring[(j - 1 - i) % p.windows]};
-			residual_sum(t, std::span<const Transform::Pair>(pairs.data(), terms), work);
-			reverse_difference(f, from, block, s, work.data() + s);
-		}
-		t.cyclic_product(qs.subspan(j * s, s), 0, qs.subspan(j * s, len), ht, Half::kLower);
-		if (p.windows && j + 1 < p.blocks) t.forward(qs.subspan(j * s, s), 0, ring[j % p.windows]);
-
-		reverse_difference(qs.first((j + 1) * s), std::ptrdiff_t((j + 1) * s - 1), q.data() + (p.blocks - 1 - j) * s,
-						   j == 0 ? s - p.pad : s);
-	}
-
-	if (plan.remainder.method == Remainder::kTail) subtract_reversed(f.data(), tail_product(p.blocks), r.data(), d);
-}
-
-template<class T>
-inline void divide(Arena& arena, const DivisionPlan& plan, std::span<const T> f, ConstWords g,
-				   Words q, Words r) {
-	if (plan.long_division) return long_division(f, g, q, r, arena.take(f.size()));
-	const Transform t(arena, plan.lg);
-	const Words scratch = arena.take(plan.scratch());
-	divide_blocks(t, plan, f, g, q, r, scratch);
-	Bump bump(scratch);
-	const size_t len = plan.remainder.length;
-	switch (plan.remainder.method) {
-		case Remainder::kDirect: return remainder_direct(f, g, q, r);
-		case Remainder::kWrap: return remainder_wrap(t, f, g, q, r, bump.take(len), bump.take(len));
-		case Remainder::kSplit: return remainder_split(t, f, g, q, r, bump.take(len), bump.take(len), bump.take(len));
-		case Remainder::kTail: return;
-	}
-}
-
-}
-
-inline size_t divide_words(size_t n, size_t m) { return division_detail::DivisionPlan(n, m).words(); }
-
-inline void divide(Arena& arena, ConstWords f, ConstWords g,
-				   Words q, Words r) {
-	const division_detail::DivisionPlan plan(f.size(), g.size());
-	if (plan.k == 0) {
-		std::copy(f.begin(), f.end(), r.begin());
-		return;
-	}
-	division_detail::divide(arena, plan, f, g, q, r);
-}
-
-}
-
-
-namespace fps_detail::blocked_poly {
-inline void native_divide(const mint* a, size_t n, const mint* b, size_t m,
-						  std::vector<mint>& quotient, std::vector<mint>& remainder) {
-	const division_detail::DivisionPlan plan(n, m);
-	const size_t k = quotient_size(n, m), d = remainder_size(n, m);
-	Arena arena(plan.words() + Arena::footprint(m) + Arena::footprint(k) + Arena::footprint(d));
-	const std::span<const mint> f(a, n);
-	auto g = arena.take(m), q = arena.take(k), r = arena.take(d);
-	for (size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - mint::mod());
-	division_detail::divide(arena, plan, f, g, q, r);
-	prepare_fps_output(quotient, k), prepare_fps_output(remainder, d);
-	division_detail::append_division_words(quotient, q.data(), q.size(), blocked_ntt::detail::kR);
-	division_detail::append_division_words(remainder, r.data(), r.size());
-}
-
-inline void native_div_series(const mint* a, size_t input, const mint* b, size_t divisor,
-							  std::vector<mint>& out, size_t n) {
-	using namespace division_detail;
-	const size_t count = std::min(divisor, n), degree = count - 1;
-	QuotientPlan plan;
-	for (size_t s = 32;; s *= 2) {
-		QuotientPlan candidate(n, degree, s);
-		if (candidate.ns < plan.ns) plan = candidate;
-		if (s >= n || 4 * s > (size_t(1) << Transform::kMaxLog)) break;
-	}
-	const size_t s = plan.s, len = 2 * s;
-	const bool tails = plan.tails && plan.blocks > 1;
-	const size_t precision = plan.precision(n), numerator = std::min(input, n);
-	const int lg = std::countr_zero(std::max(len, tails ? plan.tail : 0));
-	const size_t later = Arena::footprint(plan.blocks * s + s) +
-		(tails ? 2 * Arena::footprint(plan.tail) : 0) +
-		(plan.windows ? (2 * plan.windows + 1) * Arena::footprint(len) : 0);
-	Arena arena(Transform::words(lg) + Arena::footprint(numerator) + Arena::footprint(count) +
-		Arena::footprint(len) + Arena::footprint(std::max(inverse_scratch(precision), later)));
-	const Transform t(arena, lg);
-	auto f = arena.take(numerator), g = arena.take(count), ht = arena.take(len);
-	for (size_t i = 0; i < numerator; ++i) f[i] = std::min(a[i].v, a[i].v - mint::mod());
-	for (size_t i = 0; i < count; ++i) g[i] = std::min(b[i].v, b[i].v - mint::mod());
-	auto scratch = arena.take(std::max(inverse_scratch(precision), later));
-	inverse(t, g.first(std::min(count, precision)), ht.first(precision), scratch);
-	t.forward(ht.first(precision), 0, ht);
-	Bump bump(scratch);
-	auto qs = bump.take(plan.blocks * s + s);
-	Words gt, mp, work;
-	std::array<Words, kDivisionTerms> windows{}, ring{};
-	if (tails) {
-		gt = bump.take(plan.tail), mp = bump.take(plan.tail);
-		t.forward(g, 0, gt);
-	}
-	if (plan.windows) {
-		work = bump.take(len);
-		for (size_t i = 0; i < plan.windows; ++i) {
-			windows[i] = bump.take(len), ring[i] = bump.take(len);
-			t.forward(g.subspan(i * s, std::min(len, count - i * s)), 0, windows[i]);
-		}
-	}
-	prepare_fps_output(out, n);
-	for (size_t j = 0; j < plan.blocks; ++j) {
-		auto block = qs.subspan(j * s, len);
-		const size_t from = j * s, available = from < numerator ? std::min(s, numerator - from) : 0;
-		if (available) std::copy_n(f.data() + from, available, block.data());
-		std::fill(block.begin() + available, block.begin() + s, 0u);
-		if (j && tails) {
-			t.cyclic_product(qs.subspan(j * s - degree, degree), plan.tail - 2 * degree, mp, gt, Half::kUpper);
-			subtract(block.data(), mp.data() + plan.tail - degree, block.data(), degree);
-		} else if (j) {
-			const size_t terms = std::min(j, degree / s + 1);
-			std::array<Transform::Pair, kDivisionTerms> pairs;
-			for (size_t i = 0; i < terms; ++i) pairs[i] = {windows[i], ring[(j - 1 - i) % plan.windows]};
-			residual_sum(t, std::span<const Transform::Pair>(pairs.data(), terms), work);
-			subtract(block.data(), work.data() + s, block.data(), s);
-		}
-		t.cyclic_product(block.first(s), 0, block, ht, Half::kLower);
-		if (plan.windows && j + 1 < plan.blocks) t.forward(block.first(s), 0, ring[j % plan.windows]);
-		append_division_words(out, block.data(), std::min(s, n - from), blocked_ntt::detail::kR);
-	}
-}
-}
-
-#pragma GCC pop_options
-#endif
-
-#line 24 "fps/fps.hpp"
+#line 10 "components/mint_convolution.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
 
-template <class T = mint>
-struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
-	static_assert(T::mod() == 998244353, "FormalPowerSeries supports only mod 998244353");
-	using W = FormalPowerSeries<mint>;
-	using base = std::vector<T>;
-	using F = FormalPowerSeries;
-	using Sparse = fps_detail::SparseSeries;
-	using base::base;
-
-	FormalPowerSeries() = default;
-	FormalPowerSeries(base v) : base(std::move(v)) {}
-	F &operator=(base v) {
-		base::operator=(std::move(v));
-		return *this;
-	}
-	F &operator=(std::initializer_list<T> v) {
-		base::operator=(v);
-		return *this;
-	}
-
-	static F multiply(const F &a, const F &b) {
-		if (a.empty() || b.empty()) return {};
-		if constexpr (!std::is_same_v<T, mint>) {
-			W x = import_work(a);
-			return export_work(&a == &b ? W::multiply(x, x) : W::multiply(x, import_work(b)));
-		}
-		if (std::min(a.size(), b.size()) <= 32) {
-			F r(a.size() + b.size() - 1);
-			const F &small = a.size() < b.size() ? a : b;
-			const F &large = a.size() < b.size() ? b : a;
-			if constexpr (std::is_same_v<T, mint>) {
-				for (int j = 0; j < static_cast<int>(small.size()); ++j)
-					NTT::add_scaled(words(r) + j, words(large), large.size(), small[j].val());
-			} else
-				for (int j = 0; j < static_cast<int>(small.size()); ++j)
-					for (int i = 0; i < static_cast<int>(large.size()); ++i) r[i + j] += large[i] * small[j];
-			return r;
-		}
-		int n = 1, size = a.size() + b.size() - 1;
-		while (n < size) n <<= 1;
-		assert(n <= (1 << 23));
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (NTT::vectorized()) return F(fps_detail::multiply_detail::multiply(a, b));
-		}
-#endif
-		F x = a, y;
-		x.resize(n);
-		if (&a != &b) {
-			y = b;
-			y.resize(n);
-		}
-		ntt(x);
-		if (&a == &b) pointwise(x, x, x, n);
-		else {
-			ntt(y);
-			pointwise(x, x, y, n);
-		}
-		intt(x);
-		x.resize(size);
-		return x;
-	}
-
-	F operator-() const {
-		F r = *this;
-		for (T &x : r) x = -x;
-		return r;
-	}
-	F &operator+=(const F &g) {
-		if (this->size() < g.size()) this->resize(g.size());
-		for (std::size_t i = 0; i < g.size(); ++i) (*this)[i] += g[i];
-		return *this;
-	}
-	F &operator-=(const F &g) {
-		if (this->size() < g.size()) this->resize(g.size());
-		for (std::size_t i = 0; i < g.size(); ++i) (*this)[i] -= g[i];
-		return *this;
-	}
-	F &operator+=(T x) {
-		if (this->empty()) this->resize(1);
-		(*this)[0] += x;
-		return *this;
-	}
-	F &operator-=(T x) { return *this += -x; }
-	F &operator*=(const F &g) { return *this = multiply(*this, g); }
-	F &operator*=(T x) {
-		if constexpr (std::is_same_v<T, mint>) {
-			scale_words(*this, x);
-			return *this;
-		}
-		for (T &a : *this) a *= x;
-		return *this;
-	}
-	F &operator/=(const F &g) { return *this = div_series(g); }
-	F &operator%=(const F &g) { return *this = divmod(g).second; }
-	F &operator/=(T x) { return *this *= x.inv(); }
-
-	F &operator<<=(int d) {
-		assert(d >= 0);
-		const int n = static_cast<int>(this->size());
-		if (d >= n) return *this = F(n);
-		this->insert(this->begin(), d, T(0));
-		this->resize(n);
-		return *this;
-	}
-	F &operator>>=(int d) {
-		assert(d >= 0);
-		const int n = static_cast<int>(this->size());
-		if (d >= n) return *this = F(n);
-		this->erase(this->begin(), this->begin() + d);
-		this->resize(n);
-		return *this;
-	}
-
-	F operator+(const F &g) const {
-		F r(*this);
-		r += g;
-		return r;
-	}
-	F operator-(const F &g) const {
-		F r(*this);
-		r -= g;
-		return r;
-	}
-	F operator*(const F &g) const { return multiply(*this, g); }
-	F operator/(const F &g) const { return div_series(g); }
-	F operator%(const F &g) const { return divmod(g).second; }
-	F operator+(T x) const {
-		F r(*this);
-		r += x;
-		return r;
-	}
-	F operator-(T x) const {
-		F r(*this);
-		r -= x;
-		return r;
-	}
-	F operator*(T x) const {
-		F r(*this);
-		r *= x;
-		return r;
-	}
-	F operator/(T x) const {
-		F r(*this);
-		r /= x;
-		return r;
-	}
-	F operator<<(int d) const {
-		F r(*this);
-		r <<= d;
-		return r;
-	}
-	F operator>>(int d) const {
-		F r(*this);
-		r >>= d;
-		return r;
-	}
-
-	F pre(int n) const {
-		assert(n >= 0);
-		return F(this->begin(), this->begin() + std::min<int>(n, this->size()));
-	}
-
-	F div_series(const F &g, int deg = -1) const {
-		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).div_series(import_work(g), deg));
-		if (deg < 0) deg = this->size();
-		assert(deg >= 0);
-		if (!deg) return {};
-		assert(!g.empty() && g[0] != T(0));
-		if (this->empty()) return F(deg);
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (deg >= 129 && deg <= (1 << 23) && g.size() >= 64 && NTT::vectorized()) {
-				F r;
-				fps_detail::blocked_poly::native_div_series(this->data(), this->size(), g.data(), g.size(), r, deg);
-				return r;
-			}
-		}
-#endif
-		F r = multiply(pre(deg), g.inv(deg)).pre(deg);
-		r.resize(deg);
-		return r;
-	}
-
-	F inv(int deg = -1) const {
-		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).inv(deg));
-		if (deg < 0) deg = static_cast<int>(this->size());
-		assert(deg >= 0);
-		if (deg == 0) return {};
-		assert(!this->empty() && (*this)[0] != T(0));
-		F g{(*this)[0].inv()};
-		if constexpr (std::is_same_v<T, mint>) {
-			auto terms = Sparse::collect(this->data(), this->size(), deg, 32);
-			int stride = 0;
-			for (auto term : terms) stride = std::gcd(stride, term.first);
-			if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
-				for (auto &[j, x] : terms) x *= g[0];
-				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), deg, g[0], T(0), nullptr));
-			}
-		}
-
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (deg >= 512 && deg <= (1 << 23) && NTT::vectorized()) {
-				F result;
-				const int block = 1 << (std::bit_width(static_cast<unsigned>(deg)) - 1), tail = deg - block;
-				if (tail > 0 && tail <= 96) {
-					fps_detail::blocked_poly::native_inverse(this->data(), this->size(), result, block);
-					result.resize(deg);
-					for (int i = block; i < deg; ++i)
-						result[i] = -result[0] * dot(this->data() + 1, result.data() + i - 1, std::min<int>(i, this->size() - 1));
-					return result;
-				}
-				fps_detail::blocked_poly::native_inverse(this->data(), this->size(), result, deg);
-				return result;
-			}
-		}
-#endif
-
-		g.resize(std::min(deg, 32));
-		for (int i = 1; i < static_cast<int>(g.size()); ++i)
-			g[i] =
-				-g[0] * dot(this->data() + 1, g.data() + i - 1, std::min<int>(i, this->size() - 1));
-#if defined(__x86_64__) || defined(__i386__)
-		fps_detail::FpsWords storage;
-		Word *a = nullptr, *b = nullptr;
-		if (deg > 96 && NTT::vectorized()) {
-			int capacity = 64;
-			while (capacity < deg && capacity < (1 << 23)) capacity <<= 1;
-			storage = fps_detail::allocate_fps_words(2 * capacity);
-			a = storage.get();
-			b = a + capacity;
-			g.reserve(capacity);
-			transform(std::max(32, capacity / 16));
-		}
-#endif
-		while (static_cast<int>(g.size()) < deg) {
-			const int m = static_cast<int>(g.size()), n = 2 * m;
-			if (m >= 32 && (deg - m <= 32 || (m >= 512 && deg - m <= 96))) {
-				g.resize(deg);
-				for (int i = m; i < deg; ++i) {
-					const int count = std::min<int>(i, this->size() - 1);
-					g[i] = -g[0] * dot(this->data() + 1, g.data() + i - 1, count);
-				}
-				break;
-			}
-#if defined(__x86_64__) || defined(__i386__)
-			if (m >= 64 && n <= (1 << 23) && NTT::vectorized()) {
-				int lo = std::min<int>(n, this->size());
-				std::copy_n(words(*this), lo, a);
-				std::fill(a + lo, a + n, Word(0));
-				std::copy_n(words(g), m, b);
-				transform(std::max(1, n / 16)).inverse_newton8(a, b, n);
-				g.resize(n);
-				std::copy_n(a + m, m, words(g) + m);
-
-			} else
-#endif
-			{
-				base f = this->pre(n), r = g;
-				f.resize(n);
-				r.resize(n);
-				ntt(f);
-				ntt_half(r);
-				pointwise(f, f, r, n);
-				ntt_inverse(f);
-				std::fill(f.begin(), f.begin() + m, T(0));
-				ntt(f);
-				pointwise(f, f, r, n);
-				ntt_inverse(f);
-				const T inv = T::raw(T::mod() - (T::mod() - 1) / n);
-				const T scale = -inv * inv;
-				g.resize(n);
-				transform(1).scale(words(f) + m, m, scale.val());
-				std::copy_n(f.begin() + m, m, g.begin() + m);
-			}
-		}
-		g.resize(deg);
-		return g;
-	}
-
-	F sqrt(int deg = -1) const {
-		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).sqrt(deg));
-		if (deg < 0) deg = static_cast<int>(this->size());
-		assert(deg >= 0);
-		int last = static_cast<int>(std::min<std::size_t>(deg, this->size())), first = 0;
-		while (first < last && (*this)[first] == T(0)) ++first;
-		if (first == last) return F(deg);
-		if (first & 1) return {};
-		const T constant = mod_sqrt((*this)[first]);
-		if (constant == T(0)) return {};
-		while ((*this)[last - 1] == T(0)) --last;
-		if (first + 1 == last) {
-			F result(deg);
-			result[first / 2] = constant;
-			return result;
-		}
-		const int shift = first / 2, target = deg - shift;
-		if constexpr (std::is_same_v<T, mint>) if (target >= 256 && unsigned(target) < T::mod()) {
-			auto terms = Sparse::collect(this->data() + first, last - first, target);
-			if (terms.size() <= 12) {
-				const T inverse = (*this)[first].inv();
-				for (auto &[j, x] : terms) x *= inverse;
-				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inverse_table));
-				result.insert(result.begin(), shift, T(0));
-				return result;
-			}
-		}
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
-				F result;
-				fps_detail::blocked_poly::native_sqrt(this->data() + first, last - first, result, target, constant);
-				result.insert(result.begin(), shift, T(0));
-				return result;
-			}
-		}
-#endif
-		F f(this->begin() + first, this->begin() + last);
-		f.resize(target);
-		const T half = T(2).inv(), scale = half / constant;
-		F g(std::min(target, 32));
-		g[0] = constant;
-		for (int i = 1; i < static_cast<int>(g.size()); ++i) {
-			T sum = 0;
-			for (int j = 1; j < i; ++j) sum += g[j] * g[i - j];
-			g[i] = (f[i] - sum) * scale;
-		}
-		F h;
-		base cache;
-		if (static_cast<int>(g.size()) < target) {
-			h = g.pre(16).inv(16);
-			cache = h;
-			cache.resize(32);
-			ntt(cache);
-		}
-		while (static_cast<int>(g.size()) < target) {
-			const int m = static_cast<int>(g.size()), n = 2 * m;
-			if (target - m <= 32) {
-				g.resize(target);
-				for (int i = m; i < target; ++i)
-					g[i] = (f[i] - dot(g.data() + 1, g.data() + i - 1, i - 1)) * scale;
-				break;
-			}
-			assert(n <= (1 << 23));
-			const T in = T::raw(T::mod() - (T::mod() - 1) / n);
-			base a = g, error(n);
-			a.resize(n);
-			ntt(a);
-			inverse_extend(h, a, cache);
-			cache = h;
-			cache.resize(n);
-			ntt(cache);
-			pointwise(error, a, a, n);
-			ntt_inverse(error);
-			std::fill(error.begin(), error.begin() + m, T(0));
-			for (int i = m; i < n; ++i) error[i] = (i < target ? f[i] : T(0)) - error[i] * in;
-			ntt(error);
-			pointwise(error, error, cache, n);
-			F::scale_words(error, half);
-			ntt_inverse(error);
-			g.resize(std::min(n, target));
-			for (int i = m; i < static_cast<int>(g.size()); ++i) g[i] = error[i] * in;
-		}
-		g.resize(target);
-		g.insert(g.begin(), shift, T(0));
-		return g;
-	}
-
-	T eval(T x) const {
-		if constexpr (std::is_same_v<T, mint>) return fps_detail::horner(this->data(), this->size(), x);
-		T ans = 0;
-		for (auto it = this->rbegin(); it != this->rend(); ++it) ans = ans * x + *it;
-		return ans;
-	}
-
-	void onemul(int d, T c) {
-		assert(d >= 0);
-		if (d == 0) {
-			*this *= T(1) + c;
-			return;
-		}
-		for (int i = (static_cast<int>(this->size())) - 1; i >= d; --i) (*this)[i] += (*this)[i - d] * c;
-	}
-	void onediv(int d, T c) {
-		assert(d >= 0);
-		if (d == 0) {
-			*this /= T(1) + c;
-			return;
-		}
-		for (int i = d; i < static_cast<int>(this->size()); ++i) (*this)[i] -= (*this)[i - d] * c;
-	}
-
-	F diff() const {
-		const int n = static_cast<int>(this->size());
-		F r(n);
-		if constexpr (std::is_same_v<T, mint>) {
-			if (n > 1) NTT::weighted(words(r), words(*this) + 1, n - 1, 1);
-		} else
-			for (int i = 1; i < n; ++i) r[i - 1] = (*this)[i] * i;
-		return r;
-	}
-	F integral() const {
-		const int n = static_cast<int>(this->size());
-		assert(unsigned(n) < unsigned(T::mod()));
-		F r(n);
-		const auto &inv = inverses(n);
-		if constexpr (std::is_same_v<T, mint>) {
-			if (n > 1) NTT::product(words(r) + 1, words(*this), words(inv) + 1, n - 1);
-		} else
-			for (int i = 1; i < n; ++i) r[i] = (*this)[i - 1] * inv[i];
-		return r;
-	}
-
-	F log(int deg = -1) const {
-		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).log(deg));
-		if (deg < 0) deg = static_cast<int>(this->size());
-		assert(deg >= 0);
-		if (deg == 0) return {};
-		assert(!this->empty() && (*this)[0] == T(1));
-		if constexpr (std::is_same_v<T, mint>) if (deg >= 256 && unsigned(deg) < T::mod()) {
-			auto terms = Sparse::collect(this->data(), this->size(), deg);
-			if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inverse_table));
-		}
-		return log_derivative(deg, true);
-	}
-
-	F exp(int deg = -1) const {
-		if constexpr (std::is_same_v<T, mint>) return exp_impl<false>(deg);
-		else return export_work(import_work(*this).exp(deg));
-	}
-
-	F pow(long long k) const {
-		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).pow(k));
-		assert(k >= 0);
-		const int n = static_cast<int>(this->size());
-		if (n == 0) return {};
-		if (k == 0) {
-			F r(n);
-			r[0] = 1;
-			return r;
-		}
-		if (k == 1) return *this;
-		int first = 0;
-		while (first < n && (*this)[first] == T(0)) ++first;
-		if (first == n || first > (n - 1) / k) return F(n);
-		const int shift = first * k;
-		const int len = n - shift;
-		const T lead = (*this)[first];
-		if constexpr (std::is_same_v<T, mint>) if (unsigned(len) < T::mod()) {
-			auto terms = Sparse::collect(this->data() + first, this->size() - first, len);
-			if (terms.size() <= 12) {
-				const T inverse = lead.inv();
-				for (auto &[j, x] : terms) x *= inverse;
-				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
-				result.insert(result.begin(), shift, T(0));
-				return result;
-			}
-		}
-		if (k <= 4) {
-			F square = multiply(*this, *this).pre(n);
-			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
-		}
-
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (len >= 256 && len <= (1 << 24) && NTT::vectorized()) {
-				F r;
-				fps_detail::blocked_poly::native_power(this->data() + first, this->size() - first, r, len, T(k).val(), lead.pow(k));
-				r.insert(r.begin(), shift, T(0));
-				return r;
-			}
-		}
-#endif
-		F f(this->begin() + first, this->end());
-		f.resize(len);
-		f = f.log_derivative(len);
-		f *= T(k);
-		f = f.template exp_impl<true>(len);
-		f *= lead.pow(k);
-		F r(n);
-		for (int i = 0; i < len; ++i) r[shift + i] = f[i];
-		return r;
-	}
-
-	std::pair<F, F> divmod(const F &divisor) const {
-		if constexpr (!std::is_same_v<T, mint>) {
-			auto [q, r] = import_work(*this).divmod(import_work(divisor));
-			return {export_work(q), export_work(r)};
-		}
-		int n = static_cast<int>(this->size()), m = static_cast<int>(divisor.size());
-		while (n && (*this)[n - 1] == T(0)) --n;
-		while (m && divisor[m - 1] == T(0)) --m;
-		assert(m);
-		if (n < m) return {{}, pre(n)};
-		const int qn = n - m + 1;
-
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (m > 2 && (std::size_t)m * qn > 4096 && n <= (1 << 23) && NTT::vectorized()) {
-				F q, r;
-				fps_detail::blocked_poly::native_divide(this->data(), n, divisor.data(), m, q, r);
-				q.trim(), r.trim();
-				return {std::move(q), std::move(r)};
-			}
-		}
-#endif
-		F a = pre(n);
-		if (m <= 2 || (std::size_t)m * qn <= 4096) {
-			F q(qn);
-			const T inv = divisor[m - 1].inv();
-			for (int i = qn - 1; i >= 0; --i) {
-				q[i] = a[i + m - 1] * inv;
-				for (int j = 0; j < m; ++j) a[i + j] -= q[i] * divisor[j];
-			}
-			a.resize(m - 1);
-			a.trim();
-			q.trim();
-			return {std::move(q), std::move(a)};
-		}
-		F ra = a, rb(divisor.begin(), divisor.begin() + m);
-		std::reverse(ra.begin(), ra.end());
-		std::reverse(rb.begin(), rb.end());
-		F q = ra.pre(qn).div_series(rb, qn);
-		std::reverse(q.begin(), q.end());
-		std::reverse(rb.begin(), rb.end());
-		F product = multiply(rb.pre(m - 1), q.pre(m - 1));
-		a.resize(m - 1);
-		for (int i = 0; i < std::min<int>(a.size(), product.size()); ++i) a[i] -= product[i];
-		a.trim();
-		q.trim();
-		return {std::move(q), std::move(a)};
-	}
-
-	private:
-	using O = fps_detail::Operations<T>;
-	using O::import_work;
-	using O::export_work;
-	using O::transform;
-	using O::words;
-	using O::transform_inplace;
-	using O::ntt;
-	using O::ntt_half;
-	using O::ntt_inverse;
-	using O::scale_words;
-	using O::geometric_scale;
-	using O::batch_inverse;
-	using O::pointwise;
-	using O::inverse_extend;
-	using O::dot;
-	using O::intt;
-	using O::mod_sqrt;
-	using O::inverse_ntt_roots;
-	using O::ntt_roots;
-	using O::inverses;
-
+namespace mint_convolution_detail {
+inline std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<mint> &b) {
 	using NTT = fps_detail::NTT;
-	using Word = typename O::Word;
-
-	F log_derivative(int deg, bool integrate = false) const {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (deg >= 256 && deg <= (1 << 24) && this->size() >= 64 && NTT::vectorized()) {
-				F r;
-				fps_detail::blocked_poly::native_log(this->data(), this->size(), r, deg, integrate);
-				return r;
-			}
-		}
-#endif
-
-		F derivative(std::min<int>(deg, this->size()));
-		if (derivative.size() > 1) NTT::weighted(words(derivative) + 1, words(*this) + 1, derivative.size() - 1, 1);
-		F r = derivative.div_series(*this, deg);
-		if (integrate) {
-			const auto &iv = inverses(deg - 1);
-			NTT::product(words(r), words(r), words(iv), deg);
-		}
-		return r;
+	using Word = NTT::U;
+	if (a.empty() || b.empty()) return {};
+	auto words = [](auto &v) { return reinterpret_cast<Word *>(v.data()); };
+	auto input = [](const auto &v) { return reinterpret_cast<const Word *>(v.data()); };
+	if (std::min(a.size(), b.size()) <= 32) {
+		std::vector<mint> result(a.size() + b.size() - 1);
+		const auto &small = a.size() < b.size() ? a : b;
+		const auto &large = a.size() < b.size() ? b : a;
+		for (int j = 0; j < static_cast<int>(small.size()); ++j)
+			NTT::add_scaled(words(result) + j, input(large), large.size(), small[j].val());
+		return result;
 	}
-
-	template <bool differentiated>
-	F exp_impl(int deg) const {
-		if (deg < 0) deg = static_cast<int>(this->size());
-		assert(deg >= 0);
-		if (deg == 0) return {};
-		assert(this->empty() || (*this)[0] == T(0));
-		if constexpr (std::is_same_v<T, mint>) {
-			auto terms = Sparse::collect(this->data(), this->size(), deg, 64);
-			int stride = 0;
-			for (auto term : terms) stride = std::gcd(stride, term.first);
-			if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
-				if constexpr (differentiated) for (auto &[j, x] : terms) x /= T(j);
-				return F(Sparse::get<Sparse::Kind::exponential>(std::move(terms), deg, T(1), T(0), inverse_table));
-			}
-		}
-
+	int n = 1, size = a.size() + b.size() - 1;
+	while (n < size) n <<= 1;
+	assert(n <= (1 << 23));
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (deg >= 256 && deg <= (1 << 24) && NTT::vectorized()) {
-				F r;
-				fps_detail::blocked_poly::native_exp(this->data(), this->size(), r, deg, differentiated);
-				return r;
-			}
-		}
+	if (NTT::vectorized()) return fps_detail::multiply_detail::multiply(a, b);
 #endif
-		const auto &iv = inverses(deg);
-		const int initial = std::min(deg, 32);
-		F g(initial);
-		g[0] = 1;
-		for (int i = 1; i < initial; ++i) {
-			T sum = 0;
-			for (int j = 1; j <= i && j < static_cast<int>(this->size()); ++j)
-				sum += (differentiated ? (*this)[j] : T(j) * (*this)[j]) * g[i - j];
-			g[i] = sum * iv[i];
-		}
-		if (initial == deg) return g;
-		F h = g.pre(16).inv(16);
-		base cache = h;
-		cache.resize(32);
-		ntt(cache);
-		while (static_cast<int>(g.size()) < deg) {
-			const int m = static_cast<int>(g.size()), n = 2 * m;
-			if (deg - m <= 32) {
-				base derivative(std::min<int>(deg, this->size()));
-				for (int i = 1; i < static_cast<int>(derivative.size()); ++i) derivative[i] = differentiated ? (*this)[i] : T(i) * (*this)[i];
-				derivative.resize(std::max<int>(1, derivative.size()));
-				g.resize(deg);
-				for (int i = m; i < deg; ++i) {
-					const int count = std::min<int>(i, derivative.size() - 1);
-					g[i] = dot(derivative.data() + 1, g.data() + i - 1, count) * iv[i];
-				}
-				break;
-			}
-			assert(n <= (1 << 23));
-			const T im = T::raw(T::mod() - (T::mod() - 1) / m);
-			const T in = T::raw(T::mod() - (T::mod() - 1) / n);
-			base a = g, b(m), error(n);
-			a.resize(n);
-			ntt(a);
-			inverse_extend(h, a, cache);
-			cache = h;
-			cache.resize(n);
-			ntt(cache);
-			std::fill(b.begin(), b.end(), T(0));
-			for (int i = 1; i < m && i < static_cast<int>(this->size()); ++i) b[i - 1] = differentiated ? (*this)[i] : T(i) * (*this)[i];
-			ntt(b);
-			pointwise(b, b, a, m);
-			ntt_inverse(b);
-			error[m - 1] = b[m - 1] * im;
-			for (int i = 0; i < m - 1; ++i) error[m + i] = b[i] * im - T(i + 1) * g[i + 1];
-			ntt(error);
-			pointwise(error, error, cache, n);
-			ntt_inverse(error);
-			for (int i = (std::min(n, deg)) - 1; i >= m; --i)
-				error[i] = (i < static_cast<int>(this->size()) ? (*this)[i] * (differentiated ? iv[i] : T(1)) : T(0)) + error[i - 1] * in * iv[i];
-			std::fill(error.begin(), error.begin() + m, T(0));
-			std::fill(error.begin() + std::min(n, deg), error.end(), T(0));
-			ntt(error);
-			pointwise(error, error, a, n);
-			ntt_inverse(error);
-			g.resize(std::min(n, deg));
-			for (int i = m; i < static_cast<int>(g.size()); ++i) g[i] = error[i] * in;
-		}
-		return g;
+	std::vector<mint> x = a, y;
+	x.resize(n);
+	if (&a != &b) y = b, y.resize(n);
+	auto &plan = fps_detail::ntt_plan(std::max(1, n / 2));
+	plan.fft<false>(words(x), n);
+	if (&a == &b) NTT::product(words(x), input(x), input(x), n);
+	else {
+		plan.fft<false>(words(y), n);
+		NTT::product(words(x), input(x), input(y), n);
 	}
-
-	static const mint *inverse_table(int n) { return fps_detail::Operations<mint>::inverses(n).data(); }
-
-	void trim() { O::trim(*this); }
-
-};
-
-using fps = FormalPowerSeries<mint>;
+	plan.fft<true>(words(x), n);
+	plan.scale(words(x), n, mint(n).inv().val());
+	x.resize(size);
+	return x;
+}
+}
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options
@@ -6127,6 +3441,8 @@ std::vector<Real> convolution_fft(const std::vector<Real> &a, const std::vector<
 #endif
 
 namespace ntt_mod_detail {
+template <std::uint32_t mod> struct Vector;
+
 template <std::uint32_t mod>
 std::uint32_t power(std::uint32_t a, std::uint32_t k) {
 	std::uint32_t result = 1;
@@ -6154,23 +3470,16 @@ template <std::uint32_t mod>
 __attribute__((target("avx2")))
 void butterfly_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 					const std::uint32_t *roots, const std::uint32_t *quotients) {
-	const auto p = _mm256_set1_epi32(mod);
+	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
 			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
 			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
 			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
 			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
-			auto even = _mm256_mul_epu32(y, q);
-			auto odd = _mm256_mul_epu32(_mm256_srli_epi64(y, 32), _mm256_srli_epi64(q, 32));
-			q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
-			y = _mm256_sub_epi32(_mm256_mullo_epi32(y, r), _mm256_mullo_epi32(q, p));
-			y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
-			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
-			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
-			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), sum);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
+			y = V::multiply(y, r, q);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), V::subtract(x, y));
 		}
 }
 #endif
@@ -6200,22 +3509,15 @@ template <std::uint32_t mod>
 __attribute__((target("avx2")))
 void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 		const std::uint32_t *roots, const std::uint32_t *quotients) {
-	const auto p = _mm256_set1_epi32(mod);
+	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
 			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
 			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
-			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
-			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
-			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
 			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
 			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
-			auto even = _mm256_mul_epu32(difference, q);
-			auto odd = _mm256_mul_epu32(_mm256_srli_epi64(difference, 32), _mm256_srli_epi64(q, 32));
-			q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
-			difference = _mm256_sub_epi32(_mm256_mullo_epi32(difference, r), _mm256_mullo_epi32(q, p));
-			difference = _mm256_min_epu32(difference, _mm256_sub_epi32(difference, p));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), sum);
+			auto difference = V::multiply(V::subtract(x, y), r, q);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
 			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
 		}
 }
@@ -6224,15 +3526,16 @@ void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
 struct Vector {
+	static constexpr std::uint32_t range = mod < (std::uint32_t(1) << 30) ? 2 * mod : mod;
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i add(__m256i x, __m256i y) {
 		auto sum = _mm256_add_epi32(x, y);
-		return _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(mod)));
+		return _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(range)));
 	}
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i subtract(__m256i x, __m256i y) {
 		auto difference = _mm256_sub_epi32(x, y);
-		return _mm256_min_epu32(difference, _mm256_add_epi32(difference, _mm256_set1_epi32(mod)));
+		return _mm256_min_epu32(difference, _mm256_add_epi32(difference, _mm256_set1_epi32(range)));
 	}
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i multiply(__m256i x, __m256i factor, __m256i quotient) {
@@ -6240,6 +3543,7 @@ struct Vector {
 		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(quotient, 32));
 		auto q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
 		auto result = _mm256_sub_epi32(_mm256_mullo_epi32(x, factor), _mm256_mullo_epi32(q, _mm256_set1_epi32(mod)));
+		if constexpr (range == 2 * mod) return result;
 		return _mm256_min_epu32(result, _mm256_sub_epi32(result, _mm256_set1_epi32(mod)));
 	}
 };
@@ -6311,6 +3615,7 @@ void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32
 			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 3 * h), x3);
 		}
 }
+
 #endif
 
 #if defined(__x86_64__) || defined(__i386__)
@@ -6325,6 +3630,7 @@ void build_roots_avx2(std::uint32_t *roots, std::uint32_t *quotients, std::size_
 	auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(initial));
 	auto factor = _mm256_set1_epi32(w), quotient = _mm256_set1_epi32((std::uint64_t(w) << 32) / mod);
 	for (std::size_t j = 0; j < half; j += 8) {
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(mod)));
 		_mm256_storeu_si256(reinterpret_cast<__m256i *>(roots + j), x);
 		for (int k = 0; k < 8; ++k) quotients[j + k] = (std::uint64_t(roots[j + k]) << 32) / mod;
 		x = Vector<mod>::multiply(x, factor, quotient);
@@ -6379,6 +3685,7 @@ void backward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[mayb
 	if (vectorized && a.size() >= 8) {
 		leaf_avx2<mod, true>(a.data(), a.size(), plan.roots.data(), plan.quotients.data());
 		half = 8;
+
 		for (; 2 * half < a.size(); half *= 4) pair_avx2<mod, true>(a.data(), a.size(), half, plan.roots.data(), plan.quotients.data());
 		if (half < a.size()) butterfly_avx2<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
 		return;
@@ -6394,7 +3701,8 @@ void scale_avx2(std::uint32_t *a, std::size_t n, std::uint32_t factor, std::uint
 	auto r = _mm256_set1_epi32(factor), q = _mm256_set1_epi32(quotient);
 	for (std::size_t i = 0; i < n; i += 8) {
 		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), Vector<mod>::multiply(x, r, q));
+		auto y = Vector<mod>::multiply(x, r, q);
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), _mm256_min_epu32(y, _mm256_sub_epi32(y, _mm256_set1_epi32(mod))));
 	}
 }
 #endif
@@ -6430,6 +3738,7 @@ void transform(std::vector<std::uint32_t> &a, bool inverse, bool vectorized) {
 		scale<mod>(a, power<mod>(a.size(), mod - 2), vectorized);
 	} else {
 		forward(a, plan, vectorized);
+		if constexpr (mod < (std::uint32_t(1) << 30)) for (auto &x : a) if (x >= mod) x -= mod;
 		bit_reverse(a);
 	}
 }
@@ -6493,7 +3802,7 @@ void ntt_mod(std::vector<std::uint32_t> &a, bool inverse = false) {
 
 namespace convolution_mod_detail {
 template <std::uint32_t mod, std::uint32_t root, class T>
-std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T> &b) {
+std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T> &b, std::uint32_t factor = 1) {
 	std::size_t length = a.size() + b.size() - 1, n = std::bit_ceil(length);
 	std::vector<std::uint32_t> x(n), y(n);
 	auto reduce = [](T value) {
@@ -6506,6 +3815,7 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 		std::vector<std::uint32_t> result(length);
 		for (std::size_t i = 0; i < a.size(); ++i)
 			for (std::size_t j = 0; j < b.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * y[j]) % mod;
+		if (factor != 1) for (auto &v : result) v = std::uint64_t(v) * factor % mod;
 		return result;
 	}
 	bool vectorized = false;
@@ -6519,7 +3829,7 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 	ntt_mod_detail::pointwise<mod>(x, y, vectorized);
 	ntt_mod_detail::backward(x, plan, vectorized);
 	std::reverse(x.begin() + 1, x.end());
-	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod;
+	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod * factor % mod;
 	ntt_mod_detail::scale<mod>(x, scale, vectorized);
 	x.resize(length);
 	return x;
@@ -6527,18 +3837,85 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 inline constexpr std::uint32_t p = 754974721, q = 1224736769, r = 2013265921;
 inline constexpr __uint128_t modulus = __uint128_t(p) * q * r;
 struct Reconstruction { std::uint64_t low; std::uint32_t high; };
+template <std::uint32_t P = p, std::uint32_t Q = q, std::uint32_t R = r>
 inline Reconstruction reconstruct(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
-	static const std::uint32_t inverse_p = ntt_mod_detail::power<q>(p, q - 2);
-	static const std::uint32_t inverse_pq = ntt_mod_detail::power<r>(std::uint64_t(p) * q % r, r - 2);
-	std::uint64_t x = std::uint64_t(b + q - a) * inverse_p % q;
-	std::uint64_t low = a + std::uint64_t(p) * x;
-	std::uint64_t y = std::uint64_t(c + r - low % r) * inverse_pq % r;
+	static const std::uint32_t inverse_p = ntt_mod_detail::power<Q>(P, Q - 2);
+	static const std::uint32_t inverse_pq = ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2);
+	std::uint64_t x = std::uint64_t(b + Q - a) * inverse_p % Q;
+	std::uint64_t low = a + std::uint64_t(P) * x;
+	std::uint64_t y = std::uint64_t(c + R - low % R) * inverse_pq % R;
 	return {low, std::uint32_t(y)};
 }
 inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
 	auto [low, high] = reconstruct(a, b, c);
 	return low + __uint128_t(p) * q * high;
 }
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t P, std::uint32_t Q, std::uint32_t R>
+__attribute__((target("avx2")))
+void combine(std::uint32_t *a, const std::uint32_t *b, const std::uint32_t *c, std::size_t n) {
+	static_assert(P > 256 && Q > 256 && R > 256 && P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32));
+	constexpr std::uint32_t mod = 1000000007;
+	constexpr auto form = [](std::uint64_t x) { return std::uint32_t(x % mod * ((std::uint64_t(1) << 32) % mod) % mod); };
+	constexpr std::uint32_t place[3] = {form(std::uint64_t(Q) * R), form(std::uint64_t(P) * R), form(std::uint64_t(P) * Q)};
+	constexpr std::uint32_t wrap = form(mod - std::uint64_t(P) * Q % mod * R % mod);
+	const auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(ntt_mod_detail::negative_inverse<mod>);
+	std::size_t i = 0;
+	for (; n - i >= 8; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		auto z = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(c + i));
+		auto quotient = [&](__m256i a, __m256i b, __m256i c) __attribute__((target("avx2"), always_inline)) {
+			auto s = _mm256_mul_epu32(a, _mm256_set1_epi32((std::uint64_t(1) << 40) / P + 1));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(b, _mm256_set1_epi32((std::uint64_t(1) << 40) / Q + 1)));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(c, _mm256_set1_epi32((std::uint64_t(1) << 40) / R + 1)));
+			return _mm256_srli_epi64(_mm256_add_epi64(s, _mm256_set1_epi64x(std::uint64_t(1) << 39)), 40);
+		};
+		auto reduce = [&](__m256i a, __m256i b, __m256i c, __m256i t) __attribute__((target("avx2"), always_inline)) {
+			auto s = _mm256_add_epi64(_mm256_mul_epu32(a, _mm256_set1_epi32(place[0])), _mm256_mul_epu32(b, _mm256_set1_epi32(place[1])));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(c, _mm256_set1_epi32(place[2])));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(t, _mm256_set1_epi32(wrap)));
+			return _mm256_add_epi64(s, _mm256_mul_epu32(_mm256_mul_epu32(s, inverse), p));
+		};
+		auto xo = _mm256_srli_epi64(x, 32), yo = _mm256_srli_epi64(y, 32), zo = _mm256_srli_epi64(z, 32);
+		auto even = reduce(x, y, z, quotient(x, y, z)), odd = reduce(xo, yo, zo, quotient(xo, yo, zo));
+		x = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+	for (; i < n; ++i) {
+		std::uint64_t t = (std::uint64_t(a[i]) * ((std::uint64_t(1) << 40) / P + 1) + std::uint64_t(b[i]) * ((std::uint64_t(1) << 40) / Q + 1) + std::uint64_t(c[i]) * ((std::uint64_t(1) << 40) / R + 1) + (std::uint64_t(1) << 39)) >> 40;
+		std::uint64_t sum = std::uint64_t(a[i]) * place[0] + std::uint64_t(b[i]) * place[1] + std::uint64_t(c[i]) * place[2] + std::uint64_t(t) * wrap;
+		auto q = std::uint32_t(sum) * ntt_mod_detail::negative_inverse<mod>;
+		std::uint32_t value = (sum + std::uint64_t(q) * mod) >> 32;
+		a[i] = value < mod ? value : value - mod;
+	}
+}
+#endif
+template <std::uint32_t P, std::uint32_t PR, std::uint32_t Q, std::uint32_t QR, std::uint32_t R, std::uint32_t RR>
+std::vector<std::uint32_t> modular(const std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b, std::uint32_t mod) {
+#if defined(__x86_64__) || defined(__i386__)
+	if constexpr (P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32)) {
+		if (mod == 1000000007 && __uint128_t(std::min(a.size(), b.size())) * (mod - 1) * (mod - 1) * 4 < __uint128_t(P) * Q * R && __builtin_cpu_supports("avx2")) {
+			auto x = multiply<P, PR>(a, b, ntt_mod_detail::power<P>(std::uint64_t(Q) * R % P, P - 2));
+			auto y = multiply<Q, QR>(a, b, ntt_mod_detail::power<Q>(std::uint64_t(P) * R % Q, Q - 2));
+			auto z = multiply<R, RR>(a, b, ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2));
+			combine<P, Q, R>(x.data(), y.data(), z.data(), x.size());
+			return x;
+		}
+	}
+#endif
+	auto x = multiply<P, PR>(a, b);
+	auto y = multiply<Q, QR>(a, b);
+	auto z = multiply<R, RR>(a, b);
+	std::uint64_t pq_mod = std::uint64_t(P) * Q % mod;
+	for (std::size_t i = 0; i < x.size(); ++i) {
+		auto [low, high] = reconstruct<P, Q, R>(x[i], y[i], z[i]);
+		x[i] = (low % mod + pq_mod * high) % mod;
+	}
+	return x;
+}
+
 }
 
 template <class T>
@@ -6587,15 +3964,10 @@ std::vector<std::uint32_t> convolution_mod(const std::vector<T> &a, const std::v
 		return result;
 	}
 	if (mod == 998244353 && x.size() + other.size() - 1 <= std::size_t(1) << 23) return convolution_mod_detail::multiply<998244353, 3>(x, other);
-	auto p = convolution_mod_detail::multiply<convolution_mod_detail::p, 11>(x, other);
-	auto q = convolution_mod_detail::multiply<convolution_mod_detail::q, 3>(x, other);
-	auto r = convolution_mod_detail::multiply<convolution_mod_detail::r, 31>(x, other);
-	std::uint64_t pq_mod = std::uint64_t(convolution_mod_detail::p) * convolution_mod_detail::q % mod;
-	for (std::size_t i = 0; i < p.size(); ++i) {
-		auto [low, high] = convolution_mod_detail::reconstruct(p[i], q[i], r[i]);
-		p[i] = (low % mod + pq_mod * high) % mod;
-	}
-	return p;
+	constexpr std::uint32_t P = 167772161, Q = 469762049, R = 754974721;
+	if (__uint128_t(std::min(x.size(), other.size())) * (mod - 1) * (mod - 1) < __uint128_t(P) * Q * R)
+		return convolution_mod_detail::modular<P, 3, Q, 3, R, 11>(x, other, mod);
+	return convolution_mod_detail::modular<convolution_mod_detail::p, 11, convolution_mod_detail::q, 3, convolution_mod_detail::r, 31>(x, other, mod);
 }
 
 
@@ -6638,7 +4010,7 @@ std::vector<T> convolution_ring(const std::vector<T> &a, const std::vector<T> &b
 }
 
 
-#line 13 "convolution/convolution.hpp"
+#line 13 "components/convolution_dispatch.hpp"
 
 namespace convolution_detail {
 template <class T>
@@ -6651,19 +4023,12 @@ template <class T>
 std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
 		if constexpr (T::mod() == 998244353) {
-			if constexpr (std::is_same_v<T, mint>) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-				if (std::min(a.size(), b.size()) > 32 && fps_detail::NTT::vectorized())
-					return fps_detail::multiply_detail::multiply(a, b);
-#endif
-				fps x(a);
-				if (&a == &b) return fps::multiply(x, x);
-				return fps::multiply(x, fps(b));
-			} else {
-				fps x(a.size()), y(b.size());
+			if constexpr (std::is_same_v<T, mint>) return mint_convolution_detail::multiply(a, b);
+			else {
+				std::vector<mint> x(a.size()), y(&a == &b ? 0 : b.size());
 				for (std::size_t i = 0; i < a.size(); ++i) x[i] = mint::raw(a[i].val());
-				for (std::size_t i = 0; i < b.size(); ++i) y[i] = mint::raw(b[i].val());
-				auto values = &a == &b ? fps::multiply(x, x) : fps::multiply(x, y);
+				if (&a != &b) for (std::size_t i = 0; i < b.size(); ++i) y[i] = mint::raw(b[i].val());
+				auto values = &a == &b ? mint_convolution_detail::multiply(x, x) : mint_convolution_detail::multiply(x, y);
 				std::vector<T> result;
 				result.reserve(values.size());
 				for (auto x : values) result.push_back(T::raw(x.val()));

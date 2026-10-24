@@ -351,10 +351,7 @@ inline void native_sqrt(const mint *in, size_t input, std::vector<mint> &out, si
 	Arena arena(Transform::words(lg) + Arena::footprint(c) + Arena::footprint(n) + Arena::footprint(sqrt_scratch(n)));
 	const Transform t(arena, lg);
 	auto f = arena.take(c), g = arena.take(n), scratch = arena.take(sqrt_scratch(n));
-	for (size_t i = 0; i < c; ++i) {
-		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, f);
 	const Word ct = blocked_ntt::detail::multiply_mod(std::min(constant.v, constant.v - mint::mod()),
 		blocked_ntt::detail::power(65536, mint::mod() - 2));
 	sqrt(t, f, ct, g, scratch);

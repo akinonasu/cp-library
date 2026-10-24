@@ -1,121 +1,7 @@
 #line 1 "test/hld_path_composite.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_set_path_composite"
-#line 1 "data_structure/segment_tree/segtree.hpp"
+#line 1 "tree/path_product.hpp"
 
-
-
-#include <bit>
-#include <cassert>
-#include <cstddef>
-#include <limits>
-#include <utility>
-#include <vector>
-
-template<class S, auto op, auto e> class Segtree {
-	int n_ = 0;
-	unsigned base_ = 1;
-	std::vector<S> data_;
-	void pull(unsigned k) { data_[k] = op(data_[k * 2], data_[k * 2 + 1]); }
-	void allocate(int n) {
-		assert(n >= 0);
-		n_ = n;
-		base_ = std::bit_ceil(unsigned(n) ? unsigned(n) : 1U);
-		data_.assign(std::size_t(base_) * 2, e());
-	}
-
-  public:
-	explicit Segtree(int n = 0) { allocate(n); }
-	explicit Segtree(const std::vector<S> &a) {
-		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
-		allocate(static_cast<int>(a.size()));
-		for (int i = 0; i < n_; ++i) data_[base_ + unsigned(i)] = a[i];
-		for (unsigned k = base_ - 1; k; --k) pull(k);
-	}
-	Segtree(const Segtree &) = default;
-	Segtree &operator=(const Segtree &other) {
-		if (this != &other) { Segtree copy(other); swap(copy); }
-		return *this;
-	}
-	Segtree(Segtree &&other) noexcept
-		: n_(std::exchange(other.n_, 0)), base_(std::exchange(other.base_, 1)), data_(std::move(other.data_)) {}
-	Segtree &operator=(Segtree &&other) noexcept {
-		if (this != &other) {
-			n_ = std::exchange(other.n_, 0);
-			base_ = std::exchange(other.base_, 1);
-			data_ = std::move(other.data_);
-		}
-		return *this;
-	}
-	void swap(Segtree &other) noexcept {
-		std::swap(n_, other.n_), std::swap(base_, other.base_);
-		data_.swap(other.data_);
-	}
-	int size() const { return n_; }
-	void set(int p, S value) {
-		assert(0 <= p && p < n_);
-		unsigned k = base_ + unsigned(p);
-		data_[k] = std::move(value);
-		for (k >>= 1; k; k >>= 1) pull(k);
-	}
-	S get(int p) const {
-		assert(0 <= p && p < n_);
-		return data_[base_ + unsigned(p)];
-	}
-	S all_prod() const { return n_ ? data_[1] : e(); }
-	S prod(int l, int r) const {
-		assert(0 <= l && l <= r && r <= n_);
-		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r);
-		S left = e(), right = e();
-		while (a < b) {
-			if (a & 1) left = op(left, data_[a++]);
-			if (b & 1) right = op(data_[--b], right);
-			a >>= 1, b >>= 1;
-		}
-		return op(left, right);
-	}
-	template<class Pred> int max_right(int l, Pred f) const {
-		assert(0 <= l && l <= n_ && f(e()));
-		if (l == n_) return n_;
-		unsigned k = base_ + unsigned(l);
-		S value = e();
-		do {
-			while (!(k & 1)) k >>= 1;
-			S next = op(value, data_[k]);
-			if (!f(next)) {
-				while (k < base_) {
-					k *= 2;
-					next = op(value, data_[k]);
-					if (f(next)) value = std::move(next), ++k;
-				}
-				return static_cast<int>(k - base_);
-			}
-			value = std::move(next);
-			++k;
-		} while ((k & -k) != k);
-		return n_;
-	}
-	template<class Pred> int min_left(int r, Pred f) const {
-		assert(0 <= r && r <= n_ && f(e()));
-		if (!r) return 0;
-		unsigned k = base_ + unsigned(r);
-		S value = e();
-		do {
-			--k;
-			while (k > 1 && (k & 1)) k >>= 1;
-			S next = op(data_[k], value);
-			if (!f(next)) {
-				while (k < base_) {
-					k = k * 2 + 1;
-					next = op(data_[k], value);
-					if (f(next)) value = std::move(next), --k;
-				}
-				return static_cast<int>(k + 1 - base_);
-			}
-			value = std::move(next);
-		} while ((k & -k) != k);
-		return 0;
-	}
-};
 
 
 #line 1 "data_structure/advanced/hld.hpp"
@@ -124,7 +10,11 @@ template<class S, auto op, auto e> class Segtree {
 
 #include <algorithm>
 #include <array>
-#line 11 "data_structure/advanced/hld.hpp"
+#include <cassert>
+#include <cstddef>
+#include <limits>
+#include <utility>
+#include <vector>
 
 class HLD {
 	int shape_ = 0, center_ = 0;
@@ -311,13 +201,275 @@ class HLD {
 };
 
 
+#line 5 "tree/path_product.hpp"
+#include <bit>
+#include <cstdint>
+#include <type_traits>
+
+template<class S, auto op, auto e, auto reverse = nullptr> class TreePathProduct {
+	static constexpr bool has_reverse = !std::is_same_v<decltype(reverse), std::nullptr_t>;
+	struct Empty {};
+	struct Back { S prod, prefix; };
+	using BackStorage = std::conditional_t<has_reverse, Empty, Back>;
+	struct alignas(64) Node {
+		int left = 0, right = 0, parent = 0, head = 0, up = 0;
+		unsigned char priority = 0;
+		S value, prod, prefix;
+		[[no_unique_address]] BackStorage back;
+		static BackStorage make_back(const S& value) {
+			if constexpr (has_reverse) return {};
+			else return {value, value};
+		}
+		explicit Node(const S& v) : value(v), prod(v), prefix(v), back(make_back(v)) {}
+	};
+	std::vector<Node> nodes_;
+	std::vector<int> index_;
+	std::vector<S> dense_;
+	std::vector<int> dense_heads_, dense_up_;
+	unsigned base_ = 1;
+	bool flat_ = false;
+	int index(int v) const {
+		assert(0 <= v && v < size());
+		return index_[v];
+	}
+	void pull(int v) {
+		auto& node = nodes_[v];
+		node.prefix = node.left ? op(nodes_[node.left].prod, node.value) : node.value;
+		node.prod = node.right ? op(node.prefix, nodes_[node.right].prod) : node.prefix;
+		if constexpr (!has_reverse) {
+			node.back.prefix = node.left ? op(node.value, nodes_[node.left].back.prod) : node.value;
+			node.back.prod = node.right ? op(nodes_[node.right].back.prod, node.back.prefix) : node.back.prefix;
+		}
+	}
+	S back_prod(int v) const {
+		if constexpr (has_reverse) return reverse(nodes_[v].prod);
+		else return nodes_[v].back.prod;
+	}
+	S back_prefix(int v) const {
+		if constexpr (has_reverse) return reverse(nodes_[v].prefix);
+		else return nodes_[v].back.prefix;
+	}
+	template<bool Reverse> S dense_interval(int l, int r) const {
+		unsigned a = base_ + unsigned(l - 1), b = base_ + unsigned(r);
+		S left = e(), right = e();
+		while (a < b) {
+			if (a & 1) left = op(left, dense_[a++]);
+			if (b & 1) right = op(dense_[--b], right);
+			a >>= 1, b >>= 1;
+		}
+		S result = op(left, right);
+		if constexpr (Reverse && has_reverse) return reverse(result);
+		else return result;
+	}
+	template<bool Reverse> S prefix(int v) const {
+		S result = e();
+		int last = v;
+		for (; v; v = nodes_[v].parent) if (v <= last) {
+			if constexpr (Reverse) result = op(result, back_prefix(v));
+			else result = op(nodes_[v].prefix, result);
+		}
+		return result;
+	}
+	template<bool Reverse> S interval(int l, int r) const {
+		int a = l, b = r;
+		S left = e(), right = e();
+		while (a != b) {
+			if (nodes_[a].priority < nodes_[b].priority) {
+				if (l <= a) {
+					const auto& node = nodes_[a];
+					if constexpr (Reverse) left = op(op(back_prod(node.right), node.value), left);
+					else left = op(left, op(node.value, nodes_[node.right].prod));
+				}
+				a = nodes_[a].parent;
+			} else {
+				if (b <= r) {
+					if constexpr (Reverse) right = op(right, back_prefix(b));
+					else right = op(nodes_[b].prefix, right);
+				}
+				b = nodes_[b].parent;
+			}
+		}
+		if constexpr (Reverse) return op(right, op(nodes_[a].value, left));
+		else return op(left, op(nodes_[a].value, right));
+	}
+
+	template<bool Reverse, class X, class Apply> X apply_interval(int l, int r, X value, Apply& mapping) const {
+		int a = l, b = r;
+		S outside = e();
+		while (a != b) {
+			if (nodes_[a].priority < nodes_[b].priority) {
+				if (l <= a) {
+					const auto& node = nodes_[a];
+					if constexpr (Reverse) outside = op(op(back_prod(node.right), node.value), outside);
+					else value = mapping(nodes_[node.right].prod, mapping(node.value, std::move(value)));
+				}
+				a = nodes_[a].parent;
+			} else {
+				if (b <= r) {
+					if constexpr (Reverse) value = mapping(back_prefix(b), std::move(value));
+					else outside = op(nodes_[b].prefix, outside);
+				}
+				b = nodes_[b].parent;
+			}
+		}
+		return mapping(outside, mapping(nodes_[a].value, std::move(value)));
+	}
+
+	template<class X, class Apply> X dense_apply(int u, int v, X value, Apply& mapping) const {
+		std::array<std::pair<int, int>, 4> right;
+		int count = 0;
+		while (dense_heads_[u] != dense_heads_[v]) {
+			if (dense_heads_[u] > dense_heads_[v]) {
+				value = mapping(dense_interval<true>(dense_heads_[u], u), std::move(value));
+				u = dense_up_[u];
+			} else {
+				assert(count < int(right.size()));
+				right[count++] = {dense_heads_[v], v};
+				v = dense_up_[v];
+			}
+		}
+		if (u <= v) value = mapping(dense_interval<false>(u, v), std::move(value));
+		else value = mapping(dense_interval<true>(v, u), std::move(value));
+		while (count) {
+			auto [l, r] = right[--count];
+			value = mapping(dense_interval<false>(l, r), std::move(value));
+		}
+		return value;
+	}
+
+  public:
+	TreePathProduct() = default;
+	TreePathProduct(const HLD& tree, const std::vector<S>& values) { build(tree, values); }
+	void build(const HLD& tree, const std::vector<S>& values) {
+		assert(values.size() == std::size_t(tree.n) && tree.order.size() == values.size());
+		index_.resize(values.size());
+		nodes_.clear();
+		for (int v : tree.order) index_[v] = tree.in[v] + 1;
+		flat_ = false;
+		dense_.clear();
+		if constexpr (has_reverse) {
+			std::vector<unsigned char> levels(values.size());
+			unsigned maximum = 0;
+			for (int v : tree.order) {
+				if (tree.parent[v] != -1) levels[v] = levels[tree.parent[v]] + (tree.head[v] == v);
+				maximum = std::max(maximum, unsigned(levels[v]));
+			}
+			flat_ = maximum <= 4;
+		}
+		if (flat_) {
+			base_ = std::bit_ceil(unsigned(size()) ? unsigned(size()) : 1U);
+			dense_.assign(std::size_t(base_) * 2, e());
+			dense_heads_.assign(values.size() + 1, 0), dense_up_.assign(values.size() + 1, 0);
+			for (int v : tree.order) {
+				int id = index_[v], h = tree.head[v];
+				dense_heads_[id] = index_[h];
+				dense_up_[id] = tree.parent[h] == -1 ? 0 : index_[tree.parent[h]];
+				dense_[base_ + unsigned(id - 1)] = values[v];
+			}
+			for (unsigned i = base_ - 1; i; --i) dense_[i] = op(dense_[i * 2], dense_[i * 2 + 1]);
+			return;
+		}
+		dense_heads_.clear(), dense_up_.clear();
+		nodes_.reserve(values.size() + 1);
+		nodes_.emplace_back(e());
+		for (int v : tree.order) nodes_.emplace_back(values[v]);
+		std::vector<int> stack, order;
+		order.reserve(values.size());
+		for (int v : tree.order) {
+			if (tree.head[v] != v) continue;
+			stack.clear();
+			unsigned position = 0;
+			int head = index_[v], up = tree.parent[v] == -1 ? 0 : index_[tree.parent[v]];
+			for (int u = v; u != -1; u = tree.heavy[u]) {
+				int id = index_[u], weight = tree.size[u] - (tree.heavy[u] == -1 ? 0 : tree.size[tree.heavy[u]]);
+				auto& node = nodes_[id];
+				node.head = head, node.up = up;
+				node.priority = std::bit_width(position ^ (position + unsigned(weight)));
+				position += unsigned(weight);
+				int last = 0;
+				while (!stack.empty() && nodes_[stack.back()].priority < node.priority) {
+					last = stack.back();
+					stack.pop_back();
+				}
+				node.left = last;
+				if (last) nodes_[last].parent = id;
+				if (!stack.empty()) nodes_[stack.back()].right = id, node.parent = stack.back();
+				stack.push_back(id);
+			}
+			order.push_back(stack[0]);
+		}
+		for (std::size_t i = 0; i < order.size(); ++i) {
+			const auto& node = nodes_[order[i]];
+			if (node.left) order.push_back(node.left);
+			if (node.right) order.push_back(node.right);
+		}
+		for (auto it = order.rbegin(); it != order.rend(); ++it) pull(*it);
+	}
+	int size() const { return int(index_.size()); }
+	bool empty() const { return index_.empty(); }
+	const S& get(int v) const {
+		int id = index(v);
+		return flat_ ? dense_[base_ + unsigned(id - 1)] : nodes_[id].value;
+	}
+	void set(int v, const S& value) {
+		int id = index(v);
+		if (flat_) {
+			unsigned k = base_ + unsigned(id - 1);
+			dense_[k] = value;
+			for (k >>= 1; k; k >>= 1) dense_[k] = op(dense_[k * 2], dense_[k * 2 + 1]);
+			return;
+		}
+		nodes_[id].value = value;
+		for (; id; id = nodes_[id].parent) pull(id);
+	}
+	S prod(int u, int v) const {
+		u = index(u), v = index(v);
+		if (flat_) {
+			auto append = [](const S& part, S value) { return op(std::move(value), part); };
+			return dense_apply(u, v, e(), append);
+		}
+		S left = e(), right = e();
+		while (nodes_[u].head != nodes_[v].head) {
+			if (nodes_[u].head > nodes_[v].head) {
+				left = op(left, prefix<true>(u));
+				u = nodes_[u].up;
+			} else {
+				right = op(prefix<false>(v), right);
+				v = nodes_[v].up;
+			}
+		}
+		S middle = u <= v ? interval<false>(u, v) : interval<true>(v, u);
+		return op(left, op(middle, right));
+	}
+	template<class X, class Apply> X apply(int u, int v, X value, Apply mapping) const {
+		u = index(u), v = index(v);
+		if (flat_) return dense_apply(u, v, std::move(value), mapping);
+		S right = e();
+		while (nodes_[u].head != nodes_[v].head) {
+			if (nodes_[u].head > nodes_[v].head) {
+				for (int id = u; id; id = nodes_[id].parent)
+					if (id <= u) value = mapping(back_prefix(id), std::move(value));
+				u = nodes_[u].up;
+			} else {
+				right = op(prefix<false>(v), right);
+				v = nodes_[v].up;
+			}
+		}
+		if (u <= v) value = apply_interval<false>(u, v, std::move(value), mapping);
+		else value = apply_interval<true>(v, u, std::move(value), mapping);
+		return mapping(right, std::move(value));
+	}
+
+};
+
+
 #line 1 "math/mint.hpp"
 
 
 #line 4 "math/mint.hpp"
 #include <istream>
 #include <ostream>
-#include <type_traits>
+#line 7 "math/mint.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -451,14 +603,17 @@ using fps_mint = mint;
 #endif
 
 
+#line 1 "components/fast_io_bulk.hpp"
+
+
+
 #line 1 "components/fast_io.hpp"
 
 
 
 #line 8 "components/fast_io.hpp"
 #include <charconv>
-#line 10 "components/fast_io.hpp"
-#include <cstdint>
+#line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>
 #include <memory>
@@ -685,13 +840,327 @@ public:
 };
 
 
+#line 6 "components/fast_io_bulk.hpp"
+#include <span>
+#line 8 "components/fast_io_bulk.hpp"
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#include <immintrin.h>
+#pragma GCC push_options
+_Pragma("GCC target(\"avx2\")")
+#pragma GCC optimize("O3")
+namespace fast_io_detail {
+struct BulkInput {
+	alignas(32) static inline constexpr auto rows = [] {
+		std::array<std::array<unsigned char, 16>, 11> r{};
+		for (int n = 0; n <= 10; ++n)
+			for (int i = 0; i < 16; ++i) r[n][i] = i < 16 - n ? 128 : i - (16 - n);
+		return r;
+	}();
+	static constexpr std::size_t kChunk = 1 << 17, kCapacity = kChunk / 4 + 66;
+
+	static unsigned separators(__m256i bytes) {
+		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
+	}
+
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
+		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
+		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+			invalid = _mm256_set1_epi32(-1);
+			p += std::min(b + 1, 32u);
+			return _mm256_setzero_si256();
+		}
+		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
+		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
+		p += b + 1;
+		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
+	}
+
+	static std::uint32_t one(const char *&p, bool &bad) {
+		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
+		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
+		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
+		if (n < 1 || n > 10) [[unlikely]] {
+			bad = true;
+			p += std::min(n + 1, 16u);
+			return 0;
+		}
+		const auto digits = _mm_shuffle_epi8(_mm_sub_epi8(bytes, _mm_set1_epi8('0')),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[n].data())));
+		const auto invalid = _mm_subs_epu8(digits, _mm_set1_epi8(9));
+		bad |= !_mm_testz_si128(invalid, invalid);
+		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
+		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
+		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
+		bad |= value > 0xffffffffULL;
+		p += n + 1;
+		return std::uint32_t(value);
+	}
+
+	static const char *after_separator(const char *p) {
+		const unsigned mask = separators(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(p)));
+		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
+	}
+
+	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
+		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
+		std::size_t done = 0;
+		for (;;) {
+			std::ptrdiff_t left = end[0] - p[0];
+			for (int k = 1; k < 4; ++k) left = std::min(left, end[k] - p[k]);
+			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
+			if (steps <= 0) break;
+			for (auto j = steps; j; --j, done += 2) {
+				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				const auto k = _mm256_set1_epi32(0x00012710);
+				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
+				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
+				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
+				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				invalid = _mm256_or_si256(invalid, overflow);
+				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
+				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
+				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
+				_mm_storeh_pd(reinterpret_cast<double *>(out[1] + done), _mm_castsi128_pd(q01));
+				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[2] + done), q23);
+				_mm_storeh_pd(reinterpret_cast<double *>(out[3] + done), _mm_castsi128_pd(q23));
+			}
+		}
+		for (int k = 0; k < 4; ++k) streams[k] = p[k];
+		return done;
+	}
+
+	template <class Emit>
+	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
+		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
+		const std::size_t stream = bytes / 4;
+		const char *p1 = after_separator(p + stream), *p2 = after_separator(p + 2 * stream);
+		const char *p3 = after_separator(p + 3 * stream), *last = after_separator(p + bytes);
+		if (!p1 || !p2 || !p3 || !last) return 0;
+		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
+		auto invalid = _mm256_setzero_si256();
+		const auto done = lockstep(s, end, out, invalid);
+		bool bad = !_mm256_testz_si256(invalid, invalid);
+		std::size_t n[4];
+		for (int k = 0; k < 4; ++k) {
+			n[k] = done;
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			bad |= s[k] != end[k];
+		}
+		const auto parsed = n[0] + n[1] + n[2] + n[3];
+		if (bad || parsed > count) return 0;
+		for (int k = 0; k < 4; ++k) emit(out[k], n[k]);
+		p = last;
+		return parsed;
+	}
+
+	static std::size_t chunk(const char *&p, const char *limit, unsigned *dst, std::size_t count, unsigned *scratch) {
+		unsigned *const out[4] = {dst, scratch, scratch + kCapacity, scratch + 2 * kCapacity};
+		bool first = true;
+		unsigned *next = dst;
+		return chunk_blocks(p, limit, count, out, [&](const unsigned *values, std::size_t n) {
+			if (!first) std::memcpy(next, values, n * sizeof(unsigned));
+			first = false;
+			next += n;
+		});
+	}
+
+	template <class Emit>
+	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
+		std::unique_ptr<unsigned[]> scratch;
+		std::size_t done = 0;
+		bool chunks = true;
+		while (done < count) {
+			const char *p = in.current;
+			while (p != in.end && static_cast<unsigned char>(*p) <= ' ') ++p;
+			while (chunks && count - done >= 1024 && in.end - p >= 1088) {
+				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
+				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
+				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+				if (!parsed) {
+					chunks = false;
+					break;
+				}
+				done += parsed;
+			}
+			unsigned tail[64];
+			std::size_t used = 0;
+			while (done + 2 <= count && in.end - p >= 32) {
+				const char *next = p;
+				auto invalid = _mm256_setzero_si256();
+				const auto groups = two(next, invalid);
+				if (!_mm256_testz_si256(invalid, invalid)) break;
+				const auto halves = _mm256_madd_epi16(_mm256_packus_epi32(groups, groups), _mm256_set1_epi32(0x00012710));
+				const unsigned h0 = _mm256_extract_epi32(halves, 0), l0 = _mm256_extract_epi32(halves, 1);
+				const unsigned h1 = _mm256_extract_epi32(halves, 4), l1 = _mm256_extract_epi32(halves, 5);
+				if (h0 > 42 || (h0 == 42 && l0 > 94967295) || h1 > 42 || (h1 == 42 && l1 > 94967295)) break;
+				tail[used++] = h0 * 100000000 + l0;
+				tail[used++] = h1 * 100000000 + l1;
+				if (used == 64) {
+					emit(tail, used);
+					used = 0;
+				}
+				done += 2;
+				p = next;
+			}
+			if (used) emit(tail, used);
+			in.current = p;
+			if (done < count) {
+				unsigned value = 0;
+				in.read(value);
+				emit(&value, 1);
+				++done;
+			}
+		}
+	}
+
+	static void read(FastInput &in, unsigned *out, std::size_t count) {
+		read_blocks(in, count, [&](const unsigned *values, std::size_t n) {
+			std::memcpy(out, values, n * sizeof(unsigned));
+			out += n;
+		});
+	}
+
+};
+}
+#pragma GCC pop_options
+#endif
+
+namespace fast_io_detail {
+struct BulkOutput {
+	static char *small(char *out, std::uint32_t value) {
+		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
+		if constexpr (std::endian::native == std::endian::little) {
+			std::uint32_t word;
+			std::memcpy(&word, FastOutput::quads[value].data(), 4);
+			word >>= (4 - n) * 8;
+			std::memcpy(out, &word, 4);
+		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
+		return out + n;
+	}
+	static char *number(char *out, std::uint32_t value) {
+		if (value >= 100000000) {
+			out = small(out, value / 100000000);
+			value %= 100000000;
+			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
+			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
+			return out + 8;
+		}
+		if (value >= 10000) {
+			out = small(out, value / 10000);
+			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
+			return out + 4;
+		}
+		return small(out, value);
+	}
+	template<std::size_t Fields, class Read>
+#if defined(__GNUC__) || defined(__clang__)
+	[[gnu::noinline]]
+#endif
+	static void records(FastOutput &out, std::size_t count, Read read) {
+		constexpr auto bytes = 11 * Fields;
+		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
+		for (std::size_t base = 0; base < count;) {
+			const auto n = std::min(count - base, block);
+			char *begin = out.reserve(n * bytes), *p = begin;
+			for (std::size_t i = 0; i < n; ++i) {
+				auto values = read(base + i);
+				for (std::size_t j = 0; j < Fields; ++j) {
+					p = number(p, std::uint32_t(values[j]));
+					*p++ = j + 1 == Fields ? '\n' : ' ';
+				}
+			}
+			out.length += p - begin;
+			base += n;
+		}
+	}
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
+}
+
+namespace fast_io_detail {
+template <class Emit, std::size_t... I>
+void emit_record(Emit &emit, const std::uint32_t *values, std::index_sequence<I...>) {
+	emit(values[I]...);
+}
+}
+
+template <class Emit>
+void read_unsigned_blocks(FastInput &input, std::size_t count, Emit emit) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (__builtin_cpu_supports("avx2")) {
+		fast_io_detail::BulkInput::read_blocks(input, count, emit);
+		return;
+	}
+#endif
+	std::uint32_t values[64];
+	while (count) {
+		const auto n = std::min<std::size_t>(count, 64);
+		for (std::size_t i = 0; i < n; ++i) input.read(values[i]);
+		emit(values, n);
+		count -= n;
+	}
+}
+
+inline void read_unsigned(FastInput &input, std::span<std::uint32_t> out) {
+	read_unsigned_blocks(input, out.size(), [&](const std::uint32_t *values, std::size_t count) {
+		std::memcpy(out.data(), values, count * sizeof(std::uint32_t));
+		out = out.subspan(count);
+	});
+}
+
+template <std::size_t Fields, class Emit>
+void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
+	static_assert(Fields > 0);
+	if (count > std::numeric_limits<std::size_t>::max() / Fields) throw std::length_error("input size");
+	std::array<std::uint32_t, Fields> pending;
+	std::size_t used = 0;
+	constexpr auto indices = std::make_index_sequence<Fields>();
+	read_unsigned_blocks(input, count * Fields, [&](const std::uint32_t *values, std::size_t n) {
+		std::size_t i = 0;
+		if (used) {
+			while (used < Fields && i < n) pending[used++] = values[i++];
+			if (used == Fields) {
+				fast_io_detail::emit_record(emit, pending.data(), indices);
+				used = 0;
+			}
+		}
+		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
+		while (i < n) pending[used++] = values[i++];
+	});
+}
+
+template<std::size_t Fields, class Read>
+void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
+	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
+	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
+}
+
+
 #line 7 "test/hld_path_composite.test.cpp"
 
 struct S {
 	mint a, b, reverse_b;
 };
-S op(S x, S y) { return {x.a * y.a, x.b * y.a + y.b, y.reverse_b * x.a + x.reverse_b}; }
-S e() { return {1, 0, 0}; }
+inline S op(S x, S y) { return {x.a * y.a, x.b * y.a + y.b, y.reverse_b * x.a + x.reverse_b}; }
+inline S e() { return {1, 0, 0}; }
 
 int main() {
 	FastInput input;
@@ -699,37 +1168,20 @@ int main() {
 	int n, q;
 	input.read(n), input.read(q);
 	std::vector<S> values(n);
-	for (auto &f : values) {
-		unsigned a, b;
-		input.read(a), input.read(b);
-		f.a = a, f.b = b;
-		f.reverse_b = f.b;
-	}
+	std::size_t position = 0;
+	read_unsigned_records<2>(input, n, [&](unsigned a, unsigned b) { values[position++] = {a, b, b}; });
 	HLD tree(n);
-	for (int i = 1, u, v; i < n; ++i) {
-		input.read(u), input.read(v);
-		tree.add_edge(u, v);
-	}
+	read_unsigned_records<2>(input, n - 1, [&](unsigned u, unsigned v) { tree.add_edge(u, v); });
 	tree.build();
-	std::vector<S> ordered(n);
-	for (int v = 0; v < n; ++v) ordered[tree.in[v]] = values[v];
-	Segtree<S, op, e> seg(ordered);
-	while (q--) {
-		int type, u, v;
-		input.read(type), input.read(u);
-		if (type == 0) {
-			unsigned a, b;
-			input.read(a), input.read(b);
-			seg.set(tree.in[u], {a, b, b});
-		} else {
-			unsigned initial;
-			input.read(v), input.read(initial);
-			mint x = initial;
-			tree.for_each_path(u, v, [&](int l, int r, bool reverse) {
-				auto f = seg.prod(l, r);
-				x = f.a * x + (reverse ? f.reverse_b : f.b);
-			});
+	TreePathProduct<S, op, e, [](S value) {
+		std::swap(value.b, value.reverse_b);
+		return value;
+	}> seg(tree, values);
+	read_unsigned_records<4>(input, q, [&](unsigned type, unsigned u, unsigned a, unsigned b) {
+		if (type == 0) seg.set(u, {a, b, b});
+		else {
+			auto x = seg.apply(u, a, mint(b), [](const S& f, mint value) { return f.a * value + f.b; });
 			output.println(x.val());
 		}
-	}
+	});
 }

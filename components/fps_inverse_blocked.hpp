@@ -31,10 +31,7 @@ inline void native_inverse(const mint *in, size_t input, std::vector<mint> &out,
 	Arena arena(Transform::words(lg) + Arena::footprint(len) + Arena::footprint(scratch_words) + Arena::footprint(k));
 	const Transform t(arena, lg);
 	auto a = arena.take(len), scratch = arena.take(scratch_words), g = arena.take(k);
-	for (size_t i = 0; i < c; ++i) {
-		const unsigned v = in[i].v;
-		a[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, a.first(c));
 	const ConstWords f = a.first(c);
 	const auto extend = [&](ConstWords current, Words to,
 							Words transformed, Words work) {

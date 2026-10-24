@@ -16,7 +16,8 @@ int main() {
 		for (int i = 0; i < n; ++i) { std::uint32_t x = 0; input.read(x); a.insert(x); }
 		input.read(m);
 		for (int i = 0; i < m; ++i) input.read(b[i]);
-		auto result = a.intersection(std::span<const std::uint32_t>(b.data(), m)).vectors();
+		auto intersection = a.intersection(std::span<const std::uint32_t>(b.data(), m));
+		auto result = intersection.vectors_view();
 		output.write(result.size());
 		for (auto x : result) { output.write(' '); output.write(x); }
 		output.write('\n');

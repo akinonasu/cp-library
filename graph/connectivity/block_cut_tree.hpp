@@ -27,7 +27,11 @@ class BlockCutTree {
 		edges.emplace_back(u, v);
 		return id;
 	}
-	void build() {
+	void build() { build_impl(true); }
+	void build_components() { build_impl(false); }
+
+  private:
+	void build_impl(bool build_tree) {
 		built_ = false;
 		UndirectedVertexCSR graph(n, edges);
 		std::vector<int> ord(n, -1), active;
@@ -90,6 +94,7 @@ class BlockCutTree {
 			node_id[v] = blocks + static_cast<int>(articulation.size());
 			articulation.push_back(v);
 		}
+		if (!build_tree) { built_ = true; return; }
 		tree.resize(std::size_t(blocks) + articulation.size());
 		std::vector<int> degree(tree.size());
 		for (int c = 0; c < blocks; ++c)
@@ -105,8 +110,10 @@ class BlockCutTree {
 			}
 		built_ = true;
 	}
+
+  public:
 	int block_count() const { assert(built_); return static_cast<int>(boundaries_.size()) - 1; }
-	int node_count() const { assert(built_); return static_cast<int>(tree.size()); }
+	int node_count() const { assert(built_); return block_count() + static_cast<int>(articulation.size()); }
 	bool is_articulation(int v) const { check_(v); return node_id[v] >= block_count(); }
 	bool is_block(int node) const { assert(built_ && 0 <= node && node < node_count()); return node < block_count(); }
 	int vertex(int node) const {

@@ -938,15 +938,29 @@ void divide_by_index(size_t first, Words out, const A& a, Word factor = 1) {
 
 }
 
-inline void derivative(ConstWords f, Words d) {
+inline Word mint_scalar(Word x) { return x; }
+inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
+inline void copy_coefficients(const mint *in, Words out) {
+	for (size_t i = 0; i < out.size(); ++i) out[i] = mint_scalar(in[i]);
+}
+template <class T> inline detail::Vec coefficients(std::span<const T> f, size_t at) {
+	detail::Vec value;
+	std::memcpy(&value, f.data() + at, sizeof(value));
+	if constexpr (std::is_same_v<T, mint>) return detail::reduce(value, detail::kP);
+	else return value;
+}
+
+template <class T> inline void derivative_impl(std::span<const T> f, Words d) {
 	using namespace detail;
 	const size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
 	Indices index(1);
 	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(d.data() + i, canonical(montgomery(load_unaligned(f.data() + i + 1), index.value())));
+		store_unaligned(d.data() + i, canonical(montgomery(coefficients(f, i + 1), index.value())));
 	for (size_t i = full; i < n; ++i)
-		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), f[i + 1]) : 0;
+		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), mint_scalar(f[i + 1])) : 0;
 }
+
+inline void derivative(ConstWords f, Words d) { derivative_impl(f, d); }
 
 inline void divide_by_index(ConstWords a, size_t first, Words q) {
 	if (a.size() != q.size() || first == 0 || first + a.size() > kModulus) std::abort();
@@ -1045,18 +1059,25 @@ inline size_t log_block(size_t n) {
 
 inline size_t log_blocks(size_t n) { return (n - 1 + log_block(n) - 1) / log_block(n); }
 
-inline void subtract_from_derivative(ConstWords f, size_t first, size_t count,
+template <class T> inline void subtract_derivative(std::span<const T> f, size_t first, size_t count,
 									Word* out, size_t size) {
 	const size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
 	Indices index(first + 1);
 	for (size_t c = 0; c < full; c += 8, index.next()) {
-		const Vec d = canonical(montgomery(load_unaligned(f.data() + first + 1 + c), index.value()));
+		const Vec d = canonical(montgomery(coefficients(f, first + 1 + c), index.value()));
 		store_unaligned(out + c, reduce(_mm256_sub_epi32(add(d, broadcast(kP)), load_unaligned(out + size + c)), kP));
 	}
 	for (size_t c = full; c < count; ++c) {
-		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), f[first + 1 + c]) : 0;
+		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
 		out[c] = (d + kP - out[size + c]) % kP;
 	}
+}
+inline void subtract_derivative_impl(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative(f, first, count, out, size);
+}
+
+inline void subtract_from_derivative(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative_impl(f, first, count, out, size);
 }
 
 struct ToeplitzBottom {
@@ -1127,7 +1148,6 @@ struct SideProductBottom {
 
 inline size_t log_buffers(size_t n) { return std::max<size_t>(log_blocks(n) + 2, 3); }
 
-inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
 inline Vec mint_load(std::span<const mint> f, size_t at) {
 	if (at + 8 <= f.size()) {
 		Vec value;
@@ -1179,28 +1199,9 @@ inline void mint_forward(const Transform& t, std::span<const mint> f, Words out)
 		recursion.visit(out.data() + 8 * h, h, 1);
 	}
 }
-inline void mint_derivative(std::span<const mint> f, Words d) {
-	using namespace detail;
-	const size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
-	Indices index(1);
-	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(d.data() + i, canonical(montgomery(mint_load(f, i + 1), index.value())));
-	for (size_t i = full; i < n; ++i)
-		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), mint_scalar(f[i + 1])) : 0;
-}
-
-inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count,
-									Word* out, size_t size) {
-	const size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
-	Indices index(first + 1);
-	for (size_t c = 0; c < full; c += 8, index.next()) {
-		const Vec d = canonical(montgomery(mint_load(f, first + 1 + c), index.value()));
-		store_unaligned(out + c, reduce(_mm256_sub_epi32(add(d, broadcast(kP)), load_unaligned(out + size + c)), kP));
-	}
-	for (size_t c = full; c < count; ++c) {
-		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
-		out[c] = (d + kP - out[size + c]) % kP;
-	}
+inline void mint_derivative(std::span<const mint> f, Words d) { derivative_impl(f, d); }
+inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative(f, first, count, out, size);
 }
 
 struct NoLogTransform {
@@ -1208,7 +1209,7 @@ struct NoLogTransform {
 };
 
 template <class Input, class Sink, class Transformed>
-[[gnu::always_inline]] inline void log_derivative_impl(const Transform& t, Input f, size_t n,
+[[gnu::always_inline]] inline void log_derivative(const Transform& t, Input f, size_t n,
 												Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
 	const size_t k = log_block(n), len = 2 * k, blocks = log_blocks(n);
 	const auto buffer = [&scratch, len](size_t i) __attribute__((target("avx2"))) { return scratch.subspan(i * Arena::footprint(len), len); };
@@ -1227,7 +1228,7 @@ template <class Input, class Sink, class Transformed>
 		const Words work = j == 0 ? q0 : buffer(blocks + 1);
 		if (j == 0) {
 			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
-			else derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
+			else derivative_impl(f.first(std::min(f.size(), count + 1)), work.first(count));
 		} else {
 			if (j == 1) {
 				t.inverse_product(window(1), q0, work, Half::kUpper);
@@ -1243,7 +1244,7 @@ template <class Input, class Sink, class Transformed>
 				t.inverse_with(SideProductBottom{product, window(3).data()}, work, Half::kUpper);
 			}
 			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_subtract_from_derivative(f, first, count, work.data(), k);
-			else subtract_from_derivative(f, first, count, work.data(), k);
+			else subtract_derivative_impl(f, first, count, work.data(), k);
 		}
 		t.cyclic_product(work.first(count), 0, work, ht, Half::kLower);
 		sink(first, ConstWords(work.first(count)));
@@ -1257,13 +1258,13 @@ template <class Input, class Sink, class Transformed>
 template <class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void log_derivative(const Transform& t, ConstWords f, size_t n,
 		Words scratch, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative_impl(t, f, n, scratch, f, sink, transformed);
+	log_derivative(t, f, n, scratch, f, sink, transformed);
 }
 
 template <class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void mint_log_derivative(const Transform& t, std::span<const mint> f, size_t n,
 		Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative_impl(t, f, n, scratch, prefix, sink, transformed);
+	log_derivative(t, f, n, scratch, prefix, sink, transformed);
 }
 
 inline int log_derivative_log(size_t n) { return std::countr_zero(2 * log_block(n)); }
@@ -1304,10 +1305,7 @@ inline void native_log(const mint *in, size_t input, std::vector<mint> &out, siz
 	Arena arena(Transform::words(lg) + Arena::footprint(prefix_size) + Arena::footprint(log_scratch(n)));
 	const Transform t(arena, lg);
 	auto f = arena.take(prefix_size), scratch = arena.take(log_scratch(n));
-	for (size_t i = 0; i < prefix_size; ++i) {
-		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, f);
 	const auto sink = [&out, integrate, n](size_t first, ConstWords q) __attribute__((target("avx2"))) {
 		if (integrate) {
 			auto *work = const_cast<Word *>(q.data()) + detail::log_block(n);

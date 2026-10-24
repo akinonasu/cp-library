@@ -4,11 +4,6 @@
 
 
 
-#include <complex>
-#include <limits>
-#include <type_traits>
-#include <vector>
-
 #line 1 "fps/fps.hpp"
 
 
@@ -27,9 +22,9 @@
 #include <initializer_list>
 #include <memory>
 #include <new>
-#line 11 "components/ntt.hpp"
+#include <type_traits>
 #include <utility>
-#line 13 "components/ntt.hpp"
+#include <vector>
 
 #line 1 "components/mint_arithmetic.hpp"
 
@@ -226,13 +221,14 @@ struct Ops {
 	__attribute__((target("avx2"))) static void store8(U *a, I8 x) {
 		_mm256_storeu_si256(reinterpret_cast<I8 *>(a), x);
 	}
-	__attribute__((target("avx2"))) static I8 mul8(I8 a, I8 b) {
-		I8 x = _mm256_mul_epu32(a, b);
-		I8 y = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32));
+	__attribute__((target("avx2"), always_inline)) static inline I8 reduce8(I8 x, I8 y) {
 		I8 r = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(mod);
 		x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, r), p));
 		y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, r), p));
 		return _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
+	}
+	__attribute__((target("avx2"))) static I8 mul8(I8 a, I8 b) {
+		return reduce8(_mm256_mul_epu32(a, b), _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
 	}
 	__attribute__((target("avx2"))) static I8 fixed_mul8(I8 a, I8 r, I8 q) {
 		I8 x = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
@@ -625,9 +621,7 @@ struct NTT : mint_detail::Ops {
 			p = mul8(p, factor);
 			store8(dst + i, p);
 		}
-		I8 inverse = _mm256_set1_epi32(one);
-		for (U e = mod - 2; e; e >>= 1, p = mul8(p, p))
-			if (e & 1) inverse = mul8(inverse, p);
+		I8 inverse = inverse8(p);
 		for (int i = n - 8; i >= 8; i -= 8) {
 			store8(dst + i, mul8(inverse, load8(dst + i - 8)));
 			inverse = mul8(inverse, factor);
@@ -712,17 +706,13 @@ struct NTT : mint_detail::Ops {
 				e[k] = _mm256_add_epi64(e[k], _mm256_mul_epu32(z, r));
 				o[k] = _mm256_add_epi64(o[k], _mm256_mul_epu32(_mm256_srli_epi64(z, 32), r));
 			}
-		I8 ni = _mm256_set1_epi32(998244351);
 		for (int k = 0; k < count; ++k) {
-			I8 x = e[k], y = o[k];
-			x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, ni), p));
-			y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, ni), p));
-			x = _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
+			I8 x = reduce8(e[k], o[k]);
 			store8(a + 8 * k, _mm256_min_epu32(x, _mm256_sub_epi32(x, pp)));
 		}
 	}
 	__attribute__((target("avx2"))) static U reverse_dot8(const U *a, const U *b, int n) {
-		I8 p = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice), ni = _mm256_set1_epi32(998244351);
+		I8 p = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice);
 		I8 reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0), total = _mm256_setzero_si256();
 		int i = 0;
 		for (; i + 8 <= n;) {
@@ -737,9 +727,7 @@ struct NTT : mint_detail::Ops {
 				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
 				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
 			}
-			even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-			I8 value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+			I8 value = reduce8(even, odd);
 			value = _mm256_min_epu32(value, _mm256_sub_epi32(value, pp));
 			total = add8(total, value);
 		}
@@ -1006,11 +994,7 @@ struct Operations {
 		std::copy_n(a, n / 2, a + n / 2);
 		transform(std::max(1, n / 2)).template fft<false>(a, n, n / 2);
 	}
-	static void ntt_half(base &a) {
-		int n = a.size();
-		std::copy_n(a.begin(), n / 2, a.begin() + n / 2);
-		transform(std::max(1, n / 2)).template fft<false>(words(a), n, n / 2);
-	}
+	static void ntt_half(base &a) { ntt_half(words(a), a.size()); }
 	static void ntt_inverse(base &a) { transform_inplace<true>(a); }
 	static void scale_words(base &a, T factor) {
 		if (a.empty()) return;
@@ -1281,6 +1265,7 @@ inline mint horner(const mint* a, std::size_t n, mint x) {
 
 #line 5 "components/fps_workspace.hpp"
 #include <cstdint>
+#include <limits>
 #line 9 "components/fps_workspace.hpp"
 #if defined(__linux__)
 #include <sys/mman.h>
@@ -1339,10 +1324,14 @@ inline FpsWords allocate_fps_words(std::size_t count) {
 
 
 
-#line 10 "components/fps_sparse_core.hpp"
+#line 1 "components/fps_sparse_terms.hpp"
+
+
+
+#line 10 "components/fps_sparse_terms.hpp"
 
 namespace fps_detail {
-template <class E> struct SparseBase {
+struct SparseTerms {
 	using Series = std::vector<mint>;
 	using Terms = std::vector<std::pair<int, mint>>;
 	enum class Kind { inverse, logarithm, exponential, power };
@@ -1352,6 +1341,13 @@ template <class E> struct SparseBase {
 			if (f[i] != mint(0)) terms.emplace_back(i, f[i]);
 		return terms;
 	}
+};
+}
+
+#line 10 "components/fps_sparse_core.hpp"
+
+namespace fps_detail {
+template <class E> struct SparseBase : SparseTerms {
 	static Terms multiply(const Terms &a, const Terms &b, int n) {
 		Terms result;
 		for (auto [i, x] : a) for (auto [j, y] : b) if (i < n - j) result.emplace_back(i + j, x * y);
@@ -1426,10 +1422,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::mod)));
 	}
 	__attribute__((target("avx2"))) static V reduce8(V even, V odd) {
-		const V ni = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(O::mod);
-		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-		return canonical8(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa));
+		return canonical8(O::reduce8(even, odd));
 	}
 	__attribute__((target("avx2"), always_inline)) static inline V triangular(V x, const U *f) {
 		const V lower = _mm256_permute2x128_si256(x, x, 0x08);
@@ -1571,7 +1564,8 @@ struct SparseSeries : SparseBase<SparseSeries> {
 			p[i] = canonical(a.v), q[i] = canonical(b.v);
 		}
 		out[0] = canonical(initial.v);
-		int active = 0, near = 0, i = 1;
+		int active = 0, i = 1;
+		[[maybe_unused]] int near = 0;
 		while (i < n) {
 			while (active < int(taps.size()) && taps[active].degree <= i) {
 				near += taps[active].degree < 8;
@@ -2607,15 +2601,29 @@ void divide_by_index(size_t first, Words out, const A& a, Word factor = 1) {
 
 }
 
-inline void derivative(ConstWords f, Words d) {
+inline Word mint_scalar(Word x) { return x; }
+inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
+inline void copy_coefficients(const mint *in, Words out) {
+	for (size_t i = 0; i < out.size(); ++i) out[i] = mint_scalar(in[i]);
+}
+template <class T> inline detail::Vec coefficients(std::span<const T> f, size_t at) {
+	detail::Vec value;
+	std::memcpy(&value, f.data() + at, sizeof(value));
+	if constexpr (std::is_same_v<T, mint>) return detail::reduce(value, detail::kP);
+	else return value;
+}
+
+template <class T> inline void derivative_impl(std::span<const T> f, Words d) {
 	using namespace detail;
 	const size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
 	Indices index(1);
 	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(d.data() + i, canonical(montgomery(load_unaligned(f.data() + i + 1), index.value())));
+		store_unaligned(d.data() + i, canonical(montgomery(coefficients(f, i + 1), index.value())));
 	for (size_t i = full; i < n; ++i)
-		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), f[i + 1]) : 0;
+		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), mint_scalar(f[i + 1])) : 0;
 }
+
+inline void derivative(ConstWords f, Words d) { derivative_impl(f, d); }
 
 inline void divide_by_index(ConstWords a, size_t first, Words q) {
 	if (a.size() != q.size() || first == 0 || first + a.size() > kModulus) std::abort();
@@ -2630,7 +2638,7 @@ inline void divide_by_index(ConstWords a, size_t first, Words q) {
 
 }
 
-#line 969 "components/fps_blocked.hpp"
+#line 983 "components/fps_blocked.hpp"
 
 namespace blocked_poly {
 
@@ -2710,18 +2718,25 @@ inline size_t log_block(size_t n) {
 
 inline size_t log_blocks(size_t n) { return (n - 1 + log_block(n) - 1) / log_block(n); }
 
-inline void subtract_from_derivative(ConstWords f, size_t first, size_t count,
+template <class T> inline void subtract_derivative(std::span<const T> f, size_t first, size_t count,
 									Word* out, size_t size) {
 	const size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
 	Indices index(first + 1);
 	for (size_t c = 0; c < full; c += 8, index.next()) {
-		const Vec d = canonical(montgomery(load_unaligned(f.data() + first + 1 + c), index.value()));
+		const Vec d = canonical(montgomery(coefficients(f, first + 1 + c), index.value()));
 		store_unaligned(out + c, reduce(_mm256_sub_epi32(add(d, broadcast(kP)), load_unaligned(out + size + c)), kP));
 	}
 	for (size_t c = full; c < count; ++c) {
-		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), f[first + 1 + c]) : 0;
+		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
 		out[c] = (d + kP - out[size + c]) % kP;
 	}
+}
+inline void subtract_derivative_impl(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative(f, first, count, out, size);
+}
+
+inline void subtract_from_derivative(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative_impl(f, first, count, out, size);
 }
 
 struct ToeplitzBottom {
@@ -2792,7 +2807,6 @@ struct SideProductBottom {
 
 inline size_t log_buffers(size_t n) { return std::max<size_t>(log_blocks(n) + 2, 3); }
 
-inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
 inline Vec mint_load(std::span<const mint> f, size_t at) {
 	if (at + 8 <= f.size()) {
 		Vec value;
@@ -2844,28 +2858,9 @@ inline void mint_forward(const Transform& t, std::span<const mint> f, Words out)
 		recursion.visit(out.data() + 8 * h, h, 1);
 	}
 }
-inline void mint_derivative(std::span<const mint> f, Words d) {
-	using namespace detail;
-	const size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
-	Indices index(1);
-	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(d.data() + i, canonical(montgomery(mint_load(f, i + 1), index.value())));
-	for (size_t i = full; i < n; ++i)
-		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), mint_scalar(f[i + 1])) : 0;
-}
-
-inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count,
-									Word* out, size_t size) {
-	const size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
-	Indices index(first + 1);
-	for (size_t c = 0; c < full; c += 8, index.next()) {
-		const Vec d = canonical(montgomery(mint_load(f, first + 1 + c), index.value()));
-		store_unaligned(out + c, reduce(_mm256_sub_epi32(add(d, broadcast(kP)), load_unaligned(out + size + c)), kP));
-	}
-	for (size_t c = full; c < count; ++c) {
-		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
-		out[c] = (d + kP - out[size + c]) % kP;
-	}
+inline void mint_derivative(std::span<const mint> f, Words d) { derivative_impl(f, d); }
+inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative(f, first, count, out, size);
 }
 
 struct NoLogTransform {
@@ -2873,7 +2868,7 @@ struct NoLogTransform {
 };
 
 template <class Input, class Sink, class Transformed>
-[[gnu::always_inline]] inline void log_derivative_impl(const Transform& t, Input f, size_t n,
+[[gnu::always_inline]] inline void log_derivative(const Transform& t, Input f, size_t n,
 												Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
 	const size_t k = log_block(n), len = 2 * k, blocks = log_blocks(n);
 	const auto buffer = [&scratch, len](size_t i) __attribute__((target("avx2"))) { return scratch.subspan(i * Arena::footprint(len), len); };
@@ -2892,7 +2887,7 @@ template <class Input, class Sink, class Transformed>
 		const Words work = j == 0 ? q0 : buffer(blocks + 1);
 		if (j == 0) {
 			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
-			else derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
+			else derivative_impl(f.first(std::min(f.size(), count + 1)), work.first(count));
 		} else {
 			if (j == 1) {
 				t.inverse_product(window(1), q0, work, Half::kUpper);
@@ -2908,7 +2903,7 @@ template <class Input, class Sink, class Transformed>
 				t.inverse_with(SideProductBottom{product, window(3).data()}, work, Half::kUpper);
 			}
 			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_subtract_from_derivative(f, first, count, work.data(), k);
-			else subtract_from_derivative(f, first, count, work.data(), k);
+			else subtract_derivative_impl(f, first, count, work.data(), k);
 		}
 		t.cyclic_product(work.first(count), 0, work, ht, Half::kLower);
 		sink(first, ConstWords(work.first(count)));
@@ -2922,13 +2917,13 @@ template <class Input, class Sink, class Transformed>
 template <class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void log_derivative(const Transform& t, ConstWords f, size_t n,
 		Words scratch, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative_impl(t, f, n, scratch, f, sink, transformed);
+	log_derivative(t, f, n, scratch, f, sink, transformed);
 }
 
 template <class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void mint_log_derivative(const Transform& t, std::span<const mint> f, size_t n,
 		Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative_impl(t, f, n, scratch, prefix, sink, transformed);
+	log_derivative(t, f, n, scratch, prefix, sink, transformed);
 }
 
 inline int log_derivative_log(size_t n) { return std::countr_zero(2 * log_block(n)); }
@@ -2969,10 +2964,7 @@ inline void native_log(const mint *in, size_t input, std::vector<mint> &out, siz
 	Arena arena(Transform::words(lg) + Arena::footprint(prefix_size) + Arena::footprint(log_scratch(n)));
 	const Transform t(arena, lg);
 	auto f = arena.take(prefix_size), scratch = arena.take(log_scratch(n));
-	for (size_t i = 0; i < prefix_size; ++i) {
-		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, f);
 	const auto sink = [&out, integrate, n](size_t first, ConstWords q) __attribute__((target("avx2"))) {
 		if (integrate) {
 			auto *work = const_cast<Word *>(q.data()) + detail::log_block(n);
@@ -3422,10 +3414,7 @@ inline void native_power(const mint *in, size_t input, std::vector<mint> &out, s
 	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(power_scratch(n)));
 	const Transform t(arena, lg);
 	auto g = arena.take(n), scratch = arena.take(power_scratch(n));
-	for (size_t i = 0; i < size; ++i) {
-		const auto x = in[i].v;
-		g[i] = std::min(x, x - mint::mod());
-	}
+	copy_coefficients(in, g.first(size));
 	power(t, g.first(size), e, std::min(c.v, c.v - mint::mod()), g, scratch);
 	append_fps_words<true>(out, g.data(), n);
 }
@@ -3468,10 +3457,7 @@ inline void native_inverse(const mint *in, size_t input, std::vector<mint> &out,
 	Arena arena(Transform::words(lg) + Arena::footprint(len) + Arena::footprint(scratch_words) + Arena::footprint(k));
 	const Transform t(arena, lg);
 	auto a = arena.take(len), scratch = arena.take(scratch_words), g = arena.take(k);
-	for (size_t i = 0; i < c; ++i) {
-		const unsigned v = in[i].v;
-		a[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, a.first(c));
 	const ConstWords f = a.first(c);
 	const auto extend = [&](ConstWords current, Words to,
 							Words transformed, Words work) {
@@ -3854,10 +3840,7 @@ inline void native_sqrt(const mint *in, size_t input, std::vector<mint> &out, si
 	Arena arena(Transform::words(lg) + Arena::footprint(c) + Arena::footprint(n) + Arena::footprint(sqrt_scratch(n)));
 	const Transform t(arena, lg);
 	auto f = arena.take(c), g = arena.take(n), scratch = arena.take(sqrt_scratch(n));
-	for (size_t i = 0; i < c; ++i) {
-		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, f);
 	const Word ct = blocked_ntt::detail::multiply_mod(std::min(constant.v, constant.v - mint::mod()),
 		blocked_ntt::detail::power(65536, mint::mod() - 2));
 	sqrt(t, f, ct, g, scratch);
@@ -3867,6 +3850,10 @@ inline void native_sqrt(const mint *in, size_t input, std::vector<mint> &out, si
 
 #pragma GCC pop_options
 #endif
+
+#line 1 "components/mint_convolution.hpp"
+
+
 
 #line 1 "components/fps_convolution.hpp"
 
@@ -4132,6 +4119,56 @@ inline std::vector<mint> multiply(const std::vector<mint>& a, const std::vector<
 }
 #pragma GCC pop_options
 #endif
+
+#line 10 "components/mint_convolution.hpp"
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+namespace mint_convolution_detail {
+inline std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<mint> &b) {
+	using NTT = fps_detail::NTT;
+	using Word = NTT::U;
+	if (a.empty() || b.empty()) return {};
+	auto words = [](auto &v) { return reinterpret_cast<Word *>(v.data()); };
+	auto input = [](const auto &v) { return reinterpret_cast<const Word *>(v.data()); };
+	if (std::min(a.size(), b.size()) <= 32) {
+		std::vector<mint> result(a.size() + b.size() - 1);
+		const auto &small = a.size() < b.size() ? a : b;
+		const auto &large = a.size() < b.size() ? b : a;
+		for (int j = 0; j < static_cast<int>(small.size()); ++j)
+			NTT::add_scaled(words(result) + j, input(large), large.size(), small[j].val());
+		return result;
+	}
+	int n = 1, size = a.size() + b.size() - 1;
+	while (n < size) n <<= 1;
+	assert(n <= (1 << 23));
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (NTT::vectorized()) return fps_detail::multiply_detail::multiply(a, b);
+#endif
+	std::vector<mint> x = a, y;
+	x.resize(n);
+	if (&a != &b) y = b, y.resize(n);
+	auto &plan = fps_detail::ntt_plan(std::max(1, n / 2));
+	plan.fft<false>(words(x), n);
+	if (&a == &b) NTT::product(words(x), input(x), input(x), n);
+	else {
+		plan.fft<false>(words(y), n);
+		NTT::product(words(x), input(x), input(y), n);
+	}
+	plan.fft<true>(words(x), n);
+	plan.scale(words(x), n, mint(n).inv().val());
+	x.resize(size);
+	return x;
+}
+}
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
+
 
 #line 1 "components/fps_division_blocked.hpp"
 
@@ -4720,46 +4757,11 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	static F multiply(const F &a, const F &b) {
-		if (a.empty() || b.empty()) return {};
-		if constexpr (!std::is_same_v<T, mint>) {
+		if constexpr (std::is_same_v<T, mint>) return F(mint_convolution_detail::multiply(a, b));
+		else {
 			W x = import_work(a);
 			return export_work(&a == &b ? W::multiply(x, x) : W::multiply(x, import_work(b)));
 		}
-		if (std::min(a.size(), b.size()) <= 32) {
-			F r(a.size() + b.size() - 1);
-			const F &small = a.size() < b.size() ? a : b;
-			const F &large = a.size() < b.size() ? b : a;
-			if constexpr (std::is_same_v<T, mint>) {
-				for (int j = 0; j < static_cast<int>(small.size()); ++j)
-					NTT::add_scaled(words(r) + j, words(large), large.size(), small[j].val());
-			} else
-				for (int j = 0; j < static_cast<int>(small.size()); ++j)
-					for (int i = 0; i < static_cast<int>(large.size()); ++i) r[i + j] += large[i] * small[j];
-			return r;
-		}
-		int n = 1, size = a.size() + b.size() - 1;
-		while (n < size) n <<= 1;
-		assert(n <= (1 << 23));
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (NTT::vectorized()) return F(fps_detail::multiply_detail::multiply(a, b));
-		}
-#endif
-		F x = a, y;
-		x.resize(n);
-		if (&a != &b) {
-			y = b;
-			y.resize(n);
-		}
-		ntt(x);
-		if (&a == &b) pointwise(x, x, x, n);
-		else {
-			ntt(y);
-			pointwise(x, x, y, n);
-		}
-		intt(x);
-		x.resize(size);
-		return x;
 	}
 
 	F operator-() const {
@@ -5378,6 +5380,13 @@ using fps = FormalPowerSeries<mint>;
 #endif
 
 
+#line 1 "components/convolution_dispatch.hpp"
+
+
+
+#include <complex>
+#line 8 "components/convolution_dispatch.hpp"
+
 #line 1 "convolution/convolution_fft.hpp"
 
 
@@ -5462,6 +5471,8 @@ std::vector<Real> convolution_fft(const std::vector<Real> &a, const std::vector<
 #endif
 
 namespace ntt_mod_detail {
+template <std::uint32_t mod> struct Vector;
+
 template <std::uint32_t mod>
 std::uint32_t power(std::uint32_t a, std::uint32_t k) {
 	std::uint32_t result = 1;
@@ -5489,23 +5500,16 @@ template <std::uint32_t mod>
 __attribute__((target("avx2")))
 void butterfly_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 					const std::uint32_t *roots, const std::uint32_t *quotients) {
-	const auto p = _mm256_set1_epi32(mod);
+	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
 			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
 			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
 			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
 			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
-			auto even = _mm256_mul_epu32(y, q);
-			auto odd = _mm256_mul_epu32(_mm256_srli_epi64(y, 32), _mm256_srli_epi64(q, 32));
-			q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
-			y = _mm256_sub_epi32(_mm256_mullo_epi32(y, r), _mm256_mullo_epi32(q, p));
-			y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
-			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
-			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
-			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), sum);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
+			y = V::multiply(y, r, q);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), V::subtract(x, y));
 		}
 }
 #endif
@@ -5535,22 +5539,15 @@ template <std::uint32_t mod>
 __attribute__((target("avx2")))
 void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 		const std::uint32_t *roots, const std::uint32_t *quotients) {
-	const auto p = _mm256_set1_epi32(mod);
+	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
 			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
 			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
-			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
-			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
-			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
 			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
 			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
-			auto even = _mm256_mul_epu32(difference, q);
-			auto odd = _mm256_mul_epu32(_mm256_srli_epi64(difference, 32), _mm256_srli_epi64(q, 32));
-			q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
-			difference = _mm256_sub_epi32(_mm256_mullo_epi32(difference, r), _mm256_mullo_epi32(q, p));
-			difference = _mm256_min_epu32(difference, _mm256_sub_epi32(difference, p));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), sum);
+			auto difference = V::multiply(V::subtract(x, y), r, q);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
 			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
 		}
 }
@@ -5559,15 +5556,16 @@ void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
 struct Vector {
+	static constexpr std::uint32_t range = mod < (std::uint32_t(1) << 30) ? 2 * mod : mod;
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i add(__m256i x, __m256i y) {
 		auto sum = _mm256_add_epi32(x, y);
-		return _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(mod)));
+		return _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(range)));
 	}
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i subtract(__m256i x, __m256i y) {
 		auto difference = _mm256_sub_epi32(x, y);
-		return _mm256_min_epu32(difference, _mm256_add_epi32(difference, _mm256_set1_epi32(mod)));
+		return _mm256_min_epu32(difference, _mm256_add_epi32(difference, _mm256_set1_epi32(range)));
 	}
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i multiply(__m256i x, __m256i factor, __m256i quotient) {
@@ -5575,6 +5573,7 @@ struct Vector {
 		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(quotient, 32));
 		auto q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
 		auto result = _mm256_sub_epi32(_mm256_mullo_epi32(x, factor), _mm256_mullo_epi32(q, _mm256_set1_epi32(mod)));
+		if constexpr (range == 2 * mod) return result;
 		return _mm256_min_epu32(result, _mm256_sub_epi32(result, _mm256_set1_epi32(mod)));
 	}
 };
@@ -5646,6 +5645,7 @@ void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32
 			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 3 * h), x3);
 		}
 }
+
 #endif
 
 #if defined(__x86_64__) || defined(__i386__)
@@ -5660,6 +5660,7 @@ void build_roots_avx2(std::uint32_t *roots, std::uint32_t *quotients, std::size_
 	auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(initial));
 	auto factor = _mm256_set1_epi32(w), quotient = _mm256_set1_epi32((std::uint64_t(w) << 32) / mod);
 	for (std::size_t j = 0; j < half; j += 8) {
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(mod)));
 		_mm256_storeu_si256(reinterpret_cast<__m256i *>(roots + j), x);
 		for (int k = 0; k < 8; ++k) quotients[j + k] = (std::uint64_t(roots[j + k]) << 32) / mod;
 		x = Vector<mod>::multiply(x, factor, quotient);
@@ -5714,6 +5715,7 @@ void backward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[mayb
 	if (vectorized && a.size() >= 8) {
 		leaf_avx2<mod, true>(a.data(), a.size(), plan.roots.data(), plan.quotients.data());
 		half = 8;
+
 		for (; 2 * half < a.size(); half *= 4) pair_avx2<mod, true>(a.data(), a.size(), half, plan.roots.data(), plan.quotients.data());
 		if (half < a.size()) butterfly_avx2<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
 		return;
@@ -5729,7 +5731,8 @@ void scale_avx2(std::uint32_t *a, std::size_t n, std::uint32_t factor, std::uint
 	auto r = _mm256_set1_epi32(factor), q = _mm256_set1_epi32(quotient);
 	for (std::size_t i = 0; i < n; i += 8) {
 		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), Vector<mod>::multiply(x, r, q));
+		auto y = Vector<mod>::multiply(x, r, q);
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), _mm256_min_epu32(y, _mm256_sub_epi32(y, _mm256_set1_epi32(mod))));
 	}
 }
 #endif
@@ -5765,6 +5768,7 @@ void transform(std::vector<std::uint32_t> &a, bool inverse, bool vectorized) {
 		scale<mod>(a, power<mod>(a.size(), mod - 2), vectorized);
 	} else {
 		forward(a, plan, vectorized);
+		if constexpr (mod < (std::uint32_t(1) << 30)) for (auto &x : a) if (x >= mod) x -= mod;
 		bit_reverse(a);
 	}
 }
@@ -5828,7 +5832,7 @@ void ntt_mod(std::vector<std::uint32_t> &a, bool inverse = false) {
 
 namespace convolution_mod_detail {
 template <std::uint32_t mod, std::uint32_t root, class T>
-std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T> &b) {
+std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T> &b, std::uint32_t factor = 1) {
 	std::size_t length = a.size() + b.size() - 1, n = std::bit_ceil(length);
 	std::vector<std::uint32_t> x(n), y(n);
 	auto reduce = [](T value) {
@@ -5841,6 +5845,7 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 		std::vector<std::uint32_t> result(length);
 		for (std::size_t i = 0; i < a.size(); ++i)
 			for (std::size_t j = 0; j < b.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * y[j]) % mod;
+		if (factor != 1) for (auto &v : result) v = std::uint64_t(v) * factor % mod;
 		return result;
 	}
 	bool vectorized = false;
@@ -5854,7 +5859,7 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 	ntt_mod_detail::pointwise<mod>(x, y, vectorized);
 	ntt_mod_detail::backward(x, plan, vectorized);
 	std::reverse(x.begin() + 1, x.end());
-	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod;
+	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod * factor % mod;
 	ntt_mod_detail::scale<mod>(x, scale, vectorized);
 	x.resize(length);
 	return x;
@@ -5862,18 +5867,85 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 inline constexpr std::uint32_t p = 754974721, q = 1224736769, r = 2013265921;
 inline constexpr __uint128_t modulus = __uint128_t(p) * q * r;
 struct Reconstruction { std::uint64_t low; std::uint32_t high; };
+template <std::uint32_t P = p, std::uint32_t Q = q, std::uint32_t R = r>
 inline Reconstruction reconstruct(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
-	static const std::uint32_t inverse_p = ntt_mod_detail::power<q>(p, q - 2);
-	static const std::uint32_t inverse_pq = ntt_mod_detail::power<r>(std::uint64_t(p) * q % r, r - 2);
-	std::uint64_t x = std::uint64_t(b + q - a) * inverse_p % q;
-	std::uint64_t low = a + std::uint64_t(p) * x;
-	std::uint64_t y = std::uint64_t(c + r - low % r) * inverse_pq % r;
+	static const std::uint32_t inverse_p = ntt_mod_detail::power<Q>(P, Q - 2);
+	static const std::uint32_t inverse_pq = ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2);
+	std::uint64_t x = std::uint64_t(b + Q - a) * inverse_p % Q;
+	std::uint64_t low = a + std::uint64_t(P) * x;
+	std::uint64_t y = std::uint64_t(c + R - low % R) * inverse_pq % R;
 	return {low, std::uint32_t(y)};
 }
 inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
 	auto [low, high] = reconstruct(a, b, c);
 	return low + __uint128_t(p) * q * high;
 }
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t P, std::uint32_t Q, std::uint32_t R>
+__attribute__((target("avx2")))
+void combine(std::uint32_t *a, const std::uint32_t *b, const std::uint32_t *c, std::size_t n) {
+	static_assert(P > 256 && Q > 256 && R > 256 && P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32));
+	constexpr std::uint32_t mod = 1000000007;
+	constexpr auto form = [](std::uint64_t x) { return std::uint32_t(x % mod * ((std::uint64_t(1) << 32) % mod) % mod); };
+	constexpr std::uint32_t place[3] = {form(std::uint64_t(Q) * R), form(std::uint64_t(P) * R), form(std::uint64_t(P) * Q)};
+	constexpr std::uint32_t wrap = form(mod - std::uint64_t(P) * Q % mod * R % mod);
+	const auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(ntt_mod_detail::negative_inverse<mod>);
+	std::size_t i = 0;
+	for (; n - i >= 8; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		auto z = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(c + i));
+		auto quotient = [&](__m256i a, __m256i b, __m256i c) __attribute__((target("avx2"), always_inline)) {
+			auto s = _mm256_mul_epu32(a, _mm256_set1_epi32((std::uint64_t(1) << 40) / P + 1));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(b, _mm256_set1_epi32((std::uint64_t(1) << 40) / Q + 1)));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(c, _mm256_set1_epi32((std::uint64_t(1) << 40) / R + 1)));
+			return _mm256_srli_epi64(_mm256_add_epi64(s, _mm256_set1_epi64x(std::uint64_t(1) << 39)), 40);
+		};
+		auto reduce = [&](__m256i a, __m256i b, __m256i c, __m256i t) __attribute__((target("avx2"), always_inline)) {
+			auto s = _mm256_add_epi64(_mm256_mul_epu32(a, _mm256_set1_epi32(place[0])), _mm256_mul_epu32(b, _mm256_set1_epi32(place[1])));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(c, _mm256_set1_epi32(place[2])));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(t, _mm256_set1_epi32(wrap)));
+			return _mm256_add_epi64(s, _mm256_mul_epu32(_mm256_mul_epu32(s, inverse), p));
+		};
+		auto xo = _mm256_srli_epi64(x, 32), yo = _mm256_srli_epi64(y, 32), zo = _mm256_srli_epi64(z, 32);
+		auto even = reduce(x, y, z, quotient(x, y, z)), odd = reduce(xo, yo, zo, quotient(xo, yo, zo));
+		x = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+	for (; i < n; ++i) {
+		std::uint64_t t = (std::uint64_t(a[i]) * ((std::uint64_t(1) << 40) / P + 1) + std::uint64_t(b[i]) * ((std::uint64_t(1) << 40) / Q + 1) + std::uint64_t(c[i]) * ((std::uint64_t(1) << 40) / R + 1) + (std::uint64_t(1) << 39)) >> 40;
+		std::uint64_t sum = std::uint64_t(a[i]) * place[0] + std::uint64_t(b[i]) * place[1] + std::uint64_t(c[i]) * place[2] + std::uint64_t(t) * wrap;
+		auto q = std::uint32_t(sum) * ntt_mod_detail::negative_inverse<mod>;
+		std::uint32_t value = (sum + std::uint64_t(q) * mod) >> 32;
+		a[i] = value < mod ? value : value - mod;
+	}
+}
+#endif
+template <std::uint32_t P, std::uint32_t PR, std::uint32_t Q, std::uint32_t QR, std::uint32_t R, std::uint32_t RR>
+std::vector<std::uint32_t> modular(const std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b, std::uint32_t mod) {
+#if defined(__x86_64__) || defined(__i386__)
+	if constexpr (P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32)) {
+		if (mod == 1000000007 && __uint128_t(std::min(a.size(), b.size())) * (mod - 1) * (mod - 1) * 4 < __uint128_t(P) * Q * R && __builtin_cpu_supports("avx2")) {
+			auto x = multiply<P, PR>(a, b, ntt_mod_detail::power<P>(std::uint64_t(Q) * R % P, P - 2));
+			auto y = multiply<Q, QR>(a, b, ntt_mod_detail::power<Q>(std::uint64_t(P) * R % Q, Q - 2));
+			auto z = multiply<R, RR>(a, b, ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2));
+			combine<P, Q, R>(x.data(), y.data(), z.data(), x.size());
+			return x;
+		}
+	}
+#endif
+	auto x = multiply<P, PR>(a, b);
+	auto y = multiply<Q, QR>(a, b);
+	auto z = multiply<R, RR>(a, b);
+	std::uint64_t pq_mod = std::uint64_t(P) * Q % mod;
+	for (std::size_t i = 0; i < x.size(); ++i) {
+		auto [low, high] = reconstruct<P, Q, R>(x[i], y[i], z[i]);
+		x[i] = (low % mod + pq_mod * high) % mod;
+	}
+	return x;
+}
+
 }
 
 template <class T>
@@ -5922,15 +5994,10 @@ std::vector<std::uint32_t> convolution_mod(const std::vector<T> &a, const std::v
 		return result;
 	}
 	if (mod == 998244353 && x.size() + other.size() - 1 <= std::size_t(1) << 23) return convolution_mod_detail::multiply<998244353, 3>(x, other);
-	auto p = convolution_mod_detail::multiply<convolution_mod_detail::p, 11>(x, other);
-	auto q = convolution_mod_detail::multiply<convolution_mod_detail::q, 3>(x, other);
-	auto r = convolution_mod_detail::multiply<convolution_mod_detail::r, 31>(x, other);
-	std::uint64_t pq_mod = std::uint64_t(convolution_mod_detail::p) * convolution_mod_detail::q % mod;
-	for (std::size_t i = 0; i < p.size(); ++i) {
-		auto [low, high] = convolution_mod_detail::reconstruct(p[i], q[i], r[i]);
-		p[i] = (low % mod + pq_mod * high) % mod;
-	}
-	return p;
+	constexpr std::uint32_t P = 167772161, Q = 469762049, R = 754974721;
+	if (__uint128_t(std::min(x.size(), other.size())) * (mod - 1) * (mod - 1) < __uint128_t(P) * Q * R)
+		return convolution_mod_detail::modular<P, 3, Q, 3, R, 11>(x, other, mod);
+	return convolution_mod_detail::modular<convolution_mod_detail::p, 11, convolution_mod_detail::q, 3, convolution_mod_detail::r, 31>(x, other, mod);
 }
 
 
@@ -5973,7 +6040,7 @@ std::vector<T> convolution_ring(const std::vector<T> &a, const std::vector<T> &b
 }
 
 
-#line 13 "convolution/convolution.hpp"
+#line 13 "components/convolution_dispatch.hpp"
 
 namespace convolution_detail {
 template <class T>
@@ -5986,19 +6053,12 @@ template <class T>
 std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
 		if constexpr (T::mod() == 998244353) {
-			if constexpr (std::is_same_v<T, mint>) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-				if (std::min(a.size(), b.size()) > 32 && fps_detail::NTT::vectorized())
-					return fps_detail::multiply_detail::multiply(a, b);
-#endif
-				fps x(a);
-				if (&a == &b) return fps::multiply(x, x);
-				return fps::multiply(x, fps(b));
-			} else {
-				fps x(a.size()), y(b.size());
+			if constexpr (std::is_same_v<T, mint>) return mint_convolution_detail::multiply(a, b);
+			else {
+				std::vector<mint> x(a.size()), y(&a == &b ? 0 : b.size());
 				for (std::size_t i = 0; i < a.size(); ++i) x[i] = mint::raw(a[i].val());
-				for (std::size_t i = 0; i < b.size(); ++i) y[i] = mint::raw(b[i].val());
-				auto values = &a == &b ? fps::multiply(x, x) : fps::multiply(x, y);
+				if (&a != &b) for (std::size_t i = 0; i < b.size(); ++i) y[i] = mint::raw(b[i].val());
+				auto values = &a == &b ? mint_convolution_detail::multiply(x, x) : mint_convolution_detail::multiply(x, y);
 				std::vector<T> result;
 				result.reserve(values.size());
 				for (auto x : values) result.push_back(T::raw(x.val()));
@@ -6018,6 +6078,9 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	else if constexpr (std::is_floating_point_v<T> || convolution_detail::IsComplex<T>::value) return convolution_fft(a, b);
 	else return convolution_ring(a, b);
 }
+
+
+#line 6 "convolution/convolution.hpp"
 
 
 #line 1 "test/fixtures/fps_io.hpp"

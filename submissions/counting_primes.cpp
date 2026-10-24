@@ -7,9 +7,11 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <vector>
 
-inline std::uint64_t prime_count(std::uint64_t n) {
+namespace prime_count_detail {
+template<bool FastDivide> std::uint64_t compute(std::uint64_t n) {
 	if (n < 2) return 0;
 	std::uint64_t root = std::sqrt(static_cast<long double>(n));
 	while (__uint128_t(root) * root > n) --root;
@@ -21,7 +23,8 @@ inline std::uint64_t prime_count(std::uint64_t n) {
 	for (std::size_t i = 0; i < size; ++i) {
 		small[i] = i;
 		rough[i] = 2 * i + 1;
-		quotient[i] = n / rough[i];
+		if constexpr (FastDivide) quotient[i] = double(n) / rough[i];
+		else quotient[i] = n / rough[i];
 		large[i] = (quotient[i] - 1) / 2;
 	}
 	std::uint32_t count = 0;
@@ -29,10 +32,11 @@ inline std::uint64_t prime_count(std::uint64_t n) {
 		if (removed[p]) continue;
 		removed[p] = 1;
 		for (std::uint64_t i = p * p; i <= root; i += 2 * p) removed[i] = 1;
-		const std::uint64_t reciprocal = UINT64_MAX / p;
-		auto divide = [p, reciprocal](std::uint64_t x) {
+		const std::uint64_t reciprocal = UINT64_MAX / p + FastDivide;
+		auto divide = [=](std::uint64_t x) {
 			std::uint64_t q = (__uint128_t(x) * reciprocal) >> 64;
-			return q + (x - q * p >= p);
+			if constexpr (FastDivide) return q;
+			else return q + (x - q * p >= p);
 		};
 		std::size_t next = 0, k = 0;
 		for (; k < size && std::uint64_t(rough[k]) * p <= root; ++k) {
@@ -62,10 +66,11 @@ inline std::uint64_t prime_count(std::uint64_t n) {
 	result += (__int128_t(count) - 1) * (size - 1);
 	for (std::size_t k = 1; k < size; ++k) result -= large[k];
 	for (std::size_t k = 1; k < size; ++k) {
-		const std::uint64_t p = rough[k], reciprocal = UINT64_MAX / p;
-		auto divide = [p, reciprocal](std::uint64_t x) {
+		const std::uint64_t p = rough[k], reciprocal = UINT64_MAX / p + FastDivide;
+		auto divide = [=](std::uint64_t x) {
 			std::uint64_t q = (__uint128_t(x) * reciprocal) >> 64;
-			return q + (x - q * p >= p);
+			if constexpr (FastDivide) return q;
+			else return q + (x - q * p >= p);
 		};
 		const std::size_t end = small[(divide(quotient[k]) - 1) / 2] - count;
 		if (end <= k) break;
@@ -74,6 +79,13 @@ inline std::uint64_t prime_count(std::uint64_t n) {
 		result -= __int128_t(end - k) * (count + k - 1);
 	}
 	return static_cast<std::uint64_t>(result);
+}
+}
+
+inline std::uint64_t prime_count(std::uint64_t n) {
+	if constexpr (std::numeric_limits<double>::is_iec559 && std::numeric_limits<double>::digits == 53)
+		if (n <= (std::uint64_t(1) << 42)) return prime_count_detail::compute<true>(n);
+	return prime_count_detail::compute<false>(n);
 }
 
 

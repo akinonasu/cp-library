@@ -221,13 +221,14 @@ struct Ops {
 	__attribute__((target("avx2"))) static void store8(U *a, I8 x) {
 		_mm256_storeu_si256(reinterpret_cast<I8 *>(a), x);
 	}
-	__attribute__((target("avx2"))) static I8 mul8(I8 a, I8 b) {
-		I8 x = _mm256_mul_epu32(a, b);
-		I8 y = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32));
+	__attribute__((target("avx2"), always_inline)) static inline I8 reduce8(I8 x, I8 y) {
 		I8 r = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(mod);
 		x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, r), p));
 		y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, r), p));
 		return _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
+	}
+	__attribute__((target("avx2"))) static I8 mul8(I8 a, I8 b) {
+		return reduce8(_mm256_mul_epu32(a, b), _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
 	}
 	__attribute__((target("avx2"))) static I8 fixed_mul8(I8 a, I8 r, I8 q) {
 		I8 x = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
@@ -620,9 +621,7 @@ struct NTT : mint_detail::Ops {
 			p = mul8(p, factor);
 			store8(dst + i, p);
 		}
-		I8 inverse = _mm256_set1_epi32(one);
-		for (U e = mod - 2; e; e >>= 1, p = mul8(p, p))
-			if (e & 1) inverse = mul8(inverse, p);
+		I8 inverse = inverse8(p);
 		for (int i = n - 8; i >= 8; i -= 8) {
 			store8(dst + i, mul8(inverse, load8(dst + i - 8)));
 			inverse = mul8(inverse, factor);
@@ -707,17 +706,13 @@ struct NTT : mint_detail::Ops {
 				e[k] = _mm256_add_epi64(e[k], _mm256_mul_epu32(z, r));
 				o[k] = _mm256_add_epi64(o[k], _mm256_mul_epu32(_mm256_srli_epi64(z, 32), r));
 			}
-		I8 ni = _mm256_set1_epi32(998244351);
 		for (int k = 0; k < count; ++k) {
-			I8 x = e[k], y = o[k];
-			x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, ni), p));
-			y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, ni), p));
-			x = _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
+			I8 x = reduce8(e[k], o[k]);
 			store8(a + 8 * k, _mm256_min_epu32(x, _mm256_sub_epi32(x, pp)));
 		}
 	}
 	__attribute__((target("avx2"))) static U reverse_dot8(const U *a, const U *b, int n) {
-		I8 p = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice), ni = _mm256_set1_epi32(998244351);
+		I8 p = _mm256_set1_epi32(mod), pp = _mm256_set1_epi32(twice);
 		I8 reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0), total = _mm256_setzero_si256();
 		int i = 0;
 		for (; i + 8 <= n;) {
@@ -732,9 +727,7 @@ struct NTT : mint_detail::Ops {
 				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
 				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
 			}
-			even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-			I8 value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+			I8 value = reduce8(even, odd);
 			value = _mm256_min_epu32(value, _mm256_sub_epi32(value, pp));
 			total = add8(total, value);
 		}
@@ -1001,11 +994,7 @@ struct Operations {
 		std::copy_n(a, n / 2, a + n / 2);
 		transform(std::max(1, n / 2)).template fft<false>(a, n, n / 2);
 	}
-	static void ntt_half(base &a) {
-		int n = a.size();
-		std::copy_n(a.begin(), n / 2, a.begin() + n / 2);
-		transform(std::max(1, n / 2)).template fft<false>(words(a), n, n / 2);
-	}
+	static void ntt_half(base &a) { ntt_half(words(a), a.size()); }
 	static void ntt_inverse(base &a) { transform_inplace<true>(a); }
 	static void scale_words(base &a, T factor) {
 		if (a.empty()) return;
@@ -1335,10 +1324,14 @@ inline FpsWords allocate_fps_words(std::size_t count) {
 
 
 
-#line 10 "components/fps_sparse_core.hpp"
+#line 1 "components/fps_sparse_terms.hpp"
+
+
+
+#line 10 "components/fps_sparse_terms.hpp"
 
 namespace fps_detail {
-template <class E> struct SparseBase {
+struct SparseTerms {
 	using Series = std::vector<mint>;
 	using Terms = std::vector<std::pair<int, mint>>;
 	enum class Kind { inverse, logarithm, exponential, power };
@@ -1348,6 +1341,13 @@ template <class E> struct SparseBase {
 			if (f[i] != mint(0)) terms.emplace_back(i, f[i]);
 		return terms;
 	}
+};
+}
+
+#line 10 "components/fps_sparse_core.hpp"
+
+namespace fps_detail {
+template <class E> struct SparseBase : SparseTerms {
 	static Terms multiply(const Terms &a, const Terms &b, int n) {
 		Terms result;
 		for (auto [i, x] : a) for (auto [j, y] : b) if (i < n - j) result.emplace_back(i + j, x * y);
@@ -1422,10 +1422,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::mod)));
 	}
 	__attribute__((target("avx2"))) static V reduce8(V even, V odd) {
-		const V ni = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(O::mod);
-		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-		return canonical8(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa));
+		return canonical8(O::reduce8(even, odd));
 	}
 	__attribute__((target("avx2"), always_inline)) static inline V triangular(V x, const U *f) {
 		const V lower = _mm256_permute2x128_si256(x, x, 0x08);
@@ -1567,7 +1564,8 @@ struct SparseSeries : SparseBase<SparseSeries> {
 			p[i] = canonical(a.v), q[i] = canonical(b.v);
 		}
 		out[0] = canonical(initial.v);
-		int active = 0, near = 0, i = 1;
+		int active = 0, i = 1;
+		[[maybe_unused]] int near = 0;
 		while (i < n) {
 			while (active < int(taps.size()) && taps[active].degree <= i) {
 				near += taps[active].degree < 8;
@@ -2603,15 +2601,29 @@ void divide_by_index(size_t first, Words out, const A& a, Word factor = 1) {
 
 }
 
-inline void derivative(ConstWords f, Words d) {
+inline Word mint_scalar(Word x) { return x; }
+inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
+inline void copy_coefficients(const mint *in, Words out) {
+	for (size_t i = 0; i < out.size(); ++i) out[i] = mint_scalar(in[i]);
+}
+template <class T> inline detail::Vec coefficients(std::span<const T> f, size_t at) {
+	detail::Vec value;
+	std::memcpy(&value, f.data() + at, sizeof(value));
+	if constexpr (std::is_same_v<T, mint>) return detail::reduce(value, detail::kP);
+	else return value;
+}
+
+template <class T> inline void derivative_impl(std::span<const T> f, Words d) {
 	using namespace detail;
 	const size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
 	Indices index(1);
 	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(d.data() + i, canonical(montgomery(load_unaligned(f.data() + i + 1), index.value())));
+		store_unaligned(d.data() + i, canonical(montgomery(coefficients(f, i + 1), index.value())));
 	for (size_t i = full; i < n; ++i)
-		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), f[i + 1]) : 0;
+		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), mint_scalar(f[i + 1])) : 0;
 }
+
+inline void derivative(ConstWords f, Words d) { derivative_impl(f, d); }
 
 inline void divide_by_index(ConstWords a, size_t first, Words q) {
 	if (a.size() != q.size() || first == 0 || first + a.size() > kModulus) std::abort();
@@ -2626,7 +2638,7 @@ inline void divide_by_index(ConstWords a, size_t first, Words q) {
 
 }
 
-#line 969 "components/fps_blocked.hpp"
+#line 983 "components/fps_blocked.hpp"
 
 namespace blocked_poly {
 
@@ -2706,18 +2718,25 @@ inline size_t log_block(size_t n) {
 
 inline size_t log_blocks(size_t n) { return (n - 1 + log_block(n) - 1) / log_block(n); }
 
-inline void subtract_from_derivative(ConstWords f, size_t first, size_t count,
+template <class T> inline void subtract_derivative(std::span<const T> f, size_t first, size_t count,
 									Word* out, size_t size) {
 	const size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
 	Indices index(first + 1);
 	for (size_t c = 0; c < full; c += 8, index.next()) {
-		const Vec d = canonical(montgomery(load_unaligned(f.data() + first + 1 + c), index.value()));
+		const Vec d = canonical(montgomery(coefficients(f, first + 1 + c), index.value()));
 		store_unaligned(out + c, reduce(_mm256_sub_epi32(add(d, broadcast(kP)), load_unaligned(out + size + c)), kP));
 	}
 	for (size_t c = full; c < count; ++c) {
-		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), f[first + 1 + c]) : 0;
+		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
 		out[c] = (d + kP - out[size + c]) % kP;
 	}
+}
+inline void subtract_derivative_impl(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative(f, first, count, out, size);
+}
+
+inline void subtract_from_derivative(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative_impl(f, first, count, out, size);
 }
 
 struct ToeplitzBottom {
@@ -2788,7 +2807,6 @@ struct SideProductBottom {
 
 inline size_t log_buffers(size_t n) { return std::max<size_t>(log_blocks(n) + 2, 3); }
 
-inline unsigned mint_scalar(mint x) { return std::min(x.v, x.v - mint::mod()); }
 inline Vec mint_load(std::span<const mint> f, size_t at) {
 	if (at + 8 <= f.size()) {
 		Vec value;
@@ -2840,28 +2858,9 @@ inline void mint_forward(const Transform& t, std::span<const mint> f, Words out)
 		recursion.visit(out.data() + 8 * h, h, 1);
 	}
 }
-inline void mint_derivative(std::span<const mint> f, Words d) {
-	using namespace detail;
-	const size_t n = d.size(), full = std::min(n, f.size() > 0 ? f.size() - 1 : 0) / 8 * 8;
-	Indices index(1);
-	for (size_t i = 0; i < full; i += 8, index.next())
-		store_unaligned(d.data() + i, canonical(montgomery(mint_load(f, i + 1), index.value())));
-	for (size_t i = full; i < n; ++i)
-		d[i] = i + 1 < f.size() ? blocked_ntt::detail::multiply_mod(Word(i + 1), mint_scalar(f[i + 1])) : 0;
-}
-
-inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count,
-									Word* out, size_t size) {
-	const size_t inside = f.size() > first + 1 ? std::min(count, f.size() - first - 1) : 0, full = inside / 8 * 8;
-	Indices index(first + 1);
-	for (size_t c = 0; c < full; c += 8, index.next()) {
-		const Vec d = canonical(montgomery(mint_load(f, first + 1 + c), index.value()));
-		store_unaligned(out + c, reduce(_mm256_sub_epi32(add(d, broadcast(kP)), load_unaligned(out + size + c)), kP));
-	}
-	for (size_t c = full; c < count; ++c) {
-		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
-		out[c] = (d + kP - out[size + c]) % kP;
-	}
+inline void mint_derivative(std::span<const mint> f, Words d) { derivative_impl(f, d); }
+inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count, Word* out, size_t size) {
+	subtract_derivative(f, first, count, out, size);
 }
 
 struct NoLogTransform {
@@ -2869,7 +2868,7 @@ struct NoLogTransform {
 };
 
 template <class Input, class Sink, class Transformed>
-[[gnu::always_inline]] inline void log_derivative_impl(const Transform& t, Input f, size_t n,
+[[gnu::always_inline]] inline void log_derivative(const Transform& t, Input f, size_t n,
 												Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
 	const size_t k = log_block(n), len = 2 * k, blocks = log_blocks(n);
 	const auto buffer = [&scratch, len](size_t i) __attribute__((target("avx2"))) { return scratch.subspan(i * Arena::footprint(len), len); };
@@ -2888,7 +2887,7 @@ template <class Input, class Sink, class Transformed>
 		const Words work = j == 0 ? q0 : buffer(blocks + 1);
 		if (j == 0) {
 			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
-			else derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
+			else derivative_impl(f.first(std::min(f.size(), count + 1)), work.first(count));
 		} else {
 			if (j == 1) {
 				t.inverse_product(window(1), q0, work, Half::kUpper);
@@ -2904,7 +2903,7 @@ template <class Input, class Sink, class Transformed>
 				t.inverse_with(SideProductBottom{product, window(3).data()}, work, Half::kUpper);
 			}
 			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_subtract_from_derivative(f, first, count, work.data(), k);
-			else subtract_from_derivative(f, first, count, work.data(), k);
+			else subtract_derivative_impl(f, first, count, work.data(), k);
 		}
 		t.cyclic_product(work.first(count), 0, work, ht, Half::kLower);
 		sink(first, ConstWords(work.first(count)));
@@ -2918,13 +2917,13 @@ template <class Input, class Sink, class Transformed>
 template <class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void log_derivative(const Transform& t, ConstWords f, size_t n,
 		Words scratch, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative_impl(t, f, n, scratch, f, sink, transformed);
+	log_derivative(t, f, n, scratch, f, sink, transformed);
 }
 
 template <class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void mint_log_derivative(const Transform& t, std::span<const mint> f, size_t n,
 		Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative_impl(t, f, n, scratch, prefix, sink, transformed);
+	log_derivative(t, f, n, scratch, prefix, sink, transformed);
 }
 
 inline int log_derivative_log(size_t n) { return std::countr_zero(2 * log_block(n)); }
@@ -2965,10 +2964,7 @@ inline void native_log(const mint *in, size_t input, std::vector<mint> &out, siz
 	Arena arena(Transform::words(lg) + Arena::footprint(prefix_size) + Arena::footprint(log_scratch(n)));
 	const Transform t(arena, lg);
 	auto f = arena.take(prefix_size), scratch = arena.take(log_scratch(n));
-	for (size_t i = 0; i < prefix_size; ++i) {
-		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, f);
 	const auto sink = [&out, integrate, n](size_t first, ConstWords q) __attribute__((target("avx2"))) {
 		if (integrate) {
 			auto *work = const_cast<Word *>(q.data()) + detail::log_block(n);
@@ -3418,10 +3414,7 @@ inline void native_power(const mint *in, size_t input, std::vector<mint> &out, s
 	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(power_scratch(n)));
 	const Transform t(arena, lg);
 	auto g = arena.take(n), scratch = arena.take(power_scratch(n));
-	for (size_t i = 0; i < size; ++i) {
-		const auto x = in[i].v;
-		g[i] = std::min(x, x - mint::mod());
-	}
+	copy_coefficients(in, g.first(size));
 	power(t, g.first(size), e, std::min(c.v, c.v - mint::mod()), g, scratch);
 	append_fps_words<true>(out, g.data(), n);
 }
@@ -3464,10 +3457,7 @@ inline void native_inverse(const mint *in, size_t input, std::vector<mint> &out,
 	Arena arena(Transform::words(lg) + Arena::footprint(len) + Arena::footprint(scratch_words) + Arena::footprint(k));
 	const Transform t(arena, lg);
 	auto a = arena.take(len), scratch = arena.take(scratch_words), g = arena.take(k);
-	for (size_t i = 0; i < c; ++i) {
-		const unsigned v = in[i].v;
-		a[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, a.first(c));
 	const ConstWords f = a.first(c);
 	const auto extend = [&](ConstWords current, Words to,
 							Words transformed, Words work) {
@@ -3850,10 +3840,7 @@ inline void native_sqrt(const mint *in, size_t input, std::vector<mint> &out, si
 	Arena arena(Transform::words(lg) + Arena::footprint(c) + Arena::footprint(n) + Arena::footprint(sqrt_scratch(n)));
 	const Transform t(arena, lg);
 	auto f = arena.take(c), g = arena.take(n), scratch = arena.take(sqrt_scratch(n));
-	for (size_t i = 0; i < c; ++i) {
-		const unsigned v = in[i].v;
-		f[i] = std::min(v, v - mint::mod());
-	}
+	copy_coefficients(in, f);
 	const Word ct = blocked_ntt::detail::multiply_mod(std::min(constant.v, constant.v - mint::mod()),
 		blocked_ntt::detail::power(65536, mint::mod() - 2));
 	sqrt(t, f, ct, g, scratch);
@@ -3863,6 +3850,10 @@ inline void native_sqrt(const mint *in, size_t input, std::vector<mint> &out, si
 
 #pragma GCC pop_options
 #endif
+
+#line 1 "components/mint_convolution.hpp"
+
+
 
 #line 1 "components/fps_convolution.hpp"
 
@@ -4128,6 +4119,56 @@ inline std::vector<mint> multiply(const std::vector<mint>& a, const std::vector<
 }
 #pragma GCC pop_options
 #endif
+
+#line 10 "components/mint_convolution.hpp"
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+namespace mint_convolution_detail {
+inline std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<mint> &b) {
+	using NTT = fps_detail::NTT;
+	using Word = NTT::U;
+	if (a.empty() || b.empty()) return {};
+	auto words = [](auto &v) { return reinterpret_cast<Word *>(v.data()); };
+	auto input = [](const auto &v) { return reinterpret_cast<const Word *>(v.data()); };
+	if (std::min(a.size(), b.size()) <= 32) {
+		std::vector<mint> result(a.size() + b.size() - 1);
+		const auto &small = a.size() < b.size() ? a : b;
+		const auto &large = a.size() < b.size() ? b : a;
+		for (int j = 0; j < static_cast<int>(small.size()); ++j)
+			NTT::add_scaled(words(result) + j, input(large), large.size(), small[j].val());
+		return result;
+	}
+	int n = 1, size = a.size() + b.size() - 1;
+	while (n < size) n <<= 1;
+	assert(n <= (1 << 23));
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (NTT::vectorized()) return fps_detail::multiply_detail::multiply(a, b);
+#endif
+	std::vector<mint> x = a, y;
+	x.resize(n);
+	if (&a != &b) y = b, y.resize(n);
+	auto &plan = fps_detail::ntt_plan(std::max(1, n / 2));
+	plan.fft<false>(words(x), n);
+	if (&a == &b) NTT::product(words(x), input(x), input(x), n);
+	else {
+		plan.fft<false>(words(y), n);
+		NTT::product(words(x), input(x), input(y), n);
+	}
+	plan.fft<true>(words(x), n);
+	plan.scale(words(x), n, mint(n).inv().val());
+	x.resize(size);
+	return x;
+}
+}
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
+
 
 #line 1 "components/fps_division_blocked.hpp"
 
@@ -4716,46 +4757,11 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	}
 
 	static F multiply(const F &a, const F &b) {
-		if (a.empty() || b.empty()) return {};
-		if constexpr (!std::is_same_v<T, mint>) {
+		if constexpr (std::is_same_v<T, mint>) return F(mint_convolution_detail::multiply(a, b));
+		else {
 			W x = import_work(a);
 			return export_work(&a == &b ? W::multiply(x, x) : W::multiply(x, import_work(b)));
 		}
-		if (std::min(a.size(), b.size()) <= 32) {
-			F r(a.size() + b.size() - 1);
-			const F &small = a.size() < b.size() ? a : b;
-			const F &large = a.size() < b.size() ? b : a;
-			if constexpr (std::is_same_v<T, mint>) {
-				for (int j = 0; j < static_cast<int>(small.size()); ++j)
-					NTT::add_scaled(words(r) + j, words(large), large.size(), small[j].val());
-			} else
-				for (int j = 0; j < static_cast<int>(small.size()); ++j)
-					for (int i = 0; i < static_cast<int>(large.size()); ++i) r[i + j] += large[i] * small[j];
-			return r;
-		}
-		int n = 1, size = a.size() + b.size() - 1;
-		while (n < size) n <<= 1;
-		assert(n <= (1 << 23));
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (NTT::vectorized()) return F(fps_detail::multiply_detail::multiply(a, b));
-		}
-#endif
-		F x = a, y;
-		x.resize(n);
-		if (&a != &b) {
-			y = b;
-			y.resize(n);
-		}
-		ntt(x);
-		if (&a == &b) pointwise(x, x, x, n);
-		else {
-			ntt(y);
-			pointwise(x, x, y, n);
-		}
-		intt(x);
-		x.resize(size);
-		return x;
 	}
 
 	F operator-() const {
@@ -5382,16 +5388,16 @@ using fps = FormalPowerSeries<mint>;
 
 
 
-#line 9 "components/polynomial_product_tree.hpp"
+#line 1 "components/polynomial_multiply.hpp"
+
+
+
+#line 6 "components/polynomial_multiply.hpp"
 
 namespace polynomial_detail {
 template<class F, std::size_t Limit = 1U << 23>
-struct ProductTree {
+struct Products {
 	static_assert(Limit >= 2);
-	using T = typename F::value_type;
-	std::size_t size = 1, count;
-	std::vector<F> product;
-	static void trim(F& f) { while (!f.empty() && f.back() == T(0)) f.pop_back(); }
 	static F multiply(const F& a, const F& b) {
 		if (a.empty() || b.empty()) return {};
 		const auto n = a.size() + b.size() - 1;
@@ -5410,6 +5416,23 @@ struct ProductTree {
 			}
 		return result;
 	}
+};
+}
+
+
+#line 10 "components/polynomial_product_tree.hpp"
+
+namespace polynomial_detail {
+template<class F, std::size_t Limit = 1U << 23>
+struct ProductTree : Products<F, Limit> {
+	using Products<F, Limit>::multiply;
+	using Products<F, Limit>::multiply_low;
+	static_assert(Limit >= 2);
+	using T = typename F::value_type;
+	std::size_t size = 1, count;
+	std::vector<F> product;
+	static void trim(F& f) { while (!f.empty() && f.back() == T(0)) f.pop_back(); }
+
 
 	explicit ProductTree(const std::vector<T>& xs) : count(xs.size()) {
 		assert(count <= Limit);
@@ -5572,11 +5595,15 @@ __attribute__((target("avx2"))) inline void evaluate_direct(Ops::U *dst, const O
 }
 
 
-#line 1 "components/fps_evaluation.hpp"
+#line 1 "components/fps_multipoint.hpp"
 
 
 
-#line 5 "components/fps_evaluation.hpp"
+#line 1 "components/fps_evaluation_common.hpp"
+
+
+
+#line 5 "components/fps_evaluation_common.hpp"
 #include <optional>
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -6228,23 +6255,7 @@ protected:
 	Word* values_;
 	size_t lo_ = 0;
 };
-class BaseDescent : private BaseTree {
-public:
-	BaseDescent(const PointSlots& slots, Word* values) : BaseTree(slots, values) {}
-	void run(size_t lo, size_t hi, const Word* w) {
-		const size_t count = hi - lo;
-		if (count == 1) return store(values_ + 8 * lo, load(w));
-		if (std::has_single_bit(count)) {
-			const Word* products[6];
-			Word* at = build_levels(lo, count, products);
-			Word* const windows[2] = {at, at + 8 * count};
-			return descend_levels(lo, count, w, products, windows);
-		}
-		free_ = memory_;
-		build(1, lo, hi);
-		descend(1, lo, hi, w);
-	}
-};
+
 }
 class PointTree {
 public:
@@ -6290,15 +6301,7 @@ public:
 	size_t size() const { return m8_; }
 	ConstSpan product() const { return product_; }
 	ConstSpan product_transform() const { return top_store_.root(); }
-	void descend(ConstSpan w, Span values, Word c, Span scratch) {
-		using namespace detail;
-		Stack stack(scratch);
-		const size_t lane_length = LaneLayout::length(Word(count_));
-		const LaneState root = lane_state(w, c, stack);
-		BaseDescent base(slots_, values.data());
-		if (count_ <= LaneLayout::kBase) return base.run(0, count_, root.state + 8 * (lane_length - count_));
-		descend_lanes(0, count_, root.state, root.u, stack, base);
-	}
+
 protected:
 	using LaneTree = ProductTree<LaneLayout, detail::PointSlots, detail::TransformStore::Keeper>;
 	using TopTree = ProductTree<StandardLayout, detail::LaneProducts, detail::TransformStore::Keeper>;
@@ -6394,16 +6397,7 @@ protected:
 				return true;
 			});
 	}
-	void descend_lanes(size_t lo, size_t hi, const Word* s, Word u, detail::Stack& stack,
-					detail::BaseDescent& base) {
-		descend_tree<LaneLayout>(*lanes_, lane_store_, lo, hi, s, u, stack,
-			[&](size_t xlo, size_t xhi, size_t degree, Word* p, size_t words, Word scale) {
-				if (xhi - xlo != 1 && degree > LaneLayout::kBase) return false;
-				coefficients(p, words, scale);
-				base.run(xlo, xhi, p + words - 8 * degree);
-				return true;
-			});
-	}
+
 	static Word half(Word u) { return blocked_ntt::detail::multiply_mod(u, (detail::kP + 1) / 2); }
 	size_t m8_, count_;
 	TreeTransform t_;
@@ -6415,24 +6409,6 @@ protected:
 	ConstSpan product_;
 };
 namespace detail {
-inline constexpr size_t kDirectEvaluation = size_t(1) << 14;
-inline void evaluate_direct(ConstSpan f, ConstSpan points, Span values) {
-	constexpr size_t kChains = 4;
-	const Factor to_r(kR);
-	for (size_t i = 0; i < points.size(); i += 8 * kChains) {
-		alignas(32) Word x[8 * kChains] = {}, v[8 * kChains];
-		const size_t here = std::min<size_t>(8 * kChains, points.size() - i);
-		std::copy_n(points.begin() + std::ptrdiff_t(i), here, x);
-		Vec xm[kChains], acc[kChains];
-		for (size_t c = 0; c < kChains; ++c) xm[c] = reduce(times(load(x + 8 * c), to_r), kP), acc[c] = _mm256_setzero_si256();
-		for (size_t j = f.size(); j-- > 0;) {
-			const Vec fj = broadcast(f[j]);
-			for (size_t c = 0; c < kChains; ++c) acc[c] = reduce(add(montgomery(acc[c], xm[c]), fj), 2 * kP);
-		}
-		for (size_t c = 0; c < kChains; ++c) store(v + 8 * c, reduce(acc[c], kP));
-		std::copy_n(v, here, values.begin() + std::ptrdiff_t(i));
-	}
-}
 struct Division {
 	size_t big, k, length;
 	Division(size_t n, size_t m8)
@@ -6470,348 +6446,6 @@ inline void divide(const Transform& t, const Division& s, ConstSpan f, ConstSpan
 	std::copy_n(a.begin(), rest, d.begin() + std::ptrdiff_t(k));
 }
 }
-namespace detail {
-inline size_t evaluate_tree_words(size_t n, size_t m) {
-	const size_t m8 = (m + 7) / 8 * 8;
-	const Division sizes(n, m8);
-	return PointTree::words(m) + Transform::words(sizes.log()) + Arena::footprint(sizes.big) +
-		Arena::footprint(std::max(sizes.scratch_words(), PointTree::descend_words(m))) + Arena::footprint(m8);
-}
-inline void evaluate_tree(Arena& arena, ConstSpan f, ConstSpan points,
-						Span values) {
-	const size_t m = points.size();
-	PointTree tree(arena, points);
-	const size_t m8 = tree.size();
-	const Division sizes(f.size(), m8);
-	const Transform t(arena, sizes.log());
-	const Span d = arena.take(sizes.big);
-	const Span scratch = arena.take(std::max(sizes.scratch_words(), PointTree::descend_words(m)));
-	divide(t, sizes, f, tree.product(), tree.product_transform(), d, scratch);
-	const bool direct = m8 == m && reinterpret_cast<std::uintptr_t>(values.data()) % 32 == 0;
-	const Span all = direct ? values : arena.take(m8);
-	tree.descend(d.subspan(sizes.big - m8, m8), all, kR, scratch);
-	if (!direct) std::copy_n(all.begin(), m, values.begin());
-}
-}
-inline size_t evaluate_words(size_t n, size_t m) {
-	return n * m <= detail::kDirectEvaluation ? 0 : detail::evaluate_tree_words(n, m);
-}
-inline void evaluate(Arena& arena, ConstSpan f, ConstSpan points,
-					Span values) {
-	if (f.size() * points.size() <= detail::kDirectEvaluation) return detail::evaluate_direct(f, points, values);
-	detail::evaluate_tree(arena, f, points, values);
-}
-}
-namespace evaluation_poly {
-namespace detail {
-template <size_t K>
-[[gnu::always_inline]] inline Vec cross_sum(const Vec (&even)[K], const Vec (&odd)[K], size_t terms) {
-	if constexpr (K == 1) {
-		return montgomery_sums(even[0], odd[0], terms);
-	} else {
-		if (terms <= 17) return montgomery_sums(_mm256_add_epi64(even[0], even[1]), _mm256_add_epi64(odd[0], odd[1]), terms);
-		return montgomery_sums(_mm256_add_epi64(fold(even[0]), fold(even[1])), _mm256_add_epi64(fold(odd[0]), fold(odd[1])), 0);
-	}
-}
-[[gnu::noinline]] inline void cross_lanes(const Word* a, size_t n, const Word* b, size_t k,
-										const Word* c, const Word* d, Word* out) {
-	for (size_t t = 0; t < n + k; ++t) {
-		Vec even[2] = {}, odd[2] = {};
-		const size_t first[2] = {t > k ? t - k : 0, t > n ? t - n : 0}, last[2] = {std::min(t, n - 1), std::min(t, k - 1)};
-		for (size_t i = first[0]; i <= last[0]; ++i) {
-			const Vec x = load(a + 8 * i), y = load(d + 8 * (t - i));
-			even[0] = _mm256_add_epi64(even[0], _mm256_mul_epu32(x, y));
-			odd[0] = _mm256_add_epi64(odd[0], _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
-		}
-		for (size_t i = first[1]; i <= last[1]; ++i) {
-			const Vec x = load(b + 8 * i), y = load(c + 8 * (t - i));
-			even[1] = _mm256_add_epi64(even[1], _mm256_mul_epu32(x, y));
-			odd[1] = _mm256_add_epi64(odd[1], _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
-		}
-		store(out + 8 * t, cross_sum(even, odd, (last[0] + 1 - first[0]) + (last[1] + 1 - first[1])));
-	}
-}
-template <size_t D, size_t B>
-[[gnu::always_inline]] inline void cross_lanes(const Word* a, const Word* b, const Word* c,
-											const Word* d, Word* out) {
-	constexpr size_t kPad = B - 1, kSums = 2 * D > 17 ? 2 : 1;
-	Vec x[D + 2 * kPad], xo[D + 2 * kPad], y[D + 2 * kPad], yo[D + 2 * kPad], co[D + 1], dq[D + 1];
-	for (size_t i = 0; i < kPad; ++i)
-		x[i] = xo[i] = y[i] = yo[i] = x[D + kPad + i] = xo[D + kPad + i] = y[D + kPad + i] = yo[D + kPad + i] = _mm256_setzero_si256();
-#pragma GCC unroll 16
-	for (size_t i = 0; i < D; ++i) {
-		x[kPad + i] = load(a + 8 * i), xo[kPad + i] = _mm256_srli_epi64(x[kPad + i], 32);
-		y[kPad + i] = load(b + 8 * i), yo[kPad + i] = _mm256_srli_epi64(y[kPad + i], 32);
-	}
-#pragma GCC unroll 17
-	for (size_t j = 0; j <= D; ++j) co[j] = _mm256_srli_epi64(load(c + 8 * j), 32), dq[j] = _mm256_srli_epi64(load(d + 8 * j), 32);
-	for (size_t t0 = 0; t0 < 2 * D; t0 += B) {
-		Vec even[B][kSums] = {}, odd[B][kSums] = {};
-		const size_t first = t0 + 1 > D ? t0 + 1 - D : 0, last = std::min(D, t0 + B - 1);
-		for (size_t j = first; j <= last; ++j) {
-			const Vec qd = load(d + 8 * j), qc = load(c + 8 * j);
-#pragma GCC unroll 8
-			for (size_t s = 0; s < B; ++s) {
-				const size_t i = kPad + t0 + s - j;
-				even[s][0] = _mm256_add_epi64(even[s][0], _mm256_mul_epu32(x[i], qd));
-				odd[s][0] = _mm256_add_epi64(odd[s][0], _mm256_mul_epu32(xo[i], dq[j]));
-				even[s][kSums - 1] = _mm256_add_epi64(even[s][kSums - 1], _mm256_mul_epu32(y[i], qc));
-				odd[s][kSums - 1] = _mm256_add_epi64(odd[s][kSums - 1], _mm256_mul_epu32(yo[i], co[j]));
-			}
-		}
-#pragma GCC unroll 8
-		for (size_t s = 0; s < B; ++s) {
-			const size_t t = t0 + s, terms = 2 * (std::min(t, D - 1) + 1 - (t > D ? t - D : 0));
-			if (t < 2 * D) store(out + 8 * t, cross_sum(even[s], odd[s], terms));
-		}
-	}
-}
-template <size_t D>
-[[gnu::always_inline]] inline void cross_lanes(const Word* a, const Word* b, const Word* c,
-											const Word* d, Word* out) {
-	static_assert(2 * D <= 17);
-	Vec x[D], xo[D], y[D], yo[D], p[D + 1], po[D + 1], q[D + 1], qo[D + 1];
-#pragma GCC unroll 8
-	for (size_t i = 0; i < D; ++i) {
-		x[i] = load(a + 8 * i), xo[i] = _mm256_srli_epi64(x[i], 32);
-		y[i] = load(b + 8 * i), yo[i] = _mm256_srli_epi64(y[i], 32);
-	}
-#pragma GCC unroll 9
-	for (size_t j = 0; j <= D; ++j) {
-		p[j] = load(c + 8 * j), po[j] = _mm256_srli_epi64(p[j], 32);
-		q[j] = load(d + 8 * j), qo[j] = _mm256_srli_epi64(q[j], 32);
-	}
-#pragma GCC unroll 16
-	for (size_t t = 0; t < 2 * D; ++t) {
-		const size_t first = t > D ? t - D : 0, last = std::min(t, D - 1);
-		Vec even = _mm256_setzero_si256(), odd = _mm256_setzero_si256();
-#pragma GCC unroll 8
-		for (size_t i = first; i <= last; ++i) {
-			even = _mm256_add_epi64(even, _mm256_add_epi64(_mm256_mul_epu32(x[i], q[t - i]), _mm256_mul_epu32(y[i], p[t - i])));
-			odd = _mm256_add_epi64(odd, _mm256_add_epi64(_mm256_mul_epu32(xo[i], qo[t - i]), _mm256_mul_epu32(yo[i], po[t - i])));
-		}
-		store(out + 8 * t, montgomery_sums(even, odd, 2 * (last + 1 - first)));
-	}
-}
-template <size_t D>
-void cross_level(const Word* sums, const Word* products, Word* out, size_t nodes) {
-	for (size_t i = 0; i < nodes; ++i) {
-		const Word *r = sums + 8 * D * (2 * i), *q = products + 8 * (D + 1) * (2 * i);
-		if constexpr (D <= 8) cross_lanes<D>(r, r + 8 * D, q, q + 8 * (D + 1), out + 16 * D * i);
-		else cross_lanes<D, 2>(r, r + 8 * D, q, q + 8 * (D + 1), out + 16 * D * i);
-	}
-}
-inline Vec inverse_montgomery(Vec x) {
-	Vec result = broadcast(kR), power = x;
-	for (Word e = kP - 2; e; e >>= 1) {
-		if (e & 1) result = montgomery(result, power);
-		power = montgomery(power, power);
-	}
-	return result;
-}
-class BaseInterpolation : private BaseTree {
-public:
-	BaseInterpolation(const PointSlots& slots, const Word* y, size_t m) : BaseTree(slots, storage_), y_(y), m_(m) {}
-	const Word* run(size_t lo, size_t hi, const Word* w) {
-		const size_t count = hi - lo;
-		lo_ = lo;
-		if (count == 1) {
-			store(values_, load(w));
-			weights(1);
-			return values_;
-		}
-		if (std::has_single_bit(count)) return run_levels(count, w);
-		free_ = memory_;
-		build(1, lo, hi);
-		descend(1, lo, hi, w);
-		weights(count);
-		ascend(1, lo, hi, sums_);
-		return sums_;
-	}
-private:
-	const Word* run_levels(size_t count, const Word* w) {
-		const Word* products[6];
-		Word* at = build_levels(lo_, count, products);
-		Word* const buffers[2] = {at, at + 8 * count};
-		descend_levels(lo_, count, w, products, buffers);
-		weights(count);
-		const Word* sums = values_;
-		for (size_t d = 1, j = 0; d < count; d *= 2, ++j) {
-			Word* const out = 2 * d == count ? sums_ : buffers[j & 1];
-			with_degree(d, [&]<size_t D>() { cross_level<D>(sums, products[j], out, count / (2 * D)); });
-			sums = out;
-		}
-		return sums_;
-	}
-	void ascend(size_t v, size_t lo, size_t hi, Word* out) {
-		if (hi - lo == 1) return store(out, load(values_ + 8 * (lo - lo_)));
-		const size_t mid = lo + (hi - lo) / 2;
-		Word* const left = free_;
-		Word* const right = left + 8 * (mid - lo);
-		free_ = right + 8 * (hi - mid);
-		ascend(2 * v, lo, mid, left);
-		ascend(2 * v + 1, mid, hi, right);
-		cross_lanes(left, mid - lo, right, hi - mid, product_[2 * v], product_[2 * v + 1], out);
-		free_ = left;
-	}
-	void weights(size_t count) {
-		constexpr size_t kChains = 4;
-		const Vec iota = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7), one = broadcast(kR);
-		const size_t groups = (count + kChains - 1) / kChains;
-		Vec prefix[kMaxSlots];
-		for (size_t g = 0; g < groups; ++g) {
-#pragma GCC unroll 4
-			for (size_t c = 0; c < kChains; ++c) {
-				const size_t k = kChains * g + c, first = 8 * (lo_ + k);
-				Vec x = one;
-				if (k < count) {
-					x = load(values_ + 8 * k);
-					if (first + 8 > m_) {
-						x = _mm256_blendv_epi8(one, x, _mm256_cmpgt_epi32(broadcast(Word(m_ - first)), iota));
-						store(values_ + 8 * k, x);
-					}
-				}
-				prefix[k] = g ? montgomery(prefix[k - kChains], x) : x;
-			}
-		}
-		const Vec* const last = prefix + kChains * (groups - 1);
-		const Vec p01 = montgomery(last[0], last[1]), p23 = montgomery(last[2], last[3]);
-		const Vec inverse = inverse_montgomery(montgomery(p01, p23));
-		const Vec i01 = montgomery(inverse, p23), i23 = montgomery(inverse, p01);
-		Vec e[kChains] = {montgomery(i01, last[1]), montgomery(i01, last[0]), montgomery(i23, last[3]), montgomery(i23, last[2])};
-		for (size_t g = groups; g-- > 0;) {
-#pragma GCC unroll 4
-			for (size_t c = 0; c < kChains; ++c) {
-				const size_t k = kChains * g + c;
-				if (k >= count) continue;
-				const Vec x = load(values_ + 8 * k), reciprocal = g ? montgomery(e[c], prefix[k - kChains]) : e[c];
-				e[c] = montgomery(e[c], x);
-				store(values_ + 8 * k, canonical(montgomery(reciprocal, load(y_ + 8 * (lo_ + k)))));
-			}
-		}
-	}
-	static constexpr size_t kMaxSlots = LaneLayout::kBase;
-	alignas(32) Word storage_[8 * kMaxSlots];
-	alignas(32) Word sums_[8 * kMaxSlots];
-	const Word* y_;
-	size_t m_;
-};
-}
-class InterpolationTree : public PointTree {
-public:
-	InterpolationTree(Arena& arena, ConstSpan points) : PointTree(arena, points), m_(points.size()) {}
-	static size_t scratch_words(size_t m) {
-		const size_t m8 = (m + 7) / 8 * 8, lane_length = LaneLayout::length(Word(m8 / 8));
-		const size_t stride = std::max<size_t>(8, lane_length), top_length = StandardLayout::length(Word(m8));
-		return descend_words(m) + 10 * Arena::footprint(8 * stride) + 6 * Arena::footprint(top_length) + 4096;
-	}
-	void interpolate(ConstSpan w, ConstSpan y, Span r,
-					Span scratch) {
-		using namespace detail;
-		Stack stack(scratch);
-		const size_t lane_length = LaneLayout::length(Word(count_)), stride = std::max<size_t>(8, lane_length);
-		const LaneState root = lane_state(w, kR, stack);
-		BaseInterpolation base(slots_, y.data(), m_);
-		Word* const sums = stack.take(8 * stride);
-		if (count_ <= LaneLayout::kBase) {
-			std::copy_n(base.run(0, count_, root.state + 8 * (lane_length - count_)), 8 * count_, sums);
-		} else {
-			lanes(0, count_, root.state, root.u, stack, base, sums, lane_length);
-			t_.inverse({sums, 8 * lane_length}, {sums, 8 * lane_length});
-		}
-		Word* const columns = root.state;
-		for (size_t j = 0; j < count_; j += 8) {
-			Vec v[8];
-			for (size_t i = 0; i < 8; ++i) v[i] = load(sums + 8 * (j + i));
-			transpose8(v);
-			for (size_t l = 0; l < 8; ++l) store(columns + l * stride + j, v[l]);
-		}
-		const size_t length = StandardLayout::length(Word(m8_));
-		top(0, 8, columns, stride, stack, r.data(), length);
-		t_.inverse(r.first(length), r.first(length));
-	}
-private:
-	void lanes(size_t lo, size_t hi, const Word* s, Word u, detail::Stack& stack,
-			detail::BaseInterpolation& base, Word* out, size_t out_length) {
-		using namespace detail;
-		const LaneTree& tree = *lanes_;
-		const size_t length = LaneLayout::length(Word(tree.degree(lo, hi))), words = 8 * length;
-		const size_t mid = tree.split(lo, hi), mark = stack.mark();
-		const Word* const stored[2] = {lane_store_.pair(mid), lane_store_.pair(mid) + Arena::footprint(words)};
-		Word* const sums[2] = {out_length >= 2 * length ? out + words : out, stack.take(words)};
-		const size_t sides[2][2] = {{lo, mid}, {mid, hi}};
-		for (int side = 0; side < 2; ++side) {
-			const size_t xlo = sides[side][0], xhi = sides[side][1], degree = tree.degree(xlo, xhi);
-			const size_t inner = 8 * LaneLayout::length(Word(degree)), inner_mark = stack.mark();
-			Word* const p = stack.take(words);
-			TreeTransform::pointwise_products(s, stored[1 - side], {p, words});
-			if (xhi - xlo == 1 || degree <= LaneLayout::kBase) {
-				coefficients(p, words, u);
-				const Word* const sum = base.run(xlo, xhi, p + words - 8 * degree);
-				t_.forward({sum, 8 * degree}, 0, {sums[side], words});
-			} else if (2 * inner == words) {
-				halve(p, words);
-				lanes(xlo, xhi, p, half(u), stack, base, sums[side], length);
-			} else {
-				coefficients(p, words, u);
-				Word* const q = stack.take(inner);
-				t_.forward({p + words - inner, inner}, 0, {q, inner});
-				lanes(xlo, xhi, q, 1, stack, base, sums[side], length);
-			}
-			stack.release(inner_mark);
-		}
-		TreeTransform::pointwise_product_sums(sums[0], stored[1], sums[1], stored[0], {out, words});
-		double_to(out, words, out_length / length, stack);
-		stack.release(mark);
-	}
-	void top(size_t lo, size_t hi, const Word* columns, size_t stride, detail::Stack& stack,
-			Word* out, size_t out_length) {
-		const TopTree& tree = *top_;
-		if (hi - lo == 1) return t_.forward({columns + lo * stride, count_}, 0, {out, out_length});
-		const size_t length = StandardLayout::length(tree.degree(lo, hi)), mid = tree.split(lo, hi), mark = stack.mark();
-		const Word* const stored[2] = {top_store_.pair(mid), top_store_.pair(mid) + Arena::footprint(length)};
-		Word* const sums[2] = {out_length >= 2 * length ? out + length : out, stack.take(length)};
-		top(lo, mid, columns, stride, stack, sums[0], length);
-		top(mid, hi, columns, stride, stack, sums[1], length);
-		t_.leaf_product_sums(sums[0], stored[1], sums[1], stored[0], {out, length});
-		double_to(out, length, out_length / length, stack);
-		stack.release(mark);
-	}
-	void double_to(Word* out, size_t words, size_t factor, detail::Stack& stack) const {
-		if (factor == 1) return;
-		Word* const c = stack.take(words);
-		t_.inverse({out, words}, {c, words});
-		for (size_t n = words; n < factor * words; n *= 2) t_.forward_upper({c, words}, 0, {out + n, n});
-	}
-	size_t m_;
-};
-inline size_t interpolate_words(size_t m) {
-	const size_t m8 = (m + 7) / 8 * 8;
-	const detail::Division sizes(m, m8);
-	return PointTree::words(m) + Transform::words(sizes.log()) + Arena::footprint(std::max(m + 1, m8)) +
-		Arena::footprint(StandardLayout::length(Word(m8))) +
-		Arena::footprint(std::max(sizes.scratch_words(), InterpolationTree::scratch_words(m)));
-}
-inline void interpolate(Arena& arena, ConstSpan points, ConstSpan values,
-						Span c) {
-	const size_t m = points.size();
-	InterpolationTree tree(arena, points);
-	const size_t m8 = tree.size(), length = StandardLayout::length(Word(m8));
-	const Span y = arena.take(std::max(m + 1, m8));
-	std::reverse_copy(tree.product().begin(), tree.product().begin() + std::ptrdiff_t(m + 1), y.begin());
-	derivative(y.first(m + 1), y.first(m));
-	const detail::Division sizes(m, m8);
-	const Transform t(arena, sizes.log());
-	const Span window = arena.take(length);
-	const Span scratch = arena.take(std::max(sizes.scratch_words(), InterpolationTree::scratch_words(m)));
-	detail::divide(t, sizes, y.first(m), tree.product(), tree.product_transform(), window.first(m8), scratch);
-	std::copy(values.begin(), values.end(), y.begin());
-	y[m] = 0;
-	tree.interpolate(window.first(m8), y.first(m8), window, scratch);
-	std::reverse_copy(window.begin(), window.begin() + std::ptrdiff_t(m), c.begin());
-}
-}
-namespace evaluation_poly {
 inline void import_words(std::span<const mint> in, Span out) {
 	using namespace detail;
 	size_t i = 0;
@@ -6832,6 +6466,113 @@ inline std::vector<mint> export_words(ConstSpan in) {
 	append_fps_words<true>(out, in.data(), in.size());
 	return out;
 }
+
+}
+}
+
+#pragma GCC pop_options
+#endif
+
+#line 5 "components/fps_multipoint.hpp"
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#pragma GCC push_options
+_Pragma("GCC target(\"avx2\")")
+#pragma GCC optimize("O3")
+
+namespace fps_detail::evaluation_poly {
+namespace detail {
+class BaseDescent : private BaseTree {
+public:
+	BaseDescent(const PointSlots& slots, Word* values) : BaseTree(slots, values) {}
+	void run(size_t lo, size_t hi, const Word* w) {
+		const size_t count = hi - lo;
+		if (count == 1) return store(values_ + 8 * lo, load(w));
+		if (std::has_single_bit(count)) {
+			const Word* products[6];
+			Word* at = build_levels(lo, count, products);
+			Word* const windows[2] = {at, at + 8 * count};
+			return descend_levels(lo, count, w, products, windows);
+		}
+		free_ = memory_;
+		build(1, lo, hi);
+		descend(1, lo, hi, w);
+	}
+};
+}
+class EvaluationTree : public PointTree {
+public:
+	using PointTree::PointTree;
+	void descend(ConstSpan w, Span values, Word c, Span scratch) {
+		using namespace detail;
+		Stack stack(scratch);
+		const size_t lane_length = LaneLayout::length(Word(count_));
+		const LaneState root = lane_state(w, c, stack);
+		BaseDescent base(slots_, values.data());
+		if (count_ <= LaneLayout::kBase) return base.run(0, count_, root.state + 8 * (lane_length - count_));
+		descend_lanes(0, count_, root.state, root.u, stack, base);
+	}
+private:
+	void descend_lanes(size_t lo, size_t hi, const Word* s, Word u, detail::Stack& stack,
+					detail::BaseDescent& base) {
+		descend_tree<LaneLayout>(*lanes_, lane_store_, lo, hi, s, u, stack,
+			[&](size_t xlo, size_t xhi, size_t degree, Word* p, size_t words, Word scale) {
+				if (xhi - xlo != 1 && degree > LaneLayout::kBase) return false;
+				coefficients(p, words, scale);
+				base.run(xlo, xhi, p + words - 8 * degree);
+				return true;
+			});
+	}
+};
+namespace detail {
+inline constexpr size_t kDirectEvaluation = size_t(1) << 14;
+inline void evaluate_direct(ConstSpan f, ConstSpan points, Span values) {
+	constexpr size_t kChains = 4;
+	const Factor to_r(kR);
+	for (size_t i = 0; i < points.size(); i += 8 * kChains) {
+		alignas(32) Word x[8 * kChains] = {}, v[8 * kChains];
+		const size_t here = std::min<size_t>(8 * kChains, points.size() - i);
+		std::copy_n(points.begin() + std::ptrdiff_t(i), here, x);
+		Vec xm[kChains], acc[kChains];
+		for (size_t c = 0; c < kChains; ++c) xm[c] = reduce(times(load(x + 8 * c), to_r), kP), acc[c] = _mm256_setzero_si256();
+		for (size_t j = f.size(); j-- > 0;) {
+			const Vec fj = broadcast(f[j]);
+			for (size_t c = 0; c < kChains; ++c) acc[c] = reduce(add(montgomery(acc[c], xm[c]), fj), 2 * kP);
+		}
+		for (size_t c = 0; c < kChains; ++c) store(v + 8 * c, reduce(acc[c], kP));
+		std::copy_n(v, here, values.begin() + std::ptrdiff_t(i));
+	}
+}
+inline size_t evaluate_tree_words(size_t n, size_t m) {
+	const size_t m8 = (m + 7) / 8 * 8;
+	const Division sizes(n, m8);
+	return PointTree::words(m) + Transform::words(sizes.log()) + Arena::footprint(sizes.big) +
+		Arena::footprint(std::max(sizes.scratch_words(), PointTree::descend_words(m))) + Arena::footprint(m8);
+}
+inline void evaluate_tree(Arena& arena, ConstSpan f, ConstSpan points,
+						Span values) {
+	const size_t m = points.size();
+	EvaluationTree tree(arena, points);
+	const size_t m8 = tree.size();
+	const Division sizes(f.size(), m8);
+	const Transform t(arena, sizes.log());
+	const Span d = arena.take(sizes.big);
+	const Span scratch = arena.take(std::max(sizes.scratch_words(), PointTree::descend_words(m)));
+	divide(t, sizes, f, tree.product(), tree.product_transform(), d, scratch);
+	const bool direct = m8 == m && reinterpret_cast<std::uintptr_t>(values.data()) % 32 == 0;
+	const Span all = direct ? values : arena.take(m8);
+	tree.descend(d.subspan(sizes.big - m8, m8), all, kR, scratch);
+	if (!direct) std::copy_n(all.begin(), m, values.begin());
+}
+}
+inline size_t evaluate_words(size_t n, size_t m) {
+	return n * m <= detail::kDirectEvaluation ? 0 : detail::evaluate_tree_words(n, m);
+}
+inline void evaluate(Arena& arena, ConstSpan f, ConstSpan points,
+					Span values) {
+	if (f.size() * points.size() <= detail::kDirectEvaluation) return detail::evaluate_direct(f, points, values);
+	detail::evaluate_tree(arena, f, points, values);
+}
 inline std::vector<mint> native_evaluate(std::span<const mint> f, std::span<const mint> points) {
 	Arena arena(evaluate_words(f.size(), points.size()) + Arena::footprint(f.size()) + 2 * Arena::footprint(points.size()));
 	auto a = arena.take(f.size()), x = arena.take(points.size()), y = arena.take(points.size());
@@ -6840,16 +6581,7 @@ inline std::vector<mint> native_evaluate(std::span<const mint> f, std::span<cons
 	evaluate(arena, a, x, y);
 	return export_words(y);
 }
-inline std::vector<mint> native_interpolate(std::span<const mint> points, std::span<const mint> values) {
-	const size_t n = points.size();
-	Arena arena(interpolate_words(n) + 3 * Arena::footprint(n));
-	auto x = arena.take(n), y = arena.take(n), c = arena.take(n);
-	import_words(points, x);
-	import_montgomery(values, y);
-	interpolate(arena, x, y, c);
-	return export_words(c);
-}
-}
+
 }
 
 #pragma GCC pop_options

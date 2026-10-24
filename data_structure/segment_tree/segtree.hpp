@@ -1,6 +1,7 @@
 #ifndef SEGTREE_HPP
 #define SEGTREE_HPP
 
+#include <algorithm>
 #include <bit>
 #include <cassert>
 #include <cstddef>
@@ -61,14 +62,27 @@ template<class S, auto op, auto e> class Segtree {
 	S all_prod() const { return n_ ? data_[1] : e(); }
 	S prod(int l, int r) const {
 		assert(0 <= l && l <= r && r <= n_);
-		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r);
-		S left = e(), right = e();
-		while (a < b) {
-			if (a & 1) left = op(left, data_[a++]);
-			if (b & 1) right = op(data_[--b], right);
-			a >>= 1, b >>= 1;
+		if (l == r) return e();
+		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r) - 1;
+		unsigned level = std::bit_width(a ^ b);
+		if (!level) return data_[a];
+		unsigned left_stop = a >> (level - 1), right_stop = left_stop + 1;
+		a >>= (std::min)(unsigned(std::countr_zero(a)), level - 1);
+		b >>= (std::min)(unsigned(std::countr_one(b)), level - 1);
+		S left = data_[a], right = data_[b];
+		for (;;) {
+			++a;
+			a >>= std::countr_zero(a);
+			if (a <= right_stop) break;
+			left = op(std::move(left), data_[a]);
 		}
-		return op(left, right);
+		for (;;) {
+			--b;
+			b >>= std::countr_one(b);
+			if (b <= right_stop) break;
+			right = op(data_[b], std::move(right));
+		}
+		return op(std::move(left), std::move(right));
 	}
 	template<class Pred> int max_right(int l, Pred f) const {
 		assert(0 <= l && l <= n_ && f(e()));

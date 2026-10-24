@@ -12,6 +12,36 @@
 struct ConstantHash {
 	std::size_t operator()(int) const { return 0; }
 };
+struct alignas(64) AlignedValue { std::uint64_t data[8]{}; };
+
+template<class K, class V> void value_layout() {
+	FlatHashMap<K, V> map;
+	for (unsigned i = 0; i < 256; ++i) {
+		V value{};
+		if constexpr (std::is_same_v<V, AlignedValue>) for (auto &x : value.data) x = i;
+		else value = i;
+		map.set(K(i), value);
+	}
+	for (unsigned i = 0; i < 256; ++i) {
+		map.prefetch(K(i));
+		const auto *value = map.find(K(i));
+		assert(value && reinterpret_cast<std::uintptr_t>(value) % alignof(V) == 0);
+		if constexpr (std::is_same_v<V, AlignedValue>) for (auto x : value->data) assert(x == i);
+		else assert(*value == V(i));
+	}
+	map.reserve(2048);
+	for (unsigned i = 0; i < 128; ++i) assert(map.erase(K(i)));
+	auto copy = map;
+	for (unsigned i = 128; i < 256; ++i) {
+		const auto *value = copy.find(K(i));
+		assert(value && reinterpret_cast<std::uintptr_t>(value) % alignof(V) == 0);
+		if constexpr (std::is_same_v<V, AlignedValue>) for (auto x : value->data) assert(x == i);
+		else assert(*value == V(i));
+	}
+	map.clear();
+	assert(map.empty() && copy.size() == 128);
+}
+
 struct Value {
 	int number;
 	Value() = delete;
@@ -25,6 +55,8 @@ template<class K> void randomized() {
 	for (int step = 0; step < 100000; ++step) {
 		K key = static_cast<K>(random() % 2048);
 		std::uint64_t value = random();
+		map.prefetch(key);
+		static_assert(noexcept(map.prefetch(key)));
 		switch (random() % 8) {
 		case 0: case 1: case 2:
 			map.set(key, value), expected[key] = value;
@@ -49,6 +81,7 @@ template<class K> void randomized() {
 			}
 		}
 		const auto &view = map;
+		view.prefetch(key);
 		auto it = expected.find(key);
 		assert(map.size() == expected.size() && map.empty() == expected.empty());
 		assert(view.contains(key) == expected.contains(key));
@@ -79,11 +112,16 @@ template<class K> void randomized() {
 }
 
 int main() {
+	value_layout<std::uint8_t, std::uint64_t>();
+	value_layout<std::uint64_t, AlignedValue>();
+	value_layout<std::uint8_t, AlignedValue>();
+	value_layout<std::uint64_t, bool>();
 	randomized<std::int32_t>();
 	randomized<std::uint32_t>();
 	randomized<std::int64_t>();
 	randomized<std::uint64_t>();
 	FlatHashMap<std::string, std::string> words;
+	words.prefetch("missing");
 	words.set("ab", "cd");
 	words["ef"] = "gh";
 	assert(words.get("ab") == "cd" && words.get("ef") == "gh" && !words.get("missing"));
@@ -99,6 +137,7 @@ int main() {
 	pointers[3] = std::make_unique<int>(7);
 	assert(*pointers.at(3) == 7 && pointers.erase(3));
 	FlatHashMap<int, int, ConstantHash> collisions;
+	collisions.prefetch(0);
 	for (int i = 0; i < 1000; ++i) collisions.set(i, i * i);
 	for (int i = 0; i < 1000; i += 2) collisions.erase(i);
 	for (int i = 1; i < 1000; i += 2) assert(collisions.at(i) == i * i);

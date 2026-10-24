@@ -182,9 +182,17 @@ template<class T> class Backend {
 			if constexpr (SquareFree) {
 				for (U j = 1; j <= split; ++j) out[big(j)] += first[i] * out[big(j * p)];
 				for (U j = split + 1; j <= large; ++j) out[big(j)] += first[i] * out[small(limit / j)];
-				for (U j = root; j >= p; --j) out[small(j)] += first[i] * out[small(j / p)];
+				U j = root;
+				for (U q = root / p; q; --q) {
+					const T delta = first[i] * out[small(q)];
+					for (const U stop = q * p; j >= stop; --j) out[small(j)] += delta;
+				}
 			} else {
-				for (U j = p; j <= root; ++j) out[small(j)] += first[i] * out[small(j / p)];
+				U j = p;
+				for (U q = 1; j <= root; ++q) {
+					const T delta = first[i] * out[small(q)];
+					for (const U stop = std::min(root + 1, (q + 1) * p); j < stop; ++j) out[small(j)] += delta;
+				}
 				for (U j = large; j > split; --j) out[big(j)] += first[i] * out[small(limit / j)];
 				for (U j = split; j; --j) out[big(j)] += first[i] * out[big(j * p)];
 			}

@@ -22,7 +22,7 @@ template <class T>
 std::vector<int> convex_hull_indices(const std::vector<Point<T>> &points, bool keep_collinear = false, Real eps = epsilon) {
 	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 	if constexpr (integer<T> && sizeof(T) <= 8) {
-		if (points.size() >= 64) {
+		if (points.size() >= 4) {
 			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
 			for (auto p : points) {
 				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
@@ -69,7 +69,7 @@ template <class T>
 std::vector<Point<T>> convex_hull(std::vector<Point<T>> &&points, bool keep_collinear = false, Real eps = epsilon) {
 	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 	if constexpr (integer<T> && sizeof(T) <= 8) {
-		if (points.size() >= 64) {
+		if (points.size() >= 4) {
 			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
 			for (auto p : points) {
 				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
@@ -160,7 +160,34 @@ wide_t<T> diameter_squared(const std::vector<Point<T>> &polygon, Real eps = epsi
 
 template <class T>
 std::optional<PointPair<T>> furthest_pair(const std::vector<Point<T>> &points, Real eps = epsilon) {
+	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 	if (points.size() < 2) return std::nullopt;
+	if constexpr (integer<T> && sizeof(T) <= 8) {
+		if (points.size() >= 64) {
+			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
+			for (auto p : points) {
+				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
+				min_y = std::min(min_y, p.y), max_y = std::max(max_y, p.y);
+			}
+			if (wide_t<T>(max_x) - min_x <= INT32_MAX && wide_t<T>(max_y) - min_y <= INT32_MAX) {
+				auto pack = [&](Point<T> p) {
+					return (std::uint64_t(wide_t<T>(p.x) - min_x) << 32) | std::uint32_t(wide_t<T>(p.y) - min_y);
+				};
+				std::vector<std::uint64_t> order(points.size());
+				for (std::size_t i = 0; i < points.size(); ++i) order[i] = pack(points[i]);
+				auto hull = packed_convex_hull_detail::build(std::move(order), false);
+				if (hull.size() == 1) return PointPair<T>{0, 1, 0};
+				auto [a, b] = packed_convex_hull_detail::diameter(hull);
+				int first = -1, second = -1;
+				for (int i = 0; i < int(points.size()) && (first < 0 || second < 0); ++i) {
+					auto value = pack(points[i]);
+					if (value == a) first = i;
+					if (value == b) second = i;
+				}
+				return PointPair<T>{first, second, distance_squared(points[first], points[second])};
+			}
+		}
+	}
 	auto polygon = convex_hull(points, false, eps);
 	if (polygon.size() == 1) return PointPair<T>{0, 1, 0};
 	auto result = *convex_diameter(polygon, eps);

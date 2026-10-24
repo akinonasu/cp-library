@@ -51,4 +51,24 @@ int main() {
 		assert(a + 1e-15L >= previous);
 		previous = a;
 	}
+	for (int trial = 0; trial < 200; ++trial) {
+		std::vector<Point<std::int32_t>> values;
+		for (int i = 0; i < 2000; ++i) {
+			std::int32_t x = random(), y = random();
+			if (trial % 3 == 0) x = (i % 5 - 2) * (i % 1000), y = (i % 5 - 2) * (i % 1000);
+			if (trial % 3 == 1) x = INT_MAX - i % 1000, y = x - 1;
+			values.emplace_back(x, y);
+		}
+		values.emplace_back(0, 0);
+		values.emplace_back(INT_MIN, INT_MIN), values.emplace_back(INT_MAX, INT_MAX);
+		values.emplace_back(INT_MIN, INT_MAX), values.emplace_back(INT_MAX, INT_MIN);
+		auto expected = values;
+		std::sort(expected.begin(), expected.end(), PolarLess<std::int32_t>{});
+		polar_sort(values);
+		assert(values == expected);
+	}
+	auto expected = points;
+	polar_sort(points);
+	assert(points == expected);
+
 }

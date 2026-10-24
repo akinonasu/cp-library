@@ -7,7 +7,7 @@
 #include "../components/multivariate_convolution_core.hpp"
 #include "../components/multivariate_ranked.hpp"
 
-#include "convolution.hpp"
+#include "../components/convolution_dispatch.hpp"
 #include "../components/ntt.hpp"
 
 template <class T>
