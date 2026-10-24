@@ -258,6 +258,8 @@
 | `data_structure/range_query/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
 | `data_structure/range_query/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
 | `data_structure/range_query/mo_order.hpp` | Mo 法 | [使い方](docs/mo_order.md) |
+| `data_structure/range_query/mo_with_updates.hpp` | 更新付き Mo 法・一点更新と区間クエリ | [使い方](docs/mo_with_updates.md) |
+| `data_structure/range_query/tree_mo.hpp` | 木上の Mo 法・頂点値／辺値の経路クエリ | [使い方](docs/tree_mo.md) |
 | `data_structure/range_query/offline_range_frequency.hpp` | 区間頻度（一点更新・クエリ一括処理） | [使い方](docs/offline_range_frequency.md) |
 | `data_structure/range_query/offline_range_count_distinct.hpp` | 区間の異なる値の個数（クエリ一括処理） | [使い方](docs/offline_range_count_distinct.md) |
 | `data_structure/range_query/offline_range_sum.hpp` | 値の上限付き区間和（クエリ一括処理） | [使い方](docs/offline_range_sum.md) |
