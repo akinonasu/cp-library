@@ -1,7 +1,7 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_subtree_sum"
 #include "../data_structure/fenwick_tree.hpp"
 #include "../data_structure/advanced/hld.hpp"
-#include "components/fast_io.hpp"
+#include "components/fast_io_bulk.hpp"
 #include <vector>
 
 int main() {
@@ -10,13 +10,18 @@ int main() {
 	int n, q;
 	input.read(n), input.read(q);
 	std::vector<long long> a(n);
-	for (auto &x : a) input.read(x);
-	HLD tree(n);
-	for (int v = 1, p; v < n; ++v) {
-		input.read(p);
-		tree.add_edge(p, v);
-	}
-	tree.build();
+	std::size_t offset = 0;
+	read_unsigned_blocks(input, n, [&](const std::uint32_t *values, std::size_t count) {
+		for (std::size_t i = 0; i < count; ++i) a[offset++] = values[i];
+	});
+	std::vector<int> parents(n, -1);
+	offset = 1;
+	read_unsigned_blocks(input, n - 1, [&](const std::uint32_t *values, std::size_t count) {
+		for (std::size_t i = 0; i < count; ++i) parents[offset++] = values[i];
+	});
+	HLD tree;
+	tree.build_from_parents(std::move(parents));
+
 	std::vector<long long> ordered(n);
 	for (int v = 0; v < n; ++v) ordered[tree.in[v]] = a[v];
 	FenwickTree<long long> seg(ordered);

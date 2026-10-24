@@ -12,7 +12,7 @@ auto i = table.index(5);      // 1
 auto j = table.divided_index(0, 3); // values[j] == 10/3 == 3
 ```
 
-正の整数 $$i$$ に対する $$\displaystyle \left\lfloor\frac{N}{i}\right\rfloor$$ の異なる正の値を、降順で保持します。`N = 0` では空です。整数平方根を積で補正し、添字の判定は整数演算で行います。
+`FloorQuotients` は、正の整数 $$i$$ に対する $$\displaystyle \left\lfloor\frac{N}{i}\right\rfloor$$ の異なる正の値を、降順で保持します。`N = 0` では空です。整数平方根を積で補正し、添字の判定は整数演算で行います。
 
 | 操作 | 内容・返り値 |
 | --- | --- |
@@ -29,4 +29,26 @@ auto j = table.divided_index(0, 3); // values[j] == 10/3 == 3
 
 コピーは独立し、ムーブ後の元の表は上限 0 の空表になります。巨大な `n` では表自身が大きくなるため、確保できるメモリの範囲で使ってください。
 
-構築・コピーは $$\displaystyle O(\sqrt n)$$ 時間・空間、参照・添字取得・交換・ムーブ構築は $$O(1)$$ 時間です。ムーブ代入では代入先の旧領域を解放します。
+`FloorQuotientRange(n = 0)` は同じ商を昇順に列挙する、配列を保持しない範囲です。
+
+```cpp
+#include "lib/components/floor_quotients.hpp"
+#include <iostream>
+
+FloorQuotientRange range(10);
+for (auto x : range) std::cout << x << ' '; // 1 2 3 5 10
+```
+
+| 操作 | 内容・返り値 |
+| --- | --- |
+| `FloorQuotientRange(n = 0)` | `uint64_t` の上限 `n` に対する範囲を作る |
+| `max_n()` / `root()` / `large_size()` | 上限／整数平方根／整数平方根より大きい商の個数 |
+| `size()` / `empty()` | 要素数を `uint64_t`、空かどうかを `bool` で返す |
+| `range[i]` | `0 <= i < size()` に対する昇順の第 `i` 要素を `uint64_t` で返す |
+| `begin()` / `end()` | 前方走査用のイテレータ。間接参照の返り値は `uint64_t` の値 |
+
+`n = 0` では空です。`uint64_t` 全域に対応し、`int64_t` を超える商もそのまま符号なし整数で返します。イテレータの走査中は元の範囲を保持してください。
+
+`FloorQuotients` の構築・コピーは $$\displaystyle O(\sqrt n)$$ 時間・空間、参照・添字取得・交換・ムーブ構築は $$O(1)$$ 時間です。ムーブ代入では代入先の旧領域を解放します。
+
+`FloorQuotientRange` の構築・コピー・各参照・イテレータの取得・増分は $$O(1)$$ 時間・空間、全要素の列挙は $$\displaystyle O(\sqrt n)$$ 時間です。

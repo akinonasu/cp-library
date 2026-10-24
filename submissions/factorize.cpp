@@ -101,11 +101,25 @@ inline bool witnesses(const Montgomery &m, typename Montgomery::U d, int s,
 	const std::array<typename Montgomery::U, Count> &bases, Multiply multiply) {
 	using V = typename Montgomery::U;
 	std::array<V, Count> a, x;
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC unroll 8
+#endif
 	for (std::size_t i = 0; i < Count; ++i) a[i] = x[i] = m.in(bases[i] % m.mod);
 	for (V e = d >> 1; e; e >>= 1) {
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC unroll 8
+#endif
 		for (std::size_t i = 0; i < Count; ++i) a[i] = multiply(a[i], a[i]);
-		if (e & 1) for (std::size_t i = 0; i < Count; ++i) x[i] = multiply(x[i], a[i]);
+		if (e & 1) {
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC unroll 8
+#endif
+			for (std::size_t i = 0; i < Count; ++i) x[i] = multiply(x[i], a[i]);
+		}
 	}
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC unroll 8
+#endif
 	for (std::size_t i = 0; i < Count; ++i) {
 		V y = x[i] >= m.mod ? x[i] - m.mod : x[i];
 		if (!y && bases[i] % m.mod == 0) continue;

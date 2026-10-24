@@ -1,9 +1,11 @@
 #include "data_structure/segment_tree/range_add_range_min.hpp"
 #include <algorithm>
 #include <cassert>
+#include <bit>
 #include <cstdint>
 #include <limits>
 #include <random>
+#include <type_traits>
 #include <vector>
 
 template<class T> void randomized() {
@@ -75,6 +77,40 @@ template<class T> void boundaries() {
 	for (T value : padding.values()) assert(value == 0);
 }
 
+template<class T> void full_width() {
+	using U = std::make_unsigned_t<T>;
+	std::mt19937_64 random(543785);
+	const T low = std::numeric_limits<T>::min(), high = std::numeric_limits<T>::max();
+	for (int n : {1, 7, 8, 9, 63, 64, 65, 511, 512, 513}) {
+		std::vector<T> values(n);
+		for (auto &value : values) value = std::bit_cast<T>(U(random()));
+		RangeAddRangeMin<T> tree(values);
+		for (int step = 0; step < 1200; ++step) {
+			int l = random() % n, r = random() % n;
+			if (l > r) std::swap(l, r);
+			++r;
+			if (step % 3 == 0) {
+				int p = random() % n;
+				T value = std::bit_cast<T>(U(random()));
+				tree.set(p, value), values[p] = value;
+			} else {
+				T minimum = *std::min_element(values.begin() + l, values.begin() + r);
+				T maximum = *std::max_element(values.begin() + l, values.begin() + r);
+				__int128_t lower = std::max<__int128_t>(low, __int128_t(low) - minimum);
+				__int128_t upper = std::min<__int128_t>(high, __int128_t(high) - maximum);
+				T delta = T(std::clamp<__int128_t>(std::bit_cast<T>(U(random())), lower, upper));
+				tree.add(l, r, delta);
+				for (int i = l; i < r; ++i) values[i] = T(__int128_t(values[i]) + delta);
+			}
+			const auto &view = tree;
+			assert(view.prod(l, r) == *std::min_element(values.begin() + l, values.begin() + r));
+			assert(view.all_min() == *std::min_element(values.begin(), values.end()));
+			if (step % 37 == 0) assert(view.values() == values);
+		}
+		assert(tree.values() == values);
+	}
+}
+
 int main() {
 	randomized<std::int16_t>();
 	randomized<std::int32_t>();
@@ -82,4 +118,7 @@ int main() {
 	boundaries<std::int16_t>();
 	boundaries<std::int32_t>();
 	boundaries<std::int64_t>();
+	full_width<std::int16_t>();
+	full_width<std::int32_t>();
+	full_width<std::int64_t>();
 }

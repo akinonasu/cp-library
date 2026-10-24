@@ -118,7 +118,11 @@ class SparseTable {
 };
 
 
-#line 14 "components/static_range_min.hpp"
+#line 7 "components/static_range_min.hpp"
+#include <array>
+#line 12 "components/static_range_min.hpp"
+#include <span>
+#line 16 "components/static_range_min.hpp"
 
 template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 	static T minimum(T a, T b) { return b < a ? b : a; }
@@ -184,6 +188,41 @@ template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 		if (a + 1 < b) value = minimum(value, blocks_.prod_unchecked(a + 1, b));
 		return value;
 	}
+	std::vector<T> prod_many(std::span<const std::pair<int, int>> ranges) const {
+		std::vector<T> result;
+		result.reserve(ranges.size());
+		if constexpr (FastBoundaries) {
+			for (auto [l, r] : ranges) result.emplace_back(prod(l, r));
+		} else {
+			std::array<int, 32> left, right;
+			for (std::size_t first = 0; first < ranges.size(); first += 32) {
+				int count = int(std::min<std::size_t>(32, ranges.size() - first));
+				for (int i = 0; i < count; ++i) {
+					auto [l, r] = ranges[first + i];
+					assert(0 <= l && l < r && r <= size());
+					int a = l & ~31, b = (r - 1) & ~31;
+					auto mask = masks_[a == b ? r - 1 : a + 31] & (~std::uint32_t(0) << (l & 31));
+					left[i] = a + std::countr_zero(mask);
+					right[i] = a == b ? left[i] : b + std::countr_zero(masks_[r - 1]);
+#if defined(__GNUC__) || defined(__clang__)
+					if constexpr (!std::is_same_v<T, bool>) {
+						__builtin_prefetch(values_.data() + left[i]);
+						__builtin_prefetch(values_.data() + right[i]);
+					}
+#endif
+				}
+				for (int i = 0; i < count; ++i) {
+					auto [l, r] = ranges[first + i];
+					T value = minimum(values_[left[i]], values_[right[i]]);
+					int a = l / 32 + 1, b = (r - 1) / 32;
+					if (a < b) value = minimum(value, blocks_.prod_unchecked(a, b));
+					result.emplace_back(std::move(value));
+				}
+			}
+		}
+		return result;
+	}
+
 	T all_prod() const { return prod(0, size()); }
 };
 
@@ -196,8 +235,6 @@ template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 
 
 
-#line 5 "components/fast_io.hpp"
-#include <array>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
 #line 11 "components/fast_io.hpp"
@@ -427,8 +464,6 @@ public:
 };
 
 
-#line 6 "components/fast_io_bulk.hpp"
-#include <span>
 #line 8 "components/fast_io_bulk.hpp"
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -741,7 +776,7 @@ void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
 }
 
 
-#line 7 "test/static_range_min.test.cpp"
+#line 8 "test/static_range_min.test.cpp"
 
 int main() {
 	FastInput input;
@@ -751,7 +786,15 @@ int main() {
 	std::vector<std::uint32_t> values(n);
 	read_unsigned(input, values);
 	StaticRangeMin range(std::move(values));
+	std::array<std::pair<int, int>, 64> queries;
+	std::size_t count = 0;
+	auto flush = [&] {
+		for (auto value : range.prod_many(std::span(queries.data(), count))) output.println(value);
+		count = 0;
+	};
 	read_unsigned_records<2>(input, q, [&](std::uint32_t l, std::uint32_t r) {
-		output.println(range.prod(l, r));
+		queries[count++] = {int(l), int(r)};
+		if (count == queries.size()) flush();
 	});
+	if (count) flush();
 }

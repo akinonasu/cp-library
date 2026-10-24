@@ -20,7 +20,7 @@ std::vector<int> naive_path(const std::vector<int> &parent, const std::vector<in
 	return a;
 }
 
-void check(HLD &tree, int root, std::mt19937 &random) {
+void check(HLD &tree, int root, std::mt19937 &random, bool from_parents = false) {
 	int n = tree.n;
 	std::vector<std::vector<int>> adj(n);
 	for (auto [u, v] : tree.edges) adj[u].push_back(v), adj[v].push_back(u);
@@ -34,7 +34,8 @@ void check(HLD &tree, int root, std::mt19937 &random) {
 		}
 	}
 	for (int i = n - 1; i > 0; --i) sizes[parent[queue[i]]] += sizes[queue[i]];
-	tree.build(root);
+	if (from_parents) tree.build_from_parents(parent);
+	else tree.build(root);
 	assert(tree.parent == parent && tree.depth == depth && tree.size == sizes);
 	std::vector<int> sorted = tree.order;
 	std::sort(sorted.begin(), sorted.end());
@@ -120,7 +121,18 @@ int main() {
 	HLD empty;
 	empty.build();
 	empty.build();
+	empty.build_from_parents({});
 	assert(empty.order.empty() && empty.parent.empty());
+	void (HLD::*build)(int) = &HLD::build;
+	(empty.*build)(0);
+	HLD resized(5);
+	resized.add_edge(0, 1);
+	resized.build_from_parents({2, 0, -1, 2});
+	assert(resized.n == 4 && resized.parent == std::vector<int>({2, 0, -1, 2}));
+	assert((resized.edges == std::vector<std::pair<int, int>>({ {2, 0}, {0, 1}, {2, 3} })));
+	assert(resized.depth == std::vector<int>({1, 2, 0, 1}));
+	resized.build(1);
+	assert(resized.parent == std::vector<int>({1, -1, 0, 2}));
 	std::mt19937 random(713);
 	for (int n : {1, 2, 3, 7, 31, 64, 127, 257}) {
 		for (int kind = 0; kind < 5; ++kind) {
@@ -140,8 +152,9 @@ int main() {
 			std::shuffle(tree.edges.begin(), tree.edges.end(), random);
 			check(tree, label[0], random);
 			check(tree, random() % n, random);
+			check(tree, random() % n, random, true);
 			auto copy = tree;
-			check(copy, random() % n, random);
+			check(copy, random() % n, random, true);
 		}
 	}
 	const int n = 500000;
@@ -161,6 +174,7 @@ int main() {
 	HLD balanced((1 << 18) - 1);
 	for (int v = 1; v < balanced.n; ++v) balanced.add_edge((v - 1) / 2, v);
 	balanced.build();
+	balanced.build_from_parents(balanced.parent);
 	for (int i = 0; i < 10000; ++i) {
 		int u = random() % balanced.n, v = random() % balanced.n;
 		auto expected = naive_path(balanced.parent, balanced.depth, u, v);

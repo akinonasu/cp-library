@@ -4,6 +4,10 @@
 
 
 
+#line 1 "components/gcd_convolution_mint.hpp"
+
+
+
 #line 1 "components/divisor_zeta.hpp"
 
 
@@ -151,30 +155,105 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 
 #line 7 "components/divisor_zeta.hpp"
 
-template <bool inverse = false, bool multiples = false, class T>
-void divisor_zeta(std::vector<T> &a, const std::vector<std::size_t> &ps) {
-	if (a.empty()) return;
-	for (std::size_t p : ps) {
-		std::size_t end = (a.size() - 1) / p;
-		for (std::size_t step = 1; step <= end; ++step) {
-			std::size_t i = inverse == multiples ? step : end + 1 - step;
-			T &to = a[multiples ? i : i * p];
-			const T &from = a[multiples ? i * p : i];
-			if constexpr (inverse) to -= from;
-			else to += from;
+namespace divisor_zeta_detail {
+
+template <bool inverse, bool multiples, class F>
+void for_each(std::size_t n, const std::vector<std::size_t> &ps, std::size_t count, F update) {
+	if (!n) return;
+	for (std::size_t j = 0; j < count; ++j) {
+		const std::size_t p = ps[j], end = (n - 1) / p;
+		auto apply = [&](std::size_t i) { update(multiples ? i : i * p, multiples ? i * p : i); };
+		if constexpr (inverse == multiples) {
+			std::size_t i = 1;
+			for (; i + 3 <= end; i += 4) apply(i), apply(i + 1), apply(i + 2), apply(i + 3);
+			for (; i <= end; ++i) apply(i);
+		} else {
+			std::size_t i = end;
+			for (; i >= 4; i -= 4) apply(i), apply(i - 1), apply(i - 2), apply(i - 3);
+			for (; i; --i) apply(i);
 		}
 	}
+}
+
+}
+
+template <bool inverse = false, bool multiples = false, class T>
+void divisor_zeta(std::vector<T> &a, const std::vector<std::size_t> &ps) {
+	divisor_zeta_detail::for_each<inverse, multiples>(a.size(), ps, ps.size(), [&](std::size_t to, std::size_t from) {
+		if constexpr (inverse) a[to] -= a[from];
+		else a[to] += a[from];
+	});
 }
 
 template <bool inverse = false, bool multiples = false, class T>
 void divisor_zeta(std::vector<T> &a) { divisor_zeta<inverse, multiples>(a, prime_sieve(a.size())); }
 
 
+#line 10 "components/gcd_convolution_mint.hpp"
+
+namespace mint_detail { struct Mint; }
+
+namespace gcd_convolution_mint_detail {
+
+template <bool inverse, class T>
+void large_multiples(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &ps,
+					 std::size_t first, const std::vector<std::size_t> &products, const std::vector<std::size_t> &squares) {
+	if (first == ps.size()) return;
+	constexpr std::uint64_t twice = 2 * T::mod();
+	const std::size_t n = a.size() - 1;
+	for (std::size_t i = 1; i <= n / ps[first]; ++i) {
+		const auto end = std::upper_bound(ps.begin() + first, ps.end(), n / i);
+		std::uint64_t x = inverse ? 0 : a[i].v, y = inverse ? a[i].v : b[i].v;
+		for (auto p = ps.begin() + first; p != end; ++p) {
+			x += a[i * *p].v;
+			if constexpr (!inverse) y += b[i * *p].v;
+		}
+		for (auto p : products) {
+			if (p > n / i) break;
+			if constexpr (inverse) y += a[i * p].v;
+			else x += a[i * p].v, y += b[i * p].v;
+		}
+		if constexpr (inverse) a[i] = T::word(y % twice) - T::word(x % twice);
+		else {
+			for (auto p : squares) {
+				if (p > n / i) break;
+				x += a[i * p].v, y += b[i * p].v;
+			}
+			a[i] = T::word(x % twice), b[i] = T::word(y % twice);
+		}
+	}
+}
+
+template <class T>
+void multiply(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &ps) {
+	const std::size_t n = a.size() - 1;
+	std::size_t cutoff = std::sqrt(n) / 2;
+	while (cutoff + 1 <= n / (cutoff + 1) / (cutoff + 1)) ++cutoff;
+	const std::size_t first = std::upper_bound(ps.begin(), ps.end(), cutoff) - ps.begin();
+	std::vector<std::size_t> products, squares;
+	for (std::size_t j = first; j < ps.size() && ps[j] <= n / ps[j]; ++j) {
+		squares.push_back(ps[j] * ps[j]);
+		for (std::size_t k = j + 1; k < ps.size() && ps[k] <= n / ps[j]; ++k) products.push_back(ps[j] * ps[k]);
+	}
+	std::sort(products.begin(), products.end());
+	divisor_zeta_detail::for_each<false, true>(a.size(), ps, first, [&](std::size_t to, std::size_t from) {
+		a[to] += a[from], b[to] += b[from];
+	});
+	large_multiples<false>(a, b, ps, first, products, squares);
+	for (std::size_t i = 1; i <= n; ++i) a[i] *= b[i];
+	divisor_zeta_detail::for_each<true, true>(a.size(), ps, first, [&](std::size_t to, std::size_t from) { a[to] -= a[from]; });
+	large_multiples<true>(a, b, ps, first, products, squares);
+}
+
+}
+
+
 #line 6 "convolution/gcd_lcm_convolution.hpp"
 #include <cassert>
-#line 8 "convolution/gcd_lcm_convolution.hpp"
+#line 9 "convolution/gcd_lcm_convolution.hpp"
+#include <type_traits>
 #include <utility>
-#line 10 "convolution/gcd_lcm_convolution.hpp"
+#line 12 "convolution/gcd_lcm_convolution.hpp"
 
 namespace gcd_lcm_convolution_detail {
 
@@ -186,8 +265,15 @@ std::vector<T> multiply(std::vector<T> a, std::vector<T> b) {
 	a.resize(n, T(0));
 	b.resize(n, T(0));
 	auto ps = prime_sieve(n);
-	divisor_zeta<false, gcd>(a, ps);
-	divisor_zeta<false, gcd>(b, ps);
+	if constexpr (gcd && std::is_same_v<T, mint_detail::Mint>) {
+		if (n >= 4096 && n - 1 <= UINT32_MAX) {
+			gcd_convolution_mint_detail::multiply(a, b, ps);
+			return a;
+		}
+	}
+	divisor_zeta_detail::for_each<false, gcd>(n, ps, ps.size(), [&](std::size_t to, std::size_t from) {
+		a[to] += a[from], b[to] += b[from];
+	});
 	for (std::size_t i = 1; i < n; ++i) a[i] *= b[i];
 	divisor_zeta<true, gcd>(a, ps);
 	return a;
@@ -225,7 +311,7 @@ std::vector<T> lcm_convolution(std::vector<T> a, std::vector<T> b) {
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <type_traits>
+#line 18 "components/fast_io.hpp"
 #if defined(__unix__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>

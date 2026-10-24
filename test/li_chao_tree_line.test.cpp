@@ -38,7 +38,7 @@ int main() {
 		if (xs.empty() || xs.back() != value) xs.push_back(value);
 		queries[uint32_t(point)].index = int(xs.size()) - 1;
 	}
-	LiChaoTree<> tree(std::move(xs));
+	LiChaoTree<int64_t, false, int64_t> tree(std::move(xs));
 	for (auto [a, b] : initial) tree.add_line(a, b);
 	for (auto query : queries) {
 		if (query.type == 0) tree.add_line(query.a, query.b);

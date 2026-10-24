@@ -177,6 +177,74 @@ void opposite() {
 	assert(min_plus_convolution_concave(generic_a, generic_b) == naive(generic_a, generic_b, std::less<>{}));
 }
 
+#if defined(__SIZEOF_INT128__)
+
+template <class T, bool Minimum>
+std::vector<T> merge_reference(const std::vector<T> &a, const std::vector<T> &b) {
+	using W = __int128_t;
+	int i = 0, j = 0;
+	std::vector<T> result{T(W(a[0]) + W(b[0]))};
+	while (i + 1 < int(a.size()) || j + 1 < int(b.size())) {
+		bool left = j + 1 == int(b.size());
+		if (i + 1 < int(a.size()) && j + 1 < int(b.size())) {
+			W x = W(a[i + 1]) - W(a[i]), y = W(b[j + 1]) - W(b[j]);
+			left = Minimum ? x < y : x > y;
+		}
+		if (left) ++i;
+		else ++j;
+		result.push_back(T(W(a[i]) + W(b[j])));
+	}
+	return result;
+}
+
+template <class T>
+void large_convex() {
+	using W = __int128_t;
+	std::mt19937 rng(7251);
+	W abase = W(std::numeric_limits<T>::max()) - 4000000000LL;
+	if constexpr (std::is_signed_v<T>) abase = W(std::numeric_limits<T>::min()) + 4000000000LL;
+	W bbase = std::is_signed_v<T> ? W(std::numeric_limits<T>::max()) - 4000000000LL : W(2000000000LL);
+	for (auto [n, m] : std::array<std::array<int, 2>, 6>{std::array{2, 4095}, {4095, 2}, {2050, 2051}, {2060, 2079}, {3000, 1001}, {8001, 17}}) {
+		for (int kind = 0; kind < 3; ++kind) {
+			auto shape = [&](int count) {
+				std::vector<std::int64_t> values(count);
+				std::int64_t slope = -3000;
+				for (int i = 1; i < count; ++i) {
+					slope += kind == 0 ? rng() % 7 : 0;
+					values[i] = values[i - 1] + (kind == 2 ? slope : kind == 0 ? slope : 0);
+				}
+				auto low = *std::min_element(values.begin(), values.end());
+				for (auto &v : values) v -= low;
+				return values;
+			};
+			auto x = shape(n), y = shape(m);
+			std::vector<T> a(n), b(m), c(n), d(m);
+			for (int i = 0; i < n; ++i) a[i] = T(abase + x[i]), c[i] = T(abase - x[i]);
+			for (int i = 0; i < m; ++i) b[i] = T(bbase + y[i]), d[i] = T(bbase - y[i]);
+			assert((min_plus_convolution_convex(a, b) == merge_reference<T, true>(a, b)));
+			assert((max_plus_convolution_concave(c, d) == merge_reference<T, false>(c, d)));
+		}
+	}
+	std::vector<T> wide(4097, std::numeric_limits<T>::lowest() + 100), zero(17);
+	wide.back() = std::numeric_limits<T>::max() - 100;
+	assert((min_plus_convolution_convex(wide, zero) == merge_reference<T, true>(wide, zero)));
+	std::fill(wide.begin(), wide.end(), std::numeric_limits<T>::max() - 100);
+	wide.front() = std::numeric_limits<T>::lowest() + 100;
+	assert((max_plus_convolution_concave(wide, zero) == merge_reference<T, false>(wide, zero)));
+	zero.resize(wide.size());
+	zero.back() = 1;
+	std::fill(wide.begin(), wide.end(), std::numeric_limits<T>::lowest() + 100);
+	wide.back() = std::numeric_limits<T>::max() - 100;
+	assert((min_plus_convolution_convex(wide, zero) == merge_reference<T, true>(wide, zero)));
+	std::fill(zero.begin(), zero.end(), T(1));
+	zero.front() = 0;
+	std::fill(wide.begin(), wide.end(), std::numeric_limits<T>::max() - 100);
+	wide.front() = std::numeric_limits<T>::lowest() + 100;
+	assert((max_plus_convolution_concave(wide, zero) == merge_reference<T, false>(wide, zero)));
+}
+
+#endif
+
 int main() {
 	static_assert(!min_plus_convolution_integral_detail::supported<bool>);
 	small_integers<std::int8_t>();
@@ -191,4 +259,8 @@ int main() {
 	generic();
 	kernel();
 	opposite();
+#if defined(__SIZEOF_INT128__)
+	large_convex<std::int64_t>();
+	large_convex<std::uint64_t>();
+#endif
 }

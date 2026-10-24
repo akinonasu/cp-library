@@ -31,6 +31,28 @@ class HLD {
 	std::vector<Node> nodes;
 	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && int(in.size()) == n); }
 
+	void initialize() {
+		depth.assign(n, 0);
+		size.assign(n, 1);
+		heavy.assign(n, -1);
+		head.resize(n), in.resize(n), out.resize(n), order.resize(n);
+		nodes.resize(n);
+		shape_ = center_ = 0;
+	}
+	void finish(int root) {
+		in[root] = 0, out[root] = n, head[root] = root;
+		for (int i = n - 2; i >= 0; --i) {
+			int v = order[i], p = parent[v];
+			depth[v] = depth[p] + 1;
+			if (heavy[p] == v) in[v] = in[p] + 1, head[v] = head[p];
+			else in[v] = out[p] -= size[v], head[v] = v;
+			out[v] = in[v] + size[v];
+		}
+		for (int v = 0; v < n; ++v) out[v] = in[v] + size[v], order[in[v]] = v;
+		parent[root] = -1;
+		for (int v = 0; v < n; ++v) nodes[v] = {in[v], in[head[v]], parent[head[v]], depth[v] - in[v]};
+	}
+
   public:
 	struct Segment {
 		int l, r;
@@ -52,11 +74,7 @@ class HLD {
 		assert(n >= 0 && edges.size() == std::size_t(std::max(0, n - 1)));
 		assert(!n || (0 <= root && root < n));
 		parent.assign(n, -1);
-		depth.assign(n, 0);
-		size.assign(n, 1);
-		heavy.assign(n, -1);
-		head.resize(n), in.resize(n), out.resize(n), order.resize(n);
-		nodes.resize(n);
+		initialize();
 		if (!n) return;
 		std::vector<int> degree(n), neighbors(n);
 		for (auto [u, v] : edges) {
@@ -77,17 +95,57 @@ class HLD {
 			if (--degree[p] == 1) order[count++] = p;
 		}
 		assert(count == n - 1);
-		in[root] = 0, out[root] = n, head[root] = root;
-		for (int i = n - 2; i >= 0; --i) {
-			int v = order[i], p = parent[v];
-			depth[v] = depth[p] + 1;
-			if (heavy[p] == v) in[v] = in[p] + 1, head[v] = head[p];
-			else in[v] = out[p] -= size[v], head[v] = v;
-			out[v] = in[v] + size[v];
+		finish(root);
+	}
+	void build_from_parents(std::vector<int> parents) {
+		assert(parents.size() <= std::size_t(std::numeric_limits<int>::max() / 2));
+		n = static_cast<int>(parents.size());
+		parent = std::move(parents);
+		initialize();
+		edges.clear();
+		edges.reserve(std::max(0, n - 1));
+		if (!n) return;
+		std::fill(out.begin(), out.end(), 0);
+		int root = -1;
+		bool ordered = true;
+		for (int v = 0; v < n; ++v) {
+			int p = parent[v];
+			assert(-1 <= p && p < n && p != v);
+			if (p == -1) {
+				assert(root == -1);
+				root = v;
+			} else {
+				++out[p];
+				edges.emplace_back(p, v);
+				ordered &= p < v;
+			}
 		}
-		for (int v = 0; v < n; ++v) out[v] = in[v] + size[v], order[in[v]] = v;
-		parent[root] = -1;
-		for (int v = 0; v < n; ++v) nodes[v] = {in[v], in[head[v]], parent[head[v]], depth[v] - in[v]};
+		assert(root != -1);
+		int maximum = 0;
+		for (int v = 0; v < n; ++v) {
+			int degree = out[v] + (v != root);
+			if (degree > maximum) maximum = degree, center_ = v;
+		}
+		shape_ = maximum <= 2 ? 1 : maximum == n - 1 ? 2 : 0;
+		if (ordered) {
+			for (int v = n - 1; v > 0; --v) {
+				int p = parent[v];
+				size[p] += size[v];
+				if (heavy[p] == -1 || size[heavy[p]] < size[v]) heavy[p] = v;
+				order[n - 1 - v] = v;
+			}
+		} else {
+			int count = 0;
+			for (int v = 0; v < n; ++v) if (!out[v] && v != root) order[count++] = v;
+			for (int i = 0; i < count; ++i) {
+				int v = order[i], p = parent[v];
+				size[p] += size[v];
+				if (heavy[p] == -1 || size[heavy[p]] < size[v]) heavy[p] = v;
+				if (!--out[p] && p != root) order[count++] = p;
+			}
+			assert(count == n - 1);
+		}
+		finish(root);
 	}
 	int lca(int u, int v) const {
 		check(u), check(v);

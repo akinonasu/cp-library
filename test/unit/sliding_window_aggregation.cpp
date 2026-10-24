@@ -1,6 +1,7 @@
 #include "data_structure/sliding_window_aggregation.hpp"
 #include <cassert>
 #include <deque>
+#include <memory>
 #include <random>
 #include <stdexcept>
 #include <string>
@@ -31,6 +32,37 @@ Box combine(Box a, Box b) {
 }
 Box identity() { return Box(""); }
 using ThrowingQueue = SlidingWindowAggregation<Box, combine, identity>;
+
+struct Affine {
+	int a, b;
+	int operator()(int x) const { return (a * x + b) % 1009; }
+};
+Affine compose_affine(Affine f, Affine g) { return {g.a * f.a % 1009, (g.a * f.b + g.b) % 1009}; }
+Affine identity_affine() { return {1, 0}; }
+using AffineQueue = SlidingWindowAggregation<Affine, compose_affine, identity_affine>;
+struct CopyBox {
+	static inline int remaining = -1;
+	int value;
+	explicit CopyBox(int x) : value(x) {}
+	CopyBox(const CopyBox &other) : value(other.value) {
+		if (remaining == 0) throw std::runtime_error("copy");
+		if (remaining > 0) --remaining;
+	}
+	CopyBox(CopyBox &&) noexcept = default;
+	CopyBox &operator=(const CopyBox &) noexcept = default;
+	CopyBox &operator=(CopyBox &&) noexcept = default;
+};
+CopyBox add_boxes(CopyBox a, CopyBox b) { return CopyBox(a.value + b.value); }
+CopyBox zero_box() { return CopyBox(0); }
+std::shared_ptr<int> last_pointer(std::shared_ptr<int>, std::shared_ptr<int> b) { return b; }
+std::shared_ptr<int> no_pointer() { return {}; }
+
+int checked_sum(int a, int b) {
+	if (operations == 0) throw std::runtime_error("operation");
+	if (operations > 0) --operations;
+	return a + b;
+}
+int zero() { return 0; }
 
 int main() {
 	Queue queue;
@@ -101,4 +133,84 @@ int main() {
 		assert(values.prod().value == "bcde");
 	}
 	assert(Box::live == 0);
+	AffineQueue functions;
+	std::deque<Affine> reference;
+	functions.reserve(8);
+	for (int step = 0; step < 30000; ++step) {
+		if (reference.empty() || random() % 3) {
+			Affine f{int(random() % 1009), int(random() % 1009)};
+			functions.push_back(f);
+			reference.push_back(f);
+		} else functions.pop_front(), reference.pop_front();
+		int x = int(random() % 1009), answer = x;
+		for (Affine f : reference) answer = f(answer);
+		assert(functions.apply(x) == answer && functions.prod()(x) == answer);
+		assert(functions.apply(x, [](Affine f, int value) { return f(value); }) == answer);
+		const auto &constant = functions;
+		assert(constant.apply(x) == answer && constant.size() == reference.size());
+		if (!reference.empty()) {
+			assert(functions.front().a == reference.front().a && functions.front().b == reference.front().b);
+			assert(functions.back().a == reference.back().a && functions.back().b == reference.back().b);
+		}
+		if (step % 79 == 0) {
+			AffineQueue copied(functions), moved(std::move(copied));
+			assert(copied.empty() && copied.apply(x) == x);
+			copied = moved;
+			auto *self = &moved;
+			moved = std::move(*self);
+			assert(copied.apply(x) == answer && moved.apply(x) == answer);
+			functions.swap(moved);
+		}
+		if (reference.size() > 500) functions.clear(), reference.clear();
+	}
+	functions.clear();
+	assert(functions.apply(27) == 27 && functions.prod()(27) == 27);
+	for (int failure = 0; failure < 10; ++failure) {
+		SlidingWindowAggregation<int, checked_sum, zero> values;
+		for (int i = 1; i <= 8; ++i) values.push_back(i);
+		operations = failure;
+		try { values.pop_front(); }
+		catch (const std::runtime_error &) {
+			operations = -1;
+			assert(values.size() == 8 && values.prod() == 36);
+			assert(values.front() == 1 && values.back() == 8);
+			values.push_back(9);
+			assert(values.prod() == 45);
+			values.pop_front();
+			assert(values.size() == 8 && values.prod() == 44);
+			values.pop_front();
+			assert(values.prod() == 42);
+			continue;
+		}
+		operations = -1;
+		assert(values.size() == 7 && values.prod() == 35);
+	}
+
+	for (int failure = 0; failure < 20; ++failure) {
+		SlidingWindowAggregation<CopyBox, add_boxes, zero_box> values;
+		for (int i = 1; i <= 8; ++i) values.push_back(CopyBox(i));
+		CopyBox::remaining = failure;
+		try { values.pop_front(); }
+		catch (const std::runtime_error &) {
+			CopyBox::remaining = -1;
+			assert(values.size() == 8 && values.prod().value == 36);
+			assert(values.front().value == 1 && values.back().value == 8);
+			values.push_back(CopyBox(9));
+			assert(values.prod().value == 45);
+			values.pop_front();
+			assert(values.prod().value == 44);
+			continue;
+		}
+		CopyBox::remaining = -1;
+		assert(values.size() == 7 && values.prod().value == 35);
+	}
+	SlidingWindowAggregation<std::shared_ptr<int>, last_pointer, no_pointer> pointers;
+	auto pointer = std::make_shared<int>(1);
+	std::weak_ptr<int> removed = pointer;
+	pointers.push_back(pointer);
+	pointers.push_back(std::make_shared<int>(2));
+	pointer.reset();
+	pointers.pop_front();
+	assert(removed.expired() && *pointers.front() == 2 && *pointers.prod() == 2);
+
 }

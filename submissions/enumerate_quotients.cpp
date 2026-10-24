@@ -9,10 +9,17 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <iterator>
 #include <utility>
 #include <vector>
 
 namespace floor_quotient_detail {
+inline std::uint64_t square_root(std::uint64_t n) {
+	std::uint64_t root = std::sqrt(static_cast<long double>(n));
+	while (__uint128_t(root) * root > n) --root;
+	while (__uint128_t(root + 1) * (root + 1) <= n) ++root;
+	return root;
+}
 inline std::uint64_t divide(std::uint64_t n, std::uint64_t divisor) {
 	if constexpr (std::numeric_limits<double>::is_iec559 && std::numeric_limits<double>::radix == 2 && std::numeric_limits<double>::digits >= 53) {
 		if (n <= (std::uint64_t(1) << 53)) {
@@ -24,6 +31,43 @@ inline std::uint64_t divide(std::uint64_t n, std::uint64_t divisor) {
 }
 }
 
+class FloorQuotientRange {
+	std::uint64_t n_, root_, large_;
+
+  public:
+	explicit FloorQuotientRange(std::uint64_t n = 0) : n_(n), root_(floor_quotient_detail::square_root(n)), large_(n / (root_ + 1)) {}
+	std::uint64_t max_n() const { return n_; }
+	std::uint64_t root() const { return root_; }
+	std::uint64_t large_size() const { return large_; }
+	std::uint64_t size() const { return root_ + large_; }
+	bool empty() const { return !n_; }
+	std::uint64_t operator[](std::uint64_t i) const {
+		assert(i < size());
+		return i < root_ ? i + 1 : floor_quotient_detail::divide(n_, size() - i);
+	}
+	class iterator {
+		const FloorQuotientRange *range_ = nullptr;
+		std::uint64_t index_ = 0;
+		friend class FloorQuotientRange;
+		iterator(const FloorQuotientRange *range, std::uint64_t i) : range_(range), index_(i) {}
+
+	  public:
+		using value_type = std::uint64_t;
+		using difference_type = std::int64_t;
+		using iterator_category = std::input_iterator_tag;
+		using iterator_concept = std::forward_iterator_tag;
+		using reference = value_type;
+		using pointer = void;
+		iterator() = default;
+		value_type operator*() const { return (*range_)[index_]; }
+		iterator &operator++() { ++index_; return *this; }
+		iterator operator++(int) { auto result = *this; ++*this; return result; }
+		bool operator==(const iterator &) const = default;
+	};
+	iterator begin() const { return iterator(this, 0); }
+	iterator end() const { return iterator(this, size()); }
+};
+
 class FloorQuotients {
 	std::uint64_t n_, root_ = 0;
 	std::size_t large_ = 0;
@@ -32,9 +76,7 @@ class FloorQuotients {
   public:
 	explicit FloorQuotients(std::uint64_t n = 0) : n_(n) {
 		if (!n) return;
-		root_ = std::sqrt(static_cast<long double>(n));
-		while (__uint128_t(root_) * root_ > n) --root_;
-		while (__uint128_t(root_ + 1) * (root_ + 1) <= n) ++root_;
+		root_ = floor_quotient_detail::square_root(n);
 		large_ = n / (root_ + 1);
 		values_.reserve(large_ + root_);
 		for (std::size_t i = 1; i <= large_; ++i) values_.push_back(floor_quotient_detail::divide(n, i));
@@ -313,11 +355,14 @@ int main() {
 	FastOutput output;
 	std::uint64_t n = 0;
 	input.read(n);
-	FloorQuotients quotients(n);
+	FloorQuotientRange quotients(n);
 	output.println(quotients.size());
-	const auto &values = quotients.values();
-	for (auto i = values.size(); i--;) {
-		output.write(values[i]);
-		output.write(i ? ' ' : '\n');
+	for (std::uint64_t value = 1; value <= quotients.root(); ++value) {
+		output.write(std::uint32_t(value));
+		output.write(value == quotients.root() && !quotients.large_size() ? '\n' : ' ');
+	}
+	for (auto i = quotients.root(); i < quotients.size(); ++i) {
+		output.write(quotients[i]);
+		output.write(i + 1 == quotients.size() ? '\n' : ' ');
 	}
 }

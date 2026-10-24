@@ -1,10 +1,12 @@
 #include "math/number_theory/mod_sqrt.hpp"
 #include "math/number_theory/is_prime.hpp"
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <limits>
 #include <random>
 #include <vector>
+#include <thread>
 
 using U = std::uint64_t;
 using W = __uint128_t;
@@ -58,4 +60,27 @@ int main() {
 		}
 		if (p) for (int i = 0; i < 200; ++i) check(random(), p);
 	}
+	for (int round = 0; round < 3; ++round)
+		for (U p : {65537ULL, 998244353ULL, 2013265921ULL, 3221225473ULL, 18446744069414584321ULL})
+			for (int i = 0; i < 260; ++i) {
+				U x = random() % p;
+				auto root = mod_sqrt(U(W(x) * x % p), p);
+				assert(root && *root == std::min(x, p - x));
+				if (i % 3 == 0) check(random(), p);
+			}
+	std::array<std::thread, 2> threads;
+	for (unsigned index = 0; index < threads.size(); ++index)
+		threads[index] = std::thread([index] {
+			std::mt19937_64 generator(32023064 + index);
+			for (int round = 0; round < 4; ++round) {
+				const U p = (round + index) % 2 ? 998244353ULL : 18446744069414584321ULL;
+				for (int i = 0; i < 260; ++i) {
+					const U x = generator() % p;
+					auto root = mod_sqrt(U(W(x) * x % p), p);
+					assert(root && *root == std::min(x, p - x));
+				}
+			}
+		});
+	for (auto &thread : threads) thread.join();
+
 }
