@@ -95,3 +95,20 @@ test('bundle status reports ordinary dependency expansion', () => {
   p.click('code-bundle');
   assert.match(p.elements['code-status'].textContent, /^依存ヘッダーを展開しました$/);
 });
+
+test('iPhone touches preserve the declared viewport and native zoom', () => {
+  const source = fs.readFileSync(path.join(__dirname, 'docs/static/assets/js/scale.fix.js'), 'utf8');
+  const viewport = {name: 'viewport', content: 'width=device-width, initial-scale=1'};
+  const listeners = {};
+  const document = {
+    getElementsByTagName: name => name === 'meta' ? [viewport] : [],
+    addEventListener: (type, listener) => { listeners[type] = listener; },
+  };
+  vm.runInNewContext(source, {document, navigator: {userAgent: 'iPhone'}});
+  for (let i = 0; i < 5; ++i) {
+    listeners.touchstart?.();
+    assert.equal(viewport.content, 'width=device-width, initial-scale=1');
+    listeners.touchend?.();
+    assert.equal(viewport.content, 'width=device-width, initial-scale=1');
+  }
+});

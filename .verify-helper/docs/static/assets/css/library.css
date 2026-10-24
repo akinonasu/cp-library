@@ -24,3 +24,12 @@
 .code-toolbar button:focus-visible { outline: 2px solid #267cb9; outline-offset: 2px; }
 #code-status { font-size: 13px; }
 #library-code pre { max-height: 75vh; overflow: auto; tab-size: 4; }
+:not(pre) > code { overflow-wrap: anywhere; }
+.wrapper > section { min-width: 0; }
+.wrapper > section table { display: block; max-width: 100%; overflow-x: auto; }
+.MathJax_Display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+@media (hover: none) and (pointer: coarse) {
+  .library-search input, #code-copy-fallback { font-size: 16px; }
+  .code-toolbar { position: static; }
+  #library-code pre { max-height: 32rem; max-height: min(32rem, 70svh); overscroll-behavior: contain; }
+}
