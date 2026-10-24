@@ -4,7 +4,7 @@
 
 参照は yosupo の全言語のACから取得した fastest です。取得は 2026-10-24 13:46〜2026-10-24 13:48（日本時間）。新たな提出による実ジャッジの順位は確認していません。
 
-表の時間はすべて同じローカル環境での実行です。AMD EPYC 9V74 / Linux x86_64、C++はGCC 14.2.0・`-std=c++23 -O2 -march=native`、Rustの参照はrustc 1.99.1・`--edition=2024 -C opt-level=3 -C target-cpu=native`です。C++のconstexpr上限は深さ1024・ループ524288・演算数2097152です。参照のコード中のpragmaは保持しました。C++17/20提出もC++23としてビルドしています。
+表の時間はすべて同じローカル環境での実行です。AMD EPYC 9V74 / Linux x86_64、C++はGCC 14.2.0・`-std=c++23 -O2 -march=native`、Rustの参照はrustc 1.99.1・`-C opt-level=3 -C target-cpu=native`です。Rustのeditionは原則2021とし、let-chainを使用する2提出は2024でビルドしました。C++のconstexpr上限は深さ1024・ループ524288・演算数2097152です。参照のコード中のpragmaは保持しました。C++17/20提出もC++23としてビルドしています。
 
 計測は 2026-10-24 14:19〜2026-10-24 14:30（日本時間）、他のコンパイル・検証・計測を同時実行せず、CPU 3 に固定しました。通常ファイル入力、出力は `/dev/null`、各入力で1回ウォームアップ後、実行順を交代して5回ずつ起動し、`wait4` の子プロセスCPU時間（user+system）の中央値を求めました。表は問題ごとの最大中央値です。同一バイナリの測定は共用しています。
 
@@ -166,7 +166,7 @@ APIと正確性を維持し、ライブラリ本体・既存ライブラリの�
 | [Shortest Path](https://judge.yosupo.jp/problem/shortest_path) · [コード](shortest_path.cpp) | 30.4 | 30.4 | [31.5](https://judge.yosupo.jp/submission/407097) | +0.0% | 変更なし | 既に整数用ヒープとDAGの専用経路を利用。既存の最短路APIを保った追加改善は未確定。 |
 | [System of Linear Equations](https://judge.yosupo.jp/problem/system_of_linear_equations) · [コード](system_of_linear_equations.cpp) | 9.6 | 9.7 | [9.9](https://judge.yosupo.jp/submission/406222) | +0.8% | 本体 | 共有の消去処理でゼロ係数ブロックの更新を省略。 |
 
-検証は提出コードの再展開・コンパイルに加え、1138入力それぞれについて通常ファイル・パイプの両方を公式checkerで確認しています。期待値の欠落時は従来の検証済みコードから生成し、壊れていた3件の答案は生成結果が公式ハッシュと一致することも確認しました。変更した部品の愚直比較・独立した余因子計算・GCC/Clang・ASan/UBSan・SIMDを使わない経路も検証しています。Mac実機での速度比較は行っていません。
+検証は提出コードの再展開・コンパイルに加え、1138入力それぞれについて通常ファイル・パイプの両方を公式checkerで確認しています。参照コードも同じ1138入力で公式checkerを通しています。期待値の欠落時は従来の検証済みコードから生成し、壊れていた3件の答案は生成結果が公式ハッシュと一致することも確認しました。変更した部品の愚直比較・独立した余因子計算・GCC/Clang・ASan/UBSan・SIMDを使わない経路も検証しています。Mac実機での速度比較は行っていません。
 
 ケース別には退行もあります。距離区間和の `uni_2_00` は 37.93→41.60 ms、Aho–Corasick の `random_00` は 33.05→35.14 ms、Point Set Range Frequency の `medium_00` は 10.08→10.60 ms でした。表の最大値の改善だけで全ケースが速くなるとは限りません。
 
