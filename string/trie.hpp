@@ -40,6 +40,17 @@ class Trie {
 		for (int u = v; u != -1; u = nodes_[u].parent) nodes_[u].count += copies;
 		return v;
 	}
+	template<class F>
+	int walk_prefixes_(std::string_view s, F &&visit) const {
+		int v = root;
+		for (char c : s) {
+			int u = child(v, c);
+			if (u == -1 || !nodes_[u].count) break;
+			v = u;
+			visit(v);
+		}
+		return v;
+	}
 
   public:
 	static constexpr int root = 0;
@@ -126,13 +137,10 @@ class Trie {
 	}
 	template<class F>
 	void for_each_prefix(std::string_view s, F &&visit) const {
-		int v = root;
-		if (nodes_[v].terminal) visit(v);
-		for (char c : s) {
-			v = child(v, c);
-			if (v == -1 || !nodes_[v].count) break;
+		if (nodes_[root].terminal) visit(root);
+		walk_prefixes_(s, [&](int v) {
 			if (nodes_[v].terminal) visit(v);
-		}
+		});
 	}
 	int longest_prefix(std::string_view s) const {
 		int v = -1;
@@ -140,23 +148,14 @@ class Trie {
 		return v;
 	}
 	int lcp(std::string_view s) const {
-		int v = root, length = 0;
-		for (char c : s) {
-			v = child(v, c);
-			if (v == -1 || !nodes_[v].count) break;
-			++length;
-		}
-		return length;
+		return nodes_[walk_prefixes_(s, [](int) {})].depth;
 	}
 	std::int64_t lcp_sum(std::string_view s) const {
-		int v = root;
 		std::int64_t sum = 0;
-		for (char c : s) {
-			v = child(v, c);
-			if (v == -1 || !nodes_[v].count) break;
+		walk_prefixes_(s, [&](int v) {
 			if (nodes_[v].count > std::numeric_limits<std::int64_t>::max() - sum) throw std::overflow_error("Trie LCP sum");
 			sum += nodes_[v].count;
-		}
+		});
 		return sum;
 	}
 	std::int64_t order_of_key(std::string_view s) const {

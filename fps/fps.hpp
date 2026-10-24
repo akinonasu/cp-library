@@ -3,6 +3,7 @@
 
 #include "../components/fps_operations.hpp"
 #include "../components/fps_horner.hpp"
+#include "../components/polynomial_shift.hpp"
 #include "../components/fps_workspace.hpp"
 #include "../components/fps_sparse.hpp"
 
@@ -89,22 +90,8 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	F &operator%=(const F &g) { return *this = divmod(g).second; }
 	F &operator/=(T x) { return *this *= x.inv(); }
 
-	F &operator<<=(int d) {
-		assert(d >= 0);
-		const int n = static_cast<int>(this->size());
-		if (d >= n) return *this = F(n);
-		this->insert(this->begin(), d, T(0));
-		this->resize(n);
-		return *this;
-	}
-	F &operator>>=(int d) {
-		assert(d >= 0);
-		const int n = static_cast<int>(this->size());
-		if (d >= n) return *this = F(n);
-		this->erase(this->begin(), this->begin() + d);
-		this->resize(n);
-		return *this;
-	}
+	F &operator<<=(int d) { return polynomial_detail::shift_fixed<true>(*this, d); }
+	F &operator>>=(int d) { return polynomial_detail::shift_fixed<false>(*this, d); }
 
 	F operator+(const F &g) const {
 		F r(*this);

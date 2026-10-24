@@ -7,12 +7,22 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <limits>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
 namespace shortest_path_detail {
+template<class Weight, class Distance>
+bool reaches_limit(const Weight &weight, const Distance &limit) {
+	if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
+				  std::numeric_limits<Distance>::is_integer && std::numeric_limits<Distance>::is_bounded) {
+		using Compare = std::common_type_t<Weight, Distance>;
+		return Compare(weight) >= Compare(limit);
+	} else return weight >= limit;
+}
+
 template<class T> class RadixQueue {
 	static_assert(std::is_integral_v<T> && sizeof(T) <= 8);
 	struct State { T key; int vertex; };
@@ -109,6 +119,27 @@ template<class T> class RadixQueue {
 		return {T(last_), int(std::uint32_t(state))};
 	}
 };
+
+template<class T> class BinaryQueue {
+	using State = std::pair<T, int>;
+	std::vector<State> heap_;
+
+  public:
+	bool empty() const { return heap_.empty(); }
+	void push(T cost, int vertex) {
+		heap_.emplace_back(std::move(cost), vertex);
+		std::push_heap(heap_.begin(), heap_.end(), std::greater<State>());
+	}
+	State pop() {
+		std::pop_heap(heap_.begin(), heap_.end(), std::greater<State>());
+		State state = std::move(heap_.back());
+		heap_.pop_back();
+		return state;
+	}
+};
+
+template<class T>
+using DistanceQueue = std::conditional_t<std::is_integral_v<T> && sizeof(T) <= 8, RadixQueue<T>, BinaryQueue<T>>;
 }
 
 #endif

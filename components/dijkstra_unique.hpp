@@ -1,10 +1,9 @@
 #ifndef DIJKSTRA_UNIQUE_HPP
 #define DIJKSTRA_UNIQUE_HPP
 
+#include "dijkstra_queue.hpp"
 #include <algorithm>
 #include <cassert>
-#include <limits>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -25,13 +24,7 @@ std::pair<T, std::vector<int>> unique_path(const G &g, int st, int target, T inf
 				const auto &[to, weight] = *edge;
 				assert(weight >= 0);
 				if (to == st) break;
-				using Weight = std::remove_cvref_t<decltype(weight)>;
-				T allowance = inf - prefix;
-				if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
-							  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
-					using Compare = std::common_type_t<Weight, T>;
-					if (Compare(weight) >= Compare(allowance)) break;
-				} else if (weight >= allowance) break;
+				if (reaches_limit(weight, T(inf - prefix))) break;
 				T next = prefix + weight;
 				if (to == target) {
 					std::vector<int> path{to};

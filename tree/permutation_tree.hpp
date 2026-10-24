@@ -24,11 +24,7 @@ class PermutationTree {
 	std::vector<int> offsets_, children_, order_;
 	int add_node(int l, int r, int lo, int hi, Type type) {
 		int id = size();
-#ifdef __cpp_aggregate_paren_init
-		nodes_.emplace_back(-1, l, r, lo, hi, type);
-#else
 		nodes_.push_back({-1, l, r, lo, hi, type});
-#endif
 		return id;
 	}
 	void pack(int n) {

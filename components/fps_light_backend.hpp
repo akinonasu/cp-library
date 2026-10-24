@@ -13,6 +13,7 @@
 #include <vector>
 #include "../math/mint.hpp"
 #include "polynomial_product_tree.hpp"
+#include "polynomial_shift.hpp"
 
 #include "fps_light_ntt.hpp"
 #include "fps_sparse_scalar.hpp"
@@ -72,23 +73,11 @@ struct LightFormalPowerSeries : std::vector<T> {
 	friend F operator+(T a, F b) { return b += a; }
 	friend F operator-(T a, const F &b) { return -b + a; }
 	friend F operator*(T a, F b) { return b *= a; }
-	F &operator<<=(int d) {
-		assert(d >= 0);
-		const auto n = this->size();
-		if (Size(d) >= n) return *this = F(n);
-		this->insert(this->begin(), d, T(0));
-		this->resize(n);
-		return *this;
-	}
-	F &operator>>=(int d) {
-		assert(d >= 0);
-		const auto n = this->size();
-		this->erase(this->begin(), this->begin() + std::min(n, Size(d)));
-		this->resize(n);
-		return *this;
-	}
+	F &operator<<=(int d) { return polynomial_detail::shift_fixed<true>(*this, d); }
+	F &operator>>=(int d) { return polynomial_detail::shift_fixed<false>(*this, d); }
 	friend F operator<<(F a, int d) { return a <<= d; }
 	friend F operator>>(F a, int d) { return a >>= d; }
+
 	F pre(int n) const {
 		assert(n >= 0);
 		return F(this->begin(), this->begin() + std::min(Size(n), this->size()));

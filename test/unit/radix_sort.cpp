@@ -5,6 +5,7 @@
 #include <limits>
 #include <memory>
 #include <random>
+#include <string>
 #include <vector>
 
 void require(bool value) { if (!value) std::abort(); }
@@ -15,7 +16,30 @@ struct Item {
 	bool operator==(const Item &) const = default;
 };
 
+template <class T>
+void adaptive_integer_sort() {
+	std::mt19937_64 rng(sizeof(T));
+	for (int n : {0, 1, 255, 256, 1024}) {
+		std::vector<T> values(n);
+		for (auto &value : values) value = T(rng());
+		if (n > 1) values[0] = std::numeric_limits<T>::min(), values[1] = std::numeric_limits<T>::max();
+		auto expected = values;
+		std::sort(expected.begin(), expected.end());
+		radix_sort_detail::sort_by_key(values, [](const T &value) -> const T & { return value; });
+		require(values == expected);
+	}
+}
+
 int main() {
+	adaptive_integer_sort<std::int8_t>(); adaptive_integer_sort<std::uint8_t>();
+	adaptive_integer_sort<std::int64_t>(); adaptive_integer_sort<std::uint64_t>();
+	std::vector<std::string> words{"c", "a", "b", "a"};
+	radix_sort_detail::sort_by_key(words, [](const auto &word) -> const auto & { return word; });
+	require((words == std::vector<std::string>{"a", "a", "b", "c"}));
+	struct Nondefault { int value; explicit Nondefault(int value) : value(value) {} };
+	std::vector<Nondefault> nondefault{Nondefault(3), Nondefault(1), Nondefault(2)};
+	radix_sort_detail::sort_by_key(nondefault, [](const auto &item) { return item.value; });
+	for (int i = 0; i < 3; ++i) require(nondefault[i].value == i + 1);
 	std::mt19937_64 rng(20261020);
 	for (int n : {0, 1, 2, 3, 31, 255, 256, 257, 1024, 10000}) {
 		for (int mode = 0; mode < 8; ++mode) {

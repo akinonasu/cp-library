@@ -34,11 +34,7 @@ template <class Tree> class AuxiliaryTree {
 			nodes_[child].length = tree_->depth[nodes_[child].vertex] - tree_->depth[current.vertex];
 			child = next;
 		}
-#ifdef __cpp_aggregate_paren_init
-		nodes_.emplace_back(current.vertex, -1, 0, current.selected);
-#else
 		nodes_.push_back({current.vertex, -1, 0, current.selected});
-#endif
 		return id;
 	}
 	void attach(int child) {
@@ -65,19 +61,11 @@ template <class Tree> class AuxiliaryTree {
 				while (tree_->depth[stack_.back().vertex] > tree_->depth[w]) {
 					int child = finish();
 					if (stack_.empty() || tree_->depth[stack_.back().vertex] < tree_->depth[w])
-#ifdef __cpp_aggregate_paren_init
-						stack_.emplace_back(w, -1, false);
-#else
 						stack_.push_back({w, -1, false});
-#endif
 					attach(child);
 				}
 			}
-#ifdef __cpp_aggregate_paren_init
-			stack_.emplace_back(v, -1, true);
-#else
 			stack_.push_back({v, -1, true});
-#endif
 		}
 		while (stack_.size() > 1) attach(finish());
 		if (!stack_.empty()) finish();

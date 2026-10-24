@@ -17,14 +17,6 @@ class OfflineRangeSum {
 	struct Item { T value; int position; };
 	std::vector<T> values;
 	std::vector<Query> queries;
-	template <class Value, class Key>
-	static void sort(std::vector<Value> &items, Key key) {
-		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8) {
-			using U = std::make_unsigned_t<T>;
-			constexpr U sign = std::is_signed_v<T> ? U(1) << (sizeof(T) * 8 - 1) : U(0);
-			stable_radix_sort<11>(items, [&](const Value &value) { return U(U(key(value)) ^ sign); });
-		} else std::sort(items.begin(), items.end(), [&](const Value &a, const Value &b) { return key(a) < key(b); });
-	}
   public:
 	using sum_type = Sum;
 	OfflineRangeSum() = default;
@@ -46,9 +38,9 @@ class OfflineRangeSum {
 		std::vector<Item> order;
 		order.reserve(values.size());
 		for (int i = 0; i < size(); ++i) order.push_back({values[i], i});
-		sort(order, [](const Item &item) { return item.value; });
+		radix_sort_detail::sort_by_key<11>(order, [](const Item &item) { return item.value; });
 		auto sorted = queries;
-		sort(sorted, [](const Query &query) { return query.upper; });
+		radix_sort_detail::sort_by_key<11>(sorted, [](const Query &query) { return query.upper; });
 		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8 && (std::is_integral_v<Sum> || std::is_same_v<Sum, __int128_t> || std::is_same_v<Sum, __uint128_t>)) {
 			__int128_t base = order.front().value;
 			__uint128_t bound = (__int128_t(order.back().value) - base) * __uint128_t(std::min(size(), 65536));
