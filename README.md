@@ -48,6 +48,7 @@
 | `geometry/linear.hpp` | 直線・線分の交差・距離・射影 | [使い方](docs/geometry_linear.md) |
 | `geometry/polygon.hpp` | 多角形の面積・内外・切断 | [使い方](docs/geometry_polygon.md) |
 | `geometry/convex.hpp` | 凸包・直径・最近点対・Minkowski和 | [使い方](docs/geometry_convex.md) |
+| `geometry/dynamic_convex_hull.hpp` | 点追加型の動的凸包 | [使い方](docs/dynamic_convex_hull.md) |
 | `geometry/circle.hpp` | 円・接線・共通面積・最小包含円 | [使い方](docs/geometry_circle.md) |
 
 ### 畳み込み
