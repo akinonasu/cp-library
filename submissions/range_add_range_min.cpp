@@ -4,13 +4,37 @@
 
 
 
+#line 1 "components/aligned_allocator.hpp"
+
+
+
+#include <cstddef>
+#include <limits>
+#include <new>
+
+template<class T, std::size_t Alignment = 64> struct AlignedAllocator {
+	static_assert(Alignment >= alignof(T) && !(Alignment & (Alignment - 1)));
+	using value_type = T;
+	template<class U> struct rebind { using other = AlignedAllocator<U, Alignment>; };
+	AlignedAllocator() = default;
+	template<class U> AlignedAllocator(const AlignedAllocator<U, Alignment> &) {}
+	T *allocate(std::size_t n) {
+		if (n > std::numeric_limits<std::size_t>::max() / sizeof(T)) throw std::bad_array_new_length();
+		return static_cast<T *>(::operator new(n * sizeof(T), std::align_val_t(Alignment)));
+	}
+	void deallocate(T *p, std::size_t) { ::operator delete(p, std::align_val_t(Alignment)); }
+	template<class U> bool operator==(const AlignedAllocator<U, Alignment> &) const { return true; }
+};
+
+
+#line 5 "data_structure/segment_tree/range_add_range_min.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
 #include <cassert>
-#include <cstddef>
+#line 10 "data_structure/segment_tree/range_add_range_min.hpp"
 #include <cstdint>
-#include <limits>
+#line 12 "data_structure/segment_tree/range_add_range_min.hpp"
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
@@ -25,7 +49,7 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 	static constexpr unsigned branch = 8, bits = 3;
 	static constexpr T infinity = std::numeric_limits<T>::max();
 	static constexpr U umax = std::numeric_limits<U>::max();
-	std::vector<U> data_;
+	std::vector<U, AlignedAllocator<U>> data_;
 	std::array<std::size_t, (sizeof(int) * 8 + bits - 1) / bits + 1> offsets_{}, counts_{};
 	int n_ = 0;
 	unsigned height_ = 0;

@@ -89,12 +89,12 @@ class WeightedWaveletMatrix {
 		return {x, total};
 	}
 	template <bool WithSum = false>
-	Node less_than(int l, int r, std::uint32_t x) const {
+	Node less_than(int l, int r, std::uint32_t x, int first = 0) const {
 		if (!x || l == r) return {};
 		if constexpr (WithSum) assert(sum_ready);
 		if (x >= index.values.size()) return row<WithSum>(0, l, r);
 		Node answer{};
-		for (int d = 0; d < levels && l < r; ++d) {
+		for (int d = first; d < levels && l < r; ++d) {
 			int digit = (x >> (2 * (levels - 1 - d))) & 3, high = digit >> 1, low = digit & 1;
 			int a = bits[d].below(l, 2), b = bits[d].below(r, 2), base = 3 * d + 1;
 			if (high) answer += row<WithSum>(base, a, b);
@@ -104,6 +104,19 @@ class WeightedWaveletMatrix {
 			r = middle[d][digit] + (low ? (high ? r - b : b) - e : e);
 		}
 		return answer;
+	}
+
+	template <bool WithSum = false>
+	Node between(int l, int r, std::uint32_t low, std::uint32_t high) const {
+		if (low == high || l == r) return {};
+		if (!low || high == index.values.size()) return less_than<WithSum>(l, r, high) - less_than<WithSum>(l, r, low);
+		int common = levels - (std::bit_width(low ^ high) + 1) / 2;
+		for (int d = 0; d < common; ++d) {
+			int digit = (low >> (2 * (levels - 1 - d))) & 3;
+			l = middle[d][digit] + bits[d].rank(l, digit);
+			r = middle[d][digit] + bits[d].rank(r, digit);
+		}
+		return less_than<WithSum>(l, r, high, common) - less_than<WithSum>(l, r, low, common);
 	}
 
 	template <bool Largest>
@@ -254,18 +267,18 @@ class WeightedWaveletMatrix {
 		check(l, r);
 		auto c = index.code(x);
 		if (c == index.values.size() || index.values[c] != x) return 0;
-		return less_than(l, r, c + 1).count - less_than(l, r, c).count;
+		return between(l, r, c, c + 1).count;
 	}
 	Count range_freq(int l, int r, const T &upper) const { check(l, r); return less_than(l, r, index.code(upper)).count; }
 	Count range_freq(int l, int r, const T &lower, const T &upper) const {
 		check(l, r);
-		return lower < upper ? less_than(l, r, index.code(upper)).count - less_than(l, r, index.code(lower)).count : 0;
+		return lower < upper ? between(l, r, index.code(lower), index.code(upper)).count : 0;
 	}
 	Sum range_sum(int l, int r) const { check(l, r); assert(sum_ready); return sums[0].prod(l, r); }
 	Sum range_sum(int l, int r, const T &upper) const { check(l, r); return less_than<true>(l, r, index.code(upper)).sum; }
 	Sum range_sum(int l, int r, const T &lower, const T &upper) const {
 		check(l, r);
-		return lower < upper ? less_than<true>(l, r, index.code(upper)).sum - less_than<true>(l, r, index.code(lower)).sum : 0;
+		return lower < upper ? between<true>(l, r, index.code(lower), index.code(upper)).sum : 0;
 	}
 	T kth_smallest(int l, int r, Count k) const {
 		check(l, r);

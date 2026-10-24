@@ -62,10 +62,11 @@ class LazyReversibleTreap {
 	int root = 0, free = 0;
 	bool lazy_applied = false;
 	int count(int x) const { return t[x].count; }
+	template <bool resize = true>
 	void pull(int x) {
 		auto &v = t[x];
 		int l = v.left, r = v.right;
-		v.count = count(l) + count(r) + 1;
+		if constexpr (resize) v.count = count(l) + count(r) + 1;
 		v.product = l ? op(t[l].product, v.value) : v.value;
 		if (r) v.product = op(std::move(v.product), t[r].product);
 		if constexpr (!commutative) {
@@ -185,18 +186,25 @@ class LazyReversibleTreap {
 		if (p == left) t[x].value = std::move(value);
 		else if (p < left) set_node(t[x].left, p, std::move(value));
 		else set_node(t[x].right, p - left - 1, std::move(value));
-		pull(x);
+		pull<false>(x);
 	}
-	S fold(int x, int l, int r) {
-		if (!l && r == count(x)) return t[x].product;
-		push(x);
-		int left = count(t[x].left);
-		if (r <= left) return fold(t[x].left, l, r);
-		if (left < l) return fold(t[x].right, l - left - 1, r - left - 1);
-		S result = t[x].value;
-		if (l < left) result = op(fold(t[x].left, l, left), std::move(result));
-		if (left + 1 < r) result = op(std::move(result), fold(t[x].right, 0, r - left - 1));
-		return result;
+	S fold(int x, int l, int r, bool reversed = false) const {
+		for (;;) {
+			const auto &v = t[x];
+			if (!l && r == count(x)) {
+				if constexpr (!commutative) if (reversed) return v.back;
+				return v.product;
+			}
+			int a = reversed ? v.right : v.left, b = reversed ? v.left : v.right;
+			int left = count(a);
+			reversed ^= v.reversed;
+			if (r <= left) { x = a; continue; }
+			if (left < l) { x = b; l -= left + 1; r -= left + 1; continue; }
+			S result = v.value;
+			if (l < left) result = op(fold(a, l, left, reversed), std::move(result));
+			if (left + 1 < r) result = op(std::move(result), fold(b, 0, r - left - 1, reversed));
+			return result;
+		}
 	}
 	S fold_lazy(int x, int l, int r, const F *carry = nullptr, bool reversed = false) const {
 		const auto &v = t[x];
@@ -227,7 +235,7 @@ class LazyReversibleTreap {
 		if (l < left) apply_node(t[x].left, l, std::min(r, left), f);
 		if (l <= left && left < r) t[x].value = mapping(f, t[x].value, 1);
 		if (left + 1 < r) apply_node(t[x].right, std::max(l - left - 1, 0), r - left - 1, f);
-		pull(x);
+		pull<false>(x);
 	}
 	int reverse_node(int x, int l, int r) {
 		if (!l && r == count(x)) { flip(x); return x; }
@@ -238,13 +246,12 @@ class LazyReversibleTreap {
 		else {
 			auto [a, b] = split(t[x].left, l);
 			auto [c, d] = split(t[x].right, r - left - 1);
-			t[x].left = b;
-			t[x].right = c;
-			pull(x);
-			flip(x);
-			return merge(a, merge(x, d));
+			flip(b);
+			flip(c);
+			t[x].left = merge(a, c);
+			t[x].right = merge(b, d);
 		}
-		pull(x);
+		if constexpr (!commutative) pull<false>(x);
 		return x;
 	}
 	void collect(int x, std::vector<S> &values) {

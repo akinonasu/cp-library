@@ -235,8 +235,30 @@ template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 
 class LCA {
 	std::vector<int> in, out, order;
+	bool ordered_ = false;
 	StaticRangeMin<int, true> table;
 	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && static_cast<int>(in.size()) == n); }
+
+	void finish(int root) {
+		in[root] = n;
+		ordered_ = root == 0;
+		for (int i = n - 2; i >= 0; --i) {
+			int v = order[i], p = parent[v];
+			depth[v] = depth[p] + 1;
+			in[v] = in[p];
+			in[p] -= out[v];
+		}
+		for (int v = 0; v < n; ++v) {
+			--in[v];
+			out[v] += in[v];
+			order[in[v]] = v;
+			ordered_ &= parent[v] < v;
+		}
+		std::vector<int> values(n);
+		for (int i = 1; i < n; ++i) values[i] = ordered_ ? parent[order[i]] : in[parent[order[i]]];
+		table.build(std::move(values));
+		parent[root] = -1;
+	}
 
   public:
 	int n;
@@ -278,23 +300,55 @@ class LCA {
 			if (--degree[p] == 1) order[count++] = p;
 		}
 		assert(count == n - 1);
-		in[root] = n;
-		for (int i = n - 2; i >= 0; --i) {
-			int v = order[i], p = parent[v];
-			depth[v] = depth[p] + 1;
-			in[v] = in[p];
-			in[p] -= out[v];
-		}
-		for (int v = 0; v < n; ++v) {
-			--in[v];
-			out[v] += in[v];
-			order[in[v]] = v;
-		}
-		std::vector<int> values(n);
-		for (int i = 1; i < n; ++i) values[i] = in[parent[order[i]]];
-		table.build(std::move(values));
-		parent[root] = -1;
+		finish(root);
 	}
+
+	void build_from_parents(std::vector<int> parents) {
+		assert(parents.size() <= std::size_t(std::numeric_limits<int>::max() / 2));
+		n = static_cast<int>(parents.size());
+		parent = std::move(parents);
+		in.resize(n);
+		out.assign(n, 1);
+		order.resize(n);
+		depth.assign(n, 0);
+		table = StaticRangeMin<int, true>();
+		edges.clear();
+		edges.reserve(std::max(0, n - 1));
+		if (!n) return;
+		int root = -1;
+		bool ordered = true;
+		for (int v = 0; v < n; ++v) {
+			int p = parent[v];
+			assert(-1 <= p && p < n && p != v);
+			if (p == -1) {
+				assert(root == -1);
+				root = v;
+			} else {
+				edges.emplace_back(p, v);
+				ordered &= p < v;
+			}
+		}
+		assert(root != -1);
+		if (ordered) {
+			for (int v = n - 1; v > 0; --v) {
+				out[parent[v]] += out[v];
+				order[n - 1 - v] = v;
+			}
+		} else {
+			std::fill(in.begin(), in.end(), 0);
+			for (int v = 0; v < n; ++v) if (v != root) ++in[parent[v]];
+			int count = 0;
+			for (int v = 0; v < n; ++v) if (!in[v] && v != root) order[count++] = v;
+			for (int i = 0; i < count; ++i) {
+				int v = order[i], p = parent[v];
+				out[p] += out[v];
+				if (!--in[p] && p != root) order[count++] = p;
+			}
+			assert(count == n - 1);
+		}
+		finish(root);
+	}
+
 	int lca(int u, int v) const {
 		check(u);
 		check(v);
@@ -302,7 +356,8 @@ class LCA {
 		if (l == r) return u;
 		if (l > r) std::swap(l, r);
 		++l;
-		return order[table.prod(l, r + 1)];
+		int w = table.prod(l, r + 1);
+		return ordered_ ? w : order[w];
 	}
 	int dist(int u, int v) const {
 		int w = lca(u, v);

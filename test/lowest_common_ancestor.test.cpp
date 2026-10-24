@@ -10,10 +10,11 @@ int main() {
 	FastOutput output;
 	int n, q;
 	input.read(n), input.read(q);
-	LCA tree(n);
+	std::vector<int> parents(n, -1);
 	int vertex = 1;
-	read_unsigned_records<1>(input, n - 1, [&](unsigned p) { tree.add_edge(p, vertex++); });
-	tree.build();
+	read_unsigned_records<1>(input, n - 1, [&](unsigned p) { parents[vertex++] = p; });
+	LCA tree;
+	tree.build_from_parents(std::move(parents));
 	std::vector<unsigned> answers;
 	answers.reserve(q);
 	read_unsigned_records<2>(input, q, [&](unsigned u, unsigned v) { answers.push_back(tree.lca(u, v)); });

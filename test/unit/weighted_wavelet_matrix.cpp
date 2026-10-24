@@ -98,6 +98,30 @@ int main() {
 	}
 	check(std::vector<std::int64_t>{INT64_MIN, -1, 0, 1, INT64_MAX, INT64_MIN, INT64_MAX}, random);
 	check(std::vector<std::uint64_t>{0, 1, UINT64_MAX, UINT64_MAX - 1, std::uint64_t(1) << 63, 0}, random);
+	{
+		std::vector<std::int64_t> a(2053), w(a.size());
+		for (int i = 0; i < int(a.size()); ++i) a[i] = (std::int64_t(i) - 1026) * 1000000000000LL, w[i] = i % 5;
+		std::shuffle(a.begin(), a.end(), random);
+		WeightedWaveletMatrix<std::int64_t, std::int64_t, __int128_t> wm(a, w, false);
+		for (int repeat = 0; repeat < 1000; ++repeat) {
+			int p = random() % a.size();
+			wm.add_weight(p, 1);
+			++w[p];
+			int l = random() % a.size(), r = random() % a.size();
+			if (l > r) std::swap(l, r);
+			++r;
+			std::int64_t x = a[random() % a.size()], y = x + std::int64_t(1 + random() % 4) * 1000000000000LL;
+			std::int64_t count = 0, exact = 0;
+			__int128_t sum = 0;
+			for (int i = l; i < r; ++i) {
+				if (a[i] == x) exact += w[i];
+				if (x <= a[i] && a[i] < y) count += w[i], sum += __int128_t(a[i]) * w[i];
+			}
+			require(wm.count(l, r, x) == exact && wm.range_freq(l, r, x, y) == count);
+			if (repeat == 500) wm.prepare_sum();
+			if (repeat >= 500) require(wm.range_sum(l, r, x, y) == sum);
+		}
+	}
 	WeightedWaveletMatrix<int, std::int64_t, __int128_t> counts_only({7, -3, 12, 7}, {4, 2, 0, 1}, false);
 	counts_only.add_weight(2, 3);
 	counts_only.move_weight(0, 1, 2);

@@ -1,6 +1,7 @@
 #ifndef RANGE_ADD_RANGE_MIN_HPP
 #define RANGE_ADD_RANGE_MIN_HPP
 
+#include "../../components/aligned_allocator.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -22,7 +23,7 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 	static constexpr unsigned branch = 8, bits = 3;
 	static constexpr T infinity = std::numeric_limits<T>::max();
 	static constexpr U umax = std::numeric_limits<U>::max();
-	std::vector<U> data_;
+	std::vector<U, AlignedAllocator<U>> data_;
 	std::array<std::size_t, (sizeof(int) * 8 + bits - 1) / bits + 1> offsets_{}, counts_{};
 	int n_ = 0;
 	unsigned height_ = 0;
