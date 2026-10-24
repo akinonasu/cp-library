@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import unittest
 
 from ci import environment_key, no_cache_context
 
@@ -31,16 +32,27 @@ def run(root, path, key, *, enabled=True, force=False):
     if enabled and not force and previous == {'version': 1, 'fingerprint': key}:
         print('Reusing successful CI support tests with matching sources and tools', flush=True)
         return
-    subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', '.verify-helper', '-p', '*_test.py'], cwd=root, check=True)
+    subprocess.run([sys.executable, '.verify-helper/support_tests.py', 'suite'], cwd=root, check=True)
     if enabled:
         path.write_text(json.dumps({'version': 1, 'fingerprint': key}) + '\n')
 
 
+def suite(root):
+    loader = unittest.TestLoader()
+    tests = unittest.TestSuite()
+    for path in sorted((root / '.verify-helper').glob('*_test.py')):
+        if path.stem != 'code_highlight_test':
+            tests.addTests(loader.loadTestsFromName(path.stem))
+    return tests
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=('key', 'run'))
+    parser.add_argument('command', choices=('key', 'run', 'suite'))
     parser.add_argument('--state', type=Path, default=ROOT / '.verify-helper/support-state.json')
     args = parser.parse_args()
+    if args.command == 'suite':
+        sys.exit(not unittest.TextTestRunner().run(suite(ROOT)).wasSuccessful())
     key = fingerprint(ROOT, environment_key())
     if args.command == 'key':
         if os.environ.get('GITHUB_OUTPUT'):

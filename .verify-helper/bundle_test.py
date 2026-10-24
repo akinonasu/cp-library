@@ -5,9 +5,19 @@ import subprocess
 import tempfile
 import unittest
 
+from size_profiles import LIGHTWEIGHT, LIMITS
+
 ROOT = Path(__file__).resolve().parents[1]
-LIMIT = 256 * 1024
-LIGHT_LIMIT = 64 * 1024
+LIMIT = LIMITS['full']
+LIGHT_LIMIT = LIMITS[LIGHTWEIGHT]
+
+
+def bundle(path):
+    result = subprocess.run(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode:
+        raise AssertionError(result.stderr.decode(errors='replace'))
+    return result.stdout
 
 
 def light_headers():
@@ -100,7 +110,7 @@ class BundleTest(unittest.TestCase):
                 name = header.relative_to(ROOT).as_posix()
                 with self.subTest(header=name):
                     path.write_text('#include "' + name + '"\n#include "components/fast_io.hpp"\nint main() {}\n')
-                    generated = subprocess.check_output(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT)
+                    generated = bundle(path)
                     reference = ('//https://qandori.github.io/cp-library/lightweight/' + name + '.html\n').encode()
                     self.assertLess(len(reference + generated), LIGHT_LIMIT)
 
@@ -115,7 +125,7 @@ class BundleTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'all_light_fps.cpp'
             path.write_text(source)
-            generated = subprocess.check_output(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT)
+            generated = bundle(path)
             reference = b'//https://qandori.github.io/cp-library/lightweight/fps/fps.hpp.html\n'
             self.assertLess(len(reference + generated), LIGHT_LIMIT)
 
@@ -146,8 +156,7 @@ class BundleTest(unittest.TestCase):
                     source = '#include "' + header + '"\n#include "components/fast_io.hpp"\n#include <cstdlib>\n'
                     source += core + common + example + '\n}\n' + main
                     path.write_text(source)
-                    generated = subprocess.check_output(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT,
-                                                        stderr=subprocess.PIPE)
+                    generated = bundle(path)
                     reference = ('//https://qandori.github.io/cp-library/' + header + '.html\n').encode()
                     self.assertLess(len(reference + generated), LIMIT)
 
@@ -194,7 +203,7 @@ int main() {
                     source = '#include "' + header + '"\n#include "' + polynomial + '"\n'
                     source += program.replace('POLYNOMIAL', 'light_fps' if light else 'fps').replace('MATRIX', 'LightMatrix' if light else 'Matrix')
                     path.write_text(source)
-                    generated = subprocess.check_output(['oj-bundle', '-I', str(ROOT), str(path)], cwd=ROOT)
+                    generated = bundle(path)
                     reference = ('//https://qandori.github.io/cp-library/' + header + '.html\n').encode()
                     self.assertLess(len(reference + generated), LIGHT_LIMIT if light else LIMIT)
                     path.write_bytes(reference + generated)
