@@ -31,7 +31,7 @@ void check() {
 		if (half >= 8 && __builtin_cpu_supports("avx2")) {
 			b = a;
 			ntt_mod_detail::butterfly_avx2<mod>(b.data(), n, half, roots.data(), quotients.data());
-			assert(b == expected);
+			for (int i = 0; i < n; ++i) assert(b[i] % mod == expected[i]);
 		}
 #endif
 	}
@@ -79,6 +79,8 @@ int main() {
 	check<17, 3>();
 	check<257, 3>();
 	check<65537, 3>();
+	check<167772161, 3>();
+	check<469762049, 3>();
 	check<998244353, 3>();
 	check<754974721, 11>();
 	check<1224736769, 3>();

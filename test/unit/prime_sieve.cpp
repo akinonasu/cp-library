@@ -43,6 +43,11 @@ int main(int argc, char **) {
 	std::mt19937_64 random(20261017);
 	for (int i = 0; i < (extended ? 300 : 64); ++i) check(random() % limit);
 	check(limit);
+	for (std::size_t n : {0, 1, 2, 3, 10, 65537, 65538, 960961, 5000000}) {
+		std::vector<std::size_t> emitted;
+		for_each_prime(n, [&](std::size_t p) { emitted.push_back(p); });
+		assert(emitted == (n < 2 ? std::vector<std::size_t>{} : reference(n)));
+	}
 	if (extended) {
 		const std::size_t n[] = {10000001, 100000001, 500000001};
 		const std::size_t counts[] = {664579, 5761455, 26355867};

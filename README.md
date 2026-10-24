@@ -113,6 +113,8 @@
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
+| `tree/path_product.hpp` | 頂点値更新・順序付き経路積 | [使い方](docs/path_product.md) |
+| `tree/contour_sum.hpp` | 頂点値更新・距離区間の和 | [使い方](docs/contour_sum.md) |
 | `tree/auxiliary_tree.hpp` | Auxiliary Tree・圧縮木の隣接リスト | [使い方](docs/auxiliary_tree.md) |
 | `tree/tree_diameter.hpp` | 木の直径・最長パスの復元 | [使い方](docs/tree_diameter.md) |
 | `tree/rerooting.hpp` | 全方位木 DP | [使い方](docs/rerooting.md) |
@@ -402,6 +404,7 @@
 | `components/rational_fps_coefficients.hpp` | 有理 FPS の区間係数取得の共通処理 | [使い方](docs/rational_fps_coefficients_core.md) |
 | `components/factorial_table.hpp` | 型を指定する階乗・逆階乗テーブル | [使い方](docs/factorial_table.md) |
 | `components/factorial_table_light.hpp` | 軽量版の階乗・逆階乗生成 | [使い方](docs/factorial_table_light.md) |
+| `components/factorial_table_generic.hpp` | 汎用 modint の階乗・逆階乗生成 | [使い方](docs/factorial_table_generic.md) |
 | `components/closest_pair.hpp` | 最近点対の整数座標用処理 | [使い方](docs/closest_pair_core.md) |
 | `components/subset_convolution_modular.hpp` | Subset 畳み込みの modint 用処理 | [使い方](docs/subset_convolution_modular.md) |
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |
@@ -433,6 +436,7 @@
 | `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
 | `components/matrix_arithmetic.hpp` | 行列の内部演算 | [使い方](docs/matrix_arithmetic.md) |
+| `components/matrix_block_inverse.hpp` | 行列のブロック逆行列・余因子行列 | [使い方](docs/matrix_block_inverse.md) |
 | `components/matrix_elimination_modular.hpp` | 固定法の行列消去 | [使い方](docs/matrix_elimination_modular.md) |
 | `components/fps_light_ntt.hpp` | 軽量 FPS の NTT・畳み込み | [使い方](docs/fps_light_ntt.md) |
 | `components/fps_light_product_tree.hpp` | 軽量 FPS の積木 | [使い方](docs/fps_light_product_tree.md) |
@@ -454,6 +458,8 @@
 | `components/fps_composition_light.hpp` | 軽量 FPS の合成・射影の共通部品 | [使い方](docs/fps_composition_light.md) |
 | `components/fps_composition_generic.hpp` | FPS の合成・射影の汎用実装 | [使い方](docs/fps_composition_generic.md) |
 | `components/fps_convolution.hpp` | FPS の融合畳み込み | [使い方](docs/fps_convolution.md) |
+| `components/mint_convolution.hpp` | modint998244353 の共有畳み込み | [使い方](docs/mint_convolution.md) |
+| `components/convolution_dispatch.hpp` | 畳み込みの型別振り分け | [使い方](docs/convolution_dispatch.md) |
 | `components/fps_convolution_unbalanced.hpp` | FPS の非対称畳み込み | [使い方](docs/fps_convolution_unbalanced.md) |
 | `components/fps_convolution_constant.hpp` | FPS の定数係数畳み込み | [使い方](docs/fps_convolution_constant.md) |
 | `components/fps_direct_eval.hpp` | 多点評価の内部直接計算 | [使い方](docs/fps_direct_eval.md) |

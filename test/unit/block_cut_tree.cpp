@@ -121,10 +121,24 @@ void check(int n, const std::vector<std::pair<int, int>>& edges) {
 	graph.build();
 	verify(graph);
 	auto copy = graph;
+	graph.build_components();
+	assert(graph.tree.empty() && graph.node_count() == copy.node_count());
+	assert(graph.groups() == copy.groups() && graph.articulation == copy.articulation);
+	assert(graph.node_id == copy.node_id);
+	for (int v = 0; v < graph.node_count(); ++v) {
+		assert(graph.is_block(v) == copy.is_block(v));
+		assert(graph.vertex(v) == copy.vertex(v));
+	}
+	graph.build();
+	verify(graph);
 	verify(copy);
 }
 
 int main() {
+	auto build = &BlockCutTree::build;
+	BlockCutTree empty;
+	(empty.*build)();
+	assert(empty.node_count() == 0);
 	for (int n = 0; n <= 5; ++n) {
 		std::vector<std::pair<int, int>> all;
 		for (int u = 0; u < n; ++u) for (int v = u + 1; v < n; ++v) all.emplace_back(u, v);

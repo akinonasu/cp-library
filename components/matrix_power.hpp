@@ -29,9 +29,14 @@ struct FrobeniusPower {
 	std::vector<Row> basis, reduced;
 	std::vector<int> pivots;
 	Row transpose, upper, inverses;
+	std::vector<std::int32_t> packed;
+	int block = 0;
 	std::uint64_t random = 0x243f6a8885a308d3ULL;
 	explicit FrobeniusPower(const std::vector<T> &a, int size) : n(size), transpose(a.size()), upper(a.size()), inverses(size) {
 		for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j) transpose[std::size_t(j) * n + i] = a[std::size_t(i) * n + j].val();
+	}
+	static std::int32_t center(V x) {
+		return x <= (Ops::mod - 1) / 2 ? std::int32_t(x) : std::int32_t(std::int64_t(x) - Ops::mod);
 	}
 	Row seed() {
 		Row x(n);
@@ -44,6 +49,15 @@ struct FrobeniusPower {
 	}
 	Row apply(const Row &x) const {
 		Row result(n);
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (block) {
+			std::vector<std::int32_t> centered(n);
+			for (int i = 0; i < n; ++i) centered[i] = center(x[i]);
+			if (block == 16) product_packed_avx512<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
+			else product_packed_avx2<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
+			return result;
+		}
+#endif
 		constexpr int count = ModularElimination<Ops>::batch;
 		std::array<const V *, count> source;
 		for (int i = 0; i < n; i += count) {
@@ -121,6 +135,16 @@ struct FrobeniusPower {
 		return p;
 	}
 	std::optional<std::vector<Row>> decompose(bool diagonal = true) {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if (n >= 32 && avx2()) {
+			block = avx512_product() ? 16 : 8;
+			packed.resize(transpose.size());
+			for (int j = 0; j < n; j += block) {
+				int width = std::min(block, n - j);
+				for (int i = 0; i < n; ++i) for (int q = 0; q < width; ++q) packed[std::size_t(j) * n + std::size_t(i) * width + q] = center(transpose[std::size_t(i) * n + j + q]);
+			}
+		}
+#endif
 		for (int attempt = 0; attempt < 3; ++attempt) {
 			basis.clear(), reduced.clear(), pivots.clear();
 			work = 0;

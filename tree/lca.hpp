@@ -37,32 +37,35 @@ class LCA {
 		depth.assign(n, 0);
 		table = StaticRangeMin<int, true>();
 		if (!n) return;
-		std::vector<int> start(std::size_t(n) + 1);
-		for (auto [u, v] : edges) ++start[u + 1], ++start[v + 1];
-		for (int v = 0; v < n; ++v) start[v + 1] += start[v];
-		std::vector<int> adj(2 * edges.size());
-		std::copy(start.begin(), start.end() - 1, out.begin());
-		for (auto [u, v] : edges) adj[out[u]++] = v, adj[out[v]++] = u;
-		std::fill(out.begin(), out.end(), 1);
-		int timer = 0, top = n - 1;
-		order[top] = root;
-		parent[root] = root;
-		while (top < n) {
-			int v = order[top++];
-			in[v] = timer;
-			order[timer++] = v;
-			for (int i = start[v]; i < start[v + 1]; ++i) {
-				int to = adj[i];
-				if (to == parent[v]) continue;
-				assert(parent[to] == -1);
-				parent[to] = v;
-				depth[to] = depth[v] + 1;
-				order[--top] = to;
-			}
+		std::vector<int> degree(n), neighbors(n);
+		for (auto [u, v] : edges) {
+			++degree[u], ++degree[v];
+			neighbors[u] ^= v, neighbors[v] ^= u;
 		}
-		assert(timer == n);
-		for (int i = n - 1; i >= 1; --i) out[parent[order[i]]] += out[order[i]];
-		for (int v = 0; v < n; ++v) out[v] += in[v];
+		degree[root] += 2;
+		std::fill(out.begin(), out.end(), 1);
+		int count = 0;
+		for (int v = 0; v < n; ++v) if (degree[v] == 1) order[count++] = v;
+		for (int i = 0; i < count; ++i) {
+			int v = order[i], p = neighbors[v];
+			parent[v] = p;
+			out[p] += out[v];
+			neighbors[p] ^= v;
+			if (--degree[p] == 1) order[count++] = p;
+		}
+		assert(count == n - 1);
+		in[root] = n;
+		for (int i = n - 2; i >= 0; --i) {
+			int v = order[i], p = parent[v];
+			depth[v] = depth[p] + 1;
+			in[v] = in[p];
+			in[p] -= out[v];
+		}
+		for (int v = 0; v < n; ++v) {
+			--in[v];
+			out[v] += in[v];
+			order[in[v]] = v;
+		}
 		std::vector<int> values(n);
 		for (int i = 1; i < n; ++i) values[i] = in[parent[order[i]]];
 		table.build(std::move(values));

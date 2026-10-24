@@ -4,10 +4,6 @@
 
 
 
-#line 1 "graph/connectivity/scc.hpp"
-
-
-
 #line 1 "components/scc_core.hpp"
 
 
@@ -21,8 +17,9 @@
 #include <vector>
 
 namespace scc_detail {
+template<bool RejectPairs = false>
 inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int, int>> edges) {
-	assert(n >= 0 && edges.size() <= std::size_t(std::numeric_limits<int>::max()));
+	assert((!RejectPairs || n % 2 == 0) && n >= 0 && edges.size() <= std::size_t(std::numeric_limits<int>::max()));
 	std::vector<int> answer(n, -1);
 	unsigned monotone = 3;
 	for (auto [from, to] : edges) {
@@ -63,6 +60,7 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 			int u = v;
 			do {
 				answer[u] = count;
+				if constexpr (RejectPairs) if (answer[u ^ 1] == count) return {-1, {}};
 				degree[u] = 0;
 				u = adjacency[offset[u]];
 			} while (u != v);
@@ -106,6 +104,7 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 						work.pop_back();
 						degree[u] = n;
 						answer[u] = count;
+						if constexpr (RejectPairs) if (answer[u ^ 1] == count) return {-1, {}};
 					} while (u != v);
 					++count;
 				}
@@ -119,68 +118,11 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 }
 
 
-#line 5 "graph/connectivity/scc.hpp"
-
-class SCCGraph {
-	int n_;
-	std::vector<std::pair<int, int>> edges_;
-
-  public:
-	struct Components {
-		std::vector<int> id, vertices, offset;
-		Components() = default;
-		Components(const Components &) = default;
-		Components(Components &&other) noexcept { swap(other); }
-		Components &operator=(Components other) noexcept { swap(other); return *this; }
-		void swap(Components &other) noexcept { id.swap(other.id), vertices.swap(other.vertices), offset.swap(other.offset); }
-		int size() const { return offset.empty() ? 0 : static_cast<int>(offset.size() - 1); }
-		std::span<const int> operator[](int component) const {
-			assert(0 <= component && component < size());
-			return {vertices.data() + offset[component], std::size_t(offset[component + 1] - offset[component])};
-		}
-	};
-	explicit SCCGraph(int n = 0) : n_(n) { assert(n >= 0); }
-	int size() const { return n_; }
-	std::size_t edge_count() const { return edges_.size(); }
-	void reserve(std::size_t m) {
-		assert(m <= std::size_t(std::numeric_limits<int>::max()));
-		edges_.reserve(m);
-	}
-	void add_edge(int from, int to) {
-		assert(0 <= from && from < n_ && 0 <= to && to < n_);
-		assert(edges_.size() < std::size_t(std::numeric_limits<int>::max()));
-		edges_.emplace_back(from, to);
-	}
-	std::pair<int, std::vector<int>> scc_ids() const { return scc_detail::ids(n_, edges_); }
-	Components decomposition() const {
-		auto [count, id] = scc_ids();
-		Components result;
-		result.id = std::move(id);
-		result.offset.resize(std::size_t(count) + 1);
-		for (int x : result.id) ++result.offset[x + 1];
-		for (int i = 0; i < count; ++i) result.offset[i + 1] += result.offset[i];
-		result.vertices.resize(n_);
-		auto cursor = result.offset;
-		for (int v = 0; v < n_; ++v) result.vertices[cursor[result.id[v]]++] = v;
-		return result;
-	}
-	std::vector<std::vector<int>> scc() const {
-		auto [count, id] = scc_ids();
-		std::vector<int> sizes(count);
-		for (int x : id) ++sizes[x];
-		std::vector<std::vector<int>> groups(count);
-		for (int i = 0; i < count; ++i) groups[i].reserve(sizes[i]);
-		for (int v = 0; v < n_; ++v) groups[id[v]].push_back(v);
-		return groups;
-	}
-};
-
-
 #line 5 "graph/two_sat.hpp"
 
 class TwoSAT {
 	int n_;
-	SCCGraph graph_;
+	std::vector<std::pair<int, int>> edges_;
 	std::vector<bool> answer_;
 	bool valid_ = false;
 	static int vertices(int n) {
@@ -189,22 +131,24 @@ class TwoSAT {
 	}
 
   public:
-	explicit TwoSAT(int n = 0) : n_(n), graph_(vertices(n)), answer_(n) {}
+	explicit TwoSAT(int n = 0) : n_(n), answer_(vertices(n) / 2) {}
 	int size() const { return n_; }
 	void reserve(std::size_t clauses) {
 		assert(clauses <= std::size_t(std::numeric_limits<int>::max() / 2));
-		graph_.reserve(clauses * 2);
+		edges_.reserve(clauses * 2);
 	}
 	void add_clause(int i, bool f, int j, bool g) {
 		assert(0 <= i && i < n_ && 0 <= j && j < n_);
 		valid_ = false;
 		if (i == j && f != g) return;
-		graph_.add_edge(2 * i + !f, 2 * j + g);
-		if (i != j) graph_.add_edge(2 * j + !g, 2 * i + f);
+		assert(edges_.size() <= std::size_t(std::numeric_limits<int>::max() - 1 - int(i != j)));
+		edges_.emplace_back(2 * i + !f, 2 * j + g);
+		if (i != j) edges_.emplace_back(2 * j + !g, 2 * i + f);
 	}
 	bool satisfiable() {
-		auto id = graph_.scc_ids().second;
+		auto [count, id] = scc_detail::ids<true>(2 * n_, edges_);
 		valid_ = false;
+		if (count < 0) return false;
 		for (int i = 0; i < n_; ++i) {
 			if (id[2 * i] == id[2 * i + 1]) return false;
 			answer_[i] = id[2 * i] < id[2 * i + 1];

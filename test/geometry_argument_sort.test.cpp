@@ -10,7 +10,7 @@ int main() {
 	int n = 0; input.read(n);
 	std::vector<geometry::Point<std::int32_t>> points(n);
 	for (auto &p : points) input.read(p.x), input.read(p.y);
-	std::sort(points.begin(), points.end(), geometry::PolarLess<std::int32_t>{});
+	geometry::polar_sort(points);
 	auto lower = std::find_if(points.begin(), points.end(), [](auto p) { return p.y < 0; });
 	std::rotate(points.begin(), lower, points.end());
 	for (auto p : points) output.write(p.x), output.write(' '), output.println(p.y);

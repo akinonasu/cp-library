@@ -23,6 +23,8 @@
 #include "data_structure/advanced/static_top_tree.hpp"
 #include "data_structure/advanced/centroid_decomposition.hpp"
 #include "tree/lca.hpp"
+#include "tree/path_product.hpp"
+#include "tree/contour_sum.hpp"
 #include "graph/connectivity/low_link.hpp"
 #include "math/combinatorics/comb.hpp"
 #include "math/combinatorics/binomial_prefix_sum.hpp"
@@ -159,6 +161,11 @@ int main() {
 	hld.add_edge(1, 2);
 	hld.build();
 	assert(hld.jump(2, 0, 1) == 1 && hld.subtree(1).second - hld.subtree(1).first == 2);
+	TreeContourSum<> contour_values(3, hld.edges, values);
+	assert(contour_values.prod(1, 1, 2) == 4);
+	TreePathProduct<std::int64_t, add, zero> path_values(hld, values);
+	path_values.set(1, 4);
+	assert(path_values.prod(2, 0) == 8);
 	StaticTopTree<StaticTreeSum> static_tree(hld, {1, 2, 3});
 	static_tree.set(1, 4);
 	assert(static_tree.dp() == 8 && static_tree.subtree_prod(1) == 7);

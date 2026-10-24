@@ -73,18 +73,24 @@ __attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512
 	return _mm512_mask_sub_epi64(r, _mm512_cmp_epi64_mask(r, p, _MM_CMPINT_NLT), r, p);
 }
 
-template <std::uint32_t mod, int rows = 4>
+template <std::uint32_t mod, int rows = 8>
 __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr std::int64_t radius = mod / 2;
-	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - (mod - 1)) / (radius * radius)));
+	constexpr std::int64_t residue = (std::uint64_t(1) << 32) % mod;
+	constexpr std::int64_t folded_bound = (std::int64_t(1) << 31) * residue + 0xffffffffu;
+	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - folded_bound) / (radius * radius)));
 	int i = 0;
 	for (; i + rows <= n; i += rows) {
 		for (int j = 0; j < m; j += 16) {
 			const int width = std::min(16, m - j);
 			const __mmask16 active = (1u << width) - 1;
+			__m512i sums[rows][2];
+			for (int r = 0; r < rows; ++r) {
+				auto previous = _mm512_maskz_loadu_epi32(active, c + std::size_t(i + r) * m + j);
+				sums[r][0] = _mm512_and_si512(previous, _mm512_set1_epi64(0xffffffffu));
+				sums[r][1] = _mm512_srli_epi64(previous, 32);
+			}
 			for (int k = 0; k < inner; k += step) {
-				__m512i sums[rows][2];
-				for (int r = 0; r < rows; ++r) sums[r][0] = sums[r][1] = _mm512_setzero_si512();
 				for (int t = k; t < std::min(inner, k + step); ++t) {
 					auto x = _mm512_maskz_loadu_epi32(active, b + std::size_t(j) * inner + std::size_t(t) * width);
 					auto y = _mm512_srli_epi64(x, 32);
@@ -94,140 +100,75 @@ __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std
 						sums[r][1] = _mm512_add_epi64(sums[r][1], _mm512_mul_epi32(y, z));
 					}
 				}
-				for (int r = 0; r < rows; ++r) {
-					auto *dst = c + std::size_t(i + r) * m + j;
-					auto previous = _mm512_maskz_loadu_epi32(active, dst);
-					auto even = reduce_product_avx512<mod>(_mm512_add_epi64(sums[r][0], _mm512_and_si512(previous, _mm512_set1_epi64(0xffffffffu))));
-					auto odd = reduce_product_avx512<mod>(_mm512_add_epi64(sums[r][1], _mm512_srli_epi64(previous, 32)));
-					_mm512_mask_storeu_epi32(dst, active, _mm512_or_si512(even, _mm512_slli_epi64(odd, 32)));
+				for (int r = 0; r < rows; ++r) for (int q = 0; q < 2; ++q) {
+					auto x = sums[r][q];
+					sums[r][q] = _mm512_add_epi64(_mm512_mul_epi32(_mm512_srli_epi64(x, 32), _mm512_set1_epi32(residue)), _mm512_and_si512(x, _mm512_set1_epi64(0xffffffffu)));
 				}
 			}
-		}
-	}
-	if constexpr (rows == 4) {
-		if (i < n) product_packed_avx512<mod, 1>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
-	}
-}
-
-template <std::uint32_t mod>
-__attribute__((target("avx2"))) void product_avx2(const std::uint32_t *a, const std::uint32_t *b, std::uint32_t *c, int n, int inner, int m) {
-	constexpr int step = mod <= (std::uint32_t(1) << 30) ? 16 : 4;
-	int i = 0;
-	for (; i + 2 <= n; i += 2) {
-		int j = 0;
-		for (; j + 8 <= m; j += 8) for (int k = 0; k < inner; k += step) {
-			__m256i x0 = _mm256_setzero_si256(), x1 = x0, y0 = x0, y1 = x0;
-			for (int t = k; t < std::min(inner, k + step); ++t) {
-				__m256i row = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + std::size_t(t) * m + j));
-				__m256i odd = _mm256_srli_epi64(row, 32);
-				__m256i u = _mm256_set1_epi32(a[std::size_t(i) * inner + t]);
-				__m256i v = _mm256_set1_epi32(a[std::size_t(i + 1) * inner + t]);
-				x0 = _mm256_add_epi64(x0, _mm256_mul_epu32(u, row));
-				x1 = _mm256_add_epi64(x1, _mm256_mul_epu32(u, odd));
-				y0 = _mm256_add_epi64(y0, _mm256_mul_epu32(v, row));
-				y1 = _mm256_add_epi64(y1, _mm256_mul_epu32(v, odd));
-			}
-			std::uint64_t even[4], odd[4], even2[4], odd2[4];
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(even), x0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd), x1);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(even2), y0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd2), y1);
-			for (int s = 0; s < 4; ++s) {
-				auto *r = c + std::size_t(i) * m + j + s * 2;
-				auto *r2 = r + m;
-				r[0] = (even[s] + r[0]) % mod; r[1] = (odd[s] + r[1]) % mod;
-				r2[0] = (even2[s] + r2[0]) % mod; r2[1] = (odd2[s] + r2[1]) % mod;
+			for (int r = 0; r < rows; ++r) {
+				auto even = reduce_product_avx512<mod>(sums[r][0]), odd = reduce_product_avx512<mod>(sums[r][1]);
+				_mm512_mask_storeu_epi32(c + std::size_t(i + r) * m + j, active, _mm512_or_si512(even, _mm512_slli_epi64(odd, 32)));
 			}
 		}
-		if (j < m) for (int row = i; row < i + 2; ++row) for (int col = j; col < m; ++col) {
-			std::uint64_t sum = 0;
-			for (int k = 0; k < inner; k += step) {
-				for (int t = k; t < std::min(inner, k + step); ++t) sum += std::uint64_t(a[std::size_t(row) * inner + t]) * b[std::size_t(t) * m + col];
-				sum %= mod;
-			}
-			c[std::size_t(row) * m + col] = sum;
-		}
 	}
-	if (i < n) product_scalar<mod>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, 1, inner, m);
+	if constexpr (rows > 1) {
+		if (i < n) product_packed_avx512<mod, rows / 2>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
+	}
 }
 
 template <std::uint32_t mod, int rows = 4>
 __attribute__((target("avx2"))) void product_packed_avx2(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr std::int64_t radius = mod / 2;
-	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - (mod - 1)) / (radius * radius)));
-	auto reduce = [](std::int64_t sum, std::uint32_t c = 0) {
-		std::int64_t r = (sum + std::int64_t(c)) % std::int64_t(mod);
+	constexpr std::int64_t residue = (std::uint64_t(1) << 32) % mod;
+	constexpr std::int64_t folded_bound = (std::int64_t(1) << 31) * residue + 0xffffffffu;
+	constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - folded_bound) / (radius * radius)));
+	auto reduce = [](std::int64_t sum) {
+		std::int64_t r = sum % std::int64_t(mod);
 		return std::uint32_t(r < 0 ? r + mod : r);
 	};
 	int i = 0;
 	for (; i + rows <= n; i += rows) {
-		int j = 0;
-		for (; j + 8 <= m; j += 8) for (int k = 0; k < inner; k += step) {
-			__m256i x0 = _mm256_setzero_si256(), x1 = x0, y0 = x0, y1 = x0, z0 = x0, z1 = x0, w0 = x0, w1 = x0;
-			for (int t = k; t < std::min(inner, k + step); ++t) {
-				__m256i row = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + std::size_t(j) * inner + std::size_t(t) * 8));
-				__m256i odd = _mm256_srli_epi64(row, 32);
-				__m256i u = _mm256_set1_epi32(a[std::size_t(i) * inner + t]);
-				__m256i v = _mm256_set1_epi32(a[std::size_t(i + 1) * inner + t]);
-				x0 = _mm256_add_epi64(x0, _mm256_mul_epi32(u, row));
-				x1 = _mm256_add_epi64(x1, _mm256_mul_epi32(u, odd));
-				y0 = _mm256_add_epi64(y0, _mm256_mul_epi32(v, row));
-				y1 = _mm256_add_epi64(y1, _mm256_mul_epi32(v, odd));
-				if constexpr (rows == 4) {
-					__m256i p = _mm256_set1_epi32(a[std::size_t(i + 2) * inner + t]);
-					__m256i q = _mm256_set1_epi32(a[std::size_t(i + 3) * inner + t]);
-					z0 = _mm256_add_epi64(z0, _mm256_mul_epi32(p, row));
-					z1 = _mm256_add_epi64(z1, _mm256_mul_epi32(p, odd));
-					w0 = _mm256_add_epi64(w0, _mm256_mul_epi32(q, row));
-					w1 = _mm256_add_epi64(w1, _mm256_mul_epi32(q, odd));
-				}
+		for (int j = 0; j < m; j += 8) {
+			int width = std::min(8, m - j);
+			auto active = _mm256_cmpgt_epi32(_mm256_set1_epi32(width), _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
+			__m256i sums[rows][2];
+			for (int r = 0; r < rows; ++r) {
+				auto previous = _mm256_maskload_epi32(reinterpret_cast<const int *>(c + std::size_t(i + r) * m + j), active);
+				sums[r][0] = _mm256_and_si256(previous, _mm256_set1_epi64x(0xffffffffu));
+				sums[r][1] = _mm256_srli_epi64(previous, 32);
 			}
-			std::int64_t even[4], odd[4], even2[4], odd2[4], even3[4], odd3[4], even4[4], odd4[4];
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(even), x0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd), x1);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(even2), y0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd2), y1);
-			if constexpr (rows == 4) {
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(even3), z0);
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd3), z1);
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(even4), w0);
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd4), w1);
-			}
-			for (int s = 0; s < 4; ++s) {
-				auto *r = c + std::size_t(i) * m + j + s * 2;
-				auto *r2 = r + m;
-				r[0] = reduce(even[s], r[0]); r[1] = reduce(odd[s], r[1]);
-				r2[0] = reduce(even2[s], r2[0]); r2[1] = reduce(odd2[s], r2[1]);
-				if constexpr (rows == 4) {
-					auto *r3 = r2 + m, *r4 = r3 + m;
-					r3[0] = reduce(even3[s], r3[0]); r3[1] = reduce(odd3[s], r3[1]);
-					r4[0] = reduce(even4[s], r4[0]); r4[1] = reduce(odd4[s], r4[1]);
-				}
-			}
-		}
-		if (j < m) for (int row = i; row < i + rows; ++row) for (int col = j; col < m; ++col) {
-			std::int64_t sum = 0;
 			for (int k = 0; k < inner; k += step) {
-				for (int t = k; t < std::min(inner, k + step); ++t) sum += std::int64_t(a[std::size_t(row) * inner + t]) * b[std::size_t(j) * inner + std::size_t(t) * (m - j) + col - j];
-				sum = reduce(sum);
+				for (int t = k; t < std::min(inner, k + step); ++t) {
+					auto x = _mm256_maskload_epi32(b + std::size_t(j) * inner + std::size_t(t) * width, active);
+					auto y = _mm256_srli_epi64(x, 32);
+					for (int r = 0; r < rows; ++r) {
+						auto z = _mm256_set1_epi32(a[std::size_t(i + r) * inner + t]);
+						sums[r][0] = _mm256_add_epi64(sums[r][0], _mm256_mul_epi32(x, z));
+						sums[r][1] = _mm256_add_epi64(sums[r][1], _mm256_mul_epi32(y, z));
+					}
+				}
+				for (int r = 0; r < rows; ++r) for (int q = 0; q < 2; ++q) {
+					auto x = sums[r][q];
+					sums[r][q] = _mm256_add_epi64(_mm256_mul_epi32(_mm256_srli_epi64(x, 32), _mm256_set1_epi32(residue)), _mm256_and_si256(x, _mm256_set1_epi64x(0xffffffffu)));
+				}
 			}
-			c[std::size_t(row) * m + col] = sum;
+			for (int r = 0; r < rows; ++r) {
+				std::int64_t even[4], odd[4];
+				_mm256_storeu_si256(reinterpret_cast<__m256i *>(even), sums[r][0]);
+				_mm256_storeu_si256(reinterpret_cast<__m256i *>(odd), sums[r][1]);
+				std::uint32_t result[8];
+				for (int q = 0; q < 4; ++q) result[q * 2] = reduce(even[q]), result[q * 2 + 1] = reduce(odd[q]);
+				_mm256_maskstore_epi32(reinterpret_cast<int *>(c + std::size_t(i + r) * m + j), active, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(result)));
+			}
 		}
+
 	}
 	if constexpr (rows == 4) {
-		if (i < n) product_packed_avx2<mod, 2>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
-	} else for (; i < n; ++i) for (int j = 0; j < m; j += 8) {
-		int width = std::min(8, m - j);
-		for (int s = 0; s < width; ++s) {
-			std::int64_t sum = 0;
-			for (int k = 0; k < inner; k += step) {
-				for (int t = k; t < std::min(inner, k + step); ++t) sum += std::int64_t(a[std::size_t(i) * inner + t]) * b[std::size_t(j) * inner + std::size_t(t) * width + s];
-				sum = reduce(sum);
-			}
-			c[std::size_t(i) * m + j + s] = sum;
-		}
+		if (i < n) product_packed_avx2<mod, 1>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
 	}
 }
+
+
 #endif
 
 template <class T>
@@ -243,7 +184,7 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 	if constexpr (small_modint<T>) {
 		if (std::uint64_t(n) * m <= 128u / unsigned(inner)) { basic(); return c; }
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-		if (n >= 4 && inner >= 16 && m >= 8 && avx2()) {
+		if (inner >= 16 && m >= 8 && avx2()) {
 			const int block = avx512_product() ? 16 : 8;
 			std::vector<std::int32_t> x(a.size()), y(b.size());
 			std::vector<std::uint32_t> z(c.size());
@@ -266,10 +207,6 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 		std::vector<std::uint32_t> x(a.size()), y(b.size()), z(c.size());
 		for (std::size_t i = 0; i < a.size(); ++i) x[i] = a[i].val();
 		for (std::size_t i = 0; i < b.size(); ++i) y[i] = b[i].val();
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-		if (inner >= 16 && m >= 8 && avx2()) product_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
-		else
-#endif
 		product_scalar<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
 		for (std::size_t i = 0; i < c.size(); ++i) c[i] = T::raw(z[i]);
 	} else basic();

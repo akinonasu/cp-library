@@ -7,6 +7,9 @@
 
 namespace matrix_detail {
 template <class T>
+std::optional<std::pair<T, std::vector<T>>> block_inverse(const std::vector<T> &a, int n, bool adjugate);
+
+template <class T>
 struct FastMatrixArithmetic {
 	static constexpr bool modular = small_modint<T>;
 	template <class Ops>
@@ -29,6 +32,10 @@ struct FastMatrixArithmetic {
 	static std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n, int inner, int m) {
 		return matrix_detail::multiply(a, b, n, inner, m);
 	}
+	static std::optional<std::pair<T, std::vector<T>>> inverse(const std::vector<T> &a, int n, bool adjugate) {
+		if constexpr (modular) return block_inverse(a, n, adjugate);
+		return std::nullopt;
+	}
 	static std::optional<std::vector<T>> characteristic(const std::vector<T> &a, int n) {
 		if constexpr (small_modint<T>) if constexpr (prime_modulus(T::mod())) {
 			if (n >= 32) return FrobeniusPower<T>(a, n).characteristic();
@@ -45,5 +52,6 @@ struct FastMatrixArithmetic {
 }
 
 #include "../../components/matrix_core.hpp"
+#include "../../components/matrix_block_inverse.hpp"
 
 #endif

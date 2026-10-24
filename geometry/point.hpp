@@ -1,6 +1,7 @@
 #ifndef GEOMETRY_POINT_HPP
 #define GEOMETRY_POINT_HPP
 
+#include "../components/radix_sort.hpp"
 #include <cmath>
 #include <cstdint>
 #include <istream>
@@ -130,6 +131,40 @@ struct PolarLess {
 		}
 	}
 };
+
+template<class T>
+void polar_sort(std::vector<Point<T>> &points) {
+	if constexpr (integer<T> && sizeof(T) <= 4) {
+		if (points.size() >= 256) {
+			struct Entry { std::uint64_t key; Point<T> point; };
+			std::vector<Entry> order;
+			order.reserve(points.size());
+			constexpr std::uint64_t scale = (std::uint64_t(1) << 61) - 1;
+			for (auto p : points) {
+				std::int64_t x = p.x, y = p.y;
+				std::uint64_t a = x < 0 ? -x : x, b = y < 0 ? -y : y;
+				unsigned quadrant = y < 0 ? (x < 0 ? 2 : 3) : (x < 0 ? 1 : 0);
+				unsigned octant = quadrant * 2 + ((a < b) ^ (quadrant & 1));
+				std::uint64_t ratio = a || b ? std::min(scale, std::uint64_t(double(std::min(a, b)) / double(std::max(a, b)) * double(scale))) : 0;
+				if (octant & 1) ratio = scale - ratio;
+				order.push_back({(std::uint64_t(octant) << 61) | ratio, p});
+			}
+			stable_radix_sort<11>(order, [](const Entry &entry) { return entry.key; });
+			for (std::size_t first = 0; first < order.size();) {
+				std::size_t last = first + 1;
+				while (last < order.size() && order[last].key == order[first].key) ++last;
+				auto less = [](const Entry &a, const Entry &b) { return PolarLess<T>{}(a.point, b.point); };
+				if (last - first <= 8 || !std::is_sorted(order.begin() + first, order.begin() + last, less))
+					std::sort(order.begin() + first, order.begin() + last, less);
+				first = last;
+			}
+			for (std::size_t i = 0; i < points.size(); ++i) points[i] = order[i].point;
+			return;
+		}
+	}
+	std::sort(points.begin(), points.end(), PolarLess<T>{});
+}
+
 }
 
 #endif

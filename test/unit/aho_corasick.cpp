@@ -133,6 +133,16 @@ int main() {
 	}
 	bytes.push_back("");
 	check<256, 0>(bytes, text, true);
+	auto widths = [&]<int Alphabet>() {
+		std::vector<std::string> patterns;
+		for (int c = 0; c < Alphabet; ++c) {
+			patterns.push_back(std::string(1, char(c)));
+			patterns.push_back(std::string{char(c), char((c + 1) % Alphabet)});
+		}
+		check<Alphabet, 0>(patterns, text, true);
+	};
+	widths.template operator()<8>(); widths.template operator()<16>();
+	widths.template operator()<31>(); widths.template operator()<32>();
 	AhoCorasick<1, 'a'> deep;
 	deep.reserve(200000, 3);
 	deep.add(std::string(200000, 'a')), deep.add("a"), deep.add("");

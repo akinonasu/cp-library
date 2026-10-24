@@ -19,6 +19,8 @@
 #endif
 
 namespace ntt_mod_detail {
+template <std::uint32_t mod> struct Vector;
+
 template <std::uint32_t mod>
 std::uint32_t power(std::uint32_t a, std::uint32_t k) {
 	std::uint32_t result = 1;
@@ -46,23 +48,16 @@ template <std::uint32_t mod>
 __attribute__((target("avx2")))
 void butterfly_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 					const std::uint32_t *roots, const std::uint32_t *quotients) {
-	const auto p = _mm256_set1_epi32(mod);
+	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
 			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
 			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
 			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
 			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
-			auto even = _mm256_mul_epu32(y, q);
-			auto odd = _mm256_mul_epu32(_mm256_srli_epi64(y, 32), _mm256_srli_epi64(q, 32));
-			q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
-			y = _mm256_sub_epi32(_mm256_mullo_epi32(y, r), _mm256_mullo_epi32(q, p));
-			y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
-			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
-			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
-			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), sum);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
+			y = V::multiply(y, r, q);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), V::subtract(x, y));
 		}
 }
 #endif
@@ -92,22 +87,15 @@ template <std::uint32_t mod>
 __attribute__((target("avx2")))
 void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 		const std::uint32_t *roots, const std::uint32_t *quotients) {
-	const auto p = _mm256_set1_epi32(mod);
+	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
 			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
 			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
-			auto sum = _mm256_add_epi32(x, y), difference = _mm256_sub_epi32(x, y);
-			sum = _mm256_min_epu32(sum, _mm256_sub_epi32(sum, p));
-			difference = _mm256_min_epu32(difference, _mm256_add_epi32(difference, p));
 			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
 			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
-			auto even = _mm256_mul_epu32(difference, q);
-			auto odd = _mm256_mul_epu32(_mm256_srli_epi64(difference, 32), _mm256_srli_epi64(q, 32));
-			q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
-			difference = _mm256_sub_epi32(_mm256_mullo_epi32(difference, r), _mm256_mullo_epi32(q, p));
-			difference = _mm256_min_epu32(difference, _mm256_sub_epi32(difference, p));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), sum);
+			auto difference = V::multiply(V::subtract(x, y), r, q);
+			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
 			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
 		}
 }
@@ -116,15 +104,16 @@ void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
 struct Vector {
+	static constexpr std::uint32_t range = mod < (std::uint32_t(1) << 30) ? 2 * mod : mod;
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i add(__m256i x, __m256i y) {
 		auto sum = _mm256_add_epi32(x, y);
-		return _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(mod)));
+		return _mm256_min_epu32(sum, _mm256_sub_epi32(sum, _mm256_set1_epi32(range)));
 	}
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i subtract(__m256i x, __m256i y) {
 		auto difference = _mm256_sub_epi32(x, y);
-		return _mm256_min_epu32(difference, _mm256_add_epi32(difference, _mm256_set1_epi32(mod)));
+		return _mm256_min_epu32(difference, _mm256_add_epi32(difference, _mm256_set1_epi32(range)));
 	}
 	__attribute__((target("avx2"), always_inline))
 	static inline __m256i multiply(__m256i x, __m256i factor, __m256i quotient) {
@@ -132,6 +121,7 @@ struct Vector {
 		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(quotient, 32));
 		auto q = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
 		auto result = _mm256_sub_epi32(_mm256_mullo_epi32(x, factor), _mm256_mullo_epi32(q, _mm256_set1_epi32(mod)));
+		if constexpr (range == 2 * mod) return result;
 		return _mm256_min_epu32(result, _mm256_sub_epi32(result, _mm256_set1_epi32(mod)));
 	}
 };
@@ -203,6 +193,7 @@ void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32
 			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 3 * h), x3);
 		}
 }
+
 #endif
 
 #if defined(__x86_64__) || defined(__i386__)
@@ -217,6 +208,7 @@ void build_roots_avx2(std::uint32_t *roots, std::uint32_t *quotients, std::size_
 	auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(initial));
 	auto factor = _mm256_set1_epi32(w), quotient = _mm256_set1_epi32((std::uint64_t(w) << 32) / mod);
 	for (std::size_t j = 0; j < half; j += 8) {
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(mod)));
 		_mm256_storeu_si256(reinterpret_cast<__m256i *>(roots + j), x);
 		for (int k = 0; k < 8; ++k) quotients[j + k] = (std::uint64_t(roots[j + k]) << 32) / mod;
 		x = Vector<mod>::multiply(x, factor, quotient);
@@ -271,6 +263,7 @@ void backward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[mayb
 	if (vectorized && a.size() >= 8) {
 		leaf_avx2<mod, true>(a.data(), a.size(), plan.roots.data(), plan.quotients.data());
 		half = 8;
+
 		for (; 2 * half < a.size(); half *= 4) pair_avx2<mod, true>(a.data(), a.size(), half, plan.roots.data(), plan.quotients.data());
 		if (half < a.size()) butterfly_avx2<mod>(a.data(), a.size(), half, plan.roots.data() + half, plan.quotients.data() + half);
 		return;
@@ -286,7 +279,8 @@ void scale_avx2(std::uint32_t *a, std::size_t n, std::uint32_t factor, std::uint
 	auto r = _mm256_set1_epi32(factor), q = _mm256_set1_epi32(quotient);
 	for (std::size_t i = 0; i < n; i += 8) {
 		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), Vector<mod>::multiply(x, r, q));
+		auto y = Vector<mod>::multiply(x, r, q);
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), _mm256_min_epu32(y, _mm256_sub_epi32(y, _mm256_set1_epi32(mod))));
 	}
 }
 #endif
@@ -322,6 +316,7 @@ void transform(std::vector<std::uint32_t> &a, bool inverse, bool vectorized) {
 		scale<mod>(a, power<mod>(a.size(), mod - 2), vectorized);
 	} else {
 		forward(a, plan, vectorized);
+		if constexpr (mod < (std::uint32_t(1) << 30)) for (auto &x : a) if (x >= mod) x -= mod;
 		bit_reverse(a);
 	}
 }
@@ -387,7 +382,7 @@ void ntt_mod(std::vector<std::uint32_t> &a, bool inverse = false) {
 
 namespace convolution_mod_detail {
 template <std::uint32_t mod, std::uint32_t root, class T>
-std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T> &b) {
+std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T> &b, std::uint32_t factor = 1) {
 	std::size_t length = a.size() + b.size() - 1, n = std::bit_ceil(length);
 	std::vector<std::uint32_t> x(n), y(n);
 	auto reduce = [](T value) {
@@ -400,6 +395,7 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 		std::vector<std::uint32_t> result(length);
 		for (std::size_t i = 0; i < a.size(); ++i)
 			for (std::size_t j = 0; j < b.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * y[j]) % mod;
+		if (factor != 1) for (auto &v : result) v = std::uint64_t(v) * factor % mod;
 		return result;
 	}
 	bool vectorized = false;
@@ -413,7 +409,7 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 	ntt_mod_detail::pointwise<mod>(x, y, vectorized);
 	ntt_mod_detail::backward(x, plan, vectorized);
 	std::reverse(x.begin() + 1, x.end());
-	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod;
+	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod * factor % mod;
 	ntt_mod_detail::scale<mod>(x, scale, vectorized);
 	x.resize(length);
 	return x;
@@ -421,18 +417,85 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 inline constexpr std::uint32_t p = 754974721, q = 1224736769, r = 2013265921;
 inline constexpr __uint128_t modulus = __uint128_t(p) * q * r;
 struct Reconstruction { std::uint64_t low; std::uint32_t high; };
+template <std::uint32_t P = p, std::uint32_t Q = q, std::uint32_t R = r>
 inline Reconstruction reconstruct(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
-	static const std::uint32_t inverse_p = ntt_mod_detail::power<q>(p, q - 2);
-	static const std::uint32_t inverse_pq = ntt_mod_detail::power<r>(std::uint64_t(p) * q % r, r - 2);
-	std::uint64_t x = std::uint64_t(b + q - a) * inverse_p % q;
-	std::uint64_t low = a + std::uint64_t(p) * x;
-	std::uint64_t y = std::uint64_t(c + r - low % r) * inverse_pq % r;
+	static const std::uint32_t inverse_p = ntt_mod_detail::power<Q>(P, Q - 2);
+	static const std::uint32_t inverse_pq = ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2);
+	std::uint64_t x = std::uint64_t(b + Q - a) * inverse_p % Q;
+	std::uint64_t low = a + std::uint64_t(P) * x;
+	std::uint64_t y = std::uint64_t(c + R - low % R) * inverse_pq % R;
 	return {low, std::uint32_t(y)};
 }
 inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
 	auto [low, high] = reconstruct(a, b, c);
 	return low + __uint128_t(p) * q * high;
 }
+#if defined(__x86_64__) || defined(__i386__)
+template <std::uint32_t P, std::uint32_t Q, std::uint32_t R>
+__attribute__((target("avx2")))
+void combine(std::uint32_t *a, const std::uint32_t *b, const std::uint32_t *c, std::size_t n) {
+	static_assert(P > 256 && Q > 256 && R > 256 && P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32));
+	constexpr std::uint32_t mod = 1000000007;
+	constexpr auto form = [](std::uint64_t x) { return std::uint32_t(x % mod * ((std::uint64_t(1) << 32) % mod) % mod); };
+	constexpr std::uint32_t place[3] = {form(std::uint64_t(Q) * R), form(std::uint64_t(P) * R), form(std::uint64_t(P) * Q)};
+	constexpr std::uint32_t wrap = form(mod - std::uint64_t(P) * Q % mod * R % mod);
+	const auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(ntt_mod_detail::negative_inverse<mod>);
+	std::size_t i = 0;
+	for (; n - i >= 8; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		auto z = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(c + i));
+		auto quotient = [&](__m256i a, __m256i b, __m256i c) __attribute__((target("avx2"), always_inline)) {
+			auto s = _mm256_mul_epu32(a, _mm256_set1_epi32((std::uint64_t(1) << 40) / P + 1));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(b, _mm256_set1_epi32((std::uint64_t(1) << 40) / Q + 1)));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(c, _mm256_set1_epi32((std::uint64_t(1) << 40) / R + 1)));
+			return _mm256_srli_epi64(_mm256_add_epi64(s, _mm256_set1_epi64x(std::uint64_t(1) << 39)), 40);
+		};
+		auto reduce = [&](__m256i a, __m256i b, __m256i c, __m256i t) __attribute__((target("avx2"), always_inline)) {
+			auto s = _mm256_add_epi64(_mm256_mul_epu32(a, _mm256_set1_epi32(place[0])), _mm256_mul_epu32(b, _mm256_set1_epi32(place[1])));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(c, _mm256_set1_epi32(place[2])));
+			s = _mm256_add_epi64(s, _mm256_mul_epu32(t, _mm256_set1_epi32(wrap)));
+			return _mm256_add_epi64(s, _mm256_mul_epu32(_mm256_mul_epu32(s, inverse), p));
+		};
+		auto xo = _mm256_srli_epi64(x, 32), yo = _mm256_srli_epi64(y, 32), zo = _mm256_srli_epi64(z, 32);
+		auto even = reduce(x, y, z, quotient(x, y, z)), odd = reduce(xo, yo, zo, quotient(xo, yo, zo));
+		x = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	}
+	for (; i < n; ++i) {
+		std::uint64_t t = (std::uint64_t(a[i]) * ((std::uint64_t(1) << 40) / P + 1) + std::uint64_t(b[i]) * ((std::uint64_t(1) << 40) / Q + 1) + std::uint64_t(c[i]) * ((std::uint64_t(1) << 40) / R + 1) + (std::uint64_t(1) << 39)) >> 40;
+		std::uint64_t sum = std::uint64_t(a[i]) * place[0] + std::uint64_t(b[i]) * place[1] + std::uint64_t(c[i]) * place[2] + std::uint64_t(t) * wrap;
+		auto q = std::uint32_t(sum) * ntt_mod_detail::negative_inverse<mod>;
+		std::uint32_t value = (sum + std::uint64_t(q) * mod) >> 32;
+		a[i] = value < mod ? value : value - mod;
+	}
+}
+#endif
+template <std::uint32_t P, std::uint32_t PR, std::uint32_t Q, std::uint32_t QR, std::uint32_t R, std::uint32_t RR>
+std::vector<std::uint32_t> modular(const std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b, std::uint32_t mod) {
+#if defined(__x86_64__) || defined(__i386__)
+	if constexpr (P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32)) {
+		if (mod == 1000000007 && __uint128_t(std::min(a.size(), b.size())) * (mod - 1) * (mod - 1) * 4 < __uint128_t(P) * Q * R && __builtin_cpu_supports("avx2")) {
+			auto x = multiply<P, PR>(a, b, ntt_mod_detail::power<P>(std::uint64_t(Q) * R % P, P - 2));
+			auto y = multiply<Q, QR>(a, b, ntt_mod_detail::power<Q>(std::uint64_t(P) * R % Q, Q - 2));
+			auto z = multiply<R, RR>(a, b, ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2));
+			combine<P, Q, R>(x.data(), y.data(), z.data(), x.size());
+			return x;
+		}
+	}
+#endif
+	auto x = multiply<P, PR>(a, b);
+	auto y = multiply<Q, QR>(a, b);
+	auto z = multiply<R, RR>(a, b);
+	std::uint64_t pq_mod = std::uint64_t(P) * Q % mod;
+	for (std::size_t i = 0; i < x.size(); ++i) {
+		auto [low, high] = reconstruct<P, Q, R>(x[i], y[i], z[i]);
+		x[i] = (low % mod + pq_mod * high) % mod;
+	}
+	return x;
+}
+
 }
 
 template <class T>
@@ -481,15 +544,10 @@ std::vector<std::uint32_t> convolution_mod(const std::vector<T> &a, const std::v
 		return result;
 	}
 	if (mod == 998244353 && x.size() + other.size() - 1 <= std::size_t(1) << 23) return convolution_mod_detail::multiply<998244353, 3>(x, other);
-	auto p = convolution_mod_detail::multiply<convolution_mod_detail::p, 11>(x, other);
-	auto q = convolution_mod_detail::multiply<convolution_mod_detail::q, 3>(x, other);
-	auto r = convolution_mod_detail::multiply<convolution_mod_detail::r, 31>(x, other);
-	std::uint64_t pq_mod = std::uint64_t(convolution_mod_detail::p) * convolution_mod_detail::q % mod;
-	for (std::size_t i = 0; i < p.size(); ++i) {
-		auto [low, high] = convolution_mod_detail::reconstruct(p[i], q[i], r[i]);
-		p[i] = (low % mod + pq_mod * high) % mod;
-	}
-	return p;
+	constexpr std::uint32_t P = 167772161, Q = 469762049, R = 754974721;
+	if (__uint128_t(std::min(x.size(), other.size())) * (mod - 1) * (mod - 1) < __uint128_t(P) * Q * R)
+		return convolution_mod_detail::modular<P, 3, Q, 3, R, 11>(x, other, mod);
+	return convolution_mod_detail::modular<convolution_mod_detail::p, 11, convolution_mod_detail::q, 3, convolution_mod_detail::r, 31>(x, other, mod);
 }
 
 

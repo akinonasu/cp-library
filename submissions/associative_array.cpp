@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <functional>
 #include <limits>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <type_traits>
@@ -41,14 +42,42 @@ public:
 	V &operator[](const K &key) { return values[key]; }
 	void set(const K &key, const V &value) { values.insert_or_assign(key, value); }
 	bool erase(const K &key) { return values.erase(key); }
+	void prefetch(const K &) const noexcept {}
 	void reserve(std::size_t n) { values.reserve(n); }
 	void clear() { values.clear(); }
 };
 
 template<class K, class V, class Hash, class Equal>
 class Table<K, V, Hash, Equal, true> {
-	std::vector<K> keys;
-	std::vector<V> values;
+	struct Entry { K key{}; V value{}; };
+	struct ValueSlot { V value{}; };
+	static constexpr bool combined = sizeof(Entry) == sizeof(K) + sizeof(V) && sizeof(V) <= 16;
+	using Storage = std::conditional_t<combined, std::vector<Entry>, std::pair<std::vector<K>, std::vector<ValueSlot>>>;
+	Storage storage;
+	K &stored_key(std::size_t p) {
+		if constexpr (combined) return storage[p].key;
+		else return storage.first[p];
+	}
+	const K &stored_key(std::size_t p) const {
+		if constexpr (combined) return storage[p].key;
+		else return storage.first[p];
+	}
+	V &stored_value(std::size_t p) {
+		if constexpr (combined) return storage[p].value;
+		else return storage.second[p].value;
+	}
+	const V &stored_value(std::size_t p) const {
+		if constexpr (combined) return storage[p].value;
+		else return storage.second[p].value;
+	}
+	void resize(std::size_t capacity) {
+		if constexpr (combined) storage.resize(capacity);
+		else storage.first.resize(capacity), storage.second.resize(capacity);
+	}
+	std::size_t storage_limit() const {
+		if constexpr (combined) return storage.max_size();
+		else return std::min(storage.first.max_size(), storage.second.max_size());
+	}
 	std::vector<unsigned char> states;
 	std::size_t count = 0, deleted = 0;
 	unsigned shift = 64;
@@ -58,17 +87,17 @@ class Table<K, V, Hash, Equal, true> {
 	}
 	std::size_t locate(K key) const {
 		std::size_t p = index(key), mask = states.size() - 1;
-		while (states[p] && (states[p] != 1 || keys[p] != key)) p = (p + 1) & mask;
+		while (states[p] && (states[p] != 1 || stored_key(p) != key)) p = (p + 1) & mask;
 		return p;
 	}
 	void rehash(std::size_t capacity) {
 		Table next;
 		next.salt = salt;
-		next.keys.resize(capacity), next.values.resize(capacity), next.states.resize(capacity);
+		next.resize(capacity), next.states.resize(capacity);
 		next.shift = 64 - std::countr_zero(capacity);
 		for (std::size_t i = 0; i < states.size(); ++i) if (states[i] == 1) {
-			std::size_t p = next.locate(keys[i]);
-			next.keys[p] = keys[i], next.values[p] = values[i], next.states[p] = 1;
+			std::size_t p = next.locate(stored_key(i));
+			next.stored_key(p) = stored_key(i), next.stored_value(p) = stored_value(i), next.states[p] = 1;
 		}
 		next.count = count;
 		swap(next);
@@ -78,7 +107,7 @@ class Table<K, V, Hash, Equal, true> {
 		else if (count + deleted == states.size() / 2) {
 			if (deleted > count / 2) rehash(states.size());
 			else {
-				if (states.size() > states.max_size() / 2 || states.size() > keys.max_size() / 2 || states.size() > values.max_size() / 2)
+				if (states.size() > states.max_size() / 2 || states.size() > storage_limit() / 2)
 					throw std::length_error("FlatHashMap capacity");
 				rehash(states.size() * 2);
 			}
@@ -88,12 +117,12 @@ class Table<K, V, Hash, Equal, true> {
 		prepare();
 		std::size_t p = index(key), first = states.size(), mask = states.size() - 1;
 		while (states[p]) {
-			if (states[p] == 1 && keys[p] == key) return p;
+			if (states[p] == 1 && stored_key(p) == key) return p;
 			if (states[p] == 2 && first == states.size()) first = p;
 			p = (p + 1) & mask;
 		}
 		if (first != states.size()) p = first, --deleted;
-		keys[p] = key, values[p] = V{}, states[p] = 1;
+		stored_key(p) = key, stored_value(p) = V{}, states[p] = 1;
 		++count;
 		return p;
 	}
@@ -103,15 +132,15 @@ public:
 	Table(Table &&other) noexcept { swap(other); }
 	Table &operator=(Table other) noexcept { swap(other); return *this; }
 	void swap(Table &other) noexcept {
-		keys.swap(other.keys), values.swap(other.values), states.swap(other.states);
+		storage.swap(other.storage), states.swap(other.states);
 		std::swap(count, other.count), std::swap(deleted, other.deleted), std::swap(shift, other.shift), std::swap(salt, other.salt);
 	}
 	std::size_t size() const { return count; }
 	bool empty() const { return !count; }
-	V *find(K key) { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &values[p] : nullptr; }
-	const V *find(K key) const { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &values[p] : nullptr; }
-	V &operator[](K key) { return values[insert(key)]; }
-	void set(K key, const V &value) { V copy = value; values[insert(key)] = copy; }
+	V *find(K key) { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &stored_value(p) : nullptr; }
+	const V *find(K key) const { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &stored_value(p) : nullptr; }
+	V &operator[](K key) { return stored_value(insert(key)); }
+	void set(K key, const V &value) { V copy = value; stored_value(insert(key)) = copy; }
 	bool erase(K key) {
 		if (states.empty()) return false;
 		std::size_t p = locate(key);
@@ -119,9 +148,21 @@ public:
 		states[p] = 2, --count, ++deleted;
 		return true;
 	}
+	void prefetch(K key) const noexcept {
+#if defined(__GNUC__) || defined(__clang__)
+		if (!states.empty()) {
+			std::size_t p = index(key);
+			__builtin_prefetch(states.data() + p, 0, 3);
+			__builtin_prefetch(std::addressof(stored_key(p)), 0, 3);
+			if constexpr (!combined) __builtin_prefetch(std::addressof(stored_value(p)), 0, 3);
+		}
+#else
+		(void)key;
+#endif
+	}
 	void reserve(std::size_t n) {
 		if (n <= states.size() / 2) return;
-		std::size_t limit = std::min({states.max_size(), keys.max_size(), values.max_size()});
+		std::size_t limit = std::min(states.max_size(), storage_limit());
 		if (n > limit / 2) throw std::length_error("FlatHashMap capacity");
 		std::size_t capacity = std::bit_ceil(std::max(std::size_t(16), 2 * n));
 		if (capacity > limit) throw std::length_error("FlatHashMap capacity");
@@ -152,6 +193,7 @@ public:
 	T &operator[](const Key &key) { return table[key]; }
 	void set(const Key &key, const T &value) { table.set(key, value); }
 	bool erase(const Key &key) { return table.erase(key); }
+	void prefetch(const Key &key) const noexcept { table.prefetch(key); }
 	void reserve(size_type n) { table.reserve(n); }
 	void clear() { table.clear(); }
 	void swap(FlatHashMap &other) noexcept(noexcept(table.swap(other.table))) { table.swap(other.table); }
@@ -171,7 +213,6 @@ public:
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>
-#include <memory>
 #line 15 "components/fast_io.hpp"
 #include <string>
 #include <string_view>
@@ -395,7 +436,7 @@ public:
 };
 
 
-#line 5 "test/flat_hash_map.test.cpp"
+#line 6 "test/flat_hash_map.test.cpp"
 
 int main() {
 	FastInput input;
@@ -404,17 +445,34 @@ int main() {
 	input.read(q);
 	FlatHashMap<std::uint64_t, std::uint64_t> values;
 	values.reserve(q);
-	while (q--) {
-		int type = 0;
-		std::uint64_t key = 0;
-		input.read(type), input.read(key);
-		if (type == 0) {
-			std::uint64_t value = 0;
-			input.read(value);
-			values.set(key, value);
-		} else {
-			const auto *value = values.find(key);
+	struct Query { std::uint64_t key, value; int type; };
+	std::array<Query, 128> queries{};
+	auto apply = [&](const Query &query) {
+		if (query.type == 0) values.set(query.key, query.value);
+		else {
+			const auto *value = values.find(query.key);
 			output.println(value ? *value : 0);
 		}
+	};
+	auto read = [&](Query &query) {
+		input.read(query.type), input.read(query.key);
+		if (query.type == 0) input.read(query.value);
+	};
+	while (q) {
+		while (q && values.size() < 4096) {
+			Query query{};
+			read(query);
+			apply(query);
+			--q;
+		}
+		if (!q) break;
+		int count = std::min<int>(q, queries.size());
+		for (int i = 0; i < count; ++i) read(queries[i]);
+		for (int i = 0; i < std::min(count, 16); ++i) values.prefetch(queries[i].key);
+		for (int i = 0; i < count; ++i) {
+			if (i + 16 < count) values.prefetch(queries[i + 16].key);
+			apply(queries[i]);
+		}
+		q -= count;
 	}
 }

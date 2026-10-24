@@ -37,6 +37,7 @@ class LazyReversibleTreap {
 	std::vector<Node> t;
 	SplitMix64 rng;
 	int root = 0, free = 0;
+	bool lazy_applied = false;
 	int count(int x) const { return t[x].count; }
 	void pull(int x) {
 		auto &v = t[x];
@@ -174,6 +175,28 @@ class LazyReversibleTreap {
 		if (left + 1 < r) result = op(std::move(result), fold(t[x].right, 0, r - left - 1));
 		return result;
 	}
+	S fold_lazy(int x, int l, int r, const F *carry = nullptr, bool reversed = false) const {
+		const auto &v = t[x];
+		if (!l && r == count(x)) {
+			S result = v.product;
+			if constexpr (!commutative) if (reversed) result = v.back;
+			return carry ? mapping(*carry, std::move(result), count(x)) : result;
+		}
+		F combined = id();
+		if (v.pending) {
+			combined = carry ? composition(*carry, v.lazy) : v.lazy;
+			carry = &combined;
+		}
+		int a = reversed ? v.right : v.left, b = reversed ? v.left : v.right;
+		int left = count(a);
+		reversed ^= v.reversed;
+		if (r <= left) return fold_lazy(a, l, r, carry, reversed);
+		if (left < l) return fold_lazy(b, l - left - 1, r - left - 1, carry, reversed);
+		S result = carry ? mapping(*carry, v.value, 1) : v.value;
+		if (l < left) result = op(fold_lazy(a, l, left, carry, reversed), std::move(result));
+		if (left + 1 < r) result = op(std::move(result), fold_lazy(b, 0, r - left - 1, carry, reversed));
+		return result;
+	}
 	void apply_node(int x, int l, int r, const F &f) {
 		if (!l && r == count(x)) { act(x, f); return; }
 		push(x);
@@ -227,12 +250,13 @@ class LazyReversibleTreap {
 		std::swap(rng, other.rng);
 		std::swap(root, other.root);
 		std::swap(free, other.free);
+		std::swap(lazy_applied, other.lazy_applied);
 	}
 	int size() const { return count(root); }
 	bool empty() const { return !root; }
 	void reserve(std::size_t n) { assert(n < (std::size_t(1) << 30)); t.reserve(n + 1); }
 	std::size_t memory_usage() const { return t.capacity() * sizeof(Node); }
-	void clear() { t.erase(t.begin() + 1, t.end()); root = free = 0; }
+	void clear() { t.erase(t.begin() + 1, t.end()); root = free = 0; lazy_applied = false; }
 	void assign(const std::vector<S> &values) {
 		clear();
 		reserve(values.size());
@@ -263,10 +287,10 @@ class LazyReversibleTreap {
 		}
 	}
 	void set(int p, S value) { bounds(p, p + 1); set_node(root, p, std::move(value)); }
-	S prod(int l, int r) { bounds(l, r); return l == r ? e() : fold(root, l, r); }
+	S prod(int l, int r) { bounds(l, r); return l == r ? e() : lazy_applied ? fold_lazy(root, l, r) : fold(root, l, r); }
 	S all_prod() const { return t[root].product; }
 	void apply(int p, const F &f) { apply(p, p + 1, f); }
-	void apply(int l, int r, const F &f) { bounds(l, r); if (l != r) apply_node(root, l, r, f); }
+	void apply(int l, int r, const F &f) { bounds(l, r); if (l != r) { lazy_applied = true; apply_node(root, l, r, f); } }
 	void reverse(int l, int r) { bounds(l, r); if (r - l > 1) root = reverse_node(root, l, r); }
 	void rotate(int l, int m, int r) {
 		bounds(l, m); bounds(m, r);

@@ -128,18 +128,22 @@ std::optional<std::uint64_t> sqrt(std::uint64_t a, const M &m) {
 		while (v != m.one && k < s) v = m.mul(v, v), ++k;
 		if (k == s) return std::nullopt;
 		if (k) {
-			std::array<U, std::numeric_limits<U>::digits> powers;
-			SplitMix64 random(a ^ p ^ 0x9e3779b97f4a7c15ULL);
-			U nonresidue = 0;
-			if ((p & 7) == 5) nonresidue = 2;
-			else if (p % 3 == 2) nonresidue = 3;
-			else if (p % 5 == 2 || p % 5 == 3) nonresidue = 5;
-			else if (p % 7 == 3 || p % 7 == 5 || p % 7 == 6) nonresidue = 7;
-			for (;;) {
-				U z = nonresidue ? nonresidue : U(random() % (p - 2) + 2);
-				powers[0] = m.pow(m.in(z), q);
-				for (int i = 1; i < s; ++i) powers[i] = m.mul(powers[i - 1], powers[i - 1]);
-				if (powers[s - 1] == p - m.one) break;
+			static thread_local std::array<U, std::numeric_limits<U>::digits> powers;
+			static thread_local U cached_modulus = 0;
+			if (cached_modulus != p) {
+				SplitMix64 random(a ^ p ^ 0x9e3779b97f4a7c15ULL);
+				U nonresidue = 0;
+				if ((p & 7) == 5) nonresidue = 2;
+				else if (p % 3 == 2) nonresidue = 3;
+				else if (p % 5 == 2 || p % 5 == 3) nonresidue = 5;
+				else if (p % 7 == 3 || p % 7 == 5 || p % 7 == 6) nonresidue = 7;
+				for (;;) {
+					U z = nonresidue ? nonresidue : U(random() % (p - 2) + 2);
+					powers[0] = m.pow(m.in(z), q);
+					for (int i = 1; i < s; ++i) powers[i] = m.mul(powers[i - 1], powers[i - 1]);
+					if (powers[s - 1] == p - m.one) break;
+				}
+				cached_modulus = p;
 			}
 			if (k >= 24) {
 				std::array<U, std::numeric_limits<U>::digits> inverse;

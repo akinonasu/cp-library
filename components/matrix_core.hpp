@@ -194,6 +194,13 @@ class Matrix {
 	std::pair<Matrix, std::vector<int>> rref(long double eps = default_epsilon) const { return echelon(true, eps); }
 
 	std::optional<Matrix> inverse(long double eps = default_epsilon) const {
+		assert(h == w && eps >= 0);
+		if constexpr (requires { Arithmetic::inverse(a, h, false); }) if (auto fast = Arithmetic::inverse(a, h, false)) {
+			if (fast->second.empty()) return std::nullopt;
+			Matrix result(h);
+			result.a = std::move(fast->second);
+			return result;
+		}
 		auto work = augmented_identity();
 		auto pivots = work.reduce(w, true, eps).second;
 		if (int(pivots.size()) < h) return std::nullopt;
@@ -265,28 +272,22 @@ class Matrix {
 		});
 	}
 	Matrix adjugate(long double eps = default_epsilon) const {
-		assert(h == w);
+		assert(h == w && eps >= 0);
+		if constexpr (requires { Arithmetic::inverse(a, h, true); }) if (auto fast = Arithmetic::inverse(a, h, true)) {
+			Matrix result(h);
+			result.a = std::move(fast->second);
+			return result;
+		}
 		auto work = augmented_identity();
 		auto [determinant, pivots] = work.reduce(w, true, eps);
 		if (int(pivots.size()) == h) return work.submatrix(0, h, w, w * 2) * determinant;
 		Matrix result(h);
 		if (int(pivots.size()) + 1 < h) return result;
 		auto right = nullspace(work, pivots, w)[0];
-		int row = 0, col = 0;
-		for (int i = 1; i < h; ++i) if (work(h - 1, w + row) == T(0) || matrix_detail::Field<T>::better(work(h - 1, w + i), work(h - 1, w + row))) row = i;
-		if (work(h - 1, w + row) == T(0)) return result;
-		std::vector<T> left(h);
-		T inverse = T{1} / work(h - 1, w + row);
-		for (int i = 0; i < h; ++i) left[i] = work(h - 1, w + i) * inverse;
+		int col = 0;
 		while (std::find(pivots.begin(), pivots.end(), col) != pivots.end()) ++col;
-		Matrix minor(h - 1);
-		for (int i = 0, x = 0; i < h; ++i) if (i != row) {
-			for (int j = 0, y = 0; j < w; ++j) if (j != col) minor(x, y++) = (*this)(i, j);
-			++x;
-		}
-		T scale = minor.det(eps);
-		if ((row + col) & 1) scale = -scale;
-		for (int i = 0; i < h; ++i) for (int j = 0; j < w; ++j) result(i, j) = scale * right[i] * left[j];
+		if ((h - 1 - col) & 1) determinant = -determinant;
+		for (int i = 0; i < h; ++i) for (int j = 0; j < w; ++j) result(i, j) = determinant * right[i] * work(h - 1, w + j);
 		return result;
 	}
 };

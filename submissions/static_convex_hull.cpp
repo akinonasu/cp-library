@@ -16,13 +16,72 @@
 
 
 
-#include <cmath>
+#line 1 "components/radix_sort.hpp"
+
+
+
+#include <algorithm>
+#include <array>
+#include <cstddef>
 #include <cstdint>
+#include <type_traits>
+#include <utility>
+#include <vector>
+
+template <int Bits, class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key &&key) {
+	static_assert(1 <= Bits && Bits <= 16);
+	constexpr unsigned buckets = 1U << Bits, mask = buckets - 1;
+	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
+	static_assert(std::is_integral_v<K> && std::is_unsigned_v<K> && sizeof(K) <= sizeof(std::uint64_t));
+	if (values.size() < 2) return;
+	if (values.size() < 256) {
+		std::stable_sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
+		return;
+	}
+	std::uint64_t first = key(values.front()), previous = first, varying = 0;
+	bool sorted = true;
+	for (std::size_t i = 1; i < values.size(); ++i) {
+		std::uint64_t current = key(values[i]);
+		varying |= first ^ current;
+		sorted &= previous <= current;
+		previous = current;
+	}
+	if (sorted) return;
+	std::vector<T> scratch(values.size());
+	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
+	Counts count = [] {
+		if constexpr (Bits <= 11) return Counts{};
+		else return Counts(buckets);
+	}();
+	for (int shift = 0; shift < 64; shift += Bits) {
+		if (!((varying >> shift) & mask)) continue;
+		std::fill(count.begin(), count.end(), 0);
+		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask];
+		std::size_t sum = 0;
+		for (auto &x : count) {
+			auto n = x;
+			x = sum, sum += n;
+		}
+		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask]++] = std::move(value);
+		values.swap(scratch);
+	}
+}
+
+template <class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key key) {
+	stable_radix_sort<8>(values, std::move(key));
+}
+
+
+#line 5 "geometry/point.hpp"
+#include <cmath>
+#line 7 "geometry/point.hpp"
 #include <istream>
 #include <numbers>
 #include <optional>
 #include <ostream>
-#include <type_traits>
+#line 12 "geometry/point.hpp"
 
 namespace geometry {
 using Real = long double;
@@ -145,13 +204,44 @@ struct PolarLess {
 		}
 	}
 };
+
+template<class T>
+void polar_sort(std::vector<Point<T>> &points) {
+	if constexpr (integer<T> && sizeof(T) <= 4) {
+		if (points.size() >= 256) {
+			struct Entry { std::uint64_t key; Point<T> point; };
+			std::vector<Entry> order;
+			order.reserve(points.size());
+			constexpr std::uint64_t scale = (std::uint64_t(1) << 61) - 1;
+			for (auto p : points) {
+				std::int64_t x = p.x, y = p.y;
+				std::uint64_t a = x < 0 ? -x : x, b = y < 0 ? -y : y;
+				unsigned quadrant = y < 0 ? (x < 0 ? 2 : 3) : (x < 0 ? 1 : 0);
+				unsigned octant = quadrant * 2 + ((a < b) ^ (quadrant & 1));
+				std::uint64_t ratio = a || b ? std::min(scale, std::uint64_t(double(std::min(a, b)) / double(std::max(a, b)) * double(scale))) : 0;
+				if (octant & 1) ratio = scale - ratio;
+				order.push_back({(std::uint64_t(octant) << 61) | ratio, p});
+			}
+			stable_radix_sort<11>(order, [](const Entry &entry) { return entry.key; });
+			for (std::size_t first = 0; first < order.size();) {
+				std::size_t last = first + 1;
+				while (last < order.size() && order[last].key == order[first].key) ++last;
+				auto less = [](const Entry &a, const Entry &b) { return PolarLess<T>{}(a.point, b.point); };
+				if (last - first <= 8 || !std::is_sorted(order.begin() + first, order.begin() + last, less))
+					std::sort(order.begin() + first, order.begin() + last, less);
+				first = last;
+			}
+			for (std::size_t i = 0; i < points.size(); ++i) points[i] = order[i].point;
+			return;
+		}
+	}
+	std::sort(points.begin(), points.end(), PolarLess<T>{});
+}
+
 }
 
 
-#line 5 "geometry/linear.hpp"
-#include <algorithm>
-#include <array>
-#include <vector>
+#line 8 "geometry/linear.hpp"
 
 namespace geometry {
 template<class T> struct Line { Point<T> a, b; };
@@ -413,8 +503,6 @@ class SplitMix64 {
 
 #line 7 "components/closest_pair.hpp"
 #include <bit>
-#line 12 "components/closest_pair.hpp"
-#include <utility>
 #line 14 "components/closest_pair.hpp"
 
 namespace closest_pair_detail {
@@ -502,61 +590,7 @@ inline std::optional<std::pair<std::uint64_t, std::uint64_t>> packed(std::vector
 
 
 
-#line 1 "components/radix_sort.hpp"
-
-
-
-#line 6 "components/radix_sort.hpp"
-#include <cstddef>
-#line 11 "components/radix_sort.hpp"
-
-template <int Bits, class T, class Key>
-void stable_radix_sort(std::vector<T> &values, Key &&key) {
-	static_assert(1 <= Bits && Bits <= 16);
-	constexpr unsigned buckets = 1U << Bits, mask = buckets - 1;
-	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
-	static_assert(std::is_integral_v<K> && std::is_unsigned_v<K> && sizeof(K) <= sizeof(std::uint64_t));
-	if (values.size() < 2) return;
-	if (values.size() < 256) {
-		std::stable_sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
-		return;
-	}
-	std::uint64_t first = key(values.front()), previous = first, varying = 0;
-	bool sorted = true;
-	for (std::size_t i = 1; i < values.size(); ++i) {
-		std::uint64_t current = key(values[i]);
-		varying |= first ^ current;
-		sorted &= previous <= current;
-		previous = current;
-	}
-	if (sorted) return;
-	std::vector<T> scratch(values.size());
-	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
-	Counts count = [] {
-		if constexpr (Bits <= 11) return Counts{};
-		else return Counts(buckets);
-	}();
-	for (int shift = 0; shift < 64; shift += Bits) {
-		if (!((varying >> shift) & mask)) continue;
-		std::fill(count.begin(), count.end(), 0);
-		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask];
-		std::size_t sum = 0;
-		for (auto &x : count) {
-			auto n = x;
-			x = sum, sum += n;
-		}
-		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask]++] = std::move(value);
-		values.swap(scratch);
-	}
-}
-
-template <class T, class Key>
-void stable_radix_sort(std::vector<T> &values, Key key) {
-	stable_radix_sort<8>(values, std::move(key));
-}
-
-
-#line 8 "components/packed_convex_hull.hpp"
+#line 9 "components/packed_convex_hull.hpp"
 
 namespace packed_convex_hull_detail {
 struct Entry {
@@ -572,7 +606,8 @@ inline std::uint64_t key(std::uint64_t value) { return value; }
 inline std::uint64_t key(Entry value) { return value.key; }
 template <class Value>
 std::vector<Value> build(std::vector<Value> order, bool keep_collinear) {
-	stable_radix_sort<11>(order, [](const Value &value) { return key(value); });
+	if (order.size() < 256) std::sort(order.begin(), order.end(), [](const Value &a, const Value &b) { return key(a) < key(b); });
+	else stable_radix_sort<11>(order, [](const Value &value) { return key(value); });
 	order.erase(std::unique(order.begin(), order.end(), [](const Value &a, const Value &b) { return key(a) == key(b); }), order.end());
 	if (order.size() <= 2 || (keep_collinear && std::all_of(order.begin() + 2, order.end(), [&](const Value &value) {
 		return !cross(key(order[0]), key(order[1]), key(value));
@@ -595,6 +630,29 @@ std::vector<Value> build(std::vector<Value> order, bool keep_collinear) {
 	hull.pop_back();
 	return hull;
 }
+inline std::pair<std::uint64_t, std::uint64_t> diameter(const std::vector<std::uint64_t> &hull) {
+	std::size_t n = hull.size();
+	std::uint64_t a = hull[0], b = a, best = 0;
+	auto distance = [](std::uint64_t p, std::uint64_t q) {
+		std::int64_t x = std::int64_t(p >> 32) - std::int64_t(q >> 32);
+		std::int64_t y = std::int64_t(std::uint32_t(p)) - std::uint32_t(q);
+		return std::uint64_t(x * x + y * y);
+	};
+	for (std::size_t i = 0, j = n > 1; i < n; ++i) {
+		std::size_t next = i + 1 == n ? 0 : i + 1;
+		while (true) {
+			std::size_t after = j + 1 == n ? 0 : j + 1;
+			if (cross(hull[i], hull[next], hull[after]) <= cross(hull[i], hull[next], hull[j])) break;
+			j = after;
+		}
+		for (auto p : {hull[i], hull[next]}) {
+			auto d = distance(p, hull[j]);
+			if (d > best) a = p, b = hull[j], best = d;
+		}
+	}
+	return {a, b};
+}
+
 }
 
 
@@ -614,7 +672,7 @@ template <class T>
 std::vector<int> convex_hull_indices(const std::vector<Point<T>> &points, bool keep_collinear = false, Real eps = epsilon) {
 	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 	if constexpr (integer<T> && sizeof(T) <= 8) {
-		if (points.size() >= 64) {
+		if (points.size() >= 4) {
 			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
 			for (auto p : points) {
 				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
@@ -661,7 +719,7 @@ template <class T>
 std::vector<Point<T>> convex_hull(std::vector<Point<T>> &&points, bool keep_collinear = false, Real eps = epsilon) {
 	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 	if constexpr (integer<T> && sizeof(T) <= 8) {
-		if (points.size() >= 64) {
+		if (points.size() >= 4) {
 			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
 			for (auto p : points) {
 				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
@@ -752,7 +810,34 @@ wide_t<T> diameter_squared(const std::vector<Point<T>> &polygon, Real eps = epsi
 
 template <class T>
 std::optional<PointPair<T>> furthest_pair(const std::vector<Point<T>> &points, Real eps = epsilon) {
+	assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 	if (points.size() < 2) return std::nullopt;
+	if constexpr (integer<T> && sizeof(T) <= 8) {
+		if (points.size() >= 64) {
+			T min_x = points[0].x, max_x = min_x, min_y = points[0].y, max_y = min_y;
+			for (auto p : points) {
+				min_x = std::min(min_x, p.x), max_x = std::max(max_x, p.x);
+				min_y = std::min(min_y, p.y), max_y = std::max(max_y, p.y);
+			}
+			if (wide_t<T>(max_x) - min_x <= INT32_MAX && wide_t<T>(max_y) - min_y <= INT32_MAX) {
+				auto pack = [&](Point<T> p) {
+					return (std::uint64_t(wide_t<T>(p.x) - min_x) << 32) | std::uint32_t(wide_t<T>(p.y) - min_y);
+				};
+				std::vector<std::uint64_t> order(points.size());
+				for (std::size_t i = 0; i < points.size(); ++i) order[i] = pack(points[i]);
+				auto hull = packed_convex_hull_detail::build(std::move(order), false);
+				if (hull.size() == 1) return PointPair<T>{0, 1, 0};
+				auto [a, b] = packed_convex_hull_detail::diameter(hull);
+				int first = -1, second = -1;
+				for (int i = 0; i < int(points.size()) && (first < 0 || second < 0); ++i) {
+					auto value = pack(points[i]);
+					if (value == a) first = i;
+					if (value == b) second = i;
+				}
+				return PointPair<T>{first, second, distance_squared(points[first], points[second])};
+			}
+		}
+	}
 	auto polygon = convex_hull(points, false, eps);
 	if (polygon.size() == 1) return PointPair<T>{0, 1, 0};
 	auto result = *convex_diameter(polygon, eps);

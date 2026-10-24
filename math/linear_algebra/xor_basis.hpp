@@ -86,6 +86,8 @@ class XorBasis {
 		if (empty()) return std::nullopt;
 		return *std::min_element(core.row.begin(), core.row.begin() + rank());
 	}
+	std::span<const UInt> vectors_view() const & { return {core.row.data(), std::size_t(rank())}; }
+	std::span<const UInt> vectors_view() const && = delete;
 	std::vector<UInt> vectors() const {
 		return {core.row.begin(), core.row.begin() + rank()};
 	}

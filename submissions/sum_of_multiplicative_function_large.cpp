@@ -257,9 +257,17 @@ template<class T> class Backend {
 			if constexpr (SquareFree) {
 				for (U j = 1; j <= split; ++j) out[big(j)] += first[i] * out[big(j * p)];
 				for (U j = split + 1; j <= large; ++j) out[big(j)] += first[i] * out[small(limit / j)];
-				for (U j = root; j >= p; --j) out[small(j)] += first[i] * out[small(j / p)];
+				U j = root;
+				for (U q = root / p; q; --q) {
+					const T delta = first[i] * out[small(q)];
+					for (const U stop = q * p; j >= stop; --j) out[small(j)] += delta;
+				}
 			} else {
-				for (U j = p; j <= root; ++j) out[small(j)] += first[i] * out[small(j / p)];
+				U j = p;
+				for (U q = 1; j <= root; ++q) {
+					const T delta = first[i] * out[small(q)];
+					for (const U stop = std::min(root + 1, (q + 1) * p); j < stop; ++j) out[small(j)] += delta;
+				}
 				for (U j = large; j > split; --j) out[big(j)] += first[i] * out[small(limit / j)];
 				for (U j = split; j; --j) out[big(j)] += first[i] * out[big(j * p)];
 			}
@@ -328,11 +336,11 @@ template<class T> class Backend {
 #include <cstring>
 #line 12 "math/number_theory/prime_sieve.hpp"
 
-inline std::vector<std::size_t> prime_sieve(std::size_t n) {
-	std::vector<std::size_t> result;
-	if (n <= 2) return result;
-	if (n >= 1024) result.reserve(std::size_t(double(n) / (std::log(double(n)) - 1.1)));
-	result.push_back(2);
+inline std::vector<std::size_t> prime_sieve(std::size_t n);
+
+template<class F> void for_each_prime(std::size_t n, F emit) {
+	if (n <= 2) return;
+	emit(std::size_t(2));
 	if (n <= 65537) {
 		const std::size_t size = n / 2;
 		std::vector<std::uint8_t> prime(size, 1);
@@ -347,15 +355,15 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 			std::uint64_t word;
 			std::memcpy(&word, prime.data() + i, sizeof(word));
 			while (word) {
-				result.push_back(2 * (i + (std::countr_zero(word) >> 3)) + 1);
+				emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
 				word &= word - 1;
 			}
 		}
 #endif
-		for (; i < size; ++i) if (prime[i]) result.push_back(2 * i + 1);
-		return result;
+		for (; i < size; ++i) if (prime[i]) emit(2 * i + 1);
+		return;
 	}
-	result.push_back(3), result.push_back(5);
+	emit(3), emit(5);
 	constexpr std::array<unsigned, 8> residues{1, 7, 11, 13, 17, 19, 23, 29};
 	constexpr auto index = [&] {
 		std::array<unsigned, 30> index{};
@@ -440,12 +448,18 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 			}
 			while (word) {
 				const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
-				result.push_back(x);
+				emit(x);
 				word &= word - 1;
 			}
 		}
 		base += length;
 	}
+}
+
+inline std::vector<std::size_t> prime_sieve(std::size_t n) {
+	std::vector<std::size_t> result;
+	if (n >= 1024) result.reserve(std::size_t(double(n) / (std::log(double(n)) - 1.1)));
+	for_each_prime(n, [&](std::size_t p) { result.push_back(p); });
 	return result;
 }
 

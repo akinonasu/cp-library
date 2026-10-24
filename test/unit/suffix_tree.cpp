@@ -116,6 +116,18 @@ void suffix_arrays() {
 	text.symbols[seeds.back() + 3] = 3;
 	assert(!suffix_array_detail::prefix_order(text, 1 << 28, 257, seeds, ordered));
 	std::mt19937 rng(20261023);
+	for (int n = 16; n <= 256; ++n) for (int trial = 0; trial < 8; ++trial) {
+		std::vector<unsigned char> symbols(n + 1);
+		int alphabet = trial % 3 == 0 ? 2 : trial % 3 == 1 ? 26 : 255;
+		for (int i = 0; i < n; ++i) symbols[i] = 1 + rng() % alphabet;
+		if (trial < 3) for (int i = 1; i < n; ++i) if (i % 31) symbols[i] = symbols[i - 1];
+		std::vector<int> expected(n + 1);
+		std::iota(expected.begin(), expected.end(), 0);
+		std::sort(expected.begin(), expected.end(), [&](int p, int q) {
+			return std::lexicographical_compare(symbols.begin() + p, symbols.end(), symbols.begin() + q, symbols.end());
+		});
+		assert(suffix_array_detail::encoded_sort(symbols, n, alphabet + 1) == expected);
+	}
 	for (int n : {16, 17, 127, 128, 129, 511, 512, 1024, 4096}) {
 		for (int alphabet : {1, 2, 26, 255, 256, 1024}) {
 			std::vector<std::int64_t> symbols(n);

@@ -429,10 +429,7 @@ inline void native_power(const mint *in, size_t input, std::vector<mint> &out, s
 	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(power_scratch(n)));
 	const Transform t(arena, lg);
 	auto g = arena.take(n), scratch = arena.take(power_scratch(n));
-	for (size_t i = 0; i < size; ++i) {
-		const auto x = in[i].v;
-		g[i] = std::min(x, x - mint::mod());
-	}
+	copy_coefficients(in, g.first(size));
 	power(t, g.first(size), e, std::min(c.v, c.v - mint::mod()), g, scratch);
 	append_fps_words<true>(out, g.data(), n);
 }

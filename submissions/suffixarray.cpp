@@ -17,6 +17,10 @@
 #include <numeric>
 #include <string_view>
 #include <vector>
+#include <type_traits>
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+#include <immintrin.h>
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC push_options
@@ -24,6 +28,41 @@
 #endif
 
 namespace suffix_array_detail {
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+__attribute__((target("avx2"))) inline void byte_seeds(const unsigned char *s, int n, std::vector<int> &seeds, std::vector<unsigned char> &marked) {
+	seeds.push_back(n), marked[n] = 1;
+	bool right = true;
+	int end = n;
+	const auto sign = _mm256_set1_epi8(static_cast<char>(0x80));
+	while (end >= 33) {
+		int begin = end - 32;
+		auto a = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(s + begin));
+		auto next = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(s + begin + 1));
+		auto previous = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(s + begin - 1));
+		auto biased = _mm256_xor_si256(a, sign);
+		std::uint32_t equal = _mm256_movemask_epi8(_mm256_cmpeq_epi8(a, next));
+		std::uint32_t small = _mm256_movemask_epi8(_mm256_cmpgt_epi8(_mm256_xor_si256(next, sign), biased));
+		if (right) small |= equal & 0x80000000U;
+		for (int shift : {1, 2, 4, 8, 16}) {
+			small |= equal & (small >> shift);
+			equal &= equal >> shift;
+		}
+		std::uint32_t selected = small & std::uint32_t(_mm256_movemask_epi8(_mm256_cmpgt_epi8(_mm256_xor_si256(previous, sign), biased)));
+		while (selected) {
+			int bit = 31 - std::countl_zero(selected), p = begin + bit;
+			seeds.push_back(p), marked[p] = 1;
+			selected ^= std::uint32_t(1) << bit;
+		}
+		right = small & 1;
+		end = begin;
+	}
+	for (int i = end - 1; i > 0; --i) {
+		bool current = s[i] < s[i + 1] || (s[i] == s[i + 1] && right);
+		if (current && s[i - 1] > s[i]) seeds.push_back(i), marked[i] = 1;
+		right = current;
+	}
+}
+#endif
 template<class Sequence>
 bool prefix_order(const Sequence &s, int n, int alphabet, const std::vector<int> &seeds, std::vector<int> &ordered) {
 	if (seeds.size() <= 64 || alphabet > 257) return false;
@@ -77,11 +116,23 @@ std::vector<int> encoded_sort(const Sequence &s, int n, int alphabet) {
 	}
 	std::vector<unsigned char> is_seed(std::size_t(n) + 1);
 	std::vector<int> seeds;
-	bool next = true;
-	for (int i = n - 1; i >= 0; --i) {
-		bool current = s[i] == s[i + 1] ? next : s[i] < s[i + 1];
-		if (!current && next) seeds.push_back(i + 1), is_seed[i + 1] = 1;
-		next = current;
+	seeds.reserve(n / 2 + 1);
+	bool gathered = false;
+#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+	if constexpr (std::is_same_v<Sequence, std::vector<unsigned char>>) {
+		if (n >= 64 && __builtin_cpu_supports("avx2")) {
+			byte_seeds(s.data(), n, seeds, is_seed);
+			gathered = true;
+		}
+	}
+#endif
+	if (!gathered) {
+		bool next = true;
+		for (int i = n - 1; i >= 0; --i) {
+			bool current = s[i] == s[i + 1] ? next : s[i] < s[i + 1];
+			if (!current && next) seeds.push_back(i + 1), is_seed[i + 1] = 1;
+			next = current;
+		}
 	}
 	std::reverse(seeds.begin(), seeds.end());
 	std::vector<std::size_t> ends(alphabet), work(alphabet);
@@ -204,7 +255,7 @@ inline std::vector<int> bytes(std::string_view s) {
 #include <cstddef>
 #line 7 "components/sequence_compare.hpp"
 #include <cstring>
-#include <type_traits>
+#line 9 "components/sequence_compare.hpp"
 #if defined(__x86_64__)
 #include <immintrin.h>
 #endif

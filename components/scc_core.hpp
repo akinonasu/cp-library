@@ -10,8 +10,9 @@
 #include <vector>
 
 namespace scc_detail {
+template<bool RejectPairs = false>
 inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int, int>> edges) {
-	assert(n >= 0 && edges.size() <= std::size_t(std::numeric_limits<int>::max()));
+	assert((!RejectPairs || n % 2 == 0) && n >= 0 && edges.size() <= std::size_t(std::numeric_limits<int>::max()));
 	std::vector<int> answer(n, -1);
 	unsigned monotone = 3;
 	for (auto [from, to] : edges) {
@@ -52,6 +53,7 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 			int u = v;
 			do {
 				answer[u] = count;
+				if constexpr (RejectPairs) if (answer[u ^ 1] == count) return {-1, {}};
 				degree[u] = 0;
 				u = adjacency[offset[u]];
 			} while (u != v);
@@ -95,6 +97,7 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 						work.pop_back();
 						degree[u] = n;
 						answer[u] = count;
+						if constexpr (RejectPairs) if (answer[u ^ 1] == count) return {-1, {}};
 					} while (u != v);
 					++count;
 				}

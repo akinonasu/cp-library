@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_frequency"
 #include "../data_structure/range_query/offline_range_frequency.hpp"
-#include "../components/fast_io.hpp"
+#include "../components/fast_io_bulk.hpp"
 #include <cstdint>
 #include <vector>
 
@@ -12,13 +12,9 @@ int main() {
 	uint32_t n = 0, q = 0;
 	input.read(n); input.read(q);
 	vector<uint32_t> a(n);
-	for (auto &value : a) input.read(value);
+	read_unsigned(input, a);
 	OfflineRangeFrequency queries(a);
 	queries.reserve(q);
-	for (uint32_t i = 0; i < q; ++i) {
-		uint32_t l = 0, r = 0, x = 0;
-		input.read(l); input.read(r); input.read(x);
-		queries.add_query(l, r, x);
-	}
+	read_unsigned_records<3>(input, q, [&](std::uint32_t l, std::uint32_t r, std::uint32_t x) { queries.add_query(l, r, x); });
 	for (int answer : queries.solve()) output.println(answer);
 }

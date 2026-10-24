@@ -5,7 +5,7 @@
 #include <cstddef>
 #include <vector>
 
-#include "convolution.hpp"
+#include "../components/convolution_dispatch.hpp"
 
 template <bool negative = false, class T>
 std::vector<T> cyclic_convolution(const std::vector<T> &a, const std::vector<T> &b, std::size_t n) {
