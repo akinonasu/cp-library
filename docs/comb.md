@@ -30,6 +30,8 @@ include すると起動時に上限まで自動で前計算します。`fact[n]`
 
 既定の `mint` では、256 要素以上の AVX2 対応 x86 で SIMD を使います。
 
+法を一度指定して `comb(n,k)`・`fact[i]`・`finv[i]` の書き方を使いたい場合は、[法を指定する二項係数](comb_mod.md) を使ってください。
+
 他の modint は型を指定します。`atcoder::modint1000000007`・`atcoder::modint998244353`・`atcoder::dynamic_modint` などを使えます。ACL はこのヘッダー自体の依存には含まれません。
 
 ```cpp

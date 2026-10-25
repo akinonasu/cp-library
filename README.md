@@ -354,6 +354,7 @@
 | `math/combinatorics/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数 prefix sum 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/combinatorics/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
 | `math/combinatorics/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
+| `math/combinatorics/comb_mod.hpp` | 法を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb_mod.md) |
 | `math/combinatorics/comb_light.hpp` | 軽量版の二項係数・階乗表 | [使い方](docs/comb_light.md) |
 
 ### Floor Sum
