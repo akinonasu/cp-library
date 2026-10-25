@@ -46,6 +46,6 @@ assert(symmetric_group_convolution(fft, unit, a) == a);
 
 Maslen の対称群 Fourier 変換を使います。部分群への分割を Horner 型にまとめ、Young 図形の経路で中間計算を共有します。有限体上では平方根を必要としない有理的な Young の半正規表現を使います。Fourier 変換した各行列を順に掛け、転置アルゴリズムによる逆変換で係数に戻します。変換自体の API は [対称群 Fourier 変換](symmetric_group_fft.md) を参照してください。
 
-参考: [Library Checker issue #1432](https://github.com/yosupo06/library-checker-problems/issues/1432)、David K. Maslen, [The efficient computation of Fourier transforms on the symmetric group](https://www.ams.org/journals/mcom/1998-67-223/S0025-5718-98-00964-8/)、同手法の [FPSAC 1997 発表版](https://fpsac-archive.github.io/FPSAC97/articles.html)。issue は問題案のため、公式ジャッジ用テストは追加していません。
+参考: [Library Checker issue #1432](https://github.com/yosupo06/library-checker-problems/issues/1432)、David K. Maslen, [The efficient computation of Fourier transforms on the symmetric group](https://www.ams.org/journals/mcom/1998-67-223/S0025-5718-98-00964-8/)、同手法の [FPSAC 1997 発表版](https://fpsac-archive.github.io/FPSAC97/articles.html)。
 
 $$n$$ の分割 $$\lambda$$ に対応する表現の次元を $$d_\lambda$$ とすると、$$\displaystyle\sum_\lambda d_\lambda^2=n!$$ です。畳み込みは前計算後 $$O\left(n^2n!+\displaystyle\sum_\lambda d_\lambda^3\right)$$ 時間です。前計算・保持空間は [Fourier 変換](symmetric_group_fft.md) と共通で、計算時の追加作業空間は $$O(n!)$$ です。体の演算を $$O(1)$$ とします。

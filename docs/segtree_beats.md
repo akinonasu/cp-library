@@ -13,40 +13,57 @@ library_category: data_structure/segment_tree
 
 集約値と更新を定義して使う汎用の Segtree Beats です。区間除算、bitwise AND/OR など、通常の遅延セグメント木では一度に処理できない更新を扱います。[chmin・chmax・加算・代入の専用版](https://qandori.github.io/cp-library/data_structure/range_chmin_chmax_add_sum.hpp.html) もそのまま使えます。
 
+以下は区間 chmin と区間和を定義する例です。
+
 ```cpp
 #include "lib/data_structure/segtree_beats.hpp"
+#include <algorithm>
+#include <cassert>
+#include <limits>
+#include <optional>
+#include <vector>
 
-struct S { long long sum; int lo, hi, len; };
-struct F { int value, divisor; };
-S e() { return {0, 0, 0, 0}; }
+struct S {
+	long long sum, hi;
+	std::optional<long long> second;
+	int count;
+};
+using F = long long;
+S e() { return {0, 0, std::nullopt, 0}; }
 S op(S a, S b) {
-	if (!a.len) return b;
-	if (!b.len) return a;
-	return {a.sum + b.sum, std::min(a.lo, b.lo), std::max(a.hi, b.hi), a.len + b.len};
+	if (!a.count) return b;
+	if (!b.count) return a;
+	if (a.hi < b.hi) std::swap(a, b);
+	a.sum += b.sum;
+	if (a.hi == b.hi) {
+		a.count += b.count;
+		if (b.second && (!a.second || *a.second < *b.second)) a.second = b.second;
+	} else if (!a.second || *a.second < b.hi) {
+		a.second = b.hi;
+	}
+	return a;
 }
-F id() { return {-1, 1}; }
-F composition(F f, F g) {
-	if (f.value >= 0) return f;
-	if (g.value >= 0) return {g.value / f.divisor, 1};
-	return {-1, int(std::min(100001LL, 1LL * f.divisor * g.divisor))};
-}
+F id() { return std::numeric_limits<F>::max(); }
+F composition(F f, F g) { return std::min(f, g); }
 bool mapping(F f, S &a) {
-	if (!a.len || (f.value < 0 && f.divisor == 1)) return true;
-	int lo = f.value < 0 ? a.lo / f.divisor : f.value;
-	int hi = f.value < 0 ? a.hi / f.divisor : f.value;
-	if (lo != hi) return false;
-	a = {1LL * lo * a.len, lo, hi, a.len};
+	if (!a.count || a.hi <= f) return true;
+	if (a.second && f <= *a.second) return false;
+	a.sum -= (a.hi - f) * a.count;
+	a.hi = f;
 	return true;
 }
 using Tree = SegtreeBeats<S, op, e, F, mapping, composition, id>;
 
-Tree seg(std::vector<S>{S{2, 2, 2, 1}, S{5, 5, 5, 1}, S{6, 6, 6, 1}});
-seg.apply(1, 3, F{-1, 2});
-seg.apply(0, 2, F{3, 1});
-long long sum = seg.prod(0, 3).sum;
+int main() {
+	Tree seg(std::vector<S>{ {2, 2, std::nullopt, 1}, {5, 5, std::nullopt, 1}, {6, 6, std::nullopt, 1} });
+	seg.apply(0, 3, 4);
+	assert(seg.prod(0, 3).sum == 10);
+	seg.apply(1, 3, 1);
+	assert(seg.all_prod().sum == 4);
+}
 ```
 
-この例は [ABC256 Ex](https://atcoder.jp/contests/abc256/tasks/abc256_h) の非負整数の除算・代入・区間和です。値は $$0$$ 以上 $$10^5$$ 以下とし、除数の合成を $$100001$$ で打ち切ります。それ以上の除数では必ず $$0$$ になるためです。汎用版自体には、この値域や操作の制限はありません。
+`second` は最大値より小さい値のうち最大のものを持ち、そのような値がなければ `nullopt` です。`count` は最大値の個数です。和とその更新の中間演算は `long long` に収まる範囲で使います。
 
 | テンプレート引数・関数 | 定義 |
 | --- | --- |
@@ -76,7 +93,7 @@ long long sum = seg.prod(0, 3).sum;
 | `values()` | 遅延を伝播し、全葉の値を `vector<S>` で返す | $$O(n+E_i)$$ |
 | `size()` / `empty()` | 要素数／空か | $$O(1)$$ |
 
-`S`・`F` はコピーと代入ができる型にします。デフォルト構築や `F` 同士の等値比較は不要です。`n` での構築は各葉に `e()` を置くので、例のように区間長を持つ場合は長さ 1 の初期値を明示してください。
+`S`・`F` はコピーと代入ができる型にします。デフォルト構築や `F` 同士の等値比較は不要です。`n` での構築は各葉に `e()` を置きます。上の例では、各葉の値と最大値の個数 `count = 1` を初期値として指定してください。
 
 `mapping` が成功した場合、実際に全要素を更新した集約値と一致させます。単位更新は値を変えず、空区間と 1 要素の区間では必ず成功させてください。失敗時は `s` を変更しても構いません。合成した更新を子へ伝え、子の値から集約し直します。遅延伝播中に子で失敗した場合も、さらに降りて処理します。
 

@@ -66,43 +66,4 @@ trie.erase("apple");                 // 1 個削除
 
 `Data` は初期化可能で、`vector` に格納できる型とします。各頂点の初期値は `Data{}` です。登録・削除で個数は自動更新しますが、追加データの計算は利用者が行います。コールバック内では `data(v)` を変更できます。走査中の文字列の追加・削除・`clear()` は行わないでください。`data`・`children` の参照は、頂点追加や `reserve` による再確保・`clear()`・代入・破棄で無効になります。
 
-ARC201 C のような、追加に伴う木 DP の更新にも使えます。
-
-```cpp
-#include "lib/string/trie.hpp"
-#include <atcoder/modint>
-#include <iostream>
-
-int main() {
-	std::cin.tie(nullptr);
-	std::ios::sync_with_stdio(false);
-	int n;
-	std::cin >> n;
-	std::vector<std::string> strings(n);
-	int total_length = 0;
-	for (auto &s : strings) {
-		std::cin >> s;
-		total_length += int(s.size());
-	}
-	using Mint = atcoder::modint998244353;
-	Trie<2, 'A', Mint> trie;
-	trie.reserve(total_length);
-	std::vector<Mint> pow2(n + 1, 1);
-	for (int i = 1; i <= n; ++i) pow2[i] = pow2[i - 1] * 2;
-	for (const auto &s : strings) {
-		int terminal = trie.insert(s);
-		trie.for_each_ancestor(terminal, [&](int v) {
-			int a = trie.child(v, 'A'), b = trie.child(v, 'B');
-			Mint ways = 0;
-			if (a != -1 && b != -1) ways = trie.data(a) * trie.data(b);
-			if (trie.terminal_count(v)) ways += pow2[trie.prefix_count(v) - 1];
-			trie.data(v) = ways;
-		});
-		std::cout << trie.data(trie.root).val() << '\n';
-	}
-}
-```
-
-この例では頂点のデータに DP 値を入れ、追加した文字列の経路だけを更新します。入力が相異なるという条件を使っています。全入力の文字数を $$M$$ とすると、全体で $$O(M)$$ 時間・空間です。[問題文](https://atcoder.jp/contests/arc201/tasks/arc201_c)・[公式解説](https://atcoder.jp/contests/arc201/editorial/13374)も参照してください。
-
 表の $$L$$ は引数の文字列長、$$H$$ は選ばれた文字列長、$$d$$ は対象頂点の深さ、$$K$$ は新しく作る頂点数、$$V$$ は根を含む頂点数、$$\sigma$$ は `Alphabet` です。`Data` の初期化・移動・破棄を定数時間としています。頂点数は `INT_MAX` 以下、保持する領域は $$O(V\sigma)$$ です。再帰は使いません。

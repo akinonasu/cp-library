@@ -44,7 +44,6 @@ if (bound) {
 `Location::outside = -1`、`boundary = 0`、`inside = 1` です。
 `contains` は円板に対する判定ですが、`intersection` が求めるのは円周との交点です。
 点を返す関数は座標の辞書順で返し、接する場合は同じ点を重複させません。
-AOJ などで接する場合も2点を出力する問題では、返された1点を2回出力します。
 
 | `CircleRelation` | 状態 |
 | --- | --- |

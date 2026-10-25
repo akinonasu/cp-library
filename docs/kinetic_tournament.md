@@ -8,7 +8,7 @@ redirect_from:
 library_category: data_structure/advanced
 ---
 
-固定した昇順の係数列 $$V$$ と値の列 $$W$$ を管理します。区間内で $$W_i\gets W_i+aV_i+b$$ とする更新と、区間の最大値・その添字を求めます。$$a\geq0$$ が必要です。$$b$$ は負でも構いません。[JSC2024 決勝 D の公式解説](https://atcoder.jp/contests/jsc2024-final/editorial/10766)で使われる、区間加算を扱う Segtree Beats です。
+固定した昇順の係数列 $$V$$ と値の列 $$W$$ を管理します。区間内で $$W_i\gets W_i+aV_i+b$$ とする更新と、区間の最大値・その添字を求めます。$$a\geq0$$ が必要です。$$b$$ は負でも構いません。
 
 ```cpp
 #include "lib/data_structure/kinetic_tournament.hpp"
@@ -66,6 +66,8 @@ int main() {
 | `clear()` | 係数列と長さを保って全位置を無効にする | $$O(n)$$ |
 | `swap(other)` | 内容を交換 | $$O(1)$$ |
 | コピー / ムーブ | 独立した複製 / 内容を移動。移動元は長さ 0 | コピー $$O(n)$$、ムーブ構築 $$O(1)$$ |
+
+参考：[JSC2024 決勝 D の公式解説](https://atcoder.jp/contests/jsc2024-final/editorial/10766)
 
 $$n$$ は添字数です。空間・構築は $$O(n)$$。初期構築後の $$q$$ 操作の合計は $$O(n\log n+q\log^2 n)$$ です。初期状態からの交差も数えるため、少数の更新だけで各更新が最悪 $$O(\log^2 n)$$ になるという保証ではありません。係数順が固定され、重み付き加算の係数が非負であることを使った計算量です。
 
