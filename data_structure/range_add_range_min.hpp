@@ -52,8 +52,8 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 			propagate<Narrow>(1, a, change, negative);
 			return;
 		}
-		U left = Node::template normalize<Narrow>(data_.data() + a * branch, branch, negative, first, branch, delta);
-		U right = Node::template normalize<Narrow>(data_.data() + b * branch, block_count(0, b), negative, 0, last + 1, delta);
+		auto ends = Node::template normalize_boundaries<Narrow>(data_.data() + a * branch, data_.data() + b * branch, block_count(0, b), negative, first, last, delta, delta, delta);
+		U left = ends.first, right = ends.second;
 		for (unsigned level = 1;; ++level) {
 			l >>= bits;
 			r >>= bits;
@@ -71,10 +71,15 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 				propagate<Narrow>(level + 1, a, change, negative);
 				return;
 			}
-			left = first + 1 == branch ? Node::template change_one<Narrow>(values + a * branch, branch, first, left, negative)
-				: Node::template normalize<Narrow>(values + a * branch, branch, negative, first + 1, branch, delta, first, left);
-			right = !last ? Node::template change_one<Narrow>(values + b * branch, block_count(level, b), 0, right, negative)
-				: Node::template normalize<Narrow>(values + b * branch, block_count(level, b), negative, 0, last, delta, last, right);
+			if (first + 1 < branch && last) {
+				auto ends = Node::template normalize_boundaries<Narrow>(values + a * branch, values + b * branch, block_count(level, b), negative, first, last, delta, left, right);
+				left = ends.first, right = ends.second;
+			} else {
+				left = first + 1 == branch ? Node::template change_one<Narrow>(values + a * branch, branch, first, left, negative)
+					: Node::template normalize<Narrow>(values + a * branch, branch, negative, first + 1, branch, delta, first, left);
+				right = !last ? Node::template change_one<Narrow>(values + b * branch, block_count(level, b), 0, right, negative)
+					: Node::template normalize<Narrow>(values + b * branch, block_count(level, b), negative, 0, last, delta, last, right);
+			}
 		}
 	}
 	U restore(unsigned level, std::size_t index, U result) const {
@@ -106,6 +111,40 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 			if (last) right = std::min(right, Node::template minimum<Narrow>(values + b * branch, 0, last));
 		}
 	}
+#if defined(__AVX2__) && !defined(__AVX512F__) && defined(__x86_64__)
+	static __m256i query_block(const U* values, unsigned first, unsigned last) {
+		return Node::template minimum_vector<true>(values, first, last, 2 * limit_);
+	}
+	U query_vector(std::size_t l, std::size_t r) const {
+		--r;
+		std::size_t a = l >> bits, b = r >> bits;
+		if (a == b) {
+			auto value = query_block(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1);
+			U carry = restore(1, a, 0);
+			return Node::reduce_min(value) + carry;
+		}
+		auto left = query_block(data_.data() + a * branch, l & (branch - 1), branch);
+		auto right = query_block(data_.data() + b * branch, 0, (r & (branch - 1)) + 1);
+		for (unsigned level = 1;; ++level) {
+			l >>= bits;
+			r >>= bits;
+			left = _mm256_add_epi64(left, _mm256_set1_epi64x(std::int64_t(data_[offsets_[level] + l])));
+			right = _mm256_add_epi64(right, _mm256_set1_epi64x(std::int64_t(data_[offsets_[level] + r])));
+			unsigned first = unsigned(l & (branch - 1)), last = unsigned(r & (branch - 1));
+			a = l >> bits;
+			b = r >> bits;
+			const U* values = data_.data() + offsets_[level];
+			if (a == b) {
+				auto result = Node::min_signed(left, right);
+				if (first + 1 < last) result = Node::min_signed(result, query_block(values + a * branch, first + 1, last));
+				U carry = restore(level + 1, a, 0);
+				return Node::reduce_min(result) + carry;
+			}
+			if (first + 1 < branch) left = Node::min_signed(left, query_block(values + a * branch, first + 1, branch));
+			if (last) right = Node::min_signed(right, query_block(values + b * branch, 0, last));
+		}
+	}
+#endif
 	template<bool Narrow>
 	U assign(unsigned level, std::size_t index, std::size_t pos, U delta, bool negative) {
 		unsigned child = unsigned((pos >> (bits * level)) & (branch - 1));
@@ -208,7 +247,13 @@ public:
 		check(l, r);
 		if (l == r) return infinity;
 		if ((l == 0 && r == n_) || (l <= minimum_pos_ && minimum_pos_ < r)) return root_;
-		if constexpr (sizeof(T) == 8) if (bound_ < limit_) return added(root_, query<true>(l, r));
+		if constexpr (sizeof(T) == 8) if (bound_ < limit_) {
+#if defined(__AVX2__) && !defined(__AVX512F__) && defined(__x86_64__)
+			return added(root_, query_vector(l, r));
+#else
+			return added(root_, query<true>(l, r));
+#endif
+		}
 		return added(root_, query<false>(l, r));
 	}
 	T min(int l, int r) const { return prod(l, r); }

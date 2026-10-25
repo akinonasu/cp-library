@@ -273,6 +273,47 @@ void minimum_witness() {
 	set(0, 100);
 }
 
+void narrow_query_boundaries() {
+	using T = std::int64_t;
+	const T low = std::numeric_limits<T>::min(), high = std::numeric_limits<T>::max();
+	const T limit = high / 3, delta = (limit - 1) / 4;
+	for (int n : {73, 521, 4097}) for (bool mirror : {false, true}) {
+		std::vector<T> values(n);
+		RangeAddRangeMin<T> tree(values);
+		std::vector<int> positions{0, 1, 2, 7, 8, 9, 63, 64, 65,
+			n - 65, n - 64, n - 9, n - 8, n - 2, n - 1, n};
+		std::sort(positions.begin(), positions.end());
+		positions.erase(std::unique(positions.begin(), positions.end()), positions.end());
+		auto check = [&](const RangeAddRangeMin<T>& view) {
+			assert(view.values() == values);
+			for (int i = 0; i < n; ++i) assert(view.get(i) == values[i]);
+			for (int l : positions) for (int r : positions) if (l <= r) {
+				T expected = l == r ? high : *std::min_element(values.begin() + l, values.begin() + r);
+				assert(view.prod(l, r) == expected && view.min(l, r) == expected);
+			}
+			assert(view.all_min() == *std::min_element(values.begin(), values.end()));
+		};
+		auto add = [&](int l, int r, T value) {
+			tree.add(l, r, value);
+			for (int i = l; i < r; ++i) {
+				__int128_t next = __int128_t(values[i]) + value;
+				assert(low <= next && next <= high);
+				values[i] = T(next);
+			}
+			check(tree);
+		};
+		check(tree);
+		int l = mirror ? 0 : 1, r = mirror ? n - 1 : n;
+		for (int i = 0; i < 4; ++i) add(l, r, delta);
+		assert(tree.prod(l, r) == limit - 2);
+		add(0, n, 2 * limit);
+		assert(tree.prod(l, r) == high - 3);
+		add(l, r, 3);
+		assert(tree.prod(l, r) == high && tree.get(l) == high);
+		assert(tree.prod(l, l) == high && tree.prod(r, r) == high);
+	}
+}
+
 int main() {
 	randomized<std::int16_t>();
 	randomized<std::int32_t>();
@@ -291,4 +332,5 @@ int main() {
 	aligned_extremes<std::int64_t>();
 	padding_transitions();
 	minimum_witness();
+	narrow_query_boundaries();
 }

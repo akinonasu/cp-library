@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <limits>
 #include <type_traits>
+#include <utility>
 #if (defined(__AVX2__) || defined(__AVX512F__)) && defined(__x86_64__)
 #include <immintrin.h>
 #endif
@@ -32,10 +33,24 @@ template<class T> struct Node {
 		return slots;
 	}();
 	static __m256i min_signed(__m256i x, __m256i y) { return _mm256_blendv_epi8(x, y, _mm256_cmpgt_epi64(x, y)); }
-	static U reduce_min(__m256i x) {
-		x = min_signed(x, _mm256_permute2x128_si256(x, x, 1));
-		x = min_signed(x, _mm256_permute4x64_epi64(x, 0xb1));
-		return U(_mm_cvtsi128_si64(_mm256_castsi256_si128(x)));
+	static __m256i broadcast_min(__m256i value) {
+		value = min_signed(value, _mm256_permute2x128_si256(value, value, 1));
+		return min_signed(value, _mm256_permute4x64_epi64(value, 0xb1));
+	}
+	static U reduce_min(__m256i value) { return U(_mm_cvtsi128_si64(_mm256_castsi256_si128(broadcast_min(value)))); }
+	template<bool Narrow>
+	static __m256i minimum_vector(const U* values, unsigned l, unsigned r, U neutral) {
+		auto identity = _mm256_set1_epi64x(std::bit_cast<T>(neutral));
+		__m256i result;
+		for (unsigned i = 0; i < branch; i += 4) {
+			auto first = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[l].data() + i));
+			auto last = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[r].data() + i));
+			auto value = _mm256_load_si256(reinterpret_cast<const __m256i*>(values + i));
+			if constexpr (!Narrow) value = _mm256_xor_si256(value, _mm256_set1_epi64x(std::bit_cast<T>(sign_bit)));
+			value = _mm256_blendv_epi8(identity, value, _mm256_xor_si256(first, last));
+			result = i ? min_signed(result, value) : value;
+		}
+		return result;
 	}
 #endif
 	template<bool Narrow>
@@ -50,19 +65,9 @@ template<class T> struct Node {
 #endif
 #if defined(__AVX2__) && defined(__x86_64__)
 		if constexpr (sizeof(T) == 8) {
-			auto identity = _mm256_set1_epi64x(std::numeric_limits<T>::max());
-			auto result = identity;
-			for (unsigned i = 0; i < branch; i += 4) {
-				auto first = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[l].data() + i));
-				auto last = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[r].data() + i));
-				auto mask = _mm256_xor_si256(first, last);
-				auto value = _mm256_load_si256(reinterpret_cast<const __m256i*>(values + i));
-				if constexpr (!Narrow) value = _mm256_xor_si256(value, _mm256_set1_epi64x(std::bit_cast<T>(sign_bit)));
-				value = _mm256_xor_si256(identity, _mm256_and_si256(_mm256_xor_si256(value, identity), mask));
-				result = min_signed(result, value);
-			}
-			if constexpr (Narrow) return reduce_min(result);
-			else return reduce_min(result) ^ sign_bit;
+			U result = reduce_min(minimum_vector<Narrow>(values, l, r, U(std::numeric_limits<T>::max())));
+			if constexpr (Narrow) return result;
+			else return result ^ sign_bit;
 		}
 #endif
 		U result = umax;
@@ -93,41 +98,40 @@ template<class T> struct Node {
 #endif
 #if defined(__AVX2__) && defined(__x86_64__)
 		if constexpr (sizeof(T) == 8) {
-			auto result = _mm256_set1_epi64x(std::numeric_limits<T>::max()), wrapped = result;
+			auto identity = _mm256_set1_epi64x(std::numeric_limits<T>::max());
+			__m256i next[2], result, wrapped = identity;
 			auto underflow = _mm256_setzero_si256();
-			__m256i next[branch / 4];
 			for (unsigned i = 0; i < branch; i += 4) {
 				auto a = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[first].data() + i));
 				auto b = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[last].data() + i));
 				auto old = _mm256_load_si256(reinterpret_cast<const __m256i*>(values + i));
 				auto value = _mm256_add_epi64(old, _mm256_and_si256(_mm256_xor_si256(a, b), _mm256_set1_epi64x(std::bit_cast<T>(delta))));
-
 				value = _mm256_add_epi64(value, _mm256_and_si256(_mm256_load_si256(reinterpret_cast<const __m256i*>(slots_[x].data() + i)), _mm256_set1_epi64x(std::bit_cast<T>(dx))));
 				value = _mm256_add_epi64(value, _mm256_and_si256(_mm256_load_si256(reinterpret_cast<const __m256i*>(slots_[y].data() + i)), _mm256_set1_epi64x(std::bit_cast<T>(dy))));
 				next[i / 4] = value;
-				if constexpr (Narrow) {
-					result = min_signed(result, value);
-				} else {
+				if constexpr (!Narrow) {
 					auto biased = _mm256_xor_si256(value, _mm256_set1_epi64x(std::bit_cast<T>(sign_bit)));
-					result = min_signed(result, biased);
+					result = i ? min_signed(result, biased) : biased;
 					if (negative) {
 						auto wrap = _mm256_cmpgt_epi64(biased, _mm256_xor_si256(old, _mm256_set1_epi64x(std::bit_cast<T>(sign_bit))));
 						underflow = _mm256_or_si256(underflow, wrap);
-						wrapped = min_signed(wrapped, _mm256_blendv_epi8(_mm256_set1_epi64x(std::numeric_limits<T>::max()), biased, wrap));
+						wrapped = min_signed(wrapped, _mm256_blendv_epi8(identity, biased, wrap));
 					}
 				}
 			}
+			__m256i shift;
 			U change;
-			if constexpr (Narrow) change = reduce_min(result);
-			else change = reduce_min(negative && _mm256_movemask_epi8(underflow) ? wrapped : result) ^ sign_bit;
+			if constexpr (Narrow) {
+				shift = broadcast_min(min_signed(next[0], next[1]));
+				change = U(_mm_cvtsi128_si64(_mm256_castsi256_si128(shift)));
+			} else {
+				change = reduce_min(negative && _mm256_movemask_epi8(underflow) ? wrapped : result) ^ sign_bit;
+				shift = _mm256_set1_epi64x(std::bit_cast<T>(change));
+			}
 			for (unsigned i = 0; i < branch; i += 4) {
-				auto shift = _mm256_set1_epi64x(std::bit_cast<T>(change));
-				if constexpr (!Narrow) {
-					auto valid = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[count].data() + i));
-					shift = _mm256_and_si256(valid, shift);
-				}
-				auto value = _mm256_sub_epi64(next[i / 4], shift);
-				_mm256_store_si256(reinterpret_cast<__m256i*>(values + i), value);
+				auto delta = shift;
+				if constexpr (!Narrow) delta = _mm256_and_si256(delta, _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[count].data() + i)));
+				_mm256_store_si256(reinterpret_cast<__m256i*>(values + i), _mm256_sub_epi64(next[i / 4], delta));
 			}
 			return change;
 		}
@@ -146,6 +150,41 @@ template<class T> struct Node {
 		if (underflow) result = wrapped;
 		for (unsigned i = 0; i < count; ++i) values[i] -= result;
 		return result;
+	}
+	template<bool Narrow>
+	static std::pair<U, U> normalize_boundaries(U* left, U* right, unsigned right_count, bool negative, unsigned first, unsigned last, U delta, U left_change, U right_change) {
+#if defined(__AVX2__) && !defined(__AVX512F__) && defined(__x86_64__)
+		if constexpr (sizeof(T) == 8 && Narrow) {
+			__m256i x[2], y[2];
+			auto common = _mm256_set1_epi64x(std::bit_cast<T>(delta));
+			auto dx = _mm256_set1_epi64x(std::bit_cast<T>(left_change));
+			auto dy = _mm256_set1_epi64x(std::bit_cast<T>(right_change));
+			for (unsigned i = 0; i < branch; i += 4) {
+				auto prefix = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[first].data() + i));
+				auto suffix = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[last + 1].data() + i));
+				auto lc = _mm256_andnot_si256(prefix, common);
+				auto rc = _mm256_and_si256(suffix, common);
+				lc = _mm256_blendv_epi8(lc, dx, _mm256_load_si256(reinterpret_cast<const __m256i*>(slots_[first].data() + i)));
+				rc = _mm256_blendv_epi8(rc, dy, _mm256_load_si256(reinterpret_cast<const __m256i*>(slots_[last].data() + i)));
+				x[i / 4] = _mm256_add_epi64(_mm256_load_si256(reinterpret_cast<const __m256i*>(left + i)), lc);
+				y[i / 4] = _mm256_add_epi64(_mm256_load_si256(reinterpret_cast<const __m256i*>(right + i)), rc);
+			}
+			auto a = min_signed(x[0], x[1]), b = min_signed(y[0], y[1]);
+			auto minimum = min_signed(_mm256_unpacklo_epi64(a, b), _mm256_unpackhi_epi64(a, b));
+			minimum = min_signed(minimum, _mm256_permute2x128_si256(minimum, minimum, 1));
+			auto lm = _mm256_permute4x64_epi64(minimum, 0x00), rm = _mm256_permute4x64_epi64(minimum, 0x55);
+			_mm256_store_si256(reinterpret_cast<__m256i*>(left), _mm256_sub_epi64(x[0], lm));
+			_mm256_store_si256(reinterpret_cast<__m256i*>(left + 4), _mm256_sub_epi64(x[1], lm));
+			_mm256_store_si256(reinterpret_cast<__m256i*>(right), _mm256_sub_epi64(y[0], rm));
+			_mm256_store_si256(reinterpret_cast<__m256i*>(right + 4), _mm256_sub_epi64(y[1], rm));
+			return {U(_mm_cvtsi128_si64(_mm256_castsi256_si128(minimum))), U(_mm_extract_epi64(_mm256_castsi256_si128(minimum), 1))};
+		}
+#endif
+		U a = first + 1 == branch ? change_one<Narrow>(left, branch, first, left_change, negative)
+			: normalize<Narrow>(left, branch, negative, first + 1, branch, delta, first, left_change);
+		U b = !last ? change_one<Narrow>(right, right_count, 0, right_change, negative)
+			: normalize<Narrow>(right, right_count, negative, 0, last, delta, last, right_change);
+		return {a, b};
 	}
 	template<bool Narrow>
 	static U full_minimum(const U* values) {
