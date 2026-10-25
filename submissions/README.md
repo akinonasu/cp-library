@@ -12,7 +12,7 @@
 
 既存137問の「yosupo fastest」は 2026-10-24 13:46〜2026-10-24 13:48（日本時間）に公式APIで取得した全言語のAC最短時間です。リンク先はその提出です。ローカルとは環境・テスト範囲・計測方式が異なるため、数値を直接の速度比にはできません。同じ環境で実行した参照時間は上記の比較ページにあります。
 
-Prefix Sum of Binomial Coefficient は 2026-10-25 に追加しました。この行のローカル時間は公開テスト [73876f1](https://github.com/yosupo06/library-checker-problems/tree/73876f1cbcf082d2b22722924b924d3d65a2f00e) の全19入力を、上記と同じCPU・コンパイラ設定で、1回ウォームアップ後に5回計測したCPU時間中央値の最大です。yosupo fastest は同日取得した値です。
+Prefix Sum of Binomial Coefficient は 2026-10-25 に追加しました。この行のローカル時間は公開テスト [73876f1](https://github.com/yosupo06/library-checker-problems/tree/73876f1cbcf082d2b22722924b924d3d65a2f00e) の全19入力を、上記と同じCPU・コンパイラ設定で、1回ウォームアップ後に5回計測したCPU時間中央値の最大です。yosupo fastest は同日取得した値です。この行の時間は当時の一括処理版の記録です。現在の提出コードはオンライン版です。
 
 | 問題 | 提出用コード | 元の検証コード | ローカル | yosupo fastest |
 | --- | --- | --- | ---: | ---: |

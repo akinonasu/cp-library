@@ -1,10 +1,8 @@
-//https://qandori.github.io/cp-library/math/binomial_prefix_sum.hpp.html
 #line 1 "test/binomial_prefix_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/prefix_sum_of_binomial_coefficient"
 #line 1 "math/binomial_prefix_sum.hpp"
 
 
-#include <cmath>
 #line 1 "components/binomial_prefix_core.hpp"
 
 
@@ -3033,7 +3031,7 @@ inline void divide_by_index(ConstWords a, size_t first, Words q) {
 
 }
 
-#line 983 "components/fps_blocked.hpp"
+#line 974 "components/fps_blocked.hpp"
 
 namespace blocked_poly {
 
@@ -5766,38 +5764,133 @@ template<class Mint> class Polynomial : public binomial_prefix_detail::Polynomia
 }
 
 
-#line 7 "math/binomial_prefix_sum.hpp"
+#line 1 "components/binomial_prefix_online.hpp"
 
-template<class Mint = mint> class BinomialPrefixSum {
-	binomial_prefix_detail::Table<Mint> table_;
+
+
+#line 1 "components/mint_inner_product.hpp"
+
+
+
+#line 6 "components/mint_inner_product.hpp"
+#if (defined(__GNUC__) || defined(__clang__)) && (defined(__x86_64__) || defined(__i386__))
+#include <immintrin.h>
+#endif
+
+namespace mint_detail {
+template<bool Reverse> inline __uint128_t inner_product_scalar(const mint* a, const mint* b, int size) {
+	__uint128_t sum = 0;
+	int i = 0;
+	for (; i <= size - 4; i += 4) {
+		std::uint64_t part = std::uint64_t(a[i].v) * b[Reverse ? -i : i].v
+			+ std::uint64_t(a[i + 1].v) * b[Reverse ? -i - 1 : i + 1].v
+			+ std::uint64_t(a[i + 2].v) * b[Reverse ? -i - 2 : i + 2].v
+			+ std::uint64_t(a[i + 3].v) * b[Reverse ? -i - 3 : i + 3].v;
+		sum += part;
+	}
+	for (; i < size; ++i) sum += std::uint64_t(a[i].v) * b[Reverse ? -i : i].v;
+	return sum;
+}
+
+#if (defined(__GNUC__) || defined(__clang__)) && (defined(__x86_64__) || defined(__i386__))
+inline bool inner_product_has_avx2() {
+#if defined(__AVX2__)
+	return true;
+#else
+	static const bool enabled = __builtin_cpu_supports("avx2");
+	return enabled;
+#endif
+}
+
+template<bool Reverse> __attribute__((target("avx2")))
+__uint128_t inner_product_avx2(const mint* a, const mint* b, int size) {
+	const auto order = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
+	const auto zero = _mm256_setzero_si256();
+	auto total = zero, carry = zero;
+	int i = 0;
+	for (; i <= size - 8; i += 8) {
+		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(a + i));
+		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(b + (Reverse ? -i - 7 : i)));
+		if constexpr (Reverse) y = _mm256_permutevar8x32_epi32(y, order);
+		auto even = _mm256_mul_epu32(x, y);
+		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32));
+		auto next = _mm256_add_epi64(total, _mm256_add_epi64(even, odd));
+		carry = _mm256_sub_epi64(carry, _mm256_cmpgt_epi64(zero, _mm256_andnot_si256(next, total)));
+		total = next;
+	}
+	alignas(32) std::uint64_t low[4], high[4];
+	_mm256_store_si256(reinterpret_cast<__m256i*>(low), total);
+	_mm256_store_si256(reinterpret_cast<__m256i*>(high), carry);
+	__uint128_t sum = 0;
+	if (i < size) sum = inner_product_scalar<Reverse>(a + i, b + (Reverse ? -i : i), size - i);
+	for (int j = 0; j < 4; ++j) sum += (__uint128_t(high[j]) << 64) + low[j];
+	return sum;
+}
+#endif
+
+template<bool Reverse = false> mint inner_product(const mint* a, const mint* b, int size) {
+	assert(size >= 0);
+	__uint128_t sum;
+#if (defined(__GNUC__) || defined(__clang__)) && (defined(__x86_64__) || defined(__i386__))
+	if (size >= 64 && inner_product_has_avx2()) sum = inner_product_avx2<Reverse>(a, b, size);
+	else
+#endif
+		sum = inner_product_scalar<Reverse>(a, b, size);
+	return mint::word(mint::reduce(std::uint64_t(sum % mint::mod())));
+}
+}
+
+
+#line 7 "components/binomial_prefix_online.hpp"
+#include <cmath>
+#line 12 "components/binomial_prefix_online.hpp"
+
+namespace binomial_prefix_detail {
+template<class Mint, class Table> class Online {
+	Table table_;
 	int max_n_ = 0, block_ = 1;
-	std::vector<std::size_t> offsets_;
-	std::vector<Mint> data_;
+	std::vector<Mint> scaled_factorial_, data_;
 	void check([[maybe_unused]] int n) const { assert(0 <= n && n <= max_n_); }
+	static std::size_t offset(int row) { return std::size_t(row) * (std::size_t(row) + 1) / 2; }
+	template<bool Reverse> static Mint dot(const Mint* a, const Mint* b, int size) {
+		if constexpr (std::is_same_v<Mint, mint>) {
+			return mint_detail::inner_product<Reverse>(a, b, size);
+		} else {
+			Mint sum(0);
+			for (int i = 0; i < size; ++i) sum += a[i] * b[Reverse ? -i : i];
+			return sum;
+		}
+	}
+	Mint range(int n, int l, int r) const {
+		return table_.factorial[n] * dot<true>(table_.inverse_factorial.data() + l, table_.inverse_factorial.data() + n - l, r - l);
+	}
 
   public:
-	explicit BinomialPrefixSum(int max_n = 0, int block_size = 0) { build(max_n, block_size); }
+	explicit Online(int max_n = 0, int block_size = 0) { build(max_n, block_size); }
 	void build(int max_n, int block_size = 0) {
 		assert(max_n >= 0 && block_size >= 0);
 		table_.build(max_n);
 		max_n_ = max_n;
 		block_ = block_size ? block_size : std::max(1, int(std::sqrt(double(max_n) + 1)));
-		int blocks = ((max_n + 1) / 2) / block_;
-		offsets_.resize(blocks + 1);
-		std::size_t total = 0;
-		for (int j = 1; j <= blocks; ++j) {
-			offsets_[j] = total;
-			total += max_n - 2 * (j * block_) + 2;
+		if (max_n < 2) { scaled_factorial_.clear(); data_.clear(); return; }
+		scaled_factorial_.resize(std::size_t(max_n) + 1);
+		Mint inverse_power = table_.power2[max_n].inv() * table_.half;
+		for (int i = max_n; i >= 0; --i) {
+			scaled_factorial_[i] = table_.factorial[i] * inverse_power;
+			inverse_power += inverse_power;
 		}
-		data_.resize(total);
-		for (int j = 1; j <= blocks; ++j) {
-			int m = j * block_, start = 2 * m - 1;
-			Mint value = table_.factorial[m - 1] * table_.power2[start - 1];
-			std::size_t offset = offsets_[j];
-			data_[offset] = value;
-			for (int n = start; n < max_n; ++n) {
-				value = value + value - table_.factorial[n] * table_.inverse_factorial[n - m + 1];
-				data_[++offset] = value;
+		int rows = max_n / block_;
+		data_.resize(offset(rows) + std::size_t(rows) + 1);
+		for (int row = 0; row <= rows; ++row) {
+			int n = row * block_;
+			Mint factor = scaled_factorial_[n] + scaled_factorial_[n], sum(0);
+			auto base = offset(row);
+			for (int column = 0; column <= row / 2; ++column) {
+				int k = column * block_;
+				if (column) sum += dot<true>(table_.inverse_factorial.data() + k - block_, table_.inverse_factorial.data() + n - k + block_, block_);
+				Mint value = sum * factor;
+				data_[base + row - column] = Mint(1) - value;
+				data_[base + column] = value + table_.inverse_factorial[k] * table_.inverse_factorial[n - k] * factor;
 			}
 		}
 	}
@@ -5809,22 +5902,45 @@ template<class Mint = mint> class BinomialPrefixSum {
 		if (k <= 0) return Mint(0);
 		if (k >= std::int64_t(n) + 1) return table_.power2[n];
 		bool reflect = k > (n + 1) / 2;
-		int m = reflect ? n + 1 - int(k) : int(k), center = (n + 1) / 2;
+		int m = reflect ? n + 1 - int(k) : int(k);
 		Mint value(1);
 		if (m != 1) {
-			int j = m / block_, anchor = j * block_, distance = m - anchor;
-			if (std::int64_t(anchor) + block_ <= center && block_ - distance < distance) ++j, anchor += block_, distance = anchor - m;
-			if (center - m < distance) anchor = center, value = table_.center(n);
-			else value = anchor ? data_[offsets_[j] + n - (2 * anchor - 1)] * table_.inverse_factorial[anchor - 1] : Mint(0);
-			if (anchor < m) value += table_.range(n, anchor, m);
-			else if (m < anchor) value -= table_.range(n, m, anchor);
+			if (m == (n + 1) / 2) value = table_.center(n);
+			else {
+				int row = std::min(int((std::int64_t(n) + block_ / 2) / block_), max_n_ / block_);
+				int column = std::min(int((std::int64_t(m - 1) + block_ / 2) / block_), row);
+				int start = row * block_, anchor = column * block_;
+				int center = (n + 1) / 2;
+				auto distance = std::int64_t(std::abs(n - start)) + std::abs(m - 1 - anchor);
+				if (std::min(m - 1, center - m) <= distance) {
+					value = m - 1 <= center - m ? Mint(1) + range(n, 1, m) : table_.center(n) - range(n, m, center);
+				} else {
+					value = data_[offset(row) + column];
+					if (start < n) value -= table_.inverse_factorial[anchor] * dot<false>(scaled_factorial_.data() + start, table_.inverse_factorial.data() + start - anchor, n - start);
+					else if (n < start) {
+						int first = std::max(n, anchor);
+						value += table_.inverse_factorial[anchor] * dot<false>(scaled_factorial_.data() + first, table_.inverse_factorial.data() + first - anchor, start - first);
+					}
+					value *= table_.power2[n];
+					if (anchor < m - 1) value += range(n, anchor + 1, m);
+					else if (m - 1 < anchor) value -= range(n, m, std::min(anchor, n) + 1);
+				}
+			}
 		}
 		return reflect ? table_.power2[n] - value : value;
 	}
-	Mint prod(int n, std::int64_t l, std::int64_t r) const {
-		assert(l <= r);
-		return query(n, r) - query(n, l);
-	}
+	Mint prod(int n, std::int64_t l, std::int64_t r) const { assert(l <= r); return query(n, r) - query(n, l); }
+};
+}
+
+
+#line 6 "math/binomial_prefix_sum.hpp"
+
+template<class Mint = mint> class BinomialPrefixSum : public binomial_prefix_detail::Online<Mint, binomial_prefix_detail::Table<Mint>> {
+	using Base = binomial_prefix_detail::Online<Mint, binomial_prefix_detail::Table<Mint>>;
+
+  public:
+	explicit BinomialPrefixSum(int max_n = 0, int block_size = 0) : Base(max_n, block_size) {}
 };
 
 template<class Mint = mint, class K = int>
@@ -6093,11 +6209,11 @@ int main() {
 	FastOutput output;
 	int t = 0;
 	input.read(t);
-	std::vector<std::pair<int, int>> queries(t);
-	for (auto &[n, k] : queries) {
+	BinomialPrefixSum<> prefix(200000);
+	while (t--) {
+		int n = 0, k = 0;
 		input.read(n);
 		input.read(k);
-		++k;
+		output.println(prefix.query(n, std::int64_t(k) + 1).val());
 	}
-	for (auto answer : binomial_prefix_sum(queries)) output.println(answer.val());
 }

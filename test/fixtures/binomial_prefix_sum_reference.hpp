@@ -1,8 +1,20 @@
-#ifndef CP_BENCHMARK_BINOMIAL_PREFIX_SUM_COMPARISON_HPP
-#define CP_BENCHMARK_BINOMIAL_PREFIX_SUM_COMPARISON_HPP
+#ifndef BINOMIAL_PREFIX_SUM_REFERENCE_HPP
+#define BINOMIAL_PREFIX_SUM_REFERENCE_HPP
 
 #include "math/binomial_prefix_sum.hpp"
 #include "data_structure/mo_order.hpp"
+
+template<class Mint> std::vector<std::vector<Mint>> binomial_prefix_sum_pascal(int limit) {
+	std::vector<std::vector<Mint>> prefix(limit + 1);
+	std::vector<Mint> row(limit + 2);
+	row[0] = Mint(1);
+	for (int n = 0; n <= limit; ++n) {
+		prefix[n].resize(n + 2);
+		for (int k = 0; k <= n; ++k) prefix[n][k + 1] = prefix[n][k] + row[k];
+		for (int k = n + 1; k > 0; --k) row[k] += row[k - 1];
+	}
+	return prefix;
+}
 
 template<class Mint = mint, class K = int>
 std::vector<Mint> binomial_prefix_sum_baseline(const std::vector<std::pair<int, K>>& queries) {
