@@ -1,6 +1,6 @@
 # Library Checker 提出用コード
 
-137 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
+138 問題の提出用コードです。各 `.cpp` の全体を C++23 として提出してください。ライブラリの依存コードは展開済みです。
 
 同じ問題に複数の検証実装がある場合は、代表実装を 1 つ掲載しています。
 
@@ -10,7 +10,9 @@
 
 初回のローカル計測: 2026-10-24 14:19〜2026-10-24 14:30（日本時間）。AMD EPYC 9V74 / Linux x86_64 / GCC 14.2.0、`-std=c++23 -O2 -march=native`、通常CIと同じconstexpr上限、CPU 3 に固定。公開テスト生成器の[1814c4e](https://github.com/yosupo06/library-checker-problems/tree/1814c4e5205517e368bb57a8d1127eb961cfeaae)の固定例・各生成器のseed 0、計1138ケースで、1回ウォームアップ後の5実行のCPU時間中央値の最大を示します。入出力を含み、コンパイルは含みません。
 
-「yosupo fastest」は 2026-10-24 13:46〜2026-10-24 13:48（日本時間）に公式APIで取得した全言語のAC最短時間です。リンク先はその提出です。ローカルとは環境・テスト範囲・計測方式が異なるため、数値を直接の速度比にはできません。同じ環境で実行した参照時間は上記の比較ページにあります。
+既存137問の「yosupo fastest」は 2026-10-24 13:46〜2026-10-24 13:48（日本時間）に公式APIで取得した全言語のAC最短時間です。リンク先はその提出です。ローカルとは環境・テスト範囲・計測方式が異なるため、数値を直接の速度比にはできません。同じ環境で実行した参照時間は上記の比較ページにあります。
+
+Prefix Sum of Binomial Coefficient は 2026-10-25 に追加しました。この行のローカル時間は公開テスト [73876f1](https://github.com/yosupo06/library-checker-problems/tree/73876f1cbcf082d2b22722924b924d3d65a2f00e) の全19入力を、上記と同じCPU・コンパイラ設定で、1回ウォームアップ後に5回計測したCPU時間中央値の最大です。yosupo fastest は同日取得した値です。
 
 | 問題 | 提出用コード | 元の検証コード | ローカル | yosupo fastest |
 | --- | --- | --- | ---: | ---: |
@@ -103,6 +105,7 @@
 | [Pow of Formal Power Series (Sparse)](https://judge.yosupo.jp/problem/pow_of_formal_power_series_sparse) | [pow_of_formal_power_series_sparse.cpp](https://github.com/qandori/cp-library/blob/main/submissions/pow_of_formal_power_series_sparse.cpp) | [fps_pow_sparse.test.cpp](../test/fps_pow_sparse.test.cpp) | 13.1 ms | [10 ms](https://judge.yosupo.jp/submission/409706) |
 | [Pow of Matrix](https://judge.yosupo.jp/problem/pow_of_matrix) | [pow_of_matrix.cpp](https://github.com/qandori/cp-library/blob/main/submissions/pow_of_matrix.cpp) | [matrix_pow.test.cpp](../test/matrix_pow.test.cpp) | 8.1 ms | [11 ms](https://judge.yosupo.jp/submission/401296) |
 | [Predecessor Problem](https://judge.yosupo.jp/problem/predecessor_problem) | [predecessor_problem.cpp](https://github.com/qandori/cp-library/blob/main/submissions/predecessor_problem.cpp) | [predecessor_set.test.cpp](../test/predecessor_set.test.cpp) | 27.5 ms | [16 ms](https://judge.yosupo.jp/submission/403023) |
+| [Prefix Sum of Binomial Coefficient](https://judge.yosupo.jp/problem/prefix_sum_of_binomial_coefficient) | [prefix_sum_of_binomial_coefficient.cpp](https://github.com/qandori/cp-library/blob/main/submissions/prefix_sum_of_binomial_coefficient.cpp) | [binomial_prefix_sum.test.cpp](../test/binomial_prefix_sum.test.cpp) | 303.2 ms | [1735 ms](https://judge.yosupo.jp/submission/413194) |
 | [Primality Test](https://judge.yosupo.jp/problem/primality_test) | [primality_test.cpp](https://github.com/qandori/cp-library/blob/main/submissions/primality_test.cpp) | [is_prime.test.cpp](../test/is_prime.test.cpp) | 81.0 ms | [34 ms](https://judge.yosupo.jp/submission/405740) |
 | [Queue Operate All Composite](https://judge.yosupo.jp/problem/queue_operate_all_composite) | [queue_operate_all_composite.cpp](https://github.com/qandori/cp-library/blob/main/submissions/queue_operate_all_composite.cpp) | [sliding_window_aggregation.test.cpp](../test/sliding_window_aggregation.test.cpp) | 13.8 ms | [10 ms](https://judge.yosupo.jp/submission/403012) |
 | [Range Add Range Min](https://judge.yosupo.jp/problem/range_add_range_min) | [range_add_range_min.cpp](https://github.com/qandori/cp-library/blob/main/submissions/range_add_range_min.cpp) | [range_add_range_min.test.cpp](../test/range_add_range_min.test.cpp) | 83.3 ms | [50 ms](https://judge.yosupo.jp/submission/409052) |
