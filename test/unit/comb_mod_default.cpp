@@ -2,7 +2,6 @@
 #include "math/combinatorics/comb_mod.hpp"
 #include "math/combinatorics/comb.hpp"
 #include "math/modint.hpp"
-#include <atcoder/modint>
 #include <cassert>
 
 template <class M> void check() {
@@ -20,12 +19,11 @@ template <class M> void check() {
 const auto before_main = make_comb<StaticModint<1000000007>>(200).comb(10, 3);
 int main() {
 	assert(before_main == 120);
-	check<atcoder::modint1000000007>();
-	check<atcoder::modint998244353>();
+	check<StaticModint<998244353>>();
 	check<StaticModint<1000000007>>();
 	check<mint>();
-	atcoder::dynamic_modint<37>::set_mod(1000000007);
-	check<atcoder::dynamic_modint<37>>();
+	DynamicModint<37>::set_mod(1000000007);
+	check<DynamicModint<37>>();
 	assert(::comb(10, 3) == mint(120));
 	assert(::fact[5] * ::finv[5] == mint(1));
 	auto lazy = make_comb<StaticModint<17>>();
