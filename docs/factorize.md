@@ -32,6 +32,8 @@ auto reused = divisors(counts); // 360 の約数。再度の素因数分解は�
 
 `divisors(factors)` の `factors` は `vector<pair<uint64_t,int>>` です。異なる素数と正の指数を渡し、その積は `uint64_t` に収まる必要があります。素数の並び順は問いません。空配列は 1 の分解結果として扱い、`[1]` を返します。渡した分解結果の素数判定や正当性の検査は行いません。
 
+約数と同時にメビウス関数・オイラー関数などの値も列挙する場合は、[約数ごとの乗法的関数の値](multiplicative_divisors.md) を利用できます。
+
 64 bit 整数演算を $$O(1)$$ として、`is_prime(n)` は $$O(\log n)$$ 時間、$$O(1)$$ 空間です。`factorize(n)`・`factorize_count(n)` は Pollard Rho の期待計算量で $$O(n^{1/4} \log n)$$ 時間、$$O(\log n)$$ 空間です。
 
 約数の個数を $$d$$ とすると、`divisors(n)` は期待 $$O(n^{1/4}\log n+d\log d)$$ 時間、`divisors(n,false)` は期待 $$O(n^{1/4}\log n+d)$$ 時間、いずれも返り値を含めて $$O(d+\log n)$$ 空間です。分解結果を渡す版は素因数分解を省き、$$O(d)$$ 空間です。

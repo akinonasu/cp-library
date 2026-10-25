@@ -42,9 +42,11 @@ public:
 	}
 	Word* a() { return a_; }
 	Word* b() { return b_; }
-	const Word* multiply() {
+	const Word* multiply(bool square = false) {
 		transform_.forward(ConstWords(b_, m_), 0, Words(b_, len_));
-		transform_.cyclic_product(ConstWords(a_, n_), 0,
+		if (square) transform_.inverse_product(ConstWords(b_, len_), ConstWords(b_, len_), Words(a_, len_),
+			blocked_poly::Half::kBoth, detail::power(detail::kR, kernels::kP - 2));
+		else transform_.cyclic_product(ConstWords(a_, n_), 0,
 			Words(a_, len_), ConstWords(b_, len_), blocked_poly::Half::kBoth, detail::power(detail::kR, kernels::kP - 2));
 		return a_;
 	}
@@ -125,9 +127,9 @@ inline std::vector<mint> run_borrowed_as(const std::vector<mint>& a, const std::
 	const size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(mint);
 	mint* const to = result.data() + offset;
 	Plan plan(a.size(), b.size(), reinterpret_cast<Word*>(to));
-	copy_input_mint(a, to);
+	if (&a != &b) copy_input_mint(a, to);
 	copy_input(b, plan.b(), len);
-	plan.multiply();
+	plan.multiply(&a == &b);
 	if (offset) std::memmove(static_cast<void*>(result.data()), to, size * sizeof(mint));
 	result.resize(size);
 	return result;

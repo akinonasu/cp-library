@@ -313,7 +313,7 @@ void transform(std::vector<std::uint32_t> &a, bool inverse, bool vectorized) {
 		bit_reverse(a);
 		backward(a, plan, vectorized);
 		std::reverse(a.begin() + 1, a.end());
-		scale<mod>(a, power<mod>(a.size(), mod - 2), vectorized);
+		scale<mod>(a, mod - (mod - 1) / a.size(), vectorized);
 	} else {
 		forward(a, plan, vectorized);
 		if constexpr (mod < (std::uint32_t(1) << 30)) for (auto &x : a) if (x >= mod) x -= mod;
@@ -378,23 +378,30 @@ void ntt_mod(std::vector<std::uint32_t> &a, bool inverse = false) {
 
 #line 9 "convolution/convolution_mod.hpp"
 #include <limits>
-#line 11 "convolution/convolution_mod.hpp"
+#include <utility>
+#line 12 "convolution/convolution_mod.hpp"
 
 namespace convolution_mod_detail {
-template <std::uint32_t mod, std::uint32_t root, class T>
-std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T> &b, std::uint32_t factor = 1) {
-	std::size_t length = a.size() + b.size() - 1, n = std::bit_ceil(length);
-	std::vector<std::uint32_t> x(n), y(n);
+using Word = std::uint32_t;
+template <Word mod, Word root, class T>
+std::vector<Word> multiply(const std::vector<T> &a, const std::vector<T> &b, Word factor = 1) {
+	const auto &small = a.size() <= b.size() ? a : b;
+	const auto &large = a.size() <= b.size() ? b : a;
+	std::size_t length = a.size() + b.size() - 1;
+	bool blocked = small.size() > 32 && large.size() / small.size() >= 8, square = &a == &b;
+	std::size_t n = std::bit_ceil(blocked ? 2 * small.size() - 1 : length), block = n - small.size() + 1;
+	std::vector<Word> x(n), y(square ? 0 : n);
 	auto reduce = [](T value) {
 		__int128_t r = __int128_t(value) % mod;
-		return std::uint32_t(r < 0 ? r + mod : r);
+		return Word(r < 0 ? r + mod : r);
 	};
-	for (std::size_t i = 0; i < a.size(); ++i) x[i] = reduce(a[i]);
-	for (std::size_t i = 0; i < b.size(); ++i) y[i] = reduce(b[i]);
-	if (std::min(a.size(), b.size()) <= 32) {
-		std::vector<std::uint32_t> result(length);
-		for (std::size_t i = 0; i < a.size(); ++i)
-			for (std::size_t j = 0; j < b.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * y[j]) % mod;
+	for (std::size_t i = 0; i < small.size(); ++i) x[i] = reduce(small[i]);
+	if (small.size() <= 32) {
+		if (!square) for (std::size_t i = 0; i < large.size(); ++i) y[i] = reduce(large[i]);
+		const auto &other = square ? x : y;
+		std::vector<Word> result(length);
+		for (std::size_t i = 0; i < small.size(); ++i)
+			for (std::size_t j = 0; j < large.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * other[j]) % mod;
 		if (factor != 1) for (auto &v : result) v = std::uint64_t(v) * factor % mod;
 		return result;
 	}
@@ -404,41 +411,56 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 #endif
 	ntt_mod_detail::Plan<mod, root> plan(n, vectorized);
 	ntt_mod_detail::forward(x, plan, vectorized);
-	if (&a == &b) y = x;
-	else ntt_mod_detail::forward(y, plan, vectorized);
-	ntt_mod_detail::pointwise<mod>(x, y, vectorized);
-	ntt_mod_detail::backward(x, plan, vectorized);
-	std::reverse(x.begin() + 1, x.end());
-	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod * factor % mod;
-	ntt_mod_detail::scale<mod>(x, scale, vectorized);
-	x.resize(length);
-	return x;
+	Word scale = (std::uint64_t(1) << 32) % mod * (mod - (mod - 1) / n) % mod * factor % mod;
+	std::vector<Word> result(blocked ? length : 0);
+	auto &work = square ? x : y;
+	for (std::size_t start = 0; start < large.size(); start += block) {
+		std::size_t size = std::min(block, large.size() - start);
+		if (!square) {
+			for (std::size_t i = 0; i < size; ++i) y[i] = reduce(large[start + i]);
+			std::fill(y.begin() + size, y.end(), 0);
+			ntt_mod_detail::forward(y, plan, vectorized);
+		}
+		ntt_mod_detail::pointwise<mod>(work, x, vectorized);
+		ntt_mod_detail::backward(work, plan, vectorized);
+		std::reverse(work.begin() + 1, work.end());
+		ntt_mod_detail::scale<mod>(work, scale, vectorized);
+		if (!blocked) {
+			work.resize(length);
+			return std::move(work);
+		}
+		for (std::size_t i = 0; i < size + small.size() - 1; ++i) {
+			Word sum = result[start + i] + work[i];
+			result[start + i] = sum < mod ? sum : sum - mod;
+		}
+	}
+	return result;
 }
-inline constexpr std::uint32_t p = 754974721, q = 1224736769, r = 2013265921;
+inline constexpr Word p = 754974721, q = 1224736769, r = 2013265921;
 inline constexpr __uint128_t modulus = __uint128_t(p) * q * r;
-struct Reconstruction { std::uint64_t low; std::uint32_t high; };
-template <std::uint32_t P = p, std::uint32_t Q = q, std::uint32_t R = r>
-inline Reconstruction reconstruct(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
-	static const std::uint32_t inverse_p = ntt_mod_detail::power<Q>(P, Q - 2);
-	static const std::uint32_t inverse_pq = ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2);
+struct Reconstruction { std::uint64_t low; Word high; };
+template <Word P = p, Word Q = q, Word R = r>
+inline Reconstruction reconstruct(Word a, Word b, Word c) {
+	static const Word inverse_p = ntt_mod_detail::power<Q>(P, Q - 2);
+	static const Word inverse_pq = ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2);
 	std::uint64_t x = std::uint64_t(b + Q - a) * inverse_p % Q;
 	std::uint64_t low = a + std::uint64_t(P) * x;
 	std::uint64_t y = std::uint64_t(c + R - low % R) * inverse_pq % R;
-	return {low, std::uint32_t(y)};
+	return {low, Word(y)};
 }
-inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
+inline __uint128_t restore(Word a, Word b, Word c) {
 	auto [low, high] = reconstruct(a, b, c);
 	return low + __uint128_t(p) * q * high;
 }
 #if defined(__x86_64__) || defined(__i386__)
-template <std::uint32_t P, std::uint32_t Q, std::uint32_t R>
+template <Word P, Word Q, Word R>
 __attribute__((target("avx2")))
-void combine(std::uint32_t *a, const std::uint32_t *b, const std::uint32_t *c, std::size_t n) {
+void combine(Word *a, const Word *b, const Word *c, std::size_t n) {
 	static_assert(P > 256 && Q > 256 && R > 256 && P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32));
-	constexpr std::uint32_t mod = 1000000007;
-	constexpr auto form = [](std::uint64_t x) { return std::uint32_t(x % mod * ((std::uint64_t(1) << 32) % mod) % mod); };
-	constexpr std::uint32_t place[3] = {form(std::uint64_t(Q) * R), form(std::uint64_t(P) * R), form(std::uint64_t(P) * Q)};
-	constexpr std::uint32_t wrap = form(mod - std::uint64_t(P) * Q % mod * R % mod);
+	constexpr Word mod = 1000000007;
+	constexpr auto form = [](std::uint64_t x) { return Word(x % mod * ((std::uint64_t(1) << 32) % mod) % mod); };
+	constexpr Word place[3] = {form(std::uint64_t(Q) * R), form(std::uint64_t(P) * R), form(std::uint64_t(P) * Q)};
+	constexpr Word wrap = form(mod - std::uint64_t(P) * Q % mod * R % mod);
 	const auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(ntt_mod_detail::negative_inverse<mod>);
 	std::size_t i = 0;
 	for (; n - i >= 8; i += 8) {
@@ -466,14 +488,14 @@ void combine(std::uint32_t *a, const std::uint32_t *b, const std::uint32_t *c, s
 	for (; i < n; ++i) {
 		std::uint64_t t = (std::uint64_t(a[i]) * ((std::uint64_t(1) << 40) / P + 1) + std::uint64_t(b[i]) * ((std::uint64_t(1) << 40) / Q + 1) + std::uint64_t(c[i]) * ((std::uint64_t(1) << 40) / R + 1) + (std::uint64_t(1) << 39)) >> 40;
 		std::uint64_t sum = std::uint64_t(a[i]) * place[0] + std::uint64_t(b[i]) * place[1] + std::uint64_t(c[i]) * place[2] + std::uint64_t(t) * wrap;
-		auto q = std::uint32_t(sum) * ntt_mod_detail::negative_inverse<mod>;
-		std::uint32_t value = (sum + std::uint64_t(q) * mod) >> 32;
+		auto q = Word(sum) * ntt_mod_detail::negative_inverse<mod>;
+		Word value = (sum + std::uint64_t(q) * mod) >> 32;
 		a[i] = value < mod ? value : value - mod;
 	}
 }
 #endif
-template <std::uint32_t P, std::uint32_t PR, std::uint32_t Q, std::uint32_t QR, std::uint32_t R, std::uint32_t RR>
-std::vector<std::uint32_t> modular(const std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b, std::uint32_t mod) {
+template <Word P, Word PR, Word Q, Word QR, Word R, Word RR>
+std::vector<Word> modular(const std::vector<Word> &a, const std::vector<Word> &b, Word mod) {
 #if defined(__x86_64__) || defined(__i386__)
 	if constexpr (P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32)) {
 		if (mod == 1000000007 && __uint128_t(std::min(a.size(), b.size())) * (mod - 1) * (mod - 1) * 4 < __uint128_t(P) * Q * R && __builtin_cpu_supports("avx2")) {
@@ -792,7 +814,7 @@ public:
 
 #line 6 "components/fast_io_bulk.hpp"
 #include <span>
-#include <utility>
+#line 8 "components/fast_io_bulk.hpp"
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 #include <immintrin.h>

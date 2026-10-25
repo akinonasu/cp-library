@@ -306,7 +306,7 @@ void transform(std::vector<std::uint32_t> &a, bool inverse, bool vectorized) {
 		bit_reverse(a);
 		backward(a, plan, vectorized);
 		std::reverse(a.begin() + 1, a.end());
-		scale<mod>(a, power<mod>(a.size(), mod - 2), vectorized);
+		scale<mod>(a, mod - (mod - 1) / a.size(), vectorized);
 	} else {
 		forward(a, plan, vectorized);
 		if constexpr (mod < (std::uint32_t(1) << 30)) for (auto &x : a) if (x >= mod) x -= mod;

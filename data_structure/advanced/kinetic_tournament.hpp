@@ -1,14 +1,14 @@
 #ifndef KINETIC_TOURNAMENT_HPP
 #define KINETIC_TOURNAMENT_HPP
 
-#include "generic_segtree_beats.hpp"
+#include "../segment_tree/segtree_beats.hpp"
 #include "../../components/kinetic_tournament_monoid.hpp"
 #include <optional>
 
 template<class T = std::int64_t, bool maximize = true> class KineticTournament {
 	using M = kinetic_tournament_detail::Monoid<T, maximize>;
 	using Node = typename M::Node;
-	GenericSegtreeBeats<Node, M::op, M::identity, typename M::Tag, M::mapping, M::composition, M::tag_identity> tree_;
+	SegtreeBeats<Node, M::op, M::identity, typename M::Tag, M::mapping, M::composition, M::tag_identity> tree_;
 	std::vector<T> slopes_;
 	std::vector<unsigned char> active_;
 	int count_ = 0;

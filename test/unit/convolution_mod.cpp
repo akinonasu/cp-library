@@ -75,4 +75,23 @@ int main() {
 	check<std::uint64_t>();
 	check<std::int32_t>();
 	check<std::uint32_t>();
+	std::mt19937_64 random(6734);
+	for (unsigned mod : {998244353u, 1000000007u, 4294967295u})
+		for (int n : {33, 64, 129}) for (int m : {8 * n - 1, 8 * n, 20 * n + 7}) {
+			std::vector<std::int64_t> a(n), b(m);
+			for (auto &x : a) x = std::int64_t(random());
+			for (auto &x : b) x = std::int64_t(random());
+			a.front() = INT64_MIN;
+			b.back() = INT64_MAX;
+			auto expected = naive(a, b, mod);
+			assert(convolution_mod(a, b, mod) == expected);
+			assert(convolution_mod(b, a, mod) == expected);
+		}
+	std::vector<std::int64_t> a(69), b(4096), expected(a.size() + b.size() - 1);
+	for (auto &x : a) x = std::int64_t(random() % 101) - 50;
+	for (auto &x : b) x = std::int64_t(random() % 101) - 50;
+	for (std::size_t i = 0; i < a.size(); ++i)
+		for (std::size_t j = 0; j < b.size(); ++j) expected[i + j] += a[i] * b[j];
+	assert(convolution_integer(a, b) == expected);
+	assert(convolution_integer(b, a) == expected);
 }

@@ -1,5 +1,5 @@
-#ifndef GENERIC_SEGTREE_BEATS_HPP
-#define GENERIC_SEGTREE_BEATS_HPP
+#ifndef SEGTREE_BEATS_HPP
+#define SEGTREE_BEATS_HPP
 
 #include <algorithm>
 #include <bit>
@@ -10,7 +10,7 @@
 #include <vector>
 
 template <class S, auto op, auto e, class F, auto mapping, auto composition, auto id>
-class GenericSegtreeBeats {
+class SegtreeBeats {
 	int n_ = 0, base_ = 1, log_ = 0;
 	std::vector<S> data_;
 	std::vector<F> lazy_;
@@ -52,12 +52,12 @@ class GenericSegtreeBeats {
 	}
 
   public:
-	GenericSegtreeBeats() : GenericSegtreeBeats(0) {}
-	explicit GenericSegtreeBeats(int n, const S &value = e()) {
+	SegtreeBeats() : SegtreeBeats(0) {}
+	explicit SegtreeBeats(int n, const S &value = e()) {
 		assert(0 <= n && n <= std::numeric_limits<int>::max() / 4);
 		build(std::vector<S>(n, value));
 	}
-	explicit GenericSegtreeBeats(const std::vector<S> &a) { build(a); }
+	explicit SegtreeBeats(const std::vector<S> &a) { build(a); }
 	void build(const std::vector<S> &a) {
 		assert(a.size() <= std::size_t(std::numeric_limits<int>::max() / 4));
 		n_ = static_cast<int>(a.size());

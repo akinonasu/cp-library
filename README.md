@@ -243,6 +243,8 @@
 | `data_structure/segment_tree/range_add_range_min.hpp` | 区間加算・区間最小値 | [使い方](docs/range_add_range_min.md) |
 | `data_structure/segment_tree/segtree.hpp` | セグメント木・一点更新・区間集約・境界検索 | [使い方](docs/segtree.md) |
 | `data_structure/segment_tree/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
+| `data_structure/segment_tree/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
+| `data_structure/segment_tree/range_chmin_chmax_add_sum.hpp` | Range Chmin Chmax Add Sum | [使い方](docs/range_chmin_chmax_add_sum.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
 | `data_structure/segment_tree/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
@@ -293,6 +295,8 @@
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/data_dependent_tree.hpp` | Data Dependent Tree・永続文字列・LCP・辞書順比較 | [使い方](docs/data_dependent_tree.md) |
 | `string/z_algorithm.hpp` | Z algorithm | [使い方](docs/z_algorithm.md) |
+| `string/suffix_array.hpp` | Suffix Array・整数列対応 | [使い方](docs/suffix_array_public.md) |
+| `string/lcp_array.hpp` | LCP Array | [使い方](docs/lcp_array.md) |
 | `string/concatenation_order.hpp` | 文字列結合の辞書順比較・並べ替え | [使い方](docs/concatenation_order.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
 | `string/manacher.hpp` | Manacher・回文半径・区間の回文判定 | [使い方](docs/manacher.md) |
@@ -308,6 +312,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `math/mint.hpp` | modint998244353 | [使い方](docs/mint.md) |
+| `math/modint.hpp` | 任意の法の静的・動的 modint | [使い方](docs/modint.md) |
 | `math/fraction.hpp` | 有理数の四則演算・正確な比較 | [使い方](docs/fraction.md) |
 
 ### 数学ユーティリティ
@@ -316,6 +321,7 @@
 | --- | --- | --- |
 | `math/util/linear_congruence.hpp` | 一次合同式 ax ≡ b (mod m) の全解 | [使い方](docs/linear_congruence.md) |
 | `math/util/crt.hpp` | 一般化 CRT・連立一次合同式 | [使い方](docs/crt.md) |
+| `math/util/modular_arithmetic.hpp` | 一般の法の剰余累乗・逆元 | [使い方](docs/modular_arithmetic.md) |
 | `math/util/linear_diophantine.hpp` | 区間制約付き一次不定方程式 | [使い方](docs/linear_diophantine.md) |
 | `math/util/integer_division.hpp` | 整数除算の切り下げ・切り上げ | [使い方](docs/integer_division.md) |
 | `math/util/geometric_sum.hpp` | 等比数列の和 | [使い方](docs/geometric_sum.md) |
@@ -331,6 +337,7 @@
 | `math/number_theory/discrete_log.hpp` | 合成数 mod にも対応する離散対数 | [使い方](docs/discrete_log.md) |
 | `math/number_theory/stern_brocot_tree.hpp` | Stern–Brocot Tree・圧縮経路・祖先・LCA | [使い方](docs/stern_brocot_tree.md) |
 | `math/number_theory/factorize.hpp` | 素因数分解・素数判定・約数列挙 | [使い方](docs/factorize.md) |
+| `math/number_theory/multiplicative_divisors.hpp` | 約数ごとの乗法的関数の値 | [使い方](docs/multiplicative_divisors.md) |
 | `math/number_theory/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
 | `math/number_theory/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
 | `math/number_theory/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
@@ -347,6 +354,7 @@
 | `math/combinatorics/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数 prefix sum 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/combinatorics/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
 | `math/combinatorics/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
+| `math/combinatorics/comb_mod.hpp` | modint を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb_mod.md) |
 | `math/combinatorics/comb_light.hpp` | 軽量版の二項係数・階乗表 | [使い方](docs/comb_light.md) |
 
 ### Floor Sum
@@ -522,8 +530,6 @@ oj-bundle a.cpp | pbcopy
 | `data_structure/advanced/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
 | `data_structure/advanced/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
 | `data_structure/advanced/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
-| `data_structure/advanced/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
 | `data_structure/advanced/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負) | [使い方](docs/kinetic_tournament.md) |
-| `data_structure/advanced/generic_segtree_beats.hpp` | 汎用 Segtree Beats | [使い方](docs/generic_segtree_beats.md) |
 | `data_structure/advanced/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue | [使い方](docs/partially_retroactive_priority_queue.md) |
 | `data_structure/advanced/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue | [使い方](docs/retroactive_priority_queue.md) |

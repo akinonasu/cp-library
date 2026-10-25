@@ -736,9 +736,9 @@ public:
 	void cyclic_product(Words a, ConstWords b) const { cyclic_product(a, 0, a, b); }
 
 	void inverse_product(ConstWords a, ConstWords b, Words out,
-						Half output = Half::kBoth) const {
+						Half output = Half::kBoth, Word c = 1) const {
 		using namespace blocked_ntt::detail;
-		const Word scale = inverse_scale(out.size(), true);
+		const Word scale = multiply_mod(inverse_scale(out.size(), true), c);
 		const detail::ProductBottom product{roots_, inverse_roots_, b.data()};
 		run(out, detail::Source(nullptr, 0, 0), detail::InverseProductBottom{product, a.data()}, scale, output);
 	}
