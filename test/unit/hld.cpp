@@ -1,4 +1,4 @@
-#include "data_structure/advanced/hld.hpp"
+#include "data_structure/hld.hpp"
 #include "string/rolling_hash.hpp"
 #include <algorithm>
 #include <cassert>

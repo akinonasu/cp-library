@@ -1,4 +1,4 @@
-#include "data_structure/range_query/mo_with_updates.hpp"
+#include "data_structure/mo_with_updates.hpp"
 #include <map>
 #include <random>
 #include <set>

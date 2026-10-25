@@ -1,12 +1,14 @@
 ---
 title: XOR 基底
-documentation_of: //math/linear_algebra/xor_basis.hpp
+documentation_of: //math/xor_basis.hpp
 redirect_from:
-- /math/xor_basis.hpp.html
+- /math/linear_algebra/xor_basis.hpp.html
+- /lightweight/math/linear_algebra/xor_basis.hpp.html
+library_category: math/linear_algebra
 ---
 
 ```cpp
-#include "lib/math/linear_algebra/xor_basis.hpp"
+#include "lib/math/xor_basis.hpp"
 
 XorBasis<> basis{3, 5};
 auto maximum = basis.max_xor();

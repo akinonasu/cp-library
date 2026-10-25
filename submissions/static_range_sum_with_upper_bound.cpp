@@ -1,6 +1,6 @@
 #line 1 "test/offline_range_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_sum_with_upper_bound"
-#line 1 "data_structure/range_query/offline_range_sum.hpp"
+#line 1 "data_structure/offline_range_sum.hpp"
 
 
 
@@ -214,7 +214,7 @@ void stable_radix_sort(std::vector<T> &values, Key key) {
 }
 
 
-#line 13 "data_structure/range_query/offline_range_sum.hpp"
+#line 13 "data_structure/offline_range_sum.hpp"
 
 template <class T, class Sum = std::conditional_t<std::is_integral_v<T>, std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>, T>>
 class OfflineRangeSum {

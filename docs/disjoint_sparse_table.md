@@ -1,12 +1,14 @@
 ---
 title: Disjoint Sparse Table
-documentation_of: //data_structure/range_query/disjoint_sparse_table.hpp
+documentation_of: //data_structure/disjoint_sparse_table.hpp
 redirect_from:
-- /data_structure/disjoint_sparse_table.hpp.html
+- /data_structure/range_query/disjoint_sparse_table.hpp.html
+- /lightweight/data_structure/range_query/disjoint_sparse_table.hpp.html
+library_category: data_structure/range_query
 ---
 
 ```cpp
-#include "lib/data_structure/range_query/disjoint_sparse_table.hpp"
+#include "lib/data_structure/disjoint_sparse_table.hpp"
 
 int op(int a, int b) { return std::min(a, b); }
 

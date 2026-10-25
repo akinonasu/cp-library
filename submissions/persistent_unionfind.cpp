@@ -1,6 +1,6 @@
 #line 1 "test/rollback_union_find_persistent.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/persistent_unionfind"
-#line 1 "data_structure/union_find/rollback_union_find.hpp"
+#line 1 "data_structure/rollback_union_find.hpp"
 
 
 

@@ -1,4 +1,4 @@
-#include "graph/shortest_path/bellman_ford.hpp"
+#include "graph/bellman_ford.hpp"
 
 int main() {
 	int n = 200000;

@@ -1,12 +1,14 @@
 ---
 title: monoid floor sum
-documentation_of: //math/floor_sum/monoid_floor_sum.hpp
+documentation_of: //math/monoid_floor_sum.hpp
 redirect_from:
-- /math/monoid_floor_sum.hpp.html
+- /math/floor_sum/monoid_floor_sum.hpp.html
+- /lightweight/math/floor_sum/monoid_floor_sum.hpp.html
+library_category: math/floor_sum
 ---
 
 ```cpp
-#include "lib/math/floor_sum/monoid_floor_sum.hpp"
+#include "lib/math/monoid_floor_sum.hpp"
 #include <string>
 
 std::string op(std::string a, std::string b) { return a + b; }

@@ -1,6 +1,6 @@
 #define PROBLEM "https://yukicoder.me/problems/no/3172"
 #define COMB_MAX 200000
-#include "../math/combinatorics/comb.hpp"
+#include "../math/comb.hpp"
 #include <iostream>
 
 int main() {

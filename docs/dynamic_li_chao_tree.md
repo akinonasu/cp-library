@@ -1,13 +1,14 @@
 ---
-title: "Dynamic Li Chao Tree"
-documentation_of: //data_structure/li_chao_tree/dynamic_li_chao_tree.hpp
+title: Dynamic Li Chao Tree
+documentation_of: //data_structure/dynamic_li_chao_tree.hpp
 redirect_from:
-  - /data_structure/dynamic_li_chao_tree.hpp.html
-  - /lightweight/data_structure/dynamic_li_chao_tree.hpp.html
+- /data_structure/li_chao_tree/dynamic_li_chao_tree.hpp.html
+- /lightweight/data_structure/li_chao_tree/dynamic_li_chao_tree.hpp.html
+library_category: data_structure/li_chao_tree
 ---
 
 ```cpp
-#include "lib/data_structure/li_chao_tree/dynamic_li_chao_tree.hpp"
+#include "lib/data_structure/dynamic_li_chao_tree.hpp"
 
 DynamicLiChaoTree<> tree(-1000000000LL, 1000000001LL);
 tree.add_line(2, 1);
@@ -34,7 +35,7 @@ if (value) {
 | `clear()` | 座標範囲と確保領域を残して全ての直線・線分を削除 | $$O(N)$$ |
 | `value_type` / `bound_type` | 評価値の型／区間端点の型 | —（型） |
 
-クエリ座標の事前登録は不要で、追加・クエリをオンラインで処理します。`query(x)` の `x` は指定した座標範囲内である必要があります。直線の削除は行いません。座標を全て先読みできる場合は [Li Chao Tree (クエリ先読み)](https://qandori.github.io/cp-library/data_structure/li_chao_tree/li_chao_tree.hpp.html) も使えます。
+クエリ座標の事前登録は不要で、追加・クエリをオンラインで処理します。`query(x)` の `x` は指定した座標範囲内である必要があります。直線の削除は行いません。座標を全て先読みできる場合は [Li Chao Tree (クエリ先読み)](https://qandori.github.io/cp-library/data_structure/li_chao_tree.hpp.html) も使えます。
 
 `DynamicLiChaoTree<T, true>` では最大値を返します。`T` は座標と係数に使う 64 bit 以下の符号付き整数型で、既定は `std::int64_t` です。浮動小数点座標は扱いません。
 

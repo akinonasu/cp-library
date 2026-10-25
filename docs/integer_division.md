@@ -1,12 +1,16 @@
 ---
 title: 整数除算の切り下げ・切り上げ
-documentation_of: //math/util/integer_division.hpp
+documentation_of: //math/integer_division.hpp
+library_category: math/util
+redirect_from:
+- /math/util/integer_division.hpp.html
+- /lightweight/math/util/integer_division.hpp.html
 ---
 
 整数の商を負の無限大・正の無限大の方向に丸めます。負の被除数・除数にも使えます。
 
 ```cpp
-#include "lib/math/util/integer_division.hpp"
+#include "lib/math/integer_division.hpp"
 #include <cassert>
 #include <cstdint>
 #include <limits>

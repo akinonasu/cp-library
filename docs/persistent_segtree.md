@@ -1,15 +1,18 @@
 ---
 title: 永続セグメント木
-documentation_of: //data_structure/persistent/persistent_segtree.hpp
+documentation_of: //data_structure/persistent_segtree.hpp
 redirect_from:
-  - /data_structure/segment_tree/persistent_segtree.hpp.html
-  - /lightweight/data_structure/segment_tree/persistent_segtree.hpp.html
+- /data_structure/segment_tree/persistent_segtree.hpp.html
+- /lightweight/data_structure/segment_tree/persistent_segtree.hpp.html
+- /data_structure/persistent/persistent_segtree.hpp.html
+- /lightweight/data_structure/persistent/persistent_segtree.hpp.html
+library_category: data_structure/persistent
 ---
 
 配列の過去の状態を残したまま、一点更新・区間積・境界探索を行います。任意の過去版から分岐でき、別の版の区間をコピーすることもできます。遅延伝搬による区間更新は扱いません。
 
 ```cpp
-#include "lib/data_structure/persistent/persistent_segtree.hpp"
+#include "lib/data_structure/persistent_segtree.hpp"
 #include <cassert>
 #include <vector>
 

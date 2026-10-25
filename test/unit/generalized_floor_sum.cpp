@@ -1,4 +1,4 @@
-#include "math/floor_sum/generalized_floor_sum.hpp"
+#include "math/generalized_floor_sum.hpp"
 #include "math/mint.hpp"
 #include <algorithm>
 #include <array>

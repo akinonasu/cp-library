@@ -1,12 +1,16 @@
 ---
-title: "更新付き Mo's Algorithm"
-documentation_of: //data_structure/range_query/mo_with_updates.hpp
+title: 更新付き Mo's Algorithm
+documentation_of: //data_structure/mo_with_updates.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/mo_with_updates.hpp.html
+- /lightweight/data_structure/range_query/mo_with_updates.hpp.html
 ---
 
 配列の一点更新と区間の問い合わせを入力順に登録し、区間と時刻を動かして一括処理します。値の保持、更新前後の値、答えの計算は呼び出し側で用意します。
 
 ```cpp
-#include "lib/data_structure/range_query/mo_with_updates.hpp"
+#include "lib/data_structure/mo_with_updates.hpp"
 #include <vector>
 
 int main() {

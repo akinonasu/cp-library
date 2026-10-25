@@ -1,4 +1,4 @@
-#include "math/number_theory/totient_sum.hpp"
+#include "math/totient_sum.hpp"
 #include "math/mint.hpp"
 #include "test/fixtures/multiplicative_prefix_sum_types.hpp"
 #include <cassert>

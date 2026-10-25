@@ -1,4 +1,4 @@
-#include "math/number_theory/multiplicative_prefix_sum.hpp"
+#include "math/multiplicative_prefix_sum.hpp"
 #include "math/mint.hpp"
 #include "test/fixtures/multiplicative_prefix_sum_types.hpp"
 #include <array>

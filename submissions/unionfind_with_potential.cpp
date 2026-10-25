@@ -1,6 +1,6 @@
 #line 1 "test/weighted_union_find.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/unionfind_with_potential"
-#line 1 "data_structure/union_find/weighted_union_find.hpp"
+#line 1 "data_structure/weighted_union_find.hpp"
 
 
 

@@ -1,6 +1,6 @@
 #line 1 "test/min_of_mod_of_linear.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/min_of_mod_of_linear"
-#line 1 "math/floor_sum/min_of_mod_of_linear.hpp"
+#line 1 "math/min_of_mod_of_linear.hpp"
 
 
 

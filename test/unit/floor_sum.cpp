@@ -1,4 +1,4 @@
-#include "math/floor_sum/floor_sum.hpp"
+#include "math/floor_sum.hpp"
 #include <array>
 #include <cassert>
 #include <cstdint>

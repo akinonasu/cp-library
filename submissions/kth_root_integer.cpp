@@ -1,6 +1,6 @@
 #line 1 "test/kth_root.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/kth_root_integer"
-#line 1 "math/number_theory/kth_root.hpp"
+#line 1 "math/kth_root.hpp"
 
 
 

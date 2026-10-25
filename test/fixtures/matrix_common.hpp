@@ -2,7 +2,7 @@
 #define TEST_MATRIX_COMMON_HPP
 
 #include "components/fast_io.hpp"
-#include "math/linear_algebra/matrix.hpp"
+#include "math/matrix.hpp"
 #include "math/mint.hpp"
 
 inline Matrix<mint> read_matrix(FastInput &in, int n, int m) {

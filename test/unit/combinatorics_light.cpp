@@ -1,10 +1,10 @@
 #define COMB_MAX 200
-#include "math/combinatorics/comb_light.hpp"
-#include "math/combinatorics/binomial_prefix_sum_light.hpp"
-#include "math/combinatorics/binomial_prefix_sum_incremental_light.hpp"
-#include "math/combinatorics/comb.hpp"
-#include "math/combinatorics/binomial_prefix_sum.hpp"
-#include "math/combinatorics/binomial_prefix_sum_incremental.hpp"
+#include "math/comb_light.hpp"
+#include "math/binomial_prefix_sum_light.hpp"
+#include "math/binomial_prefix_sum_incremental_light.hpp"
+#include "math/comb.hpp"
+#include "math/binomial_prefix_sum.hpp"
+#include "math/binomial_prefix_sum_incremental.hpp"
 #include "test/fixtures/comb_modint_types.hpp"
 #include <random>
 

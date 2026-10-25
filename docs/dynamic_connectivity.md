@@ -1,12 +1,15 @@
 ---
 title: Online Dynamic Connectivity
-documentation_of: //graph/connectivity/dynamic_connectivity.hpp
+documentation_of: //graph/dynamic_connectivity.hpp
 redirect_from:
 - /data_structure/dynamic_connectivity.hpp.html
+- /graph/connectivity/dynamic_connectivity.hpp.html
+- /lightweight/graph/connectivity/dynamic_connectivity.hpp.html
+library_category: graph/connectivity
 ---
 
 ```cpp
-#include "lib/graph/connectivity/dynamic_connectivity.hpp"
+#include "lib/graph/dynamic_connectivity.hpp"
 
 DynamicConnectivity<> graph(5);
 graph.link(0, 1);
@@ -33,7 +36,7 @@ bool connected = graph.same(0, 2);
 連結成分の集約が必要な場合は、可換かつ結合則を満たす演算 `op` と単位元 `e()` を指定します。
 
 ```cpp
-#include "lib/graph/connectivity/dynamic_connectivity.hpp"
+#include "lib/graph/dynamic_connectivity.hpp"
 
 std::int64_t op(std::int64_t a, std::int64_t b) { return a + b; }
 std::int64_t e() { return 0; }

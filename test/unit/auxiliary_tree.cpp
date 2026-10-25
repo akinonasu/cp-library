@@ -1,6 +1,6 @@
 #include "tree/auxiliary_tree.hpp"
 #include "tree/lca.hpp"
-#include "data_structure/advanced/hld.hpp"
+#include "data_structure/hld.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <numeric>

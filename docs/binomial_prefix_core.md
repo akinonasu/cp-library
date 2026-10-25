@@ -1,9 +1,9 @@
 ---
-title: "二項係数の prefix sum の内部演算"
+title: 二項係数の prefix sum の内部演算
 documentation_of: //components/binomial_prefix_core.hpp
 ---
 
-[二項係数の prefix sum](https://qandori.github.io/cp-library/math/combinatorics/binomial_prefix_sum.hpp.html) の共通部品です。`binomial_prefix_detail::Table<Mint>` を使います。
+[二項係数の prefix sum](https://qandori.github.io/cp-library/math/binomial_prefix_sum.hpp.html) の共通部品です。`binomial_prefix_detail::Table<Mint>` を使います。
 
 | 操作・メンバ | 内容・返り値 | 計算量 |
 | --- | --- | --- |

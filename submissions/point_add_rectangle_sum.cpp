@@ -1,6 +1,6 @@
 #line 1 "test/weighted_wavelet_matrix_rectangle.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/point_add_rectangle_sum"
-#line 1 "data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"
+#line 1 "data_structure/weighted_wavelet_matrix.hpp"
 
 
 
@@ -308,7 +308,7 @@ class FenwickSum {
 };
 
 
-#line 7 "data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp"
+#line 7 "data_structure/weighted_wavelet_matrix.hpp"
 #include <numeric>
 
 template <class T = std::int64_t, class Count = std::int64_t,

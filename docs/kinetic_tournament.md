@@ -1,14 +1,17 @@
 ---
-title: "Kinetic Tournament (固定係数昇順・更新係数非負)"
-documentation_of: //data_structure/advanced/kinetic_tournament.hpp
+title: Kinetic Tournament (固定係数昇順・更新係数非負)
+documentation_of: //data_structure/kinetic_tournament.hpp
 redirect_from:
 - /data_structure/segment_tree/kinetic_tournament.hpp.html
+- /data_structure/advanced/kinetic_tournament.hpp.html
+- /lightweight/data_structure/advanced/kinetic_tournament.hpp.html
+library_category: data_structure/advanced
 ---
 
 固定した昇順の係数列 $$V$$ と値の列 $$W$$ を管理します。区間内で $$W_i\gets W_i+aV_i+b$$ とする更新と、区間の最大値・その添字を求めます。$$a\geq0$$ が必要です。$$b$$ は負でも構いません。[JSC2024 決勝 D の公式解説](https://atcoder.jp/contests/jsc2024-final/editorial/10766)で使われる、区間加算を扱う Segtree Beats です。
 
 ```cpp
-#include "lib/data_structure/advanced/kinetic_tournament.hpp"
+#include "lib/data_structure/kinetic_tournament.hpp"
 
 int main() {
 	std::vector<std::int64_t> coefficients{1, 3, 5};

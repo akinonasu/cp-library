@@ -13,12 +13,12 @@ from affected import LIBRARIES, SourceTree, build_affected_plan, checked_source,
 from no_cache_route import select_event
 
 
-PRODUCTS = {"components/dynamic_bit_vector.hpp", "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"}
+PRODUCTS = {"components/dynamic_bit_vector.hpp", "data_structure/dynamic_wavelet_matrix.hpp"}
 REQUIRED_UNITS = {"test/unit/" + name + ".cpp" for name in (
     "dynamic_bit_vector", "dynamic_wavelet_core", "dynamic_wavelet_count",
     "dynamic_wavelet_matrix", "standalone",
 )}
-MATRIX_PRODUCTS = {"components/matrix_arithmetic.hpp", "math/linear_algebra/matrix.hpp"}
+MATRIX_PRODUCTS = {"components/matrix_arithmetic.hpp", "math/matrix.hpp"}
 MATRIX_REQUIRED_UNITS = {"test/unit/" + name + ".cpp" for name in (
     "matrix", "matrix_characteristic", "standalone",
 )}

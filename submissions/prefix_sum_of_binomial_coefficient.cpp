@@ -1,6 +1,6 @@
 #line 1 "test/binomial_prefix_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/prefix_sum_of_binomial_coefficient"
-#line 1 "math/combinatorics/binomial_prefix_sum.hpp"
+#line 1 "math/binomial_prefix_sum.hpp"
 
 
 #include <cmath>
@@ -5791,7 +5791,7 @@ template<class Mint> class Polynomial : public binomial_prefix_detail::Polynomia
 }
 
 
-#line 7 "math/combinatorics/binomial_prefix_sum.hpp"
+#line 7 "math/binomial_prefix_sum.hpp"
 
 template<class Mint = mint> class BinomialPrefixSum {
 	binomial_prefix_detail::Table<Mint> table_;

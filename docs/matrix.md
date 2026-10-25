@@ -1,12 +1,14 @@
 ---
 title: 行列
-documentation_of: //math/linear_algebra/matrix.hpp
+documentation_of: //math/matrix.hpp
 redirect_from:
-- /math/matrix.hpp.html
+- /math/linear_algebra/matrix.hpp.html
+- /lightweight/math/linear_algebra/matrix.hpp.html
+library_category: math/linear_algebra
 ---
 
 ```cpp
-#include "lib/math/linear_algebra/matrix.hpp"
+#include "lib/math/matrix.hpp"
 #include "lib/math/mint.hpp"
 
 Matrix<mint> a = { {1, 2}, {3, 4} };

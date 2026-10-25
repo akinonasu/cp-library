@@ -1,6 +1,6 @@
 #line 1 "test/persistent_lazy_segtree.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/persistent_range_affine_range_sum"
-#line 1 "data_structure/persistent/persistent_lazy_segtree.hpp"
+#line 1 "data_structure/persistent_lazy_segtree.hpp"
 
 
 

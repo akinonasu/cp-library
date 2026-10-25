@@ -1,6 +1,10 @@
 ---
 title: 乗法的関数の prefix sum
-documentation_of: //math/number_theory/multiplicative_prefix_sum.hpp
+documentation_of: //math/multiplicative_prefix_sum.hpp
+library_category: math/number_theory
+redirect_from:
+- /math/number_theory/multiplicative_prefix_sum.hpp.html
+- /lightweight/math/number_theory/multiplicative_prefix_sum.hpp.html
 ---
 
 乗法的関数 $$f$$ の $$\displaystyle F(x)=\sum_{i=1}^x f(i)$$ を計算します。`f(1) = 1` とし、互いに素な $$a,b$$ について $$f(ab)=f(a)f(b)$$ を満たす関数が対象です。上限を含み、`F(0) = 0` です。
@@ -8,7 +12,7 @@ documentation_of: //math/number_theory/multiplicative_prefix_sum.hpp
 例えば、オイラーのトーティエント関数の和は次のように求められます。
 
 ```cpp
-#include "lib/math/number_theory/multiplicative_prefix_sum.hpp"
+#include "lib/math/multiplicative_prefix_sum.hpp"
 #include "lib/math/mint.hpp"
 
 MultiplicativePrefixSum<mint> sieve(100);

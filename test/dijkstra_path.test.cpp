@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/shortest_path"
-#include "../graph/shortest_path/dijkstra.hpp"
+#include "../graph/dijkstra.hpp"
 #include "../components/fast_io_bulk.hpp"
 #include <cstdint>
 #include <array>

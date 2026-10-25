@@ -3,7 +3,7 @@ title: Dynamic Quad Vector
 documentation_of: //components/dynamic_quad_vector.hpp
 ---
 
-[Dynamic Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp.html) の内部部品です。`dynamic_wavelet_detail::QuadVector<Block,Branch>` は 0・1・2・3 の列を保持し、任意位置への挿入・削除・代入と順位検索を行います。通常は公開クラスの `DynamicWaveletMatrix` を使います。
+[Dynamic Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/dynamic_wavelet_matrix.hpp.html) の内部部品です。`dynamic_wavelet_detail::QuadVector<Block,Branch>` は 0・1・2・3 の列を保持し、任意位置への挿入・削除・代入と順位検索を行います。通常は公開クラスの `DynamicWaveletMatrix` を使います。
 
 各葉では下位・上位 bit を別々の 64 bit word 列に詰め、word ごとの4種類の累積個数を保持します。4種類の累積個数は同じ word のものを隣接させ、64 bit の加減算で更新します。葉の既定容量は1024個、内部木は既定で32分木です。Dynamic Wavelet Matrix 内では葉の容量を8192個にしています。子の長さと桁値ごとの累積個数を持ち、順位の検索と更新を行います。均一な配列の構築は word をまとめて埋めます。空いた葉・内部ノードの領域は再利用し、全要素が同じ桁値の場合は木の検索を省きます。
 

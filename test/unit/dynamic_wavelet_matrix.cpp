@@ -1,5 +1,5 @@
-#include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
-#include "data_structure/wavelet_matrix/wavelet_matrix.hpp"
+#include "data_structure/dynamic_wavelet_matrix.hpp"
+#include "data_structure/wavelet_matrix.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>

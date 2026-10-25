@@ -1,4 +1,4 @@
-#include "data_structure/advanced/partially_retroactive_priority_queue.hpp"
+#include "data_structure/partially_retroactive_priority_queue.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <map>

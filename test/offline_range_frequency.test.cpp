@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_frequency"
-#include "../data_structure/range_query/offline_range_frequency.hpp"
+#include "../data_structure/offline_range_frequency.hpp"
 #include "../components/fast_io_bulk.hpp"
 #include <cstdint>
 #include <vector>

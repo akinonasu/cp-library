@@ -1,15 +1,16 @@
 ---
 title: Rollback Union Find
-documentation_of: //data_structure/union_find/rollback_union_find.hpp
+documentation_of: //data_structure/rollback_union_find.hpp
 redirect_from:
-  - /data_structure/rollback_union_find.hpp.html
-  - /lightweight/data_structure/rollback_union_find.hpp.html
+- /data_structure/union_find/rollback_union_find.hpp.html
+- /lightweight/data_structure/union_find/rollback_union_find.hpp.html
+library_category: data_structure/union_find
 ---
 
 頂点を併合し、後から追加順の逆に取り消せる Union Find です。オフラインの動的連結性や、分岐する状態を DFS で調べるときに使えます。
 
 ```cpp
-#include "lib/data_structure/union_find/rollback_union_find.hpp"
+#include "lib/data_structure/rollback_union_find.hpp"
 #include <cassert>
 
 int main() {

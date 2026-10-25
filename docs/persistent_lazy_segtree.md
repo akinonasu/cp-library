@@ -1,15 +1,18 @@
 ---
 title: 永続遅延セグメント木
-documentation_of: //data_structure/persistent/persistent_lazy_segtree.hpp
+documentation_of: //data_structure/persistent_lazy_segtree.hpp
 redirect_from:
-  - /data_structure/segment_tree/persistent_lazy_segtree.hpp.html
-  - /lightweight/data_structure/segment_tree/persistent_lazy_segtree.hpp.html
+- /data_structure/segment_tree/persistent_lazy_segtree.hpp.html
+- /lightweight/data_structure/segment_tree/persistent_lazy_segtree.hpp.html
+- /data_structure/persistent/persistent_lazy_segtree.hpp.html
+- /lightweight/data_structure/persistent/persistent_lazy_segtree.hpp.html
+library_category: data_structure/persistent
 ---
 
 区間更新・区間積・境界探索を過去版ごとに行います。任意の過去版から分岐でき、別の版の同じ区間をコピーできます。一点更新だけなら [永続セグメント木](persistent_segtree.md) を使えます。
 
 ```cpp
-#include "lib/data_structure/persistent/persistent_lazy_segtree.hpp"
+#include "lib/data_structure/persistent_lazy_segtree.hpp"
 #include <cassert>
 
 struct F { long long a, b; };

@@ -1,13 +1,15 @@
 ---
 title: 階乗・逆階乗と二項係数
-documentation_of: //math/combinatorics/comb.hpp
+documentation_of: //math/comb.hpp
 redirect_from:
-- /math/comb.hpp.html
+- /math/combinatorics/comb.hpp.html
+- /lightweight/math/combinatorics/comb.hpp.html
+library_category: math/combinatorics
 ---
 
 ```cpp
 #define COMB_MAX 500000
-#include "lib/math/combinatorics/comb.hpp"
+#include "lib/math/comb.hpp"
 
 int main() {
 	assert(comb(10, 3).val() == 120);
@@ -37,7 +39,7 @@ modint 型を一度指定して `comb(n,k)`・`fact[i]`・`finv[i]` の書き方
 ```cpp
 #define COMB_MAX 500000
 #include <atcoder/modint>
-#include "lib/math/combinatorics/comb.hpp"
+#include "lib/math/comb.hpp"
 
 int main() {
 	using M = atcoder::modint1000000007;

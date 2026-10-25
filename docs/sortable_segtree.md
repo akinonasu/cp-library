@@ -1,12 +1,14 @@
 ---
 title: Sortable Segtree
-documentation_of: //data_structure/segment_tree/sortable_segtree.hpp
+documentation_of: //data_structure/sortable_segtree.hpp
 redirect_from:
-- /data_structure/sortable_segtree.hpp.html
+- /data_structure/segment_tree/sortable_segtree.hpp.html
+- /lightweight/data_structure/segment_tree/sortable_segtree.hpp.html
+library_category: data_structure/segment_tree
 ---
 
 ```cpp
-#include "lib/data_structure/segment_tree/sortable_segtree.hpp"
+#include "lib/data_structure/sortable_segtree.hpp"
 
 long long op(long long a, long long b) { return a + b; }
 long long e() { return 0; }

@@ -1,4 +1,4 @@
-#include "math/combinatorics/binomial_prefix_sum.hpp"
+#include "math/binomial_prefix_sum.hpp"
 #include "test/fixtures/binomial_prefix_sum_reference.hpp"
 #include <random>
 

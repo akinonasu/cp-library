@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/stern_brocot_tree"
-#include "../math/number_theory/stern_brocot_tree.hpp"
+#include "../math/stern_brocot_tree.hpp"
 #include "../components/fast_io.hpp"
 #include <array>
 #include <cstdint>

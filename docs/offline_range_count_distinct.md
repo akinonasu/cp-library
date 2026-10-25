@@ -1,10 +1,14 @@
 ---
 title: 区間の異なる値の個数（クエリ一括処理）
-documentation_of: //data_structure/range_query/offline_range_count_distinct.hpp
+documentation_of: //data_structure/offline_range_count_distinct.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/offline_range_count_distinct.hpp.html
+- /lightweight/data_structure/range_query/offline_range_count_distinct.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/range_query/offline_range_count_distinct.hpp"
+#include "lib/data_structure/offline_range_count_distinct.hpp"
 
 OfflineRangeCountDistinct<int> query(std::vector<int>{2, 1, 2, 3});
 query.add_query(0, 3);

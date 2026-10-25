@@ -8,7 +8,7 @@
 #include <limits>
 #include <vector>
 
-#include "../math/number_theory/factorize.hpp"
+#include "../math/factorize.hpp"
 #include "../components/convolution_dispatch.hpp"
 
 template <class T>

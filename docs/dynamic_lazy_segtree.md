@@ -1,6 +1,10 @@
 ---
 title: Dynamic Lazy Segtree
-documentation_of: //data_structure/segment_tree/dynamic_lazy_segtree.hpp
+documentation_of: //data_structure/dynamic_lazy_segtree.hpp
+library_category: data_structure/segment_tree
+redirect_from:
+- /data_structure/segment_tree/dynamic_lazy_segtree.hpp.html
+- /lightweight/data_structure/segment_tree/dynamic_lazy_segtree.hpp.html
 ---
 
 巨大な整数座標の列に対する区間更新と区間集約を扱います。区間は全て半開区間です。更新で必要になったノードだけを作り、座標を事前に集めずに使えます。取得と境界探索ではノードを作成せず、内部状態も変更しません。
@@ -8,7 +12,7 @@ documentation_of: //data_structure/segment_tree/dynamic_lazy_segtree.hpp
 次は、最初は全要素が 0 の列に対する区間加算・区間和です。`S` に和と区間の長さを保持し、`initial(l,r)` で未更新区間の集約値を返します。
 
 ```cpp
-#include "lib/data_structure/segment_tree/dynamic_lazy_segtree.hpp"
+#include "lib/data_structure/dynamic_lazy_segtree.hpp"
 
 struct S { long long sum, length; };
 S op(S a, S b) { return {a.sum + b.sum, a.length + b.length}; }

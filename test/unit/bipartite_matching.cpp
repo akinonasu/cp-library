@@ -1,4 +1,4 @@
-#include "graph/matching/bipartite_matching.hpp"
+#include "graph/bipartite_matching.hpp"
 #include <cstdlib>
 #include <functional>
 #include <random>

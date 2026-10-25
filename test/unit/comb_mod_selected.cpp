@@ -1,4 +1,4 @@
-#include "math/combinatorics/comb_mod.hpp"
+#include "math/comb_mod.hpp"
 #include "../fixtures/comb_modint_types.hpp"
 #include <cassert>
 #include <type_traits>

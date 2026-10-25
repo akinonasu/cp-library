@@ -1,6 +1,6 @@
 #line 1 "test/stern_brocot_tree.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/stern_brocot_tree"
-#line 1 "math/number_theory/stern_brocot_tree.hpp"
+#line 1 "math/stern_brocot_tree.hpp"
 
 
 
@@ -28,9 +28,9 @@ public:
 }
 
 
-#line 5 "math/number_theory/stern_brocot_tree.hpp"
+#line 5 "math/stern_brocot_tree.hpp"
 #include <algorithm>
-#line 8 "math/number_theory/stern_brocot_tree.hpp"
+#line 8 "math/stern_brocot_tree.hpp"
 #include <cstdint>
 #include <limits>
 #include <optional>

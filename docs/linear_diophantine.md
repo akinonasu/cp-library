@@ -1,6 +1,10 @@
 ---
 title: 区間制約付き一次不定方程式
-documentation_of: //math/util/linear_diophantine.hpp
+documentation_of: //math/linear_diophantine.hpp
+library_category: math/util
+redirect_from:
+- /math/util/linear_diophantine.hpp.html
+- /lightweight/math/util/linear_diophantine.hpp.html
 ---
 
 $$ax+by=c,\qquad x_l\le x<x_r,\qquad y_l\le y<y_r$$
@@ -8,7 +12,7 @@ $$ax+by=c,\qquad x_l\le x<x_r,\qquad y_l\le y<y_r$$
 を満たす整数の組 $$(x,y)$$ を求めます。係数と区間端点は負でも構いません。解を列挙する配列を持たずに、個数と辞書順で指定した解を取得できます。
 
 ```cpp
-#include "lib/math/util/linear_diophantine.hpp"
+#include "lib/math/linear_diophantine.hpp"
 #include <cassert>
 #include <cstdint>
 #include <utility>

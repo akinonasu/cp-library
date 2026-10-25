@@ -198,7 +198,7 @@ int main() {
             path = Path(temporary) / 'fps_matrix.cpp'
             for light in (False, True):
                 with self.subTest(lightweight=light):
-                    header = 'math/linear_algebra/matrix_light.hpp' if light else 'math/linear_algebra/matrix.hpp'
+                    header = 'math/matrix_light.hpp' if light else 'math/matrix.hpp'
                     polynomial = 'fps/fps_light.hpp' if light else 'fps/fps.hpp'
                     source = '#include "' + header + '"\n#include "' + polynomial + '"\n'
                     source += program.replace('POLYNOMIAL', 'light_fps' if light else 'fps').replace('MATRIX', 'LightMatrix' if light else 'Matrix')

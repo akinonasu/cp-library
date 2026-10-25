@@ -13,7 +13,7 @@ main_libraries:
   - components/ntt_mod.hpp
   - components/ntt.hpp
 implementation_variants:
-  math/linear_algebra/matrix.hpp: math/linear_algebra/matrix_light.hpp
+  math/matrix.hpp: math/matrix_light.hpp
   fps/fps.hpp: fps/fps_light.hpp
   fps/taylor_shift.hpp: fps/fps_light_algorithms.hpp
   fps/bostan_mori.hpp: fps/fps_light_algorithms.hpp
@@ -38,14 +38,14 @@ implementation_variants:
   convolution/max_min_convolution.hpp: convolution/max_min_convolution_light.hpp
   convolution/online_convolution.hpp: convolution/online_convolution_light.hpp
   convolution/multivariate_convolution.hpp: convolution/multivariate_convolution_light.hpp
-  math/combinatorics/comb.hpp: math/combinatorics/comb_light.hpp
-  math/combinatorics/binomial_prefix_sum.hpp: math/combinatorics/binomial_prefix_sum_light.hpp
-  math/combinatorics/binomial_prefix_sum_incremental.hpp: math/combinatorics/binomial_prefix_sum_incremental_light.hpp
+  math/comb.hpp: math/comb_light.hpp
+  math/binomial_prefix_sum.hpp: math/binomial_prefix_sum_light.hpp
+  math/binomial_prefix_sum_incremental.hpp: math/binomial_prefix_sum_incremental_light.hpp
   components/binomial_prefix_core.hpp: components/binomial_prefix_core_light.hpp
   components/binomial_prefix_polynomial.hpp: components/binomial_prefix_polynomial_light.hpp
   components/factorial_table.hpp: components/factorial_table_light.hpp
 implementation_variant_apis:
-  math/linear_algebra/matrix.hpp: LightMatrix<T>
+  math/matrix.hpp: LightMatrix<T>
   fps/taylor_shift.hpp: light_fps_algorithms::taylor_shift
   fps/bostan_mori.hpp: light_fps_algorithms::bostan_mori
   fps/linear_recurrence.hpp: light_fps_algorithms::linear_recurrence
@@ -63,9 +63,9 @@ implementation_variant_apis:
   convolution/max_min_convolution.hpp: light_convolution::max_min_convolution
   convolution/online_convolution.hpp: LightOnlineConvolution
   convolution/multivariate_convolution.hpp: light_convolution::multivariate_convolution
-  math/combinatorics/comb.hpp: light_combinatorics::comb
-  math/combinatorics/binomial_prefix_sum.hpp: light_combinatorics::BinomialPrefixSum
-  math/combinatorics/binomial_prefix_sum_incremental.hpp: light_combinatorics::IncrementalBinomialPrefixSum
+  math/comb.hpp: light_combinatorics::comb
+  math/binomial_prefix_sum.hpp: light_combinatorics::BinomialPrefixSum
+  math/binomial_prefix_sum_incremental.hpp: light_combinatorics::IncrementalBinomialPrefixSum
 kramdown:
   math_engine: mathjax
 exclude:

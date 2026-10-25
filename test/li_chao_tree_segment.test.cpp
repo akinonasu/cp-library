@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/segment_add_get_min"
-#include "../data_structure/li_chao_tree/li_chao_tree.hpp"
+#include "../data_structure/li_chao_tree.hpp"
 #include "../components/radix_sort.hpp"
 #include <bit>
 #include <algorithm>

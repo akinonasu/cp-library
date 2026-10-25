@@ -1,12 +1,16 @@
 ---
 title: 二部グラフ（自動色分け）
-documentation_of: //graph/matching/bipartite_graph.hpp
+documentation_of: //graph/bipartite_graph.hpp
+library_category: graph/matching
+redirect_from:
+- /graph/matching/bipartite_graph.hpp.html
+- /lightweight/graph/matching/bipartite_graph.hpp.html
 ---
 
 無向グラフの隣接リスト `vector<vector<int>>` を渡し、二部判定・色分け・最大マッチング・最大独立集合・最小頂点被覆を求めます。左右の頂点番号を付け直す必要はなく、結果はすべて元の頂点番号です。
 
 ```cpp
-#include "lib/graph/matching/bipartite_graph.hpp"
+#include "lib/graph/bipartite_graph.hpp"
 
 int main() {
 	std::vector<std::vector<int>> g(5);

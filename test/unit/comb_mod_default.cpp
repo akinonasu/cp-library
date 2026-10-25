@@ -1,6 +1,6 @@
 #define COMB_MAX 200
-#include "math/combinatorics/comb_mod.hpp"
-#include "math/combinatorics/comb.hpp"
+#include "math/comb_mod.hpp"
+#include "math/comb.hpp"
 #include "math/modint.hpp"
 #include <cassert>
 

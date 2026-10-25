@@ -1,4 +1,4 @@
-#include "math/util/integer_division.hpp"
+#include "math/integer_division.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 #include <array>
 #include <bit>

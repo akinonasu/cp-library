@@ -1,6 +1,6 @@
 #line 1 "test/range_add_range_min.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/range_add_range_min"
-#line 1 "data_structure/segment_tree/range_add_range_min.hpp"
+#line 1 "data_structure/range_add_range_min.hpp"
 
 
 
@@ -27,14 +27,14 @@ template<class T, std::size_t Alignment = 64> struct AlignedAllocator {
 };
 
 
-#line 5 "data_structure/segment_tree/range_add_range_min.hpp"
+#line 5 "data_structure/range_add_range_min.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
 #include <cassert>
-#line 10 "data_structure/segment_tree/range_add_range_min.hpp"
+#line 10 "data_structure/range_add_range_min.hpp"
 #include <cstdint>
-#line 12 "data_structure/segment_tree/range_add_range_min.hpp"
+#line 12 "data_structure/range_add_range_min.hpp"
 #include <stdexcept>
 #include <type_traits>
 #include <utility>

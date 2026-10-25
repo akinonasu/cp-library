@@ -1,4 +1,4 @@
-#include "data_structure/advanced/kinetic_tournament.hpp"
+#include "data_structure/kinetic_tournament.hpp"
 #include <iostream>
 #include <random>
 

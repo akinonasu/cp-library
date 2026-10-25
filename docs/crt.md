@@ -1,12 +1,16 @@
 ---
 title: 一般化 CRT
-documentation_of: //math/util/crt.hpp
+documentation_of: //math/crt.hpp
+library_category: math/util
+redirect_from:
+- /math/util/crt.hpp.html
+- /lightweight/math/util/crt.hpp.html
 ---
 
 連立合同式 $$x\equiv r_i\pmod {m_i}$$ を解きます。法が互いに素でなくても使え、剰余は負でも構いません。
 
 ```cpp
-#include "lib/math/util/crt.hpp"
+#include "lib/math/crt.hpp"
 #include <cassert>
 
 const auto a = crt(2, 6, 5, 9);

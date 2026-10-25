@@ -1,12 +1,14 @@
 ---
 title: 素数篩
-documentation_of: //math/number_theory/prime_sieve.hpp
+documentation_of: //math/prime_sieve.hpp
 redirect_from:
-- /math/prime_sieve.hpp.html
+- /math/number_theory/prime_sieve.hpp.html
+- /lightweight/math/number_theory/prime_sieve.hpp.html
+library_category: math/number_theory
 ---
 
 ```cpp
-#include "lib/math/number_theory/prime_sieve.hpp"
+#include "lib/math/prime_sieve.hpp"
 
 auto primes = prime_sieve(10); // {2,3,5,7}
 ```

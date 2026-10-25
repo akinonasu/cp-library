@@ -1,5 +1,5 @@
 #define COMB_MAX 200
-#include "math/combinatorics/comb.hpp"
+#include "math/comb.hpp"
 #include "test/fixtures/comb_modint_types.hpp"
 #include <algorithm>
 #include <cassert>

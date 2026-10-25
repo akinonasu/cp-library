@@ -1,13 +1,17 @@
 ---
 title: modint を指定する階乗・逆階乗と二項係数
-documentation_of: //math/combinatorics/comb_mod.hpp
+documentation_of: //math/comb_mod.hpp
+library_category: math/combinatorics
+redirect_from:
+- /math/combinatorics/comb_mod.hpp.html
+- /lightweight/math/combinatorics/comb_mod.hpp.html
 ---
 
 modint 型を一度指定し、`comb(n,k)`・`fact[i]`・`finv[i]` を使います。
 
 ```cpp
 #include <atcoder/modint>
-#include "lib/math/combinatorics/comb_mod.hpp"
+#include "lib/math/comb_mod.hpp"
 #include <cassert>
 
 int main() {
@@ -22,7 +26,7 @@ int main() {
 
 ```cpp
 #include "lib/math/modint.hpp"
-#include "lib/math/combinatorics/comb_mod.hpp"
+#include "lib/math/comb_mod.hpp"
 #include <cassert>
 
 int main() {

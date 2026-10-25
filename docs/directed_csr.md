@@ -1,5 +1,5 @@
 ---
-title: "有向グラフの CSR"
+title: 有向グラフの CSR
 documentation_of: //components/directed_csr.hpp
 ---
 
@@ -7,7 +7,7 @@ documentation_of: //components/directed_csr.hpp
 
 ```cpp
 #include "lib/components/directed_csr.hpp"
-#include "lib/graph/shortest_path/dijkstra.hpp"
+#include "lib/graph/dijkstra.hpp"
 #include <cstdint>
 #include <vector>
 

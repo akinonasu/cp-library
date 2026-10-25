@@ -1,12 +1,16 @@
 ---
 title: 二項係数の prefix sum（差分更新）
-documentation_of: //math/combinatorics/binomial_prefix_sum_incremental.hpp
+documentation_of: //math/binomial_prefix_sum_incremental.hpp
+library_category: math/combinatorics
+redirect_from:
+- /math/combinatorics/binomial_prefix_sum_incremental.hpp.html
+- /lightweight/math/combinatorics/binomial_prefix_sum_incremental.hpp.html
 ---
 
 $$\displaystyle S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ を、直前のクエリから差分更新して求めます。右端を含みません。クエリは呼び出した順に処理します。
 
 ```cpp
-#include "lib/math/combinatorics/binomial_prefix_sum_incremental.hpp"
+#include "lib/math/binomial_prefix_sum_incremental.hpp"
 
 IncrementalBinomialPrefixSum<> sum(500000);
 auto other = sum;

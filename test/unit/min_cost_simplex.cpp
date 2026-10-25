@@ -1,4 +1,4 @@
-#include "graph/flow/min_cost_flow.hpp"
+#include "graph/min_cost_flow.hpp"
 #include <random>
 
 template<class Cap, class Cost> void check() {

@@ -35,7 +35,7 @@ int main() {
 
 出力は `4 1 2`、`2 1 1` の 2 行です。各行は「元の頂点番号、補助木での親の元の頂点番号、親までの元の辺数」です。頂点 2 と 4 に加え、LCA の頂点 1 が残ります。元の木の頂点 3 は辺の途中にまとめられ、根だった頂点 0 も補助木には入りません。
 
-[LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) または [HLD](https://qandori.github.io/cp-library/data_structure/advanced/hld.hpp.html) を先に `build` してください。その根に基づく LCA を使い、補助木の根は指定頂点全体の LCA になります。
+[LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) または [HLD](https://qandori.github.io/cp-library/data_structure/hld.hpp.html) を先に `build` してください。その根に基づく LCA を使い、補助木の根は指定頂点全体の LCA になります。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

@@ -1,15 +1,18 @@
 ---
 title: Static Top Tree
-documentation_of: //data_structure/advanced/static_top_tree.hpp
+documentation_of: //data_structure/static_top_tree.hpp
 redirect_from:
 - /graph/static_top_tree.hpp.html
 - /tree/static_top_tree.hpp.html
+- /data_structure/advanced/static_top_tree.hpp.html
+- /lightweight/data_structure/advanced/static_top_tree.hpp.html
+library_category: data_structure/advanced
 ---
 
-木の形を固定したまま、頂点・辺の値の変更に合わせて木 DP を更新します。構築済みの [HLD](https://qandori.github.io/cp-library/data_structure/advanced/hld.hpp.html) と、DP の型・演算を渡します。
+木の形を固定したまま、頂点・辺の値の変更に合わせて木 DP を更新します。構築済みの [HLD](https://qandori.github.io/cp-library/data_structure/hld.hpp.html) と、DP の型・演算を渡します。
 
 ```cpp
-#include "lib/data_structure/advanced/static_top_tree.hpp"
+#include "lib/data_structure/static_top_tree.hpp"
 
 struct SumDP {
 	using Vertex = long long;

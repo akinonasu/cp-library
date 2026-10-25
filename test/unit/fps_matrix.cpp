@@ -1,13 +1,13 @@
 #if defined(CP_FPS_MATRIX_LIGHT_FIRST)
-#include "math/linear_algebra/matrix_light.hpp"
+#include "math/matrix_light.hpp"
 #include "fps/fps_light.hpp"
 #include "fps/fps.hpp"
-#include "math/linear_algebra/matrix.hpp"
+#include "math/matrix.hpp"
 #else
-#include "math/linear_algebra/matrix.hpp"
+#include "math/matrix.hpp"
 #include "fps/fps.hpp"
 #include "fps/fps_light.hpp"
-#include "math/linear_algebra/matrix_light.hpp"
+#include "math/matrix_light.hpp"
 #endif
 #include <algorithm>
 #include <cassert>

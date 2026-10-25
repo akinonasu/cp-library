@@ -1,6 +1,6 @@
 #line 1 "test/mod_sqrt.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/sqrt_mod"
-#line 1 "math/number_theory/mod_sqrt.hpp"
+#line 1 "math/mod_sqrt.hpp"
 
 
 
@@ -102,11 +102,11 @@ class SplitMix64 {
 };
 
 
-#line 7 "math/number_theory/mod_sqrt.hpp"
+#line 7 "math/mod_sqrt.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
-#line 12 "math/number_theory/mod_sqrt.hpp"
+#line 12 "math/mod_sqrt.hpp"
 #include <limits>
 #include <optional>
 

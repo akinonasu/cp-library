@@ -1,12 +1,16 @@
 ---
 title: Range LIS Query（区間の最長増加部分列）
-documentation_of: //data_structure/range_query/range_lis_query.hpp
+documentation_of: //data_structure/range_lis_query.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/range_lis_query.hpp.html
+- /lightweight/data_structure/range_query/range_lis_query.hpp.html
 ---
 
 変更のない列に対して、半開区間 `[l,r)` の最長増加部分列の長さを求めます。問い合わせは構築後に順次指定でき、順列以外の列や重複する値にも対応します。
 
 ```cpp
-#include "lib/data_structure/range_query/range_lis_query.hpp"
+#include "lib/data_structure/range_lis_query.hpp"
 
 std::vector<int> a{3, 1, 2, 2, 4};
 RangeLISQuery<> tree(a);

@@ -1,13 +1,17 @@
 ---
-title: "並列二分探索"
-documentation_of: //data_structure/range_query/parallel_binary_search.hpp
+title: 並列二分探索
+documentation_of: //data_structure/parallel_binary_search.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/parallel_binary_search.hpp.html
+- /lightweight/data_structure/range_query/parallel_binary_search.hpp.html
 ---
 
 更新を先頭から順に適用したとき、各問い合わせの条件が初めて成立する更新回数を求めます。複数の二分探索をまとめ、同じ時刻までの更新を共有します。
 
 ```cpp
-#include "lib/data_structure/range_query/parallel_binary_search.hpp"
-#include "lib/data_structure/union_find/union_find.hpp"
+#include "lib/data_structure/parallel_binary_search.hpp"
+#include "lib/data_structure/union_find.hpp"
 #include <vector>
 
 int main() {

@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_lis_query"
-#include "../data_structure/range_query/range_lis_query.hpp"
+#include "../data_structure/range_lis_query.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

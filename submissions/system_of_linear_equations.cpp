@@ -241,7 +241,7 @@ public:
 };
 
 
-#line 1 "math/linear_algebra/matrix.hpp"
+#line 1 "math/matrix.hpp"
 
 
 
@@ -1176,7 +1176,7 @@ struct FrobeniusPower {
 #endif
 
 
-#line 7 "math/linear_algebra/matrix.hpp"
+#line 7 "math/matrix.hpp"
 
 namespace matrix_detail {
 template <class T>
@@ -1587,7 +1587,7 @@ std::optional<std::pair<T, std::vector<T>>> block_inverse(const std::vector<T> &
 }
 
 
-#line 56 "math/linear_algebra/matrix.hpp"
+#line 56 "math/matrix.hpp"
 
 
 #line 1 "math/mint.hpp"

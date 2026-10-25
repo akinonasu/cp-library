@@ -17,7 +17,7 @@
 
 ## ライブラリ
 
-[フォルダの分類](docs/library_layout.md)
+[ヘッダーの配置とサイトの分類](docs/library_layout.md)
 
 ### 変換・基本部品
 
@@ -131,10 +131,10 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `graph/shortest_path/dijkstra.hpp` | Dijkstra・最短経路の復元 | [使い方](docs/dijkstra.md) |
-| `graph/shortest_path/bellman_ford.hpp` | 負辺の最短経路・負閉路の復元 | [使い方](docs/bellman_ford.md) |
-| `graph/shortest_path/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
-| `graph/shortest_path/difference_constraints.hpp` | 牛ゲー（差分制約系）・解の復元・差の上下限 | [使い方](docs/difference_constraints.md) |
+| `graph/dijkstra.hpp` | Dijkstra・最短経路の復元 | [使い方](docs/dijkstra.md) |
+| `graph/bellman_ford.hpp` | 負辺の最短経路・負閉路の復元 | [使い方](docs/bellman_ford.md) |
+| `graph/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
+| `graph/difference_constraints.hpp` | 牛ゲー（差分制約系）・解の復元・差の上下限 | [使い方](docs/difference_constraints.md) |
 
 ### 最小全域木
 
@@ -146,19 +146,19 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `graph/flow/max_flow.hpp` | 最大流・最小カット | [使い方](docs/max_flow.md) |
-| `graph/flow/min_cost_flow.hpp` | 最小費用流・費用曲線 | [使い方](docs/min_cost_flow.md) |
-| `graph/flow/project_selection.hpp` | Project Selection（燃やす埋める） | [使い方](docs/project_selection.md) |
+| `graph/max_flow.hpp` | 最大流・最小カット | [使い方](docs/max_flow.md) |
+| `graph/min_cost_flow.hpp` | 最小費用流・費用曲線 | [使い方](docs/min_cost_flow.md) |
+| `graph/project_selection.hpp` | Project Selection（燃やす埋める） | [使い方](docs/project_selection.md) |
 
 ### マッチング
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `graph/matching/bipartite_graph.hpp` | 二部グラフの自動色分け・最大独立集合・最小頂点被覆 | [使い方](docs/bipartite_graph.md) |
-| `graph/matching/bipartite_matching.hpp` | 二部マッチング・最小頂点被覆・最大独立集合・辺の分類 | [使い方](docs/bipartite_matching.md) |
-| `graph/matching/general_matching.hpp` | General Matching（一般グラフ最大マッチング） | [使い方](docs/general_matching.md) |
-| `graph/matching/general_weighted_matching.hpp` | General Weighted Matching（一般グラフ最大重みマッチング） | [使い方](docs/general_weighted_matching.md) |
-| `graph/matching/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
+| `graph/bipartite_graph.hpp` | 二部グラフの自動色分け・最大独立集合・最小頂点被覆 | [使い方](docs/bipartite_graph.md) |
+| `graph/bipartite_matching.hpp` | 二部マッチング・最小頂点被覆・最大独立集合・辺の分類 | [使い方](docs/bipartite_matching.md) |
+| `graph/general_matching.hpp` | General Matching（一般グラフ最大マッチング） | [使い方](docs/general_matching.md) |
+| `graph/general_weighted_matching.hpp` | General Weighted Matching（一般グラフ最大重みマッチング） | [使い方](docs/general_weighted_matching.md) |
+| `graph/hungarian.hpp` | Hungarian Algorithm（割当問題） | [使い方](docs/hungarian.md) |
 
 ### トポロジカルソート
 
@@ -182,13 +182,13 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `graph/connectivity/dynamic_connectivity.hpp` | Online Dynamic Connectivity | [使い方](docs/dynamic_connectivity.md) |
-| `graph/connectivity/offline_dynamic_connectivity.hpp` | Offline Dynamic Connectivity（クエリ先読み） | [使い方](docs/offline_dynamic_connectivity.md) |
-| `graph/connectivity/scc.hpp` | 強連結成分分解（反復 SCC） | [使い方](docs/scc.md) |
+| `graph/dynamic_connectivity.hpp` | Online Dynamic Connectivity | [使い方](docs/dynamic_connectivity.md) |
+| `graph/offline_dynamic_connectivity.hpp` | Offline Dynamic Connectivity（クエリ先読み） | [使い方](docs/offline_dynamic_connectivity.md) |
+| `graph/scc.hpp` | 強連結成分分解（反復 SCC） | [使い方](docs/scc.md) |
 | `graph/two_sat.hpp` | 2-SAT | [使い方](docs/two_sat.md) |
-| `graph/connectivity/low_link.hpp` | Low-Link | [使い方](docs/low_link.md) |
-| `graph/connectivity/two_edge_connected_components.hpp` | 二辺連結成分分解・橋の森 | [使い方](docs/two_edge_connected_components.md) |
-| `graph/connectivity/block_cut_tree.hpp` | 二重頂点連結成分・Block Cut Tree | [使い方](docs/block_cut_tree.md) |
+| `graph/low_link.hpp` | Low-Link | [使い方](docs/low_link.md) |
+| `graph/two_edge_connected_components.hpp` | 二辺連結成分分解・橋の森 | [使い方](docs/two_edge_connected_components.md) |
+| `graph/block_cut_tree.hpp` | 二重頂点連結成分・Block Cut Tree | [使い方](docs/block_cut_tree.md) |
 
 ### データ構造
 
@@ -210,70 +210,70 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/union_find/union_find.hpp` | Union-Find・連結成分の列挙 | [使い方](docs/union_find.md) |
-| `data_structure/union_find/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
-| `data_structure/union_find/rollback_union_find.hpp` | Rollback Union Find | [使い方](docs/rollback_union_find.md) |
+| `data_structure/union_find.hpp` | Union-Find・連結成分の列挙 | [使い方](docs/union_find.md) |
+| `data_structure/weighted_union_find.hpp` | 重み付き Union-Find | [使い方](docs/weighted_union_find.md) |
+| `data_structure/rollback_union_find.hpp` | Rollback Union Find | [使い方](docs/rollback_union_find.md) |
 
 ### 永続データ構造
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/persistent/persistent_array.hpp` | 永続配列 | [使い方](docs/persistent_array.md) |
-| `data_structure/persistent/persistent_union_find.hpp` | 永続 Union Find | [使い方](docs/persistent_union_find.md) |
-| `data_structure/persistent/persistent_stack.hpp` | 永続スタック・祖先アクセス | [使い方](docs/persistent_stack.md) |
-| `data_structure/persistent/persistent_queue.hpp` | 永続キュー | [使い方](docs/persistent_queue.md) |
-| `data_structure/persistent/persistent_deque.hpp` | 永続 Deque・列の分割連結 | [使い方](docs/persistent_deque.md) |
-| `data_structure/persistent/persistent_multiset.hpp` | 永続順序付き多重集合・順位取得 | [使い方](docs/persistent_multiset.md) |
-| `data_structure/persistent/persistent_heap.hpp` | 永続併合可能ヒープ | [使い方](docs/persistent_heap.md) |
-| `data_structure/persistent/persistent_segtree.hpp` | 永続セグメント木（過去版への更新・区間コピー） | [使い方](docs/persistent_segtree.md) |
-| `data_structure/persistent/persistent_lazy_segtree.hpp` | 永続遅延セグメント木・区間コピー | [使い方](docs/persistent_lazy_segtree.md) |
+| `data_structure/persistent_array.hpp` | 永続配列 | [使い方](docs/persistent_array.md) |
+| `data_structure/persistent_union_find.hpp` | 永続 Union Find | [使い方](docs/persistent_union_find.md) |
+| `data_structure/persistent_stack.hpp` | 永続スタック・祖先アクセス | [使い方](docs/persistent_stack.md) |
+| `data_structure/persistent_queue.hpp` | 永続キュー | [使い方](docs/persistent_queue.md) |
+| `data_structure/persistent_deque.hpp` | 永続 Deque・列の分割連結 | [使い方](docs/persistent_deque.md) |
+| `data_structure/persistent_multiset.hpp` | 永続順序付き多重集合・順位取得 | [使い方](docs/persistent_multiset.md) |
+| `data_structure/persistent_heap.hpp` | 永続併合可能ヒープ | [使い方](docs/persistent_heap.md) |
+| `data_structure/persistent_segtree.hpp` | 永続セグメント木（過去版への更新・区間コピー） | [使い方](docs/persistent_segtree.md) |
+| `data_structure/persistent_lazy_segtree.hpp` | 永続遅延セグメント木・区間コピー | [使い方](docs/persistent_lazy_segtree.md) |
 
 ### Li Chao Tree
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/li_chao_tree/li_chao_tree.hpp` | Li Chao Tree (クエリ先読み) | [使い方](docs/li_chao_tree.md) |
-| `data_structure/li_chao_tree/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
+| `data_structure/li_chao_tree.hpp` | Li Chao Tree (クエリ先読み) | [使い方](docs/li_chao_tree.md) |
+| `data_structure/dynamic_li_chao_tree.hpp` | Dynamic Li Chao Tree | [使い方](docs/dynamic_li_chao_tree.md) |
 
 ### セグメント木
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/segment_tree/range_affine_range_sum.hpp` | 区間アフィン変換・区間和 | [使い方](docs/range_affine_range_sum.md) |
-| `data_structure/segment_tree/range_add_range_min.hpp` | 区間加算・区間最小値 | [使い方](docs/range_add_range_min.md) |
-| `data_structure/segment_tree/segtree.hpp` | セグメント木・一点更新・区間集約・境界検索 | [使い方](docs/segtree.md) |
-| `data_structure/segment_tree/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
-| `data_structure/segment_tree/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
-| `data_structure/segment_tree/range_chmin_chmax_add_sum.hpp` | Range Chmin Chmax Add Sum | [使い方](docs/range_chmin_chmax_add_sum.md) |
-| `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
-| `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
-| `data_structure/segment_tree/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
-| `data_structure/segment_tree/sortable_segtree.hpp` | Sortable Segtree（区間ソート・区間集約） | [使い方](docs/sortable_segtree.md) |
+| `data_structure/range_affine_range_sum.hpp` | 区間アフィン変換・区間和 | [使い方](docs/range_affine_range_sum.md) |
+| `data_structure/range_add_range_min.hpp` | 区間加算・区間最小値 | [使い方](docs/range_add_range_min.md) |
+| `data_structure/segtree.hpp` | セグメント木・一点更新・区間集約・境界検索 | [使い方](docs/segtree.md) |
+| `data_structure/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
+| `data_structure/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
+| `data_structure/range_chmin_chmax_add_sum.hpp` | Range Chmin Chmax Add Sum | [使い方](docs/range_chmin_chmax_add_sum.md) |
+| `data_structure/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
+| `data_structure/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
+| `data_structure/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
+| `data_structure/sortable_segtree.hpp` | Sortable Segtree（区間ソート・区間集約） | [使い方](docs/sortable_segtree.md) |
 
 ### Wavelet Matrix
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/wavelet_matrix/wavelet_matrix.hpp` | Wavelet Matrix | [使い方](docs/wavelet_matrix.md) |
-| `data_structure/wavelet_matrix/weighted_wavelet_matrix.hpp` | 重み更新 Wavelet Matrix | [使い方](docs/weighted_wavelet_matrix.md) |
-| `data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp` | 一点代入 Wavelet Matrix (クエリ先読み) | [使い方](docs/point_set_wavelet_matrix.md) |
-| `data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp` | Dynamic Wavelet Matrix | [使い方](docs/dynamic_wavelet_matrix.md) |
+| `data_structure/wavelet_matrix.hpp` | Wavelet Matrix | [使い方](docs/wavelet_matrix.md) |
+| `data_structure/weighted_wavelet_matrix.hpp` | 重み更新 Wavelet Matrix | [使い方](docs/weighted_wavelet_matrix.md) |
+| `data_structure/point_set_wavelet_matrix.hpp` | 一点代入 Wavelet Matrix (クエリ先読み) | [使い方](docs/point_set_wavelet_matrix.md) |
+| `data_structure/dynamic_wavelet_matrix.hpp` | Dynamic Wavelet Matrix | [使い方](docs/dynamic_wavelet_matrix.md) |
 
 ### 区間クエリ
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/range_query/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
-| `data_structure/range_query/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
-| `data_structure/range_query/parallel_binary_search.hpp` | 並列二分探索・条件が初めて成立する更新回数 | [使い方](docs/parallel_binary_search.md) |
-| `data_structure/range_query/mo_order.hpp` | Mo's Algorithm | [使い方](docs/mo_order.md) |
-| `data_structure/range_query/mo_with_updates.hpp` | 更新付き Mo's Algorithm・一点更新と区間クエリ | [使い方](docs/mo_with_updates.md) |
-| `data_structure/range_query/tree_mo.hpp` | 木上の Mo's Algorithm・頂点値／辺値の経路クエリ | [使い方](docs/tree_mo.md) |
-| `data_structure/range_query/offline_range_frequency.hpp` | 区間頻度（一点更新・クエリ一括処理） | [使い方](docs/offline_range_frequency.md) |
-| `data_structure/range_query/offline_range_count_distinct.hpp` | 区間の異なる値の個数（クエリ一括処理） | [使い方](docs/offline_range_count_distinct.md) |
-| `data_structure/range_query/offline_range_sum.hpp` | 値の上限付き区間和（クエリ一括処理） | [使い方](docs/offline_range_sum.md) |
-| `data_structure/range_query/offline_range_kth_smallest.hpp` | 区間の k 番目の値（クエリ一括処理） | [使い方](docs/offline_range_kth_smallest.md) |
-| `data_structure/range_query/range_lis_query.hpp` | Range LIS Query（区間の最長増加部分列） | [使い方](docs/range_lis_query.md) |
+| `data_structure/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
+| `data_structure/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
+| `data_structure/parallel_binary_search.hpp` | 並列二分探索・条件が初めて成立する更新回数 | [使い方](docs/parallel_binary_search.md) |
+| `data_structure/mo_order.hpp` | Mo's Algorithm | [使い方](docs/mo_order.md) |
+| `data_structure/mo_with_updates.hpp` | 更新付き Mo's Algorithm・一点更新と区間クエリ | [使い方](docs/mo_with_updates.md) |
+| `data_structure/tree_mo.hpp` | 木上の Mo's Algorithm・頂点値／辺値の経路クエリ | [使い方](docs/tree_mo.md) |
+| `data_structure/offline_range_frequency.hpp` | 区間頻度（一点更新・クエリ一括処理） | [使い方](docs/offline_range_frequency.md) |
+| `data_structure/offline_range_count_distinct.hpp` | 区間の異なる値の個数（クエリ一括処理） | [使い方](docs/offline_range_count_distinct.md) |
+| `data_structure/offline_range_sum.hpp` | 値の上限付き区間和（クエリ一括処理） | [使い方](docs/offline_range_sum.md) |
+| `data_structure/offline_range_kth_smallest.hpp` | 区間の k 番目の値（クエリ一括処理） | [使い方](docs/offline_range_kth_smallest.md) |
+| `data_structure/range_lis_query.hpp` | Range LIS Query（区間の最長増加部分列） | [使い方](docs/range_lis_query.md) |
 
 ### 列アルゴリズム
 
@@ -319,62 +319,62 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/util/linear_congruence.hpp` | 一次合同式 ax ≡ b (mod m) の全解 | [使い方](docs/linear_congruence.md) |
-| `math/util/crt.hpp` | 一般化 CRT・連立一次合同式 | [使い方](docs/crt.md) |
-| `math/util/modular_arithmetic.hpp` | 一般の法の剰余累乗・逆元 | [使い方](docs/modular_arithmetic.md) |
-| `math/util/linear_diophantine.hpp` | 区間制約付き一次不定方程式 | [使い方](docs/linear_diophantine.md) |
-| `math/util/integer_division.hpp` | 整数除算の切り下げ・切り上げ | [使い方](docs/integer_division.md) |
-| `math/util/geometric_sum.hpp` | 等比数列の和 | [使い方](docs/geometric_sum.md) |
+| `math/linear_congruence.hpp` | 一次合同式 ax ≡ b (mod m) の全解 | [使い方](docs/linear_congruence.md) |
+| `math/crt.hpp` | 一般化 CRT・連立一次合同式 | [使い方](docs/crt.md) |
+| `math/modular_arithmetic.hpp` | 一般の法の剰余累乗・逆元 | [使い方](docs/modular_arithmetic.md) |
+| `math/linear_diophantine.hpp` | 区間制約付き一次不定方程式 | [使い方](docs/linear_diophantine.md) |
+| `math/integer_division.hpp` | 整数除算の切り下げ・切り上げ | [使い方](docs/integer_division.md) |
+| `math/geometric_sum.hpp` | 等比数列の和 | [使い方](docs/geometric_sum.md) |
 
 ### 整数論
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/number_theory/mod_inv.hpp` | 定数時間 mod inv | [使い方](docs/mod_inv.md) |
-| `math/number_theory/mod_pow.hpp` | 定数時間 mod pow・離散対数 | [使い方](docs/mod_pow.md) |
-| `math/number_theory/mod_sqrt.hpp` | 任意の素数 mod の平方根 | [使い方](docs/mod_sqrt.md) |
-| `math/number_theory/kth_root.hpp` | 64 bit 整数の厳密な k 乗根 | [使い方](docs/kth_root.md) |
-| `math/number_theory/discrete_log.hpp` | 合成数 mod にも対応する離散対数 | [使い方](docs/discrete_log.md) |
-| `math/number_theory/stern_brocot_tree.hpp` | Stern–Brocot Tree・圧縮経路・祖先・LCA | [使い方](docs/stern_brocot_tree.md) |
-| `math/number_theory/factorize.hpp` | 素因数分解・素数判定・約数列挙 | [使い方](docs/factorize.md) |
-| `math/number_theory/multiplicative_divisors.hpp` | 約数ごとの乗法的関数の値 | [使い方](docs/multiplicative_divisors.md) |
-| `math/number_theory/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
-| `math/number_theory/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
-| `math/number_theory/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
-| `math/number_theory/totient_sum.hpp` | Euler φ関数の prefix sum | [使い方](docs/totient_sum.md) |
-| `math/number_theory/multiplicative_prefix_sum.hpp` | 乗法的関数の prefix sum | [使い方](docs/multiplicative_prefix_sum.md) |
+| `math/mod_inv.hpp` | 定数時間 mod inv | [使い方](docs/mod_inv.md) |
+| `math/mod_pow.hpp` | 定数時間 mod pow・離散対数 | [使い方](docs/mod_pow.md) |
+| `math/mod_sqrt.hpp` | 任意の素数 mod の平方根 | [使い方](docs/mod_sqrt.md) |
+| `math/kth_root.hpp` | 64 bit 整数の厳密な k 乗根 | [使い方](docs/kth_root.md) |
+| `math/discrete_log.hpp` | 合成数 mod にも対応する離散対数 | [使い方](docs/discrete_log.md) |
+| `math/stern_brocot_tree.hpp` | Stern–Brocot Tree・圧縮経路・祖先・LCA | [使い方](docs/stern_brocot_tree.md) |
+| `math/factorize.hpp` | 素因数分解・素数判定・約数列挙 | [使い方](docs/factorize.md) |
+| `math/multiplicative_divisors.hpp` | 約数ごとの乗法的関数の値 | [使い方](docs/multiplicative_divisors.md) |
+| `math/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
+| `math/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
+| `math/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
+| `math/totient_sum.hpp` | Euler φ関数の prefix sum | [使い方](docs/totient_sum.md) |
+| `math/multiplicative_prefix_sum.hpp` | 乗法的関数の prefix sum | [使い方](docs/multiplicative_prefix_sum.md) |
 
 ### 組合せ
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/combinatorics/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
-| `math/combinatorics/binomial_prefix_sum_light.hpp` | 軽量版の二項係数 prefix sum | [使い方](docs/binomial_prefix_sum_light.md) |
-| `math/combinatorics/binomial_prefix_sum_incremental.hpp` | 二項係数の prefix sum（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
-| `math/combinatorics/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数 prefix sum 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
-| `math/combinatorics/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
-| `math/combinatorics/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
-| `math/combinatorics/comb_mod.hpp` | modint を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb_mod.md) |
-| `math/combinatorics/comb_light.hpp` | 軽量版の二項係数・階乗表 | [使い方](docs/comb_light.md) |
+| `math/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
+| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数 prefix sum | [使い方](docs/binomial_prefix_sum_light.md) |
+| `math/binomial_prefix_sum_incremental.hpp` | 二項係数の prefix sum（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
+| `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数 prefix sum 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
+| `math/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
+| `math/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
+| `math/comb_mod.hpp` | modint を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb_mod.md) |
+| `math/comb_light.hpp` | 軽量版の二項係数・階乗表 | [使い方](docs/comb_light.md) |
 
 ### Floor Sum
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/floor_sum/floor_sum.hpp` | Floor Sum（一次式の床関数の総和） | [使い方](docs/floor_sum.md) |
-| `math/floor_sum/generalized_floor_sum.hpp` | 一般化 floor sum | [使い方](docs/generalized_floor_sum.md) |
-| `math/floor_sum/monoid_floor_sum.hpp` | monoid floor sum | [使い方](docs/monoid_floor_sum.md) |
-| `math/floor_sum/min_of_mod_of_linear.hpp` | Mod of Linear の最小値 | [使い方](docs/min_of_mod_of_linear.md) |
-| `math/floor_sum/prefix_min_of_mod_of_linear.hpp` | Mod of Linear の prefix minimum の等差数列圧縮 | [使い方](docs/prefix_min_of_mod_of_linear.md) |
-| `math/floor_sum/partition_mod_of_linear.hpp` | Mod of Linear の列の等差数列分割 | [使い方](docs/partition_mod_of_linear.md) |
+| `math/floor_sum.hpp` | Floor Sum（一次式の床関数の総和） | [使い方](docs/floor_sum.md) |
+| `math/generalized_floor_sum.hpp` | 一般化 floor sum | [使い方](docs/generalized_floor_sum.md) |
+| `math/monoid_floor_sum.hpp` | monoid floor sum | [使い方](docs/monoid_floor_sum.md) |
+| `math/min_of_mod_of_linear.hpp` | Mod of Linear の最小値 | [使い方](docs/min_of_mod_of_linear.md) |
+| `math/prefix_min_of_mod_of_linear.hpp` | Mod of Linear の prefix minimum の等差数列圧縮 | [使い方](docs/prefix_min_of_mod_of_linear.md) |
+| `math/partition_mod_of_linear.hpp` | Mod of Linear の列の等差数列分割 | [使い方](docs/partition_mod_of_linear.md) |
 
 ### 線形代数
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/linear_algebra/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
-| `math/linear_algebra/matrix_light.hpp` | 軽量な行列演算 | [使い方](docs/matrix_light.md) |
-| `math/linear_algebra/xor_basis.hpp` | XOR 基底・順序統計・共通部分・復元・ロールバック・区間クエリ | [使い方](docs/xor_basis.md) |
+| `math/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
+| `math/matrix_light.hpp` | 軽量な行列演算 | [使い方](docs/matrix_light.md) |
+| `math/xor_basis.hpp` | XOR 基底・順序統計・共通部分・復元・ロールバック・区間クエリ | [使い方](docs/xor_basis.md) |
 
 ## 補助部品
 
@@ -528,9 +528,9 @@ oj-bundle a.cpp | pbcopy
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/advanced/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
-| `data_structure/advanced/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
-| `data_structure/advanced/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
-| `data_structure/advanced/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負) | [使い方](docs/kinetic_tournament.md) |
-| `data_structure/advanced/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue | [使い方](docs/partially_retroactive_priority_queue.md) |
-| `data_structure/advanced/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue | [使い方](docs/retroactive_priority_queue.md) |
+| `data_structure/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
+| `data_structure/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
+| `data_structure/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
+| `data_structure/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負) | [使い方](docs/kinetic_tournament.md) |
+| `data_structure/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue | [使い方](docs/partially_retroactive_priority_queue.md) |
+| `data_structure/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue | [使い方](docs/retroactive_priority_queue.md) |

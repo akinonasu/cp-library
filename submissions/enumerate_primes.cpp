@@ -1,6 +1,6 @@
 #line 1 "test/enumerate_primes.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/enumerate_primes"
-#line 1 "math/number_theory/prime_sieve.hpp"
+#line 1 "math/prime_sieve.hpp"
 
 
 

@@ -1,6 +1,6 @@
 #line 1 "test/offline_dynamic_connectivity.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum"
-#line 1 "graph/connectivity/offline_dynamic_connectivity.hpp"
+#line 1 "graph/offline_dynamic_connectivity.hpp"
 
 
 
@@ -122,11 +122,11 @@ void stable_radix_sort(std::vector<T> &values, Key key) {
 }
 
 
-#line 1 "data_structure/union_find/rollback_union_find.hpp"
+#line 1 "data_structure/rollback_union_find.hpp"
 
 
 
-#line 8 "data_structure/union_find/rollback_union_find.hpp"
+#line 8 "data_structure/rollback_union_find.hpp"
 
 class RollbackUnionFind {
 	struct Change { int child, size; };
@@ -194,9 +194,9 @@ class RollbackUnionFind {
 };
 
 
-#line 11 "graph/connectivity/offline_dynamic_connectivity.hpp"
+#line 11 "graph/offline_dynamic_connectivity.hpp"
 #include <limits>
-#line 14 "graph/connectivity/offline_dynamic_connectivity.hpp"
+#line 14 "graph/offline_dynamic_connectivity.hpp"
 
 class OfflineDynamicConnectivity {
 	struct Event { std::uint64_t key; int time; std::uint32_t order; };

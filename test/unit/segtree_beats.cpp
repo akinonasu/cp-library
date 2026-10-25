@@ -1,5 +1,5 @@
 #include "../fixtures/beats.hpp"
-#include "data_structure/segment_tree/range_chmin_chmax_add_sum.hpp"
+#include "data_structure/range_chmin_chmax_add_sum.hpp"
 #include <cstdlib>
 #include <numeric>
 #include <random>

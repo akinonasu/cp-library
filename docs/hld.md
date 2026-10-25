@@ -1,13 +1,16 @@
 ---
 title: HLD (Heavy-Light Decomposition)
-documentation_of: //data_structure/advanced/hld.hpp
+documentation_of: //data_structure/hld.hpp
 redirect_from:
 - /graph/hld.hpp.html
 - /tree/hld.hpp.html
+- /data_structure/advanced/hld.hpp.html
+- /lightweight/data_structure/advanced/hld.hpp.html
+library_category: data_structure/advanced
 ---
 
 ```cpp
-#include "lib/data_structure/advanced/hld.hpp"
+#include "lib/data_structure/hld.hpp"
 
 HLD tree(3);
 tree.add_edge(0, 1);
@@ -41,7 +44,7 @@ auto [l, r] = tree.subtree(1);
 親配列がある場合は `build_from_parents(std::vector<int> parents)` を使えます。頂点数は配列の長さとなり、根の親を `-1`、それ以外の親を頂点番号で指定します。根はちょうど 1 頂点で、全頂点が根につながる木である必要があります。頂点番号は任意の順序で構いません。空配列も渡せます。
 
 ```cpp
-#include "lib/data_structure/advanced/hld.hpp"
+#include "lib/data_structure/hld.hpp"
 
 HLD rooted;
 rooted.build_from_parents({-1, 0, 1});

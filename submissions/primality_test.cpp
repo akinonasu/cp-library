@@ -1,6 +1,6 @@
 #line 1 "test/is_prime.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/primality_test"
-#line 1 "math/number_theory/is_prime.hpp"
+#line 1 "math/is_prime.hpp"
 
 
 
@@ -82,10 +82,10 @@ struct Montgomery32 {
 };
 
 
-#line 6 "math/number_theory/is_prime.hpp"
+#line 6 "math/is_prime.hpp"
 #include <array>
 #include <bit>
-#line 9 "math/number_theory/is_prime.hpp"
+#line 9 "math/is_prime.hpp"
 #include <initializer_list>
 
 namespace is_prime_detail {

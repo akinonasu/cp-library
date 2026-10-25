@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/scc"
-#include "graph/connectivity/scc.hpp"
+#include "graph/scc.hpp"
 #include "components/fast_io_bulk.hpp"
 
 int main() {

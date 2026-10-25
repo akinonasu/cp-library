@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_sum_with_upper_bound"
-#include "../data_structure/range_query/offline_range_sum.hpp"
+#include "../data_structure/offline_range_sum.hpp"
 #include "../components/fast_io_bulk.hpp"
 #include <cstdint>
 #include <vector>

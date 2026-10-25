@@ -25,11 +25,11 @@ struct DefaultInitAllocator : std::allocator<T> {
 };
 
 
-#line 1 "data_structure/range_query/sparse_table.hpp"
+#line 1 "data_structure/sparse_table.hpp"
 
 
 
-#line 5 "data_structure/range_query/sparse_table.hpp"
+#line 5 "data_structure/sparse_table.hpp"
 #include <algorithm>
 #include <bit>
 #include <cassert>

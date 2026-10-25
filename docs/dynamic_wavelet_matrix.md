@@ -1,12 +1,14 @@
 ---
 title: Dynamic Wavelet Matrix
-documentation_of: //data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp
+documentation_of: //data_structure/dynamic_wavelet_matrix.hpp
 redirect_from:
-- /data_structure/dynamic_wavelet_matrix.hpp.html
+- /data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp.html
+- /lightweight/data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp.html
+library_category: data_structure/wavelet_matrix
 ---
 
 ```cpp
-#include "lib/data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"
+#include "lib/data_structure/dynamic_wavelet_matrix.hpp"
 
 DynamicWaveletMatrix<int> wm(std::vector<int>{3, 1, 4, 1, 5});
 wm.insert(2, -7);

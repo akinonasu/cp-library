@@ -1,6 +1,6 @@
 #line 1 "test/prime_count.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/counting_primes"
-#line 1 "math/number_theory/prime_count.hpp"
+#line 1 "math/prime_count.hpp"
 
 
 

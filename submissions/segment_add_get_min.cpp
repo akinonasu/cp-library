@@ -1,6 +1,6 @@
 #line 1 "test/li_chao_tree_segment.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/segment_add_get_min"
-#line 1 "data_structure/li_chao_tree/li_chao_tree.hpp"
+#line 1 "data_structure/li_chao_tree.hpp"
 
 
 

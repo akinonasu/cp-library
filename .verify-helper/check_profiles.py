@@ -12,6 +12,7 @@ def check(root):
     manifest = json.loads((destination / 'assets/library-sizes.json').read_text())
     config, _ = split_page(b'---\n' + (root / '.verify-helper/docs/_config.yml').read_bytes() + b'\n---\n')
     headers = {path.relative_to(root).as_posix() for folder in LIBRARIES for path in (root / folder).rglob('*.hpp')}
+    assert all(len(Path(name).parts) == 2 for name in headers), 'Library headers must use only top-level folders'
     assert manifest['limits'] == LIMITS
     assert set(manifest['libraries']) == headers, 'Size inventory does not match library headers'
     actual_full = {path.relative_to(destination).as_posix().removesuffix('.md') for path in destination.rglob('*.hpp.md')
@@ -77,7 +78,8 @@ def check(root):
             assert 'fps_backend.hpp"' not in code, name + ': lightweight page includes full FPS'
             assert light['data']['copyByteCount'] == light_size
             assert light['data']['counterpartPage'] == name + '.html'
-            assert not light.get('redirect_from') and not light.get('permalink')
+            assert all(url.startswith('/' + LIGHTWEIGHT + '/') for url in light.get('redirect_from', []))
+            assert not light.get('permalink')
             assert light['data']['copyBundled'] and not light['data']['sharedPage']
             if name in different:
                 assert full['data']['implementationKind'] == '高速実装'
@@ -89,6 +91,12 @@ def check(root):
             for item in front['data'].get(key, []):
                 if item.get('pagePath') in page_titles:
                     assert item['title'] == page_titles[item['pagePath']], item['path'] + ': dependency title differs from page'
+    redirects = {}
+    for front in documents:
+        for url in front.get('redirect_from', []):
+            assert url.lstrip('/') not in page_titles, url + ': redirect shadows a library page'
+            assert url not in redirects, url + ': duplicate redirect'
+            redirects[url] = front['data']['libraryPath'], front['size_profile']
     expected_light = eligible & different
     actual_light = {path.relative_to(destination / LIGHTWEIGHT).as_posix().removesuffix('.md')
                     for path in (destination / LIGHTWEIGHT).rglob('*.hpp.md')}
@@ -109,6 +117,10 @@ def check(root):
             prefix = '' if profile == 'full' else LIGHTWEIGHT
             front, _ = split_page((destination / prefix / page).read_bytes())
             categories = front['data']['libraryCategories']
+            for category in categories:
+                for item in category['pages']:
+                    source = full_pages[item['path']]
+                    assert category['name'] == source.get('library_category', str(Path(item['path']).parent))
             structures.append([(category['name'], [item['path'] for item in category['pages']]) for category in categories])
             entries = [item for category in categories for item in category['pages']]
             assert {item['path'] for item in entries} == expected, page + ': catalog mismatch'

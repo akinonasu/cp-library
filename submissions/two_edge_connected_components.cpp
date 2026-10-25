@@ -1,6 +1,6 @@
 #line 1 "test/two_edge_connected_components.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/two_edge_connected_components"
-#line 1 "graph/connectivity/two_edge_connected_components.hpp"
+#line 1 "graph/two_edge_connected_components.hpp"
 
 
 
@@ -87,7 +87,7 @@ struct UndirectedVertexCSR {
 };
 
 
-#line 6 "graph/connectivity/two_edge_connected_components.hpp"
+#line 6 "graph/two_edge_connected_components.hpp"
 #include <algorithm>
 
 class TwoEdgeConnectedComponents {

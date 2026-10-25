@@ -1,6 +1,6 @@
 #line 1 "test/range_affine_range_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/range_affine_range_sum"
-#line 1 "data_structure/segment_tree/range_affine_range_sum.hpp"
+#line 1 "data_structure/range_affine_range_sum.hpp"
 
 
 
@@ -426,13 +426,13 @@ using fps_mint = mint;
 #endif
 
 
-#line 1 "data_structure/segment_tree/lazy_segtree.hpp"
+#line 1 "data_structure/lazy_segtree.hpp"
 
 
 
-#line 7 "data_structure/segment_tree/lazy_segtree.hpp"
+#line 7 "data_structure/lazy_segtree.hpp"
 #include <limits>
-#line 10 "data_structure/segment_tree/lazy_segtree.hpp"
+#line 10 "data_structure/lazy_segtree.hpp"
 
 template<class S, auto op, auto e, class F, auto mapping, auto composition, auto id>
 class LazySegtree {
@@ -600,9 +600,9 @@ class LazySegtree {
 };
 
 
-#line 10 "data_structure/segment_tree/range_affine_range_sum.hpp"
+#line 10 "data_structure/range_affine_range_sum.hpp"
 #include <memory>
-#line 14 "data_structure/segment_tree/range_affine_range_sum.hpp"
+#line 14 "data_structure/range_affine_range_sum.hpp"
 
 template<class Mint = mint>
 class RangeAffineRangeSum {

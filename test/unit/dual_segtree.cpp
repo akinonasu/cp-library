@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/dual_segtree.hpp"
+#include "data_structure/dual_segtree.hpp"
 #include "math/mint.hpp"
 #include <cassert>
 #include <cstdint>

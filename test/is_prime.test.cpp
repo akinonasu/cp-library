@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/primality_test"
-#include "math/number_theory/is_prime.hpp"
+#include "math/is_prime.hpp"
 #include "components/fast_io.hpp"
 #include <cstdint>
 

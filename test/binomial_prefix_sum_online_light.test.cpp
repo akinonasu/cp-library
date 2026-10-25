@@ -1,5 +1,5 @@
 #define PROBLEM "https://yukicoder.me/problems/no/2206"
-#include "math/combinatorics/binomial_prefix_sum_light.hpp"
+#include "math/binomial_prefix_sum_light.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

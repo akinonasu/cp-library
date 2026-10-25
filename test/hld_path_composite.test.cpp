@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_set_path_composite"
 #include "../tree/path_product.hpp"
-#include "../data_structure/advanced/hld.hpp"
+#include "../data_structure/hld.hpp"
 #include "../math/mint.hpp"
 #include "components/fast_io_bulk.hpp"
 #include <vector>

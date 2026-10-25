@@ -1,4 +1,4 @@
-#include "graph/shortest_path/difference_constraints.hpp"
+#include "graph/difference_constraints.hpp"
 #include <array>
 #include <functional>
 #include <random>

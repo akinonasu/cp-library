@@ -1,7 +1,7 @@
-#include "data_structure/union_find/union_find.hpp"
+#include "data_structure/union_find.hpp"
 #include "data_structure/fenwick_tree.hpp"
-#include "data_structure/segment_tree/lazy_segtree.hpp"
-#include "graph/connectivity/scc.hpp"
+#include "data_structure/lazy_segtree.hpp"
+#include "graph/scc.hpp"
 #include "graph/two_sat.hpp"
 #include <array>
 #include <cstdint>

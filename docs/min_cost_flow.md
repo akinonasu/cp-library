@@ -1,12 +1,14 @@
 ---
 title: 最小費用流
-documentation_of: //graph/flow/min_cost_flow.hpp
+documentation_of: //graph/min_cost_flow.hpp
 redirect_from:
-- /graph/min_cost_flow.hpp.html
+- /graph/flow/min_cost_flow.hpp.html
+- /lightweight/graph/flow/min_cost_flow.hpp.html
+library_category: graph/flow
 ---
 
 ```cpp
-#include "lib/graph/flow/min_cost_flow.hpp"
+#include "lib/graph/min_cost_flow.hpp"
 
 MinCostFlow<> graph(3);
 graph.add_edge(0, 1, 5, -2);

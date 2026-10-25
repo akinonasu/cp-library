@@ -1,6 +1,6 @@
 #line 1 "test/point_set_tree_path_composite_sum_fixed_root.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/point_set_tree_path_composite_sum_fixed_root"
-#line 1 "data_structure/advanced/static_top_tree.hpp"
+#line 1 "data_structure/static_top_tree.hpp"
 
 
 
@@ -15,15 +15,15 @@
 #line 6 "components/static_top_tree_structure.hpp"
 #include <functional>
 #include <limits>
-#line 1 "data_structure/advanced/hld.hpp"
+#line 1 "data_structure/hld.hpp"
 
 
 
-#line 5 "data_structure/advanced/hld.hpp"
+#line 5 "data_structure/hld.hpp"
 #include <array>
-#line 7 "data_structure/advanced/hld.hpp"
+#line 7 "data_structure/hld.hpp"
 #include <cstddef>
-#line 11 "data_structure/advanced/hld.hpp"
+#line 11 "data_structure/hld.hpp"
 
 class HLD {
 	int shape_ = 0, center_ = 0;
@@ -352,7 +352,7 @@ struct Structure {
 }
 
 
-#line 8 "data_structure/advanced/static_top_tree.hpp"
+#line 8 "data_structure/static_top_tree.hpp"
 
 template <class DP>
 class StaticTopTree {

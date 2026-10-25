@@ -1,5 +1,5 @@
-#include "data_structure/range_query/parallel_binary_search.hpp"
-#include "data_structure/union_find/union_find.hpp"
+#include "data_structure/parallel_binary_search.hpp"
+#include "data_structure/union_find.hpp"
 #include <limits>
 #include <random>
 

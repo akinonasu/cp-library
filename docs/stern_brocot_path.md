@@ -1,9 +1,9 @@
 ---
-title: "Stern–Brocot Tree の圧縮経路"
+title: Stern–Brocot Tree の圧縮経路
 documentation_of: //components/stern_brocot_path.hpp
 ---
 
-[Stern–Brocot Tree](https://qandori.github.io/cp-library/math/number_theory/stern_brocot_tree.hpp.html) の内部部品です。ユークリッド互除法で根からの連続移動を順に取り出します。
+[Stern–Brocot Tree](https://qandori.github.io/cp-library/math/stern_brocot_tree.hpp.html) の内部部品です。ユークリッド互除法で根からの連続移動を順に取り出します。
 
 | 関数・型 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

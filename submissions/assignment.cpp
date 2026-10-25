@@ -1,6 +1,6 @@
 #line 1 "test/hungarian.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/assignment"
-#line 1 "graph/matching/hungarian.hpp"
+#line 1 "graph/hungarian.hpp"
 
 
 

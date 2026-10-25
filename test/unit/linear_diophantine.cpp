@@ -1,4 +1,4 @@
-#include "math/util/linear_diophantine.hpp"
+#include "math/linear_diophantine.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 #include <array>
 #include <bit>

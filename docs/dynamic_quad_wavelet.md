@@ -3,7 +3,7 @@ title: Dynamic Wavelet Matrix の4値の内部演算
 documentation_of: //components/dynamic_quad_wavelet.hpp
 ---
 
-[Dynamic Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp.html) の既定実装で使う内部部品です。`dynamic_wavelet_detail::QuadMatrix<T,Bits,Block,Branch>` は、一段で 2 bit を処理する動的 Wavelet Matrix です。通常は `DynamicWaveletMatrix<T,Bits>` を使います。
+[Dynamic Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/dynamic_wavelet_matrix.hpp.html) の既定実装で使う内部部品です。`dynamic_wavelet_detail::QuadMatrix<T,Bits,Block,Branch>` は、一段で 2 bit を処理する動的 Wavelet Matrix です。通常は `DynamicWaveletMatrix<T,Bits>` を使います。
 
 `T` は `bool` を除く 64 bit 以下の整数型、`Bits` は 1 以上かつ `T` の bit 数以下です。符号付き整数では符号 bit を反転して大小関係を保つキーへ変換し、最上位から 2 bit ずつ処理します。段数は $$\lceil\mathrm{Bits}/2\rceil$$ で、奇数 bit 幅では最上位段の有効な桁値が 0・1 です。各段の列は [Dynamic Quad Vector](https://qandori.github.io/cp-library/components/dynamic_quad_vector.hpp.html) に保持します。
 

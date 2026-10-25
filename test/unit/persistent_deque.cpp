@@ -1,4 +1,4 @@
-#include "../../data_structure/persistent/persistent_deque.hpp"
+#include "../../data_structure/persistent_deque.hpp"
 #include <algorithm>
 #include <cassert>
 #include <climits>

@@ -1,5 +1,5 @@
 #define PROBLEM "https://yukicoder.me/problems/no/3669"
-#include "graph/shortest_path/dijkstra.hpp"
+#include "graph/dijkstra.hpp"
 #include "components/fast_io.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 #include <numeric>

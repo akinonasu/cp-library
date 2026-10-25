@@ -1,12 +1,16 @@
 ---
 title: Offline Dynamic Connectivity（クエリ先読み）
-documentation_of: //graph/connectivity/offline_dynamic_connectivity.hpp
+documentation_of: //graph/offline_dynamic_connectivity.hpp
+library_category: graph/connectivity
+redirect_from:
+- /graph/connectivity/offline_dynamic_connectivity.hpp.html
+- /lightweight/graph/connectivity/offline_dynamic_connectivity.hpp.html
 ---
 
 無向グラフの辺の追加・削除と問い合わせを登録し、最後にまとめて計算します。Rollback Union Find を利用します。
 
 ```cpp
-#include "lib/graph/connectivity/offline_dynamic_connectivity.hpp"
+#include "lib/graph/offline_dynamic_connectivity.hpp"
 #include <cassert>
 
 int main() {

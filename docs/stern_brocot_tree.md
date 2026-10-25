@@ -1,12 +1,14 @@
 ---
 title: Stern–Brocot Tree
-documentation_of: //math/number_theory/stern_brocot_tree.hpp
+documentation_of: //math/stern_brocot_tree.hpp
 redirect_from:
-- /math/stern_brocot_tree.hpp.html
+- /math/number_theory/stern_brocot_tree.hpp.html
+- /lightweight/math/number_theory/stern_brocot_tree.hpp.html
+library_category: math/number_theory
 ---
 
 ```cpp
-#include "lib/math/number_theory/stern_brocot_tree.hpp"
+#include "lib/math/stern_brocot_tree.hpp"
 
 using Tree = SternBrocotTree<>;
 Tree node(5, 3);

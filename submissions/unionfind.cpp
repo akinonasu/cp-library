@@ -1,6 +1,6 @@
 #line 1 "test/union_find.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/unionfind"
-#line 1 "data_structure/union_find/union_find.hpp"
+#line 1 "data_structure/union_find.hpp"
 
 
 

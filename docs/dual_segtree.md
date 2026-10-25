@@ -1,12 +1,16 @@
 ---
-title: "Dual Segment Tree"
-documentation_of: //data_structure/segment_tree/dual_segtree.hpp
+title: Dual Segment Tree
+documentation_of: //data_structure/dual_segtree.hpp
+library_category: data_structure/segment_tree
+redirect_from:
+- /data_structure/segment_tree/dual_segtree.hpp.html
+- /lightweight/data_structure/segment_tree/dual_segtree.hpp.html
 ---
 
 区間に更新を適用し、指定した 1 点の値を取得する双対セグメント木です。区間和などの集約値は持ちません。
 
 ```cpp
-#include "lib/data_structure/segment_tree/dual_segtree.hpp"
+#include "lib/data_structure/dual_segtree.hpp"
 
 long long mapping(long long f, long long x) { return x + f; }
 long long composition(long long f, long long g) { return f + g; }
@@ -39,7 +43,7 @@ auto a = seg.values();   // 0, 3, 10, 3, 3, 0
 アフィン変換 $$x\gets ax+b$$ の例です。更新順序によって答えが変わるため、`composition` の引数の順序に注意してください。
 
 ```cpp
-#include "lib/data_structure/segment_tree/dual_segtree.hpp"
+#include "lib/data_structure/dual_segtree.hpp"
 #include "lib/math/mint.hpp"
 
 struct Affine { mint a, b; };

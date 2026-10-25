@@ -1,10 +1,14 @@
 ---
 title: 区間頻度（一点更新・クエリ一括処理）
-documentation_of: //data_structure/range_query/offline_range_frequency.hpp
+documentation_of: //data_structure/offline_range_frequency.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/offline_range_frequency.hpp.html
+- /lightweight/data_structure/range_query/offline_range_frequency.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/range_query/offline_range_frequency.hpp"
+#include "lib/data_structure/offline_range_frequency.hpp"
 
 OfflineRangeFrequency<int> query(std::vector<int>{2, 1, 2, 3});
 int a = query.add_query(0, 4, 2);

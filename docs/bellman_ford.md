@@ -1,15 +1,16 @@
 ---
 title: Bellman-Ford
-documentation_of: //graph/shortest_path/bellman_ford.hpp
+documentation_of: //graph/bellman_ford.hpp
 redirect_from:
-  - /graph/bellman_ford.hpp.html
-  - /lightweight/graph/bellman_ford.hpp.html
+- /graph/shortest_path/bellman_ford.hpp.html
+- /lightweight/graph/shortest_path/bellman_ford.hpp.html
+library_category: graph/shortest_path
 ---
 
 負の重みを持つ辺を含む有向グラフの単一始点最短路を求めます。経路と、始点から到達できる負閉路を復元できます。自己辺・多重辺に対応します。
 
 ```cpp
-#include "lib/graph/shortest_path/bellman_ford.hpp"
+#include "lib/graph/bellman_ford.hpp"
 
 int main() {
 	std::vector<DirectedCSR<int>::Edge> edges{ {0, 1, 4}, {0, 2, 5}, {1, 2, -7}, {2, 3, 2} };

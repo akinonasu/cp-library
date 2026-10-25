@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/ordered_set"
-#include "../data_structure/persistent/persistent_multiset.hpp"
+#include "../data_structure/persistent_multiset.hpp"
 #include <iostream>
 #include <vector>
 

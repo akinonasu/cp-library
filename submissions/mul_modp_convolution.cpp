@@ -87,11 +87,11 @@ inline std::vector<std::uint32_t> generate(std::size_t n, std::uint32_t root, st
 #include <limits>
 #line 10 "convolution/multiplicative_convolution.hpp"
 
-#line 1 "math/number_theory/factorize.hpp"
+#line 1 "math/factorize.hpp"
 
 
 
-#line 1 "math/number_theory/is_prime.hpp"
+#line 1 "math/is_prime.hpp"
 
 
 
@@ -172,10 +172,10 @@ struct Montgomery32 {
 };
 
 
-#line 6 "math/number_theory/is_prime.hpp"
+#line 6 "math/is_prime.hpp"
 #include <array>
 #include <bit>
-#line 9 "math/number_theory/is_prime.hpp"
+#line 9 "math/is_prime.hpp"
 #include <initializer_list>
 
 namespace is_prime_detail {
@@ -291,12 +291,12 @@ class SplitMix64 {
 };
 
 
-#line 8 "math/number_theory/factorize.hpp"
+#line 8 "math/factorize.hpp"
 #include <cmath>
-#line 11 "math/number_theory/factorize.hpp"
+#line 11 "math/factorize.hpp"
 #include <numeric>
 #include <utility>
-#line 14 "math/number_theory/factorize.hpp"
+#line 14 "math/factorize.hpp"
 
 namespace factorize_detail {
 using U = std::uint64_t;

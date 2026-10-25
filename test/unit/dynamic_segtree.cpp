@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/dynamic_segtree.hpp"
+#include "data_structure/dynamic_segtree.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>

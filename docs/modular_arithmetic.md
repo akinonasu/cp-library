@@ -1,10 +1,14 @@
 ---
 title: 剰余累乗・逆元
-documentation_of: //math/util/modular_arithmetic.hpp
+documentation_of: //math/modular_arithmetic.hpp
+library_category: math/util
+redirect_from:
+- /math/util/modular_arithmetic.hpp.html
+- /lightweight/math/util/modular_arithmetic.hpp.html
 ---
 
 ```cpp
-#include "lib/math/util/modular_arithmetic.hpp"
+#include "lib/math/modular_arithmetic.hpp"
 #include <cassert>
 
 int main() {

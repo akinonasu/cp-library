@@ -1,12 +1,14 @@
 ---
 title: General Matching（一般グラフ最大マッチング）
-documentation_of: //graph/matching/general_matching.hpp
+documentation_of: //graph/general_matching.hpp
 redirect_from:
-- /graph/general_matching.hpp.html
+- /graph/matching/general_matching.hpp.html
+- /lightweight/graph/matching/general_matching.hpp.html
+library_category: graph/matching
 ---
 
 ```cpp
-#include "lib/graph/matching/general_matching.hpp"
+#include "lib/graph/general_matching.hpp"
 
 GeneralMatching g(3);
 g.add_edge(0, 1);

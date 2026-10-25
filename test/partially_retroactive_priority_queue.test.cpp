@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/double_ended_priority_queue"
-#include "../data_structure/advanced/partially_retroactive_priority_queue.hpp"
+#include "../data_structure/partially_retroactive_priority_queue.hpp"
 #include <cassert>
 #include <functional>
 #include <iostream>

@@ -1,12 +1,16 @@
 ---
-title: "木上の Mo's Algorithm"
-documentation_of: //data_structure/range_query/tree_mo.hpp
+title: 木上の Mo's Algorithm
+documentation_of: //data_structure/tree_mo.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/tree_mo.hpp.html
+- /lightweight/data_structure/range_query/tree_mo.hpp.html
 ---
 
 木の経路に含まれる頂点・辺を追加／削除して、経路上の異なる値の個数や頻度などを一括計算します。木と値は処理中に変更しません。集約は経路をたどる順番によらないものを扱います。
 
 ```cpp
-#include "lib/data_structure/range_query/tree_mo.hpp"
+#include "lib/data_structure/tree_mo.hpp"
 #include <vector>
 
 int main() {

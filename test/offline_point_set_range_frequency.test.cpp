@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/point_set_range_frequency"
-#include "data_structure/range_query/offline_range_frequency.hpp"
+#include "data_structure/offline_range_frequency.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

@@ -1,6 +1,6 @@
-#include "data_structure/range_query/offline_range_frequency.hpp"
-#include "data_structure/range_query/offline_range_count_distinct.hpp"
-#include "data_structure/range_query/offline_range_sum.hpp"
+#include "data_structure/offline_range_frequency.hpp"
+#include "data_structure/offline_range_count_distinct.hpp"
+#include "data_structure/offline_range_sum.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>

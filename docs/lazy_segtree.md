@@ -1,10 +1,14 @@
 ---
-title: "遅延セグメント木"
-documentation_of: //data_structure/segment_tree/lazy_segtree.hpp
+title: 遅延セグメント木
+documentation_of: //data_structure/lazy_segtree.hpp
+library_category: data_structure/segment_tree
+redirect_from:
+- /data_structure/segment_tree/lazy_segtree.hpp.html
+- /lightweight/data_structure/segment_tree/lazy_segtree.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/segment_tree/lazy_segtree.hpp"
+#include "lib/data_structure/lazy_segtree.hpp"
 
 struct S { long long sum, length; };
 S op(S a, S b) { return {a.sum + b.sum, a.length + b.length}; }

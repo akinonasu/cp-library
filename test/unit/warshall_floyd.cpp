@@ -1,4 +1,4 @@
-#include "graph/shortest_path/warshall_floyd.hpp"
+#include "graph/warshall_floyd.hpp"
 #include <random>
 #include <tuple>
 

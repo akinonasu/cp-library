@@ -1,5 +1,5 @@
 ---
-title: "区間辺グラフ"
+title: 区間辺グラフ
 documentation_of: //graph/range_edge_graph.hpp
 ---
 
@@ -7,7 +7,7 @@ documentation_of: //graph/range_edge_graph.hpp
 
 ```cpp
 #include "lib/graph/range_edge_graph.hpp"
-#include "lib/graph/shortest_path/dijkstra.hpp"
+#include "lib/graph/dijkstra.hpp"
 
 int main() {
     RangeEdgeGraph<> graph(5);

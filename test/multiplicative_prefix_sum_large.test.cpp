@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/sum_of_multiplicative_function_large"
 #define TIME_LIMIT 30
-#include "math/number_theory/multiplicative_prefix_sum.hpp"
+#include "math/multiplicative_prefix_sum.hpp"
 #include "components/fast_io.hpp"
 #include "test/fixtures/multiplicative_prefix_sum_types.hpp"
 

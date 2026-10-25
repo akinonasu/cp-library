@@ -237,7 +237,7 @@ public:
 };
 
 
-#line 1 "graph/matching/general_weighted_matching.hpp"
+#line 1 "graph/general_weighted_matching.hpp"
 
 
 
@@ -451,7 +451,7 @@ public:
 }
 
 
-#line 12 "graph/matching/general_weighted_matching.hpp"
+#line 12 "graph/general_weighted_matching.hpp"
 
 class GeneralWeightedMatching {
 	int n;

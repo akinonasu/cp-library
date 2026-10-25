@@ -1,4 +1,4 @@
-#include "data_structure/advanced/centroid_decomposition.hpp"
+#include "data_structure/centroid_decomposition.hpp"
 #include <cstdint>
 #include <random>
 

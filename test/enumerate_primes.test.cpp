@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/enumerate_primes"
-#include "math/number_theory/prime_sieve.hpp"
+#include "math/prime_sieve.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

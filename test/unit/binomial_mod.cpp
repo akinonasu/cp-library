@@ -1,4 +1,4 @@
-#include "math/combinatorics/binomial_mod.hpp"
+#include "math/binomial_mod.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 #include <random>
 

@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum"
-#include "../graph/connectivity/dynamic_connectivity.hpp"
+#include "../graph/dynamic_connectivity.hpp"
 #include "../components/fast_io.hpp"
 #include <cstdint>
 #include <vector>

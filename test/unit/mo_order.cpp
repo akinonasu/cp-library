@@ -1,4 +1,4 @@
-#include "data_structure/range_query/mo_order.hpp"
+#include "data_structure/mo_order.hpp"
 #include <numeric>
 #include <random>
 

@@ -1,18 +1,20 @@
 ---
 title: Segtree Beats
-documentation_of: //data_structure/segment_tree/segtree_beats.hpp
+documentation_of: //data_structure/segtree_beats.hpp
 redirect_from:
 - /data_structure/advanced/generic_segtree_beats.hpp.html
 - /data_structure/generic_segtree_beats.hpp.html
 - /data_structure/segment_tree/generic_segtree_beats.hpp.html
-- /data_structure/segtree_beats.hpp.html
 - /docs/generic_segtree_beats.html
+- /data_structure/segment_tree/segtree_beats.hpp.html
+- /lightweight/data_structure/segment_tree/segtree_beats.hpp.html
+library_category: data_structure/segment_tree
 ---
 
-集約値と更新を定義して使う汎用の Segtree Beats です。区間除算、bitwise AND/OR など、通常の遅延セグメント木では一度に処理できない更新を扱います。[chmin・chmax・加算・代入の専用版](https://qandori.github.io/cp-library/data_structure/segment_tree/range_chmin_chmax_add_sum.hpp.html) もそのまま使えます。
+集約値と更新を定義して使う汎用の Segtree Beats です。区間除算、bitwise AND/OR など、通常の遅延セグメント木では一度に処理できない更新を扱います。[chmin・chmax・加算・代入の専用版](https://qandori.github.io/cp-library/data_structure/range_chmin_chmax_add_sum.hpp.html) もそのまま使えます。
 
 ```cpp
-#include "lib/data_structure/segment_tree/segtree_beats.hpp"
+#include "lib/data_structure/segtree_beats.hpp"
 
 struct S { long long sum; int lo, hi, len; };
 struct F { int value, divisor; };

@@ -1,6 +1,6 @@
 #line 1 "test/floor_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/sum_of_floor_of_linear"
-#line 1 "math/floor_sum/floor_sum.hpp"
+#line 1 "math/floor_sum.hpp"
 
 
 

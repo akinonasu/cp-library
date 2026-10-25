@@ -1,12 +1,16 @@
 ---
 title: 等比数列の和
-documentation_of: //math/util/geometric_sum.hpp
+documentation_of: //math/geometric_sum.hpp
+library_category: math/util
+redirect_from:
+- /math/util/geometric_sum.hpp.html
+- /lightweight/math/util/geometric_sum.hpp.html
 ---
 
 公比 $$r$$ の等比数列の先頭 $$n$$ 項の和を求めます。除算を使わないので、$$r=1$$ や、$$r-1$$ の逆元が存在しない法にも使えます。
 
 ```cpp
-#include "lib/math/util/geometric_sum.hpp"
+#include "lib/math/geometric_sum.hpp"
 #include "lib/math/mint.hpp"
 #include <cassert>
 

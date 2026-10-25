@@ -1,4 +1,4 @@
-#include "graph/flow/project_selection.hpp"
+#include "graph/project_selection.hpp"
 #include <array>
 #include <cassert>
 #include <cstdint>

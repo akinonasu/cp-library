@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/min_of_mod_of_linear"
-#include "math/floor_sum/min_of_mod_of_linear.hpp"
+#include "math/min_of_mod_of_linear.hpp"
 #include "components/fast_io.hpp"
 #include <cstdint>
 

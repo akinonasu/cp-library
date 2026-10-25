@@ -1,12 +1,16 @@
 ---
 title: Block Cut Tree
-documentation_of: //graph/connectivity/block_cut_tree.hpp
+documentation_of: //graph/block_cut_tree.hpp
+library_category: graph/connectivity
+redirect_from:
+- /graph/connectivity/block_cut_tree.hpp.html
+- /lightweight/graph/connectivity/block_cut_tree.hpp.html
 ---
 
 無向グラフを二重頂点連結成分に分解し、成分と関節点を頂点とする Block Cut Tree を構築します。元のグラフが非連結なら森になります。
 
 ```cpp
-#include "lib/graph/connectivity/block_cut_tree.hpp"
+#include "lib/graph/block_cut_tree.hpp"
 
 BlockCutTree graph(4);
 graph.add_edge(0, 1);

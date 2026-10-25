@@ -74,15 +74,15 @@ class AffectedVerification(unittest.TestCase):
         self.git("config", "gc.autoDetach", "false")
         self.write(".gitignore", ".verify-helper/selection.json\n.verify-helper/verified-state.json\n.verify-helper/timestamps.*.json\n__pycache__/\n")
         self.write("components/dynamic_bit_vector.hpp", "#pragma once\n")
-        self.write("data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp", '#include "../../components/dynamic_bit_vector.hpp"\n')
+        self.write("data_structure/dynamic_wavelet_matrix.hpp", '#include "../components/dynamic_bit_vector.hpp"\n')
         self.write("math/unrelated.hpp", "#pragma once\n")
         self.write("test/unit/dynamic_bit_vector.cpp", '#include "components/dynamic_bit_vector.hpp"\n')
         for name in ("dynamic_wavelet_count", "dynamic_wavelet_matrix", "standalone"):
-            self.write("test/unit/" + name + ".cpp", '#include "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"\n')
+            self.write("test/unit/" + name + ".cpp", '#include "data_structure/dynamic_wavelet_matrix.hpp"\n')
         self.write("test/unit/unrelated.cpp", '#include "math/unrelated.hpp"\n')
         for name in ("freq", "kth"):
             self.write("test/dynamic_wavelet_matrix_" + name + ".test.cpp",
-                       '#include "../data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"\n')
+                       '#include "../data_structure/dynamic_wavelet_matrix.hpp"\n')
         self.write("test/unrelated.test.cpp", '#include "../math/unrelated.hpp"\n')
         self.write("test/verify.py", "# Fixture runner, never executed.\n")
         self.ref = "refs/heads/codex/dwm-neighbor-20261017"
@@ -154,7 +154,7 @@ class AffectedVerification(unittest.TestCase):
     def test_cold_dynamic_scope_and_incompatible_cache_inventory(self):
         self.change_bits()
         plan = self.plan()
-        self.assertEqual(plan["headers"], ["components/dynamic_bit_vector.hpp", "data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"])
+        self.assertEqual(plan["headers"], ["components/dynamic_bit_vector.hpp", "data_structure/dynamic_wavelet_matrix.hpp"])
         self.assertEqual(plan["bundles"], plan["headers"])
         self.assertEqual(plan["unit"], ["test/unit/dynamic_bit_vector.cpp", "test/unit/dynamic_wavelet_count.cpp",
                                         "test/unit/dynamic_wavelet_matrix.cpp", "test/unit/standalone.cpp"])
@@ -233,7 +233,7 @@ class AffectedVerification(unittest.TestCase):
         self.assertEqual(len(plan["unit"]), 4)
 
     def test_new_local_shadow_is_selected(self):
-        self.write("test/unit/data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp", "#pragma once\n")
+        self.write("test/unit/data_structure/dynamic_wavelet_matrix.hpp", "#pragma once\n")
         self.commit("introduce quoted include shadow")
         plan = self.plan()
         self.assertEqual(plan["headers"], [])
@@ -242,13 +242,13 @@ class AffectedVerification(unittest.TestCase):
                                         "test/unit/standalone.cpp"])
 
     def test_deleted_dependency_and_deleted_driver(self):
-        self.write("data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp", '#include <components/dynamic_bit_vector.hpp>\n')
+        self.write("data_structure/dynamic_wavelet_matrix.hpp", '#include <components/dynamic_bit_vector.hpp>\n')
         self.base = self.commit("root-relative dependency")
         (self.root / "components/dynamic_bit_vector.hpp").unlink()
         (self.root / "test/dynamic_wavelet_matrix_freq.test.cpp").unlink()
         self.commit("remove dependency and driver")
         plan = self.plan()
-        self.assertEqual(plan["headers"], ["data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp"])
+        self.assertEqual(plan["headers"], ["data_structure/dynamic_wavelet_matrix.hpp"])
         self.assertEqual(plan["verification"], ["test/dynamic_wavelet_matrix_kth.test.cpp"])
         self.assertEqual(len(plan["unit"]), 4)
         self.assertIn("test/dynamic_wavelet_matrix_freq.test.cpp", plan["changed_paths"])
@@ -256,7 +256,7 @@ class AffectedVerification(unittest.TestCase):
     def test_added_unit_and_judge_and_include_cycle(self):
         self.write("test/unit/added.cpp", '#include "components/dynamic_bit_vector.hpp"\n')
         self.write("test/added.test.cpp", '#include "../components/dynamic_bit_vector.hpp"\n')
-        self.write("components/dynamic_bit_vector.hpp", '#include <data_structure/wavelet_matrix/dynamic_wavelet_matrix.hpp>\n')
+        self.write("components/dynamic_bit_vector.hpp", '#include <data_structure/dynamic_wavelet_matrix.hpp>\n')
         self.commit("add drivers and cycle")
         plan = self.plan()
         self.assertIn("test/unit/added.cpp", plan["unit"])

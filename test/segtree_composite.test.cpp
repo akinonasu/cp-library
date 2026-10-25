@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/point_set_range_composite"
-#include "data_structure/segment_tree/segtree.hpp"
+#include "data_structure/segtree.hpp"
 #include "components/fast_io_bulk.hpp"
 #include "math/mint.hpp"
 #include <utility>

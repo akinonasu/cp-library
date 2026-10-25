@@ -372,13 +372,13 @@ struct DefaultInitAllocator : std::allocator<T> {
 };
 
 
-#line 1 "data_structure/range_query/sparse_table.hpp"
+#line 1 "data_structure/sparse_table.hpp"
 
 
 
-#line 12 "data_structure/range_query/sparse_table.hpp"
+#line 12 "data_structure/sparse_table.hpp"
 #include <utility>
-#line 14 "data_structure/range_query/sparse_table.hpp"
+#line 14 "data_structure/sparse_table.hpp"
 
 template <class S, auto op, auto e = nullptr>
 class SparseTable {

@@ -1,9 +1,9 @@
 ---
-title: "二項係数の prefix sum の多項式評価"
+title: 二項係数の prefix sum の多項式評価
 documentation_of: //components/binomial_prefix_polynomial.hpp
 ---
 
-[二項係数の prefix sum](https://qandori.github.io/cp-library/math/combinatorics/binomial_prefix_sum.hpp.html) の offline 版の内部部品です。通常は公開関数 `binomial_prefix_sum(queries)` を使います。
+[二項係数の prefix sum](https://qandori.github.io/cp-library/math/binomial_prefix_sum.hpp.html) の offline 版の内部部品です。通常は公開関数 `binomial_prefix_sum(queries)` を使います。
 
 `binomial_prefix_detail::Polynomial<Mint>(table,points,ids,result)` は、共通の `Table<Mint>` と折り返し済みの `(m,n)` を受け取り、$$S(n,m)$$ を `result` に書き込みます。`points` は空でないこと、`0 <= m <= n+1`、`n` が前計算の範囲内であることが必要です。`ids` の長さは `points` と同じにし、上位 31 bit は書き込み先、最下位 bit は $$2^n-S(n,m)$$ への反転指定にします。
 

@@ -8,7 +8,7 @@
 #include <limits>
 #include <vector>
 
-#include "../math/number_theory/is_prime.hpp"
+#include "../math/is_prime.hpp"
 #include "convolution_light.hpp"
 
 namespace light_convolution {

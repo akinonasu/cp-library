@@ -1,13 +1,14 @@
 ---
-title: "重み付き Union-Find"
-documentation_of: //data_structure/union_find/weighted_union_find.hpp
+title: 重み付き Union-Find
+documentation_of: //data_structure/weighted_union_find.hpp
 redirect_from:
-  - /data_structure/weighted_union_find.hpp.html
-  - /lightweight/data_structure/weighted_union_find.hpp.html
+- /data_structure/union_find/weighted_union_find.hpp.html
+- /lightweight/data_structure/union_find/weighted_union_find.hpp.html
+library_category: data_structure/union_find
 ---
 
 ```cpp
-#include "lib/data_structure/union_find/weighted_union_find.hpp"
+#include "lib/data_structure/weighted_union_find.hpp"
 
 WeightedUnionFind<std::int64_t> uf(3);
 bool ok = uf.merge(0, 1, 5); // true
