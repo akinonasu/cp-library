@@ -111,6 +111,168 @@ template<class T> void full_width() {
 	}
 }
 
+template<class T> void aligned_extremes() {
+	const T low = std::numeric_limits<T>::min(), high = std::numeric_limits<T>::max();
+	for (int n : {1, 7, 8, 9, 63, 64, 65, 511, 512, 513}) {
+		std::vector<int> edges{0, n};
+		for (int p : {1, 6, 7, 8, 9, 62, 63, 64, 65, 510, 511, 512})
+			if (p < n) edges.push_back(p);
+		std::sort(edges.begin(), edges.end());
+		edges.erase(std::unique(edges.begin(), edges.end()), edges.end());
+		for (int l : edges) for (int r : edges) if (l < r) {
+			std::vector<T> values(n);
+			RangeAddRangeMin<T> tree(values);
+			auto check = [&] {
+				assert(tree.values() == values);
+				assert(tree.all_min() == *std::min_element(values.begin(), values.end()));
+				for (int a : edges) for (int b : edges) if (a <= b) {
+					T expected = a == b ? high : *std::min_element(values.begin() + a, values.begin() + b);
+					assert(tree.prod(a, b) == expected);
+				}
+			};
+			auto add = [&](T delta) {
+				tree.add(l, r, delta);
+				for (int i = l; i < r; ++i) values[i] = T(__int128_t(values[i]) + delta);
+				check();
+			};
+			add(low);
+			for (int p : {l, r - 1}) {
+				tree.set(p, high), values[p] = high;
+				check();
+				tree.set(p, low), values[p] = low;
+				check();
+			}
+			add(high);
+			add(T(1));
+			add(high);
+			add(low);
+			add(T(1));
+		}
+	}
+}
+
+void padding_transitions() {
+	using T = std::int64_t;
+	const T low = std::numeric_limits<T>::min(), high = std::numeric_limits<T>::max();
+	const T limit = high / 3, delta = (limit - 1) / 2;
+	for (int n : {11, 88, 704}) {
+		int start = n / 11 * 8;
+		std::vector<T> values(n);
+		RangeAddRangeMin<T> tree(values);
+		auto check = [&](const RangeAddRangeMin<T>& view) {
+			assert(view.values() == values);
+			T prefix = high, suffix = high;
+			for (int i = 0; i < n; ++i) {
+				prefix = std::min(prefix, values[i]);
+				suffix = std::min(suffix, values[n - 1 - i]);
+				assert(view.get(i) == values[i]);
+				assert(view.prod(0, i + 1) == prefix);
+				assert(view.prod(n - 1 - i, n) == suffix);
+			}
+			assert(view.all_min() == prefix);
+			assert(view.prod(0, 0) == high && view.prod(n, n) == high);
+		};
+		auto add = [&](int l, int r, T value) {
+			tree.add(l, r, value);
+			for (int i = l; i < r; ++i) {
+				__int128_t next = __int128_t(values[i]) + value;
+				assert(low <= next && next <= high);
+				values[i] = T(next);
+			}
+			check(tree);
+		};
+		auto set = [&](int p, T value) {
+			tree.set(p, value), values[p] = value;
+			check(tree);
+		};
+		add(start, n, delta);
+		add(start, n, -delta);
+		add(start, n, -1);
+		add(start, n, 1);
+		add(start, n, high);
+		add(0, start, high);
+		set(start, low);
+		auto copy = tree;
+		auto moved = std::move(copy);
+		assert(copy.empty());
+		check(moved);
+		tree = std::move(moved);
+		assert(moved.empty());
+		add(start + 1, n, -1);
+		set(start, high);
+		add(start, n, low);
+		add(start, n, 1);
+		values.assign(n, 0);
+		values.back() = limit - 1;
+		tree.build(values);
+		check(tree);
+		add(start, n, 1);
+		add(start, n, high - limit);
+		add(0, start, high);
+		set(start, -limit);
+		add(start, n, -1);
+		values.assign(n, 0);
+		tree.build(values);
+		add(0, n, low);
+		add(start, n, delta);
+		add(0, n, high);
+		add(start, n, -delta);
+		add(start, n, -1);
+		add(start, n, 1);
+		add(0, n, high);
+		add(start, n, 1);
+		add(0, n, -high);
+	}
+}
+
+void minimum_witness() {
+	using T = std::int64_t;
+	const int n = 65;
+	std::vector<T> values(n);
+	RangeAddRangeMin<T> tree(values);
+	auto check = [&](const RangeAddRangeMin<T>& view) {
+		assert(view.values() == values);
+		for (int l = 0; l <= n; ++l) {
+			T expected = std::numeric_limits<T>::max();
+			assert(view.prod(l, l) == expected);
+			for (int r = l + 1; r <= n; ++r) {
+				expected = std::min(expected, values[r - 1]);
+				assert(view.prod(l, r) == expected);
+			}
+		}
+	};
+	auto add = [&](int l, int r, T value) {
+		tree.add(l, r, value);
+		for (int i = l; i < r; ++i) values[i] += value;
+		check(tree);
+	};
+	auto set = [&](int p, T value) {
+		tree.set(p, value), values[p] = value;
+		check(tree);
+	};
+	auto move_copy = [&] {
+		auto copy = tree;
+		auto moved = std::move(copy);
+		assert(copy.empty());
+		check(moved);
+		tree = std::move(moved);
+		assert(moved.empty());
+		check(tree);
+	};
+	check(tree);
+	add(0, n, 17);
+	add(16, 49, 5);
+	move_copy();
+	set(24, -11);
+	move_copy();
+	set(24, 40);
+	set(64, 17);
+	add(0, 32, -7);
+	add(0, n, -10);
+	set(0, 0);
+	set(0, 100);
+}
+
 int main() {
 	randomized<std::int16_t>();
 	randomized<std::int32_t>();
@@ -118,7 +280,15 @@ int main() {
 	boundaries<std::int16_t>();
 	boundaries<std::int32_t>();
 	boundaries<std::int64_t>();
+	boundaries<std::int8_t>();
+	full_width<std::int8_t>();
 	full_width<std::int16_t>();
 	full_width<std::int32_t>();
 	full_width<std::int64_t>();
+	aligned_extremes<std::int8_t>();
+	aligned_extremes<std::int16_t>();
+	aligned_extremes<std::int32_t>();
+	aligned_extremes<std::int64_t>();
+	padding_transitions();
+	minimum_witness();
 }

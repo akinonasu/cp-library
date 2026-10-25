@@ -2,6 +2,7 @@
 #define RANGE_ADD_RANGE_MIN_HPP
 
 #include "../components/aligned_allocator.hpp"
+#include "../components/range_add_min_node.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -13,100 +14,46 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#if defined(__AVX512F__) && defined(__x86_64__)
-#include <immintrin.h>
-#endif
 
 template<class T = std::int64_t> class RangeAddRangeMin {
 	static_assert(std::is_integral_v<T> && std::is_signed_v<T> && sizeof(T) <= 8);
 	using U = std::make_unsigned_t<T>;
+	using Node = range_add_min_detail::Node<T>;
 	static constexpr unsigned branch = 8, bits = 3;
 	static constexpr T infinity = std::numeric_limits<T>::max();
 	static constexpr U umax = std::numeric_limits<U>::max();
+	static constexpr U limit_ = U(infinity) / 3;
 	std::vector<U, AlignedAllocator<U>> data_;
 	std::array<std::size_t, (sizeof(int) * 8 + bits - 1) / bits + 1> offsets_{}, counts_{};
-	int n_ = 0;
+	int n_ = 0, minimum_pos_ = -1;
 	unsigned height_ = 0;
 	std::size_t width_ = 1;
 	T root_ = infinity;
+	U bound_ = 0;
 	static T added(T value, U delta) { return std::bit_cast<T>(U(U(value) + delta)); }
-	static U minimum(const U *values, unsigned l, unsigned r) {
-#if defined(__AVX512F__) && defined(__x86_64__)
-		if constexpr (sizeof(T) == 8 && branch == 8) {
-			unsigned mask = ((1u << r) - 1) ^ ((1u << l) - 1);
-			return _mm512_mask_reduce_min_epu64(mask, _mm512_loadu_si512(values));
-		}
-#endif
-		U result = umax;
-		for (unsigned i = l; i < r; ++i) result = std::min(result, values[i]);
-		return result;
-	}
-	static U normalize(U *values, unsigned count, bool negative, unsigned first, unsigned last, U delta, unsigned x = 0, U dx = 0, unsigned y = 0, U dy = 0) {
-#if defined(__AVX512F__) && defined(__x86_64__)
-		if constexpr (sizeof(T) == 8 && branch == 8) {
-			auto old = _mm512_loadu_si512(values);
-			unsigned mask = ((1u << last) - 1) ^ ((1u << first) - 1), valid = (1u << count) - 1;
-			auto next = _mm512_mask_add_epi64(old, mask, old, _mm512_set1_epi64(std::bit_cast<T>(delta)));
-			if (dx) next = _mm512_mask_add_epi64(next, 1u << x, next, _mm512_set1_epi64(std::bit_cast<T>(dx)));
-			if (dy) next = _mm512_mask_add_epi64(next, 1u << y, next, _mm512_set1_epi64(std::bit_cast<T>(dy)));
-			unsigned underflow = negative ? unsigned(_mm512_cmp_epu64_mask(next, old, _MM_CMPINT_GT)) & valid : 0;
-			U result = _mm512_mask_reduce_min_epu64(underflow ? underflow : valid, next);
-			next = _mm512_mask_sub_epi64(next, valid, next, _mm512_set1_epi64(std::bit_cast<T>(result)));
-			_mm512_storeu_si512(values, next);
-			return result;
-		}
-#endif
-		U wrapped = umax, result = umax;
-		bool underflow = false;
-		for (unsigned i = 0; i < count; ++i) {
-			U old = values[i], change = first <= i && i < last ? delta : 0;
-			if (i == x) change += dx;
-			if (i == y) change += dy;
-			U next = U(old + change);
-			values[i] = next;
-			if (negative && next > old) { wrapped = std::min(wrapped, next); underflow = true; }
-			result = std::min(result, next);
-		}
-		if (underflow) result = wrapped;
-		for (unsigned i = 0; i < count; ++i) values[i] -= result;
-		return result;
-	}
-	static U change_one(U *values, unsigned count, unsigned index, U delta, bool negative) {
-		if (!delta) return 0;
-		U old = values[index], next = U(old + delta);
-		values[index] = next;
-		if (negative && next > old) {
-			for (unsigned i = 0; i < count; ++i) values[i] -= next;
-			return next;
-		}
-		if (!negative && !old) {
-			U result = minimum(values, 0, count);
-			for (unsigned i = 0; i < count; ++i) values[i] -= result;
-			return result;
-		}
-		return 0;
-	}
 	unsigned block_count(unsigned level, std::size_t index) const { return unsigned(std::min<std::size_t>(branch, counts_[level] - index * branch)); }
+	template<bool Narrow>
 	void propagate(unsigned level, std::size_t index, U change, bool negative) {
 		for (; level < height_; ++level, index >>= bits) {
 			if (!change) return;
 			std::size_t block = index >> bits;
-			change = change_one(data_.data() + offsets_[level] + block * branch, block_count(level, block), index & (branch - 1), change, negative);
+			change = Node::template change_one<Narrow>(data_.data() + offsets_[level] + block * branch, block_count(level, block), index & (branch - 1), change, negative);
 		}
 		root_ = added(root_, change);
 	}
+	template<bool Narrow>
 	void update(std::size_t l, std::size_t r, U delta, bool negative) {
 		--r;
 		std::size_t a = l >> bits, b = r >> bits;
 		unsigned first = unsigned(l & (branch - 1)), last = unsigned(r & (branch - 1));
 		if (a == b) {
-			U change = first == last ? change_one(data_.data() + a * branch, block_count(0, a), first, delta, negative)
-				: normalize(data_.data() + a * branch, block_count(0, a), negative, first, last + 1, delta);
-			propagate(1, a, change, negative);
+			U change = first == last ? Node::template change_one<Narrow>(data_.data() + a * branch, block_count(0, a), first, delta, negative)
+				: Node::template normalize<Narrow>(data_.data() + a * branch, block_count(0, a), negative, first, last + 1, delta);
+			propagate<Narrow>(1, a, change, negative);
 			return;
 		}
-		U left = normalize(data_.data() + a * branch, branch, negative, first, branch, delta);
-		U right = normalize(data_.data() + b * branch, block_count(0, b), negative, 0, last + 1, delta);
+		U left = Node::template normalize<Narrow>(data_.data() + a * branch, branch, negative, first, branch, delta);
+		U right = Node::template normalize<Narrow>(data_.data() + b * branch, block_count(0, b), negative, 0, last + 1, delta);
 		for (unsigned level = 1;; ++level) {
 			l >>= bits;
 			r >>= bits;
@@ -118,28 +65,29 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 			if (a == b) {
 				U change;
 				if (first + 1 == last) {
-					change = change_one(values + a * branch, block_count(level, a), first, left, negative);
-					change += change_one(values + a * branch, block_count(level, a), last, right, negative);
-				} else change = normalize(values + a * branch, block_count(level, a), negative, first + 1, last, delta, first, left, last, right);
-				propagate(level + 1, a, change, negative);
+					change = Node::template change_one<Narrow>(values + a * branch, block_count(level, a), first, left, negative);
+					change += Node::template change_one<Narrow>(values + a * branch, block_count(level, a), last, right, negative);
+				} else change = Node::template normalize<Narrow>(values + a * branch, block_count(level, a), negative, first + 1, last, delta, first, left, last, right);
+				propagate<Narrow>(level + 1, a, change, negative);
 				return;
 			}
-			left = first + 1 == branch ? change_one(values + a * branch, branch, first, left, negative)
-				: normalize(values + a * branch, branch, negative, first + 1, branch, delta, first, left);
-			right = !last ? change_one(values + b * branch, block_count(level, b), 0, right, negative)
-				: normalize(values + b * branch, block_count(level, b), negative, 0, last, delta, last, right);
+			left = first + 1 == branch ? Node::template change_one<Narrow>(values + a * branch, branch, first, left, negative)
+				: Node::template normalize<Narrow>(values + a * branch, branch, negative, first + 1, branch, delta, first, left);
+			right = !last ? Node::template change_one<Narrow>(values + b * branch, block_count(level, b), 0, right, negative)
+				: Node::template normalize<Narrow>(values + b * branch, block_count(level, b), negative, 0, last, delta, last, right);
 		}
 	}
 	U restore(unsigned level, std::size_t index, U result) const {
 		for (; level < height_; ++level, index >>= bits) result += data_[offsets_[level] + index];
 		return result;
 	}
+	template<bool Narrow>
 	U query(std::size_t l, std::size_t r) const {
 		--r;
 		std::size_t a = l >> bits, b = r >> bits;
-		if (a == b) return restore(1, a, minimum(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1));
-		U left = minimum(data_.data() + a * branch, l & (branch - 1), branch);
-		U right = minimum(data_.data() + b * branch, 0, (r & (branch - 1)) + 1);
+		if (a == b) return restore(1, a, Node::template minimum<Narrow>(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1));
+		U left = Node::template minimum<Narrow>(data_.data() + a * branch, l & (branch - 1), branch);
+		U right = Node::template minimum<Narrow>(data_.data() + b * branch, 0, (r & (branch - 1)) + 1);
 		for (unsigned level = 1;; ++level) {
 			l >>= bits;
 			r >>= bits;
@@ -151,18 +99,19 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 			const U *values = data_.data() + offsets_[level];
 			if (a == b) {
 				U result = std::min(left, right);
-				if (first + 1 < last) result = std::min(result, minimum(values + a * branch, first + 1, last));
+				if (first + 1 < last) result = std::min(result, Node::template minimum<Narrow>(values + a * branch, first + 1, last));
 				return restore(level + 1, a, result);
 			}
-			if (first + 1 < branch) left = std::min(left, minimum(values + a * branch, first + 1, branch));
-			if (last) right = std::min(right, minimum(values + b * branch, 0, last));
+			if (first + 1 < branch) left = std::min(left, Node::template minimum<Narrow>(values + a * branch, first + 1, branch));
+			if (last) right = std::min(right, Node::template minimum<Narrow>(values + b * branch, 0, last));
 		}
 	}
+	template<bool Narrow>
 	U assign(unsigned level, std::size_t index, std::size_t pos, U delta, bool negative) {
 		unsigned child = unsigned((pos >> (bits * level)) & (branch - 1));
-		U change = level ? assign(level - 1, index * branch + child, pos, delta, negative) : delta;
+		U change = level ? assign<Narrow>(level - 1, index * branch + child, pos, delta, negative) : delta;
 		unsigned count = unsigned(std::min<std::size_t>(branch, counts_[level] - index * branch));
-		return change_one(data_.data() + offsets_[level] + index * branch, count, child, change, negative);
+		return Node::template change_one<Narrow>(data_.data() + offsets_[level] + index * branch, count, child, change, negative);
 	}
 	void collect(unsigned level, std::size_t index, std::size_t start, std::size_t width, U carry, std::vector<T> &result) const {
 		const U *values = data_.data() + offsets_[level] + index * branch;
@@ -171,6 +120,22 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 			U next = U(carry + values[i]);
 			if (!level) result[start + i] = added(root_, next);
 			else collect(level - 1, index * branch + i, start + i * part, part, next, result);
+		}
+	}
+	void padding(U value) {
+		for (unsigned level = 0; level < height_; ++level) {
+			std::size_t count = counts_[level], remainder = count & (branch - 1);
+			if (remainder) {
+				U* first = data_.data() + offsets_[level] + count;
+				std::fill(first, first + branch - remainder, value);
+			}
+		}
+	}
+	void track(U amount) {
+		if constexpr (sizeof(T) == 8) {
+			bool narrow = bound_ < limit_;
+			bound_ = narrow && amount < limit_ - bound_ ? U(bound_ + amount) : umax;
+			if (narrow && bound_ == umax) padding(umax);
 		}
 	}
 	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n_); }
@@ -187,6 +152,14 @@ public:
 		RangeAddRangeMin next;
 		next.n_ = int(values.size());
 		if (!values.empty()) {
+			std::size_t capacity = 0;
+			for (std::size_t count = values.size();;) {
+				std::size_t groups = (count + branch - 1) / branch;
+				capacity += groups * branch;
+				if (groups == 1) break;
+				count = groups;
+			}
+			next.data_.reserve(capacity);
 			std::vector<T> current = values;
 			for (unsigned level = 0;; ++level) {
 				std::size_t count = current.size(), groups = (count + branch - 1) / branch;
@@ -205,7 +178,13 @@ public:
 				if (groups == 1) { next.height_ = level + 1; next.root_ = upper[0]; break; }
 				current.swap(upper);
 			}
-			next.data_.shrink_to_fit();
+			auto extremes = std::minmax_element(values.begin(), values.end());
+			next.minimum_pos_ = values[values.size() / 2] == next.root_ ? int(values.size() / 2)
+				: int(extremes.first - values.begin());
+			if constexpr (sizeof(T) == 8) {
+				next.bound_ = U(U(*extremes.second) - U(next.root_));
+				if (next.bound_ < limit_) next.padding(2 * limit_);
+			}
 		}
 		swap(next);
 	}
@@ -214,25 +193,47 @@ public:
 	void add(int l, int r, T value) {
 		check(l, r);
 		if (l == r || !value) return;
-		if (l == 0 && r == n_) root_ = added(root_, U(value));
-		else update(l, r, U(value), value < 0);
+		if (l == 0 && r == n_) { root_ = added(root_, U(value)); return; }
+		T candidate = root_;
+		if (l <= minimum_pos_ && minimum_pos_ < r) candidate = added(root_, U(value));
+		if constexpr (sizeof(T) == 8) {
+			track(value < 0 ? U(0) - U(value) : U(value));
+			if (bound_ < limit_) update<true>(l, r, U(value), value < 0);
+			else update<false>(l, r, U(value), value < 0);
+		} else update<false>(l, r, U(value), value < 0);
+		if (minimum_pos_ >= 0 && root_ != candidate) minimum_pos_ = -1;
 	}
 	void apply(int l, int r, T value) { add(l, r, value); }
-	T prod(int l, int r) const { check(l, r); return l < r ? added(root_, query(l, r)) : infinity; }
+	T prod(int l, int r) const {
+		check(l, r);
+		if (l == r) return infinity;
+		if ((l == 0 && r == n_) || (l <= minimum_pos_ && minimum_pos_ < r)) return root_;
+		if constexpr (sizeof(T) == 8) if (bound_ < limit_) return added(root_, query<true>(l, r));
+		return added(root_, query<false>(l, r));
+	}
 	T min(int l, int r) const { return prod(l, r); }
 	T all_prod() const { return root_; }
 	T all_min() const { return root_; }
-	T get(int p) const { assert(0 <= p && p < n_); return prod(p, p + 1); }
+	T get(int p) const { assert(0 <= p && p < n_); return added(root_, restore(0, p, 0)); }
 	void set(int p, T value) {
 		assert(0 <= p && p < n_);
 		T old = get(p);
-		root_ = added(root_, assign(height_ - 1, 0, p, U(U(value) - U(old)), value < old));
+		if (value == old) { if (value == root_) minimum_pos_ = p; return; }
+		track(value < old ? U(U(old) - U(value)) : U(U(value) - U(old)));
+		U delta = U(U(value) - U(old)), change;
+		if constexpr (sizeof(T) == 8) {
+			change = bound_ < limit_ ? assign<true>(height_ - 1, 0, p, delta, value < old)
+				: assign<false>(height_ - 1, 0, p, delta, value < old);
+		} else change = assign<false>(height_ - 1, 0, p, delta, value < old);
+		root_ = added(root_, change);
+		if (value == root_) minimum_pos_ = p;
+		else if (minimum_pos_ == p) minimum_pos_ = -1;
 	}
 	std::vector<T> values() const { std::vector<T> result(n_); if (n_) collect(height_ - 1, 0, 0, width_, 0, result); return result; }
 	std::size_t memory_usage() const { return data_.capacity() * sizeof(U); }
 	void swap(RangeAddRangeMin &other) noexcept {
 		data_.swap(other.data_), offsets_.swap(other.offsets_), counts_.swap(other.counts_);
-		std::swap(n_, other.n_), std::swap(height_, other.height_), std::swap(width_, other.width_), std::swap(root_, other.root_);
+		std::swap(n_, other.n_), std::swap(minimum_pos_, other.minimum_pos_), std::swap(height_, other.height_), std::swap(width_, other.width_), std::swap(root_, other.root_), std::swap(bound_, other.bound_);
 	}
 	friend void swap(RangeAddRangeMin &a, RangeAddRangeMin &b) noexcept { a.swap(b); }
 };
