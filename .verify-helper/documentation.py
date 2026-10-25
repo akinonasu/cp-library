@@ -162,11 +162,13 @@ def generate_pages(plan, *, highlight_cache=None):
     ) for path in paths]
     markdown = configure.apply_exclude_list_to_paths(configure.find_markdown_paths(basedir=root), excluded_paths=excluded)
     jobs = configure.convert_to_page_render_jobs(source_code_stats=stats, markdown_paths=markdown, site_render_config=config)
-    jobs.append(PageRenderJob(
-        path=Path("components/index.md"),
-        front_matter={"layout": "toppage", "title": "補助部品", "components": True},
-        content=config.index_md.with_name("components.md").read_bytes(),
-    ))
+    for path, title, kind in [("components/index.md", "補助部品", "components"),
+                              ("data_structure/advanced/index.md", "応用ライブラリ", "advanced")]:
+        jobs.append(PageRenderJob(
+            path=Path(path),
+            front_matter={"layout": "toppage", "title": title, kind: True},
+            content=config.index_md.with_name(kind + ".md").read_bytes(),
+        ))
     pages = source_pages(build.render_pages(page_render_jobs=jobs, source_code_stats=stats, site_render_config=config))
     from size_profiles import documentation_links, prepare_pages, remove_stale_pages
     targets, origins = documentation_links(root, markdown)
