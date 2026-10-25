@@ -1,5 +1,5 @@
 ---
-title: "Mo 法"
+title: "Mo's Algorithm"
 documentation_of: //data_structure/range_query/mo_order.hpp
 redirect_from:
   - /components/mo_order.hpp.html
