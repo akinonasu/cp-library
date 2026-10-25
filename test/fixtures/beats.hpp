@@ -1,7 +1,7 @@
 #ifndef TEST_BEATS_HPP
 #define TEST_BEATS_HPP
 
-#include "../../data_structure/advanced/generic_segtree_beats.hpp"
+#include "../../data_structure/segment_tree/segtree_beats.hpp"
 #include <cstdint>
 
 namespace division_beats {
@@ -31,7 +31,7 @@ inline bool mapping(const F &f, S &a) {
 	a.lo = a.hi = lo;
 	return true;
 }
-using Tree = GenericSegtreeBeats<S, op, e, F, mapping, composition, id>;
+using Tree = SegtreeBeats<S, op, e, F, mapping, composition, id>;
 }
 
 namespace bitwise_beats {
@@ -58,7 +58,7 @@ inline bool mapping(const F &f, S &a) {
 	a.hi = (a.hi & f.bit_and) | f.bit_or;
 	return true;
 }
-using Tree = GenericSegtreeBeats<S, op, e, F, mapping, composition, id>;
+using Tree = SegtreeBeats<S, op, e, F, mapping, composition, id>;
 }
 
 namespace clamp_beats {
@@ -114,7 +114,7 @@ inline bool mapping(const F &f, S &a) {
 	}
 	return true;
 }
-using Tree = GenericSegtreeBeats<S, op, e, F, mapping, composition, id>;
+using Tree = SegtreeBeats<S, op, e, F, mapping, composition, id>;
 }
 
 #endif

@@ -243,6 +243,8 @@
 | `data_structure/segment_tree/range_add_range_min.hpp` | 区間加算・区間最小値 | [使い方](docs/range_add_range_min.md) |
 | `data_structure/segment_tree/segtree.hpp` | セグメント木・一点更新・区間集約・境界検索 | [使い方](docs/segtree.md) |
 | `data_structure/segment_tree/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
+| `data_structure/segment_tree/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
+| `data_structure/segment_tree/range_chmin_chmax_add_sum.hpp` | Range Chmin Chmax Add Sum | [使い方](docs/range_chmin_chmax_add_sum.md) |
 | `data_structure/segment_tree/dual_segtree.hpp` | 双対セグメント木（区間更新・一点取得） | [使い方](docs/dual_segtree.md) |
 | `data_structure/segment_tree/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
 | `data_structure/segment_tree/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
@@ -523,8 +525,6 @@ oj-bundle a.cpp | pbcopy
 | `data_structure/advanced/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
 | `data_structure/advanced/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
 | `data_structure/advanced/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
-| `data_structure/advanced/segtree_beats.hpp` | Segtree Beats | [使い方](docs/segtree_beats.md) |
 | `data_structure/advanced/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負) | [使い方](docs/kinetic_tournament.md) |
-| `data_structure/advanced/generic_segtree_beats.hpp` | 汎用 Segtree Beats | [使い方](docs/generic_segtree_beats.md) |
 | `data_structure/advanced/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue | [使い方](docs/partially_retroactive_priority_queue.md) |
 | `data_structure/advanced/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue | [使い方](docs/retroactive_priority_queue.md) |

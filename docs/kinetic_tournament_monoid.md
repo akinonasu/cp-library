@@ -3,7 +3,7 @@ title: Kinetic Tournament Core
 documentation_of: //components/kinetic_tournament_monoid.hpp
 ---
 
-区間更新版 `KineticTournament` が `GenericSegtreeBeats` に渡す内部処理です。通常は `KineticTournament` を使い、この部品を直接呼ぶ必要はありません。
+区間更新版 `KineticTournament` が `SegtreeBeats` に渡す内部処理です。通常は `KineticTournament` を使い、この部品を直接呼ぶ必要はありません。
 
 ```cpp
 #include "lib/components/kinetic_tournament_monoid.hpp"
@@ -40,6 +40,6 @@ int main() {
 | `mapping(tag,node)` | 証明が保たれれば更新して true、子へ降りる必要があれば false | $$O(1)$$ |
 | `composition(f,g)` | `g` の後に `f` を行う合成更新 | $$O(1)$$ |
 
-同値の場合、最大値版は添字が大きい方、最小値版は添字が小さい方を選びます。`mapping` が false を返した場合は節点を変更しません。`GenericSegtreeBeats` 側で更新を子に伝え、その結果から親を作り直します。空要素への `mapping` は true です。
+同値の場合、最大値版は添字が大きい方、最小値版は添字が小さい方を選びます。`mapping` が false を返した場合は節点を変更しません。`SegtreeBeats` 側で更新を子に伝え、その結果から親を作り直します。空要素への `mapping` は true です。
 
 現在値と更新後の値は `T` に、増分・加算の累積と評価途中は `W` に収めてください。残りステップ数の計算は符号なしの差と除算を使い、符号付き 64 bit 全域の係数・値の差を扱います。各操作の時間・追加空間は $$O(1)$$ です。木全体での更新回数の評価は `KineticTournament` の説明を参照してください。

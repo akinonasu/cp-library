@@ -1,6 +1,6 @@
-#line 1 "test/segtree_beats.test.cpp"
+#line 1 "test/range_chmin_chmax_add_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum"
-#line 1 "data_structure/advanced/segtree_beats.hpp"
+#line 1 "data_structure/segment_tree/range_chmin_chmax_add_sum.hpp"
 
 
 
@@ -30,10 +30,10 @@ struct DefaultInitAllocator : std::allocator<T> {
 };
 
 
-#line 10 "data_structure/advanced/segtree_beats.hpp"
+#line 10 "data_structure/segment_tree/range_chmin_chmax_add_sum.hpp"
 
 template <class T = long long, class Sum = T>
-class SegtreeBeats {
+class RangeChminChmaxAddSum {
 	static_assert(std::is_integral_v<T> && std::is_signed_v<T>);
 	static constexpr T inf = std::numeric_limits<T>::max();
 	static constexpr T neg_inf = std::numeric_limits<T>::lowest();
@@ -168,12 +168,12 @@ class SegtreeBeats {
 	}
 	void check(int l, int r) const { assert(0 <= l && l <= r && r <= n); (void)l; (void)r; }
 public:
-	SegtreeBeats() = default;
-	explicit SegtreeBeats(int n, T x = 0) : n(n), tree(n > 0 ? 2 * std::size_t(n) - 1 : 0) {
+	RangeChminChmaxAddSum() = default;
+	explicit RangeChminChmaxAddSum(int n, T x = 0) : n(n), tree(n > 0 ? 2 * std::size_t(n) - 1 : 0) {
 		assert(n >= 0);
 		if (n) build(tree.data(), 0, n, [x](int) { return x; });
 	}
-	explicit SegtreeBeats(const std::vector<T> &a) : n(int(a.size())), tree(n ? 2 * std::size_t(n) - 1 : 0) {
+	explicit RangeChminChmaxAddSum(const std::vector<T> &a) : n(int(a.size())), tree(n ? 2 * std::size_t(n) - 1 : 0) {
 		if (n) build(tree.data(), 0, n, [&](int i) { return a[i]; });
 	}
 	int size() const { return n; }
@@ -434,7 +434,7 @@ public:
 };
 
 
-#line 5 "test/segtree_beats.test.cpp"
+#line 5 "test/range_chmin_chmax_add_sum.test.cpp"
 
 int main() {
 	FastInput in;
@@ -444,7 +444,7 @@ int main() {
 	in.read(q);
 	std::vector<long long> a(n);
 	for (auto &x : a) in.read(x);
-	SegtreeBeats seg(a);
+	RangeChminChmaxAddSum seg(a);
 	while (q--) {
 		int t = 0, l = 0, r = 0;
 		in.read(t);
