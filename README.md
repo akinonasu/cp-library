@@ -383,6 +383,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `components/barrett32.hpp` | 32 bit Barrett 演算 | [使い方](docs/barrett32.md) |
+| `components/modular_power_sequence.hpp` | 剰余を取った冪の列 | [使い方](docs/modular_power_sequence.md) |
 | `components/binary_search.hpp` | 単調な述語の境界探索 | [使い方](docs/binary_search.md) |
 | `components/binomial_prefix_core.hpp` | 二項係数の prefix sum の内部演算 | [使い方](docs/binomial_prefix_core.md) |
 | `components/binomial_prefix_core_light.hpp` | 軽量版の二項係数 prefix sum の共通部品 | [使い方](docs/binomial_prefix_core_light.md) |
