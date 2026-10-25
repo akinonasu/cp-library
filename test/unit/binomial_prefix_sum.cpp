@@ -70,6 +70,17 @@ void polynomial_cases() {
 		binomial_prefix_detail::Polynomial(table, points, ids, actual);
 		assert(actual == expected);
 	}
+	for (int count : {255, 256, 257, 511, 512, 513, 1025}) {
+		std::vector<std::pair<int, int>> queries;
+		std::vector<mint> expected;
+		for (int i = 0; i < count; ++i) {
+			int row = n - i % 17, k = i + 2;
+			mint value = table.range(row, 0, k);
+			queries.emplace_back(row, k), expected.push_back(value);
+			queries.emplace_back(row, row + 1 - k), expected.push_back(table.power2[row] - value);
+		}
+		assert(binomial_prefix_sum(queries) == expected);
+	}
 	std::vector<std::pair<int, std::int64_t>> queries;
 	std::vector<std::pair<int, int>> points;
 	std::mt19937 rng(20261020);

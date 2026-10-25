@@ -124,6 +124,17 @@ int main() {
 		queries.emplace_back(n, int(random() % 20021) - 10);
 	}
 	for (int i = 0; i < 100; ++i) queries.push_back(queries[i]);
+	for (int count : {255, 256, 257, 511, 512, 513}) {
+		std::vector<std::pair<int, int>> boundary;
+		std::vector<mint> expected;
+		light_binomial_prefix_detail::Table<mint> table(2048);
+		for (int i = 0; i < count; ++i) {
+			int row = 2048 - i % 17, k = i + 2;
+			boundary.emplace_back(row, k);
+			expected.push_back(table.range(row, 0, k));
+		}
+		assert(light_combinatorics::binomial_prefix_sum(boundary) == expected);
+	}
 	auto light = light_combinatorics::binomial_prefix_sum(queries);
 	assert(light == binomial_prefix_sum(queries));
 	light_combinatorics::BinomialPrefixSum<> a(20000);
