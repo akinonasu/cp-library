@@ -11,8 +11,7 @@
 
 namespace sequence_match_detail {
 #if defined(__x86_64__)
-using sequence_compare_detail::forward_avx2;
-using sequence_compare_detail::backward_avx2;
+using sequence_compare_detail::forward_avx2, sequence_compare_detail::backward_avx2;
 #endif
 
 template <class T, bool Vectorize = true>

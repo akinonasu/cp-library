@@ -9,8 +9,7 @@ template<class T>
 struct ProductTree : polynomial_detail::ProductTree<FormalPowerSeries<T>> {
 	using F = FormalPowerSeries<T>;
 	using Base = polynomial_detail::ProductTree<F>;
-	using Base::Base;
-	using Base::evaluate;
+	using Base::Base, Base::evaluate;
 
 	static std::vector<F> build(const std::vector<T>& xs, int& size, int block, bool reciprocal,
 			std::vector<std::vector<T>>* frequency = nullptr) {

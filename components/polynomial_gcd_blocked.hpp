@@ -13,10 +13,7 @@ namespace fps_detail::blocked_poly {
 
 namespace gcd_detail {
 using namespace detail;
-using division_detail::fold;
-using division_detail::subtract;
-using division_detail::montgomery_reduce;
-using division_detail::kLongDivision;
+using division_detail::fold, division_detail::subtract, division_detail::montgomery_reduce, division_detail::kLongDivision;
 class Stack {
 public:
 	explicit Stack(Words memory) : base_(memory.data()), size_(memory.size()) {}

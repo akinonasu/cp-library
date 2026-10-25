@@ -12,9 +12,7 @@ redirect_from:
 #include "lib/math/comb_light.hpp"
 
 int main() {
-	using light_combinatorics::comb;
-	using light_combinatorics::fact;
-	using light_combinatorics::finv;
+	using light_combinatorics::comb, light_combinatorics::fact, light_combinatorics::finv;
 	assert(comb(10, 3).val() == 120);
 	assert(fact[5] * finv[5] == mint(1));
 }

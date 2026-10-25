@@ -527,10 +527,7 @@ struct ModularField {
 #endif
 
 namespace matrix_detail {
-using field_detail::SmallModint;
-using field_detail::small_modint;
-using field_detail::avx2;
-using field_detail::ModularField;
+using field_detail::SmallModint, field_detail::small_modint, field_detail::avx2, field_detail::ModularField;
 
 template <class T, class F>
 auto field(std::vector<T> &a, F &&f) {
