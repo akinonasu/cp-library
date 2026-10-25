@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from support_tests import fingerprint, run
+from support_tests import fingerprint, run, suite
 
 
 class SupportTestsCache(unittest.TestCase):
@@ -74,6 +74,29 @@ class SupportTestsCache(unittest.TestCase):
             run(self.root, self.state, 'same', force=True)
             execute.assert_called_once()
         self.assertEqual(json.loads(self.state.read_text())['fingerprint'], 'same')
+
+    def test_suite_discovers_new_checks_and_leaves_highlighting_to_its_stage(self):
+        self.write('.verify-helper/code_highlight_test.py', 'separate stage')
+        self.write('.verify-helper/new_test.py', 'new check')
+        with patch('support_tests.unittest.TestLoader') as loader:
+            loader.return_value.loadTestsFromName.return_value = unittest.TestSuite()
+            suite(self.root)
+        names = [call.args[0] for call in loader.return_value.loadTestsFromName.call_args_list]
+        self.assertEqual(names, ['helper_test', 'new_test'])
+
+    def test_workflow_installs_both_dependency_sets_before_support_checks(self):
+        import yaml
+        root = Path(__file__).resolve().parent.parent
+        workflow = yaml.load((root / '.github/workflows/verify.yml').read_text(), Loader=yaml.BaseLoader)
+        steps = workflow['jobs']['verify']['steps']
+        installs = [(i, step['run']) for i, step in enumerate(steps) if 'pip install' in step.get('run', '')]
+        self.assertEqual(len(installs), 2)
+        support = next(i for i, step in enumerate(steps) if step.get('name') == 'Identify CI support tests')
+        for index, command in installs:
+            self.assertLess(index, support)
+            self.assertIn('-r test/requirements.txt', command)
+            self.assertIn('-r .verify-helper/docs/requirements.txt', command)
+        self.assertEqual(sum('code_highlight_test.py' in step.get('run', '') for step in steps), 1)
 
     def test_workflow_only_installs_missing_boost(self):
         import yaml

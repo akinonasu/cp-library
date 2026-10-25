@@ -15,7 +15,7 @@ int naive(const vector<int> &parent, const vector<int> &depth, int u, int v) {
 	return u;
 }
 
-void check(LCA &tree, int root) {
+void check(LCA &tree, int root, bool from_parents = false) {
 	int n = tree.n;
 	vector<vector<int>> adj(n);
 	for (auto [u, v] : tree.edges) adj[u].push_back(v), adj[v].push_back(u);
@@ -29,7 +29,8 @@ void check(LCA &tree, int root) {
 				queue.push_back(to);
 			}
 	}
-	tree.build(root);
+	if (from_parents) tree.build_from_parents(parent);
+	else tree.build(root);
 	assert(tree.parent == parent && tree.depth == depth);
 	auto query = [&](int u, int v) {
 		int w = naive(parent, depth, u, v);
@@ -50,6 +51,15 @@ int main() {
 	LCA empty;
 	empty.build();
 	empty.build();
+	empty.build_from_parents({});
+	LCA resized(5);
+	resized.add_edge(0, 1);
+	resized.build_from_parents({2, 0, -1, 2});
+	assert(resized.n == 4 && resized.parent == vector<int>({2, 0, -1, 2}));
+	assert((resized.edges == vector<pair<int, int>>({ {2, 0}, {0, 1}, {2, 3} })));
+	assert(resized.depth == vector<int>({1, 2, 0, 1}));
+	check(resized, 2, true);
+	check(resized, 1);
 	mt19937 random(123);
 	for (int n : {1, 2, 3, 31, 32, 33, 63, 64, 65, 127, 128, 129, 255, 256, 257}) {
 		for (int kind = 0; kind < 5; ++kind) {
@@ -67,6 +77,7 @@ int main() {
 			shuffle((tree.edges).begin(), (tree.edges).end(), random);
 			check(tree, labels[0]);
 			check(tree, random() % n);
+			check(tree, random() % n, true);
 		}
 	}
 	for (int repeat_index = 0; repeat_index < 100; ++repeat_index) {
@@ -74,6 +85,8 @@ int main() {
 		LCA tree(n);
 		for (int v = 1; v < n; ++v) tree.add_edge(random() % v, v);
 		check(tree, random() % n);
+		check(tree, random() % n, true);
+		check(tree, 0, true);
 	}
 	{
 		LCA large(20000);
@@ -84,6 +97,7 @@ int main() {
 		shuffle((large.edges).begin(), (large.edges).end(), random);
 		check(large, labels[0]);
 		check(large, random() % large.n);
+		check(large, random() % large.n, true);
 	}
 	const int n = 500000;
 	LCA path(n);

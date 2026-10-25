@@ -56,6 +56,47 @@ inline std::uint64_t cube(std::uint64_t n) {
 	}
 }
 
+template<unsigned K>
+constexpr double power(double x) {
+	double value = 1;
+	for (unsigned k = K;; x *= x) {
+		if (k & 1) value *= x;
+		if (!(k >>= 1)) return value;
+	}
+}
+
+template<unsigned K>
+inline double estimate(std::uint64_t n) {
+	if constexpr (std::numeric_limits<double>::is_iec559 && std::numeric_limits<double>::digits == 53 && sizeof(double) == sizeof(std::uint64_t)) {
+		static constexpr auto roots = [] {
+			std::array<double, 64> values{};
+			for (int i = 0; i < 64; ++i) {
+				double a = 1 + (i + 0.5) / 64, x = 1;
+				for (int j = 0; j < 10; ++j) x += x * (1 - a * power<K>(x)) / K;
+				values[i] = x;
+			}
+			return values;
+		}();
+		static constexpr auto factors = [] {
+			std::array<double, K> values{};
+			double x = 1;
+			for (int j = 0; j < 10; ++j) x += x * (1 - 2 * power<K>(x)) / K;
+			values[0] = 1;
+			for (unsigned j = 1; j < K; ++j) values[j] = values[j - 1] * x;
+			return values;
+		}();
+		double a = double(n);
+		auto bits = std::bit_cast<std::uint64_t>(a);
+		unsigned exponent = unsigned(bits >> 52) - 1023;
+		double x = roots[(bits >> 46) & 63] * factors[exponent % K]
+			* std::bit_cast<double>(std::uint64_t(1023 - exponent / K) << 52);
+		double h = 1 - a * power<K>(x);
+		constexpr double c = 1.0 / K;
+		x += x * h * (c + h * (c * (c + 1) / 2 + h * (c * (c + 1) * (c + 2) / 6)));
+		return 1 / x;
+	} else return std::pow(double(n), 1.0 / K);
+}
+
 template <unsigned K>
 inline std::uint64_t small(std::uint64_t n) {
 	auto leq = [n](std::uint64_t x) {
@@ -70,7 +111,7 @@ inline std::uint64_t small(std::uint64_t n) {
 	double estimate;
 	if constexpr (K == 4) estimate = std::sqrt(std::sqrt(double(n)));
 	else if constexpr (K == 8) estimate = std::sqrt(std::sqrt(std::sqrt(double(n))));
-	else estimate = std::pow(double(n), 1.0 / K);
+	else estimate = kth_root_detail::estimate<K>(n);
 	std::uint64_t r = std::uint64_t(estimate);
 	if (r >= hi) r = hi - 1;
 	if (r < lo) r = lo;

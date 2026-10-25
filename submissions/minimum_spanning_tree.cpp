@@ -114,6 +114,18 @@ void stable_radix_sort(std::vector<T> &values, Key key) {
 	stable_radix_sort<8>(values, std::move(key));
 }
 
+namespace radix_sort_detail {
+template <int Bits = 8, class T, class Key>
+void sort_by_key(std::vector<T> &values, Key key) {
+	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
+	if constexpr (std::is_integral_v<K> && !std::is_same_v<K, bool> && sizeof(K) <= 8 && std::is_default_constructible_v<T>) {
+		using U = std::make_unsigned_t<K>;
+		constexpr U sign = std::is_signed_v<K> ? U(1) << (sizeof(K) * 8 - 1) : U(0);
+		stable_radix_sort<Bits>(values, [&](const T &value) { return U(U(key(value)) ^ sign); });
+	} else std::sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
+}
+}
+
 
 #line 7 "graph/kruskal.hpp"
 #include <limits>
@@ -198,11 +210,13 @@ class Kruskal {
 				}
 			} else {
 				using Key = std::make_unsigned_t<Cost>;
-				stable_radix_sort(order, [&](int id) {
+				auto sort_key = [&](int id) {
 					Key key = static_cast<Key>(edges_[id].cost);
 					if constexpr (std::is_signed_v<Cost>) key ^= Key(1) << (std::numeric_limits<Key>::digits - 1);
 					return key;
-				});
+				};
+				if (sizeof(Cost) >= 4 && order.size() >= 65536) stable_radix_sort<11>(order, sort_key);
+				else stable_radix_sort(order, sort_key);
 			}
 		} else std::sort(order.begin(), order.end(), compare);
 		UnionFind uf(n_);

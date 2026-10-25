@@ -46,6 +46,12 @@ class AhoCorasick {
 	bool built_ = false;
 	static unsigned symbol_(char c) { return static_cast<unsigned>(static_cast<unsigned char>(c) - First); }
 	void check_([[maybe_unused]] int v) const { assert(0 <= v && v < node_count()); }
+	void link_(int u, int f) {
+		nodes_[u].link = f;
+		nodes_[u].output = nodes_[f].head != -1 ? f : nodes_[f].output;
+		nodes_[u].matches += nodes_[f].matches;
+		order_.push_back(u);
+	}
 
   public:
 	static constexpr int root = 0;
@@ -95,10 +101,7 @@ class AhoCorasick {
 					while (mask) {
 						int c = std::countr_zero(mask), u = node.next[c], f = v == root ? root : fallback[c];
 						mask &= mask - 1;
-						nodes_[u].link = f;
-						nodes_[u].output = nodes_[f].head != -1 ? f : nodes_[f].output;
-						nodes_[u].matches += nodes_[f].matches;
-						order_.push_back(u);
+						link_(u, f);
 					}
 					continue;
 				}
@@ -106,11 +109,7 @@ class AhoCorasick {
 #endif
 			for (int c = 0; c < Alphabet; ++c) {
 				if (int u = node.next[c]) {
-					int f = v == root ? root : fallback[c];
-					nodes_[u].link = f;
-					nodes_[u].output = nodes_[f].head != -1 ? f : nodes_[f].output;
-					nodes_[u].matches += nodes_[f].matches;
-					order_.push_back(u);
+					link_(u, v == root ? root : fallback[c]);
 				} else {
 					node.next[c] = fallback[c];
 				}

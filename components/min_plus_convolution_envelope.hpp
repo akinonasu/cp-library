@@ -5,16 +5,55 @@
 #include <cstdint>
 #include <limits>
 #include <optional>
+#include <memory>
+#include <span>
 #include <type_traits>
 #include <cstddef>
 #include <vector>
+#include <bit>
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#include <immintrin.h>
+#endif
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
 
 namespace min_plus_convolution_envelope_detail {
 struct Envelope {
 	struct Entry { int offset, end; std::uint32_t bias; };
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	template <int step>
-	static void sweep(const std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b, std::vector<std::uint32_t> &c,
-		int first, int entering, int count, std::vector<Entry> &stack) {
+	__attribute__((target("avx2"))) static int window(std::span<const std::uint32_t> a, const Entry &x, const Entry &y, int t) {
+		constexpr int shift = step == 1 ? 0 : -7;
+		auto u = _mm256_add_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(a.data() + x.offset + step * t + shift)), _mm256_set1_epi32(int(x.bias)));
+		auto v = _mm256_add_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(a.data() + y.offset + step * t + shift)), _mm256_set1_epi32(int(y.bias)));
+		auto sign = _mm256_set1_epi32(std::numeric_limits<std::int32_t>::min());
+		unsigned loses = unsigned(_mm256_movemask_ps(_mm256_castsi256_ps(_mm256_cmpgt_epi32(_mm256_xor_si256(u, sign), _mm256_xor_si256(v, sign)))));
+		if constexpr (step == 1) return std::countr_zero(loses | 0x100u);
+		else return std::countl_zero((loses << 24) | 0x800000u);
+	}
+#endif
+	template <int step>
+	static int crossing(std::span<const std::uint32_t> a, const Entry &x, const Entry &y, int low, int high, [[maybe_unused]] bool simd) {
+		while (high - low > 8) {
+			int mid = low + (high - low) / 2;
+			(a[x.offset + step * mid] + x.bias <= a[y.offset + step * mid] + y.bias ? low : high) = mid;
+		}
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		int p = x.offset + step * low, q = y.offset + step * low, n = int(a.size());
+		if (simd && (step == 1 ? std::max(p, q) < n - 7 : std::min(p, q) >= 7)) return low + window<step>(a, x, y, low) - 1;
+#endif
+		while (high - low > 1) {
+			int mid = low + (high - low) / 2;
+			(a[x.offset + step * mid] + x.bias <= a[y.offset + step * mid] + y.bias ? low : high) = mid;
+		}
+		return low;
+	}
+	template <int step>
+	static void sweep(std::span<const std::uint32_t> a, std::span<const std::uint32_t> b, std::vector<std::uint32_t> &c,
+		int first, int entering, int count, std::vector<Entry> &stack, bool simd) {
 		int n = int(a.size());
 		stack.clear();
 		auto value = [&](const Entry &e, int t) { return a[e.offset + step * t] + e.bias; };
@@ -31,12 +70,7 @@ struct Envelope {
 				int low = t;
 				for (;;) {
 					if (value(next, top.end) > value(top, top.end)) {
-						int high = top.end;
-						while (high - low > 1) {
-							int mid = low + (high - low) / 2;
-							(value(next, mid) <= value(top, mid) ? low : high) = mid;
-						}
-						next.end = low;
+						next.end = crossing<step>(a, next, top, low, top.end, simd);
 						stack.push_back(top);
 						break;
 					}
@@ -61,15 +95,19 @@ struct Envelope {
 			t = last + 1;
 		}
 	}
-	static std::vector<std::uint32_t> run(const std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b) {
+	static std::vector<std::uint32_t> run(std::span<const std::uint32_t> a, std::span<const std::uint32_t> b) {
 		int n = int(a.size()), m = int(b.size());
 		std::vector<std::uint32_t> c(n + m - 1, std::numeric_limits<std::uint32_t>::max());
 		std::vector<Entry> stack;
 		stack.reserve(std::min(n, m));
+		bool simd = false;
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(MIN_PLUS_CONVOLUTION_DISABLE_AVX2)
+		simd = __builtin_cpu_supports("avx2");
+#endif
 		for (int j = 0; j < m; j += n) {
 			int end = std::min(m, j + n);
-			sweep<1>(a, b, c, j, j, end - j, stack);
-			sweep<-1>(a, b, c, end + n - 2, end - 1, end - j, stack);
+			sweep<1>(a, b, c, j, j, end - j, stack, simd);
+			sweep<-1>(a, b, c, end + n - 2, end - 1, end - j, stack, simd);
 		}
 		return c;
 	}
@@ -91,14 +129,16 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 	}
 	T extreme = a[low], endpoint = minimum ? std::min(a.front(), a.back()) : std::max(a.front(), a.back());
 	W amin = minimum ? W(endpoint) : W(extreme), amax = minimum ? W(extreme) : W(endpoint);
-	auto [bminptr, bmaxptr] = std::minmax_element(b.begin(), b.end());
-	W bmin = W(*bminptr), bmax = W(*bmaxptr);
+	T bmin_value = b.front(), bmax_value = b.front();
+	for (T value : b) bmin_value = std::min(bmin_value, value), bmax_value = std::max(bmax_value, value);
+	W bmin = W(bmin_value), bmax = W(bmax_value);
 	if (amin + bmin < W(std::numeric_limits<T>::lowest()) || amax + bmax > W(std::numeric_limits<T>::max()) || amax - amin + bmax - bmin > W(std::numeric_limits<std::uint32_t>::max())) return std::nullopt;
 	W abase = minimum ? amin : amax, bbase = minimum ? bmin : bmax, offset = abase + bbase;
-	std::vector<std::uint32_t> x(n), y(m);
+	auto x = std::make_unique_for_overwrite<std::uint32_t[]>(n);
+	auto y = std::make_unique_for_overwrite<std::uint32_t[]>(m);
 	for (int i = 0; i < n; ++i) x[i] = std::uint32_t(minimum ? W(a[i]) - abase : abase - W(a[i]));
 	for (int i = 0; i < m; ++i) y[i] = std::uint32_t(minimum ? W(b[i]) - bbase : bbase - W(b[i]));
-	auto c = Envelope::run(x, y);
+	auto c = Envelope::run({x.get(), std::size_t(n)}, {y.get(), std::size_t(m)});
 	std::vector<T> result(c.size());
 	for (std::size_t i = 0; i < c.size(); ++i) result[i] = T(minimum ? offset + c[i] : offset - c[i]);
 	return result;
@@ -108,5 +148,9 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 }
 
 }
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 
 #endif

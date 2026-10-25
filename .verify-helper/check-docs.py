@@ -7,6 +7,7 @@ import subprocess
 
 import yaml
 from atcoder_flags import constexpr_flags
+from size_profiles import LIMITS
 
 
 root = pathlib.Path(__file__).resolve().parents[1]
@@ -27,9 +28,9 @@ for header in headers:
     assert data['title'].removesuffix('（高速版）') != str(path), f'{path}: documentation is missing'
     code = data['data']['bundledCode']
     assert 'Traceback (most recent call last)' not in code, f'{path}: bundle failed'
-    assert len(code.encode('utf-8')) < 256 * 1024, f'{path}: bundle exceeds 256 KiB'
+    assert len(code.encode('utf-8')) < LIMITS['full'], f'{path}: bundle exceeds 256 KiB'
     copied = '//https://qandori.github.io/cp-library/' + path.as_posix() + '.html\n' + code
-    assert len(copied.encode('utf-8')) < 256 * 1024, f'{path}: copied bundle exceeds 256 KiB'
+    assert len(copied.encode('utf-8')) < LIMITS['full'], f'{path}: copied bundle exceeds 256 KiB'
     assert not re.search(r'^\s*#\s*include\s*"', code, re.MULTILINE), f'{path}: local include remains'
     if selected is None or path.as_posix() in selected:
         bundles.append(code)

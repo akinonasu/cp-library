@@ -86,11 +86,13 @@ class Kruskal {
 				}
 			} else {
 				using Key = std::make_unsigned_t<Cost>;
-				stable_radix_sort(order, [&](int id) {
+				auto sort_key = [&](int id) {
 					Key key = static_cast<Key>(edges_[id].cost);
 					if constexpr (std::is_signed_v<Cost>) key ^= Key(1) << (std::numeric_limits<Key>::digits - 1);
 					return key;
-				});
+				};
+				if (sizeof(Cost) >= 4 && order.size() >= 65536) stable_radix_sort<11>(order, sort_key);
+				else stable_radix_sort(order, sort_key);
 			}
 		} else std::sort(order.begin(), order.end(), compare);
 		UnionFind uf(n_);

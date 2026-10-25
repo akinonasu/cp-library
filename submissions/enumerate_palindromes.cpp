@@ -26,7 +26,13 @@ class Manacher {
 		assert(s.size() <= std::size_t(std::numeric_limits<int>::max()));
 		int n = int(s.size());
 		odd.resize(n), even.resize(n);
-		for (int i = 0, k = 1; i < n;) {
+		int first = std::min(n, 1);
+		while (first < n && s[first] == s[0]) ++first;
+		for (int i = 0; i < first; ++i) {
+			odd[i] = std::min(i + 1, first - i);
+			even[i] = std::min(i, first - i);
+		}
+		for (int i = first, k = 1; i < n;) {
 			int limit = std::min(i + 1, n - i);
 			while (k < limit && s[i - k] == s[i + k]) ++k;
 			odd[i] = k;
@@ -38,7 +44,7 @@ class Manacher {
 			i += j;
 			k = std::max(k - j, 1);
 		}
-		for (int i = 0, k = 0; i < n;) {
+		for (int i = first, k = 0; i < n;) {
 			int limit = std::min(i, n - i);
 			while (k < limit && s[i - k - 1] == s[i + k]) ++k;
 			even[i] = k;

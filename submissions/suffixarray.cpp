@@ -458,7 +458,9 @@ class SparseTable {
 };
 
 
-#line 14 "components/static_range_min.hpp"
+#line 12 "components/static_range_min.hpp"
+#include <span>
+#line 16 "components/static_range_min.hpp"
 
 template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 	static T minimum(T a, T b) { return b < a ? b : a; }
@@ -524,13 +526,48 @@ template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 		if (a + 1 < b) value = minimum(value, blocks_.prod_unchecked(a + 1, b));
 		return value;
 	}
+	std::vector<T> prod_many(std::span<const std::pair<int, int>> ranges) const {
+		std::vector<T> result;
+		result.reserve(ranges.size());
+		if constexpr (FastBoundaries) {
+			for (auto [l, r] : ranges) result.emplace_back(prod(l, r));
+		} else {
+			std::array<int, 32> left, right;
+			for (std::size_t first = 0; first < ranges.size(); first += 32) {
+				int count = int(std::min<std::size_t>(32, ranges.size() - first));
+				for (int i = 0; i < count; ++i) {
+					auto [l, r] = ranges[first + i];
+					assert(0 <= l && l < r && r <= size());
+					int a = l & ~31, b = (r - 1) & ~31;
+					auto mask = masks_[a == b ? r - 1 : a + 31] & (~std::uint32_t(0) << (l & 31));
+					left[i] = a + std::countr_zero(mask);
+					right[i] = a == b ? left[i] : b + std::countr_zero(masks_[r - 1]);
+#if defined(__GNUC__) || defined(__clang__)
+					if constexpr (!std::is_same_v<T, bool>) {
+						__builtin_prefetch(values_.data() + left[i]);
+						__builtin_prefetch(values_.data() + right[i]);
+					}
+#endif
+				}
+				for (int i = 0; i < count; ++i) {
+					auto [l, r] = ranges[first + i];
+					T value = minimum(values_[left[i]], values_[right[i]]);
+					int a = l / 32 + 1, b = (r - 1) / 32;
+					if (a < b) value = minimum(value, blocks_.prod_unchecked(a, b));
+					result.emplace_back(std::move(value));
+				}
+			}
+		}
+		return result;
+	}
+
 	T all_prod() const { return prod(0, size()); }
 };
 
 
 #line 9 "string/suffix_tree.hpp"
 #include <optional>
-#include <span>
+#line 11 "string/suffix_tree.hpp"
 #include <string>
 #line 13 "string/suffix_tree.hpp"
 

@@ -13,6 +13,60 @@
 #include <optional>
 
 namespace mod_sqrt_detail {
+template<class M> struct ChunkLog {
+	using U = typename M::U;
+	U modulus = 0;
+	static constexpr unsigned bits = 10, size = 1U << bits, slots = 2 * size;
+	unsigned uses = 0;
+	bool ready = false;
+	std::array<U, slots> keys{};
+	std::array<std::uint16_t, slots> values{};
+	std::array<std::array<U, size>, (std::numeric_limits<U>::digits + bits - 1) / bits> correction;
+	static unsigned hash(U value) { return std::uint64_t(value) * UINT64_C(11995408973635179863) >> (63 - bits); }
+	void build(const M &m, const std::array<U, std::numeric_limits<U>::digits> &powers, int s) {
+		keys.fill(0);
+		U value = m.one;
+		for (unsigned i = 0; i < size; ++i) {
+			unsigned h = hash(value);
+			while (keys[h]) h = (h + 1) & (slots - 1);
+			keys[h] = value;
+			values[h] = i;
+			value = m.mul(value, powers[s - bits]);
+		}
+		std::array<U, std::numeric_limits<U>::digits> inverse;
+		inverse[s - 1] = powers[s - 1];
+		for (int i = s - 1; i--;) inverse[i] = m.mul(powers[i], inverse[i + 1]);
+		for (int offset = 0; offset < s; offset += bits) {
+			value = m.one;
+			for (unsigned i = 0; i < size; ++i) {
+				correction[offset / bits][i] = value;
+				value = m.mul(value, inverse[offset]);
+			}
+		}
+		ready = true;
+	}
+	std::uint64_t logarithm(const M &m, U value, int s) const {
+		std::uint64_t result = 0;
+		for (int offset = 0; offset < s && value != m.one; offset += bits) {
+			const int width = std::min<int>(bits, s - offset);
+			U high = value;
+			for (int j = offset + width; j < s; ++j) high = m.mul(high, high);
+			unsigned h = hash(high);
+			while (keys[h] != high) h = (h + 1) & (slots - 1);
+			unsigned digit = values[h] >> (bits - width);
+			if (!offset && (digit & 1)) return UINT64_MAX;
+			result |= std::uint64_t(digit) << offset;
+			value = m.mul(value, correction[offset / bits][digit]);
+		}
+		return result;
+	}
+	U correct(const M &m, U root, std::uint64_t exponent) const {
+		for (unsigned offset = 0; exponent; exponent >>= bits, ++offset)
+			root = m.mul(root, correction[offset][exponent & (size - 1)]);
+		return root;
+	}
+};
+
 template <class M>
 std::optional<std::uint64_t> sqrt(std::uint64_t a, const M &m) {
 	using U = typename M::U;
@@ -26,6 +80,17 @@ std::optional<std::uint64_t> sqrt(std::uint64_t a, const M &m) {
 		U t = m.pow(value, q >> 1);
 		root = m.mul(value, t);
 		U b = m.mul(root, t), v = b;
+		static thread_local ChunkLog<M> cache;
+		if (s >= 12) {
+			if (cache.modulus != p) { cache.modulus = p; cache.uses = 0; cache.ready = false; }
+			if (cache.ready) {
+				const auto exponent = cache.logarithm(m, b, s);
+				if (exponent == UINT64_MAX) return std::nullopt;
+				root = cache.correct(m, root, exponent >> 1);
+				const std::uint64_t result = m.reduce(root);
+				return std::min(result, m.mod - result);
+			}
+		}
 		int k = 0;
 		while (v != m.one && k < s) v = m.mul(v, v), ++k;
 		if (k == s) return std::nullopt;
@@ -47,6 +112,7 @@ std::optional<std::uint64_t> sqrt(std::uint64_t a, const M &m) {
 				}
 				cached_modulus = p;
 			}
+			if (s >= 12 && ++cache.uses == (1U << (ChunkLog<M>::bits - 4))) cache.build(m, powers, s);
 			if (k >= 24) {
 				std::array<U, std::numeric_limits<U>::digits> inverse;
 				inverse[s - 1] = powers[s - 1];

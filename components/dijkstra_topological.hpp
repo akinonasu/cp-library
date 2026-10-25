@@ -5,9 +5,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
-#include <functional>
 #include <limits>
-#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -32,12 +30,7 @@ std::vector<T> topological_run(const G &g, int start, int target, T inf, std::ve
 		if (!indegree[v]) ready.push_back(int(v));
 	distance[start] = 0;
 	auto improve = [&](int from, const T &cost, const T &allowance, int to, const auto &weight) {
-		using Weight = std::remove_cvref_t<decltype(weight)>;
-		if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
-					  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
-			using Compare = std::common_type_t<Weight, T>;
-			if (Compare(weight) >= Compare(allowance)) return false;
-		} else if (weight >= allowance) return false;
+		if (reaches_limit(weight, allowance)) return false;
 		T next = cost + weight;
 		if (next >= distance[to]) return false;
 		if constexpr (Path) {
@@ -59,38 +52,21 @@ std::vector<T> topological_run(const G &g, int start, int target, T inf, std::ve
 			if (--indegree[to] == 0) ready.push_back(to);
 		}
 	}
-	using State = std::pair<T, int>;
-	constexpr bool radix = std::is_integral_v<T> && sizeof(T) <= 8;
-	std::conditional_t<radix, shortest_path_detail::RadixQueue<T>, std::vector<State>> queue;
-	auto push = [&](T cost, int v) {
-		if constexpr (radix) queue.push(cost, v);
-		else {
-			queue.emplace_back(std::move(cost), v);
-			std::push_heap(queue.begin(), queue.end(), std::greater<State>());
-		}
-	};
+	DistanceQueue<T> queue;
 	for (std::size_t v = 0; v < n; ++v) {
 		if (!indegree[v] || distance[v] == inf || g[v].empty()) continue;
 		if constexpr (Path) if (int(v) == target || distance[v] >= distance[target]) continue;
-		push(distance[v], int(v));
+		queue.push(distance[v], int(v));
 	}
 	while (!queue.empty()) {
-		const auto [cost, v] = [&] {
-			if constexpr (radix) return queue.pop();
-			else {
-				std::pop_heap(queue.begin(), queue.end(), std::greater<State>());
-				State state = std::move(queue.back());
-				queue.pop_back();
-				return state;
-			}
-		}();
+		const auto [cost, v] = queue.pop();
 		if (cost != distance[v]) continue;
 		if constexpr (Path) if (cost >= distance[target]) break;
 		T allowance = inf - cost;
 		for (const auto &[to, weight] : g[v]) {
 			if (!improve(v, cost, allowance, to, weight)) continue;
 			if constexpr (Path) if (to == target) continue;
-			if (!g[to].empty()) push(distance[to], to);
+			if (!g[to].empty()) queue.push(distance[to], to);
 		}
 	}
 	return distance;

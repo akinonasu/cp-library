@@ -519,7 +519,7 @@ int main() {
 		if (queried) xs.push_back(bit_cast<int32_t>(uint32_t(points[first] >> 32) ^ (1U << 31)));
 		first = last;
 	}
-	LiChaoTree<> tree(std::move(xs));
+	LiChaoTree<int64_t, false, int64_t> tree(std::move(xs));
 	for (auto [l, r, a, b] : initial) tree.add_segment_index(int(l), int(r), a, b);
 	for (auto query : queries) {
 		if (query.type == 0) tree.add_segment_index(int(query.f.l), int(query.f.r), query.f.a, query.f.b);

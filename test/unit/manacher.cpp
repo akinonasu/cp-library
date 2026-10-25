@@ -72,6 +72,13 @@ int main() {
 		for (char &c : s) c = char(rng() % alphabet);
 		check(std::string_view(s));
 	}
+	for (int prefix : {1, 3, 16, 33, 65}) {
+		std::string s(prefix, 'a');
+		for (int i = 0; i < 35; ++i) s.push_back(char('b' + rng() % 4));
+		check(s);
+		s += std::string(prefix, 'a');
+		check(s);
+	}
 	check(std::string("\0$#\xff#\0", 6));
 	check(std::vector<int>{-1, 500, 500, -1, 500, -1});
 	check(std::vector<bool>{true, false, true, true});

@@ -100,4 +100,20 @@ int main() {
 		check(g, adj, n / 2);
 	}
 
+	for (int n : {129, 513}) {
+		GeneralMatching g(n);
+		std::vector<std::vector<unsigned char>> adj(n, std::vector<unsigned char>(n));
+		auto add = [&](int u, int v) { g.add_edge(u, v); adj[u][v] = adj[v][u] = 1; };
+		add(0, 1), add(1, 2), add(2, 0);
+		for (int v = 3; v < n; ++v) add(0, v);
+		check(g, adj, 2);
+		auto copy = g;
+		for (int k = 0; k < 7; ++k) {
+			add(3 + 2 * k, 4 + 2 * k);
+			copy.add_edge(3 + 2 * k, 4 + 2 * k);
+			check(g, adj, 3 + k);
+			check(copy, adj, 3 + k);
+		}
+	}
+
 }

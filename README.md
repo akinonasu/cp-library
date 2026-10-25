@@ -48,6 +48,7 @@
 | `geometry/linear.hpp` | 直線・線分の交差・距離・射影 | [使い方](docs/geometry_linear.md) |
 | `geometry/polygon.hpp` | 多角形の面積・内外・切断 | [使い方](docs/geometry_polygon.md) |
 | `geometry/convex.hpp` | 凸包・直径・最近点対・Minkowski和 | [使い方](docs/geometry_convex.md) |
+| `geometry/dynamic_convex_hull.hpp` | 点追加型の動的凸包 | [使い方](docs/dynamic_convex_hull.md) |
 | `geometry/circle.hpp` | 円・接線・共通面積・最小包含円 | [使い方](docs/geometry_circle.md) |
 
 ### 畳み込み
@@ -119,6 +120,12 @@
 | `tree/tree_diameter.hpp` | 木の直径・最長パスの復元 | [使い方](docs/tree_diameter.md) |
 | `tree/rerooting.hpp` | 全方位木 DP | [使い方](docs/rerooting.md) |
 | `tree/dsu_on_tree.hpp` | DSU on Tree | [使い方](docs/dsu_on_tree.md) |
+
+### グラフ構築
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/range_edge_graph.hpp` | 区間辺グラフ・頂点／区間間の有向辺の圧縮 | [使い方](docs/range_edge_graph.md) |
 
 ### 最短経路
 
@@ -256,7 +263,10 @@
 | --- | --- | --- |
 | `data_structure/range_query/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
 | `data_structure/range_query/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
+| `data_structure/range_query/parallel_binary_search.hpp` | 並列二分探索・条件が初めて成立する更新回数 | [使い方](docs/parallel_binary_search.md) |
 | `data_structure/range_query/mo_order.hpp` | Mo 法 | [使い方](docs/mo_order.md) |
+| `data_structure/range_query/mo_with_updates.hpp` | 更新付き Mo 法・一点更新と区間クエリ | [使い方](docs/mo_with_updates.md) |
+| `data_structure/range_query/tree_mo.hpp` | 木上の Mo 法・頂点値／辺値の経路クエリ | [使い方](docs/tree_mo.md) |
 | `data_structure/range_query/offline_range_frequency.hpp` | 区間頻度（一点更新・クエリ一括処理） | [使い方](docs/offline_range_frequency.md) |
 | `data_structure/range_query/offline_range_count_distinct.hpp` | 区間の異なる値の個数（クエリ一括処理） | [使い方](docs/offline_range_count_distinct.md) |
 | `data_structure/range_query/offline_range_sum.hpp` | 値の上限付き区間和（クエリ一括処理） | [使い方](docs/offline_range_sum.md) |
@@ -289,6 +299,7 @@
 | `string/eertree.hpp` | Eertree（回文木）・回文の出現回数 | [使い方](docs/eertree.md) |
 | `string/trie.hpp` | Trie・重複付き辞書・接頭辞検索・辞書順検索・木 DP | [使い方](docs/trie.md) |
 | `string/aho_corasick.hpp` | Aho–Corasick・複数パターン検索 | [使い方](docs/aho_corasick.md) |
+| `string/suffix_automaton.hpp` | Suffix Automaton・文字追加・部分文字列検索・出現回数 | [使い方](docs/suffix_automaton.md) |
 | `string/suffix_tree.hpp` | Suffix Tree（静的文字列） | [使い方](docs/suffix_tree.md) |
 | `string/dynamic_pattern_matching.hpp` | Dynamic Pattern Matching（固定本文） | [使い方](docs/dynamic_pattern_matching.md) |
 
@@ -334,6 +345,7 @@
 | `math/combinatorics/binomial_prefix_sum_light.hpp` | 軽量版の二項係数 prefix sum | [使い方](docs/binomial_prefix_sum_light.md) |
 | `math/combinatorics/binomial_prefix_sum_incremental.hpp` | 二項係数の prefix sum（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
 | `math/combinatorics/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数 prefix sum 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
+| `math/combinatorics/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
 | `math/combinatorics/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 | `math/combinatorics/comb_light.hpp` | 軽量版の二項係数・階乗表 | [使い方](docs/comb_light.md) |
 
@@ -460,6 +472,7 @@
 | `components/fps_convolution.hpp` | FPS の融合畳み込み | [使い方](docs/fps_convolution.md) |
 | `components/mint_convolution.hpp` | modint998244353 の共有畳み込み | [使い方](docs/mint_convolution.md) |
 | `components/convolution_dispatch.hpp` | 畳み込みの型別振り分け | [使い方](docs/convolution_dispatch.md) |
+| `components/gcd_convolution_mint.hpp` | modint998244353 の GCD 畳み込み | [使い方](docs/gcd_convolution_mint.md) |
 | `components/fps_convolution_unbalanced.hpp` | FPS の非対称畳み込み | [使い方](docs/fps_convolution_unbalanced.md) |
 | `components/fps_convolution_constant.hpp` | FPS の定数係数畳み込み | [使い方](docs/fps_convolution_constant.md) |
 | `components/fps_direct_eval.hpp` | 多点評価の内部直接計算 | [使い方](docs/fps_direct_eval.md) |

@@ -101,6 +101,14 @@ void comb_cases() {
 }
 
 int main() {
+	IncrementalBinomialPrefixSum incremental(10);
+	light_combinatorics::IncrementalBinomialPrefixSum light_incremental(10);
+	assert(incremental.query(5, 3) == mint(16));
+	assert(light_incremental.query(5, 3) == mint(16));
+	mint (IncrementalBinomialPrefixSum<>::*query)(int, std::int64_t) = &IncrementalBinomialPrefixSum<>::query;
+	mint (light_combinatorics::IncrementalBinomialPrefixSum<>::*light_query)(int, std::int64_t) = &light_combinatorics::IncrementalBinomialPrefixSum<>::query;
+	assert((incremental.*query)(6, 3) == mint(22));
+	assert((light_incremental.*light_query)(6, 3) == mint(22));
 	comb_cases();
 	prefix_cases<mint>(120);
 	prefix_cases<Field<2>>(1);

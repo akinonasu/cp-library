@@ -9,7 +9,6 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <functional>
 #include <limits>
 #include <type_traits>
 #include <utility>
@@ -32,39 +31,17 @@ std::vector<T> run(const G &g, int st, int target, T inf, std::vector<int> &pare
 	assert(inf > 0);
 	std::vector<T> d(n, inf);
 	d[st] = 0;
-	using State = std::pair<T, int>;
-	constexpr bool radix = std::is_integral_v<T> && sizeof(T) <= 8;
-	std::conditional_t<radix, RadixQueue<T>, std::vector<State>> pq;
-	auto push = [&](T cost, int v) {
-		if constexpr (radix) pq.push(cost, v);
-		else {
-			pq.emplace_back(std::move(cost), v);
-			std::push_heap(pq.begin(), pq.end(), std::greater<State>());
-		}
-	};
-	push(0, st);
+	DistanceQueue<T> pq;
+	pq.push(0, st);
 	while (!pq.empty()) {
-		const auto [cost, v] = [&] {
-			if constexpr (radix) return pq.pop();
-			else {
-				std::pop_heap(pq.begin(), pq.end(), std::greater<State>());
-				State s = std::move(pq.back());
-				pq.pop_back();
-				return s;
-			}
-		}();
+		const auto [cost, v] = pq.pop();
 		if (d[v] != cost) continue;
 		if constexpr (Path) if (cost >= d[target]) break;
 		T allowance = inf - cost;
 		for (const auto &[to, c] : g[v]) {
 			assert(to >= 0 && static_cast<std::size_t>(to) < n);
 			assert(c >= 0);
-			using Weight = std::remove_cvref_t<decltype(c)>;
-			if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
-						  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
-				using Compare = std::common_type_t<Weight, T>;
-				if (Compare(c) >= Compare(allowance)) continue;
-			} else if (c >= allowance) continue;
+			if (reaches_limit(c, allowance)) continue;
 			T next = cost + c;
 			if (next >= d[to]) continue;
 			if constexpr (Path) {
@@ -73,7 +50,7 @@ std::vector<T> run(const G &g, int st, int target, T inf, std::vector<int> &pare
 			}
 			d[to] = next;
 			if constexpr (Path) if (to == target) continue;
-			if (!g[to].empty()) push(std::move(next), to);
+			if (!g[to].empty()) pq.push(std::move(next), to);
 		}
 	}
 	return d;
@@ -110,11 +87,7 @@ std::pair<T, std::vector<int>> path(const G &g, int st, int target, T inf) {
 			const auto &[to, weight] = g[v][0];
 			assert(to >= 0 && static_cast<std::size_t>(to) < n);
 			assert(weight >= 0);
-			if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
-						  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
-				using Compare = std::common_type_t<Weight, T>;
-				if (Compare(weight) >= Compare(inf - cost)) return {T(-1), {}};
-			} else if (weight >= inf - cost) return {T(-1), {}};
+			if (reaches_limit(weight, T(inf - cost))) return {T(-1), {}};
 			cost += weight;
 			v = to;
 			direct.push_back(v);

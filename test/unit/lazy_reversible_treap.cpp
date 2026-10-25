@@ -105,6 +105,42 @@ void random_test(std::mt19937_64 &rng) {
 }
 
 int main() {
+	for (int n = 0; n <= 10; ++n) for (int seed = 0; seed < 4; ++seed) {
+		std::vector<mint> values(n);
+		std::iota(values.begin(), values.end(), mint(1));
+		std::string letters;
+		for (int i = 0; i < n; ++i) letters += char('a' + i);
+		std::vector<std::string> symbols;
+		for (char c : letters) symbols.emplace_back(1, c);
+		for (int l = 0; l <= n; ++l) for (int r = l; r <= n; ++r) {
+			Tree<true> sum(values, seed);
+			Tree<false> ordered_sum(values, seed);
+			Text text(symbols, seed), plain(symbols, seed);
+			sum.apply(0, n, {2, 3});
+			ordered_sum.apply(0, n, {2, 3});
+			text.apply(0, n, {7});
+			sum.reverse(l, r);
+			ordered_sum.reverse(l, r);
+			text.reverse(l, r);
+			plain.reverse(l, r);
+			auto expected = values;
+			for (auto &x : expected) x = x * 2 + 3;
+			std::reverse(expected.begin() + l, expected.begin() + r);
+			auto unshifted = letters;
+			std::reverse(unshifted.begin() + l, unshifted.begin() + r);
+			auto word = shift({7}, letters, n);
+			std::reverse(word.begin() + l, word.begin() + r);
+			assert(sum.all_prod() == std::accumulate(expected.begin(), expected.end(), mint(0)));
+			assert(ordered_sum.all_prod() == sum.all_prod() && text.all_prod() == word);
+			for (int a = 0; a <= n; ++a) for (int b = a; b <= n; ++b) {
+				auto total = std::accumulate(expected.begin() + a, expected.begin() + b, mint(0));
+				assert(sum.prod(a, b) == total && ordered_sum.prod(a, b) == total);
+				assert(text.prod(a, b) == word.substr(a, b - a));
+				assert(plain.prod(a, b) == unshifted.substr(a, b - a));
+			}
+			assert(sum.to_vector() == expected && ordered_sum.to_vector() == expected);
+		}
+	}
 	std::mt19937_64 rng(3495682);
 	random_test<true>(rng);
 	random_test<false>(rng);

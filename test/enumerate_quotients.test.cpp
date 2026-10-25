@@ -7,11 +7,14 @@ int main() {
 	FastOutput output;
 	std::uint64_t n = 0;
 	input.read(n);
-	FloorQuotients quotients(n);
+	FloorQuotientRange quotients(n);
 	output.println(quotients.size());
-	const auto &values = quotients.values();
-	for (auto i = values.size(); i--;) {
-		output.write(values[i]);
-		output.write(i ? ' ' : '\n');
+	for (std::uint64_t value = 1; value <= quotients.root(); ++value) {
+		output.write(std::uint32_t(value));
+		output.write(value == quotients.root() && !quotients.large_size() ? '\n' : ' ');
+	}
+	for (auto i = quotients.root(); i < quotients.size(); ++i) {
+		output.write(quotients[i]);
+		output.write(i + 1 == quotients.size() ? '\n' : ' ');
 	}
 }

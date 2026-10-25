@@ -60,9 +60,7 @@ public:
 
 	void assign(T l, T r, const V &value) {
 		assert(l <= r);
-		if (l == r) return;
-		auto existing = find(l);
-		if (existing != end() && r <= existing->second.right && equal(existing->second.value, value)) return;
+		if (l == r || contains(l, r, value)) return;
 		V stored(value);
 		auto last = split(r), first = split(l);
 		for (auto it = first; it != last; ++it) total -= length(it->first, it->second.right);

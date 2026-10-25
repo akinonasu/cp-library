@@ -1,10 +1,12 @@
 #ifndef GCD_LCM_CONVOLUTION_HPP
 #define GCD_LCM_CONVOLUTION_HPP
 
-#include "../components/divisor_zeta.hpp"
+#include "../components/gcd_convolution_mint.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
+#include <cstdint>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -18,8 +20,15 @@ std::vector<T> multiply(std::vector<T> a, std::vector<T> b) {
 	a.resize(n, T(0));
 	b.resize(n, T(0));
 	auto ps = prime_sieve(n);
-	divisor_zeta<false, gcd>(a, ps);
-	divisor_zeta<false, gcd>(b, ps);
+	if constexpr (gcd && std::is_same_v<T, mint_detail::Mint>) {
+		if (n >= 4096 && n - 1 <= UINT32_MAX) {
+			gcd_convolution_mint_detail::multiply(a, b, ps);
+			return a;
+		}
+	}
+	divisor_zeta_detail::for_each<false, gcd>(n, ps, ps.size(), [&](std::size_t to, std::size_t from) {
+		a[to] += a[from], b[to] += b[from];
+	});
 	for (std::size_t i = 1; i < n; ++i) a[i] *= b[i];
 	divisor_zeta<true, gcd>(a, ps);
 	return a;

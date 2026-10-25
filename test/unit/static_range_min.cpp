@@ -27,6 +27,21 @@ void check_once(const std::vector<T> &values) {
 		T actual = range.all_prod();
 		require(!(actual < expected) && !(expected < actual));
 	}
+	std::vector<std::pair<int, int>> queries;
+	for (int l = 0; l < range.size(); ++l) {
+		queries.emplace_back(l, l + 1);
+		queries.emplace_back(l, range.size());
+		queries.emplace_back(l, std::min(l + 33, range.size()));
+	}
+	auto answers = range.prod_many(queries);
+	require(answers.size() == queries.size());
+	for (std::size_t i = 0; i < queries.size(); ++i) {
+		auto [l, r] = queries[i];
+		T expected = *std::min_element(values.begin() + l, values.begin() + r);
+		T actual = answers[i];
+		require(!(actual < expected) && !(expected < actual));
+	}
+	require(range.prod_many({}).empty());
 	auto copy = range;
 	auto moved = std::move(copy);
 	require(moved.size() == range.size());

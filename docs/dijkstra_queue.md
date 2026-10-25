@@ -5,6 +5,8 @@ documentation_of: //components/dijkstra_queue.hpp
 
 `shortest_path_detail::RadixQueue<T>` は [Dijkstra](https://qandori.github.io/cp-library/graph/shortest_path/dijkstra.hpp.html) が使う単調優先度キューです。通常は `dijkstra`・`dijkstra_path` を使います。`T` は 64 bit 以下の整数型、キーは非負です。頂点番号は非負の `int` です。
 
+`shortest_path_detail::DistanceQueue<T>` は、通常の Dijkstra とトポロジカル前処理で共有するキュー型です。64 bit 以下の整数距離には `RadixQueue<T>`、それ以外には二分ヒープの `BinaryQueue<T>` を使います。いずれも `empty()`・`push(key,vertex)`・`pop()` を持ち、`pop()` は最小キーと頂点の `pair<T,int>` を返します。要素数を $$q$$ として、二分ヒープの追加・削除は $$O(\log q)$$ 時間、空間は $$O(q)$$ です。
+
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `RadixQueue<T>()` | 下限 0 の空キューを作る | $$O(w)$$ |

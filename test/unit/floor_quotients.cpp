@@ -3,7 +3,13 @@
 #include <cassert>
 #include <cfenv>
 #include <random>
+#include <ranges>
+#include <limits>
 #include <utility>
+
+static_assert(std::ranges::forward_range<FloorQuotientRange>);
+static_assert(std::ranges::sized_range<FloorQuotientRange>);
+static_assert(std::same_as<std::ranges::range_value_t<FloorQuotientRange>, std::uint64_t>);
 
 int main() {
 	for (std::uint64_t n = 0; n <= 5000; ++n) {
@@ -15,6 +21,12 @@ int main() {
 			i = n / value + 1;
 		}
 		assert(table.values() == expected);
+		FloorQuotientRange range(n);
+		assert(range.max_n() == n && range.empty() == (n == 0));
+		assert(range.size() == table.size() && range.root() == table.root() && range.large_size() == table.large_size());
+		std::vector<std::uint64_t> ascending(range.begin(), range.end());
+		assert(ascending.size() == expected.size() && std::equal(ascending.begin(), ascending.end(), expected.rbegin()));
+		for (std::uint64_t i = 0; i < range.size(); ++i) assert(range[i] == ascending[i]);
 		assert(table.size() == table.root() + table.large_size());
 		assert(table.root() * table.root() <= n && (table.root() + 1) * (table.root() + 1) > n);
 		assert(!table.contains(0) && !table.contains(n + 1));
@@ -26,6 +38,16 @@ int main() {
 		}
 		if (n <= 100) for (std::uint64_t x = 1; x <= n; ++x)
 			assert(table.contains(x) == std::binary_search(expected.begin(), expected.end(), x, std::greater<>()));
+	}
+	for (auto n : {UINT64_MAX, UINT64_MAX - 1, UINT64_C(1) << 63, UINT64_C(1) << 53}) {
+		FloorQuotientRange range(n);
+		assert(__uint128_t(range.root()) * range.root() <= n && __uint128_t(range.root() + 1) * (range.root() + 1) > n);
+		assert(range.size() == range.root() + range.large_size());
+		for (std::uint64_t i = 0; i < 32; ++i) {
+			assert(range[i] == i + 1);
+			assert(range[range.size() - 1 - i] == n / (i + 1));
+		}
+		assert(range[range.root()] == n / range.large_size());
 	}
 	FloorQuotients large(1000000000000ULL);
 	std::mt19937_64 random(20261022);

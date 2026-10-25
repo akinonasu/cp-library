@@ -1,12 +1,12 @@
 #ifndef WARSHALL_FLOYD_KERNEL_HPP
 #define WARSHALL_FLOYD_KERNEL_HPP
 
+#include "aligned_allocator.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
-#include <new>
 #include <type_traits>
 #include <vector>
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
@@ -19,19 +19,7 @@
 #endif
 
 namespace warshall_floyd_detail {
-template<class T> struct Allocator {
-	using value_type = T;
-	Allocator() = default;
-	template<class U> Allocator(const Allocator<U>&) {}
-	T* allocate(std::size_t n) {
-		if (n > std::numeric_limits<std::size_t>::max() / sizeof(T)) throw std::bad_array_new_length();
-		return static_cast<T*>(::operator new(n * sizeof(T), std::align_val_t(64)));
-	}
-	void deallocate(T* p, std::size_t) { ::operator delete(p, std::align_val_t(64)); }
-	template<class U> bool operator==(const Allocator<U>&) const { return true; }
-};
-
-template<class T> using Storage = std::vector<T, Allocator<T>>;
+template<class T> using Storage = std::vector<T, AlignedAllocator<T>>;
 
 template<class T> struct Unsigned { using type = std::make_unsigned_t<T>; };
 template<> struct Unsigned<__int128_t> { using type = __uint128_t; };

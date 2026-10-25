@@ -22,6 +22,7 @@ auto [l, r] = tree.subtree(1);
 | `HLD(n = 0)` | 頂点数を指定 | $$O(n)$$ |
 | `add_edge(u,v)` | 無向辺を追加し、辺 ID を返す | 償却 $$O(1)$$ |
 | `build(root = 0)` | 指定した根で木を分解 | $$O(n)$$ |
+| `build_from_parents(parents)` | 親配列から木を構築し、分解 | $$O(n)$$ |
 | `lca(u,v)` / `dist(u,v)` | 最小共通祖先／経路の辺数 | $$O(\log n)$$ |
 | `is_ancestor(u,v)` | `u` が `v` の祖先か。自身も含む | $$O(1)$$ |
 | `ancestor(v,k)` | `k` 個上の祖先。範囲外は -1 | $$O(\log n)$$ |
@@ -36,6 +37,19 @@ auto [l, r] = tree.subtree(1);
 | `n` / `edges[id]` | 全頂点数／辺の両端 | $$O(1)$$ |
 
 無向木を扱い、`build(root = 0)` で根を指定します。頂点値は Segtree などの `in[v]` に置きます。
+
+親配列がある場合は `build_from_parents(std::vector<int> parents)` を使えます。頂点数は配列の長さとなり、根の親を `-1`、それ以外の親を頂点番号で指定します。根はちょうど 1 頂点で、全頂点が根につながる木である必要があります。頂点番号は任意の順序で構いません。空配列も渡せます。
+
+```cpp
+#include "lib/data_structure/advanced/hld.hpp"
+
+HLD rooted;
+rooted.build_from_parents({-1, 0, 1});
+auto root = rooted.parent[0]; // -1
+auto distance = rooted.dist(0, 2); // 2
+```
+
+既存の頂点・辺は置き換わります。`edges` には根以外の頂点 `v` の `(parents[v], v)` が `v` の昇順で入り、その順番が辺 ID になります。配列を以降使わない場合は `build_from_parents(std::move(parents))` と渡せます。
 
 `in[v]` は木を分解した後の配列上の位置で、元の頂点番号 `v` とは別です。元の頂点値が `value[v]` なら、長さ `n` の配列に `a[tree.in[v]] = value[v]` と並べ替えてから Segtree を構築します。`subtree(v)` の `[l,r)` と `path` が返す区間は、この配列に対する範囲です。`tree.order[i]` で位置 `i` に対応する元の頂点番号へ戻せます。
 

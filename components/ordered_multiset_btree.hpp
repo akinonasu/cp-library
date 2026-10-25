@@ -259,7 +259,7 @@ public:
 	void assign(std::vector<T> values) {
 		clear();
 		if (values.empty()) return;
-		stable_radix_sort(values, [](T value) { using U = std::make_unsigned_t<T>; constexpr U sign = std::is_signed_v<T> ? U(1) << (sizeof(T) * 8 - 1) : 0; return U(U(value) ^ sign); });
+		radix_sort_detail::sort_by_key(values, [](T value) { return value; });
 		std::size_t distinct = 0;
 		std::vector<Count> counts;
 		for (T value : values) {

@@ -91,18 +91,14 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	F &operator<<=(int d) {
 		assert(d >= 0);
-		const int n = static_cast<int>(this->size());
-		if (d >= n) return *this = F(n);
-		this->insert(this->begin(), d, T(0));
-		this->resize(n);
+		auto edge = std::shift_right(this->begin(), this->end(), d);
+		std::fill(this->begin(), edge, T(0));
 		return *this;
 	}
 	F &operator>>=(int d) {
 		assert(d >= 0);
-		const int n = static_cast<int>(this->size());
-		if (d >= n) return *this = F(n);
-		this->erase(this->begin(), this->begin() + d);
-		this->resize(n);
+		auto edge = std::shift_left(this->begin(), this->end(), d);
+		std::fill(edge, this->end(), T(0));
 		return *this;
 	}
 

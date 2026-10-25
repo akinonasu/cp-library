@@ -28,12 +28,36 @@ auto b = queue.front(); // "cd"
 | `pop_front()` | 先頭を削除 | 償却 $$O(1)$$、最悪 $$O(n)$$ |
 | `front()` / `back()` | 先頭／末尾の値の `const S&` | $$O(1)$$ |
 | `prod()` | 先頭から末尾まで集約。空なら `e()` | $$O(1)$$ |
+| `apply(value, mapping)` | `mapping(S,T)` を使い、集約を値 `value` に作用させた `T` を返す | $$O(1)$$ |
+| `apply(value)` | `S` が関数として呼べるとき、集約を `value` に作用させた `T` を返す | $$O(1)$$ |
 | `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
 | `reserve(n)` | 領域を確保 | $$O(n)$$ |
 | `clear()` | 全要素を削除 | $$O(n)$$ |
 | `swap(other)` | 内容を交換 | $$O(1)$$ |
 
 `op(S,S)` は結合的な演算、`e()` はその単位元です。`S` はコピー・移動できる型を使います。演算の引数は変更しないでください。`front`・`back`・`pop_front` はキューが空でないときに使います。取得操作は `const` オブジェクトから呼べます。
+
+`apply(value, mapping)` は `mapping(op(f, g), x) == mapping(g, mapping(f, x))` と `mapping(e(), x) == x` を満たす作用に使います。引数 `value` の型を `T` とし、`mapping` は `S` と `T` を受け取って `T` に代入できる値を返します。空のキューでは `value` をそのまま返します。`apply(value)` は `mapping(f, x) = f(x)` とした呼び出しで、同じ順序の条件を満たす関数合成に使えます。どちらも `const` オブジェクトから呼べます。
+
+```cpp
+#include "lib/data_structure/sliding_window_aggregation.hpp"
+#include <utility>
+
+using Function = std::pair<long long, long long>;
+Function compose(Function f, Function g) {
+	return {g.first * f.first, g.first * f.second + g.second};
+}
+Function identity() { return {1, 0}; }
+
+SlidingWindowAggregation<Function, compose, identity> functions;
+functions.push_back({2, 1});
+functions.push_back({3, 4});
+auto value = functions.apply(5LL, [](Function f, long long x) {
+	return f.first * x + f.second;
+}); // 37
+```
+
+作用にかかる時間を定数とすると、`apply` は $$O(1)$$ 時間です。整数型の演算結果はその型の範囲に収まるようにしてください。
 
 コピーは独立したキューを作り、移動元は再利用できる空のキューになります。参照は更新後に取得し直してください。`size_type` は `std::size_t` です。
 

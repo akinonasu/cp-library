@@ -3,7 +3,6 @@ layout: default
 ---
 
 {% include theme_fix.html %}
-<link rel="stylesheet" href="{{ '/assets/css/library.css' | relative_url }}">
 <nav class="library-nav" aria-label="ナビゲーション">
   <a href="{{ '/' | relative_url }}"{% if page.size_profile == 'full' and page.data.sharedPage != true %} aria-current="page"{% endif %}>全体（256 KiB向け）</a>
   <a href="{{ '/lightweight/' | relative_url }}"{% if page.size_profile == 'lightweight' %} aria-current="page"{% endif %}>軽量版（64 KiB）</a>

@@ -14,7 +14,7 @@
 | `data_structure/li_chao_tree/` | Li Chao Tree、Dynamic Li Chao Tree |
 | `data_structure/segment_tree/` | 動的・双対・遅延セグメント木、Sortable Segtree |
 | `data_structure/wavelet_matrix/` | 静的・動的・重み付き・一点代入 Wavelet Matrix |
-| `data_structure/range_query/` | Sparse Table、Disjoint Sparse Table、Mo 法 |
+| `data_structure/range_query/` | Sparse Table、Disjoint Sparse Table、Mo 法、並列二分探索 |
 | `data_structure/advanced/` | HLD、重心分解、Static Top Tree、Segtree Beats、Kinetic Tournament、Retroactive Priority Queue |
 | `math/` | modint、有理数 |
 | `math/number_theory/` | 素数、素因数分解、整数根、mod 演算、離散対数、Stern–Brocot Tree |

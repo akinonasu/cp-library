@@ -122,7 +122,11 @@ class SparseTable {
 };
 
 
-#line 14 "components/static_range_min.hpp"
+#line 7 "components/static_range_min.hpp"
+#include <array>
+#line 12 "components/static_range_min.hpp"
+#include <span>
+#line 16 "components/static_range_min.hpp"
 
 template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 	static T minimum(T a, T b) { return b < a ? b : a; }
@@ -188,6 +192,41 @@ template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 		if (a + 1 < b) value = minimum(value, blocks_.prod_unchecked(a + 1, b));
 		return value;
 	}
+	std::vector<T> prod_many(std::span<const std::pair<int, int>> ranges) const {
+		std::vector<T> result;
+		result.reserve(ranges.size());
+		if constexpr (FastBoundaries) {
+			for (auto [l, r] : ranges) result.emplace_back(prod(l, r));
+		} else {
+			std::array<int, 32> left, right;
+			for (std::size_t first = 0; first < ranges.size(); first += 32) {
+				int count = int(std::min<std::size_t>(32, ranges.size() - first));
+				for (int i = 0; i < count; ++i) {
+					auto [l, r] = ranges[first + i];
+					assert(0 <= l && l < r && r <= size());
+					int a = l & ~31, b = (r - 1) & ~31;
+					auto mask = masks_[a == b ? r - 1 : a + 31] & (~std::uint32_t(0) << (l & 31));
+					left[i] = a + std::countr_zero(mask);
+					right[i] = a == b ? left[i] : b + std::countr_zero(masks_[r - 1]);
+#if defined(__GNUC__) || defined(__clang__)
+					if constexpr (!std::is_same_v<T, bool>) {
+						__builtin_prefetch(values_.data() + left[i]);
+						__builtin_prefetch(values_.data() + right[i]);
+					}
+#endif
+				}
+				for (int i = 0; i < count; ++i) {
+					auto [l, r] = ranges[first + i];
+					T value = minimum(values_[left[i]], values_[right[i]]);
+					int a = l / 32 + 1, b = (r - 1) / 32;
+					if (a < b) value = minimum(value, blocks_.prod_unchecked(a, b));
+					result.emplace_back(std::move(value));
+				}
+			}
+		}
+		return result;
+	}
+
 	T all_prod() const { return prod(0, size()); }
 };
 
@@ -196,8 +235,30 @@ template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 
 class LCA {
 	std::vector<int> in, out, order;
+	bool ordered_ = false;
 	StaticRangeMin<int, true> table;
 	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && static_cast<int>(in.size()) == n); }
+
+	void finish(int root) {
+		in[root] = n;
+		ordered_ = root == 0;
+		for (int i = n - 2; i >= 0; --i) {
+			int v = order[i], p = parent[v];
+			depth[v] = depth[p] + 1;
+			in[v] = in[p];
+			in[p] -= out[v];
+		}
+		for (int v = 0; v < n; ++v) {
+			--in[v];
+			out[v] += in[v];
+			order[in[v]] = v;
+			ordered_ &= parent[v] < v;
+		}
+		std::vector<int> values(n);
+		for (int i = 1; i < n; ++i) values[i] = ordered_ ? parent[order[i]] : in[parent[order[i]]];
+		table.build(std::move(values));
+		parent[root] = -1;
+	}
 
   public:
 	int n;
@@ -239,23 +300,55 @@ class LCA {
 			if (--degree[p] == 1) order[count++] = p;
 		}
 		assert(count == n - 1);
-		in[root] = n;
-		for (int i = n - 2; i >= 0; --i) {
-			int v = order[i], p = parent[v];
-			depth[v] = depth[p] + 1;
-			in[v] = in[p];
-			in[p] -= out[v];
-		}
-		for (int v = 0; v < n; ++v) {
-			--in[v];
-			out[v] += in[v];
-			order[in[v]] = v;
-		}
-		std::vector<int> values(n);
-		for (int i = 1; i < n; ++i) values[i] = in[parent[order[i]]];
-		table.build(std::move(values));
-		parent[root] = -1;
+		finish(root);
 	}
+
+	void build_from_parents(std::vector<int> parents) {
+		assert(parents.size() <= std::size_t(std::numeric_limits<int>::max() / 2));
+		n = static_cast<int>(parents.size());
+		parent = std::move(parents);
+		in.resize(n);
+		out.assign(n, 1);
+		order.resize(n);
+		depth.assign(n, 0);
+		table = StaticRangeMin<int, true>();
+		edges.clear();
+		edges.reserve(std::max(0, n - 1));
+		if (!n) return;
+		int root = -1;
+		bool ordered = true;
+		for (int v = 0; v < n; ++v) {
+			int p = parent[v];
+			assert(-1 <= p && p < n && p != v);
+			if (p == -1) {
+				assert(root == -1);
+				root = v;
+			} else {
+				edges.emplace_back(p, v);
+				ordered &= p < v;
+			}
+		}
+		assert(root != -1);
+		if (ordered) {
+			for (int v = n - 1; v > 0; --v) {
+				out[parent[v]] += out[v];
+				order[n - 1 - v] = v;
+			}
+		} else {
+			std::fill(in.begin(), in.end(), 0);
+			for (int v = 0; v < n; ++v) if (v != root) ++in[parent[v]];
+			int count = 0;
+			for (int v = 0; v < n; ++v) if (!in[v] && v != root) order[count++] = v;
+			for (int i = 0; i < count; ++i) {
+				int v = order[i], p = parent[v];
+				out[p] += out[v];
+				if (!--in[p] && p != root) order[count++] = p;
+			}
+			assert(count == n - 1);
+		}
+		finish(root);
+	}
+
 	int lca(int u, int v) const {
 		check(u);
 		check(v);
@@ -263,7 +356,8 @@ class LCA {
 		if (l == r) return u;
 		if (l > r) std::swap(l, r);
 		++l;
-		return order[table.prod(l, r + 1)];
+		int w = table.prod(l, r + 1);
+		return ordered_ ? w : order[w];
 	}
 	int dist(int u, int v) const {
 		int w = lca(u, v);
@@ -347,8 +441,6 @@ class FenwickSum {
 
 
 
-#line 5 "components/fast_io.hpp"
-#include <array>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
 #line 11 "components/fast_io.hpp"
@@ -578,8 +670,6 @@ public:
 };
 
 
-#line 6 "components/fast_io_bulk.hpp"
-#include <span>
 #line 8 "components/fast_io_bulk.hpp"
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)

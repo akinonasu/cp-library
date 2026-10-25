@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <limits>
 #include <optional>
+#include <memory>
 #include <type_traits>
 #include <vector>
 
@@ -81,6 +82,64 @@ struct Kernel {
 		auto mask = _mm256_cmpeq_epi32(best, _mm256_set1_epi32(std::bit_cast<int>(minimum(best))));
 		return int(minimum(_mm256_or_si256(best_column, _mm256_xor_si256(mask, _mm256_set1_epi32(-1)))));
 	}
+#if defined(__SIZEOF_INT128__)
+	template <class T, bool Minimum>
+	__attribute__((target("avx512f"))) static __m512i merge_step64(const T *a, const T *b) {
+		auto best = _mm512_add_epi64(_mm512_set1_epi64(a[0]), _mm512_loadu_si512(b + 1));
+		for (int q = 1; q <= 8; ++q) {
+			auto next = _mm512_add_epi64(_mm512_set1_epi64(a[q]), _mm512_loadu_si512(b + 1 - q));
+			if constexpr (std::is_signed_v<T>) {
+				if constexpr (Minimum) best = _mm512_min_epi64(best, next);
+				else best = _mm512_max_epi64(best, next);
+			} else {
+				if constexpr (Minimum) best = _mm512_min_epu64(best, next);
+				else best = _mm512_max_epu64(best, next);
+			}
+		}
+		return best;
+	}
+	template <class T, bool Minimum>
+	__attribute__((target("avx512f"))) static void merge64(const T *a, const T *b, int n, int m, T *result) {
+		constexpr int chains = 4;
+		int count = n + m - 1, length = (count + chains * 8 - 1) / (chains * 8) * 8;
+		int x[chains], y[chains], position[chains], end[chains];
+		for (int s = 0; s < chains; ++s) {
+			int k = s * length, low = std::max(0, k + 1 - m), high = std::min(k, n - 1);
+			while (low < high) {
+				int mid = low + (high - low) / 2;
+				auto left = __int128_t(a[mid + 1]) - __int128_t(a[mid]), right = __int128_t(b[k - mid]) - __int128_t(b[k - mid - 1]);
+				if (Minimum ? left >= right : left <= right) high = mid;
+				else low = mid + 1;
+			}
+			x[s] = low, y[s] = k - low, position[s] = k, end[s] = std::min(count, k + length);
+			result[k] = T(__int128_t(a[x[s]]) + __int128_t(b[y[s]]));
+		}
+		const auto reverse = _mm512_setr_epi64(7, 6, 5, 4, 3, 2, 1, 0);
+		for (int t = 0; t < length; t += 8) for (int s = 0; s < chains; ++s) {
+			int &i = x[s], &j = y[s], &k = position[s];
+			if (k + 8 < end[s] && i + 8 < n && j >= 7 && j + 8 < m) {
+				auto values = merge_step64<T, Minimum>(a + i, b + j);
+				_mm512_storeu_si512(result + k + 1, values);
+				auto diagonal = _mm512_add_epi64(_mm512_loadu_si512(a + i), _mm512_permutexvar_epi64(reverse, _mm512_loadu_si512(b + j + 1)));
+				unsigned mask = _mm512_cmpeq_epi64_mask(diagonal, _mm512_permutexvar_epi64(_mm512_set1_epi64(7), values));
+				int q = std::countr_zero(mask | 0x100u);
+				i += q, j += 8 - q, k += 8;
+			} else {
+				int last = std::min(end[s] - 1, k + 8);
+				while (k < last) {
+					bool left = j + 1 == m;
+					if (i + 1 < n && j + 1 < m) {
+						auto u = __int128_t(a[i + 1]) - __int128_t(a[i]), v = __int128_t(b[j + 1]) - __int128_t(b[j]);
+						left = Minimum ? u < v : v < u;
+					}
+					if (left) ++i;
+					else ++j;
+					result[++k] = T(__int128_t(a[i]) + __int128_t(b[j]));
+				}
+			}
+		}
+	}
+#endif
 	__attribute__((target("avx2"))) static bool multiply(const U *a, const U *b, int n, int m, U *result,
 		std::size_t capacity, std::uint64_t budget) {
 		if (n <= 0 || m <= 0 || n > std::numeric_limits<int>::max() - m - 2 * pad) return false;
@@ -127,8 +186,8 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 	if (a.size() > std::size_t(std::numeric_limits<int>::max()) || b.size() > std::size_t(std::numeric_limits<int>::max()) - a.size()) return std::nullopt;
 	int n = int(a.size()), m = int(b.size()), length = n + m - 1;
 	std::vector<T> result;
-	result.reserve(length);
 	if (n == 1 || m == 1) {
+		result.reserve(length);
 		for (int i = 0; i < length; ++i) {
 			W value = W(a[n == 1 ? 0 : i]) + W(b[m == 1 ? 0 : i]);
 			if (value < lowest || value > highest) return std::nullopt;
@@ -145,16 +204,33 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 	const T *extreme = a.data() + low;
 	const T *endpoint = a.data() + ((Minimum ? a.front() < a.back() : a.back() < a.front()) ? n - 1 : 0);
 	const T *amin = Minimum ? extreme : endpoint, *amax = Minimum ? endpoint : extreme;
-	const auto [bmin, bmax] = std::minmax_element(b.begin(), b.end());
-	if (W(*amin) + W(*bmin) < lowest || W(*amax) + W(*bmax) > highest) return std::nullopt;
-	bool convex = true;
-	W previous = W(b[1]) - W(b[0]);
-	for (int i = 2; i < m; ++i) {
-		W next = W(b[i]) - W(b[i - 1]);
-		if (Minimum ? next < previous : previous < next) { convex = false; break; }
-		previous = next;
-	}
+	T bmin = b.front(), bmax = b.front();
+	for (T value : b) bmin = std::min(bmin, value), bmax = std::max(bmax, value);
+	if (W(*amin) + W(bmin) < lowest || W(*amax) + W(bmax) > highest) return std::nullopt;
+	auto same_curvature = [&]<class D>() {
+		D previous = D(W(b[1]) - W(b[0]));
+		for (int i = 2; i < m; ++i) {
+			D next = D(W(b[i]) - W(b[i - 1]));
+			if (Minimum ? next < previous : previous < next) return false;
+			previous = next;
+		}
+		return true;
+	};
+	bool convex = W(bmax) - W(bmin) <= std::numeric_limits<std::int64_t>::max() ? same_curvature.template operator()<std::int64_t>() : same_curvature.template operator()<W>();
 	if (convex) {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if constexpr (sizeof(T) == 8) if (length >= 4096 && length < std::numeric_limits<int>::max() - 128
+			&& std::int64_t(std::max(n, m)) <= 4 * std::int64_t(std::min(n, m)) && available() && __builtin_cpu_supports("avx512f")) {
+			W afirst = W(a[1]) - W(a[0]), alast = W(a[n - 1]) - W(a[n - 2]);
+			W bfirst = W(b[1]) - W(b[0]), blast = W(b[m - 1]) - W(b[m - 2]);
+			if (Minimum ? bfirst < alast && afirst < blast : alast < bfirst && blast < afirst) {
+				result.resize(length);
+				Kernel::merge64<T, Minimum>(a.data(), b.data(), n, m, result.data());
+				return result;
+			}
+		}
+#endif
+		result.reserve(length);
 		auto merge = [&]<class Difference>() {
 			int i = 0, j = 0;
 			result.push_back(T(W(a[0]) + W(b[0])));
@@ -174,22 +250,28 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 			while (++j < m) result.push_back(T(W(a[i]) + W(b[j])));
 		};
 		if (W(*amax) - W(*amin) <= std::numeric_limits<std::int64_t>::max()
-			&& W(*bmax) - W(*bmin) <= std::numeric_limits<std::int64_t>::max()) merge.template operator()<std::int64_t>();
+			&& W(bmax) - W(bmin) <= std::numeric_limits<std::int64_t>::max()) merge.template operator()<std::int64_t>();
 		else merge.template operator()<W>();
 		return result;
 	}
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	if (length < 256 || !available() || n > std::numeric_limits<int>::max() - m - 2 * Kernel::pad) return std::nullopt;
-	W arange = W(*amax) - W(*amin), brange = W(*bmax) - W(*bmin);
+	W arange = W(*amax) - W(*amin), brange = W(bmax) - W(bmin);
 	if (arange + 2 * brange >= W(std::numeric_limits<std::uint32_t>::max())) return std::nullopt;
 	std::size_t capacity = std::vector<std::uint32_t>{}.max_size();
 	std::size_t groups = (std::size_t(length) + Kernel::group - 1) / Kernel::group;
 	if (capacity < 2 * Kernel::pad || std::size_t(n) > capacity - 2 * Kernel::pad || std::size_t(m) > capacity || groups > capacity / Kernel::group) return std::nullopt;
-	W abase = Minimum ? W(*amin) : W(*amax), bbase = Minimum ? W(*bmin) : W(*bmax), offset = abase + bbase;
-	std::vector<std::uint32_t> x(std::size_t(n) + 2 * Kernel::pad, std::numeric_limits<std::uint32_t>::max() - std::uint32_t(brange)), y(m), values(groups * Kernel::group);
+	W abase = Minimum ? W(*amin) : W(*amax), bbase = Minimum ? W(bmin) : W(bmax), offset = abase + bbase;
+	auto x = std::make_unique_for_overwrite<std::uint32_t[]>(std::size_t(n) + 2 * Kernel::pad);
+	auto y = std::make_unique_for_overwrite<std::uint32_t[]>(m);
+	auto values = std::make_unique_for_overwrite<std::uint32_t[]>(groups * Kernel::group);
+	std::uint32_t padding = std::numeric_limits<std::uint32_t>::max() - std::uint32_t(brange);
+	std::fill_n(x.get(), Kernel::pad, padding);
+	std::fill_n(x.get() + Kernel::pad + n, Kernel::pad, padding);
 	for (int i = 0; i < n; ++i) x[Kernel::pad + i] = std::uint32_t(Minimum ? W(a[i]) - abase : abase - W(a[i]));
 	for (int i = 0; i < m; ++i) y[i] = std::uint32_t(Minimum ? W(b[i]) - bbase : bbase - W(b[i]));
-	if (!Kernel::multiply(x.data() + Kernel::pad, y.data(), n, m, values.data(), values.size(), std::uint64_t(n + m) * 16)) return std::nullopt;
+	if (!Kernel::multiply(x.get() + Kernel::pad, y.get(), n, m, values.get(), groups * Kernel::group, std::uint64_t(n + m) * 16)) return std::nullopt;
+	result.reserve(length);
 	for (int i = 0; i < length; ++i) result.push_back(T(Minimum ? offset + values[i] : offset - values[i]));
 	return result;
 #endif
