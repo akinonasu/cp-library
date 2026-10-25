@@ -224,7 +224,7 @@ inline void transform(Series &a, bool inverse = false) {
 		if (vectorized && n >= 8) leaf8<true>(a.data(), n, roots.inverse.data()), h = 8;
 #endif
 		for (; h < n; h *= 2) stage<true>(a.data(), n, h, roots.inverse.data() + h, vectorized);
-		scale(a, mint(n).inv(), vectorized);
+		scale(a, mint::raw(mint::mod() - (mint::mod() - 1) / n), vectorized);
 	} else {
 		size_t h = n / 2;
 		for (; h >= 8; h /= 2) stage<false>(a.data(), n, h, roots.forward.data() + h, vectorized);

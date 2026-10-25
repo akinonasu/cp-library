@@ -29,5 +29,14 @@ int main() {
 		require(convolution(static_cast<const std::vector<mint> &>(a), static_cast<const std::vector<mint> &>(a)) == static_cast<const std::vector<mint> &>(expected));
 	}
 	const fps empty;
+	for (int n : {33, 65, 256, 513, 4096, 32769, 131072}) {
+		fps a(n);
+		for (auto &x : a) x = mint::word(rng() % (2 * mint::mod()));
+		const fps saved = a, b = a;
+		const fps expected = a * b;
+		require(a * a == expected);
+		require(convolution(static_cast<const std::vector<mint> &>(a), static_cast<const std::vector<mint> &>(a)) == static_cast<const std::vector<mint> &>(expected));
+		require(a == saved);
+	}
 	require((empty * fps{1}).empty());
 }
