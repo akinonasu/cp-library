@@ -7,4 +7,4 @@ documentation_of: //components/fps_light_backend.hpp
 
 FPS の公開ヘッダーは `fps/fps_light.hpp`・`fps/fps_light_algorithms.hpp`、積木は `components/fps_light_product_tree.hpp` です。NTT だけを使う場合は `components/fps_light_ntt.hpp` を読み込みます。複数を include しても定義は一度だけで、通常版 FPS の実装は読み込みません。
 
-利用者は通常の `#include`・`oj-bundle` だけで使えます。メンテナーが修正する場合も、このヘッダーを直接編集します。高速実装と同様に、配布コード生成の手順はありません。
+FPS の型と基本演算は [基本演算の共通部品](fps_light_core.md) に置き、このヘッダーで積木と追加演算を組み合わせます。基本演算だけが必要な内部部品は `components/fps_light_core.hpp` を include できます。利用者は通常の `#include`・`oj-bundle` だけで使え、配布コード生成の手順はありません。
