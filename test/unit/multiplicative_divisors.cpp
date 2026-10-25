@@ -1,4 +1,4 @@
-#include "math/number_theory/multiplicative_divisors.hpp"
+#include "math/multiplicative_divisors.hpp"
 #include "math/mint.hpp"
 #include <numeric>
 #include <random>

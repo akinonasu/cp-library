@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/bipartitematching"
-#include "../graph/matching/bipartite_matching.hpp"
+#include "../graph/bipartite_matching.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

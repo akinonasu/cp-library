@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_count_distinct"
-#include "data_structure/range_query/offline_range_count_distinct.hpp"
+#include "data_structure/offline_range_count_distinct.hpp"
 #include "components/fast_io_bulk.hpp"
 
 int main() {

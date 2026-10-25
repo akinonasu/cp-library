@@ -1,6 +1,6 @@
 #line 1 "test/range_chmin_chmax_add_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/range_chmin_chmax_add_range_sum"
-#line 1 "data_structure/segment_tree/range_chmin_chmax_add_sum.hpp"
+#line 1 "data_structure/range_chmin_chmax_add_sum.hpp"
 
 
 
@@ -30,7 +30,7 @@ struct DefaultInitAllocator : std::allocator<T> {
 };
 
 
-#line 10 "data_structure/segment_tree/range_chmin_chmax_add_sum.hpp"
+#line 10 "data_structure/range_chmin_chmax_add_sum.hpp"
 
 template <class T = long long, class Sum = T>
 class RangeChminChmaxAddSum {

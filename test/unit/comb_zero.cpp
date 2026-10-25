@@ -1,5 +1,5 @@
 #define COMB_MAX 0
-#include "math/combinatorics/comb.hpp"
+#include "math/comb.hpp"
 #include <cassert>
 
 const unsigned before_main = comb(0, 0).val();

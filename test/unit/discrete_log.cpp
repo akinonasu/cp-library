@@ -1,4 +1,4 @@
-#include "math/number_theory/discrete_log.hpp"
+#include "math/discrete_log.hpp"
 #include <algorithm>
 #include <limits>
 #include <random>

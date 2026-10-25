@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/biconnected_components"
-#include "graph/connectivity/block_cut_tree.hpp"
+#include "graph/block_cut_tree.hpp"
 #include "components/fast_io_bulk.hpp"
 
 int main() {

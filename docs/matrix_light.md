@@ -1,12 +1,16 @@
 ---
 title: 行列（軽量実装）
-documentation_of: //math/linear_algebra/matrix_light.hpp
+documentation_of: //math/matrix_light.hpp
+library_category: math/linear_algebra
+redirect_from:
+- /math/linear_algebra/matrix_light.hpp.html
+- /lightweight/math/linear_algebra/matrix_light.hpp.html
 ---
 
 `LightMatrix<T>` は [行列](matrix.md) と同じ操作を使える軽量実装です。通常版と同じ共通コードを使い、数値型専用の行列積と Frobenius 分解は読み込みません。通常版の `Matrix<T>` と同じソースで併用できます。
 
 ```cpp
-#include "lib/math/linear_algebra/matrix_light.hpp"
+#include "lib/math/matrix_light.hpp"
 #include "lib/fps/fps_light.hpp"
 
 using M = LightMatrix<light_fps>;

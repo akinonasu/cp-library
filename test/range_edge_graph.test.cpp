@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/shortest_path"
 #include "graph/range_edge_graph.hpp"
-#include "graph/shortest_path/dijkstra.hpp"
+#include "graph/dijkstra.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

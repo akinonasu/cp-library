@@ -12,11 +12,7 @@ namespace fps_detail::composition_poly {
 using Word = std::uint32_t;
 using Words = std::span<Word>;
 using ConstWords = std::span<const Word>;
-using std::size_t;
-using blocked_poly::Arena;
-using blocked_poly::Transform;
-using blocked_poly::Half;
-using blocked_poly::kModulus;
+using std::size_t, blocked_poly::Arena, blocked_poly::Transform, blocked_poly::Half, blocked_poly::kModulus;
 namespace kernels {
 using Vec = __m256i;
 namespace column_detail = blocked_poly::detail;

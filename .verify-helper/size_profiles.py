@@ -178,8 +178,9 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
             front.pop('permalink', None)
         data = front.get('data', {})
         if front.get('layout') == 'toppage':
+            categories = {}
             for category in data.get('libraryCategories', []):
-                entries = []
+                categories.setdefault(category['name'], [])
                 for item in category['pages']:
                     name = item['path']
                     if name not in catalog:
@@ -192,8 +193,9 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
                     item['copyByteCount'] = size['copyBytes'][profile] if usable else None
                     item['pagePath'] = route(name, profile)
                     item['title'] = display_title(name, profile)
-                    entries.append(item)
-                category['pages'] = entries
+                    group = sources[name][0].get('library_category', category['name'])
+                    categories.setdefault(group, []).append(item)
+            data['libraryCategories'] = [{'name': name, 'pages': entries} for name, entries in categories.items()]
             data['profileLibraryCount'] = len(catalog)
             data['profileAvailableCount'] = sum(profile == 'full' or size['lightweightAvailable'] for size in catalog.values())
             if relative == 'index.md':
@@ -210,6 +212,18 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
             data['counterpartPage'] = None
             data['implementationKind'] = None
             front['title'] = display_title(name, profile)
+            redirects = sources[name][0].get('redirect_from', [])
+            if isinstance(redirects, str):
+                redirects = [redirects]
+            normal_redirects = [url for url in redirects if not url.startswith('/' + LIGHTWEIGHT + '/')]
+            light_redirects = [url for url in redirects if url.startswith('/' + LIGHTWEIGHT + '/')]
+            light_redirects += ['/' + LIGHTWEIGHT + url for url in normal_redirects if url.endswith('.hpp.html')]
+            separate = name in different and catalog[name]['lightweightAvailable']
+            redirects = light_redirects if profile == LIGHTWEIGHT else normal_redirects + ([] if separate else light_redirects)
+            if redirects:
+                front['redirect_from'] = list(dict.fromkeys(redirects))
+            else:
+                front.pop('redirect_from', None)
             if name in catalog:
                 front['documentation_of'] = name
                 data['lightweightAvailable'] = catalog[name]['lightweightAvailable']

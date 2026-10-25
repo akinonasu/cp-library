@@ -1,5 +1,5 @@
-#include "math/linear_algebra/matrix_light.hpp"
-#include "math/linear_algebra/matrix.hpp"
+#include "math/matrix_light.hpp"
+#include "math/matrix.hpp"
 #include "math/mint.hpp"
 #include "math/fraction.hpp"
 #include <array>

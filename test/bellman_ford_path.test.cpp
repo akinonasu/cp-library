@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/shortest_path"
-#include "../graph/shortest_path/bellman_ford.hpp"
+#include "../graph/bellman_ford.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

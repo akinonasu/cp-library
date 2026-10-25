@@ -1,4 +1,4 @@
-#include "math/util/geometric_sum.hpp"
+#include "math/geometric_sum.hpp"
 #include "test/fixtures/recurrence_types.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 #include <cassert>

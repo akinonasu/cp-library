@@ -1,4 +1,4 @@
-#include "math/floor_sum/floor_sum.hpp"
+#include "math/floor_sum.hpp"
 #include <boost/multiprecision/cpp_int.hpp>
 #include <array>
 #include <cassert>

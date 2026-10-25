@@ -53,12 +53,7 @@ public:
 };
 }
 using Product = ntt::Convolution;
-using ntt::detail::Vec;
-using ntt::detail::Factor;
-using ntt::detail::add;
-using ntt::detail::diff;
-using ntt::detail::kP;
-using ntt::detail::reduce;
+using ntt::detail::Vec, ntt::detail::Factor, ntt::detail::add, ntt::detail::diff, ntt::detail::kP, ntt::detail::reduce;
 inline Vec times(Vec x, const Factor& f) { return ntt::detail::multiply(x, f); }
 inline Vec diff_canonical(Vec x, Vec y) { return _mm256_sub_epi32(_mm256_add_epi32(x, ntt::detail::broadcast(kP)), y); }
 class Subtrees {

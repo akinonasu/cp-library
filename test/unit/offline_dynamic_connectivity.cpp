@@ -1,4 +1,4 @@
-#include "graph/connectivity/offline_dynamic_connectivity.hpp"
+#include "graph/offline_dynamic_connectivity.hpp"
 #include <algorithm>
 #include <cstdint>
 #include <cstdlib>

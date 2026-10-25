@@ -1,4 +1,4 @@
-#include "data_structure/range_query/range_lis_query.hpp"
+#include "data_structure/range_lis_query.hpp"
 #include <algorithm>
 #include <array>
 #include <cassert>

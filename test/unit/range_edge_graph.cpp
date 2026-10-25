@@ -1,6 +1,6 @@
 #include "graph/range_edge_graph.hpp"
-#include "graph/shortest_path/dijkstra.hpp"
-#include "graph/shortest_path/bellman_ford.hpp"
+#include "graph/dijkstra.hpp"
+#include "graph/bellman_ford.hpp"
 #include <random>
 
 int main() {

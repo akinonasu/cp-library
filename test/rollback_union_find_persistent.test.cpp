@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/persistent_unionfind"
-#include "data_structure/union_find/rollback_union_find.hpp"
+#include "data_structure/rollback_union_find.hpp"
 #include "components/fast_io.hpp"
 #include <cstddef>
 #include <vector>

@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/dynamic_lazy_segtree.hpp"
+#include "data_structure/dynamic_lazy_segtree.hpp"
 #include <array>
 #include <random>
 #include <string>

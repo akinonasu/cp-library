@@ -1,6 +1,6 @@
 #line 1 "test/segtree_composite.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/point_set_range_composite"
-#line 1 "data_structure/segment_tree/segtree.hpp"
+#line 1 "data_structure/segtree.hpp"
 
 
 

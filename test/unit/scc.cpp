@@ -1,4 +1,4 @@
-#include "../../graph/connectivity/scc.hpp"
+#include "../../graph/scc.hpp"
 #include <cassert>
 #include <random>
 

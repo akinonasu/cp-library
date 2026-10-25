@@ -1,18 +1,20 @@
 ---
 title: 二項係数の prefix sum
-documentation_of: //math/combinatorics/binomial_prefix_sum.hpp
+documentation_of: //math/binomial_prefix_sum.hpp
 redirect_from:
-- /math/binomial_prefix_sum.hpp.html
+- /math/combinatorics/binomial_prefix_sum.hpp.html
+- /lightweight/math/combinatorics/binomial_prefix_sum.hpp.html
+library_category: math/combinatorics
 ---
 
 $$\displaystyle S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ を素数 mod で計算します。右端を含みません。$$k\leq0$$ なら 0、$$k\geq n+1$$ なら $$2^n$$ です。
 
-直前のクエリとの差分で更新する場合は [差分更新版](https://qandori.github.io/cp-library/math/combinatorics/binomial_prefix_sum_incremental.hpp.html) を使えます。
+直前のクエリとの差分で更新する場合は [差分更新版](https://qandori.github.io/cp-library/math/binomial_prefix_sum_incremental.hpp.html) を使えます。
 
 既定の `mint` では共通の階乗・逆階乗生成を使い、AVX2 対応環境では SIMD を利用します。他の素数 modint も指定できます。
 
 ```cpp
-#include "lib/math/combinatorics/binomial_prefix_sum.hpp"
+#include "lib/math/binomial_prefix_sum.hpp"
 
 BinomialPrefixSum<> sum(10000);
 auto a = sum.query(5, 3); // 16

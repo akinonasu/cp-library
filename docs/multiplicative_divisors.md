@@ -1,6 +1,10 @@
 ---
 title: 約数ごとの乗法的関数の値
-documentation_of: //math/number_theory/multiplicative_divisors.hpp
+documentation_of: //math/multiplicative_divisors.hpp
+library_category: math/number_theory
+redirect_from:
+- /math/number_theory/multiplicative_divisors.hpp.html
+- /lightweight/math/number_theory/multiplicative_divisors.hpp.html
 ---
 
 正整数 `n` の全ての正の約数 `d` について、`{d, f(d)}` を列挙します。`f` は $$f(1)=1$$ で、互いに素な $$a,b$$ に対して $$f(ab)=f(a)f(b)$$ を満たす乗法的関数です。各素数冪での値を渡すだけで利用できます。
@@ -8,7 +12,7 @@ documentation_of: //math/number_theory/multiplicative_divisors.hpp
 メビウス関数は、素数冪に対して $$\mu(p)=-1$$、$$e\ge 2$$ なら $$\mu(p^e)=0$$ と指定します。
 
 ```cpp
-#include "lib/math/number_theory/multiplicative_divisors.hpp"
+#include "lib/math/multiplicative_divisors.hpp"
 #include <iostream>
 
 int main() {
@@ -32,7 +36,7 @@ int main() {
 素因数分解の結果がある場合は、そのまま渡せます。次の例はオイラー関数の値を列挙します。
 
 ```cpp
-#include "lib/math/number_theory/multiplicative_divisors.hpp"
+#include "lib/math/multiplicative_divisors.hpp"
 #include <cassert>
 
 int main() {

@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/unionfind"
-#include "data_structure/range_query/parallel_binary_search.hpp"
-#include "data_structure/union_find/union_find.hpp"
+#include "data_structure/parallel_binary_search.hpp"
+#include "data_structure/union_find.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

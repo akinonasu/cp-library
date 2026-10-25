@@ -12,7 +12,7 @@
 
 
 
-#line 1 "math/number_theory/prime_sieve.hpp"
+#line 1 "math/prime_sieve.hpp"
 
 
 
@@ -260,7 +260,7 @@ void transform(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size
 
 template <bool inverse, class T>
 void large_multiples(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &ps,
-					 std::size_t first, const std::vector<std::size_t> &products, const std::vector<std::size_t> &squares) {
+					 std::size_t first) {
 	if (first == ps.size()) return;
 	constexpr std::uint64_t twice = 2 * T::mod();
 	const std::size_t n = a.size() - 1;
@@ -271,17 +271,8 @@ void large_multiples(std::vector<T> &a, std::vector<T> &b, const std::vector<std
 			x += a[i * *p].v;
 			if constexpr (!inverse) y += b[i * *p].v;
 		}
-		for (auto p : products) {
-			if (p > n / i) break;
-			if constexpr (inverse) y += a[i * p].v;
-			else x += a[i * p].v, y += b[i * p].v;
-		}
 		if constexpr (inverse) a[i] = T::word(y % twice) - T::word(x % twice);
 		else {
-			for (auto p : squares) {
-				if (p > n / i) break;
-				x += a[i * p].v, y += b[i * p].v;
-			}
 			a[i] = T::word(x % twice), b[i] = T::word(y % twice);
 		}
 	}
@@ -290,20 +281,15 @@ void large_multiples(std::vector<T> &a, std::vector<T> &b, const std::vector<std
 template <class T>
 void multiply(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &ps) {
 	const std::size_t n = a.size() - 1;
-	std::size_t cutoff = std::sqrt(n) / 2;
-	while (cutoff + 1 <= n / (cutoff + 1) / (cutoff + 1)) ++cutoff;
+	std::size_t cutoff = std::sqrt(n);
+	while (cutoff + 1 <= n / (cutoff + 1)) ++cutoff;
+	while (cutoff && cutoff > n / cutoff) --cutoff;
 	const std::size_t first = std::upper_bound(ps.begin(), ps.end(), cutoff) - ps.begin();
-	std::vector<std::size_t> products, squares;
-	for (std::size_t j = first; j < ps.size() && ps[j] <= n / ps[j]; ++j) {
-		squares.push_back(ps[j] * ps[j]);
-		for (std::size_t k = j + 1; k < ps.size() && ps[k] <= n / ps[j]; ++k) products.push_back(ps[j] * ps[k]);
-	}
-	std::sort(products.begin(), products.end());
 	transform<false>(a, b, ps, first);
-	large_multiples<false>(a, b, ps, first, products, squares);
+	large_multiples<false>(a, b, ps, first);
 	for (std::size_t i = 1; i <= n; ++i) a[i] *= b[i];
 	transform<true>(a, b, ps, first);
-	large_multiples<true>(a, b, ps, first, products, squares);
+	large_multiples<true>(a, b, ps, first);
 }
 
 }

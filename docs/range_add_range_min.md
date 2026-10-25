@@ -1,12 +1,16 @@
 ---
 title: 区間加算・区間最小値
-documentation_of: //data_structure/segment_tree/range_add_range_min.hpp
+documentation_of: //data_structure/range_add_range_min.hpp
+library_category: data_structure/segment_tree
+redirect_from:
+- /data_structure/segment_tree/range_add_range_min.hpp.html
+- /lightweight/data_structure/segment_tree/range_add_range_min.hpp.html
 ---
 
 区間の全要素への加算と区間最小値の取得に対応します。
 
 ```cpp
-#include "lib/data_structure/segment_tree/range_add_range_min.hpp"
+#include "lib/data_structure/range_add_range_min.hpp"
 
 RangeAddRangeMin<> values(std::vector<std::int64_t>{3, 1, 5});
 values.add(0, 2, 4);        // {7,5,5}

@@ -15,12 +15,7 @@ using std::size_t;
 using Word = std::uint32_t;
 using Span = std::span<Word>;
 using ConstSpan = std::span<const Word>;
-using blocked_poly::Transform;
-using blocked_poly::Half;
-using blocked_poly::inverse;
-using blocked_poly::inverse_log;
-using blocked_poly::inverse_scratch;
-using blocked_poly::derivative;
+using blocked_poly::Transform, blocked_poly::Half, blocked_poly::inverse, blocked_poly::inverse_log, blocked_poly::inverse_scratch, blocked_poly::derivative;
 inline constexpr Word kModulus = blocked_poly::kModulus;
 class Arena : public blocked_poly::Arena {
 public:

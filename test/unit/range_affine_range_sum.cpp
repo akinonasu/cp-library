@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/range_affine_range_sum.hpp"
+#include "data_structure/range_affine_range_sum.hpp"
 #include <cassert>
 #include <cstdint>
 #include <numeric>

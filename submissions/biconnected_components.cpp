@@ -1,6 +1,6 @@
 #line 1 "test/biconnected_components.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/biconnected_components"
-#line 1 "graph/connectivity/block_cut_tree.hpp"
+#line 1 "graph/block_cut_tree.hpp"
 
 
 
@@ -66,7 +66,7 @@ struct UndirectedVertexCSR {
 };
 
 
-#line 5 "graph/connectivity/block_cut_tree.hpp"
+#line 5 "graph/block_cut_tree.hpp"
 #include <algorithm>
 
 class BlockCutTree {

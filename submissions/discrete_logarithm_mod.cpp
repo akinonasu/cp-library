@@ -1,6 +1,6 @@
 #line 1 "test/discrete_log.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/discrete_logarithm_mod"
-#line 1 "math/number_theory/discrete_log.hpp"
+#line 1 "math/discrete_log.hpp"
 
 
 
@@ -31,11 +31,11 @@ struct Barrett32 {
 };
 
 
-#line 1 "math/number_theory/factorize.hpp"
+#line 1 "math/factorize.hpp"
 
 
 
-#line 1 "math/number_theory/is_prime.hpp"
+#line 1 "math/is_prime.hpp"
 
 
 
@@ -116,10 +116,10 @@ struct Montgomery32 {
 };
 
 
-#line 6 "math/number_theory/is_prime.hpp"
+#line 6 "math/is_prime.hpp"
 #include <array>
 #include <bit>
-#line 9 "math/number_theory/is_prime.hpp"
+#line 9 "math/is_prime.hpp"
 #include <initializer_list>
 
 namespace is_prime_detail {
@@ -235,11 +235,11 @@ class SplitMix64 {
 };
 
 
-#line 6 "math/number_theory/factorize.hpp"
+#line 6 "math/factorize.hpp"
 #include <algorithm>
-#line 8 "math/number_theory/factorize.hpp"
+#line 8 "math/factorize.hpp"
 #include <cmath>
-#line 10 "math/number_theory/factorize.hpp"
+#line 10 "math/factorize.hpp"
 #include <limits>
 #include <numeric>
 #include <utility>
@@ -415,9 +415,9 @@ inline std::vector<std::uint64_t> divisors(std::uint64_t n, bool sorted = true) 
 }
 
 
-#line 9 "math/number_theory/discrete_log.hpp"
+#line 9 "math/discrete_log.hpp"
 #include <optional>
-#line 11 "math/number_theory/discrete_log.hpp"
+#line 11 "math/discrete_log.hpp"
 
 namespace discrete_log_detail {
 inline std::uint32_t inverse(std::uint32_t x, std::uint32_t mod) {

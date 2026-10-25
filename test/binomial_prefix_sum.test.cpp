@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/prefix_sum_of_binomial_coefficient"
-#include "../math/combinatorics/binomial_prefix_sum.hpp"
+#include "../math/binomial_prefix_sum.hpp"
 #include "../components/fast_io.hpp"
 
 int main() {

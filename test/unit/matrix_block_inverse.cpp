@@ -1,4 +1,4 @@
-#include "math/linear_algebra/matrix.hpp"
+#include "math/matrix.hpp"
 #include "math/mint.hpp"
 #include "test/fixtures/recurrence_types.hpp"
 #include <cassert>

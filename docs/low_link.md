@@ -1,12 +1,14 @@
 ---
 title: Low-Link
-documentation_of: //graph/connectivity/low_link.hpp
+documentation_of: //graph/low_link.hpp
 redirect_from:
-- /graph/low_link.hpp.html
+- /graph/connectivity/low_link.hpp.html
+- /lightweight/graph/connectivity/low_link.hpp.html
+library_category: graph/connectivity
 ---
 
 ```cpp
-#include "lib/graph/connectivity/low_link.hpp"
+#include "lib/graph/low_link.hpp"
 
 LowLink graph(3);
 int id = graph.add_edge(0, 1);

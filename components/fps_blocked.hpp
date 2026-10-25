@@ -39,8 +39,7 @@ inline constexpr int kMaxLog = 25;
 
 namespace detail {
 
-using kernels::Vec;
-using kernels::kP;
+using kernels::Vec, kernels::kP;
 
 constexpr Word multiply_mod(Word x, Word y) {
 	return Word(std::uint64_t(x) * y % kP);
@@ -234,15 +233,7 @@ private:
 
 namespace detail {
 
-using blocked_ntt::detail::add;
-using blocked_ntt::detail::broadcast;
-using blocked_ntt::detail::diff;
-using blocked_ntt::detail::Factor;
-using blocked_ntt::detail::kP;
-using blocked_ntt::detail::kR;
-using blocked_ntt::detail::reduce;
-using blocked_ntt::detail::slot;
-using blocked_ntt::detail::Vec;
+using blocked_ntt::detail::add, blocked_ntt::detail::broadcast, blocked_ntt::detail::diff, blocked_ntt::detail::Factor, blocked_ntt::detail::kP, blocked_ntt::detail::kR, blocked_ntt::detail::reduce, blocked_ntt::detail::slot, blocked_ntt::detail::Vec;
 
 inline constexpr auto kInverseScales = [] {
 	std::array<std::array<Word, blocked_ntt::kMaxLog + 1>, 2> s{};

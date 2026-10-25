@@ -1,6 +1,6 @@
 #line 1 "test/general_matching.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/general_matching"
-#line 1 "graph/matching/general_matching.hpp"
+#line 1 "graph/general_matching.hpp"
 
 
 

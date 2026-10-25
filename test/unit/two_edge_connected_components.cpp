@@ -1,4 +1,4 @@
-#include "graph/connectivity/two_edge_connected_components.hpp"
+#include "graph/two_edge_connected_components.hpp"
 #include <numeric>
 #include <random>
 

@@ -1,6 +1,7 @@
+//https://qandori.github.io/cp-library/math/binomial_prefix_sum.hpp.html
 #line 1 "test/binomial_prefix_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/prefix_sum_of_binomial_coefficient"
-#line 1 "math/combinatorics/binomial_prefix_sum.hpp"
+#line 1 "math/binomial_prefix_sum.hpp"
 
 
 #include <cmath>
@@ -424,6 +425,7 @@ template<class Mint> struct Table {
 
 namespace binomial_prefix_detail {
 template<class Mint> struct PolynomialScalarArithmetic {
+	static constexpr int block_size = 16;
 	using F = std::vector<Mint>;
 	static void add(F& a, const F& b) {
 		a.resize(std::max(a.size(), b.size()));
@@ -499,6 +501,7 @@ template<class Mint> struct PolynomialScalarArithmetic {
 };
 
 template<class Mint, class Series> struct PolynomialSeriesArithmetic : PolynomialScalarArithmetic<Mint> {
+	static constexpr int block_size = 256;
 	using F = Series;
 	static void add(F& a, const F& b) { a += b; }
 	static F multiply(const F& a, const F& b) {
@@ -509,6 +512,9 @@ template<class Mint, class Series> struct PolynomialSeriesArithmetic : Polynomia
 	static F remainder(F a, const F& b) {
 		PolynomialScalarArithmetic<Mint>::trim(a);
 		if (a.size() < b.size()) return a;
+		const std::size_t quotient = a.size() - b.size() + 1;
+		if ((quotient <= 32 || b.size() <= 32) && (b.size() - 1) * quotient <= 4096)
+			return F(PolynomialScalarArithmetic<Mint>::remainder(std::move(a), b));
 		if (a.size() > (1 << 22)) return F(PolynomialScalarArithmetic<Mint>::remainder(std::move(a), b));
 		return a.divmod(b).second;
 	}
@@ -521,7 +527,7 @@ template<class Mint, class Arithmetic, class Table> class PolynomialEvaluator {
 		F product, sum, modulus;
 		int begin = 0, end = 0, start = 0;
 	};
-	static constexpr int block = 16;
+	static constexpr int block = Arithmetic::block_size;
 	const Table& table_;
 	std::vector<Point> points_;
 	std::vector<int> groups_;
@@ -583,16 +589,15 @@ template<class Mint, class Arithmetic, class Table> class PolynomialEvaluator {
 	void evaluate(int node, F sum, F product) {
 		const auto& cur = tree_[node];
 		if (cur.end - cur.begin <= block) {
+			Mint xs[block], values[block]{};
+			const int count = cur.end - cur.begin;
+			for (int i = 0; i < count; ++i) xs[i] = Mint(point(cur.begin + i).n);
+			for (auto j = sum.rbegin(); j != sum.rend(); ++j)
+				for (int i = 0; i < count; ++i) values[i] = values[i] * xs[i] + *j;
 			for (int i = cur.begin; i < cur.end; ++i) {
 				const auto& query = point(i);
 				const int m = query.m, n = query.n;
-				const Mint x(n);
-				Mint tail(0), factor(1);
-				for (int j = cur.start; j < m; ++j) {
-					tail += factor * table_.inverse_factorial[j];
-					factor *= x - Mint(j);
-				}
-				Mint value = Arithmetic::eval(sum, x) + Arithmetic::eval(product, x) * tail;
+				Mint value = values[i - cur.begin] + table_.range(n, cur.start, m);
 				for (int j = groups_[i]; j < groups_[i + 1]; ++j) {
 					auto destination = points_[j].id;
 					result_[destination >> 1] = destination & 1 ? table_.power2[n] - value : value;
@@ -604,11 +609,13 @@ template<class Mint, class Arithmetic, class Table> class PolynomialEvaluator {
 		const auto& right = tree_[2 * node + 1];
 		F right_sum = sum;
 		Arithmetic::add(right_sum, Arithmetic::multiply(product, left.sum));
-		F right_product = Arithmetic::multiply(product, left.product);
+		F right_product;
+		if (right.end - right.begin > block) right_product = Arithmetic::multiply(product, left.product);
 		right_sum = Arithmetic::remainder(std::move(right_sum), right.modulus);
-		right_product = Arithmetic::remainder(std::move(right_product), right.modulus);
+		if (right.end - right.begin > block) right_product = Arithmetic::remainder(std::move(right_product), right.modulus);
 		sum = Arithmetic::remainder(std::move(sum), left.modulus);
-		product = Arithmetic::remainder(std::move(product), left.modulus);
+		if (left.end - left.begin > block) product = Arithmetic::remainder(std::move(product), left.modulus);
+		else product.clear();
 		evaluate(2 * node, std::move(sum), std::move(product));
 		evaluate(2 * node + 1, std::move(right_sum), std::move(right_product));
 	}
@@ -2099,8 +2106,7 @@ inline constexpr int kMaxLog = 25;
 
 namespace detail {
 
-using kernels::Vec;
-using kernels::kP;
+using kernels::Vec, kernels::kP;
 
 constexpr Word multiply_mod(Word x, Word y) {
 	return Word(std::uint64_t(x) * y % kP);
@@ -2294,15 +2300,7 @@ private:
 
 namespace detail {
 
-using blocked_ntt::detail::add;
-using blocked_ntt::detail::broadcast;
-using blocked_ntt::detail::diff;
-using blocked_ntt::detail::Factor;
-using blocked_ntt::detail::kP;
-using blocked_ntt::detail::kR;
-using blocked_ntt::detail::reduce;
-using blocked_ntt::detail::slot;
-using blocked_ntt::detail::Vec;
+using blocked_ntt::detail::add, blocked_ntt::detail::broadcast, blocked_ntt::detail::diff, blocked_ntt::detail::Factor, blocked_ntt::detail::kP, blocked_ntt::detail::kR, blocked_ntt::detail::reduce, blocked_ntt::detail::slot, blocked_ntt::detail::Vec;
 
 inline constexpr auto kInverseScales = [] {
 	std::array<std::array<Word, blocked_ntt::kMaxLog + 1>, 2> s{};
@@ -4408,12 +4406,7 @@ public:
 };
 }
 using Product = ntt::Convolution;
-using ntt::detail::Vec;
-using ntt::detail::Factor;
-using ntt::detail::add;
-using ntt::detail::diff;
-using ntt::detail::kP;
-using ntt::detail::reduce;
+using ntt::detail::Vec, ntt::detail::Factor, ntt::detail::add, ntt::detail::diff, ntt::detail::kP, ntt::detail::reduce;
 inline Vec times(Vec x, const Factor& f) { return ntt::detail::multiply(x, f); }
 inline Vec diff_canonical(Vec x, Vec y) { return _mm256_sub_epi32(_mm256_add_epi32(x, ntt::detail::broadcast(kP)), y); }
 class Subtrees {
@@ -5632,25 +5625,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	private:
 	using O = fps_detail::Operations<T>;
-	using O::import_work;
-	using O::export_work;
-	using O::transform;
-	using O::words;
-	using O::transform_inplace;
-	using O::ntt;
-	using O::ntt_half;
-	using O::ntt_inverse;
-	using O::scale_words;
-	using O::geometric_scale;
-	using O::batch_inverse;
-	using O::pointwise;
-	using O::inverse_extend;
-	using O::dot;
-	using O::intt;
-	using O::mod_sqrt;
-	using O::inverse_ntt_roots;
-	using O::ntt_roots;
-	using O::inverses;
+	using O::import_work, O::export_work, O::transform, O::words, O::transform_inplace, O::ntt, O::ntt_half, O::ntt_inverse, O::scale_words, O::geometric_scale, O::batch_inverse, O::pointwise, O::inverse_extend, O::dot, O::intt, O::mod_sqrt, O::inverse_ntt_roots, O::ntt_roots, O::inverses;
 
 	using NTT = fps_detail::NTT;
 	using Word = typename O::Word;
@@ -5791,7 +5766,7 @@ template<class Mint> class Polynomial : public binomial_prefix_detail::Polynomia
 }
 
 
-#line 7 "math/combinatorics/binomial_prefix_sum.hpp"
+#line 7 "math/binomial_prefix_sum.hpp"
 
 template<class Mint = mint> class BinomialPrefixSum {
 	binomial_prefix_detail::Table<Mint> table_;

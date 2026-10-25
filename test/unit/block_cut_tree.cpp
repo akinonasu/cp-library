@@ -1,4 +1,4 @@
-#include "graph/connectivity/block_cut_tree.hpp"
+#include "graph/block_cut_tree.hpp"
 #include <bit>
 #include <numeric>
 #include <random>

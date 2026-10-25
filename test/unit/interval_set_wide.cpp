@@ -7,9 +7,7 @@
 #include <type_traits>
 #include <vector>
 
-using boost::multiprecision::cpp_int;
-using boost::multiprecision::int256_t;
-using boost::multiprecision::uint256_t;
+using boost::multiprecision::cpp_int, boost::multiprecision::int256_t, boost::multiprecision::uint256_t;
 
 template<class T, class Size = typename IntervalSet<T>::size_type>
 void shifted(T origin) {

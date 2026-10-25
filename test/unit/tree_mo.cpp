@@ -1,4 +1,4 @@
-#include "data_structure/range_query/tree_mo.hpp"
+#include "data_structure/tree_mo.hpp"
 #include <numeric>
 #include <random>
 #include <queue>

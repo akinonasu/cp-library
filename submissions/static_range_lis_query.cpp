@@ -1,6 +1,6 @@
 #line 1 "test/range_lis_query.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_lis_query"
-#line 1 "data_structure/range_query/range_lis_query.hpp"
+#line 1 "data_structure/range_lis_query.hpp"
 
 
 
@@ -244,12 +244,12 @@ inline std::vector<int> seaweed(std::span<const int> permutation) {
 }
 
 
-#line 12 "data_structure/range_query/range_lis_query.hpp"
+#line 12 "data_structure/range_lis_query.hpp"
 #include <functional>
 #include <limits>
-#line 15 "data_structure/range_query/range_lis_query.hpp"
+#line 15 "data_structure/range_lis_query.hpp"
 #include <ranges>
-#line 18 "data_structure/range_query/range_lis_query.hpp"
+#line 18 "data_structure/range_lis_query.hpp"
 
 template <bool Strict = true>
 class RangeLISQuery {

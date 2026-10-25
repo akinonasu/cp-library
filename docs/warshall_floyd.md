@@ -1,15 +1,16 @@
 ---
 title: ワーシャルフロイド法
-documentation_of: //graph/shortest_path/warshall_floyd.hpp
+documentation_of: //graph/warshall_floyd.hpp
 redirect_from:
-  - /graph/warshall_floyd.hpp.html
-  - /lightweight/graph/warshall_floyd.hpp.html
+- /graph/shortest_path/warshall_floyd.hpp.html
+- /lightweight/graph/shortest_path/warshall_floyd.hpp.html
+library_category: graph/shortest_path
 ---
 
 重み付き有向グラフの全点対最短距離を求めます。負辺・多重辺・自己辺に対応し、グラフ全体の負閉路を検出します。頂点番号は 0 始まりです。
 
 ```cpp
-#include "lib/graph/shortest_path/warshall_floyd.hpp"
+#include "lib/graph/warshall_floyd.hpp"
 
 int main() {
 	WarshallFloyd<> graph(4);
@@ -29,7 +30,7 @@ int main() {
 行列から構築したり、既存の行列を更新したりすることもできます。対角成分は 0 と入力値の小さい方、到達不能な成分は `inf` としてください。
 
 ```cpp
-#include "lib/graph/shortest_path/warshall_floyd.hpp"
+#include "lib/graph/warshall_floyd.hpp"
 
 std::int64_t inf = std::numeric_limits<std::int64_t>::max();
 std::vector<std::vector<std::int64_t>> d{

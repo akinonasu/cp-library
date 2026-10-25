@@ -1,8 +1,8 @@
 #ifndef CP_BENCHMARK_BINOMIAL_PREFIX_SUM_COMPARISON_HPP
 #define CP_BENCHMARK_BINOMIAL_PREFIX_SUM_COMPARISON_HPP
 
-#include "math/combinatorics/binomial_prefix_sum.hpp"
-#include "data_structure/range_query/mo_order.hpp"
+#include "math/binomial_prefix_sum.hpp"
+#include "data_structure/mo_order.hpp"
 
 template<class Mint = mint, class K = int>
 std::vector<Mint> binomial_prefix_sum_baseline(const std::vector<std::pair<int, K>>& queries) {

@@ -1,12 +1,16 @@
 ---
-title: "更新付き Mo 法"
-documentation_of: //data_structure/range_query/mo_with_updates.hpp
+title: 更新付き Mo's Algorithm
+documentation_of: //data_structure/mo_with_updates.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/mo_with_updates.hpp.html
+- /lightweight/data_structure/range_query/mo_with_updates.hpp.html
 ---
 
 配列の一点更新と区間の問い合わせを入力順に登録し、区間と時刻を動かして一括処理します。値の保持、更新前後の値、答えの計算は呼び出し側で用意します。
 
 ```cpp
-#include "lib/data_structure/range_query/mo_with_updates.hpp"
+#include "lib/data_structure/mo_with_updates.hpp"
 #include <vector>
 
 int main() {
@@ -48,7 +52,7 @@ int main() {
 
 添字は 0 始まりです。`0 <= n <= INT_MAX`、`0 <= p < n`、`0 <= l <= r <= n` とします。更新数と問い合わせ数はそれぞれ `INT_MAX` 以下です。空区間、問い合わせの重複、問い合わせだけの入力、更新だけの入力に対応します。空の配列には空区間の問い合わせを登録できます。
 
-`block_size` は非負です。0 では配列長・問い合わせ数・更新数から幅を選び、更新がない場合は [通常の Mo 法](mo_order.md) の順序を使います。正数では指定した幅を使います。
+`block_size` は非負です。0 では配列長・問い合わせ数・更新数から幅を選び、更新がない場合は [通常の Mo's Algorithm](mo_order.md) の順序を使います。正数では指定した幅を使います。
 
 `run` の呼び出し前に、配列を更新前の初期状態、集約を空区間の状態にしてください。
 

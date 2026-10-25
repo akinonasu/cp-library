@@ -1,4 +1,4 @@
-#include "math/combinatorics/comb.hpp"
+#include "math/comb.hpp"
 #include <cstdint>
 #include <cstdlib>
 #include <limits>

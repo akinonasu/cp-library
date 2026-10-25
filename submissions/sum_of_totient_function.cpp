@@ -1,10 +1,10 @@
 #line 1 "test/multiplicative_prefix_sum_totient.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/sum_of_totient_function"
-#line 1 "math/number_theory/totient_sum.hpp"
+#line 1 "math/totient_sum.hpp"
 
 
 
-#line 1 "math/number_theory/prime_sieve.hpp"
+#line 1 "math/prime_sieve.hpp"
 
 
 
@@ -145,15 +145,15 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 }
 
 
-#line 1 "math/number_theory/kth_root.hpp"
+#line 1 "math/kth_root.hpp"
 
 
 
-#line 6 "math/number_theory/kth_root.hpp"
+#line 6 "math/kth_root.hpp"
 #include <limits>
-#line 8 "math/number_theory/kth_root.hpp"
+#line 8 "math/kth_root.hpp"
 #include <cassert>
-#line 11 "math/number_theory/kth_root.hpp"
+#line 11 "math/kth_root.hpp"
 
 namespace kth_root_detail {
 inline constexpr auto thresholds = [] {
@@ -315,9 +315,9 @@ inline std::uint64_t kth_root(std::uint64_t n, std::uint64_t k) {
 }
 
 
-#line 11 "math/number_theory/totient_sum.hpp"
+#line 11 "math/totient_sum.hpp"
 #include <type_traits>
-#line 13 "math/number_theory/totient_sum.hpp"
+#line 13 "math/totient_sum.hpp"
 
 namespace totient_detail {
 template<class T, class I> T value(I x) {

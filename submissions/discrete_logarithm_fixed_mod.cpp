@@ -1,10 +1,10 @@
 #line 1 "test/mod_pow_log.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/discrete_logarithm_fixed_mod"
-#line 1 "math/number_theory/mod_pow.hpp"
+#line 1 "math/mod_pow.hpp"
 
 
 
-#line 1 "math/number_theory/mod_inv.hpp"
+#line 1 "math/mod_inv.hpp"
 
 
 
@@ -82,7 +82,7 @@ class RationalTable {
 }
 
 
-#line 1 "math/number_theory/is_prime.hpp"
+#line 1 "math/is_prime.hpp"
 
 
 
@@ -163,9 +163,9 @@ struct Montgomery32 {
 };
 
 
-#line 6 "math/number_theory/is_prime.hpp"
+#line 6 "math/is_prime.hpp"
 #include <array>
-#line 9 "math/number_theory/is_prime.hpp"
+#line 9 "math/is_prime.hpp"
 #include <initializer_list>
 
 namespace is_prime_detail {
@@ -261,7 +261,7 @@ inline bool is_prime(std::uint64_t n) {
 }
 
 
-#line 6 "math/number_theory/mod_inv.hpp"
+#line 6 "math/mod_inv.hpp"
 
 class ModInv {
   protected:
@@ -310,7 +310,7 @@ class SplitMix64 {
 };
 
 
-#line 7 "math/number_theory/mod_pow.hpp"
+#line 7 "math/mod_pow.hpp"
 
 class ModPow : public ModInv {
 	mod_fast_detail::Reducer order_;

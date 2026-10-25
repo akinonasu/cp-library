@@ -1,10 +1,14 @@
 ---
 title: 値の上限付き区間和（クエリ一括処理）
-documentation_of: //data_structure/range_query/offline_range_sum.hpp
+documentation_of: //data_structure/offline_range_sum.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/offline_range_sum.hpp.html
+- /lightweight/data_structure/range_query/offline_range_sum.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/range_query/offline_range_sum.hpp"
+#include "lib/data_structure/offline_range_sum.hpp"
 
 OfflineRangeSum<int> query(std::vector<int>{4, 1, 4, 2});
 query.add_query(0, 4, 4);

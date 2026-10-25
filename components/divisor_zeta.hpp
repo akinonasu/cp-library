@@ -1,7 +1,7 @@
 #ifndef DIVISOR_ZETA_HPP
 #define DIVISOR_ZETA_HPP
 
-#include "../math/number_theory/prime_sieve.hpp"
+#include "../math/prime_sieve.hpp"
 #include <cstddef>
 #include <vector>
 

@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/range_chmin_chmax_add_sum.hpp"
+#include "data_structure/range_chmin_chmax_add_sum.hpp"
 #include <algorithm>
 #include <cassert>
 #include <limits>

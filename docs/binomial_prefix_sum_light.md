@@ -1,16 +1,20 @@
 ---
 title: 軽量な二項係数の prefix sum
-documentation_of: //math/combinatorics/binomial_prefix_sum_light.hpp
+documentation_of: //math/binomial_prefix_sum_light.hpp
+library_category: math/combinatorics
+redirect_from:
+- /math/combinatorics/binomial_prefix_sum_light.hpp.html
+- /lightweight/math/combinatorics/binomial_prefix_sum_light.hpp.html
 ---
 
 $$\displaystyle S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ を素数 mod で計算します。右端を含みません。$$k\leq0$$ なら 0、$$k\geq n+1$$ なら $$2^n$$ です。
 
-直前のクエリとの差分で更新する場合は [差分更新版](https://qandori.github.io/cp-library/math/combinatorics/binomial_prefix_sum_incremental_light.hpp.html) を使えます。
+直前のクエリとの差分で更新する場合は [差分更新版](https://qandori.github.io/cp-library/math/binomial_prefix_sum_incremental_light.hpp.html) を使えます。
 
 `light_combinatorics` 名前空間で使います。一括版の多項式演算は `light_fps` に基づき、通常版 FPS は読み込みません。階乗・逆階乗は通常のループで生成します。他の modint にも対応します。通常版と同時に include できます。
 
 ```cpp
-#include "lib/math/combinatorics/binomial_prefix_sum_light.hpp"
+#include "lib/math/binomial_prefix_sum_light.hpp"
 
 light_combinatorics::BinomialPrefixSum<> sum(10000);
 auto a = sum.query(5, 3); // 16

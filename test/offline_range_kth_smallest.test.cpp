@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/range_kth_smallest"
-#include "../data_structure/range_query/offline_range_kth_smallest.hpp"
+#include "../data_structure/offline_range_kth_smallest.hpp"
 #include "../components/fast_io_bulk.hpp"
 #include <cstdint>
 #include <vector>

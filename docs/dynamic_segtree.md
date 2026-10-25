@@ -1,12 +1,14 @@
 ---
 title: Dynamic Segtree
-documentation_of: //data_structure/segment_tree/dynamic_segtree.hpp
+documentation_of: //data_structure/dynamic_segtree.hpp
 redirect_from:
-- /data_structure/dynamic_segtree.hpp.html
+- /data_structure/segment_tree/dynamic_segtree.hpp.html
+- /lightweight/data_structure/segment_tree/dynamic_segtree.hpp.html
+library_category: data_structure/segment_tree
 ---
 
 ```cpp
-#include "lib/data_structure/segment_tree/dynamic_segtree.hpp"
+#include "lib/data_structure/dynamic_segtree.hpp"
 
 long long op(long long a, long long b) { return a + b; }
 long long e() { return 0; }

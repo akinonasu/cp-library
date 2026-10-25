@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/range_add_range_min"
-#include "data_structure/segment_tree/range_add_range_min.hpp"
+#include "data_structure/range_add_range_min.hpp"
 #include "components/fast_io.hpp"
 #include <cstdint>
 #include <vector>

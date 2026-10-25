@@ -1,5 +1,5 @@
-#include "graph/flow/max_flow.hpp"
-#include "graph/flow/min_cost_flow.hpp"
+#include "graph/max_flow.hpp"
+#include "graph/min_cost_flow.hpp"
 
 template<class Cap> void check() {
 	MaxFlow<Cap> maximum(3);

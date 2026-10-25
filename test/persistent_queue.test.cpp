@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/persistent_queue"
-#include "../data_structure/persistent/persistent_queue.hpp"
+#include "../data_structure/persistent_queue.hpp"
 #include "../components/fast_io.hpp"
 #include <vector>
 

@@ -1,6 +1,6 @@
 #line 1 "test/compressed_lazy_segtree_large.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/range_affine_range_sum_large_array"
-#line 1 "data_structure/segment_tree/lazy_segtree.hpp"
+#line 1 "data_structure/lazy_segtree.hpp"
 
 
 

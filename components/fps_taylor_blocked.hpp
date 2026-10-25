@@ -29,20 +29,7 @@ inline constexpr auto kTable = []<size_t... I>(std::index_sequence<I...>) {
 }
 namespace taylor_detail {
 namespace ntt = multiply_detail::ntt;
-using ntt::detail::add;
-using ntt::detail::broadcast;
-using ntt::detail::diff;
-using ntt::detail::kP;
-using ntt::detail::kR;
-using ntt::detail::multiply_mod;
-using ntt::detail::power;
-using ntt::detail::reduce;
-using ntt::detail::slot;
-using multiply_detail::Subtrees;
-using ntt::detail::Vec;
-using blocked_poly::detail::load;
-using blocked_poly::detail::low;
-using blocked_poly::detail::store;
+using ntt::detail::add, ntt::detail::broadcast, ntt::detail::diff, ntt::detail::kP, ntt::detail::kR, ntt::detail::multiply_mod, ntt::detail::power, ntt::detail::reduce, ntt::detail::slot, multiply_detail::Subtrees, ntt::detail::Vec, blocked_poly::detail::load, blocked_poly::detail::low, blocked_poly::detail::store;
 inline Word inverse(Word x) { return power(x, kP - 2); }
 inline Word mont(Word x) { return multiply_mod(x, kR); }
 inline Vec odd_lanes(Vec x) { return _mm256_srli_epi64(x, 32); }

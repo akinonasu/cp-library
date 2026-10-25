@@ -35,7 +35,7 @@ assert(sequence.is_palindrome(0, 4));
 | `is_palindrome(l,r)` | `[l,r)` が回文か。空区間も `true` | $$O(1)$$ |
 | `longest_palindrome()` | 最長の回文の `[l,r)` を `pair<int,int>` で返す。同長なら開始位置が最小のもの | $$O(n)$$ |
 | `palindrome_count()` | 空でない回文の出現数を `int64_t` で返す。同じ文字列でも位置が異なれば別に数える | $$O(n)$$ |
-| `lengths()` | 文字・文字間の中心を左から並べた最長回文長の `vector<int>`。Library Checker の出力形式 | $$O(n)$$ |
+| `lengths()` | 文字・文字間の中心を左から並べた最長回文長の `vector<int>` | $$O(n)$$ |
 | `size()` / `empty()` | 入力の長さ／空か | $$O(1)$$ |
 
 `std::string`・`std::string_view`・文字列リテラルのほか、`size()`・添字アクセス・要素の等値比較が使える `vector`・`array`・`span` などを渡せます。これらの操作は定数時間とします。入力は保持しないので、構築後に変更・破棄して構いません。公開配列 `odd`・`even` は直接書き換えないでください。

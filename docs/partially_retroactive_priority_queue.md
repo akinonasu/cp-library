@@ -1,13 +1,15 @@
 ---
 title: Partially Retroactive Priority Queue
-documentation_of: //data_structure/advanced/partially_retroactive_priority_queue.hpp
+documentation_of: //data_structure/partially_retroactive_priority_queue.hpp
 redirect_from:
-- /data_structure/partially_retroactive_priority_queue.hpp.html
 - /data_structure/priority_queue/partially_retroactive_priority_queue.hpp.html
+- /data_structure/advanced/partially_retroactive_priority_queue.hpp.html
+- /lightweight/data_structure/advanced/partially_retroactive_priority_queue.hpp.html
+library_category: data_structure/advanced
 ---
 
 ```cpp
-#include "lib/data_structure/advanced/partially_retroactive_priority_queue.hpp"
+#include "lib/data_structure/partially_retroactive_priority_queue.hpp"
 
 PartiallyRetroactivePriorityQueue<long long> queue;
 queue.insert(10, 5);
@@ -65,8 +67,6 @@ queue.erase(30, changed);        // sum = 3
 
 通知中の参照はその呼び出し中だけ有効です。コールバックから同じキューを参照・変更したり、例外を投げたりしないでください。通知なしの API は従来どおり使えます。
 
-仕事の選択に使う例は [テスト用の実装](https://github.com/qandori/cp-library/blob/main/test/fixtures/retroactive_scheduling.hpp) にあります。日付を後ろから処理して最大報酬の仕事を pop する履歴を作り、`全報酬 - 現在残る報酬和` を答えにします。報酬 0 の予備要素を `N` 個入れると、仕事がない日の pop も有効になります。締切変更は旧時刻の取消と新時刻への挿入、報酬だけの変更は `set` で処理します。ライブラリ内部の変更は不要です。
-
 `updates` は `std::vector<Queue::update_type>` で、要素は `{時刻, std::optional<T>}`、`nullopt` は削除操作です。順不同で渡せます。`Queue(updates, compare = Compare{}, seed = 0)` による構築には有効な履歴を渡します。空列の構築は `Queue(compare = Compare{}, seed = 0)` です。`top_ptr()` の戻り値は次の変更操作まで使用できます。削除ノードは再利用し、`clear()` は確保容量を残します。
 
-操作数を $$m$$、過去の最大操作数を $$M$$ とします。履歴変更は償却期待 $$O(\log m)$$、`contains_time` は期待 $$O(\log m)$$、現在のクエリ・`operation_count`・`memory_usage` は $$O(1)$$、構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、`reserve`・`clear` は $$O(M)$$、`for_each` は $$O(m)$$ です。変更通知付きも通知処理が $$O(1)$$ なら同じ計算量です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。比較・値のコピーを $$O(1)$$ とします。ABC363 G の例は償却期待 $$O((N+Q)\log N)$$ 時間、$$O(N)$$ 空間です。
+操作数を $$m$$、過去の最大操作数を $$M$$ とします。履歴変更は償却期待 $$O(\log m)$$、`contains_time` は期待 $$O(\log m)$$、現在のクエリ・`operation_count`・`memory_usage` は $$O(1)$$、構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、`reserve`・`clear` は $$O(M)$$、`for_each` は $$O(m)$$ です。変更通知付きも通知処理が $$O(1)$$ なら同じ計算量です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。比較・値のコピーを $$O(1)$$ とします。

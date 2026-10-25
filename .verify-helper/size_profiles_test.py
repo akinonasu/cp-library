@@ -101,6 +101,43 @@ class SizeProfiles(unittest.TestCase):
             self.assertTrue(all(not item['profileAvailable'] for item in entries))
             self.assertTrue(all(item['pagePath'] == item['path'] + '.html' for item in entries))
 
+    def test_categories_are_independent_of_header_directories(self):
+        destination, pages = self.fixture()
+        expected = [('math/number_theory', ['tree/a.hpp']), ('math/combinatorics', ['fps/large.hpp'])]
+        for category, names in expected:
+            path = destination / (names[0] + '.md')
+            front, body = split_page(pages[path])
+            front['library_category'] = category
+            pages[path] = render_page(front, body)
+        path = destination / 'index.md'
+        front, body = split_page(pages[path])
+        front['data']['libraryCategories'] = [{'name': 'math', 'pages': [
+            item for category in front['data']['libraryCategories'] for item in category['pages']]}]
+        pages[path] = render_page(front, body)
+        result = prepare_pages(pages, destination, CONFIG)
+        for profile in ['', LIGHTWEIGHT]:
+            front, _ = split_page(result[destination / profile / 'index.md'])
+            self.assertEqual([(category['name'], [item['path'] for item in category['pages']])
+                              for category in front['data']['libraryCategories'] if category['pages']], expected)
+
+    def test_legacy_urls_keep_their_implementation_profile(self):
+        destination, pages = self.fixture()
+        path = destination / 'fps/large.hpp.md'
+        front, body = split_page(pages[path])
+        old = '/math/combinatorics/example.hpp.html'
+        front['redirect_from'] = [old, '/' + LIGHTWEIGHT + old]
+        pages[path] = render_page(front, body)
+        config = dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp'})
+        result = prepare_pages(pages, destination, config)
+        full, _ = split_page(result[path])
+        light, _ = split_page(result[destination / LIGHTWEIGHT / 'fps/large.hpp.md'])
+        self.assertEqual(full['redirect_from'], [old])
+        self.assertEqual(light['redirect_from'], ['/' + LIGHTWEIGHT + old])
+        result = prepare_pages(pages, destination, CONFIG)
+        full, _ = split_page(result[path])
+        self.assertIn(old, full['redirect_from'])
+        self.assertIn('/' + LIGHTWEIGHT + old, full['redirect_from'])
+
     def test_variants_share_paths_structure_and_reciprocal_links(self):
         destination, pages = self.fixture()
         config = dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp'})

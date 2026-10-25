@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/binomial_coefficient_prime_mod"
 #define COMB_MAX 9999999
-#include "math/combinatorics/comb_light.hpp"
+#include "math/comb_light.hpp"
 #include "components/fast_io.hpp"
 #include "test/fixtures/comb_modint_types.hpp"
 

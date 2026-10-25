@@ -1,4 +1,4 @@
-#include "math/linear_algebra/xor_basis.hpp"
+#include "math/xor_basis.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>

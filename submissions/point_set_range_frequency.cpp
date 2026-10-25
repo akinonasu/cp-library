@@ -1,6 +1,6 @@
 #line 1 "test/offline_point_set_range_frequency.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/point_set_range_frequency"
-#line 1 "data_structure/range_query/offline_range_frequency.hpp"
+#line 1 "data_structure/offline_range_frequency.hpp"
 
 
 
@@ -300,9 +300,9 @@ class FenwickBitset {
 };
 
 
-#line 7 "data_structure/range_query/offline_range_frequency.hpp"
+#line 7 "data_structure/offline_range_frequency.hpp"
 #include <array>
-#line 12 "data_structure/range_query/offline_range_frequency.hpp"
+#line 12 "data_structure/offline_range_frequency.hpp"
 
 template <class T, class Hash = std::hash<T>, class Equal = std::equal_to<T>>
 class OfflineRangeFrequency {

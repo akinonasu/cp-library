@@ -1,7 +1,7 @@
 #ifndef MODINT_HPP
 #define MODINT_HPP
 
-#include "util/modular_arithmetic.hpp"
+#include "modular_arithmetic.hpp"
 #include <cassert>
 #include <istream>
 #include <ostream>

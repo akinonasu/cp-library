@@ -1,7 +1,7 @@
 #include "math/modint.hpp"
 #include "string/suffix_array.hpp"
 #include "string/lcp_array.hpp"
-#include "math/util/modular_arithmetic.hpp"
+#include "math/modular_arithmetic.hpp"
 #include <algorithm>
 #include <numeric>
 #include <random>

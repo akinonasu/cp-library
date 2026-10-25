@@ -1,10 +1,10 @@
 #line 1 "test/persistent_queue_batch.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/persistent_queue"
-#line 1 "data_structure/persistent/persistent_queue.hpp"
+#line 1 "data_structure/persistent_queue.hpp"
 
 
 
-#line 1 "data_structure/persistent/persistent_stack.hpp"
+#line 1 "data_structure/persistent_stack.hpp"
 
 
 
@@ -101,7 +101,7 @@ class PersistentStack {
 };
 
 
-#line 9 "data_structure/persistent/persistent_queue.hpp"
+#line 9 "data_structure/persistent_queue.hpp"
 
 template <class T>
 class PersistentQueue {

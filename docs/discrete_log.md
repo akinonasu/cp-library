@@ -1,12 +1,14 @@
 ---
 title: 離散対数
-documentation_of: //math/number_theory/discrete_log.hpp
+documentation_of: //math/discrete_log.hpp
 redirect_from:
-- /math/discrete_log.hpp.html
+- /math/number_theory/discrete_log.hpp.html
+- /lightweight/math/number_theory/discrete_log.hpp.html
+library_category: math/number_theory
 ---
 
 ```cpp
-#include "lib/math/number_theory/discrete_log.hpp"
+#include "lib/math/discrete_log.hpp"
 #include <iostream>
 
 auto x = discrete_log(2, 8, 13);
@@ -24,6 +26,6 @@ $$0^0=1$$ とします。法が 1 の場合は常に 0 を返します。
 
 例では $$2^3\equiv8\pmod{13}$$ なので 3 を返します。戻り値は `std::optional` です。`if (x)` で解の有無を確認し、解があれば `*x` を使います。答えが 0 の場合も `if (x)` は真になります。
 
-最大公約数で非周期部分を取り除き、底の位数を求めて Pohlig–Hellman 法を使います。素数位数の部分問題には baby-step giant-step 法を使い、中国剰余定理で指数を復元します。短い周期や小さい指数は先に確認します。固定した素数 mod と原始根に対する大量のクエリには、前計算型の [ModPow](https://qandori.github.io/cp-library/math/number_theory/mod_pow.hpp.html) も使えます。
+最大公約数で非周期部分を取り除き、底の位数を求めて Pohlig–Hellman 法を使います。素数位数の部分問題には baby-step giant-step 法を使い、中国剰余定理で指数を復元します。短い周期や小さい指数は先に確認します。固定した素数 mod と原始根に対する大量のクエリには、前計算型の [ModPow](https://qandori.github.io/cp-library/math/mod_pow.hpp.html) も使えます。
 
 法を $$m$$ として、期待 $$\displaystyle O(\sqrt m+\log^2 m)$$ 時間、追加空間 $$\displaystyle O(\sqrt m)$$ です。位数が小さい素因数に分かれる場合は、法全体を探索する BSGS より探索量を減らせます。ハッシュ表には線形探索を使います。

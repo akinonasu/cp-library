@@ -1,12 +1,15 @@
 ---
 title: Range Chmin Chmax Add Sum
-documentation_of: //data_structure/segment_tree/range_chmin_chmax_add_sum.hpp
+documentation_of: //data_structure/range_chmin_chmax_add_sum.hpp
 redirect_from:
 - /data_structure/advanced/segtree_beats.hpp.html
+- /data_structure/segment_tree/range_chmin_chmax_add_sum.hpp.html
+- /lightweight/data_structure/segment_tree/range_chmin_chmax_add_sum.hpp.html
+library_category: data_structure/segment_tree
 ---
 
 ```cpp
-#include "lib/data_structure/segment_tree/range_chmin_chmax_add_sum.hpp"
+#include "lib/data_structure/range_chmin_chmax_add_sum.hpp"
 
 RangeChminChmaxAddSum seg(std::vector<long long>{1, 4, 2, 8});
 seg.chmin(0, 4, 5);
@@ -20,7 +23,7 @@ auto mx = seg.max(0, 4);
 
 [基本的な使い方の一覧](https://qandori.github.io/cp-library/docs/range_chmin_chmax_add_sum_examples.html)
 
-このヘッダーは chmin・chmax・加算・代入の専用版です。他の更新や集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segment_tree/segtree_beats.hpp.html) を使ってください。
+このヘッダーは chmin・chmax・加算・代入の専用版です。他の更新や集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segtree_beats.hpp.html) を使ってください。
 
 区間は $$[l,r)$$ です。`RangeChminChmaxAddSum<T = long long, Sum = T>` は符号付き整数を扱います。`RangeChminChmaxAddSum<T, Sum>(n, x = 0)` は長さ `n` を `x` で初期化します。和だけ広い型にする場合は `RangeChminChmaxAddSum<long long, __int128_t>` などを指定します。
 

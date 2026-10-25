@@ -1,4 +1,4 @@
-#include "graph/matching/hungarian.hpp"
+#include "graph/hungarian.hpp"
 #include <algorithm>
 #include <array>
 #include <cassert>

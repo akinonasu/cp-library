@@ -145,13 +145,13 @@ void stable_radix_sort(std::vector<T> &values, Key key) {
 }
 
 
-#line 1 "data_structure/range_query/mo_order.hpp"
+#line 1 "data_structure/mo_order.hpp"
 
 
 
-#line 7 "data_structure/range_query/mo_order.hpp"
+#line 7 "data_structure/mo_order.hpp"
 #include <cmath>
-#line 12 "data_structure/range_query/mo_order.hpp"
+#line 12 "data_structure/mo_order.hpp"
 
 inline std::vector<int> mo_order(const std::vector<std::pair<int, int>>& ranges, int block_size = 0) {
 	assert(ranges.size() <= std::size_t(std::numeric_limits<int>::max()) && block_size >= 0);

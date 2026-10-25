@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/staticrmq"
-#include "../data_structure/range_query/sparse_table.hpp"
+#include "../data_structure/sparse_table.hpp"
 #include <algorithm>
 #include <iostream>
 #include <vector>

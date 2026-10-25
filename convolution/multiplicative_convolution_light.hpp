@@ -1,13 +1,14 @@
 #ifndef MULTIPLICATIVE_CONVOLUTION_LIGHT_HPP
 #define MULTIPLICATIVE_CONVOLUTION_LIGHT_HPP
 
+#include "../components/modular_power_sequence.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <limits>
 #include <vector>
 
-#include "../math/number_theory/is_prime.hpp"
+#include "../math/is_prime.hpp"
 #include "convolution_light.hpp"
 
 namespace light_convolution {
@@ -32,14 +33,14 @@ std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::ve
 	};
 	std::uint32_t root = 1;
 	while (std::any_of(factors.begin(), factors.end(), [&](auto q) { return power(root, (p - 1) / q) == 1; })) ++root;
-	std::vector<T> x(p - 1), y(p - 1), result(p, T(0));
-	std::uint64_t value = 1;
-	std::vector<std::uint32_t> powers(p - 1);
-	for (std::uint32_t i = 0; i < p - 1; ++i, value = value * root % p) {
-		powers[i] = value;
-		x[i] = a[value], y[i] = b[value];
+	std::vector<T> x(p - 1), y(&a == &b ? 0 : p - 1), result(p, T(0));
+	auto powers = modular_power_sequence_detail::generate(p - 1, root, p);
+	for (std::uint32_t i = 0; i < p - 1; ++i) {
+		x[i] = a[powers[i]];
+		if (&a != &b) y[i] = b[powers[i]];
 	}
-	auto product = light_convolution::convolution(x, y);
+
+	auto product = &a == &b ? light_convolution::convolution(x, x) : light_convolution::convolution(x, y);
 	for (std::size_t i = p - 1; i < product.size(); ++i) product[i - (p - 1)] += product[i];
 	for (std::uint32_t i = 0; i < p - 1; ++i) result[powers[i]] = product[i];
 	T sum_a(0), sum_b(0);

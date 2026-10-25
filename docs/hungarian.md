@@ -1,12 +1,14 @@
 ---
 title: Hungarian Algorithm（ハンガリアン法）
-documentation_of: //graph/matching/hungarian.hpp
+documentation_of: //graph/hungarian.hpp
 redirect_from:
-- /graph/hungarian.hpp.html
+- /graph/matching/hungarian.hpp.html
+- /lightweight/graph/matching/hungarian.hpp.html
+library_category: graph/matching
 ---
 
 ```cpp
-#include "lib/graph/matching/hungarian.hpp"
+#include "lib/graph/hungarian.hpp"
 
 std::vector<std::vector<int>> a = { {4, 1, 3}, {2, 0, 5} };
 Hungarian result(a);

@@ -7,8 +7,7 @@
 namespace light_binomial_prefix_detail {
 template<class Mint> struct Table : light_factorial_detail::Table<Mint> {
 	using Base = light_factorial_detail::Table<Mint>;
-	using Base::factorial;
-	using Base::inverse_factorial;
+	using Base::factorial, Base::inverse_factorial;
 	std::vector<Mint> power2;
 	Mint half;
 

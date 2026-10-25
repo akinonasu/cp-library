@@ -1,4 +1,4 @@
-#include "graph/connectivity/low_link.hpp"
+#include "graph/low_link.hpp"
 #include <algorithm>
 #include <cassert>
 #include <random>

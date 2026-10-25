@@ -1,12 +1,16 @@
 ---
 title: 区間アフィン変換・区間和
-documentation_of: //data_structure/segment_tree/range_affine_range_sum.hpp
+documentation_of: //data_structure/range_affine_range_sum.hpp
+library_category: data_structure/segment_tree
+redirect_from:
+- /data_structure/segment_tree/range_affine_range_sum.hpp.html
+- /lightweight/data_structure/segment_tree/range_affine_range_sum.hpp.html
 ---
 
 区間の各値を `a*x+b` に変更し、区間和を求めます。
 
 ```cpp
-#include "lib/data_structure/segment_tree/range_affine_range_sum.hpp"
+#include "lib/data_structure/range_affine_range_sum.hpp"
 
 RangeAffineRangeSum<> values(std::vector<mint>{1, 2, 3});
 values.apply(0, 2, mint(2), mint(1)); // {3,5,3}

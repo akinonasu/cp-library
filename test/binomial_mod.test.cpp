@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/binomial_coefficient"
-#include "math/combinatorics/binomial_mod.hpp"
+#include "math/binomial_mod.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

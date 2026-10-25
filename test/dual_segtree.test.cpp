@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/range_affine_point_get"
-#include "../data_structure/segment_tree/dual_segtree.hpp"
+#include "../data_structure/dual_segtree.hpp"
 #include "../components/fast_io.hpp"
 #include "../math/mint.hpp"
 

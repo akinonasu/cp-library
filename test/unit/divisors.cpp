@@ -1,4 +1,4 @@
-#include "math/number_theory/factorize.hpp"
+#include "math/factorize.hpp"
 #include <functional>
 #include <random>
 

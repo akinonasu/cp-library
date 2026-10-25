@@ -1,16 +1,18 @@
 ---
 title: 軽量な階乗・逆階乗と二項係数
-documentation_of: //math/combinatorics/comb_light.hpp
+documentation_of: //math/comb_light.hpp
+library_category: math/combinatorics
+redirect_from:
+- /math/combinatorics/comb_light.hpp.html
+- /lightweight/math/combinatorics/comb_light.hpp.html
 ---
 
 ```cpp
 #define COMB_MAX 500000
-#include "lib/math/combinatorics/comb_light.hpp"
+#include "lib/math/comb_light.hpp"
 
 int main() {
-	using light_combinatorics::comb;
-	using light_combinatorics::fact;
-	using light_combinatorics::finv;
+	using light_combinatorics::comb, light_combinatorics::fact, light_combinatorics::finv;
 	assert(comb(10, 3).val() == 120);
 	assert(fact[5] * finv[5] == mint(1));
 }

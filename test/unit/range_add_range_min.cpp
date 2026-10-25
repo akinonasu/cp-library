@@ -1,4 +1,4 @@
-#include "data_structure/segment_tree/range_add_range_min.hpp"
+#include "data_structure/range_add_range_min.hpp"
 #include <algorithm>
 #include <cassert>
 #include <bit>

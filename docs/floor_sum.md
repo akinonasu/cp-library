@@ -1,6 +1,10 @@
 ---
 title: Floor Sum
-documentation_of: //math/floor_sum/floor_sum.hpp
+documentation_of: //math/floor_sum.hpp
+library_category: math/floor_sum
+redirect_from:
+- /math/floor_sum/floor_sum.hpp.html
+- /lightweight/math/floor_sum/floor_sum.hpp.html
 ---
 
 一次式を床関数で割った値の総和を求めます。
@@ -8,7 +12,7 @@ documentation_of: //math/floor_sum/floor_sum.hpp
 $$\displaystyle \sum_{i=0}^{n-1}\left\lfloor\frac{ai+b}{m}\right\rfloor$$
 
 ```cpp
-#include "lib/math/floor_sum/floor_sum.hpp"
+#include "lib/math/floor_sum.hpp"
 
 auto a = floor_sum(4, 10, 6, 3); // 3
 auto b = floor_sum(6, 6, -2, 9); // 1

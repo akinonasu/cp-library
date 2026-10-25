@@ -1,6 +1,6 @@
 #line 1 "test/hld_jump.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/jump_on_tree"
-#line 1 "data_structure/advanced/hld.hpp"
+#line 1 "data_structure/hld.hpp"
 
 
 

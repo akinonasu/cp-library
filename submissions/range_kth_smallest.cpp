@@ -1,6 +1,6 @@
 #line 1 "test/offline_range_kth_smallest.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/range_kth_smallest"
-#line 1 "data_structure/range_query/offline_range_kth_smallest.hpp"
+#line 1 "data_structure/offline_range_kth_smallest.hpp"
 
 
 
@@ -353,9 +353,9 @@ template<class T> struct ValueIndex {
 }
 
 
-#line 9 "data_structure/range_query/offline_range_kth_smallest.hpp"
+#line 9 "data_structure/offline_range_kth_smallest.hpp"
 #include <span>
-#line 11 "data_structure/range_query/offline_range_kth_smallest.hpp"
+#line 11 "data_structure/offline_range_kth_smallest.hpp"
 
 template <class T>
 std::vector<T> offline_range_kth_smallest(const std::vector<T> &values, std::span<const std::array<int, 3>> queries) {

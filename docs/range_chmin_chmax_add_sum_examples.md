@@ -1,15 +1,15 @@
 ---
-title: "Range Chmin Chmax Add Sum の使い方一覧"
+title: Range Chmin Chmax Add Sum の使い方一覧
 redirect_from:
 - /docs/segtree_beats_examples.html
 ---
 
-[Range Chmin Chmax Add Sum](https://qandori.github.io/cp-library/data_structure/segment_tree/range_chmin_chmax_add_sum.hpp.html) は、次の更新と取得を任意に組み合わせて使えます。区間はすべて $$[l,r)$$ です。
+[Range Chmin Chmax Add Sum](https://qandori.github.io/cp-library/data_structure/range_chmin_chmax_add_sum.hpp.html) は、次の更新と取得を任意に組み合わせて使えます。区間はすべて $$[l,r)$$ です。
 
-除算や bitwise AND/OR など、別の更新・集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segment_tree/segtree_beats.hpp.html) を使ってください。
+除算や bitwise AND/OR など、別の更新・集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segtree_beats.hpp.html) を使ってください。
 
 ```cpp
-#include "lib/data_structure/segment_tree/range_chmin_chmax_add_sum.hpp"
+#include "lib/data_structure/range_chmin_chmax_add_sum.hpp"
 
 RangeChminChmaxAddSum seg(std::vector<long long>{1, 4, 2, 8});
 ```

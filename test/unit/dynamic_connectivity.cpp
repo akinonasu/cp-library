@@ -1,4 +1,4 @@
-#include "graph/connectivity/dynamic_connectivity.hpp"
+#include "graph/dynamic_connectivity.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>

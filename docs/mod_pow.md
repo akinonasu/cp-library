@@ -1,12 +1,14 @@
 ---
 title: 定数時間 mod pow
-documentation_of: //math/number_theory/mod_pow.hpp
+documentation_of: //math/mod_pow.hpp
 redirect_from:
-- /math/mod_pow.hpp.html
+- /math/number_theory/mod_pow.hpp.html
+- /lightweight/math/number_theory/mod_pow.hpp.html
+library_category: math/number_theory
 ---
 
 ```cpp
-#include "lib/math/number_theory/mod_pow.hpp"
+#include "lib/math/mod_pow.hpp"
 
 ModPow power(17);
 auto a = power.pow(3, 5); // 5
@@ -29,10 +31,10 @@ auto c = power.pow_root(k); // 5
 
 同じ法で多数の累乗・逆元を計算するときに、オブジェクトを一度作って使い回します。例の法 17 では原始根は 3、`log(5)` は「3 を何乗すると 5 になるか」を返します。通常の `pow` の底は原始根以外でも指定できます。大きい法では前計算に時間とメモリを使うため、少数回だけの累乗には `mint::pow` なども使えます。
 
-`pow` は原始根に対する離散対数に変換し、指数を $$p-1$$ で縮約してから表を参照します。有理数近似で参照範囲を小さくするため、法の大きさに比例する全対数表は持ちません。逆元だけが必要なら [ModInv](https://qandori.github.io/cp-library/math/number_theory/mod_inv.hpp.html) を使うと、離散対数の前計算を省けます。`mint` と組み合わせる場合は `mint::raw(power.pow(a.val(),k))` などとします。
+`pow` は原始根に対する離散対数に変換し、指数を $$p-1$$ で縮約してから表を参照します。有理数近似で参照範囲を小さくするため、法の大きさに比例する全対数表は持ちません。逆元だけが必要なら [ModInv](https://qandori.github.io/cp-library/math/mod_inv.hpp.html) を使うと、離散対数の前計算を省けます。`mint` と組み合わせる場合は `mint::raw(power.pow(a.val(),k))` などとします。
 
 離散対数の前計算では小さい素数の対数を利用した乱択を最大 64 回試し、失敗した場合は BSGS に切り替えます。乱数 seed は法と原始根から固定され、結果と処理は再現可能です。クエリには乱択もループも使いません。
 
-法や底を毎回変更する場合や、合成数の法を扱う場合は [discrete_log](https://qandori.github.io/cp-library/math/number_theory/discrete_log.hpp.html) を使えます。
+法や底を毎回変更する場合や、合成数の法を扱う場合は [discrete_log](https://qandori.github.io/cp-library/math/discrete_log.hpp.html) を使えます。
 
 前計算の空間は $$O(p^{2/3})$$、原始根が与えられた場合の時間はハッシュ探索を期待 $$O(1)$$ として期待 $$O(p)$$ です。原始根の自動探索には、$$p-1$$ の試し割りと候補ごとの累乗判定が追加されます。すべてのクエリは $$O(1)$$ 時間です。

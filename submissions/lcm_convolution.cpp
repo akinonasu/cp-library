@@ -12,7 +12,7 @@
 
 
 
-#line 1 "math/number_theory/prime_sieve.hpp"
+#line 1 "math/prime_sieve.hpp"
 
 
 

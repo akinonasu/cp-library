@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/range_affine_point_get"
-#include "data_structure/segment_tree/range_affine_range_sum.hpp"
+#include "data_structure/range_affine_range_sum.hpp"
 #include "components/fast_io.hpp"
 #include <vector>
 

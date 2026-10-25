@@ -1,6 +1,6 @@
 #line 1 "test/dijkstra_path.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/shortest_path"
-#line 1 "graph/shortest_path/dijkstra.hpp"
+#line 1 "graph/dijkstra.hpp"
 
 
 
@@ -493,7 +493,7 @@ struct Access {
 }
 
 
-#line 17 "graph/shortest_path/dijkstra.hpp"
+#line 17 "graph/dijkstra.hpp"
 
 inline constexpr std::int64_t DIJKSTRA_INF = 4'000'000'000'000'000'000;
 

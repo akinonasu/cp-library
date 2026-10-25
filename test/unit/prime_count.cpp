@@ -1,5 +1,5 @@
-#include "math/number_theory/prime_count.hpp"
-#include "math/number_theory/is_prime.hpp"
+#include "math/prime_count.hpp"
+#include "math/is_prime.hpp"
 #include <array>
 #include <cassert>
 #include <cfenv>

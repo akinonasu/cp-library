@@ -65,15 +65,15 @@ template<class T, bool Padded = true> class FenwickTree {
 };
 
 
-#line 1 "data_structure/advanced/hld.hpp"
+#line 1 "data_structure/hld.hpp"
 
 
 
 #include <algorithm>
 #include <array>
-#line 9 "data_structure/advanced/hld.hpp"
+#line 9 "data_structure/hld.hpp"
 #include <utility>
-#line 11 "data_structure/advanced/hld.hpp"
+#line 11 "data_structure/hld.hpp"
 
 class HLD {
 	int shape_ = 0, center_ = 0;

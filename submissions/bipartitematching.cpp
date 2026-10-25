@@ -1,6 +1,6 @@
 #line 1 "test/bipartite_matching.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/bipartitematching"
-#line 1 "graph/matching/bipartite_matching.hpp"
+#line 1 "graph/bipartite_matching.hpp"
 
 
 
@@ -250,9 +250,9 @@ struct Analysis {
 }
 
 
-#line 5 "graph/matching/bipartite_matching.hpp"
+#line 5 "graph/bipartite_matching.hpp"
 #include <cstddef>
-#line 8 "graph/matching/bipartite_matching.hpp"
+#line 8 "graph/bipartite_matching.hpp"
 #include <optional>
 
 class BipartiteMatching {

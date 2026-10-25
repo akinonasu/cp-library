@@ -3,7 +3,7 @@
 
 #include "inversion_count.hpp"
 #include "../components/radix_sort.hpp"
-#include "../data_structure/range_query/mo_order.hpp"
+#include "../data_structure/mo_order.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>

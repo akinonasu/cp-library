@@ -241,7 +241,7 @@ public:
 };
 
 
-#line 1 "math/linear_algebra/matrix.hpp"
+#line 1 "math/matrix.hpp"
 
 
 
@@ -527,10 +527,7 @@ struct ModularField {
 #endif
 
 namespace matrix_detail {
-using field_detail::SmallModint;
-using field_detail::small_modint;
-using field_detail::avx2;
-using field_detail::ModularField;
+using field_detail::SmallModint, field_detail::small_modint, field_detail::avx2, field_detail::ModularField;
 
 template <class T, class F>
 auto field(std::vector<T> &a, F &&f) {
@@ -1176,7 +1173,7 @@ struct FrobeniusPower {
 #endif
 
 
-#line 7 "math/linear_algebra/matrix.hpp"
+#line 7 "math/matrix.hpp"
 
 namespace matrix_detail {
 template <class T>
@@ -1587,7 +1584,7 @@ std::optional<std::pair<T, std::vector<T>>> block_inverse(const std::vector<T> &
 }
 
 
-#line 56 "math/linear_algebra/matrix.hpp"
+#line 56 "math/matrix.hpp"
 
 
 #line 1 "math/mint.hpp"

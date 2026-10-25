@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_C"
-#include "graph/shortest_path/warshall_floyd.hpp"
+#include "graph/warshall_floyd.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

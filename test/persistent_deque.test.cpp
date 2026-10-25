@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/deque"
-#include "../data_structure/persistent/persistent_deque.hpp"
+#include "../data_structure/persistent_deque.hpp"
 #include <iostream>
 
 int main() {

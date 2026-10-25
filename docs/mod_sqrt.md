@@ -1,12 +1,14 @@
 ---
 title: 素数 mod の平方根
-documentation_of: //math/number_theory/mod_sqrt.hpp
+documentation_of: //math/mod_sqrt.hpp
 redirect_from:
-- /math/mod_sqrt.hpp.html
+- /math/number_theory/mod_sqrt.hpp.html
+- /lightweight/math/number_theory/mod_sqrt.hpp.html
+library_category: math/number_theory
 ---
 
 ```cpp
-#include "lib/math/number_theory/mod_sqrt.hpp"
+#include "lib/math/mod_sqrt.hpp"
 #include <iostream>
 
 auto root = mod_sqrt(10, 13);

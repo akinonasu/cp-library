@@ -1,10 +1,14 @@
 ---
-title: "強連結成分分解"
-documentation_of: //graph/connectivity/scc.hpp
+title: 強連結成分分解
+documentation_of: //graph/scc.hpp
+library_category: graph/connectivity
+redirect_from:
+- /graph/connectivity/scc.hpp.html
+- /lightweight/graph/connectivity/scc.hpp.html
 ---
 
 ```cpp
-#include "lib/graph/connectivity/scc.hpp"
+#include "lib/graph/scc.hpp"
 
 SCCGraph graph(4);
 graph.add_edge(0, 1);

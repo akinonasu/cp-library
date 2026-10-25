@@ -1,6 +1,6 @@
 #line 1 "test/xor_basis_intersection.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/intersection_of_f2_vector_spaces"
-#line 1 "math/linear_algebra/xor_basis.hpp"
+#line 1 "math/xor_basis.hpp"
 
 
 
@@ -67,11 +67,11 @@ struct Core {
 }
 
 
-#line 9 "math/linear_algebra/xor_basis.hpp"
+#line 9 "math/xor_basis.hpp"
 #include <cstddef>
-#line 11 "math/linear_algebra/xor_basis.hpp"
+#line 11 "math/xor_basis.hpp"
 #include <initializer_list>
-#line 13 "math/linear_algebra/xor_basis.hpp"
+#line 13 "math/xor_basis.hpp"
 #include <optional>
 #include <span>
 #include <utility>

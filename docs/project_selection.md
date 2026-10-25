@@ -1,6 +1,10 @@
 ---
 title: Project Selection（燃やす埋める）
-documentation_of: //graph/flow/project_selection.hpp
+documentation_of: //graph/project_selection.hpp
+library_category: graph/flow
+redirect_from:
+- /graph/flow/project_selection.hpp.html
+- /lightweight/graph/flow/project_selection.hpp.html
 ---
 
 各頂点を選ぶ・選ばないの 2 通りに分け、費用の総和を最小化します。利益は負の費用として加えます。選択を `true`（1、燃やす）、非選択を `false`（0、埋める）とします。反転を指定しない頂点では、最小カットの始点側が選択側です。
@@ -8,7 +12,7 @@ documentation_of: //graph/flow/project_selection.hpp
 費用・利益には負の値も指定できます。ただし、`add_penalty`・`add_difference_cost`・`add_same_cost`・`add_same_profit`・`add_difference_profit`・`add_all_profit`・`add_any_cost` に渡す金額は非負にしてください。二変数項には、さらに後述の条件があります。
 
 ```cpp
-#include "lib/graph/flow/project_selection.hpp"
+#include "lib/graph/project_selection.hpp"
 #include <cassert>
 
 ProjectSelection<> problem(2);

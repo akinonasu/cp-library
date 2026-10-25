@@ -1,7 +1,7 @@
 #line 1 "test/multiplicative_prefix_sum_large.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/sum_of_multiplicative_function_large"
 #define TIME_LIMIT 30
-#line 1 "math/number_theory/multiplicative_prefix_sum.hpp"
+#line 1 "math/multiplicative_prefix_sum.hpp"
 
 
 
@@ -367,16 +367,16 @@ template<class T> class Backend {
 }
 
 
-#line 1 "math/number_theory/prime_sieve.hpp"
+#line 1 "math/prime_sieve.hpp"
 
 
 
-#line 5 "math/number_theory/prime_sieve.hpp"
+#line 5 "math/prime_sieve.hpp"
 #include <array>
 #include <bit>
-#line 10 "math/number_theory/prime_sieve.hpp"
+#line 10 "math/prime_sieve.hpp"
 #include <cstring>
-#line 12 "math/number_theory/prime_sieve.hpp"
+#line 12 "math/prime_sieve.hpp"
 
 inline std::vector<std::size_t> prime_sieve(std::size_t n);
 
@@ -506,7 +506,7 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 }
 
 
-#line 13 "math/number_theory/multiplicative_prefix_sum.hpp"
+#line 13 "math/multiplicative_prefix_sum.hpp"
 
 template<class T> class MultiplicativePrefixSum {
 	FloorQuotients quotients_;

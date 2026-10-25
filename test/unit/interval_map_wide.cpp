@@ -4,9 +4,7 @@
 #include <limits>
 #include <vector>
 
-using boost::multiprecision::cpp_int;
-using boost::multiprecision::int256_t;
-using boost::multiprecision::uint256_t;
+using boost::multiprecision::cpp_int, boost::multiprecision::int256_t, boost::multiprecision::uint256_t;
 
 template<class T> void boundaries() {
 	const T lo = (std::numeric_limits<T>::lowest)(), hi = (std::numeric_limits<T>::max)();

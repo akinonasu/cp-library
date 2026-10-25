@@ -1,12 +1,16 @@
 ---
 title: セグメント木
-documentation_of: //data_structure/segment_tree/segtree.hpp
+documentation_of: //data_structure/segtree.hpp
+library_category: data_structure/segment_tree
+redirect_from:
+- /data_structure/segment_tree/segtree.hpp.html
+- /lightweight/data_structure/segment_tree/segtree.hpp.html
 ---
 
 一点代入と区間集約を扱います。`op` は結合則を満たす演算、`e()` は単位元です。可換性は不要です。
 
 ```cpp
-#include "lib/data_structure/segment_tree/segtree.hpp"
+#include "lib/data_structure/segtree.hpp"
 
 long long op(long long a, long long b) { return a + b; }
 long long e() { return 0; }

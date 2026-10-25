@@ -524,25 +524,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	private:
 	using O = fps_detail::Operations<T>;
-	using O::import_work;
-	using O::export_work;
-	using O::transform;
-	using O::words;
-	using O::transform_inplace;
-	using O::ntt;
-	using O::ntt_half;
-	using O::ntt_inverse;
-	using O::scale_words;
-	using O::geometric_scale;
-	using O::batch_inverse;
-	using O::pointwise;
-	using O::inverse_extend;
-	using O::dot;
-	using O::intt;
-	using O::mod_sqrt;
-	using O::inverse_ntt_roots;
-	using O::ntt_roots;
-	using O::inverses;
+	using O::import_work, O::export_work, O::transform, O::words, O::transform_inplace, O::ntt, O::ntt_half, O::ntt_inverse, O::scale_words, O::geometric_scale, O::batch_inverse, O::pointwise, O::inverse_extend, O::dot, O::intt, O::mod_sqrt, O::inverse_ntt_roots, O::ntt_roots, O::inverses;
 
 	using NTT = fps_detail::NTT;
 	using Word = typename O::Word;

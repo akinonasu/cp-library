@@ -1,13 +1,14 @@
 ---
-title: "Union-Find"
-documentation_of: //data_structure/union_find/union_find.hpp
+title: Union-Find
+documentation_of: //data_structure/union_find.hpp
 redirect_from:
-  - /data_structure/union_find.hpp.html
-  - /lightweight/data_structure/union_find.hpp.html
+- /data_structure/union_find/union_find.hpp.html
+- /lightweight/data_structure/union_find/union_find.hpp.html
+library_category: data_structure/union_find
 ---
 
 ```cpp
-#include "lib/data_structure/union_find/union_find.hpp"
+#include "lib/data_structure/union_find.hpp"
 
 UnionFind uf(5);
 uf.merge(0, 2);

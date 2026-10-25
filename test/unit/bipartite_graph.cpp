@@ -1,4 +1,4 @@
-#include "graph/matching/bipartite_graph.hpp"
+#include "graph/bipartite_graph.hpp"
 #include <algorithm>
 #include <bit>
 #include <cstdlib>

@@ -1,6 +1,6 @@
 #line 1 "test/scc.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/scc"
-#line 1 "graph/connectivity/scc.hpp"
+#line 1 "graph/scc.hpp"
 
 
 
@@ -118,7 +118,7 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 }
 
 
-#line 5 "graph/connectivity/scc.hpp"
+#line 5 "graph/scc.hpp"
 
 class SCCGraph {
 	int n_;

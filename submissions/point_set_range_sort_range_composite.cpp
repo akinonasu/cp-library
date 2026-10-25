@@ -237,7 +237,7 @@ public:
 };
 
 
-#line 1 "data_structure/segment_tree/sortable_segtree.hpp"
+#line 1 "data_structure/sortable_segtree.hpp"
 
 
 
@@ -498,7 +498,7 @@ public:
 };
 
 
-#line 14 "data_structure/segment_tree/sortable_segtree.hpp"
+#line 14 "data_structure/sortable_segtree.hpp"
 
 template <class Key, class S, auto op, auto e, bool commutative = false>
 class SortableSegtree {

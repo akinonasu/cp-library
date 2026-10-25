@@ -1,4 +1,4 @@
-#include "../../data_structure/segment_tree/segtree.hpp"
+#include "../../data_structure/segtree.hpp"
 #include <algorithm>
 #include <cassert>
 #include <random>

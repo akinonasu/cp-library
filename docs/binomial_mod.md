@@ -1,12 +1,16 @@
 ---
-title: "任意 mod の二項係数"
-documentation_of: //math/combinatorics/binomial_mod.hpp
+title: 任意 mod の二項係数
+documentation_of: //math/binomial_mod.hpp
+library_category: math/combinatorics
+redirect_from:
+- /math/combinatorics/binomial_mod.hpp.html
+- /lightweight/math/combinatorics/binomial_mod.hpp.html
 ---
 
 素数・素数冪・合成数を法として二項係数を求めます。法が 1 の場合も扱えます。返り値は modint ではなく、法で割った余りの整数です。
 
 ```cpp
-#include "lib/math/combinatorics/binomial_mod.hpp"
+#include "lib/math/binomial_mod.hpp"
 
 int main() {
     BinomialMod composite(72);
@@ -42,7 +46,7 @@ int main() {
 大きな素数の法では、必要な `n` に合わせて `table_limit` を指定してください。`table_limit=0` も指定できます。前計算量は素数冪ごとの上限に比例するため、大きな上限には相応の時間・メモリが必要です。
 
 ```cpp
-#include "lib/math/combinatorics/binomial_mod.hpp"
+#include "lib/math/binomial_mod.hpp"
 #include <limits>
 
 int main() {

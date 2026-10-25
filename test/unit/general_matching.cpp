@@ -1,4 +1,4 @@
-#include "graph/matching/general_matching.hpp"
+#include "graph/general_matching.hpp"
 #include <algorithm>
 #include <bit>
 #include <cassert>

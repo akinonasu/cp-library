@@ -37,7 +37,7 @@ int main() {
 	check(std::vector<mint>{}, std::vector<mint>{0, 1});
 	check(std::vector<mint>{0}, std::vector<mint>{});
 	check(std::vector<mint>{0}, std::vector<mint>{0});
-	for (int n : {2, 3, 4, 7, 8, 9, 31, 127, 1024, 4095, 4096, 4097, 10007, 65537}) {
+	for (int n : {2, 3, 4, 7, 8, 9, 31, 127, 1024, 4095, 4096, 4097, 4225, 4226, 10000, 10001, 10002, 10007, 65536, 65537, 65538}) {
 		std::vector<mint> a(n), b(n - n / 3);
 		for (int trial = 0; trial < 4; ++trial) {
 			for (std::size_t i = 1; i < a.size(); ++i) a[i] = mint::word(trial ? rng() % (2 * mint::mod()) : 2 * mint::mod() - 1);

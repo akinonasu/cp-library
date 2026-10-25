@@ -1,7 +1,7 @@
 #line 1 "test/comb_prime_mod_light.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/binomial_coefficient_prime_mod"
 #define COMB_MAX 9999999
-#line 1 "math/combinatorics/comb_light.hpp"
+#line 1 "math/comb_light.hpp"
 
 
 
@@ -239,7 +239,7 @@ template<class Mint> struct Table {
 }
 
 
-#line 5 "math/combinatorics/comb_light.hpp"
+#line 5 "math/comb_light.hpp"
 
 #ifndef COMB_MAX
 #define COMB_MAX 10000000

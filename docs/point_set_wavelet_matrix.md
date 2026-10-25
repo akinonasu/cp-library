@@ -1,12 +1,14 @@
 ---
 title: Point Set Wavelet Matrix (クエリ先読み)
-documentation_of: //data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp
+documentation_of: //data_structure/point_set_wavelet_matrix.hpp
 redirect_from:
-- /data_structure/point_set_wavelet_matrix.hpp.html
+- /data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp.html
+- /lightweight/data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp.html
+library_category: data_structure/wavelet_matrix
 ---
 
 ```cpp
-#include "lib/data_structure/wavelet_matrix/point_set_wavelet_matrix.hpp"
+#include "lib/data_structure/point_set_wavelet_matrix.hpp"
 
 std::vector<int> a{3, 1, 4, 1, 5};
 std::vector<std::pair<int, int>> candidates{ {0, 10}, {2, 7} };
@@ -41,7 +43,5 @@ auto answer = wm.min_count_largest(0, 5, 12);
 `T` は `bool` を除く 64 bit 以下の整数型、`Sum` は符号付き整数型です。`PointSetWaveletMatrix<T,Sum>` で和の型を指定できます。既定は 32 bit 以下の値なら `std::int64_t`、64 bit の値なら `__int128_t` です。中間の部分和も `Sum` に収めてください。
 
 和の境界探索 `min_count_*`・`max_count_*` には初期値と登録した候補全てが非負であることが必要です。前者は `target <= 0` なら 0、後者は `budget < 0` なら -1 を返します。その他のクエリは負の値も扱えます。
-
-[ABC467 G](https://atcoder.jp/contests/abc467/tasks/abc467_g) は更新候補を登録した後、各クエリで `wm.set(c,x)` と `wm.min_count_largest(l,r,k)` を呼べば解けます。
 
 異なる登録 `(位置,値)` の総数を $$m$$、異なる値の数を $$\sigma$$ として、構築は $$O(m\log m)$$ 時間、空間は $$O(m\log\sigma)$$ です。更新と区間の順位・和の探索は $$O(\log m\log\sigma)$$、値域を指定しない区間和は $$O(\log m)$$、候補の確認は $$O(\log m)$$、サイズと要素取得は $$O(1)$$ です。

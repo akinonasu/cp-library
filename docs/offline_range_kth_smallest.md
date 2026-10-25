@@ -1,10 +1,14 @@
 ---
 title: 区間の k 番目の値（クエリ一括処理）
-documentation_of: //data_structure/range_query/offline_range_kth_smallest.hpp
+documentation_of: //data_structure/offline_range_kth_smallest.hpp
+library_category: data_structure/range_query
+redirect_from:
+- /data_structure/range_query/offline_range_kth_smallest.hpp.html
+- /lightweight/data_structure/range_query/offline_range_kth_smallest.hpp.html
 ---
 
 ```cpp
-#include "lib/data_structure/range_query/offline_range_kth_smallest.hpp"
+#include "lib/data_structure/offline_range_kth_smallest.hpp"
 
 std::vector<int> a{3, 1, 4, 1, 5};
 std::vector<std::array<int, 3>> queries{

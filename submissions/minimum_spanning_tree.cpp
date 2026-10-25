@@ -4,7 +4,7 @@
 
 
 
-#line 1 "data_structure/union_find/union_find.hpp"
+#line 1 "data_structure/union_find.hpp"
 
 
 

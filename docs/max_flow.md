@@ -1,12 +1,14 @@
 ---
 title: 最大流
-documentation_of: //graph/flow/max_flow.hpp
+documentation_of: //graph/max_flow.hpp
 redirect_from:
-- /graph/max_flow.hpp.html
+- /graph/flow/max_flow.hpp.html
+- /lightweight/graph/flow/max_flow.hpp.html
+library_category: graph/flow
 ---
 
 ```cpp
-#include "lib/graph/flow/max_flow.hpp"
+#include "lib/graph/max_flow.hpp"
 
 MaxFlow<> graph(3);
 graph.add_edge(0, 1, 5);

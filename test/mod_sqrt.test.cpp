@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/sqrt_mod"
-#include "math/number_theory/mod_sqrt.hpp"
+#include "math/mod_sqrt.hpp"
 #include "components/fast_io.hpp"
 
 int main() {

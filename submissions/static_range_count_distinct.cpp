@@ -1,6 +1,6 @@
 #line 1 "test/static_range_count_distinct.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_count_distinct"
-#line 1 "data_structure/range_query/offline_range_count_distinct.hpp"
+#line 1 "data_structure/offline_range_count_distinct.hpp"
 
 
 
@@ -275,7 +275,7 @@ class IncrementalPrefixCount {
 };
 
 
-#line 11 "data_structure/range_query/offline_range_count_distinct.hpp"
+#line 11 "data_structure/offline_range_count_distinct.hpp"
 
 template <class T, class Hash = std::hash<T>, class Equal = std::equal_to<T>>
 class OfflineRangeCountDistinct {
