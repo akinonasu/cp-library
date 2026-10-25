@@ -295,6 +295,8 @@
 | `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/data_dependent_tree.hpp` | Data Dependent Tree・永続文字列・LCP・辞書順比較 | [使い方](docs/data_dependent_tree.md) |
 | `string/z_algorithm.hpp` | Z algorithm | [使い方](docs/z_algorithm.md) |
+| `string/suffix_array.hpp` | Suffix Array・整数列対応 | [使い方](docs/suffix_array_public.md) |
+| `string/lcp_array.hpp` | LCP Array | [使い方](docs/lcp_array.md) |
 | `string/concatenation_order.hpp` | 文字列結合の辞書順比較・並べ替え | [使い方](docs/concatenation_order.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
 | `string/manacher.hpp` | Manacher・回文半径・区間の回文判定 | [使い方](docs/manacher.md) |
@@ -310,6 +312,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `math/mint.hpp` | modint998244353 | [使い方](docs/mint.md) |
+| `math/modint.hpp` | 任意の法の静的・動的 modint | [使い方](docs/modint.md) |
 | `math/fraction.hpp` | 有理数の四則演算・正確な比較 | [使い方](docs/fraction.md) |
 
 ### 数学ユーティリティ
@@ -318,6 +321,7 @@
 | --- | --- | --- |
 | `math/util/linear_congruence.hpp` | 一次合同式 ax ≡ b (mod m) の全解 | [使い方](docs/linear_congruence.md) |
 | `math/util/crt.hpp` | 一般化 CRT・連立一次合同式 | [使い方](docs/crt.md) |
+| `math/util/modular_arithmetic.hpp` | 一般の法の剰余累乗・逆元 | [使い方](docs/modular_arithmetic.md) |
 | `math/util/linear_diophantine.hpp` | 区間制約付き一次不定方程式 | [使い方](docs/linear_diophantine.md) |
 | `math/util/integer_division.hpp` | 整数除算の切り下げ・切り上げ | [使い方](docs/integer_division.md) |
 | `math/util/geometric_sum.hpp` | 等比数列の和 | [使い方](docs/geometric_sum.md) |
