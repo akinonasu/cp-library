@@ -107,7 +107,7 @@ int main() {
 	assert(minimum.flow(0, 1).second == -6);
 	BinomialPrefixSum<> prefix(50);
 	assert(prefix.query(50, 2) == mint(51) && prefix.prod(5, 1, 3) == mint(15));
-	assert(binomial_prefix_sum(std::vector<std::pair<int, int>>{{5, 3}, {4, 1}}) == std::vector<mint>({16, 1}));
+	assert(BinomialPrefixSum<>(5).query(5, 3) == mint(16));
 	ModPow modular(101);
 	assert(modular.pow(3, 7) == 66 && modular.inv(3) == 34 && modular.pow_root(modular.log(7)) == 7);
 	assert(vector == 0 && min == 0);
