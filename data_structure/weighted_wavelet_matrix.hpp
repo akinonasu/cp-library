@@ -4,7 +4,6 @@
 #include "../components/wavelet_compression.hpp"
 #include "../components/quad_bit_vector.hpp"
 #include "../components/fenwick_sum.hpp"
-#include <numeric>
 
 template <class T = std::int64_t, class Count = std::int64_t,
 		class Sum = std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>>
@@ -183,8 +182,7 @@ class WeightedWaveletMatrix {
 		}
 		counts[0].build(root);
 		std::vector<std::uint32_t> current = index.original, next(a.size());
-		std::vector<int> order(a.size()), next_order(a.size());
-		std::iota(order.begin(), order.end(), 0);
+		std::vector<Count> next_weights(a.size());
 		for (int d = 0; d < levels; ++d) {
 			int shift = 2 * (levels - 1 - d);
 			bits.emplace_back(size());
@@ -198,14 +196,14 @@ class WeightedWaveletMatrix {
 			auto cursor = middle[d];
 			for (int i = 0; i < size(); ++i) {
 				int digit = (current[i] >> shift) & 3;
-				Count node = root[order[i]];
+				Count node = root[i];
 				if (!(digit & 2)) zero[0].push_back(node);
 				if (!(digit & 1)) zero[1 + (digit >> 1)].push_back(node);
 				int p = cursor[digit]++;
-				next[p] = current[i], next_order[p] = order[i];
+				next[p] = current[i], next_weights[p] = node;
 			}
 			for (int j = 0; j < 3; ++j) counts[3 * d + 1 + j].build(zero[j]);
-			current.swap(next), order.swap(next_order);
+			current.swap(next), root.swap(next_weights);
 		}
 		if (with_sum) prepare_sum();
 	}
@@ -246,7 +244,7 @@ class WeightedWaveletMatrix {
 		weights[from] -= amount;
 		weights[to] += amount;
 		std::uint32_t x = index.original[from], y = index.original[to];
-		Node minus{-amount, sum_ready ? -Sum(index.values[x]) * amount : Sum(0)}, plus{amount, sum_ready ? Sum(index.values[y]) * amount : Sum(0)};
+		Node minus{Count(-amount), sum_ready ? -Sum(index.values[x]) * amount : Sum(0)}, plus{amount, sum_ready ? Sum(index.values[y]) * amount : Sum(0)};
 		add_pair(0, from, minus, to, plus);
 		for (int d = 0; d < levels; ++d) {
 			int shift = 2 * (levels - 1 - d), a = (x >> shift) & 3, b = (y >> shift) & 3;
