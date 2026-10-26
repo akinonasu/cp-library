@@ -13,6 +13,7 @@ main_libraries:
   - components/ntt_mod.hpp
   - components/ntt.hpp
 implementation_variants:
+  math/is_prime.hpp: math/is_prime_light.hpp
   math/matrix.hpp: math/matrix_light.hpp
   fps/fps.hpp: fps/fps_light.hpp
   fps/taylor_shift.hpp: fps/fps_light_algorithms.hpp
@@ -44,6 +45,7 @@ implementation_variants:
   components/binomial_prefix_core.hpp: components/binomial_prefix_core_light.hpp
   components/factorial_table.hpp: components/factorial_table_light.hpp
 implementation_variant_apis:
+  math/is_prime.hpp: light_is_prime
   math/matrix.hpp: LightMatrix<T>
   fps/taylor_shift.hpp: light_fps_algorithms::taylor_shift
   fps/bostan_mori.hpp: light_fps_algorithms::bostan_mori

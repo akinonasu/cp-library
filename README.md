@@ -340,6 +340,7 @@
 | `math/factorize.hpp` | 素因数分解・素数判定・約数列挙 | [使い方](docs/factorize.md) |
 | `math/multiplicative_divisors.hpp` | 約数ごとの乗法的関数の値 | [使い方](docs/multiplicative_divisors.md) |
 | `math/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
+| `math/is_prime_light.hpp` | 軽量版の素数判定 | [使い方](docs/is_prime_light.md) |
 | `math/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
 | `math/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
 | `math/totient_sum.hpp` | Euler φ関数の prefix sum | [使い方](docs/totient_sum.md) |
@@ -419,6 +420,8 @@
 | `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |
 | `components/field_arithmetic.hpp` | 体の演算・内積・配列の定数倍と加算 | [使い方](docs/field_arithmetic.md) |
 | `components/field_base.hpp` | 汎用型の体の演算 | [使い方](docs/field_base.md) |
+| `components/is_prime_core.hpp` | 素数判定の共通処理 | [使い方](docs/is_prime_core.md) |
+| `components/is_prime_bases.hpp` | 素数判定の基数表 | [使い方](docs/is_prime_bases.md) |
 | `components/matrix_core.hpp` | 行列の共通クラス | [使い方](docs/matrix_core.md) |
 | `components/matrix_base_arithmetic.hpp` | 行列の基本演算 | [使い方](docs/matrix_base_arithmetic.md) |
 | `components/matrix_power.hpp` | 行列累乗・特性多項式の内部演算 | [使い方](docs/matrix_power.md) |

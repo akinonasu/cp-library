@@ -123,7 +123,7 @@ struct Factorizer {
 			}
 		}
 		Montgomery64 m(n);
-		if (is_prime_detail::prime(m)) result.push_back(n);
+		if (is_prime_detail::fast_prime(m)) result.push_back(n);
 		else {
 			U d = rho(m);
 			split(d);
