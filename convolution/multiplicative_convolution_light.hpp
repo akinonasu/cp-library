@@ -8,14 +8,14 @@
 #include <limits>
 #include <vector>
 
-#include "../math/is_prime.hpp"
+#include "../math/is_prime_light.hpp"
 #include "convolution_light.hpp"
 
 namespace light_convolution {
 template <class T>
 std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	if (a.empty() || b.empty()) return {};
-	assert(a.size() == b.size() && a.size() <= std::numeric_limits<std::uint32_t>::max() && is_prime(a.size()));
+	assert(a.size() == b.size() && a.size() <= std::numeric_limits<std::uint32_t>::max() && light_is_prime(a.size()));
 	std::uint32_t p = a.size();
 	std::vector<std::uint32_t> factors;
 	std::uint32_t remaining = p - 1;
