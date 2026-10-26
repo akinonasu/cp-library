@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdint>
 #include <random>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -47,6 +48,48 @@ void check(int target, int shift, int input, std::mt19937 &random) {
 	}
 	for (std::size_t i = 0; i < a.size(); ++i) assert(a[i].v == saved[i].v);
 }
+
+void check_power(int n, int first, std::mt19937 &random) {
+	fps a(n), expected(n);
+	for (int i = first; i < n; ++i) a[i] = random();
+	a[first] = 7;
+	expected[0] = 1;
+	for (int k = 0; k < 5; ++k) {
+		fps next(n);
+		for (int i = 0; i < n; ++i) if (expected[i] != mint(0))
+			for (int j = first; i + j < n; ++j) next[i + j] += expected[i] * a[j];
+		expected = std::move(next);
+	}
+	const fps saved = a;
+	assert(a.pow(5) == expected && a == saved);
+}
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+void check_append(int n, std::mt19937 &random) {
+	fps a(n);
+	for (auto &x : a) x = random();
+	a[0] = 1;
+	const fps expected = a.pow(5);
+	for (int prefix : {0, 2, n / 2}) {
+		fps root(prefix, mint(3)), raised(prefix, mint(5));
+		fps_detail::blocked_poly::native_sqrt(a.data(), a.size(), root, n, mint(1));
+		fps_detail::blocked_poly::native_power(a.data(), a.size(), raised, n, 5, mint(1));
+		assert(root.size() == static_cast<std::size_t>(prefix + n));
+		assert(raised.size() == root.size());
+		for (int i = 0; i < prefix; ++i) assert(root[i] == mint(3) && raised[i] == mint(5));
+		assert(fps(root.begin() + prefix, root.end()) == a.sqrt());
+		assert(fps(raised.begin() + prefix, raised.end()) == expected);
+		for (int zeros : {0, 1, 17, n + 3}) {
+			fps shifted(prefix, mint(5));
+			fps_detail::blocked_poly::native_power(a.data(), a.size(), shifted, n, 5, mint(1), zeros);
+			assert(shifted.size() == static_cast<std::size_t>(prefix + zeros + n));
+			for (int i = 0; i < prefix; ++i) assert(shifted[i] == mint(5));
+			for (int i = 0; i < zeros; ++i) assert(shifted[prefix + i] == mint(0));
+			assert(fps(shifted.begin() + prefix + zeros, shifted.end()) == expected);
+		}
+	}
+}
+#endif
 }
 
 int main() {
@@ -57,4 +100,9 @@ int main() {
 				check(target, shift, input, random);
 	check(4097, 0, 4097, random);
 	check(4097, 1025, 65, random);
+	for (int n : {257, 513, 1025})
+		for (int first : {0, 1, 17, n / 32, n / 8, (n - 1) / 5}) check_power(n, first, random);
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	for (int n : {256, 257, 512, 513, 521}) check_append(n, random);
+#endif
 }

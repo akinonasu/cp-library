@@ -16,18 +16,22 @@ LightFormalPowerSeries<T> taylor_shift(LightFormalPowerSeries<T> f, std::type_id
 	const std::size_t n = f.size();
 	if (n <= 1 || c == T(0)) return f;
 	assert(n < T::mod());
-	F factorial(n, T(1)), inverse(n, T(1)), a(n), b(n);
-	for (std::size_t i = 1; i < n; ++i) factorial[i] = factorial[i - 1] * T(i);
-	inverse[n - 1] = factorial[n - 1].inv();
-	for (std::size_t i = n - 1; i; --i) inverse[i - 1] = inverse[i] * T(i);
+	F a(n), b(n);
+	T factorial = 1;
+	a[n - 1] = f[0];
+	for (std::size_t i = 1; i < n; ++i) {
+		factorial *= T(i);
+		a[n - 1 - i] = f[i] * factorial;
+	}
+	f[n - 1] = factorial.inv();
+	for (std::size_t i = n - 1; i; --i) f[i - 1] = f[i] * T(i);
 	T power = 1;
 	for (std::size_t i = 0; i < n; ++i) {
-		a[n - 1 - i] = f[i] * factorial[i];
-		b[i] = power * inverse[i];
+		b[i] = power * f[i];
 		power *= c;
 	}
 	a = F::multiply(a, b);
-	for (std::size_t i = 0; i < n; ++i) f[i] = a[n - 1 - i] * inverse[i];
+	for (std::size_t i = 0; i < n; ++i) f[i] *= a[n - 1 - i];
 	return f;
 }
 
@@ -38,15 +42,16 @@ T bostan_mori(LightFormalPowerSeries<T> p, LightFormalPowerSeries<T> q, long lon
 	p.shrink();
 	q.shrink();
 	while (k && !p.empty() && q.size() > 1) {
-		F opposite = q;
-		for (std::size_t i = 1; i < opposite.size(); i += 2) opposite[i] = -opposite[i];
-		F numerator = F::multiply(p, opposite), denominator = F::multiply(q, opposite);
+		F even((q.size() + 1) / 2), odd(q.size() / 2);
+		for (std::size_t i = 0; i < q.size(); ++i) (i & 1 ? odd : even)[i / 2] = q[i];
+		for (std::size_t i = 1; i < q.size(); i += 2) q[i] = -q[i];
+		F numerator = F::multiply(p, q);
+		q = F::multiply(even, even), odd = F::multiply(odd, odd);
 		p.resize((numerator.size() + 1 - std::size_t(k & 1)) / 2);
 		for (std::size_t i = 0; i < p.size(); ++i) p[i] = numerator[2 * i + std::size_t(k & 1)];
-		q.resize((denominator.size() + 1) / 2);
-		for (std::size_t i = 0; i < q.size(); ++i) q[i] = denominator[2 * i];
+		if (q.size() == odd.size()) q.push_back(T(0));
+		for (std::size_t i = 0; i < odd.size(); ++i) q[i + 1] -= odd[i];
 		p.shrink();
-		q.shrink();
 		k >>= 1;
 	}
 	return static_cast<unsigned long long>(k) < p.size() ? p[std::size_t(k)] / q[0] : T(0);

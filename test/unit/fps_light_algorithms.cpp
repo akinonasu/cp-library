@@ -1,5 +1,6 @@
 #include "fps/fps_light_algorithms.hpp"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <limits>
@@ -66,22 +67,33 @@ void shift() {
 
 void rational() {
 	std::mt19937 rng(857912);
+	const std::array<int, 15> sizes{1, 2, 3, 31, 32, 33, 63, 64, 65, 127, 128, 129, 255, 256, 257};
 	for (int trial = 0; trial < 100; ++trial) {
-		F p(rng() % 80), q(1 + rng() % 40);
+		int n = trial < int(sizes.size()) ? sizes[trial] : 1 + rng() % 40;
+		F p(trial < int(sizes.size()) ? 2 * n + 3 : rng() % 80), q(n);
 		for (auto &x : p) x = M(rng());
 		for (auto &x : q) x = M(rng());
 		q[0] = M(1 + rng() % (M::mod() - 1));
-		if (trial & 1) for (std::size_t i = std::max<std::size_t>(1, q.size() / 2); i < q.size(); ++i) q[i] = M(0);
-		std::vector<M> expected(200);
-		for (int i = 0; i < 200; ++i) {
+		if (trial % 4 == 1) for (std::size_t i = std::max<std::size_t>(1, q.size() / 2); i < q.size(); ++i) q[i] = M(0);
+		if (trial % 4 >= 2) for (std::size_t i = trial % 4 - 1; i < q.size(); i += 2) q[i] = M(0);
+		std::vector<M> expected(std::max(200, 2 * n + 50));
+		for (int i = 0; i < int(expected.size()); ++i) {
 			M value = std::size_t(i) < p.size() ? p[i] : M(0);
 			for (int j = 1; j <= i && std::size_t(j) < q.size(); ++j) value -= q[j] * expected[i - j];
 			expected[i] = value / q[0];
 		}
 		for (int k : {0, 1, 2, 3, 4, 7, 31, 32, 63, 64, 127, 199})
 			assert(A::bostan_mori(p, q, k) == expected[k]);
+		assert(A::bostan_mori(p, q, int(expected.size()) - 1) == expected.back());
 	}
 	long long k = std::numeric_limits<long long>::max();
+	for (int d : sizes) {
+		F q(d + 1);
+		q[0] = 1;
+		q[d] = -3;
+		for (long long index : {0LL, 1LL, 999999999999999999LL, k})
+			assert(A::bostan_mori(F{M(7)}, q, index) == (index % d ? M(0) : M(7) * M(3).pow(index / d)));
+	}
 	assert(A::bostan_mori(F{M(7)}, F{M(1), M(-3)}, k) == M(7) * M(3).pow(k));
 	assert(A::bostan_mori(F{M(7)}, F{M(1)}, k) == M(0));
 	assert(A::bostan_mori(F(), F{M(1), M(2)}, k) == M(0));

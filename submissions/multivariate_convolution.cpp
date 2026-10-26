@@ -1804,12 +1804,7 @@ struct Factor {
 	Factor(Word value, Word value_quotient) : w(broadcast(value)), q(broadcast(value_quotient)) {}
 };
 
-inline Vec multiply(Vec x, const Factor& f) {
-	const Vec even = _mm256_srli_epi64(_mm256_mul_epu32(x, f.q), 32);
-	const Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), f.q);
-	const Vec q = _mm256_blend_epi32(even, odd, 0xAA);
-	return _mm256_sub_epi32(_mm256_mullo_epi32(x, f.w), _mm256_mullo_epi32(q, broadcast(kP)));
-}
+inline Vec multiply(Vec x, const Factor& f) { return mint_detail::Ops::fixed_mul8(x, f.w, f.q); }
 
 inline size_t slot(size_t k) { return (k >> 3 << 4) | (k & 7); }
 
@@ -1838,18 +1833,6 @@ inline void build_table(Word* t, size_t count, const std::array<Word, kRootCount
 			_mm256_store_si256(reinterpret_cast<Vec*>(t + slot(h + j)), v);
 			_mm256_store_si256(reinterpret_cast<Vec*>(t + slot(h + j) + 8), _mm256_mullo_epi32(vr, broadcast(kernels::kNI)));
 		}
-	}
-}
-
-inline void inverse_radix4(Vec* f, size_t h, const Word* inverse_roots, const Factor& s) {
-	const Factor z(inverse_roots[1], inverse_roots[9]);
-	const auto scale = [&s](Vec x) __attribute__((target("avx2"))) { return reduce(multiply(x, s), kP); };
-	for (size_t j = 0; j < h; ++j) {
-		const Vec p0 = f[j], p1 = f[j + h], p2 = f[j + 2 * h], p3 = f[j + 3 * h];
-		const Vec ab = reduce(add(p0, p1), 2 * kP), cd = reduce(add(p2, p3), 2 * kP);
-		const Vec amb = reduce(diff(p0, p1), 2 * kP), cmd = multiply(diff(p2, p3), z);
-		f[j] = scale(add(ab, cd)), f[j + h] = scale(add(amb, cmd));
-		f[j + 2 * h] = scale(diff(ab, cd)), f[j + 3 * h] = scale(diff(amb, cmd));
 	}
 }
 
@@ -1902,14 +1885,7 @@ inline void forward_identity(Vec* a, size_t h, const Word* y) {
 inline void inverse_identity(Vec* a, size_t h, const Word* y) {
 	radix4<true, true>(a, h, y, y);
 }
-inline void scale_radix2(Vec* a, size_t h, const Word* y) {
-	const Factor s(y[1], y[9]);
-	for (size_t j = 0; j < h; ++j) {
-		const Vec lo = a[j], hi = a[j + h];
-		a[j] = reduce(multiply(add(lo, hi), s), kP);
-		a[j + h] = reduce(multiply(diff(lo, hi), s), kP);
-	}
-}
+
 }
 
 namespace blocked_poly::kernels {
@@ -2038,7 +2014,6 @@ inline void fill_window(Window& window, Vec a, const Factor& w) {
 }
 
 [[gnu::always_inline]] inline Vec leaf_product(const Window& window, const Word* b) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
 	Vec even = _mm256_setzero_si256(), odd = even;
 #pragma GCC unroll 8
 	for (int i = 0; i < 8; ++i) {
@@ -2048,9 +2023,7 @@ inline void fill_window(Window& window, Vec a, const Factor& w) {
 		even = _mm256_add_epi64(even, _mm256_mul_epu32(lo, bi));
 		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(hi, bi));
 	}
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return reduce(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA), 2 * kP);
+	return reduce(mint_detail::Ops::reduce8(even, odd), 2 * kP);
 }
 
 struct ForwardBottom {
@@ -2199,14 +2172,6 @@ public:
 		if constexpr (Bottom::kInverse) inverse(a, h, k);
 	}
 
-	static constexpr bool radix8(size_t nv) { return nv / 2 > kTile; }
-
-	void below(Word* a, size_t nv, size_t k) const {
-		const size_t h = nv / 4;
-		for (size_t t = 0; t < 4; ++t) visit(a + 8 * t * h, h, 4 * k + t);
-		if constexpr (Bottom::kInverse) inverse(a, h, k);
-	}
-
 private:
 	static constexpr size_t kTile = 256;
 
@@ -2252,14 +2217,6 @@ public:
 		if (v - first_ < count_) return _mm256_loadu_si256(reinterpret_cast<const Vec*>(in_ + (8 * v - shift_)));
 		if (v - first_touched_ >= touched_) return _mm256_setzero_si256();
 		return edge(in_, shift_, end_, v);
-	}
-
-	bool in_place(const Word* out) const { return in_ == out + shift_; }
-
-	void zero_outside(Word* out, size_t lo, size_t hi) const {
-		const size_t begin = std::clamp(shift_, lo, hi), end = std::clamp(end_, begin, hi);
-		std::fill(out + lo, out + begin, 0);
-		std::fill(out + end, out + hi, 0);
 	}
 
 	bool within(size_t lo, size_t hi) const {
@@ -2336,51 +2293,32 @@ template <class Input>
 	forward_top2_body(in, out, h);
 }
 
-inline bool forward_top8(const Source&, Word*, size_t, const Word*) { return false; }
-
 template <class Bottom>
-void radix2_halves(const Recursion<Bottom>& recursion, const Source& in, Word* a, size_t nv,
-				   const Word* roots) {
+void radix2_halves(const Recursion<Bottom>& recursion, const Source& in, Word* a, size_t nv) {
 	const size_t h = nv / 2;
-	if constexpr (Bottom::kForward) {
-		if (recursion.radix8(nv) && forward_top8(in, a, nv, roots)) {
-			recursion.below(a, h, 0);
-			recursion.below(a + 8 * h, h, 1);
-			return;
-		}
-		forward_top2(in, reinterpret_cast<Vec*>(a), h);
-	}
+	if constexpr (Bottom::kForward) forward_top2(in, reinterpret_cast<Vec*>(a), h);
 	recursion.visit(a, h, 0);
 	recursion.visit(a + 8 * h, h, 1);
 }
 
 inline void inverse_top4(Vec* f, size_t h, Half output, const Word* inverse_roots, const Factor& s) {
-	if (output == Half::kBoth) return blocked_ntt::detail::inverse_radix4(f, h, inverse_roots, s);
 	const Factor z(inverse_roots[1], inverse_roots[9]);
 	const auto scale = [&s](Vec x) __attribute__((target("avx2"))) { return reduce(times(x, s), kP); };
 	for (size_t j = 0; j < h; ++j) {
 		const Vec p0 = f[j], p1 = f[j + h], p2 = f[j + 2 * h], p3 = f[j + 3 * h];
 		const Vec ab = low(add(p0, p1)), cd = low(add(p2, p3));
 		const Vec amb = low(diff(p0, p1)), cmd = times(diff(p2, p3), z);
-		if (output == Half::kLower) {
-			f[j] = scale(add(ab, cd)), f[j + h] = scale(add(amb, cmd));
-		} else {
-			f[j + 2 * h] = scale(diff(ab, cd)), f[j + 3 * h] = scale(diff(amb, cmd));
-		}
+		if (output != Half::kUpper) f[j] = scale(add(ab, cd)), f[j + h] = scale(add(amb, cmd));
+		if (output != Half::kLower) f[j + 2 * h] = scale(diff(ab, cd)), f[j + 3 * h] = scale(diff(amb, cmd));
 	}
 }
 
 inline void inverse_top2(Vec* f, size_t h, Half output, Word scale) {
-	if (output == Half::kBoth) {
-		alignas(32) Word s[16] = {};
-		s[1] = scale;
-		s[9] = blocked_ntt::detail::quotient(scale);
-		return blocked_ntt::kernels::scale_radix2(f, h, s);
-	}
 	const Factor s(scale);
 	for (size_t j = 0; j < h; ++j) {
-		if (output == Half::kLower) f[j] = reduce(times(add(f[j], f[j + h]), s), kP);
-		else f[j + h] = reduce(times(diff(f[j], f[j + h]), s), kP);
+		const Vec lo = f[j], hi = f[j + h];
+		if (output != Half::kUpper) f[j] = reduce(times(add(lo, hi), s), kP);
+		if (output != Half::kLower) f[j + h] = reduce(times(diff(lo, hi), s), kP);
 	}
 }
 
@@ -2453,9 +2391,9 @@ public:
 	void cyclic_product(Words a, ConstWords b) const { cyclic_product(a, 0, a, b); }
 
 	void inverse_product(ConstWords a, ConstWords b, Words out,
-						Half output = Half::kBoth) const {
+						Half output = Half::kBoth, Word c = 1) const {
 		using namespace blocked_ntt::detail;
-		const Word scale = inverse_scale(out.size(), true);
+		const Word scale = multiply_mod(inverse_scale(out.size(), true), c);
 		const detail::ProductBottom product{roots_, inverse_roots_, b.data()};
 		run(out, detail::Source(nullptr, 0, 0), detail::InverseProductBottom{product, a.data()}, scale, output);
 	}
@@ -2535,7 +2473,7 @@ protected:
 			if constexpr (Bottom::kInverse) inverse_top4(v, h, output, inverse_roots_, Factor(scale));
 		} else {
 			const size_t h = nv / 2;
-			radix2_halves(recursion, in, a.data(), nv, roots_);
+			radix2_halves(recursion, in, a.data(), nv);
 			if constexpr (Bottom::kInverse) inverse_top2(v, h, output, scale);
 		}
 	}
@@ -2558,23 +2496,12 @@ protected:
 	Word *roots_, *inverse_roots_;
 };
 
-}
-
-namespace blocked_poly {
-
 namespace detail {
 
 inline Vec load_unaligned(const Word* p) { return _mm256_loadu_si256(reinterpret_cast<const Vec*>(p)); }
 inline void store_unaligned(Word* p, Vec x) { _mm256_storeu_si256(reinterpret_cast<Vec*>(p), x); }
 
-inline Vec montgomery(Vec a, Vec b) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
-	Vec even = _mm256_mul_epu32(a, b);
-	Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32));
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
-}
+inline Vec montgomery(Vec a, Vec b) { return mint_detail::Ops::mul8(a, b); }
 
 class Indices {
 public:
@@ -2690,26 +2617,29 @@ inline void divide_by_index(ConstWords a, size_t first, Words q) {
 	});
 }
 
-}
-
-#line 983 "components/fps_blocked.hpp"
-
-namespace blocked_poly {
-
 namespace detail {
 
 inline constexpr size_t kInverseBase = 32;
+
+inline Word direct_product(const Word* a, const Word* b, size_t n) {
+	std::uint64_t sums[4] = {};
+	size_t j = 0;
+	for (; j + 4 <= n; j += 4)
+		for (size_t k = 0; k < 4; ++k) sums[k] += std::uint64_t(a[j + k]) * b[n - 1 - j - k];
+	std::uint64_t sum = 0;
+	for (auto x : sums) sum += x % kP;
+	for (; j < n; ++j) sum += std::uint64_t(a[j]) * b[n - 1 - j];
+	return Word(sum % kP);
+}
 
 inline void inverse_direct(ConstWords f, Words g) {
 	using blocked_ntt::detail::multiply_mod;
 	const Word inv0 = blocked_ntt::detail::power(f[0], kP - 2);
 	g[0] = inv0;
 	for (size_t i = 1; i < g.size(); ++i) {
-		std::uint64_t sum = 0;
-		for (size_t j = 1; j <= std::min(i, f.size() - 1); ++j) {
-			sum += std::uint64_t(f[j]) * g[i - j] % kP;
-		}
-		g[i] = multiply_mod(Word(sum % kP ? kP - sum % kP : 0), inv0);
+		const size_t count = std::min(i, f.size() - 1);
+		const Word sum = direct_product(f.data() + 1, g.data() + i - count, count);
+		g[i] = multiply_mod(sum ? kP - sum : 0, inv0);
 	}
 }
 
@@ -2722,11 +2652,11 @@ inline int inverse_log(size_t n) {
 inline size_t inverse_scratch(size_t n) { return 2 * Arena::footprint(size_t(1) << inverse_log(n)); }
 
 inline void inverse_step(const Transform& t, ConstWords f, ConstWords g,
-						Words to, Words gt, Words work) {
+						Words to, Words gt, Words work, Word scale = detail::kP - 1) {
 	const size_t k = g.size();
 	t.forward(g, 0, gt);
 	t.cyclic_product(f.first(std::min(2 * k, f.size())), 0, work, gt, Half::kUpper);
-	t.cyclic_product(work.subspan(k), k, work, gt, Half::kUpper, detail::kP - 1);
+	t.cyclic_product(work.subspan(k), k, work, gt, Half::kUpper, scale);
 	if (to.data() != work.data() + k) std::copy_n(work.begin() + std::ptrdiff_t(k), to.size(), to.begin());
 }
 
@@ -2742,10 +2672,6 @@ inline void inverse(const Transform& t, ConstWords f, Words g,
 	}
 }
 
-}
-
-namespace blocked_poly {
-
 namespace detail {
 
 inline constexpr size_t kLogBase = 64;
@@ -2759,9 +2685,8 @@ inline void log_direct(ConstWords f, Words g) {
 	for (size_t i = 2; i < g.size(); ++i) inv[i] = multiply_mod(kP - kP / Word(i), inv[kP % i]);
 	g[0] = 0;
 	for (size_t i = 1; i < g.size(); ++i) {
-		std::uint64_t sum = multiply_mod(Word(i), a[i]);
-		for (size_t k = 1; k < i; ++k) sum += kP - std::uint64_t(kg[k]) * a[i - k] % kP;
-		kg[i] = Word(sum % kP);
+		const Word sum = direct_product(kg + 1, a + 1, i - 1);
+		kg[i] = (multiply_mod(Word(i), a[i]) + kP - sum) % kP;
 		g[i] = multiply_mod(kg[i], inv[i]);
 	}
 }
@@ -3005,9 +2930,6 @@ inline void log(const Transform& t, ConstWords f, Words g,
 	g[0] = 0;
 }
 
-}
-
-namespace blocked_poly {
 inline void native_log(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool integrate) {
 	prepare_fps_output(out, n);
 	out.emplace_back(0);
@@ -3178,9 +3100,11 @@ public:
 	}
 	Word* a() { return a_; }
 	Word* b() { return b_; }
-	const Word* multiply() {
+	const Word* multiply(bool square = false) {
 		transform_.forward(ConstWords(b_, m_), 0, Words(b_, len_));
-		transform_.cyclic_product(ConstWords(a_, n_), 0,
+		if (square) transform_.inverse_product(ConstWords(b_, len_), ConstWords(b_, len_), Words(a_, len_),
+			blocked_poly::Half::kBoth, detail::power(detail::kR, kernels::kP - 2));
+		else transform_.cyclic_product(ConstWords(a_, n_), 0,
 			Words(a_, len_), ConstWords(b_, len_), blocked_poly::Half::kBoth, detail::power(detail::kR, kernels::kP - 2));
 		return a_;
 	}
@@ -3256,9 +3180,9 @@ inline std::vector<mint> run_borrowed_as(const std::vector<mint>& a, const std::
 	const size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(mint);
 	mint* const to = result.data() + offset;
 	Plan plan(a.size(), b.size(), reinterpret_cast<Word*>(to));
-	copy_input_mint(a, to);
+	if (&a != &b) copy_input_mint(a, to);
 	copy_input(b, plan.b(), len);
-	plan.multiply();
+	plan.multiply(&a == &b);
 	if (offset) std::memmove(static_cast<void*>(result.data()), to, size * sizeof(mint));
 	result.resize(size);
 	return result;
@@ -3721,7 +3645,7 @@ void transform(std::vector<std::uint32_t> &a, bool inverse, bool vectorized) {
 		bit_reverse(a);
 		backward(a, plan, vectorized);
 		std::reverse(a.begin() + 1, a.end());
-		scale<mod>(a, power<mod>(a.size(), mod - 2), vectorized);
+		scale<mod>(a, mod - (mod - 1) / a.size(), vectorized);
 	} else {
 		forward(a, plan, vectorized);
 		if constexpr (mod < (std::uint32_t(1) << 30)) for (auto &x : a) if (x >= mod) x -= mod;
@@ -3784,23 +3708,29 @@ void ntt_mod(std::vector<std::uint32_t> &a, bool inverse = false) {
 }
 
 
-#line 11 "convolution/convolution_mod.hpp"
+#line 12 "convolution/convolution_mod.hpp"
 
 namespace convolution_mod_detail {
-template <std::uint32_t mod, std::uint32_t root, class T>
-std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T> &b, std::uint32_t factor = 1) {
-	std::size_t length = a.size() + b.size() - 1, n = std::bit_ceil(length);
-	std::vector<std::uint32_t> x(n), y(n);
+using Word = std::uint32_t;
+template <Word mod, Word root, class T>
+std::vector<Word> multiply(const std::vector<T> &a, const std::vector<T> &b, Word factor = 1) {
+	const auto &small = a.size() <= b.size() ? a : b;
+	const auto &large = a.size() <= b.size() ? b : a;
+	std::size_t length = a.size() + b.size() - 1;
+	bool blocked = small.size() > 32 && large.size() / small.size() >= 8, square = &a == &b;
+	std::size_t n = std::bit_ceil(blocked ? 2 * small.size() - 1 : length), block = n - small.size() + 1;
+	std::vector<Word> x(n), y(square ? 0 : n);
 	auto reduce = [](T value) {
 		__int128_t r = __int128_t(value) % mod;
-		return std::uint32_t(r < 0 ? r + mod : r);
+		return Word(r < 0 ? r + mod : r);
 	};
-	for (std::size_t i = 0; i < a.size(); ++i) x[i] = reduce(a[i]);
-	for (std::size_t i = 0; i < b.size(); ++i) y[i] = reduce(b[i]);
-	if (std::min(a.size(), b.size()) <= 32) {
-		std::vector<std::uint32_t> result(length);
-		for (std::size_t i = 0; i < a.size(); ++i)
-			for (std::size_t j = 0; j < b.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * y[j]) % mod;
+	for (std::size_t i = 0; i < small.size(); ++i) x[i] = reduce(small[i]);
+	if (small.size() <= 32) {
+		if (!square) for (std::size_t i = 0; i < large.size(); ++i) y[i] = reduce(large[i]);
+		const auto &other = square ? x : y;
+		std::vector<Word> result(length);
+		for (std::size_t i = 0; i < small.size(); ++i)
+			for (std::size_t j = 0; j < large.size(); ++j) result[i + j] = (result[i + j] + std::uint64_t(x[i]) * other[j]) % mod;
 		if (factor != 1) for (auto &v : result) v = std::uint64_t(v) * factor % mod;
 		return result;
 	}
@@ -3810,41 +3740,56 @@ std::vector<std::uint32_t> multiply(const std::vector<T> &a, const std::vector<T
 #endif
 	ntt_mod_detail::Plan<mod, root> plan(n, vectorized);
 	ntt_mod_detail::forward(x, plan, vectorized);
-	if (&a == &b) y = x;
-	else ntt_mod_detail::forward(y, plan, vectorized);
-	ntt_mod_detail::pointwise<mod>(x, y, vectorized);
-	ntt_mod_detail::backward(x, plan, vectorized);
-	std::reverse(x.begin() + 1, x.end());
-	std::uint32_t scale = (std::uint64_t(1) << 32) % mod * ntt_mod_detail::power<mod>(n, mod - 2) % mod * factor % mod;
-	ntt_mod_detail::scale<mod>(x, scale, vectorized);
-	x.resize(length);
-	return x;
+	Word scale = (std::uint64_t(1) << 32) % mod * (mod - (mod - 1) / n) % mod * factor % mod;
+	std::vector<Word> result(blocked ? length : 0);
+	auto &work = square ? x : y;
+	for (std::size_t start = 0; start < large.size(); start += block) {
+		std::size_t size = std::min(block, large.size() - start);
+		if (!square) {
+			for (std::size_t i = 0; i < size; ++i) y[i] = reduce(large[start + i]);
+			std::fill(y.begin() + size, y.end(), 0);
+			ntt_mod_detail::forward(y, plan, vectorized);
+		}
+		ntt_mod_detail::pointwise<mod>(work, x, vectorized);
+		ntt_mod_detail::backward(work, plan, vectorized);
+		std::reverse(work.begin() + 1, work.end());
+		ntt_mod_detail::scale<mod>(work, scale, vectorized);
+		if (!blocked) {
+			work.resize(length);
+			return std::move(work);
+		}
+		for (std::size_t i = 0; i < size + small.size() - 1; ++i) {
+			Word sum = result[start + i] + work[i];
+			result[start + i] = sum < mod ? sum : sum - mod;
+		}
+	}
+	return result;
 }
-inline constexpr std::uint32_t p = 754974721, q = 1224736769, r = 2013265921;
+inline constexpr Word p = 754974721, q = 1224736769, r = 2013265921;
 inline constexpr __uint128_t modulus = __uint128_t(p) * q * r;
-struct Reconstruction { std::uint64_t low; std::uint32_t high; };
-template <std::uint32_t P = p, std::uint32_t Q = q, std::uint32_t R = r>
-inline Reconstruction reconstruct(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
-	static const std::uint32_t inverse_p = ntt_mod_detail::power<Q>(P, Q - 2);
-	static const std::uint32_t inverse_pq = ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2);
+struct Reconstruction { std::uint64_t low; Word high; };
+template <Word P = p, Word Q = q, Word R = r>
+inline Reconstruction reconstruct(Word a, Word b, Word c) {
+	static const Word inverse_p = ntt_mod_detail::power<Q>(P, Q - 2);
+	static const Word inverse_pq = ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2);
 	std::uint64_t x = std::uint64_t(b + Q - a) * inverse_p % Q;
 	std::uint64_t low = a + std::uint64_t(P) * x;
 	std::uint64_t y = std::uint64_t(c + R - low % R) * inverse_pq % R;
-	return {low, std::uint32_t(y)};
+	return {low, Word(y)};
 }
-inline __uint128_t restore(std::uint32_t a, std::uint32_t b, std::uint32_t c) {
+inline __uint128_t restore(Word a, Word b, Word c) {
 	auto [low, high] = reconstruct(a, b, c);
 	return low + __uint128_t(p) * q * high;
 }
 #if defined(__x86_64__) || defined(__i386__)
-template <std::uint32_t P, std::uint32_t Q, std::uint32_t R>
+template <Word P, Word Q, Word R>
 __attribute__((target("avx2")))
-void combine(std::uint32_t *a, const std::uint32_t *b, const std::uint32_t *c, std::size_t n) {
+void combine(Word *a, const Word *b, const Word *c, std::size_t n) {
 	static_assert(P > 256 && Q > 256 && R > 256 && P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32));
-	constexpr std::uint32_t mod = 1000000007;
-	constexpr auto form = [](std::uint64_t x) { return std::uint32_t(x % mod * ((std::uint64_t(1) << 32) % mod) % mod); };
-	constexpr std::uint32_t place[3] = {form(std::uint64_t(Q) * R), form(std::uint64_t(P) * R), form(std::uint64_t(P) * Q)};
-	constexpr std::uint32_t wrap = form(mod - std::uint64_t(P) * Q % mod * R % mod);
+	constexpr Word mod = 1000000007;
+	constexpr auto form = [](std::uint64_t x) { return Word(x % mod * ((std::uint64_t(1) << 32) % mod) % mod); };
+	constexpr Word place[3] = {form(std::uint64_t(Q) * R), form(std::uint64_t(P) * R), form(std::uint64_t(P) * Q)};
+	constexpr Word wrap = form(mod - std::uint64_t(P) * Q % mod * R % mod);
 	const auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(ntt_mod_detail::negative_inverse<mod>);
 	std::size_t i = 0;
 	for (; n - i >= 8; i += 8) {
@@ -3872,14 +3817,14 @@ void combine(std::uint32_t *a, const std::uint32_t *b, const std::uint32_t *c, s
 	for (; i < n; ++i) {
 		std::uint64_t t = (std::uint64_t(a[i]) * ((std::uint64_t(1) << 40) / P + 1) + std::uint64_t(b[i]) * ((std::uint64_t(1) << 40) / Q + 1) + std::uint64_t(c[i]) * ((std::uint64_t(1) << 40) / R + 1) + (std::uint64_t(1) << 39)) >> 40;
 		std::uint64_t sum = std::uint64_t(a[i]) * place[0] + std::uint64_t(b[i]) * place[1] + std::uint64_t(c[i]) * place[2] + std::uint64_t(t) * wrap;
-		auto q = std::uint32_t(sum) * ntt_mod_detail::negative_inverse<mod>;
-		std::uint32_t value = (sum + std::uint64_t(q) * mod) >> 32;
+		auto q = Word(sum) * ntt_mod_detail::negative_inverse<mod>;
+		Word value = (sum + std::uint64_t(q) * mod) >> 32;
 		a[i] = value < mod ? value : value - mod;
 	}
 }
 #endif
-template <std::uint32_t P, std::uint32_t PR, std::uint32_t Q, std::uint32_t QR, std::uint32_t R, std::uint32_t RR>
-std::vector<std::uint32_t> modular(const std::vector<std::uint32_t> &a, const std::vector<std::uint32_t> &b, std::uint32_t mod) {
+template <Word P, Word PR, Word Q, Word QR, Word R, Word RR>
+std::vector<Word> modular(const std::vector<Word> &a, const std::vector<Word> &b, Word mod) {
 #if defined(__x86_64__) || defined(__i386__)
 	if constexpr (P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32)) {
 		if (mod == 1000000007 && __uint128_t(std::min(a.size(), b.size())) * (mod - 1) * (mod - 1) * 4 < __uint128_t(P) * Q * R && __builtin_cpu_supports("avx2")) {

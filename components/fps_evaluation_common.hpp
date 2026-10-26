@@ -28,10 +28,7 @@ public:
 };
 namespace detail {
 using namespace blocked_poly::detail;
-}
-}
-namespace evaluation_poly {
-namespace detail {
+
 inline Vec add_mod(Vec x, Vec y) { return reduce(add(x, y), kP); }
 inline Vec subtract_mod(Vec x, Vec y) { return reduce(_mm256_sub_epi32(add(x, broadcast(kP)), y), kP); }
 inline Vec to_montgomery(Vec x) { return reduce(times(x, Factor(kR)), kP); }
@@ -74,11 +71,8 @@ inline Vec fold(Vec s) {
 	return _mm256_add_epi64(_mm256_mul_epu32(_mm256_srli_epi64(s, 32), broadcast(kR)), _mm256_blend_epi32(s, _mm256_setzero_si256(), 0xAA));
 }
 [[gnu::always_inline]] inline Vec montgomery_sums(Vec even, Vec odd, size_t terms) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
 	if (terms > 12) even = fold(even), odd = fold(odd);
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return canonical(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA));
+	return canonical(mint_detail::Ops::reduce8(even, odd));
 }
 [[gnu::always_inline]] inline void multiply_lanes(const Word* a, size_t m, const Word* b, size_t k,
 												Word* c) {
@@ -470,8 +464,6 @@ inline void lane_columns(const Word* c, size_t count, const Word (&size)[8],
 			if (j < size[l]) store_unaligned(out[l] + j, r[l]);
 	}
 }
-}
-namespace evaluation_poly {
 namespace detail {
 template <size_t K, size_t C, size_t B>
 [[gnu::always_inline]] inline void middle_lanes(const Word* w, const Word* q, Word* out) {

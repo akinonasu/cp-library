@@ -174,23 +174,21 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	F inv(int deg = -1) const {
 		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).inv(deg));
-		if (deg < 0) deg = static_cast<int>(this->size());
-		assert(deg >= 0);
-		if (deg == 0) return {};
-		assert(!this->empty() && (*this)[0] != T(0));
-		F g{(*this)[0].inv()};
-		if constexpr (std::is_same_v<T, mint>) {
+		else {
+			if (deg < 0) deg = static_cast<int>(this->size());
+			assert(deg >= 0);
+			if (deg == 0) return {};
+			assert(!this->empty() && (*this)[0] != T(0));
 			auto terms = Sparse::collect(this->data(), this->size(), deg, 32);
 			int stride = 0;
 			for (auto term : terms) stride = std::gcd(stride, term.first);
 			if (terms.size() <= 32 && (deg <= 256 || terms.size() <= 12ULL * stride)) {
-				for (auto &[j, x] : terms) x *= g[0];
-				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), deg, g[0], T(0), nullptr));
+				const T inverse = (*this)[0].inv();
+				for (auto &[j, x] : terms) x *= inverse;
+				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), deg, inverse, T(0), nullptr));
 			}
-		}
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 512 && deg <= (1 << 23) && NTT::vectorized()) {
 				F result;
 				const int block = 1 << (std::bit_width(static_cast<unsigned>(deg)) - 1), tail = deg - block;
@@ -204,165 +202,167 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 				fps_detail::blocked_poly::native_inverse(this->data(), this->size(), result, deg);
 				return result;
 			}
-		}
 #endif
 
-		g.resize(std::min(deg, 32));
-		for (int i = 1; i < static_cast<int>(g.size()); ++i)
-			g[i] =
-				-g[0] * dot(this->data() + 1, g.data() + i - 1, std::min<int>(i, this->size() - 1));
+			F g{(*this)[0].inv()};
+			g.resize(std::min(deg, 32));
+			for (int i = 1; i < static_cast<int>(g.size()); ++i)
+				g[i] =
+					-g[0] * dot(this->data() + 1, g.data() + i - 1, std::min<int>(i, this->size() - 1));
 #if defined(__x86_64__) || defined(__i386__)
-		fps_detail::FpsWords storage;
-		Word *a = nullptr, *b = nullptr;
-		if (deg > 96 && NTT::vectorized()) {
-			int capacity = 64;
-			while (capacity < deg && capacity < (1 << 23)) capacity <<= 1;
-			storage = fps_detail::allocate_fps_words(2 * capacity);
-			a = storage.get();
-			b = a + capacity;
-			g.reserve(capacity);
-			transform(std::max(32, capacity / 16));
-		}
+			fps_detail::FpsWords storage;
+			Word *a = nullptr, *b = nullptr;
+			if (deg > 96 && NTT::vectorized()) {
+				int capacity = 64;
+				while (capacity < deg && capacity < (1 << 23)) capacity <<= 1;
+				storage = fps_detail::allocate_fps_words(2 * capacity);
+				a = storage.get();
+				b = a + capacity;
+				g.reserve(capacity);
+				transform(std::max(32, capacity / 16));
+			}
 #endif
-		while (static_cast<int>(g.size()) < deg) {
-			const int m = static_cast<int>(g.size()), n = 2 * m;
-			if (m >= 32 && (deg - m <= 32 || (m >= 512 && deg - m <= 96))) {
-				g.resize(deg);
-				for (int i = m; i < deg; ++i) {
-					const int count = std::min<int>(i, this->size() - 1);
-					g[i] = -g[0] * dot(this->data() + 1, g.data() + i - 1, count);
+			while (static_cast<int>(g.size()) < deg) {
+				const int m = static_cast<int>(g.size()), n = 2 * m;
+				if (m >= 32 && (deg - m <= 32 || (m >= 512 && deg - m <= 96))) {
+					g.resize(deg);
+					for (int i = m; i < deg; ++i) {
+						const int count = std::min<int>(i, this->size() - 1);
+						g[i] = -g[0] * dot(this->data() + 1, g.data() + i - 1, count);
+					}
+					break;
 				}
-				break;
-			}
 #if defined(__x86_64__) || defined(__i386__)
-			if (m >= 64 && n <= (1 << 23) && NTT::vectorized()) {
-				int lo = std::min<int>(n, this->size());
-				std::copy_n(words(*this), lo, a);
-				std::fill(a + lo, a + n, Word(0));
-				std::copy_n(words(g), m, b);
-				transform(std::max(1, n / 16)).inverse_newton8(a, b, n);
-				g.resize(n);
-				std::copy_n(a + m, m, words(g) + m);
+				if (m >= 64 && n <= (1 << 23) && NTT::vectorized()) {
+					int lo = std::min<int>(n, this->size());
+					std::copy_n(words(*this), lo, a);
+					std::fill(a + lo, a + n, Word(0));
+					std::copy_n(words(g), m, b);
+					transform(std::max(1, n / 16)).inverse_newton8(a, b, n);
+					g.resize(n);
+					std::copy_n(a + m, m, words(g) + m);
 
-			} else
+				} else
 #endif
-			{
-				base f = this->pre(n), r = g;
-				f.resize(n);
-				r.resize(n);
-				ntt(f);
-				ntt_half(r);
-				pointwise(f, f, r, n);
-				ntt_inverse(f);
-				std::fill(f.begin(), f.begin() + m, T(0));
-				ntt(f);
-				pointwise(f, f, r, n);
-				ntt_inverse(f);
-				const T inv = T::raw(T::mod() - (T::mod() - 1) / n);
-				const T scale = -inv * inv;
-				g.resize(n);
-				transform(1).scale(words(f) + m, m, scale.val());
-				std::copy_n(f.begin() + m, m, g.begin() + m);
+				{
+					base f = this->pre(n), r = g;
+					f.resize(n);
+					r.resize(n);
+					ntt(f);
+					ntt_half(r);
+					pointwise(f, f, r, n);
+					ntt_inverse(f);
+					std::fill(f.begin(), f.begin() + m, T(0));
+					ntt(f);
+					pointwise(f, f, r, n);
+					ntt_inverse(f);
+					const T inv = T::raw(T::mod() - (T::mod() - 1) / n);
+					const T scale = -inv * inv;
+					g.resize(n);
+					transform(1).scale(words(f) + m, m, scale.val());
+					std::copy_n(f.begin() + m, m, g.begin() + m);
+				}
 			}
+			g.resize(deg);
+			return g;
 		}
-		g.resize(deg);
-		return g;
 	}
 
 	F sqrt(int deg = -1) const {
 		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).sqrt(deg));
-		if (deg < 0) deg = static_cast<int>(this->size());
-		assert(deg >= 0);
-		int last = static_cast<int>(std::min<std::size_t>(deg, this->size())), first = 0;
-		while (first < last && (*this)[first] == T(0)) ++first;
-		if (first == last) return F(deg);
-		if (first & 1) return {};
-		const T constant = mod_sqrt((*this)[first]);
-		if (constant == T(0)) return {};
-		while ((*this)[last - 1] == T(0)) --last;
-		if (first + 1 == last) {
-			F result(deg);
-			result[first / 2] = constant;
-			return result;
-		}
-		const int shift = first / 2, target = deg - shift;
-		if constexpr (std::is_same_v<T, mint>) if (target >= 256 && unsigned(target) < T::mod()) {
-			auto terms = Sparse::collect(this->data() + first, last - first, target);
-			if (terms.size() <= 12) {
-				const T inverse = (*this)[first].inv();
-				for (auto &[j, x] : terms) x *= inverse;
-				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inverse_table));
-				result.insert(result.begin(), shift, T(0));
+		else {
+			if (deg < 0) deg = static_cast<int>(this->size());
+			assert(deg >= 0);
+			int last = static_cast<int>(std::min<std::size_t>(deg, this->size())), first = 0;
+			while (first < last && (*this)[first] == T(0)) ++first;
+			if (first == last) return F(deg);
+			if (first & 1) return {};
+			const T constant = mod_sqrt((*this)[first]);
+			if (constant == T(0)) return {};
+			while ((*this)[last - 1] == T(0)) --last;
+			if (first + 1 == last) {
+				F result(deg);
+				result[first / 2] = constant;
 				return result;
 			}
-		}
+			const int shift = first / 2, target = deg - shift;
+			if (target >= 256 && unsigned(target) < T::mod()) {
+				auto terms = Sparse::collect(this->data() + first, last - first, target);
+				if (terms.size() <= 12) {
+					const T inverse = (*this)[first].inv();
+					for (auto &[j, x] : terms) x *= inverse;
+					F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inverse_table));
+					result.insert(result.begin(), shift, T(0));
+					return result;
+				}
+			}
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
 			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
 				F result;
+				fps_detail::prepare_fps_output(result, deg);
+				result.resize(shift);
 				const int block = std::bit_floor(unsigned(target)), tail = target - block;
 				const int work = block >= 512 && tail <= 8 ? block : target;
 				fps_detail::blocked_poly::native_sqrt(this->data() + first, last - first, result, work, constant);
 				if (work < target) {
-					result.resize(target);
+					result.resize(deg);
 					const T factor = (constant * T(2)).inv();
 					for (int i = work; i < target; ++i)
-						result[i] = ((first + i < last ? (*this)[first + i] : T(0)) - dot(result.data() + 1, result.data() + i - 1, i - 1)) * factor;
+						result[shift + i] = ((first + i < last ? (*this)[first + i] : T(0)) - dot(result.data() + shift + 1, result.data() + shift + i - 1, i - 1)) * factor;
 				}
-				result.insert(result.begin(), shift, T(0));
 				return result;
 			}
-		}
 #endif
-		F f(this->begin() + first, this->begin() + last);
-		f.resize(target);
-		const T half = T(2).inv(), scale = half / constant;
-		F g(std::min(target, 32));
-		g[0] = constant;
-		for (int i = 1; i < static_cast<int>(g.size()); ++i) {
-			T sum = 0;
-			for (int j = 1; j < i; ++j) sum += g[j] * g[i - j];
-			g[i] = (f[i] - sum) * scale;
-		}
-		F h;
-		base cache;
-		if (static_cast<int>(g.size()) < target) {
-			h = g.pre(16).inv(16);
-			cache = h;
-			cache.resize(32);
-			ntt(cache);
-		}
-		while (static_cast<int>(g.size()) < target) {
-			const int m = static_cast<int>(g.size()), n = 2 * m;
-			if (target - m <= 32) {
-				g.resize(target);
-				for (int i = m; i < target; ++i)
-					g[i] = (f[i] - dot(g.data() + 1, g.data() + i - 1, i - 1)) * scale;
-				break;
+			F f(this->begin() + first, this->begin() + last);
+			f.resize(target);
+			const T half = T(2).inv(), scale = half / constant;
+			F g(std::min(target, 32));
+			g[0] = constant;
+			for (int i = 1; i < static_cast<int>(g.size()); ++i) {
+				T sum = 0;
+				for (int j = 1; j < i; ++j) sum += g[j] * g[i - j];
+				g[i] = (f[i] - sum) * scale;
 			}
-			assert(n <= (1 << 23));
-			const T in = T::raw(T::mod() - (T::mod() - 1) / n);
-			base a = g, error(n);
-			a.resize(n);
-			ntt(a);
-			inverse_extend(h, a, cache);
-			cache = h;
-			cache.resize(n);
-			ntt(cache);
-			pointwise(error, a, a, n);
-			ntt_inverse(error);
-			std::fill(error.begin(), error.begin() + m, T(0));
-			for (int i = m; i < n; ++i) error[i] = (i < target ? f[i] : T(0)) - error[i] * in;
-			ntt(error);
-			pointwise(error, error, cache, n);
-			F::scale_words(error, half);
-			ntt_inverse(error);
-			g.resize(std::min(n, target));
-			for (int i = m; i < static_cast<int>(g.size()); ++i) g[i] = error[i] * in;
+			F h;
+			base cache;
+			if (static_cast<int>(g.size()) < target) {
+				h = g.pre(16).inv(16);
+				cache = h;
+				cache.resize(32);
+				ntt(cache);
+			}
+			while (static_cast<int>(g.size()) < target) {
+				const int m = static_cast<int>(g.size()), n = 2 * m;
+				if (target - m <= 32) {
+					g.resize(target);
+					for (int i = m; i < target; ++i)
+						g[i] = (f[i] - dot(g.data() + 1, g.data() + i - 1, i - 1)) * scale;
+					break;
+				}
+				assert(n <= (1 << 23));
+				const T in = T::raw(T::mod() - (T::mod() - 1) / n);
+				base a = g, error(n);
+				a.resize(n);
+				ntt(a);
+				inverse_extend(h, a, cache);
+				cache = h;
+				cache.resize(n);
+				ntt(cache);
+				pointwise(error, a, a, n);
+				ntt_inverse(error);
+				std::fill(error.begin(), error.begin() + m, T(0));
+				for (int i = m; i < n; ++i) error[i] = (i < target ? f[i] : T(0)) - error[i] * in;
+				ntt(error);
+				pointwise(error, error, cache, n);
+				F::scale_words(error, half);
+				ntt_inverse(error);
+				g.resize(std::min(n, target));
+				for (int i = m; i < static_cast<int>(g.size()); ++i) g[i] = error[i] * in;
+			}
+			g.resize(target);
+			g.insert(g.begin(), shift, T(0));
+			return g;
 		}
-		g.resize(target);
-		g.insert(g.begin(), shift, T(0));
-		return g;
 	}
 
 	T eval(T x) const {
@@ -412,15 +412,17 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	F log(int deg = -1) const {
 		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).log(deg));
-		if (deg < 0) deg = static_cast<int>(this->size());
-		assert(deg >= 0);
-		if (deg == 0) return {};
-		assert(!this->empty() && (*this)[0] == T(1));
-		if constexpr (std::is_same_v<T, mint>) if (deg >= 256 && unsigned(deg) < T::mod()) {
-			auto terms = Sparse::collect(this->data(), this->size(), deg);
-			if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inverse_table));
+		else {
+			if (deg < 0) deg = static_cast<int>(this->size());
+			assert(deg >= 0);
+			if (deg == 0) return {};
+			assert(!this->empty() && (*this)[0] == T(1));
+			if (deg >= 256 && unsigned(deg) < T::mod()) {
+				auto terms = Sparse::collect(this->data(), this->size(), deg);
+				if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inverse_table));
+			}
+			return log_derivative(deg, true);
 		}
-		return log_derivative(deg, true);
 	}
 
 	F exp(int deg = -1) const {
@@ -430,55 +432,54 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	F pow(long long k) const {
 		if constexpr (!std::is_same_v<T, mint>) return export_work(import_work(*this).pow(k));
-		assert(k >= 0);
-		const int n = static_cast<int>(this->size());
-		if (n == 0) return {};
-		if (k == 0) {
-			F r(n);
-			r[0] = 1;
-			return r;
-		}
-		if (k == 1) return *this;
-		int first = 0;
-		while (first < n && (*this)[first] == T(0)) ++first;
-		if (first == n || first > (n - 1) / k) return F(n);
-		const int shift = first * k;
-		const int len = n - shift;
-		const T lead = (*this)[first];
-		if constexpr (std::is_same_v<T, mint>) if (unsigned(len) < T::mod()) {
-			auto terms = Sparse::collect(this->data() + first, this->size() - first, len);
-			if (terms.size() <= 12) {
-				const T inverse = lead.inv();
-				for (auto &[j, x] : terms) x *= inverse;
-				F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
-				result.insert(result.begin(), shift, T(0));
-				return result;
-			}
-		}
-		if (k <= 4) {
-			F square = multiply(*this, *this).pre(n);
-			return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
-		}
-
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
-		if constexpr (std::is_same_v<T, mint>) {
-			if (len >= 256 && len <= (1 << 24) && NTT::vectorized()) {
-				F r;
-				fps_detail::blocked_poly::native_power(this->data() + first, this->size() - first, r, len, T(k).val(), lead.pow(k));
-				r.insert(r.begin(), shift, T(0));
+		else {
+			assert(k >= 0);
+			const int n = static_cast<int>(this->size());
+			if (n == 0) return {};
+			if (k == 0) {
+				F r(n);
+				r[0] = 1;
 				return r;
 			}
-		}
+			if (k == 1) return *this;
+			int first = 0;
+			while (first < n && (*this)[first] == T(0)) ++first;
+			if (first == n || first > (n - 1) / k) return F(n);
+			const int shift = first * k;
+			const int len = n - shift;
+			const T lead = (*this)[first];
+			if (unsigned(len) < T::mod()) {
+				auto terms = Sparse::collect(this->data() + first, this->size() - first, len);
+				if (terms.size() <= 12) {
+					const T inverse = lead.inv();
+					for (auto &[j, x] : terms) x *= inverse;
+					F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
+					result.insert(result.begin(), shift, T(0));
+					return result;
+				}
+			}
+			if (k <= 4) {
+				F square = multiply(*this, *this).pre(n);
+				return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
+			}
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+			if (len >= 256 && len <= (1 << 24) && NTT::vectorized()) {
+				F r;
+				fps_detail::blocked_poly::native_power(this->data() + first, this->size() - first, r, len, T(k).val(), lead.pow(k), shift);
+				return r;
+			}
 #endif
-		F f(this->begin() + first, this->end());
-		f.resize(len);
-		f = f.log_derivative(len);
-		f *= T(k);
-		f = f.template exp_impl<true>(len);
-		f *= lead.pow(k);
-		F r(n);
-		for (int i = 0; i < len; ++i) r[shift + i] = f[i];
-		return r;
+			F f(this->begin() + first, this->end());
+			f.resize(len);
+			f = f.log_derivative(len);
+			f *= T(k);
+			f = f.template exp_impl<true>(len);
+			f *= lead.pow(k);
+			F r(n);
+			for (int i = 0; i < len; ++i) r[shift + i] = f[i];
+			return r;
+		}
 	}
 
 	std::pair<F, F> divmod(const F &divisor) const {

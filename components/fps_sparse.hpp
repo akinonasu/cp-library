@@ -41,32 +41,27 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		return canonical8(O::add8(x, reduce8(even, odd)));
 	}
 	template <Kind kind>
-	__attribute__((target("avx2"), always_inline)) static inline void block(U *out, int i, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
-		V total = _mm256_setzero_si256(), slope = total;
+	__attribute__((target("avx2"), always_inline)) static inline void block(U *out, int i, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q, V *coefficients, const U *steps) {
+		V total = _mm256_setzero_si256();
 		const V lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
 		for (int first = 0; first < count; first += 12) {
-			V ce = _mm256_setzero_si256(), co = ce, se = ce, so = ce;
+			V ce = _mm256_setzero_si256(), co = ce;
 			for (int j = first; j < std::min(count, first + 12); ++j) {
 				V x = O::load8(out + i - taps[j].degree);
 				if (j < near) x = _mm256_and_si256(x, _mm256_cmpgt_epi32(_mm256_set1_epi32(taps[j].degree), lanes));
-				V odd = _mm256_srli_epi64(x, 32), c = _mm256_set1_epi32(taps[j].constant);
+				V c;
+				if constexpr (kind == Kind::power) c = coefficients[j];
+				else c = _mm256_set1_epi32(taps[j].constant);
 				ce = _mm256_add_epi64(ce, _mm256_mul_epu32(x, c));
-				co = _mm256_add_epi64(co, _mm256_mul_epu32(odd, c));
+				co = _mm256_add_epi64(co, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), kind == Kind::power ? _mm256_srli_epi64(c, 32) : c));
 				if constexpr (kind == Kind::power) {
-					V factor = _mm256_set1_epi32(taps[j].slope);
-					se = _mm256_add_epi64(se, _mm256_mul_epu32(x, factor));
-					so = _mm256_add_epi64(so, _mm256_mul_epu32(odd, factor));
+					V next = _mm256_add_epi32(c, _mm256_set1_epi32(steps[j]));
+					coefficients[j] = _mm256_min_epu32(next, _mm256_sub_epi32(next, _mm256_set1_epi32(O::mod)));
 				}
 			}
 			total = O::add8(total, reduce8(ce, co));
-			if constexpr (kind == Kind::power) slope = O::add8(slope, reduce8(se, so));
 		}
 		V value = canonical8(total);
-		if constexpr (kind == Kind::power) {
-			const V offsets = _mm256_setr_epi32(0, O::one, O::in(2), O::in(3), O::in(4), O::in(5), O::in(6), O::in(7));
-			V index = O::add8(_mm256_set1_epi32(O::in(i)), offsets);
-			value = O::add8(value, O::mul8(index, slope));
-		}
 		if constexpr (kind == Kind::logarithm) value = O::add8(value, O::load8(out + i));
 		if constexpr (kind == Kind::power || kind == Kind::exponential) {
 			if (near) value = triangular(canonical8(value), q);
@@ -76,8 +71,67 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		O::store8(out + i, canonical8(value));
 	}
 	template <Kind kind>
+	__attribute__((target("avx2"))) static int near_blocks(U *out, int i, int end, const Tap *taps, int count, const U *inv, const U *p, const U *q) {
+		const int width = taps[count - 1].degree;
+		if constexpr (kind == Kind::logarithm) if (i == width) {
+			mint value = mint::word(out[i]);
+			for (int j = 0; j < count; ++j) value += mint::word(taps[j].constant) * mint::word(out[i - taps[j].degree]);
+			out[i++] = canonical(value.v);
+		}
+		std::array<mint, 8> constant{}, slope{};
+		for (int j = 0; j < count; ++j) {
+			constant[taps[j].degree] = mint::word(taps[j].constant);
+			slope[taps[j].degree] = mint::word(taps[j].slope);
+		}
+		V coefficients[7], steps[7];
+		for (int j = 0; j < width; ++j) {
+			std::array<std::uint32_t, 8> first{}, step{};
+			for (int t = 0; t < 8; ++t) {
+				mint a = 0, b = 0;
+				for (int u = 0; u <= t && u + j < width; ++u) {
+					const int d = u + j + 1;
+					mint factor = mint::word((kind == Kind::power || kind == Kind::exponential ? q : p)[t - u]);
+					a += factor * (constant[d] + mint(u) * slope[d]);
+					if constexpr (kind == Kind::power) b += factor * slope[d];
+				}
+				first[t] = canonical((a + mint(i) * b).v);
+				if constexpr (kind == Kind::power) step[t] = canonical((mint(8) * b).v);
+			}
+			coefficients[j] = O::load8(first.data());
+			if constexpr (kind == Kind::power) steps[j] = O::load8(step.data());
+		}
+		for (; end - i >= 8; i += 8) {
+			V even = _mm256_setzero_si256(), odd = even;
+			for (int j = 0; j < width; ++j) {
+				V x = _mm256_set1_epi32(out[i - 1 - j]), c = coefficients[j];
+				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, c));
+				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(x, _mm256_srli_epi64(c, 32)));
+				if constexpr (kind == Kind::power) {
+					V next = _mm256_add_epi32(c, steps[j]);
+					coefficients[j] = _mm256_min_epu32(next, _mm256_sub_epi32(next, _mm256_set1_epi32(O::mod)));
+				}
+			}
+			V value = reduce8(even, odd);
+			if constexpr (kind == Kind::power || kind == Kind::exponential) value = triangular(canonical8(O::mul8(value, O::load8(inv + i))), p);
+			O::store8(out + i, value);
+		}
+		return i;
+	}
+	template <Kind kind>
 	__attribute__((target("avx2"))) static int blocks(U *out, int i, int end, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
-		for (; end - i >= 8; i += 8) block<kind>(out, i, taps, near, count, inv, p, q);
+		if (end - i < 8) return i;
+		if (count == near && count && end - i >= 256) return near_blocks<kind>(out, i, end, taps, count, inv, p, q);
+		V coefficients[64];
+		U steps[64];
+		if constexpr (kind == Kind::power) {
+			const V offsets = _mm256_setr_epi32(0, O::one, O::in(2), O::in(3), O::in(4), O::in(5), O::in(6), O::in(7));
+			const V index = O::add8(_mm256_set1_epi32(O::in(i)), offsets);
+			for (int j = 0; j < count; ++j) {
+				coefficients[j] = canonical8(O::add8(_mm256_set1_epi32(taps[j].constant), O::mul8(index, _mm256_set1_epi32(taps[j].slope))));
+				steps[j] = canonical(O::mul(O::in(8), taps[j].slope));
+			}
+		}
+		for (; end - i >= 8; i += 8) block<kind>(out, i, taps, near, count, inv, p, q, coefficients, steps);
 		return i;
 	}
 	__attribute__((target("avx2"))) static int scale8(U *out, const U *factors, int n) {
@@ -175,6 +229,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 				++active;
 			}
 			int end = active < int(taps.size()) ? taps[active].degree : n;
+			if (!active) { i = end; continue; }
 #if defined(__x86_64__) || defined(__i386__)
 			if (O::vectorized()) i = blocks<kind>(out, i, end, taps.data(), near, active, inv, p.data(), q.data());
 #endif

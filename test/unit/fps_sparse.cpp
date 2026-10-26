@@ -30,7 +30,38 @@ void check(const Sparse::Terms &terms, int n, mint initial, mint exponent) {
 	using Scalar = fps_detail::ScalarSparseSeries;
 	assert(Scalar::get<static_cast<Scalar::Kind>(kind)>(terms, n, initial, exponent, reciprocals) == expected);
 }
+void check_boundaries() {
+	std::mt19937 gen(684513);
+	auto verify = [&](const Sparse::Terms &terms, int n, mint exponent) {
+		check<K::inverse>(terms, n, mint(7), 0);
+		check<K::logarithm>(terms, n, 0, 0);
+		check<K::exponential>(terms, n, 1, 0);
+		check<K::power>(terms, n, mint(13), exponent);
+	};
+	for (unsigned mask = 1; mask < 128; ++mask) {
+		Sparse::Terms terms;
+		for (int d = 1; d <= 7; ++d) if (mask & (1u << (d - 1)))
+			terms.emplace_back(d, mint::word(mint(gen()).v % mint::mod() + mint::mod()));
+		for (int n : {255, 256, 257, 263, 264, 265, 777, 1025}) verify(terms, n, mint(gen()));
+		verify(terms, 521, mint(-1));
+		verify(terms, 522, mint(-2));
+	}
+	for (int count : {11, 12, 13, 23, 24, 25, 63, 64}) {
+		Sparse::Terms terms;
+		for (int d = 1; d <= count; ++d) terms.emplace_back(d, mint(gen()));
+		for (int n : {257, 263, 521, 1025}) verify(terms, n, mint(gen()));
+	}
+	for (int gap : {7, 8, 9, 255, 256, 257, 1024}) {
+		Sparse::Terms terms{{gap, 3}, {gap + 1, 5}, {2 * gap + 1, 7}};
+		verify(terms, 3 * gap + 17, mint(11));
+	}
+	for (int far : {256, 257, 262, 263, 264, 265, 280, 513}) {
+		Sparse::Terms terms{{1, 3}, {3, 7}, {7, 9}, {far, 5}, {far + 1, 11}, {far + 8, 13}};
+		verify(terms, 2 * far + 17, mint(gen()));
+	}
+}
 int main() {
+	check_boundaries();
 	for (int n : {255, 256, 257, 259, 4097}) for (int stride : {1, 2, 7, 64}) {
 		Sparse::Terms terms{{stride, mint::word(mint(13).v + mint::mod())}};
 		if (stride >= n) terms.clear();

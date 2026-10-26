@@ -186,7 +186,7 @@ struct Roots {
 };
 
 inline void pointwise(Series &a, const Series &b, [[maybe_unused]] bool vectorized = simd_available()) {
-	assert(a.size() == b.size());
+	assert(a.size() <= b.size());
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	if (vectorized) return pointwise_avx2(a.data(), b.data(), a.size());
 #endif

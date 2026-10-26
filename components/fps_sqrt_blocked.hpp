@@ -18,9 +18,8 @@ inline void sqrt_direct(ConstWords f, Word c, Words g) {
 	const Word inverse = blocked_ntt::detail::power(multiply_mod(2, c), kP - 2);
 	g[0] = c;
 	for (size_t i = 1; i < g.size(); ++i) {
-		std::uint64_t sum = i < f.size() ? f[i] : 0;
-		for (size_t j = 1; j < i; ++j) sum += kP - std::uint64_t(g[j]) * g[i - j] % kP;
-		g[i] = multiply_mod(Word(sum % kP), inverse);
+		const Word sum = direct_product(g.data() + 1, g.data() + 1, i - 1);
+		g[i] = multiply_mod(((i < f.size() ? f[i] : 0) + kP - sum) % kP, inverse);
 	}
 }
 
@@ -137,7 +136,7 @@ template <class Bottom>
 void from_lower_source(const Transform& t, const Recursion<Bottom>& recursion, Word* a, size_t nv,
 					bool written = true) {
 	const Source in(a, 4 * nv, 0);
-	if (!radix4(nv)) return radix2_halves(recursion, in, a, nv, t.roots());
+	if (!radix4(nv)) return radix2_halves(recursion, in, a, nv);
 	if (!written) forward_top4(in, reinterpret_cast<Vec*>(a), nv / 4, t.roots());
 	subtrees(recursion, a, nv);
 }

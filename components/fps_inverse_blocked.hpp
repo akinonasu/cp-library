@@ -33,24 +33,16 @@ inline void native_inverse(const mint *in, size_t input, std::vector<mint> &out,
 	auto a = arena.take(len), scratch = arena.take(scratch_words), g = arena.take(k);
 	copy_coefficients(in, a.first(c));
 	const ConstWords f = a.first(c);
-	const auto extend = [&](ConstWords current, Words to,
-							Words transformed, Words work) {
-		const size_t count = current.size();
-		t.forward(current, 0, transformed);
-		t.cyclic_product(f.first(std::min(2 * count, f.size())), 0, work, transformed, Half::kUpper);
-		t.cyclic_product(work.subspan(count), count, work, transformed, Half::kUpper, 53925088);
-		if (to.data() != work.data() + count) std::copy_n(work.begin() + std::ptrdiff_t(count), to.size(), to.begin());
-	};
 	const size_t target = std::min(n, k), base = std::min(target, detail::kInverseBase);
 	detail::inverse_direct(f, g.first(base));
 	for (size_t i = 0; i < base; ++i) g[i] = blocked_ntt::detail::multiply_mod(g[i], 932051910);
 	for (size_t count = base; count < target; count *= 2) {
 		const size_t size = 2 * count;
-		extend(g.first(count), g.subspan(count, std::min(count, target - count)), scratch.first(size),
-				scratch.subspan(Arena::footprint(size), size));
+		inverse_step(t, f, g.first(count), g.subspan(count, std::min(count, target - count)), scratch.first(size),
+				scratch.subspan(Arena::footprint(size), size), 53925088);
 	}
 	if (n <= k) return append_fps_words<true>(out, g.data(), n);
-	extend(g, a.subspan(k, n - k), scratch.first(len), a);
+	inverse_step(t, f, g, a.subspan(k, n - k), scratch.first(len), a, 53925088);
 	prepare_fps_output(out, n);
 	append_fps_words<true>(out, g.data(), k);
 	append_fps_words<true>(out, a.data() + k, n - k);

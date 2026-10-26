@@ -203,7 +203,7 @@ struct LightFormalPowerSeries : std::vector<T> {
 				if (k > initial) inverse_update(frequency.pre(k), inverse, reciprocal, k);
 				F error(k);
 				for (int i = 1; i < k && Size(i) < this->size(); ++i) error[i - 1] = (*this)[i] * T(i);
-				inverse_product(error, frequency.pre(k));
+				inverse_product(error, frequency);
 				const T last = -error.back();
 				for (int i = k - 1; i; --i) error[i] = result[i] * T(i) - error[i - 1];
 				error[0] = last;
