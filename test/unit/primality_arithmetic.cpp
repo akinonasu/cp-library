@@ -53,6 +53,15 @@ void check_montgomery(U n, std::mt19937_64 &random) {
 
 int main() {
 	std::mt19937_64 random(20261017);
+	auto check_prime = [](U n) {
+		const bool expected = prime(n);
+		assert(is_prime(n) == expected);
+		if (n > 1 && (n & 1)) {
+			assert(is_prime_detail::prime(Montgomery64(n)) == expected);
+			if (n <= std::numeric_limits<std::uint32_t>::max())
+				assert(is_prime_detail::prime(Montgomery32(n)) == expected);
+		}
+	};
 	assert(!is_prime(0) && !is_prime(1));
 	assert((factorize(4294967295ULL) == std::vector<U>{3, 5, 17, 257, 65537}));
 	assert((factorize(4294967291ULL) == std::vector<U>{4294967291ULL}));
@@ -76,8 +85,19 @@ int main() {
 		n = random();
 		assert(is_prime(n) == prime(n));
 	}
-	for (U n = (U(1) << 32) - 4096; n < (U(1) << 32) + 4096; ++n) assert(is_prime(n) == prime(n));
-	for (U n = (U(1) << 62) - 4096; n < (U(1) << 62) + 4096; ++n) assert(is_prime(n) == prime(n));
+	for (U n = 0; n <= 257; ++n) check_prime(n);
+	for (U n : {61ULL, 73ULL, 193ULL, 407521ULL, 299210837ULL}) check_prime(n);
+	for (unsigned bit : {30, 32, 62, 63}) {
+		const U center = U(1) << bit;
+		for (U n = center - 4096; n < center + 4096; ++n) check_prime(n);
+	}
+	for (U n = 1373653 - 256; n <= 1373653 + 256; ++n) check_prime(n);
+	const U maximum = std::numeric_limits<U>::max();
+	for (U offset = 0; offset <= 4096; ++offset) check_prime(maximum - offset);
+	for (unsigned shift = 1; shift < 64; ++shift) {
+		const U limit = (maximum - 1) >> shift;
+		for (U k = 1; k <= 31 && k <= limit; k += 2) check_prime((k << shift) + 1);
+	}
 	for (U n : {341ULL, 561ULL, 1105ULL, 1729ULL, 2047ULL, 1373653ULL, 25326001ULL,
 				3215031751ULL, 2152302898747ULL, 3474749660383ULL, 341550071728321ULL,
 				3825123056546413051ULL, 18446744073709551615ULL}) assert(!is_prime(n));
