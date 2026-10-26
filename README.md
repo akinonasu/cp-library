@@ -134,6 +134,7 @@
 | --- | --- | --- |
 | `graph/dijkstra.hpp` | Dijkstra・最短経路の復元 | [使い方](docs/dijkstra.md) |
 | `graph/bellman_ford.hpp` | 負辺の最短経路・負閉路の復元 | [使い方](docs/bellman_ford.md) |
+| `graph/monge_d_edge_shortest_path.hpp` | Monge グラフの d 辺最短路長 | [使い方](docs/monge_d_edge_shortest_path.md) |
 | `graph/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
 | `graph/difference_constraints.hpp` | 牛ゲー（差分制約系）・解の復元・差の上下限 | [使い方](docs/difference_constraints.md) |
 
@@ -458,6 +459,7 @@
 | `components/directed_csr.hpp` | 重み付き有向グラフの CSR | [使い方](docs/directed_csr.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
 | `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
+| `components/online_monge_minima.hpp` | Online Monge Minima | [使い方](docs/online_monge_minima.md) |
 | `components/mod_linear_prefix_min.hpp` | Mod of Linear の prefix minimum の内部走査 | [使い方](docs/mod_linear_prefix_min.md) |
 | `components/matrix_arithmetic.hpp` | 行列の内部演算 | [使い方](docs/matrix_arithmetic.md) |
 | `components/matrix_block_inverse.hpp` | 行列のブロック逆行列・余因子行列 | [使い方](docs/matrix_block_inverse.md) |
