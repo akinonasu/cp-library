@@ -152,6 +152,22 @@ class PredecessorSet {
 		}
 	}
 
+	int small_rank(int p) const {
+#if defined(__AVX512F__) && defined(__x86_64__)
+		auto keys = _mm512_loadu_si512(small.data());
+		return std::popcount(unsigned(_mm512_cmp_epi32_mask(keys, _mm512_set1_epi32(p), _MM_CMPINT_LT)));
+#elif defined(__AVX2__) && defined(__x86_64__)
+		auto key = _mm256_set1_epi32(p);
+		auto a = _mm256_cmpgt_epi32(key, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(small.data())));
+		auto b = _mm256_cmpgt_epi32(key, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(small.data() + 8)));
+		return std::popcount(unsigned(_mm256_movemask_ps(_mm256_castsi256_ps(a)))) + std::popcount(unsigned(_mm256_movemask_ps(_mm256_castsi256_ps(b))));
+#else
+		int result = 0;
+		for (int x : small) result += x < p;
+		return result;
+#endif
+	}
+
 public:
 	int argmin_xor(std::uint32_t x) const {
 		if (!count) return -1;
@@ -255,8 +271,7 @@ public:
 		p = std::max(p, 0);
 		if (p >= n || !count) return n;
 		if (small_valid) {
-			int index = 0;
-			for (int x : small) index += x < p;
+			int index = small_rank(p);
 			return index == count ? n : small[index];
 		}
 		auto local = data[p >> 6] >> (p & 63);
@@ -267,8 +282,7 @@ public:
 		p = std::min(p, n - 1);
 		if (p < 0 || !count) return -1;
 		if (small_valid) {
-			int index = 0;
-			for (int x : small) index += x <= p;
+			int index = small_rank(p + 1);
 			return index ? small[index - 1] : -1;
 		}
 		auto local = data[p >> 6] << (63 - (p & 63));
