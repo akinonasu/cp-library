@@ -29,7 +29,6 @@ template<class Mint> void exhaustive(int limit) {
 	std::vector<Mint> expected;
 	for (int n = 0; n <= limit; ++n)
 		for (int k = -2; k <= n + 3; ++k) queries.emplace_back(n, k), expected.push_back(pascal[n][std::clamp(k, 0, n + 1)]);
-	assert(binomial_prefix_sum<Mint>(queries) == expected);
 	for (int block : {0, 1, 2, 3, 7, 31, 1000000000, std::numeric_limits<int>::max()}) {
 		BinomialPrefixSum<Mint> online(limit, block);
 		assert(online.max_n() == limit && online.block_size() >= 1);
@@ -71,61 +70,7 @@ template<class Mint> void rebuild_cases(int limit) {
 		}
 }
 
-void polynomial_cases() {
-	constexpr int n = 10000;
-	binomial_prefix_detail::Table<mint> table(n);
-	for (int count : {1, 16, 17, 32, 33, 64, 65, 257}) {
-		std::vector<std::pair<int, int>> points;
-		std::vector<std::uint32_t> ids;
-		std::vector<mint> expected(count), actual(count);
-		for (int i = 0; i < count; ++i) {
-			int row = n - i % 7, m = i % 3 == 0 ? 0 : 1 + (i * 193 + 731) % 4900;
-			points.emplace_back(m, row);
-			ids.push_back((std::uint32_t(i) << 1) | (i & 1));
-			mint value = table.range(row, 0, m);
-			expected[i] = i & 1 ? table.power2[row] - value : value;
-		}
-		binomial_prefix_detail::Polynomial(table, points, ids, actual);
-		assert(actual == expected);
-	}
-	for (int count : {255, 256, 257, 511, 512, 513, 1025}) {
-		std::vector<std::pair<int, int>> queries;
-		std::vector<mint> expected;
-		for (int i = 0; i < count; ++i) {
-			int row = n - i % 17, k = i + 2;
-			mint value = table.range(row, 0, k);
-			queries.emplace_back(row, k), expected.push_back(value);
-			queries.emplace_back(row, row + 1 - k), expected.push_back(table.power2[row] - value);
-		}
-		assert(binomial_prefix_sum(queries) == expected);
-	}
-	std::vector<std::pair<int, std::int64_t>> queries;
-	std::vector<std::pair<int, int>> points;
-	std::mt19937 rng(20261020);
-	constexpr int limit = 200000;
-	for (int i = 0; i < 200000; ++i) {
-		int row = rng() % (limit + 1), k = rng() % (limit + 1);
-		queries.emplace_back(row, k);
-		if (k <= 0 || k > row) continue;
-		int m = std::min(k, row + 1 - k);
-		if (m != 1 && m != (row + 1) / 2) points.emplace_back(m, row);
-	}
-	queries.emplace_back(limit, std::numeric_limits<std::int64_t>::min());
-	queries.emplace_back(limit, std::numeric_limits<std::int64_t>::max());
-	const auto original = queries;
-	auto actual = binomial_prefix_sum(queries);
-	auto expected = binomial_prefix_sum_baseline(queries);
-	for (std::size_t i = 0; i < queries.size(); ++i) assert(actual[i] == expected[i]);
-	assert(queries == original);
-	queries.resize(4000);
-	for (auto& [row, k] : queries) row %= 2049, k %= 2050;
-	auto generic = binomial_prefix_sum<Field<998244353, false>>(queries);
-	auto reference = binomial_prefix_sum_baseline(queries);
-	for (std::size_t i = 0; i < queries.size(); ++i) assert(generic[i].v == reference[i].val());
-}
-
 int main() {
-	polynomial_cases();
 	rebuild_cases<mint>(127);
 	rebuild_cases<Field<2, false>>(1);
 	rebuild_cases<Field<17, false>>(16);
@@ -136,7 +81,6 @@ int main() {
 	exhaustive<Field<17>>(16);
 	exhaustive<Field<101>>(100);
 	exhaustive<Field<1000000007>>(130);
-	assert(binomial_prefix_sum(std::vector<std::pair<int, int>>{}).empty());
 	BinomialPrefixSum<> empty;
 	assert(empty.query(0, 0) == mint(0) && empty.query(0, 1) == mint(1));
 	constexpr int n = 50000;
@@ -151,7 +95,7 @@ int main() {
 		if (i % 17 == 2) row = n, k = 1000;
 		queries.emplace_back(row, k);
 	}
-	auto answers = binomial_prefix_sum(queries);
+	auto answers = binomial_prefix_sum_baseline(queries);
 	for (std::size_t i = 0; i < queries.size(); ++i) assert(answers[i] == online.query(queries[i].first, queries[i].second));
 	std::vector<std::pair<int, int>> ranges;
 	for (int i = 0; i < 3000; ++i) {

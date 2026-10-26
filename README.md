@@ -389,8 +389,6 @@
 | `components/binary_search.hpp` | 単調な述語の境界探索 | [使い方](docs/binary_search.md) |
 | `components/binomial_prefix_core.hpp` | 二項係数の prefix sum の内部演算 | [使い方](docs/binomial_prefix_core.md) |
 | `components/binomial_prefix_core_light.hpp` | 軽量版の二項係数 prefix sum の共通部品 | [使い方](docs/binomial_prefix_core_light.md) |
-| `components/binomial_prefix_polynomial.hpp` | 二項係数の prefix sum の多項式評価 | [使い方](docs/binomial_prefix_polynomial.md) |
-| `components/binomial_prefix_polynomial_light.hpp` | 軽量版の二項係数 prefix sum の多項式処理 | [使い方](docs/binomial_prefix_polynomial_light.md) |
 | `components/flow_graph.hpp` | フローの残余グラフ | [使い方](docs/flow_graph.md) |
 | `components/undirected_csr.hpp` | 無向グラフの CSR | [使い方](docs/undirected_csr.md) |
 | `components/push_relabel.hpp` | Push-Relabel の内部演算 | [使い方](docs/push_relabel.md) |

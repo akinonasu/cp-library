@@ -42,7 +42,6 @@ implementation_variants:
   math/binomial_prefix_sum.hpp: math/binomial_prefix_sum_light.hpp
   math/binomial_prefix_sum_incremental.hpp: math/binomial_prefix_sum_incremental_light.hpp
   components/binomial_prefix_core.hpp: components/binomial_prefix_core_light.hpp
-  components/binomial_prefix_polynomial.hpp: components/binomial_prefix_polynomial_light.hpp
   components/factorial_table.hpp: components/factorial_table_light.hpp
 implementation_variant_apis:
   math/matrix.hpp: LightMatrix<T>

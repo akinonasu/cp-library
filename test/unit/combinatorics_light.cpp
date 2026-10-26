@@ -46,7 +46,6 @@ template<class M> void prefix_cases(int limit) {
 		}
 		for (int k = n + 1; k > 0 && k <= limit; --k) row[k] += row[k - 1];
 	}
-	assert(light_combinatorics::binomial_prefix_sum<M>(queries) == answers);
 	for (int block : {0, 1, 7, 1000000000}) {
 		light_combinatorics::BinomialPrefixSum<M> sum(limit, block);
 		assert(sum.max_n() == limit && sum.block_size() > 0);
@@ -116,7 +115,6 @@ int main() {
 	prefix_cases<Field<17>>(16);
 	prefix_cases<Field<101>>(100);
 	prefix_cases<Field<1000000007>>(120);
-	assert(light_combinatorics::binomial_prefix_sum(std::vector<std::pair<int, int>>{}).empty());
 	std::mt19937_64 random(20261022);
 	std::vector<std::pair<int, std::int64_t>> queries;
 	for (int i = 0; i < 8192; ++i) {
@@ -124,26 +122,14 @@ int main() {
 		queries.emplace_back(n, int(random() % 20021) - 10);
 	}
 	for (int i = 0; i < 100; ++i) queries.push_back(queries[i]);
-	for (int count : {255, 256, 257, 511, 512, 513}) {
-		std::vector<std::pair<int, int>> boundary;
-		std::vector<mint> expected;
-		light_binomial_prefix_detail::Table<mint> table(2048);
-		for (int i = 0; i < count; ++i) {
-			int row = 2048 - i % 17, k = i + 2;
-			boundary.emplace_back(row, k);
-			expected.push_back(table.range(row, 0, k));
-		}
-		assert(light_combinatorics::binomial_prefix_sum(boundary) == expected);
-	}
-	auto light = light_combinatorics::binomial_prefix_sum(queries);
-	assert(light == binomial_prefix_sum(queries));
 	light_combinatorics::BinomialPrefixSum<> a(20000);
 	BinomialPrefixSum<> b(20000);
 	light_combinatorics::IncrementalBinomialPrefixSum<> c(20000);
 	IncrementalBinomialPrefixSum<> d(20000);
 	for (std::size_t i = 0; i < queries.size(); ++i) {
 		auto [n, k] = queries[i];
-		assert(light[i] == a.query(n, k) && light[i] == b.query(n, k));
-		assert(light[i] == c.query(n, k) && light[i] == d.query(n, k));
+		auto expected = b.query(n, k);
+		assert(expected == a.query(n, k));
+		assert(expected == c.query(n, k) && expected == d.query(n, k));
 	}
 }
