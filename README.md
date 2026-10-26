@@ -114,6 +114,7 @@
 | `tree/tree_hash.hpp` | 根を持たない木のハッシュ | [使い方](docs/tree_hash.md) |
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
+| `tree/top_tree.hpp` | Top Tree・辺の追加削除と木 DP | [使い方](docs/top_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `tree/path_product.hpp` | 頂点値更新・順序付き経路積 | [使い方](docs/path_product.md) |
 | `tree/contour_sum.hpp` | 頂点値更新・距離区間の和 | [使い方](docs/contour_sum.md) |
