@@ -7,6 +7,7 @@ template<unsigned P, bool Comparable = true> struct Field {
 	static constexpr unsigned mod() { return P; }
 	Field() = default;
 	Field(long long x) { long long r = x % P; v = r < 0 ? r + P : r; }
+	unsigned val() const { return v; }
 	Field& operator+=(Field x) { v += x.v; if (v >= P) v -= P; return *this; }
 	Field& operator-=(Field x) { v += P - x.v; if (v >= P) v -= P; return *this; }
 	Field& operator*=(Field x) { v = std::uint64_t(v) * x.v % P; return *this; }
@@ -23,17 +24,7 @@ template<unsigned P, bool Comparable = true> struct Field {
 };
 
 template<class Mint> void exhaustive(int limit) {
-	std::vector<std::vector<Mint>> pascal(limit + 1);
-	for (int n = 0; n <= limit; ++n) {
-		pascal[n].resize(n + 2);
-		std::vector<Mint> row(n + 1, Mint(1));
-		for (int k = 1; k < n; ++k) {
-			Mint left = pascal[n - 1][k] - pascal[n - 1][k - 1];
-			Mint right = pascal[n - 1][k + 1] - pascal[n - 1][k];
-			row[k] = left + right;
-		}
-		for (int k = 0; k <= n; ++k) pascal[n][k + 1] = pascal[n][k] + row[k];
-	}
+	auto pascal = binomial_prefix_sum_pascal<Mint>(limit);
 	std::vector<std::pair<int, std::int64_t>> queries;
 	std::vector<Mint> expected;
 	for (int n = 0; n <= limit; ++n)
@@ -51,6 +42,33 @@ template<class Mint> void exhaustive(int limit) {
 		online.build(0);
 		assert(online.max_n() == 0 && online.table_size() == 0 && online.query(0, 1) == Mint(1));
 	}
+}
+
+template<class Mint> void rebuild_cases(int limit) {
+	auto pascal = binomial_prefix_sum_pascal<Mint>(limit);
+	BinomialPrefixSum<Mint> online;
+	std::mt19937_64 rng(20261026);
+	auto expected = [&](int n, std::int64_t k) { return pascal[n][std::clamp(k, std::int64_t(0), std::int64_t(n) + 1)]; };
+	for (int block : {0, 1, 2, 3, 7, 31, std::numeric_limits<int>::max()})
+		for (int size : {0, 1, limit / 2, limit, 0, limit / 3, limit}) {
+			online.build(size, block);
+			const auto copied = online;
+			assert(online.max_n() == size);
+			for (int i = 0; i < 257; ++i) {
+				int n = rng() % (size + 1);
+				std::int64_t l = int(rng() % (size + 7)) - 3, r = int(rng() % (size + 7)) - 3;
+				if (i % 17 == 0) l = std::numeric_limits<std::int64_t>::min();
+				if (i % 17 == 1) r = std::numeric_limits<std::int64_t>::max();
+				if (l > r) std::swap(l, r);
+				assert(online.query(n, r).val() == expected(n, r).val());
+				assert(online.prod(n, l, r).val() == (expected(n, r) - expected(n, l)).val());
+				assert(copied.query(n, l).val() == expected(n, l).val());
+			}
+			online.build(0);
+			assert(copied.max_n() == size);
+			assert(copied.query(size, size / 2).val() == expected(size, size / 2).val());
+			assert(online.query(0, 0).val() == Mint(0).val() && online.query(0, 1).val() == Mint(1).val());
+		}
 }
 
 void polynomial_cases() {
@@ -108,6 +126,10 @@ void polynomial_cases() {
 
 int main() {
 	polynomial_cases();
+	rebuild_cases<mint>(127);
+	rebuild_cases<Field<2, false>>(1);
+	rebuild_cases<Field<17, false>>(16);
+	rebuild_cases<Field<1000000007, false>>(127);
 	exhaustive<mint>(320);
 	exhaustive<Field<2>>(1);
 	exhaustive<Field<3>>(2);

@@ -3,7 +3,7 @@
 
 #include "binomial_prefix_core_light.hpp"
 #include "binomial_prefix_polynomial_base.hpp"
-#include "../fps/fps_light.hpp"
+#include "fps_light_core.hpp"
 
 namespace light_binomial_prefix_detail {
 template<class Mint> using PolynomialScalarArithmetic = binomial_prefix_detail::PolynomialScalarArithmetic<Mint>;

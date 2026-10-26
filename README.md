@@ -33,6 +33,7 @@
 | `components/xor_select.hpp` | 64 bit 内の XOR 順位選択 | [使い方](docs/xor_select.md) |
 | `components/ordered_midpoint.hpp` | 順序付き整数区間の中点 | [使い方](docs/ordered_midpoint.md) |
 | `components/min_plus_convolution_integral.hpp` | min-plus / max-plus 畳み込みの整数用共通実装 | [使い方](docs/min_plus_convolution_integral.md) |
+| `components/range_add_min_node.hpp` | 区間加算・最小値のノード演算 | [使い方](docs/range_add_min_node.md) |
 | `components/range_affine_sum_simd.hpp` | 区間アフィン変換・区間和の共通実装 | [使い方](docs/range_affine_sum_simd.md) |
 | `components/multivariate_convolution_core.hpp` | 多変数畳み込みの共通実装 | [使い方](docs/multivariate_convolution_core.md) |
 | `components/multivariate_ranked.hpp` | 小さい次元の多変数畳み込み | [使い方](docs/multivariate_ranked.md) |
@@ -356,6 +357,7 @@
 | `math/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
 | `math/comb_mod.hpp` | modint を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb_mod.md) |
 | `math/comb_light.hpp` | 軽量版の二項係数・階乗表 | [使い方](docs/comb_light.md) |
+| `math/fixed_size_subset_sum.hpp` | 個数を指定して選ぶ部分和の集合 | [使い方](docs/fixed_size_subset_sum.md) |
 
 ### Floor Sum
 
@@ -501,6 +503,7 @@
 | `components/fps_io.hpp` | FPS の一括入出力 | [使い方](docs/fps_io.md) |
 | `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
 | `components/polynomial_product_tree.hpp` | 多項式の共通積木 | [使い方](docs/polynomial_product_tree.md) |
+| `components/fixed_size_subset_sum.hpp` | 個数指定の部分和集合の NTT・厳密判定 | [使い方](docs/fixed_size_subset_sum_core.md) |
 | `components/symmetric_group_fft.hpp` | 対称群 Fourier 変換 | [使い方](docs/symmetric_group_fft.md) |
 | `components/xor_basis_core.hpp` | XOR 基底の内部演算 | [使い方](docs/xor_basis_core.md) |
 

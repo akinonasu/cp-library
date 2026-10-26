@@ -71,14 +71,16 @@ class BundleTest(unittest.TestCase):
     def test_light_fps_uses_readable_cpp(self):
         headers = ['fps/fps_light.hpp', 'fps/fps_light_algorithms.hpp',
                    'components/fps_light_ntt.hpp', 'components/fps_light_product_tree.hpp',
-                   'components/fps_light_backend.hpp', 'math/mint.hpp']
+                   'components/fps_light_backend.hpp', 'components/fps_light_core.hpp', 'math/mint.hpp']
         for name in headers:
             source = (ROOT / name).read_text()
             self.assertTrue(source.isascii(), name)
             definitions = [line for line in source.splitlines() if line.startswith('#define ')]
             self.assertEqual(len(definitions), 1, name)
             self.assertEqual(definitions[0].split()[1], source.splitlines()[0].split()[1])
-        self.assertGreater((ROOT / 'components/fps_light_backend.hpp').read_text().count('\n'), 500)
+        lines = sum((ROOT / ('components/' + name)).read_text().count('\n')
+                    for name in ('fps_light_core.hpp', 'fps_light_backend.hpp'))
+        self.assertGreater(lines, 500)
 
     def test_light_dependency_closure_uses_readable_cpp(self):
         headers = light_headers()

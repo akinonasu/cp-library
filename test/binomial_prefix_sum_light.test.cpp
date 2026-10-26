@@ -7,11 +7,11 @@ int main() {
 	FastOutput output;
 	int t = 0;
 	input.read(t);
-	std::vector<std::pair<int, int>> queries(t);
-	for (auto &[n, k] : queries) {
+	light_combinatorics::BinomialPrefixSum<> prefix(200000);
+	while (t--) {
+		int n = 0, k = 0;
 		input.read(n);
 		input.read(k);
-		++k;
+		output.println(prefix.query(n, std::int64_t(k) + 1).val());
 	}
-	for (auto answer : light_combinatorics::binomial_prefix_sum(queries)) output.println(answer.val());
 }
