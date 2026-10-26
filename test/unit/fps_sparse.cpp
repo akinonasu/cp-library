@@ -59,6 +59,12 @@ void check_boundaries() {
 		Sparse::Terms terms{{11 * stride, 3}, {14 * stride, 5}, {21 * stride, 7}};
 		for (int n : {22 * stride, 31 * stride + 5}) check<K::exponential>(terms, n, mint(13), 0);
 	}
+	for (int d : {1, 7, 257}) {
+		Sparse::Terms terms{{d, 3}};
+		for (int n : {d + 1, 32 * d, 32 * d + 1})
+			for (long long e : {5LL, 998244352LL, 998244353LL, 9223372036854775807LL})
+				check<K::power>(terms, n, mint(13), mint(e));
+	}
 	for (int far : {256, 257, 262, 263, 264, 265, 280, 513}) {
 		Sparse::Terms terms{{1, 3}, {3, 7}, {7, 9}, {far, 5}, {far + 1, 11}, {far + 8, 13}};
 		verify(terms, 2 * far + 17, mint(gen()));

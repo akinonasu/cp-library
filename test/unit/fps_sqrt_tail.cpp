@@ -17,6 +17,25 @@ U power(U a, U exponent) {
 	return result;
 }
 
+void check_constants() {
+	assert(power(3, (mod - 1) / 2) == mod - 1);
+	std::mt19937 random(814619);
+	for (int trial = 0; trial < 64; ++trial) {
+		const U x = 1 + random() % (mod - 1), square = x * x % mod;
+		for (U factor : {U(1), U(3)}) {
+			fps a{mint::raw(square * factor % mod)};
+			a[0].v = a[0].v % mod + mod;
+			const auto saved = a[0].v;
+			const auto root = a.sqrt(1);
+			if (factor == 1) {
+				assert(root.size() == 1);
+				assert(root[0].val() == x || root[0].val() == mod - x);
+			} else assert(root.empty());
+			assert(a[0].v == saved);
+		}
+	}
+}
+
 void check(int target, int shift, int input, std::mt19937 &random) {
 	const int first = 2 * shift, degree = target + shift;
 	fps a(first + input);
@@ -93,6 +112,7 @@ void check_append(int n, std::mt19937 &random) {
 }
 
 int main() {
+	check_constants();
 	std::mt19937 random(573184);
 	for (int target : {512, 513, 520, 521})
 		for (int shift : {0, 257})

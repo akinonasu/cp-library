@@ -1102,12 +1102,14 @@ struct Operations {
 		scale_words(a, inv);
 	}
 	static T mod_sqrt(T a) {
-		if (a == T(0) || a.pow((T::mod() - 1) / 2) != T(1)) return 0;
-		T r = a.pow(60), t = a.pow(119), c = T(3).pow(119);
+		if (a == T(0)) return 0;
+		T t = a.pow(59), r = t * a, c = T(3).pow(119);
+		t *= r;
 		int m = 23;
 		while (t != T(1)) {
 			int i = 0;
-			for (T u = t; u != T(1); u *= u) ++i;
+			for (T u = t; u != T(1) && i < m; u *= u) ++i;
+			if (i == m) return 0;
 			T b = c.pow(1 << (m - i - 1));
 			r *= b;
 			c = b * b;
@@ -4846,6 +4848,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 				F result;
 				const int block = 1 << (std::bit_width(static_cast<unsigned>(deg)) - 1), tail = deg - block;
 				if (tail > 0 && tail <= 96) {
+					fps_detail::prepare_fps_output(result, deg);
 					fps_detail::blocked_poly::native_inverse(this->data(), this->size(), result, block);
 					result.resize(deg);
 					for (int i = block; i < deg; ++i)
@@ -5940,8 +5943,84 @@ public:
 #line 1 "components/fps_io.hpp"
 
 
+
 #line 1 "components/fast_io_bulk.hpp"
 
+
+
+#line 1 "components/fast_io_output.hpp"
+
+
+
+#line 7 "components/fast_io_output.hpp"
+
+namespace fast_io_detail {
+struct BulkOutput {
+	static char *small(char *out, std::uint32_t value) {
+		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
+		if constexpr (std::endian::native == std::endian::little) {
+			std::uint32_t word;
+			std::memcpy(&word, FastOutput::quads[value].data(), 4);
+			word >>= (4 - n) * 8;
+			std::memcpy(out, &word, 4);
+		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
+		return out + n;
+	}
+	static char *number(char *out, std::uint32_t value) {
+		if (value >= 100000000) {
+			out = small(out, value / 100000000);
+			value %= 100000000;
+			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
+			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
+			return out + 8;
+		}
+		if (value >= 10000) {
+			out = small(out, value / 10000);
+			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
+			return out + 4;
+		}
+		return small(out, value);
+	}
+	template<std::size_t Fields, class Read>
+#if defined(__GNUC__) || defined(__clang__)
+	[[gnu::noinline]]
+#endif
+	static void records(FastOutput &out, std::size_t count, Read read) {
+		constexpr auto bytes = 11 * Fields;
+		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
+		for (std::size_t base = 0; base < count;) {
+			const auto n = std::min(count - base, block);
+			char *begin = out.reserve(n * bytes), *p = begin;
+			for (std::size_t i = 0; i < n; ++i) {
+				auto values = read(base + i);
+				for (std::size_t j = 0; j < Fields; ++j) {
+					p = number(p, std::uint32_t(values[j]));
+					*p++ = j + 1 == Fields ? '\n' : ' ';
+				}
+			}
+			out.length += p - begin;
+			base += n;
+		}
+	}
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
+}
+
+template<std::size_t Fields, class Read>
+void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
+	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
+	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
+}
 
 
 #line 8 "components/fast_io_bulk.hpp"
@@ -6135,67 +6214,6 @@ struct BulkInput {
 #pragma GCC pop_options
 #endif
 
-namespace fast_io_detail {
-struct BulkOutput {
-	static char *small(char *out, std::uint32_t value) {
-		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
-		if constexpr (std::endian::native == std::endian::little) {
-			std::uint32_t word;
-			std::memcpy(&word, FastOutput::quads[value].data(), 4);
-			word >>= (4 - n) * 8;
-			std::memcpy(out, &word, 4);
-		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
-		return out + n;
-	}
-	static char *number(char *out, std::uint32_t value) {
-		if (value >= 100000000) {
-			out = small(out, value / 100000000);
-			value %= 100000000;
-			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
-			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
-			return out + 8;
-		}
-		if (value >= 10000) {
-			out = small(out, value / 10000);
-			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
-			return out + 4;
-		}
-		return small(out, value);
-	}
-	template<std::size_t Fields, class Read>
-#if defined(__GNUC__) || defined(__clang__)
-	[[gnu::noinline]]
-#endif
-	static void records(FastOutput &out, std::size_t count, Read read) {
-		constexpr auto bytes = 11 * Fields;
-		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
-		for (std::size_t base = 0; base < count;) {
-			const auto n = std::min(count - base, block);
-			char *begin = out.reserve(n * bytes), *p = begin;
-			for (std::size_t i = 0; i < n; ++i) {
-				auto values = read(base + i);
-				for (std::size_t j = 0; j < Fields; ++j) {
-					p = number(p, std::uint32_t(values[j]));
-					*p++ = j + 1 == Fields ? '\n' : ' ';
-				}
-			}
-			out.length += p - begin;
-			base += n;
-		}
-	}
-	static void write(FastOutput &out, std::string_view text) {
-		if (text.size() <= (1 << 16)) return out.write(text);
-		if (out.length && !out.flush()) throw std::runtime_error("output failed");
-		std::size_t done = 0;
-		while (done < text.size()) {
-			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
-			if (!written) throw std::runtime_error("output failed");
-			done += written;
-		}
-	}
-};
-
-}
 
 namespace fast_io_detail {
 template <class Emit, std::size_t... I>
@@ -6249,14 +6267,13 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 	});
 }
 
-template<std::size_t Fields, class Read>
-void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
-	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
-	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
-}
+
+#line 1 "components/fps_write.hpp"
 
 
-#line 7 "components/fps_io.hpp"
+
+#line 10 "components/fps_write.hpp"
+
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 #include <immintrin.h>
 #pragma GCC push_options
@@ -6403,6 +6420,93 @@ namespace fps_detail {
 	return _mm256_min_epu32(value, _mm256_sub_epi32(value, p));
 }
 
+inline void write_coefficients_native(FastOutput &output, const mint *in, std::size_t n) {
+	alignas(32) unsigned values[25600];
+	alignas(32) char text[256000];
+	const auto &k = fps_io_fields::detail::kConstants;
+	for (std::size_t i = 0; i < n; i += 25600) {
+		const auto count = std::min<std::size_t>(25600, n - i), full = count / 16 * 16;
+		char *end = text;
+		static constexpr char zeros[] = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
+		const auto empty = [&]() __attribute__((target("avx2"))) {
+			std::size_t at = 0;
+			const auto p = _mm256_set1_epi32(mint::mod());
+			for (; at + 8 <= count; at += 8) {
+				__m256i x;
+				std::memcpy(&x, in + i + at, sizeof(x));
+				x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+				if (!_mm256_testz_si256(x, x)) return false;
+			}
+			for (; at < count; ++at) if (in[i + at] != mint(0)) return false;
+			return true;
+		};
+		if (empty()) {
+			for (std::size_t at = 0; at < count; at += 16) std::memcpy(text + 2 * at, zeros, 32);
+			end += 2 * count;
+		} else {
+			std::size_t j = 0;
+			for (; j + 8 <= count; j += 8) {
+				alignas(32) unsigned words[8];
+				std::memcpy(words, in + i + j, sizeof(words));
+				_mm256_storeu_si256(reinterpret_cast<__m256i *>(values + j), io_values(_mm256_load_si256(reinterpret_cast<const __m256i *>(words))));
+			}
+			for (; j < count; ++j) values[j] = in[i + j].val();
+			auto zero = [&](std::size_t at) __attribute__((target("avx2"))) {
+				auto x = _mm256_or_si256(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + at)), _mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + at + 8)));
+				return _mm256_testz_si256(x, x);
+			};
+			std::size_t at = 0;
+			while (at < full) {
+				if (zero(at)) { std::memcpy(end, zeros, 32); end += 32; at += 16; }
+				else {
+					const auto first = at;
+					do at += 16; while (at < full && !zero(at));
+					fps_io_fields::detail::format(end, values + first, at - first, k);
+					end += 10 * (at - first);
+				}
+			}
+			if (full < count) {
+				alignas(32) unsigned rest[16] = {};
+				alignas(16) char last[160];
+				std::copy_n(values + full, count - full, rest);
+				bool empty = true;
+				for (auto x : rest) empty &= x == 0;
+				if (empty) { std::memcpy(end, zeros, 2 * (count - full)); end += 2 * (count - full); }
+				else {
+					fps_io_fields::detail::format(last, rest, 16, k);
+					std::memcpy(end, last, 10 * (count - full));
+					end += 10 * (count - full);
+				}
+			}
+		}
+		if (i + count == n) end[-1] = '\n';
+		fast_io_detail::BulkOutput::write(output, std::string_view(text, end - text));
+	}
+	if (!n) output.write('\n');
+}
+}
+#pragma GCC pop_options
+#endif
+
+namespace fps_detail {
+inline void write_coefficients(FastOutput &output, const mint *in, std::size_t n) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (__builtin_cpu_supports("avx2")) return write_coefficients_native(output, in, n);
+#endif
+	for (std::size_t i = 0; i < n; ++i) { output.write(in[i].val()); output.write(' '); }
+	output.write('\n');
+}
+}
+
+#line 8 "components/fps_io.hpp"
+
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#include <immintrin.h>
+#pragma GCC push_options
+_Pragma("GCC target(\"avx2\")")
+#pragma GCC optimize("O3")
+
+namespace fps_detail {
 inline void read_coefficients(FastInput &input, std::vector<mint> &out, std::size_t n) {
 	if (!n) return;
 	if (n > out.max_size() - out.size()) throw std::length_error("fps input");
@@ -6410,54 +6514,6 @@ inline void read_coefficients(FastInput &input, std::vector<mint> &out, std::siz
 	fast_io_detail::BulkInput::read_blocks(input, n, [&](const unsigned *values, std::size_t count) {
 		append_fps_words<false>(out, values, count);
 	});
-}
-
-inline void write_coefficients(FastOutput &output, const mint *in, std::size_t n) {
-	alignas(32) unsigned values[25600];
-	alignas(32) char text[256000];
-	const auto &k = fps_io_fields::detail::kConstants;
-	for (std::size_t i = 0; i < n; i += 25600) {
-		const auto count = std::min<std::size_t>(25600, n - i), full = count / 16 * 16;
-		std::size_t j = 0;
-		for (; j + 8 <= count; j += 8) {
-			alignas(32) unsigned words[8];
-			std::memcpy(words, in + i + j, sizeof(words));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(values + j), io_values(_mm256_load_si256(reinterpret_cast<const __m256i *>(words))));
-		}
-		for (; j < count; ++j) values[j] = in[i + j].val();
-		char *end = text;
-		static constexpr char zeros[] = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ";
-		auto zero = [&](std::size_t at) __attribute__((target("avx2"))) {
-			auto x = _mm256_or_si256(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + at)), _mm256_loadu_si256(reinterpret_cast<const __m256i *>(values + at + 8)));
-			return _mm256_testz_si256(x, x);
-		};
-		std::size_t at = 0;
-		while (at < full) {
-			if (zero(at)) { std::memcpy(end, zeros, 32); end += 32; at += 16; }
-			else {
-				const auto first = at;
-				do at += 16; while (at < full && !zero(at));
-				fps_io_fields::detail::format(end, values + first, at - first, k);
-				end += 10 * (at - first);
-			}
-		}
-		if (full < count) {
-			alignas(32) unsigned rest[16] = {};
-			alignas(16) char last[160];
-			std::copy_n(values + full, count - full, rest);
-			bool empty = true;
-			for (auto x : rest) empty &= x == 0;
-			if (empty) { std::memcpy(end, zeros, 2 * (count - full)); end += 2 * (count - full); }
-			else {
-				fps_io_fields::detail::format(last, rest, 16, k);
-				std::memcpy(end, last, 10 * (count - full));
-				end += 10 * (count - full);
-			}
-		}
-		if (i + count == n) end[-1] = '\n';
-		fast_io_detail::BulkOutput::write(output, std::string_view(text, end - text));
-	}
-	if (!n) output.write('\n');
 }
 }
 #pragma GCC pop_options

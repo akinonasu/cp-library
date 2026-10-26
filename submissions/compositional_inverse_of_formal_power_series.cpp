@@ -1102,12 +1102,14 @@ struct Operations {
 		scale_words(a, inv);
 	}
 	static T mod_sqrt(T a) {
-		if (a == T(0) || a.pow((T::mod() - 1) / 2) != T(1)) return 0;
-		T r = a.pow(60), t = a.pow(119), c = T(3).pow(119);
+		if (a == T(0)) return 0;
+		T t = a.pow(59), r = t * a, c = T(3).pow(119);
+		t *= r;
 		int m = 23;
 		while (t != T(1)) {
 			int i = 0;
-			for (T u = t; u != T(1); u *= u) ++i;
+			for (T u = t; u != T(1) && i < m; u *= u) ++i;
+			if (i == m) return 0;
 			T b = c.pow(1 << (m - i - 1));
 			r *= b;
 			c = b * b;
@@ -4846,6 +4848,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 				F result;
 				const int block = 1 << (std::bit_width(static_cast<unsigned>(deg)) - 1), tail = deg - block;
 				if (tail > 0 && tail <= 96) {
+					fps_detail::prepare_fps_output(result, deg);
 					fps_detail::blocked_poly::native_inverse(this->data(), this->size(), result, block);
 					result.resize(deg);
 					for (int i = block; i < deg; ++i)

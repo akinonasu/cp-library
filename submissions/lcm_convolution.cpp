@@ -260,7 +260,7 @@ void transform(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size
 
 template <bool inverse, class T>
 void large_multiples(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &ps,
-					 std::size_t first, const std::vector<std::size_t> &products, const std::vector<std::size_t> &squares) {
+					 std::size_t first) {
 	if (first == ps.size()) return;
 	constexpr std::uint64_t twice = 2 * T::mod();
 	const std::size_t n = a.size() - 1;
@@ -271,17 +271,8 @@ void large_multiples(std::vector<T> &a, std::vector<T> &b, const std::vector<std
 			x += a[i * *p].v;
 			if constexpr (!inverse) y += b[i * *p].v;
 		}
-		for (auto p : products) {
-			if (p > n / i) break;
-			if constexpr (inverse) y += a[i * p].v;
-			else x += a[i * p].v, y += b[i * p].v;
-		}
 		if constexpr (inverse) a[i] = T::word(y % twice) - T::word(x % twice);
 		else {
-			for (auto p : squares) {
-				if (p > n / i) break;
-				x += a[i * p].v, y += b[i * p].v;
-			}
 			a[i] = T::word(x % twice), b[i] = T::word(y % twice);
 		}
 	}
@@ -290,20 +281,15 @@ void large_multiples(std::vector<T> &a, std::vector<T> &b, const std::vector<std
 template <class T>
 void multiply(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &ps) {
 	const std::size_t n = a.size() - 1;
-	std::size_t cutoff = std::sqrt(n) / 2;
-	while (cutoff + 1 <= n / (cutoff + 1) / (cutoff + 1)) ++cutoff;
+	std::size_t cutoff = std::sqrt(n);
+	while (cutoff + 1 <= n / (cutoff + 1)) ++cutoff;
+	while (cutoff && cutoff > n / cutoff) --cutoff;
 	const std::size_t first = std::upper_bound(ps.begin(), ps.end(), cutoff) - ps.begin();
-	std::vector<std::size_t> products, squares;
-	for (std::size_t j = first; j < ps.size() && ps[j] <= n / ps[j]; ++j) {
-		squares.push_back(ps[j] * ps[j]);
-		for (std::size_t k = j + 1; k < ps.size() && ps[k] <= n / ps[j]; ++k) products.push_back(ps[j] * ps[k]);
-	}
-	std::sort(products.begin(), products.end());
 	transform<false>(a, b, ps, first);
-	large_multiples<false>(a, b, ps, first, products, squares);
+	large_multiples<false>(a, b, ps, first);
 	for (std::size_t i = 1; i <= n; ++i) a[i] *= b[i];
 	transform<true>(a, b, ps, first);
-	large_multiples<true>(a, b, ps, first, products, squares);
+	large_multiples<true>(a, b, ps, first);
 }
 
 }
@@ -356,6 +342,10 @@ std::vector<T> lcm_convolution(std::vector<T> a, std::vector<T> b) {
 
 
 #line 1 "components/fast_io_bulk.hpp"
+
+
+
+#line 1 "components/fast_io_output.hpp"
 
 
 
@@ -592,8 +582,80 @@ public:
 };
 
 
-#line 5 "components/fast_io_bulk.hpp"
+#line 5 "components/fast_io_output.hpp"
 #include <limits>
+#line 7 "components/fast_io_output.hpp"
+
+namespace fast_io_detail {
+struct BulkOutput {
+	static char *small(char *out, std::uint32_t value) {
+		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
+		if constexpr (std::endian::native == std::endian::little) {
+			std::uint32_t word;
+			std::memcpy(&word, FastOutput::quads[value].data(), 4);
+			word >>= (4 - n) * 8;
+			std::memcpy(out, &word, 4);
+		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
+		return out + n;
+	}
+	static char *number(char *out, std::uint32_t value) {
+		if (value >= 100000000) {
+			out = small(out, value / 100000000);
+			value %= 100000000;
+			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
+			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
+			return out + 8;
+		}
+		if (value >= 10000) {
+			out = small(out, value / 10000);
+			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
+			return out + 4;
+		}
+		return small(out, value);
+	}
+	template<std::size_t Fields, class Read>
+#if defined(__GNUC__) || defined(__clang__)
+	[[gnu::noinline]]
+#endif
+	static void records(FastOutput &out, std::size_t count, Read read) {
+		constexpr auto bytes = 11 * Fields;
+		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
+		for (std::size_t base = 0; base < count;) {
+			const auto n = std::min(count - base, block);
+			char *begin = out.reserve(n * bytes), *p = begin;
+			for (std::size_t i = 0; i < n; ++i) {
+				auto values = read(base + i);
+				for (std::size_t j = 0; j < Fields; ++j) {
+					p = number(p, std::uint32_t(values[j]));
+					*p++ = j + 1 == Fields ? '\n' : ' ';
+				}
+			}
+			out.length += p - begin;
+			base += n;
+		}
+	}
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
+}
+
+template<std::size_t Fields, class Read>
+void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
+	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
+	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
+}
+
+
+#line 6 "components/fast_io_bulk.hpp"
 #include <span>
 #line 8 "components/fast_io_bulk.hpp"
 
@@ -786,67 +848,6 @@ struct BulkInput {
 #pragma GCC pop_options
 #endif
 
-namespace fast_io_detail {
-struct BulkOutput {
-	static char *small(char *out, std::uint32_t value) {
-		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
-		if constexpr (std::endian::native == std::endian::little) {
-			std::uint32_t word;
-			std::memcpy(&word, FastOutput::quads[value].data(), 4);
-			word >>= (4 - n) * 8;
-			std::memcpy(out, &word, 4);
-		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
-		return out + n;
-	}
-	static char *number(char *out, std::uint32_t value) {
-		if (value >= 100000000) {
-			out = small(out, value / 100000000);
-			value %= 100000000;
-			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
-			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
-			return out + 8;
-		}
-		if (value >= 10000) {
-			out = small(out, value / 10000);
-			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
-			return out + 4;
-		}
-		return small(out, value);
-	}
-	template<std::size_t Fields, class Read>
-#if defined(__GNUC__) || defined(__clang__)
-	[[gnu::noinline]]
-#endif
-	static void records(FastOutput &out, std::size_t count, Read read) {
-		constexpr auto bytes = 11 * Fields;
-		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
-		for (std::size_t base = 0; base < count;) {
-			const auto n = std::min(count - base, block);
-			char *begin = out.reserve(n * bytes), *p = begin;
-			for (std::size_t i = 0; i < n; ++i) {
-				auto values = read(base + i);
-				for (std::size_t j = 0; j < Fields; ++j) {
-					p = number(p, std::uint32_t(values[j]));
-					*p++ = j + 1 == Fields ? '\n' : ' ';
-				}
-			}
-			out.length += p - begin;
-			base += n;
-		}
-	}
-	static void write(FastOutput &out, std::string_view text) {
-		if (text.size() <= (1 << 16)) return out.write(text);
-		if (out.length && !out.flush()) throw std::runtime_error("output failed");
-		std::size_t done = 0;
-		while (done < text.size()) {
-			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
-			if (!written) throw std::runtime_error("output failed");
-			done += written;
-		}
-	}
-};
-
-}
 
 namespace fast_io_detail {
 template <class Emit, std::size_t... I>
@@ -898,12 +899,6 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
 		while (i < n) pending[used++] = values[i++];
 	});
-}
-
-template<std::size_t Fields, class Read>
-void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
-	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
-	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
 }
 
 

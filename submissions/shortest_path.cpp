@@ -90,9 +90,20 @@ class RadixHeap {
 };
 
 
-#line 14 "components/dijkstra_queue.hpp"
+#line 10 "components/dijkstra_queue.hpp"
+#include <functional>
+#line 15 "components/dijkstra_queue.hpp"
 
 namespace shortest_path_detail {
+template<class Weight, class Distance>
+bool reaches_limit(const Weight &weight, const Distance &limit) {
+	if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
+				  std::numeric_limits<Distance>::is_integer && std::numeric_limits<Distance>::is_bounded) {
+		using Compare = std::common_type_t<Weight, Distance>;
+		return Compare(weight) >= Compare(limit);
+	} else return weight >= limit;
+}
+
 template<class T> class RadixQueue {
 	static_assert(std::is_integral_v<T> && sizeof(T) <= 8);
 	struct State { T key; int vertex; };
@@ -189,6 +200,27 @@ template<class T> class RadixQueue {
 		return {T(last_), int(std::uint32_t(state))};
 	}
 };
+
+template<class T> class BinaryQueue {
+	using State = std::pair<T, int>;
+	std::vector<State> heap_;
+
+  public:
+	bool empty() const { return heap_.empty(); }
+	void push(T cost, int vertex) {
+		heap_.emplace_back(std::move(cost), vertex);
+		std::push_heap(heap_.begin(), heap_.end(), std::greater<State>());
+	}
+	State pop() {
+		std::pop_heap(heap_.begin(), heap_.end(), std::greater<State>());
+		State state = std::move(heap_.back());
+		heap_.pop_back();
+		return state;
+	}
+};
+
+template<class T>
+using DistanceQueue = std::conditional_t<std::is_integral_v<T> && sizeof(T) <= 8, RadixQueue<T>, BinaryQueue<T>>;
 }
 
 
@@ -196,9 +228,7 @@ template<class T> class RadixQueue {
 
 
 
-#line 8 "components/dijkstra_topological.hpp"
-#include <functional>
-#line 13 "components/dijkstra_topological.hpp"
+#line 11 "components/dijkstra_topological.hpp"
 
 namespace shortest_path_detail {
 template<bool Path, class G, class T>
@@ -221,12 +251,7 @@ std::vector<T> topological_run(const G &g, int start, int target, T inf, std::ve
 		if (!indegree[v]) ready.push_back(int(v));
 	distance[start] = 0;
 	auto improve = [&](int from, const T &cost, const T &allowance, int to, const auto &weight) {
-		using Weight = std::remove_cvref_t<decltype(weight)>;
-		if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
-					  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
-			using Compare = std::common_type_t<Weight, T>;
-			if (Compare(weight) >= Compare(allowance)) return false;
-		} else if (weight >= allowance) return false;
+		if (reaches_limit(weight, allowance)) return false;
 		T next = cost + weight;
 		if (next >= distance[to]) return false;
 		if constexpr (Path) {
@@ -248,38 +273,21 @@ std::vector<T> topological_run(const G &g, int start, int target, T inf, std::ve
 			if (--indegree[to] == 0) ready.push_back(to);
 		}
 	}
-	using State = std::pair<T, int>;
-	constexpr bool radix = std::is_integral_v<T> && sizeof(T) <= 8;
-	std::conditional_t<radix, shortest_path_detail::RadixQueue<T>, std::vector<State>> queue;
-	auto push = [&](T cost, int v) {
-		if constexpr (radix) queue.push(cost, v);
-		else {
-			queue.emplace_back(std::move(cost), v);
-			std::push_heap(queue.begin(), queue.end(), std::greater<State>());
-		}
-	};
+	DistanceQueue<T> queue;
 	for (std::size_t v = 0; v < n; ++v) {
 		if (!indegree[v] || distance[v] == inf || g[v].empty()) continue;
 		if constexpr (Path) if (int(v) == target || distance[v] >= distance[target]) continue;
-		push(distance[v], int(v));
+		queue.push(distance[v], int(v));
 	}
 	while (!queue.empty()) {
-		const auto [cost, v] = [&] {
-			if constexpr (radix) return queue.pop();
-			else {
-				std::pop_heap(queue.begin(), queue.end(), std::greater<State>());
-				State state = std::move(queue.back());
-				queue.pop_back();
-				return state;
-			}
-		}();
+		const auto [cost, v] = queue.pop();
 		if (cost != distance[v]) continue;
 		if constexpr (Path) if (cost >= distance[target]) break;
 		T allowance = inf - cost;
 		for (const auto &[to, weight] : g[v]) {
 			if (!improve(v, cost, allowance, to, weight)) continue;
 			if constexpr (Path) if (to == target) continue;
-			if (!g[to].empty()) push(distance[to], to);
+			if (!g[to].empty()) queue.push(distance[to], to);
 		}
 	}
 	return distance;
@@ -291,7 +299,7 @@ std::vector<T> topological_run(const G &g, int start, int target, T inf, std::ve
 
 
 
-#line 10 "components/dijkstra_unique.hpp"
+#line 9 "components/dijkstra_unique.hpp"
 
 namespace shortest_path_detail {
 template<class G, class T>
@@ -310,13 +318,7 @@ std::pair<T, std::vector<int>> unique_path(const G &g, int st, int target, T inf
 				const auto &[to, weight] = *edge;
 				assert(weight >= 0);
 				if (to == st) break;
-				using Weight = std::remove_cvref_t<decltype(weight)>;
-				T allowance = inf - prefix;
-				if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
-							  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
-					using Compare = std::common_type_t<Weight, T>;
-					if (Compare(weight) >= Compare(allowance)) break;
-				} else if (weight >= allowance) break;
+				if (reaches_limit(weight, T(inf - prefix))) break;
 				T next = prefix + weight;
 				if (to == target) {
 					std::vector<int> path{to};
@@ -493,7 +495,7 @@ struct Access {
 }
 
 
-#line 17 "graph/dijkstra.hpp"
+#line 16 "graph/dijkstra.hpp"
 
 inline constexpr std::int64_t DIJKSTRA_INF = 4'000'000'000'000'000'000;
 
@@ -512,39 +514,17 @@ std::vector<T> run(const G &g, int st, int target, T inf, std::vector<int> &pare
 	assert(inf > 0);
 	std::vector<T> d(n, inf);
 	d[st] = 0;
-	using State = std::pair<T, int>;
-	constexpr bool radix = std::is_integral_v<T> && sizeof(T) <= 8;
-	std::conditional_t<radix, RadixQueue<T>, std::vector<State>> pq;
-	auto push = [&](T cost, int v) {
-		if constexpr (radix) pq.push(cost, v);
-		else {
-			pq.emplace_back(std::move(cost), v);
-			std::push_heap(pq.begin(), pq.end(), std::greater<State>());
-		}
-	};
-	push(0, st);
+	DistanceQueue<T> pq;
+	pq.push(0, st);
 	while (!pq.empty()) {
-		const auto [cost, v] = [&] {
-			if constexpr (radix) return pq.pop();
-			else {
-				std::pop_heap(pq.begin(), pq.end(), std::greater<State>());
-				State s = std::move(pq.back());
-				pq.pop_back();
-				return s;
-			}
-		}();
+		const auto [cost, v] = pq.pop();
 		if (d[v] != cost) continue;
 		if constexpr (Path) if (cost >= d[target]) break;
 		T allowance = inf - cost;
 		for (const auto &[to, c] : g[v]) {
 			assert(to >= 0 && static_cast<std::size_t>(to) < n);
 			assert(c >= 0);
-			using Weight = std::remove_cvref_t<decltype(c)>;
-			if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
-						  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
-				using Compare = std::common_type_t<Weight, T>;
-				if (Compare(c) >= Compare(allowance)) continue;
-			} else if (c >= allowance) continue;
+			if (reaches_limit(c, allowance)) continue;
 			T next = cost + c;
 			if (next >= d[to]) continue;
 			if constexpr (Path) {
@@ -553,7 +533,7 @@ std::vector<T> run(const G &g, int st, int target, T inf, std::vector<int> &pare
 			}
 			d[to] = next;
 			if constexpr (Path) if (to == target) continue;
-			if (!g[to].empty()) push(std::move(next), to);
+			if (!g[to].empty()) pq.push(std::move(next), to);
 		}
 	}
 	return d;
@@ -590,11 +570,7 @@ std::pair<T, std::vector<int>> path(const G &g, int st, int target, T inf) {
 			const auto &[to, weight] = g[v][0];
 			assert(to >= 0 && static_cast<std::size_t>(to) < n);
 			assert(weight >= 0);
-			if constexpr (std::numeric_limits<Weight>::is_integer && std::numeric_limits<Weight>::is_bounded &&
-						  std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_bounded) {
-				using Compare = std::common_type_t<Weight, T>;
-				if (Compare(weight) >= Compare(inf - cost)) return {T(-1), {}};
-			} else if (weight >= inf - cost) return {T(-1), {}};
+			if (reaches_limit(weight, T(inf - cost))) return {T(-1), {}};
 			cost += weight;
 			v = to;
 			direct.push_back(v);
@@ -675,6 +651,10 @@ std::pair<T, std::vector<int>> dijkstra_path(const DirectedCSR<W> &g, int st, in
 
 
 #line 1 "components/fast_io_bulk.hpp"
+
+
+
+#line 1 "components/fast_io_output.hpp"
 
 
 
@@ -912,6 +892,77 @@ public:
 };
 
 
+#line 7 "components/fast_io_output.hpp"
+
+namespace fast_io_detail {
+struct BulkOutput {
+	static char *small(char *out, std::uint32_t value) {
+		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
+		if constexpr (std::endian::native == std::endian::little) {
+			std::uint32_t word;
+			std::memcpy(&word, FastOutput::quads[value].data(), 4);
+			word >>= (4 - n) * 8;
+			std::memcpy(out, &word, 4);
+		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
+		return out + n;
+	}
+	static char *number(char *out, std::uint32_t value) {
+		if (value >= 100000000) {
+			out = small(out, value / 100000000);
+			value %= 100000000;
+			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
+			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
+			return out + 8;
+		}
+		if (value >= 10000) {
+			out = small(out, value / 10000);
+			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
+			return out + 4;
+		}
+		return small(out, value);
+	}
+	template<std::size_t Fields, class Read>
+#if defined(__GNUC__) || defined(__clang__)
+	[[gnu::noinline]]
+#endif
+	static void records(FastOutput &out, std::size_t count, Read read) {
+		constexpr auto bytes = 11 * Fields;
+		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
+		for (std::size_t base = 0; base < count;) {
+			const auto n = std::min(count - base, block);
+			char *begin = out.reserve(n * bytes), *p = begin;
+			for (std::size_t i = 0; i < n; ++i) {
+				auto values = read(base + i);
+				for (std::size_t j = 0; j < Fields; ++j) {
+					p = number(p, std::uint32_t(values[j]));
+					*p++ = j + 1 == Fields ? '\n' : ' ';
+				}
+			}
+			out.length += p - begin;
+			base += n;
+		}
+	}
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
+}
+
+template<std::size_t Fields, class Read>
+void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
+	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
+	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
+}
+
+
 #line 8 "components/fast_io_bulk.hpp"
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -1103,67 +1154,6 @@ struct BulkInput {
 #pragma GCC pop_options
 #endif
 
-namespace fast_io_detail {
-struct BulkOutput {
-	static char *small(char *out, std::uint32_t value) {
-		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
-		if constexpr (std::endian::native == std::endian::little) {
-			std::uint32_t word;
-			std::memcpy(&word, FastOutput::quads[value].data(), 4);
-			word >>= (4 - n) * 8;
-			std::memcpy(out, &word, 4);
-		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
-		return out + n;
-	}
-	static char *number(char *out, std::uint32_t value) {
-		if (value >= 100000000) {
-			out = small(out, value / 100000000);
-			value %= 100000000;
-			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
-			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
-			return out + 8;
-		}
-		if (value >= 10000) {
-			out = small(out, value / 10000);
-			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
-			return out + 4;
-		}
-		return small(out, value);
-	}
-	template<std::size_t Fields, class Read>
-#if defined(__GNUC__) || defined(__clang__)
-	[[gnu::noinline]]
-#endif
-	static void records(FastOutput &out, std::size_t count, Read read) {
-		constexpr auto bytes = 11 * Fields;
-		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
-		for (std::size_t base = 0; base < count;) {
-			const auto n = std::min(count - base, block);
-			char *begin = out.reserve(n * bytes), *p = begin;
-			for (std::size_t i = 0; i < n; ++i) {
-				auto values = read(base + i);
-				for (std::size_t j = 0; j < Fields; ++j) {
-					p = number(p, std::uint32_t(values[j]));
-					*p++ = j + 1 == Fields ? '\n' : ' ';
-				}
-			}
-			out.length += p - begin;
-			base += n;
-		}
-	}
-	static void write(FastOutput &out, std::string_view text) {
-		if (text.size() <= (1 << 16)) return out.write(text);
-		if (out.length && !out.flush()) throw std::runtime_error("output failed");
-		std::size_t done = 0;
-		while (done < text.size()) {
-			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
-			if (!written) throw std::runtime_error("output failed");
-			done += written;
-		}
-	}
-};
-
-}
 
 namespace fast_io_detail {
 template <class Emit, std::size_t... I>
@@ -1215,12 +1205,6 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
 		while (i < n) pending[used++] = values[i++];
 	});
-}
-
-template<std::size_t Fields, class Read>
-void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
-	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
-	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
 }
 
 

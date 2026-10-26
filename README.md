@@ -403,6 +403,7 @@
 | `components/integer_arithmetic.hpp` | 整数型の判定・オーバーフローを検出する加算と乗算 | [使い方](docs/integer_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
 | `components/fast_io_bulk.hpp` | 非負整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
+| `components/fast_io_output.hpp` | 非負整数の一括出力 | [使い方](docs/fast_io_output.md) |
 | `components/dynamic_bit_vector.hpp` | Dynamic Bit Vector | [使い方](docs/dynamic_bit_vector.md) |
 | `components/dynamic_quad_vector.hpp` | Dynamic Quad Vector | [使い方](docs/dynamic_quad_vector.md) |
 | `components/dynamic_quad_wavelet.hpp` | Dynamic Quad Wavelet Matrix | [使い方](docs/dynamic_quad_wavelet.md) |
@@ -507,6 +508,7 @@
 | `components/fps_sqrt_blocked.hpp` | FPS 平方根のブロック変換 | [使い方](docs/fps_sqrt_blocked.md) |
 | `components/fps_taylor_blocked.hpp` | Taylor Shift の中間積 | [使い方](docs/fps_taylor_blocked.md) |
 | `components/fps_io.hpp` | FPS の一括入出力 | [使い方](docs/fps_io.md) |
+| `components/fps_write.hpp` | FPS の高速出力 | [使い方](docs/fps_write.md) |
 | `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
 | `components/polynomial_product_tree.hpp` | 多項式の共通積木 | [使い方](docs/polynomial_product_tree.md) |
 | `components/fixed_size_subset_sum.hpp` | 個数指定の部分和集合の NTT・厳密判定 | [使い方](docs/fixed_size_subset_sum_core.md) |

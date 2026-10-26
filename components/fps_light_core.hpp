@@ -415,15 +415,14 @@ struct LightFormalPowerSeries : std::vector<T> {
 	}
 	static std::optional<T> scalar_sqrt(T a) {
 		if (a == T(0)) return T(0);
-		if (a.pow((T::mod() - 1) / 2) != T(1)) return std::nullopt;
 		constexpr int q = 119;
-		T x = a.pow((q + 1) / 2), t = a.pow(q), c = T(3).pow(q);
+		T t = a.pow((q - 1) / 2), x = t * a, c = T(3).pow(q);
+		t *= x;
 		int m = 23;
 		while (t != T(1)) {
-			int i = 1;
-			T next = t * t;
-			while (i < m && next != T(1)) next *= next, ++i;
-			assert(i < m);
+			int i = 0;
+			for (T next = t; next != T(1) && i < m; next *= next) ++i;
+			if (i == m) return std::nullopt;
 			T b = c.pow(1LL << (m - i - 1));
 			x *= b;
 			c = b * b;

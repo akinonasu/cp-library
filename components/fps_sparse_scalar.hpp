@@ -17,10 +17,9 @@ struct ScalarSparseSeries : SparseTerms {
 			if (e <= 4 && terms.size() <= 12 && (n >= 4096 || terms.size() <= 3)) {
 				Terms power{{0, initial}};
 				for (unsigned k = 0; k < e; ++k) {
-					Terms next = power;
-					for (auto [i, x] : power) for (auto [j, y] : terms)
-						if (i < n - j) next.emplace_back(i + j, x * y);
-					power = std::move(next);
+					const auto previous = power;
+					for (auto [i, x] : previous) for (auto [j, y] : terms)
+						if (i < n - j) power.emplace_back(i + j, x * y);
 				}
 				out[0] = 0;
 				for (auto [i, x] : power) out[i] += x;
@@ -33,11 +32,12 @@ struct ScalarSparseSeries : SparseTerms {
 		for (auto &[j, x] : terms) j /= stride;
 		if constexpr (kind == Kind::exponential) for (auto &[j, x] : terms) x *= mint(j);
 		const mint *inv = kind == Kind::inverse ? nullptr : inverses(count);
-		if (terms.size() == 1 && kind != Kind::power) {
+		if (terms.size() == 1) {
 			mint value = kind == Kind::logarithm ? mint(-1) : initial;
 			mint ratio = kind == Kind::exponential ? terms[0].second : -terms[0].second;
 			for (int i = 1; i < count; ++i) {
 				value *= ratio;
+				if constexpr (kind == Kind::power) value *= (mint(i - 1) - exponent) * inv[i];
 				if constexpr (kind == Kind::exponential) value *= inv[i];
 				out[i * stride] = value;
 			}

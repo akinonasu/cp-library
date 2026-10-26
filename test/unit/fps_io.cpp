@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <random>
+#include <sstream>
 #include <string>
 #include <thread>
 #if defined(__linux__)
@@ -32,6 +33,44 @@ static void write_series(FastOutput& output, const fps& series) {
 }
 
 static void require(bool value) { if (!value) std::abort(); }
+
+static void check_output_words() {
+	std::mt19937 rng(726315);
+	const auto p = mint::mod();
+	for (int n : {0, 1, 15, 16, 17, 25599, 25600, 25601, 51217})
+		for (int offset : {0, 1, 7}) for (int pattern = 0; pattern < 4; ++pattern) {
+			fps storage(n + offset);
+			for (int i = 0; i < n; ++i) {
+				unsigned word = rng() % p + (i & 1 ? p : 0);
+				if (pattern == 0 || (pattern == 2 && i / 16 % 2)) word = i & 1 ? p : 0;
+				if (pattern == 3) word = (i % 2 ? p : 0) + (1u << (i % 29));
+				storage[offset + i] = mint::word(word);
+			}
+			const auto saved = storage;
+			FILE *file = std::tmpfile();
+			require(file != nullptr);
+			{
+				FastOutput output(file);
+				output.println(71);
+				fps_detail::write_coefficients(output, n ? storage.data() + offset : nullptr, n);
+				output.println(72);
+				require(output.flush());
+			}
+			std::rewind(file);
+			std::string text;
+			char buffer[4096];
+			while (auto count = std::fread(buffer, 1, sizeof(buffer), file)) text.append(buffer, count);
+			std::fclose(file);
+			std::istringstream input(text);
+			unsigned value = 0;
+			require(bool(input >> value) && value == 71);
+			for (int i = 0; i < n; ++i) require(bool(input >> value) && value == saved[offset + i].val());
+			require(bool(input >> value) && value == 72);
+			input >> std::ws;
+			require(input.eof() && !text.empty() && text.back() == '\n');
+			for (std::size_t i = 0; i < storage.size(); ++i) require(storage[i].v == saved[i].v);
+		}
+}
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 static void check_append() {
@@ -196,6 +235,7 @@ static void check_parallel() {
 }
 
 int main() {
+	check_output_words();
 	check_parallel();
 	for (int n : {0, 1, 15, 16, 17, 31, 32, 33, 47, 48, 49, 25601, 51201}) for (int pattern = 0; pattern < 3; ++pattern) {
 		std::vector<unsigned> values(n);

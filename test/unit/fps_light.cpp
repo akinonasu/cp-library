@@ -202,6 +202,23 @@ void series() {
 		equal(q, expected_q); equal(r, expected_r); equal(make(a) % make(b), expected_r);
 	}
 }
+void one_term_powers() {
+	for (int d : {1, 7, 257}) {
+		for (int n : {d + 1, 32 * d, 32 * d + 1}) {
+			V a(n); a[0] = 7; a[d] = 3;
+			for (long long k : {5LL, static_cast<long long>(mod - 1), static_cast<long long>(mod), std::numeric_limits<long long>::max()}) {
+				const V compressed = series_power(V{7, 3}, U(k), (n - 1) / d + 1);
+				V expected(n);
+				for (std::size_t i = 0; i < compressed.size(); ++i) expected[i * d] = compressed[i];
+				equal(make(a).pow(k), expected);
+			}
+		}
+		const int n = 2 * d + 6;
+		V a(n); a[1] = 7; a[1 + d] = 3;
+		equal(make(a).pow(5), series_power(a, 5, n));
+		equal(make(a).pow(std::numeric_limits<long long>::max()), V(n));
+	}
+}
 void square_roots() {
 	std::mt19937_64 rng(185436);
 	check(power(3, (mod - 1) / 2) == mod - 1);
@@ -298,6 +315,7 @@ void closed_form_tails() {
 int main() {
 	basics();
 	series();
+	one_term_powers();
 	square_roots();
 	dense_boundaries();
 	short_exponentials();
