@@ -131,7 +131,7 @@ inline bool witnesses(const Montgomery &m, typename Montgomery::U d, int s,
 	const std::array<typename Montgomery::U, Count> &bases, Multiply multiply) {
 	using V = typename Montgomery::U;
 	std::array<V, Count> x;
-	if constexpr (Count <= 2) {
+	if (Count <= 2 || d < 4096) {
 		std::array<V, Count> a;
 #pragma GCC unroll 8
 		for (std::size_t i = 0; i < Count; ++i) a[i] = x[i] = m.in(bases[i] % m.mod);
@@ -207,7 +207,7 @@ inline bool prime(const Montgomery64 &m) {
 		});
 	}
 	auto multiply = [&](U a, U b) { return m.mul(a, b); };
-	return witness2(m, d, s, multiply) && witnesses(m, d, s, bases, multiply);
+	return witnesses(m, d, s, std::array<U, 1>{2}, multiply) && witnesses(m, d, s, bases, multiply);
 }
 }
 
