@@ -309,7 +309,6 @@ class FenwickSum {
 
 
 #line 7 "data_structure/weighted_wavelet_matrix.hpp"
-#include <numeric>
 
 template <class T = std::int64_t, class Count = std::int64_t,
 		class Sum = std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>>
@@ -488,8 +487,7 @@ class WeightedWaveletMatrix {
 		}
 		counts[0].build(root);
 		std::vector<std::uint32_t> current = index.original, next(a.size());
-		std::vector<int> order(a.size()), next_order(a.size());
-		std::iota(order.begin(), order.end(), 0);
+		std::vector<Count> next_weights(a.size());
 		for (int d = 0; d < levels; ++d) {
 			int shift = 2 * (levels - 1 - d);
 			bits.emplace_back(size());
@@ -503,14 +501,14 @@ class WeightedWaveletMatrix {
 			auto cursor = middle[d];
 			for (int i = 0; i < size(); ++i) {
 				int digit = (current[i] >> shift) & 3;
-				Count node = root[order[i]];
+				Count node = root[i];
 				if (!(digit & 2)) zero[0].push_back(node);
 				if (!(digit & 1)) zero[1 + (digit >> 1)].push_back(node);
 				int p = cursor[digit]++;
-				next[p] = current[i], next_order[p] = order[i];
+				next[p] = current[i], next_weights[p] = node;
 			}
 			for (int j = 0; j < 3; ++j) counts[3 * d + 1 + j].build(zero[j]);
-			current.swap(next), order.swap(next_order);
+			current.swap(next), root.swap(next_weights);
 		}
 		if (with_sum) prepare_sum();
 	}
@@ -551,7 +549,7 @@ class WeightedWaveletMatrix {
 		weights[from] -= amount;
 		weights[to] += amount;
 		std::uint32_t x = index.original[from], y = index.original[to];
-		Node minus{-amount, sum_ready ? -Sum(index.values[x]) * amount : Sum(0)}, plus{amount, sum_ready ? Sum(index.values[y]) * amount : Sum(0)};
+		Node minus{Count(-amount), sum_ready ? -Sum(index.values[x]) * amount : Sum(0)}, plus{amount, sum_ready ? Sum(index.values[y]) * amount : Sum(0)};
 		add_pair(0, from, minus, to, plus);
 		for (int d = 0; d < levels; ++d) {
 			int shift = 2 * (levels - 1 - d), a = (x >> shift) & 3, b = (y >> shift) & 3;
@@ -839,40 +837,120 @@ public:
 };
 
 
-#line 4 "test/weighted_wavelet_matrix_rectangle.test.cpp"
+#line 1 "components/radix_sort.hpp"
+
+
+
+#line 9 "components/radix_sort.hpp"
+#include <utility>
+#line 11 "components/radix_sort.hpp"
+
+template <int Bits, class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key &&key) {
+	static_assert(1 <= Bits && Bits <= 16);
+	constexpr unsigned buckets = 1U << Bits, mask = buckets - 1;
+	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
+	static_assert(std::is_integral_v<K> && std::is_unsigned_v<K> && sizeof(K) <= sizeof(std::uint64_t));
+	if (values.size() < 2) return;
+	if (values.size() < 256) {
+		std::stable_sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
+		return;
+	}
+	std::uint64_t first = key(values.front()), previous = first, varying = 0;
+	bool sorted = true;
+	for (std::size_t i = 1; i < values.size(); ++i) {
+		std::uint64_t current = key(values[i]);
+		varying |= first ^ current;
+		sorted &= previous <= current;
+		previous = current;
+	}
+	if (sorted) return;
+	std::vector<T> scratch(values.size());
+	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
+	Counts count = [] {
+		if constexpr (Bits <= 11) return Counts{};
+		else return Counts(buckets);
+	}();
+	for (int shift = 0; shift < 64; shift += Bits) {
+		if (!((varying >> shift) & mask)) continue;
+		std::fill(count.begin(), count.end(), 0);
+		for (const auto &value : values) ++count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask];
+		std::size_t sum = 0;
+		for (auto &x : count) {
+			auto n = x;
+			x = sum, sum += n;
+		}
+		for (auto &&value : values) scratch[count[(static_cast<std::uint64_t>(key(value)) >> shift) & mask]++] = std::move(value);
+		values.swap(scratch);
+	}
+}
+
+template <class T, class Key>
+void stable_radix_sort(std::vector<T> &values, Key key) {
+	stable_radix_sort<8>(values, std::move(key));
+}
+
+namespace radix_sort_detail {
+template <int Bits = 8, class T, class Key>
+void sort_by_key(std::vector<T> &values, Key key) {
+	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
+	if constexpr (std::is_integral_v<K> && !std::is_same_v<K, bool> && sizeof(K) <= 8 && std::is_default_constructible_v<T>) {
+		using U = std::make_unsigned_t<K>;
+		constexpr U sign = std::is_signed_v<K> ? U(1) << (sizeof(K) * 8 - 1) : U(0);
+		stable_radix_sort<Bits>(values, [&](const T &value) { return U(U(key(value)) ^ sign); });
+	} else std::sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
+}
+}
+
+
+#line 5 "test/weighted_wavelet_matrix_rectangle.test.cpp"
 
 int main() {
 	FastInput input;
 	FastOutput output;
 	int n = 0, q = 0;
 	input.read(n); input.read(q);
-	struct Point { int x, y; std::int64_t weight; };
-	struct Query { int type, x, y, r, u; std::int64_t weight; };
-	std::vector<Point> points(n);
-	for (auto &p : points) input.read(p.x), input.read(p.y), input.read(p.weight);
+	struct Query { int type, x, y, r, u; std::uint32_t weight; };
 	std::vector<Query> queries(q);
-	for (auto &z : queries) {
-		input.read(z.type); input.read(z.x); input.read(z.y);
-		if (!z.type) input.read(z.weight), points.push_back({z.x, z.y, 0});
-		else input.read(z.r), input.read(z.u);
-	}
-	std::sort(points.begin(), points.end(), [](auto a, auto b) { return std::pair(a.x, a.y) < std::pair(b.x, b.y); });
-	std::vector<std::pair<int, int>> coordinates;
-	std::vector<int> values;
+	std::vector<int> xs, values;
 	std::vector<std::int64_t> weights;
-	for (auto p : points) {
-		if (!coordinates.empty() && coordinates.back() == std::pair(p.x, p.y)) weights.back() += p.weight;
-		else coordinates.emplace_back(p.x, p.y), values.push_back(p.y), weights.push_back(p.weight);
+	{
+		struct Point { int x, y, id; std::uint32_t weight; };
+		std::vector<Point> points(n);
+		for (auto &p : points) input.read(p.x), input.read(p.y), input.read(p.weight), p.id = -1;
+		for (int i = 0; i < q; ++i) {
+			auto &z = queries[i];
+			input.read(z.type); input.read(z.x); input.read(z.y);
+			if (!z.type) input.read(z.weight), points.push_back({z.x, z.y, i, 0});
+			else input.read(z.r), input.read(z.u);
+		}
+		stable_radix_sort<11>(points, [](const Point &p) { return (std::uint64_t(std::uint32_t(p.x)) << 32) | std::uint32_t(p.y); });
+		xs.reserve(points.size()); values.reserve(points.size()); weights.reserve(points.size());
+		int previous_x = -1, previous_y = -1;
+		for (auto p : points) {
+			if (!xs.empty() && p.x == previous_x && p.y == previous_y) weights.back() += p.weight;
+			else xs.push_back(p.x), values.push_back(p.y), weights.push_back(p.weight);
+			previous_x = p.x; previous_y = p.y;
+			if (p.id >= 0) queries[p.id].x = int(weights.size()) - 1;
+		}
+	}
+	{
+		std::vector<std::pair<int, int>> bounds;
+		for (int i = 0; i < q; ++i) if (queries[i].type) {
+			bounds.emplace_back(queries[i].x, i * 2);
+			bounds.emplace_back(queries[i].r, i * 2 + 1);
+		}
+		stable_radix_sort<11>(bounds, [](const auto &v) { return unsigned(v.first); });
+		int p = 0;
+		for (auto [x, id] : bounds) {
+			while (p < int(xs.size()) && xs[p] < x) ++p;
+			if (id & 1) queries[id / 2].r = p;
+			else queries[id / 2].x = p;
+		}
 	}
 	WeightedWaveletMatrix<int, std::int64_t, __int128_t> wm(values, weights, false);
 	for (auto z : queries) {
-		if (!z.type) {
-			int p = std::lower_bound(coordinates.begin(), coordinates.end(), std::pair(z.x, z.y)) - coordinates.begin();
-			wm.add_weight(p, z.weight);
-		} else {
-			int l = std::lower_bound(coordinates.begin(), coordinates.end(), std::pair(z.x, -1)) - coordinates.begin();
-			int r = std::lower_bound(coordinates.begin(), coordinates.end(), std::pair(z.r, -1)) - coordinates.begin();
-			output.println(wm.range_freq(l, r, z.y, z.u));
-		}
+		if (!z.type) wm.add_weight(z.x, z.weight);
+		else output.println(wm.range_freq(z.x, z.r, z.y, z.u));
 	}
 }

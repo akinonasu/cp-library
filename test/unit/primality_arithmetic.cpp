@@ -1,4 +1,5 @@
 #include "math/factorize.hpp"
+#include "math/is_prime_light.hpp"
 #include <cassert>
 #include <cstdint>
 #include <limits>
@@ -56,10 +57,14 @@ int main() {
 	auto check_prime = [](U n) {
 		const bool expected = prime(n);
 		assert(is_prime(n) == expected);
+		assert(light_is_prime(n) == expected);
 		if (n > 1 && (n & 1)) {
 			assert(is_prime_detail::prime(Montgomery64(n)) == expected);
-			if (n <= std::numeric_limits<std::uint32_t>::max())
+			assert(is_prime_detail::fast_prime(Montgomery64(n)) == expected);
+			if (n <= std::numeric_limits<std::uint32_t>::max()) {
 				assert(is_prime_detail::prime(Montgomery32(n)) == expected);
+				assert(is_prime_detail::fast_prime(Montgomery32(n)) == expected);
+			}
 		}
 	};
 	assert(!is_prime(0) && !is_prime(1));
@@ -69,6 +74,7 @@ int main() {
 	std::vector<bool> composite(1000001);
 	for (U i = 2; i < composite.size(); ++i) {
 		assert(is_prime(i) == !composite[i]);
+		assert(light_is_prime(i) == !composite[i]);
 		if (!composite[i])
 			for (U j = i * i; j < composite.size(); j += i) composite[j] = true;
 	}
@@ -81,13 +87,14 @@ int main() {
 		U n = std::uint32_t(random()) | 1;
 		if (n == 1) n = 3;
 		check_montgomery<Montgomery64>(n, random);
-		assert(is_prime(n) == prime(n));
+		check_prime(n);
 		n = random();
-		assert(is_prime(n) == prime(n));
+		check_prime(n);
 	}
 	for (U n = 0; n <= 257; ++n) check_prime(n);
-	for (U n : {61ULL, 73ULL, 193ULL, 407521ULL, 299210837ULL}) check_prime(n);
-	for (unsigned bit : {30, 32, 62, 63}) {
+	for (U n : {61ULL, 73ULL, 193ULL, 407521ULL, 299210837ULL, 8651776913431ULL,
+				1152965996591997761ULL, 3315293452192821991ULL}) check_prime(n);
+	for (unsigned bit : {17, 30, 32, 49, 62, 63}) {
 		const U center = U(1) << bit;
 		for (U n = center - 4096; n < center + 4096; ++n) check_prime(n);
 	}

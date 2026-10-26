@@ -639,6 +639,8 @@ inline void pack(const char *src, std::uint64_t *dst, std::size_t words) {
 class PredecessorSet {
 	int n = 0, count = 0, height = 0;
 	std::array<int, 6> offset{}, length{};
+	std::array<int, 16> small{};
+	bool small_valid = false;
 	std::vector<std::uint64_t> data;
 	void mask_tail() {
 		int bits = n;
@@ -653,6 +655,57 @@ class PredecessorSet {
 		for (int h = 1; h < height; ++h)
 			for (int i = 0; i < length[h - 1]; ++i)
 				if (data[offset[h - 1] + i]) data[offset[h] + (i >> 6)] |= std::uint64_t(1) << (i & 63);
+		rebuild_small();
+	}
+
+	template <int H, bool Forward> int descend(int p) const {
+		if constexpr (H == 0) return p;
+		else {
+			auto word = data[offset[H - 1] + p];
+			int bit = Forward ? std::countr_zero(word) : 63 - std::countl_zero(word);
+			return descend<H - 1, Forward>(p * 64 + bit);
+		}
+	}
+	template <int H, bool Forward> int ascend(int p) const {
+		if constexpr (H == 6) return Forward ? n : -1;
+		else {
+			if (H >= height) return Forward ? n : -1;
+			auto word = data[offset[H] + (p >> 6)];
+			auto mask = Forward ? (~std::uint64_t(1) << (p & 63)) : ~(~std::uint64_t(0) << (p & 63));
+			word &= mask;
+			if (word) {
+				int bit = Forward ? std::countr_zero(word) : 63 - std::countl_zero(word);
+				return descend<H, Forward>((p & ~63) + bit);
+			}
+			return ascend<H + 1, Forward>(p >> 6);
+		}
+	}
+
+	void rebuild_small() {
+		small_valid = count <= int(small.size());
+		if (!small_valid) return;
+		small.fill(n);
+		for (int i = 0, p = 0; i < count; ++i) {
+			auto word = data[p >> 6] >> (p & 63);
+			p = word ? p + std::countr_zero(word) : ascend<1, true>(p >> 6);
+			small[i] = p++;
+		}
+	}
+
+	int small_rank(int p) const {
+#if defined(__AVX512F__) && defined(__x86_64__)
+		auto keys = _mm512_loadu_si512(small.data());
+		return std::popcount(unsigned(_mm512_cmp_epi32_mask(keys, _mm512_set1_epi32(p), _MM_CMPINT_LT)));
+#elif defined(__AVX2__) && defined(__x86_64__)
+		auto key = _mm256_set1_epi32(p);
+		auto a = _mm256_cmpgt_epi32(key, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(small.data())));
+		auto b = _mm256_cmpgt_epi32(key, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(small.data() + 8)));
+		return std::popcount(unsigned(_mm256_movemask_ps(_mm256_castsi256_ps(a)))) + std::popcount(unsigned(_mm256_movemask_ps(_mm256_castsi256_ps(b))));
+#else
+		int result = 0;
+		for (int x : small) result += x < p;
+		return result;
+#endif
 	}
 
 public:
@@ -695,6 +748,7 @@ public:
 		}
 		data.assign(total, filled ? ~std::uint64_t(0) : 0);
 		if (filled) mask_tail();
+		rebuild_small();
 	}
 	void assign(std::string_view bits) {
 		assert(bits.size() <= std::size_t(std::numeric_limits<int>::max()));
@@ -720,67 +774,88 @@ public:
 	bool contains(int p) const { assert(0 <= p && p < n); return data[p >> 6] >> (p & 63) & 1; }
 	bool insert(int p) {
 		assert(0 <= p && p < n);
-		if (contains(p)) return false;
-		++count;
-		for (int h = 0; h < height; ++h) {
-			auto &word = data[offset[h] + (p >> 6)];
-			auto before = word;
-			word |= std::uint64_t(1) << (p & 63);
-			if (before) break;
-			p >>= 6;
+		int index = p >> 6;
+		auto &leaf = data[index];
+		auto mask = std::uint64_t(1) << (p & 63), before = leaf;
+		leaf = before | mask;
+		bool changed = !(before & mask);
+		count += changed;
+		if (!before) for (int h = 1; h < height; ++h) {
+			auto &word = data[offset[h] + (index >> 6)];
+			auto old = word;
+			word |= std::uint64_t(1) << (index & 63);
+			if (old) break;
+			index >>= 6;
 		}
-		return true;
+		small_valid = false;
+		return changed;
 	}
 	bool erase(int p) {
 		assert(0 <= p && p < n);
-		if (!contains(p)) return false;
-		--count;
-		for (int h = 0; h < height; ++h) {
-			auto &word = data[offset[h] + (p >> 6)];
-			word &= ~(std::uint64_t(1) << (p & 63));
+		int index = p >> 6;
+		auto &leaf = data[index];
+		auto mask = std::uint64_t(1) << (p & 63), before = leaf;
+		leaf = before & ~mask;
+		bool changed = (before & mask) != 0;
+		count -= changed;
+		if (before && !leaf) for (int h = 1; h < height; ++h) {
+			auto &word = data[offset[h] + (index >> 6)];
+			word &= ~(std::uint64_t(1) << (index & 63));
 			if (word) break;
-			p >>= 6;
+			index >>= 6;
 		}
-		return true;
+		small_valid = false;
+		return changed;
 	}
 	int next(int p) const {
 		p = std::max(p, 0);
 		if (p >= n || !count) return n;
-		for (int h = 0; h < height; ++h) {
-			if ((p >> 6) >= length[h]) return n;
-			auto word = data[offset[h] + (p >> 6)] >> (p & 63);
-			if (word) {
-				p += std::countr_zero(word);
-				while (h--) p = p * 64 + std::countr_zero(data[offset[h] + p]);
-				return p;
-			}
-			p = (p >> 6) + 1;
+		if (small_valid) {
+			int index = small_rank(p);
+			return index == count ? n : small[index];
 		}
-		return n;
+		auto local = data[p >> 6] >> (p & 63);
+		if (local) return p + std::countr_zero(local);
+		return ascend<1, true>(p >> 6);
 	}
 	int prev(int p) const {
 		p = std::min(p, n - 1);
 		if (p < 0 || !count) return -1;
-		for (int h = 0; h < height; ++h) {
-			auto word = data[offset[h] + (p >> 6)] << (63 - (p & 63));
-			if (word) {
-				p -= std::countl_zero(word);
-				while (h--) p = p * 64 + 63 - std::countl_zero(data[offset[h] + p]);
-				return p;
-			}
-			p = (p >> 6) - 1;
-			if (p < 0) return -1;
+		if (small_valid) {
+			int index = small_rank(p + 1);
+			return index ? small[index - 1] : -1;
 		}
-		return -1;
+		auto local = data[p >> 6] << (63 - (p & 63));
+		if (local) return p - std::countl_zero(local);
+		return ascend<1, false>(p >> 6);
 	}
-	bool set(int p, bool present) { return present ? insert(p) : erase(p); }
+	bool set(int p, bool present) {
+		assert(0 <= p && p < n);
+		int index = p >> 6;
+		auto &leaf = data[index];
+		auto mask = std::uint64_t(1) << (p & 63), before = leaf;
+		auto fill = std::uint64_t(0) - present;
+		leaf = before ^ ((before ^ fill) & mask);
+		bool old = (before & mask) != 0;
+		count += int(present) - int(old);
+		if ((!before) != (!leaf)) for (int h = 1; h < height; ++h) {
+			auto &word = data[offset[h] + (index >> 6)];
+			auto previous = word;
+			word = previous ^ ((previous ^ fill) & (std::uint64_t(1) << (index & 63)));
+			if ((!previous) == (!word)) break;
+			index >>= 6;
+		}
+		small_valid = false;
+		return old != present;
+	}
 	int min() const { return next(0); }
 	int max() const { return prev(n - 1); }
-	void clear() { std::fill(data.begin(), data.end(), 0); count = 0; }
+	void clear() { std::fill(data.begin(), data.end(), 0); count = 0; small_valid = false; }
 	void fill() {
 		std::fill(data.begin(), data.end(), ~std::uint64_t(0));
 		mask_tail();
 		count = n;
+		rebuild_small();
 	}
 	template <class F> void for_each(int l, int r, F &&f) const {
 		assert(0 <= l && l <= r && r <= n);
@@ -803,7 +878,7 @@ public:
 	void swap(PredecessorSet &other) noexcept {
 		using std::swap;
 		swap(n, other.n); swap(count, other.count); swap(height, other.height);
-		offset.swap(other.offset); length.swap(other.length); data.swap(other.data);
+		offset.swap(other.offset); length.swap(other.length); data.swap(other.data); small.swap(other.small); swap(small_valid, other.small_valid);
 	}
 	std::size_t memory_usage() const { return data.capacity() * sizeof(std::uint64_t); }
 };

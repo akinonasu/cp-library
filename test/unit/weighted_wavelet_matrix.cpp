@@ -80,6 +80,58 @@ void check(const std::vector<T> &a, std::mt19937_64 &random) {
 	}
 }
 
+template <class Count>
+void check_count_width() {
+	using Sum = __int128_t;
+	using WM = WeightedWaveletMatrix<std::int64_t, Count, Sum>;
+	const Count limit = std::numeric_limits<Count>::max();
+	const std::array<std::int64_t, 9> bounds{INT64_MIN, INT64_MIN + 1, -11, -1, 0, 1, 11, INT64_MAX - 1, INT64_MAX};
+	for (int n : {0, 1, 7, 8, 9, 15, 16, 17, 63, 64, 65, 255, 256, 257}) {
+		std::vector<std::int64_t> a(n);
+		std::vector<Count> weights(n);
+		for (int i = 0; i < n; ++i) a[i] = i % 7 ? (i * 37) % n - n / 2 : -5;
+		if (n) {
+			a.front() = INT64_MIN; a.back() = INT64_MAX;
+			weights.front() = limit / 2;
+			weights.back() += limit - weights.front();
+		}
+		WM wm(a, weights, false);
+		auto verify = [&](const WM &tree, bool with_sum) {
+			std::vector<std::pair<int, int>> ranges{{0, n}, {0, n / 2}, {n / 3, n}, {n / 2, n / 2}, {0, 0}};
+			if (n) ranges.emplace_back(n - 1, n);
+			if (n <= 8) for (int l = 0; l <= n; ++l) for (int r = l; r <= n; ++r) ranges.emplace_back(l, r);
+			for (auto [l, r] : ranges) {
+				Sum total = 0, total_sum = 0;
+				for (int i = l; i < r; ++i) total += weights[i], total_sum += Sum(a[i]) * weights[i];
+				require(tree.count(l, r) == total);
+				if (with_sum) require(tree.range_sum(l, r) == total_sum);
+				for (auto low : bounds) for (auto high : bounds) {
+					Sum count = 0, sum = 0;
+					for (int i = l; i < r; ++i) if (low <= a[i] && a[i] < high) count += weights[i], sum += Sum(a[i]) * weights[i];
+					require(tree.range_freq(l, r, low, high) == count);
+					if (with_sum) require(tree.range_sum(l, r, low, high) == sum);
+				}
+			}
+		};
+		verify(wm, false);
+		if (n) {
+			Count amount = weights.front() / 2;
+			wm.move_weight(0, n - 1, amount);
+			weights.front() -= amount; weights.back() += amount;
+		}
+		verify(wm, false);
+		wm.prepare_sum(); verify(wm, true);
+		if (n) {
+			Count removed = weights.back() / 2;
+			wm.set_weight(n - 1, weights.back() - removed); weights.back() -= removed;
+			wm.add_weight(0, removed / 2); weights.front() += removed / 2;
+		}
+		verify(wm, true);
+		auto copy = wm; verify(copy, true);
+		copy.build(a, weights, false); copy.prepare_sum(); verify(copy, true);
+	}
+}
+
 int main() {
 	std::mt19937_64 random(498937);
 	check(std::vector<int>{}, random);
@@ -147,5 +199,9 @@ int main() {
 	require(huge.max_count_smallest(0, 3, __int128_t(5) * (INT64_MAX / 4)) == INT64_MAX / 4 + 1);
 	WeightedWaveletMatrix<int> empty;
 	require(empty.empty() && empty.count(0, 0) == 0 && empty.range_sum(0, 0) == 0);
+	check_count_width<std::int8_t>();
+	check_count_width<std::int16_t>();
+	check_count_width<std::int32_t>();
+	check_count_width<std::int64_t>();
 	std::puts("Weighted Wavelet Matrix OK");
 }
