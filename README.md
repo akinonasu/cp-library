@@ -315,6 +315,7 @@
 | --- | --- | --- |
 | `math/mint.hpp` | modint998244353 | [使い方](docs/mint.md) |
 | `math/modint.hpp` | 任意の法の静的・動的 modint | [使い方](docs/modint.md) |
+| `math/bigint.hpp` | 符号付き多倍長整数・四則演算・10 進入出力 | [使い方](docs/bigint.md) |
 | `math/fraction.hpp` | 有理数の四則演算・正確な比較 | [使い方](docs/fraction.md) |
 
 ### 数学ユーティリティ
@@ -398,6 +399,7 @@
 | `components/min_cost_simplex.hpp` | 最小費用流の Network Simplex | [使い方](docs/min_cost_simplex.md) |
 | `components/small_vector.hpp` | Small Vector | [使い方](docs/small_vector.md) |
 | `components/limb_arithmetic.hpp` | Limb Arithmetic | [使い方](docs/limb_arithmetic.md) |
+| `components/bigint_magnitude.hpp` | 多倍長整数の絶対値演算・NTT 乗算・逆数除算 | [使い方](docs/bigint_magnitude.md) |
 | `components/integer_arithmetic.hpp` | 整数型の判定・オーバーフローを検出する加算と乗算 | [使い方](docs/integer_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
 | `components/fast_io_bulk.hpp` | 非負整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
