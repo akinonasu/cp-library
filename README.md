@@ -457,6 +457,7 @@
 | `components/dijkstra_unique.hpp` | Dijkstra の一意経路の探索 | [使い方](docs/dijkstra_unique.md) |
 | `components/warshall_floyd_kernel.hpp` | ワーシャルフロイド法のブロック・SIMD 演算 | [使い方](docs/warshall_floyd_kernel.md) |
 | `components/scc_core.hpp` | 反復 SCC の共通部品 | [使い方](docs/scc_core.md) |
+| `components/two_sat_core.hpp` | 2-SAT の含意伝播・強連結成分判定の共通部品 | [使い方](docs/two_sat_core.md) |
 | `components/shortest_path_scc.hpp` | 最短路で使う到達可能部分の強連結成分分解 | [使い方](docs/shortest_path_scc.md) |
 | `components/directed_csr.hpp` | 重み付き有向グラフの CSR | [使い方](docs/directed_csr.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
