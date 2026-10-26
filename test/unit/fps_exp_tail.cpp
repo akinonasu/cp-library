@@ -54,7 +54,7 @@ int main() {
 		require(munmap(a, 8192) == 0 && munmap(b, 8192) == 0);
 	}
 
-	for (const std::size_t n : {1u, 2u, 7u, 31u, 63u, 64u, 65u, 255u, 256u, 257u, 4095u, 4096u, 4097u, 4098u, 4099u, 4100u, 4101u, 8193u, 16385u, 262143u, 262144u, 262145u, 262148u, 262149u}) {
+	for (const std::size_t n : {1u, 2u, 7u, 31u, 63u, 64u, 65u, 255u, 256u, 257u, 4095u, 4096u, 4097u, 4098u, 4099u, 4100u, 4101u, 4104u, 4112u, 4113u, 8193u, 16385u, 262143u, 262144u, 262145u, 262148u, 262149u, 262160u, 262161u}) {
 		for (const std::size_t input : {std::size_t(0), std::size_t(1), std::size_t(7), n / 3, n, n + 17}) {
 			std::vector<Mint> in(input);
 			for (auto& x : in) x = Mint::word(2 * Mint::mod() - 1 - rng() % 1000);
@@ -65,7 +65,7 @@ int main() {
 				fps_detail::blocked_poly::native_exp(in.data(), input, actual, n, differentiated);
 				require(actual.size() == n + 2 && actual[0] == Mint(5) && actual[1] == Mint(7));
 				const auto prefix = std::bit_floor(n), rest = n - prefix;
-				const auto direct = prefix >= 4096 && rest && rest <= 4;
+				const auto direct = prefix >= 4096 && rest && rest <= 16;
 				const auto known = direct ? prefix : n;
 				fps_detail::blocked_poly::native_exp_regular(in.data(), input, base, known, differentiated);
 				for (std::size_t i = 0; i < known; ++i) require(actual[i + 2] == base[i]);

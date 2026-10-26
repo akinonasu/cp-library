@@ -139,13 +139,9 @@ void leaf8(mint *a, size_t n, const mint *roots) {
 
 __attribute__((target("avx2")))
 inline void expand_roots(mint *out, const mint *previous, size_t n, mint step) {
-	const auto factor = _mm256_set1_epi32(step.v);
-	for (size_t i = 0; i < n; i += 8) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(previous + i));
-		auto y = product(x, factor);
-		auto low = _mm256_unpacklo_epi32(x, y), high = _mm256_unpackhi_epi32(x, y);
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(out + 2 * i), _mm256_permute2x128_si256(low, high, 0x20));
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(out + 2 * i + 8), _mm256_permute2x128_si256(low, high, 0x31));
+	for (size_t i = 0; i < n; ++i) {
+		out[2 * i].v = previous[i].v;
+		out[2 * i + 1].v = mint::reduce(static_cast<unsigned long long>(previous[i].v) * step.v);
 	}
 }
 

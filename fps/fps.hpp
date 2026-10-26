@@ -300,7 +300,15 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if constexpr (std::is_same_v<T, mint>) {
 			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
 				F result;
-				fps_detail::blocked_poly::native_sqrt(this->data() + first, last - first, result, target, constant);
+				const int block = std::bit_floor(unsigned(target)), tail = target - block;
+				const int work = block >= 512 && tail <= 8 ? block : target;
+				fps_detail::blocked_poly::native_sqrt(this->data() + first, last - first, result, work, constant);
+				if (work < target) {
+					result.resize(target);
+					const T factor = (constant * T(2)).inv();
+					for (int i = work; i < target; ++i)
+						result[i] = ((first + i < last ? (*this)[first + i] : T(0)) - dot(result.data() + 1, result.data() + i - 1, i - 1)) * factor;
+				}
 				result.insert(result.begin(), shift, T(0));
 				return result;
 			}

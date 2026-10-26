@@ -2394,9 +2394,9 @@ public:
 	void cyclic_product(Words a, ConstWords b) const { cyclic_product(a, 0, a, b); }
 
 	void inverse_product(ConstWords a, ConstWords b, Words out,
-						Half output = Half::kBoth) const {
+						Half output = Half::kBoth, Word c = 1) const {
 		using namespace blocked_ntt::detail;
-		const Word scale = inverse_scale(out.size(), true);
+		const Word scale = multiply_mod(inverse_scale(out.size(), true), c);
 		const detail::ProductBottom product{roots_, inverse_roots_, b.data()};
 		run(out, detail::Source(nullptr, 0, 0), detail::InverseProductBottom{product, a.data()}, scale, output);
 	}
@@ -2633,7 +2633,7 @@ inline void divide_by_index(ConstWords a, size_t first, Words q) {
 
 }
 
-#line 983 "components/fps_blocked.hpp"
+#line 974 "components/fps_blocked.hpp"
 
 namespace blocked_poly {
 
@@ -3389,7 +3389,7 @@ inline void native_exp_regular(const mint *in, size_t input, std::vector<mint> &
 
 inline void native_exp(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool differentiated = false) {
 	const size_t prefix = std::bit_floor(n), tail = n - prefix;
-	if (prefix >= 4096 && tail && tail <= 4) {
+	if (prefix >= 4096 && tail && tail <= 16) {
 		const size_t offset = out.size();
 		prepare_fps_output(out, offset + n);
 		native_exp_regular(in, input, out, prefix, differentiated);
@@ -3995,9 +3995,11 @@ public:
 	}
 	Word* a() { return a_; }
 	Word* b() { return b_; }
-	const Word* multiply() {
+	const Word* multiply(bool square = false) {
 		transform_.forward(ConstWords(b_, m_), 0, Words(b_, len_));
-		transform_.cyclic_product(ConstWords(a_, n_), 0,
+		if (square) transform_.inverse_product(ConstWords(b_, len_), ConstWords(b_, len_), Words(a_, len_),
+			blocked_poly::Half::kBoth, detail::power(detail::kR, kernels::kP - 2));
+		else transform_.cyclic_product(ConstWords(a_, n_), 0,
 			Words(a_, len_), ConstWords(b_, len_), blocked_poly::Half::kBoth, detail::power(detail::kR, kernels::kP - 2));
 		return a_;
 	}
@@ -4073,9 +4075,9 @@ inline std::vector<mint> run_borrowed_as(const std::vector<mint>& a, const std::
 	const size_t offset = ((alignment - (address & (alignment - 1))) & (alignment - 1)) / sizeof(mint);
 	mint* const to = result.data() + offset;
 	Plan plan(a.size(), b.size(), reinterpret_cast<Word*>(to));
-	copy_input_mint(a, to);
+	if (&a != &b) copy_input_mint(a, to);
 	copy_input(b, plan.b(), len);
-	plan.multiply();
+	plan.multiply(&a == &b);
 	if (offset) std::memmove(static_cast<void*>(result.data()), to, size * sizeof(mint));
 	result.resize(size);
 	return result;
@@ -4790,18 +4792,14 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 
 	F &operator<<=(int d) {
 		assert(d >= 0);
-		const int n = static_cast<int>(this->size());
-		if (d >= n) return *this = F(n);
-		this->insert(this->begin(), d, T(0));
-		this->resize(n);
+		auto edge = std::shift_right(this->begin(), this->end(), d);
+		std::fill(this->begin(), edge, T(0));
 		return *this;
 	}
 	F &operator>>=(int d) {
 		assert(d >= 0);
-		const int n = static_cast<int>(this->size());
-		if (d >= n) return *this = F(n);
-		this->erase(this->begin(), this->begin() + d);
-		this->resize(n);
+		auto edge = std::shift_left(this->begin(), this->end(), d);
+		std::fill(edge, this->end(), T(0));
 		return *this;
 	}
 
@@ -5003,7 +5001,15 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		if constexpr (std::is_same_v<T, mint>) {
 			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
 				F result;
-				fps_detail::blocked_poly::native_sqrt(this->data() + first, last - first, result, target, constant);
+				const int block = std::bit_floor(unsigned(target)), tail = target - block;
+				const int work = block >= 512 && tail <= 8 ? block : target;
+				fps_detail::blocked_poly::native_sqrt(this->data() + first, last - first, result, work, constant);
+				if (work < target) {
+					result.resize(target);
+					const T factor = (constant * T(2)).inv();
+					for (int i = work; i < target; ++i)
+						result[i] = ((first + i < last ? (*this)[first + i] : T(0)) - dot(result.data() + 1, result.data() + i - 1, i - 1)) * factor;
+				}
 				result.insert(result.begin(), shift, T(0));
 				return result;
 			}

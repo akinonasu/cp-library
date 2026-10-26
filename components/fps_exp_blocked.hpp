@@ -409,7 +409,7 @@ inline void native_exp_regular(const mint *in, size_t input, std::vector<mint> &
 
 inline void native_exp(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool differentiated = false) {
 	const size_t prefix = std::bit_floor(n), tail = n - prefix;
-	if (prefix >= 4096 && tail && tail <= 4) {
+	if (prefix >= 4096 && tail && tail <= 16) {
 		const size_t offset = out.size();
 		prepare_fps_output(out, offset + n);
 		native_exp_regular(in, input, out, prefix, differentiated);
