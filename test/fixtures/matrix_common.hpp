@@ -1,13 +1,17 @@
 #ifndef TEST_MATRIX_COMMON_HPP
 #define TEST_MATRIX_COMMON_HPP
 
-#include "components/fast_io.hpp"
+#include "components/fast_io_bulk.hpp"
 #include "math/matrix.hpp"
 #include "math/mint.hpp"
 
 inline Matrix<mint> read_matrix(FastInput &in, int n, int m) {
 	Matrix<mint> a(n, m);
-	for (int i = 0; i < n; ++i) for (int j = 0; j < m; ++j) { unsigned x = 0; in.read(x); a(i, j) = mint::raw(x); }
+	auto *next = a.data();
+	read_unsigned_blocks(in, std::size_t(n) * m, [&](const std::uint32_t *values, std::size_t count) {
+		for (std::size_t i = 0; i < count; ++i) next[i] = mint::raw(values[i]);
+		next += count;
+	});
 	return a;
 }
 
