@@ -34,11 +34,8 @@ inline Word inverse(Word x) { return power(x, kP - 2); }
 inline Word mont(Word x) { return multiply_mod(x, kR); }
 inline Vec odd_lanes(Vec x) { return _mm256_srli_epi64(x, 32); }
 [[gnu::always_inline]] inline Vec montgomery(Vec a, Vec a_odd, Vec b, Vec b_odd) {
-	const Vec ni = broadcast(ntt::kernels::kNI), p = broadcast(kP);
 	Vec even = _mm256_mul_epu32(a, b), odd = _mm256_mul_epu32(a_odd, b_odd);
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
+	return mint_detail::Ops::reduce8(even, odd);
 }
 [[gnu::always_inline]] inline void transpose(Vec (&r)[8]) {
 	Vec t[8], u[8];

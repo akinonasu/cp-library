@@ -68,6 +68,12 @@ template<class T> struct Node {
 		return min_signed(value, _mm256_permute4x64_epi64(value, 0xb1));
 	}
 	static U reduce_min(__m256i value) { return U(_mm_cvtsi128_si64(_mm256_castsi256_si128(broadcast_min(value)))); }
+	static __m256i broadcast_min32(__m256i value) {
+		value = _mm256_min_epu32(value, _mm256_permute2x128_si256(value, value, 1));
+		value = _mm256_min_epu32(value, _mm256_shuffle_epi32(value, 0x4e));
+		return _mm256_min_epu32(value, _mm256_shuffle_epi32(value, 0xb1));
+	}
+	static U reduce_min32(__m256i value) { return U(std::uint32_t(_mm_cvtsi128_si32(_mm256_castsi256_si128(broadcast_min32(value))))); }
 	template<bool Narrow>
 	static __m256i minimum_vector(const U* values, unsigned l, unsigned r, U neutral) {
 		auto identity = _mm256_set1_epi64x(std::bit_cast<T>(neutral));
@@ -83,6 +89,48 @@ template<class T> struct Node {
 		return result;
 	}
 #endif
+	static T build(U* values, unsigned count) {
+		if (!count) return std::numeric_limits<T>::max();
+#if defined(__AVX512F__) && defined(__x86_64__)
+		if constexpr (sizeof(T) == 8) {
+			auto value = _mm512_loadu_si512(values);
+			unsigned valid = (1u << count) - 1;
+			T minimum = T(_mm512_mask_reduce_min_epi64(valid, value));
+			value = _mm512_mask_sub_epi64(value, valid, value, _mm512_set1_epi64(minimum));
+			_mm512_storeu_si512(values, value);
+			return minimum;
+		}
+#endif
+#if defined(__AVX2__) && defined(__x86_64__)
+		if constexpr (sizeof(T) == 8) {
+			auto first = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[count].data()));
+			auto last = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[count].data() + 4));
+			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(values));
+			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(values + 4));
+			auto identity = _mm256_set1_epi64x(std::numeric_limits<T>::max());
+			auto a = _mm256_blendv_epi8(identity, x, first), b = _mm256_blendv_epi8(identity, y, last);
+			auto minimum = broadcast_min(min_signed(a, b));
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(values), _mm256_sub_epi64(x, _mm256_and_si256(first, minimum)));
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(values + 4), _mm256_sub_epi64(y, _mm256_and_si256(last, minimum)));
+			return std::bit_cast<T>(U(_mm_cvtsi128_si64(_mm256_castsi256_si128(minimum))));
+		}
+		if constexpr (sizeof(T) == 4) {
+			auto valid = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[count].data()));
+			auto value = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(values));
+			auto sign = _mm256_set1_epi32(std::bit_cast<T>(sign_bit));
+			auto key = _mm256_xor_si256(value, sign);
+			key = _mm256_or_si256(key, _mm256_andnot_si256(valid, _mm256_set1_epi32(-1)));
+			auto minimum = _mm256_xor_si256(broadcast_min32(key), sign);
+			value = _mm256_sub_epi32(value, _mm256_and_si256(valid, minimum));
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(values), value);
+			return std::bit_cast<T>(U(std::uint32_t(_mm_cvtsi128_si32(_mm256_castsi256_si128(minimum)))));
+		}
+#endif
+		T minimum = std::bit_cast<T>(values[0]);
+		for (unsigned i = 1; i < count; ++i) minimum = std::min(minimum, std::bit_cast<T>(values[i]));
+		for (unsigned i = 0; i < count; ++i) values[i] = U(values[i] - U(minimum));
+		return minimum;
+	}
 	template<bool Narrow>
 	static U minimum(const U* values, unsigned l, unsigned r) {
 #if defined(__AVX512F__) && defined(__x86_64__)
@@ -98,6 +146,13 @@ template<class T> struct Node {
 			U result = reduce_min(minimum_vector<Narrow>(values, l, r, U(std::numeric_limits<T>::max())));
 			if constexpr (Narrow) return result;
 			else return result ^ sign_bit;
+		}
+		if constexpr (sizeof(T) == 4) {
+			auto first = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[l].data()));
+			auto last = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[r].data()));
+			auto value = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(values));
+			auto excluded = _mm256_xor_si256(_mm256_xor_si256(first, last), _mm256_set1_epi32(-1));
+			return reduce_min32(_mm256_or_si256(value, excluded));
 		}
 #endif
 		U result = umax;
@@ -165,6 +220,25 @@ template<class T> struct Node {
 			}
 			return change;
 		}
+		if constexpr (sizeof(T) == 4) {
+			auto first_mask = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[first].data()));
+			auto last_mask = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[last].data()));
+			auto old = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(values));
+			auto next = _mm256_add_epi32(old, _mm256_and_si256(_mm256_xor_si256(first_mask, last_mask), _mm256_set1_epi32(std::bit_cast<T>(delta))));
+			next = _mm256_add_epi32(next, _mm256_and_si256(_mm256_load_si256(reinterpret_cast<const __m256i*>(slots_[x].data())), _mm256_set1_epi32(std::bit_cast<T>(dx))));
+			next = _mm256_add_epi32(next, _mm256_and_si256(_mm256_load_si256(reinterpret_cast<const __m256i*>(slots_[y].data())), _mm256_set1_epi32(std::bit_cast<T>(dy))));
+			auto candidates = next;
+			if (negative) {
+				auto sign = _mm256_set1_epi32(std::bit_cast<T>(sign_bit));
+				auto wrapped = _mm256_cmpgt_epi32(_mm256_xor_si256(next, sign), _mm256_xor_si256(old, sign));
+				if (_mm256_movemask_epi8(wrapped)) candidates = _mm256_or_si256(next, _mm256_andnot_si256(wrapped, _mm256_set1_epi32(-1)));
+			}
+			U change = reduce_min32(candidates);
+			auto valid = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[count].data()));
+			next = _mm256_sub_epi32(next, _mm256_and_si256(valid, _mm256_set1_epi32(std::bit_cast<T>(change))));
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(values), next);
+			return change;
+		}
 #endif
 		U wrapped = umax, result = umax;
 		bool underflow = false;
@@ -210,6 +284,38 @@ template<class T> struct Node {
 			return {U(_mm_cvtsi128_si64(_mm256_castsi256_si128(minimum))), U(_mm_extract_epi64(_mm256_castsi256_si128(minimum), 1))};
 		}
 #endif
+#if defined(__AVX2__) && defined(__x86_64__)
+		if constexpr (sizeof(T) == 4) {
+			auto common = _mm256_set1_epi32(std::bit_cast<T>(delta));
+			auto prefix = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[first].data()));
+			auto suffix = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[last + 1].data()));
+			auto lc = _mm256_andnot_si256(prefix, common);
+			auto rc = _mm256_and_si256(suffix, common);
+			lc = _mm256_blendv_epi8(lc, _mm256_set1_epi32(std::bit_cast<T>(left_change)), _mm256_load_si256(reinterpret_cast<const __m256i*>(slots_[first].data())));
+			rc = _mm256_blendv_epi8(rc, _mm256_set1_epi32(std::bit_cast<T>(right_change)), _mm256_load_si256(reinterpret_cast<const __m256i*>(slots_[last].data())));
+			auto old_left = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(left));
+			auto old_right = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(right));
+			auto x = _mm256_add_epi32(old_left, lc), y = _mm256_add_epi32(old_right, rc);
+			auto a = x, b = y;
+			if (negative) {
+				auto sign = _mm256_set1_epi32(std::bit_cast<T>(sign_bit));
+				auto lx = _mm256_cmpgt_epi32(_mm256_xor_si256(x, sign), _mm256_xor_si256(old_left, sign));
+				auto ry = _mm256_cmpgt_epi32(_mm256_xor_si256(y, sign), _mm256_xor_si256(old_right, sign));
+				if (_mm256_movemask_epi8(lx)) a = _mm256_or_si256(x, _mm256_andnot_si256(lx, _mm256_set1_epi32(-1)));
+				if (_mm256_movemask_epi8(ry)) b = _mm256_or_si256(y, _mm256_andnot_si256(ry, _mm256_set1_epi32(-1)));
+			}
+			auto minimum = _mm256_min_epu32(_mm256_unpacklo_epi32(a, b), _mm256_unpackhi_epi32(a, b));
+			minimum = _mm256_min_epu32(minimum, _mm256_shuffle_epi32(minimum, 0x4e));
+			minimum = _mm256_min_epu32(minimum, _mm256_permute2x128_si256(minimum, minimum, 1));
+			auto lm = _mm256_shuffle_epi32(minimum, 0x00), rm = _mm256_shuffle_epi32(minimum, 0x55);
+			x = _mm256_sub_epi32(x, lm);
+			y = _mm256_sub_epi32(y, _mm256_and_si256(rm, _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[right_count].data()))));
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(left), x);
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(right), y);
+			auto low = _mm256_castsi256_si128(minimum);
+			return {U(std::uint32_t(_mm_cvtsi128_si32(low))), U(std::uint32_t(_mm_extract_epi32(low, 1)))};
+		}
+#endif
 		U a = first + 1 == branch ? change_one<Narrow>(left, branch, first, left_change, negative)
 			: normalize<Narrow>(left, branch, negative, first + 1, branch, delta, first, left_change);
 		U b = !last ? change_one<Narrow>(right, right_count, 0, right_change, negative)
@@ -237,6 +343,7 @@ template<class T> struct Node {
 			if constexpr (Narrow) return reduce_min(result);
 			else return reduce_min(result) ^ sign_bit;
 		}
+		if constexpr (sizeof(T) == 4) return reduce_min32(_mm256_loadu_si256(reinterpret_cast<const __m256i*>(values)));
 #endif
 		U result = umax;
 		for (unsigned i = 0; i < branch; ++i) result = std::min(result, values[i]);
@@ -261,8 +368,57 @@ template<class T> struct Node {
 			}
 			return;
 		}
+		if constexpr (sizeof(T) == 4) {
+			auto valid = _mm256_load_si256(reinterpret_cast<const __m256i*>(masks_[count].data()));
+			auto value = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(values));
+			value = _mm256_sub_epi32(value, _mm256_and_si256(valid, _mm256_set1_epi32(std::bit_cast<T>(change))));
+			_mm256_storeu_si256(reinterpret_cast<__m256i*>(values), value);
+			return;
+		}
 #endif
 		for (unsigned i = 0; i < count; ++i) values[i] -= change;
+	}
+
+	static void materialize(const U* values, T* result, unsigned count, U base) {
+		if (count == branch) {
+#if defined(__AVX512F__) && defined(__x86_64__)
+			if constexpr (sizeof(T) == 8) {
+				auto value = _mm512_loadu_si512(values);
+				value = _mm512_add_epi64(value, _mm512_set1_epi64(std::bit_cast<T>(base)));
+				_mm512_storeu_si512(result, value);
+				return;
+			}
+#endif
+#if defined(__AVX2__) && defined(__x86_64__)
+			if constexpr (sizeof(T) == 8) {
+				auto delta = _mm256_set1_epi64x(std::bit_cast<T>(base));
+				for (unsigned i = 0; i < branch; i += 4) {
+					auto value = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(values + i));
+					_mm256_storeu_si256(reinterpret_cast<__m256i*>(result + i), _mm256_add_epi64(value, delta));
+				}
+				return;
+			}
+			if constexpr (sizeof(T) == 4) {
+				auto value = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(values));
+				value = _mm256_add_epi32(value, _mm256_set1_epi32(std::bit_cast<T>(base)));
+				_mm256_storeu_si256(reinterpret_cast<__m256i*>(result), value);
+				return;
+			}
+			if constexpr (sizeof(T) == 2) {
+				auto value = _mm_loadu_si128(reinterpret_cast<const __m128i*>(values));
+				value = _mm_add_epi16(value, _mm_set1_epi16(std::bit_cast<T>(base)));
+				_mm_storeu_si128(reinterpret_cast<__m128i*>(result), value);
+				return;
+			}
+			if constexpr (sizeof(T) == 1) {
+				auto value = _mm_loadl_epi64(reinterpret_cast<const __m128i*>(values));
+				value = _mm_add_epi8(value, _mm_set1_epi8(std::bit_cast<T>(base)));
+				_mm_storel_epi64(reinterpret_cast<__m128i*>(result), value);
+				return;
+			}
+#endif
+		}
+		for (unsigned i = 0; i < count; ++i) result[i] = std::bit_cast<T>(U(values[i] + base));
 	}
 	template<bool Narrow>
 	static U change_one(U *values, unsigned count, unsigned index, U delta, bool negative) {
@@ -365,9 +521,13 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 	}
 	template<bool Narrow>
 	U query(std::size_t l, std::size_t r) const {
+		if constexpr (sizeof(T) < 8) if (!bound_) return 0;
 		--r;
 		std::size_t a = l >> bits, b = r >> bits;
-		if (a == b) return restore(1, a, Node::template minimum<Narrow>(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1));
+		if (a == b) {
+			if (l == r) return restore(0, l, 0);
+			return restore(1, a, Node::template minimum<Narrow>(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1));
+		}
 		U left = Node::template minimum<Narrow>(data_.data() + a * branch, l & (branch - 1), branch);
 		U right = Node::template minimum<Narrow>(data_.data() + b * branch, 0, (r & (branch - 1)) + 1);
 		for (unsigned level = 1;; ++level) {
@@ -396,6 +556,7 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 		--r;
 		std::size_t a = l >> bits, b = r >> bits;
 		if (a == b) {
+			if (l == r) return restore(0, l, 0);
 			auto value = query_block(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1);
 			U carry = restore(1, a, 0);
 			return Node::reduce_min(value) + carry;
@@ -429,14 +590,16 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 		unsigned count = unsigned(std::min<std::size_t>(branch, counts_[level] - index * branch));
 		return Node::template change_one<Narrow>(data_.data() + offsets_[level] + index * branch, count, child, change, negative);
 	}
-	void collect(unsigned level, std::size_t index, std::size_t start, std::size_t width, U carry, std::vector<T> &result) const {
+	void collect(unsigned level, std::size_t index, std::size_t start, std::size_t width, U base, std::vector<T> &result) const {
 		const U *values = data_.data() + offsets_[level] + index * branch;
-		std::size_t part = width / branch;
-		for (unsigned i = 0; i < branch && start + i * part < std::size_t(n_); ++i) {
-			U next = U(carry + values[i]);
-			if (!level) result[start + i] = added(root_, next);
-			else collect(level - 1, index * branch + i, start + i * part, part, next, result);
+		if (!level) {
+			unsigned count = unsigned(std::min<std::size_t>(branch, std::size_t(n_) - start));
+			Node::materialize(values, result.data() + start, count, base);
+			return;
 		}
+		std::size_t part = width / branch;
+		for (unsigned i = 0; i < branch && start + i * part < std::size_t(n_); ++i)
+			collect(level - 1, index * branch + i, start + i * part, part, U(base + values[i]), result);
 	}
 	void padding(U value) {
 		for (unsigned level = 0; level < height_; ++level) {
@@ -452,55 +615,60 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 			bool narrow = bound_ < limit_;
 			bound_ = narrow && amount < limit_ - bound_ ? U(bound_ + amount) : umax;
 			if (narrow && bound_ == umax) padding(umax);
+		} else bound_ = 1;
+	}
+	void allocate(int n, U value) {
+		n_ = n;
+		if (!n) return;
+		std::size_t total = 0, count = n;
+		for (unsigned level = 0;; ++level) {
+			std::size_t groups = (count + branch - 1) / branch;
+			offsets_[level] = total;
+			counts_[level] = count;
+			total += groups * branch;
+			if (width_ > std::numeric_limits<std::size_t>::max() / branch) throw std::length_error("RangeAddRangeMin size");
+			width_ *= branch;
+			if (groups == 1) { height_ = level + 1; break; }
+			count = groups;
 		}
+		data_.resize(total, value);
 	}
 	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n_); }
 public:
 	using value_type = T;
 	RangeAddRangeMin() = default;
-	explicit RangeAddRangeMin(int n, T value = 0) { assert(n >= 0); build(std::vector<T>(n, value)); }
+	explicit RangeAddRangeMin(int n, T value = 0) {
+		assert(n >= 0);
+		allocate(n, 0);
+		if (n) { root_ = value; minimum_pos_ = n / 2; padding(sizeof(T) == 8 ? 2 * limit_ : umax); }
+	}
 	explicit RangeAddRangeMin(const std::vector<T> &values) { build(values); }
 	RangeAddRangeMin(const RangeAddRangeMin &) = default;
 	RangeAddRangeMin(RangeAddRangeMin &&other) noexcept { swap(other); }
 	RangeAddRangeMin &operator=(RangeAddRangeMin other) noexcept { swap(other); return *this; }
 	void build(const std::vector<T> &values) {
 		assert(values.size() <= std::size_t(std::numeric_limits<int>::max()));
+		auto extremes = std::minmax_element(values.begin(), values.end());
+		if (!values.empty() && *extremes.first == *extremes.second) {
+			RangeAddRangeMin next(int(values.size()), *extremes.first);
+			swap(next);
+			return;
+		}
 		RangeAddRangeMin next;
-		next.n_ = int(values.size());
+		next.allocate(int(values.size()), umax);
 		if (!values.empty()) {
-			std::size_t capacity = 0;
-			for (std::size_t count = values.size();;) {
-				std::size_t groups = (count + branch - 1) / branch;
-				capacity += groups * branch;
-				if (groups == 1) break;
-				count = groups;
-			}
-			next.data_.reserve(capacity);
-			std::vector<T> current = values;
-			for (unsigned level = 0;; ++level) {
-				std::size_t count = current.size(), groups = (count + branch - 1) / branch;
-				next.offsets_[level] = next.data_.size();
-				next.counts_[level] = count;
-				next.data_.resize(next.data_.size() + groups * branch, umax);
-				std::vector<T> upper(groups);
+			std::copy(values.begin(), values.end(), next.data_.begin());
+			for (unsigned level = 0; level < next.height_; ++level) {
+				std::size_t groups = (next.counts_[level] + branch - 1) / branch;
 				for (std::size_t group = 0; group < groups; ++group) {
-					std::size_t first = group * branch, last = std::min(count, first + branch);
-					T minimum = *std::min_element(current.begin() + first, current.begin() + last);
-					upper[group] = minimum;
-					for (std::size_t i = first; i < last; ++i) next.data_[next.offsets_[level] + i] = U(U(current[i]) - U(minimum));
+					T minimum = Node::build(next.data_.data() + next.offsets_[level] + group * branch, next.block_count(level, group));
+					if (level + 1 == next.height_) next.root_ = minimum;
+					else next.data_[next.offsets_[level + 1] + group] = U(minimum);
 				}
-				if (next.width_ > std::numeric_limits<std::size_t>::max() / branch) throw std::length_error("RangeAddRangeMin size");
-				next.width_ *= branch;
-				if (groups == 1) { next.height_ = level + 1; next.root_ = upper[0]; break; }
-				current.swap(upper);
 			}
-			auto extremes = std::minmax_element(values.begin(), values.end());
-			next.minimum_pos_ = values[values.size() / 2] == next.root_ ? int(values.size() / 2)
-				: int(extremes.first - values.begin());
-			if constexpr (sizeof(T) == 8) {
-				next.bound_ = U(U(*extremes.second) - U(next.root_));
-				if (next.bound_ < limit_) next.padding(2 * limit_);
-			}
+			next.minimum_pos_ = values[values.size() / 2] == next.root_ ? int(values.size() / 2) : int(extremes.first - values.begin());
+			next.bound_ = U(U(*extremes.second) - U(next.root_));
+			if constexpr (sizeof(T) == 8) if (next.bound_ < limit_) next.padding(2 * limit_);
 		}
 		swap(next);
 	}
@@ -516,7 +684,10 @@ public:
 			track(value < 0 ? U(0) - U(value) : U(value));
 			if (bound_ < limit_) update<true>(l, r, U(value), value < 0);
 			else update<false>(l, r, U(value), value < 0);
-		} else update<false>(l, r, U(value), value < 0);
+		} else {
+			bound_ = 1;
+			update<false>(l, r, U(value), value < 0);
+		}
 		if (minimum_pos_ >= 0 && root_ != candidate) minimum_pos_ = -1;
 	}
 	void apply(int l, int r, T value) { add(l, r, value); }
@@ -524,12 +695,15 @@ public:
 		check(l, r);
 		if (l == r) return infinity;
 		if ((l == 0 && r == n_) || (l <= minimum_pos_ && minimum_pos_ < r)) return root_;
-		if constexpr (sizeof(T) == 8) if (bound_ < limit_) {
+		if constexpr (sizeof(T) == 8) {
+			if (U(bound_ - 1) < U(limit_ - 1)) {
 #if defined(__AVX2__) && !defined(__AVX512F__) && defined(__x86_64__)
-			return added(root_, query_vector(l, r));
+				return added(root_, query_vector(l, r));
 #else
-			return added(root_, query<true>(l, r));
+				return added(root_, query<true>(l, r));
 #endif
+			}
+			if (!bound_) return root_;
 		}
 		return added(root_, query<false>(l, r));
 	}
@@ -551,7 +725,7 @@ public:
 		if (value == root_) minimum_pos_ = p;
 		else if (minimum_pos_ == p) minimum_pos_ = -1;
 	}
-	std::vector<T> values() const { std::vector<T> result(n_); if (n_) collect(height_ - 1, 0, 0, width_, 0, result); return result; }
+	std::vector<T> values() const { std::vector<T> result(n_); if (n_) collect(height_ - 1, 0, 0, width_, U(root_), result); return result; }
 	std::size_t memory_usage() const { return data_.capacity() * sizeof(U); }
 	void swap(RangeAddRangeMin &other) noexcept {
 		data_.swap(other.data_), offsets_.swap(other.offsets_), counts_.swap(other.counts_);

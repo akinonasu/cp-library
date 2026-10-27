@@ -5,12 +5,14 @@ documentation_of: //components/fps_light_ntt.hpp
 
 通常は [軽量 FPS](https://qandori.github.io/cp-library/fps/fps_light.hpp.html) を利用します。法 998244353 の共有 `mint` と小さい NTT を使う内部部品です。軽量 FPS と軽量畳み込みが共有し、このヘッダー単体では FPS 本体を読み込みません。既存の大型 NTT・演算別カーネルには依存しません。
 
-| 関数 | 内容・条件 |
-| --- | --- |
-| `fps_light_detail::multiply(a,b)` | `std::vector<mint>` 同士の畳み込み。入力が空なら空配列 |
-| `fps_light_detail::transform(a,inverse = false)` | 順変換／逆変換。長さは正の 2 冪で $$2^{23}$$ 以下 |
-| `fps_light_detail::pointwise(a,b)` | 同じ長さの `std::vector<mint>` の要素積を `a` に格納。同じ配列も指定可能 |
-| `fps_light_detail::scale(a,c)` | 全要素を `c` 倍 |
+| 関数 | 内容・条件 | 計算量 |
+| --- | --- | --- |
+| `fps_light_detail::multiply(a,b)` | `std::vector<mint>` 同士の畳み込みを同じ型で返す。入力が空なら空配列 | $$O(n\log n)$$ |
+| `fps_light_detail::transform(a,inverse = false)` | 順変換／逆変換を上書き。返り値は `void`。長さは正の 2 冪で $$2^{23}$$ 以下 | $$O(n\log n)$$ |
+| `fps_light_detail::pointwise(a,b,vectorized=simd_available())` | `std::vector<mint>` の要素積を `a` に格納。`a.size() <= b.size()` とし、`b` の先頭 `a.size()` 項を使う。返り値は `void` | $$O(n)$$ |
+| `fps_light_detail::scale(a,c,vectorized=simd_available())` | 全要素を `mint c` 倍。返り値は `void` | $$O(n)$$ |
+
+`pointwise` と `scale` は空配列にも使えます。`pointwise` の `b` は変更しませんが、`a` と同じ配列を渡して平方を上書きすることもできます。`vectorized` は通常省略します。`false` はスカラー演算を選び、`true` は AVX2 対応 CPU でのみ指定できます。表の $$n$$ は `multiply` では結果長、それ以外では `a.size()` です。
 
 順変換は DIF、逆変換は DIT で、変換領域の係数は bit-reversed 順です。順変換後の各点積と逆変換を組み合わせる用途で使います。根の表は必要な長さまで共有して拡張し、逆変換の根は順変換の根から求めます。x86 の GCC・Clang では AVX2 の対応を実行時に確認し、対応する CPU ではバタフライ、根の表の拡張、要素積・定数倍を SIMD で処理します。それ以外はスカラー経路です。
 

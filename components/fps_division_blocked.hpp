@@ -178,10 +178,7 @@ private:
 };
 
 inline Vec montgomery_reduce(Vec even, Vec odd) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
+	return mint_detail::Ops::reduce8(even, odd);
 }
 
 inline Word input_word(Word x) { return x; }
@@ -473,7 +470,6 @@ inline void divide(Arena& arena, ConstWords f, ConstWords g,
 }
 
 }
-
 
 namespace fps_detail::blocked_poly {
 inline void native_divide(const mint* a, size_t n, const mint* b, size_t m,

@@ -127,10 +127,7 @@ template <size_t N>
 }
 
 inline Vec reduce_sums(Vec even, Vec odd) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
+	return mint_detail::Ops::reduce8(even, odd);
 }
 
 [[gnu::always_inline]] inline void graeffe_sums(const Vec (&c)[8], const Vec (&tc)[8], Vec (&sum)[4]) {
@@ -508,7 +505,6 @@ inline void multiply_constant(ConstWords a, Word c, Words t) {
 	const Factor f(c);
 	for (size_t i = 0; i < a.size(); i += 8) store(t.data() + i, reduce(times(load(a.data() + i), f), kP));
 }
-
 
 }
 

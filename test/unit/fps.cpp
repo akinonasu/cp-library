@@ -193,9 +193,38 @@ template<class T> void run_type(const char *name) {
 		<< " adjacent_cases=" << adjacent_cases << '\n';
 }
 static_assert(std::is_same_v<fps_mint, mint>);
+void run_series() {
+	std::mt19937_64 random(67291);
+	for (int n : {1, 31, 65, 257, 513}) {
+		auto source = make_series<NontrivialMint>(n, 2, random);
+		fps normal(n);
+		for (int i = 0; i < n; ++i) normal[i] = source[i].val();
+		auto check = [&](auto operation) {
+			const auto saved = source;
+			require(values(operation(source)) == values(operation(normal)));
+			untouched(source, saved);
+		};
+		for (int degree : {0, n, n + 13}) {
+			source[0] = 7; normal[0] = 7;
+			check([&](const auto &f) { return f.inv(degree); });
+			source[0] = 1; normal[0] = 1;
+			check([&](const auto &f) { return f.log(degree); });
+			source[0] = 0; normal[0] = 0;
+			check([&](const auto &f) { return f.exp(degree); });
+		}
+		for (int first : {0, 1, 2, 17}) {
+			if (first >= n) continue;
+			for (int i = 0; i < first; ++i) source[i] = 0, normal[i] = 0;
+			source[first] = 1; normal[first] = 1;
+			check([](const auto &f) { return f.sqrt(); });
+			for (int k : {0, 1, 5}) check([&](const auto &f) { return f.pow(k); });
+		}
+	}
+}
 void run() {
 	run_type<fps_mint>("fps_mint");
 	run_type<NontrivialMint>("NontrivialMint");
+	run_series();
 	std::cout << "PASS scalar checks=" << checks << '\n';
 }
 }

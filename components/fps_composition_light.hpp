@@ -18,10 +18,7 @@ LightFormalPowerSeries<T> power_projection(const LightFormalPowerSeries<T> &f, c
 
 template<class T>
 LightFormalPowerSeries<T> power_projection(const LightFormalPowerSeries<T> &f, int n, int deg = -1) {
-	assert(0 <= n && n < (1 << 21));
-	LightFormalPowerSeries<T> weights(n + 1);
-	weights[n] = 1;
-	return power_projection(f, weights, deg);
+	return fps_detail::composition_fallback::power_projection(f, n, deg);
 }
 
 template<class T>

@@ -174,7 +174,7 @@ void series() {
 		V denominator = random_values(rng, n + 1); denominator[0] = 7;
 		for (int d : {0, n, n + 3}) equal(f.div_series(make(denominator), d), product(a, inverse(denominator, d), d));
 		equal(f / make(denominator), product(a, inverse(denominator, n), n));
-		for (U k : {U(0), U(1), U(2), U(5), U(37)}) {
+		for (U k : {U(0), U(1), U(2), U(3), U(4), U(5), U(37)}) {
 			equal(f.pow(static_cast<long long>(k)), series_power(a, k, n));
 			if (n) { V shifted = a; shifted[0] = 13; equal(make(shifted).pow(static_cast<long long>(k)), series_power(shifted, k, n)); }
 		}
@@ -185,6 +185,13 @@ void series() {
 		equal(make(a).inv(), inverse(a, n));
 		equal(make(a).log(), logarithm(a, n));
 		a[0] = 0; equal(make(a).exp(), exponential(a, n));
+		for (int first : {0, 1, n / 4, n / 2}) {
+			V shifted = a;
+			shifted[0] = 7;
+			std::fill(shifted.begin(), shifted.begin() + first, 0);
+			for (U k : {U(2), U(3), U(4)})
+				equal(make(shifted).pow(static_cast<long long>(k)), series_power(shifted, k, n));
+		}
 	}
 	for (int n : {0, 1, 2, 3, 31, 33, 65, 100}) for (int m : {1, 2, 3, 32, 64, 101}) {
 		V a = random_values(rng, n), b = random_values(rng, m); b.back() = 1;
@@ -193,6 +200,23 @@ void series() {
 		auto [q, r] = make(a).divmod(make(b));
 		auto [expected_q, expected_r] = division(a, b);
 		equal(q, expected_q); equal(r, expected_r); equal(make(a) % make(b), expected_r);
+	}
+}
+void one_term_powers() {
+	for (int d : {1, 7, 257}) {
+		for (int n : {d + 1, 32 * d, 32 * d + 1}) {
+			V a(n); a[0] = 7; a[d] = 3;
+			for (long long k : {5LL, static_cast<long long>(mod - 1), static_cast<long long>(mod), std::numeric_limits<long long>::max()}) {
+				const V compressed = series_power(V{7, 3}, U(k), (n - 1) / d + 1);
+				V expected(n);
+				for (std::size_t i = 0; i < compressed.size(); ++i) expected[i * d] = compressed[i];
+				equal(make(a).pow(k), expected);
+			}
+		}
+		const int n = 2 * d + 6;
+		V a(n); a[1] = 7; a[1 + d] = 3;
+		equal(make(a).pow(5), series_power(a, 5, n));
+		equal(make(a).pow(std::numeric_limits<long long>::max()), V(n));
 	}
 }
 void square_roots() {
@@ -257,6 +281,20 @@ void dense_boundaries() {
 	}
 }
 
+void short_exponentials() {
+	std::mt19937_64 rng(340815);
+	for (int input : {33, 65, 193, 1100})
+		for (int n : {257, 513, 1025}) {
+			V a = random_values(rng, input);
+			a[0] = 0;
+			auto f = make(a);
+			for (std::size_t i = 0; i < f.size(); i += 2) f[i].v = f[i].v % mod + mod;
+			const auto saved = f;
+			equal(f.exp(n), exponential(a, n));
+			for (std::size_t i = 0; i < f.size(); ++i) check(f[i].v == saved[i].v);
+		}
+}
+
 void closed_form_tails() {
 	for (int n : {8192, 8193, 8194, 8195, 8196, 8197}) {
 		V ones(n, 1), ramp(n), logarithm(n), reciprocal(n);
@@ -277,8 +315,10 @@ void closed_form_tails() {
 int main() {
 	basics();
 	series();
+	one_term_powers();
 	square_roots();
 	dense_boundaries();
+	short_exponentials();
 	closed_form_tails();
 	std::printf("light FPS: %llu independent checks passed\n", static_cast<unsigned long long>(checks));
 }

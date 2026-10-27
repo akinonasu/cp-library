@@ -7,7 +7,7 @@ documentation_of: //components/fps_sqrt_blocked.hpp
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `native_sqrt(in,input,out,n,constant)` | 定数項を指定して平方根を空の out へ追加 | $$O(n\log n)$$ |
+| `native_sqrt(in,input,out,n,constant)` | 定数項を指定して平方根を `out` の末尾へ追加。返り値は `void` | $$O(n\log n+s)$$ |
 | `sqrt_log(n)` | 必要な変換次数 | $$O(1)$$ |
 | `sqrt_scratch(n)` | 必要な作業領域のワード数 | $$O(1)$$ |
 | `sqrt(t,f,c,g,scratch)` | 平方根を通常表現で計算 | $$O(n\log n)$$ |
@@ -16,7 +16,7 @@ documentation_of: //components/fps_sqrt_blocked.hpp
 
 関数は `fps_detail::blocked_poly` 内にあります。通常は [FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) の `f.sqrt(n)` を使います。表の `n` は出力係数数、`m` は更新に使う変換長です。
 
-`fps_detail::blocked_poly::native_sqrt(in,input,out,n,constant)` は、`in` の `input` 個の `Mint` 係数から、定数項が `constant` の平方根 $$g^2=f\bmod x^n$$ を求めます。結果の `n` 項を、空の `vector<Mint>` である `out` に追加します。`1 <= n <= 2^23`、`input >= 1`、定数項が非零、`constant * constant == in[0]` を前提とします。内部ワードの範囲は $$[0,2p)$$、$$p=998244353$$ です。入力の範囲外を 0 とし、次数 `n` 以降は読みません。入力は変更せず、`out` と重ねません。公開配列に padding やアラインメントは要求しません。
+`fps_detail::blocked_poly::native_sqrt(in,input,out,n,constant)` は、`in` の `input` 個の `Mint` 係数から、定数項が `constant` の平方根 $$g^2=f\bmod x^n$$ を求めます。結果の `n` 項を `vector<Mint>` である `out` の末尾へ追加し、既存の要素は保持します。`1 <= n <= 2^23`、`input >= 1`、定数項が非零、`constant * constant == in[0]` を前提とします。内部ワードの範囲は $$[0,2p)$$、$$p=998244353$$ です。入力の範囲外を 0 とし、次数 `n` 以降は読みません。入力は変更せず、`out` と重ねません。公開配列に padding やアラインメントは要求しません。
 
 公開 FPS 側で先頭の零係数と定数項の平方根を確認してから、この関数を呼びます。先頭の零の個数が奇数、または定数項が平方剰余でない場合は、公開 API が空配列を返します。入力が零多項式の場合も公開 API 側で処理します。
 
@@ -34,4 +34,4 @@ documentation_of: //components/fps_sqrt_blocked.hpp
 
 作業領域は RAII の `Arena` が所有し、mmap が使えない場合は通常の整列配列へ戻ります。確保できなければ例外を送出します。
 
-**計算量**: 平方根全体は $$O(n\log n)$$ 時間、$$O(n)$$ 追加空間です。`sqrt_log`・`sqrt_scratch` は $$O(1)$$ 時間です。
+**計算量**: 平方根全体は $$O(n\log n)$$ 時間、$$O(n)$$ 追加空間です。`native_sqrt` で `out` の再確保が必要な場合は、既存の要素数 $$s$$ に比例する時間・空間が加わります。`out.reserve(out.size()+n)` で容量を確保しておけば、既存の要素の移動はありません。`sqrt_log`・`sqrt_scratch` は $$O(1)$$ 時間です。

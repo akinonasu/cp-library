@@ -114,6 +114,8 @@
 | `tree/tree_hash.hpp` | 根を持たない木のハッシュ | [使い方](docs/tree_hash.md) |
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
+| `tree/persistent_link_cut_tree.hpp` | 永続 Link Cut Tree・過去版からの分岐 | [使い方](docs/persistent_link_cut_tree.md) |
+| `tree/top_tree.hpp` | Top Tree・辺の追加削除と木 DP | [使い方](docs/top_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `tree/path_product.hpp` | 頂点値更新・順序付き経路積 | [使い方](docs/path_product.md) |
 | `tree/contour_sum.hpp` | 頂点値更新・距離区間の和 | [使い方](docs/contour_sum.md) |
@@ -403,6 +405,7 @@
 | `components/integer_arithmetic.hpp` | 整数型の判定・オーバーフローを検出する加算と乗算 | [使い方](docs/integer_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
 | `components/fast_io_bulk.hpp` | 非負整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
+| `components/fast_io_output.hpp` | 非負整数の一括出力 | [使い方](docs/fast_io_output.md) |
 | `components/dynamic_bit_vector.hpp` | Dynamic Bit Vector | [使い方](docs/dynamic_bit_vector.md) |
 | `components/dynamic_quad_vector.hpp` | Dynamic Quad Vector | [使い方](docs/dynamic_quad_vector.md) |
 | `components/dynamic_quad_wavelet.hpp` | Dynamic Quad Wavelet Matrix | [使い方](docs/dynamic_quad_wavelet.md) |
@@ -457,6 +460,7 @@
 | `components/dijkstra_unique.hpp` | Dijkstra の一意経路の探索 | [使い方](docs/dijkstra_unique.md) |
 | `components/warshall_floyd_kernel.hpp` | ワーシャルフロイド法のブロック・SIMD 演算 | [使い方](docs/warshall_floyd_kernel.md) |
 | `components/scc_core.hpp` | 反復 SCC の共通部品 | [使い方](docs/scc_core.md) |
+| `components/two_sat_core.hpp` | 2-SAT の含意伝播・強連結成分判定の共通部品 | [使い方](docs/two_sat_core.md) |
 | `components/shortest_path_scc.hpp` | 最短路で使う到達可能部分の強連結成分分解 | [使い方](docs/shortest_path_scc.md) |
 | `components/directed_csr.hpp` | 重み付き有向グラフの CSR | [使い方](docs/directed_csr.md) |
 | `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
@@ -506,6 +510,7 @@
 | `components/fps_sqrt_blocked.hpp` | FPS 平方根のブロック変換 | [使い方](docs/fps_sqrt_blocked.md) |
 | `components/fps_taylor_blocked.hpp` | Taylor Shift の中間積 | [使い方](docs/fps_taylor_blocked.md) |
 | `components/fps_io.hpp` | FPS の一括入出力 | [使い方](docs/fps_io.md) |
+| `components/fps_write.hpp` | FPS の高速出力 | [使い方](docs/fps_write.md) |
 | `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
 | `components/polynomial_product_tree.hpp` | 多項式の共通積木 | [使い方](docs/polynomial_product_tree.md) |
 | `components/fixed_size_subset_sum.hpp` | 個数指定の部分和集合の NTT・厳密判定 | [使い方](docs/fixed_size_subset_sum_core.md) |

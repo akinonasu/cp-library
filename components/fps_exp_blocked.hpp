@@ -26,13 +26,6 @@ inline Factors entries(const Word* table, size_t k) {
 	return {load(e), load(e + 8)};
 }
 
-
-}
-}
-namespace blocked_poly {
-
-namespace detail {
-
 inline constexpr size_t kExpBase = 64;
 
 inline void exp_direct(ConstWords q, Words g) {
@@ -41,9 +34,8 @@ inline void exp_direct(ConstWords q, Words g) {
 	for (size_t i = 2; i < g.size(); ++i) inv[i] = multiply_mod(kP - kP / Word(i), inv[kP % i]);
 	g[0] = 1;
 	for (size_t i = 1; i < g.size(); ++i) {
-		std::uint64_t sum = 0;
-		for (size_t k = 1; k <= i; ++k) sum += std::uint64_t(q[k]) * g[i - k] % kP;
-		g[i] = multiply_mod(Word(sum % kP), inv[i]);
+		const Word sum = direct_product(q.data() + 1, g.data(), i);
+		g[i] = multiply_mod(sum, inv[i]);
 	}
 }
 
@@ -99,7 +91,7 @@ void product_to(const Transform& t, Words out, const Source& in, const Bottom& b
 		}
 	} else {
 		const size_t h = nv / 2;
-		radix2_halves(recursion, in, out.data(), nv, t.roots());
+		radix2_halves(recursion, in, out.data(), nv);
 		for (size_t j = 0; j < h; ++j) put(j, lower ? add(v[j], v[j + h]) : diff(v[j], v[j + h]));
 	}
 }
@@ -327,13 +319,11 @@ inline void power(const Transform& t, ConstWords f, Word e, Word c,
 	if (n > kExpBase) exp_newton(t, lo, g, rest, QTransforms{qt, q2t});
 }
 
-}
-namespace blocked_poly {
 namespace detail {
 template <bool differentiated>
 [[gnu::noinline]] mint exp_tail_coefficient(const mint* in, size_t input, const mint* g, size_t n) {
 	const size_t count = std::min(n, input ? input - 1 : 0), full = count / 8 * 8;
-	const Vec reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0), ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
+	const Vec reversed = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
 	Vec total = _mm256_setzero_si256();
 	Indices index(1);
 	size_t j = 0;
@@ -350,9 +340,7 @@ template <bool differentiated>
 			even = _mm256_add_epi64(even, _mm256_mul_epu32(a, b));
 			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
 		}
-		even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-		const Vec value = canonical(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA));
+		const Vec value = canonical(mint_detail::Ops::reduce8(even, odd));
 		total = low(add(total, value));
 	}
 	total = low(add(total, _mm256_permute2x128_si256(total, total, 1)));
@@ -409,7 +397,7 @@ inline void native_exp_regular(const mint *in, size_t input, std::vector<mint> &
 
 inline void native_exp(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool differentiated = false) {
 	const size_t prefix = std::bit_floor(n), tail = n - prefix;
-	if (prefix >= 4096 && tail && tail <= 4) {
+	if (prefix >= 4096 && tail && tail <= 16) {
 		const size_t offset = out.size();
 		prepare_fps_output(out, offset + n);
 		native_exp_regular(in, input, out, prefix, differentiated);
@@ -423,7 +411,7 @@ inline void native_exp(const mint *in, size_t input, std::vector<mint> &out, siz
 	native_exp_regular(in, input, out, n, differentiated);
 }
 
-inline void native_power(const mint *in, size_t input, std::vector<mint> &out, size_t n, Word e, mint c) {
+inline void native_power(const mint *in, size_t input, std::vector<mint> &out, size_t n, Word e, mint c, size_t zeros = 0) {
 	const int lg = power_log(n);
 	const size_t size = std::min(input, n);
 	Arena arena(Transform::words(lg) + Arena::footprint(n) + Arena::footprint(power_scratch(n)));
@@ -431,6 +419,10 @@ inline void native_power(const mint *in, size_t input, std::vector<mint> &out, s
 	auto g = arena.take(n), scratch = arena.take(power_scratch(n));
 	copy_coefficients(in, g.first(size));
 	power(t, g.first(size), e, std::min(c.v, c.v - mint::mod()), g, scratch);
+	if (zeros) {
+		prepare_fps_output(out, out.size() + zeros + n);
+		out.resize(out.size() + zeros);
+	}
 	append_fps_words<true>(out, g.data(), n);
 }
 }

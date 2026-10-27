@@ -131,6 +131,30 @@ class BundleTest(unittest.TestCase):
             reference = b'//https://qandori.github.io/cp-library/lightweight/fps/fps.hpp.html\n'
             self.assertLess(len(reference + generated), LIGHT_LIMIT)
 
+    @unittest.skipUnless(shutil.which('oj-bundle') and shutil.which('g++'), 'C++ bundle tools are unavailable')
+    def test_light_fps_output_budget(self):
+        from atcoder_flags import constexpr_flags
+
+        source = '''#include "fps/fps_light.hpp"
+#include "components/fps_write.hpp"
+int main() {
+    light_fps f{1, 2, 3};
+    const auto restored = f.log(5).exp();
+    FastOutput output;
+    fps_detail::write_coefficients(output, restored.data(), restored.size());
+}
+'''
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / 'fps_output.cpp'
+            path.write_text(source)
+            generated = bundle(path)
+            reference = b'//https://qandori.github.io/cp-library/fps/fps_light.hpp.html\n'
+            self.assertLess(len(reference + generated), LIGHT_LIMIT)
+            path.write_bytes(reference + generated)
+            executable = Path(temporary) / 'fps_output'
+            subprocess.run(['g++', '-std=c++23', '-O2', *constexpr_flags('g++'), str(path), '-o', str(executable)], check=True)
+            self.assertEqual(subprocess.check_output([str(executable)]).split(), [b'1', b'2', b'3', b'0', b'0'])
+
     @unittest.skipUnless(shutil.which('oj-bundle'), 'oj-bundle is unavailable')
     def test_full_fps_public_header_budgets(self):
         examples = {

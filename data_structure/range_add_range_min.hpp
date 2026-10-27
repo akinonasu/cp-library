@@ -88,9 +88,13 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 	}
 	template<bool Narrow>
 	U query(std::size_t l, std::size_t r) const {
+		if constexpr (sizeof(T) < 8) if (!bound_) return 0;
 		--r;
 		std::size_t a = l >> bits, b = r >> bits;
-		if (a == b) return restore(1, a, Node::template minimum<Narrow>(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1));
+		if (a == b) {
+			if (l == r) return restore(0, l, 0);
+			return restore(1, a, Node::template minimum<Narrow>(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1));
+		}
 		U left = Node::template minimum<Narrow>(data_.data() + a * branch, l & (branch - 1), branch);
 		U right = Node::template minimum<Narrow>(data_.data() + b * branch, 0, (r & (branch - 1)) + 1);
 		for (unsigned level = 1;; ++level) {
@@ -119,6 +123,7 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 		--r;
 		std::size_t a = l >> bits, b = r >> bits;
 		if (a == b) {
+			if (l == r) return restore(0, l, 0);
 			auto value = query_block(data_.data() + a * branch, l & (branch - 1), (r & (branch - 1)) + 1);
 			U carry = restore(1, a, 0);
 			return Node::reduce_min(value) + carry;
@@ -152,14 +157,16 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 		unsigned count = unsigned(std::min<std::size_t>(branch, counts_[level] - index * branch));
 		return Node::template change_one<Narrow>(data_.data() + offsets_[level] + index * branch, count, child, change, negative);
 	}
-	void collect(unsigned level, std::size_t index, std::size_t start, std::size_t width, U carry, std::vector<T> &result) const {
+	void collect(unsigned level, std::size_t index, std::size_t start, std::size_t width, U base, std::vector<T> &result) const {
 		const U *values = data_.data() + offsets_[level] + index * branch;
-		std::size_t part = width / branch;
-		for (unsigned i = 0; i < branch && start + i * part < std::size_t(n_); ++i) {
-			U next = U(carry + values[i]);
-			if (!level) result[start + i] = added(root_, next);
-			else collect(level - 1, index * branch + i, start + i * part, part, next, result);
+		if (!level) {
+			unsigned count = unsigned(std::min<std::size_t>(branch, std::size_t(n_) - start));
+			Node::materialize(values, result.data() + start, count, base);
+			return;
 		}
+		std::size_t part = width / branch;
+		for (unsigned i = 0; i < branch && start + i * part < std::size_t(n_); ++i)
+			collect(level - 1, index * branch + i, start + i * part, part, U(base + values[i]), result);
 	}
 	void padding(U value) {
 		for (unsigned level = 0; level < height_; ++level) {
@@ -175,55 +182,60 @@ template<class T = std::int64_t> class RangeAddRangeMin {
 			bool narrow = bound_ < limit_;
 			bound_ = narrow && amount < limit_ - bound_ ? U(bound_ + amount) : umax;
 			if (narrow && bound_ == umax) padding(umax);
+		} else bound_ = 1;
+	}
+	void allocate(int n, U value) {
+		n_ = n;
+		if (!n) return;
+		std::size_t total = 0, count = n;
+		for (unsigned level = 0;; ++level) {
+			std::size_t groups = (count + branch - 1) / branch;
+			offsets_[level] = total;
+			counts_[level] = count;
+			total += groups * branch;
+			if (width_ > std::numeric_limits<std::size_t>::max() / branch) throw std::length_error("RangeAddRangeMin size");
+			width_ *= branch;
+			if (groups == 1) { height_ = level + 1; break; }
+			count = groups;
 		}
+		data_.resize(total, value);
 	}
 	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= n_); }
 public:
 	using value_type = T;
 	RangeAddRangeMin() = default;
-	explicit RangeAddRangeMin(int n, T value = 0) { assert(n >= 0); build(std::vector<T>(n, value)); }
+	explicit RangeAddRangeMin(int n, T value = 0) {
+		assert(n >= 0);
+		allocate(n, 0);
+		if (n) { root_ = value; minimum_pos_ = n / 2; padding(sizeof(T) == 8 ? 2 * limit_ : umax); }
+	}
 	explicit RangeAddRangeMin(const std::vector<T> &values) { build(values); }
 	RangeAddRangeMin(const RangeAddRangeMin &) = default;
 	RangeAddRangeMin(RangeAddRangeMin &&other) noexcept { swap(other); }
 	RangeAddRangeMin &operator=(RangeAddRangeMin other) noexcept { swap(other); return *this; }
 	void build(const std::vector<T> &values) {
 		assert(values.size() <= std::size_t(std::numeric_limits<int>::max()));
+		auto extremes = std::minmax_element(values.begin(), values.end());
+		if (!values.empty() && *extremes.first == *extremes.second) {
+			RangeAddRangeMin next(int(values.size()), *extremes.first);
+			swap(next);
+			return;
+		}
 		RangeAddRangeMin next;
-		next.n_ = int(values.size());
+		next.allocate(int(values.size()), umax);
 		if (!values.empty()) {
-			std::size_t capacity = 0;
-			for (std::size_t count = values.size();;) {
-				std::size_t groups = (count + branch - 1) / branch;
-				capacity += groups * branch;
-				if (groups == 1) break;
-				count = groups;
-			}
-			next.data_.reserve(capacity);
-			std::vector<T> current = values;
-			for (unsigned level = 0;; ++level) {
-				std::size_t count = current.size(), groups = (count + branch - 1) / branch;
-				next.offsets_[level] = next.data_.size();
-				next.counts_[level] = count;
-				next.data_.resize(next.data_.size() + groups * branch, umax);
-				std::vector<T> upper(groups);
+			std::copy(values.begin(), values.end(), next.data_.begin());
+			for (unsigned level = 0; level < next.height_; ++level) {
+				std::size_t groups = (next.counts_[level] + branch - 1) / branch;
 				for (std::size_t group = 0; group < groups; ++group) {
-					std::size_t first = group * branch, last = std::min(count, first + branch);
-					T minimum = *std::min_element(current.begin() + first, current.begin() + last);
-					upper[group] = minimum;
-					for (std::size_t i = first; i < last; ++i) next.data_[next.offsets_[level] + i] = U(U(current[i]) - U(minimum));
+					T minimum = Node::build(next.data_.data() + next.offsets_[level] + group * branch, next.block_count(level, group));
+					if (level + 1 == next.height_) next.root_ = minimum;
+					else next.data_[next.offsets_[level + 1] + group] = U(minimum);
 				}
-				if (next.width_ > std::numeric_limits<std::size_t>::max() / branch) throw std::length_error("RangeAddRangeMin size");
-				next.width_ *= branch;
-				if (groups == 1) { next.height_ = level + 1; next.root_ = upper[0]; break; }
-				current.swap(upper);
 			}
-			auto extremes = std::minmax_element(values.begin(), values.end());
-			next.minimum_pos_ = values[values.size() / 2] == next.root_ ? int(values.size() / 2)
-				: int(extremes.first - values.begin());
-			if constexpr (sizeof(T) == 8) {
-				next.bound_ = U(U(*extremes.second) - U(next.root_));
-				if (next.bound_ < limit_) next.padding(2 * limit_);
-			}
+			next.minimum_pos_ = values[values.size() / 2] == next.root_ ? int(values.size() / 2) : int(extremes.first - values.begin());
+			next.bound_ = U(U(*extremes.second) - U(next.root_));
+			if constexpr (sizeof(T) == 8) if (next.bound_ < limit_) next.padding(2 * limit_);
 		}
 		swap(next);
 	}
@@ -239,7 +251,10 @@ public:
 			track(value < 0 ? U(0) - U(value) : U(value));
 			if (bound_ < limit_) update<true>(l, r, U(value), value < 0);
 			else update<false>(l, r, U(value), value < 0);
-		} else update<false>(l, r, U(value), value < 0);
+		} else {
+			bound_ = 1;
+			update<false>(l, r, U(value), value < 0);
+		}
 		if (minimum_pos_ >= 0 && root_ != candidate) minimum_pos_ = -1;
 	}
 	void apply(int l, int r, T value) { add(l, r, value); }
@@ -247,12 +262,15 @@ public:
 		check(l, r);
 		if (l == r) return infinity;
 		if ((l == 0 && r == n_) || (l <= minimum_pos_ && minimum_pos_ < r)) return root_;
-		if constexpr (sizeof(T) == 8) if (bound_ < limit_) {
+		if constexpr (sizeof(T) == 8) {
+			if (U(bound_ - 1) < U(limit_ - 1)) {
 #if defined(__AVX2__) && !defined(__AVX512F__) && defined(__x86_64__)
-			return added(root_, query_vector(l, r));
+				return added(root_, query_vector(l, r));
 #else
-			return added(root_, query<true>(l, r));
+				return added(root_, query<true>(l, r));
 #endif
+			}
+			if (!bound_) return root_;
 		}
 		return added(root_, query<false>(l, r));
 	}
@@ -274,7 +292,7 @@ public:
 		if (value == root_) minimum_pos_ = p;
 		else if (minimum_pos_ == p) minimum_pos_ = -1;
 	}
-	std::vector<T> values() const { std::vector<T> result(n_); if (n_) collect(height_ - 1, 0, 0, width_, 0, result); return result; }
+	std::vector<T> values() const { std::vector<T> result(n_); if (n_) collect(height_ - 1, 0, 0, width_, U(root_), result); return result; }
 	std::size_t memory_usage() const { return data_.capacity() * sizeof(U); }
 	void swap(RangeAddRangeMin &other) noexcept {
 		data_.swap(other.data_), offsets_.swap(other.offsets_), counts_.swap(other.counts_);

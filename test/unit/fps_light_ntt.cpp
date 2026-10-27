@@ -29,8 +29,15 @@ void pointwise_and_scale() {
 			}
 			for (bool vectorized : {false, fps_light_detail::simd_available()}) {
 				auto product = a;
-				fps_light_detail::pointwise(product, b, vectorized);
-				assert(canonical(product) == expected);
+				for (int extra : {0, 1, 7, 8, 17}) {
+					auto rhs = b;
+					rhs.resize(n + extra, mint::word(unsigned(2 * p - 1)));
+					const auto saved = rhs;
+					product = a;
+					fps_light_detail::pointwise(product, rhs, vectorized);
+					assert(canonical(product) == expected);
+					for (std::size_t i = 0; i < rhs.size(); ++i) assert(rhs[i].v == saved[i].v);
+				}
 				product = a;
 				fps_light_detail::pointwise(product, product, vectorized);
 				assert(canonical(product) == square);

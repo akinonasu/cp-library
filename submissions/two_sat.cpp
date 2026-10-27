@@ -4,7 +4,7 @@
 
 
 
-#line 1 "components/scc_core.hpp"
+#line 1 "components/two_sat_core.hpp"
 
 
 
@@ -16,104 +16,160 @@
 #include <utility>
 #include <vector>
 
-namespace scc_detail {
-template<bool RejectPairs = false>
-inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int, int>> edges) {
-	assert((!RejectPairs || n % 2 == 0) && n >= 0 && edges.size() <= std::size_t(std::numeric_limits<int>::max()));
-	std::vector<int> answer(n, -1);
-	unsigned monotone = 3;
-	for (auto [from, to] : edges) {
-		assert(0 <= from && from < n && 0 <= to && to < n);
-		monotone &= (from <= to ? 1U : 0U) | (from >= to ? 2U : 0U);
-		if (!monotone) break;
+namespace two_sat_detail {
+inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std::span<const int> forced, std::vector<bool> &answer) {
+	assert(0 <= variables && variables <= std::numeric_limits<int>::max() / 2);
+	assert(edges.size() <= std::size_t(std::numeric_limits<int>::max()) && answer.size() == std::size_t(variables));
+	int n = 2 * variables;
+	std::vector<signed char> values(variables, -1);
+	std::vector<int> trail;
+	trail.reserve(variables);
+	for (int literal : forced) {
+		if (values[literal >> 1] < 0) {
+			values[literal >> 1] = literal & 1;
+			trail.push_back(literal);
+		} else if (values[literal >> 1] != (literal & 1)) return false;
 	}
-	if (monotone) {
-		for (int v = 0; v < n; ++v) answer[v] = monotone & 1 ? v : n - 1 - v;
-		return {n, std::move(answer)};
-	}
-	std::vector<int> offset(std::size_t(n) + 1), degree(n);
-	for (auto [from, to] : edges) {
-		assert(0 <= from && from < n && 0 <= to && to < n);
-		++offset[from + 1];
-		++degree[to];
-	}
-	bool functional = true;
-	for (int v = 0; v < n; ++v) {
-		functional &= offset[v + 1] <= 1;
-		offset[v + 1] += offset[v];
-	}
-	std::vector<int> adjacency(edges.size()), work(offset.begin(), offset.end() - 1);
-	for (auto [from, to] : edges) adjacency[work[from]++] = to;
-	work.clear();
-	for (int v = 0; v < n; ++v) if (!degree[v]) work.push_back(v);
-	for (std::size_t head = 0; head < work.size(); ++head) {
-		int v = work[head];
-		answer[v] = static_cast<int>(head);
-		for (int j = offset[v]; j < offset[v + 1]; ++j)
-			if (--degree[adjacency[j]] == 0) work.push_back(adjacency[j]);
-	}
-	int peeled = static_cast<int>(work.size());
-	if (peeled == n) return {n, std::move(answer)};
-	if (functional) {
-		int count = peeled;
-		for (int v = 0; v < n; ++v) if (degree[v]) {
-			int u = v;
-			do {
-				answer[u] = count;
-				if constexpr (RejectPairs) if (answer[u ^ 1] == count) return {-1, {}};
-				degree[u] = 0;
-				u = adjacency[offset[u]];
-			} while (u != v);
-			++count;
+	if (trail.size() == std::size_t(variables)) {
+		for (auto [from, to] : edges) {
+			if (values[from >> 1] == (from & 1) && values[to >> 1] != (to & 1)) return false;
 		}
-		return {count, std::move(answer)};
+		for (int i = 0; i < variables; ++i) answer[i] = values[i];
+		return true;
 	}
-	for (int v : work) answer[v] = -answer[v] - 1;
-	for (int &x : degree) x = x ? -1 : n;
-	work.clear();
+	std::vector<int> offset(std::size_t(n) + 1, -1), adjacency(edges.size());
+	std::size_t branching = 0;
+	for (std::size_t i = 0; i < edges.size(); ++i) {
+		auto [from, to] = edges[i];
+		branching += offset[from] >= 0;
+		adjacency[i] = offset[from];
+		offset[from] = static_cast<int>(i);
+	}
+	bool compact = false;
+	auto make_compact = [&] {
+		std::fill(offset.begin(), offset.end(), 0);
+		for (auto [from, to] : edges) ++offset[from];
+		for (int v = 1; v < n; ++v) offset[v] += offset[v - 1];
+		offset[n] = static_cast<int>(edges.size());
+		for (auto [from, to] : edges) adjacency[--offset[from]] = to;
+		compact = true;
+	};
+	if (variables >= 1024) {
+		auto closure = [&]<bool Adaptive>() -> int {
+			std::size_t budget = std::size_t(variables) + edges.size();
+			if constexpr (!Adaptive) budget = (std::min)(budget, std::numeric_limits<std::size_t>::max() / 2) * 2;
+			std::size_t switch_after = std::max<std::size_t>(1024, (std::size_t(variables) + edges.size()) / 16);
+			std::size_t compact_budget = budget - std::min(budget, switch_after);
+			auto propagate = [&] {
+				for (std::size_t i = 0; i < trail.size(); ++i) {
+					if (!budget) return -1;
+					--budget;
+					int v = trail[i];
+					if constexpr (Adaptive) if (!compact && budget < compact_budget) make_compact();
+					auto visit = [&](int to) {
+						if (!budget) return -1;
+						--budget;
+						if (values[to >> 1] < 0) {
+							values[to >> 1] = to & 1;
+							trail.push_back(to);
+						} else if (values[to >> 1] != (to & 1)) {
+							for (int literal : trail) values[literal >> 1] = -1;
+							return 0;
+						}
+						return 1;
+					};
+					if constexpr (Adaptive) if (compact) {
+						for (int at = offset[v]; at < offset[v + 1]; ++at) {
+							int status = visit(adjacency[at]);
+							if (status != 1) return status;
+						}
+						continue;
+					}
+					for (int at = offset[v]; at >= 0; at = adjacency[at]) {
+						int status = visit(edges[at].second);
+						if (status != 1) return status;
+					}
+				}
+				return 1;
+			};
+			auto empty = [&](int v) {
+				if constexpr (Adaptive) if (compact) return offset[v] == offset[v + 1];
+				return offset[v] < 0;
+			};
+			int status = propagate();
+			if (!status) return 0;
+			for (int i = 0; status > 0 && i < variables; ++i) if (values[i] < 0) {
+				if (empty(2 * i)) values[i] = 0;
+				else if (empty(2 * i + 1)) values[i] = 1;
+				else {
+					trail.assign(1, 2 * i);
+					values[i] = 0;
+					status = propagate();
+					if (!status) {
+						trail.assign(1, 2 * i + 1);
+						values[i] = 1;
+						status = propagate();
+						if (!status) return 0;
+					}
+				}
+			}
+			return status;
+		};
+		int status = edges.size() >= std::size_t(variables) && branching > edges.size() / 32
+			? closure.template operator()<true>() : closure.template operator()<false>();
+		if (status >= 0) {
+			if (status) for (int i = 0; i < variables; ++i) answer[i] = values[i];
+			return status;
+		}
+	}
+	if (!compact) make_compact();
+	trail.clear();
+	std::vector<int> order(n, -1);
 	struct Frame { int vertex, next, low; };
 	std::vector<Frame> stack;
-	stack.reserve(n - peeled);
-	int clock = 0, count = 0;
+	stack.reserve(n);
+	int clock = 0, component = -2;
 	auto enter = [&](int v) {
-		degree[v] = clock++;
-		work.push_back(v);
-		stack.push_back({v, offset[v], degree[v]});
+		order[v] = clock++;
+		trail.push_back(v);
+		stack.push_back({v, offset[v], order[v]});
 	};
-	for (int root = 0; root < n; ++root) if (degree[root] == -1) {
+	for (int root = 0; root < n; ++root) if (order[root] == -1) {
+		if (offset[root] == offset[root + 1]) { order[root] = component--; continue; }
 		enter(root);
 		while (!stack.empty()) {
 			auto &frame = stack.back();
-			int v = frame.vertex;
-			int next = frame.next, low = frame.low, end = offset[v + 1];
-			for (; next < end; ++next) {
+			int v = frame.vertex, next = frame.next, low = frame.low;
+			for (; next < offset[v + 1]; ++next) {
 				int to = adjacency[next];
-				if (degree[to] == -1) break;
-				low = std::min(low, degree[to]);
+				if (order[to] == -1) {
+					if (offset[to] == offset[to + 1]) { order[to] = component--; continue; }
+					break;
+				}
+				if (order[to] >= 0) low = std::min(low, order[to]);
 			}
 			frame.low = low;
-			if (next < end) {
+			if (next < offset[v + 1]) {
 				frame.next = next + 1;
 				enter(adjacency[next]);
 			} else {
 				stack.pop_back();
-				if (low == degree[v]) {
+				if (low == order[v]) {
 					int u;
 					do {
-						u = work.back();
-						work.pop_back();
-						degree[u] = n;
-						answer[u] = count;
-						if constexpr (RejectPairs) if (answer[u ^ 1] == count) return {-1, {}};
+						u = trail.back();
+						trail.pop_back();
+						order[u] = component;
+						if (order[u ^ 1] == component) return false;
 					} while (u != v);
-					++count;
+					--component;
 				}
 				if (!stack.empty()) stack.back().low = std::min(stack.back().low, low);
 			}
 		}
 	}
-	for (int &x : answer) x = x < 0 ? -x - 1 : peeled + count - 1 - x;
-	return {peeled + count, std::move(answer)};
+	for (int i = 0; i < variables; ++i) answer[i] = order[2 * i] < order[2 * i + 1];
+	return true;
 }
 }
 
@@ -125,60 +181,7 @@ class TwoSAT {
 	std::vector<std::pair<int, int>> edges_;
 	std::vector<int> forced_;
 	std::vector<bool> answer_;
-	bool valid_ = false;
-	int closure() {
-		std::vector<int> head(2 * n_, -1), next(edges_.size()), trail;
-		std::vector<signed char> values(n_, -1);
-		trail.reserve(n_);
-		for (std::size_t i = 0; i < edges_.size(); ++i) {
-			int from = edges_[i].first;
-			next[i] = head[from];
-			head[from] = static_cast<int>(i);
-		}
-		std::size_t budget = (std::min)(std::size_t(n_) + edges_.size(), std::numeric_limits<std::size_t>::max() / 2) * 2;
-		auto propagate = [&](int root) {
-			trail.clear();
-			trail.push_back(root);
-			values[root >> 1] = root & 1;
-			for (std::size_t i = 0; i < trail.size(); ++i) {
-				if (!budget) return -1;
-				--budget;
-				for (int at = head[trail[i]]; at >= 0; at = next[at]) {
-					if (!budget) return -1;
-					--budget;
-					int to = edges_[at].second;
-					if (values[to >> 1] < 0) {
-						values[to >> 1] = to & 1;
-						trail.push_back(to);
-					} else if (values[to >> 1] != (to & 1)) {
-						for (int v : trail) values[v >> 1] = -1;
-						return 0;
-					}
-				}
-			}
-			return 1;
-		};
-		for (int to : forced_) {
-			if (values[to >> 1] < 0) {
-				int result = propagate(to);
-				if (result != 1) return result;
-			} else if (values[to >> 1] != (to & 1)) return 0;
-		}
-		for (int i = 0; i < n_; ++i) if (values[i] < 0) {
-			if (head[2 * i] < 0) values[i] = 0;
-			else if (head[2 * i + 1] < 0) values[i] = 1;
-			else {
-				int result = propagate(2 * i);
-				if (result < 0) return -1;
-				if (!result) {
-					result = propagate(2 * i + 1);
-					if (result != 1) return result;
-				}
-			}
-		}
-		for (int i = 0; i < n_; ++i) answer_[i] = values[i];
-		return 1;
-	}
+	bool valid_ = false, solved_ = false;
 	static int vertices(int n) {
 		assert(0 <= n && n <= std::numeric_limits<int>::max() / 2);
 		return n * 2;
@@ -193,7 +196,7 @@ class TwoSAT {
 	}
 	void add_clause(int i, bool f, int j, bool g) {
 		assert(0 <= i && i < n_ && 0 <= j && j < n_);
-		valid_ = false;
+		valid_ = solved_ = false;
 		if (i == j && f != g) return;
 		assert(edges_.size() <= std::size_t(std::numeric_limits<int>::max() - 1 - int(i != j)));
 		edges_.emplace_back(2 * i + !f, 2 * j + g);
@@ -201,22 +204,12 @@ class TwoSAT {
 		if (i != j) edges_.emplace_back(2 * j + !g, 2 * i + f);
 	}
 	bool satisfiable() {
+		if (solved_) return valid_;
 		valid_ = false;
-		if (edges_.empty()) {
-			std::fill(answer_.begin(), answer_.end(), false);
-			return valid_ = true;
-		}
-		if (n_ >= 1024) {
-			int result = closure();
-			if (result >= 0) return valid_ = result;
-		}
-		auto [count, id] = scc_detail::ids<true>(2 * n_, edges_);
-		if (count < 0) return false;
-		for (int i = 0; i < n_; ++i) {
-			if (id[2 * i] == id[2 * i + 1]) return false;
-			answer_[i] = id[2 * i] < id[2 * i + 1];
-		}
-		return valid_ = true;
+		if (edges_.empty()) std::fill(answer_.begin(), answer_.end(), false), valid_ = true;
+		else valid_ = two_sat_detail::solve(n_, edges_, forced_, answer_);
+		solved_ = true;
+		return valid_;
 	}
 	std::vector<bool> answer() const { assert(valid_); return answer_; }
 };

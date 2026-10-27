@@ -2744,12 +2744,7 @@ struct Factor {
 	Factor(Word value, Word value_quotient) : w(broadcast(value)), q(broadcast(value_quotient)) {}
 };
 
-inline Vec multiply(Vec x, const Factor& f) {
-	const Vec even = _mm256_srli_epi64(_mm256_mul_epu32(x, f.q), 32);
-	const Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), f.q);
-	const Vec q = _mm256_blend_epi32(even, odd, 0xAA);
-	return _mm256_sub_epi32(_mm256_mullo_epi32(x, f.w), _mm256_mullo_epi32(q, broadcast(kP)));
-}
+inline Vec multiply(Vec x, const Factor& f) { return mint_detail::Ops::fixed_mul8(x, f.w, f.q); }
 
 inline size_t slot(size_t k) { return (k >> 3 << 4) | (k & 7); }
 
@@ -2778,18 +2773,6 @@ inline void build_table(Word* t, size_t count, const std::array<Word, kRootCount
 			_mm256_store_si256(reinterpret_cast<Vec*>(t + slot(h + j)), v);
 			_mm256_store_si256(reinterpret_cast<Vec*>(t + slot(h + j) + 8), _mm256_mullo_epi32(vr, broadcast(kernels::kNI)));
 		}
-	}
-}
-
-inline void inverse_radix4(Vec* f, size_t h, const Word* inverse_roots, const Factor& s) {
-	const Factor z(inverse_roots[1], inverse_roots[9]);
-	const auto scale = [&s](Vec x) __attribute__((target("avx2"))) { return reduce(multiply(x, s), kP); };
-	for (size_t j = 0; j < h; ++j) {
-		const Vec p0 = f[j], p1 = f[j + h], p2 = f[j + 2 * h], p3 = f[j + 3 * h];
-		const Vec ab = reduce(add(p0, p1), 2 * kP), cd = reduce(add(p2, p3), 2 * kP);
-		const Vec amb = reduce(diff(p0, p1), 2 * kP), cmd = multiply(diff(p2, p3), z);
-		f[j] = scale(add(ab, cd)), f[j + h] = scale(add(amb, cmd));
-		f[j + 2 * h] = scale(diff(ab, cd)), f[j + 3 * h] = scale(diff(amb, cmd));
 	}
 }
 
@@ -2842,14 +2825,7 @@ inline void forward_identity(Vec* a, size_t h, const Word* y) {
 inline void inverse_identity(Vec* a, size_t h, const Word* y) {
 	radix4<true, true>(a, h, y, y);
 }
-inline void scale_radix2(Vec* a, size_t h, const Word* y) {
-	const Factor s(y[1], y[9]);
-	for (size_t j = 0; j < h; ++j) {
-		const Vec lo = a[j], hi = a[j + h];
-		a[j] = reduce(multiply(add(lo, hi), s), kP);
-		a[j + h] = reduce(multiply(diff(lo, hi), s), kP);
-	}
-}
+
 }
 
 namespace blocked_poly::kernels {
@@ -2978,7 +2954,6 @@ inline void fill_window(Window& window, Vec a, const Factor& w) {
 }
 
 [[gnu::always_inline]] inline Vec leaf_product(const Window& window, const Word* b) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
 	Vec even = _mm256_setzero_si256(), odd = even;
 #pragma GCC unroll 8
 	for (int i = 0; i < 8; ++i) {
@@ -2988,9 +2963,7 @@ inline void fill_window(Window& window, Vec a, const Factor& w) {
 		even = _mm256_add_epi64(even, _mm256_mul_epu32(lo, bi));
 		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(hi, bi));
 	}
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return reduce(_mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA), 2 * kP);
+	return reduce(mint_detail::Ops::reduce8(even, odd), 2 * kP);
 }
 
 struct ForwardBottom {
@@ -3139,14 +3112,6 @@ public:
 		if constexpr (Bottom::kInverse) inverse(a, h, k);
 	}
 
-	static constexpr bool radix8(size_t nv) { return nv / 2 > kTile; }
-
-	void below(Word* a, size_t nv, size_t k) const {
-		const size_t h = nv / 4;
-		for (size_t t = 0; t < 4; ++t) visit(a + 8 * t * h, h, 4 * k + t);
-		if constexpr (Bottom::kInverse) inverse(a, h, k);
-	}
-
 private:
 	static constexpr size_t kTile = 256;
 
@@ -3192,14 +3157,6 @@ public:
 		if (v - first_ < count_) return _mm256_loadu_si256(reinterpret_cast<const Vec*>(in_ + (8 * v - shift_)));
 		if (v - first_touched_ >= touched_) return _mm256_setzero_si256();
 		return edge(in_, shift_, end_, v);
-	}
-
-	bool in_place(const Word* out) const { return in_ == out + shift_; }
-
-	void zero_outside(Word* out, size_t lo, size_t hi) const {
-		const size_t begin = std::clamp(shift_, lo, hi), end = std::clamp(end_, begin, hi);
-		std::fill(out + lo, out + begin, 0);
-		std::fill(out + end, out + hi, 0);
 	}
 
 	bool within(size_t lo, size_t hi) const {
@@ -3276,51 +3233,32 @@ template <class Input>
 	forward_top2_body(in, out, h);
 }
 
-inline bool forward_top8(const Source&, Word*, size_t, const Word*) { return false; }
-
 template <class Bottom>
-void radix2_halves(const Recursion<Bottom>& recursion, const Source& in, Word* a, size_t nv,
-				   const Word* roots) {
+void radix2_halves(const Recursion<Bottom>& recursion, const Source& in, Word* a, size_t nv) {
 	const size_t h = nv / 2;
-	if constexpr (Bottom::kForward) {
-		if (recursion.radix8(nv) && forward_top8(in, a, nv, roots)) {
-			recursion.below(a, h, 0);
-			recursion.below(a + 8 * h, h, 1);
-			return;
-		}
-		forward_top2(in, reinterpret_cast<Vec*>(a), h);
-	}
+	if constexpr (Bottom::kForward) forward_top2(in, reinterpret_cast<Vec*>(a), h);
 	recursion.visit(a, h, 0);
 	recursion.visit(a + 8 * h, h, 1);
 }
 
 inline void inverse_top4(Vec* f, size_t h, Half output, const Word* inverse_roots, const Factor& s) {
-	if (output == Half::kBoth) return blocked_ntt::detail::inverse_radix4(f, h, inverse_roots, s);
 	const Factor z(inverse_roots[1], inverse_roots[9]);
 	const auto scale = [&s](Vec x) __attribute__((target("avx2"))) { return reduce(times(x, s), kP); };
 	for (size_t j = 0; j < h; ++j) {
 		const Vec p0 = f[j], p1 = f[j + h], p2 = f[j + 2 * h], p3 = f[j + 3 * h];
 		const Vec ab = low(add(p0, p1)), cd = low(add(p2, p3));
 		const Vec amb = low(diff(p0, p1)), cmd = times(diff(p2, p3), z);
-		if (output == Half::kLower) {
-			f[j] = scale(add(ab, cd)), f[j + h] = scale(add(amb, cmd));
-		} else {
-			f[j + 2 * h] = scale(diff(ab, cd)), f[j + 3 * h] = scale(diff(amb, cmd));
-		}
+		if (output != Half::kUpper) f[j] = scale(add(ab, cd)), f[j + h] = scale(add(amb, cmd));
+		if (output != Half::kLower) f[j + 2 * h] = scale(diff(ab, cd)), f[j + 3 * h] = scale(diff(amb, cmd));
 	}
 }
 
 inline void inverse_top2(Vec* f, size_t h, Half output, Word scale) {
-	if (output == Half::kBoth) {
-		alignas(32) Word s[16] = {};
-		s[1] = scale;
-		s[9] = blocked_ntt::detail::quotient(scale);
-		return blocked_ntt::kernels::scale_radix2(f, h, s);
-	}
 	const Factor s(scale);
 	for (size_t j = 0; j < h; ++j) {
-		if (output == Half::kLower) f[j] = reduce(times(add(f[j], f[j + h]), s), kP);
-		else f[j + h] = reduce(times(diff(f[j], f[j + h]), s), kP);
+		const Vec lo = f[j], hi = f[j + h];
+		if (output != Half::kUpper) f[j] = reduce(times(add(lo, hi), s), kP);
+		if (output != Half::kLower) f[j + h] = reduce(times(diff(lo, hi), s), kP);
 	}
 }
 
@@ -3475,7 +3413,7 @@ protected:
 			if constexpr (Bottom::kInverse) inverse_top4(v, h, output, inverse_roots_, Factor(scale));
 		} else {
 			const size_t h = nv / 2;
-			radix2_halves(recursion, in, a.data(), nv, roots_);
+			radix2_halves(recursion, in, a.data(), nv);
 			if constexpr (Bottom::kInverse) inverse_top2(v, h, output, scale);
 		}
 	}
@@ -3498,23 +3436,12 @@ protected:
 	Word *roots_, *inverse_roots_;
 };
 
-}
-
-namespace blocked_poly {
-
 namespace detail {
 
 inline Vec load_unaligned(const Word* p) { return _mm256_loadu_si256(reinterpret_cast<const Vec*>(p)); }
 inline void store_unaligned(Word* p, Vec x) { _mm256_storeu_si256(reinterpret_cast<Vec*>(p), x); }
 
-inline Vec montgomery(Vec a, Vec b) {
-	const Vec ni = broadcast(blocked_ntt::kernels::kNI), p = broadcast(kP);
-	Vec even = _mm256_mul_epu32(a, b);
-	Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32));
-	even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, ni), p));
-	odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, ni), p));
-	return _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
-}
+inline Vec montgomery(Vec a, Vec b) { return mint_detail::Ops::mul8(a, b); }
 
 class Indices {
 public:
@@ -3630,26 +3557,29 @@ inline void divide_by_index(ConstWords a, size_t first, Words q) {
 	});
 }
 
-}
-
-#line 974 "components/fps_blocked.hpp"
-
-namespace blocked_poly {
-
 namespace detail {
 
 inline constexpr size_t kInverseBase = 32;
+
+inline Word direct_product(const Word* a, const Word* b, size_t n) {
+	std::uint64_t sums[4] = {};
+	size_t j = 0;
+	for (; j + 4 <= n; j += 4)
+		for (size_t k = 0; k < 4; ++k) sums[k] += std::uint64_t(a[j + k]) * b[n - 1 - j - k];
+	std::uint64_t sum = 0;
+	for (auto x : sums) sum += x % kP;
+	for (; j < n; ++j) sum += std::uint64_t(a[j]) * b[n - 1 - j];
+	return Word(sum % kP);
+}
 
 inline void inverse_direct(ConstWords f, Words g) {
 	using blocked_ntt::detail::multiply_mod;
 	const Word inv0 = blocked_ntt::detail::power(f[0], kP - 2);
 	g[0] = inv0;
 	for (size_t i = 1; i < g.size(); ++i) {
-		std::uint64_t sum = 0;
-		for (size_t j = 1; j <= std::min(i, f.size() - 1); ++j) {
-			sum += std::uint64_t(f[j]) * g[i - j] % kP;
-		}
-		g[i] = multiply_mod(Word(sum % kP ? kP - sum % kP : 0), inv0);
+		const size_t count = std::min(i, f.size() - 1);
+		const Word sum = direct_product(f.data() + 1, g.data() + i - count, count);
+		g[i] = multiply_mod(sum ? kP - sum : 0, inv0);
 	}
 }
 
@@ -3662,11 +3592,11 @@ inline int inverse_log(size_t n) {
 inline size_t inverse_scratch(size_t n) { return 2 * Arena::footprint(size_t(1) << inverse_log(n)); }
 
 inline void inverse_step(const Transform& t, ConstWords f, ConstWords g,
-						Words to, Words gt, Words work) {
+						Words to, Words gt, Words work, Word scale = detail::kP - 1) {
 	const size_t k = g.size();
 	t.forward(g, 0, gt);
 	t.cyclic_product(f.first(std::min(2 * k, f.size())), 0, work, gt, Half::kUpper);
-	t.cyclic_product(work.subspan(k), k, work, gt, Half::kUpper, detail::kP - 1);
+	t.cyclic_product(work.subspan(k), k, work, gt, Half::kUpper, scale);
 	if (to.data() != work.data() + k) std::copy_n(work.begin() + std::ptrdiff_t(k), to.size(), to.begin());
 }
 
@@ -3682,10 +3612,6 @@ inline void inverse(const Transform& t, ConstWords f, Words g,
 	}
 }
 
-}
-
-namespace blocked_poly {
-
 namespace detail {
 
 inline constexpr size_t kLogBase = 64;
@@ -3699,9 +3625,8 @@ inline void log_direct(ConstWords f, Words g) {
 	for (size_t i = 2; i < g.size(); ++i) inv[i] = multiply_mod(kP - kP / Word(i), inv[kP % i]);
 	g[0] = 0;
 	for (size_t i = 1; i < g.size(); ++i) {
-		std::uint64_t sum = multiply_mod(Word(i), a[i]);
-		for (size_t k = 1; k < i; ++k) sum += kP - std::uint64_t(kg[k]) * a[i - k] % kP;
-		kg[i] = Word(sum % kP);
+		const Word sum = direct_product(kg + 1, a + 1, i - 1);
+		kg[i] = (multiply_mod(Word(i), a[i]) + kP - sum) % kP;
 		g[i] = multiply_mod(kg[i], inv[i]);
 	}
 }
@@ -3945,9 +3870,6 @@ inline void log(const Transform& t, ConstWords f, Words g,
 	g[0] = 0;
 }
 
-}
-
-namespace blocked_poly {
 inline void native_log(const mint *in, size_t input, std::vector<mint> &out, size_t n, bool integrate) {
 	prepare_fps_output(out, n);
 	out.emplace_back(0);
@@ -5041,6 +4963,10 @@ std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::ve
 
 
 
+#line 1 "components/fast_io_output.hpp"
+
+
+
 #line 1 "components/fast_io.hpp"
 
 
@@ -5272,6 +5198,77 @@ public:
 };
 
 
+#line 7 "components/fast_io_output.hpp"
+
+namespace fast_io_detail {
+struct BulkOutput {
+	static char *small(char *out, std::uint32_t value) {
+		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
+		if constexpr (std::endian::native == std::endian::little) {
+			std::uint32_t word;
+			std::memcpy(&word, FastOutput::quads[value].data(), 4);
+			word >>= (4 - n) * 8;
+			std::memcpy(out, &word, 4);
+		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
+		return out + n;
+	}
+	static char *number(char *out, std::uint32_t value) {
+		if (value >= 100000000) {
+			out = small(out, value / 100000000);
+			value %= 100000000;
+			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
+			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
+			return out + 8;
+		}
+		if (value >= 10000) {
+			out = small(out, value / 10000);
+			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
+			return out + 4;
+		}
+		return small(out, value);
+	}
+	template<std::size_t Fields, class Read>
+#if defined(__GNUC__) || defined(__clang__)
+	[[gnu::noinline]]
+#endif
+	static void records(FastOutput &out, std::size_t count, Read read) {
+		constexpr auto bytes = 11 * Fields;
+		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
+		for (std::size_t base = 0; base < count;) {
+			const auto n = std::min(count - base, block);
+			char *begin = out.reserve(n * bytes), *p = begin;
+			for (std::size_t i = 0; i < n; ++i) {
+				auto values = read(base + i);
+				for (std::size_t j = 0; j < Fields; ++j) {
+					p = number(p, std::uint32_t(values[j]));
+					*p++ = j + 1 == Fields ? '\n' : ' ';
+				}
+			}
+			out.length += p - begin;
+			base += n;
+		}
+	}
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
+}
+
+template<std::size_t Fields, class Read>
+void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
+	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
+	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
+}
+
+
 #line 8 "components/fast_io_bulk.hpp"
 
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
@@ -5463,67 +5460,6 @@ struct BulkInput {
 #pragma GCC pop_options
 #endif
 
-namespace fast_io_detail {
-struct BulkOutput {
-	static char *small(char *out, std::uint32_t value) {
-		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
-		if constexpr (std::endian::native == std::endian::little) {
-			std::uint32_t word;
-			std::memcpy(&word, FastOutput::quads[value].data(), 4);
-			word >>= (4 - n) * 8;
-			std::memcpy(out, &word, 4);
-		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
-		return out + n;
-	}
-	static char *number(char *out, std::uint32_t value) {
-		if (value >= 100000000) {
-			out = small(out, value / 100000000);
-			value %= 100000000;
-			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
-			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
-			return out + 8;
-		}
-		if (value >= 10000) {
-			out = small(out, value / 10000);
-			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
-			return out + 4;
-		}
-		return small(out, value);
-	}
-	template<std::size_t Fields, class Read>
-#if defined(__GNUC__) || defined(__clang__)
-	[[gnu::noinline]]
-#endif
-	static void records(FastOutput &out, std::size_t count, Read read) {
-		constexpr auto bytes = 11 * Fields;
-		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
-		for (std::size_t base = 0; base < count;) {
-			const auto n = std::min(count - base, block);
-			char *begin = out.reserve(n * bytes), *p = begin;
-			for (std::size_t i = 0; i < n; ++i) {
-				auto values = read(base + i);
-				for (std::size_t j = 0; j < Fields; ++j) {
-					p = number(p, std::uint32_t(values[j]));
-					*p++ = j + 1 == Fields ? '\n' : ' ';
-				}
-			}
-			out.length += p - begin;
-			base += n;
-		}
-	}
-	static void write(FastOutput &out, std::string_view text) {
-		if (text.size() <= (1 << 16)) return out.write(text);
-		if (out.length && !out.flush()) throw std::runtime_error("output failed");
-		std::size_t done = 0;
-		while (done < text.size()) {
-			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
-			if (!written) throw std::runtime_error("output failed");
-			done += written;
-		}
-	}
-};
-
-}
 
 namespace fast_io_detail {
 template <class Emit, std::size_t... I>
@@ -5575,12 +5511,6 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
 		while (i < n) pending[used++] = values[i++];
 	});
-}
-
-template<std::size_t Fields, class Read>
-void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
-	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
-	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
 }
 
 
