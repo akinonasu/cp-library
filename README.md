@@ -135,6 +135,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `graph/dijkstra.hpp` | Dijkstra・最短経路の復元 | [使い方](docs/dijkstra.md) |
+| `graph/k_shortest_walk.hpp` | K Shortest Walk・再訪を許す経路長の列挙 | [使い方](docs/k_shortest_walk.md) |
 | `graph/bellman_ford.hpp` | 負辺の最短経路・負閉路の復元 | [使い方](docs/bellman_ford.md) |
 | `graph/monge_d_edge_shortest_path.hpp` | Monge グラフの d 辺最短路長 | [使い方](docs/monge_d_edge_shortest_path.md) |
 | `graph/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
