@@ -311,6 +311,7 @@
 | `string/aho_corasick.hpp` | Aho–Corasick・複数パターン検索 | [使い方](docs/aho_corasick.md) |
 | `string/suffix_automaton.hpp` | Suffix Automaton・文字追加・部分文字列検索・出現回数 | [使い方](docs/suffix_automaton.md) |
 | `string/suffix_tree.hpp` | Suffix Tree（静的文字列） | [使い方](docs/suffix_tree.md) |
+| `string/basic_substring_structure.hpp` | Basic Substring Structure・部分文字列の階段状ブロック分解 | [使い方](docs/basic_substring_structure.md) |
 | `string/dynamic_pattern_matching.hpp` | Dynamic Pattern Matching（固定本文） | [使い方](docs/dynamic_pattern_matching.md) |
 
 ### 数値型
@@ -440,6 +441,7 @@
 | `components/closest_pair.hpp` | 最近点対の整数座標用処理 | [使い方](docs/closest_pair_core.md) |
 | `components/subset_convolution_modular.hpp` | Subset 畳み込みの modint 用処理 | [使い方](docs/subset_convolution_modular.md) |
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |
+| `components/suffix_locus.hpp` | 本文の区間から Suffix Tree の位置を検索 | [使い方](docs/suffix_locus.md) |
 | `components/static_range_min.hpp` | ブロック分割による静的 RMQ | [使い方](docs/static_range_min.md) |
 | `components/static_top_tree_structure.hpp` | Static Top Tree の構造 | [使い方](docs/static_top_tree_structure.md) |
 | `components/stern_brocot_path.hpp` | Stern–Brocot Tree の経路演算 | [使い方](docs/stern_brocot_path.md) |
