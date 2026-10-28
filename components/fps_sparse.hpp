@@ -139,7 +139,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		for (; n - i >= 8; i += 8) O::store8(out + i, O::mul8(O::load8(out + i), O::load8(factors + i)));
 		return i;
 	}
-	template <bool exponential = false>
+	template <bool exponential = false, int streams = 1>
 	__attribute__((target("avx2"))) static void geometric8(U *out, int n, U initial, U ratio, const U *inv = nullptr) {
 		std::uint32_t first[8];
 		U step = O::one;
@@ -151,18 +151,22 @@ struct SparseSeries : SparseBase<SparseSeries> {
 				if constexpr (exponential) first[j] = O::mul(first[j], inv[j]);
 			}
 		}
-		V value = O::load8(first), multiplier = _mm256_set1_epi32(step);
-		O::store8(out, value);
-		int i = 8;
-		for (; n - i >= 8; i += 8) {
-			value = O::mul8(value, multiplier);
+		V value[streams], multiplier = _mm256_set1_epi32(step);
+		value[0] = O::load8(first);
+		for (int j = 1; j < streams; ++j) value[j] = O::mul8(value[j - 1], multiplier);
+		for (int j = 0; j < streams; ++j) O::store8(out + 8 * j, value[j]);
+		for (int j = 1; j < streams; j *= 2) step = O::mul(step, step);
+		multiplier = _mm256_set1_epi32(step);
+		int i = 8 * streams;
+		for (; n - i >= 8 * streams; i += 8 * streams) for (int k = 0; k < streams; ++k) {
+			value[k] = O::mul8(value[k], multiplier);
 			if constexpr (exponential) {
 				V factors[4];
 #pragma GCC unroll 4
 				for (int j = 0; j < 4; ++j) factors[j] = O::mul8(O::load8(inv + i - 2 * j), O::load8(inv + i - 2 * j - 1));
-				value = O::mul8(value, O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
+				value[k] = O::mul8(value[k], O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
 			}
-			O::store8(out + i, value);
+			O::store8(out + i + 8 * k, value[k]);
 		}
 		for (; i < n; ++i) {
 			out[i] = O::mul(out[i - 1], ratio);
@@ -175,7 +179,8 @@ struct SparseSeries : SparseBase<SparseSeries> {
 	static void geometric(Series &out, mint initial, mint ratio, const mint *inv = nullptr) {
 #if defined(__x86_64__) || defined(__i386__)
 		if (out.size() >= 8 && O::vectorized()) {
-			geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
+			if (!exponential && out.size() >= 256) geometric8<false, 4>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v);
+			else geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
 			return;
 		}
 #endif

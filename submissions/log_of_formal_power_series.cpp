@@ -1534,7 +1534,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		for (; n - i >= 8; i += 8) O::store8(out + i, O::mul8(O::load8(out + i), O::load8(factors + i)));
 		return i;
 	}
-	template <bool exponential = false>
+	template <bool exponential = false, int streams = 1>
 	__attribute__((target("avx2"))) static void geometric8(U *out, int n, U initial, U ratio, const U *inv = nullptr) {
 		std::uint32_t first[8];
 		U step = O::one;
@@ -1546,18 +1546,22 @@ struct SparseSeries : SparseBase<SparseSeries> {
 				if constexpr (exponential) first[j] = O::mul(first[j], inv[j]);
 			}
 		}
-		V value = O::load8(first), multiplier = _mm256_set1_epi32(step);
-		O::store8(out, value);
-		int i = 8;
-		for (; n - i >= 8; i += 8) {
-			value = O::mul8(value, multiplier);
+		V value[streams], multiplier = _mm256_set1_epi32(step);
+		value[0] = O::load8(first);
+		for (int j = 1; j < streams; ++j) value[j] = O::mul8(value[j - 1], multiplier);
+		for (int j = 0; j < streams; ++j) O::store8(out + 8 * j, value[j]);
+		for (int j = 1; j < streams; j *= 2) step = O::mul(step, step);
+		multiplier = _mm256_set1_epi32(step);
+		int i = 8 * streams;
+		for (; n - i >= 8 * streams; i += 8 * streams) for (int k = 0; k < streams; ++k) {
+			value[k] = O::mul8(value[k], multiplier);
 			if constexpr (exponential) {
 				V factors[4];
 #pragma GCC unroll 4
 				for (int j = 0; j < 4; ++j) factors[j] = O::mul8(O::load8(inv + i - 2 * j), O::load8(inv + i - 2 * j - 1));
-				value = O::mul8(value, O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
+				value[k] = O::mul8(value[k], O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
 			}
-			O::store8(out + i, value);
+			O::store8(out + i + 8 * k, value[k]);
 		}
 		for (; i < n; ++i) {
 			out[i] = O::mul(out[i - 1], ratio);
@@ -1570,7 +1574,8 @@ struct SparseSeries : SparseBase<SparseSeries> {
 	static void geometric(Series &out, mint initial, mint ratio, const mint *inv = nullptr) {
 #if defined(__x86_64__) || defined(__i386__)
 		if (out.size() >= 8 && O::vectorized()) {
-			geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
+			if (!exponential && out.size() >= 256) geometric8<false, 4>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v);
+			else geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
 			return;
 		}
 #endif
@@ -2538,21 +2543,23 @@ void divide_by_index(size_t first, Words out, const A& a, Word factor = 1) {
 		}
 	}
 
-	alignas(32) Word total[kLanes], inverse[kLanes];
-	for (int v = 0; v < 4; ++v) store(total + 8 * v, canonical(prefix[v]));
+	const Vec left = montgomery(prefix[0], prefix[1]), right = montgomery(prefix[2], prefix[3]);
+	alignas(32) Word total[8], inverse[8];
+	store(total, canonical(montgomery(left, right)));
 	Word running = 1;
-	for (size_t l = 0; l < kLanes; ++l) {
+	for (size_t l = 0; l < 8; ++l) {
 		inverse[l] = running;
 		running = blocked_ntt::detail::multiply_mod(running, total[l]);
 	}
 	running = blocked_ntt::detail::multiply_mod(scalar_inverse(running), blocked_ntt::detail::multiply_mod(kR, factor));
-	for (size_t l = kLanes; l-- > 0;) {
+	for (size_t l = 8; l-- > 0;) {
 		inverse[l] = blocked_ntt::detail::multiply_mod(inverse[l], running);
 		running = blocked_ntt::detail::multiply_mod(running, total[l]);
 	}
 
-	Vec inv[4];
-	for (int v = 0; v < 4; ++v) inv[v] = load(inverse + 8 * v);
+	const Vec inv_left = montgomery(load(inverse), right), inv_right = montgomery(load(inverse), left);
+	Vec inv[4] = {montgomery(inv_left, prefix[1]), montgomery(inv_left, prefix[0]),
+				  montgomery(inv_right, prefix[3]), montgomery(inv_right, prefix[2])};
 	const auto put = [&](size_t at, Vec reciprocal) __attribute__((target("avx2"))) {
 		const Vec q = canonical(montgomery(reciprocal, a(at)));
 		if (at + 8 <= n) return store_unaligned(out.data() + at, q);
@@ -2622,9 +2629,9 @@ inline Word direct_product(const Word* a, const Word* b, size_t n) {
 	return Word(sum % kP);
 }
 
-inline void inverse_direct(ConstWords f, Words g) {
+inline void inverse_direct(ConstWords f, Words g, Word inv0 = 0) {
 	using blocked_ntt::detail::multiply_mod;
-	const Word inv0 = blocked_ntt::detail::power(f[0], kP - 2);
+	if (!inv0) inv0 = blocked_ntt::detail::power(f[0], kP - 2);
 	g[0] = inv0;
 	for (size_t i = 1; i < g.size(); ++i) {
 		const size_t count = std::min(i, f.size() - 1);
@@ -2979,14 +2986,18 @@ inline Factors entries(const Word* table, size_t k) {
 
 inline constexpr size_t kExpBase = 64;
 
+inline constexpr auto kExpInverse = [] {
+	std::array<Word, kExpBase> inv{0, 1};
+	for (size_t i = 2; i < inv.size(); ++i) inv[i] = blocked_ntt::detail::multiply_mod(kP - kP / Word(i), inv[kP % i]);
+	return inv;
+}();
+
 inline void exp_direct(ConstWords q, Words g) {
 	using blocked_ntt::detail::multiply_mod;
-	Word inv[kExpBase] = {0, 1};
-	for (size_t i = 2; i < g.size(); ++i) inv[i] = multiply_mod(kP - kP / Word(i), inv[kP % i]);
 	g[0] = 1;
 	for (size_t i = 1; i < g.size(); ++i) {
 		const Word sum = direct_product(q.data() + 1, g.data(), i);
-		g[i] = multiply_mod(sum, inv[i]);
+		g[i] = multiply_mod(sum, kExpInverse[i]);
 	}
 }
 
@@ -3452,13 +3463,15 @@ namespace detail {
 
 inline constexpr size_t kSqrtBase = 64;
 
-inline void sqrt_direct(ConstWords f, Word c, Words g) {
+inline void sqrt_direct(ConstWords f, Word c, Words g, Word inverse = 0) {
 	using blocked_ntt::detail::multiply_mod;
-	const Word inverse = blocked_ntt::detail::power(multiply_mod(2, c), kP - 2);
+	if (!inverse) inverse = blocked_ntt::detail::power(multiply_mod(2, c), kP - 2);
 	g[0] = c;
 	for (size_t i = 1; i < g.size(); ++i) {
-		const Word sum = direct_product(g.data() + 1, g.data() + 1, i - 1);
-		g[i] = multiply_mod(((i < f.size() ? f[i] : 0) + kP - sum) % kP, inverse);
+		const size_t half = (i - 1) / 2;
+		Word sum = 2 * direct_product(g.data() + 1, g.data() + i - half, half);
+		if (!(i & 1)) sum += multiply_mod(g[i / 2], g[i / 2]);
+		g[i] = multiply_mod(((i < f.size() ? f[i] : 0) + 3 * kP - sum) % kP, inverse);
 	}
 }
 
@@ -3697,10 +3710,11 @@ inline void sqrt_steps(const Transform& t, ConstWords f, Word c, Words a,
 	using namespace detail;
 	const size_t len = a.size();
 	if (f.empty() || f[0] == 0 || blocked_ntt::detail::multiply_mod(c, c) != f[0] || len < kSqrtBase) std::abort();
-	sqrt_direct(f, c, a.first(kSqrtBase));
+	const Word inv0 = blocked_ntt::detail::power(c, kP - 2);
+	sqrt_direct(f, c, a.first(kSqrtBase), blocked_ntt::detail::multiply_mod(inv0, (kP + 1) / 2));
 	Word* const h = a.data() + len / 2;
 	alignas(32) Word h0[kSqrtBase / 2];
-	inverse_direct(a.first(kSqrtBase / 2), h0);
+	inverse_direct(a.first(kSqrtBase / 2), h0, inv0);
 	for (Word& x : h0) x = x ? kP - x : 0;
 	t.forward(h0, 0, ht.first(kSqrtBase));
 	if (len > kSqrtBase) std::copy_n(h0, kSqrtBase / 2, h);

@@ -15,6 +15,17 @@ int main() {
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
 	if (!fps_detail::NTT::vectorized()) return 0;
 	std::mt19937 rng(20261019);
+	namespace bd = fps_detail::blocked_poly::detail;
+	for (int n : {0, 1, 7, 8, 9, 31, 32, 33, 63, 64, 65, 127, 128, 129, 257})
+		for (unsigned first : {1u, 19u, fps_mint::mod() - n})
+			for (unsigned factor : {0u, 1u, bd::kR, fps_mint::mod() - 1}) {
+				std::vector<unsigned> input(n + 8), out(n + 8, 0xdeadbeefu);
+				for (auto& x : input) x = rng() % (2 * fps_mint::mod());
+				bd::divide_by_index(first, {out.data(), unsigned(n)}, [&](size_t at) __attribute__((target("avx2"))) { return bd::load_unaligned(input.data() + at); }, factor);
+				for (int i = 0; i < n; ++i)
+					require(out[i] == (fps_mint(input[i]) * factor / fps_mint(first + i)).val());
+				for (int i = n; i < n + 8; ++i) require(out[i] == 0xdeadbeefu);
+			}
 	for (int n = 0; n <= 257; ++n) {
 		auto words = std::make_unique<unsigned[]>(n);
 		for (int mode = 0; mode < 2; ++mode) {

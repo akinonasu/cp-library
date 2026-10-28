@@ -28,14 +28,18 @@ inline Factors entries(const Word* table, size_t k) {
 
 inline constexpr size_t kExpBase = 64;
 
+inline constexpr auto kExpInverse = [] {
+	std::array<Word, kExpBase> inv{0, 1};
+	for (size_t i = 2; i < inv.size(); ++i) inv[i] = blocked_ntt::detail::multiply_mod(kP - kP / Word(i), inv[kP % i]);
+	return inv;
+}();
+
 inline void exp_direct(ConstWords q, Words g) {
 	using blocked_ntt::detail::multiply_mod;
-	Word inv[kExpBase] = {0, 1};
-	for (size_t i = 2; i < g.size(); ++i) inv[i] = multiply_mod(kP - kP / Word(i), inv[kP % i]);
 	g[0] = 1;
 	for (size_t i = 1; i < g.size(); ++i) {
 		const Word sum = direct_product(q.data() + 1, g.data(), i);
-		g[i] = multiply_mod(sum, inv[i]);
+		g[i] = multiply_mod(sum, kExpInverse[i]);
 	}
 }
 
