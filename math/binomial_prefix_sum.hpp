@@ -2,6 +2,12 @@
 #define BINOMIAL_PREFIX_SUM_HPP
 #include "../components/binomial_prefix_core.hpp"
 #include "../components/binomial_prefix_online.hpp"
+#include "../components/binomial_prefix_batch.hpp"
+
+template<class Mint = mint, class K = int>
+std::vector<Mint> binomial_prefix_sum(const std::vector<std::pair<int, K>>& queries, int block_size = 0) {
+	return binomial_prefix_detail::batch<Mint, binomial_prefix_detail::Table<Mint>>(queries, block_size);
+}
 
 template<class Mint = mint> class BinomialPrefixSum : public binomial_prefix_detail::Online<Mint, binomial_prefix_detail::Table<Mint>> {
 	using Base = binomial_prefix_detail::Online<Mint, binomial_prefix_detail::Table<Mint>>;

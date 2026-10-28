@@ -441,6 +441,15 @@ inline bool inner_product_has_avx2() {
 #endif
 }
 
+inline bool inner_product_has_avx512() {
+#if defined(__AVX512F__)
+	return true;
+#else
+	static const bool enabled = __builtin_cpu_supports("avx512f");
+	return enabled;
+#endif
+}
+
 template<bool Reverse> __attribute__((target("avx2")))
 __uint128_t inner_product_avx2(const mint* a, const mint* b, int size) {
 	const auto order = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
@@ -465,13 +474,40 @@ __uint128_t inner_product_avx2(const mint* a, const mint* b, int size) {
 	for (int j = 0; j < 4; ++j) sum += (__uint128_t(high[j]) << 64) + low[j];
 	return sum;
 }
+
+template<bool Reverse> __attribute__((target("avx512f")))
+__uint128_t inner_product_avx512(const mint* a, const mint* b, int size) {
+	const auto order = _mm512_setr_epi32(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
+	const auto zero = _mm512_setzero_si512();
+	const auto one = _mm512_set1_epi64(1);
+	auto total = zero, carry = zero;
+	int i = 0;
+	for (; i <= size - 16; i += 16) {
+		auto x = _mm512_loadu_si512(a + i);
+		auto y = _mm512_loadu_si512(b + (Reverse ? -i - 15 : i));
+		if constexpr (Reverse) y = _mm512_permutexvar_epi32(order, y);
+		auto even = _mm512_mul_epu32(x, y);
+		auto odd = _mm512_mul_epu32(_mm512_srli_epi64(x, 32), _mm512_srli_epi64(y, 32));
+		auto next = _mm512_add_epi64(total, _mm512_add_epi64(even, odd));
+		carry = _mm512_mask_add_epi64(carry, _mm512_cmplt_epu64_mask(next, total), carry, one);
+		total = next;
+	}
+	alignas(64) std::uint64_t low[8], high[8];
+	_mm512_store_si512(low, total);
+	_mm512_store_si512(high, carry);
+	__uint128_t sum = 0;
+	if (i < size) sum = inner_product_scalar<Reverse>(a + i, b + (Reverse ? -i : i), size - i);
+	for (int j = 0; j < 8; ++j) sum += (__uint128_t(high[j]) << 64) + low[j];
+	return sum;
+}
 #endif
 
 template<bool Reverse = false> mint inner_product(const mint* a, const mint* b, int size) {
 	assert(size >= 0);
 	__uint128_t sum;
 #if (defined(__GNUC__) || defined(__clang__)) && (defined(__x86_64__) || defined(__i386__))
-	if (size >= 64 && inner_product_has_avx2()) sum = inner_product_avx2<Reverse>(a, b, size);
+	if (size >= 64 && inner_product_has_avx512()) sum = inner_product_avx512<Reverse>(a, b, size);
+	else if (size >= 64 && inner_product_has_avx2()) sum = inner_product_avx2<Reverse>(a, b, size);
 	else
 #endif
 		sum = inner_product_scalar<Reverse>(a, b, size);
@@ -576,7 +612,96 @@ template<class Mint, class Table> class Online {
 }
 
 
-#line 5 "math/binomial_prefix_sum.hpp"
+#line 1 "components/binomial_prefix_batch.hpp"
+
+
+
+#line 6 "components/binomial_prefix_batch.hpp"
+#include <utility>
+
+namespace binomial_prefix_detail {
+template<class Mint, class Table, class K>
+std::vector<Mint> batch(const std::vector<std::pair<int, K>>& queries, int block_size) {
+	static_assert(std::is_integral_v<K> && std::is_signed_v<K> && sizeof(K) <= 8);
+	assert(block_size >= 0 && Mint::mod() > 1);
+	std::vector<Mint> answer(queries.size());
+	if (queries.empty()) return answer;
+	int limit = 0;
+	for (auto [n, k] : queries) {
+		(void)k;
+		assert(0 <= n && n < std::numeric_limits<int>::max() && std::uint64_t(n) < Mint::mod());
+		limit = std::max(limit, n);
+	}
+	std::vector<Mint> power2(std::size_t(limit) + 1);
+	power2[0] = Mint(1);
+	for (int n = 1; n <= limit; ++n) power2[n] = power2[n - 1] + power2[n - 1];
+	struct Point { int n, k; std::size_t id; bool reflect; };
+	std::vector<Point> points;
+	points.reserve(queries.size());
+	int maximum = 0;
+	for (std::size_t i = 0; i < queries.size(); ++i) {
+		auto [n, k] = queries[i];
+		if (k <= 0) continue;
+		if (std::uint64_t(k) >= std::uint64_t(n) + 1) { answer[i] = power2[n]; continue; }
+		bool reflect = k > (n + 1) / 2;
+		int m = reflect ? n + 1 - int(k) : int(k);
+		if (m == 1) answer[i] = reflect ? power2[n] - Mint(1) : Mint(1);
+		else if ((n & 1) && m == (n + 1) / 2) answer[i] = power2[n - 1];
+		else {
+			points.push_back({n, m, i, reflect});
+			maximum = std::max(maximum, n);
+		}
+	}
+	if (points.empty()) return answer;
+	auto store = [&](const Point& point, Mint value) {
+		answer[point.id] = point.reflect ? power2[point.n] - value : value;
+	};
+	if (std::all_of(points.begin(), points.end(), [&](const Point& point) { return point.n == maximum; })) {
+		Table table(maximum);
+		int first = maximum, last = 0;
+		for (const auto& point : points) first = std::min(first, point.k), last = std::max(last, point.k);
+		std::vector<Mint> prefix(std::size_t(last - first) + 1);
+		Mint value;
+		if constexpr (std::is_same_v<Mint, mint>) value = table.factorial[maximum] * mint_detail::inner_product<true>(table.inverse_factorial.data(), table.inverse_factorial.data() + maximum, first);
+		else value = table.range(maximum, 0, first);
+		prefix[0] = value;
+		for (int k = first; k < last; ++k) prefix[k - first + 1] = value += table.binom(maximum, k);
+		for (const auto& point : points) store(point, prefix[point.k - first]);
+	} else {
+		int block = block_size ? block_size : std::max(1, int(std::round(maximum / std::sqrt(double(points.size())))));
+		if (!block_size) {
+			int alternative = std::max(1, int(std::round(maximum / std::sqrt(double(queries.size())))));
+			if (alternative != block && alternative >= block / 2 + block % 2) {
+				std::size_t count = std::min(points.size(), std::size_t(256));
+				auto estimate = [&](int width) {
+					int rows = maximum / width;
+					double sum = 0;
+					for (std::size_t i = 0; i < count; ++i) {
+						const auto& point = points[i * (points.size() / count)];
+						int row = std::min(int((std::int64_t(point.n) + width / 2) / width), rows);
+						int column = std::min(int((std::int64_t(point.k - 1) + width / 2) / width), row);
+						std::int64_t distance = std::abs(point.n - row * width) + std::int64_t(std::abs(point.k - 1 - column * width));
+						sum += std::min(std::int64_t(std::min(point.k - 1, (point.n + 1) / 2 - point.k)), distance);
+					}
+					return double(maximum) * maximum / (4 * double(width)) + double(points.size()) * sum / double(count);
+				};
+				if (estimate(alternative) < estimate(block)) block = alternative;
+			}
+		}
+		Online<Mint, Table> online(maximum, block);
+		for (const auto& point : points) store(point, online.query(point.n, point.k));
+	}
+	return answer;
+}
+}
+
+
+#line 6 "math/binomial_prefix_sum.hpp"
+
+template<class Mint = mint, class K = int>
+std::vector<Mint> binomial_prefix_sum(const std::vector<std::pair<int, K>>& queries, int block_size = 0) {
+	return binomial_prefix_detail::batch<Mint, binomial_prefix_detail::Table<Mint>>(queries, block_size);
+}
 
 template<class Mint = mint> class BinomialPrefixSum : public binomial_prefix_detail::Online<Mint, binomial_prefix_detail::Table<Mint>> {
 	using Base = binomial_prefix_detail::Online<Mint, binomial_prefix_detail::Table<Mint>>;
@@ -829,11 +954,11 @@ int main() {
 	FastOutput output;
 	int t = 0;
 	input.read(t);
-	BinomialPrefixSum<> prefix(200000);
-	while (t--) {
-		int n = 0, k = 0;
+	std::vector<std::pair<int, int>> queries(t);
+	for (auto& [n, k] : queries) {
 		input.read(n);
 		input.read(k);
-		output.println(prefix.query(n, std::int64_t(k) + 1).val());
+		++k;
 	}
+	for (auto value : binomial_prefix_sum(queries)) output.println(value.val());
 }

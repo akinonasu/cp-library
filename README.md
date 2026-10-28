@@ -355,8 +355,8 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
-| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数 prefix sum | [使い方](docs/binomial_prefix_sum_light.md) |
+| `math/binomial_prefix_sum.hpp` | 二項係数の prefix sum・一括計算 | [使い方](docs/binomial_prefix_sum.md) |
+| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数 prefix sum・一括計算 | [使い方](docs/binomial_prefix_sum_light.md) |
 | `math/binomial_prefix_sum_incremental.hpp` | 二項係数の prefix sum（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
 | `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数 prefix sum 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
