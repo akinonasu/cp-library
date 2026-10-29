@@ -50,9 +50,10 @@ class DynamicBitset {
 	}
 	template <Operation Op> int count_with(const DynamicBitset &other) const {
 		check_size(other);
-		if (data_.size() >= 8) return int(bitset_ops_detail::count<Op>(data_.data(), other.data_.data(), data_.size()));
+		if (data_.size() >= 8) return int(bitset_ops_detail::count<Op>(data_.data(), Op == Operation::identity ? nullptr : other.data_.data(), data_.size()));
 		int result = 0;
-		for (std::size_t i = 0; i < data_.size(); ++i) result += std::popcount(bitset_ops_detail::combine<Op>(data_[i], other.data_[i]));
+		if constexpr (Op == Operation::identity) { for (auto x : data_) result += std::popcount(x); }
+		else for (std::size_t i = 0; i < data_.size(); ++i) result += std::popcount(bitset_ops_detail::combine<Op>(data_[i], other.data_[i]));
 		return result;
 	}
 	template <bool Left, bool Or> DynamicBitset &shift(std::size_t amount) {
@@ -152,10 +153,7 @@ class DynamicBitset {
 	void push_back(bool value) { assert(n_ < std::numeric_limits<int>::max()); int p = n_; resize(n_ + 1); set(p, value); }
 	void pop_back() { assert(n_); resize(n_ - 1); }
 	void clear() { data_.clear(); n_ = 0; }
-	int count() const {
-		if (data_.size() >= 8) return int(bitset_ops_detail::count<Operation::identity>(data_.data(), nullptr, data_.size()));
-		int result = 0; for (auto x : data_) result += std::popcount(x); return result;
-	}
+	int count() const { return count_with<Operation::identity>(*this); }
 	int count(int l, int r) const {
 		check_range(l, r); if (l == r) return 0;
 		std::size_t first = unsigned(l) / 64, last = unsigned(r - 1) / 64;
