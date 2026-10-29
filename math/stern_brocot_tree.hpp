@@ -144,6 +144,37 @@ public:
 	}
 	SternBrocotTree lca(const SternBrocotTree &other) const { return lca(value(), other.value()); }
 	W distance(const SternBrocotTree &other) const { return W(level) + other.level - 2 * W(lca(other).level); }
+	template <class Predicate>
+	static std::pair<value_type, value_type> binary_search(Int max_numerator, Int max_denominator, Predicate &&predicate) {
+		assert(max_numerator > 0 && max_denominator > 0);
+		W n = U(max_numerator), d = U(max_denominator);
+		W a = 0, b = 1, c = 1, e = 0;
+		while (a + c <= n && b + e <= d) {
+			bool side = bool(predicate(Int(a + c), Int(b + e)));
+			W &x = side ? a : c, &y = side ? b : e;
+			W u = side ? c : a, v = side ? e : b;
+			W limit = u ? (n - x) / u : (d - y) / v;
+			if (v) limit = std::min(limit, (d - y) / v);
+			auto same = [&](W k) { return bool(predicate(Int(x + k * u), Int(y + k * v))) == side; };
+			W low = 1, high = 1;
+			while (low < limit) {
+				high = low > limit / 2 ? limit : low * 2;
+				if (!same(high)) break;
+				low = high;
+			}
+			while (high - low > 1) {
+				W mid = low + (high - low) / 2;
+				if (same(mid)) low = mid;
+				else high = mid;
+			}
+			x += low * u; y += low * v;
+		}
+		return {{Int(a), Int(b)}, {Int(c), Int(e)}};
+	}
+	template <class Predicate>
+	static std::pair<value_type, value_type> binary_search(Int bound, Predicate &&predicate) {
+		return binary_search(bound, bound, std::forward<Predicate>(predicate));
+	}
 	static std::pair<value_type, value_type> approximate(Int numerator, Int denominator, Int max_numerator, Int max_denominator) {
 		assert(numerator > 0 && denominator > 0 && max_numerator > 0 && max_denominator > 0);
 		U a = numerator, b = denominator, ln = 0, ld = 1, rn = 1, rd = 0;

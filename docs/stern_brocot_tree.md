@@ -49,6 +49,8 @@ auto [low, high] = Tree::approximate(5, 3, 2); // 1/1, 2/1
 | `Tree::ancestor(value,depth)` | 指定した正の有理数の、指定した深さの祖先を `optional` で返す | $$O(\log M)$$ |
 | `lca(other)` / `Tree::lca(value1,value2)` | 最低共通祖先の頂点を返す | $$O(\log M)$$ |
 | `distance(other)` | 二頂点間の辺数を `distance_type` で返す | $$O(\log M)$$ |
+| `Tree::binary_search(bound,predicate)` | 分子・分母の共通上限を指定して有理数二分探索 | 判定 $$O(\log M)$$ 回 |
+| `Tree::binary_search(max_numerator,max_denominator,predicate)` | 分子・分母の上限を別々に指定して有理数二分探索 | 判定 $$O(\log M)$$ 回 |
 | `Tree::approximate(numerator,denominator,bound)` | 分子・分母がともに `bound` 以下の分数による最良の下側・上側近似を返す | $$O(\log M)$$ |
 | `Tree::approximate(numerator,denominator,max_numerator,max_denominator)` | 分子・分母の上限を別々に指定して最良近似を返す | $$O(\log M)$$ |
 
@@ -56,8 +58,39 @@ auto [low, high] = Tree::approximate(5, 3, 2); // 1/1, 2/1
 
 `approximate()` は正の有理数 $$x=\displaystyle\frac{\mathrm{numerator}}{\mathrm{denominator}}$$ を挟む、最大の $$l\le x$$ と最小の $$r\ge x$$ を `pair<value_type,value_type>` で返します。返される分数は既約です。上限はすべて正とし、分子 0 または分母 0 の端点も候補に含みます。入力が上限内で表現できるときは両端ともその値になります。入力は約分されていなくても構いません。例えば `approximate(10,6,5,3)` は両端とも `5/3` です。
 
+`Tree::binary_search(max_numerator,max_denominator,predicate)` は、上限内の正の既約分数について、`predicate(p,q)` が `true` となる最大の分数と `false` となる最小の分数を `std::pair<value_type,value_type>` で返します。`Tree::binary_search(bound,predicate)` では分子・分母の上限をともに `bound` とします。上限は正の `Int`、判定関数の引数は分子・分母の順の `Int` です。引数の既定値はありません。
+
+判定は有理数の昇順で `true` から `false` に一度だけ切り替わる必要があります。すべて `true`・すべて `false` でも構いません。該当する正の分数がなければ下端は `{0,1}`、上端は `{1,0}` を返します。この二つは境界用の番兵で、判定関数には渡しません。判定関数が呼ばれるのは分子・分母がそれぞれ指定上限以下の正の既約分数だけです。同じ値に対する判定結果は変えないでください。呼び出し順序や回数そのものへの依存は避けます。
+
+`approximate()` と異なり、返す両端は必ず異なります。境界ちょうどの値をどちらに含めるかは、判定関数の `<`・`<=` などで指定します。探索対象は正の有理数で、負の値には対応しません。頂点の状態を変更しない静的関数です。判定関数はコピーせず、例外を投げた場合はそのまま伝播します。
+
+次の例では、浮動小数点を使わずに平方根を挟みます。
+
+```cpp
+#include "lib/math/stern_brocot_tree.hpp"
+#include <cassert>
+#include <cstdint>
+
+int main() {
+	using Tree = SternBrocotTree<>;
+	auto [lower, upper] = Tree::binary_search(100,
+		[](std::uint64_t p, std::uint64_t q) { return p * p <= 2 * q * q; });
+	assert((lower == Tree::value_type{41, 29}));
+	assert((upper == Tree::value_type{99, 70}));
+
+	auto [ok, ng] = Tree::binary_search(20, 10,
+		[](std::uint64_t p, std::uint64_t q) { return 3 * p <= 5 * q; });
+	assert((ok == Tree::value_type{5, 3}));
+	assert((ng == Tree::value_type{17, 10}));
+}
+```
+
+探索内部では広い整数型と上限から計算した移動可能回数を使い、`Int` の最大値まで指定できます。ただし、判定関数内部の乗算などのオーバーフローは利用者が防いでください。上の平方根の例は上限 100 に対して安全ですが、一般の 64 bit 上限で `p*p` や `2*q*q` が同じ型に収まるとは限りません。
+
 移動回数・深さは `count_type` で指定します。0 回の移動は成功し、深さ 0 の祖先は根です。`decode()` は空の経路を根として扱い、回数 0 や同方向の連続区間も受け付けます。`encode()`・`path()` の返り値には回数 0 を含まず、方向は交互に並びます。
 
 分子・分母は元の `Int` に収まる必要がありますが、中間積には幅の広い整数型を使います。64 bit 型の二頂点間の距離は 64 bit を超える場合があるため、`distance_type` は 128 bit です。`Tree::ancestor()` と `Tree::lca()` は入力の圧縮経路を配列にせず処理し、共通部分だけが必要なときは途中で打ち切ります。
 
 分子・分母の最大値を $$M$$、圧縮経路の区間数を $$s$$ として、根の構築・値取得・範囲取得・深さ・比較・包含判定・左右への移動・子・親の取得は $$O(1)$$ です。有理数からの構築・`encode()`・`path()`・`ancestor()`・`lca()`・`distance()`・`approximate()`・一括 `move_up()` は $$O(\log M)$$ 時間、`decode()` は $$O(s)$$ 時間です。経路を配列で返す場合の空間は $$O(\log M)$$、それ以外の追加空間と頂点一つの保持は $$O(1)$$ です。
+
+有理数二分探索では $$M=\max(\mathrm{max\_numerator},\mathrm{max\_denominator})$$ として、判定関数の呼び出し回数は $$O(\log M)$$、判定 1 回の時間を $$T$$ とすれば全体で $$O(T\log M)$$ 時間、追加空間は $$O(1)$$ です。同方向への移動回数を指数探索してから二分探索するため、長い一本道を 1 頂点ずつ進みません。上限 1 の場合は定数時間です。
