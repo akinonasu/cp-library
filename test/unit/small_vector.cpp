@@ -5,7 +5,38 @@
 #include <sstream>
 #include <vector>
 
+template<std::size_t N>
+void moves() {
+	using Vector = SmallVector<int, N>;
+	static_assert(std::is_nothrow_move_constructible_v<Vector> && std::is_nothrow_move_assignable_v<Vector>);
+	for (std::size_t size : {std::size_t(0), std::size_t(1), N, N + 1, 2 * N}) {
+		for (bool reserved : {false, true}) for (bool destination_large : {false, true}) {
+			Vector source(size);
+			for (std::size_t i = 0; i < size; ++i) source[i] = int(i + 1);
+			if (reserved) source.reserve(4 * N);
+			auto expected = source;
+			bool heap = source.capacity() > N;
+			int *storage = source.data();
+			Vector moved(std::move(source));
+			assert(moved == expected && source.empty() && source.capacity() == N);
+			if (heap) assert(moved.data() == storage);
+			source.push_back(17);
+			assert(source.back() == 17);
+			Vector destination(destination_large ? 4 * N : 1);
+			destination = std::move(moved);
+			assert(destination == expected && moved.empty() && moved.capacity() == N);
+			if (heap) assert(destination.data() == storage);
+			moved.push_back(23);
+			assert(moved.back() == 23);
+			auto *self = &destination;
+			destination = std::move(*self);
+			assert(destination == expected);
+		}
+	}
+}
+
 int main() {
+	moves<1>(); moves<2>(); moves<16>();
 	static_assert(sizeof(SmallVector<std::uint64_t>) == 3 * sizeof(std::uint64_t));
 	std::mt19937 rng(5678);
 	SmallVector<int> a;
