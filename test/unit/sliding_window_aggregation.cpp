@@ -133,6 +133,24 @@ int main() {
 		assert(values.prod().value == "bcde");
 	}
 	assert(Box::live == 0);
+	for (int popped : {0, 1, 5}) for (int failure = 0; failure < 12; ++failure) {
+		{
+			ThrowingQueue values;
+			for (char c : std::string("abcde")) values.push_back(Box(std::string(1, c)));
+			for (int i = 0; i < popped; ++i) values.pop_front();
+			std::string before = std::string("abcde").substr(popped);
+			Box::remaining = failure;
+			try { values.push_back(Box("f")); }
+			catch (const std::runtime_error &) {
+				Box::remaining = -1;
+				assert(values.size() == before.size() && values.prod().value == before);
+				values.push_back(Box("f"));
+			}
+			Box::remaining = -1;
+			assert(values.size() == before.size() + 1 && values.prod().value == before + "f");
+		}
+		assert(Box::live == 0);
+	}
 	AffineQueue functions;
 	std::deque<Affine> reference;
 	functions.reserve(8);
