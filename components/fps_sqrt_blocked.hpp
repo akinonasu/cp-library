@@ -13,13 +13,15 @@ namespace detail {
 
 inline constexpr size_t kSqrtBase = 64;
 
-inline void sqrt_direct(ConstWords f, Word c, Words g) {
+inline void sqrt_direct(ConstWords f, Word c, Words g, Word inverse = 0) {
 	using blocked_ntt::detail::multiply_mod;
-	const Word inverse = blocked_ntt::detail::power(multiply_mod(2, c), kP - 2);
+	if (!inverse) inverse = blocked_ntt::detail::power(multiply_mod(2, c), kP - 2);
 	g[0] = c;
 	for (size_t i = 1; i < g.size(); ++i) {
-		const Word sum = direct_product(g.data() + 1, g.data() + 1, i - 1);
-		g[i] = multiply_mod(((i < f.size() ? f[i] : 0) + kP - sum) % kP, inverse);
+		const size_t half = (i - 1) / 2;
+		Word sum = 2 * direct_product(g.data() + 1, g.data() + i - half, half);
+		if (!(i & 1)) sum += multiply_mod(g[i / 2], g[i / 2]);
+		g[i] = multiply_mod(((i < f.size() ? f[i] : 0) + 3 * kP - sum) % kP, inverse);
 	}
 }
 
@@ -258,10 +260,11 @@ inline void sqrt_steps(const Transform& t, ConstWords f, Word c, Words a,
 	using namespace detail;
 	const size_t len = a.size();
 	if (f.empty() || f[0] == 0 || blocked_ntt::detail::multiply_mod(c, c) != f[0] || len < kSqrtBase) std::abort();
-	sqrt_direct(f, c, a.first(kSqrtBase));
+	const Word inv0 = blocked_ntt::detail::power(c, kP - 2);
+	sqrt_direct(f, c, a.first(kSqrtBase), blocked_ntt::detail::multiply_mod(inv0, (kP + 1) / 2));
 	Word* const h = a.data() + len / 2;
 	alignas(32) Word h0[kSqrtBase / 2];
-	inverse_direct(a.first(kSqrtBase / 2), h0);
+	inverse_direct(a.first(kSqrtBase / 2), h0, inv0);
 	for (Word& x : h0) x = x ? kP - x : 0;
 	t.forward(h0, 0, ht.first(kSqrtBase));
 	if (len > kSqrtBase) std::copy_n(h0, kSqrtBase / 2, h);

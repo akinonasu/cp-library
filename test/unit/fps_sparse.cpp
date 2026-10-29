@@ -72,7 +72,7 @@ void check_boundaries() {
 }
 int main() {
 	check_boundaries();
-	for (int n : {255, 256, 257, 259, 4097}) for (int stride : {1, 2, 7, 64}) {
+	for (int n : {255, 256, 257, 259, 287, 288, 289, 511, 512, 513, 4097}) for (int stride : {1, 2, 7, 64}) {
 		Sparse::Terms terms{{stride, mint::word(mint(13).v + mint::mod())}};
 		if (stride >= n) terms.clear();
 		check<K::inverse>(terms, n, mint(7), 0);

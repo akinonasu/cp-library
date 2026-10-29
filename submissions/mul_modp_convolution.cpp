@@ -3488,21 +3488,23 @@ void divide_by_index(size_t first, Words out, const A& a, Word factor = 1) {
 		}
 	}
 
-	alignas(32) Word total[kLanes], inverse[kLanes];
-	for (int v = 0; v < 4; ++v) store(total + 8 * v, canonical(prefix[v]));
+	const Vec left = montgomery(prefix[0], prefix[1]), right = montgomery(prefix[2], prefix[3]);
+	alignas(32) Word total[8], inverse[8];
+	store(total, canonical(montgomery(left, right)));
 	Word running = 1;
-	for (size_t l = 0; l < kLanes; ++l) {
+	for (size_t l = 0; l < 8; ++l) {
 		inverse[l] = running;
 		running = blocked_ntt::detail::multiply_mod(running, total[l]);
 	}
 	running = blocked_ntt::detail::multiply_mod(scalar_inverse(running), blocked_ntt::detail::multiply_mod(kR, factor));
-	for (size_t l = kLanes; l-- > 0;) {
+	for (size_t l = 8; l-- > 0;) {
 		inverse[l] = blocked_ntt::detail::multiply_mod(inverse[l], running);
 		running = blocked_ntt::detail::multiply_mod(running, total[l]);
 	}
 
-	Vec inv[4];
-	for (int v = 0; v < 4; ++v) inv[v] = load(inverse + 8 * v);
+	const Vec inv_left = montgomery(load(inverse), right), inv_right = montgomery(load(inverse), left);
+	Vec inv[4] = {montgomery(inv_left, prefix[1]), montgomery(inv_left, prefix[0]),
+				  montgomery(inv_right, prefix[3]), montgomery(inv_right, prefix[2])};
 	const auto put = [&](size_t at, Vec reciprocal) __attribute__((target("avx2"))) {
 		const Vec q = canonical(montgomery(reciprocal, a(at)));
 		if (at + 8 <= n) return store_unaligned(out.data() + at, q);
@@ -3572,9 +3574,9 @@ inline Word direct_product(const Word* a, const Word* b, size_t n) {
 	return Word(sum % kP);
 }
 
-inline void inverse_direct(ConstWords f, Words g) {
+inline void inverse_direct(ConstWords f, Words g, Word inv0 = 0) {
 	using blocked_ntt::detail::multiply_mod;
-	const Word inv0 = blocked_ntt::detail::power(f[0], kP - 2);
+	if (!inv0) inv0 = blocked_ntt::detail::power(f[0], kP - 2);
 	g[0] = inv0;
 	for (size_t i = 1; i < g.size(); ++i) {
 		const size_t count = std::min(i, f.size() - 1);

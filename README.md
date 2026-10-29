@@ -207,6 +207,8 @@
 | `data_structure/sliding_window_aggregation.hpp` | Sliding Window Aggregation（キューの集約） | [使い方](docs/sliding_window_aggregation.md) |
 | `data_structure/xor_set.hpp` | XOR の最小値・最大値を求める整数集合 | [使い方](docs/xor_set.md) |
 | `data_structure/offline_rectangle_sum.hpp` | 静的矩形和（クエリ先読み） | [使い方](docs/offline_rectangle_sum.md) |
+| `data_structure/kd_tree.hpp` | Kd-tree・最近傍／k 近傍・矩形内の点の検索 | [使い方](docs/kd_tree.md) |
+| `data_structure/dynamic_bitset.hpp` | Dynamic Bitset・論理演算／シフト・区間更新・ビット列挙 | [使い方](docs/dynamic_bitset.md) |
 | `data_structure/priority_search_tree.hpp` | Priority Search Tree（三辺矩形内の点の列挙・点の更新） | [使い方](docs/priority_search_tree.md) |
 | `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
 | `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
@@ -310,6 +312,7 @@
 | `string/aho_corasick.hpp` | Aho–Corasick・複数パターン検索 | [使い方](docs/aho_corasick.md) |
 | `string/suffix_automaton.hpp` | Suffix Automaton・文字追加・部分文字列検索・出現回数 | [使い方](docs/suffix_automaton.md) |
 | `string/suffix_tree.hpp` | Suffix Tree（静的文字列） | [使い方](docs/suffix_tree.md) |
+| `string/basic_substring_structure.hpp` | Basic Substring Structure・部分文字列の階段状ブロック分解 | [使い方](docs/basic_substring_structure.md) |
 | `string/dynamic_pattern_matching.hpp` | Dynamic Pattern Matching（固定本文） | [使い方](docs/dynamic_pattern_matching.md) |
 
 ### 数値型
@@ -341,7 +344,7 @@
 | `math/mod_sqrt.hpp` | 任意の素数 mod の平方根 | [使い方](docs/mod_sqrt.md) |
 | `math/kth_root.hpp` | 64 bit 整数の厳密な k 乗根 | [使い方](docs/kth_root.md) |
 | `math/discrete_log.hpp` | 合成数 mod にも対応する離散対数 | [使い方](docs/discrete_log.md) |
-| `math/stern_brocot_tree.hpp` | Stern–Brocot Tree・圧縮経路・祖先・LCA | [使い方](docs/stern_brocot_tree.md) |
+| `math/stern_brocot_tree.hpp` | Stern–Brocot Tree・圧縮経路・祖先・LCA・有理数二分探索 | [使い方](docs/stern_brocot_tree.md) |
 | `math/factorize.hpp` | 素因数分解・素数判定・約数列挙 | [使い方](docs/factorize.md) |
 | `math/multiplicative_divisors.hpp` | 約数ごとの乗法的関数の値 | [使い方](docs/multiplicative_divisors.md) |
 | `math/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
@@ -355,8 +358,8 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/binomial_prefix_sum.hpp` | 二項係数の prefix sum | [使い方](docs/binomial_prefix_sum.md) |
-| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数 prefix sum | [使い方](docs/binomial_prefix_sum_light.md) |
+| `math/binomial_prefix_sum.hpp` | 二項係数の prefix sum・一括計算 | [使い方](docs/binomial_prefix_sum.md) |
+| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数 prefix sum・一括計算 | [使い方](docs/binomial_prefix_sum_light.md) |
 | `math/binomial_prefix_sum_incremental.hpp` | 二項係数の prefix sum（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
 | `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数 prefix sum 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
@@ -417,6 +420,7 @@
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |
 | `components/sequence_match.hpp` | 前方・後方の一致比較 | [使い方](docs/sequence_match.md) |
 | `components/z_algorithm.hpp` | Z algorithm・接頭辞一致の列挙 | [使い方](docs/z_algorithm_core.md) |
+| `components/bitset_ops.hpp` | Bitset のワード演算・ビット数集約 | [使い方](docs/bitset_ops.md) |
 | `components/fenwick_bitset.hpp` | 更新可能ビット列の区間個数 | [使い方](docs/fenwick_bitset.md) |
 | `components/incremental_prefix_count.hpp` | 一点加算・接頭辞個数 | [使い方](docs/incremental_prefix_count.md) |
 | `components/offline_range_kth.hpp` | 区間順位の一括処理 | [使い方](docs/offline_range_kth.md) |
@@ -439,6 +443,7 @@
 | `components/closest_pair.hpp` | 最近点対の整数座標用処理 | [使い方](docs/closest_pair_core.md) |
 | `components/subset_convolution_modular.hpp` | Subset 畳み込みの modint 用処理 | [使い方](docs/subset_convolution_modular.md) |
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |
+| `components/suffix_locus.hpp` | 本文の区間から Suffix Tree の位置を検索 | [使い方](docs/suffix_locus.md) |
 | `components/static_range_min.hpp` | ブロック分割による静的 RMQ | [使い方](docs/static_range_min.md) |
 | `components/static_top_tree_structure.hpp` | Static Top Tree の構造 | [使い方](docs/static_top_tree_structure.md) |
 | `components/stern_brocot_path.hpp` | Stern–Brocot Tree の経路演算 | [使い方](docs/stern_brocot_path.md) |

@@ -240,7 +240,7 @@ struct LightFormalPowerSeries : std::vector<T> {
 				if (!r.empty()) { r.insert(r.begin(), shift, T(0)); return r; }
 			}
 			F f(this->begin() + first, this->begin() + last);
-			const T half = T(2).inv(), factor = (T(2) * *constant).inv();
+			const T half = T(2).inv();
 			F result = f.template sparse<Kind::power>(0, initial, 32, 0, *constant, half);
 			if (initial == target) {
 				result.insert(result.begin(), shift, T(0));
@@ -271,7 +271,7 @@ struct LightFormalPowerSeries : std::vector<T> {
 			}
 			result.resize(target);
 			for (int i = work; i < target; ++i)
-				result[i] = (f.coefficient(i) - dot(result, result, i, i - 1)) * factor;
+				result[i] = (f.coefficient(i) - dot(result, result, i, i - 1)) * reciprocal[0] * half;
 			result.insert(result.begin(), shift, T(0));
 			return result;
 		}
@@ -410,11 +410,11 @@ struct LightFormalPowerSeries : std::vector<T> {
 	}
 	static const std::vector<T> &inverses(int n) {
 		static std::vector<T> inv{T(0), T(1)};
-		for (int i = static_cast<int>(inv.size()); i < n; ++i) inv.push_back(T(T::mod() - T::mod() / i) * inv[T::mod() % i]);
+		for (int i = static_cast<int>(inv.size()); i < n; ++i) inv.push_back(T::raw(T::mod() - T::mod() / i) * inv[T::mod() % i]);
 		return inv;
 	}
 	static std::optional<T> scalar_sqrt(T a) {
-		if (a == T(0)) return T(0);
+		if (a == T(1)) return a;
 		constexpr int q = 119;
 		T t = a.pow((q - 1) / 2), x = t * a, c = T(3).pow(q);
 		t *= x;

@@ -160,3 +160,9 @@ Prefix Sum of Binomial Coefficient は 2026-10-25 に追加しました。この
 ```sh
 oj-bundle -I . test/union_find.test.cpp > submissions/unionfind.cpp
 ```
+
+## AtCoder
+
+| 問題 | 提出用コード | 説明・ライブラリ利用部分 |
+| --- | --- | --- |
+| [ABC012 D](https://atcoder.jp/contests/abc012/tasks/abc012_4) | [abc012_4.cpp](abc012_4.cpp) | [説明](abc012_4.md) |

@@ -19,12 +19,14 @@ CONTROL_PATHS = (
     ".github/workflows/verify.yml", ".github/workflows/macos-portability.yml",
     ".verify-helper/affected.py", ".verify-helper/affected_test.py",
     ".verify-helper/ci.py", ".verify-helper/ci_test.py",
+    ".verify-helper/macos_scope.py", ".verify-helper/macos_scope_test.py",
     ".verify-helper/no_cache_route.py", ".verify-helper/no_cache_route_test.py",
     ".verify-helper/intrinsic_gate.py", ".verify-helper/intrinsic_gate_test.py",
 )
 BASELINE_INPUTS = (
     ".github/workflows/verify.yml", ".github/workflows/macos-portability.yml",
-    ".verify-helper/ci.py", ".verify-helper/ci_test.py", "test/verify.py",
+    ".verify-helper/ci.py", ".verify-helper/ci_test.py",
+    ".verify-helper/macos_scope.py", ".verify-helper/macos_scope_test.py", "test/verify.py",
     "test/requirements.txt", ".verify-helper/config.toml",
     ".verify-helper/check-docs.py", ".verify-helper/documentation.py",
     ".verify-helper/verification.py", ".verify-helper/verification_test.py",

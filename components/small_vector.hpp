@@ -27,6 +27,14 @@ class SmallVector {
 	bool large() const { return length & flag; }
 	void set_size(std::size_t n) { length = (length & flag) | n; }
 
+	void take(SmallVector &b) noexcept {
+		length = b.length;
+		if (large()) storage.heap = b.storage.heap;
+		else std::memcpy(storage.local, b.storage.local, size() * sizeof(T));
+		b.length = 0;
+		b.storage.local[0] = T{};
+	}
+
 public:
 	SmallVector() = default;
 	explicit SmallVector(std::size_t n) { resize(n); }
@@ -34,12 +42,7 @@ public:
 	template <std::input_iterator It>
 	SmallVector(It first, It last) { assign(first, last); }
 	SmallVector(const SmallVector &b) { assign(b.begin(), b.end()); }
-	SmallVector(SmallVector &&b) noexcept : length(b.length) {
-		if (large()) storage.heap = b.storage.heap;
-		else std::memcpy(storage.local, b.storage.local, size() * sizeof(T));
-		b.length = 0;
-		b.storage.local[0] = T{};
-	}
+	SmallVector(SmallVector &&b) noexcept { take(b); }
 	SmallVector &operator=(const SmallVector &b) {
 		if (this != &b) assign(b.begin(), b.end());
 		return *this;
@@ -47,11 +50,7 @@ public:
 	SmallVector &operator=(SmallVector &&b) noexcept {
 		if (this == &b) return *this;
 		if (large()) delete[] storage.heap.data;
-		length = b.length;
-		if (large()) storage.heap = b.storage.heap;
-		else std::memcpy(storage.local, b.storage.local, size() * sizeof(T));
-		b.length = 0;
-		b.storage.local[0] = T{};
+		take(b);
 		return *this;
 	}
 	~SmallVector() { if (large()) delete[] storage.heap.data; }
