@@ -28,6 +28,12 @@ class DirectedCSR {
 	std::vector<Arc> arcs_;
 	int single_gap_ = -2;
 	bool unique_incoming_ = true;
+	void reset(int n, std::size_t m) {
+		assert(n >= 0);
+		offset_.assign(std::size_t(n) + 1, 0);
+		single_gap_ = -2;
+		unique_incoming_ = m <= std::size_t(n);
+	}
 	void count_edge(const Edge &edge, std::vector<std::uint64_t> &seen) {
 		assert(0 <= edge.from && edge.from < size() && 0 <= edge.to && edge.to < size());
 		++offset_[edge.from];
@@ -89,10 +95,7 @@ class DirectedCSR {
 	template<class Producer>
 	DirectedCSR(int n, std::size_t m, Producer &&produce) { build(n, m, std::forward<Producer>(produce)); }
 	void build(int n, std::span<const Edge> edges) {
-		assert(n >= 0);
-		offset_.assign(std::size_t(n) + 1, 0);
-		single_gap_ = -2;
-		unique_incoming_ = edges.size() <= std::size_t(n);
+		reset(n, edges.size());
 		try {
 			std::vector<std::uint64_t> seen(unique_incoming_ ? (std::size_t(n) + 63) / 64 : 0);
 			for (const auto &edge : edges) count_edge(edge, seen);
@@ -102,10 +105,7 @@ class DirectedCSR {
 	}
 	template<class Producer>
 	void build(int n, std::size_t m, Producer &&produce) {
-		assert(n >= 0);
-		offset_.assign(std::size_t(n) + 1, 0);
-		single_gap_ = -2;
-		unique_incoming_ = m <= std::size_t(n);
+		reset(n, m);
 		try {
 			std::vector<std::uint64_t> seen(unique_incoming_ ? (std::size_t(n) + 63) / 64 : 0);
 			auto edges = std::make_unique_for_overwrite<Edge[]>(m);
