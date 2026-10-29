@@ -69,8 +69,11 @@ public:
 		else return left.size() + right.size();
 	}
 	void push_back(S value) {
+		bool fresh;
+		if constexpr (inplace) fresh = middle == right.size();
+		else fresh = right.empty();
+		S product = fresh ? value : op(right.back().product, value);
 		if constexpr (inplace) {
-			S product = middle == right.size() ? value : op(right.back().product, value);
 			if (first && right.size() == right.capacity() && first >= right.size() / 2) {
 				std::move(right.begin() + first, right.end(), right.begin());
 				const auto length = right.size() - first;
@@ -78,11 +81,8 @@ public:
 				middle -= first;
 				first = 0;
 			}
-			right.emplace_back(std::move(value), std::move(product));
-		} else {
-			S product = right.empty() ? value : op(right.back().product, value);
-			right.emplace_back(std::move(value), std::move(product));
 		}
+		right.emplace_back(std::move(value), std::move(product));
 	}
 	void pop_front() {
 		assert(!empty());
