@@ -1,6 +1,7 @@
 #ifndef LCP_ARRAY_HPP
 #define LCP_ARRAY_HPP
 
+#include <algorithm>
 #include <cassert>
 #include <limits>
 #include <string_view>
@@ -21,7 +22,8 @@ std::vector<int> build(const Sequence &s, const std::vector<int> &sa) {
 		if (h) --h;
 		if (rank[i] == 0) { h = 0; continue; }
 		int j = sa[rank[i] - 1];
-		while (h < n - i && h < n - j && s[i + h] == s[j + h]) ++h;
+		int limit = n - std::max(i, j);
+		while (h < limit && s[i + h] == s[j + h]) ++h;
 		result[rank[i] - 1] = h;
 	}
 	return result;
