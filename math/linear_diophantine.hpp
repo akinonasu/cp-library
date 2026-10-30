@@ -36,11 +36,15 @@ constexpr std::optional<LinearDiophantineSolution> linear_diophantine(std::int64
 		__uint128_t width = I(yr) - yl;
 		return LinearDiophantineSolution(xl, yl, 0, 0, __uint128_t(I(xr) - xl) * width, width);
 	}
-	I r = a < 0 ? -I(a) : I(a), s = b < 0 ? -I(b) : I(b);
+	std::uint64_t r = a < 0 ? -I(a) : I(a), s = b < 0 ? -I(b) : I(b);
 	I x = 1, u = 0, y = 0, v = 1;
-	while (s) {
-		I q = r / s;
+	if (s) for (;;) {
+		std::uint64_t q = r / s;
 		r -= q * s;
+		if (!r) {
+			r = s, x = u, y = v;
+			break;
+		}
 		x -= q * u;
 		y -= q * v;
 		std::swap(r, s);

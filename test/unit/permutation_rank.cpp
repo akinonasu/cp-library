@@ -76,6 +76,11 @@ int main() {
 		assert(permutation_rank<Big>(p) == factorial - 1);
 		assert(permutation_unrank(n, Big(factorial - 1)) == p);
 	}
+	for (int n : {0, 1, 2, 19, 20, 21, 22, 63, 64, 65, 1000}) {
+		for (std::uint64_t rank : std::array<std::uint64_t, 5>{0, 1, 3628800, 2432902008176640000ULL, UINT64_MAX})
+			assert(permutation_unrank(n, rank) == permutation_unrank(n, Big(rank)));
+		assert(permutation_unrank(n, UINT32_MAX) == permutation_unrank(n, Big(UINT32_MAX)));
+	}
 	for (int n : {6, 33}) {
 		std::vector<int> p(n);
 		std::iota(p.rbegin(), p.rend(), 0);

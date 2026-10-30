@@ -16,6 +16,11 @@ static_assert(linear_diophantine(2, 3, 7, 0, 10, 0, 10)->first() == std::pair<I,
 static_assert(linear_diophantine(0, 0, 0, -2, 3, 1, 5)->count() == 20);
 static_assert(linear_diophantine(0, 0, 0, -2, 3, 1, 5)->kth(7) == std::pair<I, I>{-1, 4});
 static_assert(!linear_diophantine(2, 4, 1, -5, 5, -5, 5));
+static_assert(linear_diophantine(INT64_MIN, 0, INT64_MIN, 0, 2, 0, 2)->count() == 2);
+static_assert(linear_diophantine(0, INT64_MIN, INT64_MIN, 0, 2, 0, 2)->first() == std::pair<I, I>{0, 1});
+static_assert(linear_diophantine(INT64_MIN, INT64_MIN, 0, -1, 2, -1, 2)->count() == 3);
+static_assert(!linear_diophantine(INT64_MIN, INT64_MIN, 1, -1, 2, -1, 2));
+static_assert(linear_diophantine(INT64_MIN, 1, 0, 0, 1, 0, 1)->count() == 1);
 
 void brute(I a, I b, I c, I xl, I xr, I yl, I yr) {
 	std::vector<std::pair<I, I>> expected;

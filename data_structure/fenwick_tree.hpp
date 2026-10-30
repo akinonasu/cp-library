@@ -34,11 +34,14 @@ template<class T, bool Padded = true> class FenwickTree {
 		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
 		n_ = static_cast<int>(a.size());
 		data_.resize(index(unsigned(n_)) + 1);
-		for (unsigned i = 1; i <= unsigned(n_); ++i) {
+		for (unsigned i = 2; i <= unsigned(n_); i += 2) {
+			data_[index(i - 1)] += U(a[i - 2]);
+			data_[index(i)] += data_[index(i - 1)];
 			data_[index(i)] += U(a[i - 1]);
 			unsigned p = i + (i & -i);
 			if (p <= unsigned(n_)) data_[index(p)] += data_[index(i)];
 		}
+		if (n_ & 1) data_[index(unsigned(n_))] += U(a.back());
 	}
 	int size() const { return n_; }
 	void add(int p, T x) {

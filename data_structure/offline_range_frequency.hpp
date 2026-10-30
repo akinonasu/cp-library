@@ -67,9 +67,9 @@ class OfflineRangeFrequency {
 			for (std::size_t r = 0; r <= initial.size(); ++r) {
 				if (r) ++counts[initial[r - 1]];
 				for (auto i = ends[r]; i < ends[r + 1]; ++i) {
-					auto event = grouped[i];
-					if (event[1] > 0) result[event[1] - 1] += counts[event[0]];
-					else result[-event[1] - 1] -= counts[event[0]];
+					auto [value, signed_id] = grouped[i];
+					if (signed_id > 0) result[signed_id - 1] += counts[value];
+					else result[-signed_id - 1] -= counts[value];
 				}
 			}
 			return result;

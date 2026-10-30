@@ -100,10 +100,17 @@ class Kruskal {
 		result.edges.reserve(std::min(order.size(), std::size_t(n_ ? n_ - 1 : 0)));
 		for (int id : order) {
 			const auto &e = edges_[id];
-			int u = uf.leader(e.from), v = uf.leader(e.to);
-			if (u == v) continue;
-			add_cost(result.cost, e.cost);
-			uf.merge(u, v);
+			if constexpr (std::is_same_v<Cost, std::int64_t> && std::is_same_v<Sum, Cost>) {
+				int components = uf.count();
+				uf.merge(e.from, e.to);
+				if (uf.count() == components) continue;
+				add_cost(result.cost, e.cost);
+			} else {
+				int u = uf.leader(e.from), v = uf.leader(e.to);
+				if (u == v) continue;
+				add_cost(result.cost, e.cost);
+				uf.merge(u, v);
+			}
 			result.edges.push_back(id);
 			if (uf.count() == 1) break;
 		}

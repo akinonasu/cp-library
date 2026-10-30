@@ -46,6 +46,7 @@ public:
 
 template<class K, class V, class Hash, class Equal>
 class Table<K, V, Hash, Equal, true> {
+	enum : unsigned char { vacant = 0, occupied = 1, tombstone = 2 };
 	struct Entry { K key{}; V value{}; };
 	struct ValueSlot { V value{}; };
 	static constexpr bool combined = sizeof(Entry) == sizeof(K) + sizeof(V) && sizeof(V) <= 16;
@@ -84,7 +85,7 @@ class Table<K, V, Hash, Equal, true> {
 	}
 	std::size_t locate(K key) const {
 		std::size_t p = index(key), mask = states.size() - 1;
-		while (states[p] && (states[p] != 1 || stored_key(p) != key)) p = (p + 1) & mask;
+		while (states[p] != vacant && (states[p] != occupied || stored_key(p) != key)) p = (p + 1) & mask;
 		return p;
 	}
 	void rehash(std::size_t capacity) {
@@ -92,9 +93,9 @@ class Table<K, V, Hash, Equal, true> {
 		next.salt = salt;
 		next.resize(capacity), next.states.resize(capacity);
 		next.shift = 64 - std::countr_zero(capacity);
-		for (std::size_t i = 0; i < states.size(); ++i) if (states[i] == 1) {
+		for (std::size_t i = 0; i < states.size(); ++i) if (states[i] == occupied) {
 			std::size_t p = next.locate(stored_key(i));
-			next.stored_key(p) = stored_key(i), next.stored_value(p) = stored_value(i), next.states[p] = 1;
+			next.stored_key(p) = stored_key(i), next.stored_value(p) = stored_value(i), next.states[p] = occupied;
 		}
 		next.count = count;
 		swap(next);
@@ -113,13 +114,13 @@ class Table<K, V, Hash, Equal, true> {
 	std::size_t insert(K key) {
 		prepare();
 		std::size_t p = index(key), first = states.size(), mask = states.size() - 1;
-		while (states[p]) {
-			if (states[p] == 1 && stored_key(p) == key) return p;
-			if (states[p] == 2 && first == states.size()) first = p;
+		while (states[p] != vacant) {
+			if (states[p] == occupied && stored_key(p) == key) return p;
+			if (states[p] == tombstone && first == states.size()) first = p;
 			p = (p + 1) & mask;
 		}
 		if (first != states.size()) p = first, --deleted;
-		stored_key(p) = key, stored_value(p) = V{}, states[p] = 1;
+		stored_key(p) = key, stored_value(p) = V{}, states[p] = occupied;
 		++count;
 		return p;
 	}
@@ -134,15 +135,15 @@ public:
 	}
 	std::size_t size() const { return count; }
 	bool empty() const { return !count; }
-	V *find(K key) { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &stored_value(p) : nullptr; }
-	const V *find(K key) const { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &stored_value(p) : nullptr; }
+	V *find(K key) { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] != vacant ? &stored_value(p) : nullptr; }
+	const V *find(K key) const { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] != vacant ? &stored_value(p) : nullptr; }
 	V &operator[](K key) { return stored_value(insert(key)); }
 	void set(K key, const V &value) { V copy = value; stored_value(insert(key)) = copy; }
 	bool erase(K key) {
 		if (states.empty()) return false;
 		std::size_t p = locate(key);
-		if (!states[p]) return false;
-		states[p] = 2, --count, ++deleted;
+		if (states[p] == vacant) return false;
+		states[p] = tombstone, --count, ++deleted;
 		return true;
 	}
 	void prefetch(K key) const noexcept {
@@ -165,7 +166,7 @@ public:
 		if (capacity > limit) throw std::length_error("FlatHashMap capacity");
 		rehash(capacity);
 	}
-	void clear() { std::fill(states.begin(), states.end(), 0); count = deleted = 0; }
+	void clear() { std::fill(states.begin(), states.end(), vacant); count = deleted = 0; }
 };
 }
 
