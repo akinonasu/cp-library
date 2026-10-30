@@ -42,11 +42,12 @@ class OfflineRangeSum {
 		auto sorted = queries;
 		radix_sort_detail::sort_by_key<11>(sorted, [](const Query &query) { return query.upper; });
 		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8 && (std::is_integral_v<Sum> || std::is_same_v<Sum, __int128_t> || std::is_same_v<Sum, __uint128_t>)) {
+			int block_length = std::min(size(), insert_only_prefix_detail::block_size);
 			__int128_t base = order.front().value;
-			__uint128_t bound = (__int128_t(order.back().value) - base) * __uint128_t(std::min(size(), 65536));
+			__uint128_t bound = (__int128_t(order.back().value) - base) * __uint128_t(block_length);
 			int bits = 1;
 			while (bound >>= 1) ++bits;
-			if (bits + std::bit_width(unsigned(std::min(size(), 65536))) <= 64) {
+			if (bits + std::bit_width(unsigned(block_length)) <= 64) {
 				insert_only_prefix_detail::Packed tree(size(), base, bits);
 				std::size_t inserted = 0;
 				for (const auto &query : sorted) {
