@@ -96,7 +96,6 @@ inline std::optional<std::uint32_t> discrete_log(std::uint64_t a, std::uint64_t 
 		delta = std::uint64_t(delta) * discrete_log_detail::inverse(period % power, power) % power;
 		answer += period * delta, period *= power;
 	}
-	if (m.pow(a, answer) != b) return std::nullopt;
 	return std::uint32_t(answer + offset);
 }
 
