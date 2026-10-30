@@ -6,9 +6,35 @@
 
 void require(bool value) { if (!value) std::abort(); }
 
+struct Aggregate {
+	std::int64_t count = 0;
+	__int128_t sum = 0;
+	Aggregate &operator+=(const Aggregate &other) { count += other.count; sum += other.sum; return *this; }
+	Aggregate &operator-=(const Aggregate &other) { count -= other.count; sum -= other.sum; return *this; }
+	bool operator==(const Aggregate &) const = default;
+};
+
+void rebuild() {
+	FenwickSum<Aggregate> tree;
+	for (int n : {0, 1, 2, 3, 8, 9, 1024, 1025, 1023, 3, 0, 33}) {
+		std::vector<Aggregate> values(n);
+		for (int i = 0; i < n; ++i) values[i] = {i % 7 - 3, (__int128_t(i % 11) - 5) * (__int128_t(1) << 80)};
+		const auto saved = values;
+		tree.build(values);
+		require(tree.size() == n && values == saved);
+		Aggregate prefix;
+		for (int r = 0; r <= n; ++r) {
+			require(tree.prefix(r) == prefix);
+			if (r < n) prefix += values[r];
+		}
+		for (int l = 0; l < n; ++l) require(tree.prod(l, l + 1) == values[l]);
+	}
+}
+
 int main() {
+	rebuild();
 	std::mt19937 random(765747);
-	for (int n : {0, 1, 2, 3, 7, 8, 9, 31, 32, 33, 127, 129}) {
+	for (int n : {0, 1, 2, 3, 7, 8, 9, 31, 32, 33, 127, 128, 129, 255, 256, 257, 1023, 1024, 1025}) {
 		std::vector<std::int64_t> a(n);
 		for (auto &x : a) x = int(random() % 100) - 50;
 		FenwickSum<std::int64_t> tree(a);

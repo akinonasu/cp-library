@@ -17,7 +17,8 @@ class FenwickSum {
 	void build(const std::vector<T> &a) {
 		assert(a.size() <= static_cast<unsigned>(std::numeric_limits<int>::max()));
 		data = a;
-		for (unsigned i = 1; i <= data.size(); ++i) {
+		for (unsigned i = 2; i <= data.size(); i += 2) {
+			data[i - 1] += data[i - 2];
 			unsigned p = i + (i & -i);
 			if (p <= data.size()) data[p - 1] += data[i - 1];
 		}
