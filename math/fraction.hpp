@@ -124,11 +124,14 @@ class Fraction {
 		return num < 0 ? reduced(-W(den), -W(num)) : reduced(den, num);
 	}
 	constexpr Fraction pow(std::uint64_t k) const {
+		if (!k) return Fraction(1);
+		if (!num) return *this;
 		Fraction result(1), base = *this;
+		auto multiply = [](Fraction a, Fraction b) { return reduced(W(a.num) * b.num, W(a.den) * b.den); };
 		while (k) {
-			if (k & 1) result *= base;
+			if (k & 1) result = multiply(result, base);
 			k >>= 1;
-			if (k) base *= base;
+			if (k) base = multiply(base, base);
 		}
 		return result;
 	}

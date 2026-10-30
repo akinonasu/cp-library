@@ -75,7 +75,26 @@ static_assert(Fraction<int>(std::numeric_limits<int>::max(), 2) * 2 == std::nume
 static_assert(Fraction<int>(std::numeric_limits<int>::max(), 2) + Fraction<int>(std::numeric_limits<int>::max(), 2)
 	== std::numeric_limits<int>::max());
 
+template <class T>
+void powers() {
+	for (int n = -3; n <= 3; ++n) for (int d = 1; d <= 4; ++d) {
+		Reference expected(1, 1), base(n, d);
+		for (std::uint64_t k = 0; k <= 40 && fits<T>(expected); ++k) {
+			equal(Fraction<T>(n, d).pow(k), expected);
+			expected = Reference(expected.n * base.n, expected.d * base.d);
+		}
+	}
+	constexpr auto maximum = std::numeric_limits<std::uint64_t>::max();
+	static_assert(Fraction<T>(0).pow(0) == 1);
+	static_assert(Fraction<T>(0).pow(maximum) == 0);
+	static_assert(Fraction<T>(1).pow(maximum) == 1);
+	static_assert(Fraction<T>(-1).pow(maximum) == -1);
+	static_assert(Fraction<T>(-1).pow(maximum - 1) == 1);
+	static_assert(Fraction<T>(std::numeric_limits<T>::min()).pow(1) == std::numeric_limits<T>::min());
+}
+
 int main() {
+	powers<std::int8_t>(); powers<std::int16_t>(); powers<std::int32_t>(); powers<std::int64_t>();
 	for (int n = -12; n <= 12; ++n)
 		for (int d = -12; d <= 12; ++d) if (d) {
 			equal(F(n, d), Reference(n, d));
