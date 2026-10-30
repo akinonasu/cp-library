@@ -1,6 +1,7 @@
 #ifndef PERMUTATION_RANK_HPP
 #define PERMUTATION_RANK_HPP
 
+#include <array>
 #include <bit>
 #include <cstdint>
 #include <limits>
@@ -10,8 +11,17 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+#if defined(__BMI2__) && defined(__x86_64__)
+#include <immintrin.h>
+#endif
 
 namespace permutation_order_detail {
+inline constexpr auto factorial = [] {
+	std::array<std::uint64_t, 21> result{};
+	result[0] = 1;
+	for (int i = 1; i <= 20; ++i) result[i] = result[i - 1] * i;
+	return result;
+}();
 class Available {
 	std::vector<int> tree;
   public:
@@ -36,6 +46,23 @@ class Available {
 		return int(p);
 	}
 };
+
+inline void restore(std::vector<int> &result) {
+	int n = int(result.size()), prefix = 0;
+	while (prefix < n && !result[prefix]) result[prefix] = prefix, ++prefix;
+	std::uint64_t available = (std::uint64_t(1) << (n - prefix)) - 1;
+	for (int &digit : std::span(result).subspan(prefix)) {
+#if defined(__BMI2__) && defined(__x86_64__)
+		digit = std::countr_zero(_pdep_u64(std::uint64_t(1) << digit, available));
+#else
+		std::uint64_t bits = available;
+		for (int k = digit; k; --k) bits &= bits - 1;
+		digit = std::countr_zero(bits);
+#endif
+		available &= ~(std::uint64_t(1) << digit);
+		digit += prefix;
+	}
+}
 }
 
 template <class Rank = std::uint64_t>
@@ -89,6 +116,10 @@ std::optional<std::vector<int>> permutation_unrank(int n, Rank rank) {
 	static_assert(std::numeric_limits<Rank>::is_integer);
 	if (n < 0) throw std::invalid_argument("permutation_unrank");
 	if (rank < 0) return std::nullopt;
+	if constexpr (std::is_integral_v<Rank> && sizeof(Rank) <= 8) {
+		if (n <= 20 && std::uint64_t(rank) >= permutation_order_detail::factorial[n]) return std::nullopt;
+		if (!n) return std::vector<int>{};
+	}
 	using Work = std::conditional_t<std::numeric_limits<Rank>::is_bounded &&
 		(std::numeric_limits<Rank>::digits < std::numeric_limits<int>::digits), int, Rank>;
 	Work remaining = static_cast<Work>(std::move(rank));
@@ -98,6 +129,10 @@ std::optional<std::vector<int>> permutation_unrank(int n, Rank rank) {
 		remaining /= base;
 	}
 	if (remaining != 0) return std::nullopt;
+	if constexpr (std::is_integral_v<Rank> && sizeof(Rank) <= 8) {
+		permutation_order_detail::restore(result);
+		return result;
+	}
 	permutation_order_detail::Available available(n);
 	for (int &digit : result) {
 		digit = available.select(digit);
