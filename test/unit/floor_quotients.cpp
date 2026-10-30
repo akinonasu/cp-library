@@ -39,6 +39,12 @@ int main() {
 		if (n <= 100) for (std::uint64_t x = 1; x <= n; ++x)
 			assert(table.contains(x) == std::binary_search(expected.begin(), expected.end(), x, std::greater<>()));
 	}
+	for (std::uint64_t r : {UINT64_C(1), UINT64_C(31), UINT64_C(65535), UINT64_C(1) << 26, UINT64_C(4294967295)}) {
+		for (std::uint64_t n : {r * r, r * (r + 1) - 1, r * (r + 1)}) {
+			FloorQuotientRange range(n);
+			assert(range.root() == r && range.large_size() == n / (r + 1));
+		}
+	}
 	for (auto n : {UINT64_MAX, UINT64_MAX - 1, UINT64_C(1) << 63, UINT64_C(1) << 53}) {
 		FloorQuotientRange range(n);
 		assert(__uint128_t(range.root()) * range.root() <= n && __uint128_t(range.root() + 1) * (range.root() + 1) > n);

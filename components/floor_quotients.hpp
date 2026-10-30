@@ -32,7 +32,7 @@ class FloorQuotientRange {
 	std::uint64_t n_, root_, large_;
 
   public:
-	explicit FloorQuotientRange(std::uint64_t n = 0) : n_(n), root_(floor_quotient_detail::square_root(n)), large_(n / (root_ + 1)) {}
+	explicit FloorQuotientRange(std::uint64_t n = 0) : n_(n), root_(floor_quotient_detail::square_root(n)), large_(root_ - (n < root_ * (root_ + 1))) {}
 	std::uint64_t max_n() const { return n_; }
 	std::uint64_t root() const { return root_; }
 	std::uint64_t large_size() const { return large_; }
