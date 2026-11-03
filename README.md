@@ -261,7 +261,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/static_threshold_search.hpp` | 静的整数列の閾値検索・期待 O(log log n) | [使い方](docs/static_threshold_search.md) |
+| `data_structure/static_threshold_search.hpp` | 静的整数列の閾値検索・O(log n) | [使い方](docs/static_threshold_search.md) |
 | `data_structure/wavelet_matrix.hpp` | Wavelet Matrix | [使い方](docs/wavelet_matrix.md) |
 | `data_structure/weighted_wavelet_matrix.hpp` | 重み更新 Wavelet Matrix | [使い方](docs/weighted_wavelet_matrix.md) |
 | `data_structure/point_set_wavelet_matrix.hpp` | 一点代入 Wavelet Matrix (クエリ先読み) | [使い方](docs/point_set_wavelet_matrix.md) |
@@ -447,7 +447,6 @@
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |
 | `components/suffix_locus.hpp` | 本文の区間から Suffix Tree の位置を検索 | [使い方](docs/suffix_locus.md) |
 | `components/factorial_mod_table.hpp` | 998244353 専用の階乗定数表 | [使い方](docs/factorial_mod_table.md) |
-| `components/static_integer_successor.hpp` | 静的整数列の successor 検索用索引 | [使い方](docs/static_integer_successor.md) |
 | `components/static_range_min.hpp` | ブロック分割による静的 RMQ | [使い方](docs/static_range_min.md) |
 | `components/static_top_tree_structure.hpp` | Static Top Tree の構造 | [使い方](docs/static_top_tree_structure.md) |
 | `components/stern_brocot_path.hpp` | Stern–Brocot Tree の経路演算 | [使い方](docs/stern_brocot_path.md) |

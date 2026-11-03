@@ -47,6 +47,12 @@ template<class T> void suite() {
 			check<T, false, false>(a, rng); check<T, true, false>(a, rng); check<T, false, true>(a, rng); check<T, true, true>(a, rng);
 		}
 	}
+	for (int n : {65, 129, 4097}) for (int at : {0, 31, 32, 63, 64, n / 2, n - 1}) {
+		for (bool invert : {false, true}) {
+			std::vector<T> a(n, T(invert ? 7 : 0)); a[at] = T(invert ? 0 : 7);
+			check<T, false, false>(a, rng); check<T, true, false>(a, rng); check<T, false, true>(a, rng); check<T, true, true>(a, rng);
+		}
+	}
 	for (int trial = 0; trial < 120; ++trial) { std::vector<T> a(rng() % 90); for (auto &x : a) x = T(rng() % 50); check<T, false, false>(a, rng); check<T, true, false>(a, rng); check<T, false, true>(a, rng); check<T, true, true>(a, rng); }
 }
 int main() { suite<std::int64_t>(); suite<std::uint64_t>(); suite<int>(); suite<unsigned>(); suite<signed char>(); suite<unsigned short>(); }
