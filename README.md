@@ -17,6 +17,8 @@
 
 [コンパイル時の警告](docs/compiler_warnings.md)
 
+[利用者テンプレートとの併用](docs/template_compatibility.md)
+
 ## ライブラリ
 
 [ヘッダーの配置とサイトの分類](docs/library_layout.md)

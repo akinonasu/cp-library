@@ -40,7 +40,7 @@ template<class T> class SidetrackHeap {
 			if constexpr (Persistent) id = make(nodes[id]);
 			auto &node = nodes[id];
 			node.right = root;
-			if (nodes[node.left].rank < nodes[root].rank) std::swap(node.left, node.right);
+			if ((nodes[node.left].rank) < nodes[root].rank) std::swap(node.left, node.right);
 			node.rank = nodes[node.right].rank + 1;
 			root = id;
 		}

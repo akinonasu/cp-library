@@ -21,8 +21,8 @@ struct alignas(32) Lanes {
 	std::uint32_t lane[8];
 };
 
-constexpr Lanes all(std::uint32_t x) { return {{x, x, x, x, x, x, x, x}}; }
-constexpr Lanes all16(std::uint32_t x) { return all(x * 0x10001); }
+constexpr Lanes splat(std::uint32_t x) { return {{x, x, x, x, x, x, x, x}}; }
+constexpr Lanes all16(std::uint32_t x) { return splat(x * 0x10001); }
 
 constexpr int Z = 0x80;
 
@@ -33,15 +33,15 @@ constexpr Lanes shuffle(const int (&b)[16]) {
 }
 
 struct Constants {
-	Lanes div10 = all(429496730);
-	Lanes div10e5 = all(1407374884);
-	Lanes pack = all(1 - 10000 * 65536u);
-	Lanes ten = all(10);
-	Lanes tail = all(' ' << 8 | '0');
+	Lanes div10 = splat(429496730);
+	Lanes div10e5 = splat(1407374884);
+	Lanes pack = splat(1 - 10000 * 65536u);
+	Lanes ten = splat(10);
+	Lanes tail = splat(' ' << 8 | '0');
 	Lanes by100 = all16(5243), hundred = all16(100);
 	Lanes by10 = all16(6554);
 	Lanes tens_out = all16(2559);
-	Lanes ones = all(~0u), zero = all(0x30303030), space = all(0x20202020);
+	Lanes ones = splat(~0u), zero = splat(0x30303030), space = splat(0x20202020);
 
 	Lanes chunk0[2] = {shuffle({0, 1, 2, 3, 4, 5, 6, 7, Z, Z, 8, 9, 10, 11, 12, 13}),
 					shuffle({Z, Z, Z, Z, Z, Z, Z, Z, 0, 1, Z, Z, Z, Z, Z, Z})};

@@ -40,7 +40,7 @@ class PersistentHeap {
 		nodes.push_back(nodes[root]);
 		auto& node = nodes.back();
 		node.right = right;
-		if (nodes[node.left].rank < nodes[node.right].rank) std::swap(node.left, node.right);
+		if ((nodes[node.left].rank) < nodes[node.right].rank) std::swap(node.left, node.right);
 		node.rank = nodes[node.right].rank + 1;
 		node.size = 1 + nodes[node.left].size + nodes[node.right].size;
 		return result;
