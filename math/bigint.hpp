@@ -17,7 +17,7 @@
 #include <type_traits>
 #include <utility>
 
-class BigInt {
+class [[gnu::warn_unused]] BigInt {
 	using Word = bigint_detail::Word;
 	using Magnitude = bigint_detail::Magnitude;
 	static constexpr Word base = bigint_detail::base;

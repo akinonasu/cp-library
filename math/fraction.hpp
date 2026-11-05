@@ -13,7 +13,7 @@
 
 template <std::signed_integral Int = std::int64_t>
 requires (sizeof(Int) <= sizeof(std::int64_t))
-class Fraction {
+class [[gnu::warn_unused]] Fraction {
 	using U = std::make_unsigned_t<Int>;
 	using W = std::conditional_t<(sizeof(Int) <= 4), std::int64_t, __int128_t>;
 	Int num = 0, den = 1;

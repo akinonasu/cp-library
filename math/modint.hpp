@@ -18,7 +18,7 @@ template <int Id> struct DynamicModulus {
 	static std::uint32_t mod() { return reducer.mod; }
 	static std::uint32_t mul(std::uint32_t a, std::uint32_t b) { return reducer.mul(a, b); }
 };
-template <class Policy> class Modint {
+template <class Policy> class [[gnu::warn_unused]] Modint {
 	std::uint32_t value_ = 0;
 public:
 	constexpr Modint() = default;

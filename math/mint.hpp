@@ -17,7 +17,7 @@ constexpr bool mint_integral = std::is_integral_v<I>
 							   || std::is_same_v<I, __int128> || std::is_same_v<I, unsigned __int128>
 #endif
 	;
-struct Mint {
+struct [[gnu::warn_unused]] Mint {
 	using mint = Mint;
 	unsigned v = 0;
 	static constexpr unsigned mod() { return 998244353; }

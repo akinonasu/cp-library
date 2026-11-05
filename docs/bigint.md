@@ -5,6 +5,8 @@ documentation_of: //math/bigint.hpp
 
 符号付きの任意精度整数です。四則演算・剰余・比較と、10 進文字列との相互変換を扱います。内部は 9 桁ずつ保存し、大きな乗算には厳密な NTT、大きな除算には整数逆数を使います。
 
+`BigInt` には `[[gnu::warn_unused]]` を付けています。GCC・Clang で `-Wall` などを有効にすると未使用のローカル変数を警告します。意図的に使わない変数には `[[maybe_unused]]` を付けてください。
+
 ```cpp
 #include "lib/math/bigint.hpp"
 #include <cassert>

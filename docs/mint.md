@@ -5,12 +5,20 @@ documentation_of: //math/mint.hpp
 
 ```cpp
 #include "lib/math/mint.hpp"
+#include <cassert>
 
-mint x = 3;
-auto power = x.pow(5); // 243
-auto inverse = x.inv();
-auto value = x.val(); // 3
+int main() {
+	mint x = 3;
+	auto power = x.pow(5);
+	auto inverse = x.inv();
+	auto value = x.val();
+	assert(power == mint(243));
+	assert(inverse * x == mint(1));
+	assert(value == 3);
+}
 ```
+
+`mint` と別名の `fps_mint` には `[[gnu::warn_unused]]` を付けています。GCC・Clang で `-Wall` などを有効にすると未使用のローカル変数を警告します。意図的に使わない変数には `[[maybe_unused]]` を付けてください。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
