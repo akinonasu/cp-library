@@ -168,7 +168,7 @@ int main() {
 		equal(BigInt(text), parse_decimal(text));
 	for (const std::string &text : std::vector<std::string>{"", "+", "-", " 1", "1 ", "1x", "0x10", "--1", "+-1", "1_000", std::string("12\0" "3", 4)}) {
 		bool caught = false;
-		try { BigInt value(text); }
+		try { [[maybe_unused]] BigInt value(text); }
 		catch (const std::invalid_argument &) { caught = true; }
 		assert(caught);
 	}

@@ -17,7 +17,7 @@
 #include <type_traits>
 #include <utility>
 
-class BigInt {
+class [[gnu::warn_unused]] BigInt {
 	using Word = bigint_detail::Word;
 	using Magnitude = bigint_detail::Magnitude;
 	static constexpr Word base = bigint_detail::base;
@@ -97,9 +97,9 @@ public:
 		}
 		sign_ = negative ? -1 : 1;
 	}
-	int sign() const { return sign_; }
-	explicit operator bool() const { return sign_ != 0; }
-	std::string to_string() const {
+	[[nodiscard]] int sign() const { return sign_; }
+	[[nodiscard]] explicit operator bool() const { return sign_ != 0; }
+	[[nodiscard]] std::string to_string() const {
 		if (!sign_) return "0";
 		char top[10];
 		std::size_t length = std::to_chars(top, top + 10, digits_.back()).ptr - top;
@@ -113,8 +113,8 @@ public:
 		}
 		return result;
 	}
-	BigInt operator+() const { return *this; }
-	BigInt operator-() const {
+	[[nodiscard]] BigInt operator+() const { return *this; }
+	[[nodiscard]] BigInt operator-() const {
 		BigInt result(*this);
 		result.sign_ = -result.sign_;
 		return result;
@@ -128,22 +128,22 @@ public:
 	BigInt &operator--() { return *this -= 1; }
 	BigInt operator++(int) { BigInt old(*this); ++*this; return old; }
 	BigInt operator--(int) { BigInt old(*this); --*this; return old; }
-	friend BigInt operator+(BigInt a, const BigInt &b) { a += b; return a; }
-	friend BigInt operator-(BigInt a, const BigInt &b) { a -= b; return a; }
-	friend BigInt operator*(const BigInt &a, const BigInt &b) {
+	[[nodiscard]] friend BigInt operator+(BigInt a, const BigInt &b) { a += b; return a; }
+	[[nodiscard]] friend BigInt operator-(BigInt a, const BigInt &b) { a -= b; return a; }
+	[[nodiscard]] friend BigInt operator*(const BigInt &a, const BigInt &b) {
 		if (!a || !b) return {};
 		return BigInt(bigint_detail::multiply(a.digits_, b.digits_), a.sign_ * b.sign_);
 	}
-	friend BigInt operator/(const BigInt &a, const BigInt &b) { return divmod(a, b).first; }
-	friend BigInt operator%(const BigInt &a, const BigInt &b) { return divmod(a, b).second; }
-	friend std::pair<BigInt, BigInt> divmod(const BigInt &a, const BigInt &b) {
+	[[nodiscard]] friend BigInt operator/(const BigInt &a, const BigInt &b) { return divmod(a, b).first; }
+	[[nodiscard]] friend BigInt operator%(const BigInt &a, const BigInt &b) { return divmod(a, b).second; }
+	[[nodiscard]] friend std::pair<BigInt, BigInt> divmod(const BigInt &a, const BigInt &b) {
 		if (!b) throw std::domain_error("BigInt division by zero");
 		auto [quotient, remainder] = bigint_detail::divide(a.digits_, b.digits_);
 		return {BigInt(std::move(quotient), a.sign_ * b.sign_), BigInt(std::move(remainder), a.sign_)};
 	}
-	friend BigInt abs(BigInt value) { if (value.sign_ < 0) value.sign_ = 1; return value; }
-	friend bool operator==(const BigInt &a, const BigInt &b) { return a.sign_ == b.sign_ && a.digits_ == b.digits_; }
-	friend std::strong_ordering operator<=>(const BigInt &a, const BigInt &b) {
+	[[nodiscard]] friend BigInt abs(BigInt value) { if (value.sign_ < 0) value.sign_ = 1; return value; }
+	[[nodiscard]] friend bool operator==(const BigInt &a, const BigInt &b) { return a.sign_ == b.sign_ && a.digits_ == b.digits_; }
+	[[nodiscard]] friend std::strong_ordering operator<=>(const BigInt &a, const BigInt &b) {
 		if (a.sign_ != b.sign_) return a.sign_ <=> b.sign_;
 		return (a.sign_ * bigint_detail::compare(a.digits_, b.digits_)) <=> 0;
 	}

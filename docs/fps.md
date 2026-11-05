@@ -3,12 +3,19 @@ title: "形式的冪級数"
 documentation_of: //fps/fps.hpp
 ---
 
+FPS の値型には `[[gnu::warn_unused]]`、四則演算・`pre()`・`inv()`・`log()`・`exp()`・`pow()`・微積分などの計算には `[[nodiscard]]` を付けています。未使用変数には `[[maybe_unused]]`、結果の意図的な破棄には `(void)f.inv()` を使えます。
+
 ```cpp
 #include "lib/fps/fps.hpp"
+#include <cassert>
 
-fps f{1, 2, 3}, g{4, 5};
-fps product = f * g;
-fps inverse = f.inv(10);
+int main() {
+	fps f{1, 2, 3}, g{4, 5};
+	fps product = f * g;
+	fps inverse = f.inv(10);
+	assert((product == fps{4, 13, 22, 15}));
+	assert(inverse.size() == 10 && inverse[0] == mint(1));
+}
 ```
 
 mod は 998244353、係数は定数項から順に格納します。`fps` は `std::vector<mint>` と同様に扱えます。`deg` は返す係数の個数で、省略時は元のサイズです。

@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-class DynamicBitset {
+class [[nodiscard, gnu::warn_unused]] DynamicBitset {
 	using Word = std::uint64_t;
 	using Operation = bitset_ops_detail::Operation;
 	std::vector<Word> data_;
@@ -126,12 +126,12 @@ class DynamicBitset {
 		DynamicBitset result; result.data_.assign(words.begin(), words.end()); result.n_ = n; result.trim(); return result;
 	}
 	void swap(DynamicBitset &other) noexcept { data_.swap(other.data_); std::swap(n_, other.n_); }
-	int size() const { return n_; }
-	bool empty() const { return !n_; }
-	std::span<const Word> words() const { return data_; }
-	bool test(int p) const { check(p); return (data_[unsigned(p) / 64] >> (p & 63)) & 1; }
-	bool operator[](int p) const { return test(p); }
-	reference operator[](int p) { check(p); return reference(data_[unsigned(p) / 64], p & 63); }
+	[[nodiscard]] int size() const { return n_; }
+	[[nodiscard]] bool empty() const { return !n_; }
+	[[nodiscard]] std::span<const Word> words() const { return data_; }
+	[[nodiscard]] bool test(int p) const { check(p); return (data_[unsigned(p) / 64] >> (p & 63)) & 1; }
+	[[nodiscard]] bool operator[](int p) const { return test(p); }
+	[[nodiscard]] reference operator[](int p) { check(p); return reference(data_[unsigned(p) / 64], p & 63); }
 	DynamicBitset &set(int p, bool value = true) { (*this)[p] = value; return *this; }
 	DynamicBitset &reset(int p) { return set(p, false); }
 	DynamicBitset &flip(int p) { (*this)[p].flip(); return *this; }
@@ -153,8 +153,8 @@ class DynamicBitset {
 	void push_back(bool value) { assert(n_ < std::numeric_limits<int>::max()); int p = n_; resize(n_ + 1); set(p, value); }
 	void pop_back() { assert(n_); resize(n_ - 1); }
 	void clear() { data_.clear(); n_ = 0; }
-	int count() const { return count_with<Operation::identity>(*this); }
-	int count(int l, int r) const {
+	[[nodiscard]] int count() const { return count_with<Operation::identity>(*this); }
+	[[nodiscard]] int count(int l, int r) const {
 		check_range(l, r); if (l == r) return 0;
 		std::size_t first = unsigned(l) / 64, last = unsigned(r - 1) / 64;
 		Word left = ~Word(0) << (l & 63), right = mask(((r - 1) & 63) + 1);
@@ -163,30 +163,30 @@ class DynamicBitset {
 		result += int(bitset_ops_detail::count<Operation::identity>(data_.data() + first + 1, nullptr, last - first - 1));
 		return result;
 	}
-	int rank(int r) const { return count(0, r); }
-	bool any() const { for (auto x : data_) if (x) return true; return false; }
-	bool none() const { return !any(); }
-	bool all() const {
+	[[nodiscard]] int rank(int r) const { return count(0, r); }
+	[[nodiscard]] bool any() const { for (auto x : data_) if (x) return true; return false; }
+	[[nodiscard]] bool none() const { return !any(); }
+	[[nodiscard]] bool all() const {
 		std::size_t full = unsigned(n_) / 64;
 		for (std::size_t i = 0; i < full; ++i) if (data_[i] != ~Word(0)) return false;
 		return !(n_ & 63) || data_[full] == mask(n_ & 63);
 	}
-	int count_and(const DynamicBitset &other) const { return count_with<Operation::bit_and>(other); }
-	int count_or(const DynamicBitset &other) const { return count_with<Operation::bit_or>(other); }
-	int count_xor(const DynamicBitset &other) const { return count_with<Operation::bit_xor>(other); }
-	int count_and_not(const DynamicBitset &other) const { return count_with<Operation::and_not>(other); }
-	bool intersection_parity(const DynamicBitset &other) const {
+	[[nodiscard]] int count_and(const DynamicBitset &other) const { return count_with<Operation::bit_and>(other); }
+	[[nodiscard]] int count_or(const DynamicBitset &other) const { return count_with<Operation::bit_or>(other); }
+	[[nodiscard]] int count_xor(const DynamicBitset &other) const { return count_with<Operation::bit_xor>(other); }
+	[[nodiscard]] int count_and_not(const DynamicBitset &other) const { return count_with<Operation::and_not>(other); }
+	[[nodiscard]] bool intersection_parity(const DynamicBitset &other) const {
 		check_size(other); Word x = 0;
 		for (std::size_t i = 0; i < data_.size(); ++i) x ^= data_[i] & other.data_[i];
 		return std::popcount(x) & 1;
 	}
-	bool intersects(const DynamicBitset &other) const { check_size(other); for (std::size_t i = 0; i < data_.size(); ++i) if (data_[i] & other.data_[i]) return true; return false; }
-	bool is_subset_of(const DynamicBitset &other) const { check_size(other); for (std::size_t i = 0; i < data_.size(); ++i) if (data_[i] & ~other.data_[i]) return false; return true; }
-	bool is_proper_subset_of(const DynamicBitset &other) const { return is_subset_of(other) && *this != other; }
-	int compare(const DynamicBitset &other) const {
+	[[nodiscard]] bool intersects(const DynamicBitset &other) const { check_size(other); for (std::size_t i = 0; i < data_.size(); ++i) if (data_[i] & other.data_[i]) return true; return false; }
+	[[nodiscard]] bool is_subset_of(const DynamicBitset &other) const { check_size(other); for (std::size_t i = 0; i < data_.size(); ++i) if (data_[i] & ~other.data_[i]) return false; return true; }
+	[[nodiscard]] bool is_proper_subset_of(const DynamicBitset &other) const { return is_subset_of(other) && *this != other; }
+	[[nodiscard]] int compare(const DynamicBitset &other) const {
 		check_size(other); for (auto i = data_.size(); i-- > 0;) if (data_[i] != other.data_[i]) return data_[i] < other.data_[i] ? -1 : 1; return 0;
 	}
-	int find_next(int p, bool value = true) const {
+	[[nodiscard]] int find_next(int p, bool value = true) const {
 		assert(-1 <= p && p < n_); ++p;
 		if (p == n_) return n_;
 		std::size_t i = unsigned(p) / 64;
@@ -197,7 +197,7 @@ class DynamicBitset {
 			x = chosen(i, value);
 		}
 	}
-	int find_prev(int p, bool value = true) const {
+	[[nodiscard]] int find_prev(int p, bool value = true) const {
 		assert(0 <= p && p <= n_); if (!p) return n_; --p;
 		std::size_t i = unsigned(p) / 64;
 		Word x = chosen(i, value) & mask((p & 63) + 1);
@@ -207,9 +207,9 @@ class DynamicBitset {
 			x = chosen(--i, value);
 		}
 	}
-	int find_first(bool value = true) const { return n_ ? find_next(-1, value) : 0; }
-	int find_last(bool value = true) const { return find_prev(n_, value); }
-	int select(int k, bool value = true) const {
+	[[nodiscard]] int find_first(bool value = true) const { return n_ ? find_next(-1, value) : 0; }
+	[[nodiscard]] int find_last(bool value = true) const { return find_prev(n_, value); }
+	[[nodiscard]] int select(int k, bool value = true) const {
 		assert(k >= 0);
 		for (std::size_t i = 0; i < data_.size(); ++i) {
 			Word x = chosen(i, value); int c = std::popcount(x);
@@ -237,7 +237,7 @@ class DynamicBitset {
 	friend DynamicBitset operator^(DynamicBitset a, const DynamicBitset &b) { a ^= b; return a; }
 	friend DynamicBitset operator-(DynamicBitset a, const DynamicBitset &b) { a -= b; return a; }
 	DynamicBitset operator~() const { auto result = *this; result.flip_all(); return result; }
-	bool operator==(const DynamicBitset &) const = default;
+	[[nodiscard]] bool operator==(const DynamicBitset &) const = default;
 	DynamicBitset &operator<<=(std::size_t k) { return shift<true, false>(k); }
 	DynamicBitset &operator>>=(std::size_t k) { return shift<false, false>(k); }
 	friend DynamicBitset operator<<(DynamicBitset a, std::size_t k) { a <<= k; return a; }
@@ -277,7 +277,7 @@ class DynamicBitset {
 		auto wrap = *this; wrap >>= std::size_t(n_) - amount; *this <<= amount; return *this |= wrap;
 	}
 	DynamicBitset &rotate_right(std::size_t amount) { if (n_ && (amount %= std::size_t(n_))) rotate_left(std::size_t(n_) - amount); return *this; }
-	std::string to_string() const {
+	[[nodiscard]] std::string to_string() const {
 		std::string result(n_, '0'); for_each([&](int p) { result[std::size_t(n_ - 1 - p)] = '1'; }); return result;
 	}
 };

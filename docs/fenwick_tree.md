@@ -3,6 +3,8 @@ title: "Fenwick Tree"
 documentation_of: //data_structure/fenwick_tree.hpp
 ---
 
+`size()` と両方の `sum()` には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)tree.sum(r)` のように明示してください。
+
 ```cpp
 #include "lib/data_structure/fenwick_tree.hpp"
 

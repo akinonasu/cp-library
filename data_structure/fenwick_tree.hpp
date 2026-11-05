@@ -43,18 +43,18 @@ template<class T, bool Padded = true> class FenwickTree {
 		}
 		if (n_ & 1) data_[index(unsigned(n_))] += U(a.back());
 	}
-	int size() const { return n_; }
+	[[nodiscard]] int size() const { return n_; }
 	void add(int p, T x) {
 		assert(0 <= p && p < n_);
 		for (unsigned i = unsigned(p) + 1; i <= unsigned(n_); i += i & -i) data_[index(i)] += U(x);
 	}
-	T sum(int r) const {
+	[[nodiscard]] T sum(int r) const {
 		assert(0 <= r && r <= n_);
 		U result{};
 		for (unsigned i = unsigned(r); i; i &= i - 1) result += data_[index(i)];
 		return T(result);
 	}
-	T sum(int l, int r) const {
+	[[nodiscard]] T sum(int l, int r) const {
 		assert(0 <= l && l <= r && r <= n_);
 		U result{};
 		unsigned a = unsigned(l), b = unsigned(r);

@@ -3,6 +3,8 @@ title: 木の直径
 documentation_of: //tree/tree_diameter.hpp
 ---
 
+`solve()` には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)tree.solve()` のように明示してください。
+
 重み付き無向木で、重みの合計が最大になる単純パスと、その長さを求めます。負の重みも扱えます。
 
 ```cpp

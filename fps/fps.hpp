@@ -28,7 +28,7 @@
 #endif
 
 template <class T = mint>
-struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
+struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	static_assert(T::mod() == 998244353, "FormalPowerSeries supports only mod 998244353");
 	using W = FormalPowerSeries<mint>;
 	using base = std::vector<T>;
@@ -366,7 +366,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		}
 	}
 
-	T eval(T x) const {
+	[[nodiscard]] T eval(T x) const {
 		if constexpr (std::is_same_v<T, mint>) return fps_detail::horner(this->data(), this->size(), x);
 		T ans = 0;
 		for (auto it = this->rbegin(); it != this->rend(); ++it) ans = ans * x + *it;
@@ -483,7 +483,7 @@ struct FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 		}
 	}
 
-	std::pair<F, F> divmod(const F &divisor) const {
+	[[nodiscard]] std::pair<F, F> divmod(const F &divisor) const {
 		if constexpr (!std::is_same_v<T, mint>) {
 			auto [q, r] = import_work(*this).divmod(import_work(divisor));
 			return {export_work(q), export_work(r)};

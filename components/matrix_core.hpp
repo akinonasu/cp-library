@@ -25,35 +25,35 @@ template <class T> struct FastMatrixArithmetic;
 }
 
 template <class T, class Arithmetic = matrix_detail::FastMatrixArithmetic<T>>
-class Matrix {
+class [[nodiscard, gnu::warn_unused]] Matrix {
 	static_assert(!std::is_same_v<T, bool>);
 	int h = 0, w = 0;
 	std::vector<T> a;
 	std::pair<T, std::vector<int>> reduce(int columns, bool reduced, long double eps) {
 		assert(eps >= 0);
 		return Arithmetic::field(a, [&]<class Ops>(auto &work) {
-			auto result = [&] {
+			auto res = [&] {
 				if constexpr (requires { Arithmetic::template eliminate<Ops>(work, h, w, columns, reduced, eps); })
 					return Arithmetic::template eliminate<Ops>(work, h, w, columns, reduced, eps);
 				else return matrix_detail::eliminate<Ops, Arithmetic::modular>(work, h, w, columns, reduced, eps);
 			}();
-			return std::pair{T(result.determinant), std::move(result.pivots)};
+			return std::pair{T(res.determinant), std::move(res.pivots)};
 		});
 	}
-	static std::vector<std::vector<T>> nullspace(const Matrix &r, const std::vector<int> &pivots, int variables) {
-		std::vector<bool> pivot(variables);
-		for (int p : pivots) pivot[p] = true;
+	static std::vector<std::vector<T>> nullspace(const Matrix &r, const std::vector<int> &piv, int vars) {
+		std::vector<bool> pivot(vars);
+		for (int p : piv) pivot[p] = true;
 		std::vector<std::vector<T>> basis;
-		basis.reserve(variables - pivots.size());
-		for (int col = 0; col < variables; ++col) if (!pivot[col]) {
-			std::vector<T> v(variables, T(0));
+		basis.reserve(vars - piv.size());
+		for (int col = 0; col < vars; ++col) if (!pivot[col]) {
+			std::vector<T> v(vars, T(0));
 			v[col] = T{1};
-			for (int i = 0; i < int(pivots.size()); ++i) v[pivots[i]] = -r(i, col);
+			for (int i = 0; i < int(piv.size()); ++i) v[piv[i]] = -r(i, col);
 			basis.push_back(std::move(v));
 		}
 		return basis;
 	}
-	Matrix augmented_identity() const {
+	Matrix augment() const {
 		static_assert(!matrix_detail::integer<T>);
 		assert(h == w && w <= std::numeric_limits<int>::max() / 2);
 		Matrix work(h, w * 2);
@@ -66,8 +66,8 @@ class Matrix {
 
 	std::pair<Matrix, std::vector<int>> echelon(bool reduced, long double eps) const {
 		Matrix work = *this;
-		auto pivots = work.reduce(w, reduced, eps).second;
-		return {std::move(work), std::move(pivots)};
+		auto piv = work.reduce(w, reduced, eps).second;
+		return {std::move(work), std::move(piv)};
 	}
 
   public:
@@ -86,7 +86,7 @@ class Matrix {
 			std::copy(row.begin(), row.end(), (*this)[i++].begin());
 		}
 	}
-	explicit Matrix(const std::vector<std::vector<T>> &values) : Matrix(int(values.size()), values.empty() ? 0 : int(values[0].size())) {
+	[[nodiscard]] explicit Matrix(const std::vector<std::vector<T>> &values) : Matrix(int(values.size()), values.empty() ? 0 : int(values[0].size())) {
 		for (int i = 0; i < h; ++i) {
 			assert(int(values[i].size()) == w);
 			std::copy(values[i].begin(), values[i].end(), (*this)[i].begin());
@@ -100,35 +100,35 @@ class Matrix {
 		return *this;
 	}
 	void swap(Matrix &other) noexcept { std::swap(h, other.h); std::swap(w, other.w); a.swap(other.a); }
-	int rows() const { return h; }
-	int cols() const { return w; }
-	bool empty() const { return !h || !w; }
-	T *data() { return a.data(); }
-	const T *data() const { return a.data(); }
-	std::span<T> operator[](int i) { assert(0 <= i && i < h); return {w ? a.data() + std::size_t(i) * w : a.data(), std::size_t(w)}; }
-	std::span<const T> operator[](int i) const { assert(0 <= i && i < h); return {w ? a.data() + std::size_t(i) * w : a.data(), std::size_t(w)}; }
-	T &operator()(int i, int j) { assert(0 <= i && i < h && 0 <= j && j < w); return a[std::size_t(i) * w + j]; }
-	const T &operator()(int i, int j) const { assert(0 <= i && i < h && 0 <= j && j < w); return a[std::size_t(i) * w + j]; }
-	bool operator==(const Matrix &) const = default;
+	[[nodiscard]] int rows() const { return h; }
+	[[nodiscard]] int cols() const { return w; }
+	[[nodiscard]] bool empty() const { return !h || !w; }
+	[[nodiscard]] T *data() { return a.data(); }
+	[[nodiscard]] const T *data() const { return a.data(); }
+	[[nodiscard]] std::span<T> operator[](int i) { assert(0 <= i && i < h); return {w ? a.data() + std::size_t(i) * w : a.data(), std::size_t(w)}; }
+	[[nodiscard]] std::span<const T> operator[](int i) const { assert(0 <= i && i < h); return {w ? a.data() + std::size_t(i) * w : a.data(), std::size_t(w)}; }
+	[[nodiscard]] T &operator()(int i, int j) { assert(0 <= i && i < h && 0 <= j && j < w); return a[std::size_t(i) * w + j]; }
+	[[nodiscard]] const T &operator()(int i, int j) const { assert(0 <= i && i < h && 0 <= j && j < w); return a[std::size_t(i) * w + j]; }
+	[[nodiscard]] bool operator==(const Matrix &) const = default;
 	static Matrix identity(int n) {
-		Matrix result(n);
-		for (int i = 0; i < n; ++i) result(i, i) = T{1};
-		return result;
+		Matrix res(n);
+		for (int i = 0; i < n; ++i) res(i, i) = T{1};
+		return res;
 	}
 	void fill(T value) { std::fill(a.begin(), a.end(), value); }
 	Matrix transpose() const {
-		Matrix result(w, h);
+		Matrix res(w, h);
 		for (int i = 0; i < h; i += 32) for (int j = 0; j < w; j += 32)
-			for (int x = i; x < std::min(h, i + 32); ++x) for (int y = j; y < std::min(w, j + 32); ++y) result(y, x) = (*this)(x, y);
-		return result;
+			for (int x = i; x < std::min(h, i + 32); ++x) for (int y = j; y < std::min(w, j + 32); ++y) res(y, x) = (*this)(x, y);
+		return res;
 	}
 	Matrix submatrix(int row_l, int row_r, int col_l, int col_r) const {
 		assert(0 <= row_l && row_l <= row_r && row_r <= h && 0 <= col_l && col_l <= col_r && col_r <= w);
-		Matrix result(row_r - row_l, col_r - col_l);
-		for (int i = row_l; i < row_r; ++i) std::copy((*this)[i].begin() + col_l, (*this)[i].begin() + col_r, result[i - row_l].begin());
-		return result;
+		Matrix res(row_r - row_l, col_r - col_l);
+		for (int i = row_l; i < row_r; ++i) std::copy((*this)[i].begin() + col_l, (*this)[i].begin() + col_r, res[i - row_l].begin());
+		return res;
 	}
-	Matrix operator-() const { Matrix result = *this; for (auto &x : result.a) x = -x; return result; }
+	Matrix operator-() const { Matrix res = *this; for (auto &x : res.a) x = -x; return res; }
 	Matrix &operator+=(const Matrix &b) { assert(h == b.h && w == b.w); for (std::size_t i = 0; i < a.size(); ++i) a[i] += b.a[i]; return *this; }
 	Matrix &operator-=(const Matrix &b) { assert(h == b.h && w == b.w); for (std::size_t i = 0; i < a.size(); ++i) a[i] -= b.a[i]; return *this; }
 	Matrix &operator*=(const Matrix &b) { return *this = *this * b; }
@@ -138,37 +138,37 @@ class Matrix {
 	friend Matrix operator-(Matrix a, const Matrix &b) { a -= b; return a; }
 	friend Matrix operator*(const Matrix &a, const Matrix &b) {
 		assert(a.w == b.h);
-		Matrix result;
-		result.h = a.h; result.w = b.w;
-		result.a = Arithmetic::multiply(a.a, b.a, a.h, a.w, b.w);
-		return result;
+		Matrix res;
+		res.h = a.h; res.w = b.w;
+		res.a = Arithmetic::multiply(a.a, b.a, a.h, a.w, b.w);
+		return res;
 	}
 	friend Matrix operator*(Matrix a, T x) { a *= x; return a; }
 	friend Matrix operator*(T x, Matrix a) { a *= x; return a; }
 	friend Matrix operator/(Matrix a, T x) { a /= x; return a; }
-	std::vector<T> operator*(const std::vector<T> &v) const {
+	[[nodiscard]] std::vector<T> operator*(const std::vector<T> &v) const {
 		assert(int(v.size()) == w);
 		return Arithmetic::multiply(a, v, h, w, 1);
 	}
 	Matrix pow(std::uint64_t exponent) const {
 		assert(h == w);
 		if (auto power = Arithmetic::power(a, h, exponent)) {
-			Matrix result(h);
-			result.a = std::move(*power);
-			return result;
+			Matrix res(h);
+			res.a = std::move(*power);
+			return res;
 		}
 		return pow(exponent, [](Matrix &) {});
 	}
 	template <class Normalize>
 	Matrix pow(std::uint64_t exponent, Normalize normalize) const {
 		assert(h == w);
-		Matrix result = identity(h), x = *this;
-		normalize(result);
+		Matrix res = identity(h), x = *this;
+		normalize(res);
 		normalize(x);
 		while (exponent) {
 			if (exponent & 1) {
-				result *= x;
-				normalize(result);
+				res *= x;
+				normalize(res);
 			}
 			exponent >>= 1;
 			if (exponent) {
@@ -176,57 +176,57 @@ class Matrix {
 				normalize(x);
 			}
 		}
-		return result;
+		return res;
 	}
-	T trace() const { assert(h == w); T result = T(0); for (int i = 0; i < h; ++i) result += (*this)(i, i); return result; }
-	T det(long double eps = default_epsilon) const {
+	[[nodiscard]] T trace() const { assert(h == w); T res = T(0); for (int i = 0; i < h; ++i) res += (*this)(i, i); return res; }
+	[[nodiscard]] T det(long double eps = default_epsilon) const {
 		assert(h == w);
 		if constexpr (matrix_detail::integer<T>) {
 			return matrix_detail::integer_determinant(a, h);
 		} else {
 			Matrix work = *this;
-			auto [value, pivots] = work.reduce(w, false, eps);
-			return int(pivots.size()) == h ? value : T(0);
+			auto [value, piv] = work.reduce(w, false, eps);
+			return int(piv.size()) == h ? value : T(0);
 		}
 	}
-	int rank(long double eps = default_epsilon) const { Matrix work = *this; return int(work.reduce(w, false, eps).second.size()); }
-	std::pair<Matrix, std::vector<int>> row_echelon(long double eps = default_epsilon) const { return echelon(false, eps); }
-	std::pair<Matrix, std::vector<int>> rref(long double eps = default_epsilon) const { return echelon(true, eps); }
+	[[nodiscard]] int rank(long double eps = default_epsilon) const { Matrix work = *this; return int(work.reduce(w, false, eps).second.size()); }
+	[[nodiscard]] std::pair<Matrix, std::vector<int>> row_echelon(long double eps = default_epsilon) const { return echelon(false, eps); }
+	[[nodiscard]] std::pair<Matrix, std::vector<int>> rref(long double eps = default_epsilon) const { return echelon(true, eps); }
 
-	std::optional<Matrix> inverse(long double eps = default_epsilon) const {
+	[[nodiscard]] std::optional<Matrix> inverse(long double eps = default_epsilon) const {
 		assert(h == w && eps >= 0);
 		if constexpr (requires { Arithmetic::inverse(a, h, false); }) if (auto fast = Arithmetic::inverse(a, h, false)) {
 			if (fast->second.empty()) return std::nullopt;
-			Matrix result(h);
-			result.a = std::move(fast->second);
-			return result;
+			Matrix res(h);
+			res.a = std::move(fast->second);
+			return res;
 		}
-		auto work = augmented_identity();
-		auto pivots = work.reduce(w, true, eps).second;
-		if (int(pivots.size()) < h) return std::nullopt;
+		auto work = augment();
+		auto piv = work.reduce(w, true, eps).second;
+		if (int(piv.size()) < h) return std::nullopt;
 		return work.submatrix(0, h, w, w * 2);
 	}
-	std::vector<std::vector<T>> kernel(long double eps = default_epsilon) const {
-		auto [work, pivots] = rref(eps);
-		return nullspace(work, pivots, w);
+	[[nodiscard]] std::vector<std::vector<T>> kernel(long double eps = default_epsilon) const {
+		auto [work, piv] = rref(eps);
+		return nullspace(work, piv, w);
 	}
-	std::optional<LinearSolution<T>> solve(const std::vector<T> &b, long double eps = default_epsilon) const {
+	[[nodiscard]] std::optional<LinearSolution<T>> solve(const std::vector<T> &b, long double eps = default_epsilon) const {
 		assert(int(b.size()) == h && w < std::numeric_limits<int>::max());
 		Matrix work(h, w + 1);
 		for (int i = 0; i < h; ++i) {
 			std::copy((*this)[i].begin(), (*this)[i].end(), work[i].begin());
 			work(i, w) = b[i];
 		}
-		auto pivots = work.reduce(w, true, eps).second;
-		for (int i = int(pivots.size()); i < h; ++i) if (!matrix_detail::Field<T>::zero(work(i, w), eps)) return std::nullopt;
-		LinearSolution<T> result{std::vector<T>(w, T(0)), nullspace(work, pivots, w)};
-		for (int i = 0; i < int(pivots.size()); ++i) result.particular[pivots[i]] = work(i, w);
-		return result;
+		auto piv = work.reduce(w, true, eps).second;
+		for (int i = int(piv.size()); i < h; ++i) if (!matrix_detail::Field<T>::zero(work(i, w), eps)) return std::nullopt;
+		LinearSolution<T> res{std::vector<T>(w, T(0)), nullspace(work, piv, w)};
+		for (int i = 0; i < int(piv.size()); ++i) res.particular[piv[i]] = work(i, w);
+		return res;
 	}
-	std::vector<T> characteristic_polynomial(long double eps = default_epsilon) const {
+	[[nodiscard]] std::vector<T> characteristic_polynomial(long double eps = default_epsilon) const {
 		assert(h == w && eps >= 0);
 		if constexpr (requires { Arithmetic::characteristic(a, h); })
-			if (auto result = Arithmetic::characteristic(a, h)) return std::move(*result);
+			if (auto res = Arithmetic::characteristic(a, h)) return std::move(*res);
 		auto work = a;
 		return Arithmetic::field(work, [&]<class Ops>(auto &b) {
 			using V = typename Ops::V;
@@ -266,29 +266,29 @@ class Matrix {
 					Ops::axpy(p[n].data(), p[i].data(), i + 1, Ops::neg(factor));
 				}
 			}
-			std::vector<T> result(h + 1);
-			for (int i = 0; i <= h; ++i) result[i] = T(p[h][i]);
-			return result;
+			std::vector<T> res(h + 1);
+			for (int i = 0; i <= h; ++i) res[i] = T(p[h][i]);
+			return res;
 		});
 	}
 	Matrix adjugate(long double eps = default_epsilon) const {
 		assert(h == w && eps >= 0);
 		if constexpr (requires { Arithmetic::inverse(a, h, true); }) if (auto fast = Arithmetic::inverse(a, h, true)) {
-			Matrix result(h);
-			result.a = std::move(fast->second);
-			return result;
+			Matrix res(h);
+			res.a = std::move(fast->second);
+			return res;
 		}
-		auto work = augmented_identity();
-		auto [determinant, pivots] = work.reduce(w, true, eps);
-		if (int(pivots.size()) == h) return work.submatrix(0, h, w, w * 2) * determinant;
-		Matrix result(h);
-		if (int(pivots.size()) + 1 < h) return result;
-		auto right = nullspace(work, pivots, w)[0];
+		auto work = augment();
+		auto [det, piv] = work.reduce(w, true, eps);
+		if (int(piv.size()) == h) return work.submatrix(0, h, w, w * 2) * det;
+		Matrix res(h);
+		if (int(piv.size()) + 1 < h) return res;
+		auto right = nullspace(work, piv, w)[0];
 		int col = 0;
-		while (std::find(pivots.begin(), pivots.end(), col) != pivots.end()) ++col;
-		if ((h - 1 - col) & 1) determinant = -determinant;
-		for (int i = 0; i < h; ++i) for (int j = 0; j < w; ++j) result(i, j) = determinant * right[i] * work(h - 1, w + j);
-		return result;
+		while (std::find(piv.begin(), piv.end(), col) != piv.end()) ++col;
+		if ((h - 1 - col) & 1) det = -det;
+		for (int i = 0; i < h; ++i) for (int j = 0; j < w; ++j) res(i, j) = det * right[i] * work(h - 1, w + j);
+		return res;
 	}
 };
 

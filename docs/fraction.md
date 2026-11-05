@@ -3,20 +3,32 @@ title: "有理数（Fraction）"
 documentation_of: //math/fraction.hpp
 ---
 
+四則演算・比較・切り上げ／切り下げ・`pow()`・`inv()`・値の取得には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)a.inv()` のように明示してください。
+
 ```cpp
 #include "lib/math/fraction.hpp"
+#include <cassert>
 
-using F = Fraction<>;
-F a(2, -6), b(5, 6);
-auto sum = a + b;
-auto n = sum.numerator();
-auto d = sum.denominator();
-auto lower = a.floor();
-auto upper = a.ceil();
-auto inverse = a.inv();
-auto power = a.pow(3);
-double approximation = static_cast<double>(a);
+int main() {
+	using F = Fraction<>;
+	F a(2, -6), b(5, 6);
+	auto sum = a + b;
+	auto n = sum.numerator();
+	auto d = sum.denominator();
+	auto lower = a.floor();
+	auto upper = a.ceil();
+	auto inverse = a.inv();
+	auto power = a.pow(3);
+	double approximation = static_cast<double>(a);
+	assert(n == 1 && d == 2);
+	assert(lower == -1 && upper == 0);
+	assert(inverse == F(-3));
+	assert(power == F(-1, 27));
+	assert(-1 < approximation && approximation < 0);
+}
 ```
+
+`Fraction<Int>` と別名の `fraction` には `[[gnu::warn_unused]]` を付けています。GCC・Clang で `-Wall` などを有効にすると未使用のローカル変数を警告します。意図的に使わない変数には `[[maybe_unused]]` を付けてください。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

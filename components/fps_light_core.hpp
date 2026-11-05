@@ -22,7 +22,7 @@
 #endif
 
 template<class T = mint>
-struct LightFormalPowerSeries : std::vector<T> {
+struct [[nodiscard, gnu::warn_unused]] LightFormalPowerSeries : std::vector<T> {
 	static_assert(T::mod() == 998244353);
 	using base = std::vector<T>;
 	using F = LightFormalPowerSeries;
@@ -92,22 +92,22 @@ struct LightFormalPowerSeries : std::vector<T> {
 	}
 	void shrink() { while (!this->empty() && this->back() == T(0)) this->pop_back(); }
 	void trim() { shrink(); }
-	T eval(T x) const {
-		T result = 0;
-		for (auto it = this->rbegin(); it != this->rend(); ++it) result = result * x + *it;
-		return result;
+	[[nodiscard]] T eval(T x) const {
+		T res = 0;
+		for (auto it = this->rbegin(); it != this->rend(); ++it) res = res * x + *it;
+		return res;
 	}
 	F diff() const {
-		F result(this->size());
-		for (Size i = 1; i < this->size(); ++i) result[i - 1] = (*this)[i] * T(i);
-		return result;
+		F res(this->size());
+		for (Size i = 1; i < this->size(); ++i) res[i - 1] = (*this)[i] * T(i);
+		return res;
 	}
 	F integral() const {
 		assert(this->size() < T::mod());
-		F result(this->size());
+		F res(this->size());
 		const auto &inv = inverses(static_cast<int>(this->size()));
-		for (Size i = 1; i < this->size(); ++i) result[i] = (*this)[i - 1] * inv[i];
-		return result;
+		for (Size i = 1; i < this->size(); ++i) res[i] = (*this)[i - 1] * inv[i];
+		return res;
 	}
 	void onemul(int d, T c) {
 		assert(d >= 0);
@@ -127,12 +127,12 @@ struct LightFormalPowerSeries : std::vector<T> {
 		else {
 			if (auto r = sparse<Kind::inverse>(0, n, 32, 12, T(0)); !r.empty()) return r;
 			const int work = newton_precision(n), initial = 32;
-			F result = pre(initial).inv(initial);
-			const T inverse = result[0];
-			for (int k = initial; k < work; k *= 2) inverse_step(*this, result, std::min(k * 2, work));
-			result.resize(n);
-			for (int i = work; i < n; ++i) result[i] = -dot(*this, result, i) * inverse;
-			return result;
+			F res = pre(initial).inv(initial);
+			const T recip = res[0];
+			for (int k = initial; k < work; k *= 2) inverse_step(*this, res, std::min(k * 2, work));
+			res.resize(n);
+			for (int i = work; i < n; ++i) res[i] = -dot(*this, res, i) * recip;
+			return res;
 		}
 	}
 	F div_series(const F &g, int deg = -1) const {
@@ -142,34 +142,34 @@ struct LightFormalPowerSeries : std::vector<T> {
 		if constexpr (!std::is_same_v<T, mint>) return from_native(native().div_series(g.native(), n));
 		else {
 			if (n <= 32) {
-				F result(n);
-				const T inverse = g[0].inv();
+				F res(n);
+				const T recip = g[0].inv();
 				for (int i = 0; i < n; ++i) {
-					result[i] = (coefficient(i) - dot(g, result, i)) * inverse;
+					res[i] = (coefficient(i) - dot(g, res, i)) * recip;
 				}
-				return result;
+				return res;
 			}
 			const int work = newton_precision(n), k = std::bit_floor(unsigned(work - 1)), length = k * 2;
-			F inverse = g.inv(k), result = pre(k);
-			const T constant = inverse[0];
-			inverse.resize(length), result.resize(length);
-			transform(inverse);
-			inverse_product(result, inverse);
-			zero(result, k);
-			F quotient = result, error = g.pre(work);
+			F recip = g.inv(k), res = pre(k);
+			const T constant = recip[0];
+			recip.resize(length), res.resize(length);
+			transform(recip);
+			inverse_product(res, recip);
+			zero(res, k);
+			F quotient = res, error = g.pre(work);
 			error.resize(length);
 			transform(quotient);
 			inverse_product(error, quotient);
 			zero(error, 0, k);
 			for (int i = k; i < work; ++i) error[i] = coefficient(i) - error[i];
 			zero(error, work);
-			inverse_product(error, inverse);
-			result.resize(n);
-			std::copy(error.begin() + k, error.begin() + work, result.begin() + k);
+			inverse_product(error, recip);
+			res.resize(n);
+			std::copy(error.begin() + k, error.begin() + work, res.begin() + k);
 			for (int i = work; i < n; ++i) {
-				result[i] = (coefficient(i) - dot(g, result, i)) * constant;
+				res[i] = (coefficient(i) - dot(g, res, i)) * constant;
 			}
-			return result;
+			return res;
 		}
 	}
 	F log(int deg = -1) const {
@@ -179,9 +179,9 @@ struct LightFormalPowerSeries : std::vector<T> {
 		if constexpr (!std::is_same_v<T, mint>) return from_native(native().log(n));
 		else {
 			if (n >= 256) if (auto r = sparse<Kind::logarithm>(0, n, 12, 0, T(0)); !r.empty()) return r;
-			F result = pre(n).diff().div_series(*this, n - 1);
-			result.resize(n);
-			return result.integral();
+			F res = pre(n).diff().div_series(*this, n - 1);
+			res.resize(n);
+			return res.integral();
 		}
 	}
 	F exp(int deg = -1) const {
@@ -193,34 +193,34 @@ struct LightFormalPowerSeries : std::vector<T> {
 			if (auto r = sparse<Kind::exponential>(0, n, 64, 24, T(1)); !r.empty()) return r;
 			const int work = newton_precision(n), initial = 32;
 			const auto &inv = inverses(n);
-			F result = pre(initial).exp(initial);
-			F reciprocal = result.inv(), inverse;
+			F res = pre(initial).exp(initial);
+			F reciprocal = res.inv(), recip;
 			for (int k = initial; k < work; k *= 2) {
 				const int length = k * 2, m = std::min(length, work);
-				F frequency = result;
-				frequency.resize(length);
-				transform(frequency);
-				if (k > initial) inverse_update(frequency.pre(k), inverse, reciprocal, k);
+				F freq = res;
+				freq.resize(length);
+				transform(freq);
+				if (k > initial) inverse_update(freq.pre(k), recip, reciprocal, k);
 				F error(k);
 				for (int i = 1; i < k && Size(i) < this->size(); ++i) error[i - 1] = (*this)[i] * T(i);
-				inverse_product(error, frequency);
+				inverse_product(error, freq);
 				const T last = -error.back();
-				for (int i = k - 1; i; --i) error[i] = result[i] * T(i) - error[i - 1];
+				for (int i = k - 1; i; --i) error[i] = res[i] * T(i) - error[i - 1];
 				error[0] = last;
 				error.resize(length);
-				inverse = reciprocal;
-				inverse.resize(length);
-				transform(inverse);
-				inverse_product(error, inverse);
+				recip = reciprocal;
+				recip.resize(length);
+				transform(recip);
+				inverse_product(error, recip);
 				for (int i = 0; i < m - k; ++i) error[i] = coefficient(k + i) - error[i] * inv[k + i];
 				zero(error, m - k);
-				inverse_product(error, frequency);
-				result.resize(m);
-				std::copy_n(error.begin(), m - k, result.begin() + k);
+				inverse_product(error, freq);
+				res.resize(m);
+				std::copy_n(error.begin(), m - k, res.begin() + k);
 			}
-			result.resize(n);
-			for (int i = work; i < n; ++i) result[i] = dot<true>(*this, result, i) * inv[i];
-			return result;
+			res.resize(n);
+			for (int i = work; i < n; ++i) res[i] = dot<true>(*this, res, i) * inv[i];
+			return res;
 		}
 	}
 	F sqrt(int deg = -1) const {
@@ -241,21 +241,21 @@ struct LightFormalPowerSeries : std::vector<T> {
 			}
 			F f(this->begin() + first, this->begin() + last);
 			const T half = T(2).inv();
-			F result = f.template sparse<Kind::power>(0, initial, 32, 0, *constant, half);
+			F res = f.template sparse<Kind::power>(0, initial, 32, 0, *constant, half);
 			if (initial == target) {
-				result.insert(result.begin(), shift, T(0));
-				return result;
+				res.insert(res.begin(), shift, T(0));
+				return res;
 			}
-			F reciprocal = result.inv();
+			F reciprocal = res.inv();
 			for (int k = initial; k < work; k *= 2) {
 				const int length = k * 2, m = std::min(length, work);
 				F error;
-				if (k > initial) inverse_step(result, reciprocal, k, &error);
-				if (error.empty()) { error = result; transform(error); }
-				F inverse = reciprocal;
+				if (k > initial) inverse_step(res, reciprocal, k, &error);
+				if (error.empty()) { error = res; transform(error); }
+				F recip = reciprocal;
 				pointwise(error, error);
 				transform(error, true);
-				error.resize(length), inverse.resize(length);
+				error.resize(length), recip.resize(length);
 				for (int i = 0; i < m - k; ++i) {
 					T low = f.coefficient(i);
 					T high = f.coefficient(k + i);
@@ -263,24 +263,24 @@ struct LightFormalPowerSeries : std::vector<T> {
 				}
 				zero(error, m - k);
 				transform(error);
-				transform(inverse);
-				pointwise(error, inverse);
+				transform(recip);
+				pointwise(error, recip);
 				transform(error, true);
-				result.resize(m);
-				std::copy_n(error.begin(), m - k, result.begin() + k);
+				res.resize(m);
+				std::copy_n(error.begin(), m - k, res.begin() + k);
 			}
-			result.resize(target);
+			res.resize(target);
 			for (int i = work; i < target; ++i)
-				result[i] = (f.coefficient(i) - dot(result, result, i, i - 1)) * reciprocal[0] * half;
-			result.insert(result.begin(), shift, T(0));
-			return result;
+				res[i] = (f.coefficient(i) - dot(res, res, i, i - 1)) * reciprocal[0] * half;
+			res.insert(res.begin(), shift, T(0));
+			return res;
 		}
 	}
 	F pow(long long k) const {
 		assert(k >= 0);
 		const int n = precision(-1);
 		if (!n) return {};
-		if (!k) { F result(n); result[0] = 1; return result; }
+		if (!k) { F res(n); res[0] = 1; return res; }
 		if (k == 1) return *this;
 		int first = 0;
 		while (first < n && (*this)[first] == T(0)) ++first;
@@ -298,11 +298,11 @@ struct LightFormalPowerSeries : std::vector<T> {
 		F f(this->begin() + first, this->end());
 		f.resize(len);
 		f /= f[0];
-		F result = (f.log(len) * T(k)).exp(len) * scale;
-		result.insert(result.begin(), shift, T(0));
-		return result;
+		F res = (f.log(len) * T(k)).exp(len) * scale;
+		res.insert(res.begin(), shift, T(0));
+		return res;
 	}
-	std::pair<F, F> divmod(const F &divisor) const {
+	[[nodiscard]] std::pair<F, F> divmod(const F &divisor) const {
 		F a = *this, b = divisor;
 		a.shrink(), b.shrink();
 		assert(!b.empty());
@@ -311,9 +311,9 @@ struct LightFormalPowerSeries : std::vector<T> {
 		const int qn = static_cast<int>(a.size() - b.size() + 1), m = static_cast<int>(b.size());
 		if (m <= 32 || Size(m) * qn <= 2048) {
 			F q(qn);
-			const T inverse = b.back().inv();
+			const T recip = b.back().inv();
 			for (int i = qn - 1; i >= 0; --i) {
-				T value = q[i] = a[i + m - 1] * inverse;
+				T value = q[i] = a[i + m - 1] * recip;
 				for (int j = 0; j < m; ++j) a[i + j] -= value * b[j];
 			}
 			a.resize(m - 1);
@@ -342,13 +342,13 @@ struct LightFormalPowerSeries : std::vector<T> {
 		return sum;
 	}
 	T coefficient(int i) const { return Size(i) < this->size() ? (*this)[i] : T(0); }
-	static void inverse_product(F &a, const F &frequency) {
-		transform(a); pointwise(a, frequency); transform(a, true);
+	static void inverse_product(F &a, const F &freq) {
+		transform(a); pointwise(a, freq); transform(a, true);
 	}
 	static void zero(F &a, int first, int last = -1) {
 		std::fill(a.begin() + first, last < 0 ? a.end() : a.begin() + last, T(0));
 	}
-	static void transform(F &a, bool inverse = false) { fps_light_detail::transform(a, inverse); }
+	static void transform(F &a, bool recip = false) { fps_light_detail::transform(a, recip); }
 	static void pointwise(F &a, const F &b) { fps_light_detail::pointwise(a, b); }
 
 	template <Kind kind>
@@ -358,9 +358,9 @@ struct LightFormalPowerSeries : std::vector<T> {
 		for (auto [j, x] : terms) stride = std::gcd(stride, j);
 		if (int(terms.size()) > limit || (budget && n > 256 && terms.size() > Size(budget * stride))) return {};
 		if constexpr (kind == Kind::inverse || kind == Kind::power) {
-			T inverse = (*this)[first].inv();
-			for (auto &[j, x] : terms) x *= inverse;
-			if constexpr (kind == Kind::inverse) initial = inverse;
+			T recip = (*this)[first].inv();
+			for (auto &[j, x] : terms) x *= recip;
+			if constexpr (kind == Kind::inverse) initial = recip;
 		}
 		return F(Sparse::get<kind>(std::move(terms), n, initial, exponent, inverse_table));
 	}
@@ -370,33 +370,33 @@ struct LightFormalPowerSeries : std::vector<T> {
 	}
 	using Native = LightFormalPowerSeries<mint>;
 	Native native() const {
-		Native result(this->size());
-		for (Size i = 0; i < this->size(); ++i) result[i] = mint::raw((*this)[i].val());
-		return result;
+		Native res(this->size());
+		for (Size i = 0; i < this->size(); ++i) res[i] = mint::raw((*this)[i].val());
+		return res;
 	}
 	static F from_native(const Native &a) {
-		F result(a.size());
-		for (Size i = 0; i < a.size(); ++i) result[i] = T::raw(a[i].val());
-		return result;
+		F res(a.size());
+		for (Size i = 0; i < a.size(); ++i) res[i] = T::raw(a[i].val());
+		return res;
 	}
-	static void inverse_step(const F &f, F &result, int n, F *frequency = nullptr) {
-		const int k = static_cast<int>(result.size()), length = k * 2;
+	static void inverse_step(const F &f, F &res, int n, F *freq = nullptr) {
+		const int k = static_cast<int>(res.size()), length = k * 2;
 		assert(k > 0 && std::has_single_bit(unsigned(k)) && k < n && n <= length);
-		F error = f.pre(n), inverse = result;
-		error.resize(length), inverse.resize(length);
+		F error = f.pre(n), recip = res;
+		error.resize(length), recip.resize(length);
 		transform(error);
-		if (frequency) *frequency = error;
-		transform(inverse);
-		inverse_update(std::move(error), inverse, result, n);
+		if (freq) *freq = error;
+		transform(recip);
+		inverse_update(std::move(error), recip, res, n);
 	}
-	static void inverse_update(F error, const F &inverse, F &result, int n) {
-		const int k = static_cast<int>(result.size());
-		pointwise(error, inverse);
+	static void inverse_update(F error, const F &recip, F &res, int n) {
+		const int k = static_cast<int>(res.size());
+		pointwise(error, recip);
 		transform(error, true);
 		zero(error, 0, k);
-		inverse_product(error, inverse);
-		result.resize(n);
-		for (int i = k; i < n; ++i) result[i] = -error[i];
+		inverse_product(error, recip);
+		res.resize(n);
+		for (int i = k; i < n; ++i) res[i] = -error[i];
 	}
 	int precision(int deg) const {
 		assert(this->size() <= Size(std::numeric_limits<int>::max()));
