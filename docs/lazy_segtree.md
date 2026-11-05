@@ -7,6 +7,8 @@ redirect_from:
 - /lightweight/data_structure/segment_tree/lazy_segtree.hpp.html
 ---
 
+要素・区間積の取得と境界検索には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)seg.prod(l,r)` のように明示してください。
+
 ```cpp
 #include "lib/data_structure/lazy_segtree.hpp"
 

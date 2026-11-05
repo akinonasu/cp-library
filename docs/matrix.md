@@ -7,16 +7,26 @@ redirect_from:
 library_category: math/linear_algebra
 ---
 
+`Matrix`・`LightMatrix` の値型には `[[gnu::warn_unused]]`、四則演算・転置・累乗・行列式・逆行列などの計算と要素の取得には `[[nodiscard]]` を付けています。未使用変数には `[[maybe_unused]]`、結果の意図的な破棄には `(void)a.transpose()` を使えます。
+
 ```cpp
 #include "lib/math/matrix.hpp"
 #include "lib/math/mint.hpp"
+#include <cassert>
 
-Matrix<mint> a = { {1, 2}, {3, 4} };
-auto det = a.det();
-auto inverse = a.inverse();
-auto power = a.pow(10);
-auto solution = a.solve({5, 11});
-auto polynomial = a.characteristic_polynomial();
+int main() {
+	Matrix<mint> a = { {1, 2}, {3, 4} };
+	auto det = a.det();
+	auto inverse = a.inverse();
+	auto power = a.pow(10);
+	auto solution = a.solve({5, 11});
+	auto polynomial = a.characteristic_polynomial();
+	assert(det == mint(-2));
+	assert(inverse && a * *inverse == Matrix<mint>::identity(2));
+	assert(power.rows() == 2 && power.cols() == 2);
+	assert((solution && solution->particular == std::vector<mint>{1, 2}));
+	assert((polynomial == std::vector<mint>{-2, -5, 1}));
+}
 ```
 
 `Matrix<T>` は行優先の連続領域に保存する可変サイズの行列です。添字は 0 始まり、区間は半開区間です。`bool` は使えません。

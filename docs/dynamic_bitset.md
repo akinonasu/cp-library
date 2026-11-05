@@ -3,6 +3,8 @@ title: Dynamic Bitset
 documentation_of: //data_structure/dynamic_bitset.hpp
 ---
 
+値型には `[[gnu::warn_unused]]`、値を返すビット演算・検索・個数の取得・部分列の作成には `[[nodiscard]]` を付けています。未使用変数には `[[maybe_unused]]`、結果の意図的な破棄には `(void)bits.count()` を使えます。
+
 長さを実行時に指定するビット集合です。64 bit ごとの論理演算・シフト、区間の更新、立っているビットの列挙、集合間の個数計算を扱います。添字 `i` が整数としての $$2^i$$ のビットに対応します。
 
 ```cpp

@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-inline std::vector<int> tree_center(const std::vector<std::vector<int>> &graph) {
+[[nodiscard]] inline std::vector<int> tree_center(const std::vector<std::vector<int>> &graph) {
 	assert(graph.size() <= std::size_t(std::numeric_limits<int>::max()));
 	const int n = static_cast<int>(graph.size());
 	if (!n) return {};

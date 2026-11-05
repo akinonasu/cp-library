@@ -264,7 +264,7 @@ void centered_multiplication_edges() {
 					if (kind == 4) v = values[(k * 2 + j * 3) % values.size()];
 					b(k, j) = T::raw(v);
 				}
-				check(a, b);
+				(void)check(a, b);
 			}
 	for (int n : {16, 17, 31, 32, 33, 65}) {
 		Matrix<T> a(n);

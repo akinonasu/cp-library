@@ -53,7 +53,7 @@ template<class T = std::int64_t> class TreeDiameter {
 	}
 	const std::vector<Edge> &edges() const { return edges_; }
 	void clear() { edges_.clear(); }
-	Result solve() const {
+	[[nodiscard]] Result solve() const {
 		assert(edges_.size() == std::size_t(n_ ? n_ - 1 : 0));
 		Result result;
 		if (!n_) return result;

@@ -3,13 +3,21 @@ title: "軽量な形式的冪級数"
 documentation_of: //fps/fps_light.hpp
 ---
 
+軽量 FPS の値型には `[[gnu::warn_unused]]`、値を返す四則演算・級数演算・評価には `[[nodiscard]]` を付けています。未使用変数には `[[maybe_unused]]`、結果の意図的な破棄には `(void)f.inv()` を使えます。
+
 ```cpp
 #include "lib/fps/fps_light.hpp"
+#include <cassert>
 
-light_fps f{1, 2, 3}, g{4, 5};
-auto product = f * g; // {4,13,22,15}
-auto inverse = f.inv(10);
-auto logarithm = f.log(10);
+int main() {
+	light_fps f{1, 2, 3}, g{4, 5};
+	auto product = f * g;
+	auto inverse = f.inv(10);
+	auto logarithm = f.log(10);
+	assert((product == light_fps{4, 13, 22, 15}));
+	assert(inverse.size() == 10 && inverse[0] == mint(1));
+	assert(logarithm.size() == 10 && logarithm[0] == mint(0));
+}
 ```
 
 Codeforces などの小さいソースサイズ上限向けの FPS です。法は 998244353、係数は定数項から順に格納します。`light_fps` と `LightFPS` は `LightFormalPowerSeries<mint>` の別名で、`std::vector<mint>` と同様の要素アクセス・イテレータ・サイズ変更を使えます。

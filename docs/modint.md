@@ -3,6 +3,8 @@ title: 任意の法の modint
 documentation_of: //math/modint.hpp
 ---
 
+四則演算・比較・`pow()`・`inv()`・値の取得には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)a.inv()` のように明示してください。
+
 ```cpp
 #include "lib/math/modint.hpp"
 #include <cassert>

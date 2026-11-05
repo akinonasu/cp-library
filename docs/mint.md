@@ -3,6 +3,8 @@ title: "modint998244353"
 documentation_of: //math/mint.hpp
 ---
 
+`pow()`・`inv()`・四則演算・比較・値の取得には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)x.inv()` のように明示してください。
+
 ```cpp
 #include "lib/math/mint.hpp"
 #include <cassert>

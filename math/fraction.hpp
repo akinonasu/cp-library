@@ -82,21 +82,21 @@ class [[gnu::warn_unused]] Fraction {
 		assert(valid);
 		(void)valid;
 	}
-	constexpr Int numerator() const { return num; }
-	constexpr Int denominator() const { return den; }
-	constexpr Fraction operator+() const { return *this; }
-	constexpr Fraction operator-() const { return reduced(-W(num), den); }
-	constexpr bool operator==(const Fraction &) const = default;
-	constexpr std::strong_ordering operator<=>(Fraction b) const { return W(num) * b.den <=> W(b.num) * den; }
-	friend constexpr Fraction operator+(Fraction a, Fraction b) { return a.template add<false>(b); }
-	friend constexpr Fraction operator-(Fraction a, Fraction b) { return a.template add<true>(b); }
-	friend constexpr Fraction operator*(Fraction a, Fraction b) {
+	[[nodiscard]] constexpr Int numerator() const { return num; }
+	[[nodiscard]] constexpr Int denominator() const { return den; }
+	[[nodiscard]] constexpr Fraction operator+() const { return *this; }
+	[[nodiscard]] constexpr Fraction operator-() const { return reduced(-W(num), den); }
+	[[nodiscard]] constexpr bool operator==(const Fraction &) const = default;
+	[[nodiscard]] constexpr std::strong_ordering operator<=>(Fraction b) const { return W(num) * b.den <=> W(b.num) * den; }
+	[[nodiscard]] friend constexpr Fraction operator+(Fraction a, Fraction b) { return a.template add<false>(b); }
+	[[nodiscard]] friend constexpr Fraction operator-(Fraction a, Fraction b) { return a.template add<true>(b); }
+	[[nodiscard]] friend constexpr Fraction operator*(Fraction a, Fraction b) {
 		if (!a.num || !b.num) return {};
 		U g = gcd(magnitude(a.num), U(b.den)), h = gcd(magnitude(b.num), U(a.den));
 		return reduced(W(divide(a.num, g)) * divide(b.num, h),
 			W(a.den / static_cast<Int>(h)) * (b.den / static_cast<Int>(g)));
 	}
-	friend constexpr Fraction operator/(Fraction a, Fraction b) {
+	[[nodiscard]] friend constexpr Fraction operator/(Fraction a, Fraction b) {
 		assert(b.num != 0);
 		if (!a.num) return {};
 		U g = gcd(magnitude(a.num), magnitude(b.num)), h = gcd(U(a.den), U(b.den));
@@ -113,17 +113,17 @@ class [[gnu::warn_unused]] Fraction {
 	constexpr Fraction &operator--() { return *this -= 1; }
 	constexpr Fraction operator++(int) { Fraction old = *this; ++*this; return old; }
 	constexpr Fraction operator--(int) { Fraction old = *this; --*this; return old; }
-	constexpr explicit operator bool() const { return num != 0; }
-	constexpr explicit operator Int() const { return num / den; }
+	[[nodiscard]] constexpr explicit operator bool() const { return num != 0; }
+	[[nodiscard]] constexpr explicit operator Int() const { return num / den; }
 	template <std::floating_point F>
-	constexpr explicit operator F() const { return F(num) / F(den); }
-	constexpr Int floor() const { return num / den - (num % den < 0); }
-	constexpr Int ceil() const { return num / den + (num % den > 0); }
-	constexpr Fraction inv() const {
+	[[nodiscard]] constexpr explicit operator F() const { return F(num) / F(den); }
+	[[nodiscard]] constexpr Int floor() const { return num / den - (num % den < 0); }
+	[[nodiscard]] constexpr Int ceil() const { return num / den + (num % den > 0); }
+	[[nodiscard]] constexpr Fraction inv() const {
 		assert(num != 0);
 		return num < 0 ? reduced(-W(den), -W(num)) : reduced(den, num);
 	}
-	constexpr Fraction pow(std::uint64_t k) const {
+	[[nodiscard]] constexpr Fraction pow(std::uint64_t k) const {
 		if (!k) return Fraction(1);
 		if (!num) return *this;
 		Fraction result(1), base = *this;
@@ -135,10 +135,10 @@ class [[gnu::warn_unused]] Fraction {
 		}
 		return result;
 	}
-	friend constexpr Fraction abs(Fraction x) { return x.num < 0 ? -x : x; }
-	friend constexpr Int floor(Fraction x) { return x.floor(); }
-	friend constexpr Int ceil(Fraction x) { return x.ceil(); }
-	friend constexpr Fraction pow(Fraction x, std::uint64_t k) { return x.pow(k); }
+	[[nodiscard]] friend constexpr Fraction abs(Fraction x) { return x.num < 0 ? -x : x; }
+	[[nodiscard]] friend constexpr Int floor(Fraction x) { return x.floor(); }
+	[[nodiscard]] friend constexpr Int ceil(Fraction x) { return x.ceil(); }
+	[[nodiscard]] friend constexpr Fraction pow(Fraction x, std::uint64_t k) { return x.pow(k); }
 	friend std::ostream &operator<<(std::ostream &os, Fraction x) {
 		return os << std::int64_t(x.num) << '/' << std::int64_t(x.den);
 	}

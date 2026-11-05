@@ -158,7 +158,7 @@ void lifetime() {
 	}
 	for (std::string text : std::vector<std::string>{"x", "10x01", " 01", "01\n", "012", std::string("1\0", 2)}) {
 		bool failed = false;
-		try { DynamicBitset invalid{std::string_view(text)}; } catch (const std::invalid_argument &) { failed = true; }
+		try { [[maybe_unused]] DynamicBitset invalid{std::string_view(text)}; } catch (const std::invalid_argument &) { failed = true; }
 		assert(failed);
 	}
 	DynamicBitset x("101010");

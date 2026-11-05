@@ -3,6 +3,8 @@ title: "有理数（Fraction）"
 documentation_of: //math/fraction.hpp
 ---
 
+四則演算・比較・切り上げ／切り下げ・`pow()`・`inv()`・値の取得には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)a.inv()` のように明示してください。
+
 ```cpp
 #include "lib/math/fraction.hpp"
 #include <cassert>

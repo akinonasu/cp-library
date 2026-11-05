@@ -15,6 +15,8 @@
 
 [提出コードの生成とサイズ上限](docs/bundle.md)
 
+[コンパイル時の警告](docs/compiler_warnings.md)
+
 ## ライブラリ
 
 [ヘッダーの配置とサイトの分類](docs/library_layout.md)

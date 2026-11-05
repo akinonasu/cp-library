@@ -66,7 +66,7 @@ class LazySegtree {
 		for (int i = 0; i < n_; ++i) data_[base_ + unsigned(i)] = a[i];
 		for (unsigned k = base_ - 1; k; --k) pull(k);
 	}
-	int size() const { return n_; }
+	[[nodiscard]] int size() const { return n_; }
 	void set(int p, S value) {
 		vertex(p);
 		unsigned k = base_ + unsigned(p);
@@ -74,14 +74,14 @@ class LazySegtree {
 		data_[k] = std::move(value);
 		for (k >>= 1; k; k >>= 1) pull(k);
 	}
-	S get(int p) {
+	[[nodiscard]] S get(int p) {
 		vertex(p);
 		unsigned k = base_ + unsigned(p);
 		push_path(k);
 		return data_[k];
 	}
-	S all_prod() const { return data_[1]; }
-	S prod(int l, int r) {
+	[[nodiscard]] S all_prod() const { return data_[1]; }
+	[[nodiscard]] S prod(int l, int r) {
 		range(l, r);
 		if (l == r) return e();
 		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r);
@@ -94,7 +94,7 @@ class LazySegtree {
 		}
 		return op(left, right);
 	}
-	S prod(int l, int r) const {
+	[[nodiscard]] S prod(int l, int r) const {
 		range(l, r);
 		if (l == r) return e();
 		return prod_rec(1, 0, base_, unsigned(l), unsigned(r));
@@ -121,8 +121,8 @@ class LazySegtree {
 			if ((last >> i) << i != last) pull((last - 1) >> i);
 		}
 	}
-	template<auto predicate> int max_right(int l) { return max_right(l, predicate); }
-	template<class Pred> int max_right(int l, Pred predicate) {
+	template<auto predicate> [[nodiscard]] int max_right(int l) { return max_right(l, predicate); }
+	template<class Pred> [[nodiscard]] int max_right(int l, Pred predicate) {
 		range(l, l);
 		assert(predicate(e()));
 		if (l == n_) return n_;
@@ -146,8 +146,8 @@ class LazySegtree {
 		} while ((k & -k) != k);
 		return n_;
 	}
-	template<auto predicate> int min_left(int r) { return min_left(r, predicate); }
-	template<class Pred> int min_left(int r, Pred predicate) {
+	template<auto predicate> [[nodiscard]] int min_left(int r) { return min_left(r, predicate); }
+	template<class Pred> [[nodiscard]] int min_left(int r, Pred predicate) {
 		range(r, r);
 		assert(predicate(e()));
 		if (!r) return 0;

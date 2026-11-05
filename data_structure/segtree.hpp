@@ -48,19 +48,19 @@ template<class S, auto op, auto e> class Segtree {
 		std::swap(n_, other.n_), std::swap(base_, other.base_);
 		data_.swap(other.data_);
 	}
-	int size() const { return n_; }
+	[[nodiscard]] int size() const { return n_; }
 	void set(int p, S value) {
 		assert(0 <= p && p < n_);
 		unsigned k = base_ + unsigned(p);
 		data_[k] = std::move(value);
 		for (k >>= 1; k; k >>= 1) pull(k);
 	}
-	S get(int p) const {
+	[[nodiscard]] S get(int p) const {
 		assert(0 <= p && p < n_);
 		return data_[base_ + unsigned(p)];
 	}
-	S all_prod() const { return n_ ? data_[1] : e(); }
-	S prod(int l, int r) const {
+	[[nodiscard]] S all_prod() const { return n_ ? data_[1] : e(); }
+	[[nodiscard]] S prod(int l, int r) const {
 		assert(0 <= l && l <= r && r <= n_);
 		if (l == r) return e();
 		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r) - 1;
@@ -84,7 +84,7 @@ template<class S, auto op, auto e> class Segtree {
 		}
 		return op(std::move(left), std::move(right));
 	}
-	template<class Pred> int max_right(int l, Pred f) const {
+	template<class Pred> [[nodiscard]] int max_right(int l, Pred f) const {
 		assert(0 <= l && l <= n_ && f(e()));
 		if (l == n_) return n_;
 		unsigned k = base_ + unsigned(l);
@@ -105,7 +105,7 @@ template<class S, auto op, auto e> class Segtree {
 		} while ((k & -k) != k);
 		return n_;
 	}
-	template<class Pred> int min_left(int r, Pred f) const {
+	template<class Pred> [[nodiscard]] int min_left(int r, Pred f) const {
 		assert(0 <= r && r <= n_ && f(e()));
 		if (!r) return 0;
 		unsigned k = base_ + unsigned(r);
