@@ -1,10 +1,5 @@
 #include "../fixtures/user_template.hpp"
 
-#undef all
-#define CP_ALL_SELECT(first, ...) first
-#define CP_ALL_RANGE(a) std::begin(a), std::end(a)
-#define all(...) CP_ALL_SELECT(__VA_OPT__(CP_ALL_RANGE,) all)(__VA_ARGS__)
-
 #include "data_structure/dynamic_bitset.hpp"
 #include <bitset>
 

@@ -94,7 +94,7 @@ void solve() {
 	rep(i, n) d[i][i] = true;
 	rep(i, n - 1) d[i][i + 1] = true;
 	rep(k, n) rep(i, n) if (d[i][k]) d[i] |= d[k];
-	assert((d[0].all)() && d[3].count() == 1);
+	assert(d[0].all() && d[3].count() == 1);
 	assert((tree_center(vector<vector<int>>{ {1}, {0, 2}, {1} }) == vector<int>{1}));
 	TreeDiameter<> diameter(2);
 	diameter.add_edge(0, 1);

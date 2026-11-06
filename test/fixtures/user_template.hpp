@@ -40,7 +40,9 @@ typedef long double ld;
 #define per2(i, n) per3(i, 0, n)
 #define per1(n) per2(__i__, n)
 #define per(...) overload3(__VA_ARGS__, per3, per2, per1)(__VA_ARGS__)
-#define all(a) a.begin(), a.end()
+#define CP_ALL_SELECT(first, ...) first
+#define CP_ALL_RANGE(a) std::begin(a), std::end(a)
+#define all(...) CP_ALL_SELECT(__VA_OPT__(CP_ALL_RANGE,) all)(__VA_ARGS__)
 #define UNIQUE(a) sort(all(a)), a.erase(unique(all(a)), a.end()), a.shrink_to_fit()
 #define sz(a) static_cast<int>(a.size())
 #ifndef DEBUG

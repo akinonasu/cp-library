@@ -178,7 +178,7 @@ class [[nodiscard, gnu::warn_unused]] DynamicBitset {
 	[[nodiscard]] int rank(int r) const { return count(0, r); }
 	[[nodiscard]] bool any() const { for (auto x : data_) if (x) return true; return false; }
 	[[nodiscard]] bool none() const { return !any(); }
-	[[nodiscard]] bool (all)() const {
+	[[nodiscard]] bool all() const {
 		std::size_t full = unsigned(n_) / 64;
 		for (std::size_t i = 0; i < full; ++i) if (data_[i] != ~Word(0)) return false;
 		return !(n_ & 63) || data_[full] == mask(n_ & 63);
