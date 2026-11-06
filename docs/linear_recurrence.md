@@ -10,7 +10,7 @@ std::vector<mint> initial{0, 1}, coefficients{1, 1};
 auto value = linear_recurrence(initial, coefficients, 10); // 55
 ```
 
-初期値と係数は `vector<T>` で渡します。法は 998244353 です。内部では [Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html) を使います。
+初期値と係数は `vector<T>` で渡します。法は 998244353 です。
 
 係数が未知で先頭の数項が分かっている場合は、[線形漸化式の復元](berlekamp_massey.md)で係数を求められます。
 

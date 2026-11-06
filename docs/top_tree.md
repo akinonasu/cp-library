@@ -123,6 +123,6 @@ int main() {
 
 この DP の `length` は境界の経路の重み和、`left`・`right` はそれぞれ先頭・末尾からの最大パス和、`diameter` はクラスタ内の最大パス和です。`Point` は枝の高さの最大 2 個と、枝の内部の最大パス和を保持します。重みは非負とし、加算で `long long` があふれないようにします。
 
-実装は経路と枝をそれぞれ Splay Tree で管理し、ノードを配列で確保・再利用します。[Toptree 導入編](https://niuez.hatenablog.com/entry/2019/08/04/191420) の compress・rake と、[ei1333 の Lazy Top Tree](https://ei1333.github.io/library/structure/dynamic-tree/lazy-top-tree.hpp) を参考にしています。
+[Toptree 導入編](https://niuez.hatenablog.com/entry/2019/08/04/191420) の compress・rake と、[ei1333 の Lazy Top Tree](https://ei1333.github.io/library/structure/dynamic-tree/lazy-top-tree.hpp) を参考にしています。
 
 頂点数を $$n$$ とし、DP の演算・値のコピーを定数時間・定数空間とすると、構築は $$O(n)$$ 時間、空間は $$O(n)$$ です。`get`・`size`・`empty` は $$O(1)$$、辺の追加・削除、連結判定、頂点更新、集約は償却 $$O(\log n)$$ です。

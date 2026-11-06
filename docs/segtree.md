@@ -7,8 +7,6 @@ redirect_from:
 - /lightweight/data_structure/segment_tree/segtree.hpp.html
 ---
 
-`size()`・`get()`・`prod()`・`all_prod()`・境界検索には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)seg.prod(l,r)` のように明示してください。
-
 一点代入と区間集約を扱います。`op` は結合則を満たす演算、`e()` は単位元です。可換性は不要です。
 
 ```cpp

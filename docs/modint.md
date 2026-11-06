@@ -3,8 +3,6 @@ title: 任意の法の modint
 documentation_of: //math/modint.hpp
 ---
 
-四則演算・比較・`pow()`・`inv()`・値の取得には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)a.inv()` のように明示してください。
-
 ```cpp
 #include "lib/math/modint.hpp"
 #include <cassert>
@@ -20,8 +18,6 @@ int main() {
 ```
 
 `StaticModint<Mod>` はコンパイル時に法を固定し、`DynamicModint<Id = 0>` は実行時に法を設定します。法は `std::uint32_t` の正の値で、素数・合成数の両方に対応します。動的版の初期の法は 998244353 です。`Id` が異なる型は法を独立に保持します。
-
-両方の型に `[[gnu::warn_unused]]` を付けています。GCC・Clang で `-Wall` などを有効にすると未使用のローカル変数を警告します。意図的に使わない変数には `[[maybe_unused]]` を付けてください。
 
 | 操作 | 内容・返り値 |
 | --- | --- |

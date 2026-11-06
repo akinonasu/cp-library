@@ -38,8 +38,6 @@ assert(!sat.answer()[0]);
 
 充足可能・充足不可能のどちらの判定結果も保存します。節を追加せずに `satisfiable()` を再度呼ぶと、保存した結果を返します。`add_clause` は恒真節の場合も保存結果を無効にするため、追加後は再び `satisfiable()` を呼んでください。`reserve` は保存結果を無効にしません。コピーは節・保存結果とも独立します。
 
-内部の含意グラフには [2-SAT の共通部品](https://qandori.github.io/cp-library/components/two_sat_core.hpp.html) を使用します。探索は反復処理なので、長い含意列でも再帰の深さに依存しません。
-
 参考: [Nyaan's Library](https://github.com/NyaanNyaan/library/blob/master/math/two-sat.hpp)、[maspypy library](https://github.com/maspypy/library/blob/main/graph/twosat.hpp)。
 
 変数数を $$n$$、節数を $$m$$ として、構築は $$O(n)$$、節追加は償却 $$O(1)$$、初回または節追加後の判定は $$O(n+m)$$、変更のない問題の再判定は $$O(1)$$、代入例のコピーは $$O(n)$$、保持・作業空間は $$O(n+m)$$ です。空の問題は $$O(1)$$ 時間・空間です。

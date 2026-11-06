@@ -44,11 +44,9 @@ assert(ok && d[0][2] == -2);
 
 `add_edge` は既存の辺との最小値を保持します。成功した `solve()` の後に辺を追加して再計算することもできます。辺の削除や重みの増加には、新しいオブジェクトを構築してください。
 
-加算時の符号付き整数オーバーフローと、到達不能値への加算を避けます。入力範囲から安全性を確認できる場合、64 bit の指定でも内部を 32 bit にします。必要なら逆に 64 bit・128 bit へ拡張し、負閉路がなく有限の最短距離が `T` の範囲外または `inf` 以上なら `std::overflow_error` を送出します。極端に大きい重みでの 128 bit 計算は SIMD を使いません。
+負閉路がなく有限の最短距離が `T` の範囲外または `inf` 以上なら `std::overflow_error` を送出します。
 
 `n < 0`、`inf <= 0`、正方行列でない入力、`weight >= inf` は `std::invalid_argument` です。頂点番号は範囲内である必要があります。
-
-32 頂点の小ブロックと 512 頂点の大ブロックで分割し、主な更新では複数行をレジスタ内に保持します。GCC・Clang の x86 では実行時に AVX-512F / AVX2 を判定して使います。対応しない CPU や macOS arm64 では通常の整数演算で同じ結果を求めます。単一スレッドで動作し、`-march=native` や全体への `#pragma GCC target` は不要です。
 
 `WARSHALL_FLOYD_DISABLE_AVX512`、`WARSHALL_FLOYD_DISABLE_SIMD`、`WARSHALL_FLOYD_DISABLE_NARROWING` を include 前に定義すると、それぞれ AVX-512・明示的な SIMD・64 bit から 32 bit への変換を無効にできます。
 

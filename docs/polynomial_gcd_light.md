@@ -26,6 +26,6 @@ auto inverse = light_fps_algorithms::polynomial_inv_mod(light_fps{1, 1}, light_f
 
 `polynomial_inv_mod` の法多項式は非零にします。法が非零の定数なら、空配列を持つ `optional` を返します。それ以外では GCD が 1 のときに限り逆元が存在し、返り値の次数は法多項式の次数未満です。FPS の `f.inv()` が求める $$x^n$$ を法とする逆数とは別の操作です。
 
-再帰的な Half-GCD で互除法をまとめ、多項式の 2×2 行列により変換します。小さい区間だけ通常の互除法を使います。ソースを短く保つため、通常版の専用 SIMD 互除法や NTT キャッシュは使いません。依存先は軽量 FPS と軽量 Half-GCD です。[高速実装はこちら](https://qandori.github.io/cp-library/fps/polynomial_gcd.hpp.html)。
+[通常版はこちら](https://qandori.github.io/cp-library/fps/polynomial_gcd.hpp.html)。
 
 入力の最大係数数は $$2^{22}$$ 以下とします。最大係数数を $$n$$、畳み込みの計算量を $$M(n)$$ として、各関数は $$O(M(n)\log n)=O(n\log^2 n)$$ 時間、追加空間は $$O(n)$$ です。

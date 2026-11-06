@@ -13,7 +13,7 @@ $$\displaystyle S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ を素数 mod で計算しま
 
 直前のクエリとの差分で更新する場合は [差分更新版](https://qandori.github.io/cp-library/math/binomial_prefix_sum_incremental_light.hpp.html) を使えます。
 
-`light_combinatorics` 名前空間で使います。階乗・逆階乗は通常のループで生成します。既定の `mint` の長い積和は AVX-512F・AVX2 対応環境で SIMD を利用します。他の modint にも対応し、通常版と同時に include できます。
+`light_combinatorics` 名前空間で使います。他の modint にも対応し、通常版と同時に include できます。
 
 ```cpp
 #include "lib/math/binomial_prefix_sum_light.hpp"

@@ -3,8 +3,6 @@ title: "形式的冪級数"
 documentation_of: //fps/fps.hpp
 ---
 
-FPS の値型には `[[gnu::warn_unused]]`、四則演算・`pre()`・`inv()`・`log()`・`exp()`・`pow()`・微積分などの計算には `[[nodiscard]]` を付けています。未使用変数には `[[maybe_unused]]`、結果の意図的な破棄には `(void)f.inv()` を使えます。
-
 ```cpp
 #include "lib/fps/fps.hpp"
 #include <cassert>
@@ -66,11 +64,7 @@ wc -c submit.cpp
 
 係数数と長さ引数は `int` の範囲とし、積の計算に必要な NTT 長は $$2^{23}$$ 以下にしてください。全ての入力長と指定する出力長を $$2^{22}$$ 以下にすると、基本演算はこの変換長に収まります。積分・対数・指数・冪で使う整数の逆元のため、次数は法未満とします。
 
-[Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html)、[線形漸化式](https://qandori.github.io/cp-library/fps/linear_recurrence.hpp.html)、[合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)、[合成逆元](https://qandori.github.io/cp-library/fps/compositional_inverse.hpp.html)、[多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html)、[補間](https://qandori.github.io/cp-library/fps/interpolate.hpp.html)、[Taylor shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) の使い方は、各ページを参照してください。関連する公開ヘッダーは、必要な内部部品を共有しています。
-
-Linux x86_64 / GCC では AVX2 対応を実行時に確認して高速実装を選びます。追加のコンパイルオプションは不要で、他の環境でも同じ API を使えます。
-
-平方根の出力長が $$2^k+\delta$$、$$2^k\ge512$$、$$1\le\delta\le8$$ の場合、高速実装は $$2^k$$ 項まで求めてから、$$\displaystyle 2g_0g_i=f_i-\sum_{j=1}^{i-1}g_jg_{i-j}$$ で末尾を補います。先頭に零がある入力では、零を除いて移動した級数の出力長に適用します。
+[Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html)、[線形漸化式](https://qandori.github.io/cp-library/fps/linear_recurrence.hpp.html)、[合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)、[合成逆元](https://qandori.github.io/cp-library/fps/compositional_inverse.hpp.html)、[多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html)、[補間](https://qandori.github.io/cp-library/fps/interpolate.hpp.html)、[Taylor shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) の使い方は、各ページを参照してください。
 
 入力・出力の最大係数数を $$n$$ とします。
 

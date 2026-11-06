@@ -39,8 +39,6 @@ assert((a == Magnitude{999999999, 1}));
 
 `add`・`multiply`・`divide` は同じ配列を両方の引数に指定できます。`add(a,a)` は元の値の 2 倍にし、`subtract(a,a)` は空配列にします。`divide` で除数が空配列なら `std::domain_error` を送出します。`divide_schoolbook` の非零条件と、1 桁演算の基数条件などは `assert` の前提です。
 
-`add`・`subtract` は、AVX2 を使用できる x86 環境で `b` が 32 桁以上の場合、自動的に AVX2 版を選びます。それ以外はスカラー版を使います。
-
 `reciprocal(a)` は、`a` が非空で最上位桁が `base / 2` 以上であることを前提とします。桁数を $$n$$、配列が表す非負整数を $$A$$、基数を $$B=10^9$$ とすると、返す値は次です。
 
 $$
