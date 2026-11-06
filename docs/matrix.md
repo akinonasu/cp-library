@@ -7,8 +7,6 @@ redirect_from:
 library_category: math/linear_algebra
 ---
 
-`Matrix`・`LightMatrix` の値型には `[[gnu::warn_unused]]`、四則演算・転置・累乗・行列式・逆行列などの計算と要素の取得には `[[nodiscard]]` を付けています。未使用変数には `[[maybe_unused]]`、結果の意図的な破棄には `(void)a.transpose()` を使えます。
-
 ```cpp
 #include "lib/math/matrix.hpp"
 #include "lib/math/mint.hpp"
@@ -78,8 +76,6 @@ int main() {
 符号付き整数型の `det` は例外として Bareiss 法で厳密に計算します。途中の積・差・商は `__int128_t`、結果は `T` に収まる必要があります。整数の他の演算も途中の値が `T` に収まる範囲で使います。
 
 浮動小数点では絶対値が最大のピボットを選び、絶対値が `eps` 以下なら 0 と判定します。既定は `1e-12L`、それ以外の型は 0 です。`eps >= 0` とし、必要に応じて各操作の引数で変更します。浮動小数点の結果には丸め誤差を含みます。
-
-`mod()` がコンパイル時定数で $$1<\mathrm{mod}<2^{31}$$、`val()`・`raw()` を持つ modint は専用の処理を使います。AVX2・AVX512 は実行時に判定し、使えない環境では通常処理に切り替えます。
 
 大きな累乗では、上記の modint の法が素数なら Frobenius 分解を使います。基底の独立性と各ブロックの関係式を確認し、確認できない場合は繰り返し二乗法に切り替えます。合成数 mod・整数・浮動小数点でも `pow` を使えます。
 

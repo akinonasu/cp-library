@@ -32,6 +32,6 @@ mint c2 = product.push(7, 11);
 
 追加済みの項数を $$n$$ とすると、`pending()` は $$\displaystyle \sum_{i=1}^{n-1} a_i b_{n-i}$$ です。$$n=0,1$$ では 0 を返します。次の `push(x,y)` の返り値は、$$n>0$$ なら $$\mathrm{pending}()+xb_0+a_0y$$、$$n=0$$ なら $$xy$$ になります。`pending()` は状態を変更しません。
 
-係数の法は 998244353 に固定しています。[mint](https://qandori.github.io/cp-library/math/mint.hpp.html) を既定とし、同じ法の別の modint でも使えます。内部では既存の NTT と Montgomery 表現を使い、対応する x86 CPU では AVX2 を利用します。Mac・Clang でも利用できます。
+係数の法は 998244353 に固定しています。[mint](https://qandori.github.io/cp-library/math/mint.hpp.html) を既定とし、同じ法の別の modint でも使えます。
 
 項数を $$n$$ として、`push()` を合計 $$n$$ 回行う時間は $$O(n\log^2 n)$$、1 回の最悪時間は $$O(n\log n)$$、使用空間は $$O(n)$$ です。構築・`size()`・`max_size()`・`empty()`・`operator[]`・`pending()` は $$O(1)$$ です。`reserve(r)` は $$O(n)$$ 時間・$$O(r)$$ 空間、`clear()` は $$O(n)$$ 時間以内です。事前確保した領域と共有 NTT キャッシュは別途保持されます。

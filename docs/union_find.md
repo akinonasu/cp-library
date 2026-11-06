@@ -7,8 +7,6 @@ redirect_from:
 library_category: data_structure/union_find
 ---
 
-`size()`・`count()`・`leader()`・`same()`・`groups()` には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)uf.leader(v)` のように明示してください。`merge()` の返り値は通常どおり捨てられます。
-
 ```cpp
 #include "lib/data_structure/union_find.hpp"
 

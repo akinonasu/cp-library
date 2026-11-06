@@ -24,7 +24,7 @@ int suffix = match.backward(2, 4, 2); // 2
 
 列を所有しない内部部品です。元の列は比較中に有効である必要があります。`forward(i, j, limit)` は位置 `i, j` からの前方一致長、`backward(i, j, limit)` は位置 `i, j` の直前からの後方一致長です。比較する全要素が列の範囲内になる `limit >= 0` を指定します。
 
-一意な表現を持つ整数は 64 bit 単位で比較します。x86_64 では CPU の対応を確認して長い比較に AVX2 を使います。`Matcher<T, false>` で AVX2 を無効にできます。一般の要素は `==` で比較します。
+要素は `==` で比較します。`Matcher<T, false>` で AVX2 を無効にできます。
 
 比較処理は [共通接頭辞・接尾辞の比較](https://qandori.github.io/cp-library/components/sequence_compare.hpp.html) と共有しています。異なる 2 配列の比較だけが必要な場合は、そちらの `prefix`・`suffix` を直接使えます。
 

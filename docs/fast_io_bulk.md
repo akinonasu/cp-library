@@ -3,7 +3,7 @@ title: "非負整数の一括入出力"
 documentation_of: //components/fast_io_bulk.hpp
 ---
 
-`uint32_t` の整数をまとめて読み書きします。入力は Linux x86_64 / GCC では AVX2 を利用できる CPU で高速な解析を選び、それ以外では `FastInput::read` を使います。出力には [非負整数の一括出力](fast_io_output.md) を読み込みます。出力だけが必要なら、その部品を直接 include できます。
+`uint32_t` の整数をまとめて読み書きします。出力には [非負整数の一括出力](fast_io_output.md) を読み込みます。出力だけが必要なら、その部品を直接 include できます。
 
 ```cpp
 #include "lib/components/fast_io_bulk.hpp"

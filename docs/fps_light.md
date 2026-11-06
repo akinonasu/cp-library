@@ -3,8 +3,6 @@ title: "軽量な形式的冪級数"
 documentation_of: //fps/fps_light.hpp
 ---
 
-軽量 FPS の値型には `[[gnu::warn_unused]]`、値を返す四則演算・級数演算・評価には `[[nodiscard]]` を付けています。未使用変数には `[[maybe_unused]]`、結果の意図的な破棄には `(void)f.inv()` を使えます。
-
 ```cpp
 #include "lib/fps/fps_light.hpp"
 #include <cassert>
@@ -22,11 +20,11 @@ int main() {
 
 Codeforces などの小さいソースサイズ上限向けの FPS です。法は 998244353、係数は定数項から順に格納します。`light_fps` と `LightFPS` は `LightFormalPowerSeries<mint>` の別名で、`std::vector<mint>` と同様の要素アクセス・イテレータ・サイズ変更を使えます。
 
-[高速実装の FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) と別の型で、同じソース内に両方を include できます。軽量版は小さい NTT と Newton 法を共有し、高速実装の大きな演算別カーネルを読み込みません。提出用コードはヘッダーを結合して作り、利用者のコードやほかのライブラリを含めた総バイト数を確認してください。
+[通常版 FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) と別の型で、同じソース内に両方を include できます。提出するソース全体のサイズを確認してください。
 
-係数をまとめて出力するときは [FPS の高速出力](fps_write.md) を追加できます。Linux x86_64 / GCC の AVX2 対応 CPU では SIMD を使い、ほかの環境では通常の出力に切り替わります。組み合わせるヘッダーと使用例を含めたコード長を確認してください。
+係数をまとめて出力するときは [FPS の高速出力](fps_write.md) を追加できます。
 
-`LightFormalPowerSeries<T>` は `mod()` が定数式となる法 998244353 の modint 型を指定できます。`T` は整数からの構築、`mod()`・`raw()`・`val()`・`inv()`・`pow()`、四則演算と等値比較に対応する必要があります。既定型以外は積・逆数・対数・指数・平方根などの演算ごとに共有する `mint` へ変換します。
+`LightFormalPowerSeries<T>` は `mod()` が定数式となる法 998244353 の modint 型を指定できます。`T` は整数からの構築、`mod()`・`raw()`・`val()`・`inv()`・`pow()`、四則演算と等値比較に対応する必要があります。
 
 `deg` は返す係数数で、省略時は元の長さです。逆数の例は $$x^0$$ から $$x^9$$ までを返します。通常の積は入力が非空なら長さ `f.size()+g.size()-1`、`diff()`・`integral()`・シフト・`pow(k)` は元の長さを保ちます。例えば `light_fps{1,1}.pow(3)` は `{1,3}` なので、4 係数必要なら先に `resize(4)` してください。
 

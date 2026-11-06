@@ -114,6 +114,49 @@ void pairs(const Bits &a, const Bits &b) {
 	assert(x.compare(y) == comparison && y.compare(x) == -comparison);
 }
 
+void mixed_pair(const Bits &a, const Bits &b) {
+	Bits intersection(std::min(a.size(), b.size())), either(std::max(a.size(), b.size())), exclusive(either.size());
+	for (std::size_t i = 0; i < either.size(); ++i) {
+		bool x = i < a.size() && a[i], y = i < b.size() && b[i];
+		either[i] = x || y; exclusive[i] = x != y;
+		if (i < intersection.size()) intersection[i] = x && y;
+	}
+	const auto x = make(a), y = make(b);
+	const auto expected_and = make(intersection), expected_or = make(either), expected_xor = make(exclusive);
+	assert((x & y) == expected_and && (y & x) == expected_and);
+	assert((x | y) == expected_or && (y | x) == expected_or);
+	assert((x ^ y) == expected_xor && (y ^ x) == expected_xor);
+	assert(x == make(a) && y == make(b));
+	for (bool reverse : {false, true}) {
+		auto z = reverse ? y : x;
+		const auto &other = reverse ? x : y;
+		assert(&(z &= other) == &z && z == expected_and);
+		z.resize(int(either.size()));
+		auto padded = intersection; padded.resize(either.size());
+		assert(z == make(padded));
+		z = reverse ? y : x;
+		assert(&(z |= other) == &z && z == expected_or);
+		z = reverse ? y : x;
+		assert(&(z ^= other) == &z && z == expected_xor);
+		z ^= z; assert(z.none() && z.size() == int(either.size()));
+	}
+	assert(x.count_and(y) == expected_and.count() && y.count_and(x) == expected_and.count());
+	assert(x.count_or(y) == expected_or.count() && y.count_or(x) == expected_or.count());
+	assert(x.count_xor(y) == expected_xor.count() && y.count_xor(x) == expected_xor.count());
+}
+
+void mixed_sizes() {
+	std::mt19937_64 rng(389721);
+	for (int n : {0, 1, 2, 7, 63, 64, 65, 127, 128, 129, 511, 512, 513, 2047, 2048, 2049, 4095, 4096, 4097, 65535})
+		for (int m : {0, 1, 2, 7, 63, 64, 65, 127, 128, 129, 511, 512, 513, 2047, 2048, 2049, 4095, 4096, 4097, 65535})
+			for (int pattern = 0; pattern < 3; ++pattern) {
+				Bits a(n), b(m);
+				for (auto &x : a) x = pattern == 0 ? 0 : pattern == 1 ? 1 : rng() & 1;
+				for (auto &x : b) x = pattern == 0 ? 1 : pattern == 1 ? 1 : rng() & 1;
+				mixed_pair(a, b);
+			}
+}
+
 void shifts(const Bits &bits, std::size_t shift) {
 	DynamicBitset x = make(bits);
 	for (bool left : {false, true}) {
@@ -226,6 +269,7 @@ int main() {
 	lifetime();
 	overlaps();
 	large_words();
+	mixed_sizes();
 	std::mt19937_64 random(392107);
 	std::vector<int> sizes{0, 1, 2, 7, 31, 32, 33, 63, 64, 65, 66, 127, 128, 129, 191, 192, 193, 255, 256, 257};
 	for (int n : sizes) {

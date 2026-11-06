@@ -38,29 +38,29 @@ constexpr u32 power_mod(u32 a, u64 e) {
 }
 constexpr u32 inverse_mod(u32 a) { return power_mod(a, kP - 2); }
 constexpr u32 montgomery(u32 a) { return multiply_mod(a, k2To32); }
-__attribute__((target("avx2"))) inline Vec all(u32 x) { return _mm256_set1_epi32(int(x)); }
+__attribute__((target("avx2"))) inline Vec splat(u32 x) { return _mm256_set1_epi32(int(x)); }
 __attribute__((target("avx2"))) inline Vec load(const void* p) { return _mm256_loadu_si256(static_cast<const Vec*>(p)); }
 __attribute__((target("avx2"))) inline void store(void* p, Vec x) { _mm256_storeu_si256(static_cast<Vec*>(p), x); }
 __attribute__((target("avx2"))) inline Vec add_mod(Vec x, Vec y) {
 	const Vec s = _mm256_add_epi32(x, y);
-	return _mm256_min_epu32(s, _mm256_sub_epi32(s, all(kP)));
+	return _mm256_min_epu32(s, _mm256_sub_epi32(s, splat(kP)));
 }
 __attribute__((target("avx2"))) inline Vec sub_mod(Vec x, Vec y) {
 	const Vec d = _mm256_sub_epi32(x, y);
-	return _mm256_min_epu32(d, _mm256_add_epi32(d, all(kP)));
+	return _mm256_min_epu32(d, _mm256_add_epi32(d, splat(kP)));
 }
 template <bool Wide>
 __attribute__((target("avx2"))) inline Vec reduce(Vec even, Vec odd) {
 	Vec high = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xAA);
 	if constexpr (Wide) {
-		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, all(2 * kP)));
-		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, all(2 * kP)));
-		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, all(kP)));
+		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, splat(2 * kP)));
+		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, splat(2 * kP)));
+		high = _mm256_min_epu32(high, _mm256_sub_epi32(high, splat(kP)));
 	}
-	const Vec qe = _mm256_mul_epu32(even, all(kPInverse)), qo = _mm256_mul_epu32(odd, all(kPInverse));
-	const Vec me = _mm256_mul_epu32(qe, all(kP)), mo = _mm256_mul_epu32(qo, all(kP));
+	const Vec qe = _mm256_mul_epu32(even, splat(kPInverse)), qo = _mm256_mul_epu32(odd, splat(kPInverse));
+	const Vec me = _mm256_mul_epu32(qe, splat(kP)), mo = _mm256_mul_epu32(qo, splat(kP));
 	const Vec r = _mm256_sub_epi32(high, _mm256_blend_epi32(_mm256_srli_epi64(me, 32), mo, 0xAA));
-	return _mm256_min_epu32(r, _mm256_add_epi32(r, all(kP)));
+	return _mm256_min_epu32(r, _mm256_add_epi32(r, splat(kP)));
 }
 __attribute__((target("avx2"))) inline Vec fold(Vec s) {
 	return _mm256_add_epi64(_mm256_and_si256(s, _mm256_set1_epi64x(0xFFFFFFFF)),
@@ -197,7 +197,7 @@ public:
 			evaluate_top(fo, t, top_f);
 			evaluate_top(go, t, top_g);
 			if (const int z = top_zeros3_[t]) {
-				const Vec factor = all(montgomery(power_mod(2, z)));
+				const Vec factor = splat(montgomery(power_mod(2, z)));
 				for (std::size_t i = 0; i < plane; ++i) top_f[i] = montgomery_multiply(top_f[i], factor);
 			}
 			const int forward_extra = top_cap_[t] + 3, inverse_extra = planes_ + 2;
@@ -219,7 +219,7 @@ public:
 			}
 			interpolate_top(top_f, t, co);
 		}
-		const Vec scale = all(montgomery(multiply_mod(k2To32, power_mod(inverse_mod(2), threes_))));
+		const Vec scale = splat(montgomery(multiply_mod(k2To32, power_mod(inverse_mod(2), threes_))));
 		if (!reordered()) {
 			for (std::size_t i = 0; i < size_; i += 8) store(c + i, montgomery_multiply(load(c + i), scale));
 			return;

@@ -30,8 +30,6 @@ documentation_of: //components/dynamic_quad_vector.hpp
 
 `ranks(l,r)` の各配列はそれぞれ $$[0,l)$$・$$[0,r)$$ の個数です。区間内の個数は、後者から前者を引いて求めます。同じ子に含まれる両端の検索は経路を共有します。`move_rank` は二つの位置の検索と共通する祖先の更新を共有し、葉の分割・結合が必要な場合は通常の削除・挿入を使います。更新時の順位は必要な桁値だけを集計します。大きな葉の `select` は累積個数を二分探索して対象 word を求めます。
 
-GCC・Clang の x86 では、ノード処理と葉の bit 移動・累積個数の更新に AVX-512F + POPCNT／AVX2 + POPCNT、word 内の `select` に BMI2 の PDEP を実行時の判定で使います。POPCNT を使う処理にも対応状況の判定があり、その他の CPU では通常の整数演算を使います。GCC では内部関数を O3 で最適化し、ヘッダー読み込み後は呼び出し側の最適化設定へ戻します。
-
 include 前の `DYNAMIC_QUAD_DISABLE_SIMD` で実行時に選ぶ SIMD・POPCNT・BMI2 経路を、`DYNAMIC_QUAD_DISABLE_AVX512` で AVX-512 経路を無効にできます。CPU 固有の命令を全体へ有効にするコンパイルオプションは不要です。
 
 `Block`・`Branch` を固定し、要素数を $$n$$ として、構築は $$O(n)$$、挿入・移動は償却 $$O(\log n)$$、削除・代入・クエリは $$O(\log n)$$ です。空間は $$O(N)$$ で、$$N$$ は過去の最大要素数と予約容量の最大値です。

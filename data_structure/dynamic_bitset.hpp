@@ -49,11 +49,23 @@ class [[nodiscard, gnu::warn_unused]] DynamicBitset {
 		apply(data_[last], right);
 	}
 	template <Operation Op> int count_with(const DynamicBitset &other) const {
-		check_size(other);
-		if (data_.size() >= 8) return int(bitset_ops_detail::count<Op>(data_.data(), Op == Operation::identity ? nullptr : other.data_.data(), data_.size()));
+		if constexpr (Op == Operation::identity) return int(bitset_ops_detail::count<Op>(data_.data(), nullptr, data_.size()));
+		if constexpr (Op == Operation::and_not) check_size(other);
+		std::size_t common = std::min(data_.size(), other.data_.size());
 		int result = 0;
-		if constexpr (Op == Operation::identity) { for (auto x : data_) result += std::popcount(x); }
-		else for (std::size_t i = 0; i < data_.size(); ++i) result += std::popcount(bitset_ops_detail::combine<Op>(data_[i], other.data_[i]));
+		if (common >= 8) result = int(bitset_ops_detail::count<Op>(data_.data(), other.data_.data(), common));
+		else for (std::size_t i = 0; i < common; ++i) result += std::popcount(bitset_ops_detail::combine<Op>(data_[i], other.data_[i]));
+		if constexpr (Op == Operation::bit_or || Op == Operation::bit_xor) {
+			const auto &tail = data_.size() > other.data_.size() ? data_ : other.data_;
+			if (common < tail.size()) result += int(bitset_ops_detail::count<Operation::identity>(tail.data() + common, nullptr, tail.size() - common));
+		}
+		return result;
+	}
+	template <Operation Op> static DynamicBitset binary(const DynamicBitset &a, const DynamicBitset &b) {
+		bool first = Op == Operation::bit_and ? a.n_ <= b.n_ : a.n_ >= b.n_;
+		DynamicBitset result = first ? a : b;
+		const auto &other = first ? b : a;
+		bitset_ops_detail::apply<Op>(result.data_.data(), other.data_.data(), std::min(result.data_.size(), other.data_.size()));
 		return result;
 	}
 	template <bool Left, bool Or> DynamicBitset &shift(std::size_t amount) {
@@ -228,13 +240,22 @@ class [[nodiscard, gnu::warn_unused]] DynamicBitset {
 		}
 	}
 	template <class F> void for_each(F &&emit) const { for_each(0, n_, std::forward<F>(emit)); }
-	DynamicBitset &operator&=(const DynamicBitset &other) { check_size(other); bitset_ops_detail::apply<Operation::bit_and>(data_.data(), other.data_.data(), data_.size()); return *this; }
-	DynamicBitset &operator|=(const DynamicBitset &other) { check_size(other); bitset_ops_detail::apply<Operation::bit_or>(data_.data(), other.data_.data(), data_.size()); return *this; }
-	DynamicBitset &operator^=(const DynamicBitset &other) { check_size(other); bitset_ops_detail::apply<Operation::bit_xor>(data_.data(), other.data_.data(), data_.size()); return *this; }
+	DynamicBitset &operator&=(const DynamicBitset &other) {
+		if (n_ > other.n_) resize(other.n_);
+		bitset_ops_detail::apply<Operation::bit_and>(data_.data(), other.data_.data(), data_.size()); return *this;
+	}
+	DynamicBitset &operator|=(const DynamicBitset &other) {
+		if (n_ < other.n_) resize(other.n_);
+		bitset_ops_detail::apply<Operation::bit_or>(data_.data(), other.data_.data(), other.data_.size()); return *this;
+	}
+	DynamicBitset &operator^=(const DynamicBitset &other) {
+		if (n_ < other.n_) resize(other.n_);
+		bitset_ops_detail::apply<Operation::bit_xor>(data_.data(), other.data_.data(), other.data_.size()); return *this;
+	}
 	DynamicBitset &operator-=(const DynamicBitset &other) { check_size(other); bitset_ops_detail::apply<Operation::and_not>(data_.data(), other.data_.data(), data_.size()); return *this; }
-	friend DynamicBitset operator&(DynamicBitset a, const DynamicBitset &b) { a &= b; return a; }
-	friend DynamicBitset operator|(DynamicBitset a, const DynamicBitset &b) { a |= b; return a; }
-	friend DynamicBitset operator^(DynamicBitset a, const DynamicBitset &b) { a ^= b; return a; }
+	friend DynamicBitset operator&(const DynamicBitset &a, const DynamicBitset &b) { return binary<Operation::bit_and>(a, b); }
+	friend DynamicBitset operator|(const DynamicBitset &a, const DynamicBitset &b) { return binary<Operation::bit_or>(a, b); }
+	friend DynamicBitset operator^(const DynamicBitset &a, const DynamicBitset &b) { return binary<Operation::bit_xor>(a, b); }
 	friend DynamicBitset operator-(DynamicBitset a, const DynamicBitset &b) { a -= b; return a; }
 	DynamicBitset operator~() const { auto result = *this; result.flip_all(); return result; }
 	[[nodiscard]] bool operator==(const DynamicBitset &) const = default;

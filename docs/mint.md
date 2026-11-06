@@ -3,8 +3,6 @@ title: "modint998244353"
 documentation_of: //math/mint.hpp
 ---
 
-`pow()`・`inv()`・四則演算・比較・値の取得には `[[nodiscard]]` を付けています。返り値を意図的に捨てる場合は `(void)x.inv()` のように明示してください。
-
 ```cpp
 #include "lib/math/mint.hpp"
 #include <cassert>
@@ -19,8 +17,6 @@ int main() {
 	assert(value == 3);
 }
 ```
-
-`mint` と別名の `fps_mint` には `[[gnu::warn_unused]]` を付けています。GCC・Clang で `-Wall` などを有効にすると未使用のローカル変数を警告します。意図的に使わない変数には `[[maybe_unused]]` を付けてください。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

@@ -18,6 +18,4 @@ auto inverse = compositional_inverse(f, 5); // {0,1,-1,2,-5}
 | --- | --- | --- |
 | `compositional_inverse(f,deg = -1)` | $$f(g(x))=x\bmod x^{\mathrm{deg}}$$ となる $$g$$。$$f_0=0$$、長さ 2 以上を求める場合は $$f_1\ne0$$。省略時は `f.size()` | $$O(n\log^2 n)$$ |
 
-Linux x86_64 / GCC と AVX2 では、射影から冪まで同じ作業領域で計算します。
-
 入出力の最大係数数を $$n$$ として、時間 $$O(n\log^2 n)$$、追加空間 $$O(n)$$ です。
