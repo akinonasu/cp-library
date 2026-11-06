@@ -1,4 +1,4 @@
-#include "data_structure/static_top_tree.hpp"
+#include "tree/static_top_tree.hpp"
 #include "test/fixtures/static_top_tree_dp.hpp"
 #include <array>
 #include <bit>

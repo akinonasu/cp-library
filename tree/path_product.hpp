@@ -1,7 +1,7 @@
 #ifndef TREE_PATH_PRODUCT_HPP
 #define TREE_PATH_PRODUCT_HPP
 
-#include "../data_structure/hld.hpp"
+#include "hld.hpp"
 #include <bit>
 #include <cstdint>
 #include <type_traits>

@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/frequency_table_of_tree_distance"
-#include "../data_structure/centroid_decomposition.hpp"
+#include "../tree/centroid_decomposition.hpp"
 #include "../convolution/convolution_mod.hpp"
 #include "../components/fast_io.hpp"
 #include <algorithm>

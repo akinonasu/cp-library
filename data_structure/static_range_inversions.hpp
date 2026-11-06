@@ -1,9 +1,9 @@
 #ifndef STATIC_RANGE_INVERSIONS_HPP
 #define STATIC_RANGE_INVERSIONS_HPP
 
-#include "inversion_count.hpp"
+#include "../sequence/inversion_count.hpp"
 #include "../components/radix_sort.hpp"
-#include "../data_structure/mo_order.hpp"
+#include "mo_order.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
