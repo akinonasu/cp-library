@@ -78,7 +78,7 @@ void solve() {
 	LightMatrix<mint> light{ {1, 2}, {3, 4} };
 	assert(matrix.det() == mint(-2) && light.det() == mint(-2));
 	SternBrocotTree<> rational;
-	assert((rational.value() == pair<std::int64_t, std::int64_t>{1, 1}));
+	assert((rational.value() == SternBrocotTree<>::value_type{1, 1}));
 	geometry::Point<long long> point{1, 2};
 	assert((point + point == geometry::Point<long long>{2, 4}));
 	PersistentHeap<int> heap;
