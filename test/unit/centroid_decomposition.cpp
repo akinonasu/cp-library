@@ -1,5 +1,6 @@
 #include "tree/centroid_decomposition.hpp"
 #include <cstdint>
+#include <numeric>
 #include <random>
 
 template<class T> void verify(CentroidDecomposition<T>& tree) {
@@ -86,10 +87,20 @@ int main() {
 		int n = 2 + rng() % 99;
 		CentroidDecomposition<> tree(n);
 		CentroidDecomposition<long long> weighted(n);
+		std::vector<int> label(n);
+		std::iota(label.begin(), label.end(), 0);
+		if (trial % 2) std::shuffle(label.begin(), label.end(), rng);
+		std::vector<std::pair<int, int>> edges;
 		for (int v = 1; v < n; ++v) {
 			int p = trial % 5 == 0 ? v - 1 : trial % 5 == 1 ? 0 : trial % 5 == 2 ? (v - 1) / 2 : rng() % v;
-			assert(tree.add_edge(p, v) == v - 1);
-			weighted.add_edge(p, v, (static_cast<long long>(rng() % 2001) - 1000) * 1000000000LL);
+			edges.emplace_back(label[p], label[v]);
+		}
+		if (trial % 2) std::shuffle(edges.begin(), edges.end(), rng);
+		for (int i = 0; i < n - 1; ++i) {
+			auto [u, v] = edges[i];
+			if (rng() % 2) std::swap(u, v);
+			assert(tree.add_edge(u, v) == i);
+			weighted.add_edge(u, v, (static_cast<long long>(rng() % 2001) - 1000) * 1000000000LL);
 		}
 		verify(tree), verify(weighted);
 		std::vector<int> best(n, n), active(n);
