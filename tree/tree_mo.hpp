@@ -1,8 +1,8 @@
 #ifndef TREE_MO_HPP
 #define TREE_MO_HPP
 
-#include "mo_order.hpp"
-#include "../tree/lca.hpp"
+#include "../data_structure/mo_order.hpp"
+#include "lca.hpp"
 
 class TreeMo {
 	LCA lca_;

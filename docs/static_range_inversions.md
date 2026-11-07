@@ -1,12 +1,16 @@
 ---
 title: 静的区間の転倒数
-documentation_of: //sequence/static_range_inversions.hpp
+documentation_of: //data_structure/static_range_inversions.hpp
+redirect_from:
+- /sequence/static_range_inversions.hpp.html
+- /lightweight/sequence/static_range_inversions.hpp.html
+library_category: data_structure/range_query
 ---
 
 数列と半開区間の問い合わせをまとめて渡し、各区間の転倒数を返します。同じ値の組は数えず、入力は変更しません。
 
 ```cpp
-#include "lib/sequence/static_range_inversions.hpp"
+#include "lib/data_structure/static_range_inversions.hpp"
 
 std::vector<int> a{3, 1, 2, 1};
 std::vector<std::pair<int,int>> ranges{ {0,4}, {1,4}, {2,2} };

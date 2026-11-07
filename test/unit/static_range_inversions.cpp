@@ -1,4 +1,4 @@
-#include "sequence/static_range_inversions.hpp"
+#include "data_structure/static_range_inversions.hpp"
 #include <array>
 #include <cassert>
 #include <deque>

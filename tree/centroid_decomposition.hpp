@@ -39,7 +39,7 @@ template<class T = int> class CentroidDecomposition {
 		assert(n >= 0 && edges.size() == std::size_t(std::max(0, n - 1)));
 		built_ = distances_ = false;
 		root = -1;
-		parent.assign(n, -1), depth.assign(n, -1), size.resize(n);
+		parent.assign(n, -1), depth.assign(n, -1), size.assign(n, 1);
 		in.resize(n), out.resize(n), order.clear();
 		order.reserve(n);
 		if (!distances) {
@@ -63,38 +63,41 @@ template<class T = int> class CentroidDecomposition {
 				if (distances) weights[a] = weights[b] = e.weight;
 			}
 		}
-		std::vector<int> previous(n, -1), sub(n), work;
-		std::vector<std::pair<int, int>> tasks;
+		std::vector<int> work;
 		work.reserve(n);
-		tasks.emplace_back(0, -1);
-		while (!tasks.empty()) {
-			auto [s, p] = tasks.back();
-			tasks.pop_back();
-			work.clear(), work.push_back(s), previous[s] = -2;
-			for (std::size_t i = 0; i < work.size(); ++i) {
-				int v = work[i];
-				sub[v] = 1;
-				for (int j = start[v]; j < start[v + 1]; ++j) {
+		work.push_back(0), parent[0] = -2;
+		for (std::size_t i = 0; i < work.size(); ++i) {
+			int v = work[i];
+			for (int j = start[v]; j < start[v + 1]; ++j) {
+				int u = adj[j];
+				if (u == parent[v]) continue;
+				assert(parent[u] == -1);
+				parent[u] = v, work.push_back(u);
+			}
+		}
+		assert(work.size() == std::size_t(n));
+		for (std::size_t i = work.size(); --i;) size[parent[work[i]]] += size[work[i]];
+		work.clear(), work.push_back(0), parent[0] = -1;
+		while (!work.empty()) {
+			int c = work.back(), p = parent[c], count = size[c];
+			work.pop_back();
+			while (count > 2) {
+				int next = -1;
+				for (int j = start[c]; j < start[c + 1]; ++j) {
 					int u = adj[j];
-					if (depth[u] >= 0 || u == previous[v]) continue;
-					assert(p != -1 || previous[u] == -1);
-					previous[u] = v, work.push_back(u);
+					if (depth[u] < 0 && size[u] > count / 2) { next = u; break; }
 				}
+				if (next < 0) break;
+				size[c] -= size[next], size[next] = count, c = next;
 			}
-			assert(p != -1 || work.size() == std::size_t(n));
-			int count = int(work.size()), c = -1;
-			for (std::size_t i = work.size(); i-- > 0;) {
-				int v = work[i];
-				if (c == -1 && sub[v] >= (count + 1) / 2) c = v;
-				if (previous[v] >= 0) sub[previous[v]] += sub[v];
-			}
-			parent[c] = p, depth[c] = p == -1 ? 0 : depth[p] + 1;
-			size[c] = count, in[c] = int(order.size()), out[c] = in[c] + count;
+			parent[c] = p, depth[c] = p < 0 ? 0 : depth[p] + 1;
+			in[c] = int(order.size()), out[c] = in[c] + count;
 			order.push_back(c);
-			if (p == -1) root = c;
+			if (p < 0) root = c;
+			if (count == 1) continue;
 			for (int j = start[c + 1]; j-- > start[c];) {
 				int u = adj[j];
-				if (depth[u] == -1) tasks.emplace_back(u, c);
+				if (depth[u] < 0) parent[u] = c, work.push_back(u);
 			}
 		}
 		if (distances) {
@@ -102,6 +105,7 @@ template<class T = int> class CentroidDecomposition {
 			for (int v = 0; v < n; ++v) offsets_[v + 1] = offsets_[v] + depth[v] + 1;
 			paths_.resize(offsets_.back());
 			std::vector<T> distance(n);
+			std::vector<int> previous(n);
 			for (int c : order) {
 				work.clear(), work.push_back(c), previous[c] = -1, distance[c] = T(0);
 				for (std::size_t i = 0; i < work.size(); ++i) {

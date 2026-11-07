@@ -1,4 +1,4 @@
-#include "data_structure/tree_mo.hpp"
+#include "tree/tree_mo.hpp"
 #include <numeric>
 #include <random>
 #include <queue>

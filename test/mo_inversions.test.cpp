@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_inversions_query"
-#include "sequence/static_range_inversions.hpp"
+#include "data_structure/static_range_inversions.hpp"
 #include "components/fast_io_bulk.hpp"
 #include <cstdint>
 

@@ -126,6 +126,7 @@
 | `tree/tree_center.hpp` | 木の中心・最大距離を最小にする頂点 | [使い方](docs/tree_center.md) |
 | `tree/rerooting.hpp` | 全方位木 DP | [使い方](docs/rerooting.md) |
 | `tree/dsu_on_tree.hpp` | DSU on Tree | [使い方](docs/dsu_on_tree.md) |
+| `tree/tree_mo.hpp` | 木上の Mo's Algorithm・頂点値／辺値の経路クエリ | [使い方](docs/tree_mo.md) |
 
 ### グラフ構築
 
@@ -144,11 +145,12 @@
 | `graph/warshall_floyd.hpp` | ワーシャルフロイド法・全点対最短距離 | [使い方](docs/warshall_floyd.md) |
 | `graph/difference_constraints.hpp` | 牛ゲー（差分制約系）・解の復元・差の上下限 | [使い方](docs/difference_constraints.md) |
 
-### 最小全域木
+### 最小全域木・シュタイナー木
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `graph/kruskal.hpp` | Kruskal・最小全域木／最小全域森 | [使い方](docs/kruskal.md) |
+| `graph/steiner_tree.hpp` | 最小シュタイナー木・採用辺の復元 | [使い方](docs/steiner_tree.md) |
 
 ### フロー
 
@@ -279,12 +281,12 @@
 | `data_structure/parallel_binary_search.hpp` | 並列二分探索・条件が初めて成立する更新回数 | [使い方](docs/parallel_binary_search.md) |
 | `data_structure/mo_order.hpp` | Mo's Algorithm | [使い方](docs/mo_order.md) |
 | `data_structure/mo_with_updates.hpp` | 更新付き Mo's Algorithm・一点更新と区間クエリ | [使い方](docs/mo_with_updates.md) |
-| `data_structure/tree_mo.hpp` | 木上の Mo's Algorithm・頂点値／辺値の経路クエリ | [使い方](docs/tree_mo.md) |
 | `data_structure/offline_range_frequency.hpp` | 区間頻度（一点更新・クエリ一括処理） | [使い方](docs/offline_range_frequency.md) |
 | `data_structure/offline_range_count_distinct.hpp` | 区間の異なる値の個数（クエリ一括処理） | [使い方](docs/offline_range_count_distinct.md) |
 | `data_structure/offline_range_sum.hpp` | 値の上限付き区間和（クエリ一括処理） | [使い方](docs/offline_range_sum.md) |
 | `data_structure/offline_range_kth_smallest.hpp` | 区間の k 番目の値（クエリ一括処理） | [使い方](docs/offline_range_kth_smallest.md) |
 | `data_structure/range_lis_query.hpp` | Range LIS Query（区間の最長増加部分列） | [使い方](docs/range_lis_query.md) |
+| `data_structure/static_range_inversions.hpp` | 静的区間の転倒数 | [使い方](docs/static_range_inversions.md) |
 
 ### 列アルゴリズム
 
@@ -293,7 +295,6 @@
 | `sequence/lis.hpp` | 最長増加部分列（長さ・復元） | [使い方](docs/lis.md) |
 | `sequence/permutation_rank.hpp` | 順列の辞書順順位・復元 | [使い方](docs/permutation_rank.md) |
 | `sequence/inversion_count.hpp` | 転倒数 | [使い方](docs/inversion_count.md) |
-| `sequence/static_range_inversions.hpp` | 静的区間の転倒数 | [使い方](docs/static_range_inversions.md) |
 | `sequence/run_length_encoding.hpp` | 連長圧縮（RLE） | [使い方](docs/run_length_encoding.md) |
 
 ### 列・文字列
@@ -553,9 +554,9 @@ oj-bundle a.cpp | pbcopy
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `data_structure/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
-| `data_structure/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
-| `data_structure/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
+| `tree/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
+| `tree/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
+| `tree/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
 | `data_structure/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負) | [使い方](docs/kinetic_tournament.md) |
 | `data_structure/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue | [使い方](docs/partially_retroactive_priority_queue.md) |
 | `data_structure/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue | [使い方](docs/retroactive_priority_queue.md) |
