@@ -19,6 +19,7 @@
 #include "graph/bellman_ford.hpp"
 #include "graph/max_flow.hpp"
 #include "graph/min_cost_flow.hpp"
+#include "graph/steiner_tree.hpp"
 #include "tree/hld.hpp"
 #include "tree/static_top_tree.hpp"
 #include "tree/centroid_decomposition.hpp"
