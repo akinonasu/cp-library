@@ -37,6 +37,22 @@ void check() {
 	Tree empty;
 	require(empty.empty() && empty.size() == 0 && empty.edge_count() == 0);
 	require(empty.build().empty() && empty.reroot().empty());
+	{
+		constexpr auto merge = [](NoDefault a, NoDefault b) { return NoDefault(a.value + b.value); };
+		constexpr auto e = [] { return NoDefault(0); };
+		constexpr auto put_edge = [](NoDefault x, int) { return x; };
+		constexpr auto put_vertex = [](NoDefault x, int) { return NoDefault(x.value + 1); };
+		RerootingDP<NoDefault, NoDefault, merge, e, put_edge, put_vertex> tree(3);
+		tree.add_edge(0, 1, 7, 11);
+		for (int root : {0, 2, 1}) {
+			auto sub = tree.build(root);
+			require(sub[2].value == 1 && sub[root].value == (root == 2 ? 1 : 2));
+			auto answer = tree.reroot();
+			require(answer[0].value == 2 && answer[1].value == 2 && answer[2].value == 1);
+			auto copy = tree;
+			require(copy.reroot()[0].value == 2 && copy.subtree(1, 0).value == 1);
+		}
+	}
 	std::mt19937 rng(1702);
 	for (int n = 1; n <= 25; ++n) for (int trial = 0; trial < 8; ++trial) {
 		weights.resize(n);
