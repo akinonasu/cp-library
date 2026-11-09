@@ -104,6 +104,23 @@ template<class F> void overflow(F f) {
 int main() {
 	random_cases<std::int32_t>();
 	random_cases<std::int64_t>();
+	{
+		using T = std::int64_t;
+		const int n = 545;
+		std::vector<T> potential(n);
+		for (int i = 0; i < n; ++i) potential[i] = T(i % 3) * 1000000000;
+		WarshallFloyd<T> chain(n);
+		for (int i = 1; i < n; ++i) chain.add_edge(i - 1, i, 2 + potential[i] - potential[i - 1]);
+		assert(chain.solve());
+		for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
+			assert(chain(i, j) == (i <= j ? 2 * T(j - i) + potential[j] - potential[i] : chain.infinity()));
+		chain.add_edge(n - 1, 0, 2 + potential[0] - potential[n - 1]);
+		assert(chain.solve());
+		for (int i = 0; i < n; ++i) for (int j = 0; j < n; ++j)
+			assert(chain(i, j) == 2 * T((j - i + n) % n) + potential[j] - potential[i]);
+		chain.add_edge(n - 1, 0, -3 * T(n - 1) + potential[0] - potential[n - 1]);
+		assert(!chain.solve());
+	}
 	using T = std::int64_t;
 	constexpr T inf = std::numeric_limits<T>::max(), low = std::numeric_limits<T>::lowest();
 	check<T>({{0, inf, inf}, {inf, 0, -1}, {inf, inf, 0}});

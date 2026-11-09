@@ -310,20 +310,35 @@ template<class T, int B, bool Negative, int Backend>
 bool solve(T* data, int blocks, T inf) {
 	using K = Kernel<T, B, Negative, Backend>;
 	auto tile = [&](int i, int j) { return data + (std::size_t(i) * blocks + j) * B * B; };
+	std::vector<unsigned char> active(std::size_t(blocks) * blocks);
+	auto refresh = [&](int i, int j) {
+		auto id = std::size_t(i) * blocks + j;
+		if (!active[id]) {
+			const T* p = tile(i, j);
+			for (int z = 0; z < B * B; ++z) if (p[z] != inf) { active[id] = 1; break; }
+		}
+	};
+	for (int i = 0; i < blocks; ++i) for (int j = 0; j < blocks; ++j) refresh(i, j);
+	auto update = [&](int i, int j, int k, bool dependent) {
+		if (!active[std::size_t(i) * blocks + k] || !active[std::size_t(k) * blocks + j]) return;
+		if (dependent) K::edge(tile(i, j), tile(i, k), tile(k, j), inf);
+		else K::product(tile(i, j), tile(i, k), tile(k, j), inf);
+		refresh(i, j);
+	};
 	auto product = [&](int row, int col, int pivot, int rows, int cols, int inner) {
 		for (int k = pivot; k < pivot + inner; ++k)
 			for (int i = row; i < row + rows; ++i)
-				for (int j = col; j < col + cols; ++j) K::product(tile(i, j), tile(i, k), tile(k, j), inf);
+				for (int j = col; j < col + cols; ++j) update(i, j, k, false);
 	};
 	constexpr int macro = 16;
 	for (int base = 0; base < blocks; base += macro) {
 		int size = std::min(macro, blocks - base);
 		for (int k = base; k < base + size; ++k) {
 			if (!K::close(tile(k, k), inf)) return false;
-			for (int j = base; j < base + size; ++j) if (j != k) K::edge(tile(k, j), tile(k, k), tile(k, j), inf);
-			for (int i = base; i < base + size; ++i) if (i != k) K::edge(tile(i, k), tile(i, k), tile(k, k), inf);
+			for (int j = base; j < base + size; ++j) if (j != k) update(k, j, k, true);
+			for (int i = base; i < base + size; ++i) if (i != k) update(i, k, k, true);
 			for (int i = base; i < base + size; ++i) if (i != k)
-				for (int j = base; j < base + size; ++j) if (j != k) K::product(tile(i, j), tile(i, k), tile(k, j), inf);
+				for (int j = base; j < base + size; ++j) if (j != k) update(i, j, k, false);
 		}
 		for (int j = 0; j < blocks; j += macro) if (j != base)
 			product(base, j, base, size, std::min(macro, blocks - j), size);
