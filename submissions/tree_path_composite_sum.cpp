@@ -186,6 +186,80 @@ class Rerooting {
 	}
 };
 
+template<class E, class V, auto merge, auto e, auto put_edge, auto put_vertex>
+class RerootingDP {
+	Rerooting<V, E> tree_;
+	std::vector<std::pair<int, int>> indices_;
+	int root_ = 0;
+	bool built_ = false;
+
+  public:
+	using Edge = E;
+	using Vertex = V;
+
+	explicit RerootingDP(int n = 0) : tree_(n) {}
+	int size() const { return tree_.size(); }
+	bool empty() const { return tree_.empty(); }
+	int edge_count() const { return tree_.edge_count(); }
+	int add_edge(int u, int v, int idx, int xdi) {
+		int id = tree_.add_edge(u, v);
+		indices_.emplace_back(idx, xdi);
+		built_ = false;
+		return id;
+	}
+	std::vector<V> build(int root = 0) {
+		assert(empty() || (0 <= root && root < size()));
+		built_ = false;
+		root_ = root;
+		if (empty()) {
+			built_ = true;
+			return {};
+		}
+		std::vector<std::pair<int, int>> edges;
+		edges.reserve(edge_count());
+		for (int id = 0; id < edge_count(); ++id) edges.push_back(tree_.edge(id));
+		UndirectedCSR graph(size(), edges);
+		std::vector<int> parent(size(), -2), order;
+		order.reserve(size());
+		auto visit = [&](int s) {
+			if (parent[s] != -2) return;
+			parent[s] = -1;
+			order.push_back(s);
+			for (std::size_t i = order.size() - 1; i < order.size(); ++i) {
+				int v = order[i];
+				for (auto arc : graph[v]) {
+					if (arc.to == parent[v]) continue;
+					assert(parent[arc.to] == -2);
+					if (parent[arc.to] != -2) continue;
+					parent[arc.to] = v;
+					order.push_back(arc.to);
+				}
+			}
+		};
+		visit(root);
+		for (int v = 0; v < size(); ++v) visit(v);
+		std::vector<V> result(size(), put_vertex(e(), root));
+		for (auto it = order.rbegin(); it != order.rend(); ++it) {
+			int v = *it;
+			E value = e();
+			for (auto arc : graph[v]) if (parent[arc.to] == v) {
+				int idx = v == edges[arc.id].first ? indices_[arc.id].first : indices_[arc.id].second;
+				value = merge(value, put_edge(result[arc.to], idx));
+			}
+			result[v] = put_vertex(value, v);
+		}
+		built_ = true;
+		return result;
+	}
+	std::vector<V> reroot() {
+		assert(built_);
+		return tree_.build(e(), merge, put_vertex, [&](const V& value, int from, int, int id) {
+			int idx = from == tree_.edge(id).first ? indices_[id].second : indices_[id].first;
+			return put_edge(value, idx);
+		}, root_);
+	}
+};
+
 
 #line 1 "components/fast_io.hpp"
 
@@ -444,11 +518,11 @@ constexpr bool mint_integral = std::is_integral_v<I>
 							   || std::is_same_v<I, __int128> || std::is_same_v<I, unsigned __int128>
 #endif
 	;
-struct Mint {
+struct [[gnu::warn_unused]] Mint {
 	using mint = Mint;
 	unsigned v = 0;
-	static constexpr unsigned mod() { return 998244353; }
-	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
+	[[nodiscard]] static constexpr unsigned mod() { return 998244353; }
+	[[nodiscard, gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -458,17 +532,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	[[gnu::always_inline]] static Mint raw(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	[[gnu::always_inline]] static Mint word(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	[[gnu::always_inline]] unsigned val() const {
+	[[nodiscard, gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -507,27 +581,27 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	[[gnu::always_inline]] Mint operator+() const { return *this; }
-	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
-	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
-	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
+	[[nodiscard, gnu::always_inline]] Mint operator+() const { return *this; }
+	[[nodiscard, gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[nodiscard, gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[nodiscard, gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[nodiscard, gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[nodiscard]] Mint operator/(Mint b) const { return Mint(*this) /= b; }
+	[[nodiscard, gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[nodiscard, gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
+	[[nodiscard]] friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
+	[[nodiscard]] friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
+	[[nodiscard]] friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
+	[[nodiscard]] friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator==(I a, Mint b) { return Mint(a) == b; }
+	[[nodiscard]] friend bool operator==(I a, Mint b) { return Mint(a) == b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
-	Mint pow(long long n) const {
+	[[nodiscard]] friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
+	[[nodiscard]] Mint pow(long long n) const {
 		assert(n >= 0);
 		if (!n) return Mint(1);
 		Mint r(1), a = *this;
@@ -535,7 +609,7 @@ struct Mint {
 			if (n & 1) r *= a;
 		return r * a;
 	}
-	[[gnu::noinline]] Mint inv() const {
+	[[nodiscard, gnu::noinline]] Mint inv() const {
 		assert(*this != Mint(0));
 		Mint a2 = *this * *this, a3 = a2 * *this;
 		Mint a7 = a3 * a3 * *this;
@@ -566,25 +640,29 @@ using fps_mint = mint;
 
 #line 5 "test/rerooting.test.cpp"
 
+using Data = std::pair<mint, mint>;
+std::vector<mint> a, b, c;
+Data merge(Data x, Data y) { return {x.first + y.first, x.second + y.second}; }
+Data e() { return {0, 0}; }
+Data put_edge(Data x, int id) { return {x.first * b[id] + x.second * c[id], x.second}; }
+Data put_vertex(Data x, int v) { return {x.first + a[v], x.second + 1}; }
+
 int main() {
 	FastInput input;
 	FastOutput output;
 	int n = 0;
 	input.read(n);
-	Rerooting<std::pair<mint, mint>> tree(n);
-	std::vector<mint> a(n), b(n - 1), c(n - 1);
+	RerootingDP<Data, Data, merge, e, put_edge, put_vertex> tree(n);
+	a.resize(n), b.resize(n - 1), c.resize(n - 1);
 	for (auto &x : a) { unsigned value = 0; input.read(value); x = value; }
 	for (int id = 0; id < n - 1; ++id) {
 		int u = 0, v = 0;
 		unsigned x = 0, y = 0;
 		input.read(u), input.read(v), input.read(x), input.read(y);
 		b[id] = x, c[id] = y;
-		tree.add_edge(u, v);
+		tree.add_edge(u, v, id, id);
 	}
-	using Data = std::pair<mint, mint>;
-	tree.build(Data{0, 0}, [](Data x, Data y) { return Data{x.first + y.first, x.second + y.second}; },
-		[&](Data x, int v) { return Data{x.first + a[v], x.second + 1}; },
-		[&](Data x, int, int, int id) { return Data{x.first * b[id] + x.second * c[id], x.second}; });
-	for (auto x : tree.values()) output.write(x.first.val()), output.write(' ');
+	tree.build();
+	for (auto x : tree.reroot()) output.write(x.first.val()), output.write(' ');
 	output.write('\n');
 }

@@ -125,4 +125,78 @@ class Rerooting {
 	}
 };
 
+template<class E, class V, auto merge, auto e, auto put_edge, auto put_vertex>
+class RerootingDP {
+	Rerooting<V, E> tree_;
+	std::vector<std::pair<int, int>> indices_;
+	int root_ = 0;
+	bool built_ = false;
+
+  public:
+	using Edge = E;
+	using Vertex = V;
+
+	explicit RerootingDP(int n = 0) : tree_(n) {}
+	int size() const { return tree_.size(); }
+	bool empty() const { return tree_.empty(); }
+	int edge_count() const { return tree_.edge_count(); }
+	int add_edge(int u, int v, int idx, int xdi) {
+		int id = tree_.add_edge(u, v);
+		indices_.emplace_back(idx, xdi);
+		built_ = false;
+		return id;
+	}
+	std::vector<V> build(int root = 0) {
+		assert(empty() || (0 <= root && root < size()));
+		built_ = false;
+		root_ = root;
+		if (empty()) {
+			built_ = true;
+			return {};
+		}
+		std::vector<std::pair<int, int>> edges;
+		edges.reserve(edge_count());
+		for (int id = 0; id < edge_count(); ++id) edges.push_back(tree_.edge(id));
+		UndirectedCSR graph(size(), edges);
+		std::vector<int> parent(size(), -2), order;
+		order.reserve(size());
+		auto visit = [&](int s) {
+			if (parent[s] != -2) return;
+			parent[s] = -1;
+			order.push_back(s);
+			for (std::size_t i = order.size() - 1; i < order.size(); ++i) {
+				int v = order[i];
+				for (auto arc : graph[v]) {
+					if (arc.to == parent[v]) continue;
+					assert(parent[arc.to] == -2);
+					if (parent[arc.to] != -2) continue;
+					parent[arc.to] = v;
+					order.push_back(arc.to);
+				}
+			}
+		};
+		visit(root);
+		for (int v = 0; v < size(); ++v) visit(v);
+		std::vector<V> result(size(), put_vertex(e(), root));
+		for (auto it = order.rbegin(); it != order.rend(); ++it) {
+			int v = *it;
+			E value = e();
+			for (auto arc : graph[v]) if (parent[arc.to] == v) {
+				int idx = v == edges[arc.id].first ? indices_[arc.id].first : indices_[arc.id].second;
+				value = merge(value, put_edge(result[arc.to], idx));
+			}
+			result[v] = put_vertex(value, v);
+		}
+		built_ = true;
+		return result;
+	}
+	std::vector<V> reroot() {
+		assert(built_);
+		return tree_.build(e(), merge, put_vertex, [&](const V& value, int from, int, int id) {
+			int idx = from == tree_.edge(id).first ? indices_[id].second : indices_[id].first;
+			return put_edge(value, idx);
+		}, root_);
+	}
+};
+
 #endif

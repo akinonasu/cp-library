@@ -25,7 +25,116 @@ struct Poison {
 	int value = -19937;
 };
 
+namespace article {
+std::vector<long long> weights;
+Pair merge(Pair x, Pair y) { return {x.first + y.first, x.second + y.second}; }
+Pair e() { return {0, 0}; }
+Vertex put_vertex(Pair x, int v) { return {x.first + weights[v], x.second + 1}; }
+Pair put_edge(Vertex x, int idx) { return {x.sum + idx * x.count, x.count}; }
+using Tree = RerootingDP<Pair, Vertex, merge, e, put_edge, put_vertex>;
+
+void check() {
+	Tree empty;
+	require(empty.empty() && empty.size() == 0 && empty.edge_count() == 0);
+	require(empty.build().empty() && empty.reroot().empty());
+	std::mt19937 rng(1702);
+	for (int n = 1; n <= 25; ++n) for (int trial = 0; trial < 8; ++trial) {
+		weights.resize(n);
+		for (auto& x : weights) x = int(rng() % 31) - 15;
+		Tree tree(n);
+		std::vector<std::vector<std::pair<int, int>>> graph(n);
+		for (int v = 1; v < n; ++v) if (trial % 2 || rng() % 3) {
+			int u = rng() % v;
+			int to = v;
+			int idx = int(rng() % 41) - 20, xdi = int(rng() % 41) - 20;
+			if (rng() & 1) std::swap(u, to);
+			require(tree.add_edge(u, to, idx, xdi) == tree.edge_count() - 1);
+			graph[u].emplace_back(to, idx), graph[to].emplace_back(u, xdi);
+		}
+		auto naive = [&](auto&& self, int v, int parent) -> Vertex {
+			Pair x = e();
+			for (auto [to, idx] : graph[v]) if (to != parent)
+				x = merge(x, put_edge(self(self, to, v), idx));
+			return put_vertex(x, v);
+		};
+		for (int root : {0, n - 1}) {
+			auto sub = tree.build(root);
+			std::vector<int> parent(n, -2), order;
+			auto visit = [&](int s) {
+				if (parent[s] != -2) return;
+				parent[s] = -1;
+				order.push_back(s);
+				for (std::size_t i = order.size() - 1; i < order.size(); ++i)
+					for (auto [to, idx] : graph[order[i]]) if (to != parent[order[i]])
+						parent[to] = order[i], order.push_back(to);
+			};
+			visit(root);
+			for (int v = 0; v < n; ++v) visit(v);
+			for (int v = 0; v < n; ++v) {
+				auto expected = naive(naive, v, parent[v]);
+				require(sub[v].sum == expected.sum && sub[v].count == expected.count);
+			}
+			for (int repeat = 0; repeat < 2; ++repeat) {
+				auto answer = tree.reroot();
+				for (int v = 0; v < n; ++v) {
+					auto expected = naive(naive, v, -1);
+					require(answer[v].sum == expected.sum && answer[v].count == expected.count);
+				}
+			}
+			require(sub[root].sum == naive(naive, root, -1).sum);
+		}
+	}
+	{
+		constexpr auto merge = [](std::string a, std::string b) { return a + b; };
+		constexpr auto e = [] { return std::string{}; };
+		constexpr auto put_edge = [](std::string x, int idx) { return '[' + std::to_string(idx) + x + ']'; };
+		constexpr auto put_vertex = [](std::string x, int v) { return '(' + std::to_string(v) + x + ')'; };
+		RerootingDP<std::string, std::string, merge, e, put_edge, put_vertex> tree(5);
+		std::vector<std::vector<std::pair<int, int>>> graph(5);
+		for (auto [u, v] : {std::pair{2, 1}, {0, 2}, {2, 3}}) {
+			tree.add_edge(u, v, 10 + v, 20 + u);
+			graph[u].emplace_back(v, 10 + v), graph[v].emplace_back(u, 20 + u);
+		}
+		auto naive = [&](auto&& self, int v, int parent) -> std::string {
+			std::string x;
+			for (auto [to, idx] : graph[v]) if (to != parent)
+				x += put_edge(self(self, to, v), idx);
+			return put_vertex(x, v);
+		};
+		for (int root = 0; root < 5; ++root) {
+			auto sub = tree.build(root);
+			require(sub[root] == naive(naive, root, -1));
+			auto answer = tree.reroot();
+			for (int v = 0; v < 5; ++v) require(answer[v] == naive(naive, v, -1));
+		}
+	}
+	weights.assign(3, 0);
+	Tree growing(3);
+	growing.add_edge(0, 1, 2, 7);
+	growing.build();
+	require(growing.reroot()[0].sum == 2 && growing.reroot()[1].sum == 7);
+	growing.add_edge(1, 2, 5, 11);
+	growing.build(2);
+	auto copy = growing;
+	require(copy.reroot()[2].sum == 29);
+	for (bool star : {false, true}) {
+		const int n = 300000;
+		weights.assign(n, 0);
+		Tree tree(n);
+		for (int v = 1; v < n; ++v) tree.add_edge(star ? 0 : v - 1, v, 1, 1);
+		tree.build(n / 2);
+		auto answer = tree.reroot();
+		for (int v = 0; v < n; ++v) {
+			long long expected = star ? (v ? 2LL * n - 3 : n - 1) :
+				1LL * v * (v + 1) / 2 + 1LL * (n - 1 - v) * (n - v) / 2;
+			require(answer[v].sum == expected && answer[v].count == n);
+		}
+	}
+}
+}
+
 int main() {
+	article::check();
 	std::mt19937 rng(973401);
 	Rerooting<int> empty;
 	require(empty.empty() && empty.size() == 0 && empty.edge_count() == 0);
