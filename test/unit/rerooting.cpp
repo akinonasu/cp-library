@@ -80,6 +80,18 @@ void check() {
 					auto expected = naive(naive, v, -1);
 					require(answer[v].sum == expected.sum && answer[v].count == expected.count);
 				}
+				for (int u = 0; u < n; ++u) {
+					std::vector<int> parents(n, -2), vertices{u};
+					parents[u] = -1;
+					for (std::size_t i = 0; i < vertices.size(); ++i)
+						for (auto [to, idx] : graph[vertices[i]]) if (to != parents[vertices[i]])
+							parents[to] = vertices[i], vertices.push_back(to);
+					for (int v : vertices) {
+						auto expected = naive(naive, v, parents[v]);
+						const auto& actual = tree.subtree(u, v);
+						require(actual.sum == expected.sum && actual.count == expected.count);
+					}
+				}
 			}
 			require(sub[root].sum == naive(naive, root, -1).sum);
 		}
@@ -106,6 +118,14 @@ void check() {
 			require(sub[root] == naive(naive, root, -1));
 			auto answer = tree.reroot();
 			for (int v = 0; v < 5; ++v) require(answer[v] == naive(naive, v, -1));
+			for (int u = 0; u < 5; ++u) {
+				std::vector<int> parents(5, -2), vertices{u};
+				parents[u] = -1;
+				for (std::size_t i = 0; i < vertices.size(); ++i)
+					for (auto [to, idx] : graph[vertices[i]]) if (to != parents[vertices[i]])
+						parents[to] = vertices[i], vertices.push_back(to);
+				for (int v : vertices) require(tree.subtree(u, v) == naive(naive, v, parents[v]));
+			}
 		}
 	}
 	weights.assign(3, 0);
@@ -117,6 +137,7 @@ void check() {
 	growing.build(2);
 	auto copy = growing;
 	require(copy.reroot()[2].sum == 29);
+	require(copy.subtree(2, 1).sum == 7 && copy.subtree(2, 1).count == 2);
 	for (bool star : {false, true}) {
 		const int n = 300000;
 		weights.assign(n, 0);
@@ -128,6 +149,18 @@ void check() {
 			long long expected = star ? (v ? 2LL * n - 3 : n - 1) :
 				1LL * v * (v + 1) / 2 + 1LL * (n - 1 - v) * (n - v) / 2;
 			require(answer[v].sum == expected && answer[v].count == n);
+			for (int u : {0, n - 1}) {
+				const auto& sub = tree.subtree(u, v);
+				long long sum;
+				int count;
+				if (u == v) sum = expected, count = n;
+				else if (star) sum = v ? 0 : n - 2, count = v ? 1 : n - 1;
+				else {
+					count = u == 0 ? n - v : v + 1;
+					sum = 1LL * count * (count - 1) / 2;
+				}
+				require(sub.sum == sum && sub.count == count);
+			}
 		}
 	}
 }

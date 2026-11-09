@@ -190,8 +190,10 @@ template<class E, class V, auto merge, auto e, auto put_edge, auto put_vertex>
 class RerootingDP {
 	Rerooting<V, E> tree_;
 	std::vector<std::pair<int, int>> indices_;
+	std::vector<V> branches_;
+	std::vector<int> parent_arc_, component_, in_, out_, child_start_, children_;
 	int root_ = 0;
-	bool built_ = false;
+	bool built_ = false, rerooted_ = false;
 
   public:
 	using Edge = E;
@@ -205,11 +207,13 @@ class RerootingDP {
 		int id = tree_.add_edge(u, v);
 		indices_.emplace_back(idx, xdi);
 		built_ = false;
+		rerooted_ = false;
 		return id;
 	}
 	std::vector<V> build(int root = 0) {
 		assert(empty() || (0 <= root && root < size()));
 		built_ = false;
+		rerooted_ = false;
 		root_ = root;
 		if (empty()) {
 			built_ = true;
@@ -219,25 +223,46 @@ class RerootingDP {
 		edges.reserve(edge_count());
 		for (int id = 0; id < edge_count(); ++id) edges.push_back(tree_.edge(id));
 		UndirectedCSR graph(size(), edges);
-		std::vector<int> parent(size(), -2), order;
+		std::vector<int> parent(size(), -2), order, stack;
+		parent_arc_.assign(size(), -1);
+		component_.resize(size());
+		in_.resize(size()), out_.assign(size(), 1);
 		order.reserve(size());
+		stack.reserve(size());
 		auto visit = [&](int s) {
 			if (parent[s] != -2) return;
 			parent[s] = -1;
-			order.push_back(s);
-			for (std::size_t i = order.size() - 1; i < order.size(); ++i) {
-				int v = order[i];
-				for (auto arc : graph[v]) {
+			stack.push_back(s);
+			while (!stack.empty()) {
+				int v = stack.back();
+				stack.pop_back();
+				in_[v] = static_cast<int>(order.size());
+				component_[v] = s;
+				order.push_back(v);
+				auto arcs = graph[v];
+				for (auto it = arcs.rbegin(); it != arcs.rend(); ++it) {
+					auto arc = *it;
 					if (arc.to == parent[v]) continue;
 					assert(parent[arc.to] == -2);
 					if (parent[arc.to] != -2) continue;
 					parent[arc.to] = v;
-					order.push_back(arc.to);
+					parent_arc_[arc.to] = 2 * arc.id + (arc.to == edges[arc.id].second);
+					stack.push_back(arc.to);
 				}
 			}
 		};
 		visit(root);
 		for (int v = 0; v < size(); ++v) visit(v);
+		for (auto it = order.rbegin(); it != order.rend(); ++it)
+			if (parent[*it] != -1) out_[parent[*it]] += out_[*it];
+		child_start_.assign(size() + 1, 0);
+		children_.clear();
+		children_.reserve(edge_count());
+		for (int v = 0; v < size(); ++v) {
+			out_[v] += in_[v];
+			for (auto arc : graph[v]) if (parent[arc.to] == v) children_.push_back(arc.to);
+			child_start_[v + 1] = static_cast<int>(children_.size());
+		}
 		std::vector<V> result(size(), put_vertex(e(), root));
 		for (auto it = order.rbegin(); it != order.rend(); ++it) {
 			int v = *it;
@@ -253,10 +278,29 @@ class RerootingDP {
 	}
 	std::vector<V> reroot() {
 		assert(built_);
-		return tree_.build(e(), merge, put_vertex, [&](const V& value, int from, int, int id) {
+		rerooted_ = false;
+		branches_.clear();
+		if (edge_count()) branches_.assign(2 * indices_.size(), put_vertex(e(), root_));
+		auto answer = tree_.build(e(), merge, put_vertex, [&](const V& value, int from, int, int id) {
+			branches_[2 * id + (from == tree_.edge(id).second)] = value;
 			int idx = from == tree_.edge(id).first ? indices_[id].second : indices_[id].first;
 			return put_edge(value, idx);
 		}, root_);
+		rerooted_ = true;
+		return answer;
+	}
+	const V& subtree(int u, int v) const {
+		assert(rerooted_ && 0 <= u && u < size() && 0 <= v && v < size());
+		assert(component_[u] == component_[v]);
+		if (u == v) return tree_[v];
+		if (!(in_[v] <= in_[u] && in_[u] < out_[v])) return branches_[parent_arc_[v]];
+		int l = child_start_[v], r = child_start_[v + 1];
+		while (l < r) {
+			int m = l + (r - l) / 2;
+			if (in_[children_[m]] <= in_[u]) l = m + 1;
+			else r = m;
+		}
+		return branches_[parent_arc_[children_[l - 1]] ^ 1];
 	}
 };
 
