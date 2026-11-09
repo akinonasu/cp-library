@@ -18,6 +18,19 @@
 #pragma GCC optimize("O3")
 #endif
 
+#if !defined(WARSHALL_FLOYD_DISABLE_AVX512) && !defined(WARSHALL_FLOYD_DISABLE_SIMD) && (defined(__x86_64__) || defined(__i386__))
+#if defined(__GNUC__) && !defined(__clang__)
+_Pragma("GCC push_options")
+_Pragma("GCC target(\"no-avx512f,avx512f\")")
+#ifdef __AVX512F__
+#define WARSHALL_FLOYD_DETAIL_AVX512
+#endif
+_Pragma("GCC pop_options")
+#elif defined(__clang__)
+#define WARSHALL_FLOYD_DETAIL_AVX512
+#endif
+#endif
+
 namespace warshall_floyd_detail {
 template<class T> using Storage = std::vector<T, AlignedAllocator<T>>;
 
@@ -26,7 +39,7 @@ template<> struct Unsigned<__int128_t> { using type = __uint128_t; };
 
 inline int backend() {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(WARSHALL_FLOYD_DISABLE_SIMD)
-#ifndef WARSHALL_FLOYD_DISABLE_AVX512
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 	if (__builtin_cpu_supports("avx512f")) return 2;
 #endif
 	if (__builtin_cpu_supports("avx2")) return 1;
@@ -55,6 +68,7 @@ bool scalar(T* out, const T* a, const T* b, T inf) {
 }
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 template<class T, int B, bool Negative, bool Diagonal>
 __attribute__((target("avx512f")))
 bool simple512(T* out, const T* a, const T* b, T inf) {
@@ -136,6 +150,8 @@ void product512(T* out, const T* a, const T* b, T inf) {
 			_mm512_storeu_si512(out + (i + r) * B + j + q * lanes, value[r][q]);
 	}
 }
+
+#endif
 
 template<class T, int B, bool Negative, bool Diagonal>
 __attribute__((target("avx2")))
@@ -235,21 +251,27 @@ template<class T, int B, bool Negative, int Backend>
 struct Kernel {
 	static bool close(T* out, T inf) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 		if constexpr (Backend == 2) return simple512<T, B, Negative, true>(out, out, out, inf);
+#endif
 		if constexpr (Backend == 1) return simple256<T, B, Negative, true>(out, out, out, inf);
 #endif
 		return scalar<T, B, Negative, true>(out, out, out, inf);
 	}
 	static void edge(T* out, const T* a, const T* b, T inf) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 		if constexpr (Backend == 2) { simple512<T, B, Negative, false>(out, a, b, inf); return; }
+#endif
 		if constexpr (Backend == 1) { simple256<T, B, Negative, false>(out, a, b, inf); return; }
 #endif
 		scalar<T, B, Negative, false>(out, a, b, inf);
 	}
 	static void product(T* out, const T* a, const T* b, T inf) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 		if constexpr (Backend == 2) { product512<T, B, Negative>(out, a, b, inf); return; }
+#endif
 		if constexpr (Backend == 1) { product256<T, B, Negative>(out, a, b, inf); return; }
 #endif
 		scalar<T, B, Negative, false>(out, a, b, inf);
@@ -299,5 +321,7 @@ bool run(T* data, int blocks, T inf, int selected = backend()) {
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC pop_options
 #endif
+
+#undef WARSHALL_FLOYD_DETAIL_AVX512
 
 #endif
