@@ -19,16 +19,14 @@ inline unsigned argmin(std::uint64_t word, unsigned key) {
 	if ((word >> key) & 1) return key;
 	unsigned shift = key & 32;
 	word = std::rotl(word, shift);
-	shift = key & 16;
-	word = ((word & 0x0000ffff0000ffffULL) << shift) | ((word & 0xffff0000ffff0000ULL) >> shift);
-	shift = key & 8;
-	word = ((word & 0x00ff00ff00ff00ffULL) << shift) | ((word & 0xff00ff00ff00ff00ULL) >> shift);
-	shift = key & 4;
-	word = ((word & 0x0f0f0f0f0f0f0f0fULL) << shift) | ((word & 0xf0f0f0f0f0f0f0f0ULL) >> shift);
-	shift = key & 2;
-	word = ((word & 0x3333333333333333ULL) << shift) | ((word & 0xccccccccccccccccULL) >> shift);
-	shift = key & 1;
-	word = ((word & 0x5555555555555555ULL) << shift) | ((word & 0xaaaaaaaaaaaaaaaaULL) >> shift);
+	auto exchange = [&](unsigned shift, std::uint64_t mask) {
+		word = ((word & mask) << shift) | ((word & ~mask) >> shift);
+	};
+	exchange(key & 16, 0x0000ffff0000ffffULL);
+	exchange(key & 8, 0x00ff00ff00ff00ffULL);
+	exchange(key & 4, 0x0f0f0f0f0f0f0f0fULL);
+	exchange(key & 2, 0x3333333333333333ULL);
+	exchange(key & 1, 0x5555555555555555ULL);
 	return std::countr_zero(word) ^ key;
 }
 }
@@ -369,6 +367,28 @@ void stable_radix_sort(std::vector<T> &values, Key &&key) {
 	}
 	if (sorted) return;
 	std::vector<T> scratch(values.size());
+	if constexpr (Bits == 11 && sizeof(K) <= 4) {
+		if (values.size() <= UINT32_MAX && (varying & mask) && ((varying >> 11) & mask) && (varying >> 22)) {
+			std::array<std::array<std::uint32_t, buckets>, 3> counts{};
+			for (const auto &value : values) {
+				std::uint32_t k = key(value);
+				++counts[0][k & mask];
+				++counts[1][(k >> 11) & mask];
+				++counts[2][k >> 22];
+			}
+			for (int pass = 0; pass < 3; ++pass) {
+				auto &count = counts[pass];
+				std::uint32_t sum = 0;
+				for (auto &x : count) {
+					auto n = x;
+					x = sum, sum += n;
+				}
+				for (auto &&value : values) scratch[count[(std::uint32_t(key(value)) >> (11 * pass)) & mask]++] = std::move(value);
+				values.swap(scratch);
+			}
+			return;
+		}
+	}
 	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
 	Counts count = [] {
 		if constexpr (Bits <= 11) return Counts{};
@@ -645,31 +665,36 @@ int main() {
 	FastOutput output;
 	int n = 0, q = 0;
 	input.read(n), input.read(q);
+	std::vector<int> initial(n);
+	for (int &x : initial) input.read(x);
 	struct Item { int value, time; };
-	struct Query { int type, rank = 0; };
-	std::vector<Item> items(n);
-	for (auto &item : items) input.read(item.value), item.time = -1;
-	std::vector<Query> queries(q);
-	for (int i = 0; i < q; ++i) {
-		input.read(queries[i].type);
-		if (queries[i].type == 0) {
+	std::vector<Item> items;
+	items.reserve(q);
+	std::vector<unsigned char> types(q);
+	for (auto &type : types) {
+		input.read(type);
+		if (type == 0) {
 			int x = 0;
 			input.read(x);
-			items.push_back({x, i});
+			items.push_back({x, int(items.size())});
 		}
 	}
+	stable_radix_sort<11>(initial, [](int x) { return std::uint32_t(x) ^ (1U << 31); });
 	stable_radix_sort<11>(items, [](const Item &item) { return std::uint32_t(item.value) ^ (1U << 31); });
 	PredecessorSet values(int(items.size()));
-	for (int i = 0; i < int(items.size()); ++i) {
-		if (items[i].time < 0) values.insert(i);
-		else queries[items[i].time].rank = i;
-	}
-	for (auto query : queries) {
-		if (query.type == 0) values.insert(query.rank);
-		else {
-			int p = query.type == 1 ? values.min() : values.max();
-			output.println(items[p].value);
-			values.erase(p);
+	std::vector<int> ranks(items.size());
+	for (int i = 0; i < int(items.size()); ++i) ranks[items[i].time] = i;
+	int left = 0, right = n, inserted = 0;
+	for (auto type : types) {
+		if (type == 0) values.insert(ranks[inserted++]);
+		else if (type == 1) {
+			int p = values.min();
+			if (left < right && (p == values.universe_size() || initial[left] <= items[p].value)) output.println(initial[left++]);
+			else { output.println(items[p].value); values.erase(p); }
+		} else {
+			int p = values.max();
+			if (left < right && (p < 0 || initial[right - 1] >= items[p].value)) output.println(initial[--right]);
+			else { output.println(items[p].value); values.erase(p); }
 		}
 	}
 }

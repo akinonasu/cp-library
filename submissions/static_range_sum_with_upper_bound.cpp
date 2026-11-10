@@ -28,7 +28,9 @@ class FenwickSum {
 	void build(const std::vector<T> &a) {
 		assert(a.size() <= static_cast<unsigned>(std::numeric_limits<int>::max()));
 		data = a;
-		for (unsigned i = 1; i <= data.size(); ++i) {
+		constexpr unsigned step = sizeof(T) <= 8 ? 2 : 1;
+		for (unsigned i = step; i <= data.size(); i += step) {
+			if constexpr (step == 2) data[i - 1] += data[i - 2];
 			unsigned p = i + (i & -i);
 			if (p <= data.size()) data[p - 1] += data[i - 1];
 		}
@@ -80,6 +82,7 @@ class FenwickSum {
 #endif
 
 namespace insert_only_prefix_detail {
+inline constexpr int level_count = 4, block_bits = 4 * level_count, block_size = 1 << block_bits;
 struct CountSum {
 	__int128_t sum = 0;
 	int count = 0;
@@ -87,7 +90,7 @@ struct CountSum {
 	CountSum &operator-=(const CountSum &other) { sum -= other.sum; count -= other.count; return *this; }
 };
 class Packed {
-	std::array<std::vector<std::array<std::uint64_t, 16>>, 4> levels;
+	std::array<std::vector<std::array<std::uint64_t, 16>>, level_count> levels;
 	FenwickSum<CountSum> coarse;
 	__int128_t base;
 	std::uint64_t sum_mask;
@@ -112,16 +115,16 @@ class Packed {
 	__attribute__((target("avx2"))) void insert_avx2(unsigned p, std::uint64_t delta) {
 		auto encoded = (std::uint64_t(1) << sum_bits) + delta;
 		add_avx2(levels[0][p >> 4].data(), p & 15, encoded);
-		for (int level = 1; level < 4; ++level)
+		for (int level = 1; level < level_count; ++level)
 			add_avx2(levels[level][p >> (4 * (level + 1))].data(), ((p >> (4 * level)) & 15) + 1, encoded);
-		coarse.add(p >> 16, {base + delta, 1});
+		coarse.add(p >> block_bits, {base + delta, 1});
 	}
 #endif
 
   public:
-	Packed(int n, __int128_t minimum, int bits) : coarse((std::size_t(n) + 65535) >> 16), base(minimum), sum_mask((std::uint64_t(1) << bits) - 1), sum_bits(bits) {
+	Packed(int n, __int128_t minimum, int bits) : coarse((std::size_t(n) + block_size - 1) >> block_bits), base(minimum), sum_mask((std::uint64_t(1) << bits) - 1), sum_bits(bits) {
 		assert(n >= 0 && 0 < bits && bits < 64);
-		for (int level = 0; level < 4; ++level) levels[level].resize((std::size_t(n) + (std::size_t(1) << (4 * (level + 1))) - 1) >> (4 * (level + 1)));
+		for (int level = 0; level < level_count; ++level) levels[level].resize((std::size_t(n) + (std::size_t(1) << (4 * (level + 1))) - 1) >> (4 * (level + 1)));
 #if defined(__x86_64__) || defined(__i386__)
 		vectorized = __builtin_cpu_supports("avx2");
 #endif
@@ -132,16 +135,16 @@ class Packed {
 #endif
 		auto encoded = (std::uint64_t(1) << sum_bits) + delta;
 		add_scalar(levels[0][unsigned(p) >> 4].data(), p & 15, encoded);
-		for (int level = 1; level < 4; ++level)
+		for (int level = 1; level < level_count; ++level)
 			add_scalar(levels[level][unsigned(p) >> (4 * (level + 1))].data(), ((unsigned(p) >> (4 * level)) & 15) + 1, encoded);
-		coarse.add(unsigned(p) >> 16, {base + delta, 1});
+		coarse.add(unsigned(p) >> block_bits, {base + delta, 1});
 	}
 	CountSum prefix(int r) const {
 		if (!r) return {};
 		unsigned p = unsigned(r - 1);
 		std::uint64_t encoded = levels[0][p >> 4][p & 15];
-		for (int level = 1; level < 4; ++level) encoded += levels[level][p >> (4 * (level + 1))][(p >> (4 * level)) & 15];
-		auto result = coarse.prefix(p >> 16);
+		for (int level = 1; level < level_count; ++level) encoded += levels[level][p >> (4 * (level + 1))][(p >> (4 * level)) & 15];
+		auto result = coarse.prefix(p >> block_bits);
 		int count = int(encoded >> sum_bits);
 		result.sum += __int128_t(encoded & sum_mask) + base * count;
 		result.count += count;
@@ -187,6 +190,28 @@ void stable_radix_sort(std::vector<T> &values, Key &&key) {
 	}
 	if (sorted) return;
 	std::vector<T> scratch(values.size());
+	if constexpr (Bits == 11 && sizeof(K) <= 4) {
+		if (values.size() <= UINT32_MAX && (varying & mask) && ((varying >> 11) & mask) && (varying >> 22)) {
+			std::array<std::array<std::uint32_t, buckets>, 3> counts{};
+			for (const auto &value : values) {
+				std::uint32_t k = key(value);
+				++counts[0][k & mask];
+				++counts[1][(k >> 11) & mask];
+				++counts[2][k >> 22];
+			}
+			for (int pass = 0; pass < 3; ++pass) {
+				auto &count = counts[pass];
+				std::uint32_t sum = 0;
+				for (auto &x : count) {
+					auto n = x;
+					x = sum, sum += n;
+				}
+				for (auto &&value : values) scratch[count[(std::uint32_t(key(value)) >> (11 * pass)) & mask]++] = std::move(value);
+				values.swap(scratch);
+			}
+			return;
+		}
+	}
 	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
 	Counts count = [] {
 		if constexpr (Bits <= 11) return Counts{};
@@ -257,11 +282,12 @@ class OfflineRangeSum {
 		auto sorted = queries;
 		radix_sort_detail::sort_by_key<11>(sorted, [](const Query &query) { return query.upper; });
 		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8 && (std::is_integral_v<Sum> || std::is_same_v<Sum, __int128_t> || std::is_same_v<Sum, __uint128_t>)) {
+			int block_length = std::min(size(), insert_only_prefix_detail::block_size);
 			__int128_t base = order.front().value;
-			__uint128_t bound = (__int128_t(order.back().value) - base) * __uint128_t(std::min(size(), 65536));
+			__uint128_t bound = (__int128_t(order.back().value) - base) * __uint128_t(block_length);
 			int bits = 1;
 			while (bound >>= 1) ++bits;
-			if (bits + std::bit_width(unsigned(std::min(size(), 65536))) <= 64) {
+			if (bits + std::bit_width(unsigned(block_length)) <= 64) {
 				insert_only_prefix_detail::Packed tree(size(), base, bits);
 				std::size_t inserted = 0;
 				for (const auto &query : sorted) {

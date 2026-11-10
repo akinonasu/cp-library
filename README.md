@@ -216,6 +216,7 @@
 | `data_structure/dynamic_bitset.hpp` | Dynamic Bitset・論理演算／シフト・区間更新・ビット列挙 | [使い方](docs/dynamic_bitset.md) |
 | `data_structure/priority_search_tree.hpp` | Priority Search Tree（三辺矩形内の点の列挙・点の更新） | [使い方](docs/priority_search_tree.md) |
 | `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
+| `data_structure/double_ended_priority_queue.hpp` | 両端優先度付きキュー（最小値・最大値の取得と削除） | [使い方](docs/double_ended_priority_queue.md) |
 | `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
 
 ### Union-Find

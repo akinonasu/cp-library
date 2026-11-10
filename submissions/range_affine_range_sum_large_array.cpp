@@ -69,7 +69,7 @@ class LazySegtree {
 		for (int i = 0; i < n_; ++i) data_[base_ + unsigned(i)] = a[i];
 		for (unsigned k = base_ - 1; k; --k) pull(k);
 	}
-	int size() const { return n_; }
+	[[nodiscard]] int size() const { return n_; }
 	void set(int p, S value) {
 		vertex(p);
 		unsigned k = base_ + unsigned(p);
@@ -77,14 +77,14 @@ class LazySegtree {
 		data_[k] = std::move(value);
 		for (k >>= 1; k; k >>= 1) pull(k);
 	}
-	S get(int p) {
+	[[nodiscard]] S get(int p) {
 		vertex(p);
 		unsigned k = base_ + unsigned(p);
 		push_path(k);
 		return data_[k];
 	}
-	S all_prod() const { return data_[1]; }
-	S prod(int l, int r) {
+	[[nodiscard]] S all_prod() const { return data_[1]; }
+	[[nodiscard]] S prod(int l, int r) {
 		range(l, r);
 		if (l == r) return e();
 		unsigned a = base_ + unsigned(l), b = base_ + unsigned(r);
@@ -97,7 +97,7 @@ class LazySegtree {
 		}
 		return op(left, right);
 	}
-	S prod(int l, int r) const {
+	[[nodiscard]] S prod(int l, int r) const {
 		range(l, r);
 		if (l == r) return e();
 		return prod_rec(1, 0, base_, unsigned(l), unsigned(r));
@@ -124,8 +124,8 @@ class LazySegtree {
 			if ((last >> i) << i != last) pull((last - 1) >> i);
 		}
 	}
-	template<auto predicate> int max_right(int l) { return max_right(l, predicate); }
-	template<class Pred> int max_right(int l, Pred predicate) {
+	template<auto predicate> [[nodiscard]] int max_right(int l) { return max_right(l, predicate); }
+	template<class Pred> [[nodiscard]] int max_right(int l, Pred predicate) {
 		range(l, l);
 		assert(predicate(e()));
 		if (l == n_) return n_;
@@ -149,8 +149,8 @@ class LazySegtree {
 		} while ((k & -k) != k);
 		return n_;
 	}
-	template<auto predicate> int min_left(int r) { return min_left(r, predicate); }
-	template<class Pred> int min_left(int r, Pred predicate) {
+	template<auto predicate> [[nodiscard]] int min_left(int r) { return min_left(r, predicate); }
+	template<class Pred> [[nodiscard]] int min_left(int r, Pred predicate) {
 		range(r, r);
 		assert(predicate(e()));
 		if (!r) return 0;
@@ -440,6 +440,28 @@ void stable_radix_sort(std::vector<T> &values, Key &&key) {
 	}
 	if (sorted) return;
 	std::vector<T> scratch(values.size());
+	if constexpr (Bits == 11 && sizeof(K) <= 4) {
+		if (values.size() <= UINT32_MAX && (varying & mask) && ((varying >> 11) & mask) && (varying >> 22)) {
+			std::array<std::array<std::uint32_t, buckets>, 3> counts{};
+			for (const auto &value : values) {
+				std::uint32_t k = key(value);
+				++counts[0][k & mask];
+				++counts[1][(k >> 11) & mask];
+				++counts[2][k >> 22];
+			}
+			for (int pass = 0; pass < 3; ++pass) {
+				auto &count = counts[pass];
+				std::uint32_t sum = 0;
+				for (auto &x : count) {
+					auto n = x;
+					x = sum, sum += n;
+				}
+				for (auto &&value : values) scratch[count[(std::uint32_t(key(value)) >> (11 * pass)) & mask]++] = std::move(value);
+				values.swap(scratch);
+			}
+			return;
+		}
+	}
 	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
 	Counts count = [] {
 		if constexpr (Bits <= 11) return Counts{};
@@ -464,6 +486,18 @@ void stable_radix_sort(std::vector<T> &values, Key key) {
 	stable_radix_sort<8>(values, std::move(key));
 }
 
+namespace radix_sort_detail {
+template <int Bits = 8, class T, class Key>
+void sort_by_key(std::vector<T> &values, Key key) {
+	using K = std::remove_cvref_t<decltype(key(std::declval<const T &>()))>;
+	if constexpr (std::is_integral_v<K> && !std::is_same_v<K, bool> && sizeof(K) <= 8 && std::is_default_constructible_v<T>) {
+		using U = std::make_unsigned_t<K>;
+		constexpr U sign = std::is_signed_v<K> ? U(1) << (sizeof(K) * 8 - 1) : U(0);
+		stable_radix_sort<Bits>(values, [&](const T &value) { return U(U(key(value)) ^ sign); });
+	} else std::sort(values.begin(), values.end(), [&](const T &a, const T &b) { return key(a) < key(b); });
+}
+}
+
 
 #line 1 "math/mint.hpp"
 
@@ -485,11 +519,11 @@ constexpr bool mint_integral = std::is_integral_v<I>
 							   || std::is_same_v<I, __int128> || std::is_same_v<I, unsigned __int128>
 #endif
 	;
-struct Mint {
+struct [[gnu::warn_unused]] Mint {
 	using mint = Mint;
 	unsigned v = 0;
-	static constexpr unsigned mod() { return 998244353; }
-	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
+	[[nodiscard]] static constexpr unsigned mod() { return 998244353; }
+	[[nodiscard, gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -499,17 +533,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	[[gnu::always_inline]] static Mint raw(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	[[gnu::always_inline]] static Mint word(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	[[gnu::always_inline]] unsigned val() const {
+	[[nodiscard, gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -548,27 +582,27 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	[[gnu::always_inline]] Mint operator+() const { return *this; }
-	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
-	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
-	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
+	[[nodiscard, gnu::always_inline]] Mint operator+() const { return *this; }
+	[[nodiscard, gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[nodiscard, gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[nodiscard, gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[nodiscard, gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[nodiscard]] Mint operator/(Mint b) const { return Mint(*this) /= b; }
+	[[nodiscard, gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[nodiscard, gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
+	[[nodiscard]] friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
+	[[nodiscard]] friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
+	[[nodiscard]] friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
+	[[nodiscard]] friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator==(I a, Mint b) { return Mint(a) == b; }
+	[[nodiscard]] friend bool operator==(I a, Mint b) { return Mint(a) == b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
-	Mint pow(long long n) const {
+	[[nodiscard]] friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
+	[[nodiscard]] Mint pow(long long n) const {
 		assert(n >= 0);
 		if (!n) return Mint(1);
 		Mint r(1), a = *this;
@@ -576,7 +610,7 @@ struct Mint {
 			if (n & 1) r *= a;
 		return r * a;
 	}
-	[[gnu::noinline]] Mint inv() const {
+	[[nodiscard, gnu::noinline]] Mint inv() const {
 		assert(*this != Mint(0));
 		Mint a2 = *this * *this, a3 = a2 * *this;
 		Mint a7 = a3 * a3 * *this;
