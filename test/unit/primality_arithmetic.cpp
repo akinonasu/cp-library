@@ -39,7 +39,11 @@ template <class M>
 void check_montgomery(U n, std::mt19937_64 &random) {
 	M m(n);
 	assert(typename M::U(n * m.inverse) == 1);
+	for (typename M::U x : {typename M::U(0), typename M::U(n), std::numeric_limits<typename M::U>::max()})
+		assert(m.reduce(m.in(x)) == U(x) % n);
 	for (int i = 0; i < 16; ++i) {
+		const typename M::U full = random();
+		assert(m.reduce(m.in(full)) == U(full) % n);
 		U a = i < 3 ? (i == 0 ? 0 : n - i) : random() % n;
 		U b = i < 3 ? n - 1 : random() % n;
 		U x = m.in(a), y = m.in(b);
@@ -78,8 +82,10 @@ int main() {
 		if (!composite[i])
 			for (U j = i * i; j < composite.size(); j += i) composite[j] = true;
 	}
-	for (U n : {3ULL, 41ULL, 1681ULL, 2147483647ULL, 2147483649ULL, 4294967291ULL, 4294967295ULL})
+	for (U n : {3ULL, 41ULL, 1681ULL, 2147483647ULL, 2147483649ULL, 4294967291ULL, 4294967295ULL}) {
 		check_montgomery<Montgomery64>(n, random);
+		check_montgomery<Montgomery32>(n, random);
+	}
 	for (U n : {3ULL, 4294967297ULL, 9223372036854775783ULL, 9223372036854775809ULL,
 				18446744073709551557ULL, 18446744073709551615ULL})
 		check_montgomery<Montgomery64>(n, random);
@@ -87,6 +93,7 @@ int main() {
 		U n = std::uint32_t(random()) | 1;
 		if (n == 1) n = 3;
 		check_montgomery<Montgomery64>(n, random);
+		check_montgomery<Montgomery32>(n, random);
 		check_prime(n);
 		n = random();
 		check_prime(n);

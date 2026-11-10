@@ -20,6 +20,6 @@ auto value = m.reduce(m.mul(a, b));
 | `add(a,b)` / `mul(a,b)` | Montgomery 表現で加算／乗算 | $$O(1)$$ |
 | `pow(a,k)` | Montgomery 表現で非負整数乗 | $$O(\log k)$$ |
 
-法は 1 より大きい 64 bit 符号なし奇数です。`in(x)` で Montgomery 表現に変換し、`reduce(x)` で戻します。`add(a,b)`・`mul(a,b)`・`pow(a,k)` は Montgomery 表現で計算します。入力は法未満とします。
+法は 1 より大きい 64 bit 符号なし奇数です。`in(x)` は任意の `std::uint64_t` を受け取り、`x % mod` の Montgomery 表現に変換します。`reduce(x)` で通常の値に戻します。`add(a,b)`・`mul(a,b)`・`pow(a,k)` の入力は法未満の Montgomery 表現とします。
 
 構築・変換・加算・乗算は $$O(1)$$、累乗は $$O(\log k)$$、空間は $$O(1)$$ です。

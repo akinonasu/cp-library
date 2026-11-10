@@ -30,10 +30,10 @@ inline bool fast_prime(const Montgomery64 &m) {
 		return witnesses(m, d, s, std::array<U, 3>{2, base, second[base >> 13]}, multiply);
 	};
 	if (m.mod < (U(1) << 62)) {
-		U inverse = -m.inverse;
+		U inverse = m.inverse;
 		return check([&](U a, U b) {
 			__uint128_t x = __uint128_t(a) * b;
-			return U((x + __uint128_t(U(x) * inverse) * m.mod) >> 64);
+			return U(x >> 64) + m.mod - U((__uint128_t(U(x) * inverse) * m.mod) >> 64);
 		});
 	}
 	return check([&](U a, U b) { return m.mul(a, b); });
