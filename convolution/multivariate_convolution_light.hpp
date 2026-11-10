@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstddef>
 #include <vector>
+#include <type_traits>
 #include "../components/multivariate_convolution_core.hpp"
 
 #include "convolution_light.hpp"
@@ -31,12 +32,16 @@ std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vect
 	if constexpr (requires { T::mod(); T::raw(0); a[0].val(); }) {
 		if constexpr (T::mod() == 998244353) {
 			assert(size <= std::size_t(1) << 22);
-			std::vector<mint> x(size), y(size);
 			std::vector<int> dims;
 			for (int d : dimensions) if (d > 1) dims.push_back(d);
+			auto multiply = [&](const std::vector<mint> &x, const std::vector<mint> &y) {
+				auto transform = [](std::vector<mint> &v, bool inverse) { fps_light_detail::transform(v, inverse); };
+				return multivariate_convolution_detail::Core::multiply(x, y, dims, transform, fps_light_detail::multiply);
+			};
+			if constexpr (std::is_same_v<T, mint>) return multiply(a, b);
+			std::vector<mint> x(size), y(size);
 			for (std::size_t i = 0; i < size; ++i) x[i] = mint::raw(a[i].val()), y[i] = mint::raw(b[i].val());
-			auto transform = [](std::vector<mint> &v, bool inverse) { fps_light_detail::transform(v, inverse); };
-			auto product = multivariate_convolution_detail::Core::multiply(x, y, dims, transform, fps_light_detail::multiply);
+			auto product = multiply(x, y);
 			std::vector<T> result;
 			result.reserve(size);
 			for (auto v : product) result.push_back(T::raw(v.val()));
