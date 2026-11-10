@@ -201,34 +201,7 @@ class RerootingDP {
 		return put_edge(value, idx);
 	}
 
-  public:
-	using Edge = E;
-	using Vertex = V;
-
-	explicit RerootingDP(int n = 0) : n_(n) {
-		assert(0 <= n && n < std::numeric_limits<int>::max());
-		edges_.reserve(std::max(0, n - 1));
-		indices_.reserve(std::max(0, n - 1));
-	}
-	int size() const { return n_; }
-	bool empty() const { return n_ == 0; }
-	int edge_count() const { return static_cast<int>(edges_.size()); }
-	int add_edge(int u, int v, int idx, int xdi) {
-		assert(0 <= u && u < n_ && 0 <= v && v < n_ && u != v);
-		assert(edges_.size() < std::size_t(std::numeric_limits<int>::max() / 2));
-		edges_.emplace_back(u, v);
-		indices_.emplace_back(idx, xdi);
-		built_ = rerooted_ = false;
-		return edge_count() - 1;
-	}
-	std::vector<V> build(int root = 0) {
-		assert(empty() || (0 <= root && root < n_));
-		built_ = rerooted_ = false;
-		if (empty()) {
-			values_.clear();
-			built_ = true;
-			return {};
-		}
+	void build_graph() {
 		start_.assign(std::size_t(n_) + 1, 0);
 		for (auto [u, v] : edges_) ++start_[u + 1], ++start_[v + 1];
 		for (int v = 0; v < n_; ++v) start_[v + 1] += start_[v];
@@ -239,6 +212,8 @@ class RerootingDP {
 			arcs_[cursor[u]++] = {v, 2 * id};
 			arcs_[cursor[v]++] = {u, 2 * id + 1};
 		}
+	}
+	void build_order(int root) {
 		parent_arc_.assign(n_, -2);
 		component_.resize(n_);
 		in_.resize(n_), out_.assign(n_, 1);
@@ -284,6 +259,38 @@ class RerootingDP {
 				if (arcs_[i].id != parent_arc_[v]) children_.push_back(arcs_[i].to);
 			child_start_[v + 1] = static_cast<int>(children_.size());
 		}
+	}
+
+  public:
+	using Edge = E;
+	using Vertex = V;
+
+	explicit RerootingDP(int n = 0) : n_(n) {
+		assert(0 <= n && n < std::numeric_limits<int>::max());
+		edges_.reserve(std::max(0, n - 1));
+		indices_.reserve(std::max(0, n - 1));
+	}
+	int size() const { return n_; }
+	bool empty() const { return n_ == 0; }
+	int edge_count() const { return static_cast<int>(edges_.size()); }
+	int add_edge(int u, int v, int idx, int xdi) {
+		assert(0 <= u && u < n_ && 0 <= v && v < n_ && u != v);
+		assert(edges_.size() < std::size_t(std::numeric_limits<int>::max() / 2));
+		edges_.emplace_back(u, v);
+		indices_.emplace_back(idx, xdi);
+		built_ = rerooted_ = false;
+		return edge_count() - 1;
+	}
+	std::vector<V> build(int root = 0) {
+		assert(empty() || (0 <= root && root < n_));
+		built_ = rerooted_ = false;
+		if (empty()) {
+			values_.clear();
+			built_ = true;
+			return {};
+		}
+		build_graph();
+		build_order(root);
 		E unit = e();
 		if constexpr (std::is_default_constructible_v<E>) messages_.resize(arcs_.size());
 		else messages_.assign(arcs_.size(), unit);

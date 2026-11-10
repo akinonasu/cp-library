@@ -35,8 +35,6 @@ struct ModularElimination {
 		for (int i = 0; i < 2; ++i) sum = _mm512_min_epu32(sum, _mm512_sub_epi32(sum, _mm512_set1_epi32(Ops::mod)));
 		return sum;
 	}
-#endif
-#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,avx512dq"))) static void update512(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
 		std::array<V, batch> encoded;
 		for (int k = 0; k < count; ++k) encoded[k] = std::uint64_t(coeff[k]) * ((std::uint64_t(1) << 32) % Ops::mod) % Ops::mod;

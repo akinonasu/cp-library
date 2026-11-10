@@ -83,8 +83,7 @@ struct Kernel {
 		auto mask = _mm256_cmpeq_epi32(best, _mm256_set1_epi32(std::bit_cast<int>(minimum(best))));
 		return int(minimum(_mm256_or_si256(best_column, _mm256_xor_si256(mask, _mm256_set1_epi32(-1)))));
 	}
-#if defined(__SIZEOF_INT128__)
-#if CP_LIBRARY_AVX512
+#if defined(__SIZEOF_INT128__) && CP_LIBRARY_AVX512
 	template <class T, bool Minimum>
 	__attribute__((target("avx512f"))) static __m512i merge_step64(const T *a, const T *b) {
 		auto best = _mm512_add_epi64(_mm512_set1_epi64(a[0]), _mm512_loadu_si512(b + 1));
@@ -100,8 +99,6 @@ struct Kernel {
 		}
 		return best;
 	}
-#endif
-#if CP_LIBRARY_AVX512
 	template <class T, bool Minimum>
 	__attribute__((target("avx512f"))) static void merge64(const T *a, const T *b, int n, int m, T *result) {
 		constexpr int chains = 4;
@@ -143,7 +140,6 @@ struct Kernel {
 			}
 		}
 	}
-#endif
 #endif
 	__attribute__((target("avx2"))) static bool multiply(const U *a, const U *b, int n, int m, U *result,
 		std::size_t capacity, std::uint64_t budget) {

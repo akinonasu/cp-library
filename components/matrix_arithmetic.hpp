@@ -75,9 +75,7 @@ __attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512
 	r = _mm512_mask_add_epi64(r, _mm512_cmp_epi64_mask(r, _mm512_setzero_si512(), _MM_CMPINT_LT), r, p);
 	return _mm512_mask_sub_epi64(r, _mm512_cmp_epi64_mask(r, p, _MM_CMPINT_NLT), r, p);
 }
-#endif
 
-#if CP_LIBRARY_AVX512
 template <std::uint32_t mod, int rows = 8>
 __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr std::int64_t radius = mod / 2;
@@ -173,7 +171,6 @@ __attribute__((target("avx2"))) void product_packed_avx2(const std::int32_t *a, 
 		if (i < n) product_packed_avx2<mod, 1>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
 	}
 }
-
 
 #endif
 
