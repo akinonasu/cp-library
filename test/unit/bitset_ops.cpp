@@ -30,7 +30,9 @@ template <Op Operation> void check(const Word *a, const Word *b, std::size_t n) 
 	assert(bitset_ops_detail::count<Operation>(a, second, n) == expected);
 	assert(bitset_ops_detail::scalar<Operation>(a, second, n) == expected);
 #if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 	if (bitset_ops_detail::has_avx512()) assert(bitset_ops_detail::avx512<Operation>(a, second, n) == expected);
+#endif
 	if (bitset_ops_detail::has_avx2()) assert(bitset_ops_detail::avx2<Operation>(a, second, n) == expected);
 #endif
 	if constexpr (Operation != Op::identity) {

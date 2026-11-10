@@ -1,3 +1,24 @@
+#line 1 "components/simd_capabilities.hpp"
+#ifndef SIMD_CAPABILITIES_HPP
+#define SIMD_CAPABILITIES_HPP
+
+#if (defined(__x86_64__) || defined(__i386__)) && defined(__GNUC__) && !defined(__clang__)
+_Pragma("GCC push_options")
+_Pragma("GCC target(\"no-avx512f,avx512f\")")
+#ifdef __AVX512F__
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+_Pragma("GCC pop_options")
+#elif (defined(__x86_64__) || defined(__i386__)) && defined(__clang__)
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+
+#endif
+
 #line 1 "test/berlekamp_massey.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/find_linear_recurrence"
 #line 1 "fps/berlekamp_massey.hpp"
@@ -107,6 +128,7 @@ struct ModularField {
 		__m256i r = _mm256_sub_epi32(_mm256_mullo_epi32(a, x), _mm256_mullo_epi32(high, p));
 		return _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f"))) static __m512i product16(__m512i a, __m512i x, __m512i q) {
 		const auto p = _mm512_set1_epi32(mod);
 		auto even = _mm512_srli_epi64(_mm512_mul_epu32(a, q), 32);
@@ -115,6 +137,8 @@ struct ModularField {
 		auto r = _mm512_sub_epi32(_mm512_mullo_epi32(a, x), _mm512_mullo_epi32(high, p));
 		return _mm512_min_epu32(r, _mm512_sub_epi32(r, p));
 	}
+#endif
+#if CP_LIBRARY_AVX512
 	template <bool add_to>
 	__attribute__((target("avx512f"))) static void apply16(V *a, const V *b, int n, V x, V q) {
 		const auto vx = _mm512_set1_epi32(x), vq = _mm512_set1_epi32(q), p = _mm512_set1_epi32(mod);
@@ -133,6 +157,7 @@ struct ModularField {
 			else a[i] = r;
 		}
 	}
+#endif
 	template <bool add_to>
 	__attribute__((target("avx2"))) static void apply8(V *a, const V *b, int n, V x, V q) {
 		__m256i vx = _mm256_set1_epi32(x), vq = _mm256_set1_epi32(q), p = _mm256_set1_epi32(mod);
@@ -156,7 +181,9 @@ struct ModularField {
 	static void apply(V *a, const V *b, int n, V x) {
 		V q = (std::uint64_t(x) << 32) / mod;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 		if (n >= 64 && avx2() && __builtin_cpu_supports("avx512f")) { apply16<add_to>(a, b, n, x, q); return; }
+#endif
 		if (n >= 16 && avx2()) { apply8<add_to>(a, b, n, x, q); return; }
 #endif
 		for (int i = 0; i < n; ++i) {

@@ -53,8 +53,11 @@ struct FrobeniusPower {
 		if (block) {
 			std::vector<std::int32_t> centered(n);
 			for (int i = 0; i < n; ++i) centered[i] = center(x[i]);
+#if CP_LIBRARY_AVX512
 			if (block == 16) product_packed_avx512<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
-			else product_packed_avx2<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
+			else
+#endif
+			product_packed_avx2<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
 			return result;
 		}
 #endif

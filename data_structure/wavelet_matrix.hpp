@@ -1,6 +1,7 @@
 #ifndef WAVELET_MATRIX_HPP
 #define WAVELET_MATRIX_HPP
 
+#include "../components/simd_capabilities.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -718,6 +719,7 @@ class WaveletMatrix {
 		}
 		return values[(x << 3) | bits.back().select_avx2(l, r, k)];
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx2,popcnt,avx512f,avx512vl,avx512vpopcntdq"))) T kth_avx512(int l, int r, int k) const {
 		std::uint32_t x = 0;
 		for (int d = 0; d + 1 < levels; ++d) {
@@ -729,6 +731,7 @@ class WaveletMatrix {
 		}
 		return values[(x << 3) | bits.back().select_avx512(l, r, k)];
 	}
+#endif
 #endif
 
   public:
@@ -816,7 +819,9 @@ class WaveletMatrix {
 		if (r - l <= 8) return values[small_codes(l, r)[k]];
 		if (quaternary) return quad_kth(l, r, k);
 #if defined(__x86_64__) || defined(__i386__)
+#if CP_LIBRARY_AVX512
 		if (wide_vectorized) return kth_avx512(l, r, k);
+#endif
 		if (vectorized) return kth_avx2(l, r, k);
 #endif
 		return kth_scalar(l, r, k);

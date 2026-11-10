@@ -186,6 +186,172 @@ class Rerooting {
 	}
 };
 
+template<class E, class V, auto merge, auto e, auto put_edge, auto put_vertex>
+class RerootingDP {
+	int n_;
+	std::vector<std::pair<int, int>> edges_, indices_;
+	std::vector<UndirectedCSR::Arc> arcs_;
+	std::vector<int> start_, order_, parent_arc_, component_, in_, out_, child_start_, children_;
+	std::vector<E> messages_;
+	std::vector<V> values_, branches_;
+	bool built_ = false, rerooted_ = false;
+
+	E lift(const V& value, int id) const {
+		int idx = id & 1 ? indices_[id >> 1].first : indices_[id >> 1].second;
+		return put_edge(value, idx);
+	}
+
+  public:
+	using Edge = E;
+	using Vertex = V;
+
+	explicit RerootingDP(int n = 0) : n_(n) {
+		assert(0 <= n && n < std::numeric_limits<int>::max());
+		edges_.reserve(std::max(0, n - 1));
+		indices_.reserve(std::max(0, n - 1));
+	}
+	int size() const { return n_; }
+	bool empty() const { return n_ == 0; }
+	int edge_count() const { return static_cast<int>(edges_.size()); }
+	int add_edge(int u, int v, int idx, int xdi) {
+		assert(0 <= u && u < n_ && 0 <= v && v < n_ && u != v);
+		assert(edges_.size() < std::size_t(std::numeric_limits<int>::max() / 2));
+		edges_.emplace_back(u, v);
+		indices_.emplace_back(idx, xdi);
+		built_ = rerooted_ = false;
+		return edge_count() - 1;
+	}
+	std::vector<V> build(int root = 0) {
+		assert(empty() || (0 <= root && root < n_));
+		built_ = rerooted_ = false;
+		if (empty()) {
+			values_.clear();
+			built_ = true;
+			return {};
+		}
+		start_.assign(std::size_t(n_) + 1, 0);
+		for (auto [u, v] : edges_) ++start_[u + 1], ++start_[v + 1];
+		for (int v = 0; v < n_; ++v) start_[v + 1] += start_[v];
+		arcs_.resize(2 * edges_.size());
+		std::vector<int> cursor = start_;
+		for (int id = 0; id < edge_count(); ++id) {
+			auto [u, v] = edges_[id];
+			arcs_[cursor[u]++] = {v, 2 * id};
+			arcs_[cursor[v]++] = {u, 2 * id + 1};
+		}
+		parent_arc_.assign(n_, -2);
+		component_.resize(n_);
+		in_.resize(n_), out_.assign(n_, 1);
+		order_.clear();
+		order_.reserve(n_);
+		std::vector<int> stack;
+		stack.reserve(n_);
+		auto visit = [&](int s) {
+			if (parent_arc_[s] != -2) return;
+			parent_arc_[s] = -1;
+			stack.push_back(s);
+			while (!stack.empty()) {
+				int v = stack.back();
+				stack.pop_back();
+				in_[v] = static_cast<int>(order_.size());
+				component_[v] = s;
+				order_.push_back(v);
+				for (int i = start_[v + 1]; i-- > start_[v];) {
+					auto arc = arcs_[i];
+					if (arc.id == parent_arc_[v]) continue;
+					assert(parent_arc_[arc.to] == -2);
+					if (parent_arc_[arc.to] != -2) continue;
+					parent_arc_[arc.to] = arc.id ^ 1;
+					stack.push_back(arc.to);
+				}
+			}
+		};
+		visit(root);
+		for (int v = 0; v < n_; ++v) visit(v);
+		for (auto it = order_.rbegin(); it != order_.rend(); ++it) {
+			int id = parent_arc_[*it];
+			if (id != -1) {
+				auto [u, v] = edges_[id >> 1];
+				out_[id & 1 ? u : v] += out_[*it];
+			}
+		}
+		child_start_.assign(std::size_t(n_) + 1, 0);
+		children_.clear();
+		children_.reserve(edge_count());
+		for (int v = 0; v < n_; ++v) {
+			out_[v] += in_[v];
+			for (int i = start_[v]; i < start_[v + 1]; ++i)
+				if (arcs_[i].id != parent_arc_[v]) children_.push_back(arcs_[i].to);
+			child_start_[v + 1] = static_cast<int>(children_.size());
+		}
+		E unit = e();
+		if constexpr (std::is_default_constructible_v<E>) messages_.resize(arcs_.size());
+		else messages_.assign(arcs_.size(), unit);
+		if constexpr (std::is_default_constructible_v<V>) {
+			values_.resize(n_);
+			branches_.resize(arcs_.size());
+		} else {
+			V initial = put_vertex(unit, root);
+			values_.assign(n_, initial);
+			branches_.assign(arcs_.size(), initial);
+		}
+		for (auto it = order_.rbegin(); it != order_.rend(); ++it) {
+			int v = *it, id = parent_arc_[v];
+			int l = child_start_[v], r = child_start_[v + 1];
+			E value = l == r ? unit : messages_[parent_arc_[children_[l++]]];
+			for (; l < r; ++l) value = merge(value, messages_[parent_arc_[children_[l]]]);
+			values_[v] = put_vertex(value, v);
+			if (id != -1) {
+				branches_[id] = values_[v];
+				messages_[id] = lift(values_[v], id);
+			}
+		}
+		built_ = true;
+		return values_;
+	}
+	std::vector<V> reroot() {
+		assert(built_);
+		if (rerooted_) return values_;
+		E unit = e();
+		int maximum = 0;
+		for (int v = 0; v < n_; ++v) maximum = std::max(maximum, start_[v + 1] - start_[v]);
+		std::vector<E> prefix(maximum, unit);
+		for (int v : order_) {
+			int start = start_[v], degree = start_[v + 1] - start;
+			if (degree == 0) continue;
+			auto incoming = [&](int i) -> const E& { return messages_[arcs_[start + i].id ^ 1]; };
+			if (degree > 1) prefix[1] = incoming(0);
+			for (int i = 1; i + 1 < degree; ++i) prefix[i + 1] = merge(prefix[i], incoming(i));
+			values_[v] = put_vertex(degree == 1 ? incoming(0) : merge(prefix[degree - 1], incoming(degree - 1)), v);
+			E suffix = unit;
+			for (int i = degree - 1; i >= 0; --i) {
+				int id = arcs_[start + i].id;
+				if (id != parent_arc_[v]) {
+					E value = i == degree - 1 ? prefix[i] : i == 0 ? suffix : merge(prefix[i], suffix);
+					branches_[id] = put_vertex(value, v);
+					messages_[id] = lift(branches_[id], id);
+				}
+				if (i > 0) suffix = i == degree - 1 ? incoming(i) : merge(incoming(i), suffix);
+			}
+		}
+		rerooted_ = true;
+		return values_;
+	}
+	const V& subtree(int u, int v) const {
+		assert(rerooted_ && 0 <= u && u < n_ && 0 <= v && v < n_);
+		assert(component_[u] == component_[v]);
+		if (u == v) return values_[v];
+		if (!(in_[v] <= in_[u] && in_[u] < out_[v])) return branches_[parent_arc_[v]];
+		int l = child_start_[v], r = child_start_[v + 1];
+		while (l < r) {
+			int m = l + (r - l) / 2;
+			if (in_[children_[m]] <= in_[u]) l = m + 1;
+			else r = m;
+		}
+		return branches_[parent_arc_[children_[l - 1]] ^ 1];
+	}
+};
+
 
 #line 1 "components/fast_io.hpp"
 
@@ -444,11 +610,11 @@ constexpr bool mint_integral = std::is_integral_v<I>
 							   || std::is_same_v<I, __int128> || std::is_same_v<I, unsigned __int128>
 #endif
 	;
-struct Mint {
+struct [[gnu::warn_unused]] Mint {
 	using mint = Mint;
 	unsigned v = 0;
-	static constexpr unsigned mod() { return 998244353; }
-	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
+	[[nodiscard]] static constexpr unsigned mod() { return 998244353; }
+	[[nodiscard, gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -458,17 +624,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	[[gnu::always_inline]] static Mint raw(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	[[gnu::always_inline]] static Mint word(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	[[gnu::always_inline]] unsigned val() const {
+	[[nodiscard, gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -507,27 +673,27 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	[[gnu::always_inline]] Mint operator+() const { return *this; }
-	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
-	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
-	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
+	[[nodiscard, gnu::always_inline]] Mint operator+() const { return *this; }
+	[[nodiscard, gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[nodiscard, gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[nodiscard, gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[nodiscard, gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[nodiscard]] Mint operator/(Mint b) const { return Mint(*this) /= b; }
+	[[nodiscard, gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[nodiscard, gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
+	[[nodiscard]] friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
+	[[nodiscard]] friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
+	[[nodiscard]] friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
+	[[nodiscard]] friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator==(I a, Mint b) { return Mint(a) == b; }
+	[[nodiscard]] friend bool operator==(I a, Mint b) { return Mint(a) == b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
-	Mint pow(long long n) const {
+	[[nodiscard]] friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
+	[[nodiscard]] Mint pow(long long n) const {
 		assert(n >= 0);
 		if (!n) return Mint(1);
 		Mint r(1), a = *this;
@@ -535,7 +701,7 @@ struct Mint {
 			if (n & 1) r *= a;
 		return r * a;
 	}
-	[[gnu::noinline]] Mint inv() const {
+	[[nodiscard, gnu::noinline]] Mint inv() const {
 		assert(*this != Mint(0));
 		Mint a2 = *this * *this, a3 = a2 * *this;
 		Mint a7 = a3 * a3 * *this;
@@ -566,25 +732,29 @@ using fps_mint = mint;
 
 #line 5 "test/rerooting.test.cpp"
 
+using Data = std::pair<mint, mint>;
+std::vector<mint> a, b, c;
+Data merge(Data x, Data y) { return {x.first + y.first, x.second + y.second}; }
+Data e() { return {0, 0}; }
+Data put_edge(Data x, int id) { return {x.first * b[id] + x.second * c[id], x.second}; }
+Data put_vertex(Data x, int v) { return {x.first + a[v], x.second + 1}; }
+
 int main() {
 	FastInput input;
 	FastOutput output;
 	int n = 0;
 	input.read(n);
-	Rerooting<std::pair<mint, mint>> tree(n);
-	std::vector<mint> a(n), b(n - 1), c(n - 1);
+	RerootingDP<Data, Data, merge, e, put_edge, put_vertex> tree(n);
+	a.resize(n), b.resize(n - 1), c.resize(n - 1);
 	for (auto &x : a) { unsigned value = 0; input.read(value); x = value; }
 	for (int id = 0; id < n - 1; ++id) {
 		int u = 0, v = 0;
 		unsigned x = 0, y = 0;
 		input.read(u), input.read(v), input.read(x), input.read(y);
 		b[id] = x, c[id] = y;
-		tree.add_edge(u, v);
+		tree.add_edge(u, v, id, id);
 	}
-	using Data = std::pair<mint, mint>;
-	tree.build(Data{0, 0}, [](Data x, Data y) { return Data{x.first + y.first, x.second + y.second}; },
-		[&](Data x, int v) { return Data{x.first + a[v], x.second + 1}; },
-		[&](Data x, int, int, int id) { return Data{x.first * b[id] + x.second * c[id], x.second}; });
-	for (auto x : tree.values()) output.write(x.first.val()), output.write(' ');
+	tree.build();
+	for (auto x : tree.reroot()) output.write(x.first.val()), output.write(' ');
 	output.write('\n');
 }

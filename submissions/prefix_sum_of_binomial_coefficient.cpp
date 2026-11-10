@@ -1,3 +1,24 @@
+#line 1 "components/simd_capabilities.hpp"
+#ifndef SIMD_CAPABILITIES_HPP
+#define SIMD_CAPABILITIES_HPP
+
+#if (defined(__x86_64__) || defined(__i386__)) && defined(__GNUC__) && !defined(__clang__)
+_Pragma("GCC push_options")
+_Pragma("GCC target(\"no-avx512f,avx512f\")")
+#ifdef __AVX512F__
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+_Pragma("GCC pop_options")
+#elif (defined(__x86_64__) || defined(__i386__)) && defined(__clang__)
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+
+#endif
+
 #line 1 "test/binomial_prefix_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/prefix_sum_of_binomial_coefficient"
 #line 1 "math/binomial_prefix_sum.hpp"
@@ -442,11 +463,15 @@ inline bool inner_product_has_avx2() {
 }
 
 inline bool inner_product_has_avx512() {
+#if CP_LIBRARY_AVX512
 #if defined(__AVX512F__)
 	return true;
 #else
 	static const bool enabled = __builtin_cpu_supports("avx512f");
 	return enabled;
+#endif
+#else
+	return false;
 #endif
 }
 
@@ -475,6 +500,7 @@ __uint128_t inner_product_avx2(const mint* a, const mint* b, int size) {
 	return sum;
 }
 
+#if CP_LIBRARY_AVX512
 template<bool Reverse> __attribute__((target("avx512f")))
 __uint128_t inner_product_avx512(const mint* a, const mint* b, int size) {
 	const auto order = _mm512_setr_epi32(15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
@@ -501,13 +527,17 @@ __uint128_t inner_product_avx512(const mint* a, const mint* b, int size) {
 	return sum;
 }
 #endif
+#endif
 
 template<bool Reverse = false> mint inner_product(const mint* a, const mint* b, int size) {
 	assert(size >= 0);
 	__uint128_t sum;
 #if (defined(__GNUC__) || defined(__clang__)) && (defined(__x86_64__) || defined(__i386__))
+#if CP_LIBRARY_AVX512
 	if (size >= 64 && inner_product_has_avx512()) sum = inner_product_avx512<Reverse>(a, b, size);
-	else if (size >= 64 && inner_product_has_avx2()) sum = inner_product_avx2<Reverse>(a, b, size);
+	else
+#endif
+	if (size >= 64 && inner_product_has_avx2()) sum = inner_product_avx2<Reverse>(a, b, size);
 	else
 #endif
 		sum = inner_product_scalar<Reverse>(a, b, size);

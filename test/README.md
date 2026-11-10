@@ -15,6 +15,14 @@ python3 test/verify.py
 
 AtCoder のジャッジ用テストは追加しません。一時的な計測コード・結果・ログはチェックアウト外の一時ディレクトリへ置き、リポジトリには保存しません。
 
+[yukicoder の公開 `noavx512` GCC プラグイン](https://yukicoder.me/help/environments)を用意すると、全ヘッダーと単体テストを制限付きコンパイラで検証できます。コンパイラとプラグインは同じ GCC の版を使います。既存の選択ファイルを使う場合は `--selection` を指定できます。
+
+```sh
+python3 test/verify_yukicoder.py --cxx g++-15 --plugin /usr/lib/yukicoder/noavx512-gcc15.so --jobs 2
+```
+
+プラグインによる命令指定の置換は警告になるため、この検証では警告をエラーとして扱いません。通常の `test/verify.py` の検証条件は変えません。
+
 macOS の移植性検証は ARM64 の `macos-15` で行います。Ubuntu の事前ジョブで変更ファイルを確認し、`docs/`・`submissions/`・ルートの `README.md`／`AGENTS.md` だけの変更では macOS ジョブを省略します。ライブラリ・単体テスト・CI 設定などの変更、差分を確定できない場合、明示的な no-cache 検証では実行します。手動の `workflow_dispatch` でも実行できます。
 
 `macos-14` は [GitHub の廃止告知](https://github.com/actions/runner-images/issues/13518)により計画停止の対象となり、2026-11-02 にサポートが終了するため使用しません。

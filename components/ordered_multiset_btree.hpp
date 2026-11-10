@@ -1,6 +1,7 @@
 #ifndef ORDERED_MULTISET_BTREE_HPP
 #define ORDERED_MULTISET_BTREE_HPP
 
+#include "simd_capabilities.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -43,6 +44,7 @@ __attribute__((target("avx2"))) int find_avx2(const Key *data, int n, Key value)
 	if (n < 32) less &= (1U << n) - 1;
 	return std::countr_one(less);
 }
+#if CP_LIBRARY_AVX512
 template<bool Strict, class Key>
 __attribute__((target("avx512f"))) int find_avx512(const Key *data, int n, Key value) {
 	unsigned less = 0;
@@ -65,13 +67,20 @@ __attribute__((target("avx512f"))) int find_avx512(const Key *data, int n, Key v
 	return std::countr_one(less);
 }
 #endif
+#endif
 template<bool Strict, class Key>
 int find(const Key *data, int n, Key value) {
 #if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
 	if constexpr (sizeof(Key) == 4 || sizeof(Key) == 8) {
+#if CP_LIBRARY_AVX512
 		static const int kernel = __builtin_cpu_supports("avx512f") ? 2 : __builtin_cpu_supports("avx2") ? 1 : 0;
+#else
+		static const int kernel = __builtin_cpu_supports("avx2") ? 1 : 0;
+#endif
 		if (n >= 8) {
+#if CP_LIBRARY_AVX512
 			if (kernel == 2) return find_avx512<Strict>(data, n, value);
+#endif
 			if (kernel == 1) return find_avx2<Strict>(data, n, value);
 		}
 	}

@@ -12,7 +12,9 @@ template<bool Reverse> void check(const mint* a, const mint* b, int size) {
 	assert(mint_detail::inner_product_scalar<Reverse>(a, b, size) == sum);
 #if (defined(__GNUC__) || defined(__clang__)) && (defined(__x86_64__) || defined(__i386__))
 	if (mint_detail::inner_product_has_avx2()) assert(mint_detail::inner_product_avx2<Reverse>(a, b, size) == sum);
+#if CP_LIBRARY_AVX512
 	if (mint_detail::inner_product_has_avx512()) assert(mint_detail::inner_product_avx512<Reverse>(a, b, size) == sum);
+#endif
 #endif
 	assert(mint_detail::inner_product<Reverse>(a, b, size) == expected);
 }

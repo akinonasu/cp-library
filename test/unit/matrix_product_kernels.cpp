@@ -7,10 +7,12 @@
 #include <random>
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 template <std::uint32_t P>
 __attribute__((target("avx512f,avx512dq"))) void reduce_batch(const std::int64_t *source, std::uint64_t *result) {
 	_mm512_storeu_si512(result, matrix_detail::reduce_product_avx512<P>(_mm512_loadu_si512(source)));
 }
+#endif
 #endif
 
 template <std::uint32_t P>
@@ -38,6 +40,7 @@ void check() {
 			assert(result.size() == expected.size());
 			for (std::size_t i = 0; i < result.size(); ++i) assert(result[i].val() == expected[i]);
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 			if (matrix_detail::avx512_product() && n && inner && m) {
 				std::vector<std::int32_t> centered_a(a.size()), packed_b(b.size());
 				auto center = [](std::uint32_t value) { return value <= (P - 1) / 2 ? std::int32_t(value) : std::int32_t(std::int64_t(value) - P); };
@@ -51,6 +54,7 @@ void check() {
 				matrix_detail::product_packed_avx512<P>(centered_a.data(), packed_b.data(), actual.data(), n, inner, m);
 				assert(actual == expected);
 			}
+#endif
 			if (matrix_detail::avx2() && n && inner && m) {
 				std::vector<std::int32_t> centered_a(a.size()), packed_b(b.size());
 				auto center = [](std::uint32_t value) { return value <= (P - 1) / 2 ? std::int32_t(value) : std::int32_t(std::int64_t(value) - P); };
@@ -68,6 +72,7 @@ void check() {
 		}
 	}
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 	if (matrix_detail::avx512_product()) {
 		constexpr std::int64_t radius = P / 2;
 		constexpr int step = int(std::min<std::int64_t>(32, (std::numeric_limits<std::int64_t>::max() - (P - 1)) / (radius * radius)));
@@ -94,6 +99,7 @@ void check() {
 		}
 		assert(!std::fesetround(previous));
 	}
+#endif
 #endif
 }
 

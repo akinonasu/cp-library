@@ -1,6 +1,7 @@
 #ifndef BITSET_OPS_HPP
 #define BITSET_OPS_HPP
 
+#include "simd_capabilities.hpp"
 #include <bit>
 #include <cstddef>
 #include <cstdint>
@@ -38,6 +39,7 @@ inline std::size_t scalar_large(const std::uint64_t *a, const std::uint64_t *b, 
 }
 
 #if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 template <Operation Op> __attribute__((target("avx512f,avx512vpopcntdq")))
 inline std::size_t avx512(const std::uint64_t *a, const std::uint64_t *b, std::size_t n) {
 	__m512i sum = _mm512_setzero_si512();
@@ -55,6 +57,7 @@ inline std::size_t avx512(const std::uint64_t *a, const std::uint64_t *b, std::s
 	}
 	return std::size_t(_mm512_reduce_add_epi64(sum)) + scalar<Op>(a + i, b ? b + i : nullptr, n - i);
 }
+#endif
 
 template <Operation Op> __attribute__((target("avx2")))
 inline std::size_t avx2(const std::uint64_t *a, const std::uint64_t *b, std::size_t n) {
@@ -81,8 +84,12 @@ inline std::size_t avx2(const std::uint64_t *a, const std::uint64_t *b, std::siz
 }
 
 inline bool has_avx512() {
+#if CP_LIBRARY_AVX512
 	static const bool enabled = __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512vpopcntdq");
 	return enabled;
+#else
+	return false;
+#endif
 }
 inline bool has_avx2() {
 	static const bool enabled = __builtin_cpu_supports("avx2");
@@ -108,7 +115,9 @@ template <Operation Op> inline void apply(std::uint64_t *a, const std::uint64_t 
 template <Operation Op> inline std::size_t count(const std::uint64_t *a, const std::uint64_t *b, std::size_t n) {
 #if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
 	if (n >= 64) {
+#if CP_LIBRARY_AVX512
 		if (has_avx512()) return avx512<Op>(a, b, n);
+#endif
 		if (has_avx2()) return avx2<Op>(a, b, n);
 	}
 #endif

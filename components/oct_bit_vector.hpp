@@ -1,6 +1,7 @@
 #ifndef OCT_BIT_VECTOR_HPP
 #define OCT_BIT_VECTOR_HPP
 
+#include "simd_capabilities.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -30,12 +31,16 @@ struct OctBitVector {
 #endif
 	}
 	static bool has_avx512() {
+#if CP_LIBRARY_AVX512
 #if defined(__x86_64__) || defined(__i386__)
 		return has_avx2() && __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512vl") && __builtin_cpu_supports("avx512vpopcntdq");
 #else
 		return false;
 #endif
-	}
+	#else
+	return false;
+#endif
+}
 	static std::array<std::uint32_t, 8> cumulative(std::uint32_t low, std::uint32_t mid, std::uint32_t high, std::uint32_t valid) {
 		return {~(high | mid | low) & valid, ~(high | mid) & valid, ~high & ~(mid & low) & valid,
 				~high & valid, (~high | ~(mid | low)) & valid, ~(high & mid) & valid, ~(high & mid & low) & valid, valid};
@@ -115,6 +120,7 @@ struct OctBitVector {
 		auto passed = _mm256_cmpgt_epi32(_mm256_set1_epi32(k + 1), counts);
 		return std::popcount(unsigned(_mm256_movemask_ps(_mm256_castsi256_ps(passed))));
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx2,popcnt,avx512f,avx512vl,avx512vpopcntdq"))) void build_avx512(const std::vector<std::uint32_t> &a, int shift) {
 		auto total = _mm256_setzero_si256();
 		std::uint32_t bit = std::uint32_t(1) << shift;
@@ -140,10 +146,14 @@ struct OctBitVector {
 			total = _mm256_add_epi32(total, _mm256_popcnt_epi32(_mm256_load_si256(reinterpret_cast<const __m256i *>(b.masks.data()))));
 		}
 	}
+#endif
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx2,popcnt,avx512f,avx512vl,avx512vpopcntdq"), always_inline)) static __m256i prefix_counts_avx512(const Block &b, int r) {
 		auto masked = _mm256_and_si256(_mm256_load_si256(reinterpret_cast<const __m256i *>(b.masks.data())), _mm256_set1_epi32(mask(r)));
 		return _mm256_add_epi32(_mm256_popcnt_epi32(masked), _mm256_load_si256(reinterpret_cast<const __m256i *>(b.prefix.data())));
 	}
+#endif
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx2,popcnt,avx512f,avx512vl,avx512vpopcntdq"), always_inline)) Route route_avx512(int l, int r, int k) const {
 		auto left = prefix_counts_avx512(blocks[l >> 5], l), right = prefix_counts_avx512(blocks[r >> 5], r);
 		auto passed = _mm256_cmpgt_epi32(_mm256_set1_epi32(k + 1), _mm256_sub_epi32(right, left));
@@ -154,6 +164,8 @@ struct OctBitVector {
 		int before_l = _mm_extract_epi32(a, 1) & -int(digit != 0), before_r = _mm_extract_epi32(b, 1) & -int(digit != 0);
 		return {digit, _mm_cvtsi128_si32(a) - before_l, _mm_cvtsi128_si32(b) - before_r, k - before_r + before_l};
 	}
+#endif
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx2,popcnt,avx512f,avx512vl,avx512vpopcntdq"), always_inline)) int select_avx512(int l, int r, int k) const {
 		__m256i counts;
 		if ((l >> 5) == (r >> 5)) {
@@ -163,12 +175,15 @@ struct OctBitVector {
 		auto passed = _mm256_cmpgt_epi32(_mm256_set1_epi32(k + 1), counts);
 		return std::popcount(unsigned(_mm256_movemask_ps(_mm256_castsi256_ps(passed))));
 	}
+#endif
 
 #endif
 	void build(const std::vector<std::uint32_t> &a, int shift) {
 		assert(a.size() == std::size_t(n) && 0 <= shift && shift <= 30);
 #if defined(__x86_64__) || defined(__i386__)
+#if CP_LIBRARY_AVX512
 		if (has_avx512()) { build_avx512(a, shift); return; }
+#endif
 		if (has_avx2()) { build_avx2(a, shift); return; }
 #endif
 		build_scalar(a, shift);

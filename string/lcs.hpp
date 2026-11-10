@@ -1,6 +1,7 @@
 #ifndef LCS_HPP
 #define LCS_HPP
 
+#include "../components/simd_capabilities.hpp"
 #include "../components/sequence_compare.hpp"
 #include <algorithm>
 #include <array>
@@ -45,6 +46,7 @@ __attribute__((target("avx2"))) inline void avx2(std::string_view s, const std::
 	}
 }
 
+#if CP_LIBRARY_AVX512
 template <bool reverse>
 __attribute__((target("avx512f"))) inline void avx512(std::string_view s, const std::array<const Word *, 256> &masks, Word *__restrict row, int words) {
 	const __m512i ones = _mm512_set1_epi64(-1), one = _mm512_set1_epi64(1);
@@ -62,6 +64,7 @@ __attribute__((target("avx512f"))) inline void avx512(std::string_view s, const 
 		}
 	}
 }
+#endif
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC pop_options
 #endif
@@ -124,8 +127,11 @@ inline std::vector<Word> profile(std::string_view s, std::string_view t) {
 #if defined(__x86_64__)
 	int kernel = backend;
 	if (backend == 0 && words >= 8) {
+#if CP_LIBRARY_AVX512
 		if (__builtin_cpu_supports("avx512f")) kernel = 3;
-		else if (__builtin_cpu_supports("avx2")) kernel = 2;
+		else
+#endif
+		if (__builtin_cpu_supports("avx2")) kernel = 2;
 	}
 	if (kernel >= 2) {
 		int stride = (words + 7) & ~7;
@@ -140,8 +146,11 @@ inline std::vector<Word> profile(std::string_view s, std::string_view t) {
 			unsigned char c = t[reverse ? m - 1 - j : j];
 			data[std::size_t(ids[c]) * stride + j / 64] |= Word(1) << (j % 64);
 		}
+#if CP_LIBRARY_AVX512
 		if (kernel == 3) avx512<reverse>(s, masks, row, stride);
-		else avx2<reverse>(s, masks, row, stride);
+		else
+#endif
+		avx2<reverse>(s, masks, row, stride);
 		return std::vector<Word>(row, row + words);
 	}
 #endif

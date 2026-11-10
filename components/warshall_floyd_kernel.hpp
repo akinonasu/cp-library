@@ -18,6 +18,19 @@
 #pragma GCC optimize("O3")
 #endif
 
+#if !defined(WARSHALL_FLOYD_DISABLE_AVX512) && !defined(WARSHALL_FLOYD_DISABLE_SIMD) && (defined(__x86_64__) || defined(__i386__))
+#if defined(__GNUC__) && !defined(__clang__)
+_Pragma("GCC push_options")
+_Pragma("GCC target(\"no-avx512f,avx512f\")")
+#ifdef __AVX512F__
+#define WARSHALL_FLOYD_DETAIL_AVX512
+#endif
+_Pragma("GCC pop_options")
+#elif defined(__clang__)
+#define WARSHALL_FLOYD_DETAIL_AVX512
+#endif
+#endif
+
 namespace warshall_floyd_detail {
 template<class T> using Storage = std::vector<T, AlignedAllocator<T>>;
 
@@ -26,7 +39,7 @@ template<> struct Unsigned<__int128_t> { using type = __uint128_t; };
 
 inline int backend() {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(WARSHALL_FLOYD_DISABLE_SIMD)
-#ifndef WARSHALL_FLOYD_DISABLE_AVX512
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 	if (__builtin_cpu_supports("avx512f")) return 2;
 #endif
 	if (__builtin_cpu_supports("avx2")) return 1;
@@ -55,6 +68,7 @@ bool scalar(T* out, const T* a, const T* b, T inf) {
 }
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 template<class T, int B, bool Negative, bool Diagonal>
 __attribute__((target("avx512f")))
 bool simple512(T* out, const T* a, const T* b, T inf) {
@@ -136,6 +150,8 @@ void product512(T* out, const T* a, const T* b, T inf) {
 			_mm512_storeu_si512(out + (i + r) * B + j + q * lanes, value[r][q]);
 	}
 }
+
+#endif
 
 template<class T, int B, bool Negative, bool Diagonal>
 __attribute__((target("avx2")))
@@ -235,21 +251,27 @@ template<class T, int B, bool Negative, int Backend>
 struct Kernel {
 	static bool close(T* out, T inf) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 		if constexpr (Backend == 2) return simple512<T, B, Negative, true>(out, out, out, inf);
+#endif
 		if constexpr (Backend == 1) return simple256<T, B, Negative, true>(out, out, out, inf);
 #endif
 		return scalar<T, B, Negative, true>(out, out, out, inf);
 	}
 	static void edge(T* out, const T* a, const T* b, T inf) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 		if constexpr (Backend == 2) { simple512<T, B, Negative, false>(out, a, b, inf); return; }
+#endif
 		if constexpr (Backend == 1) { simple256<T, B, Negative, false>(out, a, b, inf); return; }
 #endif
 		scalar<T, B, Negative, false>(out, a, b, inf);
 	}
 	static void product(T* out, const T* a, const T* b, T inf) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#ifdef WARSHALL_FLOYD_DETAIL_AVX512
 		if constexpr (Backend == 2) { product512<T, B, Negative>(out, a, b, inf); return; }
+#endif
 		if constexpr (Backend == 1) { product256<T, B, Negative>(out, a, b, inf); return; }
 #endif
 		scalar<T, B, Negative, false>(out, a, b, inf);
@@ -260,20 +282,35 @@ template<class T, int B, bool Negative, int Backend>
 bool solve(T* data, int blocks, T inf) {
 	using K = Kernel<T, B, Negative, Backend>;
 	auto tile = [&](int i, int j) { return data + (std::size_t(i) * blocks + j) * B * B; };
+	std::vector<unsigned char> active(std::size_t(blocks) * blocks);
+	auto refresh = [&](int i, int j) {
+		auto id = std::size_t(i) * blocks + j;
+		if (!active[id]) {
+			const T* p = tile(i, j);
+			for (int z = 0; z < B * B; ++z) if (p[z] != inf) { active[id] = 1; break; }
+		}
+	};
+	for (int i = 0; i < blocks; ++i) for (int j = 0; j < blocks; ++j) refresh(i, j);
+	auto update = [&](int i, int j, int k, bool dependent) {
+		if (!active[std::size_t(i) * blocks + k] || !active[std::size_t(k) * blocks + j]) return;
+		if (dependent) K::edge(tile(i, j), tile(i, k), tile(k, j), inf);
+		else K::product(tile(i, j), tile(i, k), tile(k, j), inf);
+		refresh(i, j);
+	};
 	auto product = [&](int row, int col, int pivot, int rows, int cols, int inner) {
 		for (int k = pivot; k < pivot + inner; ++k)
 			for (int i = row; i < row + rows; ++i)
-				for (int j = col; j < col + cols; ++j) K::product(tile(i, j), tile(i, k), tile(k, j), inf);
+				for (int j = col; j < col + cols; ++j) update(i, j, k, false);
 	};
 	constexpr int macro = 16;
 	for (int base = 0; base < blocks; base += macro) {
 		int size = std::min(macro, blocks - base);
 		for (int k = base; k < base + size; ++k) {
 			if (!K::close(tile(k, k), inf)) return false;
-			for (int j = base; j < base + size; ++j) if (j != k) K::edge(tile(k, j), tile(k, k), tile(k, j), inf);
-			for (int i = base; i < base + size; ++i) if (i != k) K::edge(tile(i, k), tile(i, k), tile(k, k), inf);
+			for (int j = base; j < base + size; ++j) if (j != k) update(k, j, k, true);
+			for (int i = base; i < base + size; ++i) if (i != k) update(i, k, k, true);
 			for (int i = base; i < base + size; ++i) if (i != k)
-				for (int j = base; j < base + size; ++j) if (j != k) K::product(tile(i, j), tile(i, k), tile(k, j), inf);
+				for (int j = base; j < base + size; ++j) if (j != k) update(i, j, k, false);
 		}
 		for (int j = 0; j < blocks; j += macro) if (j != base)
 			product(base, j, base, size, std::min(macro, blocks - j), size);
@@ -299,5 +336,7 @@ bool run(T* data, int blocks, T inf, int selected = backend()) {
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC pop_options
 #endif
+
+#undef WARSHALL_FLOYD_DETAIL_AVX512
 
 #endif

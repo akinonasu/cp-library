@@ -15,4 +15,4 @@ documentation_of: //components/warshall_floyd_kernel.hpp
 
 配列の要素数は少なくとも `(blocks * B)^2`、各ブロックの端数はなく、`B` は 32 の倍数としてください。内部関数はこれらの前提や数値範囲を再検証しません。
 
-仮頂点を含む頂点数を $$p=B\cdot\mathrm{blocks}$$ として、計算時間は $$O(p^3)$$、配列以外の追加空間は $$O(1)$$ です。
+仮頂点を含む頂点数を $$p=B\cdot\mathrm{blocks}$$ として、計算時間は $$O(p^3)$$、配列以外の追加空間は $$O((p/B)^2)$$ です。
