@@ -5,9 +5,15 @@
 #include <cassert>
 #include <cstddef>
 #include <limits>
+#include <memory>
 #include <span>
 #include <utility>
 #include <vector>
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
 
 namespace two_sat_detail {
 inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std::span<const int> forced, std::vector<bool> &answer) {
@@ -15,15 +21,15 @@ inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std
 	assert(edges.size() <= std::size_t(std::numeric_limits<int>::max()) && answer.size() == std::size_t(variables));
 	int n = 2 * variables;
 	std::vector<signed char> values(variables, -1);
-	std::vector<int> trail;
-	trail.reserve(variables);
+	std::unique_ptr<int[]> trail(new int[variables]);
+	int *begin = trail.get(), *end = begin;
 	for (int literal : forced) {
 		if (values[literal >> 1] < 0) {
 			values[literal >> 1] = literal & 1;
-			trail.push_back(literal);
+			*end++ = literal;
 		} else if (values[literal >> 1] != (literal & 1)) return false;
 	}
-	if (trail.size() == std::size_t(variables)) {
+	if (end - begin == variables) {
 		for (auto [from, to] : edges) {
 			if (values[from >> 1] == (from & 1) && values[to >> 1] != (to & 1)) return false;
 		}
@@ -54,19 +60,19 @@ inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std
 			std::size_t switch_after = std::max<std::size_t>(1024, (std::size_t(variables) + edges.size()) / 16);
 			std::size_t compact_budget = budget - std::min(budget, switch_after);
 			auto propagate = [&] {
-				for (std::size_t i = 0; i < trail.size(); ++i) {
+				for (int *at = begin; at != end; ++at) {
 					if (!budget) return -1;
 					--budget;
-					int v = trail[i];
+					int v = *at;
 					if constexpr (Adaptive) if (!compact && budget < compact_budget) make_compact();
 					auto visit = [&](int to) {
 						if (!budget) return -1;
 						--budget;
 						if (values[to >> 1] < 0) {
 							values[to >> 1] = to & 1;
-							trail.push_back(to);
+							*end++ = to;
 						} else if (values[to >> 1] != (to & 1)) {
-							for (int literal : trail) values[literal >> 1] = -1;
+							for (int *at = begin; at != end; ++at) values[*at >> 1] = -1;
 							return 0;
 						}
 						return 1;
@@ -95,11 +101,11 @@ inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std
 				if (empty(2 * i)) values[i] = 0;
 				else if (empty(2 * i + 1)) values[i] = 1;
 				else {
-					trail.assign(1, 2 * i);
+					begin[0] = 2 * i, end = begin + 1;
 					values[i] = 0;
 					status = propagate();
 					if (!status) {
-						trail.assign(1, 2 * i + 1);
+						begin[0] = 2 * i + 1, end = begin + 1;
 						values[i] = 1;
 						status = propagate();
 						if (!status) return 0;
@@ -116,7 +122,8 @@ inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std
 		}
 	}
 	if (!compact) make_compact();
-	trail.clear();
+	trail.reset(new int[n]);
+	begin = trail.get(), end = begin;
 	std::vector<int> order(n, -1);
 	struct Frame { int vertex, next, low; };
 	std::vector<Frame> stack;
@@ -124,7 +131,7 @@ inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std
 	int clock = 0, component = -2;
 	auto enter = [&](int v) {
 		order[v] = clock++;
-		trail.push_back(v);
+		*end++ = v;
 		stack.push_back({v, offset[v], order[v]});
 	};
 	for (int root = 0; root < n; ++root) if (order[root] == -1) {
@@ -150,8 +157,8 @@ inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std
 				if (low == order[v]) {
 					int u;
 					do {
-						u = trail.back();
-						trail.pop_back();
+						u = end[-1];
+						--end;
 						order[u] = component;
 						if (order[u ^ 1] == component) return false;
 					} while (u != v);
@@ -165,5 +172,9 @@ inline bool solve(int variables, std::span<const std::pair<int, int>> edges, std
 	return true;
 }
 }
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
 
 #endif

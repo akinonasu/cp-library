@@ -60,7 +60,29 @@ void check(int n, const std::vector<std::array<int, 4>>& clauses, int padding = 
 	assert(solver.satisfiable() == (witness != -1));
 }
 
+void check_core(int n, const std::vector<std::pair<int, int>> &edges, const std::vector<int> &forced, bool expected) {
+	const auto saved_edges = edges;
+	const auto saved_forced = forced;
+	std::vector<bool> answer(n);
+	assert(two_sat_detail::solve(n, edges, forced, answer) == expected);
+	if (expected) {
+		for (auto [from, to] : edges)
+			assert(answer[from >> 1] != bool(from & 1) || answer[to >> 1] == bool(to & 1));
+		for (int literal : forced) assert(answer[literal >> 1] == bool(literal & 1));
+	}
+	assert(edges == saved_edges && forced == saved_forced);
+}
+
 int main() {
+	check_core(0, {}, {}, true);
+	for (int n : {2, 1023, 1024, 1025}) {
+		check_core(n, {{0, 0}, {1, 1}, {2, 2}, {3, 3}}, {}, true);
+		check_core(n, {{0, 2}, {3, 1}, {2, 3}}, {}, true);
+		check_core(n, {{0, 2}, {3, 1}, {2, 3}}, {3, 3}, true);
+		check_core(n, {{0, 2}, {3, 1}, {2, 3}, {0, 1}}, {1, 3, 1}, true);
+		check_core(n, {{0, 1}, {1, 0}}, {}, false);
+		check_core(n, {{0, 1}, {1, 0}}, {1, 0}, false);
+	}
 	check(0, {});
 	{
 		TwoSAT empty;

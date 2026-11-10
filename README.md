@@ -415,7 +415,7 @@
 | `components/bigint_magnitude.hpp` | 多倍長整数の絶対値演算・NTT 乗算・逆数除算 | [使い方](docs/bigint_magnitude.md) |
 | `components/integer_arithmetic.hpp` | 整数型の判定・オーバーフローを検出する加算と乗算 | [使い方](docs/integer_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
-| `components/fast_io_bulk.hpp` | 非負整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
+| `components/fast_io_bulk.hpp` | 整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
 | `components/fast_io_output.hpp` | 非負整数の一括出力 | [使い方](docs/fast_io_output.md) |
 | `components/dynamic_bit_vector.hpp` | Dynamic Bit Vector | [使い方](docs/dynamic_bit_vector.md) |
 | `components/dynamic_quad_vector.hpp` | Dynamic Quad Vector | [使い方](docs/dynamic_quad_vector.md) |

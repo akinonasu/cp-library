@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/two_sat"
 #include "graph/two_sat.hpp"
-#include "components/fast_io.hpp"
+#include "components/fast_io_bulk.hpp"
 
 int main() {
 	FastInput in;
@@ -11,11 +11,9 @@ int main() {
 	in.read(n), in.read(m);
 	TwoSAT solver(n);
 	solver.reserve(m);
-	while (m--) {
-		int a = 0, b = 0, zero = 0;
-		in.read(a), in.read(b), in.read(zero);
+	read_signed_records<3>(in, m, [&](int a, int b, int) {
 		solver.add_clause((a > 0 ? a : -a) - 1, a > 0, (b > 0 ? b : -b) - 1, b > 0);
-	}
+	});
 	if (!solver.satisfiable()) { out.println("s UNSATISFIABLE"); return 0; }
 	out.println("s SATISFIABLE");
 	out.write('v');
