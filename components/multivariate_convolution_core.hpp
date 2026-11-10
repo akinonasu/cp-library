@@ -5,7 +5,7 @@
 #include <bit>
 #include <cstddef>
 #include <vector>
-#include "mint_arithmetic.hpp"
+#include "mint_simd.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options
@@ -13,7 +13,10 @@
 #endif
 
 namespace multivariate_convolution_detail {
-struct Core : mint_detail::Ops {
+struct Core : mint_detail::SimdOps {
+	using Indices = std::vector<int>;
+	using Row = std::vector<mint>;
+	using Rows = std::vector<Row>;
 	static int modulus(int k) {
 		for (int m : {1, 2, 4, 7, 8, 14, 16, 17, 28, 32})
 			if (m >= k) return m;
@@ -27,103 +30,80 @@ struct Core : mint_detail::Ops {
 #endif
 	}
 #if defined(__x86_64__) || defined(__i386__)
+	[[gnu::target("avx2")]] static I8 load(const mint *p) { return load8(reinterpret_cast<const U *>(p)); }
+	[[gnu::target("avx2")]] static void store(mint *p, I8 v) { store8(reinterpret_cast<U *>(p), v); }
 	template<int Tables>
-	__attribute__((target("avx2"), always_inline)) static inline I8 lookup8(const U *table, I8 index) {
-		auto low = _mm256_permutevar8x32_epi32(load8(table), index);
+	__attribute__((target("avx2"), always_inline)) static inline I8 lookup(const mint *table, I8 index) {
+		auto low = _mm256_permutevar8x32_epi32(load(table), index);
 		if constexpr (Tables == 1) return low;
 		auto pick = [index](I8 x, I8 y, int bit) __attribute__((always_inline, target("avx2"))) {
 			auto mask = _mm256_castsi256_ps(_mm256_slli_epi32(index, 31 - bit));
 			return _mm256_castps_si256(_mm256_blendv_ps(_mm256_castsi256_ps(x), _mm256_castsi256_ps(y), mask));
 		};
-		low = pick(low, _mm256_permutevar8x32_epi32(load8(table + 8), index), 3);
+		low = pick(low, _mm256_permutevar8x32_epi32(load(table + 8), index), 3);
 		if constexpr (Tables == 2) return low;
-		auto high = pick(_mm256_permutevar8x32_epi32(load8(table + 16), index),
-			_mm256_permutevar8x32_epi32(load8(table + 24), index), 3);
+		auto high = pick(_mm256_permutevar8x32_epi32(load(table + 16), index),
+			_mm256_permutevar8x32_epi32(load(table + 24), index), 3);
 		return pick(low, high, 4);
 	}
-	template<int Tables>
-	__attribute__((target("avx2"))) static int weigh8(mint *x, mint *y, const mint *f, const mint *g, const unsigned char *rank, const mint *weights, int count) {
+	template<bool Sum, int Tables>
+	[[gnu::target("avx2")]] static int apply8(mint *out, const mint *in, const unsigned char *rank, const mint *weights, int count, mint *other, const mint *input) {
 		int i = 0;
 		for (; i + 8 <= count; i += 8) {
 			auto indices = _mm256_cvtepu8_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(rank + i)));
-			auto w = lookup8<Tables>(reinterpret_cast<const U *>(weights), indices);
-			store8(reinterpret_cast<U *>(x + i), mul8(load8(reinterpret_cast<const U *>(f + i)), w));
-			store8(reinterpret_cast<U *>(y + i), mul8(load8(reinterpret_cast<const U *>(g + i)), w));
+			auto w = lookup<Tables>(weights, indices), value = mul8(load(in + i), w);
+			if constexpr (Sum) value = add8(load(out + i), value);
+			else store(other + i, mul8(load(input + i), w));
+			store(out + i, value);
 		}
 		return i;
 	}
-	template<int Tables>
-	__attribute__((target("avx2"))) static int accumulate8(mint *out, const mint *z, const unsigned char *rank, const mint *weights, int count) {
-		int i = 0;
-		for (; i + 8 <= count; i += 8) {
-			auto indices = _mm256_cvtepu8_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(rank + i)));
-			auto w = lookup8<Tables>(reinterpret_cast<const U *>(weights), indices);
-			auto value = mul8(load8(reinterpret_cast<const U *>(z + i)), w);
-			store8(reinterpret_cast<U *>(out + i), add8(load8(reinterpret_cast<const U *>(out + i)), value));
-		}
-		return i;
-	}
-
 	template<int Count>
-	__attribute__((target("avx2"))) static void short_row8(std::vector<mint> &out, const std::vector<std::vector<mint>> &a, const std::vector<std::vector<mint>> &b, int row, const std::vector<int> &parts) {
+	[[gnu::target("avx2")]] static void row8(Row &out, const Rows &a, const Rows &b, int row, const Indices &parts) {
 		const auto p = _mm256_set1_epi32(mod), two = _mm256_set1_epi32(twice);
 		for (std::size_t i = 0; i < out.size(); i += 8) {
-			auto even = _mm256_setzero_si256(), odd = even;
-#pragma GCC unroll 8
-			for (int k = 0; k < Count; ++k) {
-				auto x = load8(reinterpret_cast<const U *>(a[parts[k]].data() + i));
-				auto y = load8(reinterpret_cast<const U *>(b[row - parts[k]].data() + i));
-				if constexpr (Count >= 4) {
-					x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
-					y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
-				}
-				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
-				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
-			}
-			auto value = reduce8(even, odd);
-			value = _mm256_min_epu32(value, _mm256_sub_epi32(value, two));
-			store8(reinterpret_cast<U *>(out.data() + i), value);
-		}
-	}
-
-	__attribute__((target("avx2"))) static void row8(std::vector<mint> &out, const std::vector<std::vector<mint>> &a, const std::vector<std::vector<mint>> &b, int row, const std::vector<int> &parts) {
-		const auto p = _mm256_set1_epi32(mod), r = _mm256_set1_epi32(998244351), two = _mm256_set1_epi32(twice);
-		for (std::size_t i = 0; i < out.size(); i += 8) {
 			auto sum = _mm256_setzero_si256();
-			for (std::size_t j = 0; j < parts.size(); j += 8) {
+			for (std::size_t j = 0; j < (Count ? Count : parts.size()); j += 8) {
 				auto even = _mm256_setzero_si256(), odd = even;
-				for (std::size_t k = j; k < std::min(j + 8, parts.size()); ++k) {
-					auto x = load8(reinterpret_cast<const U *>(a[parts[k]].data() + i));
-					auto y = load8(reinterpret_cast<const U *>(b[row - parts[k]].data() + i));
-					x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
-					y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
+				for (std::size_t k = 0; k < (Count ? Count : std::min(std::size_t(8), parts.size() - j)); ++k) {
+					auto x = load(a[parts[j + k]].data() + i), y = load(b[row - parts[j + k]].data() + i);
+					if constexpr (!Count || Count >= 4) {
+						x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+						y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
+					}
 					even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
 					odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
 				}
-				even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, r), p));
-				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, r), p));
-				auto value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+				auto value = reduce8(even, odd);
 				value = _mm256_min_epu32(value, _mm256_sub_epi32(value, two));
-				sum = add8(sum, value);
+				if constexpr (Count) sum = value;
+				else sum = add8(sum, value);
 			}
-			store8(reinterpret_cast<U *>(out.data() + i), sum);
+			store(out.data() + i, sum);
 		}
 	}
 #endif
-	static void row(std::vector<mint> &out, const std::vector<std::vector<mint>> &a, const std::vector<std::vector<mint>> &b, int index, const std::vector<int> &parts) {
+	template<bool Sum>
+	static void apply(mint *out, const mint *in, const unsigned char *rank, const mint *weights, int count, [[maybe_unused]] int colors, mint *other = nullptr, const mint *input = nullptr) {
+		int i = 0;
+#if defined(__x86_64__) || defined(__i386__)
+		if (available()) {
+			if (colors <= 8) i = apply8<Sum, 1>(out, in, rank, weights, count, other, input);
+			else if (colors <= 16) i = apply8<Sum, 2>(out, in, rank, weights, count, other, input);
+			else i = apply8<Sum, 4>(out, in, rank, weights, count, other, input);
+		}
+#endif
+		for (; i < count; ++i) {
+			if constexpr (Sum) out[i] += in[i] * weights[rank[i]];
+			else out[i] = in[i] * weights[rank[i]], other[i] = input[i] * weights[rank[i]];
+		}
+	}
+	static void row(Row &out, const Rows &a, const Rows &b, int index, const Indices &parts) {
 #if defined(__x86_64__) || defined(__i386__)
 		if (out.size() >= 8 && available()) {
-			switch (parts.size()) {
-			case 1: return short_row8<1>(out, a, b, index, parts);
-			case 2: return short_row8<2>(out, a, b, index, parts);
-			case 3: return short_row8<3>(out, a, b, index, parts);
-			case 4: return short_row8<4>(out, a, b, index, parts);
-			case 5: return short_row8<5>(out, a, b, index, parts);
-			case 6: return short_row8<6>(out, a, b, index, parts);
-			case 7: return short_row8<7>(out, a, b, index, parts);
-			case 8: return short_row8<8>(out, a, b, index, parts);
-			default: return row8(out, a, b, index, parts);
-			}
+			using Kernel = void (*)(Row &, const Rows &, const Rows &, int, const Indices &);
+			static constexpr Kernel kernels[] = {row8<0>, row8<1>, row8<2>, row8<3>, row8<4>, row8<5>, row8<6>, row8<7>, row8<8>};
+			return kernels[parts.size() <= 8 ? parts.size() : 0](out, a, b, index, parts);
 		}
 #endif
 		std::fill(out.begin(), out.end(), mint(0));
@@ -131,12 +111,12 @@ struct Core : mint_detail::Ops {
 			for (std::size_t i = 0; i < out.size(); ++i) out[i] += a[p][i] * b[index - p][i];
 	}
 	template <class Transform, class Product>
-	static std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<mint> &b, std::vector<int> dims, Transform transform, Product product) {
+	static Row multiply(const Row &a, const Row &b, Indices dims, Transform transform, Product product) {
 		int n = a.size();
-		std::vector<int> order(dims.size());
+		Indices order(dims.size());
 		for (int j = 0; j < int(order.size()); ++j) order[j] = j;
 		std::stable_sort(order.begin(), order.end(), [&](int x, int y) { return dims[x] > dims[y]; });
-		std::vector<int> sorted;
+		Indices sorted;
 		for (int j : order) sorted.push_back(dims[j]);
 		int split = sorted.size(), inner = n, outer = 1;
 		double best = 1e300, pairs = 1;
@@ -152,12 +132,12 @@ struct Core : mint_detail::Ops {
 		for (int j = 0; j < int(dims.size()); ++j) sorted[j] = dims[order[j]];
 		int prefix = 0, run = 1;
 		while (prefix < int(dims.size()) && order[prefix] == prefix) run *= dims[prefix++];
-		std::vector<int> permutation;
-		std::vector<mint> f, g, result(n);
+		Indices permutation;
+		Row f, g, result(n);
 		if (run != n) {
-			std::vector<int> target(dims.size());
+			Indices target(dims.size());
 			for (int j = 0, s = 1; j < int(dims.size()); s *= sorted[j++]) target[order[j]] = s;
-			std::vector<int> digit(dims.size());
+			Indices digit(dims.size());
 			f.resize(n), g.resize(n), permutation.resize(n / run);
 			for (int i = 0, p = 0; i < n; i += run) {
 				permutation[i / run] = p;
@@ -173,7 +153,7 @@ struct Core : mint_detail::Ops {
 		const auto &input_f = run == n ? a : f, &input_g = run == n ? b : g;
 		int m = modulus(split), length = std::bit_ceil(unsigned(2 * inner - 1));
 		std::vector<unsigned char> ranks(inner);
-		std::vector<int> rank_digits(split);
+		Indices rank_digits(split);
 		for (int i = 0, rank = 0; i < inner; ++i) {
 			ranks[i] = rank;
 			for (int j = 0; j + 1 < split && ++rank_digits[j] == sorted[j]; ++j) {
@@ -181,7 +161,7 @@ struct Core : mint_detail::Ops {
 				if (++rank == m) rank = 0;
 			}
 		}
-		std::vector<std::vector<int>> parts(outer);
+		std::vector<Indices> parts(outer);
 		for (int e = 0; e < outer; ++e)
 			for (int x = 0; x <= e; ++x) {
 				bool valid = true;
@@ -189,8 +169,8 @@ struct Core : mint_detail::Ops {
 					if (u % sorted[j] > v % sorted[j]) { valid = false; break; }
 				if (valid) parts[e].push_back(x);
 			}
-		std::vector<std::vector<mint>> x(outer, std::vector<mint>(outer == 1 ? inner : length)), y = x;
-		std::vector<mint> z(length), weights(32), inverse(32);
+		Rows x(outer, Row(outer == 1 ? inner : length)), y = x;
+		Row z(length), weights(32), inverse(32);
 		mint root = mint(3).pow((mod - 1) / m), scale = mint(m).inv();
 		for (int s = 0; s < m; ++s) {
 			mint step = root.pow(s), back = step.inv();
@@ -199,38 +179,20 @@ struct Core : mint_detail::Ops {
 			for (int row = 0; row < outer; ++row) {
 				std::fill(x[row].begin() + inner, x[row].end(), mint(0));
 				std::fill(y[row].begin() + inner, y[row].end(), mint(0));
-				int i = 0;
 				if (s == 0) {
 					std::copy_n(input_f.begin() + row * inner, inner, x[row].begin());
 					std::copy_n(input_g.begin() + row * inner, inner, y[row].begin());
-					i = inner;
-				}
-#if defined(__x86_64__) || defined(__i386__)
-				else if (available()) {
-					if (m <= 8) i = weigh8<1>(x[row].data(), y[row].data(), input_f.data() + row * inner, input_g.data() + row * inner, ranks.data(), weights.data(), inner);
-					else if (m <= 16) i = weigh8<2>(x[row].data(), y[row].data(), input_f.data() + row * inner, input_g.data() + row * inner, ranks.data(), weights.data(), inner);
-					else i = weigh8<4>(x[row].data(), y[row].data(), input_f.data() + row * inner, input_g.data() + row * inner, ranks.data(), weights.data(), inner);
-				}
-#endif
-				for (; i < inner; ++i) x[row][i] = input_f[row * inner + i] * weights[ranks[i]], y[row][i] = input_g[row * inner + i] * weights[ranks[i]];
+				} else apply<false>(x[row].data(), input_f.data() + row * inner, ranks.data(), weights.data(), inner, m, y[row].data(), input_g.data() + row * inner);
 				if (outer != 1) transform(x[row], false), transform(y[row], false);
 			}
 			for (int row = outer; row-- > 0;) {
 				if (outer == 1) z = product(x[0], y[0]);
 				else Core::row(z, x, y, row, parts[row]), transform(z, true);
-				int i = 0;
-#if defined(__x86_64__) || defined(__i386__)
-				if (available()) {
-					if (m <= 8) i = accumulate8<1>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner);
-					else if (m <= 16) i = accumulate8<2>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner);
-					else i = accumulate8<4>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner);
-				}
-#endif
-				for (; i < inner; ++i) result[row * inner + i] += z[i] * inverse[ranks[i]];
+				apply<true>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner, m);
 			}
 		}
 		if (run == n) return result;
-		std::vector<mint> output(n);
+		Row output(n);
 		for (int i = 0; i < n; i += run) std::copy_n(result.begin() + permutation[i / run], run, output.begin() + i);
 		return output;
 	}

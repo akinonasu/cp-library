@@ -14,7 +14,7 @@
 
 #include <algorithm>
 #include <bit>
-#line 1 "components/mint_arithmetic.hpp"
+#line 1 "components/mint_simd.hpp"
 
 
 
@@ -158,41 +158,15 @@ using fps_mint = mint;
 #endif
 
 
-#line 5 "components/mint_arithmetic.hpp"
+#line 5 "components/mint_simd.hpp"
 #if defined(__x86_64__) || defined(__i386__)
 #include <immintrin.h>
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
-#pragma GCC push_options
-#pragma GCC optimize("O3")
-#endif
-
 namespace mint_detail {
-struct Ops {
-	using T = mint;
+struct SimdOps {
 	typedef unsigned int U __attribute__((may_alias));
-	static constexpr U mod = 998244353, twice = 2 * mod, one = 301989884;
-	static U reduce(unsigned long long x) { return T::reduce(x); }
-	static U mul(U a, U b) { return reduce((unsigned long long)a * b); }
-	static U add(U a, U b) {
-		U c = a + b;
-		return c < twice ? c : c - twice;
-	}
-	static U sub(U a, U b) {
-		U c = a - b;
-		return c < twice ? c : c + twice;
-	}
-	static U in(U a) { return mul(a, 932051910); }
-	static U out(U a) {
-		a = reduce(a);
-		return a < mod ? a : a - mod;
-	}
-	static U quotient(U r) { return ((unsigned long long)r << 32) / mod; }
-	static U fixed_mul(U a, U r, U q) {
-		return a * r - U(((unsigned long long)a * q) >> 32) * mod;
-	}
-
+	static constexpr U mod = 998244353, twice = 2 * mod;
 #if defined(__x86_64__) || defined(__i386__)
 	static bool vectorized() {
 #if defined(__AVX2__)
@@ -203,10 +177,10 @@ struct Ops {
 #endif
 	}
 	using I8 = __m256i;
-	__attribute__((target("avx2"))) static I8 load8(const U *a) {
+	[[gnu::target("avx2")]] static I8 load8(const U *a) {
 		return _mm256_loadu_si256(reinterpret_cast<const I8 *>(a));
 	}
-	__attribute__((target("avx2"))) static void store8(U *a, I8 x) {
+	[[gnu::target("avx2")]] static void store8(U *a, I8 x) {
 		_mm256_storeu_si256(reinterpret_cast<I8 *>(a), x);
 	}
 	__attribute__((target("avx2"), always_inline)) static inline I8 reduce8(I8 x, I8 y) {
@@ -215,37 +189,16 @@ struct Ops {
 		y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, r), p));
 		return _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
 	}
-	__attribute__((target("avx2"))) static I8 mul8(I8 a, I8 b) {
+	[[gnu::target("avx2")]] static I8 mul8(I8 a, I8 b) {
 		return reduce8(_mm256_mul_epu32(a, b), _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
 	}
-	__attribute__((target("avx2"))) static I8 fixed_mul8(I8 a, I8 r, I8 q) {
-		I8 x = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
-		I8 y = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), q);
-		I8 t = _mm256_blend_epi32(x, y, 0xaa);
-		return _mm256_sub_epi32(_mm256_mullo_epi32(a, r),
-								_mm256_mullo_epi32(t, _mm256_set1_epi32(mod)));
-	}
-	__attribute__((target("avx2"))) static I8 fixed_even8(I8 a, I8 r, I8 q) {
-		I8 t = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
-		return _mm256_sub_epi64(_mm256_mul_epu32(a, r),
-								_mm256_mul_epu32(t, _mm256_set1_epi32(mod)));
-	}
-	__attribute__((target("avx2"))) static I8 add8(I8 a, I8 b) {
+	[[gnu::target("avx2")]] static I8 add8(I8 a, I8 b) {
 		I8 x = _mm256_add_epi32(a, b);
 		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(twice)));
 	}
-	__attribute__((target("avx2"))) static I8 sub8(I8 a, I8 b) {
-		I8 x = _mm256_sub_epi32(a, b);
-		return _mm256_min_epu32(x, _mm256_add_epi32(x, _mm256_set1_epi32(twice)));
-	}
-
 #endif
 };
 }
-
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
-#pragma GCC pop_options
-#endif
 
 
 #line 9 "components/multivariate_convolution_core.hpp"
@@ -256,7 +209,10 @@ struct Ops {
 #endif
 
 namespace multivariate_convolution_detail {
-struct Core : mint_detail::Ops {
+struct Core : mint_detail::SimdOps {
+	using Indices = std::vector<int>;
+	using Row = std::vector<mint>;
+	using Rows = std::vector<Row>;
 	static int modulus(int k) {
 		for (int m : {1, 2, 4, 7, 8, 14, 16, 17, 28, 32})
 			if (m >= k) return m;
@@ -270,103 +226,80 @@ struct Core : mint_detail::Ops {
 #endif
 	}
 #if defined(__x86_64__) || defined(__i386__)
+	[[gnu::target("avx2")]] static I8 load(const mint *p) { return load8(reinterpret_cast<const U *>(p)); }
+	[[gnu::target("avx2")]] static void store(mint *p, I8 v) { store8(reinterpret_cast<U *>(p), v); }
 	template<int Tables>
-	__attribute__((target("avx2"), always_inline)) static inline I8 lookup8(const U *table, I8 index) {
-		auto low = _mm256_permutevar8x32_epi32(load8(table), index);
+	__attribute__((target("avx2"), always_inline)) static inline I8 lookup(const mint *table, I8 index) {
+		auto low = _mm256_permutevar8x32_epi32(load(table), index);
 		if constexpr (Tables == 1) return low;
 		auto pick = [index](I8 x, I8 y, int bit) __attribute__((always_inline, target("avx2"))) {
 			auto mask = _mm256_castsi256_ps(_mm256_slli_epi32(index, 31 - bit));
 			return _mm256_castps_si256(_mm256_blendv_ps(_mm256_castsi256_ps(x), _mm256_castsi256_ps(y), mask));
 		};
-		low = pick(low, _mm256_permutevar8x32_epi32(load8(table + 8), index), 3);
+		low = pick(low, _mm256_permutevar8x32_epi32(load(table + 8), index), 3);
 		if constexpr (Tables == 2) return low;
-		auto high = pick(_mm256_permutevar8x32_epi32(load8(table + 16), index),
-			_mm256_permutevar8x32_epi32(load8(table + 24), index), 3);
+		auto high = pick(_mm256_permutevar8x32_epi32(load(table + 16), index),
+			_mm256_permutevar8x32_epi32(load(table + 24), index), 3);
 		return pick(low, high, 4);
 	}
-	template<int Tables>
-	__attribute__((target("avx2"))) static int weigh8(mint *x, mint *y, const mint *f, const mint *g, const unsigned char *rank, const mint *weights, int count) {
+	template<bool Sum, int Tables>
+	[[gnu::target("avx2")]] static int apply8(mint *out, const mint *in, const unsigned char *rank, const mint *weights, int count, mint *other, const mint *input) {
 		int i = 0;
 		for (; i + 8 <= count; i += 8) {
 			auto indices = _mm256_cvtepu8_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(rank + i)));
-			auto w = lookup8<Tables>(reinterpret_cast<const U *>(weights), indices);
-			store8(reinterpret_cast<U *>(x + i), mul8(load8(reinterpret_cast<const U *>(f + i)), w));
-			store8(reinterpret_cast<U *>(y + i), mul8(load8(reinterpret_cast<const U *>(g + i)), w));
+			auto w = lookup<Tables>(weights, indices), value = mul8(load(in + i), w);
+			if constexpr (Sum) value = add8(load(out + i), value);
+			else store(other + i, mul8(load(input + i), w));
+			store(out + i, value);
 		}
 		return i;
 	}
-	template<int Tables>
-	__attribute__((target("avx2"))) static int accumulate8(mint *out, const mint *z, const unsigned char *rank, const mint *weights, int count) {
-		int i = 0;
-		for (; i + 8 <= count; i += 8) {
-			auto indices = _mm256_cvtepu8_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(rank + i)));
-			auto w = lookup8<Tables>(reinterpret_cast<const U *>(weights), indices);
-			auto value = mul8(load8(reinterpret_cast<const U *>(z + i)), w);
-			store8(reinterpret_cast<U *>(out + i), add8(load8(reinterpret_cast<const U *>(out + i)), value));
-		}
-		return i;
-	}
-
 	template<int Count>
-	__attribute__((target("avx2"))) static void short_row8(std::vector<mint> &out, const std::vector<std::vector<mint>> &a, const std::vector<std::vector<mint>> &b, int row, const std::vector<int> &parts) {
+	[[gnu::target("avx2")]] static void row8(Row &out, const Rows &a, const Rows &b, int row, const Indices &parts) {
 		const auto p = _mm256_set1_epi32(mod), two = _mm256_set1_epi32(twice);
 		for (std::size_t i = 0; i < out.size(); i += 8) {
-			auto even = _mm256_setzero_si256(), odd = even;
-#pragma GCC unroll 8
-			for (int k = 0; k < Count; ++k) {
-				auto x = load8(reinterpret_cast<const U *>(a[parts[k]].data() + i));
-				auto y = load8(reinterpret_cast<const U *>(b[row - parts[k]].data() + i));
-				if constexpr (Count >= 4) {
-					x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
-					y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
-				}
-				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
-				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
-			}
-			auto value = reduce8(even, odd);
-			value = _mm256_min_epu32(value, _mm256_sub_epi32(value, two));
-			store8(reinterpret_cast<U *>(out.data() + i), value);
-		}
-	}
-
-	__attribute__((target("avx2"))) static void row8(std::vector<mint> &out, const std::vector<std::vector<mint>> &a, const std::vector<std::vector<mint>> &b, int row, const std::vector<int> &parts) {
-		const auto p = _mm256_set1_epi32(mod), r = _mm256_set1_epi32(998244351), two = _mm256_set1_epi32(twice);
-		for (std::size_t i = 0; i < out.size(); i += 8) {
 			auto sum = _mm256_setzero_si256();
-			for (std::size_t j = 0; j < parts.size(); j += 8) {
+			for (std::size_t j = 0; j < (Count ? Count : parts.size()); j += 8) {
 				auto even = _mm256_setzero_si256(), odd = even;
-				for (std::size_t k = j; k < std::min(j + 8, parts.size()); ++k) {
-					auto x = load8(reinterpret_cast<const U *>(a[parts[k]].data() + i));
-					auto y = load8(reinterpret_cast<const U *>(b[row - parts[k]].data() + i));
-					x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
-					y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
+				for (std::size_t k = 0; k < (Count ? Count : std::min(std::size_t(8), parts.size() - j)); ++k) {
+					auto x = load(a[parts[j + k]].data() + i), y = load(b[row - parts[j + k]].data() + i);
+					if constexpr (!Count || Count >= 4) {
+						x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
+						y = _mm256_min_epu32(y, _mm256_sub_epi32(y, p));
+					}
 					even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
 					odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
 				}
-				even = _mm256_add_epi64(even, _mm256_mul_epu32(_mm256_mul_epu32(even, r), p));
-				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_mul_epu32(odd, r), p));
-				auto value = _mm256_blend_epi32(_mm256_srli_epi64(even, 32), odd, 0xaa);
+				auto value = reduce8(even, odd);
 				value = _mm256_min_epu32(value, _mm256_sub_epi32(value, two));
-				sum = add8(sum, value);
+				if constexpr (Count) sum = value;
+				else sum = add8(sum, value);
 			}
-			store8(reinterpret_cast<U *>(out.data() + i), sum);
+			store(out.data() + i, sum);
 		}
 	}
 #endif
-	static void row(std::vector<mint> &out, const std::vector<std::vector<mint>> &a, const std::vector<std::vector<mint>> &b, int index, const std::vector<int> &parts) {
+	template<bool Sum>
+	static void apply(mint *out, const mint *in, const unsigned char *rank, const mint *weights, int count, [[maybe_unused]] int colors, mint *other = nullptr, const mint *input = nullptr) {
+		int i = 0;
+#if defined(__x86_64__) || defined(__i386__)
+		if (available()) {
+			if (colors <= 8) i = apply8<Sum, 1>(out, in, rank, weights, count, other, input);
+			else if (colors <= 16) i = apply8<Sum, 2>(out, in, rank, weights, count, other, input);
+			else i = apply8<Sum, 4>(out, in, rank, weights, count, other, input);
+		}
+#endif
+		for (; i < count; ++i) {
+			if constexpr (Sum) out[i] += in[i] * weights[rank[i]];
+			else out[i] = in[i] * weights[rank[i]], other[i] = input[i] * weights[rank[i]];
+		}
+	}
+	static void row(Row &out, const Rows &a, const Rows &b, int index, const Indices &parts) {
 #if defined(__x86_64__) || defined(__i386__)
 		if (out.size() >= 8 && available()) {
-			switch (parts.size()) {
-			case 1: return short_row8<1>(out, a, b, index, parts);
-			case 2: return short_row8<2>(out, a, b, index, parts);
-			case 3: return short_row8<3>(out, a, b, index, parts);
-			case 4: return short_row8<4>(out, a, b, index, parts);
-			case 5: return short_row8<5>(out, a, b, index, parts);
-			case 6: return short_row8<6>(out, a, b, index, parts);
-			case 7: return short_row8<7>(out, a, b, index, parts);
-			case 8: return short_row8<8>(out, a, b, index, parts);
-			default: return row8(out, a, b, index, parts);
-			}
+			using Kernel = void (*)(Row &, const Rows &, const Rows &, int, const Indices &);
+			static constexpr Kernel kernels[] = {row8<0>, row8<1>, row8<2>, row8<3>, row8<4>, row8<5>, row8<6>, row8<7>, row8<8>};
+			return kernels[parts.size() <= 8 ? parts.size() : 0](out, a, b, index, parts);
 		}
 #endif
 		std::fill(out.begin(), out.end(), mint(0));
@@ -374,12 +307,12 @@ struct Core : mint_detail::Ops {
 			for (std::size_t i = 0; i < out.size(); ++i) out[i] += a[p][i] * b[index - p][i];
 	}
 	template <class Transform, class Product>
-	static std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<mint> &b, std::vector<int> dims, Transform transform, Product product) {
+	static Row multiply(const Row &a, const Row &b, Indices dims, Transform transform, Product product) {
 		int n = a.size();
-		std::vector<int> order(dims.size());
+		Indices order(dims.size());
 		for (int j = 0; j < int(order.size()); ++j) order[j] = j;
 		std::stable_sort(order.begin(), order.end(), [&](int x, int y) { return dims[x] > dims[y]; });
-		std::vector<int> sorted;
+		Indices sorted;
 		for (int j : order) sorted.push_back(dims[j]);
 		int split = sorted.size(), inner = n, outer = 1;
 		double best = 1e300, pairs = 1;
@@ -395,12 +328,12 @@ struct Core : mint_detail::Ops {
 		for (int j = 0; j < int(dims.size()); ++j) sorted[j] = dims[order[j]];
 		int prefix = 0, run = 1;
 		while (prefix < int(dims.size()) && order[prefix] == prefix) run *= dims[prefix++];
-		std::vector<int> permutation;
-		std::vector<mint> f, g, result(n);
+		Indices permutation;
+		Row f, g, result(n);
 		if (run != n) {
-			std::vector<int> target(dims.size());
+			Indices target(dims.size());
 			for (int j = 0, s = 1; j < int(dims.size()); s *= sorted[j++]) target[order[j]] = s;
-			std::vector<int> digit(dims.size());
+			Indices digit(dims.size());
 			f.resize(n), g.resize(n), permutation.resize(n / run);
 			for (int i = 0, p = 0; i < n; i += run) {
 				permutation[i / run] = p;
@@ -416,7 +349,7 @@ struct Core : mint_detail::Ops {
 		const auto &input_f = run == n ? a : f, &input_g = run == n ? b : g;
 		int m = modulus(split), length = std::bit_ceil(unsigned(2 * inner - 1));
 		std::vector<unsigned char> ranks(inner);
-		std::vector<int> rank_digits(split);
+		Indices rank_digits(split);
 		for (int i = 0, rank = 0; i < inner; ++i) {
 			ranks[i] = rank;
 			for (int j = 0; j + 1 < split && ++rank_digits[j] == sorted[j]; ++j) {
@@ -424,7 +357,7 @@ struct Core : mint_detail::Ops {
 				if (++rank == m) rank = 0;
 			}
 		}
-		std::vector<std::vector<int>> parts(outer);
+		std::vector<Indices> parts(outer);
 		for (int e = 0; e < outer; ++e)
 			for (int x = 0; x <= e; ++x) {
 				bool valid = true;
@@ -432,8 +365,8 @@ struct Core : mint_detail::Ops {
 					if (u % sorted[j] > v % sorted[j]) { valid = false; break; }
 				if (valid) parts[e].push_back(x);
 			}
-		std::vector<std::vector<mint>> x(outer, std::vector<mint>(outer == 1 ? inner : length)), y = x;
-		std::vector<mint> z(length), weights(32), inverse(32);
+		Rows x(outer, Row(outer == 1 ? inner : length)), y = x;
+		Row z(length), weights(32), inverse(32);
 		mint root = mint(3).pow((mod - 1) / m), scale = mint(m).inv();
 		for (int s = 0; s < m; ++s) {
 			mint step = root.pow(s), back = step.inv();
@@ -442,38 +375,20 @@ struct Core : mint_detail::Ops {
 			for (int row = 0; row < outer; ++row) {
 				std::fill(x[row].begin() + inner, x[row].end(), mint(0));
 				std::fill(y[row].begin() + inner, y[row].end(), mint(0));
-				int i = 0;
 				if (s == 0) {
 					std::copy_n(input_f.begin() + row * inner, inner, x[row].begin());
 					std::copy_n(input_g.begin() + row * inner, inner, y[row].begin());
-					i = inner;
-				}
-#if defined(__x86_64__) || defined(__i386__)
-				else if (available()) {
-					if (m <= 8) i = weigh8<1>(x[row].data(), y[row].data(), input_f.data() + row * inner, input_g.data() + row * inner, ranks.data(), weights.data(), inner);
-					else if (m <= 16) i = weigh8<2>(x[row].data(), y[row].data(), input_f.data() + row * inner, input_g.data() + row * inner, ranks.data(), weights.data(), inner);
-					else i = weigh8<4>(x[row].data(), y[row].data(), input_f.data() + row * inner, input_g.data() + row * inner, ranks.data(), weights.data(), inner);
-				}
-#endif
-				for (; i < inner; ++i) x[row][i] = input_f[row * inner + i] * weights[ranks[i]], y[row][i] = input_g[row * inner + i] * weights[ranks[i]];
+				} else apply<false>(x[row].data(), input_f.data() + row * inner, ranks.data(), weights.data(), inner, m, y[row].data(), input_g.data() + row * inner);
 				if (outer != 1) transform(x[row], false), transform(y[row], false);
 			}
 			for (int row = outer; row-- > 0;) {
 				if (outer == 1) z = product(x[0], y[0]);
 				else Core::row(z, x, y, row, parts[row]), transform(z, true);
-				int i = 0;
-#if defined(__x86_64__) || defined(__i386__)
-				if (available()) {
-					if (m <= 8) i = accumulate8<1>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner);
-					else if (m <= 16) i = accumulate8<2>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner);
-					else i = accumulate8<4>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner);
-				}
-#endif
-				for (; i < inner; ++i) result[row * inner + i] += z[i] * inverse[ranks[i]];
+				apply<true>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner, m);
 			}
 		}
 		if (run == n) return result;
-		std::vector<mint> output(n);
+		Row output(n);
 		for (int i = 0; i < n; i += run) std::copy_n(result.begin() + permutation[i / run], run, output.begin() + i);
 		return output;
 	}
@@ -1043,6 +958,68 @@ __attribute__((target("avx2"))) inline std::vector<mint> multiply(const std::vec
 #line 11 "components/ntt.hpp"
 #include <utility>
 #line 13 "components/ntt.hpp"
+
+#line 1 "components/mint_arithmetic.hpp"
+
+
+
+#line 5 "components/mint_arithmetic.hpp"
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC push_options
+#pragma GCC optimize("O3")
+#endif
+
+namespace mint_detail {
+struct Ops : SimdOps {
+	using T = mint;
+	static constexpr U one = 301989884;
+	static U reduce(unsigned long long x) { return T::reduce(x); }
+	static U mul(U a, U b) { return reduce((unsigned long long)a * b); }
+	static U add(U a, U b) {
+		U c = a + b;
+		return c < twice ? c : c - twice;
+	}
+	static U sub(U a, U b) {
+		U c = a - b;
+		return c < twice ? c : c + twice;
+	}
+	static U in(U a) { return mul(a, 932051910); }
+	static U out(U a) {
+		a = reduce(a);
+		return a < mod ? a : a - mod;
+	}
+	static U quotient(U r) { return ((unsigned long long)r << 32) / mod; }
+	static U fixed_mul(U a, U r, U q) {
+		return a * r - U(((unsigned long long)a * q) >> 32) * mod;
+	}
+
+#if defined(__x86_64__) || defined(__i386__)
+	__attribute__((target("avx2"))) static I8 fixed_mul8(I8 a, I8 r, I8 q) {
+		I8 x = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
+		I8 y = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), q);
+		I8 t = _mm256_blend_epi32(x, y, 0xaa);
+		return _mm256_sub_epi32(_mm256_mullo_epi32(a, r),
+								_mm256_mullo_epi32(t, _mm256_set1_epi32(mod)));
+	}
+	__attribute__((target("avx2"))) static I8 fixed_even8(I8 a, I8 r, I8 q) {
+		I8 t = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
+		return _mm256_sub_epi64(_mm256_mul_epu32(a, r),
+								_mm256_mul_epu32(t, _mm256_set1_epi32(mod)));
+	}
+	__attribute__((target("avx2"))) static I8 sub8(I8 a, I8 b) {
+		I8 x = _mm256_sub_epi32(a, b);
+		return _mm256_min_epu32(x, _mm256_add_epi32(x, _mm256_set1_epi32(twice)));
+	}
+
+#endif
+};
+}
+
+#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#pragma GCC pop_options
+#endif
+
 
 #line 15 "components/ntt.hpp"
 
@@ -3463,6 +3440,14 @@ std::vector<Real> convolution_fft(const std::vector<Real> &a, const std::vector<
 #endif
 
 namespace ntt_mod_detail {
+#if defined(__x86_64__) || defined(__i386__)
+__attribute__((target("avx2"), always_inline))
+inline __m256i load256(const void *p) { return _mm256_loadu_si256(static_cast<const __m256i *>(p)); }
+__attribute__((target("avx2"), always_inline))
+inline void store256(void *p, __m256i x) { _mm256_storeu_si256(static_cast<__m256i *>(p), x); }
+
+#endif
+
 template <std::uint32_t mod> struct Vector;
 
 template <std::uint32_t mod>
@@ -3489,19 +3474,19 @@ void butterfly(std::uint32_t *a, std::size_t n, std::size_t half,
 
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void butterfly_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 					const std::uint32_t *roots, const std::uint32_t *quotients) {
 	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
-			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
-			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
-			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
-			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
+			auto x = load256(a + start + j);
+			auto y = load256(a + start + j + half);
+			auto r = load256(roots + j);
+			auto q = load256(quotients + j);
 			y = V::multiply(y, r, q);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), V::subtract(x, y));
+			store256(a + start + j, V::add(x, y));
+			store256(a + start + j + half, V::subtract(x, y));
 		}
 }
 #endif
@@ -3527,19 +3512,19 @@ void forward_stage(std::uint32_t *a, std::size_t n, std::size_t half,
 
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 		const std::uint32_t *roots, const std::uint32_t *quotients) {
 	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
-			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
-			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
-			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
-			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
+			auto x = load256(a + start + j);
+			auto y = load256(a + start + j + half);
+			auto r = load256(roots + j);
+			auto q = load256(quotients + j);
 			auto difference = V::multiply(V::subtract(x, y), r, q);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
+			store256(a + start + j, V::add(x, y));
+			store256(a + start + j + half, difference);
 		}
 }
 
@@ -3568,7 +3553,7 @@ struct Vector {
 };
 
 template <std::uint32_t mod, bool inverse>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void leaf_avx2(std::uint32_t *a, std::size_t n, const std::uint32_t *roots, const std::uint32_t *quotients) {
 	using V = Vector<mod>;
 	auto r4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(roots + 4)));
@@ -3576,7 +3561,7 @@ void leaf_avx2(std::uint32_t *a, std::size_t n, const std::uint32_t *roots, cons
 	auto r2 = _mm256_setr_epi32(roots[2], roots[3], roots[2], roots[3], roots[2], roots[3], roots[2], roots[3]);
 	auto q2 = _mm256_setr_epi32(quotients[2], quotients[3], quotients[2], quotients[3], quotients[2], quotients[3], quotients[2], quotients[3]);
 	for (std::size_t i = 0; i < n; i += 8) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto x = load256(a + i);
 		if constexpr (!inverse) {
 			auto y = _mm256_permute2x128_si256(x, x, 1);
 			x = _mm256_blend_epi32(V::add(x, y), V::multiply(V::subtract(y, x), r4, q4), 0xf0);
@@ -3594,26 +3579,26 @@ void leaf_avx2(std::uint32_t *a, std::size_t n, const std::uint32_t *roots, cons
 			y = _mm256_permute2x128_si256(x, x, 1);
 			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xf0);
 		}
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+		store256(a + i, x);
 	}
 }
 
 template <std::uint32_t mod, bool inverse>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32_t *roots, const std::uint32_t *quotients) {
 	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 4 * h)
 		for (std::size_t j = 0; j < h; j += 8) {
-			auto x0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
-			auto x1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + h));
-			auto x2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + 2 * h));
-			auto x3 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + 3 * h));
-			auto r0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + 2 * h + j));
-			auto q0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + 2 * h + j));
-			auto r1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + 3 * h + j));
-			auto q1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + 3 * h + j));
-			auto r2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + h + j));
-			auto q2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + h + j));
+			auto x0 = load256(a + start + j);
+			auto x1 = load256(a + start + j + h);
+			auto x2 = load256(a + start + j + 2 * h);
+			auto x3 = load256(a + start + j + 3 * h);
+			auto r0 = load256(roots + 2 * h + j);
+			auto q0 = load256(quotients + 2 * h + j);
+			auto r1 = load256(roots + 3 * h + j);
+			auto q1 = load256(quotients + 3 * h + j);
+			auto r2 = load256(roots + h + j);
+			auto q2 = load256(quotients + h + j);
 			if constexpr (!inverse) {
 				auto y0 = V::add(x0, x2), y1 = V::add(x1, x3);
 				auto y2 = V::multiply(V::subtract(x0, x2), r0, q0);
@@ -3628,26 +3613,26 @@ void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32
 				x0 = V::add(y0, y2); x2 = V::subtract(y0, y2);
 				x1 = V::add(y1, y3); x3 = V::subtract(y1, y3);
 			}
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), x0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + h), x1);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 2 * h), x2);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 3 * h), x3);
+			store256(a + start + j, x0);
+			store256(a + start + j + h, x1);
+			store256(a + start + j + 2 * h, x2);
+			store256(a + start + j + 3 * h, x3);
 		}
 }
 
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void build_roots_avx2(std::uint32_t *roots, std::uint32_t *quotients, std::size_t half, std::uint32_t step) {
 	std::uint32_t initial[8], w = 1;
 	for (int i = 0; i < 8; ++i) {
 		initial[i] = w;
 		w = std::uint64_t(w) * step % mod;
 	}
-	auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(initial));
+	auto x = load256(initial);
 	auto factor = _mm256_set1_epi32(w), quotient = _mm256_set1_epi32((std::uint64_t(w) << 32) / mod);
 	for (std::size_t j = 0; j < half; j += 8) {
 		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(mod)));
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(roots + j), x);
+		store256(roots + j, x);
 		for (int k = 0; k < 8; ++k) quotients[j + k] = (std::uint64_t(roots[j + k]) << 32) / mod;
 		x = Vector<mod>::multiply(x, factor, quotient);
 	}
@@ -3712,13 +3697,13 @@ void backward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[mayb
 
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void scale_avx2(std::uint32_t *a, std::size_t n, std::uint32_t factor, std::uint32_t quotient) {
 	auto r = _mm256_set1_epi32(factor), q = _mm256_set1_epi32(quotient);
 	for (std::size_t i = 0; i < n; i += 8) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto x = load256(a + i);
 		auto y = Vector<mod>::multiply(x, r, q);
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), _mm256_min_epu32(y, _mm256_sub_epi32(y, _mm256_set1_epi32(mod))));
+		store256(a + i, _mm256_min_epu32(y, _mm256_sub_epi32(y, _mm256_set1_epi32(mod))));
 	}
 }
 #endif
@@ -3768,12 +3753,12 @@ constexpr std::uint32_t negative_inverse = [] {
 
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void pointwise_avx2(std::uint32_t *a, const std::uint32_t *b, std::size_t n) {
 	auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(negative_inverse<mod>);
 	for (std::size_t i = 0; i < n; i += 8) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
-		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		auto x = load256(a + i);
+		auto y = load256(b + i);
 		auto even = _mm256_mul_epu32(x, y);
 		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32));
 		auto qe = _mm256_mul_epu32(even, inverse), qo = _mm256_mul_epu32(odd, inverse);
@@ -3781,7 +3766,7 @@ void pointwise_avx2(std::uint32_t *a, const std::uint32_t *b, std::size_t n) {
 		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(qo, p));
 		x = _mm256_blend_epi32(even, odd, 0xaa);
 		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+		store256(a + i, x);
 	}
 }
 #endif
@@ -4492,24 +4477,41 @@ struct BulkInput {
 		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
 	}
 
-	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+	template <bool Signed = false>
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid, unsigned *signs = nullptr) {
 		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
 		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
-		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+		unsigned n0 = 0, n1 = 0;
+		if constexpr (Signed) {
+			if (a < 1 || a > 11 || b <= a + 1 || b - a - 1 > 11) [[unlikely]] {
+				invalid = _mm256_set1_epi32(-1);
+				p += std::min(b + 1, 32u);
+				*signs = 0;
+				return _mm256_setzero_si256();
+			}
+			n0 = p[0] == '-', n1 = p[a + 1] == '-';
+			*signs = n0 | (n1 << 1);
+		}
+		if (a < n0 + 1 || a - n0 > 10 || b <= a + n1 + 1 || b - a - n1 - 1 > 10) [[unlikely]] {
 			invalid = _mm256_set1_epi32(-1);
 			p += std::min(b + 1, 32u);
 			return _mm256_setzero_si256();
 		}
-		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
-		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
-			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		auto window = bytes;
+		if constexpr (Signed) window = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1 + n1)), _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + n0)));
+		else window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - n1 - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a - n0].data())));
 		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
 		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
 		p += b + 1;
 		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
 	}
 
+	template <bool Signed = false>
 	static std::uint32_t one(const char *&p, bool &bad) {
+		bool negative = false;
+		if constexpr (Signed) negative = *p == '-', p += negative;
 		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
 		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
 		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
@@ -4525,9 +4527,10 @@ struct BulkInput {
 		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
 		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
 		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
-		bad |= value > 0xffffffffULL;
+		if constexpr (Signed) bad |= value > 2147483647ULL + negative;
+		else bad |= value > 0xffffffffULL;
 		p += n + 1;
-		return std::uint32_t(value);
+		return negative ? 0u - std::uint32_t(value) : std::uint32_t(value);
 	}
 
 	static const char *after_separator(const char *p) {
@@ -4535,6 +4538,7 @@ struct BulkInput {
 		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
 	}
 
+	template <bool Signed = false>
 	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
 		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
 		std::size_t done = 0;
@@ -4544,16 +4548,27 @@ struct BulkInput {
 			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
 			if (steps <= 0) break;
 			for (auto j = steps; j; --j, done += 2) {
-				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				unsigned signs0 = 0, signs1 = 0, signs2 = 0, signs3 = 0;
+				const auto g0 = two<Signed>(p[0], invalid, &signs0), g1 = two<Signed>(p[1], invalid, &signs1), g2 = two<Signed>(p[2], invalid, &signs2), g3 = two<Signed>(p[3], invalid, &signs3);
 				const auto k = _mm256_set1_epi32(0x00012710);
 				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
 				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
 				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
 				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
-				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
-					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				auto max_high = _mm256_set1_epi32(42), max_low = _mm256_set1_epi32(94967295);
+				auto signs = _mm256_setzero_si256();
+				if constexpr (Signed) {
+					signs = _mm256_setr_epi32(signs0 & 1, signs1 & 1, signs2 & 1, signs3 & 1, signs0 >> 1, signs1 >> 1, signs2 >> 1, signs3 >> 1);
+					max_high = _mm256_set1_epi32(21), max_low = _mm256_add_epi32(_mm256_set1_epi32(47483647), signs);
+				}
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, max_high),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, max_high), _mm256_cmpgt_epi32(low, max_low)));
 				invalid = _mm256_or_si256(invalid, overflow);
-				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				if constexpr (Signed) {
+					const auto mask = _mm256_sub_epi32(_mm256_setzero_si256(), signs);
+					value = _mm256_sub_epi32(_mm256_xor_si256(value, mask), mask);
+				}
 				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
 				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
 				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
@@ -4566,7 +4581,7 @@ struct BulkInput {
 		return done;
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
 		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
 		const std::size_t stream = bytes / 4;
@@ -4575,12 +4590,12 @@ struct BulkInput {
 		if (!p1 || !p2 || !p3 || !last) return 0;
 		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
 		auto invalid = _mm256_setzero_si256();
-		const auto done = lockstep(s, end, out, invalid);
+		const auto done = lockstep<Signed>(s, end, out, invalid);
 		bool bad = !_mm256_testz_si256(invalid, invalid);
 		std::size_t n[4];
 		for (int k = 0; k < 4; ++k) {
 			n[k] = done;
-			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one<Signed>(s[k], bad);
 			bad |= s[k] != end[k];
 		}
 		const auto parsed = n[0] + n[1] + n[2] + n[3];
@@ -4601,7 +4616,7 @@ struct BulkInput {
 		});
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
 		std::unique_ptr<unsigned[]> scratch;
 		std::size_t done = 0;
@@ -4612,7 +4627,7 @@ struct BulkInput {
 			while (chunks && count - done >= 1024 && in.end - p >= 1088) {
 				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
 				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
-				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+				const auto parsed = chunk_blocks<Signed>(p, in.end, count - done, out, emit);
 				if (!parsed) {
 					chunks = false;
 					break;
@@ -4621,7 +4636,7 @@ struct BulkInput {
 			}
 			unsigned tail[64];
 			std::size_t used = 0;
-			while (done + 2 <= count && in.end - p >= 32) {
+			while (!Signed && done + 2 <= count && in.end - p >= 32) {
 				const char *next = p;
 				auto invalid = _mm256_setzero_si256();
 				const auto groups = two(next, invalid);
@@ -4642,9 +4657,9 @@ struct BulkInput {
 			if (used) emit(tail, used);
 			in.current = p;
 			if (done < count) {
-				unsigned value = 0;
+				std::conditional_t<Signed, std::int32_t, unsigned> value = 0;
 				in.read(value);
-				emit(&value, 1);
+				emit(reinterpret_cast<unsigned *>(&value), 1);
 				++done;
 			}
 		}
@@ -4664,8 +4679,8 @@ struct BulkInput {
 
 
 namespace fast_io_detail {
-template <class Emit, std::size_t... I>
-void emit_record(Emit &emit, const std::uint32_t *values, std::index_sequence<I...>) {
+template <class Emit, class T, std::size_t... I>
+void emit_record(Emit &emit, const T *values, std::index_sequence<I...>) {
 	emit(values[I]...);
 }
 }
@@ -4702,6 +4717,46 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 	std::size_t used = 0;
 	constexpr auto indices = std::make_index_sequence<Fields>();
 	read_unsigned_blocks(input, count * Fields, [&](const std::uint32_t *values, std::size_t n) {
+		std::size_t i = 0;
+		if (used) {
+			while (used < Fields && i < n) pending[used++] = values[i++];
+			if (used == Fields) {
+				fast_io_detail::emit_record(emit, pending.data(), indices);
+				used = 0;
+			}
+		}
+		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
+		while (i < n) pending[used++] = values[i++];
+	});
+}
+
+template <class Emit>
+void read_signed_blocks(FastInput &input, std::size_t count, Emit emit) {
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if (__builtin_cpu_supports("avx2")) {
+		fast_io_detail::BulkInput::read_blocks<true>(input, count, [&](const unsigned *values, std::size_t n) {
+			emit(reinterpret_cast<const std::int32_t *>(values), n);
+		});
+		return;
+	}
+#endif
+	std::int32_t values[64];
+	while (count) {
+		const auto n = std::min<std::size_t>(count, 64);
+		for (std::size_t i = 0; i < n; ++i) input.read(values[i]);
+		emit(values, n);
+		count -= n;
+	}
+}
+
+template <std::size_t Fields, class Emit>
+void read_signed_records(FastInput &input, std::size_t count, Emit emit) {
+	static_assert(Fields > 0);
+	if (count > std::numeric_limits<std::size_t>::max() / Fields) throw std::length_error("input size");
+	std::array<std::int32_t, Fields> pending;
+	std::size_t used = 0;
+	constexpr auto indices = std::make_index_sequence<Fields>();
+	read_signed_blocks(input, count * Fields, [&](const std::int32_t *values, std::size_t n) {
 		std::size_t i = 0;
 		if (used) {
 			while (used < Fields && i < n) pending[used++] = values[i++];
