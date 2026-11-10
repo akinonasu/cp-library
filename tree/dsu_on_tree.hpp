@@ -57,14 +57,13 @@ class DSUOnTree {
 		out_.assign(n_, 1);
 		order_.clear();
 		if (!n_) { built_ = true; return; }
-		UndirectedCSR graph(n_, edges_);
+		UndirectedVertexCSR graph(n_, edges_);
 		order_.reserve(n_);
 		order_.push_back(root);
 		parent_[root] = -1;
 		for (std::size_t i = 0; i < order_.size(); ++i) {
 			int v = order_[i];
-			for (auto arc : graph[v]) {
-				int to = arc.to;
+			for (int to : graph[v]) {
 				if (to == parent_[v]) continue;
 				assert(parent_[to] == -2);
 				if (parent_[to] != -2) continue;
@@ -84,8 +83,8 @@ class DSUOnTree {
 			int v = order_[top++];
 			in_[v] = timer;
 			order_[timer++] = v;
-			for (auto arc : graph[v])
-				if (parent_[arc.to] == v && arc.to != heavy_[v]) order_[--top] = arc.to;
+			for (int to : graph[v])
+				if (parent_[to] == v && to != heavy_[v]) order_[--top] = to;
 			if (heavy_[v] != -1) order_[--top] = heavy_[v];
 		}
 		for (int v = 0; v < n_; ++v) out_[v] += in_[v];
