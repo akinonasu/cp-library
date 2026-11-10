@@ -83,6 +83,38 @@ struct Kernel {
 		auto mask = _mm256_cmpeq_epi32(best, _mm256_set1_epi32(std::bit_cast<int>(minimum(best))));
 		return int(minimum(_mm256_or_si256(best_column, _mm256_xor_si256(mask, _mm256_set1_epi32(-1)))));
 	}
+	__attribute__((target("avx2"))) static void block_minima(const U *a, int n, U *result) {
+		int blocks = n / 64;
+		for (int b = 0; b < blocks; ++b) {
+			auto value = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + b * 64));
+			for (int j = 8; j < 64; j += 8) value = _mm256_min_epu32(value, _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + b * 64 + j)));
+			result[b] = minimum(value);
+		}
+		if (n % 64) {
+			U value = U(-1);
+			for (int j = blocks * 64; j < n; ++j) value = std::min(value, a[j]);
+			result[blocks] = value;
+		}
+	}
+	__attribute__((target("avx2"))) static int bounded_argmin(const U *a, const U *b, int row, int low, int high,
+		const U *amin, const U *bmin, int center) {
+		if (high - low < 128) return argmin(a, b, row, low, high);
+		int best = std::clamp(row - center, low, high);
+		U value = a[row - best] + b[best];
+		auto take = [&](int left, int right) {
+			int next = argmin(a, b, row, left, right);
+			U v = a[row - next] + b[next];
+			if (v < value || (v == value && next < best)) best = next, value = v;
+		};
+		int first = (low + 63) / 64, last = (high + 1) / 64;
+		if (low < first * 64) take(low, first * 64 - 1);
+		if (last * 64 <= high) take(last * 64, high);
+		for (int j = first; j < last; ++j) {
+			U bound = amin[row / 64 - j] + bmin[j];
+			if (bound < value || (bound == value && j * 64 < best)) take(j * 64, j * 64 + 63);
+		}
+		return best;
+	}
 #if defined(__SIZEOF_INT128__) && CP_LIBRARY_AVX512
 	template <class T, bool Minimum>
 	__attribute__((target("avx512f"))) static __m512i merge_step64(const T *a, const T *b) {
@@ -149,6 +181,28 @@ struct Kernel {
 		if (capacity < std::size_t(groups) * group) return false;
 		std::vector<U> opt(std::size_t(size) + 1, U(m - 1));
 		opt[0] = 0;
+		bool bounded = n >= 256 && m >= 256 && length >= 4096;
+		if (bounded) {
+			bool increasing = true, decreasing = true;
+			for (int i = 1; i < std::min(m, 32) && (increasing || decreasing); ++i) {
+				increasing &= b[i - 1] <= b[i];
+				decreasing &= b[i - 1] >= b[i];
+			}
+			bounded = !increasing && !decreasing;
+		}
+		std::vector<U> amin, bmin;
+		int center = 0;
+		if (bounded) {
+			amin.resize((n + 63) / 64), bmin.resize((m + 63) / 64);
+			block_minima(a, n, amin.data()), block_minima(b, m, bmin.data());
+			for (int i = int(amin.size()) - 1; i > 0; --i) amin[i] = std::min(amin[i], amin[i - 1]);
+			int high = n - 1;
+			while (center < high) {
+				int mid = center + (high - center) / 2;
+				if (a[mid] <= a[mid + 1]) high = mid;
+				else center = mid + 1;
+			}
+		}
 		for (int step = size / 2; step; step /= 2)
 			for (int t = step; t < groups; t += 2 * step) {
 				int row = t * group;
@@ -157,7 +211,7 @@ struct Kernel {
 				std::uint64_t work = std::uint64_t(high - low) + 1;
 				if (work > budget) return false;
 				budget -= work;
-				opt[t] = U(argmin(a, b, row, low, high));
+				opt[t] = U(bounded ? bounded_argmin(a, b, row, low, high, amin.data(), bmin.data(), center) : argmin(a, b, row, low, high));
 			}
 		for (int t = 0; t < groups; ++t) {
 			int row = t * group;
