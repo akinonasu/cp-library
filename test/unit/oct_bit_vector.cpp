@@ -14,11 +14,13 @@ __attribute__((target("avx2,popcnt"))) void check_avx2(const OctBitVector &bits,
 	require(bits.select_avx2(l, r, k) == expected.digit);
 }
 
+#if CP_LIBRARY_AVX512
 __attribute__((target("avx2,popcnt,avx512f,avx512vl,avx512vpopcntdq"))) void check_avx512(const OctBitVector &bits, int l, int r, int k, OctBitVector::Route expected) {
 	auto actual = bits.route_avx512(l, r, k);
 	require(actual.digit == expected.digit && actual.a == expected.a && actual.b == expected.b && actual.k == expected.k);
 	require(bits.select_avx512(l, r, k) == expected.digit);
 }
+#endif
 #endif
 
 void check(const OctBitVector &bits, const std::vector<std::uint32_t> &a, int shift) {
@@ -74,7 +76,9 @@ int main() {
 					require(step.a == before && step.b == count && step.k == k - below);
 #if defined(__x86_64__) || defined(__i386__)
 					if (OctBitVector::has_avx2()) check_avx2(bits, l, r, k, step);
+#if CP_LIBRARY_AVX512
 					if (OctBitVector::has_avx512()) check_avx512(bits, l, r, k, step);
+#endif
 #endif
 				}
 			}

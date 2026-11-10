@@ -1,3 +1,24 @@
+#line 1 "components/simd_capabilities.hpp"
+#ifndef SIMD_CAPABILITIES_HPP
+#define SIMD_CAPABILITIES_HPP
+
+#if (defined(__x86_64__) || defined(__i386__)) && defined(__GNUC__) && !defined(__clang__)
+_Pragma("GCC push_options")
+_Pragma("GCC target(\"no-avx512f,avx512f\")")
+#ifdef __AVX512F__
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+_Pragma("GCC pop_options")
+#elif (defined(__x86_64__) || defined(__i386__)) && defined(__clang__)
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+
+#endif
+
 #line 1 "test/matrix_adjugate.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/adjugate_matrix"
 #line 1 "test/fixtures/matrix_common.hpp"
@@ -779,6 +800,7 @@ struct ModularField {
 		__m256i r = _mm256_sub_epi32(_mm256_mullo_epi32(a, x), _mm256_mullo_epi32(high, p));
 		return _mm256_min_epu32(r, _mm256_sub_epi32(r, p));
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f"))) static __m512i product16(__m512i a, __m512i x, __m512i q) {
 		const auto p = _mm512_set1_epi32(mod);
 		auto even = _mm512_srli_epi64(_mm512_mul_epu32(a, q), 32);
@@ -787,6 +809,8 @@ struct ModularField {
 		auto r = _mm512_sub_epi32(_mm512_mullo_epi32(a, x), _mm512_mullo_epi32(high, p));
 		return _mm512_min_epu32(r, _mm512_sub_epi32(r, p));
 	}
+#endif
+#if CP_LIBRARY_AVX512
 	template <bool add_to>
 	__attribute__((target("avx512f"))) static void apply16(V *a, const V *b, int n, V x, V q) {
 		const auto vx = _mm512_set1_epi32(x), vq = _mm512_set1_epi32(q), p = _mm512_set1_epi32(mod);
@@ -805,6 +829,7 @@ struct ModularField {
 			else a[i] = r;
 		}
 	}
+#endif
 	template <bool add_to>
 	__attribute__((target("avx2"))) static void apply8(V *a, const V *b, int n, V x, V q) {
 		__m256i vx = _mm256_set1_epi32(x), vq = _mm256_set1_epi32(q), p = _mm256_set1_epi32(mod);
@@ -828,7 +853,9 @@ struct ModularField {
 	static void apply(V *a, const V *b, int n, V x) {
 		V q = (std::uint64_t(x) << 32) / mod;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 		if (n >= 64 && avx2() && __builtin_cpu_supports("avx512f")) { apply16<add_to>(a, b, n, x, q); return; }
+#endif
 		if (n >= 16 && avx2()) { apply8<add_to>(a, b, n, x, q); return; }
 #endif
 		for (int i = 0; i < n; ++i) {
@@ -890,10 +917,15 @@ void product_scalar(const std::uint32_t *a, const std::uint32_t *b, std::uint32_
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 inline bool avx512_product() {
+#if CP_LIBRARY_AVX512
 	static const bool supported = __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512dq");
 	return avx2() && supported;
+#else
+	return false;
+#endif
 }
 
+#if CP_LIBRARY_AVX512
 template <std::uint32_t mod>
 __attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512i sum) {
 	const auto p = _mm512_set1_epi64(mod);
@@ -904,7 +936,9 @@ __attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512
 	r = _mm512_mask_add_epi64(r, _mm512_cmp_epi64_mask(r, _mm512_setzero_si512(), _MM_CMPINT_LT), r, p);
 	return _mm512_mask_sub_epi64(r, _mm512_cmp_epi64_mask(r, p, _MM_CMPINT_NLT), r, p);
 }
+#endif
 
+#if CP_LIBRARY_AVX512
 template <std::uint32_t mod, int rows = 8>
 __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr std::int64_t radius = mod / 2;
@@ -947,6 +981,7 @@ __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std
 		if (i < n) product_packed_avx512<mod, rows / 2>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
 	}
 }
+#endif
 
 template <std::uint32_t mod, int rows = 4>
 __attribute__((target("avx2"))) void product_packed_avx2(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
@@ -1030,8 +1065,11 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 				for (int k = 0; k < inner; ++k) for (int s = 0; s < width; ++s)
 					y[std::size_t(j) * inner + std::size_t(k) * width + s] = center(b[std::size_t(k) * m + j + s].val());
 			}
+#if CP_LIBRARY_AVX512
 			if (block == 16) product_packed_avx512<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
-			else product_packed_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
+			else
+#endif
+			product_packed_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
 			for (std::size_t i = 0; i < c.size(); ++i) c[i] = T::raw(z[i]);
 			return c;
 		}
@@ -1083,6 +1121,7 @@ struct ModularElimination {
 
 	static constexpr int batch = int(std::min<std::uint64_t>(8, (std::numeric_limits<std::int64_t>::max() - (Ops::mod - 1)) / (std::uint64_t(Ops::mod - 1) * (Ops::mod - 1))));
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,avx512dq"))) static __m512i reduce512(__m512i sum) {
 		constexpr V negative_inverse = [] { V v = Ops::mod; for (int i = 0; i < 4; ++i) v *= 2 - Ops::mod * v; return V(0) - v; }();
 		sum = _mm512_add_epi64(sum, _mm512_mul_epu32(_mm512_mul_epu32(sum, _mm512_set1_epi32(negative_inverse)), _mm512_set1_epi32(Ops::mod)));
@@ -1090,6 +1129,8 @@ struct ModularElimination {
 		for (int i = 0; i < 2; ++i) sum = _mm512_min_epu32(sum, _mm512_sub_epi32(sum, _mm512_set1_epi32(Ops::mod)));
 		return sum;
 	}
+#endif
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,avx512dq"))) static void update512(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
 		std::array<V, batch> encoded;
 		for (int k = 0; k < count; ++k) encoded[k] = std::uint64_t(coeff[k]) * ((std::uint64_t(1) << 32) % Ops::mod) % Ops::mod;
@@ -1113,6 +1154,7 @@ struct ModularElimination {
 			dst[j] = sum % Ops::mod;
 		}
 	}
+#endif
 	__attribute__((target("avx2"))) static __m256i reduce256(__m256i sum) {
 		constexpr V negative_inverse = [] { V v = Ops::mod; for (int i = 0; i < 4; ++i) v *= 2 - Ops::mod * v; return V(0) - v; }();
 		sum = _mm256_add_epi64(sum, _mm256_mul_epu32(_mm256_mul_epu32(sum, _mm256_set1_epi32(negative_inverse)), _mm256_set1_epi32(Ops::mod)));
@@ -1157,7 +1199,9 @@ struct ModularElimination {
 		if (!count || !length || std::none_of(coeff, coeff + count, [](V x) { return x != 0; })) return;
 		if (count == 1) { if (coeff[0]) Ops::axpy(dst, src[0] + first, length, coeff[0]); return; }
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 		if (length >= 32 && avx512_product()) { update512(dst, src, coeff, count, first, length); return; }
+#endif
 		if (length >= 16 && avx2()) { update256(dst, src, coeff, count, first, length); return; }
 #endif
 		for (int j = 0; j < length; ++j) {
@@ -1279,8 +1323,11 @@ struct FrobeniusPower {
 		if (block) {
 			std::vector<std::int32_t> centered(n);
 			for (int i = 0; i < n; ++i) centered[i] = center(x[i]);
+#if CP_LIBRARY_AVX512
 			if (block == 16) product_packed_avx512<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
-			else product_packed_avx2<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
+			else
+#endif
+			product_packed_avx2<Ops::mod, 1>(centered.data(), packed.data(), result.data(), 1, n, n);
 			return result;
 		}
 #endif

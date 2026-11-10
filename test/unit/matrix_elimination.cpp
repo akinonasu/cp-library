@@ -42,11 +42,13 @@ void check() {
 			Engine::update256(actual.data() + 1, sources.data(), coefficients.data(), count, 1, length);
 			assert(actual == expected);
 		}
+#if CP_LIBRARY_AVX512
 		if (matrix_detail::avx512_product()) {
 			auto actual = dst;
 			Engine::update512(actual.data() + 1, sources.data(), coefficients.data(), count, 1, length);
 			assert(actual == expected);
 		}
+#endif
 #endif
 		Engine::update(dst.data() + 1, sources.data(), coefficients.data(), count, 1, length);
 		assert(dst == expected);

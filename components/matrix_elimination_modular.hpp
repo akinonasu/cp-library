@@ -1,6 +1,7 @@
 #ifndef MATRIX_ELIMINATION_MODULAR_HPP
 #define MATRIX_ELIMINATION_MODULAR_HPP
 
+#include "simd_capabilities.hpp"
 #include "matrix_arithmetic.hpp"
 #include <array>
 
@@ -26,6 +27,7 @@ struct ModularElimination {
 
 	static constexpr int batch = int(std::min<std::uint64_t>(8, (std::numeric_limits<std::int64_t>::max() - (Ops::mod - 1)) / (std::uint64_t(Ops::mod - 1) * (Ops::mod - 1))));
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,avx512dq"))) static __m512i reduce512(__m512i sum) {
 		constexpr V negative_inverse = [] { V v = Ops::mod; for (int i = 0; i < 4; ++i) v *= 2 - Ops::mod * v; return V(0) - v; }();
 		sum = _mm512_add_epi64(sum, _mm512_mul_epu32(_mm512_mul_epu32(sum, _mm512_set1_epi32(negative_inverse)), _mm512_set1_epi32(Ops::mod)));
@@ -33,6 +35,8 @@ struct ModularElimination {
 		for (int i = 0; i < 2; ++i) sum = _mm512_min_epu32(sum, _mm512_sub_epi32(sum, _mm512_set1_epi32(Ops::mod)));
 		return sum;
 	}
+#endif
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,avx512dq"))) static void update512(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
 		std::array<V, batch> encoded;
 		for (int k = 0; k < count; ++k) encoded[k] = std::uint64_t(coeff[k]) * ((std::uint64_t(1) << 32) % Ops::mod) % Ops::mod;
@@ -56,6 +60,7 @@ struct ModularElimination {
 			dst[j] = sum % Ops::mod;
 		}
 	}
+#endif
 	__attribute__((target("avx2"))) static __m256i reduce256(__m256i sum) {
 		constexpr V negative_inverse = [] { V v = Ops::mod; for (int i = 0; i < 4; ++i) v *= 2 - Ops::mod * v; return V(0) - v; }();
 		sum = _mm256_add_epi64(sum, _mm256_mul_epu32(_mm256_mul_epu32(sum, _mm256_set1_epi32(negative_inverse)), _mm256_set1_epi32(Ops::mod)));
@@ -100,7 +105,9 @@ struct ModularElimination {
 		if (!count || !length || std::none_of(coeff, coeff + count, [](V x) { return x != 0; })) return;
 		if (count == 1) { if (coeff[0]) Ops::axpy(dst, src[0] + first, length, coeff[0]); return; }
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 		if (length >= 32 && avx512_product()) { update512(dst, src, coeff, count, first, length); return; }
+#endif
 		if (length >= 16 && avx2()) { update256(dst, src, coeff, count, first, length); return; }
 #endif
 		for (int j = 0; j < length; ++j) {

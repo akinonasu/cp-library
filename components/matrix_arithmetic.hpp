@@ -1,6 +1,7 @@
 #ifndef MATRIX_ARITHMETIC_HPP
 #define MATRIX_ARITHMETIC_HPP
 
+#include "simd_capabilities.hpp"
 #include "matrix_base_arithmetic.hpp"
 #include "field_arithmetic.hpp"
 
@@ -55,10 +56,15 @@ void product_scalar(const std::uint32_t *a, const std::uint32_t *b, std::uint32_
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 inline bool avx512_product() {
+#if CP_LIBRARY_AVX512
 	static const bool supported = __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512dq");
 	return avx2() && supported;
+#else
+	return false;
+#endif
 }
 
+#if CP_LIBRARY_AVX512
 template <std::uint32_t mod>
 __attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512i sum) {
 	const auto p = _mm512_set1_epi64(mod);
@@ -69,7 +75,9 @@ __attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512
 	r = _mm512_mask_add_epi64(r, _mm512_cmp_epi64_mask(r, _mm512_setzero_si512(), _MM_CMPINT_LT), r, p);
 	return _mm512_mask_sub_epi64(r, _mm512_cmp_epi64_mask(r, p, _MM_CMPINT_NLT), r, p);
 }
+#endif
 
+#if CP_LIBRARY_AVX512
 template <std::uint32_t mod, int rows = 8>
 __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr std::int64_t radius = mod / 2;
@@ -112,6 +120,7 @@ __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std
 		if (i < n) product_packed_avx512<mod, rows / 2>(a + std::size_t(i) * inner, b, c + std::size_t(i) * m, n - i, inner, m);
 	}
 }
+#endif
 
 template <std::uint32_t mod, int rows = 4>
 __attribute__((target("avx2"))) void product_packed_avx2(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
@@ -195,8 +204,11 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 				for (int k = 0; k < inner; ++k) for (int s = 0; s < width; ++s)
 					y[std::size_t(j) * inner + std::size_t(k) * width + s] = center(b[std::size_t(k) * m + j + s].val());
 			}
+#if CP_LIBRARY_AVX512
 			if (block == 16) product_packed_avx512<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
-			else product_packed_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
+			else
+#endif
+			product_packed_avx2<T::mod()>(x.data(), y.data(), z.data(), n, inner, m);
 			for (std::size_t i = 0; i < c.size(); ++i) c[i] = T::raw(z[i]);
 			return c;
 		}

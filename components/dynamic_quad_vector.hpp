@@ -1,6 +1,7 @@
 #ifndef DYNAMIC_QUAD_VECTOR_HPP
 #define DYNAMIC_QUAD_VECTOR_HPP
 
+#include "simd_capabilities.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -127,12 +128,16 @@ class QuadVector {
 #endif
 	}
 	static bool has_avx512() {
+#if CP_LIBRARY_AVX512
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(DYNAMIC_QUAD_DISABLE_SIMD) && !defined(DYNAMIC_QUAD_DISABLE_AVX512)
 		return __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("popcnt");
 #else
 		return false;
 #endif
-	}
+	#else
+	return false;
+#endif
+}
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	__attribute__((target("avx2,popcnt")))
 	static int child_avx2(const Node& node, int p) {
@@ -148,6 +153,7 @@ class QuadVector {
 		unsigned active = node.count == 32 ? ~0U : (1U << node.count) - 1;
 		return std::popcount(passed & active) - 1;
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,popcnt")))
 	static int child_avx512(const Node& node, int p) {
 		auto value = _mm512_set1_epi32(p);
@@ -156,6 +162,7 @@ class QuadVector {
 		unsigned active = node.count == 32 ? ~0U : (1U << node.count) - 1;
 		return std::popcount(passed & active) - 1;
 	}
+#endif
 	__attribute__((target("avx2,popcnt")))
 	static void add_range_avx2(Node& node, int first, int last, int size_delta, int digit, int sum_delta) {
 		int i = first;
@@ -175,6 +182,7 @@ class QuadVector {
 			node.sums[digit][i + 1] += sum_delta;
 		}
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,popcnt")))
 	static void add_range_avx512(Node& node, int first, int last, int size_delta, int digit, int sum_delta) {
 		auto sizes = _mm512_set1_epi32(size_delta), sums = _mm512_set1_epi32(sum_delta);
@@ -191,6 +199,7 @@ class QuadVector {
 			}
 		}
 	}
+#endif
 	__attribute__((target("avx2,popcnt")))
 	static void set_counts_avx2(Node& node, int first, int old, int digit) {
 		auto one = _mm256_set1_epi32(1);
@@ -203,6 +212,7 @@ class QuadVector {
 		}
 		for (; i < node.count; ++i) --node.sums[old][i + 1], ++node.sums[digit][i + 1];
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,popcnt")))
 	static void set_counts_avx512(Node& node, int first, int old, int digit) {
 		auto one = _mm512_set1_epi32(1);
@@ -216,10 +226,13 @@ class QuadVector {
 		}
 	}
 #endif
+#endif
 	static int child(const Node& node, int p) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 		if constexpr (Branch == 32) {
+#if CP_LIBRARY_AVX512
 			if (has_avx512()) return child_avx512(node, p);
+#endif
 			if (has_avx2()) return child_avx2(node, p);
 		}
 #endif
@@ -241,7 +254,9 @@ class QuadVector {
 		if (first == last) return;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 		if constexpr (Branch == 32) {
+#if CP_LIBRARY_AVX512
 			if (has_avx512()) { add_range_avx512(node, first, last, size_delta, digit, sum_delta); return; }
+#endif
 			if (has_avx2()) { add_range_avx2(node, first, last, size_delta, digit, sum_delta); return; }
 		}
 #endif
@@ -254,7 +269,9 @@ class QuadVector {
 		if (first == node.count) return;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 		if constexpr (Branch == 32) {
+#if CP_LIBRARY_AVX512
 			if (has_avx512()) { set_counts_avx512(node, first, old, digit); return; }
+#endif
 			if (has_avx2()) { set_counts_avx2(node, first, old, digit); return; }
 		}
 #endif
@@ -348,6 +365,7 @@ class QuadVector {
 		}
 		shift_insert(leaf, first, i, digit);
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f")))
 	static void shift_insert_avx512(Leaf& leaf, int first, int last, int digit) {
 		auto ones = _mm512_set1_epi64(1), added = _mm512_set1_epi64(Word(1) << (16 * digit));
@@ -366,6 +384,7 @@ class QuadVector {
 		}
 		shift_insert(leaf, first, i, digit);
 	}
+#endif
 	__attribute__((target("avx2")))
 	static void shift_erase_avx2(Leaf& leaf, int first, int last, int digit) {
 		auto ones = _mm256_set1_epi64x(1), removed = _mm256_set1_epi64x(Word(1) << (16 * digit));
@@ -385,6 +404,7 @@ class QuadVector {
 		}
 		shift_erase(leaf, i, last, digit);
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f")))
 	static void shift_erase_avx512(Leaf& leaf, int first, int last, int digit) {
 		auto ones = _mm512_set1_epi64(1), removed = _mm512_set1_epi64(Word(1) << (16 * digit));
@@ -404,6 +424,7 @@ class QuadVector {
 		}
 		shift_erase(leaf, i, last, digit);
 	}
+#endif
 	__attribute__((target("avx2")))
 	static void set_prefix_avx2(Leaf& leaf, int first, int last, int old, int digit) {
 		auto delta = _mm256_set1_epi64x(prefix_delta(old, digit));
@@ -414,6 +435,7 @@ class QuadVector {
 		}
 		for (; i < last; ++i) update_prefix(leaf.prefix[i], old, digit);
 	}
+#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f")))
 	static void set_prefix_avx512(Leaf& leaf, int first, int last, int old, int digit) {
 		auto delta = _mm512_set1_epi64(prefix_delta(old, digit));
@@ -425,9 +447,12 @@ class QuadVector {
 		for (; i < last; ++i) update_prefix(leaf.prefix[i], old, digit);
 	}
 #endif
+#endif
 	static void set_prefix(Leaf& leaf, int first, int last, int old, int digit) {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 		if (last - first >= 8 && has_avx512()) { set_prefix_avx512(leaf, first, last, old, digit); return; }
+#endif
 		if (last - first >= 4 && has_avx2()) { set_prefix_avx2(leaf, first, last, old, digit); return; }
 #endif
 		for (int i = first; i < last; ++i) update_prefix(leaf.prefix[i], old, digit);
@@ -437,8 +462,11 @@ class QuadVector {
 		if (!(leaf.length & 63)) for (int d = 0; d < 4; ++d) leaf.prefix[leaf.length >> 6][d] = leaf.counts[d];
 		int last = leaf.length >> 6;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 		if (last - w >= 8 && has_avx512()) shift_insert_avx512(leaf, w, last, digit);
-		else if (last - w >= 4 && has_avx2()) shift_insert_avx2(leaf, w, last, digit);
+		else
+#endif
+		if (last - w >= 4 && has_avx2()) shift_insert_avx2(leaf, w, last, digit);
 		else
 #endif
 		shift_insert(leaf, w, last, digit);
@@ -454,8 +482,11 @@ class QuadVector {
 		leaf.high[w] = (b & low) | ((b >> 1) & ~low);
 		if (w < last) leaf.low[w] |= leaf.low[w + 1] << 63, leaf.high[w] |= leaf.high[w + 1] << 63;
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_LIBRARY_AVX512
 		if (last - w >= 9 && has_avx512()) shift_erase_avx512(leaf, w + 1, last, digit);
-		else if (last - w >= 5 && has_avx2()) shift_erase_avx2(leaf, w + 1, last, digit);
+		else
+#endif
+		if (last - w >= 5 && has_avx2()) shift_erase_avx2(leaf, w + 1, last, digit);
 		else
 #endif
 		shift_erase(leaf, w + 1, last, digit);

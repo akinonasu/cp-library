@@ -1,3 +1,24 @@
+#line 1 "components/simd_capabilities.hpp"
+#ifndef SIMD_CAPABILITIES_HPP
+#define SIMD_CAPABILITIES_HPP
+
+#if (defined(__x86_64__) || defined(__i386__)) && defined(__GNUC__) && !defined(__clang__)
+_Pragma("GCC push_options")
+_Pragma("GCC target(\"no-avx512f,avx512f\")")
+#ifdef __AVX512F__
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+_Pragma("GCC pop_options")
+#elif (defined(__x86_64__) || defined(__i386__)) && defined(__clang__)
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+
+#endif
+
 #line 1 "test/ordered_set.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/ordered_set"
 #line 1 "components/fast_io_bulk.hpp"
@@ -676,6 +697,7 @@ __attribute__((target("avx2"))) int find_avx2(const Key *data, int n, Key value)
 	if (n < 32) less &= (1U << n) - 1;
 	return std::countr_one(less);
 }
+#if CP_LIBRARY_AVX512
 template<bool Strict, class Key>
 __attribute__((target("avx512f"))) int find_avx512(const Key *data, int n, Key value) {
 	unsigned less = 0;
@@ -698,13 +720,20 @@ __attribute__((target("avx512f"))) int find_avx512(const Key *data, int n, Key v
 	return std::countr_one(less);
 }
 #endif
+#endif
 template<bool Strict, class Key>
 int find(const Key *data, int n, Key value) {
 #if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
 	if constexpr (sizeof(Key) == 4 || sizeof(Key) == 8) {
+#if CP_LIBRARY_AVX512
 		static const int kernel = __builtin_cpu_supports("avx512f") ? 2 : __builtin_cpu_supports("avx2") ? 1 : 0;
+#else
+		static const int kernel = __builtin_cpu_supports("avx2") ? 1 : 0;
+#endif
 		if (n >= 8) {
+#if CP_LIBRARY_AVX512
 			if (kernel == 2) return find_avx512<Strict>(data, n, value);
+#endif
 			if (kernel == 1) return find_avx2<Strict>(data, n, value);
 		}
 	}

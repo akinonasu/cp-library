@@ -8,7 +8,7 @@
 #if defined(LCS_EMULATE_SIMD)
 constexpr bool have_avx2 = true, have_avx512 = true;
 #elif defined(__x86_64__)
-const bool have_avx2 = __builtin_cpu_supports("avx2"), have_avx512 = __builtin_cpu_supports("avx512f");
+const bool have_avx2 = __builtin_cpu_supports("avx2"), have_avx512 = CP_LIBRARY_AVX512 && __builtin_cpu_supports("avx512f");
 #endif
 
 int brute(std::string_view a, std::string_view b) {
@@ -98,7 +98,9 @@ void check_carries() {
 			if (backend == 3 && !have_avx512) continue;
 			alignas(64) auto actual = row;
 			if (backend == 2) lcs_detail::avx2<false>("x", masks, actual.data(), 24);
+#if CP_LIBRARY_AVX512
 			else lcs_detail::avx512<false>("x", masks, actual.data(), 24);
+#endif
 			assert(actual == expected);
 		}
 	}

@@ -14,7 +14,7 @@
 #if defined(EDIT_DISTANCE_EMULATE_SIMD)
 constexpr bool have_avx2 = true, have_avx512 = true;
 #elif defined(__x86_64__)
-const bool have_avx2 = __builtin_cpu_supports("avx2"), have_avx512 = __builtin_cpu_supports("avx512f");
+const bool have_avx2 = __builtin_cpu_supports("avx2"), have_avx512 = CP_LIBRARY_AVX512 && __builtin_cpu_supports("avx512f");
 #endif
 
 int brute(std::string_view s, std::string_view t) {
@@ -151,7 +151,9 @@ void check_carries() {
 			if (backend == 3 && !have_avx512) continue;
 			alignas(64) auto actual_p = p, actual_m = m;
 			if (backend == 2) edit_distance_detail::avx2("x", masks, actual_p.data(), actual_m.data(), 16);
+#if CP_LIBRARY_AVX512
 			else edit_distance_detail::avx512("x", masks, actual_p.data(), actual_m.data(), 16);
+#endif
 			assert(actual_p == expected_p && actual_m == expected_m);
 		}
 	}
