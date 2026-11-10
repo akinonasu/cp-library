@@ -86,13 +86,83 @@ inline Result hopcroft_karp(const CSR& graph, std::vector<int>& left, std::vecto
 	return {added, false};
 }
 
+inline int degree_greedy(const CSR& graph, const CSR& reverse, std::vector<int>& left, std::vector<int>& right,
+	std::vector<int>& dl, std::vector<int>& dr, std::vector<int>& queue) {
+	int l = int(left.size()), r = int(right.size()), added = 0;
+	int tail = 0;
+	for (int u = 0; u < l; ++u) {
+		dl[u] = graph.start[u + 1] - graph.start[u];
+		if (dl[u] == 1) queue[tail++] = u;
+	}
+	for (int v = 0; v < r; ++v) {
+		dr[v] = reverse.start[v + 1] - reverse.start[v];
+		if (dr[v] == 1) queue[tail++] = l + v;
+	}
+	int head = 0, cursor = 0;
+	for (;;) {
+		int u = -1, v = -1;
+		while (head < tail) {
+			int x = queue[head++];
+			if (x < l) {
+				if (!dl[x]) continue;
+				u = x;
+				break;
+			} else {
+				x -= l;
+				if (!dr[x]) continue;
+				v = x;
+				break;
+			}
+		}
+		if (u < 0 && v < 0) {
+			while (cursor < l && !dl[cursor]) ++cursor;
+			if (cursor == l) break;
+			u = cursor;
+			v = left[u];
+		}
+		if (v < 0) {
+			for (int e = graph.start[u]; e < graph.start[u + 1]; ++e) if (dr[graph.adj[e]]) {
+				v = graph.adj[e];
+				break;
+			}
+		}
+		if (u < 0) {
+			for (int e = reverse.start[v]; e < reverse.start[v + 1]; ++e) if (dl[reverse.adj[e]]) {
+				u = reverse.adj[e];
+				break;
+			}
+		}
+		if (left[u] != v) {
+			int previous = right[v];
+			assert(left[u] < 0 || previous < 0);
+			if (left[u] >= 0) right[left[u]] = -1;
+			else if (previous >= 0) left[previous] = -1;
+			else ++added;
+			left[u] = v, right[v] = u;
+		}
+		dl[u] = dr[v] = 0;
+		for (int e = graph.start[u]; e < graph.start[u + 1]; ++e) {
+			int x = graph.adj[e];
+			if (dr[x] && --dr[x] == 1) queue[tail++] = l + x;
+		}
+		for (int e = reverse.start[v]; e < reverse.start[v + 1]; ++e) {
+			int x = reverse.adj[e];
+			if (dl[x] && --dl[x] == 1) queue[tail++] = x;
+		}
+	}
+	return added;
+}
+
 inline int warm_start(const CSR& graph, std::vector<int>& left, std::vector<int>& right, int multiplier) {
 	assert(multiplier >= 0);
 	int l = int(left.size()), r = int(right.size()), n = l + r, added = 0;
 	int deficit = int(std::count(left.begin(), left.end(), -1));
-	if (!deficit) return 0;
+	if (!deficit || !multiplier) return 0;
 	CSR reverse(r, graph);
-	std::vector<int> dl(l), dr(r), bfs(l), active(r);
+	std::vector<int> dl(l), dr(r), queue(n);
+	added = degree_greedy(graph, reverse, left, right, dl, dr, queue);
+	if (added == deficit) return added;
+	std::span<int> bfs(queue.data(), l), active(queue.data() + l, r);
 	std::uint64_t work = 0, budget = std::uint64_t(graph.adj.size() + n) * multiplier;
 	int head = 0, tail = 0, count = 0, steps = 0;
 	bool first = true;
