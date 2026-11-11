@@ -206,6 +206,20 @@ void opposite() {
 			for (auto &v : a) v = -v;
 			assert(max_plus_convolution_convex(a, b) == naive(a, b, std::greater<>{}));
 		}
+	for (int n : {0, 1, 2, 7, 16, 63, 64, 65, 130, 257})
+		for (int m : {0, 1, 2, 13, 65, 140}) {
+			using V = std::uint32_t;
+			std::vector<V> a(n), b(m);
+			for (int i = 0; i < n; ++i) a[i] = UINT32_MAX - 1000 - V(i) * i;
+			for (auto &v : b) v = V(rng() % 1001);
+			if (!b.empty()) b[0] = 1000;
+			auto original_a = a, original_b = b;
+			assert(min_plus_convolution_concave(a, b) == naive(a, b, std::less<>{}));
+			assert(a == original_a && b == original_b);
+		}
+	assert((min_plus_convolution_concave(std::vector<std::uint32_t>{UINT32_MAX - 1}, std::vector<std::uint32_t>{1})
+		== std::vector<std::uint32_t>{UINT32_MAX}));
+	assert((!min_plus_convolution_envelope_detail::multiply<std::uint32_t, true>({UINT32_MAX}, {1})));
 	using I = std::int64_t;
 	using U = std::uint64_t;
 	I lower = std::numeric_limits<I>::min(), upper = std::numeric_limits<I>::max();

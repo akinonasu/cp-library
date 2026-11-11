@@ -133,6 +133,7 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 	for (T value : b) bmin_value = std::min(bmin_value, value), bmax_value = std::max(bmax_value, value);
 	W bmin = W(bmin_value), bmax = W(bmax_value);
 	if (amin + bmin < W(std::numeric_limits<T>::lowest()) || amax + bmax > W(std::numeric_limits<T>::max()) || amax - amin + bmax - bmin > W(std::numeric_limits<std::uint32_t>::max())) return std::nullopt;
+	if constexpr (minimum && std::is_same_v<T, std::uint32_t>) return Envelope::run(a, b);
 	W abase = minimum ? amin : amax, bbase = minimum ? bmin : bmax, offset = abase + bbase;
 	auto x = std::make_unique_for_overwrite<std::uint32_t[]>(n);
 	auto y = std::make_unique_for_overwrite<std::uint32_t[]>(m);
