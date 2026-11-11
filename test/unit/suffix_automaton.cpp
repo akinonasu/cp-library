@@ -77,4 +77,33 @@ int main() {
 	}
 	SuffixAutomaton repeated(std::string(200000, 'a'));
 	assert(repeated.distinct_count() == 200000 && repeated.count("aaa") == 199998);
+	for (int period : {1, 2, 17}) {
+		std::string s;
+		for (int i = 0; i < 20000; ++i) s += char(i % period);
+		SuffixAutomaton periodic(s);
+		assert(periodic.node_count() == periodic.size() + 1);
+		auto counts = periodic.occurrences();
+		auto order = periodic.order_by_length();
+		assert(counts[0] == s.size() + 1);
+		for (int v = 1; v < periodic.node_count(); ++v) {
+			assert(order[v] == v && periodic.length(v) == v);
+			assert(counts[v] == (s.size() - v) / period + 1);
+		}
+	}
+	std::string s;
+	for (int i = 0; i < 2000; ++i) s += "ab";
+	SuffixAutomaton extended(s);
+	assert(extended.node_count() == extended.size() + 1 && extended.count("ab") == 2000);
+	s += 'b', extended.push_back('b');
+	assert(extended.node_count() > extended.size() + 1);
+	for (std::string pattern : {std::string{}, std::string("a"), std::string("b"), std::string("ab"),
+		std::string("bb"), std::string("ba"), s.substr(0, 129)}) {
+		std::uint64_t count = 0;
+		for (std::size_t pos = 0; pos <= s.size(); ++pos)
+			if (s.compare(pos, pattern.size(), pattern) == 0) ++count;
+		assert(extended.count(pattern) == count);
+	}
+	auto order = extended.order_by_length();
+	for (std::size_t i = 1; i < order.size(); ++i)
+		assert(extended.length(order[i - 1]) <= extended.length(order[i]));
 }

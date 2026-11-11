@@ -5,7 +5,7 @@
 
 int main() {
 	std::mt19937 rng(829653);
-	for (int m : {0, 1, 2, 3, 7, 16, 37, 100}) for (int q : {0, 1, 2, 17, 300, 3000}) {
+	for (int m : {0, 1, 2, 3, 7, 16, 37, 100, 127, 128, 129, 1023, 1024, 1025}) for (int q : {0, 1, 2, 17, 300, 3000}) {
 		std::vector<int> thresholds(q), expected(q);
 		for (int id = 0; id < q; ++id) {
 			thresholds[id] = int(rng() % (m + 5)) - 2;

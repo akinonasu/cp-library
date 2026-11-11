@@ -95,10 +95,15 @@ class StaticThresholdSearch {
 		next.base_ = std::bit_ceil(std::max(1U, blocks));
 		next.minimum_.assign(std::size_t(next.base_) * 2, std::numeric_limits<T>::max());
 		next.maximum_.assign(std::size_t(next.base_) * 2, std::numeric_limits<T>::lowest());
-		for (std::size_t i = 0; i < next.values_.size(); ++i) {
-			unsigned v = next.base_ + unsigned(i / 64);
-			next.minimum_[v] = std::min(next.minimum_[v], next.values_[i]);
-			next.maximum_[v] = std::max(next.maximum_[v], next.values_[i]);
+		for (unsigned block = 0; block < blocks; ++block) {
+			std::size_t begin = std::size_t(block) * 64, end = std::min(begin + 64, next.values_.size());
+			T low = next.values_[begin], high = low;
+			for (std::size_t i = begin + 1; i < end; ++i) {
+				low = std::min(low, next.values_[i]);
+				high = std::max(high, next.values_[i]);
+			}
+			next.minimum_[next.base_ + block] = low;
+			next.maximum_[next.base_ + block] = high;
 		}
 		for (unsigned v = next.base_ - 1; v; --v) {
 			next.minimum_[v] = std::min(next.minimum_[v * 2], next.minimum_[v * 2 + 1]);
