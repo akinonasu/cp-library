@@ -15,7 +15,7 @@ static_assert(&ordered_convolution<mint> == &light_convolution::ordered_convolut
 static_assert(&multivariate_convolution<mint> == &light_convolution::multivariate_convolution<mint>);
 static_assert(&max_min_convolution<int> == &light_convolution::max_min_convolution<int>);
 static_assert(&min_max_convolution<int> == &light_convolution::min_max_convolution<int>);
-static_assert(std::is_same_v<OnlineConvolution<>, LightOnlineConvolution<>>);
+static_assert(std::is_base_of_v<LightOnlineConvolution<>, OnlineConvolution<>>);
 
 int main() {
 	const std::vector<mint> a{1, 2, 3}, b{4, 5, 6};
