@@ -37,6 +37,8 @@ template<class T = std::int64_t> class TreeContourSum {
 	std::vector<std::size_t> offsets_;
 	std::vector<Route> routes_;
 	std::vector<U> sums_;
+	int shape_ = 0, center_ = -1;
+	U total_{};
 	void check([[maybe_unused]] int v) const { assert(0 <= v && v < size()); }
 	void add_bucket(int group, int distance, U value) {
 		const auto& bucket = buckets_[group];
@@ -58,11 +60,12 @@ template<class T = std::int64_t> class TreeContourSum {
 	void build(int n, std::span<const std::pair<int, int>> edges, const std::vector<T>& values) {
 		assert(0 <= n && n <= std::numeric_limits<int>::max() / 2);
 		assert(values.size() == std::size_t(n) && edges.size() == std::size_t(n ? n - 1 : 0));
-		position_.assign(n, -1), micro_.resize(n);
+		position_.assign(n, -1);
+		shape_ = 0, center_ = -1, total_ = U{};
 		values_.clear(), values_.reserve(std::size_t(n) * 2), distances_.clear();
 		buckets_.clear(), buckets_.reserve(std::size_t(n) * 2), sums_.clear();
 		offsets_.assign(std::size_t(n) + 1, 0), routes_.clear();
-		if (!n) return;
+		if (!n) { micro_.clear(); return; }
 		std::vector<int> start(std::size_t(n) + 1), adjacent(edges.size() * 2);
 		for (auto [u, v] : edges) {
 			assert(0 <= u && u < n && 0 <= v && v < n && u != v);
@@ -73,6 +76,44 @@ template<class T = std::int64_t> class TreeContourSum {
 			auto cursor = start;
 			for (auto [u, v] : edges) adjacent[cursor[u]++] = v, adjacent[cursor[v]++] = u;
 		}
+		if (n > 32) {
+			int maximum = 0, leaf = 0;
+			for (int v = 0; v < n; ++v) {
+				int degree = start[v + 1] - start[v];
+				if (degree > maximum) maximum = degree, center_ = v;
+				if (degree == 1) leaf = v;
+			}
+			if (maximum <= 2) {
+				shape_ = 1;
+				micro_.clear();
+				values_.resize(n), sums_.resize(n);
+				int previous = -1, v = leaf, count = 0;
+				while (v != -1) {
+					assert(count < n);
+					position_[v] = count;
+					values_[count] = values[v], sums_[count++] = U(values[v]);
+					int next = -1;
+					for (int e = start[v]; e < start[v + 1]; ++e)
+						if (adjacent[e] != previous) next = adjacent[e];
+					previous = v, v = next;
+				}
+				assert(count == n);
+				buckets_.push_back({0, n});
+				for (unsigned i = 1; i <= unsigned(n); ++i) {
+					unsigned j = i + (i & -i);
+					if (j <= unsigned(n)) sums_[j - 1] += sums_[i - 1];
+				}
+				return;
+			}
+			if (maximum == n - 1) {
+				shape_ = 2;
+				micro_.clear();
+				values_ = values;
+				for (int v = 0; v < n; ++v) position_[v] = v, total_ += U(values[v]);
+				return;
+			}
+		}
+		micro_.resize(n);
 		unsigned stride = std::bit_width(unsigned(n));
 		if (std::size_t(n) > std::numeric_limits<std::size_t>::max() / stride / sizeof(Route)) throw std::length_error("TreeContourSum routes");
 		auto pending = std::make_unique_for_overwrite<Route[]>(std::size_t(n) * stride);
@@ -187,6 +228,11 @@ template<class T = std::int64_t> class TreeContourSum {
 	void add(int v, T value) {
 		check(v);
 		values_[position_[v]] = T(U(values_[position_[v]]) + U(value));
+		if (shape_) {
+			if (shape_ == 1) add_bucket(0, position_[v], U(value));
+			else total_ += U(value);
+			return;
+		}
 		const auto& micro = micro_[v];
 		if (micro.count) values_[micro.first + micro.count] = T(U(values_[micro.first + micro.count]) + U(value));
 		for (std::size_t i = offsets_[v]; i < offsets_[v + 1]; ++i) {
@@ -200,6 +246,24 @@ template<class T = std::int64_t> class TreeContourSum {
 		check(v);
 		l = std::max<std::int64_t>(l, 0), r = std::min<std::int64_t>(r, size());
 		if (l >= r) return T{};
+		if (shape_) {
+			if (shape_ == 1) {
+				int p = position_[v];
+				U answer = sum_bucket(0, p + int(l), p + int(r));
+				return T(answer + sum_bucket(0, p - int(r) + 1, p - std::max(1, int(l)) + 1));
+			}
+			{
+				U own = U(values_[v]), center = U(values_[center_]), answer{};
+				if (!l) answer += own;
+				if (v == center_) {
+					if (l <= 1 && 1 < r) answer += total_ - center;
+				} else {
+					if (l <= 1 && 1 < r) answer += center;
+					if (l <= 2 && 2 < r) answer += total_ - center - own;
+				}
+				return T(answer);
+			}
+		}
 		U answer{};
 		const auto& micro = micro_[v];
 		if (micro.count && l <= micro.maximum) {
