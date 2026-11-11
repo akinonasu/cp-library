@@ -34,8 +34,15 @@ class SuffixAutomaton {
 		nodes_[v].head = e;
 		if (!v) root_edges_[c] = e;
 	}
+	[[gnu::noinline]] void prepare_direct_counts_() const {
+		counts_.resize(nodes_.size());
+		for (int v = 0; v < node_count(); ++v) counts_[v] = nodes_[v].hits;
+		for (int v = node_count() - 1; v > 0; --v) counts_[nodes_[v].link] += counts_[v];
+		counts_[root] = std::uint64_t(size()) + 1;
+	}
 	void prepare_counts_() const {
 		if (!counts_.empty()) return;
+		if (node_count() == size() + 1) return prepare_direct_counts_();
 		auto order = order_by_length();
 		counts_.resize(nodes_.size());
 		for (int v = 0; v < node_count(); ++v) counts_[v] = nodes_[v].hits;

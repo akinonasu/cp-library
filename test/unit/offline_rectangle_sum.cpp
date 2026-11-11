@@ -6,6 +6,7 @@
 #include <random>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 
 void require(bool ok) { if (!ok) std::abort(); }
@@ -23,7 +24,31 @@ struct ModSum {
 	ModSum &operator-=(ModSum other) { value = (value + 97 - other.value) % 97; return *this; }
 };
 
+template<class Sum>
+void small_sum() {
+	OfflineRectangleSum<int, int, Sum> solver;
+	const Sum high = std::numeric_limits<Sum>::max();
+	solver.add_point(-1, 0, high);
+	solver.add_point(0, 0, high);
+	solver.add_query(-1, 0, 0, 1);
+	solver.add_query(0, 0, 1, 1);
+	solver.add_query(0, 1, 1, 2);
+	require(solver.solve() == std::vector<Sum>{high, high, 0});
+	if constexpr (std::is_signed_v<Sum>) {
+		OfflineRectangleSum<int, int, Sum> negative;
+		negative.add_point(-2, 0, std::numeric_limits<Sum>::min());
+		negative.add_point(-1, 0, std::numeric_limits<Sum>::min());
+		negative.add_point(0, 0, high);
+		negative.add_query(-1, 0, 0, 1);
+		negative.add_query(-1, 0, 1, 1);
+		require(negative.solve() == std::vector<Sum>{std::numeric_limits<Sum>::min(), -1});
+	}
+}
+
 int main() {
+	small_sum<std::int8_t>(); small_sum<std::uint8_t>();
+	small_sum<std::int16_t>(); small_sum<std::uint16_t>();
+	small_sum<std::int32_t>(); small_sum<std::uint32_t>();
 	std::mt19937 rng(312484);
 	for (int round = 0; round < 150; ++round) {
 		int n = rng() % 100, q = rng() % 100;

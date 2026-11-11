@@ -1,9 +1,11 @@
 #ifndef PARALLEL_BINARY_SEARCH_HPP
 #define PARALLEL_BINARY_SEARCH_HPP
 
-#include "../components/radix_sort.hpp"
+#include <algorithm>
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <vector>
 
 template<class Reset, class Apply, class Check>
 std::vector<int> parallel_binary_search(int update_count, int query_count, Reset reset, Apply apply, Check check) {
@@ -11,36 +13,59 @@ std::vector<int> parallel_binary_search(int update_count, int query_count, Reset
 	std::vector<int> answer(query_count, -1);
 	if (!query_count) return answer;
 	reset();
-	std::vector<int> active;
-	active.reserve(query_count);
+	std::vector<int> order;
+	order.reserve(query_count);
 	for (int id = 0; id < query_count; ++id) {
 		if (check(id)) answer[id] = 0;
-		else active.push_back(id);
+		else order.push_back(id);
 	}
-	if (active.empty() || !update_count) return answer;
+	if (order.empty() || !update_count) return answer;
 	for (int i = 0; i < update_count; ++i) apply(i);
 	std::size_t kept = 0;
-	for (int id : active) if (check(id)) active[kept++] = id;
-	active.resize(kept);
-	if (active.empty()) return answer;
-	std::vector<int> low(query_count), high(query_count, update_count);
-	std::vector<std::pair<std::uint32_t, int>> middle;
-	middle.reserve(active.size());
-	for (;;) {
-		middle.clear();
-		for (int id : active) if (high[id] - low[id] > 1)
-			middle.emplace_back(std::uint32_t(low[id] + (high[id] - low[id]) / 2), id);
-		if (middle.empty()) break;
-		stable_radix_sort(middle, [](const auto &entry) { return entry.first; });
-		reset();
-		int time = 0;
-		for (auto [target, id] : middle) {
-			while (std::uint32_t(time) < target) apply(time++);
-			if (check(id)) high[id] = time;
-			else low[id] = time;
-		}
+	for (int id : order) if (check(id)) order[kept++] = id;
+	order.resize(kept);
+	if (order.empty()) return answer;
+	if (update_count == 1) {
+		for (int id : order) answer[id] = 1;
+		return answer;
 	}
-	for (int id : active) answer[id] = high[id];
+	struct Group { int last, low, high; };
+	std::vector<Group> groups, next;
+	groups.reserve(std::min(order.size(), std::size_t(update_count)));
+	next.reserve(groups.capacity());
+	groups.push_back({int(order.size()), 0, update_count});
+	std::vector<int> scratch(order.size());
+	while (!groups.empty()) {
+		reset();
+		int time = 0, first = 0;
+		bool pending = false;
+		next.clear();
+		for (const auto &g : groups) {
+			int begin = first;
+			first = g.last;
+			if (g.high - g.low == 1) { next.push_back(g); continue; }
+			const int middle = g.low + (g.high - g.low) / 2;
+			while (std::uint32_t(time) < std::uint32_t(middle)) apply(time++);
+			int left = begin, right = g.last;
+			for (int i = begin; i < g.last; ++i) {
+				int id = order[i];
+				if (check(id)) scratch[left++] = id;
+				else scratch[--right] = id;
+			}
+			std::reverse(scratch.begin() + right, scratch.begin() + g.last);
+			if (g.low + 1 == middle) {
+				for (int i = begin; i < left; ++i) answer[scratch[i]] = middle;
+			} else if (left != begin) pending = true;
+			if (left != begin) next.push_back({left, g.low, middle});
+			if (middle + 1 == g.high) {
+				for (int i = right; i < g.last; ++i) answer[scratch[i]] = g.high;
+			} else if (right != g.last) pending = true;
+			if (right != g.last) next.push_back({g.last, middle, g.high});
+		}
+		if (!pending) break;
+		groups.swap(next);
+		order.swap(scratch);
+	}
 	return answer;
 }
 

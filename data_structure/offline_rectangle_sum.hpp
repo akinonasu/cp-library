@@ -71,8 +71,8 @@ public:
 			events.push_back({q.right, down, up, i, false});
 		}
 		radix_sort_detail::sort_by_key(events, [](const Event &e) -> const X & { return e.x; });
-		bool narrow = false;
-		if constexpr (std::is_integral_v<Sum> && sizeof(Sum) <= 8) {
+		bool narrow = std::is_integral_v<Sum> && std::numeric_limits<Sum>::digits <= 32;
+		if constexpr (std::is_integral_v<Sum> && sizeof(Sum) <= 8 && std::numeric_limits<Sum>::digits > 32) {
 			Accum positive = 0, negative = 0;
 			for (const auto &point : points) {
 				Accum value(point.weight);
