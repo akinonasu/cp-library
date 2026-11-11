@@ -53,6 +53,11 @@
 | `geometry/convex.hpp` | 凸包・直径・最近点対・Minkowski和 | [使い方](docs/geometry_convex.md) |
 | `geometry/dynamic_convex_hull.hpp` | 点追加型の動的凸包 | [使い方](docs/dynamic_convex_hull.md) |
 | `geometry/circle.hpp` | 円・接線・共通面積・最小包含円 | [使い方](docs/geometry_circle.md) |
+| `geometry/rational.hpp` | 幾何の任意精度整数・有理数座標 | [使い方](docs/geometry_rational.md) |
+| `geometry/exact_linear.hpp` | 厳密な交点・射影・距離二乗 | [使い方](docs/geometry_exact_linear.md) |
+| `geometry/exact_polygon.hpp` | 厳密な面積・重心・凸多角形の切断 | [使い方](docs/geometry_exact_polygon.md) |
+| `geometry/exact_circle.hpp` | 厳密な円の判定・外接円・最小包含円 | [使い方](docs/geometry_exact_circle.md) |
+| `geometry/exact.hpp` | 任意精度による厳密な平面幾何の一括 include | [使い方](docs/geometry_exact.md) |
 
 ### 畳み込み
 
