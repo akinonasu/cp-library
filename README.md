@@ -194,6 +194,12 @@
 | --- | --- | --- |
 | `graph/eulerian_trail.hpp` | 有向・無向 Euler 路（頂点列・辺 ID 列） | [使い方](docs/eulerian_trail.md) |
 
+### 三角形列挙
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/enumerate_triangles.hpp` | 無向単純グラフの三角形列挙 | [使い方](docs/enumerate_triangles.md) |
+
 ### 連結性
 
 | ファイル | 内容 | 使い方 |
