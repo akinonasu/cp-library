@@ -3,18 +3,18 @@ title: "素数 mod 上の乗法畳み込み（軽量実装）"
 documentation_of: //convolution/multiplicative_convolution_light.hpp
 ---
 
-`light_convolution` 名前空間で呼び出します。法 998244353 の計算は軽量 FPS を使い、通常の FPS は読み込みません。高速実装と同時に include できます。
+通常版と同じ関数名で呼び出します。同じ機能は通常版か軽量版のいずれか一方を include してください。法 998244353 の計算には軽量 FPS を使います。
 
 ```cpp
 #include "lib/convolution/multiplicative_convolution_light.hpp"
 
 std::vector<mint> a{1, 2, 3}, b{4, 5, 6};
-auto c = light_convolution::multiplicative_convolution(a, b); // {35,28,27}
+auto c = multiplicative_convolution(a, b); // {35,28,27}
 ```
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `light_convolution::multiplicative_convolution(a,b)` | 同じ素数長 `P` の列から $$\displaystyle c_k=\sum_{ij\bmod P=k}a_ib_j$$ を返す | $$O(M(P)+P)$$＋因数分解・原始根探索 |
+| `multiplicative_convolution(a,b)` | 同じ素数長 `P` の列から $$\displaystyle c_k=\sum_{ij\bmod P=k}a_ib_j$$ を返す | $$O(M(P)+P)$$＋因数分解・原始根探索 |
 
 添字 `i,j` の積を `P` で割った余りを出力先にします。係数の計算は入力型の加算・乗算です。例は長さ `P=3` なので、`a[2]*b[2]` は `2*2 % 3 = 1` より `c[1]` に加えます。`c` は入力と同じ型の長さ `P` の配列です。
 

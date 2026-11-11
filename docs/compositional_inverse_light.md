@@ -6,8 +6,8 @@ documentation_of: //fps/compositional_inverse_light.hpp
 ```cpp
 #include "lib/fps/compositional_inverse_light.hpp"
 
-light_fps f{0, 1, 1};
-auto g = light_fps_algorithms::compositional_inverse(f, 5);
+fps f{0, 1, 1};
+auto g = compositional_inverse(f, 5);
 // {0, 1, -1, 2, -5} (mod 998244353)
 ```
 

@@ -6,5 +6,5 @@ int main() {
 	FastInput input;
 	FastOutput output;
 	int n = 0; input.read(n);
-	write_light_fps(output, light_fps_algorithms::compositional_inverse(read_light_fps(input, n)));
+	write_light_fps(output, compositional_inverse(read_light_fps(input, n)));
 }

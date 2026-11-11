@@ -8,33 +8,33 @@ documentation_of: //fps/fps_light.hpp
 #include <cassert>
 
 int main() {
-	light_fps f{1, 2, 3}, g{4, 5};
+	fps f{1, 2, 3}, g{4, 5};
 	auto product = f * g;
 	auto inverse = f.inv(10);
 	auto logarithm = f.log(10);
-	assert((product == light_fps{4, 13, 22, 15}));
+	assert((product == fps{4, 13, 22, 15}));
 	assert(inverse.size() == 10 && inverse[0] == mint(1));
 	assert(logarithm.size() == 10 && logarithm[0] == mint(0));
 }
 ```
 
-Codeforces などの小さいソースサイズ上限向けの FPS です。法は 998244353、係数は定数項から順に格納します。`light_fps` と `LightFPS` は `LightFormalPowerSeries<mint>` の別名で、`std::vector<mint>` と同様の要素アクセス・イテレータ・サイズ変更を使えます。
+Codeforces などの小さいソースサイズ上限向けの FPS です。法は 998244353、係数は定数項から順に格納します。`fps` は `FormalPowerSeries<mint>` の別名で、`std::vector<mint>` と同様の要素アクセス・イテレータ・サイズ変更を使えます。
 
-[通常版 FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) と別の型で、同じソース内に両方を include できます。提出するソース全体のサイズを確認してください。
+公開名と操作は [通常版 FPS](https://qandori.github.io/cp-library/fps/fps.hpp.html) と同じです。同じ機能は通常版か軽量版のいずれか一方を include してください。`light_fps`・`LightFPS`・`LightFormalPowerSeries<T>` でも軽量版を明示できます。提出するソース全体のサイズを確認してください。
 
 係数をまとめて出力するときは [FPS の高速出力](fps_write.md) を追加できます。
 
-`LightFormalPowerSeries<T>` は `mod()` が定数式となる法 998244353 の modint 型を指定できます。`T` は整数からの構築、`mod()`・`raw()`・`val()`・`inv()`・`pow()`、四則演算と等値比較に対応する必要があります。
+`FormalPowerSeries<T>` は `mod()` が定数式となる法 998244353 の modint 型を指定できます。`T` は整数からの構築、`mod()`・`raw()`・`val()`・`inv()`・`pow()`、四則演算と等値比較に対応する必要があります。
 
-`deg` は返す係数数で、省略時は元の長さです。逆数の例は $$x^0$$ から $$x^9$$ までを返します。通常の積は入力が非空なら長さ `f.size()+g.size()-1`、`diff()`・`integral()`・シフト・`pow(k)` は元の長さを保ちます。例えば `light_fps{1,1}.pow(3)` は `{1,3}` なので、4 係数必要なら先に `resize(4)` してください。
+`deg` は返す係数数で、省略時は元の長さです。逆数の例は $$x^0$$ から $$x^9$$ までを返します。通常の積は入力が非空なら長さ `f.size()+g.size()-1`、`diff()`・`integral()`・シフト・`pow(k)` は元の長さを保ちます。例えば `fps{1,1}.pow(3)` は `{1,3}` なので、4 係数必要なら先に `resize(4)` してください。
 
 `pre(n)` は高次の係数を切り落とすだけで、長さを伸ばすときは `resize(n)` を使います。加減算は長い方の入力長、スカラー加減算は空列なら長さ 1 になり、それ以外は元の長さを保ちます。`divmod` は `{商,余り}` の `pair` を返し、どちらも末尾の零を除き、零多項式は空配列です。`f/g` は多項式の商ではなく級数の除算です。
 
 | 操作 | 内容・条件 |
 | --- | --- |
-| `light_fps()` / `light_fps(n)` / `light_fps{a0,a1,...}` / `light_fps(vector<mint>)` | 空列／零列／係数列から構築 |
+| `fps()` / `fps(n)` / `fps{a0,a1,...}` / `fps(vector<mint>)` | 空列／零列／係数列から構築 |
 | `f = a` / `f = {a0,a1,...}` | 配列／初期値列の代入 |
-| `LightFormalPowerSeries<T>::multiply(f,g)` / `f * g` | 多項式の積 |
+| `FormalPowerSeries<T>::multiply(f,g)` / `f * g` | 多項式の積 |
 | `-f` / `f + g` / `f - g` | 符号反転／加減算 |
 | `f + c` / `f - c` / `f * c` / `f / c` | 定数項への加減算／全係数の定数倍・除算。除数は非零 |
 | `+=` / `-=` / `*=` / `/=` / `%=` | 対応する演算結果を自身へ代入 |
@@ -58,6 +58,6 @@ Codeforces などの小さいソースサイズ上限向けの FPS です。法�
 
 `inv`・`log`・`exp`・`sqrt`・`pow`・`div_series` の出力長は $$2^{22}$$ 以下です。`divmod` は末尾の零を除いた被除数の係数数を $$2^{22}$$ 以下にします。変換長は最大 $$2^{23}$$ です。各操作の途中の積も含め、必要な NTT 長がこの上限以内であることが必要です。法 998244353 の整数の逆元を用いるため、積分・対数・指数などの次数は法未満にします。
 
-Taylor shift・Bostan–Mori・線形漸化式・多点評価・補間は [軽量 FPS の追加演算](https://qandori.github.io/cp-library/fps/fps_light_algorithms.hpp.html) にあります。合成・合成逆元・power projection・多項式 GCD も、それぞれ `fps/compose_light.hpp`・`fps/compositional_inverse_light.hpp`・`fps/power_projection_light.hpp`・`fps/polynomial_gcd_light.hpp` にあります。いずれも軽量 FPS だけを読み込み、`light_fps_algorithms` 名前空間で利用します。
+Taylor shift・Bostan–Mori・線形漸化式・多点評価・補間は [軽量 FPS の追加演算](https://qandori.github.io/cp-library/fps/fps_light_algorithms.hpp.html) にあります。合成・合成逆元・power projection・多項式 GCD も、それぞれ `fps/compose_light.hpp`・`fps/compositional_inverse_light.hpp`・`fps/power_projection_light.hpp`・`fps/polynomial_gcd_light.hpp` にあります。いずれも通常版と同じ関数名で呼び出せます。`light_fps_algorithms` 名前空間でも利用できます。
 
 最大の入力・出力係数数を $$n$$ として、加減算・スカラー演算・微分・積分・シフト・一点評価は $$O(n)$$、積・級数除算・多項式除算・逆数・対数・指数・平方根は $$O(n\log n)$$、冪は $$O(n\log n+\log k)$$ 時間です。各操作の追加空間は $$O(n)$$ です。共有する NTT の根の表は、これまでに使用した最大変換長を $$L$$ として $$O(L)$$ 空間を保持します。整数逆元の表も、それまでに要求した最大の長さに応じて領域を保持します。

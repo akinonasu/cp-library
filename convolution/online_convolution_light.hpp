@@ -92,4 +92,10 @@ public:
 	}
 };
 
+#ifndef ONLINE_CONVOLUTION_HPP
+#define ONLINE_CONVOLUTION_HPP 1
+template<class T = mint>
+using OnlineConvolution = LightOnlineConvolution<T>;
+#endif
+
 #endif

@@ -53,4 +53,9 @@ std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::ve
 
 }
 
+#ifndef MULTIPLICATIVE_CONVOLUTION_HPP
+#define MULTIPLICATIVE_CONVOLUTION_HPP 1
+using light_convolution::multiplicative_convolution;
+#endif
+
 #endif

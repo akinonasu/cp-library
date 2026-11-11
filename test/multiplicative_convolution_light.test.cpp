@@ -11,6 +11,6 @@ int main() {
 	std::vector<mint> a(n), b(n);
 	for (auto &x : a) std::cin >> x;
 	for (auto &x : b) std::cin >> x;
-	for (auto x : light_convolution::multiplicative_convolution(a, b)) std::cout << x << ' ';
+	for (auto x : multiplicative_convolution(a, b)) std::cout << x << ' ';
 	std::cout << '\n';
 }

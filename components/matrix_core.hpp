@@ -22,9 +22,15 @@ struct LinearSolution {
 
 namespace matrix_detail {
 template <class T> struct FastMatrixArithmetic;
+template <class T> struct PlainMatrixArithmetic;
+#ifdef CP_MATRIX_LIGHT_API
+template <class T> using DefaultMatrixArithmetic = PlainMatrixArithmetic<T>;
+#else
+template <class T> using DefaultMatrixArithmetic = FastMatrixArithmetic<T>;
+#endif
 }
 
-template <class T, class Arithmetic = matrix_detail::FastMatrixArithmetic<T>>
+template <class T, class Arithmetic = matrix_detail::DefaultMatrixArithmetic<T>>
 class [[nodiscard, gnu::warn_unused]] Matrix {
 	static_assert(!std::is_same_v<T, bool>);
 	int h = 0, w = 0;

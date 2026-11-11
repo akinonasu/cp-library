@@ -75,4 +75,10 @@ std::vector<T> min_max_convolution(const std::vector<T> &a, const std::vector<T>
 
 }
 
+#ifndef MAX_MIN_CONVOLUTION_HPP
+#define MAX_MIN_CONVOLUTION_HPP 1
+using light_convolution::max_min_convolution;
+using light_convolution::min_max_convolution;
+#endif
+
 #endif

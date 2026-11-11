@@ -14,6 +14,6 @@ int main() {
 		std::cin >> r;
 		++b[(n - r) % n];
 	}
-	auto c = light_convolution::cyclic_convolution(a, b, n);
+	auto c = cyclic_convolution(a, b, n);
 	for (int i = 0; i < n; ++i) std::cout << c[i] << (i + 1 == n ? '\n' : ' ');
 }

@@ -8,16 +8,16 @@ documentation_of: //components/fps_light_product_tree.hpp
 
 std::vector<mint> xs{0, 1, 2};
 fps_light_detail::ProductTree<mint> tree(xs);
-auto values = tree.evaluate(light_fps{1, 2, 3}); // {1,6,17}
+auto values = tree.evaluate(fps{1, 2, 3}); // {1,6,17}
 ```
 
-[軽量 FPS の多点評価・補間](https://qandori.github.io/cp-library/fps/fps_light_algorithms.hpp.html) が共有する内部部品です。`fps_light_detail::ProductTree<T>` は[共通積木](polynomial_product_tree.md)の `ProductTree<LightFormalPowerSeries<T>>` の別名です。各葉に一次式を置き、上の節点ほど積を保持します。評価は多項式の剰余を子へ渡して行います。通常は公開関数 `light_fps_algorithms::multipoint_eval`・`interpolate` を使ってください。
+[軽量 FPS の多点評価・補間](https://qandori.github.io/cp-library/fps/fps_light_algorithms.hpp.html) が共有する内部部品です。`fps_light_detail::ProductTree<T>` は[共通積木](polynomial_product_tree.md)の `ProductTree<FormalPowerSeries<T>>` の別名です。各葉に一次式を置き、上の節点ほど積を保持します。評価は多項式の剰余を子へ渡して行います。通常は公開関数 `multipoint_eval`・`interpolate` を使ってください。
 
 | 要素 | 内容 |
 | --- | --- |
 | `ProductTree<T>(xs)` | 評価点から積木を構築。点の重複・空の点列を許す |
 | `tree.evaluate(f)` | `xs` の順の評価値を `std::vector<T>` で返す |
-| `tree.interpolate(ys)` | 対応する値から点数と同じ係数数の `LightFormalPowerSeries<T>` を返す。点は互いに異なる必要がある |
+| `tree.interpolate(ys)` | 対応する値から点数と同じ係数数の `FormalPowerSeries<T>` を返す。点は互いに異なる必要がある |
 | `tree.count` / `tree.size` | 点数／点数以上の最小の 2 冪（空なら 1） |
 | `tree.product` | 1 始まりの節点配列。添字 0 は未使用 |
 

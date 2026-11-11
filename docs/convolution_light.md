@@ -3,18 +3,18 @@ title: "通常の畳み込み（軽量実装）"
 documentation_of: //convolution/convolution_light.hpp
 ---
 
-`light_convolution` 名前空間で呼び出します。法 998244353 の計算は軽量 FPS を使い、通常の FPS は読み込みません。高速実装と同時に include できます。
+通常版と同じ関数名で呼び出します。同じ機能は通常版か軽量版のいずれか一方を include してください。法 998244353 の計算には軽量 FPS を使います。
 
 ```cpp
 #include "lib/convolution/convolution_light.hpp"
 
 std::vector<mint> a{1, 2, 3}, b{4, 5};
-auto c = light_convolution::convolution(a, b); // {4,13,22,15}
+auto c = convolution(a, b); // {4,13,22,15}
 ```
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `light_convolution::convolution(a,b)` | 通常の畳み込み $$\displaystyle c_k=\sum_{i+j=k}a_ib_j$$ を返す。係数型から実装を選ぶ | NTT・CRT・FFT: $$O(L\log L)$$、一般の環: $$O(L^{\log_2 3})$$ |
+| `convolution(a,b)` | 通常の畳み込み $$\displaystyle c_k=\sum_{i+j=k}a_ib_j$$ を返す。係数型から実装を選ぶ | NTT・CRT・FFT: $$O(L\log L)$$、一般の環: $$O(L^{\log_2 3})$$ |
 
 $$\displaystyle c_k = \sum_{i+j=k} a_i b_j$$ を返します。
 

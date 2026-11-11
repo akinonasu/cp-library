@@ -11,8 +11,8 @@ using ProductTree = polynomial_detail::ProductTree<LightFormalPowerSeries<T>>;
 
 namespace light_fps_algorithms {
 template<class T>
-LightFormalPowerSeries<T> taylor_shift(LightFormalPowerSeries<T> f, std::type_identity_t<T> c) {
-	using F = LightFormalPowerSeries<T>;
+Series<T> taylor_shift(Series<T> f, std::type_identity_t<T> c) {
+	using F = Series<T>;
 	const std::size_t n = f.size();
 	if (n <= 1 || c == T(0)) return f;
 	assert(n < T::mod());
@@ -36,8 +36,8 @@ LightFormalPowerSeries<T> taylor_shift(LightFormalPowerSeries<T> f, std::type_id
 }
 
 template<class T>
-T bostan_mori(LightFormalPowerSeries<T> p, LightFormalPowerSeries<T> q, long long k) {
-	using F = LightFormalPowerSeries<T>;
+T bostan_mori(Series<T> p, Series<T> q, long long k) {
+	using F = Series<T>;
 	assert(k >= 0 && !q.empty() && q[0] != T(0));
 	p.shrink();
 	q.shrink();
@@ -59,7 +59,7 @@ T bostan_mori(LightFormalPowerSeries<T> p, LightFormalPowerSeries<T> q, long lon
 
 template<class T>
 T linear_recurrence(const std::vector<T> &initial, const std::vector<T> &coefficients, long long k) {
-	using F = LightFormalPowerSeries<T>;
+	using F = Series<T>;
 	assert(k >= 0 && initial.size() == coefficients.size());
 	const std::size_t n = initial.size();
 	if (static_cast<unsigned long long>(k) < n) return initial[std::size_t(k)];
@@ -72,7 +72,7 @@ T linear_recurrence(const std::vector<T> &initial, const std::vector<T> &coeffic
 }
 
 template<class T>
-std::vector<T> multipoint_eval(const LightFormalPowerSeries<T> &f, const std::vector<T> &xs) {
+std::vector<T> multipoint_eval(const Series<T> &f, const std::vector<T> &xs) {
 	if (f.size() <= 32 || xs.size() <= 32) {
 		std::vector<T> result;
 		result.reserve(xs.size());
@@ -83,10 +83,23 @@ std::vector<T> multipoint_eval(const LightFormalPowerSeries<T> &f, const std::ve
 }
 
 template<class T>
-LightFormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> &ys) {
+Series<T> interpolate(const std::vector<T> &xs, const std::vector<T> &ys) {
 	assert(xs.size() == ys.size());
 	return fps_light_detail::ProductTree<T>(xs).interpolate(ys);
 }
 }
+
+#ifdef CP_FPS_LIGHT_API
+#define CP_FPS_TAYLOR_SHIFT_HPP 1
+using light_fps_algorithms::taylor_shift;
+#define CP_FPS_BOSTAN_MORI_HPP 1
+using light_fps_algorithms::bostan_mori;
+#define CP_FPS_LINEAR_RECURRENCE_HPP 1
+using light_fps_algorithms::linear_recurrence;
+#define CP_FPS_MULTIPOINT_EVAL_HPP 1
+using light_fps_algorithms::multipoint_eval;
+#define CP_FPS_INTERPOLATE_HPP 1
+using light_fps_algorithms::interpolate;
+#endif
 
 #endif

@@ -436,6 +436,19 @@ struct [[nodiscard, gnu::warn_unused]] LightFormalPowerSeries : std::vector<T> {
 using light_fps = LightFormalPowerSeries<>;
 using LightFPS = light_fps;
 
+namespace light_fps_algorithms {
+template<class T>
+using Series = LightFormalPowerSeries<T>;
+}
+
+#ifndef FPS_998244353_HPP
+#define FPS_998244353_HPP 1
+#define CP_FPS_LIGHT_API 1
+template<class T = mint>
+using FormalPowerSeries = LightFormalPowerSeries<T>;
+using fps = light_fps;
+#endif
+
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options
 #endif

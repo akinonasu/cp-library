@@ -76,8 +76,10 @@ class BundleTest(unittest.TestCase):
             source = (ROOT / name).read_text()
             self.assertTrue(source.isascii(), name)
             definitions = [line for line in source.splitlines() if line.startswith('#define ')]
-            self.assertEqual(len(definitions), 1, name)
+            self.assertTrue(definitions, name)
             self.assertEqual(definitions[0].split()[1], source.splitlines()[0].split()[1])
+            for definition in definitions[1:]:
+                self.assertRegex(definition, r'^#define [A-Z][A-Z0-9_]* 1$')
         lines = sum((ROOT / ('components/' + name)).read_text().count('\n')
                     for name in ('fps_light_core.hpp', 'fps_light_backend.hpp'))
         self.assertGreater(lines, 500)
@@ -122,8 +124,22 @@ class BundleTest(unittest.TestCase):
         self.assertTrue(headers)
         source = ''.join('#include "' + header + '"\n' for header in headers)
         source += '#include "components/fast_io.hpp"\n#include <cstdlib>\n'
-        usage = (ROOT / 'test/unit/fps_light_public_headers.cpp').read_text()
-        source += usage[usage.index('void require('):]
+        source += '''int main() {
+    fps f{1, 2, 1}, g{0, 1, 1};
+    auto a = f.inv(16), b = f.log(16).exp(), c = f.pow(2), d = (f * f).sqrt();
+    auto q = f.divmod(g);
+    auto h = taylor_shift(f, mint(1));
+    std::vector<mint> xs{0, 1, 2}, ys = multipoint_eval(f, xs);
+    auto p = interpolate(xs, ys), r = compose(f, g, 16), t = compositional_inverse(g, 16);
+    auto w = power_projection(g, 2), z = polynomial_gcd(f, g);
+    auto e = polynomial_extended_gcd(f, g);
+    auto u = polynomial_inv_mod(f, g);
+    auto range = rational_fps_coefficients(f, g + mint(1), 10, 16);
+    FastOutput out;
+    out.println(bostan_mori(f, g + mint(1), 100).val());
+    out.println(linear_recurrence(xs, ys, 10).val());
+}
+'''
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / 'all_light_fps.cpp'
             path.write_text(source)
@@ -138,7 +154,7 @@ class BundleTest(unittest.TestCase):
         source = '''#include "fps/fps_light.hpp"
 #include "components/fps_write.hpp"
 int main() {
-    light_fps f{1, 2, 3};
+    fps f{1, 2, 3};
     const auto restored = f.log(5).exp();
     FastOutput output;
     fps_detail::write_coefficients(output, restored.data(), restored.size());
@@ -227,7 +243,7 @@ int main() {
                     header = 'math/matrix_light.hpp' if light else 'math/matrix.hpp'
                     polynomial = 'fps/fps_light.hpp' if light else 'fps/fps.hpp'
                     source = '#include "' + header + '"\n#include "' + polynomial + '"\n'
-                    source += program.replace('POLYNOMIAL', 'light_fps' if light else 'fps').replace('MATRIX', 'LightMatrix' if light else 'Matrix')
+                    source += program.replace('POLYNOMIAL', 'fps').replace('MATRIX', 'Matrix')
                     path.write_text(source)
                     generated = bundle(path)
                     reference = ('//https://qandori.github.io/cp-library/' + header + '.html\n').encode()

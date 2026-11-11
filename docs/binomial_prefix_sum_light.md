@@ -9,18 +9,18 @@ redirect_from:
 
 $$\displaystyle S(n,k)=\sum_{i=0}^{k-1}\binom ni$$ を素数 mod で計算します。右端を含みません。$$k\leq0$$ なら 0、$$k\geq n+1$$ なら $$2^n$$ です。
 
-全クエリがそろっている場合は `light_combinatorics::binomial_prefix_sum` で一括計算できます。クエリを 1 件ずつ渡す場合は `light_combinatorics::BinomialPrefixSum` を使います。
+全クエリがそろっている場合は `binomial_prefix_sum` で一括計算できます。クエリを 1 件ずつ渡す場合は `BinomialPrefixSum` を使います。
 
 直前のクエリとの差分で更新する場合は [差分更新版](https://qandori.github.io/cp-library/math/binomial_prefix_sum_incremental_light.hpp.html) を使えます。
 
-`light_combinatorics` 名前空間で使います。他の modint にも対応し、通常版と同時に include できます。
+通常版と同じ名前で使います。他の modint にも対応します。同じ機能は通常版か軽量版のいずれか一方を include してください。
 
 ```cpp
 #include "lib/math/binomial_prefix_sum_light.hpp"
 #include <cassert>
 
 int main() {
-	light_combinatorics::BinomialPrefixSum<> sum(10000);
+	BinomialPrefixSum<> sum(10000);
 	auto a = sum.query(5, 3); // 16
 	auto b = sum.prod(5, 1, 3); // 15
 
@@ -39,12 +39,12 @@ int main() {
 
 int main() {
 	std::vector<std::pair<int, std::int64_t>> queries{ {5, 3}, {5, 2}, {6, 2}, {5, 6}, {7, 4}, {5, 3} };
-	auto values = light_combinatorics::binomial_prefix_sum(queries);
+	auto values = binomial_prefix_sum(queries);
 	assert((values == std::vector<mint>{16, 6, 7, 32, 64, 16}));
 }
 ```
 
-`light_combinatorics::binomial_prefix_sum<Mint = mint, K = int>(queries, block_size = 0)` は `std::vector<Mint>` を返します。`queries` は `std::vector<std::pair<int, K>>` で、各要素は `{n,k}` です。`K` は 64 bit 以下の符号付き整数型とし、`n` は非負で `INT_MAX` と法より小さくします。`block_size` は非負の `int` です。添字 `i` の返り値が `queries[i]` の答えになり、重複クエリもそのまま残します。空入力には空の列を返し、入力は変更しません。`Mint` の条件はクラス版と同じです。
+`binomial_prefix_sum<Mint = mint, K = int>(queries, block_size = 0)` は `std::vector<Mint>` を返します。`queries` は `std::vector<std::pair<int, K>>` で、各要素は `{n,k}` です。`K` は 64 bit 以下の符号付き整数型とし、`n` は非負で `INT_MAX` と法より小さくします。`block_size` は非負の `int` です。添字 `i` の返り値が `queries[i]` の答えになり、重複クエリもそのまま残します。空入力には空の列を返し、入力は変更しません。`Mint` の条件はクラス版と同じです。
 
 一括計算は端や中央の直接答えられるクエリを先に処理し、残ったクエリに必要な範囲だけ階乗と格子を作ります。残ったクエリの `n` がすべて等しい場合は、その行の必要な prefix を一度だけ計算し、格子を作りません。
 
@@ -52,7 +52,7 @@ int main() {
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `light_combinatorics::BinomialPrefixSum<Mint>(max_n,block_size=0)` | `0 <= n <= max_n` のクエリを前計算。`Mint` の既定は `mint`、`max_n` の既定は 0 | $$O(N+N^2/B)$$ |
+| `BinomialPrefixSum<Mint>(max_n,block_size=0)` | `0 <= n <= max_n` のクエリを前計算。`Mint` の既定は `mint`、`max_n` の既定は 0 | $$O(N+N^2/B)$$ |
 | `build(max_n,block_size=0)` | 範囲とブロック幅を変更して前計算を作り直す。返り値は `void` | $$O(N+N^2/B)$$ |
 | `query(n,k)` | $$S(n,k)$$ を `Mint` で返す。`k` は `std::int64_t` | $$O(B)$$ |
 | `prod(n,l,r)` | $$\displaystyle \sum_{i=l}^{r-1}\binom ni$$ を `Mint` で返す。`l`・`r` は `std::int64_t`、`l <= r` が必要。空区間は 0、範囲外の添字の項も 0 | $$O(B)$$ |
@@ -78,7 +78,7 @@ int main() {
 int main() {
 	const int max_n = 200000, queries = 64;
 	int block = std::max(1, int(max_n / std::sqrt(double(queries))));
-	light_combinatorics::BinomialPrefixSum<> sum(max_n, block);
+	BinomialPrefixSum<> sum(max_n, block);
 	auto value = sum.query(12345, 100);
 	(void)value;
 }

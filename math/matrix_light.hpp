@@ -1,6 +1,7 @@
 #ifndef MATRIX_LIGHT_HPP
 #define MATRIX_LIGHT_HPP
 
+#define CP_MATRIX_LIGHT_API 1
 #include "../components/matrix_core.hpp"
 
 namespace matrix_detail {

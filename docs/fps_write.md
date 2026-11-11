@@ -12,7 +12,7 @@ Linux x86_64 / GCC では AVX2 対応を自動で確認し、利用できる場�
 #include "lib/components/fps_write.hpp"
 
 int main() {
-	light_fps f{1, 2, 3};
+	fps f{1, 2, 3};
 	const auto g = f.log(5).exp();
 	FastOutput out;
 	fps_detail::write_coefficients(out, g.data(), g.size());

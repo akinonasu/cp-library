@@ -19,4 +19,10 @@ template<class Mint = mint> class BinomialPrefixSum : public binomial_prefix_det
 
 }
 
+#ifndef BINOMIAL_PREFIX_SUM_HPP
+#define BINOMIAL_PREFIX_SUM_HPP 1
+using light_combinatorics::binomial_prefix_sum;
+using light_combinatorics::BinomialPrefixSum;
+#endif
+
 #endif

@@ -13,7 +13,7 @@ int main() {
 	unsigned x = 0;
 	for (auto &v : a) { in.read(x); v = mint::raw(x); }
 	for (auto &v : b) { in.read(x); v = mint::raw(x); }
-	LightOnlineConvolution queue(n + m - 1);
+	OnlineConvolution queue(n + m - 1);
 	for (int i = 0; i < n + m - 1; ++i) {
 		if (i) out.write(' ');
 		out.write(queue.push(i < n ? a[i] : mint(0), i < m ? b[i] : mint(0)).val());

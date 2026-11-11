@@ -19,7 +19,7 @@ int main() {
 			for (std::size_t j = 0; j < count; ++j) (*v)[i++] = mint::raw(values[j]);
 		});
 	}
-	const auto result = light_convolution::multivariate_convolution(a, b, dimensions);
+	const auto result = multivariate_convolution(a, b, dimensions);
 	write_unsigned_records<1>(output, result.size(), [&](std::size_t i) {
 		return std::array{result[i].val()};
 	});
