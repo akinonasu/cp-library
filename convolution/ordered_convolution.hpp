@@ -8,6 +8,9 @@
 
 #include "../components/convolution_dispatch.hpp"
 
+#ifndef CP_ORDERED_CONVOLUTION_API
+#define CP_ORDERED_CONVOLUTION_API 1
+
 template <class T>
 std::vector<T> ordered_convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	if (a.empty() || b.empty()) return {};
@@ -34,5 +37,7 @@ std::vector<T> ordered_convolution(const std::vector<T> &a, const std::vector<T>
 	solve(solve, 0, std::max(a.size(), b.size()));
 	return result;
 }
+
+#endif
 
 #endif

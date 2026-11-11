@@ -3,12 +3,12 @@ title: "Online Convolution（軽量実装）"
 documentation_of: //convolution/online_convolution_light.hpp
 ---
 
-`LightOnlineConvolution` は高速実装の `OnlineConvolution` と同時に include できます。操作と境界条件は同じで、通常の FPS は読み込みません。
+通常版と同じ `OnlineConvolution` で利用でき、操作と境界条件も同じです。同じ機能は通常版か軽量版のいずれか一方を include してください。`LightOnlineConvolution` でも軽量版を明示できます。
 
 ```cpp
 #include "lib/convolution/online_convolution_light.hpp"
 
-LightOnlineConvolution<> product(3);
+OnlineConvolution<> product(3);
 mint c0 = product.push(2, 4);
 mint c1 = product.push(3, 5);
 mint known = product.pending();
@@ -19,8 +19,8 @@ mint c2 = product.push(7, 11);
 
 | 関数・型 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `LightOnlineConvolution<T = mint>` | 法 998244353 のオンライン畳み込み。係数型 `T` は `mod()`・`val()`・`raw()` を持つ modint | —（型） |
-| `LightOnlineConvolution(max_size = 1 << 23)` | 追加できる項数の上限を指定して構築。最初から上限分を確保することはない | $$O(1)$$ |
+| `OnlineConvolution<T = mint>` | 法 998244353 のオンライン畳み込み。係数型 `T` は `mod()`・`val()`・`raw()` を持つ modint | —（型） |
+| `OnlineConvolution(max_size = 1 << 23)` | 追加できる項数の上限を指定して構築。最初から上限分を確保することはない | $$O(1)$$ |
 | `push(x,y)` | 次の係数対 `a[n]=x`・`b[n]=y` を追加し、積の対応する係数を `T` で返す。追加前の項数を `n` とすると $$\displaystyle \sum_{i=0}^n a_i b_{n-i}$$ | 償却 $$O(\log^2 n)$$、最悪 $$O(n\log n)$$ |
 | `pending()` | 次の係数のうち、追加済みの入力だけで決まる部分を `T` で返す | $$O(1)$$ |
 | `operator[](i)` | 確定済みの積の第 `i` 係数を `T` で返す。`0 <= i < size()` | $$O(1)$$ |

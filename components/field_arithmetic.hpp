@@ -75,8 +75,6 @@ struct ModularField {
 		auto r = _mm512_sub_epi32(_mm512_mullo_epi32(a, x), _mm512_mullo_epi32(high, p));
 		return _mm512_min_epu32(r, _mm512_sub_epi32(r, p));
 	}
-#endif
-#if CP_LIBRARY_AVX512
 	template <bool add_to>
 	__attribute__((target("avx512f"))) static void apply16(V *a, const V *b, int n, V x, V q) {
 		const auto vx = _mm512_set1_epi32(x), vq = _mm512_set1_epi32(q), p = _mm512_set1_epi32(mod);

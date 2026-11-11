@@ -13,6 +13,8 @@ struct CoefficientRangeTransform {
 };
 }
 
+#ifndef CP_FPS_RANGE_API
+#define CP_FPS_RANGE_API 1
 template <class T>
 FormalPowerSeries<T> rational_fps_coefficients(FormalPowerSeries<T> p, FormalPowerSeries<T> q, long long l, long long r) {
 	using O = fps_detail::Operations<T>;
@@ -20,5 +22,7 @@ FormalPowerSeries<T> rational_fps_coefficients(FormalPowerSeries<T> p, FormalPow
 		return O::export_work(rational_fps_coefficients(O::import_work(p), O::import_work(q), l, r));
 	else return rational_fps_detail::Coefficients<fps, fps_detail::CoefficientRangeTransform>::get(std::move(p), std::move(q), l, r);
 }
+
+#endif
 
 #endif

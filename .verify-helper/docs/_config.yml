@@ -44,29 +44,6 @@ implementation_variants:
   math/binomial_prefix_sum_incremental.hpp: math/binomial_prefix_sum_incremental_light.hpp
   components/binomial_prefix_core.hpp: components/binomial_prefix_core_light.hpp
   components/factorial_table.hpp: components/factorial_table_light.hpp
-implementation_variant_apis:
-  math/is_prime.hpp: light_is_prime
-  math/matrix.hpp: LightMatrix<T>
-  fps/taylor_shift.hpp: light_fps_algorithms::taylor_shift
-  fps/bostan_mori.hpp: light_fps_algorithms::bostan_mori
-  fps/linear_recurrence.hpp: light_fps_algorithms::linear_recurrence
-  fps/rational_fps_coefficients.hpp: light_fps_algorithms::rational_fps_coefficients
-  fps/multipoint_eval.hpp: light_fps_algorithms::multipoint_eval
-  fps/interpolate.hpp: light_fps_algorithms::interpolate
-  fps/compose.hpp: light_fps_algorithms::compose
-  fps/compositional_inverse.hpp: light_fps_algorithms::compositional_inverse
-  fps/power_projection.hpp: light_fps_algorithms::power_projection
-  fps/polynomial_gcd.hpp: light_fps_algorithms::polynomial_gcd
-  convolution/convolution.hpp: light_convolution::convolution
-  convolution/cyclic_convolution.hpp: light_convolution::cyclic_convolution
-  convolution/multiplicative_convolution.hpp: light_convolution::multiplicative_convolution
-  convolution/ordered_convolution.hpp: light_convolution::ordered_convolution
-  convolution/max_min_convolution.hpp: light_convolution::max_min_convolution
-  convolution/online_convolution.hpp: LightOnlineConvolution
-  convolution/multivariate_convolution.hpp: light_convolution::multivariate_convolution
-  math/comb.hpp: light_combinatorics::comb
-  math/binomial_prefix_sum.hpp: light_combinatorics::BinomialPrefixSum
-  math/binomial_prefix_sum_incremental.hpp: light_combinatorics::IncrementalBinomialPrefixSum
 kramdown:
   math_engine: mathjax
 exclude:

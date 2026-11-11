@@ -30,18 +30,21 @@ inline bool fast_prime(const Montgomery64 &m) {
 		return witnesses(m, d, s, std::array<U, 3>{2, base, second[base >> 13]}, multiply);
 	};
 	if (m.mod < (U(1) << 62)) {
-		U inverse = -m.inverse;
+		U inverse = m.inverse;
 		return check([&](U a, U b) {
 			__uint128_t x = __uint128_t(a) * b;
-			return U((x + __uint128_t(U(x) * inverse) * m.mod) >> 64);
+			return U(x >> 64) + m.mod - U((__uint128_t(U(x) * inverse) * m.mod) >> 64);
 		});
 	}
 	return check([&](U a, U b) { return m.mul(a, b); });
 }
 }
 
+#ifndef CP_IS_PRIME_API_HPP
+#define CP_IS_PRIME_API_HPP 1
 inline bool is_prime(std::uint64_t n) {
 	return is_prime_detail::check(n, [](const auto &m) { return is_prime_detail::fast_prime(m); });
 }
+#endif
 
 #endif

@@ -7,6 +7,9 @@
 
 #include "../components/convolution_dispatch.hpp"
 
+#ifndef CP_CYCLIC_CONVOLUTION_API
+#define CP_CYCLIC_CONVOLUTION_API 1
+
 template <bool negative = false, class T>
 std::vector<T> cyclic_convolution(const std::vector<T> &a, const std::vector<T> &b, std::size_t n) {
 	assert(n > 0);
@@ -31,5 +34,7 @@ std::vector<T> cyclic_convolution(const std::vector<T> &a, const std::vector<T> 
 	}
 	return x;
 }
+
+#endif
 
 #endif

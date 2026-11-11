@@ -32,6 +32,8 @@ inline PolynomialHalfGCD::Matrix polynomial_gcd_jump(const PolynomialHalfGCD::F&
 }
 }
 
+#ifndef CP_FPS_GCD_API
+#define CP_FPS_GCD_API 1
 template<class T>
 struct PolynomialExtendedGCD {
 	FormalPowerSeries<T> gcd, x, y;
@@ -116,6 +118,8 @@ std::optional<FormalPowerSeries<T>> polynomial_inv_mod(FormalPowerSeries<T> a, F
 		return std::move(matrix.a[1]);
 	}
 }
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

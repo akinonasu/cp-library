@@ -13,5 +13,5 @@ int main() {
 		input.read(k);
 		++k;
 	}
-	for (auto value : light_combinatorics::binomial_prefix_sum(queries)) output.println(value.val());
+	for (auto value : binomial_prefix_sum(queries)) output.println(value.val());
 }

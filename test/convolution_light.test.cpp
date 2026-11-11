@@ -10,6 +10,6 @@ int main() {
 	std::vector<mint> a(n), b(m);
 	for (auto &x : a) std::cin >> x;
 	for (auto &x : b) std::cin >> x;
-	for (auto x : light_convolution::convolution(a, b)) std::cout << x << ' ';
+	for (auto x : convolution(a, b)) std::cout << x << ' ';
 	std::cout << '\n';
 }

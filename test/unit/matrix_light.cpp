@@ -1,5 +1,5 @@
-#include "math/matrix_light.hpp"
 #include "math/matrix.hpp"
+#include "math/matrix_light.hpp"
 #include "math/mint.hpp"
 #include "math/fraction.hpp"
 #include <array>
@@ -7,6 +7,8 @@
 #include <cmath>
 #include <random>
 #include <type_traits>
+
+static_assert(std::is_same_v<Matrix<mint>, Matrix<mint, matrix_detail::FastMatrixArithmetic<mint>>>);
 
 template <class A, class B>
 void same(const A &a, const B &b) {

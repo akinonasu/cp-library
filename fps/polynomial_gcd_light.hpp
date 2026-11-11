@@ -7,11 +7,11 @@
 namespace light_fps_algorithms {
 template<class T>
 struct PolynomialExtendedGCD {
-	LightFormalPowerSeries<T> gcd, x, y;
+	Series<T> gcd, x, y;
 };
 
 template<class T>
-LightFormalPowerSeries<T> polynomial_gcd(LightFormalPowerSeries<T> a, LightFormalPowerSeries<T> b) {
+Series<T> polynomial_gcd(Series<T> a, Series<T> b) {
 	a.shrink(), b.shrink();
 	fps_light_detail::PolynomialHalfGCD<T>::reduce(a, b);
 	if (!a.empty()) a /= a.back();
@@ -19,7 +19,7 @@ LightFormalPowerSeries<T> polynomial_gcd(LightFormalPowerSeries<T> a, LightForma
 }
 
 template<class T>
-PolynomialExtendedGCD<T> polynomial_extended_gcd(LightFormalPowerSeries<T> a, LightFormalPowerSeries<T> b) {
+PolynomialExtendedGCD<T> polynomial_extended_gcd(Series<T> a, Series<T> b) {
 	a.shrink(), b.shrink();
 	if (a.empty() && b.empty()) return {};
 	using H = fps_light_detail::PolynomialHalfGCD<T>;
@@ -31,15 +31,25 @@ PolynomialExtendedGCD<T> polynomial_extended_gcd(LightFormalPowerSeries<T> a, Li
 }
 
 template<class T>
-std::optional<LightFormalPowerSeries<T>> polynomial_inv_mod(LightFormalPowerSeries<T> a, LightFormalPowerSeries<T> modulus) {
+std::optional<Series<T>> polynomial_inv_mod(Series<T> a, Series<T> modulus) {
 	modulus.shrink();
 	assert(!modulus.empty());
-	if (modulus.size() == 1) return LightFormalPowerSeries<T>{};
+	if (modulus.size() == 1) return Series<T>{};
 	a = a.divmod(modulus).second;
 	auto result = polynomial_extended_gcd(std::move(a), modulus);
 	if (result.gcd.size() != 1) return std::nullopt;
 	return result.x.divmod(modulus).second;
 }
 }
+
+#ifdef CP_FPS_LIGHT_API
+#ifndef CP_FPS_GCD_API
+#define CP_FPS_GCD_API 1
+using light_fps_algorithms::PolynomialExtendedGCD;
+using light_fps_algorithms::polynomial_gcd;
+using light_fps_algorithms::polynomial_extended_gcd;
+using light_fps_algorithms::polynomial_inv_mod;
+#endif
+#endif
 
 #endif

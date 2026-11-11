@@ -53,4 +53,9 @@ std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::ve
 
 }
 
+#ifndef CP_MULTIPLICATIVE_CONVOLUTION_API
+#define CP_MULTIPLICATIVE_CONVOLUTION_API 1
+using light_convolution::multiplicative_convolution;
+#endif
+
 #endif

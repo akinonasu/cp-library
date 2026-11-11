@@ -8,5 +8,5 @@ int main() {
 	int n;
 	std::cin >> n;
 	for (int k = 0; k <= n; ++k)
-		std::cout << ((n - k) % 2 ? mint(0) : light_combinatorics::comb(n, (n - k) / 2) * (k ? 2 : 1)) << (k == n ? '\n' : ' ');
+		std::cout << ((n - k) % 2 ? mint(0) : comb(n, (n - k) / 2) * (k ? 2 : 1)) << (k == n ? '\n' : ' ');
 }

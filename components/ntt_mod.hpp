@@ -12,6 +12,14 @@
 #endif
 
 namespace ntt_mod_detail {
+#if defined(__x86_64__) || defined(__i386__)
+__attribute__((target("avx2"), always_inline))
+inline __m256i load256(const void *p) { return _mm256_loadu_si256(static_cast<const __m256i *>(p)); }
+__attribute__((target("avx2"), always_inline))
+inline void store256(void *p, __m256i x) { _mm256_storeu_si256(static_cast<__m256i *>(p), x); }
+
+#endif
+
 template <std::uint32_t mod> struct Vector;
 
 template <std::uint32_t mod>
@@ -38,19 +46,19 @@ void butterfly(std::uint32_t *a, std::size_t n, std::size_t half,
 
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void butterfly_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 					const std::uint32_t *roots, const std::uint32_t *quotients) {
 	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
-			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
-			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
-			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
-			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
+			auto x = load256(a + start + j);
+			auto y = load256(a + start + j + half);
+			auto r = load256(roots + j);
+			auto q = load256(quotients + j);
 			y = V::multiply(y, r, q);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), V::subtract(x, y));
+			store256(a + start + j, V::add(x, y));
+			store256(a + start + j + half, V::subtract(x, y));
 		}
 }
 #endif
@@ -61,7 +69,6 @@ std::uint32_t shoup(std::uint32_t value, std::uint32_t factor, std::uint32_t quo
 	std::uint32_t result = value * factor - q * mod;
 	return result < mod ? result : result - mod;
 }
-
 
 template <std::uint32_t mod>
 void forward_stage(std::uint32_t *a, std::size_t n, std::size_t half,
@@ -77,24 +84,22 @@ void forward_stage(std::uint32_t *a, std::size_t n, std::size_t half,
 
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 		const std::uint32_t *roots, const std::uint32_t *quotients) {
 	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 2 * half)
 		for (std::size_t j = 0; j < half; j += 8) {
-			auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
-			auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + half));
-			auto r = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + j));
-			auto q = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + j));
+			auto x = load256(a + start + j);
+			auto y = load256(a + start + j + half);
+			auto r = load256(roots + j);
+			auto q = load256(quotients + j);
 			auto difference = V::multiply(V::subtract(x, y), r, q);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), V::add(x, y));
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
+			store256(a + start + j, V::add(x, y));
+			store256(a + start + j + half, difference);
 		}
 }
-#endif
 
-#if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
 struct Vector {
 	static constexpr std::uint32_t range = mod < (std::uint32_t(1) << 30) ? 2 * mod : mod;
@@ -120,7 +125,7 @@ struct Vector {
 };
 
 template <std::uint32_t mod, bool inverse>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void leaf_avx2(std::uint32_t *a, std::size_t n, const std::uint32_t *roots, const std::uint32_t *quotients) {
 	using V = Vector<mod>;
 	auto r4 = _mm256_broadcastsi128_si256(_mm_loadu_si128(reinterpret_cast<const __m128i *>(roots + 4)));
@@ -128,7 +133,7 @@ void leaf_avx2(std::uint32_t *a, std::size_t n, const std::uint32_t *roots, cons
 	auto r2 = _mm256_setr_epi32(roots[2], roots[3], roots[2], roots[3], roots[2], roots[3], roots[2], roots[3]);
 	auto q2 = _mm256_setr_epi32(quotients[2], quotients[3], quotients[2], quotients[3], quotients[2], quotients[3], quotients[2], quotients[3]);
 	for (std::size_t i = 0; i < n; i += 8) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto x = load256(a + i);
 		if constexpr (!inverse) {
 			auto y = _mm256_permute2x128_si256(x, x, 1);
 			x = _mm256_blend_epi32(V::add(x, y), V::multiply(V::subtract(y, x), r4, q4), 0xf0);
@@ -146,26 +151,26 @@ void leaf_avx2(std::uint32_t *a, std::size_t n, const std::uint32_t *roots, cons
 			y = _mm256_permute2x128_si256(x, x, 1);
 			x = _mm256_blend_epi32(V::add(x, y), V::subtract(y, x), 0xf0);
 		}
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+		store256(a + i, x);
 	}
 }
 
 template <std::uint32_t mod, bool inverse>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32_t *roots, const std::uint32_t *quotients) {
 	using V = Vector<mod>;
 	for (std::size_t start = 0; start < n; start += 4 * h)
 		for (std::size_t j = 0; j < h; j += 8) {
-			auto x0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j));
-			auto x1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + h));
-			auto x2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + 2 * h));
-			auto x3 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + start + j + 3 * h));
-			auto r0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + 2 * h + j));
-			auto q0 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + 2 * h + j));
-			auto r1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + 3 * h + j));
-			auto q1 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + 3 * h + j));
-			auto r2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(roots + h + j));
-			auto q2 = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(quotients + h + j));
+			auto x0 = load256(a + start + j);
+			auto x1 = load256(a + start + j + h);
+			auto x2 = load256(a + start + j + 2 * h);
+			auto x3 = load256(a + start + j + 3 * h);
+			auto r0 = load256(roots + 2 * h + j);
+			auto q0 = load256(quotients + 2 * h + j);
+			auto r1 = load256(roots + 3 * h + j);
+			auto q1 = load256(quotients + 3 * h + j);
+			auto r2 = load256(roots + h + j);
+			auto q2 = load256(quotients + h + j);
 			if constexpr (!inverse) {
 				auto y0 = V::add(x0, x2), y1 = V::add(x1, x3);
 				auto y2 = V::multiply(V::subtract(x0, x2), r0, q0);
@@ -180,29 +185,26 @@ void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32
 				x0 = V::add(y0, y2); x2 = V::subtract(y0, y2);
 				x1 = V::add(y1, y3); x3 = V::subtract(y1, y3);
 			}
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j), x0);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + h), x1);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 2 * h), x2);
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + 3 * h), x3);
+			store256(a + start + j, x0);
+			store256(a + start + j + h, x1);
+			store256(a + start + j + 2 * h, x2);
+			store256(a + start + j + 3 * h, x3);
 		}
 }
 
-#endif
-
-#if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void build_roots_avx2(std::uint32_t *roots, std::uint32_t *quotients, std::size_t half, std::uint32_t step) {
 	std::uint32_t initial[8], w = 1;
 	for (int i = 0; i < 8; ++i) {
 		initial[i] = w;
 		w = std::uint64_t(w) * step % mod;
 	}
-	auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(initial));
+	auto x = load256(initial);
 	auto factor = _mm256_set1_epi32(w), quotient = _mm256_set1_epi32((std::uint64_t(w) << 32) / mod);
 	for (std::size_t j = 0; j < half; j += 8) {
 		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(mod)));
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(roots + j), x);
+		store256(roots + j, x);
 		for (int k = 0; k < 8; ++k) quotients[j + k] = (std::uint64_t(roots[j + k]) << 32) / mod;
 		x = Vector<mod>::multiply(x, factor, quotient);
 	}
@@ -267,13 +269,13 @@ void backward(std::vector<std::uint32_t> &a, const Plan<mod, root> &plan, [[mayb
 
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void scale_avx2(std::uint32_t *a, std::size_t n, std::uint32_t factor, std::uint32_t quotient) {
 	auto r = _mm256_set1_epi32(factor), q = _mm256_set1_epi32(quotient);
 	for (std::size_t i = 0; i < n; i += 8) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
+		auto x = load256(a + i);
 		auto y = Vector<mod>::multiply(x, r, q);
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), _mm256_min_epu32(y, _mm256_sub_epi32(y, _mm256_set1_epi32(mod))));
+		store256(a + i, _mm256_min_epu32(y, _mm256_sub_epi32(y, _mm256_set1_epi32(mod))));
 	}
 }
 #endif
@@ -323,12 +325,12 @@ constexpr std::uint32_t negative_inverse = [] {
 
 #if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
-__attribute__((target("avx2")))
+[[gnu::target("avx2")]]
 void pointwise_avx2(std::uint32_t *a, const std::uint32_t *b, std::size_t n) {
 	auto p = _mm256_set1_epi32(mod), inverse = _mm256_set1_epi32(negative_inverse<mod>);
 	for (std::size_t i = 0; i < n; i += 8) {
-		auto x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i));
-		auto y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i));
+		auto x = load256(a + i);
+		auto y = load256(b + i);
 		auto even = _mm256_mul_epu32(x, y);
 		auto odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32));
 		auto qe = _mm256_mul_epu32(even, inverse), qo = _mm256_mul_epu32(odd, inverse);
@@ -336,7 +338,7 @@ void pointwise_avx2(std::uint32_t *a, const std::uint32_t *b, std::size_t n) {
 		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(qo, p));
 		x = _mm256_blend_epi32(even, odd, 0xaa);
 		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, p));
-		_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+		store256(a + i, x);
 	}
 }
 #endif

@@ -30,6 +30,28 @@ void stable_radix_sort(std::vector<T> &values, Key &&key) {
 	}
 	if (sorted) return;
 	std::vector<T> scratch(values.size());
+	if constexpr (Bits == 11 && sizeof(K) <= 4) {
+		if (values.size() <= UINT32_MAX && (varying & mask) && ((varying >> 11) & mask) && (varying >> 22)) {
+			std::array<std::array<std::uint32_t, buckets>, 3> counts{};
+			for (const auto &value : values) {
+				std::uint32_t k = key(value);
+				++counts[0][k & mask];
+				++counts[1][(k >> 11) & mask];
+				++counts[2][k >> 22];
+			}
+			for (int pass = 0; pass < 3; ++pass) {
+				auto &count = counts[pass];
+				std::uint32_t sum = 0;
+				for (auto &x : count) {
+					auto n = x;
+					x = sum, sum += n;
+				}
+				for (auto &&value : values) scratch[count[(std::uint32_t(key(value)) >> (11 * pass)) & mask]++] = std::move(value);
+				values.swap(scratch);
+			}
+			return;
+		}
+	}
 	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
 	Counts count = [] {
 		if constexpr (Bits <= 11) return Counts{};

@@ -71,6 +71,20 @@ int main() {
 			require(values == expected);
 		}
 	}
+	for (int n : {256, 257, 4096}) {
+		for (std::uint32_t mask : {UINT32_MAX, (1U << 30) - 1, 0x80080001U, 0xff0000ffU}) {
+			std::vector<std::unique_ptr<Item>> values;
+			std::vector<Item> expected;
+			for (int i = 0; i < n; ++i) {
+				auto item = std::make_unique<Item>(Item{std::uint32_t(rng()) & mask, i});
+				expected.push_back(*item);
+				values.push_back(std::move(item));
+			}
+			std::stable_sort(expected.begin(), expected.end(), [](const Item &a, const Item &b) { return a.key < b.key; });
+			stable_radix_sort<11>(values, [](const auto &item) { return std::uint32_t(item->key); });
+			for (int i = 0; i < n; ++i) require(values[i] && *values[i] == expected[i]);
+		}
+	}
 	struct CopyOnlyKey {
 		CopyOnlyKey() = default;
 		CopyOnlyKey(const CopyOnlyKey &) = default;

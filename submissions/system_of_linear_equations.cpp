@@ -809,8 +809,6 @@ struct ModularField {
 		auto r = _mm512_sub_epi32(_mm512_mullo_epi32(a, x), _mm512_mullo_epi32(high, p));
 		return _mm512_min_epu32(r, _mm512_sub_epi32(r, p));
 	}
-#endif
-#if CP_LIBRARY_AVX512
 	template <bool add_to>
 	__attribute__((target("avx512f"))) static void apply16(V *a, const V *b, int n, V x, V q) {
 		const auto vx = _mm512_set1_epi32(x), vq = _mm512_set1_epi32(q), p = _mm512_set1_epi32(mod);
@@ -936,9 +934,7 @@ __attribute__((target("avx512f,avx512dq"))) __m512i reduce_product_avx512(__m512
 	r = _mm512_mask_add_epi64(r, _mm512_cmp_epi64_mask(r, _mm512_setzero_si512(), _MM_CMPINT_LT), r, p);
 	return _mm512_mask_sub_epi64(r, _mm512_cmp_epi64_mask(r, p, _MM_CMPINT_NLT), r, p);
 }
-#endif
 
-#if CP_LIBRARY_AVX512
 template <std::uint32_t mod, int rows = 8>
 __attribute__((target("avx512f,avx512dq"))) void product_packed_avx512(const std::int32_t *a, const std::int32_t *b, std::uint32_t *c, int n, int inner, int m) {
 	constexpr std::int64_t radius = mod / 2;
@@ -1129,8 +1125,6 @@ struct ModularElimination {
 		for (int i = 0; i < 2; ++i) sum = _mm512_min_epu32(sum, _mm512_sub_epi32(sum, _mm512_set1_epi32(Ops::mod)));
 		return sum;
 	}
-#endif
-#if CP_LIBRARY_AVX512
 	__attribute__((target("avx512f,avx512dq"))) static void update512(V *dst, const V *const *src, const V *coeff, int count, int first, int length) {
 		std::array<V, batch> encoded;
 		for (int k = 0; k < count; ++k) encoded[k] = std::uint64_t(coeff[k]) * ((std::uint64_t(1) << 32) % Ops::mod) % Ops::mod;

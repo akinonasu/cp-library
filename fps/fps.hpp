@@ -27,10 +27,12 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_API
+#define CP_FPS_API 1
 template <class T = mint>
 struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, private fps_detail::Operations<T> {
 	static_assert(T::mod() == 998244353, "FormalPowerSeries supports only mod 998244353");
-	using W = FormalPowerSeries<mint>;
+	using W = FormalPowerSeries<>;
 	using base = std::vector<T>;
 	using F = FormalPowerSeries;
 	using Sparse = fps_detail::SparseSeries;
@@ -292,7 +294,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 				if (terms.size() <= 12) {
 					const T inverse = (*this)[first].inv();
 					for (auto &[j, x] : terms) x *= inverse;
-					F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inverse_table));
+					F result(Sparse::get<Sparse::Kind::power>(std::move(terms), target, constant, T(2).inv(), inv_table));
 					result.insert(result.begin(), shift, T(0));
 					return result;
 				}
@@ -420,7 +422,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 			assert(!this->empty() && (*this)[0] == T(1));
 			if (deg >= 256 && unsigned(deg) < T::mod()) {
 				auto terms = Sparse::collect(this->data(), this->size(), deg);
-				if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inverse_table));
+				if (terms.size() <= 12) return F(Sparse::get<Sparse::Kind::logarithm>(std::move(terms), deg, T(0), T(0), inv_table));
 			}
 			return log_derivative(deg, true);
 		}
@@ -454,7 +456,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 				if (terms.size() <= 12) {
 					const T inverse = lead.inv();
 					for (auto &[j, x] : terms) x *= inverse;
-					F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inverse_table));
+					F result(Sparse::get<Sparse::Kind::power>(std::move(terms), len, lead.pow(k), T(k), inv_table));
 					result.insert(result.begin(), shift, T(0));
 					return result;
 				}
@@ -572,7 +574,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 			for (auto term : terms) stride = std::gcd(stride, term.first);
 			if (terms.size() <= 64 && (deg <= 256 || terms.size() <= 24ULL * stride)) {
 				if constexpr (differentiated) for (auto &[j, x] : terms) x /= T(j);
-				return F(Sparse::get<Sparse::Kind::exponential>(std::move(terms), deg, T(1), T(0), inverse_table));
+				return F(Sparse::get<Sparse::Kind::exponential>(std::move(terms), deg, T(1), T(0), inv_table));
 			}
 		}
 
@@ -646,13 +648,15 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 		return g;
 	}
 
-	static const mint *inverse_table(int n) { return fps_detail::Operations<mint>::inverses(n).data(); }
+	static const mint *inv_table(int n) { return fps_detail::Operations<mint>::inverses(n).data(); }
 
 	void trim() { O::trim(*this); }
 
 };
 
-using fps = FormalPowerSeries<mint>;
+using fps = FormalPowerSeries<>;
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

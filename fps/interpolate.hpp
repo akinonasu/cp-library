@@ -10,6 +10,8 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_INTERPOLATE_API
+#define CP_FPS_INTERPOLATE_API 1
 template<class T>
 FormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> &ys) {
 	using O = fps_detail::Operations<T>;
@@ -26,6 +28,8 @@ FormalPowerSeries<T> interpolate(const std::vector<T> &xs, const std::vector<T> 
 
 	return polynomial_detail::ProductTree<FormalPowerSeries<T>>(xs).interpolate(ys);
 }
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

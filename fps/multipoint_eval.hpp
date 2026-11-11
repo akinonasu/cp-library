@@ -11,6 +11,8 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_EVAL_API
+#define CP_FPS_EVAL_API 1
 template<class T>
 std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<T> &xs) {
 	using W = FormalPowerSeries<mint>;
@@ -58,6 +60,8 @@ std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<
 
 	return fps_detail::ProductTree<T>(xs).evaluate(f);
 }
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

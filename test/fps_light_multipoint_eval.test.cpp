@@ -7,11 +7,11 @@ int main() {
 	FastOutput out;
 	int n = 0, m = 0;
 	in.read(n), in.read(m);
-	light_fps f(n);
+	fps f(n);
 	std::vector<mint> xs(m);
 	for (auto &x : f) { unsigned value = 0; in.read(value); x = mint::raw(value); }
 	for (auto &x : xs) { unsigned value = 0; in.read(value); x = mint::raw(value); }
-	for (auto x : light_fps_algorithms::multipoint_eval(f, xs)) {
+	for (auto x : multipoint_eval(f, xs)) {
 		out.write(x.val()); out.write(' ');
 	}
 	out.write('\n');

@@ -92,4 +92,13 @@ public:
 	}
 };
 
+#ifndef CP_ONLINE_CONVOLUTION_API
+#define CP_ONLINE_CONVOLUTION_API 1
+template<class T = mint>
+class OnlineConvolution : public LightOnlineConvolution<T> {
+  public:
+	explicit OnlineConvolution(int max_size = 1 << 23) : LightOnlineConvolution<T>(max_size) {}
+};
+#endif
+
 #endif

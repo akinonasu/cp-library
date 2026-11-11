@@ -9,6 +9,8 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_BOSTAN_API
+#define CP_FPS_BOSTAN_API 1
 template<class T>
 T bostan_mori(FormalPowerSeries<T> p, FormalPowerSeries<T> q, long long k) {
 	using F = FormalPowerSeries<T>;
@@ -99,6 +101,8 @@ T bostan_mori(FormalPowerSeries<T> p, FormalPowerSeries<T> q, long long k) {
 		return answer + correction * numerator / denominator;
 	}
 }
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

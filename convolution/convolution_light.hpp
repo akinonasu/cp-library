@@ -49,4 +49,9 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 }
 }
 
+#ifndef CP_CONVOLUTION_API
+#define CP_CONVOLUTION_API 1
+using light_convolution::convolution;
+#endif
+
 #endif

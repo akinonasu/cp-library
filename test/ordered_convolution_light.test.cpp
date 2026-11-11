@@ -15,7 +15,7 @@ int main() {
 		std::cin >> r;
 		b[(n - r) % n] += 1;
 	}
-	auto c = light_convolution::ordered_convolution(a, b), d = light_convolution::ordered_convolution(b, a);
+	auto c = ordered_convolution(a, b), d = ordered_convolution(b, a);
 	for (int i = 0; i < int(c.size()); ++i) c[i] += d[i];
 	for (int i = 0; i < n; ++i) c[2 * i] += a[i] * b[i];
 	for (int i = 0; i < n; ++i)

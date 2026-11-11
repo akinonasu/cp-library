@@ -24,7 +24,7 @@ class FunctionalGraph {
 		for ([[maybe_unused]] int v : next) assert(0 <= v && v < n);
 		to = std::move(next);
 		parent.resize(n);
-		cycle_id.assign(n, -1);
+		cycle_id.assign(n, 0);
 		cycle_position.assign(n, -1);
 		entry.resize(n);
 		depth.assign(n, 0);
@@ -34,7 +34,8 @@ class FunctionalGraph {
 		order_.resize(n);
 		cycle_vertices_.clear();
 		cycle_offsets_.clear();
-		std::vector<int> indegree(n), heavy(n, -1), peeled;
+		auto &indegree = cycle_id;
+		std::vector<int> heavy(n, -1), peeled;
 		peeled.reserve(n);
 		for (int v : to) ++indegree[v];
 		for (int v = 0; v < n; ++v) if (!indegree[v]) peeled.push_back(v);
@@ -47,7 +48,7 @@ class FunctionalGraph {
 		}
 		cycle_vertices_.reserve(std::size_t(n) - peeled.size());
 		int position = 0;
-		for (int v = 0; v < n; ++v) if (indegree[v] && cycle_id[v] == -1) {
+		for (int v = 0; v < n; ++v) if (indegree[v] && cycle_position[v] == -1) {
 			int id = cycle_count(), start = static_cast<int>(cycle_vertices_.size()), u = v;
 			cycle_offsets_.push_back(start);
 			do {

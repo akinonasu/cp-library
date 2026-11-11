@@ -13,7 +13,9 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_API
 template<class T> struct FormalPowerSeries;
+#endif
 
 namespace fps_detail {
 

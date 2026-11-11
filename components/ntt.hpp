@@ -542,8 +542,6 @@ struct NTT : mint_detail::Ops {
 		scale8(a + n / 2, n / 2, mod - (unsigned long long)norm * norm % mod);
 	}
 
-#endif
-#if defined(__x86_64__) || defined(__i386__)
 	template <bool odd>
 	__attribute__((target("avx2"))) static void reduce_pairs8(U *a, U *b, const U *twist, int n) {
 		for (int i = 0; i < n; i += 8) {

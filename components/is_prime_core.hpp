@@ -47,7 +47,7 @@ inline bool witnesses(const Montgomery &m, typename Montgomery::U d, int s,
 	if (Count <= 3 || d < 4096) {
 		std::array<V, Count> a;
 #pragma GCC unroll 8
-		for (std::size_t i = 0; i < Count; ++i) a[i] = x[i] = m.in(bases[i] % m.mod);
+		for (std::size_t i = 0; i < Count; ++i) a[i] = x[i] = m.in(bases[i]);
 		for (V e = d >> 1; e; e >>= 1) {
 #pragma GCC unroll 8
 			for (std::size_t i = 0; i < Count; ++i) a[i] = multiply(a[i], a[i]);
@@ -59,7 +59,7 @@ inline bool witnesses(const Montgomery &m, typename Montgomery::U d, int s,
 	} else {
 		constexpr int window = 3;
 		std::array<std::array<V, Count>, 1 << window> powers;
-		for (std::size_t i = 0; i < Count; ++i) powers[1][i] = m.in(bases[i] % m.mod);
+		for (std::size_t i = 0; i < Count; ++i) powers[1][i] = m.in(bases[i]);
 		for (int k = 2; k < (1 << window); ++k)
 			for (std::size_t i = 0; i < Count; ++i) powers[k][i] = multiply(powers[k - 1][i], powers[1][i]);
 		int shift = ((std::bit_width(d) - 1) / window) * window;

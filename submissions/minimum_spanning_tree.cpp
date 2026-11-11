@@ -21,9 +21,9 @@ class UnionFind {
 		assert(n >= 0);
 		parent_.assign(n, -1);
 	}
-	int size() const { return static_cast<int>(parent_.size()); }
-	int count() const { return count_; }
-	int leader(int v) {
+	[[nodiscard]] int size() const { return static_cast<int>(parent_.size()); }
+	[[nodiscard]] int count() const { return count_; }
+	[[nodiscard]] int leader(int v) {
 		assert(0 <= v && v < size());
 		while (parent_[v] >= 0) {
 			int p = parent_[v];
@@ -41,9 +41,9 @@ class UnionFind {
 		--count_;
 		return a;
 	}
-	bool same(int a, int b) { return leader(a) == leader(b); }
-	int size(int v) { return -parent_[leader(v)]; }
-	std::vector<std::vector<int>> groups() {
+	[[nodiscard]] bool same(int a, int b) { return leader(a) == leader(b); }
+	[[nodiscard]] int size(int v) { return -parent_[leader(v)]; }
+	[[nodiscard]] std::vector<std::vector<int>> groups() {
 		std::vector<int> index(size(), -1);
 		std::vector<std::vector<int>> result(count_);
 		int next = 0;
@@ -90,6 +90,28 @@ void stable_radix_sort(std::vector<T> &values, Key &&key) {
 	}
 	if (sorted) return;
 	std::vector<T> scratch(values.size());
+	if constexpr (Bits == 11 && sizeof(K) <= 4) {
+		if (values.size() <= UINT32_MAX && (varying & mask) && ((varying >> 11) & mask) && (varying >> 22)) {
+			std::array<std::array<std::uint32_t, buckets>, 3> counts{};
+			for (const auto &value : values) {
+				std::uint32_t k = key(value);
+				++counts[0][k & mask];
+				++counts[1][(k >> 11) & mask];
+				++counts[2][k >> 22];
+			}
+			for (int pass = 0; pass < 3; ++pass) {
+				auto &count = counts[pass];
+				std::uint32_t sum = 0;
+				for (auto &x : count) {
+					auto n = x;
+					x = sum, sum += n;
+				}
+				for (auto &&value : values) scratch[count[(std::uint32_t(key(value)) >> (11 * pass)) & mask]++] = std::move(value);
+				values.swap(scratch);
+			}
+			return;
+		}
+	}
 	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
 	Counts count = [] {
 		if constexpr (Bits <= 11) return Counts{};
@@ -224,10 +246,17 @@ class Kruskal {
 		result.edges.reserve(std::min(order.size(), std::size_t(n_ ? n_ - 1 : 0)));
 		for (int id : order) {
 			const auto &e = edges_[id];
-			int u = uf.leader(e.from), v = uf.leader(e.to);
-			if (u == v) continue;
-			add_cost(result.cost, e.cost);
-			uf.merge(u, v);
+			if constexpr (std::is_same_v<Cost, std::int64_t> && std::is_same_v<Sum, Cost>) {
+				int components = uf.count();
+				uf.merge(e.from, e.to);
+				if (uf.count() == components) continue;
+				add_cost(result.cost, e.cost);
+			} else {
+				int u = uf.leader(e.from), v = uf.leader(e.to);
+				if (u == v) continue;
+				add_cost(result.cost, e.cost);
+				uf.merge(u, v);
+			}
 			result.edges.push_back(id);
 			if (uf.count() == 1) break;
 		}

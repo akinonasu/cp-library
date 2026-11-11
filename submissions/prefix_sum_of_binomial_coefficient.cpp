@@ -463,15 +463,13 @@ inline bool inner_product_has_avx2() {
 }
 
 inline bool inner_product_has_avx512() {
-#if CP_LIBRARY_AVX512
-#if defined(__AVX512F__)
+#if !CP_LIBRARY_AVX512
+	return false;
+#elif defined(__AVX512F__)
 	return true;
 #else
 	static const bool enabled = __builtin_cpu_supports("avx512f");
 	return enabled;
-#endif
-#else
-	return false;
 #endif
 }
 

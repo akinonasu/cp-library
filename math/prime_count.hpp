@@ -5,17 +5,24 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <memory>
 #include <vector>
 
 namespace prime_count_detail {
-template<bool FastDivide> std::uint64_t compute(std::uint64_t n) {
+template<bool FastDivide>
+#if defined(__GNUC__) && !defined(__clang__)
+__attribute__((optimize("O3")))
+#endif
+std::uint64_t compute(std::uint64_t n) {
 	if (n < 2) return 0;
 	std::uint64_t root = std::sqrt(static_cast<long double>(n));
 	while (__uint128_t(root) * root > n) --root;
 	while (__uint128_t(root + 1) * (root + 1) <= n) ++root;
 	std::size_t size = (root + 1) / 2;
-	std::vector<std::uint32_t> small(size), rough(size);
-	std::vector<std::uint64_t> large(size), quotient(size);
+	auto small = std::make_unique_for_overwrite<std::uint32_t[]>(size);
+	auto rough = std::make_unique_for_overwrite<std::uint32_t[]>(size);
+	auto large = std::make_unique_for_overwrite<std::uint64_t[]>(size);
+	auto quotient = std::make_unique_for_overwrite<std::uint64_t[]>(size);
 	std::vector<std::uint8_t> removed(root + 1);
 	for (std::size_t i = 0; i < size; ++i) {
 		small[i] = i;
@@ -59,8 +66,8 @@ template<bool FastDivide> std::uint64_t compute(std::uint64_t n) {
 		}
 		++count;
 	}
-	__int128_t result = 1 + __int128_t(large[0]) + __int128_t(size) * (size - 1) / 2;
-	result += (__int128_t(count) - 1) * (size - 1);
+	std::uint64_t result = 1 + large[0] + std::uint64_t(size) * (size - 1) / 2;
+	result += (std::uint64_t(count) - 1) * (size - 1);
 	for (std::size_t k = 1; k < size; ++k) result -= large[k];
 	for (std::size_t k = 1; k < size; ++k) {
 		const std::uint64_t p = rough[k], reciprocal = UINT64_MAX / p + FastDivide;
@@ -73,9 +80,9 @@ template<bool FastDivide> std::uint64_t compute(std::uint64_t n) {
 		if (end <= k) break;
 		for (std::size_t j = k + 1; j <= end; ++j)
 			result += small[(divide(quotient[j]) - 1) / 2];
-		result -= __int128_t(end - k) * (count + k - 1);
+		result -= std::uint64_t(end - k) * (count + k - 1);
 	}
-	return static_cast<std::uint64_t>(result);
+	return result;
 }
 }
 

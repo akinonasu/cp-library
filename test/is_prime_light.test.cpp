@@ -11,6 +11,6 @@ int main() {
 	while (q--) {
 		std::uint64_t n = 0;
 		input.read(n);
-		output.println(light_is_prime(n) ? "Yes" : "No");
+		output.println(is_prime(n) ? "Yes" : "No");
 	}
 }

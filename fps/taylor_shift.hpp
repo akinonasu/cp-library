@@ -10,6 +10,8 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_SHIFT_API
+#define CP_FPS_SHIFT_API 1
 template<class T>
 FormalPowerSeries<T> taylor_shift(FormalPowerSeries<T> f, std::type_identity_t<T> c) {
 	using F = FormalPowerSeries<T>;
@@ -38,6 +40,8 @@ FormalPowerSeries<T> taylor_shift(FormalPowerSeries<T> f, std::type_identity_t<T
 		return f;
 	}
 }
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

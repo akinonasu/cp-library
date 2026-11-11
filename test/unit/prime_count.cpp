@@ -16,7 +16,10 @@ int main() {
 			for (int j = p * p; j <= limit; j += p) composite[j] = true;
 		prefix[p] = prefix[p - 1] + !composite[p];
 	}
-	for (int n = 0; n <= 30000; ++n) assert(prime_count(n) == prefix[n]);
+	for (int n = 0; n <= 30000; ++n) {
+		assert(prime_count(n) == prefix[n]);
+		assert(prime_count_detail::compute<false>(n) == prefix[n]);
+	}
 	std::mt19937_64 random(20261022);
 	for (int trial = 0; trial < 2000; ++trial) {
 		const auto n = random() % (limit + 1);

@@ -32,10 +32,30 @@ void check(int l, int r, const std::vector<std::pair<int, int>>& edges, bool inc
 		}
 	};
 	visit(0);
+	{
+		bipartite_matching_detail::CSR csr(l, edges, false), reverse(r, csr);
+		std::vector<int> left(l, -1), right(r, -1), dl(l), dr(r), queue(l + r);
+		int initial = 0;
+		for (auto it = edges.rbegin(); it != edges.rend(); ++it) {
+			auto [u, v] = *it;
+			if (left[u] < 0 && right[v] < 0) left[u] = v, right[v] = u, ++initial;
+		}
+		int added = bipartite_matching_detail::degree_greedy(csr, reverse, left, right, dl, dr, queue);
+		int actual = 0;
+		for (int u = 0; u < l; ++u) if (left[u] >= 0) {
+			++actual;
+			require(right[left[u]] == u && std::find(edges.begin(), edges.end(), std::pair(u, left[u])) != edges.end());
+		}
+		for (int v = 0; v < r; ++v) if (right[v] >= 0) require(left[right[v]] == v);
+		require(added >= 0 && actual == initial + added);
+		auto result = bipartite_matching_detail::hopcroft_karp(csr, left, right);
+		require(result.maximum && actual + result.added == best);
+	}
 	if (incremental) for (int budget : {0, 1, 16}) {
 		bipartite_matching_detail::CSR csr(l, edges, false);
 		std::vector<int> left(l, -1), right(r, -1);
 		int added = bipartite_matching_detail::warm_start(csr, left, right, budget);
+		if (!budget) require(added == 0);
 		int actual = 0;
 		for (int u = 0; u < l; ++u) if (left[u] >= 0) {
 			++actual;
@@ -146,4 +166,17 @@ int main() {
 	for (int i = 0; i < 200000; ++i) unbalanced.add_edge(i, 0);
 	require(unbalanced.build() == 1);
 	for (auto value : unbalanced.edge_classification()) require(value == BipartiteMatching::EdgeStatus::optional);
+	for (bool transpose : {false, true}) {
+		BipartiteMatching paths(transpose ? n + 1 : n, transpose ? n : n + 1);
+		std::vector<std::pair<int, int>> edges;
+		for (int u = 0; u < n; ++u) {
+			edges.emplace_back(u, u);
+			if (u % 100 != 99) edges.emplace_back(u, u + 1);
+		}
+		std::shuffle(edges.begin(), edges.end(), random);
+		for (auto [u, v] : edges) paths.add_edge(transpose ? v : u, transpose ? u : v);
+		require(paths.build() == n);
+		paths.add_edge(transpose ? n : 0, transpose ? 0 : n);
+		require(paths.build() == n && paths.matching_edge_ids().size() == n);
+	}
 }

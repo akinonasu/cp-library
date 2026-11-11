@@ -139,6 +139,58 @@ void kernel() {
 #endif
 }
 
+void kernel_blocks() {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+	if (!min_plus_convolution_integral_detail::available()) return;
+	using K = min_plus_convolution_integral_detail::Kernel;
+	using U = std::uint32_t;
+	std::mt19937 rng(409564);
+	for (int n : {1, 63, 64, 65, 127, 128, 129, 255, 256, 257}) {
+		std::vector<U> input(n), output((n + 63) / 64);
+		for (auto &x : input) x = rng();
+		K::block_minima(input.data(), n, output.data());
+		for (int j = 0; j < int(output.size()); ++j)
+			assert(output[j] == *std::min_element(input.begin() + j * 64, input.begin() + std::min(n, (j + 1) * 64)));
+	}
+	for (auto [n, m] : std::array<std::array<int, 2>, 8>{std::array{2, 4097}, {3, 4096}, {17, 257}, {2048, 2048}, {2048, 2049}, {2049, 2049}, {257, 4097}, {4097, 257}}) {
+		for (int kind = 0; kind < 3; ++kind) {
+			int length = n + m - 1, capacity = (length + K::group - 1) / K::group * K::group;
+			std::vector<U> storage(n + 2 * K::pad + 2, U(-1) - 1000), b(m), output(capacity + 2, 71651);
+			storage.front() = storage.back() = 0;
+			U *a = storage.data() + K::pad + 1;
+			int center = kind == 1 ? 0 : n / 2;
+			for (int i = 0; i < n; ++i) {
+				std::int64_t d = i - center;
+				a[i] = kind == 0 ? 0 : kind == 1 ? U(std::uint64_t(i) * ((UINT32_MAX - 4000) / (n - 1))) : U(d * d);
+			}
+			for (auto &x : b) x = kind == 0 ? 0 : rng() % 1001;
+			const auto saved_a = storage, saved_b = b, saved_output = output;
+			assert(!K::multiply(a, b.data(), n, m, output.data() + 1, capacity, 0));
+			assert(output == saved_output);
+			assert(K::multiply(a, b.data(), n, m, output.data() + 1, capacity, std::uint64_t(n + m) * 16));
+			assert(output.front() == saved_output.front() && output.back() == saved_output.back());
+			assert(storage == saved_a && b == saved_b);
+			for (int row = 0; row < length; ++row) {
+				U best = U(-1);
+				for (int j = std::max(0, row + 1 - n); j < m && j <= row; ++j) best = std::min(best, a[row - j] + b[j]);
+				assert(output[row + 1] == best);
+			}
+			std::vector<U> amin((n + 63) / 64), bmin((m + 63) / 64);
+			K::block_minima(a, n, amin.data());
+			K::block_minima(b.data(), m, bmin.data());
+			for (int i = int(amin.size()) - 1; i; --i) amin[i] = std::min(amin[i], amin[i - 1]);
+			for (int sample = 0; sample < 80; ++sample) {
+				int row = int(rng() % length), low = std::max(0, row + 1 - n), high = std::min(m - 1, row);
+				if (high - low > 128) low += rng() % (high - low - 127);
+				int best = low;
+				for (int j = low + 1; j <= high; ++j) if (a[row - j] + b[j] < a[row - best] + b[best]) best = j;
+				assert(K::bounded_argmin(a, b.data(), row, low, high, amin.data(), bmin.data(), center) == best);
+			}
+		}
+	}
+#endif
+}
+
 void opposite() {
 	std::mt19937_64 rng(5738);
 	for (int n : {0, 1, 2, 7, 63, 64, 65, 127, 256})
@@ -258,6 +310,7 @@ int main() {
 	boundaries();
 	generic();
 	kernel();
+	kernel_blocks();
 	opposite();
 #if defined(__SIZEOF_INT128__)
 	large_convex<std::int64_t>();

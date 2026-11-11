@@ -128,16 +128,12 @@ class QuadVector {
 #endif
 	}
 	static bool has_avx512() {
-#if CP_LIBRARY_AVX512
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(DYNAMIC_QUAD_DISABLE_SIMD) && !defined(DYNAMIC_QUAD_DISABLE_AVX512)
+#if CP_LIBRARY_AVX512 && !defined(DYNAMIC_QUAD_DISABLE_SIMD) && !defined(DYNAMIC_QUAD_DISABLE_AVX512)
 		return __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("popcnt");
 #else
 		return false;
 #endif
-	#else
-	return false;
-#endif
-}
+	}
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	__attribute__((target("avx2,popcnt")))
 	static int child_avx2(const Node& node, int p) {

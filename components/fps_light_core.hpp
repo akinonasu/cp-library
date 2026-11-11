@@ -21,17 +21,18 @@
 #pragma GCC optimize("O3")
 #endif
 
+namespace fps_light_detail {
 template<class T = mint>
-struct [[nodiscard, gnu::warn_unused]] LightFormalPowerSeries : std::vector<T> {
+struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T> {
 	static_assert(T::mod() == 998244353);
 	using base = std::vector<T>;
-	using F = LightFormalPowerSeries;
+	using F = FormalPowerSeries;
 	using Sparse = fps_detail::ScalarSparseSeries;
 	using Kind = Sparse::Kind;
 	using Size = std::size_t;
 	using base::base;
-	LightFormalPowerSeries() = default;
-	LightFormalPowerSeries(base a) : base(std::move(a)) {}
+	FormalPowerSeries() = default;
+	FormalPowerSeries(base a) : base(std::move(a)) {}
 	F &operator=(base a) { base::operator=(std::move(a)); return *this; }
 	F &operator=(std::initializer_list<T> a) { base::operator=(a); return *this; }
 	static F multiply(const F &a, const F &b) {
@@ -368,7 +369,7 @@ struct [[nodiscard, gnu::warn_unused]] LightFormalPowerSeries : std::vector<T> {
 		const int prefix = std::bit_floor(unsigned(n));
 		return prefix >= 4096 && n - prefix <= 4 ? prefix : n;
 	}
-	using Native = LightFormalPowerSeries<mint>;
+	using Native = FormalPowerSeries<mint>;
 	Native native() const {
 		Native res(this->size());
 		for (Size i = 0; i < this->size(); ++i) res[i] = mint::raw((*this)[i].val());
@@ -432,9 +433,25 @@ struct [[nodiscard, gnu::warn_unused]] LightFormalPowerSeries : std::vector<T> {
 		return T::raw(std::min(x.val(), T::mod() - x.val()));
 	}
 };
+}
+
+template<class T = mint>
+using LightFormalPowerSeries = fps_light_detail::FormalPowerSeries<T>;
 
 using light_fps = LightFormalPowerSeries<>;
 using LightFPS = light_fps;
+
+namespace light_fps_algorithms {
+template<class T>
+using Series = LightFormalPowerSeries<T>;
+}
+
+#ifndef CP_FPS_API
+#define CP_FPS_API 1
+#define CP_FPS_LIGHT_API 1
+using fps_light_detail::FormalPowerSeries;
+using fps = light_fps;
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

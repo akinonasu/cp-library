@@ -18,12 +18,19 @@ enum class Location { outside = -1, boundary = 0, inside = 1 };
 
 template<class T>
 inline constexpr bool integer = std::is_integral_v<T> || std::is_same_v<T, __int128_t> || std::is_same_v<T, __uint128_t>;
+namespace point_detail {
+template<class T> struct Scalar {
+	static constexpr bool valid = (std::is_arithmetic_v<T> && std::is_signed_v<T>) || std::is_same_v<T, __int128_t>;
+	static constexpr bool exact = integer<T>;
+	using Wide = std::conditional_t<integer<T>, __int128_t, Real>;
+};
+}
 template<class T>
-using wide_t = std::conditional_t<integer<T>, __int128_t, Real>;
+using wide_t = typename point_detail::Scalar<T>::Wide;
 
 template<class T>
 struct Point {
-	static_assert((std::is_arithmetic_v<T> && std::is_signed_v<T>) || std::is_same_v<T, __int128_t>);
+	static_assert(point_detail::Scalar<T>::valid);
 	T x{}, y{};
 	constexpr Point() = default;
 	constexpr Point(T x, T y) : x(x), y(y) {}
@@ -49,8 +56,8 @@ using FPoint = Point<Real>;
 
 template<class T>
 constexpr int sign(T value, Real eps = epsilon) {
-	if constexpr (integer<T>) return (value > 0) - (value < 0);
-	else return (value > eps) - (value < -eps);
+	if constexpr (std::is_floating_point_v<T>) return (value > eps) - (value < -eps);
+	else return (value > 0) - (value < 0);
 }
 template<class T>
 constexpr wide_t<T> dot(Point<T> a, Point<T> b) {
@@ -94,8 +101,8 @@ Real distance(Point<T> a, Point<T> b) {
 }
 template<class T>
 constexpr bool almost_equal(Point<T> a, Point<T> b, Real eps = epsilon) {
-	if constexpr (integer<T>) return a == b;
-	else return std::abs(Real(a.x) - b.x) <= eps && std::abs(Real(a.y) - b.y) <= eps;
+	if constexpr (std::is_floating_point_v<T>) return std::abs(Real(a.x) - b.x) <= eps && std::abs(Real(a.y) - b.y) <= eps;
+	else return a == b;
 }
 template<class T>
 constexpr Point<T> rotate90(Point<T> p) { return {-p.y, p.x}; }
@@ -127,7 +134,10 @@ struct PolarLess {
 			return norm(a) < norm(b);
 		} else {
 			if (auto c = cross(a, b); c != 0) return c > 0;
-			return norm2(a) < norm2(b);
+			if constexpr (integer<T> && sizeof(T) <= 8) {
+				auto norm = [](Point<T> p) { return __uint128_t(__int128_t(p.x) * p.x) + __uint128_t(__int128_t(p.y) * p.y); };
+				return norm(a) < norm(b);
+			} else return norm2(a) < norm2(b);
 		}
 	}
 };
@@ -139,15 +149,15 @@ void polar_sort(std::vector<Point<T>> &points) {
 			struct Entry { std::uint64_t key; Point<T> point; };
 			std::vector<Entry> order;
 			order.reserve(points.size());
-			constexpr std::uint64_t scale = (std::uint64_t(1) << 61) - 1;
+			constexpr std::uint64_t scale = (std::uint64_t(1) << 32) - 1;
 			for (auto p : points) {
 				std::int64_t x = p.x, y = p.y;
 				std::uint64_t a = x < 0 ? -x : x, b = y < 0 ? -y : y;
 				unsigned quadrant = y < 0 ? (x < 0 ? 2 : 3) : (x < 0 ? 1 : 0);
 				unsigned octant = quadrant * 2 + ((a < b) ^ (quadrant & 1));
-				std::uint64_t ratio = a || b ? std::min(scale, std::uint64_t(double(std::min(a, b)) / double(std::max(a, b)) * double(scale))) : 0;
+				std::uint64_t ratio = a || b ? std::min(a, b) * scale / std::max(a, b) : 0;
 				if (octant & 1) ratio = scale - ratio;
-				order.push_back({(std::uint64_t(octant) << 61) | ratio, p});
+				order.push_back({(std::uint64_t(octant) << 32) | ratio, p});
 			}
 			stable_radix_sort<11>(order, [](const Entry &entry) { return entry.key; });
 			for (std::size_t first = 0; first < order.size();) {

@@ -73,7 +73,7 @@ __attribute__((target("avx2"))) inline Vec montgomery_multiply(Vec x, Vec y) {
 }
 struct Buffer {
 	Vec* data;
-	explicit Buffer(std::size_t n) : data(new Vec[n]()) {}
+	explicit Buffer(std::size_t n) : data(new Vec[n]) {}
 	Buffer(const Buffer&) = delete;
 	Buffer& operator=(const Buffer&) = delete;
 	~Buffer() { delete[] data; }
@@ -219,7 +219,7 @@ public:
 			}
 			interpolate_top(top_f, t, co);
 		}
-		const Vec scale = splat(montgomery(multiply_mod(k2To32, power_mod(inverse_mod(2), threes_))));
+		const Vec scale = splat(montgomery(power_mod(inverse_mod(2), threes_)));
 		if (!reordered()) {
 			for (std::size_t i = 0; i < size_; i += 8) store(c + i, montgomery_multiply(load(c + i), scale));
 			return;
@@ -516,11 +516,11 @@ private:
 
 __attribute__((target("avx2"))) inline std::vector<mint> multiply(const std::vector<mint>& a, const std::vector<mint>& b, const std::vector<int>& dimensions) {
 	std::vector<u32> dims(dimensions.begin(), dimensions.end()), f(a.size()), g(b.size()), result(a.size());
-	for (std::size_t i = 0; i < a.size(); ++i) f[i] = a[i].val(), g[i] = b[i].val();
+	for (std::size_t i = 0; i < a.size(); ++i) f[i] = a[i].v < kP ? a[i].v : a[i].v - kP, g[i] = b[i].v < kP ? b[i].v : b[i].v - kP;
 	Ranked(dims, a.size()).multiply(f.data(), g.data(), result.data());
 	std::vector<mint> out;
 	out.reserve(result.size());
-	for (u32 x : result) out.push_back(mint::raw(x));
+	for (u32 x : result) out.push_back(mint::word(x));
 	return out;
 }
 }

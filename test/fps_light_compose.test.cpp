@@ -7,5 +7,5 @@ int main() {
 	FastOutput output;
 	int n = 0; input.read(n);
 	auto f = read_light_fps(input, n), g = read_light_fps(input, n);
-	write_light_fps(output, light_fps_algorithms::compose(f, g));
+	write_light_fps(output, compose(f, g));
 }

@@ -13,4 +13,9 @@ template<class Mint = mint> class IncrementalBinomialPrefixSum : public binomial
 };
 }
 
+#ifndef CP_BINOMIAL_PREFIX_SUM_INCREMENTAL_API_HPP
+#define CP_BINOMIAL_PREFIX_SUM_INCREMENTAL_API_HPP 1
+using light_combinatorics::IncrementalBinomialPrefixSum;
+#endif
+
 #endif

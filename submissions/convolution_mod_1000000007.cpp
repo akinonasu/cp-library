@@ -99,9 +99,7 @@ void forward_stage_avx2(std::uint32_t *a, std::size_t n, std::size_t half,
 			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + start + j + half), difference);
 		}
 }
-#endif
 
-#if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
 struct Vector {
 	static constexpr std::uint32_t range = mod < (std::uint32_t(1) << 30) ? 2 * mod : mod;
@@ -194,9 +192,7 @@ void pair_avx2(std::uint32_t *a, std::size_t n, std::size_t h, const std::uint32
 		}
 }
 
-#endif
 
-#if defined(__x86_64__) || defined(__i386__)
 template <std::uint32_t mod>
 __attribute__((target("avx2")))
 void build_roots_avx2(std::uint32_t *roots, std::uint32_t *quotients, std::size_t half, std::uint32_t step) {

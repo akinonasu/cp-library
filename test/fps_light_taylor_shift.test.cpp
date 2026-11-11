@@ -8,9 +8,9 @@ int main() {
 	int n = 0;
 	unsigned c = 0;
 	in.read(n), in.read(c);
-	light_fps f(n);
+	fps f(n);
 	for (auto &x : f) { unsigned value = 0; in.read(value); x = mint::raw(value); }
-	for (auto x : light_fps_algorithms::taylor_shift(std::move(f), mint::raw(c))) {
+	for (auto x : taylor_shift(std::move(f), mint::raw(c))) {
 		out.write(x.val()); out.write(' ');
 	}
 	out.write('\n');

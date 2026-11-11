@@ -53,6 +53,11 @@
 | `geometry/convex.hpp` | 凸包・直径・最近点対・Minkowski和 | [使い方](docs/geometry_convex.md) |
 | `geometry/dynamic_convex_hull.hpp` | 点追加型の動的凸包 | [使い方](docs/dynamic_convex_hull.md) |
 | `geometry/circle.hpp` | 円・接線・共通面積・最小包含円 | [使い方](docs/geometry_circle.md) |
+| `geometry/rational.hpp` | 幾何の任意精度整数・有理数座標 | [使い方](docs/geometry_rational.md) |
+| `geometry/exact_linear.hpp` | 厳密な交点・射影・距離二乗 | [使い方](docs/geometry_exact_linear.md) |
+| `geometry/exact_polygon.hpp` | 厳密な面積・重心・凸多角形の切断 | [使い方](docs/geometry_exact_polygon.md) |
+| `geometry/exact_circle.hpp` | 厳密な円の判定・外接円・最小包含円 | [使い方](docs/geometry_exact_circle.md) |
+| `geometry/exact.hpp` | 任意精度による厳密な平面幾何の一括 include | [使い方](docs/geometry_exact.md) |
 
 ### 畳み込み
 
@@ -216,6 +221,7 @@
 | `data_structure/dynamic_bitset.hpp` | Dynamic Bitset・論理演算／シフト・区間更新・ビット列挙 | [使い方](docs/dynamic_bitset.md) |
 | `data_structure/priority_search_tree.hpp` | Priority Search Tree（三辺矩形内の点の列挙・点の更新） | [使い方](docs/priority_search_tree.md) |
 | `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
+| `data_structure/double_ended_priority_queue.hpp` | 両端優先度付きキュー（最小値・最大値の取得と削除） | [使い方](docs/double_ended_priority_queue.md) |
 | `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
 
 ### Union-Find
@@ -414,7 +420,7 @@
 | `components/bigint_magnitude.hpp` | 多倍長整数の絶対値演算・NTT 乗算・逆数除算 | [使い方](docs/bigint_magnitude.md) |
 | `components/integer_arithmetic.hpp` | 整数型の判定・オーバーフローを検出する加算と乗算 | [使い方](docs/integer_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
-| `components/fast_io_bulk.hpp` | 非負整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
+| `components/fast_io_bulk.hpp` | 整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
 | `components/fast_io_output.hpp` | 非負整数の一括出力 | [使い方](docs/fast_io_output.md) |
 | `components/dynamic_bit_vector.hpp` | Dynamic Bit Vector | [使い方](docs/dynamic_bit_vector.md) |
 | `components/dynamic_quad_vector.hpp` | Dynamic Quad Vector | [使い方](docs/dynamic_quad_vector.md) |

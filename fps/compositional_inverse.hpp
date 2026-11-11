@@ -10,6 +10,8 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_REVERT_API
+#define CP_FPS_REVERT_API 1
 template<class T>
 FormalPowerSeries<T> compositional_inverse(const FormalPowerSeries<T> &f, int deg = -1) {
 	using F = FormalPowerSeries<T>;
@@ -41,6 +43,8 @@ FormalPowerSeries<T> compositional_inverse(const FormalPowerSeries<T> &f, int de
 		return fps_detail::composition_fallback::compositional_inverse(f, deg);
 	}
 }
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

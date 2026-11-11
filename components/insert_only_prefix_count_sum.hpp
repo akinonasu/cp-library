@@ -43,8 +43,6 @@ class Packed {
 			_mm256_storeu_si256(p, _mm256_add_epi64(_mm256_loadu_si256(p), change));
 		}
 	}
-#endif
-#if defined(__x86_64__) || defined(__i386__)
 	__attribute__((target("avx2"))) void insert_avx2(unsigned p, std::uint64_t delta) {
 		auto encoded = (std::uint64_t(1) << sum_bits) + delta;
 		add_avx2(levels[0][p >> 4].data(), p & 15, encoded);

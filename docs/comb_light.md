@@ -12,13 +12,12 @@ redirect_from:
 #include "lib/math/comb_light.hpp"
 
 int main() {
-	using light_combinatorics::comb, light_combinatorics::fact, light_combinatorics::finv;
 	assert(comb(10, 3).val() == 120);
 	assert(fact[5] * finv[5] == mint(1));
 }
 ```
 
-`light_combinatorics` 名前空間の `comb`・`Comb<Mint>`・`fact`・`finv` を使います。通常版と同じ添字形式で、負の添字は 0 を返します。`COMB_MAX` の既定値は 10000000 です。通常版とは独立した実装で、同時に include できます。
+通常版と同じ `comb`・`Comb<Mint>`・`fact`・`finv` を使います。同じ機能は通常版か軽量版のいずれか一方を include してください。負の添字は 0 を返し、`COMB_MAX` の既定値は 10000000 です。
 
 各 modint 型の最初の有効な問い合わせで階乗・逆階乗を生成し、その型の全操作で表を共有します。使わない型、負の添字、範囲外の `k` を 0 とする問い合わせでは前計算しません。`main` より前の呼び出しにも対応します。既定の `mint` も同じ方式です。
 

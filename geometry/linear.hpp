@@ -27,7 +27,7 @@ constexpr bool on_line(Line<T> l, Point<T> p, Real eps = epsilon) {
 template<class T>
 constexpr bool on_segment(Segment<T> s, Point<T> p, Real eps = epsilon) {
 	if (orientation(s.a, s.b, p, eps)) return false;
-	if constexpr (integer<T>)
+	if constexpr (!std::is_floating_point_v<T>)
 		return std::min(s.a.x, s.b.x) <= p.x && p.x <= std::max(s.a.x, s.b.x)
 			&& std::min(s.a.y, s.b.y) <= p.y && p.y <= std::max(s.a.y, s.b.y);
 	else return std::min(s.a.x, s.b.x) - eps <= p.x && p.x <= std::max(s.a.x, s.b.x) + eps

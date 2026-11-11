@@ -15,6 +15,6 @@ int main() {
 	for (int q = 0; q < queries; ++q) {
 		int n = 0, k = 0;
 		input.read(n), input.read(k);
-		output.println(light_combinatorics::comb<M>(n, k).val());
+		output.println(comb<M>(n, k).val());
 	}
 }
