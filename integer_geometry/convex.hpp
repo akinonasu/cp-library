@@ -10,7 +10,7 @@ namespace integer_geometry {
 template<Coordinate T>
 struct PointPair {
 	int first, second;
-	T squared_distance;
+	Wide squared_distance;
 };
 
 template<Coordinate T>
@@ -54,9 +54,9 @@ std::optional<PointPair<T>> convex_diameter(const std::vector<BasicPoint<T>> &po
 }
 
 template<Coordinate T>
-T diameter_squared(const std::vector<BasicPoint<T>> &polygon) {
+Wide diameter_squared(const std::vector<BasicPoint<T>> &polygon) {
 	auto result = convex_diameter(polygon);
-	return result ? result->squared_distance : T(0);
+	return result ? result->squared_distance : Wide(0);
 }
 
 template<Coordinate T>

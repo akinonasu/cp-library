@@ -2,7 +2,7 @@
 #define INTEGER_GEOMETRY_BRIDGE_HPP
 
 #include "../integer_geometry/point.hpp"
-#include "../geometry/rational.hpp"
+#include "../geometry/point.hpp"
 #include <vector>
 
 namespace integer_geometry_detail {

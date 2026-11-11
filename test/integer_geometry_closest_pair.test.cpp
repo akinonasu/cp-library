@@ -11,11 +11,7 @@ int main() {
 	while (t--) {
 		int n = 0; input.read(n);
 		std::vector<integer_geometry::Point> points(n);
-		for (auto &p : points) {
-			std::int64_t x = 0, y = 0;
-			input.read(x), input.read(y);
-			p = {x, y};
-		}
+		for (auto &p : points) input.read(p.x), input.read(p.y);
 		auto pair = integer_geometry::closest_pair(points);
 		output.write(pair->first), output.write(' '), output.println(pair->second);
 	}

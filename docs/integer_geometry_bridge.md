@@ -12,6 +12,6 @@ documentation_of: //components/integer_geometry_bridge.hpp
 | `to_geometry(points)` / `from_geometry(points)` | 対応する `std::vector` の点列を変換 |
 | `from_geometry(location)` | `geometry::Location` を `integer_geometry::Location` へ変換 |
 
-座標型 `T` は `Integer` または `Rational` です。座標の値と型を保ち、返り値は入力を参照しません。空の点列も扱えます。
+座標型 `T` は64 bit以下の符号付き組み込み整数型です。座標の値と型を保ち、返り値は入力を参照しません。空の点列も扱えます。
 
-単点の変換は定数個、長さ $$n$$ の点列の変換は $$O(n)$$ 個の数値を複製します。任意精度の複製時間と数値の保存空間は、整数や分子・分母のビット長によります。
+単点の変換は $$O(1)$$ 時間・追加空間、長さ $$n$$ の点列の変換は $$O(n)$$ 時間・追加空間です。

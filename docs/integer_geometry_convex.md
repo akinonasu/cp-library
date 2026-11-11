@@ -23,20 +23,20 @@ int main() {
 }
 ```
 
-`integer_geometry` 名前空間を使います。点群は `vector<BasicPoint<T>>` とし、`T` は `Integer` または `Rational` です。距離・外積の中間値も任意精度で扱います。
+`integer_geometry` 名前空間を使います。点群は `vector<BasicPoint<T>>` とし、`T` は64 bit以下の符号付き組み込み整数型です。外積や距離二乗は符号付き128 bit整数 `Wide` で計算します。
 
-| 操作 | 内容・返り値 | 演算回数 |
+| 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `convex_hull_indices(points,keep_collinear = false)` | 凸包上の点の元の添字を `vector<int>` で返す | $$O(n\log n)$$ |
 | `convex_hull(points,keep_collinear = false)` | 凸包の頂点列を返す | $$O(n\log n)$$ |
 | `convex_contains(convex,p)` | 凸多角形に対する点の位置を `Location` で返す | $$O(\log h)$$ |
 | `convex_diameter(convex)` | 最遠頂点対を `optional<PointPair<T>>` で返す。添字は入力の凸多角形内 | $$O(h)$$ |
-| `diameter_squared(convex)` | 凸多角形の直径二乗を `T` で返す。空・単点は0 | $$O(h)$$ |
+| `diameter_squared(convex)` | 凸多角形の直径二乗を `Wide` で返す。空・単点は0 | $$O(h)$$ |
 | `furthest_pair(points)` | 一般の点群の最遠点対を `optional<PointPair<T>>` で返す | $$O(n\log n)$$ |
 | `closest_pair(points)` | 一般の点群の最近点対を `optional<PointPair<T>>` で返す | $$O(n\log n)$$ |
 | `minkowski_sum(a,b)` | 2つの凸多角形の Minkowski 和を頂点列で返す | $$O(n+m)$$ |
 | `PointPair<T>::first`, `.second` | 点対の0始まりの添字 `int` | $$O(1)$$ |
-| `PointPair<T>::squared_distance` | 点対の距離二乗 `T` | $$O(1)$$ |
+| `PointPair<T>::squared_distance` | 点対の距離二乗 `Wide` | $$O(1)$$ |
 
 元の点群の添字は `[0,n)`、凸多角形内の添字は `[0,h)` です。凸包・点対を求める操作では入力点数を `INT_MAX` 以下にします。同距離の候補が複数あれば任意の1組を返します。
 
@@ -48,6 +48,8 @@ int main() {
 `closest_pair`・`furthest_pair` は2点未満なら `nullopt` を返します。2点以上なら、全点が同一でも異なる添字を返します。
 `convex_diameter` は空なら `nullopt`、単点なら `first = second = 0`、距離0を返します。
 
-Minkowski 和の入力は凸な境界順とし、時計回り・辺上の余分な点・末尾の始点の重複を認めます。返り値は余分な点を除いた反時計回りの凸包です。空集合との和は空、単点との和は平行移動です。非凸な点群は先に `convex_hull` に通してください。
+Minkowski 和の入力は凸な境界順とし、時計回り・辺上の余分な点・末尾の始点の重複を認めます。返り値は余分な点を除いた反時計回りの凸包です。空集合との和は空、単点との和は平行移動です。非凸な点群は先に `convex_hull` に通してください。出力の座標の和は座標型 `T` に収めます。
 
-計算量は数値演算・比較の回数です。凸包・一般の点対は $$O(n)$$、凸多角形の直径は $$O(h)$$、Minkowski 和は $$O(n+m)$$ 個の数値を保持します。凸多角形の内外判定は定数個の数値を保持します。任意精度の演算時間と数値の保存空間は、整数や分子・分母のビット長によります。
+全ての中間値を符号付き128 bit整数に収めて使います。凸包・点対・凸多角形の内外判定では、例えば各座標の絶対値が $$10^{18}$$ 以下なら十分です。Minkowski 和では面積の積算も含めて条件を満たす必要があり、例えば各入力の点数が `INT_MAX` 以下、各座標の絶対値が $$10^9$$ 以下なら十分です。
+
+凸包・一般の点対は $$O(n)$$、凸多角形の直径は $$O(h)$$、Minkowski 和は $$O(n+m)$$ 追加空間です。凸多角形の内外判定は $$O(1)$$ 追加空間です。

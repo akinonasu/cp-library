@@ -11,14 +11,10 @@ int main() {
 	while (t--) {
 		int n = 0; input.read(n);
 		std::vector<integer_geometry::Point> points(n);
-		for (auto &p : points) {
-			std::int64_t x = 0, y = 0;
-			input.read(x), input.read(y);
-			p = {x, y};
-		}
+		for (auto &p : points) input.read(p.x), input.read(p.y);
 		auto hull = integer_geometry::convex_hull(points);
 		output.println(hull.size());
 		for (const auto &p : hull)
-			output.write(p.x.convert_to<std::int64_t>()), output.write(' '), output.println(p.y.convert_to<std::int64_t>());
+			output.write(p.x), output.write(' '), output.println(p.y);
 	}
 }

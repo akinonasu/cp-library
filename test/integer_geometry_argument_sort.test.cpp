@@ -10,14 +10,10 @@ int main() {
 	FastOutput output;
 	int n = 0; input.read(n);
 	std::vector<integer_geometry::Point> points(n);
-	for (auto &p : points) {
-		std::int64_t x = 0, y = 0;
-		input.read(x), input.read(y);
-		p = {x, y};
-	}
+	for (auto &p : points) input.read(p.x), input.read(p.y);
 	integer_geometry::polar_sort(points);
 	auto lower = std::find_if(points.begin(), points.end(), [](const auto &p) { return p.y < 0; });
 	std::rotate(points.begin(), lower, points.end());
 	for (const auto &p : points)
-		output.write(p.x.convert_to<std::int64_t>()), output.write(' '), output.println(p.y.convert_to<std::int64_t>());
+		output.write(p.x), output.write(' '), output.println(p.y);
 }
