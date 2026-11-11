@@ -155,6 +155,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `graph/kruskal.hpp` | Kruskal・最小全域木／最小全域森 | [使い方](docs/kruskal.md) |
+| `graph/directed_mst.hpp` | 有向最小全域木・採用辺と親の復元 | [使い方](docs/directed_mst.md) |
 | `graph/steiner_tree.hpp` | 最小シュタイナー木・採用辺の復元 | [使い方](docs/steiner_tree.md) |
 
 ### フロー
