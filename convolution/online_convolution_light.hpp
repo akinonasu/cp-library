@@ -8,8 +8,9 @@
 #include <type_traits>
 #include <vector>
 
+namespace light_convolution {
 template <class T = mint>
-class LightOnlineConvolution {
+class OnlineConvolution {
 	static_assert(T::mod() == 998244353);
 	using M = mint;
 	using V = std::vector<M>;
@@ -68,7 +69,7 @@ class LightOnlineConvolution {
 		}
 	}
 public:
-	explicit LightOnlineConvolution(int max_size = 1 << 23) : limit(max_size) { assert(0 <= limit && limit <= (1 << 23)); }
+	explicit OnlineConvolution(int max_size = 1 << 23) : limit(max_size) { assert(0 <= limit && limit <= (1 << 23)); }
 	int size() const { return a.size(); }
 	int max_size() const { return limit; }
 	bool empty() const { return a.empty(); }
@@ -91,11 +92,14 @@ public:
 		return export_value(c[n]);
 	}
 };
+}
+
+template<class T = mint>
+using LightOnlineConvolution = light_convolution::OnlineConvolution<T>;
 
 #ifndef ONLINE_CONVOLUTION_HPP
 #define ONLINE_CONVOLUTION_HPP 1
-template<class T = mint>
-using OnlineConvolution = LightOnlineConvolution<T>;
+using light_convolution::OnlineConvolution;
 #endif
 
 #endif
