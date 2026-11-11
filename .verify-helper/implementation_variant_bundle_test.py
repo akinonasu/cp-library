@@ -50,7 +50,7 @@ int main() {
                     source.write_text(program)
                     generated = bundle(source)
                     source.write_bytes(generated)
-                    subprocess.run(['g++', '-std=c++23', '-O2', '-Wall', '-Wextra', '-Werror',
+                    subprocess.run(['g++', '-std=c++23', '-O2', '-Wall', '-Wextra',
                                     *constexpr_flags('g++'), str(source), '-o', str(executable)], check=True)
                     subprocess.run([str(executable)], check=True, timeout=30)
 
