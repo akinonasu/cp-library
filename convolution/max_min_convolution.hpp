@@ -11,6 +11,9 @@
 
 #include "../fps/fps.hpp"
 
+#ifndef CP_MAX_MIN_CONVOLUTION_API
+#define CP_MAX_MIN_CONVOLUTION_API 1
+
 namespace max_min_convolution_detail {
 template <class T, class Compare>
 std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, Compare compare) {
@@ -71,5 +74,7 @@ template <class T>
 std::vector<T> min_max_convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	return max_min_convolution_detail::multiply(a, b, std::less<T>{});
 }
+
+#endif
 
 #endif

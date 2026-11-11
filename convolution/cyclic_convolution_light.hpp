@@ -35,8 +35,8 @@ std::vector<T> cyclic_convolution(const std::vector<T> &a, const std::vector<T> 
 
 }
 
-#ifndef CYCLIC_CONVOLUTION_HPP
-#define CYCLIC_CONVOLUTION_HPP 1
+#ifndef CP_CYCLIC_CONVOLUTION_API
+#define CP_CYCLIC_CONVOLUTION_API 1
 using light_convolution::cyclic_convolution;
 #endif
 

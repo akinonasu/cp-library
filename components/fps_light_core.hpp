@@ -446,8 +446,8 @@ template<class T>
 using Series = LightFormalPowerSeries<T>;
 }
 
-#ifndef FPS_998244353_HPP
-#define FPS_998244353_HPP 1
+#ifndef CP_FPS_API
+#define CP_FPS_API 1
 #define CP_FPS_LIGHT_API 1
 using fps_light_detail::FormalPowerSeries;
 using fps = light_fps;

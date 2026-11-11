@@ -11,6 +11,9 @@
 #include "../math/factorize.hpp"
 #include "../components/convolution_dispatch.hpp"
 
+#ifndef CP_MULTIPLICATIVE_CONVOLUTION_API
+#define CP_MULTIPLICATIVE_CONVOLUTION_API 1
+
 template <class T>
 std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	if (a.empty() || b.empty()) return {};
@@ -43,5 +46,7 @@ std::vector<T> multiplicative_convolution(const std::vector<T> &a, const std::ve
 	result[0] += sum_a * b[0];
 	return result;
 }
+
+#endif
 
 #endif

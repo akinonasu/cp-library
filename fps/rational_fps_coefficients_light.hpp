@@ -28,8 +28,10 @@ Series<T> rational_fps_coefficients(Series<T> p, Series<T> q, long long l, long 
 }
 
 #ifdef CP_FPS_LIGHT_API
-#define CP_FPS_RATIONAL_FPS_COEFFICIENTS_HPP 1
+#ifndef CP_FPS_RANGE_API
+#define CP_FPS_RANGE_API 1
 using light_fps_algorithms::rational_fps_coefficients;
+#endif
 #endif
 
 #endif

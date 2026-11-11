@@ -8,6 +8,8 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_RECURRENCE_API
+#define CP_FPS_RECURRENCE_API 1
 template<class T>
 T linear_recurrence(const std::vector<T> &initial, const std::vector<T> &coefficients, long long k) {
 	using F = FormalPowerSeries<T>;
@@ -37,6 +39,8 @@ T linear_recurrence(const std::vector<T> &initial, const std::vector<T> &coeffic
 	F p = F::multiply(F(initial.end() - order, initial.end()), q).pre(order);
 	return bostan_mori(std::move(p), std::move(q), k - d + order);
 }
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

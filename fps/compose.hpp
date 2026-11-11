@@ -11,6 +11,8 @@
 #pragma GCC optimize("O3")
 #endif
 
+#ifndef CP_FPS_COMPOSE_API
+#define CP_FPS_COMPOSE_API 1
 template<class T>
 FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowerSeries<T> &inner, int deg = -1) {
 	using F = FormalPowerSeries<T>;
@@ -90,6 +92,8 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 #endif
 	return fps_detail::composition_fallback::compose(f, g, deg);
 }
+
+#endif
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC pop_options

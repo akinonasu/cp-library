@@ -28,12 +28,18 @@ Series<T> compositional_inverse(const Series<T> &f, int deg = -1) {
 }
 
 #ifdef CP_FPS_LIGHT_API
-#define CP_FPS_COMPOSE_HPP 1
+#ifndef CP_FPS_COMPOSE_API
+#define CP_FPS_COMPOSE_API 1
 using light_fps_algorithms::compose;
-#define CP_FPS_POWER_PROJECTION_HPP 1
+#endif
+#ifndef CP_FPS_PROJECT_API
+#define CP_FPS_PROJECT_API 1
 using light_fps_algorithms::power_projection;
-#define CP_FPS_COMPOSITIONAL_INVERSE_HPP 1
+#endif
+#ifndef CP_FPS_REVERT_API
+#define CP_FPS_REVERT_API 1
 using light_fps_algorithms::compositional_inverse;
+#endif
 #endif
 
 #endif

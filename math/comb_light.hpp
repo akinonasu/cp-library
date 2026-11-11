@@ -47,8 +47,8 @@ inline constexpr auto& fact = Comb<>::fact;
 inline constexpr auto& finv = Comb<>::finv;
 }
 
-#ifndef COMB_HPP
-#define COMB_HPP 1
+#ifndef CP_COMB_API_HPP
+#define CP_COMB_API_HPP 1
 using light_combinatorics::COMB_INF;
 using light_combinatorics::comb;
 using light_combinatorics::Comb;

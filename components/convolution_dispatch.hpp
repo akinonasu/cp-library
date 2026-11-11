@@ -11,6 +11,9 @@
 #include "../convolution/convolution_mod.hpp"
 #include "../convolution/convolution_ring.hpp"
 
+#ifndef CP_CONVOLUTION_API
+#define CP_CONVOLUTION_API 1
+
 namespace convolution_detail {
 template <class T>
 struct IsComplex : std::false_type {};
@@ -47,5 +50,7 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	else if constexpr (std::is_floating_point_v<T> || convolution_detail::IsComplex<T>::value) return convolution_fft(a, b);
 	else return convolution_ring(a, b);
 }
+
+#endif
 
 #endif

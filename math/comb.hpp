@@ -13,6 +13,9 @@
 #ifndef COMB_MAX
 #define COMB_MAX 10000000
 #endif
+
+#ifndef CP_COMB_API_HPP
+#define CP_COMB_API_HPP 1
 constexpr int COMB_INF = static_cast<int>(COMB_MAX);
 static_assert(COMB_INF >= 0 && COMB_INF < mint::mod());
 namespace comb_detail {
@@ -74,5 +77,7 @@ template<class Mint = mint> struct Comb {
 };
 inline constexpr auto &fact = Comb<>::fact;
 inline constexpr auto &finv = Comb<>::finv;
+
+#endif
 
 #endif

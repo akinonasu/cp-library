@@ -70,8 +70,8 @@ std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vect
 
 }
 
-#ifndef MULTIVARIATE_CONVOLUTION_HPP
-#define MULTIVARIATE_CONVOLUTION_HPP 1
+#ifndef CP_MULTIVARIATE_CONVOLUTION_API
+#define CP_MULTIVARIATE_CONVOLUTION_API 1
 using light_convolution::multivariate_convolution;
 #endif
 

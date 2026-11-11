@@ -90,16 +90,26 @@ Series<T> interpolate(const std::vector<T> &xs, const std::vector<T> &ys) {
 }
 
 #ifdef CP_FPS_LIGHT_API
-#define CP_FPS_TAYLOR_SHIFT_HPP 1
+#ifndef CP_FPS_SHIFT_API
+#define CP_FPS_SHIFT_API 1
 using light_fps_algorithms::taylor_shift;
-#define CP_FPS_BOSTAN_MORI_HPP 1
+#endif
+#ifndef CP_FPS_BOSTAN_API
+#define CP_FPS_BOSTAN_API 1
 using light_fps_algorithms::bostan_mori;
-#define CP_FPS_LINEAR_RECURRENCE_HPP 1
+#endif
+#ifndef CP_FPS_RECURRENCE_API
+#define CP_FPS_RECURRENCE_API 1
 using light_fps_algorithms::linear_recurrence;
-#define CP_FPS_MULTIPOINT_EVAL_HPP 1
+#endif
+#ifndef CP_FPS_EVAL_API
+#define CP_FPS_EVAL_API 1
 using light_fps_algorithms::multipoint_eval;
-#define CP_FPS_INTERPOLATE_HPP 1
+#endif
+#ifndef CP_FPS_INTERPOLATE_API
+#define CP_FPS_INTERPOLATE_API 1
 using light_fps_algorithms::interpolate;
+#endif
 #endif
 
 #endif

@@ -8,6 +8,9 @@
 #include <type_traits>
 #include <vector>
 
+#ifndef CP_ONLINE_CONVOLUTION_API
+#define CP_ONLINE_CONVOLUTION_API 1
+
 template <class T = mint>
 class OnlineConvolution {
 	static_assert(T::mod() == 998244353);
@@ -102,5 +105,7 @@ public:
 		return export_value(c[n]);
 	}
 };
+
+#endif
 
 #endif

@@ -49,11 +49,8 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 }
 }
 
-#ifndef CONVOLUTION_DISPATCH_HPP
-#define CONVOLUTION_DISPATCH_HPP 1
-#ifndef CONVOLUTION_HPP
-#define CONVOLUTION_HPP 1
-#endif
+#ifndef CP_CONVOLUTION_API
+#define CP_CONVOLUTION_API 1
 using light_convolution::convolution;
 #endif
 

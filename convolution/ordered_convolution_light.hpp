@@ -38,8 +38,8 @@ std::vector<T> ordered_convolution(const std::vector<T> &a, const std::vector<T>
 
 }
 
-#ifndef ORDERED_CONVOLUTION_HPP
-#define ORDERED_CONVOLUTION_HPP 1
+#ifndef CP_ORDERED_CONVOLUTION_API
+#define CP_ORDERED_CONVOLUTION_API 1
 using light_convolution::ordered_convolution;
 #endif
 

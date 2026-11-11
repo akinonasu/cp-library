@@ -43,11 +43,13 @@ std::optional<Series<T>> polynomial_inv_mod(Series<T> a, Series<T> modulus) {
 }
 
 #ifdef CP_FPS_LIGHT_API
-#define CP_FPS_POLYNOMIAL_GCD_HPP 1
+#ifndef CP_FPS_GCD_API
+#define CP_FPS_GCD_API 1
 using light_fps_algorithms::PolynomialExtendedGCD;
 using light_fps_algorithms::polynomial_gcd;
 using light_fps_algorithms::polynomial_extended_gcd;
 using light_fps_algorithms::polynomial_inv_mod;
+#endif
 #endif
 
 #endif

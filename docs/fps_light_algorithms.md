@@ -3,6 +3,8 @@ title: "軽量 FPS の追加演算"
 documentation_of: //fps/fps_light_algorithms.hpp
 ---
 
+FPS の本体と追加演算は、同じ版のヘッダーを選んでください。
+
 ```cpp
 #include "lib/fps/fps_light_algorithms.hpp"
 

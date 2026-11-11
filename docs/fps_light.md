@@ -3,6 +3,8 @@ title: "軽量な形式的冪級数"
 documentation_of: //fps/fps_light.hpp
 ---
 
+FPS の本体と追加演算は、同じ版のヘッダーを選んでください。
+
 ```cpp
 #include "lib/fps/fps_light.hpp"
 #include <cassert>

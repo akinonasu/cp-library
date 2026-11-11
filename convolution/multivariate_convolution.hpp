@@ -11,6 +11,9 @@
 #include "../components/convolution_dispatch.hpp"
 #include "../components/ntt.hpp"
 
+#ifndef CP_MULTIVARIATE_CONVOLUTION_API
+#define CP_MULTIVARIATE_CONVOLUTION_API 1
+
 template <class T>
 std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vector<T> &b, const std::vector<int> &dimensions) {
 	std::size_t size = 1;
@@ -81,5 +84,7 @@ std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vect
 	}
 	return result;
 }
+
+#endif
 
 #endif

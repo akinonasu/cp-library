@@ -13,8 +13,8 @@ template<class Mint = mint> class IncrementalBinomialPrefixSum : public binomial
 };
 }
 
-#ifndef BINOMIAL_PREFIX_SUM_INCREMENTAL_HPP
-#define BINOMIAL_PREFIX_SUM_INCREMENTAL_HPP 1
+#ifndef CP_BINOMIAL_PREFIX_SUM_INCREMENTAL_API_HPP
+#define CP_BINOMIAL_PREFIX_SUM_INCREMENTAL_API_HPP 1
 using light_combinatorics::IncrementalBinomialPrefixSum;
 #endif
 

@@ -92,8 +92,8 @@ public:
 	}
 };
 
-#ifndef ONLINE_CONVOLUTION_HPP
-#define ONLINE_CONVOLUTION_HPP 1
+#ifndef CP_ONLINE_CONVOLUTION_API
+#define CP_ONLINE_CONVOLUTION_API 1
 template<class T = mint>
 class OnlineConvolution : public LightOnlineConvolution<T> {
   public:
