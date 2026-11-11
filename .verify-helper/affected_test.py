@@ -151,6 +151,18 @@ class AffectedVerification(unittest.TestCase):
         self.assertEqual(plan["unit"], ["test/unit/geometry.cpp"])
         self.assertEqual(plan["verification"], ["test/geometry.test.cpp"])
 
+    def test_integer_geometry_header_scope(self):
+        self.write("integer_geometry/point.hpp", "#pragma once\n")
+        self.write("integer_geometry/linear.hpp", '#include "point.hpp"\n')
+        self.write("test/unit/integer_geometry.cpp", '#include "integer_geometry/linear.hpp"\n')
+        self.write("test/integer_geometry.test.cpp", '#include "integer_geometry/linear.hpp"\n')
+        self.commit("add integer geometry")
+        plan = self.plan()
+        self.assertEqual(plan["headers"], ["integer_geometry/linear.hpp", "integer_geometry/point.hpp"])
+        self.assertEqual(plan["bundles"], plan["headers"])
+        self.assertEqual(plan["unit"], ["test/unit/integer_geometry.cpp"])
+        self.assertEqual(plan["verification"], ["test/integer_geometry.test.cpp"])
+
     def test_cold_dynamic_scope_and_incompatible_cache_inventory(self):
         self.change_bits()
         plan = self.plan()

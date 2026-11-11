@@ -59,6 +59,18 @@
 | `geometry/exact_circle.hpp` | 厳密な円の判定・外接円・最小包含円 | [使い方](docs/geometry_exact_circle.md) |
 | `geometry/exact.hpp` | 任意精度による厳密な平面幾何の一括 include | [使い方](docs/geometry_exact.md) |
 
+### 整数幾何
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `integer_geometry/geometry.hpp` | 整数・有理数による厳密な平面幾何の一括 include | [使い方](docs/integer_geometry.md) |
+| `integer_geometry/point.hpp` | 任意精度の点・ベクトル・偏角順 | [使い方](docs/integer_geometry_point.md) |
+| `integer_geometry/linear.hpp` | 直線・線分の判定・交点・射影・距離二乗 | [使い方](docs/integer_geometry_linear.md) |
+| `integer_geometry/polygon.hpp` | 多角形の面積・内外・重心・切断 | [使い方](docs/integer_geometry_polygon.md) |
+| `integer_geometry/convex.hpp` | 凸包・最近点対・最遠点対・Minkowski 和 | [使い方](docs/integer_geometry_convex.md) |
+| `integer_geometry/circle.hpp` | 円の判定・外接円・最小包含円 | [使い方](docs/integer_geometry_circle.md) |
+| `integer_geometry/lattice.hpp` | 方向の原始化・線分と多角形の格子点数 | [使い方](docs/integer_geometry_lattice.md) |
+
 ### 畳み込み
 
 | ファイル | 内容 | 使い方 |
@@ -446,6 +458,7 @@
 | `components/offline_range_kth.hpp` | 区間順位の一括処理 | [使い方](docs/offline_range_kth.md) |
 | `components/insert_only_prefix_count_sum.hpp` | 挿入のみの区間和・個数 | [使い方](docs/insert_only_prefix_count_sum.md) |
 | `components/packed_convex_hull.hpp` | 整数点の凸包 | [使い方](docs/packed_convex_hull.md) |
+| `components/integer_geometry_bridge.hpp` | 整数幾何と通常幾何の厳密な座標変換 | [使い方](docs/integer_geometry_bridge.md) |
 | `components/min_plus_convolution_envelope.hpp` | 凹列と任意列の畳み込み | [使い方](docs/min_plus_convolution_envelope.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
 | `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |

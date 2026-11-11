@@ -86,6 +86,31 @@ class SizeProfiles(unittest.TestCase):
         self.assertIn(b'/cp-library/tree/a.hpp.html', body)
         self.assertEqual(result[destination / 'test/a.test.cpp.md'], pages[destination / 'test/a.test.cpp.md'])
 
+    def test_integer_geometry_has_separate_catalog_and_shared_profile_routes(self):
+        destination = Path('/tmp/generated')
+        names = ['geometry/point.hpp', 'integer_geometry/point.hpp']
+        categories = [{'name': name.split('/')[0], 'pages': [
+            {'path': name, 'title': name, 'icon': 'OK'}]} for name in names]
+        pages = {}
+        for name in names:
+            front = {'layout': 'document', 'documentation_of': name, 'title': name,
+                     'data': {'path': name, 'bundledCode': 'int point;\n'}}
+            pages[destination / (name + '.md')] = render_page(front, b'point\n')
+        pages[destination / 'index.md'] = render_page(
+            {'layout': 'toppage', 'data': {'libraryCategories': categories}}, b'catalog\n')
+        result = prepare_pages(pages, destination, CONFIG)
+        for profile in ['', LIGHTWEIGHT]:
+            front, _ = split_page(result[destination / profile / 'index.md'])
+            actual = front['data']['libraryCategories']
+            self.assertEqual([category['name'] for category in actual], ['geometry', 'integer_geometry'])
+            entries = [item for category in actual for item in category['pages']]
+            self.assertEqual([item['path'] for item in entries], names)
+            self.assertEqual([item['pagePath'] for item in entries], [name + '.html' for name in names])
+        for name in names:
+            front, _ = split_page(result[destination / (name + '.md')])
+            self.assertTrue(front['data']['sharedPage'])
+            self.assertIn('/lightweight/' + name + '.html', front['redirect_from'])
+
     def test_over_limit_library_keeps_its_catalog_position_and_full_link(self):
         destination, pages = self.fixture()
         path = destination / 'tree/a.hpp.md'
