@@ -139,6 +139,7 @@
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `tree/path_product.hpp` | 頂点値更新・順序付き経路積 | [使い方](docs/path_product.md) |
 | `tree/contour_sum.hpp` | 頂点値更新・距離区間の和 | [使い方](docs/contour_sum.md) |
+| `tree/subtree_index.hpp` | 親配列から部分木の区間番号を構築 | [使い方](docs/subtree_index.md) |
 | `tree/auxiliary_tree.hpp` | Auxiliary Tree・圧縮木の隣接リスト | [使い方](docs/auxiliary_tree.md) |
 | `tree/tree_diameter.hpp` | 木の直径・最長パスの復元 | [使い方](docs/tree_diameter.md) |
 | `tree/tree_center.hpp` | 木の中心・最大距離を最小にする頂点 | [使い方](docs/tree_center.md) |
@@ -521,6 +522,7 @@
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
 | `components/fps_log.hpp` | FPS の対数の内部変換 | [使い方](docs/fps_log.md) |
 | `components/fps_blocked.hpp` | FPS のブロック変換 | [使い方](docs/fps_blocked.md) |
+| `components/ntt_mod_blocked.hpp` | 任意法畳み込みのブロック変換 | [使い方](docs/ntt_mod_blocked.md) |
 | `components/fps_bostan.hpp` | Bostan–Mori の倍長化 | [使い方](docs/fps_bostan.md) |
 | `components/fps_horner.hpp` | FPS の一点評価 | [使い方](docs/fps_horner.md) |
 | `components/polynomial_gcd_blocked.hpp` | 多項式 Half-GCD の専用変換 | [使い方](docs/polynomial_gcd_blocked.md) |
@@ -530,10 +532,15 @@
 | `components/fps_projection_blocked.hpp` | FPS の射影の専用変換 | [使い方](docs/fps_projection_blocked.md) |
 | `components/fps_composition_light.hpp` | 軽量 FPS の合成・射影の共通部品 | [使い方](docs/fps_composition_light.md) |
 | `components/fps_composition_generic.hpp` | FPS の合成・射影の汎用実装 | [使い方](docs/fps_composition_generic.md) |
+| `components/fps_composition_stages.hpp` | FPS の合成・射影の共通段 | [使い方](docs/fps_composition_stages.md) |
+| `components/fps_compose_generic.hpp` | FPS の合成の汎用実装 | [使い方](docs/fps_compose_generic.md) |
+| `components/fps_projection_generic.hpp` | FPS の射影の汎用実装 | [使い方](docs/fps_projection_generic.md) |
+| `components/fps_reversion_generic.hpp` | FPS の合成逆元の汎用実装 | [使い方](docs/fps_reversion_generic.md) |
 | `components/fps_convolution.hpp` | FPS の融合畳み込み | [使い方](docs/fps_convolution.md) |
 | `components/mint_convolution.hpp` | modint998244353 の共有畳み込み | [使い方](docs/mint_convolution.md) |
 | `components/convolution_dispatch.hpp` | 畳み込みの型別振り分け | [使い方](docs/convolution_dispatch.md) |
 | `components/gcd_convolution_mint.hpp` | modint998244353 の GCD 畳み込み | [使い方](docs/gcd_convolution_mint.md) |
+| `components/lcm_convolution_mint.hpp` | modint998244353 の LCM 畳み込み | [使い方](docs/lcm_convolution_mint.md) |
 | `components/fps_convolution_unbalanced.hpp` | FPS の非対称畳み込み | [使い方](docs/fps_convolution_unbalanced.md) |
 | `components/fps_convolution_constant.hpp` | FPS の定数係数畳み込み | [使い方](docs/fps_convolution_constant.md) |
 | `components/fps_direct_eval.hpp` | 多点評価の内部直接計算 | [使い方](docs/fps_direct_eval.md) |
