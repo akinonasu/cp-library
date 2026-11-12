@@ -105,6 +105,47 @@ void unsigned_borrowed() {
 	}
 }
 
+void unsigned_rank() {
+	using U = std::uint32_t;
+	std::mt19937 rng(409555);
+	constexpr int n = 4096, m = 4097;
+	for (int kind = 0; kind < 4; ++kind) {
+		std::vector<U> a(n), b(m);
+		for (int i = 0; i < n; ++i) {
+			int d = kind == 0 ? i - n / 2 : kind == 1 ? i : n - 1 - i;
+			a[i] = kind == 3 ? (i == 0 || i == n - 1 ? 0 : UINT32_MAX - 1000) : U(n * n - d * d);
+		}
+		U bound = kind == 3 ? U(1000) : U(n * n);
+		for (auto &v : b) v = rng() % (bound + 1);
+		b[0] = bound;
+		if (kind == 1) std::sort(b.begin(), b.end(), std::greater<U>{});
+		if (kind == 2) std::sort(b.begin(), b.end());
+		if (kind < 3) {
+			U offset = UINT32_MAX - *std::max_element(a.begin(), a.end()) - bound;
+			for (auto &v : a) v += offset;
+		}
+		min_plus_convolution_envelope_detail::Envelope::Rank rank(a, m);
+		rank.build();
+		for (int sample = 0; sample < 100; ++sample) {
+			std::int64_t threshold = std::int64_t((std::uint64_t(rng()) << 32 | rng()) % (2 * std::uint64_t(UINT32_MAX) + 3)) - UINT32_MAX - 1;
+			if (sample < 50) threshold = std::int64_t(rng() % 20001) - 10000;
+			auto [low, high] = rank(threshold);
+			int count = 0;
+			for (int i = 1; i < n; ++i) count += std::int64_t(a[i]) - a[i - 1] >= threshold;
+			assert(low <= count && count <= high);
+		}
+		const auto saved_a = a, saved_b = b;
+		auto expected = naive(a, b, std::less<U>{});
+		assert(min_plus_convolution_concave(a, b) == expected);
+		assert(min_plus_convolution_envelope_detail::Envelope::execute<true>(a, b) == expected);
+		assert(a == saved_a && b == saved_b);
+		U amax = *std::max_element(a.begin(), a.end());
+		for (auto &v : a) v = amax - v;
+		for (auto &v : b) v = bound - v;
+		assert(max_plus_convolution_convex(a, b) == naive(a, b, std::greater<U>{}));
+	}
+}
+
 struct Value {
 	long long value = 0;
 	friend Value operator+(Value a, Value b) { return {a.value + b.value}; }
@@ -285,6 +326,52 @@ std::vector<T> merge_reference(const std::vector<T> &a, const std::vector<T> &b)
 	return result;
 }
 
+void unsigned_merge() {
+	using U = std::uint32_t;
+	std::mt19937 rng(409575);
+	for (auto [n, m] : std::array<std::array<int, 2>, 7>{std::array{2048, 2048}, {2048, 2049}, {2050, 2051}, {2060, 2079}, {3000, 1001}, {4095, 2}, {8001, 17}}) {
+		for (int kind = 0; kind < 4; ++kind) {
+			auto shape = [&](int count) {
+				std::vector<std::int64_t> values(count);
+				std::int64_t slope = -3000;
+				for (int i = 1; i < count; ++i) {
+					slope += kind == 0 ? rng() % 7 : kind == 3 ? i % 2 : 0;
+					values[i] = values[i - 1] + (kind == 1 ? 0 : slope);
+				}
+				auto low = *std::min_element(values.begin(), values.end());
+				std::vector<U> result(count);
+				for (int i = 0; i < count; ++i) result[i] = U(values[i] - low);
+				return result;
+			};
+			auto a = shape(n), b = shape(m);
+			U amax = *std::max_element(a.begin(), a.end()), bmax = *std::max_element(b.begin(), b.end());
+			if (kind & 1) for (auto &v : a) v += UINT32_MAX - amax - bmax;
+			const auto saved_a = a, saved_b = b;
+			auto minimum = merge_reference<U, true>(a, b);
+			assert(min_plus_convolution_convex(a, b) == minimum);
+			assert(a == saved_a && b == saved_b);
+			if (n == 2050 && kind == 0) assert(minimum == naive(a, b, std::less<U>{}));
+			amax = *std::max_element(a.begin(), a.end());
+			for (auto &v : a) v = amax - v;
+			for (auto &v : b) v = bmax - v;
+			if (kind & 1) {
+				U offset = UINT32_MAX - *std::max_element(a.begin(), a.end()) - *std::max_element(b.begin(), b.end());
+				for (auto &v : a) v += offset;
+			}
+			auto maximum = merge_reference<U, false>(a, b);
+			assert(max_plus_convolution_concave(a, b) == maximum);
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+			if (min_plus_convolution_integral_detail::available() && n + m - 1 >= 4096) {
+				std::vector<U> output(maximum.size() + 2, 71651);
+				min_plus_convolution_integral_detail::Kernel::merge32<false>(a.data(), b.data(), n, m, output.data() + 1);
+				assert(output.front() == 71651 && output.back() == 71651);
+				assert(std::equal(maximum.begin(), maximum.end(), output.begin() + 1));
+			}
+#endif
+		}
+	}
+}
+
 template <class T>
 void large_convex() {
 	using W = __int128_t;
@@ -345,11 +432,13 @@ int main() {
 	small_integers<std::uint64_t>();
 	boundaries();
 	unsigned_borrowed();
+	unsigned_rank();
 	generic();
 	kernel();
 	kernel_blocks();
 	opposite();
 #if defined(__SIZEOF_INT128__)
+	unsigned_merge();
 	large_convex<std::int64_t>();
 	large_convex<std::uint64_t>();
 #endif
