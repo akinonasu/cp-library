@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/vertex_add_subtree_sum"
 #include "../data_structure/fenwick_tree.hpp"
-#include "../tree/hld.hpp"
+#include "../tree/subtree_index.hpp"
 #include "components/fast_io_bulk.hpp"
 #include <vector>
 
@@ -19,7 +19,7 @@ int main() {
 	read_unsigned_blocks(input, n - 1, [&](const std::uint32_t *values, std::size_t count) {
 		for (std::size_t i = 0; i < count; ++i) parents[offset++] = values[i];
 	});
-	HLD tree;
+	SubtreeIndex tree;
 	tree.build_from_parents(std::move(parents));
 
 	std::vector<long long> ordered(n);
