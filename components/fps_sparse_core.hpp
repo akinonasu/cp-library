@@ -46,8 +46,12 @@ template <class E> struct SparseBase : SparseTerms {
 		}
 		int stride = 0;
 		for (auto term : terms) stride = std::gcd(stride, term.first);
-		const int count = (n - 1) / stride + 1;
+		int count = (n - 1) / stride + 1;
 		for (auto &term : terms) term.first /= stride;
+		if constexpr (kind == Kind::power) {
+			const auto degree = 1LL * terms.back().first * exponent.val() + 1;
+			if (2 * degree <= count) count = degree;
+		}
 		const mint *inv = nullptr;
 		if constexpr (kind != Kind::inverse) inv = inverses(count);
 		Series compressed;
@@ -60,7 +64,7 @@ template <class E> struct SparseBase : SparseTerms {
 				if constexpr (kind == Kind::logarithm) compressed[0] = 0, E::scale(compressed, inv);
 			}
 		} else compressed = E::template solve<kind>(terms, count, initial, exponent, inv);
-		if (stride == 1) return compressed;
+		if (stride == 1 && (kind != Kind::power || count == n)) return compressed;
 		Series out(n);
 		for (int i = 0; i < count; ++i) out[i * stride] = compressed[i];
 		return out;

@@ -103,7 +103,25 @@ void check_transfers() {
 		check<K::power>(terms, 16400 * stride + 1, mint(13), mint(2).inv());
 	}
 }
+void check_finite_powers() {
+	for (int stride : {1, 3, 17}) for (int exponent : {0, 5, 11, 52}) {
+		Sparse::Terms terms{{stride, mint(3)}, {3 * stride, mint(-7)}};
+		const int degree = 3 * exponent + 1;
+		const int boundary = (2 * degree - 1) * stride + 1;
+		for (int delta : {-1, 0, 1}) {
+			const int n = std::max(3 * stride + 1, boundary + delta);
+			check<K::power>(terms, n, mint(13), mint(exponent));
+			check<K::power>(terms, n, mint(-1), mint(998244353LL + exponent));
+		}
+	}
+	Sparse::Terms short_terms{{1, 2}, {2, 3}, {3, 4}, {5, 6}};
+	check<K::power>(short_terms, 257, mint(13), mint(998244353LL));
+	Sparse::Terms terms;
+	for (int degree = 1; degree <= 13; ++degree) terms.emplace_back(degree, mint(degree + 1));
+	for (int exponent : {0, 1, 2, 5, 11}) check<K::power>(terms, 4097, mint(17), mint(exponent));
+}
 int main() {
+	check_finite_powers();
 	check_transfers();
 	check_boundaries();
 	for (int n : {255, 256, 257, 259, 287, 288, 289, 511, 512, 513, 4097}) for (int stride : {1, 2, 7, 64}) {
