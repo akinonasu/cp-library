@@ -450,7 +450,7 @@ class LazyReversibleSequence {
 		if (x == y) {
 			if (nodes_[x].reversed) { int left = count(x) - j; j = count(x) - i, i = left; }
 			std::reverse(nodes_[x].values.begin() + i, nodes_[x].values.begin() + j);
-			pull_leaf(x), repair(a);
+			if constexpr (!commutative) pull_leaf(x), repair(a);
 			return true;
 		}
 		int nx = count(x), ny = count(y), tail = ny - j;
