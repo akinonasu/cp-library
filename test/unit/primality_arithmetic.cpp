@@ -9,6 +9,13 @@
 using U = std::uint64_t;
 using W = __uint128_t;
 
+static_assert([] {
+	U hash = 14695981039346656037ULL;
+	for (auto x : is_prime_detail::bases32) hash = (hash ^ x) * 1099511628211ULL;
+	for (auto x : is_prime_detail::bases64) hash = (hash ^ x) * 1099511628211ULL;
+	return hash == 0xf820463e378990b2ULL;
+}());
+
 U power(U a, U e, U n) {
 	U r = 1;
 	for (; e; e >>= 1, a = W(a) * a % n)
