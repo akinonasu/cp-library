@@ -71,6 +71,51 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		O::store8(out + i, canonical8(value));
 	}
 	template <Kind kind>
+	__attribute__((target("avx2"))) static int homogeneous(U *out, int i, int end, const Tap *taps, int count) {
+		const int width = taps[count - 1].degree;
+		if constexpr (kind == Kind::logarithm) if (i == width) {
+			mint value = mint::word(out[i]);
+			for (int j = 0; j < count; ++j) value += mint::word(taps[j].constant) * mint::word(out[i - taps[j].degree]);
+			out[i++] = canonical(value.v);
+		}
+		V coefficients[8][15];
+		for (int j = 0; j < width; ++j) {
+			U words[64];
+			for (int t = 0; t < 64; ++t) {
+				U value = 0;
+				for (int first = 0; first < count; first += 12) {
+					std::uint64_t sum = 0;
+					for (int k = first; k < std::min(count, first + 12); ++k) {
+						int d = taps[k].degree;
+						U x = t >= d ? words[t - d] : j == d - t - 1 ? O::one : 0;
+						sum += std::uint64_t(taps[k].constant) * x;
+					}
+					value = canonical(O::add(value, O::reduce(sum) % O::mod));
+				}
+				words[t] = value;
+			}
+			for (int b = 0; b < 8; ++b) coefficients[b][j] = O::load8(words + 8 * b);
+		}
+		for (; end - i >= 64; i += 64) {
+			for (int block = 0; block < 8; ++block) {
+				int b = block == 0 ? 7 : block - 1;
+				V total = _mm256_setzero_si256();
+				for (int first = 0; first < width; first += 12) {
+					V even = _mm256_setzero_si256(), odd = even;
+					for (int j = first; j < std::min(width, first + 12); ++j) {
+						V x = _mm256_set1_epi32(out[i - 1 - j]), c = coefficients[b][j];
+						even = _mm256_add_epi64(even, _mm256_mul_epu32(x, c));
+						odd = _mm256_add_epi64(odd, _mm256_mul_epu32(x, _mm256_srli_epi64(c, 32)));
+					}
+					total = O::add8(total, reduce8(even, odd));
+				}
+				O::store8(out + i + 8 * b, canonical8(total));
+			}
+		}
+		return i;
+	}
+
+	template <Kind kind>
 	__attribute__((target("avx2"))) static int near_blocks(U *out, int i, int end, const Tap *taps, int count, const U *inv, const U *p, const U *q) {
 		const int width = taps[count - 1].degree;
 		if constexpr (kind == Kind::logarithm) if (i == width) {
@@ -120,6 +165,8 @@ struct SparseSeries : SparseBase<SparseSeries> {
 	template <Kind kind>
 	__attribute__((target("avx2"))) static int blocks(U *out, int i, int end, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
 		if (end - i < 8) return i;
+		if constexpr (kind == Kind::inverse || kind == Kind::logarithm)
+			if (count && taps[count - 1].degree < 16 && end - i >= 8192) i = homogeneous<kind>(out, i, end, taps, count);
 		if (count == near && count && end - i >= 256) return near_blocks<kind>(out, i, end, taps, count, inv, p, q);
 		V coefficients[64];
 		U steps[64];

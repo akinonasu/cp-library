@@ -70,7 +70,25 @@ void check_boundaries() {
 		verify(terms, 2 * far + 17, mint(gen()));
 	}
 }
+void check_transfers() {
+	std::mt19937 gen(1598347);
+	for (int width : {2, 4, 7, 8, 12, 15}) for (int shape = 0; shape < 3; ++shape) {
+		Sparse::Terms terms;
+		for (int d = 1; d <= width; ++d) if (shape == 0 || d == 1 || d == width || (shape == 2 && gen() % 3 == 0))
+			terms.emplace_back(d, mint::word(mint(gen()).v % mint::mod() + mint::mod()));
+		for (int n : {8191, 8192 + width, 8193 + width, 8255, 16399}) {
+			check<K::inverse>(terms, n, mint(7), 0);
+			check<K::logarithm>(terms, n, 0, 0);
+		}
+	}
+	for (int width : {7, 15}) for (int far : {8192, 8255, 16384}) {
+		Sparse::Terms terms{{1, 3}, {width, 7}, {far, 11}, {far + 3, 13}};
+		check<K::inverse>(terms, far + 513, mint(7), 0);
+		check<K::logarithm>(terms, far + 513, 0, 0);
+	}
+}
 int main() {
+	check_transfers();
 	check_boundaries();
 	for (int n : {255, 256, 257, 259, 287, 288, 289, 511, 512, 513, 4097}) for (int stride : {1, 2, 7, 64}) {
 		Sparse::Terms terms{{stride, mint::word(mint(13).v + mint::mod())}};
