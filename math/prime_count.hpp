@@ -1,6 +1,7 @@
 #ifndef PRIME_COUNT_HPP
 #define PRIME_COUNT_HPP
 
+#include <array>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -18,21 +19,42 @@ std::uint64_t compute(std::uint64_t n) {
 	std::uint64_t root = std::sqrt(static_cast<long double>(n));
 	while (__uint128_t(root) * root > n) --root;
 	while (__uint128_t(root + 1) * (root + 1) <= n) ++root;
-	std::size_t size = (root + 1) / 2;
-	auto small = std::make_unique_for_overwrite<std::uint32_t[]>(size);
+	constexpr auto phi = [] {
+		std::array<unsigned, 30> values{};
+		for (unsigned i = 1; i < 30; ++i) values[i] = values[i - 1] + bool(i % 2 && i % 3 && i % 5);
+		return values;
+	}();
+	auto survivors = [&](std::uint64_t x) { return x / 30 * 8 + phi[x % 30]; };
+	const bool wheel = root >= 25;
+	std::size_t size = wheel ? survivors(root) : (root + 1) / 2;
+	auto small = std::make_unique_for_overwrite<std::uint32_t[]>((root + 1) / 2);
 	auto rough = std::make_unique_for_overwrite<std::uint32_t[]>(size);
 	auto large = std::make_unique_for_overwrite<std::uint64_t[]>(size);
 	auto quotient = std::make_unique_for_overwrite<std::uint64_t[]>(size);
 	std::vector<std::uint8_t> removed(root + 1);
-	for (std::size_t i = 0; i < size; ++i) {
-		small[i] = i;
-		rough[i] = 2 * i + 1;
-		if constexpr (FastDivide) quotient[i] = double(n) / rough[i];
-		else quotient[i] = n / rough[i];
-		large[i] = (quotient[i] - 1) / 2;
+	if (wheel) {
+		for (std::size_t i = 0; i < (root + 1) / 2; ++i) small[i] = survivors(2 * i + 1) + 1;
+		small[0] = 0, small[1] = 1;
+		std::size_t k = 0;
+		for (std::uint64_t r = 1; r <= root; r += 2) {
+			if (r % 3 == 0 || r % 5 == 0) { removed[r] = 1; continue; }
+			rough[k] = r;
+			if constexpr (FastDivide) quotient[k] = double(n) / r;
+			else quotient[k] = n / r;
+			large[k] = survivors(quotient[k]) + 1;
+			++k;
+		}
+	} else {
+		for (std::size_t i = 0; i < size; ++i) {
+			small[i] = i;
+			rough[i] = 2 * i + 1;
+			if constexpr (FastDivide) quotient[i] = double(n) / rough[i];
+			else quotient[i] = n / rough[i];
+			large[i] = (quotient[i] - 1) / 2;
+		}
 	}
-	std::uint32_t count = 0;
-	for (std::uint64_t p = 3; p * p <= root; p += 2) {
+	std::uint32_t count = wheel ? 2 : 0;
+	for (std::uint64_t p = wheel ? 7 : 3; p * p <= root; p += 2) {
 		if (removed[p]) continue;
 		removed[p] = 1;
 		for (std::uint64_t i = p * p; i <= root; i += 2 * p) removed[i] = 1;
