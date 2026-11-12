@@ -2,6 +2,7 @@
 #define CONVOLUTION_MOD_HPP
 
 #include "../components/ntt_mod.hpp"
+#include "../components/ntt_mod_blocked.hpp"
 #include <algorithm>
 #include <bit>
 #include <cassert>
@@ -13,12 +14,18 @@
 namespace convolution_mod_detail {
 using Word = std::uint32_t;
 template <Word mod, Word root, class T>
-std::vector<Word> multiply(const std::vector<T> &a, const std::vector<T> &b, Word factor = 1) {
+std::vector<Word> multiply(const std::vector<T> &a, const std::vector<T> &b, Word factor = 1, Word *workspace = nullptr) {
 	const auto &small = a.size() <= b.size() ? a : b;
 	const auto &large = a.size() <= b.size() ? b : a;
 	std::size_t length = a.size() + b.size() - 1;
 	bool blocked = small.size() > 32 && large.size() / small.size() >= 8, square = &a == &b;
 	std::size_t n = std::bit_ceil(blocked ? 2 * small.size() - 1 : length), block = n - small.size() + 1;
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	if constexpr (mod < (Word(1) << 30))
+		if (small.size() > 32 && n >= 1024 && __builtin_cpu_supports("avx2")) return ntt_mod_detail::multiply_blocked<mod, root>(a, b, factor, workspace);
+#else
+	(void)workspace;
+#endif
 	std::vector<Word> x(n), y(square ? 0 : n);
 	auto reduce = [](T value) {
 		__int128_t r = __int128_t(value) % mod;
@@ -125,20 +132,32 @@ void combine(Word *a, const Word *b, const Word *c, std::size_t n) {
 #endif
 template <Word P, Word PR, Word Q, Word QR, Word R, Word RR>
 std::vector<Word> modular(const std::vector<Word> &a, const std::vector<Word> &b, Word mod) {
+	Word *workspace = nullptr;
+#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+	fps_detail::FpsWords storage;
+	if constexpr (P < (Word(1) << 30) && Q < (Word(1) << 30) && R < (Word(1) << 30)) {
+		const auto smaller = std::min(a.size(), b.size()), larger = std::max(a.size(), b.size());
+		const auto n = std::bit_ceil(larger / smaller >= 8 ? 2 * smaller - 1 : a.size() + b.size() - 1);
+		if (smaller > 32 && n >= 1024 && __builtin_cpu_supports("avx2")) {
+			storage = fps_detail::allocate_fps_words(ntt_mod_detail::blocked_workspace_words(n));
+			workspace = storage.get();
+		}
+	}
+#endif
 #if defined(__x86_64__) || defined(__i386__)
 	if constexpr (P + std::uint64_t(Q) + R < (std::uint64_t(1) << 32)) {
 		if (mod == 1000000007 && __uint128_t(std::min(a.size(), b.size())) * (mod - 1) * (mod - 1) * 4 < __uint128_t(P) * Q * R && __builtin_cpu_supports("avx2")) {
-			auto x = multiply<P, PR>(a, b, ntt_mod_detail::power<P>(std::uint64_t(Q) * R % P, P - 2));
-			auto y = multiply<Q, QR>(a, b, ntt_mod_detail::power<Q>(std::uint64_t(P) * R % Q, Q - 2));
-			auto z = multiply<R, RR>(a, b, ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2));
+			auto x = multiply<P, PR>(a, b, ntt_mod_detail::power<P>(std::uint64_t(Q) * R % P, P - 2), workspace);
+			auto y = multiply<Q, QR>(a, b, ntt_mod_detail::power<Q>(std::uint64_t(P) * R % Q, Q - 2), workspace);
+			auto z = multiply<R, RR>(a, b, ntt_mod_detail::power<R>(std::uint64_t(P) * Q % R, R - 2), workspace);
 			combine<P, Q, R>(x.data(), y.data(), z.data(), x.size());
 			return x;
 		}
 	}
 #endif
-	auto x = multiply<P, PR>(a, b);
-	auto y = multiply<Q, QR>(a, b);
-	auto z = multiply<R, RR>(a, b);
+	auto x = multiply<P, PR>(a, b, 1, workspace);
+	auto y = multiply<Q, QR>(a, b, 1, workspace);
+	auto z = multiply<R, RR>(a, b, 1, workspace);
 	std::uint64_t pq_mod = std::uint64_t(P) * Q % mod;
 	for (std::size_t i = 0; i < x.size(); ++i) {
 		auto [low, high] = reconstruct<P, Q, R>(x[i], y[i], z[i]);

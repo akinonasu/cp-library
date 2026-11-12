@@ -22,7 +22,7 @@ template<class T>
 void check() {
 	std::mt19937_64 random(897);
 	for (std::uint32_t mod : {1u, 2u, 17u, 998244353u, 1000000007u, 4294967295u})
-		for (int n : {0, 1, 2, 7, 8, 16, 17, 31, 32, 33, 127, 128, 129, 257}) {
+		for (int n : {0, 1, 2, 7, 8, 16, 17, 31, 32, 33, 127, 128, 129, 257, 511, 512, 513}) {
 			std::vector<T> a(n);
 			for (auto &value : a) value = T(random());
 			if (n) a[0] = std::numeric_limits<T>::max();
@@ -77,7 +77,7 @@ int main() {
 	check<std::uint32_t>();
 	std::mt19937_64 random(6734);
 	for (unsigned mod : {998244353u, 1000000007u, 4294967295u})
-		for (int n : {33, 64, 129}) for (int m : {8 * n - 1, 8 * n, 20 * n + 7}) {
+		for (int n : {33, 64, 129, 257}) for (int m : {8 * n - 1, 8 * n, 20 * n + 7}) {
 			std::vector<std::int64_t> a(n), b(m);
 			for (auto &x : a) x = std::int64_t(random());
 			for (auto &x : b) x = std::int64_t(random());
