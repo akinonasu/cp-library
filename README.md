@@ -31,12 +31,16 @@
 | `components/divisor_zeta.hpp` | Divisor Zeta / Möbius Transform | [使い方](docs/divisor_zeta.md) |
 | `components/fft.hpp` | FFT | [使い方](docs/fft.md) |
 | `components/ntt_mod.hpp` | NTT（法指定） | [使い方](docs/ntt_mod.md) |
+| `components/ntt_mod_core.hpp` | 法指定 NTT の共通演算 | [使い方](docs/ntt_mod_core.md) |
+| `components/convolution_mod_core.hpp` | 任意 mod・整数畳み込みの共通処理 | [使い方](docs/convolution_mod_core.md) |
+| `components/compiler_features.hpp` | コンパイラとアーキテクチャの共通条件 | [使い方](docs/compiler_features.md) |
 | `components/ntt.hpp` | NTT（998244353） | [使い方](docs/ntt.md) |
 | `components/xor_select.hpp` | 64 bit 内の XOR 順位選択 | [使い方](docs/xor_select.md) |
 | `components/ordered_midpoint.hpp` | 順序付き整数区間の中点 | [使い方](docs/ordered_midpoint.md) |
 | `components/min_plus_convolution_integral.hpp` | min-plus / max-plus 畳み込みの整数用共通実装 | [使い方](docs/min_plus_convolution_integral.md) |
 | `components/range_add_min_node.hpp` | 区間加算・最小値のノード演算 | [使い方](docs/range_add_min_node.md) |
 | `components/range_affine_sum_simd.hpp` | 区間アフィン変換・区間和の共通実装 | [使い方](docs/range_affine_sum_simd.md) |
+| `components/range_affine_point_simd.hpp` | 区間アフィン変換・一点取得の共通実装 | [使い方](docs/range_affine_point_simd.md) |
 | `components/multivariate_convolution_core.hpp` | 多変数畳み込みの共通実装 | [使い方](docs/multivariate_convolution_core.md) |
 | `components/multivariate_ranked.hpp` | 小さい次元の多変数畳み込み | [使い方](docs/multivariate_ranked.md) |
 | `components/ordered_multiset_btree.hpp` | 順序統計多重集合の共通実装 | [使い方](docs/ordered_multiset_btree.md) |
@@ -233,6 +237,7 @@
 | --- | --- | --- |
 | `data_structure/slope_trick.hpp` | Slope Trick | [使い方](docs/slope_trick.md) |
 | `data_structure/lazy_reversible_treap.hpp` | 遅延伝搬・反転可能な乱択平衡二分木 | [使い方](docs/lazy_reversible_treap.md) |
+| `data_structure/lazy_reversible_sequence.hpp` | 遅延伝搬・反転可能なブロック列 | [使い方](docs/lazy_reversible_sequence.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
 | `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列） | [使い方](docs/flat_hash_map.md) |
@@ -280,6 +285,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `data_structure/range_affine_range_sum.hpp` | 区間アフィン変換・区間和 | [使い方](docs/range_affine_range_sum.md) |
+| `data_structure/range_affine_point_get.hpp` | 区間アフィン変換・一点取得 | [使い方](docs/range_affine_point_get.md) |
 | `data_structure/range_add_range_min.hpp` | 区間加算・区間最小値 | [使い方](docs/range_add_range_min.md) |
 | `data_structure/segtree.hpp` | セグメント木・一点更新・区間集約・境界検索 | [使い方](docs/segtree.md) |
 | `data_structure/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
