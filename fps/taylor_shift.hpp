@@ -5,7 +5,7 @@
 #include "../components/mint_factorials.hpp"
 #include "../components/fps_taylor_blocked.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -22,7 +22,7 @@ FormalPowerSeries<T> taylor_shift(FormalPowerSeries<T> f, std::type_identity_t<T
 		const int n = static_cast<int>(f.size());
 		if (n <= 1 || c == T(0)) return f;
 		assert(unsigned(n) < unsigned(T::mod()));
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 		if (n >= 256 && n <= (1 << 19) && fps_detail::NTT::vectorized()) {
 			fps_detail::taylor_detail::shift(f, c);
 			return f;
@@ -43,7 +43,7 @@ FormalPowerSeries<T> taylor_shift(FormalPowerSeries<T> f, std::type_identity_t<T
 
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

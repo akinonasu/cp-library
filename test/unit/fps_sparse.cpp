@@ -72,19 +72,35 @@ void check_boundaries() {
 }
 void check_transfers() {
 	std::mt19937 gen(1598347);
-	for (int width : {2, 4, 7, 8, 12, 15}) for (int shape = 0; shape < 3; ++shape) {
+	for (int width : {1, 2, 4, 7, 8, 9, 12, 15}) for (int shape = 0; shape < 3; ++shape) {
 		Sparse::Terms terms;
 		for (int d = 1; d <= width; ++d) if (shape == 0 || d == 1 || d == width || (shape == 2 && gen() % 3 == 0))
 			terms.emplace_back(d, mint::word(mint(gen()).v % mint::mod() + mint::mod()));
 		for (int n : {8191, 8192 + width, 8193 + width, 8255, 16399}) {
 			check<K::inverse>(terms, n, mint(7), 0);
 			check<K::logarithm>(terms, n, 0, 0);
+			check<K::exponential>(terms, n, mint(7), 0);
+			for (mint exponent : {mint(0), mint(1), mint(11), mint(-1), mint(-2), mint(2).inv()}) check<K::power>(terms, n, mint(13), exponent);
 		}
 	}
 	for (int width : {7, 15}) for (int far : {8192, 8255, 16384}) {
 		Sparse::Terms terms{{1, 3}, {width, 7}, {far, 11}, {far + 3, 13}};
 		check<K::inverse>(terms, far + 513, mint(7), 0);
 		check<K::logarithm>(terms, far + 513, 0, 0);
+		check<K::exponential>(terms, far + 513, mint(7), 0);
+		check<K::power>(terms, far + 513, mint(13), mint(2).inv());
+	}
+	for (int rep = 0; rep < 32; ++rep) {
+		Sparse::Terms terms;
+		for (int d = 1; d <= 15; ++d) if (gen() % 3 == 0) terms.emplace_back(d, mint(gen()));
+		const int n = 8192 + gen() % 256;
+		check<K::exponential>(terms, n, mint(7), 0);
+		check<K::power>(terms, n, mint(13), mint(gen()));
+	}
+	for (int stride : {2, 7}) {
+		Sparse::Terms terms{{stride, 3}, {3 * stride, 7}, {7 * stride, 9}};
+		check<K::exponential>(terms, 16400 * stride + 1, mint(7), 0);
+		check<K::power>(terms, 16400 * stride + 1, mint(13), mint(2).inv());
 	}
 }
 int main() {

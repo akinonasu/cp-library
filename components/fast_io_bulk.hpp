@@ -1,12 +1,14 @@
 #ifndef FAST_IO_BULK_HPP
 #define FAST_IO_BULK_HPP
 
+#include "compiler_features.hpp"
+
 #include "fast_io_output.hpp"
 #include <limits>
 #include <span>
 #include <utility>
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #include <immintrin.h>
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
@@ -235,7 +237,7 @@ void emit_record(Emit &emit, const T *values, std::index_sequence<I...>) {
 
 template <class Emit>
 void read_unsigned_blocks(FastInput &input, std::size_t count, Emit emit) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (__builtin_cpu_supports("avx2")) {
 		fast_io_detail::BulkInput::read_blocks(input, count, emit);
 		return;
@@ -280,7 +282,7 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 
 template <class Emit>
 void read_signed_blocks(FastInput &input, std::size_t count, Emit emit) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (__builtin_cpu_supports("avx2")) {
 		fast_io_detail::BulkInput::read_blocks<true>(input, count, [&](const unsigned *values, std::size_t n) {
 			emit(reinterpret_cast<const std::int32_t *>(values), n);

@@ -2,7 +2,7 @@
 #define CP_COMPONENTS_FPS_SQRT_BLOCKED_HPP
 #include "fps_inverse_blocked.hpp"
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
@@ -25,21 +25,6 @@ inline void sqrt_direct(ConstWords f, Word c, Words g, Word inverse = 0) {
 	}
 }
 
-inline Vec load_padded(ConstWords f, size_t at) {
-	if (at + 8 <= f.size()) return load_unaligned(f.data() + at);
-	alignas(32) Word x[8] = {};
-	if (at < f.size()) std::copy(f.begin() + std::ptrdiff_t(at), f.end(), x);
-	return load(x);
-}
-
-inline Vec first_lanes(size_t count) {
-	return _mm256_cmpgt_epi32(broadcast(Word(std::min<size_t>(count, 8))),
-							_mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
-}
-inline void store_first(Word* p, Vec x, size_t count) {
-	if (count >= 8) return store_unaligned(p, x);
-	_mm256_maskstore_epi32(reinterpret_cast<int*>(p), first_lanes(count), x);
-}
 inline Vec load_first(const Word* p, size_t count) {
 	if (count >= 8) return load_unaligned(p);
 	return _mm256_maskload_epi32(reinterpret_cast<const int*>(p), first_lanes(count));

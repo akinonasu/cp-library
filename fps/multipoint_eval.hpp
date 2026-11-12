@@ -6,7 +6,7 @@
 #include "../components/fps_direct_eval.hpp"
 #include "../components/fps_multipoint.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -21,7 +21,7 @@ std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<
 	if constexpr (!std::is_same_v<T, mint>) return O::export_work(W(multipoint_eval<mint>(O::import_work(f), O::import_work(xs))));
 	if (xs.empty()) return {};
 	if (f.size() <= 32 || xs.size() <= 32) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if constexpr (std::is_same_v<T, mint>) {
 			if (((xs.size() >= 8 && f.size() >= 8 && (xs.size() >= 32 || f.size() >= 32)) ||
 				 (xs.size() >= 4096 && f.size() >= 4)) && fps_detail::NTT::vectorized()) {
@@ -36,7 +36,7 @@ std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<
 		for (T x : xs) r.push_back(f.eval(x));
 		return r;
 	}
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	if constexpr (std::is_same_v<T, mint>) {
 		if (f.size() * xs.size() <= (std::size_t(1) << 14) && fps_detail::NTT::vectorized()) {
 			base result(xs.size());
@@ -45,7 +45,7 @@ std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<
 		}
 	}
 #endif
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if constexpr (std::is_same_v<T, mint>) {
 		if (std::max(f.size(), xs.size()) <= (1 << 23) && fps_detail::NTT::vectorized()) {
 			if (xs.size() <= 512 && f.size() > 4 * xs.size()) {
@@ -63,7 +63,7 @@ std::vector<T> multipoint_eval(const FormalPowerSeries<T> &f, const std::vector<
 
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

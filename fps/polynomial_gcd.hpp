@@ -6,14 +6,14 @@
 #include "../components/polynomial_gcd_blocked.hpp"
 #include <optional>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
 
 namespace fps_detail {
 inline PolynomialHalfGCD::Matrix polynomial_gcd_jump(const PolynomialHalfGCD::F& a, const PolynomialHalfGCD::F& b) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (a.size() >= 129 && a.size() <= (1u << 23) && NTT::vectorized()) {
 		PolynomialHalfGCD::Matrix out;
 		blocked_poly::native_gcd_matrix(a.data(), a.size(), b.data(), b.size(), 3,
@@ -100,7 +100,7 @@ std::optional<FormalPowerSeries<T>> polynomial_inv_mod(FormalPowerSeries<T> a, F
 		if (!result) return std::nullopt;
 		return O::export_work(*result);
 	} else {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 		if (modulus.size() >= 129 && modulus.size() <= (1u << 23) && a.size() <= (1u << 23) && fps_detail::NTT::vectorized()) {
 			FormalPowerSeries<T> out;
 			if (!fps_detail::blocked_poly::native_inv_mod(a.data(), a.size(), modulus.data(), modulus.size(), out)) return std::nullopt;
@@ -121,7 +121,7 @@ std::optional<FormalPowerSeries<T>> polynomial_inv_mod(FormalPowerSeries<T> a, F
 
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

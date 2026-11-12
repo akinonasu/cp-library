@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <cstring>
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #include <immintrin.h>
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
@@ -224,7 +224,7 @@ inline void write_coefficients_native(FastOutput &output, const mint *in, std::s
 
 namespace fps_detail {
 inline void write_coefficients(FastOutput &output, const mint *in, std::size_t n) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (__builtin_cpu_supports("avx2")) return write_coefficients_native(output, in, n);
 #endif
 	for (std::size_t i = 0; i < n; ++i) { output.write(in[i].val()); output.write(' '); }

@@ -4,7 +4,7 @@
 #include "../fps/fps.hpp"
 #include <array>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -157,7 +157,7 @@ struct PolynomialHalfGCD {
 		return product_sum(transformed(matrix, 0, n), x, transformed(matrix, 1, n), y, n);
 	}
 	static void combine(T* out, const T* a, const T* b, int n, T x, T y, T z) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (n >= 8 && NTT::vectorized()) {
 			combine8(out, a, b, n, x.val(), y.val(), z.val());
 			return;
@@ -165,7 +165,7 @@ struct PolynomialHalfGCD {
 #endif
 		for (int i = 0; i < n; ++i) out[i] = x * a[i] + y * b[i - 1] + z * b[i];
 	}
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	__attribute__((target("avx2"))) static void combine8(T* out, const T* a, const T* b, int n, unsigned x, unsigned y, unsigned z) {
 		using I = NTT::I8;
 		I vx = _mm256_set1_epi32(x), qx = _mm256_set1_epi32(NTT::quotient(x));
@@ -291,7 +291,7 @@ struct PolynomialHalfGCD {
 };
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

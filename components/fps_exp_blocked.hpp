@@ -3,29 +3,13 @@
 
 #include "fps_blocked.hpp"
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
 namespace fps_detail {
 namespace blocked_poly {
 namespace detail {
-struct Factors {
-	Vec w, q;
-};
-
-inline Vec times(Vec x, const Factors& w) {
-	const Vec even = _mm256_srli_epi64(_mm256_mul_epu32(x, w.q), 32);
-	const Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(w.q, 32));
-	const Vec q = _mm256_blend_epi32(even, odd, 0xAA);
-	return _mm256_sub_epi32(_mm256_mullo_epi32(x, w.w), _mm256_mullo_epi32(q, broadcast(kP)));
-}
-
-inline Factors entries(const Word* table, size_t k) {
-	const Word* e = table + slot(k);
-	return {load(e), load(e + 8)};
-}
-
 inline constexpr size_t kExpBase = 64;
 
 inline constexpr auto kExpInverse = [] {
@@ -75,11 +59,7 @@ void product_to(const Transform& t, Words out, const Source& in, const Bottom& b
 	const Factor s(scale);
 	const auto put = [to, &s](size_t j, Vec x) __attribute__((target("avx2"))) {
 		const Vec y = reduce(times(x, s), kP);
-		if (8 * j + 8 <= to.size()) return store_unaligned(to.data() + 8 * j, y);
-		if (8 * j >= to.size()) return;
-		const Vec lanes = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
-		const Vec mask = _mm256_cmpgt_epi32(broadcast(Word(to.size() - 8 * j)), lanes);
-		_mm256_maskstore_epi32(reinterpret_cast<int*>(to.data() + 8 * j), mask, y);
+		if (8 * j < to.size()) store_first(to.data() + 8 * j, y, to.size() - 8 * j);
 	};
 	const bool lower = output == Half::kLower;
 	if (std::countr_zero(nv) % 2 == 0) {
@@ -115,12 +95,7 @@ template <class Given>
 		if (given_low) qt = given.low;
 		if (given_block2) q2t = given.block2;
 	}
-	const auto q = [g, n](size_t i) __attribute__((target("avx2"))) {
-		if (i + 8 <= n) return load_unaligned(g.data() + i);
-		alignas(32) Word x[8] = {};
-		std::copy(g.begin() + std::ptrdiff_t(i), g.end(), x);
-		return load(x);
-	};
+	const auto q = [g](size_t i) __attribute__((target("avx2"))) { return load_padded(g, i); };
 	if (first) t.forward(g.first(half), 0, g0t);
 	t.forward(g.first(m), 0, glt);
 	if (given_low) {

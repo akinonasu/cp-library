@@ -6,7 +6,7 @@
 #include "../components/fps_projection_generic.hpp"
 #include <numeric>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -71,7 +71,7 @@ FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, const Forma
 				}
 			}
 		} else
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 		if (n <= (1 << 21) && fps_detail::NTT::vectorized()) {
 			fps_detail::composition_poly::native_weighted_projection(f.data(), len, w.data(), res, n, count);
 		} else
@@ -106,7 +106,7 @@ FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, const Forma
 template<class T>
 FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, int n, int deg = -1) {
 	assert(n >= 0 && n < (1 << 21));
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if constexpr (std::is_same_v<T, mint>) {
 		if (n >= 64 && f.size() > 2 && f[0] == T(0) && f[1] != T(0) && f[2] != T(0) &&
 			fps_detail::NTT::vectorized()) {
@@ -127,7 +127,7 @@ FormalPowerSeries<T> power_projection(const FormalPowerSeries<T> &f, int n, int 
 
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

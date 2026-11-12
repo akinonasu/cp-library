@@ -13,7 +13,7 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 #include <immintrin.h>
 #endif
 
@@ -32,7 +32,7 @@ auto field(std::vector<T> &a, F &&f) {
 	} else return f.template operator()<Field<T>>(a);
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -54,7 +54,7 @@ void product_scalar(const std::uint32_t *a, const std::uint32_t *b, std::uint32_
 	}
 }
 
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_GNU_X86
 inline bool avx512_product() {
 #if CP_LIBRARY_AVX512
 	static const bool supported = __builtin_cpu_supports("avx512f") && __builtin_cpu_supports("avx512dq");
@@ -186,7 +186,7 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 	};
 	if constexpr (small_modint<T>) {
 		if (std::uint64_t(n) * m <= 128u / unsigned(inner)) { basic(); return c; }
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_GNU_X86
 		if (inner >= 16 && m >= 8 && avx2()) {
 			const int block = avx512_product() ? 16 : 8;
 			std::vector<std::int32_t> x(a.size()), y(b.size());
@@ -219,7 +219,7 @@ std::vector<T> multiply(const std::vector<T> &a, const std::vector<T> &b, int n,
 	return c;
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 }

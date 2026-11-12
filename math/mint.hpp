@@ -1,11 +1,12 @@
 #ifndef MINT_998244353_HPP
 #define MINT_998244353_HPP
+#include "../components/compiler_features.hpp"
 #include <cassert>
 #include <istream>
 #include <ostream>
 #include <type_traits>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -132,7 +133,7 @@ struct [[gnu::warn_unused]] Mint {
 using mint = mint_detail::Mint;
 using fps_mint = mint;
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

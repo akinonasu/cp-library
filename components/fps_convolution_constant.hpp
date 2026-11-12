@@ -9,7 +9,7 @@
 #include <span>
 #include <vector>
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 _Pragma("GCC target(\"avx2\")")

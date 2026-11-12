@@ -8,7 +8,7 @@
 #include <type_traits>
 #include <vector>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -75,7 +75,7 @@ struct Operations {
 	}
 	static void batch_inverse(base &dst, const base &src) {
 		int n = src.size();
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if constexpr (std::is_same_v<T, mint>) {
 			if (n >= 128 && NTT::vectorized()) {
 				NTT::batch_inverse8(words(dst), words(src), n);
@@ -108,7 +108,7 @@ struct Operations {
 			dst[i] = value;
 		}
 	}
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	template<int count, bool first>
 	__attribute__((target("avx2"))) static void accumulate_products8(Word *dst, const Word *const *a, const Word *const *b, int n) {
 		accumulate_products<count, first>(dst, a, b, n);
@@ -140,7 +140,7 @@ struct Operations {
 	}
 	static T dot(const T *a, const T *b, int n) {
 
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if constexpr (std::is_same_v<T, mint>) {
 			if (n >= 64 && NTT::vectorized())
 				return T::word(NTT::reverse_dot8(reinterpret_cast<const Word *>(a), reinterpret_cast<const Word *>(b), n));
@@ -196,7 +196,7 @@ struct Operations {
 	static const std::vector<T> &inverses(int n) {
 		assert(unsigned(n) < unsigned(T::mod()));
 		static std::vector<T> inv{0, 1};
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if constexpr (std::is_same_v<T, mint>) {
 			int first = inv.size(), count = (n + 1 - first) / 8 * 8;
 			if (count >= 256 && NTT::vectorized()) {
@@ -219,7 +219,7 @@ struct Operations {
 
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

@@ -5,7 +5,7 @@
 
 namespace mint_detail {
 
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 
 __attribute__((target("avx2"))) inline void factorial_transpose(Ops::I8 (&x)[8]) {
 	Ops::I8 a[8], b[8];
@@ -81,7 +81,7 @@ __attribute__((target("avx2"))) inline void factorials8(Ops::U* fact, Ops::U* in
 
 inline void factorials(Ops::U* fact, Ops::U* invfact, int n) {
 	if (!n) return;
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	if (n >= 256 && Ops::vectorized()) {
 		factorials8(fact, invfact, n);
 		return;

@@ -5,7 +5,7 @@
 
 namespace fps_detail {
 using mint_detail::factorials;
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 using mint_detail::factorials8, mint_detail::factorial_chain, mint_detail::factorial_transpose;
 #endif
 }

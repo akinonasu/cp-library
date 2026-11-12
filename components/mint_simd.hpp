@@ -2,7 +2,7 @@
 #define MINT_SIMD_HPP
 
 #include "../math/mint.hpp"
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 #include <immintrin.h>
 #endif
 
@@ -10,7 +10,7 @@ namespace mint_detail {
 struct SimdOps {
 	typedef unsigned int U __attribute__((may_alias));
 	static constexpr U mod = 998244353, twice = 2 * mod;
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	static bool vectorized() {
 #if defined(__AVX2__)
 		return true;

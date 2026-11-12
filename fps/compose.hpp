@@ -6,7 +6,7 @@
 #include "../components/fps_compose_generic.hpp"
 #include <numeric>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -22,7 +22,7 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 	if (deg == 0) return {};
 	if constexpr (!std::is_same_v<T, mint>)
 		return O::export_work(compose<mint>(O::import_work(outer), O::import_work(inner), deg));
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if constexpr (std::is_same_v<T, mint>) {
 		if (deg >= 64 && deg <= (1 << 21) && outer.size() > 8 && inner.size() > 2 &&
 			outer[std::min(outer.size(), std::size_t(deg)) - 1] != T(0) &&
@@ -81,7 +81,7 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 		result.resize(deg);
 		return result;
 	}
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if constexpr (std::is_same_v<T, mint>) {
 		if (fps_detail::NTT::vectorized() && deg <= (1 << 21)) {
 			F result;
@@ -95,7 +95,7 @@ FormalPowerSeries<T> compose(const FormalPowerSeries<T> &outer, const FormalPowe
 
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

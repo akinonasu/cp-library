@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <type_traits>
 #include <utility>
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_GNU_X86
 #include <immintrin.h>
 #endif
 
@@ -26,7 +26,7 @@ template <class T>
 inline constexpr bool small_modint = SmallModint<T>::value;
 
 inline bool avx2() {
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__)) && !defined(FIELD_DISABLE_AVX2) && !defined(MATRIX_DISABLE_AVX2)
+#if CP_GNU_X86 && !defined(FIELD_DISABLE_AVX2) && !defined(MATRIX_DISABLE_AVX2)
 	static const bool enabled = __builtin_cpu_supports("avx2");
 	return enabled;
 #else
@@ -57,7 +57,7 @@ struct ModularField {
 		V r = a * x - V((std::uint64_t(a) * q) >> 32) * mod;
 		return r < mod ? r : r - mod;
 	}
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_GNU_X86
 	__attribute__((target("avx2"))) static __m256i product8(__m256i a, __m256i x, __m256i q) {
 		__m256i p = _mm256_set1_epi32(mod);
 		__m256i even = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
@@ -116,7 +116,7 @@ struct ModularField {
 	template <bool add_to>
 	static void apply(V *a, const V *b, int n, V x) {
 		V q = (std::uint64_t(x) << 32) / mod;
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_GNU_X86
 #if CP_LIBRARY_AVX512
 		if (n >= 64 && avx2() && __builtin_cpu_supports("avx512f")) { apply16<add_to>(a, b, n, x, q); return; }
 #endif

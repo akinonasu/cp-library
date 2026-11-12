@@ -3,14 +3,14 @@
 
 #include "ntt.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
 
 namespace fps_detail {
 
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 struct LogTransform {
 	using U = NTT::U;
 	using I8 = NTT::I8;
@@ -137,7 +137,7 @@ struct LogTransform {
 
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 
