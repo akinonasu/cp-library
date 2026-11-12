@@ -9,4 +9,4 @@ documentation_of: //components/matrix_block_inverse.hpp
 
 返り値は `optional<pair<T,vector<T>>>` で、組の先頭は行列式です。この経路を使えない場合は `nullopt` を返すため、呼び出し側で通常の消去法を使います。逆行列が存在しないときの組の配列は空です。
 
-時間は $$O(n^3)$$、追加空間は $$O(n^2)$$ です。体の演算を定数時間とします。
+時間は $$O(n^3)$$、追加空間は $$O(n^2)$$ です。modint の四則演算を定数時間とします。

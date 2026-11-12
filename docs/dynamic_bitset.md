@@ -48,12 +48,12 @@ int main() {
 | `words()` | 内部配列への `std::span<const std::uint64_t>` |
 | `to_string()` | 長さを保った二進表記を `std::string` で返す |
 
-`from_words` の配列長は正確に $$\lceil n/64\rceil$$ とします。`words[0]` が添字 0～63、`words[1]` が 64～127 に対応します。最後のワードのうち長さの外にある上位ビットは読み捨てます。`words()` の配列長も同じで、外側のビットは常に 0 です。この参照を通した変更はできません。
+`std::uint64_t` 1 個を、以下ではワードと呼びます。`from_words` の配列長は正確に $$\lceil n/64\rceil$$ とします。`words[0]` が添字 0～63、`words[1]` が 64～127 に対応します。最後のワードのうち長さの外にある上位ビットは読み捨てます。`words()` の配列長も同じで、外側のビットは常に 0 です。この参照を通した変更はできません。
 
 | 一点・全体・区間の操作 | 内容・返り値 |
 | --- | --- |
 | `test(int i)` / const の `operator[](int i)` | ビット値を `bool` で返す |
-| 非 const の `operator[](int i)` | `bool` に変換できる `reference` プロキシ。`bits[i] = value`、プロキシ同士の代入、`bits[i].flip()` が可能 |
+| 非 const の `operator[](int i)` | 要素の読み書きを代行する `reference` 型のオブジェクト（プロキシ）。`bool` に変換できる。`bits[i] = value`、プロキシ同士の代入、`bits[i].flip()` が可能 |
 | `set(int i, bool value = true)` / `reset(int i)` / `flip(int i)` | 一点を代入 / `false` にする / 反転 |
 | `set_all(bool value = true)` / `reset_all()` / `flip_all()` | 全体を代入 / `false` にする / 反転 |
 | `set_range(int l, int r, bool value = true)` / `reset_range(l,r)` / `flip_range(l,r)` | 区間を代入 / `false` にする / 反転 |
@@ -70,7 +70,7 @@ int main() {
 | `a &= b` / `a \|= b` / `a ^= b` / `a -= b` | 同じ演算で `a` を更新し、`DynamicBitset&` を返す |
 | `~a` | 長さの内側だけを反転した列を返す |
 | `count_and(other)` / `count_or(other)` / `count_xor(other)` / `count_and_not(other)` | 各演算の結果の `true` の個数を、結果の列を作らず `int` で返す |
-| `intersection_parity(other)` | 共通する `true` の個数が奇数かを `bool` で返す。GF(2) 上の内積 |
+| `intersection_parity(other)` | 共通する `true` の個数が奇数かを `bool` で返す |
 | `intersects(other)` | 共通する `true` が存在するかを `bool` で返す |
 | `is_subset_of(other)` / `is_proper_subset_of(other)` | 自身が部分集合 / 真部分集合かを `bool` で返す |
 | `compare(other)` | 符号なし整数とみなした大小を `int` の `-1`・`0`・`1` で返す |
@@ -146,7 +146,7 @@ int main() {
 
 コピーした列は独立しています。ムーブ後の移動元は長さ 0 になります。`words()` の `span` と要素のプロキシは内部領域を参照するため、領域の再確保・`clear`・代入・破棄後に使わないでください。長さを縮めた場合は、範囲外になった添字のプロキシも使えません。メモリ確保を伴う操作では標準コンテナの例外が発生することがあります。
 
-演算前の長さを $$n$$、ワード数を $$W=\lceil n/64\rceil$$ とします。相手の列がある場合は、その長さを $$m$$、ワード数を $$V=\lceil m/64\rceil$$ とします。要素は $$W$$ ワードに格納し、予約領域も含む保持空間は確保済みの容量に比例します。`reserve` や過去の長さによる余剰領域がなければ $$O(W)$$ です。以下はワードの論理演算・popcount・ビット位置の検索を定数時間とする計算量です。
+演算前の長さを $$n$$、ワード数を $$W=\lceil n/64\rceil$$ とします。相手の列がある場合は、その長さを $$m$$、ワード数を $$V=\lceil m/64\rceil$$ とします。要素は $$W$$ ワードに格納し、予約領域も含む保持空間は確保済みの容量に比例します。`reserve` や過去の長さによる余剰領域がなければ $$O(W)$$ です。以下はワードの論理演算・1 のビット数の計算・ビット位置の検索を定数時間とする計算量です。
 
 | 操作 | 時間・追加空間 |
 | --- | --- |
@@ -167,3 +167,5 @@ int main() {
 | `slice(l,r)` | $$O(\lceil(r-l)/64\rceil)$$ 時間・追加空間 |
 
 `any`・`all`・検索・比較は結果が決まった時点で走査を終えます。両方が空の演算・空区間・シフト量 0 などの何もしない場合は定数時間です。再確保のない `resize` は、追加・初期化するワード数に比例する時間で、縮小時は定数時間です。再確保のない `reserve` は定数時間です。`push_back` は償却 $$O(1)$$、`pop_back` は $$O(1)$$ です。コピーは $$O(W)$$、ムーブ構築は $$O(1)$$ で、代入には旧領域の解放も加わります。`clear` は定数時間です。
+
+「償却」は、一連の操作にかかる合計時間から求めた、1 回あたりの計算量を表します。

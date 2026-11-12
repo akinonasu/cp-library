@@ -18,7 +18,7 @@ auto position = bits.select1(0);
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `DynamicBitVector()` / `DynamicBitVector(a)` | 空列／`vector<bool>` から構築 | 空: $$O(1)$$、配列: $$O(n)$$ |
-| `build(a)` / `build(n,packed)` | bit 列から再構築／下位 bit から詰めた word 配列で再構築 | $$O(n)$$ |
+| `build(a)` / `build(n,packed)` | bit 列から再構築／下位 bit から詰めた 64 bit 整数配列で再構築 | $$O(n)$$ |
 | `size()` / `empty()` / `count()` | bit 数／空判定／1 の総数 | $$O(1)$$ |
 | `access(i)` / `operator[](i)` | bit を取得 | $$O(\log n)$$ |
 | `rank1(r)` / `rank0(r)` | $$[0,r)$$ の 1／0 の個数 | $$O(\log n)$$ |
@@ -42,3 +42,5 @@ auto position = bits.select1(0);
 `build(a)` で再構築できます。`reserve(n)` は要素数の予約、`memory_usage()` は確保済みノード領域のバイト数です。`clear()` は容量を保持して空にします。`push_back(b)`・`pop_back()` も利用できます。
 
 要素数を $$n$$ として、構築は $$O(n)$$、挿入・移動は償却 $$O(\log n)$$、削除・更新・順位検索・取得は $$O(\log n)$$ です。サイズ・全体の個数・`clear` は $$O(1)$$、`reserve(N)` は $$O(N)$$、空間は $$O(N)$$ です。$$N$$ は過去の最大要素数と予約容量の最大値です。
+
+償却計算量は、1 回ごとの最悪時間ではなく、一連の操作にかかる合計時間を操作回数で割ったときの上界です。

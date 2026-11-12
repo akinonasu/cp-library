@@ -23,7 +23,7 @@ if (value) {
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `LiChaoTree(coordinates = {})` | クエリる座標列を登録して構築。ソート・重複除去を行う | $$O(n\log n)$$、ソート済み: $$O(n)$$ |
+| `LiChaoTree(coordinates = {})` | 問い合わせる座標列を登録して構築。ソート・重複除去を行う | $$O(n\log n)$$、ソート済み: $$O(n)$$ |
 | `build(coordinates)` | 座標列を登録し直す。既存の直線・線分は削除 | $$O(n\log n)$$、ソート済み: $$O(n)$$ |
 | `add_line(a,b)` | 全登録座標に直線 $$ax+b$$ を追加 | $$O(\log n)$$ |
 | `add_segment(l,r,a,b)` | 座標区間 $$[l,r)$$ に直線 $$ax+b$$ を追加。端点自体の登録は不要 | $$O(\log^2 n)$$ |
@@ -34,7 +34,7 @@ if (value) {
 | `size()` | 重複除去後の登録座標数 | $$O(1)$$ |
 | `clear()` | 座標列を残して全ての直線・線分を削除 | $$O(n)$$ |
 
-構築前にクエリを先読みし、クエリる座標を全て登録します。座標の候補が最初から分かっていれば、その候補を登録するだけで使えます。追加する直線・線分の先読みは不要です。`query(x)`・`index(x)` には登録済みの座標を渡します。添字はソート・重複除去後の 0 始まりです。クエリ座標を事前に集められない場合は [Dynamic Li Chao Tree](https://qandori.github.io/cp-library/data_structure/dynamic_li_chao_tree.hpp.html) を使えます。
+構築前にクエリを先読みし、問い合わせる座標を全て登録します。座標の候補が最初から分かっていれば、その候補を登録するだけで使えます。追加する直線・線分の先読みは不要です。`query(x)`・`index(x)` には登録済みの座標を渡します。添字はソート・重複除去後の 0 始まりです。クエリ座標を事前に集められない場合は [Dynamic Li Chao Tree](https://qandori.github.io/cp-library/data_structure/dynamic_li_chao_tree.hpp.html) を使えます。
 
 `LiChaoTree<T, true>` では `query`・`query_index` が最大値を返します。既定の `T` は `std::int64_t`、整数の計算・返り値は 32 bit 型なら `std::int64_t`、64 bit 型なら `__int128_t` です。第 3 テンプレート引数で計算型を指定できます。
 

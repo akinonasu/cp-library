@@ -20,11 +20,12 @@ int main() {
 
 `geometry` 名前空間を使います。[任意精度整数・有理数座標](geometry_rational.md) の型と Boost.Multiprecision を使用します。
 点・直線・線分の座標型は `ExactCoordinate` とし、符号付き組み込み整数、`Integer`、`Rational` を渡せます。二つの引数で座標型が異なっていても使えます。
+ここでは2端点が同じ直線を「退化直線」と呼び、その端点だけからなる図形として扱います。
 入力を任意精度有理数に変換してから計算するため、固定幅整数の差や積がその型に収まらない入力も扱えます。許容誤差の引数はありません。
 
 | 操作 | 内容・返り値 |
 | --- | --- |
-| `projection_exact(l,p)` | 点 `p` の直線 `l` への射影を `RPoint` で返す。退化直線ならその点 |
+| `projection_exact(l,p)` | 点 `p` から直線 `l` へ下ろした垂線の足（射影）を `RPoint` で返す。退化直線ならその点 |
 | `reflection_exact(l,p)` | 直線について `p` と対称な点を `RPoint` で返す。退化直線ならその点を中心に点対称 |
 | `intersection_exact(l,m)` | 直線同士の唯一の交点を `optional<RPoint>` で返す。平行・一致直線は `nullopt` |
 | `intersection_exact(s,t)` | 線分同士の共通部分を `vector<RPoint>` で返す。0点・1点・重なりの両端2点 |

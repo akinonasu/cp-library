@@ -23,7 +23,7 @@ auto mx = seg.max(0, 4);
 
 [基本的な使い方の一覧](https://qandori.github.io/cp-library/docs/range_chmin_chmax_add_sum_examples.html)
 
-このヘッダーは chmin・chmax・加算・代入の専用版です。他の更新や集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segtree_beats.hpp.html) を使ってください。
+このヘッダーは chmin・chmax・加算・代入の専用版です。他の更新や区間で計算する値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segtree_beats.hpp.html) を使ってください。
 
 区間は $$[l,r)$$ です。`RangeChminChmaxAddSum<T = long long, Sum = T>` は符号付き整数を扱います。`RangeChminChmaxAddSum<T, Sum>(n, x = 0)` は長さ `n` を `x` で初期化します。和だけ広い型にする場合は `RangeChminChmaxAddSum<long long, __int128_t>` などを指定します。
 
@@ -40,5 +40,7 @@ auto mx = seg.max(0, 4);
 | `size()` | 要素数 | $$O(1)$$ |
 
 値は `numeric_limits<T>::lowest()` より大きく、`numeric_limits<T>::max()` より小さくしてください。値・累積加算は `T`、和・更新差分と個数の積は `Sum` に収まる必要があります。空区間の和は `0`、最小値・最大値はそれぞれ `numeric_limits<T>::max()`・`lowest()` です。
+
+「償却」は、1 回だけ時間のかかる操作があっても、一連の操作の合計時間から 1 回あたりの計算量を評価するという意味です。
 
 構築・`values()`・空間は $$O(n)$$、`add`・`assign`・区間取得・`get`・`set` は $$O(\log n)$$、`chmin`・`chmax` を含む更新は償却 $$O(\log^2 n)$$、全体の取得・`size()` は $$O(1)$$ です。

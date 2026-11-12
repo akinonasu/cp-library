@@ -5,11 +5,11 @@ documentation_of: //components/range_add_min_node.hpp
 
 [区間加算・区間最小値](range_add_range_min.md)の 8 子ノードを処理する内部部品です。通常は `data_structure/range_add_range_min.hpp` を include します。
 
-`range_add_min_detail::Node<T>` の `T` は 64 bit 以下の標準の符号付き整数型、`U` は同じ幅の符号なし型です。通常は、配列にノードの最小値からの差分を `U` で格納します。正規化済みの有効要素の最小値は 0 です。差分は `U` の全範囲を取り得るため、通常の経路は unsigned の順序を使います。`build` への入力は、差分ではなく元の符号付き値のビット表現です。
+`range_add_min_detail::Node<T>` の `T` は 64 bit 以下の標準の符号付き整数型、`U` は同じ幅の符号なし型です。配列には各値とノードの最小値の差を `U` で格納します。差分の最小値が 0 になるように揃え直す処理を、以下では「正規化」と呼びます。差分は `U` の全範囲を取り得るため、通常の経路は符号なし整数として比較します。`build` への入力は、差分ではなく元の符号付き値のビット表現です。
 
-通常の `values` は、初期化済みの連続 8 要素の `U` 配列です。有効要素は先頭 `count` 個で、`1 <= count <= 8` とします。更新には 8 要素とも読み書き可能な配列を渡します。`build` の count 0 と `materialize` の領域条件は後述します。
+通常の `values` は、初期化済みの連続 8 要素の `U` 配列です。この 8 要素の区画をブロックと呼びます。有効要素は先頭 `count` 個で、`1 <= count <= 8` とします。後ろの無効要素は、要素数を 8 に揃えるための詰め物（パディング）です。更新には 8 要素とも読み書き可能な配列を渡します。`build` の count 0 と `materialize` の領域条件は後述します。
 
-64 bit の SIMD 経路では、`build`・`materialize` を除き、配列の先頭アドレスを 32 バイト境界に揃えます。`build`・`materialize` と 32 bit 以下の操作には SIMD 用の追加のアラインメント条件はなく、`T`・`U` 本来のアラインメントを満たせば使えます。
+複数の値を同時に計算する CPU 命令を SIMD と呼び、その命令がまとめて扱う値の一つをレーンと呼びます。64 bit の SIMD 経路では、`build`・`materialize` を除き、配列の先頭アドレスを 32 の倍数に揃えます。`build`・`materialize` と 32 bit 以下の操作には、通常の `T`・`U` 配列より厳しいアドレスの配置条件はありません。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -38,9 +38,9 @@ documentation_of: //components/range_add_min_node.hpp
 
 `normalize_boundaries` の `left,right` は重ならない別の 8 要素ブロックを指す `U*` です。左の有効要素数は 8、右は `1 <= right_count <= 8` とし、`0 <= first < 8`、`0 <= last < right_count` を満たします。左右をそれぞれ正規化しておき、返された変化量をそれぞれの親へ反映します。左右の境界位置には共通の `delta` を重ねず、`left_change,right_change` だけを加えます。
 
-差分への加減算は `U` の巡回演算で行います。負の変化量も `U` に変換して渡し、実際の増減方向を `negative` で別に指定します。1 回の呼び出しで渡す非ゼロの変化量はすべて同じ増減方向にし、減少なら `negative=true`、増加なら `false` とします。`normalize_boundaries` の左右の変化量にも同じ条件が必要です。差分の最上位ビットから増減方向を決めないでください。呼び出し元は、各子が表す更新後の値が `T` の範囲に収まることを保証します。更新前の有効要素は正規化しておき、返された変化量を親ノードの最小値に加えます。
+差分への加減算は `U` の巡回演算で行います。これは `U` が $$k$$ bit なら、結果を $$2^k$$ で割った余りとして扱う計算です。負の変化量も `U` に変換して渡し、実際の増減方向を `negative` で別に指定します。1 回の呼び出しで渡す非ゼロの変化量はすべて同じ増減方向にし、減少なら `negative=true`、増加なら `false` とします。`normalize_boundaries` の左右の変化量にも同じ条件が必要です。差分の最上位ビットから増減方向を決めないでください。呼び出し元は、各子が表す更新後の値が `T` の範囲に収まることを保証します。更新前の有効要素は正規化しておき、返された変化量を親ノードの最小値に加えます。
 
-`Narrow=false` では、パディングを `std::numeric_limits<U>::max()` にします。負更新で差分が wrap する場合も扱い、`U` 全域の差分を比較します。
+`Narrow=false` では、パディングを `std::numeric_limits<U>::max()` にします。負の更新で差分が 0 を下回り、`U` の最大値付近へ回り込む場合も扱い、`U` 全域の差分を比較します。
 
 32 bit の AVX2 経路は unsigned 32 bit の最小値を使い、符号付き整数の全範囲に対応します。`negative=true` では、更新後の unsigned 差分が元より大きくなるレーンを、0 を下回った差分として区別します。このレーンが存在すればその中の最小値を選び、なければ全有効レーンの最小値を選びます。`normalize_boundaries` では左右それぞれでこの判定を行ってから、両ブロックの最小値を同時に求めます。右のパディングには正規化量を引かず、`U` の最大値を維持します。
 
@@ -48,9 +48,9 @@ documentation_of: //components/range_add_min_node.hpp
 
 `min_signed`・`broadcast_min`・`reduce_min`・`minimum_vector` は AVX2 有効時だけ定義される、64 bit 整数用の補助関数です。`broadcast_min32`・`reduce_min32` は同じ条件で定義される unsigned 32 bit 用です。
 
-`minimum_vector` は `0 <= l <= r <= 8` とし、指定区間が有効要素だけを含むようにします。配列には前述の 64 bit 用のアラインメント条件が必要です。レーン `j` は添字 `j` と `j+4` の小さい方を表します。`l == r` なら全レーンが `neutral` になります。レーン間の最小値はまだ取らず、`reduce_min` または `broadcast_min` と組み合わせます。
+`minimum_vector` は `0 <= l <= r <= 8` とし、指定区間が有効要素だけを含むようにします。配列の先頭アドレスは前述のとおり 32 の倍数に揃えます。レーン `j` は添字 `j` と `j+4` の小さい方を表します。`l == r` なら全レーンが `neutral` になります。レーン間の最小値はまだ取らず、`reduce_min` または `broadcast_min` と組み合わせます。
 
-`minimum_vector<true>` は元の差分を signed 64 bit として比較します。`minimum_vector<false>` は読み込んだ各差分 `value` を `key = value ^ sign_bit` に変換し、`key` を signed 64 bit として比較します。これにより元の unsigned 順序と一致します。`neutral` はこの変換後の表現で渡し、signed の順序で全候補以上になる値を選びます。通常経路の中立値は `U(std::numeric_limits<T>::max())` です。`false` の返り値に `reduce_min` を適用した後は、さらに `sign_bit` を XOR して元の差分に戻します。配列に保存する差分自体は変換しません。
+`minimum_vector<true>` は元の差分を signed 64 bit として比較します。`minimum_vector<false>` は読み込んだ各差分 `value` を `key = value ^ sign_bit` に変換し、`key` を signed 64 bit として比較します。`sign_bit` は最上位 bit だけが 1 の整数です。これにより元の unsigned 順序と一致します。`neutral` はこの変換後の表現で渡し、signed の順序で全候補以上になる値を選びます。このように最小値として選ばれないための値を、表では中立値と呼んでいます。通常経路では `U(std::numeric_limits<T>::max())` です。`false` の返り値に `reduce_min` を適用した後は、さらに `sign_bit` を XOR して元の差分に戻します。配列に保存する差分自体は変換しません。
 
 `Narrow=true` は 64 bit 整数の内部用経路です。`M = std::numeric_limits<T>::max()`、初期列の最大値と最小値の差を $$S_0$$、全区間加算を除く更新の絶対変化量累計を $$A$$ とし、$$\displaystyle L=\left\lfloor\frac{M}{3}\right\rfloor$$ とします。一点代入では新旧の値の差の絶対値を累計に加えます。呼び出し元が $$S_0+A<L$$ を保証し、構築後のパディングを $$2L$$ にします。SIMD の `normalize<true>` はパディングも含めて signed の最小値を計算し、8 レーンすべてからその値を引きます。
 

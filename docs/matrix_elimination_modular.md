@@ -5,7 +5,7 @@ documentation_of: //components/matrix_elimination_modular.hpp
 
 [行列](matrix.md) が使う固定法の消去処理です。通常は `Matrix<T>` の行列式・階数・逆行列・連立一次方程式を使います。
 
-`matrix_detail::ModularElimination<Ops>` は、`Ops::V` が `uint32_t`、法が $$1<p<2^{31}$$ の体を扱います。配列の値は $$[0,p)$$ に収めます。
+`matrix_detail::ModularElimination<Ops>` は、`Ops::V` が `uint32_t`、法が $$1<p<2^{31}$$ の素数の場合に使います。配列の値は $$[0,p)$$ に収めます。配列は各行を左から右へ、上の行から順に並べます。「ピボット」は、消去法で各行の計算の基準に選ぶ 0 でない成分です。
 
 | 操作 | 内容 |
 | --- | --- |

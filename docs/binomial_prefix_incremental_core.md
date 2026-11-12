@@ -1,9 +1,9 @@
 ---
-title: "二項係数の prefix sum の差分更新部品"
+title: "二項係数の累積和の差分更新部品"
 documentation_of: //components/binomial_prefix_incremental_core.hpp
 ---
 
-[二項係数の prefix sum（差分更新）](binomial_prefix_sum_incremental.md) と [軽量版](binomial_prefix_sum_incremental_light.md) の共通部品です。通常は公開ライブラリを使います。
+[二項係数の累積和（差分更新）](binomial_prefix_sum_incremental.md) と [軽量版](binomial_prefix_sum_incremental_light.md) の共通部品です。通常は公開ライブラリを使います。
 
 `binomial_prefix_detail::IncrementalPrefixSum<Mint, Table, FastHalf>` は、直前の問い合わせの状態を保持します。`Table` は階乗・逆階乗・2 の冪と `binom`・`range` を提供する前計算型、`FastHalf` は `mint` の内部表現による半分の計算を使うかを指定する `bool` です。
 

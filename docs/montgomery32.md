@@ -3,6 +3,8 @@ title: "Montgomery 32"
 documentation_of: //components/montgomery32.hpp
 ---
 
+32 bit の奇数法で加算・乗算・累乗を行う部品です。法を $$m$$、$$R=2^{32}$$ として、整数 $$a$$ を $$aR\bmod m$$ に変換した値を「Montgomery 表現」と呼びます。`in` で変換してから `add`・`mul`・`pow` を使い、最後に `reduce` で通常の余りへ戻します。
+
 ```cpp
 #include "lib/components/montgomery32.hpp"
 

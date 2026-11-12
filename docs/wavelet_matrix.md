@@ -43,20 +43,20 @@ auto total = wm.sum_smallest(0, 5, 3); // 5: 1 + 1 + 3
 | `range_sum_with_count(l,r,upper)` | `upper` 未満の値の和と個数を `pair<Sum,int>` で返す | 準備後 $$O(\log\sigma)$$ |
 | `range_sum(l,r)` | 区間和。未前処理なら初回に前処理 | 準備後 $$O(1)$$ |
 | `sum_smallest(l,r,k)` / `sum_largest(l,r,k)` | 下位／上位 `k` 個の和。未前処理なら初回に前処理 | 準備後 $$O(\log\sigma)$$ |
-| `min_count_smallest(l,r,target)` / `min_count_largest(l,r,target)` | 小さい順／大きい順に加え、和が `target` 以上になる最小個数。届かなければ -1 | 準備後 $$O(\log\sigma)$$、単調配列: $$O(\log n)$$ |
-| `max_count_smallest(l,r,budget)` / `max_count_largest(l,r,budget)` | 小さい順／大きい順に加え、和が `budget` 以下の最大個数。空の選択も不可能なら -1 | 準備後 $$O(\log\sigma)$$、単調配列: $$O(\log n)$$ |
+| `min_count_smallest(l,r,target)` / `min_count_largest(l,r,target)` | 小さい順／大きい順に加え、和が `target` 以上になる最小個数。届かなければ -1 | 準備後 $$O(\log\sigma)$$、昇順・降順の配列: $$O(\log n)$$ |
+| `max_count_smallest(l,r,budget)` / `max_count_largest(l,r,budget)` | 小さい順／大きい順に加え、和が `budget` 以下の最大個数。空の選択も不可能なら -1 | 準備後 $$O(\log\sigma)$$、昇順・降順の配列: $$O(\log n)$$ |
 
 `range_sum_with_count` は和と個数を一度の走査で求めます。値域を指定する和も、未前処理なら最初に和の準備を行います。
 
 和の前処理は必要時に行います。構築時に済ませる場合は `WaveletMatrix<T> wm(a, true)` とします。整数の和は 32 bit 型なら `std::int64_t`、64 bit 型なら `__int128_t` です。`WaveletMatrix<T, Sum>` で和の型を指定できます。
 
-入力は `vector<T>`、長さは `INT_MAX` 以下です。`T` はコピー・代入と、互いに整合する `<`・`==`・`!=` に対応する型とし、浮動小数点の NaN は渡さないでください。入力は変更せず、構築後に破棄しても構いません。和を利用する場合は `Sum(0)`・`T` からの変換・加減算・整数との乗算が必要で、中間の部分和も `Sum` に収めてください。和を使わない場合は文字列などの値も扱えます。
+入力は `vector<T>`、長さは `INT_MAX` 以下です。`T` はコピー・代入と `<`・`==`・`!=` に対応する型とします。大小比較では `a < a` を `false` とし、`a < b` かつ `b < c` なら `a < c` とします。どちら向きの `<` も `false` のときは同値とみなし、`a` と `b`、`b` と `c` が同値なら `a` と `c` も同値になるようにします。`a == b` は比較上同値なときに `true`、`a != b` はその逆とし、浮動小数点の NaN は渡さないでください。入力は変更せず、構築後に破棄しても構いません。和を利用する場合は `Sum(0)`・`T` からの変換・加減算・整数との乗算が必要で、中間の部分和も `Sum` に収めてください。和を使わない場合は文字列などの値も扱えます。
 
 和を使う場合は、構築時に `true` を指定して前計算できます。
 
-`count`・`rank`・`select` を繰り返す場合は、`wm.prepare_count()` で値検索用のハッシュ表を準備できます。64 bit 以下の整数型に対応し、値の種類が少ない場合や連続している場合は追加の表を作りません。その他の型では何もしません。`build` で前処理は破棄されます。
+表の「索引あり」は、値検索用のハッシュ表を準備した場合を指します。`count`・`rank`・`select` を繰り返す場合は、`wm.prepare_count()` で値検索用のハッシュ表を準備できます。64 bit 以下の整数型に対応し、値の種類が少ない場合や連続している場合は追加の表を作りません。その他の型では何もしません。`build` で前処理は破棄されます。
 
-`min_count_*`・`max_count_*` は非負整数列と整数の和の型で使います。`min_count_*` は `target <= 0` なら 0、`max_count_*` は `budget < 0` なら -1 を返します。和の準備は自動で行います。`sum_largest` などを個数について二分探索するより、索引を直接たどることで探索を一度に済ませます。
+`min_count_*`・`max_count_*` は非負整数列と整数の和の型で使います。`min_count_*` は `target <= 0` なら 0、`max_count_*` は `budget < 0` なら -1 を返します。和の準備は自動で行います。`sum_largest` などを個数について二分探索する必要はなく、1 回の問い合わせで求められます。
 
 一点代入と和の探索には [Point Set Wavelet Matrix (クエリ先読み)](https://qandori.github.io/cp-library/data_structure/point_set_wavelet_matrix.hpp.html)、固定した値の重み更新には [Weighted Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/weighted_wavelet_matrix.hpp.html) を使えます。
 
@@ -67,3 +67,5 @@ auto total = wm.sum_smallest(0, 5, 3); // 5: 1 + 1 + 3
 `prepare_count` は期待 $$O(\sigma)$$・最悪 $$O(\sigma^2)$$ 時間、$$O(\sigma)$$ 空間です。前処理後の値検索は期待 $$O(1)$$・最悪 $$O(\sigma)$$、出現位置の検索を含む `count`・`rank` は期待 $$O(\log \sigma)$$、`select` は期待 $$O(1)$$ です。
 
 和の準備後の `min_count_*`・`max_count_*` は通常 $$O(\log \sigma)$$、配列全体が昇順・降順の場合は $$O(\log n)$$ です。
+
+ハッシュ表の計算量で「期待」とあるものは、ハッシュ値が偏らないときの平均時間です。

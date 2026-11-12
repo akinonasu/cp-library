@@ -3,11 +3,11 @@ title: Stern–Brocot Tree の圧縮経路
 documentation_of: //components/stern_brocot_path.hpp
 ---
 
-[Stern–Brocot Tree](https://qandori.github.io/cp-library/math/stern_brocot_tree.hpp.html) の内部部品です。ユークリッド互除法で根からの連続移動を順に取り出します。
+[Stern–Brocot Tree](https://qandori.github.io/cp-library/math/stern_brocot_tree.hpp.html) の内部部品です。同じ方向への連続移動を、その方向と移動回数にまとめて順に取り出します。
 
 | 関数・型 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `stern_brocot_detail::Path<U>` | 符号なし整数の分子・分母を持つ圧縮経路イテレータ | —（型） |
+| `stern_brocot_detail::Path<U>` | 符号なし整数の分子・分母から、根からの移動方向・回数を順に取り出す型 | —（型） |
 | `Path(numerator,denominator)` | 正の分子・分母から構築。約分されていなくてもよい | $$O(1)$$ |
 | `empty()` | 経路を最後まで取り出したか | $$O(1)$$ |
 | `right()` | 次の区間が右への移動であるか。`!empty()` が必要 | $$O(1)$$ |

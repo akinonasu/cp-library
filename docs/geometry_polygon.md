@@ -24,7 +24,7 @@ auto left_area = area(left); // 6
 | `signed_area2(polygon)` | 符号付き面積の2倍を `wide_t<T>` で返す。反時計回りが正 | $$O(n)$$ |
 | `area(polygon)` | 面積の絶対値を `Real` で返す | $$O(n)$$ |
 | `perimeter(polygon)` | 最後から最初への辺を含む周長を `Real` で返す | $$O(n)$$ |
-| `is_convex(polygon,strict = false,eps = epsilon)` | 単純多角形が凸か判定。`strict = true` では同一直線上の連続する3頂点も認めない | $$O(n)$$ |
+| `is_convex(polygon,strict = false,eps = epsilon)` | 単純多角形（自己交差しない多角形）が凸か判定。`strict = true` では同一直線上の連続する3頂点も認めない | $$O(n)$$ |
 | `contains(polygon,p,eps = epsilon)` | 一般の単純多角形に対する `Location::outside`・`boundary`・`inside` | $$O(n)$$ |
 | `centroid(polygon,eps = epsilon)` | 面積についての重心を `optional<FPoint>` で返す。面積0は `nullopt` | $$O(n)$$ |
 | `convex_cut(polygon,line,eps = epsilon)` | 凸多角形を有向直線 `line.a -> line.b` の左側で切り、残る頂点列を `vector<FPoint>` で返す。直線上も残す | $$O(n)$$ |
@@ -37,7 +37,7 @@ auto left_area = area(left); // 6
 `convex_cut` には凸な境界順の頂点列と、異なる2点からなる直線を渡します。切断後が空・単点・線分になることもあります。
 
 組み込み整数の符号判定と `signed_area2` は浮動小数点に変換せず計算します。計算途中の積・和は符号付き128 bitに収めてください。
-`area`・`perimeter`・`centroid`・切断後の座標は実数です。浮動小数点の `eps` は絶対誤差のしきい値なので、座標の大きさに合わせて変更してください。整数では `eps` を使いません。`centroid` の面積と退化判定も、整数入力なら128 bitで計算してから実数に変換します。
+`area`・`perimeter`・`centroid`・切断後の座標は実数です。浮動小数点の `eps` は絶対誤差のしきい値なので、座標の大きさに合わせて変更してください。整数では `eps` を使いません。`centroid` の面積と面積が0かどうかの判定も、整数入力なら128 bitで計算してから実数に変換します。
 
 面積・重心・切断後の座標を厳密に保つ場合は [exact_polygon.hpp](geometry_exact_polygon.md) を使います。`area_exact`・`centroid_exact`・`convex_cut_exact` は任意精度有理数で計算します。
 `signed_area2`・`contains`・`is_convex` には [rational.hpp](geometry_rational.md) の `BigPoint`・`RPoint` も渡せます。その場合、中間値も任意精度で判定に EPS は使いません。

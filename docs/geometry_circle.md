@@ -28,7 +28,7 @@ if (bound) {
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `Circle{center,radius}` | 中心と非負の半径を持つ円を構築 | $$O(1)$$ |
-| `area(c)` | 円板の面積 | $$O(1)$$ |
+| `area(c)` | 円周とその内部（円板）の面積 | $$O(1)$$ |
 | `circumference(c)` | 円周の長さ | $$O(1)$$ |
 | `contains(c,p,eps = epsilon)` | 点が円板の内部・円周上・外部のどこにあるかを `Location` で返す | $$O(1)$$ |
 | `relation(a,b,eps = epsilon)` | 2円の位置関係を `CircleRelation` で返す | $$O(1)$$ |
@@ -37,10 +37,10 @@ if (bound) {
 | `intersection(a,b,eps = epsilon)` | 2円周の交点を `optional<vector<FPoint>>` で返す | $$O(1)$$ |
 | `tangent_points(c,p,eps = epsilon)` | 点 `p` から円への接点。内部なら空、円周上なら1点、外部なら2点 | $$O(1)$$ |
 | `common_tangents(a,b,eps = epsilon)` | 共通接線を `optional<vector<Line<Real>>>` で返す。有限なら0～4本、無限なら `nullopt` | $$O(1)$$ |
-| `circumcircle(a,b,c,eps = epsilon)` | 三角形の外接円を `optional<Circle>` で返す。退化していれば `nullopt` | $$O(1)$$ |
-| `incircle(a,b,c,eps = epsilon)` | 三角形の内接円を `optional<Circle>` で返す。退化していれば `nullopt` | $$O(1)$$ |
+| `circumcircle(a,b,c,eps = epsilon)` | 三角形の外接円を `optional<Circle>` で返す。3点がほぼ同一直線上なら `nullopt` | $$O(1)$$ |
+| `incircle(a,b,c,eps = epsilon)` | 三角形の内接円を `optional<Circle>` で返す。3点がほぼ同一直線上なら `nullopt` | $$O(1)$$ |
 | `overlap_area(a,b)` | 2つの円板の共通部分の面積 | $$O(1)$$ |
-| `intersection_area(c,polygon)` | 円板と単純多角形の共通部分の面積。頂点は外周順、凸でなくてもよく、時計回りでもよい | $$O(n)$$ |
+| `intersection_area(c,polygon)` | 円板と単純多角形（自己交差しない多角形）の共通部分の面積。頂点は外周順、凸でなくてもよく、時計回りでもよい | $$O(n)$$ |
 | `minimum_enclosing_circle(points,seed = 712367821,eps = epsilon)` | 全点を含む最小の円を `optional<Circle>` で返す。空入力は `nullopt`。入力配列は変更しない | 期待 $$O(n)$$、最悪 $$O(n^3)$$ |
 
 `Location::outside = -1`、`boundary = 0`、`inside = 1` です。
@@ -71,9 +71,9 @@ if (bound) {
 ソートには許容誤差を使いません。入力・中間計算が有限となる範囲で使い、座標や半径のスケール、要求される誤差に応じて `eps` を指定してください。
 接する直前の交点や、ほぼ一直線上の3点の外接円は数値的に不安定です。
 
-最小包含円は固定 seed のシャッフルによる増分法です。シャッフル順に対する期待時間が線形で、同じ実行環境では seed を指定すると再現できます。
+最小包含円の `seed` は、点をランダムに並べ替える順序を決めます。その順序に対する期待時間が線形で、同じ実行環境では同じ `seed` を指定すると再現できます。
 同じ点だけなら半径 0、全点が一直線上でも処理できます。最後に全点との距離を確認して半径を補正します。
-得られる中心・半径は実数の近似値で、境界点の厳密なラベル判定には別の判定が必要です。
+得られる中心・半径は実数の近似値で、点が円周上にあるかの厳密な判定には別の判定が必要です。
 
 多角形の頂点数・入力点数を $$n$$ として、円と多角形の共通面積は時間 $$O(n)$$・追加空間 $$O(1)$$、最小包含円は期待時間 $$O(n)$$・最悪時間 $$O(n^3)$$・追加空間 $$O(n)$$ です。
 それ以外は時間・追加空間ともに $$O(1)$$ です。

@@ -3,7 +3,7 @@ title: オフラインの時間区間処理
 documentation_of: //components/offline_time_segments.hpp
 ---
 
-各操作が有効な半開区間 `[left,right)` を登録し、snapshot と rollback を持つ状態で時刻順に処理します。オフライン動的連結性の内部で使う部品です。
+各操作が有効な半開区間 `[left,right)` を登録し、各時刻に有効な操作だけを適用した状態を調べます。途中の状態を保存する `snapshot()` と、保存した状態へ戻す `rollback()` を持つ型を渡します。全ての操作区間を先に登録してから処理するため、入力を先読みできる動的連結性などに使います。
 
 ```cpp
 #include "lib/components/offline_time_segments.hpp"
@@ -37,7 +37,5 @@ int main() {
 `state.snapshot()` が現在位置を返し、`state.rollback(saved)` がそこへ戻すことが必要です。`apply(state,item)` は操作を適用し、`visit(time,const_state)` はその時刻の問い合わせを処理します。`visit` は0から `times-1` まで必ず昇順に1回ずつ呼びます。`visit` から snapshot が管理する状態を変更しないでください。
 
 同じ時刻に有効な操作の適用順は保証しません。適用順によらず問い合わせの答えが一致する用途に使ってください。外部データを変更する場合、その復元も `state.rollback` で行います。コールバックでこの時間区間オブジェクトを変更しないでください。
-
-各セグメントの操作 ID を1本の配列へまとめます。要素数の集計・累積和の後、同じ配列の開始位置を使って格納するため、書き込み用の位置配列は別に作りません。DFS の再帰の深さは $$O(\log T)$$ です。
 
 時刻数を $$T$$、区間数を $$I$$、格納した操作 ID の総数を $$K=O(I\log T)$$ とします。構築は $$O(T+I\log T)$$ 時間、空間は $$O(T+K)$$ です。`run` は $$O(T+K)$$ 回の操作を行い、`apply`・snapshot・rollback・`visit` の実際のコストは別に加算します。追加スタックは $$O(\log T)$$ です。空の場合や長さ1の場合にも定数時間かかります。

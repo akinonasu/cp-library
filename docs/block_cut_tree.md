@@ -7,7 +7,7 @@ redirect_from:
 - /lightweight/graph/connectivity/block_cut_tree.hpp.html
 ---
 
-無向グラフを二重頂点連結成分に分解し、成分と関節点を頂点とする Block Cut Tree を構築します。元のグラフが非連結なら森になります。
+無向グラフを、連結な部分グラフのうち、どの 1 頂点を除いても残りが連結であり、この条件を保ったまま頂点や辺を追加できないもの（二重頂点連結成分）に分解します。橋の両端と孤立点もそれぞれ 1 成分とします。頂点を除くと連結成分の数が増えるものを関節点と呼び、成分と関節点を頂点とする Block Cut Tree を構築します。元のグラフが非連結なら森になります。
 
 ```cpp
 #include "lib/graph/block_cut_tree.hpp"

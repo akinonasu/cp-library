@@ -3,6 +3,10 @@ title: "軽量 FPS の追加演算"
 documentation_of: //fps/fps_light_algorithms.hpp
 ---
 
+表の $$[x^k]h(x)$$ は、$$h(x)$$ の $$x^k$$ の係数を表します。
+
+このページの射影（power projection）は、各冪 $$f(x)^0,f(x)^1,\ldots$$ から、指定した次数の係数、または係数の重み付き和を取り出して並べる操作です。
+
 FPS の本体と追加演算は、同じ版のヘッダーを選んでください。
 
 ```cpp
@@ -32,7 +36,7 @@ auto value = linear_recurrence(initial, coefficients, 10); // 55
 
 多点評価は入力順を保ち、空の点列では空配列です。補間は `xs` と `ys` の長さが等しく、`xs` が法上で相異なることが必要です。空の補間は空配列、補間結果の長さは点数です。入力の点をソートする必要はありません。
 
-Taylor shift では階乗と逆階乗、評価と補間では [積木](https://qandori.github.io/cp-library/components/fps_light_product_tree.hpp.html) を使います。演算中に必要となる NTT の長さは $$2^{23}$$ 以下である必要があります。
+演算中に必要となる、素数を法とした変換（NTT）の長さは $$2^{23}$$ 以下である必要があります。
 
 合成・合成逆元・射影・多項式 GCD は `fps/compose_light.hpp`・`fps/compositional_inverse_light.hpp`・`fps/power_projection_light.hpp`・`fps/polynomial_gcd_light.hpp` に分けています。同じ軽量 FPS を使い、通常版と同じ関数名で必要な演算だけを追加できます。
 

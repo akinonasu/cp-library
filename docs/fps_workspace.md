@@ -3,13 +3,13 @@ title: FPS の作業領域
 documentation_of: //components/fps_workspace.hpp
 ---
 
-FPS 内部で使う、64 byte 以上に整列した `unsigned int` の作業領域です。
+FPS 内部で使う、先頭アドレスが 64 byte の倍数となるように配置した `unsigned int` の作業領域です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `fps_detail::allocate_fps_words(n)` | n ワードの作業領域の所有権を返す | OS・アロケータに依存 |
-| `storage[i]` | i 番目のワードへの参照 | $$O(1)$$ |
-| `storage.get()` | 先頭ワードへのポインタ | $$O(1)$$ |
+| `fps_detail::allocate_fps_words(n)` | n 個の 32 bit 整数の作業領域の所有権を返す | OS のメモリ確保処理に依存 |
+| `storage[i]` | i 番目の 32 bit 整数への参照 | $$O(1)$$ |
+| `storage.get()` | 先頭の 32 bit 整数へのポインタ | $$O(1)$$ |
 
 ```cpp
 #include "lib/components/fps_workspace.hpp"
@@ -18,10 +18,6 @@ auto storage = fps_detail::allocate_fps_words(1024);
 storage[0] = 1;
 ```
 
-`FpsWords` は所有権を移動できる配列です。要素の初期値は未規定で、使用前に書き込む必要があります。
+`FpsWords` は `std::move` で別の変数に移せる配列で、破棄時に領域を自動で解放します。要素の初期値は未規定で、使用前に書き込む必要があります。確保できなければ `std::bad_alloc` を送出します。
 
-Linux では 2 MiB 以上の要求に対し、2 MiB 境界に整列した匿名マッピングと `MADV_HUGEPAGE` を使います。大きなページの利用は OS の設定と資源に依存します。マッピングに失敗した場合と他の環境では、通常の整列した配列確保に戻ります。確保できなければ `std::bad_alloc` を送出します。解放方法は所有する配列が保持します。
-
-大きなページ用のマッピングは要求を 2 MiB 単位に切り上げ、整列のためにさらに 2 MiB の仮想アドレス領域を確保します。
-
-**計算量**: 作業領域は $$O(n)$$ です。確保と解放の時間は OS とアロケータに依存します。
+**計算量**: 作業領域は $$O(n)$$ です。確保と解放の時間は OS のメモリ確保処理に依存します。

@@ -10,6 +10,8 @@ redirect_from:
 - /lightweight/data_structure/centroid_decomposition.hpp.html
 ---
 
+木の各成分で、取り除いた後のどの成分の頂点数も、元の成分の半分以下になる頂点（重心）を選び、残りの成分で同じ操作を繰り返します。選んだ重心同士の親子関係を表す木を、重心分解木と呼びます。
+
 ```cpp
 #include "lib/tree/centroid_decomposition.hpp"
 

@@ -7,6 +7,8 @@ redirect_from:
 library_category: graph/connectivity
 ---
 
+無向グラフで、頂点や辺を 1 つ取り除くと連結成分の数が増えるものを求めます。そのような頂点を関節点、辺を橋と呼びます。
+
 ```cpp
 #include "lib/graph/low_link.hpp"
 
@@ -25,10 +27,12 @@ auto vertices = graph.articulation; // {1}
 | `build()` | 関節点・橋を計算。辺の追加後は再実行 | $$O(n+m)$$ |
 | `is_bridge(id)` | 辺 ID が橋か | $$O(1)$$ |
 | `articulation` / `bridges` | 関節点の一覧／橋の辺 ID の一覧 | $$O(1)$$ |
-| `ord[v]` / `low[v]` | DFS の訪問順／後退辺を使って到達できる最小の訪問順 | $$O(1)$$ |
+| `ord[v]` / `low[v]` | DFS の訪問順／子孫を経由して戻れる最も早い訪問順（下記参照） | $$O(1)$$ |
 | `n` / `edges[id]` | 全頂点数／辺の両端 | $$O(1)$$ |
 
 無向グラフを扱います。頂点番号は 0 始まり、`add_edge(u, v)` は辺 ID を返します。
+
+`ord[v]` は DFS で初めて訪れた順の番号です。`low[v]` は、`v` から DFS 木の辺を 0 本以上、子の方向へ進み、その地点から DFS 木以外の辺を高々 1 本使って届く頂点の `ord` の最小値です。`v` 自身の `ord` も候補に含みます。
 
 `build()` 後に `articulation` から関節点、`bridges` から橋の辺 ID、`edges[id]` から辺の両端を取得できます。`is_bridge(id)` で橋か判定できます。辺を追加した後は `build()` を再実行します。
 

@@ -5,6 +5,8 @@ documentation_of: //components/matrix_base_arithmetic.hpp
 
 通常版・軽量版が共有する、要素型の演算を使う行列積・消去・整数行列式です。
 
+「行優先」は各行を左から右へ、上の行から順に配列へ並べる保存方法です。「ピボット」は消去法で各行の計算の基準に選ぶ 0 でない成分を指します。
+
 | 操作 | 内容 | 計算量 |
 | --- | --- | --- |
 | `matrix_detail::basic_multiply(a,b,n,k,m)` | 行優先の配列で表した $$n\times k$$ と $$k\times m$$ の行列積 | $$O(nkm)$$ |

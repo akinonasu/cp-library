@@ -29,8 +29,8 @@ auto sum = minkowski_sum(hull, std::vector<IPoint>{ {0, 0}, {1, 0} });
 | --- | --- | --- |
 | `convex_hull_indices(points,keep_collinear = false,eps = epsilon)` | 凸包上の点の元の添字を `vector<int>` で返す。同じ座標が複数あれば、そのうちの1点を使う | $$O(n\log n)$$ |
 | `convex_hull(points,keep_collinear = false,eps = epsilon)` | 凸包の頂点列を返す | $$O(n\log n)$$ |
-| `convex_contains(convex,p,eps = epsilon)` | 厳密凸・反時計回りの頂点列に対する `Location::outside`・`boundary`・`inside` | $$O(\log h)$$ |
-| `convex_diameter(convex,eps = epsilon)` | 厳密凸・反時計回りの頂点列の最遠頂点対を `optional<PointPair<T>>` で返す。添字は渡した頂点列内 | $$O(h)$$ |
+| `convex_contains(convex,p,eps = epsilon)` | 辺上の中間点を除いた反時計回りの凸多角形の頂点列に対する `Location::outside`・`boundary`・`inside` | $$O(\log h)$$ |
+| `convex_diameter(convex,eps = epsilon)` | 辺上の中間点を除いた反時計回りの凸多角形の頂点列の最遠頂点対を `optional<PointPair<T>>` で返す。添字は渡した頂点列内 | $$O(h)$$ |
 | `diameter_squared(convex,eps = epsilon)` | 同じ凸多角形の直径の2乗を `wide_t<T>` で返す。空・単点は0 | $$O(h)$$ |
 | `furthest_pair(points,eps = epsilon)` | 一般の点群の最遠点対。添字は元の点群内 | $$O(n\log n)$$ |
 | `closest_pair(points)` | 一般の点群の最近点対。添字は元の点群内。重複点があれば距離0の異なる添字を返す | $$O(n\log n)$$ |

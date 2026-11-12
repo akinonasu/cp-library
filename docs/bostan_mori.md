@@ -3,6 +3,8 @@ title: "Bostan–Mori"
 documentation_of: //fps/bostan_mori.hpp
 ---
 
+記号 $$[x^k]h(x)$$ は、$$h(x)$$ を展開したときの $$x^k$$ の係数を表します。
+
 ```cpp
 #include "lib/fps/bostan_mori.hpp"
 

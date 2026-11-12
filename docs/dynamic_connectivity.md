@@ -33,7 +33,7 @@ bool connected = graph.same(0, 2);
 | `prod(v)` | 連結成分の集約。集約用の型・演算を指定した場合のみ | 償却 $$O(\log n)$$ |
 | `reserve(m)` | 同時に保持する異なる辺の本数を予約 | 期待 $$O(m+k)$$ |
 
-連結成分の集約が必要な場合は、可換かつ結合則を満たす演算 `op` と単位元 `e()` を指定します。
+連結成分の頂点値をまとめたい場合は、演算 `op` と初期値 `e()` を指定します。`op(op(a,b),c) == op(a,op(b,c))` と `op(a,b) == op(b,a)` を満たし、`op(e(),x)`・`op(x,e())` がどちらも `x` になることが必要です。総和なら `op(a,b) = a+b`、`e() = 0` です。
 
 ```cpp
 #include "lib/graph/dynamic_connectivity.hpp"

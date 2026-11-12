@@ -3,6 +3,8 @@ title: "無向グラフの CSR"
 documentation_of: //components/undirected_csr.hpp
 ---
 
+各頂点の隣接辺を 1 本の配列に続けて格納し、頂点ごとの開始位置を別の配列で持つ形式（CSR）です。
+
 ```cpp
 #include "lib/components/undirected_csr.hpp"
 
@@ -21,7 +23,7 @@ for (auto [to, id] : graph[0]) {
 | `Arc::to` / `Arc::id` | 行き先／入力順の辺 ID | $$O(1)$$ |
 | `n` | 頂点数 | $$O(1)$$ |
 | `start[v]` / `start[v+1]` | 頂点 `v` の出辺を格納した半開区間 | $$O(1)$$ |
-| `adj[i]` | 平坦な隣接配列の要素 | $$O(1)$$ |
+| `adj[i]` | 全頂点の隣接辺を並べた配列の要素 | $$O(1)$$ |
 
 頂点番号は 0 始まりで、多重辺・自己ループ・孤立点・空グラフに対応します。各辺を両方向に保存するため、自己ループも 2 個の出辺になります。同じ頂点からの出辺は入力順です。
 

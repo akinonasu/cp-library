@@ -1,7 +1,9 @@
 ---
-title: "Limb Arithmetic"
+title: "桁ごとの整数加減算"
 documentation_of: //components/limb_arithmetic.hpp
 ---
+
+整数を基数 $$B$$ ごとの桁に分けて配列に保存し、その配列どうしを加減算します。例えば基数 1000 では、配列 `{567,234,1}` は $$1\cdot1000^2+234\cdot1000+567=1234567$$ を表します。
 
 ```cpp
 #include "lib/components/limb_arithmetic.hpp"

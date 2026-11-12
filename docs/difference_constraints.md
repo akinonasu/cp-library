@@ -56,7 +56,7 @@ if (result.feasible()) {
 | `size()` / `origin()` | 変数数／定数 0 の補助頂点 |
 | `values()` | 実現可能な解を `const vector<value_type>&` で取得。通常の変数のみ |
 | `value(v)` | 解の 1 変数。`value(origin())` は 0 |
-| `negative_cycle()` | 矛盾を示す正規化済み制約の閉路。解があれば空 |
+| `negative_cycle()` | `x[v] - x[u] <= c` の形へそろえた制約のうち、矛盾を示す閉路。解があれば空 |
 | `upper_bounds(source)` | 全変数について `x[v] - x[source]` の最大値 |
 | `upper_bounds()` | 全変数について `x[v]` の最大値 |
 | `max_difference(u,v)` | `x[v] - x[u]` の最大値 |

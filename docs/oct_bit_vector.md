@@ -11,7 +11,7 @@ bits.build(std::vector<std::uint32_t>{0, 7, 1, 7}, 0);
 auto count = bits.rank(4, 7);
 ```
 
-32 要素ごとに 8 種類の累積マスクと累積個数を保持します。`a.size()` は構築時の長さ、`shift` は 0〜30、端点は 0〜`n` とします。
+各整数から連続する 3 bit を取り出し、0〜7 の列として個数や順位を調べる部品です。`a.size()` は構築時の長さ、`shift` は 0〜30、端点は 0〜`n` とします。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -26,11 +26,11 @@ auto count = bits.rank(4, 7);
 | `has_avx2()` | AVX2・POPCNT を利用できるかを返す | $$O(1)$$ |
 | `has_avx512()` | AVX2・POPCNT と AVX512F・VL・VPOPCNTDQ を利用できるかを返す | $$O(1)$$ |
 | `mask(r)` | 下位 `r % 32` bit のマスク | $$O(1)$$ |
-| `cumulative(low,mid,high,valid)` | 3 個の bit 面から 8 種類の累積マスクを作る | $$O(1)$$ |
+| `cumulative(low,mid,high,valid)` | 各要素の下位・中央・上位 bit をそれぞれ集めた 3 個の整数と、有効位置のマスク `valid` から、値が `d` 以下である位置に bit が立つマスクを `d=0,...,7` について作る | $$O(1)$$ |
 | `popcounts(x)` / `prefix_counts(block,r)` / `prefix_counts_avx512(block,r)` | SIMD による内部の並列計数 | $$O(1)$$ |
 
-`Route` の `digit` は選択された値、`a`・`b` は元の $$[0,l)$$・$$[0,r)$$ にあるその値の個数、`k` はその値の中での順位です。`route_*`・`select_*` には $$0 \le k < r-l$$ を渡します。
+`Route` の `digit` は選択された値、`a`・`b` は元の $$[0,l)$$・$$[0,r)$$ にあるその値の個数、`k` はその値の中での順位です。`route_*`・`select_*` は `[l,r)` を昇順に並べたときの 0 始まり `k` 番目を調べ、$$0 \le k < r-l$$ を渡します。
 
-SIMD を指定する関数と `popcounts`・`prefix_counts` は x86 専用です。直接使う場合は対応する `has_avx2()`・`has_avx512()` を確認し、同じ命令セットに対応する関数から呼び出します。通常は `build` と Wavelet Matrix を使います。
+複数の値を同時に計算する CPU 命令（SIMD）を指定する関数と `popcounts`・`prefix_counts` は x86 専用です。直接使う場合は対応する `has_avx2()`・`has_avx512()` を確認し、同じ命令セットに対応する関数から呼び出します。通常は `build` と Wavelet Matrix を使います。
 
 長さを $$n$$ として、構築は $$O(n)$$、クエリは $$O(1)$$、空間は $$O(n)$$ bit です。

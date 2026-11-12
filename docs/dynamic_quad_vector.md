@@ -3,13 +3,9 @@ title: Dynamic Quad Vector
 documentation_of: //components/dynamic_quad_vector.hpp
 ---
 
-[Dynamic Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/dynamic_wavelet_matrix.hpp.html) の内部部品です。`dynamic_wavelet_detail::QuadVector<Block,Branch>` は 0・1・2・3 の列を保持し、任意位置への挿入・削除・代入と順位検索を行います。通常は公開クラスの `DynamicWaveletMatrix` を使います。
+[Dynamic Wavelet Matrix](https://qandori.github.io/cp-library/data_structure/dynamic_wavelet_matrix.hpp.html) の内部部品です。`dynamic_wavelet_detail::QuadVector<Block,Branch>` は 0・1・2・3 の列を保持し、任意位置への挿入・削除・代入と、指定位置より前にある各値の個数の取得を行います。通常は公開クラスの `DynamicWaveletMatrix` を使います。
 
-各葉では下位・上位 bit を別々の 64 bit word 列に詰め、word ごとの4種類の累積個数を保持します。4種類の累積個数は同じ word のものを隣接させ、64 bit の加減算で更新します。葉の既定容量は1024個、内部木は既定で32分木です。Dynamic Wavelet Matrix 内では葉の容量を8192個にしています。子の長さと桁値ごとの累積個数を持ち、順位の検索と更新を行います。均一な配列の構築は word をまとめて埋めます。空いた葉・内部ノードの領域は再利用し、全要素が同じ桁値の場合は木の検索を省きます。
-
-構築時は葉に約4分の1の空きを残します。ただし、それによって木が一段深くなる場合は葉数を減らします。挿入で葉が満杯になると半分に分割し、削除で容量の4分の1未満になると隣の葉と結合・再配分します。これにより更新のたびに結合と分割を繰り返すことを避けます。
-
-`Block` は一つの葉に保持する桁値の個数で、128 以上 32768 以下の 64 の倍数とします。`Branch` は 4 以上の 2 の冪です。`digit` は 0〜3、位置と `select` の順位は 0 始まりです。
+`Block` は一つの葉に保持する値の個数で、128 以上 32768 以下の 64 の倍数とします。`Branch` は各節点が持つ子の最大数で、4 以上の 2 の冪です。既定は `Block=1024`・`Branch=32` です。`digit` は 0〜3、位置と `select` の順位は 0 始まりです。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -28,8 +24,10 @@ documentation_of: //components/dynamic_quad_vector.hpp
 | `reserve(N)` / `clear()` | 領域予約／容量を残して空にする | reserve: $$O(N)$$、clear: $$O(1)$$ |
 | `memory_usage()` / `swap(other)` | 確保済みノード領域のバイト数／内容の交換 | $$O(1)$$ |
 
-`ranks(l,r)` の各配列はそれぞれ $$[0,l)$$・$$[0,r)$$ の個数です。区間内の個数は、後者から前者を引いて求めます。同じ子に含まれる両端の検索は経路を共有します。`move_rank` は二つの位置の検索と共通する祖先の更新を共有し、葉の分割・結合が必要な場合は通常の削除・挿入を使います。更新時の順位は必要な桁値だけを集計します。大きな葉の `select` は累積個数を二分探索して対象 word を求めます。
+`ranks(l,r)` の各配列はそれぞれ $$[0,l)$$・$$[0,r)$$ の個数です。区間内の個数は、後者から前者を引いて求めます。表の更新操作が返す「順位」は、指定位置より前にある同じ値の個数を表します。
 
-include 前の `DYNAMIC_QUAD_DISABLE_SIMD` で実行時に選ぶ SIMD・POPCNT・BMI2 経路を、`DYNAMIC_QUAD_DISABLE_AVX512` で AVX-512 経路を無効にできます。CPU 固有の命令を全体へ有効にするコンパイルオプションは不要です。
+include 前の `DYNAMIC_QUAD_DISABLE_SIMD` で CPU 固有の命令を使う高速化を、`DYNAMIC_QUAD_DISABLE_AVX512` で AVX-512 命令による高速化だけを無効にできます。通常はどちらも定義する必要がなく、CPU 固有の命令を全体へ有効にするコンパイルオプションも不要です。
 
 `Block`・`Branch` を固定し、要素数を $$n$$ として、構築は $$O(n)$$、挿入・移動は償却 $$O(\log n)$$、削除・代入・クエリは $$O(\log n)$$ です。空間は $$O(N)$$ で、$$N$$ は過去の最大要素数と予約容量の最大値です。
+
+償却計算量は、1 回ごとの最悪時間ではなく、一連の操作にかかる合計時間を操作回数で割ったときの上界です。

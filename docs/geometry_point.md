@@ -13,7 +13,7 @@ auto squared = distance_squared(b, c); // __int128_t の 8
 FPoint p = rotate(b, pi / 2);
 ```
 
-`geometry` 名前空間を使います。`Point<T>` は座標 `x,y` を持ち、`T` は符号付き組み込み整数型または浮動小数点型です。`IPoint` は `Point<std::int64_t>`、`FPoint` は `Point<long double>` です。`Real` は `long double`、`pi` は円周率、`epsilon` は `1e-12L` です。
+`geometry` 名前空間を使います。`Point<T>` は座標 `x,y` を持ち、`T` は符号付き組み込み整数型または浮動小数点型です。`IPoint` は `Point<std::int64_t>`、`FPoint` は `Point<long double>` です。`Real` は `long double`、`pi` は円周率、`epsilon` は実数を比較するときの許容誤差の既定値 `1e-12L` です。以下では許容誤差を EPS とも書きます。
 
 [rational.hpp](geometry_rational.md) を追加すると、任意精度整数の `BigPoint` と任意精度有理数の `RPoint` も使えます。内積・外積・距離二乗や判定を、固定幅整数の範囲を超えて厳密に扱えます。
 
@@ -26,12 +26,12 @@ FPoint p = rotate(b, pi / 2);
 | `p.x`, `p.y` | 座標 | $$O(1)$$ |
 | `p == q`, `p < q` | 完全一致、x・y の辞書順。EPS は使用しない | $$O(1)$$ |
 | `p + q`, `p - q`, `-p` | ベクトルの加減算 | $$O(1)$$ |
-| `p * c`, `c * p`, `p / c` | 座標型 `T` のスカラーとの演算。除数は0以外 | $$O(1)$$ |
+| `p * c`, `c * p`, `p / c` | 座標型 `T` の数値との演算。除数は0以外 | $$O(1)$$ |
 | `p += q`, `p -= q`, `p *= c`, `p /= c` | 対応する代入演算 | $$O(1)$$ |
 | `in >> p`, `out << p` | `x y` 形式の入出力。ストリームが座標型を扱える場合 | $$O(1)$$ |
 | `sign(x,eps = epsilon)` | 負・0・正を `-1,0,1` で返す。整数では EPS を無視 | $$O(1)$$ |
-| `dot(a,b)` | 内積 | $$O(1)$$ |
-| `cross(a,b)` | 外積 | $$O(1)$$ |
+| `dot(a,b)` | 内積 `a.x*b.x + a.y*b.y` | $$O(1)$$ |
+| `cross(a,b)` | 外積 `a.x*b.y - a.y*b.x` | $$O(1)$$ |
 | `cross(a,b,c)` | `(b-a)` と `(c-a)` の外積 | $$O(1)$$ |
 | `norm2(p)` | 原点からの距離二乗 | $$O(1)$$ |
 | `distance_squared(a,b)` | 2点間の距離二乗 | $$O(1)$$ |
@@ -50,7 +50,7 @@ FPoint p = rotate(b, pi / 2);
 
 `ccw(a,b,c)` は、左が `1`、右が `-1`、a より後方が `2`、b より先が `-2`、線分上が `0` です。a と b が同じ場合、その点自身は `0`、それ以外は `-2` です。
 
-偏角ソートは `polar_sort(points);` とします。比較に EPS を入れると整合的なソート順にならないため、辞書順・偏角順とも EPS は使いません。
+偏角は、正のx方向からベクトルに向かう角度です。正の向きは反時計回りです。偏角ソートは `polar_sort(points);` とします。比較に EPS を入れると整合的なソート順にならないため、辞書順・偏角順とも EPS は使いません。
 
 ```cpp
 #include "lib/geometry/point.hpp"

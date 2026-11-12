@@ -25,7 +25,7 @@ int main() {
 | `Circle` | `BasicCircle<Integer>` |
 | `c.center`, `c.radius` | 中心、半径 |
 | `make_circle(center,radius)` | 中心の座標型 `T` と非負の半径 `T` から `BasicCircle<T>` を返す |
-| `contains(c,p)` | 円板に対する点の位置を `Location` で返す |
+| `contains(c,p)` | 円周とその内部（円板）に対する点の位置を `Location` で返す |
 | `relation(a,b)` | 2円の位置関係を `CircleRelation` で返す |
 | `intersects(a,b)` | 2つの円周に共通点があるかを `bool` で返す。一致する円も `true` |
 | `intersects(c,line)`, `intersects(line,c)` | 円周と直線に共通点があるかを `bool` で返す |
@@ -33,7 +33,7 @@ int main() {
 
 座標型 `T` は64 bit以下の符号付き組み込み整数型です。既定構築は原点を中心とする半径0の円です。半径は常に非負にします。円・直線・線分・点の座標型は異なっていても組み合わせられます。
 
-`contains` は円板、`intersects` は円周に対する判定です。線分全体が円板の内部なら `intersects` は `false` です。退化した直線・線分は点として扱い、その点が円周上にある場合だけ交差します。
+`contains` は円板、`intersects` は円周に対する判定です。線分全体が円板の内部なら `intersects` は `false` です。2端点が同じ直線・線分は点として扱い、その点が円周上にある場合だけ交差します。
 
 `CircleRelation` は、一致する `coincident`、外接する `external_tangent`、内接する `internal_tangent`、異なる2点で交わる `intersecting`、互いに離れた `separate`、一方が他方を内包して円周に共通点がない `contained` です。半径0の円が他方の円周上にある場合は `external_tangent` とします。
 

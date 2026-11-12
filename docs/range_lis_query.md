@@ -25,7 +25,7 @@ RangeLISQuery<> decreasing(a, std::greater<>{});
 int d = decreasing.query(0, 5); // 2: 3, 1
 ```
 
-既定は狭義増加です。`RangeLISQuery<false>` は等しい値を続けて選べる広義増加を求めます。比較関数には厳密弱順序を指定します。狭義では `compare(x,y)`、広義では `!compare(y,x)` を満たす順に選びます。
+既定は、選んだ値が順に大きくなる狭義増加です。`RangeLISQuery<false>` は等しい値を続けて選べる広義増加を求めます。比較関数 `compare(x,y)` は `x` が `y` より前に来るかを返します。比較では、自分自身には `false` を返し、`a` が `b` より前、`b` が `c` より前なら `a` が `c` より前となるようにします。どちら向きの比較も `false` のときは同値とみなし、`a` と `b`、`b` と `c` が同値なら `a` と `c` も同値になるようにします。狭義では `compare(x,y)`、広義では `!compare(y,x)` を満たす順に選びます。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -62,6 +62,6 @@ int main() {
 
 参考: [Library Checker: Static Range LIS Query](https://judge.yosupo.jp/problem/static_range_lis_query)、[Tiskin: Semi-local string comparison](https://arxiv.org/abs/0707.3619)。
 
-列の長さを $$n$$ とし、比較を定数時間とすると、前計算は $$O(n\log^2 n)$$ 時間、問い合わせは $$O(\log n)$$ 時間・$$O(1)$$ 追加空間です。保持空間は $$O(n\log n)$$ bit、前計算の作業領域は $$O(n)$$ word です。
+列の長さを $$n$$ とし、比較を定数時間とすると、前計算は $$O(n\log^2 n)$$ 時間、問い合わせは $$O(\log n)$$ 時間・$$O(1)$$ 追加空間です。保持空間は $$O(n\log n)$$ bit、前計算の作業領域は $$O(n)$$ 個の固定長整数です。
 
 一括関数は問い合わせ数を $$q$$ として $$O(n\log^2 n+q\log n)$$ 時間・$$O(n+q)$$ 作業空間を使い、結果の格納に $$O(q)$$ 空間を使います。問い合わせが空なら $$O(1)$$、列の長さが1以下なら $$O(q)$$ 時間です。

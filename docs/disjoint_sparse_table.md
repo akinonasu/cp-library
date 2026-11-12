@@ -7,6 +7,8 @@ redirect_from:
 library_category: data_structure/range_query
 ---
 
+構築後に値を変更しない配列の、区間の計算結果を求めます。ここで「集約」は、要素を左から右の順に `op` でまとめることです。
+
 ```cpp
 #include "lib/data_structure/disjoint_sparse_table.hpp"
 
@@ -24,9 +26,9 @@ auto value = table.prod(0, 2); // 2
 | `operator[](i)` | 元の配列の要素を取得 | $$O(1)$$ |
 | `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
 
-`op` は結合則を満たす演算です。`prod(l, r)` は $$[l,r)$$ の集約、`all_prod()` は全体の集約です。
+`op` は `op(op(a,b),c) == op(a,op(b,c))` を満たします。これは要素の順番を保てば、まとめる括弧の位置を変えても結果が同じになる条件（結合法則）です。`prod(l, r)` は $$[l,r)$$ の集約、`all_prod()` は全体の集約です。
 
-空区間も使う場合は単位元を返す関数 `e()` を定義し、`DisjointSparseTable<S, op, e>` とします。`build(a)` で再構築できます。
+空区間も使う場合は、`op(e(),x) == x` と `op(x,e()) == x` を満たす空区間の値（単位元）を返す関数 `e()` を定義し、`DisjointSparseTable<S, op, e>` とします。`build(a)` で再構築できます。
 
 再構築では各段の確保済み領域を再利用します。小さい配列や空配列へ作り直しても容量を保持することがあります。領域を解放したい場合は `table = decltype(table){};` として空のオブジェクトで置き換えます。
 

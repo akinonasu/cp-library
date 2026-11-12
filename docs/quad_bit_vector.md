@@ -4,6 +4,8 @@ documentation_of: //components/quad_bit_vector.hpp
 redirect_from: /data_structure/quad_bit_vector.hpp.html
 ---
 
+各整数から連続する 2 bit を取り出し、0〜3 の列として個数を調べる部品です。64 要素ごとの区画をブロックと呼びます。
+
 ```cpp
 #include "lib/components/quad_bit_vector.hpp"
 
@@ -22,7 +24,7 @@ auto count = bits.rank(4, 3);
 | `ranks(r)` | $$[0,r)$$ の 0・1・2・3 の個数を配列で返す | $$O(1)$$ |
 | `mask(block,digit)` | 1 ブロック内で `digit` に一致する位置の 64 bit マスク | $$O(1)$$ |
 
-`build(a, shift)` は各要素の下から `shift` 番目と次のビットを取り出します。`a.size()` は構築時の長さと一致させ、`shift` は 0〜30 とします。
+`build(a, shift)` は各要素の下から `shift` 番目と次のビットを取り出します。最下位 bit を 0 番目と数えます。`a.size()` は構築時の長さと一致させ、`shift` は 0〜30 とします。
 
 `rank(r, digit)` は $$[0,r)$$ にある `digit` の個数、`below(r, digit)` は `digit` 未満の個数、`ranks(r)` は 4 種類すべての個数です。`digit` は 0〜3 です。
 

@@ -6,7 +6,7 @@ redirect_from:
 
 [Range Chmin Chmax Add Sum](https://qandori.github.io/cp-library/data_structure/range_chmin_chmax_add_sum.hpp.html) は、次の更新と取得を任意に組み合わせて使えます。区間はすべて $$[l,r)$$ です。
 
-除算や bitwise AND/OR など、別の更新・集約値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segtree_beats.hpp.html) を使ってください。
+除算や bitwise AND/OR など、別の更新や区間で計算する値を定義する場合は [汎用版](https://qandori.github.io/cp-library/data_structure/segtree_beats.hpp.html) を使ってください。
 
 ```cpp
 #include "lib/data_structure/range_chmin_chmax_add_sum.hpp"
@@ -91,5 +91,7 @@ auto min = seg.all_min();
 auto max = seg.all_max();
 auto a = seg.values();
 ```
+
+「償却」は、1 回だけ時間のかかる操作があっても、一連の操作の合計時間から 1 回あたりの計算量を評価するという意味です。
 
 構築・全要素取得・空間は $$O(n)$$、加算・代入・区間取得・1 点操作は $$O(\log n)$$、`chmin`・`chmax` を含む更新は償却 $$O(\log^2 n)$$、全体の和・最小・最大の取得は $$O(1)$$ です。
