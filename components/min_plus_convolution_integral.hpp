@@ -316,6 +316,19 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 	std::size_t capacity = std::vector<std::uint32_t>{}.max_size();
 	std::size_t groups = (std::size_t(length) + Kernel::group - 1) / Kernel::group;
 	if (capacity < 2 * Kernel::pad || std::size_t(n) > capacity - 2 * Kernel::pad || std::size_t(m) > capacity || groups > capacity / Kernel::group) return std::nullopt;
+	if constexpr (Minimum && std::is_same_v<T, std::uint32_t>) {
+		if (W(*amax) + 2 * W(bmax) < W(std::numeric_limits<std::uint32_t>::max())) {
+			auto x = std::make_unique_for_overwrite<std::uint32_t[]>(std::size_t(n) + 2 * Kernel::pad);
+			std::uint32_t padding = std::numeric_limits<std::uint32_t>::max() - bmax;
+			std::fill_n(x.get(), Kernel::pad, padding);
+			std::fill_n(x.get() + Kernel::pad + n, Kernel::pad, padding);
+			std::copy(a.begin(), a.end(), x.get() + Kernel::pad);
+			result.resize(groups * Kernel::group);
+			if (!Kernel::multiply(x.get() + Kernel::pad, b.data(), n, m, result.data(), result.size(), std::uint64_t(n + m) * 16)) return std::nullopt;
+			result.resize(length);
+			return result;
+		}
+	}
 	W abase = Minimum ? W(*amin) : W(*amax), bbase = Minimum ? W(bmin) : W(bmax), offset = abase + bbase;
 	auto x = std::make_unique_for_overwrite<std::uint32_t[]>(std::size_t(n) + 2 * Kernel::pad);
 	auto y = std::make_unique_for_overwrite<std::uint32_t[]>(m);

@@ -83,6 +83,28 @@ void boundaries() {
 #endif
 }
 
+void unsigned_borrowed() {
+	using U = std::uint32_t;
+	std::mt19937 rng(409229);
+	for (int n : {2, 17, 129, 257}) for (int m : {1, 2, 15, 127, 257}) {
+		std::vector<U> a(n), b(m);
+		U maximum = 0;
+		for (int i = 0; i < n; ++i) {
+			int d = i - n / 2;
+			a[i] = U(d * d), maximum = std::max(maximum, a[i]);
+		}
+		for (auto &value : b) value = rng() % 1002;
+		b[0] = 1001;
+		check(a, b);
+		U offset = UINT32_MAX - maximum - 2 * U(1001) - 1;
+		for (auto &value : a) value += offset;
+		for (int boundary = 0; boundary < 3; ++boundary) {
+			check(a, b);
+			for (auto &value : a) ++value;
+		}
+	}
+}
+
 struct Value {
 	long long value = 0;
 	friend Value operator+(Value a, Value b) { return {a.value + b.value}; }
@@ -322,6 +344,7 @@ int main() {
 	small_integers<std::int64_t>();
 	small_integers<std::uint64_t>();
 	boundaries();
+	unsigned_borrowed();
 	generic();
 	kernel();
 	kernel_blocks();
