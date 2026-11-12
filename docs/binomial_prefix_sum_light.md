@@ -1,5 +1,5 @@
 ---
-title: 軽量な二項係数の prefix sum
+title: 軽量な二項係数の累積和
 documentation_of: //math/binomial_prefix_sum_light.hpp
 library_category: math/combinatorics
 redirect_from:
@@ -46,7 +46,7 @@ int main() {
 
 `binomial_prefix_sum<Mint = mint, K = int>(queries, block_size = 0)` は `std::vector<Mint>` を返します。`queries` は `std::vector<std::pair<int, K>>` で、各要素は `{n,k}` です。`K` は 64 bit 以下の符号付き整数型とし、`n` は非負で `INT_MAX` と法より小さくします。`block_size` は非負の `int` です。添字 `i` の返り値が `queries[i]` の答えになり、重複クエリもそのまま残します。空入力には空の列を返し、入力は変更しません。`Mint` の条件はクラス版と同じです。
 
-一括計算は端や中央の直接答えられるクエリを先に処理し、残ったクエリに必要な範囲だけ階乗と格子を作ります。残ったクエリの `n` がすべて等しい場合は、その行の必要な prefix を一度だけ計算し、格子を作りません。
+ここでいう格子は、`n,k` を一定間隔で選んだ点に対応する値を保存する前計算表です。一括計算は端や中央の直接答えられるクエリを先に処理し、残ったクエリに必要な範囲だけ階乗と格子を作ります。残ったクエリの `n` がすべて等しい場合は、その行の必要な累積和を一度だけ計算し、格子を作りません。
 
 格子を使う場合、残ったクエリの最大 `n` を $$M$$、個数を $$R$$ とすると、`block_size == 0` では $$\displaystyle B_0=\max(1,\operatorname{round}(M/\sqrt R))$$ を基準にします。クエリの標本から前計算と補正量を見積もり、$$B_0/2\leq B\leq B_0$$ の範囲で幅を選びます。正の `block_size` は指定した幅を使います。直接答えられる場合と同じ行だけの場合は、指定幅にかかわらず格子を省きます。
 
@@ -84,6 +84,6 @@ int main() {
 }
 ```
 
-格子と正規化は [kemuniku の実装](https://judge.yosupo.jp/submission/413314)、一括処理は [to-omer/competitive-library](https://github.com/to-omer/competitive-library) を参考にしています。
+前計算方法は [kemuniku の実装](https://judge.yosupo.jp/submission/413314)、一括処理は [to-omer/competitive-library](https://github.com/to-omer/competitive-library) を参考にしています。
 
 一括計算では、全クエリの最大 `n` を $$N$$、全クエリ数を $$Q$$ として、時間は $$O(N+Q+M^2/B+RB)$$、空間は $$O(N+Q+M^2/B^2)$$ です。幅の自動選択では $$O(N+Q+M\sqrt R)$$ 時間、$$O(N+Q)$$ 空間になります。格子を省く場合は $$O(N+Q)$$ 時間・空間、空入力は $$O(1)$$ 時間・空間です。

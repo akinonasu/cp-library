@@ -3,7 +3,7 @@ title: 線形漸化式の復元（Berlekamp–Massey）
 documentation_of: //fps/berlekamp_massey.hpp
 ---
 
-有限数列と矛盾しない定数係数線形漸化式のうち、位数が最小のものを 1 つ求めます。
+初めの $$d$$ 項を初期値とし、それ以降の各項を直前の $$d$$ 項の定数倍の和で表す漸化式を求めます。この $$d$$ を位数と呼び、位数が最小になるものを 1 つ返します。
 
 ```cpp
 #include "lib/fps/berlekamp_massey.hpp"
@@ -30,7 +30,7 @@ std::vector<mint> initial(a.begin(), a.begin() + c.size());
 auto value = linear_recurrence(initial, c, 10); // 55
 ```
 
-`T` は正確な四則演算と 0 の等値判定ができる体の型を使います。`mint`、`atcoder::modint1000000007` などの素数 modint、有理数型に対応します。整数型や合成数 mod の modint は対象外です。入力長は `INT_MAX` 未満としてください。
+`T` は正確な四則演算と 0 の等値判定ができ、0 でない全ての値で割れる型を使います。このような数の集まりを体と呼びます。`mint`、`atcoder::modint1000000007` などの素数 modint、有理数型に対応します。整数型や合成数 mod の modint は対象外です。入力長は `INT_MAX` 未満としてください。
 
 空の入力や全て 0 の数列には空の係数列を返します。位数に必要な末尾の 0 は残します。例えば `{1,0,0}` に対する返り値は `{0}` です。
 

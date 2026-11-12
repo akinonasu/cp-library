@@ -5,7 +5,7 @@ documentation_of: //components/dijkstra_topological.hpp
 
 [Dijkstra](https://qandori.github.io/cp-library/graph/dijkstra.hpp.html) のトポロジカル前処理です。通常は `graph/dijkstra.hpp` を include し、`dijkstra<true>` または `dijkstra_path<true>` で有効にします。既定の `dijkstra`・`dijkstra_path` では使いません。
 
-まず入次数が 0 の頂点から順に距離を確定し、残った部分を Dijkstra 法で探索します。有向閉路があるグラフにも使えます。DAG では優先度付きキューを使わず線形時間で処理します。
+まず入次数が 0 の頂点から順に距離を確定し、残った部分を Dijkstra 法で探索します。有向閉路があるグラフにも使えます。有向閉路のないグラフ（DAG）では優先度付きキューを使わず線形時間で処理します。
 
 ```cpp
 #include "lib/graph/dijkstra.hpp"

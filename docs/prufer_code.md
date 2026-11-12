@@ -3,7 +3,7 @@ title: Prufer Code（木の符号化・復号）
 documentation_of: //tree/prufer_code.hpp
 ---
 
-頂点番号が 0 始まりのラベル付き無向木と、Prufer 符号を相互に変換します。符号化では、番号が最小の葉を取り除き、その隣接頂点を記録します。
+頂点番号が 0 始まりの無向木と、Prufer 符号を相互に変換します。符号化では、番号が最小の葉を取り除き、その隣接頂点を記録します。
 
 ```cpp
 #include "lib/tree/prufer_code.hpp"

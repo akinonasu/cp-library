@@ -22,7 +22,7 @@ auto inverse = polynomial_inv_mod(fps{1, 1}, fps{1, 0, 1});
 | `PolynomialExtendedGCD<T>` | `gcd`・`x`・`y` は `FormalPowerSeries<T>`。構造化束縛が可能 |
 | `polynomial_inv_mod(a,modulus)` | `a*h ≡ 1 mod modulus` を満たす `optional<FormalPowerSeries<T>>`。逆元がなければ `nullopt` |
 
-入力は変更しません。入力・出力とも不要な末尾の 0 を除き、零多項式は空配列とします。`gcd(0,0)` は零多項式、拡張 GCD は三つの空配列を返します。片方だけが 0 なら、もう片方を最高次係数 1 に正規化します。
+入力は変更しません。入力・出力とも不要な末尾の 0 を除き、零多項式は空配列とします。`gcd(0,0)` は零多項式、拡張 GCD は三つの空配列を返します。片方だけが 0 なら、もう片方の全係数を最高次係数で割り、最高次係数を 1 にそろえます。
 
 `polynomial_inv_mod` の法多項式は非零にします。法が非零の定数なら、空配列を持つ `optional` を返します。それ以外では GCD が 1 のときに限り逆元が存在し、返り値の次数は法多項式の次数未満です。FPS の `f.inv()` が求める $$x^n$$ を法とする逆数とは別の操作です。
 

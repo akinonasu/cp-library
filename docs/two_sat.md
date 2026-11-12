@@ -3,6 +3,8 @@ title: "2-SAT"
 documentation_of: //graph/two_sat.hpp
 ---
 
+`true`・`false` を取る変数について、`(x[i] == f) || (x[j] == g)` の形の条件を全て満たす値の組を求めます。この形の条件 1 つを節と呼びます。
+
 ```cpp
 #include "lib/graph/two_sat.hpp"
 #include <cassert>
@@ -25,18 +27,18 @@ assert(!sat.answer()[0]);
 | 操作 | 内容・返り値 |
 | --- | --- |
 | `size()` | 変数の個数を `int` で返す |
-| `reserve(m)` | `m` 節分の含意辺の格納容量を予約する。返り値は `void` |
+| `reserve(m)` | `m` 節を追加するための内部領域を予約する。返り値は `void` |
 | `add_clause(i,f,j,g)` | `(x[i] == f) || (x[j] == g)` を追加する。返り値は `void` |
-| `satisfiable()` | 充足可能なら `true`、充足不可能なら `false` を `bool` で返す |
-| `answer()` | 直前に求めた充足代入のコピーを `std::vector<bool>` で返す |
+| `satisfiable()` | 全ての節を同時に満たせるなら `true`、そうでなければ `false` を `bool` で返す |
+| `answer()` | 直前に求めた、全ての節を満たす変数の値を `std::vector<bool>` で返す |
 
 `f`・`g` は bool 値です。`answer()` は、直前の `satisfiable()` が `true` で、以後に節を追加していない場合だけ呼べます。返す配列の長さは `size()`、各要素は対応する変数の値です。代入例は一意ではありません。
 
-同じ変数を両辺に指定できます。`add_clause(i,f,i,f)` は変数の固定、`add_clause(i,true,i,false)` は恒真節です。恒真節では辺を追加せず、固定節では含意と対偶が同じ辺になるため 1 本だけ追加します。重複する節も指定できます。
+同じ変数を両辺に指定できます。`add_clause(i,f,i,f)` は `x[i] = f` への固定、`add_clause(i,true,i,false)` は値によらず常に満たす条件です。重複する節も指定できます。
 
-変数数は `0 <= n <= INT_MAX / 2`、`i`・`j` は `[0,n)`、実際に格納する含意辺は `INT_MAX` 以下である必要があります。予約する節数 `m` は `std::size_t` で、`INT_MAX / 2` 以下です。これらの範囲は `assert` の前提です。`TwoSAT(0)` は充足可能で、代入例は空配列です。節がなければ、全変数が `false` の代入例を返します。
+変数数は `0 <= n <= INT_MAX / 2`、`i`・`j` は `[0,n)`、内部に格納する辺（1 節につき最大 2 本）は `INT_MAX` 以下である必要があります。予約する節数 `m` は `std::size_t` で、`INT_MAX / 2` 以下です。これらの範囲は `assert` の前提です。`TwoSAT(0)` は充足可能で、代入例は空配列です。節がなければ、全変数が `false` の代入例を返します。
 
-充足可能・充足不可能のどちらの判定結果も保存します。節を追加せずに `satisfiable()` を再度呼ぶと、保存した結果を返します。`add_clause` は恒真節の場合も保存結果を無効にするため、追加後は再び `satisfiable()` を呼んでください。`reserve` は保存結果を無効にしません。コピーは節・保存結果とも独立します。
+充足可能・充足不可能のどちらの判定結果も保存します。節を追加せずに `satisfiable()` を再度呼ぶと、保存した結果を返します。`add_clause` は常に真になる条件の場合も保存結果を無効にするため、追加後は再び `satisfiable()` を呼んでください。`reserve` は保存結果を無効にしません。コピーは節・保存結果とも独立します。
 
 参考: [Nyaan's Library](https://github.com/NyaanNyaan/library/blob/master/math/two-sat.hpp)、[maspypy library](https://github.com/maspypy/library/blob/main/graph/twosat.hpp)。
 

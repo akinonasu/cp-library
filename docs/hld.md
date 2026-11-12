@@ -10,6 +10,8 @@ redirect_from:
 - /lightweight/data_structure/hld.hpp.html
 ---
 
+木の経路を少数の連続区間へ分け、セグメント木などの配列用データ構造で扱えるようにします。子がある頂点では、部分木の頂点数が最大の子を 1 つ選んで「重い子」と呼び、その子をたどってできる経路を「連鎖」と呼びます。
+
 ```cpp
 #include "lib/tree/hld.hpp"
 
@@ -57,9 +59,9 @@ auto distance = rooted.dist(0, 2); // 2
 
 `in[v]` は木を分解した後の配列上の位置で、元の頂点番号 `v` とは別です。元の頂点値が `value[v]` なら、長さ `n` の配列に `a[tree.in[v]] = value[v]` と並べ替えてから Segtree を構築します。`subtree(v)` の `[l,r)` と `path` が返す区間は、この配列に対する範囲です。`tree.order[i]` で位置 `i` に対応する元の頂点番号へ戻せます。
 
-`path(u,v,edge = false)` は経路を `u` から `v` の順に並べた `Segment{l,r,reversed}` の列を返します。各区間は $$[l,r)$$ で、`reversed` が真なら降順に読みます。非可換な演算では、区間の正順・逆順の積を用意して使い分けます。`for_each_path(u,v,f,edge = false)` は同じ順序で `f(l,r,reversed)` を呼び、区間列のメモリ確保を省きます。
+`path(u,v,edge = false)` は経路を `u` から `v` の順に並べた `Segment{l,r,reversed}` の列を返します。各区間は $$[l,r)$$ で、`reversed` が真なら降順に読みます。順序を変えると結果が変わる演算では、区間の正順・逆順の演算結果を用意して使い分けます。`for_each_path(u,v,f,edge = false)` は同じ順序で `f(l,r,reversed)` を呼び、区間列のメモリ確保を省きます。
 
-次は `in[v]` 順の値で構築した区間和のセグメント木 `seg` を使う部分です。`u`・`v` は経路の両端で、和は可換なので `reversed` を使いません。
+次は `in[v]` 順の値で構築した区間和のセグメント木 `seg` を使う部分です。`u`・`v` は経路の両端で、和は足す順序によらないので `reversed` を使いません。
 
 ```cpp
 long long answer = 0;

@@ -52,13 +52,13 @@
 | --- | --- | --- |
 | `geometry/geometry.hpp` | 平面幾何の一括 include | [使い方](docs/geometry.md) |
 | `geometry/point.hpp` | 点・ベクトル・偏角順 | [使い方](docs/geometry_point.md) |
-| `geometry/linear.hpp` | 直線・線分の交差・距離・射影 | [使い方](docs/geometry_linear.md) |
+| `geometry/linear.hpp` | 直線・線分の交差・距離・直線上の最近点 | [使い方](docs/geometry_linear.md) |
 | `geometry/polygon.hpp` | 多角形の面積・内外・切断 | [使い方](docs/geometry_polygon.md) |
 | `geometry/convex.hpp` | 凸包・直径・最近点対・Minkowski和 | [使い方](docs/geometry_convex.md) |
 | `geometry/dynamic_convex_hull.hpp` | 点追加型の動的凸包 | [使い方](docs/dynamic_convex_hull.md) |
 | `geometry/circle.hpp` | 円・接線・共通面積・最小包含円 | [使い方](docs/geometry_circle.md) |
 | `geometry/rational.hpp` | 幾何の任意精度整数・有理数座標 | [使い方](docs/geometry_rational.md) |
-| `geometry/exact_linear.hpp` | 厳密な交点・射影・距離二乗 | [使い方](docs/geometry_exact_linear.md) |
+| `geometry/exact_linear.hpp` | 誤差のない交点・直線上の最近点・距離二乗 | [使い方](docs/geometry_exact_linear.md) |
 | `geometry/exact_polygon.hpp` | 厳密な面積・重心・凸多角形の切断 | [使い方](docs/geometry_exact_polygon.md) |
 | `geometry/exact_circle.hpp` | 厳密な円の判定・外接円・最小包含円 | [使い方](docs/geometry_exact_circle.md) |
 | `geometry/exact.hpp` | 任意精度による厳密な平面幾何の一括 include | [使い方](docs/geometry_exact.md) |
@@ -74,7 +74,7 @@
 | `integer_geometry/convex.hpp` | 凸包・最近点対・最遠点対・Minkowski 和 | [使い方](docs/integer_geometry_convex.md) |
 | `integer_geometry/dynamic_convex_hull.hpp` | 点追加型の動的凸包・支持点・面積 | [使い方](docs/integer_geometry_dynamic_convex_hull.md) |
 | `integer_geometry/circle.hpp` | 整数中心・整数半径の円の判定 | [使い方](docs/integer_geometry_circle.md) |
-| `integer_geometry/lattice.hpp` | 方向の原始化・線分と多角形の格子点数 | [使い方](docs/integer_geometry_lattice.md) |
+| `integer_geometry/lattice.hpp` | 方向ベクトルの約分・線分と多角形の格子点数 | [使い方](docs/integer_geometry_lattice.md) |
 
 ### 畳み込み
 
@@ -86,11 +86,11 @@
 | `convolution/online_convolution_light.hpp` | 軽量版のオンライン畳み込み | [使い方](docs/online_convolution_light.md) |
 | `convolution/convolution_mod.hpp` | 任意 mod・整数の畳み込み | [使い方](docs/convolution_mod.md) |
 | `convolution/convolution_fft.hpp` | 実数・複素数の畳み込み | [使い方](docs/convolution_fft.md) |
-| `convolution/convolution_ring.hpp` | 一般の環の畳み込み | [使い方](docs/convolution_ring.md) |
+| `convolution/convolution_ring.hpp` | 加算・減算・乗算を使う型の畳み込み | [使い方](docs/convolution_ring.md) |
 | `convolution/bitwise_convolution.hpp` | AND・OR・XOR 畳み込み | [使い方](docs/bitwise_convolution.md) |
 | `convolution/gcd_lcm_convolution.hpp` | GCD-plus・LCM-plus 畳み込み | [使い方](docs/gcd_lcm_convolution.md) |
 | `convolution/boolean_convolution.hpp` | AND-OR などの論理畳み込み | [使い方](docs/boolean_convolution.md) |
-| `convolution/symmetric_group_convolution.hpp` | 対称群上の畳み込み | [使い方](docs/symmetric_group_convolution.md) |
+| `convolution/symmetric_group_convolution.hpp` | 順列の合成による畳み込み | [使い方](docs/symmetric_group_convolution.md) |
 | `convolution/subset_convolution.hpp` | Subset 畳み込み | [使い方](docs/subset_convolution.md) |
 | `convolution/min_plus_convolution.hpp` | 凸・凹 min-plus / max-plus 畳み込み | [使い方](docs/min_plus_convolution.md) |
 | `convolution/max_min_convolution.hpp` | max-min・min-max 畳み込み | [使い方](docs/max_min_convolution.md) |
@@ -120,8 +120,8 @@
 | `fps/berlekamp_massey.hpp` | 線形漸化式の復元（Berlekamp–Massey） | [使い方](docs/berlekamp_massey.md) |
 | `fps/compose.hpp` | 形式的冪級数の合成 | [使い方](docs/compose.md) |
 | `fps/compose_light.hpp` | 軽量 FPS の合成 | [使い方](docs/compose_light.md) |
-| `fps/power_projection.hpp` | Power Projection | [使い方](docs/power_projection.md) |
-| `fps/power_projection_light.hpp` | 軽量 FPS の Power Projection | [使い方](docs/power_projection_light.md) |
+| `fps/power_projection.hpp` | 冪ごとの係数・重み付き和（Power Projection） | [使い方](docs/power_projection.md) |
+| `fps/power_projection_light.hpp` | 軽量 FPS の冪ごとの係数・重み付き和 | [使い方](docs/power_projection_light.md) |
 | `fps/compositional_inverse.hpp` | 形式的冪級数の合成逆元 | [使い方](docs/compositional_inverse.md) |
 | `fps/compositional_inverse_light.hpp` | 軽量 FPS の合成逆元 | [使い方](docs/compositional_inverse_light.md) |
 | `fps/multipoint_eval.hpp` | 多点評価 | [使い方](docs/multipoint_eval.md) |
@@ -390,17 +390,17 @@
 | `math/is_prime_light.hpp` | 軽量版の素数判定 | [使い方](docs/is_prime_light.md) |
 | `math/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
 | `math/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
-| `math/totient_sum.hpp` | Euler φ関数の prefix sum | [使い方](docs/totient_sum.md) |
-| `math/multiplicative_prefix_sum.hpp` | 乗法的関数の prefix sum | [使い方](docs/multiplicative_prefix_sum.md) |
+| `math/totient_sum.hpp` | Euler φ関数の先頭区間和 | [使い方](docs/totient_sum.md) |
+| `math/multiplicative_prefix_sum.hpp` | 乗法的関数の先頭区間和 | [使い方](docs/multiplicative_prefix_sum.md) |
 
 ### 組合せ
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/binomial_prefix_sum.hpp` | 二項係数の prefix sum・一括計算 | [使い方](docs/binomial_prefix_sum.md) |
-| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数 prefix sum・一括計算 | [使い方](docs/binomial_prefix_sum_light.md) |
-| `math/binomial_prefix_sum_incremental.hpp` | 二項係数の prefix sum（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
-| `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数 prefix sum 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
+| `math/binomial_prefix_sum.hpp` | 二項係数の先頭区間和・一括計算 | [使い方](docs/binomial_prefix_sum.md) |
+| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数の先頭区間和・一括計算 | [使い方](docs/binomial_prefix_sum_light.md) |
+| `math/binomial_prefix_sum_incremental.hpp` | 二項係数の先頭区間和（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
+| `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数の先頭区間和 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
 | `math/factorial_mod.hpp` | 大きな N の階乗 mod 998244353 | [使い方](docs/factorial_mod.md) |
 | `math/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
@@ -435,16 +435,16 @@
 | --- | --- | --- |
 | `components/barrett32.hpp` | 32 bit Barrett 演算 | [使い方](docs/barrett32.md) |
 | `components/modular_power_sequence.hpp` | 剰余を取った冪の列 | [使い方](docs/modular_power_sequence.md) |
-| `components/binary_search.hpp` | 単調な述語の境界探索 | [使い方](docs/binary_search.md) |
-| `components/binomial_prefix_core.hpp` | 二項係数の prefix sum の内部演算 | [使い方](docs/binomial_prefix_core.md) |
-| `components/binomial_prefix_core_light.hpp` | 軽量版の二項係数 prefix sum の共通部品 | [使い方](docs/binomial_prefix_core_light.md) |
+| `components/binary_search.hpp` | 条件が切り替わる境界の二分探索 | [使い方](docs/binary_search.md) |
+| `components/binomial_prefix_core.hpp` | 二項係数の先頭区間和の内部演算 | [使い方](docs/binomial_prefix_core.md) |
+| `components/binomial_prefix_core_light.hpp` | 軽量版の二項係数の先頭区間和 の共通部品 | [使い方](docs/binomial_prefix_core_light.md) |
 | `components/flow_graph.hpp` | フローの残余グラフ | [使い方](docs/flow_graph.md) |
 | `components/undirected_csr.hpp` | 無向グラフの CSR | [使い方](docs/undirected_csr.md) |
 | `components/push_relabel.hpp` | Push-Relabel の内部演算 | [使い方](docs/push_relabel.md) |
 | `components/min_cost_circulation.hpp` | 最小費用流の容量スケーリング | [使い方](docs/min_cost_circulation.md) |
 | `components/min_cost_simplex.hpp` | 最小費用流の Network Simplex | [使い方](docs/min_cost_simplex.md) |
 | `components/small_vector.hpp` | Small Vector | [使い方](docs/small_vector.md) |
-| `components/limb_arithmetic.hpp` | Limb Arithmetic | [使い方](docs/limb_arithmetic.md) |
+| `components/limb_arithmetic.hpp` | 整数を分割した桁配列の演算 | [使い方](docs/limb_arithmetic.md) |
 | `components/bigint_magnitude.hpp` | 多倍長整数の絶対値演算・NTT 乗算・逆数除算 | [使い方](docs/bigint_magnitude.md) |
 | `components/integer_arithmetic.hpp` | 整数型の判定・オーバーフローを検出する加算と乗算 | [使い方](docs/integer_arithmetic.md) |
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
@@ -519,7 +519,7 @@
 | `components/matrix_block_inverse.hpp` | 行列のブロック逆行列・余因子行列 | [使い方](docs/matrix_block_inverse.md) |
 | `components/matrix_elimination_modular.hpp` | 固定法の行列消去 | [使い方](docs/matrix_elimination_modular.md) |
 | `components/fps_light_ntt.hpp` | 軽量 FPS の NTT・畳み込み | [使い方](docs/fps_light_ntt.md) |
-| `components/fps_light_product_tree.hpp` | 軽量 FPS の積木 | [使い方](docs/fps_light_product_tree.md) |
+| `components/fps_light_product_tree.hpp` | 軽量 FPS の多項式の積をまとめる木 | [使い方](docs/fps_light_product_tree.md) |
 | `components/fps_operations.hpp` | FPS の内部演算 | [使い方](docs/fps_operations.md) |
 | `components/fps_sparse.hpp` | 疎 FPS の共通演算 | [使い方](docs/fps_sparse.md) |
 | `components/fps_sparse_core.hpp` | 疎 FPS の次数圧縮・前処理 | [使い方](docs/fps_sparse_core.md) |
@@ -532,15 +532,15 @@
 | `components/fps_bostan.hpp` | Bostan–Mori の倍長化 | [使い方](docs/fps_bostan.md) |
 | `components/fps_horner.hpp` | FPS の一点評価 | [使い方](docs/fps_horner.md) |
 | `components/polynomial_gcd_blocked.hpp` | 多項式 Half-GCD の専用変換 | [使い方](docs/polynomial_gcd_blocked.md) |
-| `components/fps_composition.hpp` | FPS の合成・射影の内部処理 | [使い方](docs/fps_composition.md) |
-| `components/fps_composition_common.hpp` | FPS の合成・射影の共通変換 | [使い方](docs/fps_composition_common.md) |
+| `components/fps_composition.hpp` | FPS の合成・冪ごとの係数計算の内部処理 | [使い方](docs/fps_composition.md) |
+| `components/fps_composition_common.hpp` | FPS の合成・冪ごとの係数計算の共通変換 | [使い方](docs/fps_composition_common.md) |
 | `components/fps_compose_blocked.hpp` | FPS の合成の専用変換 | [使い方](docs/fps_compose_blocked.md) |
-| `components/fps_projection_blocked.hpp` | FPS の射影の専用変換 | [使い方](docs/fps_projection_blocked.md) |
-| `components/fps_composition_light.hpp` | 軽量 FPS の合成・射影の共通部品 | [使い方](docs/fps_composition_light.md) |
-| `components/fps_composition_generic.hpp` | FPS の合成・射影の汎用実装 | [使い方](docs/fps_composition_generic.md) |
-| `components/fps_composition_stages.hpp` | FPS の合成・射影の共通段 | [使い方](docs/fps_composition_stages.md) |
+| `components/fps_projection_blocked.hpp` | FPS の冪ごとの係数計算の専用変換 | [使い方](docs/fps_projection_blocked.md) |
+| `components/fps_composition_light.hpp` | 軽量 FPS の合成・冪ごとの係数計算の共通部品 | [使い方](docs/fps_composition_light.md) |
+| `components/fps_composition_generic.hpp` | FPS の合成・冪ごとの係数計算の汎用実装 | [使い方](docs/fps_composition_generic.md) |
+| `components/fps_composition_stages.hpp` | FPS の合成・冪ごとの係数計算の共通段 | [使い方](docs/fps_composition_stages.md) |
 | `components/fps_compose_generic.hpp` | FPS の合成の汎用実装 | [使い方](docs/fps_compose_generic.md) |
-| `components/fps_projection_generic.hpp` | FPS の射影の汎用実装 | [使い方](docs/fps_projection_generic.md) |
+| `components/fps_projection_generic.hpp` | FPS の冪ごとの係数計算の汎用実装 | [使い方](docs/fps_projection_generic.md) |
 | `components/fps_reversion_generic.hpp` | FPS の合成逆元の汎用実装 | [使い方](docs/fps_reversion_generic.md) |
 | `components/fps_convolution.hpp` | FPS の融合畳み込み | [使い方](docs/fps_convolution.md) |
 | `components/mint_convolution.hpp` | modint998244353 の共有畳み込み | [使い方](docs/mint_convolution.md) |
@@ -566,9 +566,9 @@
 | `components/fps_io.hpp` | FPS の一括入出力 | [使い方](docs/fps_io.md) |
 | `components/fps_write.hpp` | FPS の高速出力 | [使い方](docs/fps_write.md) |
 | `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
-| `components/polynomial_product_tree.hpp` | 多項式の共通積木 | [使い方](docs/polynomial_product_tree.md) |
+| `components/polynomial_product_tree.hpp` | 多項式の積をまとめる共通の木 | [使い方](docs/polynomial_product_tree.md) |
 | `components/fixed_size_subset_sum.hpp` | 個数指定の部分和集合の NTT・厳密判定 | [使い方](docs/fixed_size_subset_sum_core.md) |
-| `components/symmetric_group_fft.hpp` | 対称群 Fourier 変換 | [使い方](docs/symmetric_group_fft.md) |
+| `components/symmetric_group_fft.hpp` | 順列の合成用の Fourier 変換 | [使い方](docs/symmetric_group_fft.md) |
 | `components/xor_basis_core.hpp` | XOR 基底の内部演算 | [使い方](docs/xor_basis_core.md) |
 
 ## 使い方

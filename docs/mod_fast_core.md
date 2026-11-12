@@ -11,12 +11,12 @@ documentation_of: //components/mod_fast_core.hpp
 | `Reducer::reduce(x)` | 任意の `uint64_t` の剰余を `uint32_t` で返す | $$O(1)$$ |
 | `Reducer::mul(a,b)` | `uint32_t` の積の剰余 | $$O(1)$$ |
 | `Reducer::pow(a,e)` | 非負の `uint64_t` 指数による繰り返し二乗法 | $$O(\log e)$$ |
-| `Reducer::mod` / `Reducer::reciprocal` | 法／縮約用の逆数。参照用 | $$O(1)$$ |
+| `Reducer::mod` / `Reducer::reciprocal` | 法／剰余計算用の定数。参照用 | $$O(1)$$ |
 | `RationalTable(p)` | $$2\le p<2^{31}$$ の素数に対する有理数近似の表を構築 | $$O(p^{2/3})$$ |
 | `RationalTable::direct()` | 小さい法に対して全要素の表を使うか | $$O(1)$$ |
 | `RationalTable::limit()` | 分子の絶対値の上限 | $$O(1)$$ |
 | `RationalTable::fraction(x)` | $$x\equiv a/b\pmod p$$ を満たす `{a,b}`。$$1\le x<p$$、$$a\ne0$$、$$b>0$$ | $$O(1)$$ |
 
-`RationalTable` は Farey 数列を走査し、各バケットの中央で分子の絶対値が小さい分数を保存します。分母上限とバケット幅を法に応じて調整し、クエリには右シフト・配列参照・積と差だけを使います。
+`RationalTable::fraction(x)` の `{a,b}` は、`a` を `b` で割る計算を法 `p` で行うと `x` になることを表します。ここでの除算は `b` の逆元を掛ける操作です。
 
-`Reducer` の構築・縮約・積は $$O(1)$$ 時間・空間、累乗は $$O(\log e)$$ 時間です。`RationalTable` の構築は $$O(p^{2/3})$$ 時間・空間、各クエリは $$O(1)$$ 時間です。
+`Reducer` の構築・剰余計算・積は $$O(1)$$ 時間・空間、累乗は $$O(\log e)$$ 時間です。`RationalTable` の構築は $$O(p^{2/3})$$ 時間・空間、各クエリは $$O(1)$$ 時間です。

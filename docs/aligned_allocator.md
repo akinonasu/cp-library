@@ -3,7 +3,7 @@ title: 整列した配列のアロケータ
 documentation_of: //components/aligned_allocator.hpp
 ---
 
-`std::vector` などに指定できる、境界を指定したアロケータです。
+`std::vector` などのメモリ確保・解放を担当する部品（アロケータ）です。確保する先頭アドレスを指定したバイト数の倍数に揃えられます。
 
 ```cpp
 #include "lib/components/aligned_allocator.hpp"

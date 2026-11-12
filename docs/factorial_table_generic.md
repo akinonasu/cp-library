@@ -7,6 +7,6 @@ documentation_of: //components/factorial_table_generic.hpp
 
 `factorial_table_detail::build<Mint, Canonical = true>(factorial,inverse_factorial,n)` は、各 `Mint*` の先頭 `n+1` 要素に階乗・逆階乗を書き込みます。領域は重ならない有効な配列とし、素数法 `p = Mint::mod()` に対して `0 <= n < p` を満たしてください。
 
-`Mint` は整数からの構築・乗算・`inv()` に対応させます。`Canonical = true` かつ整数の `val()` を持つ型では、その剰余代表を使えるものとして扱います。`false` では型自身の乗算を使います。表を生成している間は法を変更しません。
+`Mint` は整数からの構築・乗算・`inv()` に対応させます。`Canonical = true` かつ整数の `val()` を持つ型では、`val()` がその値と法で割った余りの等しい整数を返す必要があります。負の整数を返す型にも対応します。`false` では型自身の乗算を使います。表を生成している間は法を変更しません。
 
 逆元計算を $$O(\log p)$$ として、時間は $$O(n+\log p)$$、出力配列を除く追加空間は $$O(1)$$ です。

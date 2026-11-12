@@ -19,7 +19,7 @@ int main() {
 ```
 
 `geometry` 名前空間を使います。Boost.Multiprecision のヘッダーが必要で、追加のリンクライブラリは不要です。
-整数・有理数の演算と比較は任意精度で行います。固定幅整数の範囲を超える中間値や、整数にならない交点などを丸めずに扱えます。
+有理数は、整数の分子・分母を持つ分数です。整数・有理数の演算と比較は、値の大きさに応じて必要な桁数を確保する任意精度で行います。固定幅整数の範囲を超える中間値や、整数にならない交点などを丸めずに扱えます。
 
 | 型・操作 | 内容 |
 | --- | --- |
@@ -27,7 +27,7 @@ int main() {
 | `Rational` | `boost::multiprecision::cpp_rational`。任意精度整数の分子・分母を持つ有理数 |
 | `BigPoint` | `Point<Integer>` |
 | `RPoint` | `Point<Rational>` |
-| `ExactCoordinate<T>` | 符号付き組み込み整数型（`__int128_t` を含む）、`Integer`、`Rational` のいずれかなら真となる概念 |
+| `ExactCoordinate<T>` | 符号付き組み込み整数型（`__int128_t` を含む）、`Integer`、`Rational` のいずれかかどうかを表す型の条件 |
 | `to_rational(p)` | `Point<T>` を値を保った `RPoint` に変換。`T` は `ExactCoordinate` |
 
 `Integer`・`Rational` は整数から構築でき、四則演算・比較・ストリーム入出力に対応します。除数は0以外にします。

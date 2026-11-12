@@ -12,6 +12,10 @@ redirect_from:
 
 木の形を固定したまま、頂点・辺の値の変更に合わせて木 DP を更新します。構築済みの [HLD](https://qandori.github.io/cp-library/tree/hld.hpp.html) と、DP の型・演算を渡します。
 
+このページでは、木の一部をまとめて計算する単位をクラスタと呼びます。`Path` は向き付きの 1 本の経路と、そこから伸びる枝を合わせた情報です。この区別して保持する経路を「境界の経路」と呼びます。`Point` は、親の頂点をまだ加えていない枝の情報です。
+
+HLD で各頂点の部分木の頂点数が最大の子を 1 つ選び、その子へ進み続ける経路を heavy path と呼びます。`all_prod`・`subtree_prod` が返す `Path` では、この経路を使います。
+
 ```cpp
 #include "lib/tree/static_top_tree.hpp"
 
@@ -70,12 +74,12 @@ DP には次の型と static 関数を定義します。値はコピー・代入
 | `DP::add_edge(path)` | パスクラスタを親へ接続する枝の `Point` に変換 | DP による（定数時間を仮定） |
 | `DP::add_vertex(point,vertex)` | 枝の集約に頂点を加え、長さ 1 の `Path` に変換 | DP による（定数時間を仮定） |
 
-`rake` は可換モノイド、`compress` はモノイドにします。`add_edge(path_identity()) == point_identity()` が必要です。クラスタの併合順序によらず同じ木 DP を表すように各演算を定義します。逆元は不要で、積が 0 になる DP も扱えます。
+`rake` は `rake(rake(a,b),c) == rake(a,rake(b,c))` と `rake(a,b) == rake(b,a)` を満たすようにします。`point_identity()` を左右どちらに渡しても他方の値がそのまま返ることが必要です。`compress` も `compress(compress(a,b),c) == compress(a,compress(b,c))` を満たし、`path_identity()` を左右どちらに渡しても他方の値を返すようにします。`add_edge(path_identity()) == point_identity()` が必要です。クラスタの併合順序によらず同じ木 DP を表すように各演算を定義します。結合を取り消す逆演算は不要で、積が 0 になる DP も扱えます。
 
-辺を更新する場合は、子の `Vertex` に親辺の値を保存し、`edge_vertex(e)` で子を求めて `set` します。根の仮想的な親辺は、DP に応じた単位元にします。`subtree_prod(v)` にも `Vertex` に保存した `v` の親辺の作用が含まれます。
+辺を更新する場合は、子の `Vertex` に親辺の値を保存し、`edge_vertex(e)` で子を求めて `set` します。根の仮想的な親辺は、DP に応じた「辺がない場合の値」にします。`subtree_prod(v)` にも `Vertex` に保存した `v` の親辺による変換が含まれます。
 
-`prod(v)` は経路上の頂点だけを集約する操作ではありません。経路外の枝を `Point` として畳み、**全頂点を含む**根から `v` へのクラスタを返します。`Path` に両方向の情報を持たせれば、指定した頂点を根とする全方位の値も取り出せます。逆方向の辺・頂点の作用も DP 側で定義します。[一次関数合成の全方位 DP](https://github.com/qandori/cp-library/blob/main/test/fixtures/static_top_tree_dp.hpp) と [可変根の使用例](https://github.com/qandori/cp-library/blob/main/test/point_set_tree_path_composite_sum.test.cpp) を参照してください。独立集合のように枝の方向を反転させる処理が必要な DP では、固定根の `Path` をそのまま逆順にするだけでは全方位の答えになりません。
+`prod(v)` は経路上の頂点だけを集約する操作ではありません。経路外の枝を `Point` としてまとめ、**全頂点を含む**根から `v` へのクラスタを返します。`Path` に両方向の情報を持たせれば、指定した頂点を根とする全方位の値も取り出せます。逆方向の辺・頂点による変換も DP 側で定義します。[一次関数合成の全方位 DP](https://github.com/qandori/cp-library/blob/main/test/fixtures/static_top_tree_dp.hpp) と [可変根の使用例](https://github.com/qandori/cp-library/blob/main/test/point_set_tree_path_composite_sum.test.cpp) を参照してください。独立集合のように枝の方向を反転させる処理が必要な DP では、固定根の `Path` をそのまま逆順にするだけでは全方位の答えになりません。
 
-`all_prod`・`subtree_prod` も `Path` を返すため、固定根の答えとして使う際には DP に応じた取り出し方を使います。例えば行列を `Path` にする DP では、末尾に空の子の状態を作用させます。`dp` はその処理を `add_edge` で行う場合に使えます。
+`all_prod`・`subtree_prod` も `Path` を返すため、固定根の答えとして使う際には DP に応じた取り出し方を使います。例えば行列を `Path` にする DP では、末尾に空の子の状態を表すベクトルを掛けます。`dp` はその処理を `add_edge` で行う場合に使えます。
 
 DP の型・演算を定数時間・定数空間とすると、HLD 構築後の構築・再構築は $$O(n\log n)$$ 時間、空間は $$O(n)$$ です。`set`・`subtree_prod`・`prod` は $$O(\log n)$$、それ以外の操作は $$O(1)$$ です。

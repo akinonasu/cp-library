@@ -16,7 +16,7 @@ auto b = totient_sum<mint>(10000000000ULL);
 auto c = totient_sum<__uint128_t>(10000000000ULL);
 ```
 
-$$\displaystyle\sum_{i=1}^{N}\varphi(i)$$ を計算します。$$\varphi(1)=1$$、$$N=0$$ の返り値は 0 です。
+$$\displaystyle\sum_{i=1}^{N}\varphi(i)$$ を計算します。$$\varphi(i)$$ は 1 以上 $$i$$ 以下で $$i$$ と互いに素な整数の個数です。$$\varphi(1)=1$$、$$N=0$$ の返り値は 0 です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -26,6 +26,6 @@ $$\displaystyle\sum_{i=1}^{N}\varphi(i)$$ を計算します。$$\varphi(1)=1$$�
 
 modint を指定すると、その法での値を返します。整数からの構築と加減乗算に対応していれば利用でき、逆元は不要です。合成数の法にも対応します。
 
-Euler φ関数の和だけが必要な場合に使います。他の乗法的関数の和や、素数上の prefix sum も必要な場合は [MultiplicativePrefixSum](https://qandori.github.io/cp-library/math/multiplicative_prefix_sum.hpp.html) を使えます。
+Euler φ関数の和だけが必要な場合に使います。他の乗法的関数の和や、素数上の累積和も必要な場合は [MultiplicativePrefixSum](https://qandori.github.io/cp-library/math/multiplicative_prefix_sum.hpp.html) を使えます。
 
 時間計算量は $$O(n^{2/3}/\log n)$$、追加空間は $$O(\sqrt n)$$ です。

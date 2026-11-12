@@ -1,5 +1,5 @@
 ---
-title: 乗法的関数の prefix sum
+title: 乗法的関数の累積和
 documentation_of: //math/multiplicative_prefix_sum.hpp
 library_category: math/number_theory
 redirect_from:
@@ -9,7 +9,7 @@ redirect_from:
 
 乗法的関数 $$f$$ の $$\displaystyle F(x)=\sum_{i=1}^x f(i)$$ を計算します。`f(1) = 1` とし、互いに素な $$a,b$$ について $$f(ab)=f(a)f(b)$$ を満たす関数が対象です。上限を含み、`F(0) = 0` です。
 
-例えば、オイラーのトーティエント関数の和は次のように求められます。
+例えば、オイラーのトーティエント関数 $$\varphi(n)$$ は、1 以上 $$n$$ 以下で $$n$$ と互いに素な整数の個数です。その和は次のように求められます。
 
 ```cpp
 #include "lib/math/multiplicative_prefix_sum.hpp"
@@ -26,7 +26,7 @@ auto prefix = sieve.prefix_sum(prime_prefix, phi);
 auto at10 = sieve.get(prefix, 10); // 32
 ```
 
-利用には、素数上の prefix sum の表 `prime_prefix` と、素数冪に対する値を返す関数 `prime_power` が必要です。
+利用には、素数上の累積和の表 `prime_prefix` と、素数冪に対する値を返す関数 `prime_power` が必要です。
 
 ## prime_prefix に渡すもの
 
@@ -69,7 +69,7 @@ $$\displaystyle \texttt{prime\_prefix}[i]=G(q_i)=\sum_{\substack{p\leq q_i\\p\te
 
 `prime_power(p,e,pe)` は $$f(p^e)$$ を `T` で返します。`p` は素数、`e >= 1`、`pe = p^e <= n` です。同じ引数には同じ値を返してください。`prime_prefix` の素数上の値と、このコールバックの `e = 1` の値は一致する必要があります。高い冪に対する値は任意に指定できます。
 
-`T` は整数・modint など、0・1 の構築と加減乗算を備えた可換環の値を使います。コールバックの戻り値も `T` にしてください。逆元や除算は不要で、合成数 mod の型も使えます。`prime_sum_linear` では `std::uint64_t` から `T` への変換も使います。三角数は整数の片側を先に半分にするため、2 の逆元を要求しません。整数型の場合は、中間値もその型に収めてください。大きな整数和には `__int128_t` などを使えます。
+`T` は整数・modint など、0・1 の構築と加減乗算ができる型を使います。加算・乗算は順序や括弧の付け方を変えても同じ結果になり、`a*(b+c) == a*b+a*c` を満たす必要があります。0 の加算と 1 の乗算は値を変えず、各値から自身を引くと 0 になるものとします。コールバックの戻り値も `T` にしてください。除算は不要で、合成数 mod の型も使えます。`prime_sum_linear` では `std::uint64_t` から `T` への変換も使います。整数型の場合は、中間値もその型に収めてください。大きな整数和には `__int128_t` などを使えます。
 
 代表的な指定は次の通りです。
 
@@ -83,7 +83,7 @@ $$\displaystyle \texttt{prime\_prefix}[i]=G(q_i)=\sum_{\substack{p\leq q_i\\p\te
 | 約数和 σ | `prime_sum_linear(T(1),T(1))` | $$\displaystyle\sum_{j=0}^{e}T(p)^j$$ |
 | 平方数なら 1 | `prime_sum_linear(T(0),T(0))` | `T(e%2 == 0)` |
 
-`prime_sum(integer_prefix)` では、補助関数 $$g$$ が完全乗法的、すなわち互いに素という制約なしに $$g(ab)=g(a)g(b)$$、かつ $$g(1)=1$$ であることが必要です。通常の乗法性だけでは不十分で、例えばトーティエント関数の累積和を直接渡すことはできません。`integer_prefix(x)` に $$\displaystyle\sum_{i=1}^x g(i)$$ を与えると、各点で $$\displaystyle\sum_{p\leq x,\ p\text{ prime}}g(p)$$ を返します。`g(i)=1,i,i^2` や Dirichlet 指標などが使えます。返された表の線形結合を作れば、素数上の値が多項式などで表せる関数にも対応できます。別の方法で作った正しい素数上の表を `sum`・`prefix_sum` に渡しても構いません。
+`prime_sum(integer_prefix)` では、補助関数 $$g$$ が完全乗法的、すなわち互いに素という制約なしに $$g(ab)=g(a)g(b)$$、かつ $$g(1)=1$$ であることが必要です。通常の乗法性だけでは不十分で、例えばトーティエント関数の累積和を直接渡すことはできません。`integer_prefix(x)` に $$\displaystyle\sum_{i=1}^x g(i)$$ を与えると、各点で $$\displaystyle\sum_{p\leq x,\ p\text{ prime}}g(p)$$ を返します。`g(i)=1,i,i^2` などが使えます。返された表を定数倍して足し合わせれば、素数上の値が多項式などで表せる関数にも対応できます。別の方法で作った正しい素数上の表を `sum`・`prefix_sum` に渡しても構いません。
 
 ## 範囲と計算量
 
@@ -91,8 +91,6 @@ $$\displaystyle \texttt{prime\_prefix}[i]=G(q_i)=\sum_{\substack{p\leq q_i\\p\te
 
 上限 0 では表は空で、`sum` と `get(table,0)` は 0 です。上限 1 では `sum` は 1 です。呼び出しはオブジェクトや入力の表を変更しないため、別の関数や異なる素数冪の値で計算領域を再利用できます。コピーは独立し、ムーブ後の元は上限 0 の状態になります。必要な領域は入力に応じて増えるため、時間とメモリに収まる範囲で使ってください。
 
-商の表と素数篩を共有し、素数上の表は奇数に圧縮した Min_25 篩で作ります。`prefix_sum` は逆順の素数から高い冪を復元し、商が同じになる範囲をまとめて更新します。
-
-`sum` は Black algorithm の列挙を使います。上限が $$2^{32}$$ 以上で、`T::mod()` が 32 bit の法を返し、3 の逆元が存在する modint では、`prime_sum`・`prime_sum_linear`・`sum` を素数の範囲ごとに分割する処理へ自動で切り替えます。`sum` では平方因子を持たない数の和と強力数上の補正を組み合わせます。この処理は [Library Checker の高速な提出](https://judge.yosupo.jp/submission/405757) を参考にしています。型への追加要件はなく、それ以外の型でも同じ API を使えます。
+内部の処理は [Library Checker の提出](https://judge.yosupo.jp/submission/405757) を参考にしています。
 
 `T` の演算とコールバックを $$O(1)$$ とすると、構築は $$\displaystyle O(\sqrt n\log\log n)$$ 時間・$$\displaystyle O(\sqrt n)$$ 空間です。`prime_sum`・`prime_sum_linear`・`sum`・`prefix_sum` はそれぞれ $$\displaystyle O\!\left(\frac{n^{3/4}}{\log n}\right)$$ 時間、保持する表と作業領域は $$\displaystyle O(\sqrt n)$$ です。表の参照は $$O(1)$$、コピーは $$\displaystyle O(\sqrt n)$$ 時間・空間です。`n <= 1` は定数時間で処理します。

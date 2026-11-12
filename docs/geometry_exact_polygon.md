@@ -21,7 +21,7 @@ int main() {
 ```
 
 `geometry` 名前空間を使います。[任意精度整数・有理数座標](geometry_rational.md) の型と Boost.Multiprecision を使用します。
-多角形は境界順の `vector<Point<T>>` で渡し、末尾に始点を重ねる必要はありません。座標型は `ExactCoordinate` とします。
+多角形は境界順の `vector<Point<T>>` で渡し、末尾に始点を重ねる必要はありません。座標型は `ExactCoordinate`、つまり符号付き組み込み整数型・`Integer`・`Rational` のいずれかとします。
 入力を任意精度有理数に変換してから計算し、許容誤差は使いません。整数入力の中間積・和も固定幅整数の範囲に制限されません。
 
 | 操作 | 内容・返り値 | 演算回数 |
@@ -30,7 +30,7 @@ int main() {
 | `centroid_exact(polygon)` | 面積についての重心を `optional<RPoint>` で返す。面積0なら `nullopt` | $$O(n)$$ |
 | `convex_cut_exact(polygon,line)` | 凸多角形を有向直線 `line.a -> line.b` の左側で切り、残る頂点列を `vector<RPoint>` で返す。直線上も残す | $$O(n)$$ |
 
-面積・重心は単純多角形を時計回り・反時計回りのどちらでも渡せます。重心は頂点の平均ではなく領域の重心です。
+面積・重心は単純多角形（自己交差しない多角形）を時計回り・反時計回りのどちらでも渡せます。重心は頂点の平均ではなく領域の重心です。
 空・単点・線分の面積は0で、重心は `nullopt` です。自己交差の検査はしません。
 符号付き面積の2倍が必要なら、`vector<RPoint>` または `vector<BigPoint>` に [signed_area2](geometry_polygon.md) を使います。
 

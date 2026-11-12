@@ -4,6 +4,8 @@ documentation_of: //components/d_ary_heap.hpp
 redirect_from: /data_structure/d_ary_heap.hpp.html
 ---
 
+値の追加と最大値の取り出しを行う優先度付きキューです。`D` は木の各節点が持つ子の最大数を表します。
+
 ```cpp
 #include "lib/components/d_ary_heap.hpp"
 
@@ -23,7 +25,7 @@ auto x = heap.pop_value();
 | `push_pop(x)` | `x` を追加した場合の先頭を返し、残りを保持 | $$O(\log n)$$ |
 | `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
 | `values()` | 内部配列の const 参照 | $$O(1)$$ |
-| `reserve(n)` / `clear()` | 領域予約／容量を残して空にする | reserve: $$O(n)$$、clear: 自明な型 $$O(1)$$、その他 $$O(n)$$ |
+| `reserve(n)` / `clear()` | 領域予約／容量を残して空にする | reserve: $$O(n)$$、clear: 要素の破棄に処理が不要なら $$O(1)$$、その他 $$O(n)$$ |
 | `swap(other)` | 内容と比較関数を交換 | $$O(1)$$ |
 
 `DaryHeap<T, Compare = std::less<T>, D = 2>` は最大ヒープです。最小ヒープは `Compare` に `std::greater<T>` を指定します。`D` は 2 以上です。`std::vector<T>` からも構築できます。
@@ -32,4 +34,6 @@ auto x = heap.pop_value();
 
 `values()` は内部配列の const 参照です。`size()`・`empty()`・`reserve(n)`・`clear()` も使えます。
 
-要素数を $$n$$、$$D$$ を定数として、配列からの構築・コピー・予約は $$O(n)$$、`push` は償却 $$O(\log n)$$、削除・置換は $$O(\log n)$$、`clear` は自明に破棄可能な型なら $$O(1)$$、それ以外は $$O(n)$$、その他は $$O(1)$$ です。空間は $$O(n)$$、比較・要素の移動・破棄は $$O(1)$$ とします。
+要素数を $$n$$、$$D$$ を定数として、配列からの構築・コピー・予約は $$O(n)$$、`push` は償却 $$O(\log n)$$、削除・置換は $$O(\log n)$$、`clear` は `int` など要素の破棄に処理を必要としない型なら $$O(1)$$、それ以外は $$O(n)$$、その他は $$O(1)$$ です。空間は $$O(n)$$、比較・要素の移動・破棄は $$O(1)$$ とします。
+
+償却計算量は、1 回ごとの最悪時間ではなく、一連の操作にかかる合計時間を操作回数で割ったときの上界です。

@@ -73,7 +73,7 @@ c.insert((std::numeric_limits<int256_t>::lowest)(),
 | `clear()` | 空集合に戻す | $$O(n)$$ |
 | `swap(t)` / `swap(s,t)` | 集合を交換 | $$O(1)$$ |
 
-`coordinate_type` は `T`、`size_type` は `Size`、`interval_type` は `std::pair<T,T>` です。`insert`・`erase`・`count`・`size` は `size_type` を返します。`const_iterator`・`const_reverse_iterator` の参照先は左端・右端の組です。更新時に結合・分割・削除・左端の変更を受けた区間のイテレータは使い直してください。構築にはソート後の挿入ヒント、更新には木のノードの再利用を使います。
+`coordinate_type` は `T`、`size_type` は `Size`、`interval_type` は `std::pair<T,T>` です。`insert`・`erase`・`count`・`size` は `size_type` を返します。`const_iterator`・`const_reverse_iterator` の参照先は左端・右端の組です。更新時に結合・分割・削除・左端の変更を受けた区間のイテレータは使い直してください。
 
 操作前後の区間数の最大値を $$n$$、更新・列挙で触れる区間数を $$k$$ として、`insert`・`erase`・`count` は $$O(\log n+k)$$、単点更新・検索・`contains`・`intersects`・`find`・`lower_bound`・`next`・`prev`・`mex` は $$O(\log n)$$ です。長さ $$m$$ の区間列からの構築・`assign` は $$O(m\log m+n)$$、コピー・`clear` は $$O(n)$$ です。移動代入は移動先にあった区間数に比例します。それ以外の操作は $$O(1)$$、空間は $$O(n)$$、構築・`assign` 中は入力を含めて $$O(m+n)$$ です。
 

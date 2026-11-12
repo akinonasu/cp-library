@@ -34,4 +34,4 @@ mint c2 = product.push(7, 11);
 
 係数の法は 998244353 に固定しています。[mint](https://qandori.github.io/cp-library/math/mint.hpp.html) を既定とし、同じ法の別の modint でも使えます。
 
-項数を $$n$$ として、`push()` を合計 $$n$$ 回行う時間は $$O(n\log^2 n)$$、1 回の最悪時間は $$O(n\log n)$$、使用空間は $$O(n)$$ です。構築・`size()`・`max_size()`・`empty()`・`operator[]`・`pending()` は $$O(1)$$ です。`reserve(r)` は $$O(n)$$ 時間・$$O(r)$$ 空間、`clear()` は $$O(n)$$ 時間以内です。事前確保した領域と共有 NTT キャッシュは別途保持されます。
+項数を $$n$$ として、`push()` を合計 $$n$$ 回行う時間は $$O(n\log^2 n)$$、1 回の最悪時間は $$O(n\log n)$$、使用空間は $$O(n)$$ です。表の「償却」は、この合計時間を 1 回あたりに均したものです。構築・`size()`・`max_size()`・`empty()`・`operator[]`・`pending()` は $$O(1)$$ です。`reserve(r)` は $$O(n)$$ 時間・$$O(r)$$ 空間、`clear()` は $$O(n)$$ 時間以内です。事前確保した領域と、再利用のために保持する NTT の定数表は別途保持されます。

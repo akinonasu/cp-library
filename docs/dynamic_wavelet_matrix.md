@@ -7,6 +7,8 @@ redirect_from:
 library_category: data_structure/wavelet_matrix
 ---
 
+要素の途中への挿入・削除・代入と、区間内の値の個数や、小さい順で k 番目の値を求める列です。
+
 ```cpp
 #include "lib/data_structure/dynamic_wavelet_matrix.hpp"
 
@@ -48,8 +50,10 @@ auto frequency = wm.count(0, wm.size(), 1);
 
 `prev_value(l,r,upper)` は境界を含まず、`next_value(l,r,lower)` は境界を含みます。空区間や条件を満たす値がない場合は `nullopt` です。`select(x,k)` は `x` が値域外の場合や `k` が負の場合も `-1` を返します。
 
-include 前に `DYNAMIC_QUAD_DISABLE_SIMD` を定義すると SIMD・POPCNT・BMI2 経路を、`DYNAMIC_QUAD_DISABLE_AVX512` を定義すると AVX-512 経路を無効にできます。
+include 前に `DYNAMIC_QUAD_DISABLE_SIMD` を定義すると、このクラスが CPU の機能を実行時に調べて選ぶ専用処理を無効にできます。`DYNAMIC_QUAD_DISABLE_AVX512` は、一部の CPU にある AVX-512 命令を使う専用処理を無効にします。
 
 第3テンプレート引数に独自の `BitVector` を指定できます。`move_rank` と `access_rank` は省略できます。CPU 拡張命令をコンパイル時に指定する場合は、実行する CPU に合ったオプションを使ってください。
 
 要素数を $$n$$、bit 数を $$B$$ として、構築は $$O(Bn)$$、挿入・代入は償却 $$O(B\log n)$$、削除・クエリは $$O(B\log n)$$ です。サイズ取得は $$O(1)$$、`clear`・`memory_usage`・`swap` は $$O(B)$$、`reserve(N)` は $$O(BN)$$、空間は $$O(BN)$$ です。$$N$$ は過去の最大要素数と予約容量の最大値です。
+
+「償却」は、一連の操作にかかる合計時間から求めた、1 回あたりの計算量を表します。

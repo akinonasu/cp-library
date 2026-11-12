@@ -7,6 +7,8 @@ redirect_from:
 library_category: data_structure/range_query
 ---
 
+構築後に値を変更しない配列の、区間最小値などを求めます。ここで「集約」は、要素を左から右の順に `op` でまとめることです。
+
 ```cpp
 #include "lib/data_structure/sparse_table.hpp"
 
@@ -24,13 +26,13 @@ auto value = table.prod(0, 2); // 2
 | `prod_unchecked(l,r)` | 境界検査なしで非空区間を集約 | $$O(1)$$ |
 | `operator[](i)` | 元の配列の要素を取得 | $$O(1)$$ |
 | `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
-| `clear()` | 空に戻す | 自明に破棄できる型: $$O(\log n)$$、その他: $$O(n\log n)$$ |
+| `clear()` | 空に戻す | 整数など、`std::is_trivially_destructible_v<S>` が `true` となる型: $$O(\log n)$$、その他: $$O(n\log n)$$ |
 
-`op` は結合則と冪等性を満たす演算です。`prod(l, r)` は $$[l,r)$$、`all_prod()` は全体の集約です。
+`op` は `op(op(a,b),c) == op(a,op(b,c))` を満たします。これは要素の順番を保てば、まとめる括弧の位置を変えても結果が同じになる条件（結合法則）です。 さらに `op(x,x) == x`、つまり同じ値を 2 つまとめても変化しない条件（冪等性）が必要です。`prod(l, r)` は $$[l,r)$$、`all_prod()` は全体の集約です。
 
-空区間も使う場合は単位元を返す関数 `e()` を定義し、`SparseTable<S, op, e>` とします。`build(a)` または `build(n, value)` で再構築でき、後者は `value(i)` を各要素とします。
+空区間も使う場合は、`op(e(),x) == x` と `op(x,e()) == x` を満たす空区間の値（単位元）を返す関数 `e()` を定義し、`SparseTable<S, op, e>` とします。`build(a)` または `build(n, value)` で再構築でき、後者は `value(i)` を各要素とします。
 
-冪等性は `op(x,x)==x` という条件です。最小値・最大値・gcd などに使えます。総和のようにこの条件を満たさない演算には [Disjoint Sparse Table](https://qandori.github.io/cp-library/data_structure/disjoint_sparse_table.hpp.html) を使います。構築後の要素は固定です。別の配列に変える場合は `build` を呼び直します。
+この `op(x,x) == x` という条件を満たすため、最小値・最大値・gcd などに使えます。総和のようにこの条件を満たさない演算には [Disjoint Sparse Table](https://qandori.github.io/cp-library/data_structure/disjoint_sparse_table.hpp.html) を使います。構築後の要素は固定です。別の配列に変える場合は `build` を呼び直します。
 
 `prod_unchecked(l, r)` は境界検査を省略します。非空の区間を指定してください。
 

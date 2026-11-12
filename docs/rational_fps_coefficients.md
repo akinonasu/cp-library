@@ -3,6 +3,8 @@ title: 有理 FPS の区間係数取得
 documentation_of: //fps/rational_fps_coefficients.hpp
 ---
 
+$$[x^k]h(x)$$ は、$$h(x)$$ の $$x^k$$ の係数を表します。ここでは多項式の商 $$p(x)/q(x)$$ を、$$q(x)$$ と掛けると $$p(x)$$ になる係数列として扱います。
+
 有理式で表された FPS の連続する係数をまとめて求めます。
 
 ```cpp
@@ -40,6 +42,6 @@ auto a = rational_fps_coefficients(p, q, 10, 15);
 
 初期値と係数列の長さは同じにし、`coefficients[0]` に 1 つ前の項の係数を入れます。1 項だけなら [Bostan–Mori](bostan_mori.md) や [線形漸化式の第 k 項](linear_recurrence.md) も使えます。
 
-MSB-first 版 Bostan–Mori を使います。時間は $$O(N\log N\log r+(N+M)\log(N+M))$$、追加空間は $$O(N\log r+M)$$ です。先頭付近の取得は $$O((N+M)\log(N+M))$$ 時間です。
+時間は $$O(N\log N\log r+(N+M)\log(N+M))$$、追加空間は $$O(N\log r+M)$$ です。先頭付近の取得は $$O((N+M)\log(N+M))$$ 時間です。
 
 参考：[AtCoder Algorithm Lectures：Bostan–Mori の発展](https://info.atcoder.jp/entry/algorithm_lectures/bostan_mori_advanced)

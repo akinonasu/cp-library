@@ -21,7 +21,7 @@ queue.set(10, 1);
 queue.erase(30);
 ```
 
-`RetroactivePriorityQueue<T, Compare = std::less<T>, Time = std::int64_t, BlockSize = 256>` は、過去の操作を変更し、任意時点の状態をクエリる fully retroactive な優先度付きキューです。`std::less<T>` では最小値、`std::greater<T>` では最大値を先頭にします。
+`RetroactivePriorityQueue<T, Compare = std::less<T>, Time = std::int64_t, BlockSize = 256>` は、過去の操作を変更し、任意時点の状態を取得する優先度付きキューです。`std::less<T>` では最小値、`std::greater<T>` では最大値を先頭にします。
 
 時刻は64 bit以下の整数で、各時刻に置ける操作は1つです。クエリは指定時刻の操作を実行した直後の状態で、引数なしでは履歴の末尾を参照します。比較上同順位の要素は、挿入時刻が早い方を優先します。
 
@@ -48,3 +48,5 @@ queue.erase(30);
 `updates` は `std::vector<Queue::update_type>` で、要素は `{時刻, std::optional<T>}` です。`nullopt` は削除操作です。順不同で渡せます。`Queue(updates, compare = Compare{}, seed = 0)` でも構築できます。このコンストラクタには有効な履歴を渡します。空列の構築は `Queue(compare = Compare{}, seed = 0)` です。削除ノードは再利用し、`clear()` は操作ノードの確保容量を残します。
 
 現在の操作数を $$m$$、過去の最大操作数を $$M$$、ブロック幅を $$B$$ とします。構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、履歴変更は償却期待 $$O(B\log B+m/B+\log m)$$、`top` は期待 $$O(B\log B+(m/B)\log B\log m)$$ です。`size(t)`・`empty(t)`・`contains_time` は $$O(\log m)$$、現在の `size`・`empty`・`operation_count` は $$O(1)$$、`reserve`・`clear` は $$O(M)$$、`memory_usage` は $$O(m/B)$$ です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。$$\displaystyle B\approx\sqrt m$$ とすると更新は償却期待 $$\displaystyle O(\sqrt m\log m)$$、`top` は期待 $$\displaystyle O(\sqrt m\log^2m)$$ です。比較・値のコピーを $$O(1)$$ とします。
+
+「期待」は内部で使う乱数について平均した時間を、「償却」は一連の操作の合計時間から求めた 1 回あたりの計算量を表します。

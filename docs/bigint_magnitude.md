@@ -45,8 +45,6 @@ $$
 \displaystyle\left\lfloor\frac{B^{2n}}{A}\right\rfloor.
 $$
 
-乗算は小さい配列に学校算法、大きい配列に 3 個の素数での NTT と CRT を使い、誤差なく求めます。除算は小さい除数・短い商に正規化した長除算、それ以外に Newton 法で求めた整数逆数とブロックごとの商推定を使います。
-
-NTT を使う内部乗算ごとに、繰り上げ前の係数列の長さが $$2^{24}$$ 以下である必要があります。これを超える場合は `std::length_error` を送出します。`reciprocal`・`divide` も内部乗算について同じ条件が必要です。
+乗除算は誤差なく求めます。大きな入力の内部乗算には NTT（素数を法とする離散フーリエ変換）を使います。その乗算ごとに、繰り上げ前の係数列の長さが $$2^{24}$$ 以下である必要があります。これを超える場合は `std::length_error` を送出します。`reciprocal`・`divide` も内部乗算について同じ条件が必要です。
 
 基数桁数を $$n,m$$、$$n\ge m$$、長さ $$k$$ の乗算時間を $$M(k)$$ とします。`trim`・`compare`・1 桁演算・`add`・`subtract`・`increment` は最悪 $$O(n)$$ 時間です。小さい `multiply` は $$O(nm)$$、NTT 版は $$O((n+m)\log(n+m))$$ 時間です。`divide_schoolbook` は被除数が除数以上の場合、商の桁数を $$q$$ として $$O(qm)$$ 時間で、$$q\le n-m+1$$ です。被除数が除数未満の除算は、余りのコピーを含め $$O(n)$$ 時間です。`reciprocal` は $$O(M(n))$$、逆数を使う `divide` は $$O(\displaystyle\frac{n}{m}M(m))$$ 時間です。乗除算の追加空間は $$O(n+m)$$、`reciprocal` は $$O(n)$$、`trim`・`compare`・`subtract` は $$O(1)$$ です。`add` は結果を保存する `a` の拡張分を除き、$$O(1)$$ 空間です。

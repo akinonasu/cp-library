@@ -3,7 +3,9 @@ title: 二部マッチングの内部演算
 documentation_of: //components/bipartite_matching_core.hpp
 ---
 
-通常は [二部マッチング](https://qandori.github.io/cp-library/graph/bipartite_matching.hpp.html) を使います。この部品は CSR、増加道探索、交互グラフの解析を共有します。名前空間は `bipartite_matching_detail` です。
+通常は [二部マッチング](https://qandori.github.io/cp-library/graph/bipartite_matching.hpp.html) を使います。この部品は隣接頂点の保存、増加道探索、交互グラフの解析を共有します。名前空間は `bipartite_matching_detail` です。
+
+CSR は、隣接頂点を 1 本の配列 `adj` へ並べ、各頂点の開始位置を `start` に持つ形式です。増加道は、マッチングに含まれない辺と含まれる辺を交互に通り、両端が未対応の頂点になる経路です。この経路で辺の採用・不採用を入れ替えると、本数を 1 増やせます。
 
 $$N$$ は両側の頂点数の和、$$M$$ は辺数、$$K$$ は小さい側の頂点数です。
 
@@ -15,7 +17,7 @@ $$N$$ は両側の頂点数の和、$$M$$ は辺数、$$K$$ は小さい側の�
 | `hopcroft_karp(graph,left,right,phases,max_distance)` | 指定回数・距離まで増加道の段階を進める。上限を省略すると終了まで | $$O((N+M)\sqrt K)$$ |
 | `Result::added` / `maximum` | 増加した本数／最大と確認できたか | $$O(1)$$ |
 | `degree_greedy(graph,reverse,left,right,dl,dr,queue)` | 次数 1 の頂点を優先して既存解を改善し、増加した本数を返す | $$O(N+M)$$ |
-| `warm_start(graph,left,right,multiplier)` | 距離ラベルで初期解を改善し、増加した本数を返す。作業量に上限を設ける | $$O((N+M)(1+\text{multiplier}))$$ |
+| `warm_start(graph,left,right,multiplier)` | 作業量の上限内で既存のマッチングを改善し、増加した本数を返す | $$O((N+M)(1+\text{multiplier}))$$ |
 | `augment(graph,left,right,multiplier,root_divisor,easy_phases)` | 両方式を組み合わせ、最大マッチングまで増やす | $$O((N+M)\sqrt K)$$（既定値） |
 | `Analysis(l,r,edges,left,right)` | 最大マッチングから交互グラフと到達範囲を作る | $$O(N+M)$$ |
 | `Analysis::reach(queue,tail,start,adj,seen)` | 初期頂点からの到達判定 | $$O(N+M)$$ |

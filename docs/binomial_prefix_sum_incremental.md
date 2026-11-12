@@ -1,5 +1,5 @@
 ---
-title: 二項係数の prefix sum（差分更新）
+title: 二項係数の累積和（差分更新）
 documentation_of: //math/binomial_prefix_sum_incremental.hpp
 library_category: math/combinatorics
 redirect_from:

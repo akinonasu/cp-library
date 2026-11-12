@@ -35,9 +35,9 @@ auto weak_indices = lis<false>(a);     // 1, 2, 3, 4
 | `lis_lengths(a,compare = std::less<>{})` | 各位置を終点とする狭義増加部分列の長さを `vector<int>` で返す | $$O(n\log n)$$ |
 | `lis_length<false>(a,compare)` / `lis<false>(a,compare)` / `lis_lengths<false>(a,compare)` | 広義増加で同じ計算を行う。比較関数は省略可 | $$O(n\log n)$$ |
 
-`a` は const でサイズ取得とランダムアクセスができる範囲を渡します。`vector`・`array`・C 配列・`span`・`deque`・`string_view` などに対応します。長さは `INT_MAX` 以下としてください。空の列では長さ 0、添字列と各位置の長さは空配列になります。元の列は変更しません。
+`a` は const でサイズ取得と添字による要素の取得ができる列を渡します。`vector`・`array`・C 配列・`span`・`deque`・`string_view` などに対応します。長さは `INT_MAX` 以下としてください。空の列では長さ 0、添字列と各位置の長さは空配列になります。元の列は変更しません。
 
-比較関数は厳密弱順序を定めるものを使います。狭義の場合は `compare(x,y)`、広義の場合は `!compare(y,x)` を満たす順に要素を選びます。例えば `std::greater<>{}` を渡すと、減少部分列を求められます。
+比較関数は `compare(x,y)` が「指定した順序で `x` は `y` より前に来る」を返すものにします。`compare(x,x)` は `false` とし、`compare(x,y)` と `compare(y,z)` が真なら `compare(x,z)` も真にしてください。また、どちら向きの比較も `false` となる2要素を同値としたとき、`x` と `y`、`y` と `z` が同値なら `x` と `z` も同値となる必要があります。狭義の場合は `compare(x,y)`、広義の場合は `!compare(y,x)` を満たす順に要素を選びます。例えば `std::greater<>{}` を渡すと、減少部分列を求められます。
 
 ```cpp
 #include "lib/sequence/lis.hpp"
@@ -52,6 +52,6 @@ auto indices = lis(items, [](const Item &x, const Item &y) {
 });
 ```
 
-小さい自明にコピー可能な要素は、末尾候補の値を連続配列に保持します。それ以外は元の列の添字を保持するため、要素がコピーできなくても比較できれば使えます。番兵や値の加減算を使わず、整数型の上限・下限もそのまま扱えます。
+要素がコピーできなくても、比較できれば使えます。整数型の上限・下限もそのまま扱えます。
 
-比較・小さい要素のコピーを $$O(1)$$ として、時間は全て $$O(n\log n)$$ です。答えの長さを $$L$$ とすると、`lis_length` の追加空間は $$O(L)$$、`lis`・`lis_lengths` の追加空間は $$O(n)$$ です。
+比較・要素のコピーを $$O(1)$$ として、時間は全て $$O(n\log n)$$ です。答えの長さを $$L$$ とすると、`lis_length` の追加空間は $$O(L)$$、`lis`・`lis_lengths` の追加空間は $$O(n)$$ です。

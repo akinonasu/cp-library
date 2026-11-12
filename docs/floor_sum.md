@@ -7,7 +7,7 @@ redirect_from:
 - /lightweight/math/floor_sum/floor_sum.hpp.html
 ---
 
-一次式を床関数で割った値の総和を求めます。
+一次式を除算し、小数部分を負の無限大の方向へ切り捨てた値の総和を求めます。例えば $$\lfloor-1/2\rfloor=-1$$ です。
 
 $$\displaystyle \sum_{i=0}^{n-1}\left\lfloor\frac{ai+b}{m}\right\rfloor$$
 

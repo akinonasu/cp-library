@@ -30,9 +30,9 @@ int main() {
 | [linear.hpp](integer_geometry_linear.md) | 直線・線分上の判定、平行・直交、交差判定 |
 | [polygon.hpp](integer_geometry_polygon.md) | 面積の2倍、内外判定、凸性の判定 |
 | [convex.hpp](integer_geometry_convex.md) | 凸包、凸多角形の内外、最近・最遠点対、Minkowski 和 |
-| [dynamic_convex_hull.hpp](integer_geometry_dynamic_convex_hull.md) | 点の追加、面積・内外・支持点の問い合わせ |
+| [dynamic_convex_hull.hpp](integer_geometry_dynamic_convex_hull.md) | 点の追加、面積・内外・内積を最大にする頂点の問い合わせ |
 | [circle.hpp](integer_geometry_circle.md) | 整数中心・整数半径の円の内外・交差・位置関係 |
-| [lattice.hpp](integer_geometry_lattice.md) | 方向の原始化、線分・多角形の格子点数 |
+| [lattice.hpp](integer_geometry_lattice.md) | 方向ベクトルの約分、線分・多角形の格子点数 |
 
 判定に角度や許容誤差を使いません。距離は二乗、面積は2倍の値で表し、整数のまま比較・計算できます。
 

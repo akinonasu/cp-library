@@ -2,7 +2,7 @@
 title: 利用者テンプレートとの併用
 ---
 
-標準ヘッダーと ACL を先に読み込んだ後で、`using namespace std;`、`vec`・`rep`・`per`・`all`・`sz`・`uint`・`ulong` などを定義するテンプレートと併用できます。ライブラリを読み込んでも、これらのマクロは保持されます。
+標準ヘッダーと AtCoder Library（ACL）を先に読み込んだ後で、`using namespace std;`、`vec`・`rep`・`per`・`all`・`sz`・`uint`・`ulong` などを定義するテンプレートと併用できます。ライブラリを読み込んでも、これらのマクロは保持されます。
 
 `all(v)` を維持しながら `bits.all()` も通常どおり呼び出すには、C++20 以降の `__VA_OPT__` で引数の有無を判定します。テンプレートの `#define all(a) ...` を次の3行に置き換えてください。既存の `all(v)` や `UNIQUE` の変更は不要です。
 
@@ -12,7 +12,7 @@ title: 利用者テンプレートとの併用
 #define all(...) CP_ALL_SELECT(__VA_OPT__(CP_ALL_RANGE,) all)(__VA_ARGS__)
 ```
 
-`std::begin`・`std::end` を使うため、`<iterator>` をマクロ定義より先に読み込みます。`<bits/stdc++.h>` を使う元のテンプレートでは追加不要です。元のマクロと同じく引数を二度評価するため、副作用のある式は渡さないでください。
+`std::begin`・`std::end` を使うため、`<iterator>` をマクロ定義より先に読み込みます。`<bits/stdc++.h>` を使う元のテンプレートでは追加不要です。元のマクロと同じく引数を二度評価するため、`++i` など評価するたびに値や状態が変わる式は渡さないでください。
 
 ```cpp
 #include <algorithm>
