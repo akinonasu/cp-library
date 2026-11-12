@@ -24,6 +24,7 @@
 #include "convolution/max_min_convolution_light.hpp"
 #endif
 #include <cassert>
+#include <type_traits>
 
 struct Ring {
 	long long value = 0;
@@ -42,7 +43,34 @@ struct OtherMint {
 	friend bool operator==(OtherMint, OtherMint) = default;
 };
 
+struct OtherMod {
+	unsigned value = 0;
+	OtherMod(unsigned x = 0) : value(x % mod()) {}
+	static constexpr unsigned mod() { return 1000000007; }
+	static OtherMod raw(unsigned x) { return OtherMod(x); }
+	unsigned val() const { return value; }
+	friend bool operator==(OtherMod, OtherMod) = default;
+};
+
 int main() {
+#ifdef LIGHT_FIRST
+#if LIGHT_FIRST
+	static_assert(std::is_same_v<convolution_mod_detail::DefaultBackend, convolution_mod_detail::PortableBackend>);
+#else
+	static_assert(std::is_same_v<convolution_mod_detail::DefaultBackend, convolution_mod_detail::FullBackend>);
+#endif
+#endif
+	std::vector<long long> integers(97, 7), others(113, -11);
+	auto expected = convolution_integer<long long, convolution_mod_detail::PortableBackend>(integers, others);
+	assert(convolution(integers, others) == expected);
+	assert(light_convolution::convolution(integers, others) == expected);
+	for (unsigned mod : {17u, 65536u, 167772161u, 469762049u, 754974721u, 1000000007u}) {
+		auto portable = convolution_mod<long long, convolution_mod_detail::PortableBackend>(integers, others, mod);
+		assert(convolution_mod(integers, others, mod) == portable);
+		assert((convolution_mod<long long, convolution_mod_detail::FullBackend>(integers, others, mod) == portable));
+	}
+	std::vector<OtherMod> modular(97, OtherMod(123)), factors(113, OtherMod(456));
+	assert(convolution(modular, factors) == light_convolution::convolution(modular, factors));
 	std::vector<mint> a(97, mint(2)), b(97, mint(3));
 	assert(convolution(a, b) == light_convolution::convolution(a, b));
 	assert(cyclic_convolution(a, b, 19) == light_convolution::cyclic_convolution(a, b, 19));

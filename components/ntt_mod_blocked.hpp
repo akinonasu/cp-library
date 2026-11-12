@@ -1,6 +1,6 @@
 #ifndef NTT_MOD_BLOCKED_HPP
 #define NTT_MOD_BLOCKED_HPP
-#include "ntt_mod.hpp"
+#include "ntt_mod_core.hpp"
 #include "fps_workspace.hpp"
 #include <type_traits>
 #if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
