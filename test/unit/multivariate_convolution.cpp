@@ -42,4 +42,16 @@ int main() {
 		assert(multivariate_convolution(x, y, dims) == result);
 		assert(light_convolution::multivariate_convolution(x, y, dims) == result);
 	}
+	for (bool alternating : {false, true}) {
+		const std::vector<int> dims{67, 71};
+		const int n = dims[0] * dims[1];
+		std::vector<mint> a(n), expected(n);
+		for (int j = 0; j < dims[1]; ++j) for (int i = 0; i < dims[0]; ++i) {
+			mint sign = alternating && (j & 1) ? mint(-1) : mint(1);
+			a[i + dims[0] * j] = sign;
+			expected[i + dims[0] * j] = mint(i + 1) * mint(j + 1) * sign;
+		}
+		assert(multivariate_convolution(a, a, dims) == expected);
+		assert(light_convolution::multivariate_convolution(a, a, dims) == expected);
+	}
 }

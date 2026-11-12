@@ -7,6 +7,7 @@
 #include <type_traits>
 #include "../components/multivariate_convolution_core.hpp"
 #include "../components/multivariate_ranked.hpp"
+#include "../components/multivariate_convolution_product.hpp"
 
 #include "../components/convolution_dispatch.hpp"
 #include "../components/ntt.hpp"
@@ -54,7 +55,8 @@ std::vector<T> multivariate_convolution(const std::vector<T> &a, const std::vect
 				if (small && degree < 24 && std::count(dims.begin(), dims.end(), 2) >= 3 && multivariate_convolution_detail::Core::available())
 					return multivariate_ranked_detail::multiply(x, y, dims);
 #endif
-				return multivariate_convolution_detail::Core::multiply(x, y, dims, transform, convolution<mint>);
+				multivariate_convolution_detail::Product product;
+				return multivariate_convolution_detail::Core::multiply(x, y, dims, transform, [&](const auto &f, const auto &g) { return product(f, g); });
 			};
 			if constexpr (std::is_same_v<T, mint>) return multiply(a, b);
 			std::vector<mint> x(size), y(size);

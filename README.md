@@ -42,6 +42,7 @@
 | `components/range_affine_sum_simd.hpp` | 区間アフィン変換・区間和の共通実装 | [使い方](docs/range_affine_sum_simd.md) |
 | `components/range_affine_point_simd.hpp` | 区間アフィン変換・一点取得の共通実装 | [使い方](docs/range_affine_point_simd.md) |
 | `components/multivariate_convolution_core.hpp` | 多変数畳み込みの共通実装 | [使い方](docs/multivariate_convolution_core.md) |
+| `components/multivariate_convolution_product.hpp` | 多変数畳み込みの積 | [使い方](docs/multivariate_convolution_product.md) |
 | `components/multivariate_ranked.hpp` | 小さい次元の多変数畳み込み | [使い方](docs/multivariate_ranked.md) |
 | `components/ordered_multiset_btree.hpp` | 順序統計多重集合の共通実装 | [使い方](docs/ordered_multiset_btree.md) |
 | `components/predecessor_set.hpp` | Predecessor Set（64 分木） | [使い方](docs/predecessor_set.md) |
