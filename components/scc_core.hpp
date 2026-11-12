@@ -10,6 +10,32 @@
 #include <vector>
 
 namespace scc_detail {
+template<bool RejectPairs>
+inline std::pair<int, std::vector<int>> functional_ids(int n, std::span<const std::pair<int, int>> edges,
+	std::vector<int> &answer, std::vector<int> &next, std::vector<int> &degree) {
+	std::fill(next.begin(), next.end(), -1);
+	for (auto [from, to] : edges) next[from] = to;
+	std::vector<int> work;
+	work.reserve(n);
+	for (int v = 0; v < n; ++v) if (!degree[v]) work.push_back(v);
+	for (std::size_t head = 0; head < work.size(); ++head) {
+		int v = work[head], to = next[v];
+		answer[v] = static_cast<int>(head);
+		if (to != -1 && --degree[to] == 0) work.push_back(to);
+	}
+	int count = static_cast<int>(work.size());
+	for (int v = 0; v < n; ++v) if (degree[v]) {
+		int u = v;
+		do {
+			answer[u] = count;
+			if constexpr (RejectPairs) if (answer[u ^ 1] == count) return {-1, {}};
+			degree[u] = 0;
+			u = next[u];
+		} while (u != v);
+		++count;
+	}
+	return {count, std::move(answer)};
+}
 template<bool RejectPairs = false>
 inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int, int>> edges) {
 	assert((!RejectPairs || n % 2 == 0) && n >= 0 && edges.size() <= std::size_t(std::numeric_limits<int>::max()));
@@ -35,6 +61,7 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 		functional &= offset[v + 1] <= 1;
 		offset[v + 1] += offset[v];
 	}
+	if (functional) return functional_ids<RejectPairs>(n, edges, answer, offset, degree);
 	std::vector<int> adjacency(edges.size()), work(offset.begin(), offset.end() - 1);
 	for (auto [from, to] : edges) adjacency[work[from]++] = to;
 	work.clear();
@@ -47,20 +74,6 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 	}
 	int peeled = static_cast<int>(work.size());
 	if (peeled == n) return {n, std::move(answer)};
-	if (functional) {
-		int count = peeled;
-		for (int v = 0; v < n; ++v) if (degree[v]) {
-			int u = v;
-			do {
-				answer[u] = count;
-				if constexpr (RejectPairs) if (answer[u ^ 1] == count) return {-1, {}};
-				degree[u] = 0;
-				u = adjacency[offset[u]];
-			} while (u != v);
-			++count;
-		}
-		return {count, std::move(answer)};
-	}
 	for (int v : work) answer[v] = -answer[v] - 1;
 	for (int &x : degree) x = x ? -1 : n;
 	work.clear();

@@ -23,6 +23,13 @@ void check(int n, const std::vector<std::pair<int, int>> &edges) {
 		assert((result.id[u] == result.id[v]) == (reaches[u][v] && reaches[v][u]));
 		if (reaches[u][v]) assert(result.id[u] <= result.id[v]);
 	}
+	if (n % 2 == 0) {
+		bool conflict = false;
+		for (int v = 0; v < n; v += 2) conflict |= reaches[v][v ^ 1] && reaches[v ^ 1][v];
+		auto paired = scc_detail::ids<true>(n, edges);
+		if (conflict) assert(paired.first == -1 && paired.second.empty());
+		else assert(paired.first == result.size() && paired.second == result.id);
+	}
 	auto copy = result;
 	auto moved = std::move(result);
 	assert(copy.id == moved.id && result.size() == 0);
@@ -46,6 +53,15 @@ int main() {
 		for (int i = 0, m = n ? random() % 150 : 0; i < m; ++i) edges.emplace_back(random() % n, random() % n);
 		check(n, edges);
 	}
+	for (int repeat = 0; repeat < 200; ++repeat) {
+		int n = random() % 40;
+		std::vector<std::pair<int, int>> edges;
+		for (int v = 0; v < n; ++v) if (random() % 3) edges.emplace_back(v, random() % n);
+		std::shuffle(edges.begin(), edges.end(), random);
+		check(n, edges);
+	}
+	check(6, { {5, 4}, {4, 3}, {3, 2}, {2, 1}, {1, 0} });
+	check(6, { {0, 1}, {1, 0}, {2, 3}, {3, 2}, {4, 5}, {5, 4} });
 	check(200, {});
 	std::vector<std::pair<int, int>> cycle;
 	for (int v = 0; v < 200; ++v) cycle.emplace_back(v, (v + 1) % 200);
