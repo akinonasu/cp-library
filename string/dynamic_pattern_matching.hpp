@@ -113,7 +113,13 @@ class DynamicPatternMatching {
 		int b = split(rest, r - l).second;
 		root_ = concat(a, b);
 	}
-	void set(size_type p, char c) { assert(p < size()); erase(p); insert(p, c); }
+	void set(size_type p, char c) {
+		assert(p < size());
+		auto [a, rest] = split(root_, p);
+		int b = split(rest, 1).second;
+		int middle = rope().make(character(c));
+		root_ = concat(concat(a, middle), b);
+	}
 	void move(size_type l, size_type r, size_type p) {
 		check_range(l, r); assert(p <= size() - (r - l));
 		if (l == r || p == l) return;

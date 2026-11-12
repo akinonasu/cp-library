@@ -161,6 +161,16 @@ void limits() {
 	assert(matching.size() == std::numeric_limits<std::uint64_t>::max());
 	assert(matching[0] == 'z' && matching[matching.size() - 1] == 'z');
 	auto snapshot = matching;
+	auto replaced = snapshot;
+	const auto middle = replaced.size() / 2;
+	replaced.set(0, char(0));
+	replaced.set(middle, char(255));
+	replaced.set(replaced.size() - 1, 'a');
+	assert(replaced.size() == snapshot.size() && replaced[0] == char(0) && replaced[middle] == char(255) && replaced[replaced.size() - 1] == 'a');
+	assert(snapshot[0] == 'z' && snapshot[middle] == 'z' && snapshot[snapshot.size() - 1] == 'z');
+	replaced.erase(middle + 1, replaced.size() - 1);
+	replaced.erase(1, middle);
+	check(replaced, std::string({char(0), char(255), 'a'}));
 	matching.move(0, 1000000000000000000ULL, matching.size() - 1000000000000000000ULL);
 	matching.erase(1, matching.size() - 1);
 	check(matching, "zz");
