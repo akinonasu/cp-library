@@ -361,6 +361,33 @@ struct NTT : mint_detail::Ops {
 		for (int i = count; i < n; ++i) dst[i] = T::word(src[i]).inv().v;
 	}
 	__attribute__((target("avx2"))) static void inverse_sequence8(U *dst, int first, int n) {
+		if (n >= 4096) {
+			const int count = n / 32 * 32;
+			const I8 step = _mm256_set1_epi32(in(32));
+			I8 factor[4], prefix[4], inverse[4];
+			for (int c = 0; c < 4; ++c) {
+				alignas(32) U initial[8];
+				for (int j = 0; j < 8; ++j) initial[j] = in(first + 8 * c + j);
+				factor[c] = prefix[c] = load8(initial);
+				store8(dst + 8 * c, prefix[c]);
+			}
+			for (int i = 32; i < count; i += 32)
+				for (int c = 0; c < 4; ++c) {
+					factor[c] = add8(factor[c], step);
+					prefix[c] = mul8(prefix[c], factor[c]);
+					store8(dst + i + 8 * c, prefix[c]);
+				}
+			for (int c = 0; c < 4; ++c) inverse[c] = inverse8(prefix[c]);
+			for (int i = count - 32; i >= 32; i -= 32)
+				for (int c = 0; c < 4; ++c) {
+					store8(dst + i + 8 * c, mul8(inverse[c], load8(dst + i - 32 + 8 * c)));
+					inverse[c] = mul8(inverse[c], factor[c]);
+					factor[c] = sub8(factor[c], step);
+				}
+			for (int c = 0; c < 4; ++c) store8(dst + 8 * c, inverse[c]);
+			if (count != n) inverse_sequence8(dst + count, first + count, n - count);
+			return;
+		}
 
 		alignas(32) U initial[8];
 		for (int j = 0; j < 8; ++j) initial[j] = in(first + j);
