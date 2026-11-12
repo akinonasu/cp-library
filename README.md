@@ -345,7 +345,7 @@
 | `string/lcp_array.hpp` | LCP Array | [使い方](docs/lcp_array.md) |
 | `string/concatenation_order.hpp` | 文字列結合の辞書順比較・並べ替え | [使い方](docs/concatenation_order.md) |
 | `string/run_enumerate.hpp` | Run 列挙 | [使い方](docs/run_enumerate.md) |
-| `string/manacher.hpp` | Manacher・回文半径・区間の回文判定 | [使い方](docs/manacher.md) |
+| `string/manacher.hpp` | 回文半径・全中心の最大回文長・区間の回文判定 | [使い方](docs/manacher.md) |
 | `string/eertree.hpp` | Eertree（回文木）・回文の出現回数 | [使い方](docs/eertree.md) |
 | `string/trie.hpp` | Trie・重複付き辞書・接頭辞検索・辞書順検索・木 DP | [使い方](docs/trie.md) |
 | `string/aho_corasick.hpp` | Aho–Corasick・複数パターン検索 | [使い方](docs/aho_corasick.md) |
@@ -388,7 +388,7 @@
 | `math/multiplicative_divisors.hpp` | 約数ごとの乗法的関数の値 | [使い方](docs/multiplicative_divisors.md) |
 | `math/is_prime.hpp` | 素数判定 | [使い方](docs/is_prime.md) |
 | `math/is_prime_light.hpp` | 軽量版の素数判定 | [使い方](docs/is_prime_light.md) |
-| `math/prime_sieve.hpp` | 素数篩 | [使い方](docs/prime_sieve.md) |
+| `math/prime_sieve.hpp` | 素数列挙・間引き列挙 | [使い方](docs/prime_sieve.md) |
 | `math/prime_count.hpp` | 上限以下の素数の個数 | [使い方](docs/prime_count.md) |
 | `math/totient_sum.hpp` | Euler φ関数の先頭区間和 | [使い方](docs/totient_sum.md) |
 | `math/multiplicative_prefix_sum.hpp` | 乗法的関数の先頭区間和 | [使い方](docs/multiplicative_prefix_sum.md) |
@@ -450,6 +450,7 @@
 | `components/fast_io.hpp` | Fast I/O | [使い方](docs/fast_io.md) |
 | `components/fast_io_bulk.hpp` | 整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
 | `components/fast_io_output.hpp` | 非負整数の一括出力 | [使い方](docs/fast_io_output.md) |
+| `components/fast_io_output_values.hpp` | 非負整数列の一括出力 | [使い方](docs/fast_io_output_values.md) |
 | `components/dynamic_bit_vector.hpp` | Dynamic Bit Vector | [使い方](docs/dynamic_bit_vector.md) |
 | `components/dynamic_quad_vector.hpp` | Dynamic Quad Vector | [使い方](docs/dynamic_quad_vector.md) |
 | `components/dynamic_quad_wavelet.hpp` | Dynamic Quad Wavelet Matrix | [使い方](docs/dynamic_quad_wavelet.md) |
