@@ -1,22 +1,14 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/enumerate_primes"
 #include "math/prime_sieve.hpp"
-#include "components/fast_io.hpp"
+#include "components/fast_io_output_values.hpp"
 
 int main() {
 	FastInput input;
 	FastOutput output;
 	std::size_t n = 0, a = 0, b = 0;
 	input.read(n), input.read(a), input.read(b);
-	std::vector<std::size_t> selected;
-	std::size_t count = 0, next = b;
-	for_each_prime(n + 1, [&](std::size_t p) {
-		if (count == next) selected.push_back(p), next += a;
-		++count;
-	});
+	auto [count, selected] = prime_sieve_sample(n + 1, a, b);
 	output.write(count), output.write(' '), output.println(selected.size());
-	for (std::size_t i = 0; i < selected.size(); ++i) {
-		if (i) output.write(' ');
-		output.write(selected[i]);
-	}
-	output.write('\n');
+	if (selected.empty()) output.write('\n');
+	else write_unsigned_values(output, selected.size(), [&](std::size_t i) { return selected[i]; });
 }

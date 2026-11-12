@@ -38,12 +38,13 @@ inline bool avx2() {
 }
 
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
-template <std::uint32_t mod>
+template <std::uint32_t mod, int Ranks = 20>
 struct Modular {
+	static_assert(Ranks >= 8 && Ranks <= 20 && Ranks % 4 == 0);
 	using V = std::uint32_t;
 	static V add(V a, V b) { V c = a + b; return c < mod ? c : c - mod; }
 	static V sub(V a, V b) { return a >= b ? a - b : a + mod - b; }
-	static constexpr int width = 24;
+	static constexpr int width = (Ranks + 7) / 8 * 8;
 	__attribute__((target("avx2"))) static void transform(V *a, int n) {
 		const __m256i p = _mm256_set1_epi32(mod);
 		if (n >= 128) {
@@ -106,8 +107,8 @@ struct Modular {
 		constexpr V r2 = V((~std::uint64_t(0) % mod + 1) % mod);
 		const __m256i p = _mm256_set1_epi64x(mod), scale = _mm256_set1_epi64x(r2);
 		for (int pos = 0; pos < n; pos += 4) {
-			__m256i x[20], y[20], out[20];
-			for (int rank = 0; rank < 20; rank += 4) {
+			__m256i x[Ranks], y[Ranks], out[Ranks];
+			for (int rank = 0; rank < Ranks; rank += 4) {
 				for (int side = 0; side < 2; ++side) {
 					const V *v = (side ? b : a) + std::size_t(pos) * width + rank;
 					__m128i a0 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(v));
@@ -124,7 +125,7 @@ struct Modular {
 			}
 			out[0] = _mm256_setzero_si256();
 #pragma GCC unroll 20
-			for (int rank = 1; rank < 20; ++rank) {
+			for (int rank = 1; rank < Ranks; ++rank) {
 				__m256i value = _mm256_setzero_si256();
 				for (int first = 0; first < rank; first += 8) {
 					__m256i sum = _mm256_setzero_si256();
@@ -135,7 +136,7 @@ struct Modular {
 				}
 				out[rank] = reduce(_mm256_mul_epu32(value, scale));
 			}
-			for (int rank = 0; rank < 20; rank += 4) {
+			for (int rank = 0; rank < Ranks; rank += 4) {
 				__m128i z[4];
 				for (int j = 0; j < 4; ++j) z[j] = _mm256_castsi256_si128(_mm256_permutevar8x32_epi32(out[rank + j], _mm256_setr_epi32(0, 2, 4, 6, 0, 2, 4, 6)));
 				__m128i u = _mm_unpacklo_epi32(z[0], z[1]), v = _mm_unpackhi_epi32(z[0], z[1]), w = _mm_unpacklo_epi32(z[2], z[3]), zz = _mm_unpackhi_epi32(z[2], z[3]);

@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
+#include <limits>
 #include <random>
 #include <vector>
 
@@ -48,6 +49,28 @@ int main(int argc, char **) {
 		for_each_prime(n, [&](std::size_t p) { emitted.push_back(p); });
 		assert(emitted == (n < 2 ? std::vector<std::size_t>{} : reference(n)));
 	}
+	auto check_sample = [&](std::size_t n, std::size_t stride, std::size_t offset) {
+		auto [count, values] = prime_sieve_sample(n, stride, offset);
+		const auto end = std::lower_bound(expected.begin(), expected.end(), n);
+		const std::size_t size = std::size_t(end - expected.begin());
+		assert(count == size);
+		std::vector<std::size_t> selected;
+		for (std::size_t i = offset; i < size;) {
+			selected.push_back(expected[i]);
+			if (stride >= size - i) break;
+			i += stride;
+		}
+		assert(selected == values);
+	};
+	for (std::size_t n = 0; n < 128; ++n)
+		for (std::size_t stride = 1; stride <= 17; ++stride)
+			for (std::size_t offset = 0; offset <= 20; ++offset) check_sample(n, stride, offset);
+	const std::size_t maximum = std::numeric_limits<std::size_t>::max();
+	const std::size_t strides[] = {1, 2, 4, 5, 7, 8, 9, 63, 64, 65, 1000000, maximum};
+	const std::size_t offsets[] = {0, 1, 7, 63, 100, 1000000, maximum};
+	for (std::size_t n : {65536, 65537, 65538, 90089, 90090, 90091, 960959, 960960, 960961, 1921920, 4999999})
+		for (auto stride : strides)
+			for (auto offset : offsets) check_sample(n, stride, offset);
 	if (extended) {
 		const std::size_t n[] = {10000001, 100000001, 500000001};
 		const std::size_t counts[] = {664579, 5761455, 26355867};

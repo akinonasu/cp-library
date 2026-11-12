@@ -12,6 +12,8 @@
 #include <vector>
 
 namespace totient_detail {
+template<class T> inline constexpr bool wide_modular = requires(std::uint64_t x) { std::uint64_t(T::mod()); T{x}; };
+
 template<class T, class I> T value(I x) {
 	if constexpr (requires { std::uint64_t(T::mod()); }) {
 		auto modulus = std::uint64_t(T::mod());
@@ -111,7 +113,8 @@ template<class T, class Count> T compute(std::uint64_t n) {
 
 template<class T = std::uint64_t> T totient_sum(std::uint64_t n) {
 	constexpr bool integer = std::is_integral_v<T> || std::is_same_v<T, __int128_t> || std::is_same_v<T, __uint128_t>;
-	using A = std::conditional_t<integer, __uint128_t, T>;
+	constexpr bool modular = totient_detail::wide_modular<T>;
+	using A = std::conditional_t<integer || modular, __uint128_t, T>;
 	A answer(0);
 	if (n < 64) {
 		std::vector<unsigned> phi(n + 1);
@@ -122,7 +125,8 @@ template<class T = std::uint64_t> T totient_sum(std::uint64_t n) {
 	} else if (n <= (std::uint64_t(1) << 40)) answer = totient_detail::compute<A, std::int64_t>(n);
 	else answer = totient_detail::compute<A, __int128_t>(n);
 	if constexpr (integer) { assert(answer <= __uint128_t(std::numeric_limits<T>::max())); }
-	return T(answer);
+	if constexpr (!integer && modular) return T(std::uint64_t(answer % std::uint64_t(T::mod())));
+	else return T(answer);
 }
 
 #endif

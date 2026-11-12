@@ -119,11 +119,11 @@ void check_modular() {
 	assert(subset_convolution(a, b) == subset_convolution_baseline::subset_convolution(a, b));
 }
 
-template <std::uint32_t mod>
+template <std::uint32_t mod, int Ranks = 20>
 void check_modular_product() {
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	if (!subset_convolution_detail::avx2()) return;
-	using Kernel = subset_convolution_detail::Modular<mod>;
+	using Kernel = subset_convolution_detail::Modular<mod, Ranks>;
 	for (int trial = 0; trial < 16; ++trial) {
 		std::vector<std::uint32_t> a(4 * Kernel::width), b(a.size());
 		for (auto &x : a) x = trial ? rng() % mod : mod - 1;
@@ -131,7 +131,7 @@ void check_modular_product() {
 		auto original = a;
 		Kernel::product(a.data(), b.data(), 4);
 		for (int pos = 0; pos < 4; ++pos)
-			for (int rank = 0; rank < 20; ++rank) {
+			for (int rank = 0; rank < Ranks; ++rank) {
 				std::uint64_t expected = 0;
 				for (int i = 0; i < rank; ++i)
 					expected = (expected + std::uint64_t(original[pos * Kernel::width + i]) * b[pos * Kernel::width + rank - i - 1]) % mod;
@@ -139,6 +139,22 @@ void check_modular_product() {
 			}
 	}
 #endif
+}
+
+template <class T>
+void check_modular_boundaries() {
+	for (int exponent : {8, 12, 16})
+		for (int delta : {-1, 0, 1}) {
+			int base = 1 << exponent;
+			std::vector<T> a(base + delta, T::raw(T::mod() - 1));
+			auto c = subset_convolution(a, a);
+			for (std::size_t mask = 0; mask < c.size(); ++mask) {
+				unsigned ways = 1U << std::popcount(mask);
+				if (delta < 0 && mask == unsigned(base - 1)) ways -= 2;
+				if (delta > 0 && mask >= unsigned(base)) ways = 2;
+				assert(c[mask] == T(ways));
+			}
+		}
 }
 
 int main() {
@@ -161,8 +177,19 @@ int main() {
 	check_modular<RecurrenceModint<2>>();
 	check_modular<RecurrenceModint<2147483647>>();
 	check_modular<DynamicModint>();
+	check_modular_boundaries<mint>();
+	check_modular_boundaries<RecurrenceModint<1073741823>>();
+	check_modular_product<3, 8>();
+	check_modular_product<3, 12>();
+	check_modular_product<3, 16>();
 	check_modular_product<3>();
+	check_modular_product<998244353, 8>();
+	check_modular_product<998244353, 12>();
+	check_modular_product<998244353, 16>();
 	check_modular_product<998244353>();
+	check_modular_product<1073741823, 8>();
+	check_modular_product<1073741823, 12>();
+	check_modular_product<1073741823, 16>();
 	check_modular_product<1073741823>();
 	std::vector<mint> a(1 << 16, mint(1));
 	auto c = subset_convolution(a, a);

@@ -74,4 +74,23 @@ int main() {
 	for (int i = 0; i < 100; ++i) last = numbered.push(last, Value(i));
 	auto numbered_values = numbered.get_many(std::vector<std::pair<decltype(numbered)::root_type, int>>(100, {last, 99}));
 	for (const auto &value : numbered_values) assert(value.x == 0);
+	PersistentStack<Value> forest;
+	using Node = decltype(forest)::root_type;
+	std::vector<Node> versions{forest.initial_root()};
+	std::vector<int> depths{0}, topmost{0}, expected_roots;
+	std::vector<std::pair<Node, int>> ancestor_queries;
+	for (int i = 1; i <= 4096; ++i) {
+		int parent = i % 127 == 1 ? 0 : int(random() % unsigned(i));
+		versions.push_back(forest.push(versions[parent], Value(i)));
+		depths.push_back(depths[parent] + 1);
+		topmost.push_back(parent ? topmost[parent] : i);
+		for (int repeat = 0; repeat < 3; ++repeat) {
+			ancestor_queries.emplace_back(versions.back(), depths.back() - 1);
+			expected_roots.push_back(topmost.back());
+		}
+	}
+	auto forest_values = forest.get_many(ancestor_queries);
+	assert(forest_values.size() == expected_roots.size());
+	for (std::size_t i = 0; i < forest_values.size(); ++i) assert(forest_values[i].x == expected_roots[i]);
+
 }

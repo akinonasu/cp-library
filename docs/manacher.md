@@ -21,6 +21,21 @@ Manacher sequence(a);
 assert(sequence.is_palindrome(0, 4));
 ```
 
+最大回文長の列だけが必要なら、`palindrome_lengths(s)` を使います。文字と文字の間を含む全ての中心について、最長の回文の長さを左から並べた `vector<int>` を返します。
+
+```cpp
+#include "lib/string/manacher.hpp"
+#include <cassert>
+#include <vector>
+
+int main() {
+	auto lengths = palindrome_lengths("aba");
+	assert((lengths == std::vector<int>{1, 0, 3, 0, 1}));
+}
+```
+
+返り値の `2*i` 番目は文字 `s[i]` を中心とする長さ、`2*i+1` 番目は `s[i]` と `s[i+1]` の間を中心とする長さです。文字間に回文がなければ 0 です。長さ $$n>0$$ の入力に対して $$2n-1$$ 要素、空入力に対して空配列を返します。入力の列・型・長さに関する条件は `Manacher` と同じです。入力は変更せず、計算量と使用空間は $$O(n)$$ です。
+
 添字は 0 始まり、区間は半開区間 `[l,r)` です。`odd[i]` は中心 `i` を含めた片側の長さ、`even[i]` は `i-1` と `i` の間を中心とする片側の長さです。
 
 | 半径 | 最長の回文の区間 | 長さ |

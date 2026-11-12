@@ -66,12 +66,15 @@ class PersistentStack {
 			for (auto [root, k] : queries) result.push_back(get(root, k));
 			return result;
 		}
-		std::vector<root_type> first(nodes.size()), next(nodes.size()), selected(queries.size()), path;
+		std::vector<root_type> first(nodes.size()), next(nodes.size()), selected(queries.size()), path(1);
 		std::vector<int> head(nodes.size(), -1), following(queries.size());
+		int maximum_depth = 0;
 		for (root_type v = 1; v < nodes.size(); ++v) {
 			root_type p = nodes[v].next;
 			next[v] = first[p]; first[p] = v;
+			if (maximum_depth < nodes[v].size) maximum_depth = nodes[v].size;
 		}
+		path.reserve(std::size_t(maximum_depth) + 1);
 		for (int i = 0; i < int(queries.size()); ++i) {
 			root_type root = queries[i].first;
 			following[i] = head[root]; head[root] = i;
@@ -80,7 +83,7 @@ class PersistentStack {
 			path.push_back(v);
 			for (int i = head[v]; i != -1; i = following[i]) selected[i] = path[path.size() - 1 - queries[i].second];
 			if (first[v]) { v = first[v]; continue; }
-			while (v && !next[v]) { path.pop_back(); v = nodes[v].next; }
+			while (v && !next[v]) { path.pop_back(); v = path.back(); }
 			if (v) { path.pop_back(); v = next[v]; }
 		}
 		std::vector<T> result;
