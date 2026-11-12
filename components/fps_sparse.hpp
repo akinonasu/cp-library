@@ -4,7 +4,7 @@
 #include "mint_arithmetic.hpp"
 #include <array>
 #include <cstdint>
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -18,7 +18,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 	using U = O::U;
 	static_assert(12ULL * (O::mod - 1) * (O::mod - 1) + 0xffffffffULL * O::mod < ~0ULL);
 	static U canonical(U x) { return x < O::mod ? x : x - O::mod; }
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	using V = O::I8;
 	__attribute__((target("avx2"))) static V canonical8(V x) {
 		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(O::twice)));
@@ -71,6 +71,121 @@ struct SparseSeries : SparseBase<SparseSeries> {
 		O::store8(out + i, canonical8(value));
 	}
 	template <Kind kind>
+	__attribute__((target("avx2"))) static int homogeneous(U *out, int i, int end, const Tap *taps, int count) {
+		const int width = taps[count - 1].degree;
+		if constexpr (kind == Kind::logarithm) if (i == width) {
+			mint value = mint::word(out[i]);
+			for (int j = 0; j < count; ++j) value += mint::word(taps[j].constant) * mint::word(out[i - taps[j].degree]);
+			out[i++] = canonical(value.v);
+		}
+		V coefficients[8][15];
+		for (int j = 0; j < width; ++j) {
+			U words[64];
+			for (int t = 0; t < 64; ++t) {
+				U value = 0;
+				for (int first = 0; first < count; first += 12) {
+					std::uint64_t sum = 0;
+					for (int k = first; k < std::min(count, first + 12); ++k) {
+						int d = taps[k].degree;
+						U x = t >= d ? words[t - d] : j == d - t - 1 ? O::one : 0;
+						sum += std::uint64_t(taps[k].constant) * x;
+					}
+					value = canonical(O::add(value, O::reduce(sum) % O::mod));
+				}
+				words[t] = value;
+			}
+			for (int b = 0; b < 8; ++b) coefficients[b][j] = O::load8(words + 8 * b);
+		}
+		for (; end - i >= 64; i += 64) {
+			for (int block = 0; block < 8; ++block) {
+				int b = block == 0 ? 7 : block - 1;
+				V total = _mm256_setzero_si256();
+				for (int first = 0; first < width; first += 12) {
+					V even = _mm256_setzero_si256(), odd = even;
+					for (int j = first; j < std::min(width, first + 12); ++j) {
+						V x = _mm256_set1_epi32(out[i - 1 - j]), c = coefficients[b][j];
+						even = _mm256_add_epi64(even, _mm256_mul_epu32(x, c));
+						odd = _mm256_add_epi64(odd, _mm256_mul_epu32(x, _mm256_srli_epi64(c, 32)));
+					}
+					total = O::add8(total, reduce8(even, odd));
+				}
+				O::store8(out + i + 8 * b, canonical8(total));
+			}
+		}
+		return i;
+	}
+
+	template <Kind kind, int groups>
+	__attribute__((target("avx2"))) static int chained(U *out, int i, int end, int width, const U *inv, const U *p, const V *coefficients, const V *steps) {
+		V total = _mm256_setzero_si256();
+		for (int first = 0; first < width; first += 12) {
+			V even = _mm256_setzero_si256(), odd = even;
+			for (int j = first; j < std::min(width, first + 12); ++j) {
+				V x = _mm256_set1_epi32(out[i - 1 - j]), c = coefficients[j];
+				even = _mm256_add_epi64(even, _mm256_mul_epu32(x, c));
+				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(x, _mm256_srli_epi64(c, 32)));
+			}
+			total = O::add8(total, reduce8(even, odd));
+		}
+		V h = canonical8(O::mul8(canonical8(total), O::load8(inv + i))), previous{};
+		if constexpr (groups == 2) {
+			U inverse[8] = {O::one};
+			for (int t = 1; t < 8; ++t) {
+				mint value = 0;
+				for (int d = 1; d <= t; ++d) value -= mint::word(p[d]) * mint::word(inverse[t - d]);
+				inverse[t] = canonical(value.v);
+			}
+			previous = triangular(O::load8(out + i - 8), inverse);
+		}
+		V matrix[8 * groups], delta[8 * groups];
+		for (int group = 0; group < groups; ++group) for (int s = 0; s < 8; ++s) {
+			V even = _mm256_setzero_si256(), odd = even, de = even, dodd = even;
+			for (int j = 8 * group; j < width && j + s < 8 * group + 8; ++j) {
+				V c = coefficients[j], factor = _mm256_set1_epi32(p[7 + 8 * group - j - s]);
+				if constexpr (kind == Kind::power) c = canonical8(O::add8(c, steps[j]));
+				even = _mm256_add_epi64(even, _mm256_mul_epu32(c, factor));
+				odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(c, 32), factor));
+				if constexpr (kind == Kind::power) {
+					de = _mm256_add_epi64(de, _mm256_mul_epu32(steps[j], factor));
+					dodd = _mm256_add_epi64(dodd, _mm256_mul_epu32(_mm256_srli_epi64(steps[j], 32), factor));
+				}
+			}
+			matrix[8 * group + s] = reduce8(even, odd);
+			if constexpr (kind == Kind::power) delta[8 * group + s] = reduce8(de, dodd);
+		}
+		for (; end - i >= 16; i += 8) {
+			total = _mm256_setzero_si256();
+			for (int group = 0; group < groups; ++group) {
+				V value = group ? previous : h;
+				V low = _mm256_permute2x128_si256(value, value, 0x00), high = _mm256_permute2x128_si256(value, value, 0x11);
+				V x[8] = {_mm256_shuffle_epi32(low, 0x00), _mm256_shuffle_epi32(low, 0x55), _mm256_shuffle_epi32(low, 0xaa), _mm256_shuffle_epi32(low, 0xff),
+					_mm256_shuffle_epi32(high, 0x00), _mm256_shuffle_epi32(high, 0x55), _mm256_shuffle_epi32(high, 0xaa), _mm256_shuffle_epi32(high, 0xff)};
+				V even = _mm256_setzero_si256(), odd = even;
+#pragma GCC unroll 8
+				for (int j = 0; j < 8; ++j) {
+					V c = matrix[8 * group + j];
+					even = _mm256_add_epi64(even, _mm256_mul_epu32(x[j], c));
+					odd = _mm256_add_epi64(odd, _mm256_mul_epu32(x[j], _mm256_srli_epi64(c, 32)));
+				}
+				if constexpr (groups == 1) total = reduce8(even, odd);
+				else total = group ? _mm256_add_epi32(total, reduce8(even, odd)) : reduce8(even, odd);
+			}
+			if constexpr (groups == 2) total = _mm256_min_epu32(total, _mm256_sub_epi32(total, _mm256_set1_epi32(O::mod)));
+			V next = O::mul8(total, O::load8(inv + i + 8));
+			next = _mm256_min_epu32(next, _mm256_sub_epi32(next, _mm256_set1_epi32(O::mod)));
+			O::store8(out + i, triangular(h, p));
+			if constexpr (groups == 2) previous = h;
+			h = next;
+			if constexpr (kind == Kind::power) for (int j = 0; j < 8 * groups; ++j) {
+				V value = _mm256_add_epi32(matrix[j], delta[j]);
+				matrix[j] = _mm256_min_epu32(value, _mm256_sub_epi32(value, _mm256_set1_epi32(O::mod)));
+			}
+		}
+		O::store8(out + i, triangular(h, p));
+		return i + 8;
+	}
+
+	template <Kind kind>
 	__attribute__((target("avx2"))) static int near_blocks(U *out, int i, int end, const Tap *taps, int count, const U *inv, const U *p, const U *q) {
 		const int width = taps[count - 1].degree;
 		if constexpr (kind == Kind::logarithm) if (i == width) {
@@ -78,12 +193,13 @@ struct SparseSeries : SparseBase<SparseSeries> {
 			for (int j = 0; j < count; ++j) value += mint::word(taps[j].constant) * mint::word(out[i - taps[j].degree]);
 			out[i++] = canonical(value.v);
 		}
-		std::array<mint, 8> constant{}, slope{};
+		constexpr int limit = kind == Kind::power || kind == Kind::exponential ? 16 : 8;
+		std::array<mint, limit> constant{}, slope{};
 		for (int j = 0; j < count; ++j) {
 			constant[taps[j].degree] = mint::word(taps[j].constant);
 			slope[taps[j].degree] = mint::word(taps[j].slope);
 		}
-		V coefficients[7], steps[7];
+		V coefficients[limit - 1], steps[limit - 1];
 		for (int j = 0; j < width; ++j) {
 			std::array<std::uint32_t, 8> first{}, step{};
 			for (int t = 0; t < 8; ++t) {
@@ -99,6 +215,10 @@ struct SparseSeries : SparseBase<SparseSeries> {
 			}
 			coefficients[j] = O::load8(first.data());
 			if constexpr (kind == Kind::power) steps[j] = O::load8(step.data());
+		}
+		if constexpr (kind == Kind::power || kind == Kind::exponential) if (end - i >= 8192) {
+			if (width <= 8) return chained<kind, 1>(out, i, end, width, inv, p, coefficients, steps);
+			return chained<kind, 2>(out, i, end, width, inv, p, coefficients, steps);
 		}
 		for (; end - i >= 8; i += 8) {
 			V even = _mm256_setzero_si256(), odd = even;
@@ -120,6 +240,10 @@ struct SparseSeries : SparseBase<SparseSeries> {
 	template <Kind kind>
 	__attribute__((target("avx2"))) static int blocks(U *out, int i, int end, const Tap *taps, int near, int count, const U *inv, const U *p, const U *q) {
 		if (end - i < 8) return i;
+		if constexpr (kind == Kind::inverse || kind == Kind::logarithm)
+			if (count && taps[count - 1].degree < 16 && end - i >= 8192) i = homogeneous<kind>(out, i, end, taps, count);
+		if constexpr (kind == Kind::power || kind == Kind::exponential)
+			if (near && taps[count - 1].degree < 16 && end - i >= 8192) return near_blocks<kind>(out, i, end, taps, count, inv, p, q);
 		if (count == near && count && end - i >= 256) return near_blocks<kind>(out, i, end, taps, count, inv, p, q);
 		V coefficients[64];
 		U steps[64];
@@ -177,7 +301,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 #endif
 	template <bool exponential = false>
 	static void geometric(Series &out, mint initial, mint ratio, const mint *inv = nullptr) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (out.size() >= 8 && O::vectorized()) {
 			if (!exponential && out.size() >= 256) geometric8<false, 4>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v);
 			else geometric8<exponential>(reinterpret_cast<U *>(out.data()), out.size(), initial.v, ratio.v, reinterpret_cast<const U *>(inv));
@@ -192,7 +316,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 	}
 	static void scale(Series &out, const mint *factors) {
 		int i = 1;
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (O::vectorized()) i = scale8(reinterpret_cast<U *>(out.data()), reinterpret_cast<const U *>(factors), out.size());
 #endif
 		for (; i < int(out.size()); ++i) out[i] *= factors[i];
@@ -235,7 +359,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 			}
 			int end = active < int(taps.size()) ? taps[active].degree : n;
 			if (!active) { i = end; continue; }
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 			if (O::vectorized()) i = blocks<kind>(out, i, end, taps.data(), near, active, inv, p.data(), q.data());
 #endif
 			for (; i < end; ++i) {
@@ -260,7 +384,7 @@ struct SparseSeries : SparseBase<SparseSeries> {
 
 };
 }
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 #endif

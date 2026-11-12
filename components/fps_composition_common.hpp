@@ -3,7 +3,7 @@
 
 #include "fps_blocked.hpp"
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
@@ -56,31 +56,6 @@ inline void inverse_even_columns(Vec *a, size_t h, const Word *x, const Word *y)
 namespace detail {
 using namespace blocked_poly::detail;
 using blocked_poly::detail::times;
-struct Factors {
-	Vec w, q;
-};
-
-inline Vec times(Vec x, const Factors& w) {
-	const Vec even = _mm256_srli_epi64(_mm256_mul_epu32(x, w.q), 32);
-	const Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(w.q, 32));
-	const Vec q = _mm256_blend_epi32(even, odd, 0xAA);
-	return _mm256_sub_epi32(_mm256_mullo_epi32(x, w.w), _mm256_mullo_epi32(q, broadcast(kP)));
-}
-
-inline constexpr auto kInverseScales = [] {
-	std::array<std::array<Word, blocked_ntt::kMaxLog + 1>, 2> s{};
-	for (int lg = 3; lg <= blocked_ntt::kMaxLog; ++lg) {
-		s[0][lg] = blocked_ntt::detail::power(Word(1) << (lg - 3), kP - 2);
-		s[1][lg] = blocked_ntt::detail::multiply_mod(s[0][lg], kR);
-	}
-	return s;
-}();
-
-inline Factors entries(const Word* table, size_t k) {
-	const Word* e = table + slot(k);
-	return {load(e), load(e + 8)};
-}
-
 inline constexpr size_t kComposeBase = 32;
 
 constexpr Word minus_twice(Word x) {
@@ -290,37 +265,12 @@ struct LevelBottom {
 
 template <class Bottom>
 void forward_with(Words a, size_t size, const Tables& tables, const Bottom& bottom) {
-	const Recursion recursion(tables.roots, tables.inverse_roots, bottom);
-	const Source in(a.data(), size, 0);
-	const size_t nv = a.size() / 8;
-	auto* v = reinterpret_cast<Vec*>(a.data());
-	if (std::countr_zero(nv) % 2 == 0) {
-		const size_t h = nv / 4;
-		forward_top4(in, v, h, tables.roots);
-		for (size_t t = 0; t < 4; ++t) recursion.visit(a.data() + 8 * t * h, h, t);
-	} else {
-		const size_t h = nv / 2;
-		forward_top2(in, v, h);
-		recursion.visit(a.data(), h, 0);
-		recursion.visit(a.data() + 8 * h, h, 1);
-	}
+	transform_with(a, Source(a.data(), size, 0), bottom, tables.roots, tables.inverse_roots, 0, Half::kBoth);
 }
 
 template <class Bottom>
 void inverse_with(Words a, const Tables& tables, const Bottom& bottom, Word scale, Half output) {
-	const Recursion recursion(tables.roots, tables.inverse_roots, bottom);
-	const size_t nv = a.size() / 8;
-	auto* v = reinterpret_cast<Vec*>(a.data());
-	if (std::countr_zero(nv) % 2 == 0) {
-		const size_t h = nv / 4;
-		for (size_t t = 0; t < 4; ++t) recursion.visit(a.data() + 8 * t * h, h, t);
-		inverse_top4(v, h, output, tables.inverse_roots, Factor(scale));
-	} else {
-		const size_t h = nv / 2;
-		recursion.visit(a.data(), h, 0);
-		recursion.visit(a.data() + 8 * h, h, 1);
-		inverse_top2(v, h, output, scale);
-	}
+	transform_with(a, Source(nullptr, 0, 0), bottom, tables.roots, tables.inverse_roots, scale, output);
 }
 
 inline void forward_columns(Word* a, size_t h, size_t b, const Word* roots, size_t k) {

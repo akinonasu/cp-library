@@ -13,7 +13,7 @@
 
 #include "mint_arithmetic.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -61,7 +61,7 @@ struct NTT : mint_detail::Ops {
 		}
 	}
 
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 
 	template <int stride>
 	__attribute__((target("avx2"))) static I8 rates8(const V &values, int k) {
@@ -260,7 +260,7 @@ struct NTT : mint_detail::Ops {
 	void stage(U *a, int stride, int length, int first = 0) const {
 		const V &w = inverse ? inverse_roots : roots;
 		const V &quot = inverse ? inverse_root_quotients : root_quotients;
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (length >= 8 && vectorized()) {
 			stage8<inverse>(a, stride, length, first);
 			return;
@@ -282,7 +282,7 @@ struct NTT : mint_detail::Ops {
 	template <bool inverse>
 	void fft(U *a, int length, int limit = 0) const {
 		if (!limit) limit = length;
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (limit >= 8 && vectorized()) {
 			fft8<inverse>(a, length, limit);
 			return;
@@ -294,7 +294,7 @@ struct NTT : mint_detail::Ops {
 			for (int h = limit / 2; h; h >>= 1) stage<false>(a, h, length);
 		}
 	}
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	__attribute__((target("avx2"))) static void product8(U *dst, const U *a, const U *b, int n) {
 		int i = 0;
 		for (; i + 8 <= n; i += 8) {
@@ -361,6 +361,33 @@ struct NTT : mint_detail::Ops {
 		for (int i = count; i < n; ++i) dst[i] = T::word(src[i]).inv().v;
 	}
 	__attribute__((target("avx2"))) static void inverse_sequence8(U *dst, int first, int n) {
+		if (n >= 4096) {
+			const int count = n / 32 * 32;
+			const I8 step = _mm256_set1_epi32(in(32));
+			I8 factor[4], prefix[4], inverse[4];
+			for (int c = 0; c < 4; ++c) {
+				alignas(32) U initial[8];
+				for (int j = 0; j < 8; ++j) initial[j] = in(first + 8 * c + j);
+				factor[c] = prefix[c] = load8(initial);
+				store8(dst + 8 * c, prefix[c]);
+			}
+			for (int i = 32; i < count; i += 32)
+				for (int c = 0; c < 4; ++c) {
+					factor[c] = add8(factor[c], step);
+					prefix[c] = mul8(prefix[c], factor[c]);
+					store8(dst + i + 8 * c, prefix[c]);
+				}
+			for (int c = 0; c < 4; ++c) inverse[c] = inverse8(prefix[c]);
+			for (int i = count - 32; i >= 32; i -= 32)
+				for (int c = 0; c < 4; ++c) {
+					store8(dst + i + 8 * c, mul8(inverse[c], load8(dst + i - 32 + 8 * c)));
+					inverse[c] = mul8(inverse[c], factor[c]);
+					factor[c] = sub8(factor[c], step);
+				}
+			for (int c = 0; c < 4; ++c) store8(dst + 8 * c, inverse[c]);
+			if (count != n) inverse_sequence8(dst + count, first + count, n - count);
+			return;
+		}
 
 		alignas(32) U initial[8];
 		for (int j = 0; j < 8; ++j) initial[j] = in(first + j);
@@ -392,7 +419,7 @@ struct NTT : mint_detail::Ops {
 	}
 #endif
 	static void weighted(U *dst, const U *src, int n, int first) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (n >= 8 && vectorized()) {
 			weighted8(dst, src, n, first);
 			return;
@@ -401,7 +428,7 @@ struct NTT : mint_detail::Ops {
 		for (int i = 0; i < n; ++i) dst[i] = mul(src[i], in(first + i));
 	}
 	static void normalize(U *a, int n) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (n >= 8 && vectorized()) {
 			normalize8(a, n);
 			return;
@@ -412,7 +439,7 @@ struct NTT : mint_detail::Ops {
 			if (a[i] >= mod) a[i] -= mod;
 	}
 	static void product(U *dst, const U *a, const U *b, int n) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (n >= 8 && vectorized()) {
 			product8(dst, a, b, n);
 			return;
@@ -421,7 +448,7 @@ struct NTT : mint_detail::Ops {
 		int i = 0;
 		for (; i < n; ++i) dst[i] = mul(a[i], b[i]);
 	}
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	__attribute__((target("avx2"), always_inline)) void partial_stage8(U *a, int stride, int k) const {
 		const I8 p = _mm256_set1_epi32(twice);
 		const I8 r = _mm256_set1_epi32(roots[k]), q = _mm256_set1_epi32(root_quotients[k]);
@@ -563,7 +590,7 @@ struct NTT : mint_detail::Ops {
 
 	template <bool odd>
 	static void reduce_pairs(U *a, U *b, const U *twist, int n) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (n >= 8 && vectorized()) {
 			reduce_pairs8<odd>(a, b, twist, n);
 			return;
@@ -577,7 +604,7 @@ struct NTT : mint_detail::Ops {
 		}
 	}
 	static void combine(U *a, const U *b, const U *x, const U *y, int n) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (n >= 8 && vectorized()) {
 			combine8(a, b, x, y, n);
 			return;
@@ -586,7 +613,7 @@ struct NTT : mint_detail::Ops {
 		int i = 0;
 		for (; i < n; ++i) a[i] = add(mul(a[i], y[i]), mul(b[i], x[i]));
 	}
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	__attribute__((target("avx2"))) static void geometric8(U *a, int n, U first, U step) {
 		alignas(32) U factors[8];
 		U power = one;
@@ -605,7 +632,7 @@ struct NTT : mint_detail::Ops {
 	}
 #endif
 	static void geometric(U *a, int n, U first, U step) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (n >= 8 && vectorized()) {
 			geometric8(a, n, first, step);
 			return;
@@ -617,7 +644,7 @@ struct NTT : mint_detail::Ops {
 			first = mul(first, step);
 		}
 	}
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	__attribute__((target("avx2"))) static void add_scaled8(U *a, const U *b, int n, U r) {
 		U q = quotient(r);
 		I8 v = _mm256_set1_epi32(r), vq = _mm256_set1_epi32(q);
@@ -627,7 +654,7 @@ struct NTT : mint_detail::Ops {
 	}
 #endif
 	static void add_scaled(U *a, const U *b, int n, U r) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (n >= 8 && vectorized()) {
 			add_scaled8(a, b, n, r);
 			return;
@@ -638,7 +665,7 @@ struct NTT : mint_detail::Ops {
 		for (; i < n; ++i) a[i] = add(a[i], fixed_mul(b[i], r, q));
 	}
 	static void scale_copy(U *dst, const U *src, int length, U r) {
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 		if (length >= 8 && vectorized()) {
 			scale_copy8(dst, src, length, r);
 			return;
@@ -689,7 +716,7 @@ inline void ntt(std::vector<mint> &a, bool inverse = false) {
 	}
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

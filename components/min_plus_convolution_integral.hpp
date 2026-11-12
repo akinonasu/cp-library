@@ -115,6 +115,71 @@ struct Kernel {
 		}
 		return best;
 	}
+
+	template <bool Minimum>
+	__attribute__((target("avx2"))) static __m256i merge_step32(const U *a, const U *b) {
+		auto low = _mm256_add_epi32(_mm256_set1_epi32(int(a[0])), _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + 1)));
+		for (int q = 1; q <= 4; ++q) {
+			auto next = _mm256_add_epi32(_mm256_set1_epi32(int(a[q])), _mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + 1 - q)));
+			if constexpr (Minimum) low = _mm256_min_epu32(low, next);
+			else low = _mm256_max_epu32(low, next);
+		}
+		auto high = Minimum ? _mm_set1_epi32(-1) : _mm_setzero_si128();
+		for (int q = 5; q <= 8; ++q) {
+			auto next = _mm_add_epi32(_mm_set1_epi32(int(a[q])), _mm_loadu_si128(reinterpret_cast<const __m128i *>(b + 5 - q)));
+			if constexpr (Minimum) high = _mm_min_epu32(high, next);
+			else high = _mm_max_epu32(high, next);
+		}
+		auto both = _mm256_inserti128_si256(Minimum ? _mm256_set1_epi32(-1) : _mm256_setzero_si256(), high, 1);
+		if constexpr (Minimum) return _mm256_min_epu32(low, both);
+		else return _mm256_max_epu32(low, both);
+	}
+	template <bool Minimum>
+	__attribute__((target("avx2"))) static void merge32(const U *a, const U *b, int n, int m, U *result) {
+		constexpr int chains = 4;
+		int count = n + m - 1, length = (count + chains * 8 - 1) / (chains * 8) * 8;
+		int x[chains], y[chains], position[chains], end[chains];
+		for (int s = 0; s < chains; ++s) {
+			int k = s * length, low = std::max(0, k + 1 - m), high = std::min(k, n - 1);
+			while (low < high) {
+				int mid = low + (high - low) / 2;
+				auto left = std::int64_t(a[mid + 1]) - a[mid], right = std::int64_t(b[k - mid]) - b[k - mid - 1];
+				if (Minimum ? left >= right : left <= right) high = mid;
+				else low = mid + 1;
+			}
+			x[s] = low, y[s] = k - low, position[s] = k, end[s] = std::min(count, k + length);
+			result[k] = a[x[s]] + b[y[s]];
+		}
+		const auto reverse = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
+		for (int t = 0; t < length; t += 8) {
+#pragma GCC unroll 4
+			for (int s = 0; s < chains; ++s) {
+				int &i = x[s], &j = y[s], &k = position[s];
+				if (k + 8 < end[s] && i + 8 < n && j >= 3 && j + 8 < m) {
+					auto values = merge_step32<Minimum>(a + i, b + j);
+					_mm256_storeu_si256(reinterpret_cast<__m256i *>(result + k + 1), values);
+					auto diagonal = _mm256_add_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i)),
+						_mm256_permutevar8x32_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + j + 1)), reverse));
+					unsigned mask = unsigned(_mm256_movemask_ps(_mm256_castsi256_ps(_mm256_cmpeq_epi32(diagonal,
+						_mm256_permutevar8x32_epi32(values, _mm256_set1_epi32(7))))));
+					int q = std::countr_zero(mask | 0x100u);
+					i += q, j += 8 - q, k += 8;
+				} else {
+					int last = std::min(end[s] - 1, k + 8);
+					while (k < last) {
+						bool left = j + 1 == m;
+						if (i + 1 < n && j + 1 < m) {
+							auto u = std::int64_t(a[i + 1]) - a[i], v = std::int64_t(b[j + 1]) - b[j];
+							left = Minimum ? u < v : v < u;
+						}
+						if (left) ++i;
+						else ++j;
+						result[++k] = a[i] + b[j];
+					}
+				}
+			}
+		}
+	}
 #if defined(__SIZEOF_INT128__) && CP_LIBRARY_AVX512
 	template <class T, bool Minimum>
 	__attribute__((target("avx512f"))) static __m512i merge_step64(const T *a, const T *b) {
@@ -273,6 +338,18 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 	};
 	bool convex = W(bmax) - W(bmin) <= std::numeric_limits<std::int64_t>::max() ? same_curvature.template operator()<std::int64_t>() : same_curvature.template operator()<W>();
 	if (convex) {
+#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+		if constexpr (std::is_same_v<T, std::uint32_t>) if (length >= 4096 && length < std::numeric_limits<int>::max() - 128
+			&& std::int64_t(std::max(n, m)) <= 4 * std::int64_t(std::min(n, m)) && available()) {
+			W afirst = W(a[1]) - W(a[0]), alast = W(a[n - 1]) - W(a[n - 2]);
+			W bfirst = W(b[1]) - W(b[0]), blast = W(b[m - 1]) - W(b[m - 2]);
+			if (Minimum ? bfirst < alast && afirst < blast : alast < bfirst && blast < afirst) {
+				result.resize(length);
+				Kernel::merge32<Minimum>(a.data(), b.data(), n, m, result.data());
+				return result;
+			}
+		}
+#endif
 #if CP_LIBRARY_AVX512
 		if constexpr (sizeof(T) == 8) if (length >= 4096 && length < std::numeric_limits<int>::max() - 128
 			&& std::int64_t(std::max(n, m)) <= 4 * std::int64_t(std::min(n, m)) && available() && __builtin_cpu_supports("avx512f")) {
@@ -316,6 +393,19 @@ std::optional<std::vector<T>> multiply(const std::vector<T> &a, const std::vecto
 	std::size_t capacity = std::vector<std::uint32_t>{}.max_size();
 	std::size_t groups = (std::size_t(length) + Kernel::group - 1) / Kernel::group;
 	if (capacity < 2 * Kernel::pad || std::size_t(n) > capacity - 2 * Kernel::pad || std::size_t(m) > capacity || groups > capacity / Kernel::group) return std::nullopt;
+	if constexpr (Minimum && std::is_same_v<T, std::uint32_t>) {
+		if (W(*amax) + 2 * W(bmax) < W(std::numeric_limits<std::uint32_t>::max())) {
+			auto x = std::make_unique_for_overwrite<std::uint32_t[]>(std::size_t(n) + 2 * Kernel::pad);
+			std::uint32_t padding = std::numeric_limits<std::uint32_t>::max() - bmax;
+			std::fill_n(x.get(), Kernel::pad, padding);
+			std::fill_n(x.get() + Kernel::pad + n, Kernel::pad, padding);
+			std::copy(a.begin(), a.end(), x.get() + Kernel::pad);
+			result.resize(groups * Kernel::group);
+			if (!Kernel::multiply(x.get() + Kernel::pad, b.data(), n, m, result.data(), result.size(), std::uint64_t(n + m) * 16)) return std::nullopt;
+			result.resize(length);
+			return result;
+		}
+	}
 	W abase = Minimum ? W(*amin) : W(*amax), bbase = Minimum ? W(bmin) : W(bmax), offset = abase + bbase;
 	auto x = std::make_unique_for_overwrite<std::uint32_t[]>(std::size_t(n) + 2 * Kernel::pad);
 	auto y = std::make_unique_for_overwrite<std::uint32_t[]>(m);

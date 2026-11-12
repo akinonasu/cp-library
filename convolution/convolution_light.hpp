@@ -3,7 +3,7 @@
 
 #include "../components/fps_light_ntt.hpp"
 #include "convolution_fft.hpp"
-#include "convolution_mod.hpp"
+#include "../components/convolution_mod_core.hpp"
 #include "convolution_ring.hpp"
 #include <complex>
 #include <limits>
@@ -34,7 +34,7 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 		const auto &other = &a == &b ? x : y;
 		auto values = [&] {
 			if constexpr (std::is_same_v<M, mint>) return fps_light_detail::multiply(x, other);
-			else return convolution_mod(x, other, T::mod());
+			else return ::convolution_mod<M, convolution_mod_detail::PortableBackend>(x, other, T::mod());
 		}();
 		std::vector<T> result;
 		result.reserve(values.size());
@@ -43,7 +43,7 @@ std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b) {
 			else result.push_back(T::raw(value));
 		}
 		return result;
-	} else if constexpr (std::numeric_limits<T>::is_integer && sizeof(T) <= 8) return convolution_integer(a, b);
+	} else if constexpr (std::numeric_limits<T>::is_integer && sizeof(T) <= 8) return ::convolution_integer<T, convolution_mod_detail::PortableBackend>(a, b);
 	else if constexpr (std::is_floating_point_v<T> || detail::IsComplex<T>::value) return convolution_fft(a, b);
 	else return convolution_ring(a, b);
 }

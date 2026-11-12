@@ -102,6 +102,20 @@ class IncrementalVerification(unittest.TestCase):
         self.assertEqual(plan["unit"], ["test/unit/geometry.cpp"])
         self.assertEqual(plan["verification"], ["test/geometry.test.cpp"])
 
+    def test_integer_geometry_directory(self):
+        self.write("integer_geometry/point.hpp", "#pragma once\n")
+        self.write("integer_geometry/linear.hpp", '#include "point.hpp"\n')
+        self.write("test/unit/integer_geometry.cpp", '#include "integer_geometry/linear.hpp"\n')
+        self.write("test/integer_geometry.test.cpp", '#include "integer_geometry/linear.hpp"\n')
+        previous = self.plan()["state"]
+        self.assertIn("integer_geometry/point.hpp", previous["targets"]["headers"])
+        self.assertIn("integer_geometry/linear.hpp", previous["targets"]["bundles"])
+        self.write("integer_geometry/point.hpp", "#pragma once\nstruct Point {};\n")
+        plan = self.plan(previous)
+        self.assertEqual(plan["headers"], ["integer_geometry/linear.hpp", "integer_geometry/point.hpp"])
+        self.assertEqual(plan["unit"], ["test/unit/integer_geometry.cpp"])
+        self.assertEqual(plan["verification"], ["test/integer_geometry.test.cpp"])
+
     def test_unchanged_and_documentation_only(self):
         self.write("docs/comb.md", "Updated documentation\n")
         self.write("notes/result.md", "Updated notes\n")

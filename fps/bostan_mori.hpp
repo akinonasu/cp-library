@@ -4,7 +4,7 @@
 #include "fps.hpp"
 #include "../components/fps_bostan.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -62,7 +62,7 @@ T bostan_mori(FormalPowerSeries<T> p, FormalPowerSeries<T> q, long long k) {
 		plan.template fft<false>(b, 2 * n);
 		auto doubling = [&](Word *v, T leading) {
 			Word *odd = v + n;
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 			if (n >= 8 && fps_detail::NTT::vectorized()) {
 				fps_detail::bostan_detail::inverse_twisted(plan, v, odd, O::words(powers), n);
 				odd[0] = fps_detail::NTT::sub(odd[0], (T(2) * leading).v);
@@ -104,7 +104,7 @@ T bostan_mori(FormalPowerSeries<T> p, FormalPowerSeries<T> q, long long k) {
 
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

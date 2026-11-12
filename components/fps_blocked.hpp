@@ -14,7 +14,7 @@
 #include <cstring>
 #include <vector>
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #include <immintrin.h>
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
@@ -222,6 +222,23 @@ inline constexpr auto kInverseScales = [] {
 
 inline Vec load(const Word* p) { return _mm256_load_si256(reinterpret_cast<const Vec*>(p)); }
 inline void store(Word* p, Vec x) { _mm256_store_si256(reinterpret_cast<Vec*>(p), x); }
+
+struct Factors {
+	Vec w, q;
+};
+
+inline Vec times(Vec x, const Factors& w) {
+	const Vec even = _mm256_srli_epi64(_mm256_mul_epu32(x, w.q), 32);
+	const Vec odd = _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(w.q, 32));
+	const Vec q = _mm256_blend_epi32(even, odd, 0xAA);
+	return _mm256_sub_epi32(_mm256_mullo_epi32(x, w.w), _mm256_mullo_epi32(q, broadcast(kP)));
+}
+
+inline Factors entries(const Word* table, size_t k) {
+	const Word* e = table + slot(k);
+	return {load(e), load(e + 8)};
+}
+
 
 inline Vec low(Vec x) { return reduce(x, 2 * kP); }
 inline Vec canonical(Vec x) { return reduce(reduce(x, 2 * kP), kP); }
@@ -560,15 +577,17 @@ template <class Input>
 	}
 }
 
-[[gnu::noinline]] inline void forward_top4(Source in, Vec* out, size_t h, const Word* roots) {
+template <class Input>
+[[gnu::noinline]] inline void forward_top4(Input in, Vec* out, size_t h, const Word* roots) {
 	forward_top4_body(in, out, h, roots);
 }
-[[gnu::noinline]] inline void forward_top2(Source in, Vec* out, size_t h) {
+template <class Input>
+[[gnu::noinline]] inline void forward_top2(Input in, Vec* out, size_t h) {
 	forward_top2_body(in, out, h);
 }
 
-template <class Bottom>
-void radix2_halves(const Recursion<Bottom>& recursion, const Source& in, Word* a, size_t nv) {
+template <class Bottom, class Input>
+void radix2_halves(const Recursion<Bottom>& recursion, const Input& in, Word* a, size_t nv) {
 	const size_t h = nv / 2;
 	if constexpr (Bottom::kForward) forward_top2(in, reinterpret_cast<Vec*>(a), h);
 	recursion.visit(a, h, 0);
@@ -593,6 +612,24 @@ inline void inverse_top2(Vec* f, size_t h, Half output, Word scale) {
 		const Vec lo = f[j], hi = f[j + h];
 		if (output != Half::kUpper) f[j] = reduce(times(add(lo, hi), s), kP);
 		if (output != Half::kLower) f[j + h] = reduce(times(diff(lo, hi), s), kP);
+	}
+}
+
+template <class Input, class Bottom>
+[[gnu::always_inline]] inline void transform_with(Words a, const Input& in, const Bottom& bottom,
+		const Word* roots, const Word* inverse_roots, Word scale, Half output) {
+	const detail::Recursion recursion(roots, inverse_roots, bottom);
+	const size_t nv = a.size() / 8;
+	auto* v = reinterpret_cast<Vec*>(a.data());
+	if (std::countr_zero(nv) % 2 == 0) {
+		const size_t h = nv / 4;
+		if constexpr (Bottom::kForward) forward_top4(in, v, h, roots);
+		for (size_t t = 0; t < 4; ++t) recursion.visit(a.data() + 8 * t * h, h, t);
+		if constexpr (Bottom::kInverse) inverse_top4(v, h, output, inverse_roots, Factor(scale));
+	} else {
+		const size_t h = nv / 2;
+		radix2_halves(recursion, in, a.data(), nv);
+		if constexpr (Bottom::kInverse) inverse_top2(v, h, output, scale);
 	}
 }
 
@@ -648,7 +685,6 @@ public:
 	}
 
 	void inverse(ConstWords in, Words out, Half output = Half::kBoth) const {
-		using namespace blocked_ntt::detail;
 		const Word scale = inverse_scale(out.size(), false);
 		run(out, detail::Source(nullptr, 0, 0), detail::InverseBottom{inverse_roots_, in.data()}, scale, output);
 	}
@@ -687,7 +723,6 @@ public:
 
 	template <class Bottom>
 	void inverse_with(const Bottom& bottom, Words out, Half output = Half::kBoth) const {
-		using namespace blocked_ntt::detail;
 		const Word scale = inverse_scale(out.size(), true);
 		run(out, detail::Source(nullptr, 0, 0), bottom, scale, output);
 	}
@@ -720,11 +755,9 @@ protected:
 
 	template <size_t K>
 	void inverse_products(std::span<const Pair> pairs, Words out, Half output) const {
-		using namespace blocked_ntt::detail;
-		const Word scale = inverse_scale(out.size(), true);
 		detail::InverseProductSumBottom<K> bottom{};
 		for (size_t k = 0; k < K; ++k) bottom.terms[k] = {{roots_, inverse_roots_, pairs[k].b.data()}, pairs[k].a.data()};
-		run(out, detail::Source(nullptr, 0, 0), bottom, scale, output);
+		inverse_with(bottom, out, output);
 	}
 
 	static detail::Source source(ConstWords in, size_t shift, size_t n) {
@@ -733,23 +766,9 @@ protected:
 	}
 
 	template <class Bottom>
-	void run(Words a, const detail::Source& in, const Bottom& bottom, Word scale,
-			Half output) const {
-		using namespace detail;
+	void run(Words a, const detail::Source& in, const Bottom& bottom, Word scale, Half output) const {
 		check_length(a.size());
-		const detail::Recursion recursion(roots_, inverse_roots_, bottom);
-		const size_t nv = a.size() / 8;
-		auto* v = reinterpret_cast<Vec*>(a.data());
-		if (std::countr_zero(nv) % 2 == 0) {
-			const size_t h = nv / 4;
-			if constexpr (Bottom::kForward) forward_top4(in, v, h, roots_);
-			for (size_t t = 0; t < 4; ++t) recursion.visit(a.data() + 8 * t * h, h, t);
-			if constexpr (Bottom::kInverse) inverse_top4(v, h, output, inverse_roots_, Factor(scale));
-		} else {
-			const size_t h = nv / 2;
-			radix2_halves(recursion, in, a.data(), nv);
-			if constexpr (Bottom::kInverse) inverse_top2(v, h, output, scale);
-		}
+		detail::transform_with(a, in, bottom, roots_, inverse_roots_, scale, output);
 	}
 
 	template <class Combine>
@@ -774,6 +793,22 @@ namespace detail {
 
 inline Vec load_unaligned(const Word* p) { return _mm256_loadu_si256(reinterpret_cast<const Vec*>(p)); }
 inline void store_unaligned(Word* p, Vec x) { _mm256_storeu_si256(reinterpret_cast<Vec*>(p), x); }
+
+inline Vec load_padded(ConstWords f, size_t at) {
+	if (at + 8 <= f.size()) return load_unaligned(f.data() + at);
+	alignas(32) Word x[8] = {};
+	if (at < f.size()) std::copy(f.begin() + std::ptrdiff_t(at), f.end(), x);
+	return load(x);
+}
+
+inline Vec first_lanes(size_t count) {
+	return _mm256_cmpgt_epi32(broadcast(Word(std::min<size_t>(count, 8))),
+							_mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
+}
+inline void store_first(Word* p, Vec x, size_t count) {
+	if (count >= 8) return store_unaligned(p, x);
+	_mm256_maskstore_epi32(reinterpret_cast<int*>(p), first_lanes(count), x);
+}
 
 inline Vec montgomery(Vec a, Vec b) { return mint_detail::Ops::mul8(a, b); }
 
@@ -884,13 +919,7 @@ inline void derivative(ConstWords f, Words d) { derivative_impl(f, d); }
 
 inline void divide_by_index(ConstWords a, size_t first, Words q) {
 	if (a.size() != q.size() || first == 0 || first + a.size() > kModulus) std::abort();
-	const size_t n = a.size();
-	detail::divide_by_index(first, q, [a, n](size_t at) __attribute__((target("avx2"))) {
-		if (at + 8 <= n) return detail::load_unaligned(a.data() + at);
-		alignas(32) Word rest[8] = {};
-		std::copy(a.begin() + at, a.end(), rest);
-		return detail::load(rest);
-	});
+	detail::divide_by_index(first, q, [a](size_t at) __attribute__((target("avx2"))) { return detail::load_padded(a, at); });
 }
 
 namespace detail {
@@ -985,13 +1014,6 @@ template <class T> inline void subtract_derivative(std::span<const T> f, size_t 
 		const Word d = c < inside ? blocked_ntt::detail::multiply_mod(Word(first + 1 + c), mint_scalar(f[first + 1 + c])) : 0;
 		out[c] = (d + kP - out[size + c]) % kP;
 	}
-}
-inline void subtract_derivative_impl(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
-	subtract_derivative(f, first, count, out, size);
-}
-
-inline void subtract_from_derivative(ConstWords f, size_t first, size_t count, Word* out, size_t size) {
-	subtract_derivative_impl(f, first, count, out, size);
 }
 
 struct ToeplitzBottom {
@@ -1090,39 +1112,15 @@ private:
 	std::span<const mint> f_;
 	size_t full_, touched_;
 };
-[[gnu::noinline]] inline void mint_forward_top4(MintSource in, Vec* out, size_t h, const Word* roots) {
-	forward_top4_body(in, out, h, roots);
-}
-[[gnu::noinline]] inline void mint_forward_top2(MintSource in, Vec* out, size_t h) {
-	forward_top2_body(in, out, h);
-}
-
 inline void mint_forward(const Transform& t, std::span<const mint> f, Words out) {
-	const MintSource in(f);
-	const detail::Recursion recursion(t.roots(), t.inverse_roots(), ForwardBottom{t.roots()});
-	const size_t nv = out.size() / 8;
-	auto* v = reinterpret_cast<Vec*>(out.data());
-	if (std::countr_zero(nv) % 2 == 0) {
-		const size_t h = nv / 4;
-		mint_forward_top4(in, v, h, t.roots());
-		for (size_t q = 0; q < 4; ++q) recursion.visit(out.data() + 8 * q * h, h, q);
-	} else {
-		const size_t h = nv / 2;
-		mint_forward_top2(in, v, h);
-		recursion.visit(out.data(), h, 0);
-		recursion.visit(out.data() + 8 * h, h, 1);
-	}
-}
-inline void mint_derivative(std::span<const mint> f, Words d) { derivative_impl(f, d); }
-inline void mint_subtract_from_derivative(std::span<const mint> f, size_t first, size_t count, Word* out, size_t size) {
-	subtract_derivative(f, first, count, out, size);
+	transform_with(out, MintSource(f), ForwardBottom{t.roots()}, t.roots(), t.inverse_roots(), 0, Half::kBoth);
 }
 
 struct NoLogTransform {
 	void operator()(size_t, ConstWords) const {}
 };
 
-template <class Input, class Sink, class Transformed>
+template <class Input, class Sink, class Transformed = NoLogTransform>
 [[gnu::always_inline]] inline void log_derivative(const Transform& t, Input f, size_t n,
 												Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
 	const size_t k = log_block(n), len = 2 * k, blocks = log_blocks(n);
@@ -1141,8 +1139,7 @@ template <class Input, class Sink, class Transformed>
 		const size_t first = j * k, count = std::min(k, n - 1 - first);
 		const Words work = j == 0 ? q0 : buffer(blocks + 1);
 		if (j == 0) {
-			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_derivative(f.first(std::min(f.size(), count + 1)), work.first(count));
-			else derivative_impl(f.first(std::min(f.size(), count + 1)), work.first(count));
+			derivative_impl(f.first(std::min(f.size(), count + 1)), work.first(count));
 		} else {
 			if (j == 1) {
 				t.inverse_product(window(1), q0, work, Half::kUpper);
@@ -1157,8 +1154,7 @@ template <class Input, class Sink, class Transformed>
 				const InverseProductBottom product{{t.roots(), t.inverse_roots(), work.data()}, window(1).data()};
 				t.inverse_with(SideProductBottom{product, window(3).data()}, work, Half::kUpper);
 			}
-			if constexpr (std::is_same_v<Input, std::span<const mint>>) mint_subtract_from_derivative(f, first, count, work.data(), k);
-			else subtract_derivative_impl(f, first, count, work.data(), k);
+			subtract_derivative(f, first, count, work.data(), k);
 		}
 		t.cyclic_product(work.first(count), 0, work, ht, Half::kLower);
 		sink(first, ConstWords(work.first(count)));
@@ -1175,11 +1171,6 @@ template <class Sink, class Transformed = NoLogTransform>
 	log_derivative(t, f, n, scratch, f, sink, transformed);
 }
 
-template <class Sink, class Transformed = NoLogTransform>
-[[gnu::always_inline]] inline void mint_log_derivative(const Transform& t, std::span<const mint> f, size_t n,
-		Words scratch, ConstWords prefix, const Sink& sink, const Transformed& transformed = {}) {
-	log_derivative(t, f, n, scratch, prefix, sink, transformed);
-}
 
 inline int log_derivative_log(size_t n) { return std::countr_zero(2 * log_block(n)); }
 
@@ -1187,12 +1178,9 @@ inline size_t log_derivative_scratch(size_t n) { return log_buffers(n) * Arena::
 
 }
 
-inline int log_log(size_t n) {
-	return n <= detail::kLogBase ? Transform::kMinLog : std::countr_zero(2 * detail::log_block(n));
-}
 
 inline size_t log_scratch(size_t n) {
-	return n <= detail::kLogBase ? 0 : detail::log_buffers(n) * Arena::footprint(2 * detail::log_block(n));
+	return n <= detail::kLogBase ? 0 : detail::log_derivative_scratch(n);
 }
 
 inline void log(const Transform& t, ConstWords f, Words g,
@@ -1226,7 +1214,7 @@ inline void native_log(const mint *in, size_t input, std::vector<mint> &out, siz
 		if (integrate) append_fps_words<true>(out, values, q.size());
 		else append_fps_words<false>(out, values, q.size());
 	};
-	if (direct) detail::mint_log_derivative(t, {in, c}, n, scratch, f, sink);
+	if (direct) detail::log_derivative(t, std::span<const mint>(in, c), n, scratch, f, sink);
 	else detail::log_derivative(t, f, n, scratch, sink);
 }
 }

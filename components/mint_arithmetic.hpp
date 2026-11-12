@@ -3,7 +3,7 @@
 
 #include "mint_simd.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -32,7 +32,7 @@ struct Ops : SimdOps {
 		return a * r - U(((unsigned long long)a * q) >> 32) * mod;
 	}
 
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	__attribute__((target("avx2"))) static I8 fixed_mul8(I8 a, I8 r, I8 q) {
 		I8 x = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
 		I8 y = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), q);
@@ -54,7 +54,7 @@ struct Ops : SimdOps {
 };
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

@@ -5,7 +5,7 @@
 #include <array>
 #include <cstring>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -30,7 +30,7 @@ inline T scalar(const T* a, std::size_t n, T x) {
 	return result;
 }
 
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 template<int K>
 __attribute__((target("avx2"))) inline mint vector(const mint* a, std::size_t n, mint x) {
 	static_assert(K == 1 || K == 2 || K == 4);
@@ -77,7 +77,7 @@ __attribute__((target("avx2"))) inline mint vector(const mint* a, std::size_t n,
 inline mint horner(const mint* a, std::size_t n, mint x) {
 	if (!n) return mint(0);
 	if (x == mint(0)) return a[0];
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	if (n >= 32 && Ops::vectorized()) {
 		if (n < 64) return horner_detail::vector<1>(a, n, x);
 		return horner_detail::vector<4>(a, n, x);
@@ -90,7 +90,7 @@ inline mint horner(const mint* a, std::size_t n, mint x) {
 }
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

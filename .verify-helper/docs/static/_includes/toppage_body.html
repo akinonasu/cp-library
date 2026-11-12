@@ -41,7 +41,7 @@
   {% assign visible_entries = entries | strip %}
   {% if visible_entries != '' %}
   <section class="library-category">
-    <h2>{% if advanced %}応用ライブラリ{% elsif folder == 'components' and page.components != true %}変換{% else %}{{ category.name | escape }}{% endif %}</h2>
+    <h2>{% if advanced %}応用ライブラリ{% elsif folder == 'components' and page.components != true %}変換{% elsif category.name == 'integer_geometry' %}整数幾何{% else %}{{ category.name | escape }}{% endif %}</h2>
     <ul class="library-entries">{{ entries }}</ul>
   </section>
   {% endif %}

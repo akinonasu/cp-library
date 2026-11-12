@@ -1,4 +1,5 @@
 #include "convolution/convolution_mod.hpp"
+#include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <limits>
@@ -21,8 +22,8 @@ std::vector<std::uint32_t> naive(const std::vector<T> &a, const std::vector<T> &
 template<class T>
 void check() {
 	std::mt19937_64 random(897);
-	for (std::uint32_t mod : {1u, 2u, 17u, 998244353u, 1000000007u, 4294967295u})
-		for (int n : {0, 1, 2, 7, 8, 16, 17, 31, 32, 33, 127, 128, 129, 257}) {
+	for (std::uint32_t mod : {1u, 2u, 17u, 65536u, 65537u, 167772161u, 469762049u, 754974721u, 998244353u, 1000000007u, 4294967295u})
+		for (int n : {0, 1, 2, 7, 8, 16, 17, 31, 32, 33, 127, 128, 129, 257, 511, 512, 513}) {
 			std::vector<T> a(n);
 			for (auto &value : a) value = T(random());
 			if (n) a[0] = std::numeric_limits<T>::max();
@@ -36,6 +37,17 @@ void check() {
 			assert(convolution_mod(a, b, mod) == naive(a, b, mod));
 			assert(convolution_mod(b, a, mod) == naive(b, a, mod));
 		}
+}
+
+void check_modulus_bounds() {
+	for (auto [n, mod] : {std::pair{33, 4784u}, {33, 4785u}, {33, 103668831u}, {33, 103668832u},
+		{257, 1714u}, {257, 1715u}, {257, 37148272u}, {257, 37148273u},
+		{513, 1214u}, {513, 1215u}, {513, 26293385u}, {513, 26293386u}}) {
+		std::vector<std::uint32_t> a(n, mod - 1), b = a, expected(2 * n - 1);
+		for (int i = 0; i < 2 * n - 1; ++i) expected[i] = std::min({i + 1, n, 2 * n - 1 - i}) % mod;
+		assert(convolution_mod(a, b, mod) == expected);
+		assert(convolution_mod(a, a, mod) == expected);
+	}
 }
 
 #if defined(__x86_64__) || defined(__i386__)
@@ -67,6 +79,7 @@ void check_reconstruction() {
 #endif
 
 int main() {
+	check_modulus_bounds();
 #if defined(__x86_64__) || defined(__i386__)
 	check_reconstruction<167772161, 469762049, 754974721>();
 	check_reconstruction<754974721, 1224736769, 2013265921>();
@@ -77,7 +90,7 @@ int main() {
 	check<std::uint32_t>();
 	std::mt19937_64 random(6734);
 	for (unsigned mod : {998244353u, 1000000007u, 4294967295u})
-		for (int n : {33, 64, 129}) for (int m : {8 * n - 1, 8 * n, 20 * n + 7}) {
+		for (int n : {33, 64, 129, 257}) for (int m : {8 * n - 1, 8 * n, 20 * n + 7}) {
 			std::vector<std::int64_t> a(n), b(m);
 			for (auto &x : a) x = std::int64_t(random());
 			for (auto &x : b) x = std::int64_t(random());

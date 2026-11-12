@@ -1,0 +1,10 @@
+---
+title: 区間アフィン変換・一点取得の共通実装
+documentation_of: //components/range_affine_point_simd.hpp
+---
+
+[区間アフィン変換・一点取得](range_affine_point_get.md)が使う内部処理です。通常は公開クラス `RangeAffinePointGet` を使います。
+
+静的な奇数法が $$2^{30}$$ 未満で AVX2 を使える場合に、多分岐の木でアフィン変換を管理します。それ以外では公開クラスが汎用の双対セグメント木を使います。
+
+列長を $$n$$ として、構築時間・使用空間は $$O(n)$$、更新・一点取得は $$O(\log n)$$ 時間です。

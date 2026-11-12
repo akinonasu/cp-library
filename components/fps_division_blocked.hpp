@@ -4,7 +4,7 @@
 #include "fps_blocked.hpp"
 #include <limits>
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
@@ -71,6 +71,13 @@ struct QuotientPlan {
 	}
 
 	size_t precision(size_t k) const { return blocks == 1 ? k : s; }
+
+	size_t scratch(bool use_tail) const {
+		size_t later = Arena::footprint(blocks * s + s);
+		if (use_tail) later += 2 * Arena::footprint(tail);
+		if (windows) later += (2 * windows + 1) * Arena::footprint(2 * s);
+		return std::max(inverse_scratch(precision(blocks * s - pad)), later);
+	}
 };
 
 enum class Remainder { kDirect, kWrap, kSplit, kTail };
@@ -145,11 +152,7 @@ struct DivisionPlan {
 
 	size_t quotient_words() const {
 		const QuotientPlan& p = quotient;
-		const size_t len = 2 * p.s;
-		size_t later = Arena::footprint(p.blocks * p.s + p.s);
-		if (tails()) later += 2 * Arena::footprint(p.tail);
-		if (p.windows) later += (2 * p.windows + 1) * Arena::footprint(len);
-		return Arena::footprint(divisor()) + Arena::footprint(len) + std::max(inverse_scratch(p.precision(k)), later);
+		return Arena::footprint(divisor()) + Arena::footprint(2 * p.s) + p.scratch(tails());
 	}
 
 	size_t scratch() const { return std::max(quotient_words(), remainder.buffers() * Arena::footprint(remainder.length)); }
@@ -181,16 +184,14 @@ inline Vec montgomery_reduce(Vec even, Vec odd) {
 	return mint_detail::Ops::reduce8(even, odd);
 }
 
-inline Word input_word(Word x) { return x; }
-inline Word input_word(mint x) { return std::min(x.v, x.v - mint::mod()); }
-inline Vec load_any(const Word* p) { return _mm256_loadu_si256(reinterpret_cast<const Vec*>(p)); }
+inline Vec load_any(const Word* p) { return load_unaligned(p); }
 inline Vec load_any(const mint* p) {
 	static_assert(sizeof(mint) == sizeof(Word) && std::is_trivially_copyable_v<mint>);
 	Vec value;
 	std::memcpy(&value, p, sizeof(value));
 	return reduce(value, kP);
 }
-inline void store_any(Word* p, Vec x) { _mm256_storeu_si256(reinterpret_cast<Vec*>(p), x); }
+inline void store_any(Word* p, Vec x) { store_unaligned(p, x); }
 inline Vec reversed(Vec x) { return _mm256_permutevar8x32_epi32(x, _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0)); }
 
 inline void append_words(std::vector<mint>& out, const Word* values, size_t n, Word factor = 1) {
@@ -230,7 +231,7 @@ template<class T>
 inline void subtract(const T* a, const Word* b, Word* out, size_t count) {
 	size_t i = 0;
 	for (; i + 8 <= count; i += 8) store_any(out + i, difference(load_any(a + i), load_any(b + i)));
-	for (; i < count; ++i) out[i] = (input_word(a[i]) + kP - b[i]) % kP;
+	for (; i < count; ++i) out[i] = (mint_scalar(a[i]) + kP - b[i]) % kP;
 }
 
 template<class T>
@@ -239,7 +240,7 @@ inline void reverse_difference(std::span<T> a, std::ptrdiff_t top, Word* out, si
 	const std::ptrdiff_t size = std::ptrdiff_t(a.size());
 	const auto value = [&](size_t i) {
 		const std::ptrdiff_t p = top - std::ptrdiff_t(i);
-		const Word x = p >= 0 && p < size ? input_word(a[size_t(p)]) : 0;
+		const Word x = p >= 0 && p < size ? mint_scalar(a[size_t(p)]) : 0;
 		return sub ? (x + kP - sub[i]) % kP : x;
 	};
 	size_t i = top >= size ? std::min(count, size_t(top - size + 1)) : 0;
@@ -265,7 +266,7 @@ inline void fold(std::span<T> a, Words out) {
 		for (size_t j = 0; j < full; j += 8) {
 			store(out.data() + j, reduce(add(load(out.data() + j), load_any(x + j)), kP));
 		}
-		for (size_t j = full; j < count; ++j) out[j] = (out[j] + input_word(x[j])) % kP;
+		for (size_t j = full; j < count; ++j) out[j] = (out[j] + mint_scalar(x[j])) % kP;
 	}
 }
 
@@ -275,7 +276,7 @@ inline void long_division(std::span<const T> f, ConstWords g, Words q,
 	using blocked_ntt::detail::multiply_mod;
 	const size_t d = g.size() - 1;
 	if constexpr (std::is_same_v<T, Word>) std::copy(f.begin(), f.end(), rest.begin());
-	else for (size_t i = 0; i < f.size(); ++i) rest[i] = input_word(f[i]);
+	else for (size_t i = 0; i < f.size(); ++i) rest[i] = mint_scalar(f[i]);
 	const Word lead = blocked_ntt::detail::power(g[d], kP - 2);
 	for (size_t i = q.size(); i-- > 0;) {
 		const Word c = multiply_mod(rest[i + d], lead);
@@ -294,7 +295,7 @@ inline void remainder_direct(std::span<const T> f, ConstWords g,
 	const auto scalar = [&](size_t j) {
 		std::uint64_t sum = 0;
 		for (size_t i = 0; i <= std::min(j, k - 1); ++i) sum = (sum + std::uint64_t(q[i]) * g[j - i]) % kP;
-		r[j] = Word((input_word(f[j]) + kP - sum) % kP);
+		r[j] = Word((mint_scalar(f[j]) + kP - sum) % kP);
 	};
 	size_t j = 0;
 	for (; j < std::min(d, k); ++j) scalar(j);
@@ -377,7 +378,7 @@ template<class T>
 inline void subtract_reversed(const T* a, const Word* b, Word* out, size_t count) {
 	size_t j = 0;
 	for (; j + 8 <= count; j += 8) store_any(out + j, difference(load_any(a + j), reversed(load_any(b + count - 8 - j))));
-	for (; j < count; ++j) out[j] = (input_word(a[j]) + kP - b[count - 1 - j]) % kP;
+	for (; j < count; ++j) out[j] = (mint_scalar(a[j]) + kP - b[count - 1 - j]) % kP;
 }
 
 template<class T>
@@ -479,7 +480,7 @@ inline void native_divide(const mint* a, size_t n, const mint* b, size_t m,
 	Arena arena(plan.words() + Arena::footprint(m) + Arena::footprint(k) + Arena::footprint(d));
 	const std::span<const mint> f(a, n);
 	auto g = arena.take(m), q = arena.take(k), r = arena.take(d);
-	for (size_t i = 0; i < m; ++i) g[i] = std::min(b[i].v, b[i].v - mint::mod());
+	copy_coefficients(b, g);
 	division_detail::divide(arena, plan, f, g, q, r);
 	prepare_fps_output(quotient, k), prepare_fps_output(remainder, d);
 	division_detail::append_division_words(quotient, q.data(), q.size(), blocked_ntt::detail::kR);
@@ -500,16 +501,14 @@ inline void native_div_series(const mint* a, size_t input, const mint* b, size_t
 	const bool tails = plan.tails && plan.blocks > 1;
 	const size_t precision = plan.precision(n), numerator = std::min(input, n);
 	const int lg = std::countr_zero(std::max(len, tails ? plan.tail : 0));
-	const size_t later = Arena::footprint(plan.blocks * s + s) +
-		(tails ? 2 * Arena::footprint(plan.tail) : 0) +
-		(plan.windows ? (2 * plan.windows + 1) * Arena::footprint(len) : 0);
+	const size_t workspace = plan.scratch(tails);
 	Arena arena(Transform::words(lg) + Arena::footprint(numerator) + Arena::footprint(count) +
-		Arena::footprint(len) + Arena::footprint(std::max(inverse_scratch(precision), later)));
+		Arena::footprint(len) + Arena::footprint(workspace));
 	const Transform t(arena, lg);
 	auto f = arena.take(numerator), g = arena.take(count), ht = arena.take(len);
-	for (size_t i = 0; i < numerator; ++i) f[i] = std::min(a[i].v, a[i].v - mint::mod());
-	for (size_t i = 0; i < count; ++i) g[i] = std::min(b[i].v, b[i].v - mint::mod());
-	auto scratch = arena.take(std::max(inverse_scratch(precision), later));
+	copy_coefficients(a, f);
+	copy_coefficients(b, g);
+	auto scratch = arena.take(workspace);
 	inverse(t, g.first(std::min(count, precision)), ht.first(precision), scratch);
 	t.forward(ht.first(precision), 0, ht);
 	Bump bump(scratch);

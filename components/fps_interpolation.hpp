@@ -3,7 +3,7 @@
 
 #include "fps_evaluation_common.hpp"
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
@@ -11,30 +11,27 @@ _Pragma("GCC target(\"avx2\")")
 namespace fps_detail::evaluation_poly {
 namespace detail {
 template <size_t K>
-[[gnu::always_inline]] inline Vec cross_sum(const Vec (&even)[K], const Vec (&odd)[K], size_t terms) {
-	if constexpr (K == 1) {
-		return montgomery_sums(even[0], odd[0], terms);
-	} else {
-		if (terms <= 17) return montgomery_sums(_mm256_add_epi64(even[0], even[1]), _mm256_add_epi64(odd[0], odd[1]), terms);
-		return montgomery_sums(_mm256_add_epi64(fold(even[0]), fold(even[1])), _mm256_add_epi64(fold(odd[0]), fold(odd[1])), 0);
+[[gnu::always_inline]] inline Vec cross_sum(const ProductSums (&sums)[K], size_t terms) {
+	if constexpr (K == 1) return sums[0].finish(terms);
+	else {
+		if (terms <= 17) return montgomery_sums(_mm256_add_epi64(sums[0].even, sums[1].even), _mm256_add_epi64(sums[0].odd, sums[1].odd), terms);
+		return montgomery_sums(_mm256_add_epi64(fold(sums[0].even), fold(sums[1].even)), _mm256_add_epi64(fold(sums[0].odd), fold(sums[1].odd)), 0);
 	}
 }
 [[gnu::noinline]] inline void cross_lanes(const Word* a, size_t n, const Word* b, size_t k,
 										const Word* c, const Word* d, Word* out) {
 	for (size_t t = 0; t < n + k; ++t) {
-		Vec even[2] = {}, odd[2] = {};
+		ProductSums sums[2]{};
 		const size_t first[2] = {t > k ? t - k : 0, t > n ? t - n : 0}, last[2] = {std::min(t, n - 1), std::min(t, k - 1)};
 		for (size_t i = first[0]; i <= last[0]; ++i) {
 			const Vec x = load(a + 8 * i), y = load(d + 8 * (t - i));
-			even[0] = _mm256_add_epi64(even[0], _mm256_mul_epu32(x, y));
-			odd[0] = _mm256_add_epi64(odd[0], _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
+			sums[0].add(x, y);
 		}
 		for (size_t i = first[1]; i <= last[1]; ++i) {
 			const Vec x = load(b + 8 * i), y = load(c + 8 * (t - i));
-			even[1] = _mm256_add_epi64(even[1], _mm256_mul_epu32(x, y));
-			odd[1] = _mm256_add_epi64(odd[1], _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
+			sums[1].add(x, y);
 		}
-		store(out + 8 * t, cross_sum(even, odd, (last[0] + 1 - first[0]) + (last[1] + 1 - first[1])));
+		store(out + 8 * t, cross_sum(sums, (last[0] + 1 - first[0]) + (last[1] + 1 - first[1])));
 	}
 }
 template <size_t D, size_t B>
@@ -46,29 +43,27 @@ template <size_t D, size_t B>
 		x[i] = xo[i] = y[i] = yo[i] = x[D + kPad + i] = xo[D + kPad + i] = y[D + kPad + i] = yo[D + kPad + i] = _mm256_setzero_si256();
 #pragma GCC unroll 16
 	for (size_t i = 0; i < D; ++i) {
-		x[kPad + i] = load(a + 8 * i), xo[kPad + i] = _mm256_srli_epi64(x[kPad + i], 32);
-		y[kPad + i] = load(b + 8 * i), yo[kPad + i] = _mm256_srli_epi64(y[kPad + i], 32);
+		load_lane_pair(a + 8 * i, x[kPad + i], xo[kPad + i]);
+		load_lane_pair(b + 8 * i, y[kPad + i], yo[kPad + i]);
 	}
 #pragma GCC unroll 17
 	for (size_t j = 0; j <= D; ++j) co[j] = _mm256_srli_epi64(load(c + 8 * j), 32), dq[j] = _mm256_srli_epi64(load(d + 8 * j), 32);
 	for (size_t t0 = 0; t0 < 2 * D; t0 += B) {
-		Vec even[B][kSums] = {}, odd[B][kSums] = {};
+		ProductSums sums[B][kSums]{};
 		const size_t first = t0 + 1 > D ? t0 + 1 - D : 0, last = std::min(D, t0 + B - 1);
 		for (size_t j = first; j <= last; ++j) {
 			const Vec qd = load(d + 8 * j), qc = load(c + 8 * j);
 #pragma GCC unroll 8
 			for (size_t s = 0; s < B; ++s) {
 				const size_t i = kPad + t0 + s - j;
-				even[s][0] = _mm256_add_epi64(even[s][0], _mm256_mul_epu32(x[i], qd));
-				odd[s][0] = _mm256_add_epi64(odd[s][0], _mm256_mul_epu32(xo[i], dq[j]));
-				even[s][kSums - 1] = _mm256_add_epi64(even[s][kSums - 1], _mm256_mul_epu32(y[i], qc));
-				odd[s][kSums - 1] = _mm256_add_epi64(odd[s][kSums - 1], _mm256_mul_epu32(yo[i], co[j]));
+				sums[s][0].add(x[i], xo[i], qd, dq[j]);
+				sums[s][kSums - 1].add(y[i], yo[i], qc, co[j]);
 			}
 		}
 #pragma GCC unroll 8
 		for (size_t s = 0; s < B; ++s) {
 			const size_t t = t0 + s, terms = 2 * (std::min(t, D - 1) + 1 - (t > D ? t - D : 0));
-			if (t < 2 * D) store(out + 8 * t, cross_sum(even[s], odd[s], terms));
+			if (t < 2 * D) store(out + 8 * t, cross_sum(sums[s], terms));
 		}
 	}
 }
@@ -79,13 +74,13 @@ template <size_t D>
 	Vec x[D], xo[D], y[D], yo[D], p[D + 1], po[D + 1], q[D + 1], qo[D + 1];
 #pragma GCC unroll 8
 	for (size_t i = 0; i < D; ++i) {
-		x[i] = load(a + 8 * i), xo[i] = _mm256_srli_epi64(x[i], 32);
-		y[i] = load(b + 8 * i), yo[i] = _mm256_srli_epi64(y[i], 32);
+		load_lane_pair(a + 8 * i, x[i], xo[i]);
+		load_lane_pair(b + 8 * i, y[i], yo[i]);
 	}
 #pragma GCC unroll 9
 	for (size_t j = 0; j <= D; ++j) {
-		p[j] = load(c + 8 * j), po[j] = _mm256_srli_epi64(p[j], 32);
-		q[j] = load(d + 8 * j), qo[j] = _mm256_srli_epi64(q[j], 32);
+		load_lane_pair(c + 8 * j, p[j], po[j]);
+		load_lane_pair(d + 8 * j, q[j], qo[j]);
 	}
 #pragma GCC unroll 16
 	for (size_t t = 0; t < 2 * D; ++t) {

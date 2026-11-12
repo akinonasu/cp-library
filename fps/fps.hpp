@@ -22,7 +22,7 @@
 #include <utility>
 #include <vector>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -160,7 +160,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 		if (!deg) return {};
 		assert(!g.empty() && g[0] != T(0));
 		if (this->empty()) return F(deg);
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 129 && deg <= (1 << 23) && g.size() >= 64 && NTT::vectorized()) {
 				F r;
@@ -190,7 +190,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 				return F(Sparse::get<Sparse::Kind::inverse>(std::move(terms), deg, inverse, T(0), nullptr));
 			}
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 			if (deg >= 512 && deg <= (1 << 23) && NTT::vectorized()) {
 				F result;
 				const int block = 1 << (std::bit_width(static_cast<unsigned>(deg)) - 1), tail = deg - block;
@@ -212,7 +212,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 			for (int i = 1; i < static_cast<int>(g.size()); ++i)
 				g[i] =
 					-g[0] * dot(this->data() + 1, g.data() + i - 1, std::min<int>(i, this->size() - 1));
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 			fps_detail::FpsWords storage;
 			Word *a = nullptr, *b = nullptr;
 			if (deg > 96 && NTT::vectorized()) {
@@ -235,7 +235,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 					}
 					break;
 				}
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 				if (m >= 64 && n <= (1 << 23) && NTT::vectorized()) {
 					int lo = std::min<int>(n, this->size());
 					std::copy_n(words(*this), lo, a);
@@ -299,7 +299,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 					return result;
 				}
 			}
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 			if (target >= 256 && target <= (1 << 23) && NTT::vectorized()) {
 				F result;
 				fps_detail::prepare_fps_output(result, deg);
@@ -466,7 +466,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 				return k == 2 ? square : multiply(square, k == 3 ? *this : square).pre(n);
 			}
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 			if (len >= 256 && len <= (1 << 24) && NTT::vectorized()) {
 				F r;
 				fps_detail::blocked_poly::native_power(this->data() + first, this->size() - first, r, len, T(k).val(), lead.pow(k), shift);
@@ -497,7 +497,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 		if (n < m) return {{}, pre(n)};
 		const int qn = n - m + 1;
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 		if constexpr (std::is_same_v<T, mint>) {
 			if (m > 2 && (std::size_t)m * qn > 4096 && n <= (1 << 23) && NTT::vectorized()) {
 				F q, r;
@@ -542,7 +542,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 	using Word = typename O::Word;
 
 	F log_derivative(int deg, bool integrate = false) const {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 256 && deg <= (1 << 24) && this->size() >= 64 && NTT::vectorized()) {
 				F r;
@@ -578,7 +578,7 @@ struct [[nodiscard, gnu::warn_unused]] FormalPowerSeries : std::vector<T>, priva
 			}
 		}
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 		if constexpr (std::is_same_v<T, mint>) {
 			if (deg >= 256 && deg <= (1 << 24) && NTT::vectorized()) {
 				F r;
@@ -658,7 +658,7 @@ using fps = FormalPowerSeries<>;
 
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

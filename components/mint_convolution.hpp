@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <vector>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -31,7 +31,7 @@ inline std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<
 	int n = 1, size = a.size() + b.size() - 1;
 	while (n < size) n <<= 1;
 	assert(n <= (1 << 23));
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (NTT::vectorized()) return fps_detail::multiply_detail::multiply(a, b);
 #endif
 	std::vector<mint> x = a, y;
@@ -51,7 +51,7 @@ inline std::vector<mint> multiply(const std::vector<mint> &a, const std::vector<
 }
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

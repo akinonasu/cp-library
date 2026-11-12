@@ -1,5 +1,6 @@
 #include "convolution/gcd_lcm_convolution.hpp"
 #include "math/mint.hpp"
+#include "math/modint.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -28,8 +29,24 @@ std::vector<T> direct(std::vector<T> a, std::vector<T> b) {
 
 template <class T>
 void check(const std::vector<T> &a, const std::vector<T> &b) {
-	assert(gcd_convolution(a, b) == direct<true>(a, b));
-	assert(lcm_convolution(a, b) == direct<false>(a, b));
+	auto gcd_expected = direct<true>(a, b);
+	assert(gcd_convolution(a, b) == gcd_expected);
+	auto expected = direct<false>(a, b);
+	assert(lcm_convolution(a, b) == expected);
+	if constexpr (std::is_same_v<T, mint>) if (!a.empty() && !b.empty()) {
+		auto x = a, y = b;
+		x.resize(expected.size()), y.resize(expected.size());
+		lcm_convolution_mint_detail::multiply(x, y, prime_sieve(x.size()));
+		assert(x == expected);
+#if defined(__x86_64__) || defined(__i386__)
+		if (__builtin_cpu_supports("avx2")) {
+			x = a, y = b;
+			x.resize(expected.size()), y.resize(expected.size());
+			gcd_convolution_mint_detail::blocked_multiply(x, y, prime_sieve(x.size()));
+			assert(x == gcd_expected);
+		}
+#endif
+	}
 }
 
 int main() {
@@ -37,13 +54,35 @@ int main() {
 	check(std::vector<mint>{}, std::vector<mint>{0, 1});
 	check(std::vector<mint>{0}, std::vector<mint>{});
 	check(std::vector<mint>{0}, std::vector<mint>{0});
-	for (int n : {2, 3, 4, 7, 8, 9, 31, 127, 1024, 4095, 4096, 4097, 4225, 4226, 10000, 10001, 10002, 10007, 65536, 65537, 65538}) {
+	for (int n : {2, 3, 4, 7, 8, 9, 31, 127, 1024, 4095, 4096, 4097, 4225, 4226, 10000, 10001, 10002, 10007, 32768, 32769, 32770, 65536, 65537, 65538}) {
 		std::vector<mint> a(n), b(n - n / 3);
 		for (int trial = 0; trial < 4; ++trial) {
 			for (std::size_t i = 1; i < a.size(); ++i) a[i] = mint::word(trial ? rng() % (2 * mint::mod()) : 2 * mint::mod() - 1);
 			for (std::size_t i = 1; i < b.size(); ++i) b[i] = mint::word(trial ? rng() % (2 * mint::mod()) : mint::mod());
 			check(a, b);
 		}
+	}
+	for (int n : {524288, 524289, 524290, 1000001}) {
+		std::vector<mint> a(n), b(n - n / 5);
+		for (std::size_t i = 1; i < a.size(); ++i) a[i] = mint::word(rng() % (2 * mint::mod()));
+		for (std::size_t i = 1; i < b.size(); ++i) b[i] = mint::word(rng() % (2 * mint::mod()));
+		assert(gcd_convolution(a, b) == direct<true>(a, b));
+		assert(lcm_convolution(a, b) == direct<false>(a, b));
+	}
+	for (int pattern = 0; pattern < 4; ++pattern) {
+		std::vector<mint> a(1000001), b(pattern == 3 ? 2 : a.size());
+		for (std::size_t i = 1; i < a.size(); ++i)
+			a[i] = mint::word(pattern == 0 ? 0 : pattern == 1 ? 2 * mint::mod() - 1 : pattern == 2 && i % 97 ? 0 : rng() % (2 * mint::mod()));
+		for (std::size_t i = 1; i < b.size(); ++i)
+			b[i] = mint::word(pattern == 0 ? 0 : pattern == 1 ? 2 * mint::mod() - 1 : pattern == 2 && i % 97 ? 0 : rng() % (2 * mint::mod()));
+		assert(gcd_convolution(a, b) == direct<true>(a, b));
+	}
+	for (int n : {2, 31, 127, 1024}) {
+		using M = StaticModint<1000000007>;
+		std::vector<M> a(n), b(n - n / 3);
+		for (std::size_t i = 1; i < a.size(); ++i) a[i] = rng();
+		for (std::size_t i = 1; i < b.size(); ++i) b[i] = rng();
+		check(a, b);
 	}
 	for (int trial = 0; trial < 50; ++trial) {
 		std::vector<std::int64_t> a(1 + rng() % 500), b(1 + rng() % 500);

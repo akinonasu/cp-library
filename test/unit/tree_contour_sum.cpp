@@ -44,10 +44,10 @@ void check(int n, const std::vector<std::pair<int, int>>& edges, std::mt19937& r
 	assert(sums.empty());
 }
 
-template<class T> void boundary() {
+template<class T> void boundary(bool star = false) {
 	constexpr int n = 257;
 	std::vector<std::pair<int, int>> edges;
-	for (int v = 1; v < n; ++v) edges.emplace_back(v - 1, v);
+	for (int v = 1; v < n; ++v) edges.emplace_back(star ? 0 : v - 1, v);
 	T maximum = std::numeric_limits<T>::max(), minimum = std::numeric_limits<T>::lowest();
 	std::vector<T> values(n);
 	values[0] = maximum, values[1] = minimum, values[2] = 11;
@@ -81,8 +81,10 @@ int main() {
 		}
 	}
 	boundary<std::int64_t>();
+	boundary<std::int64_t>(true);
 #if defined(__SIZEOF_INT128__)
 	boundary<__int128_t>();
+	boundary<__int128_t>(true);
 #endif
 	std::vector<std::pair<int, int>> edges{{0, 1}, {1, 2}};
 	TreeContourSum<mint> modular(3, edges, {1, 2, 3});
@@ -106,4 +108,21 @@ int main() {
 	assert(star.prod(0, 1, 2) == n - 1 && star.prod(1, 2, 3) == n - 2);
 	star.add(2, 20);
 	assert(star.prod(1, 0, n) == n + 20);
+	for (auto* sums : {&path, &star}) {
+		assert(sums->prod(0, std::numeric_limits<std::int64_t>::lowest(), std::numeric_limits<std::int64_t>::max()) == (sums == &path ? n : n + 20));
+		assert(sums->prod(n - 1, std::numeric_limits<std::int64_t>::lowest(), 1) == 1);
+		assert(sums->prod(0, std::numeric_limits<std::int64_t>::max(), std::numeric_limits<std::int64_t>::max()) == 0);
+	}
+	TreeContourSum<mint> reused;
+	for (int shape : {0, 1, 2, 1, 0, 2}) {
+		constexpr int count = 65;
+		edges.clear();
+		for (int v = 1; v < count; ++v) edges.emplace_back(shape == 0 ? v - 1 : shape == 1 ? 0 : (v - 1) / 2, v);
+		reused.build(count, edges, std::vector<mint>(count, 1));
+		reused.set(0, 9);
+		reused.add(count - 1, 7);
+		assert(reused.prod(count / 2, -1, count) == mint(count + 15));
+		assert(reused.prod(0, 0, 1) == mint(9));
+		assert(reused.get(count - 1) == mint(8));
+	}
 }

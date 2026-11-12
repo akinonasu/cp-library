@@ -10,17 +10,10 @@ int main() {
 	FastOutput output;
 	int n = 0, m = 0;
 	input.read(n), input.read(m);
-	std::vector<std::int64_t> a(n), b(m);
-	auto read = [&](std::vector<std::int64_t> &values) {
-		std::size_t offset = 0;
-		read_unsigned_blocks(input, values.size(), [&](const std::uint32_t *block, std::size_t count) {
-			for (std::size_t i = 0; i < count; ++i) values[offset + i] = block[i];
-			offset += count;
-		});
-	};
-	read(a), read(b);
+	std::vector<std::uint32_t> a(n), b(m);
+	read_unsigned(input, a), read_unsigned(input, b);
 	const auto result = min_plus_convolution_concave(a, b);
 	write_unsigned_records<1>(output, result.size(), [&](std::size_t i) {
-		return std::array{std::uint32_t(result[i])};
+		return std::array{result[i]};
 	});
 }

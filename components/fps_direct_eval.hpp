@@ -8,7 +8,7 @@
 namespace fps_detail {
 using mint_detail::Ops;
 
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 __attribute__((target("avx2"))) inline void evaluate_direct(Ops::U *dst, const Ops::U *f,
 		std::size_t n, const Ops::U *points, std::size_t m) {
 	using I = Ops::I8;

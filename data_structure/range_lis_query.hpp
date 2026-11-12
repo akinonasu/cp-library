@@ -13,8 +13,44 @@
 #include <limits>
 #include <numeric>
 #include <ranges>
+#include <span>
+#include <type_traits>
 #include <utility>
 #include <vector>
+
+namespace range_lis_query_detail {
+template<bool Strict, class Range, class Compare>
+std::vector<int> permutation(const Range &values, Compare compare) {
+	int n = int(std::ranges::size(values));
+	auto first = std::ranges::begin(values);
+	std::vector<int> order(n, -1), result(n);
+	if constexpr (std::is_integral_v<std::ranges::range_value_t<Range>>
+		&& sizeof(std::ranges::range_value_t<Range>) <= sizeof(std::uintmax_t) && std::is_same_v<Compare, std::less<>>) {
+		bool direct = true;
+		for (int i = 0; i < n; ++i) {
+			auto value = first[i];
+			if constexpr (std::is_signed_v<std::ranges::range_value_t<Range>>) {
+				if (value < 0) { direct = false; break; }
+			}
+			if (std::uintmax_t(value) >= std::uintmax_t(n)) { direct = false; break; }
+			int rank = int(value);
+			if (order[rank] != -1) { direct = false; break; }
+			order[rank] = i;
+			result[i] = rank;
+		}
+		if (direct) return result;
+	}
+	std::iota(order.begin(), order.end(), 0);
+	std::sort(order.begin(), order.end(), [&](int a, int b) {
+		if (compare(first[a], first[b])) return true;
+		if (compare(first[b], first[a])) return false;
+		if constexpr (Strict) return a > b;
+		else return a < b;
+	});
+	for (int i = 0; i < n; ++i) result[order[i]] = i;
+	return result;
+}
+}
 
 template <bool Strict = true>
 class RangeLISQuery {
@@ -68,16 +104,7 @@ public:
 		bits.clear();
 		offsets.clear();
 		if (!n) return;
-		auto first = std::ranges::begin(values);
-		std::vector<int> order(n), permutation(n);
-		std::iota(order.begin(), order.end(), 0);
-		std::sort(order.begin(), order.end(), [&](int a, int b) {
-			if (compare(first[a], first[b])) return true;
-			if (compare(first[b], first[a])) return false;
-			if constexpr (Strict) return a > b;
-			else return a < b;
-		});
-		for (int i = 0; i < n; ++i) permutation[order[i]] = i;
+		auto permutation = range_lis_query_detail::permutation<Strict>(values, std::move(compare));
 		auto endpoints = range_lis_detail::seaweed(permutation);
 		std::vector<std::uint32_t> current(n), next(n);
 		for (int i = 0; i < n; ++i) current[i] = endpoints[i] < 0 ? unsigned(n) : unsigned(endpoints[i]);
@@ -106,5 +133,53 @@ public:
 		return query_impl(l, r);
 	}
 };
+
+template<bool Strict = true, class Range, class Compare = std::less<>>
+	requires std::ranges::random_access_range<const Range> && std::ranges::sized_range<const Range>
+std::vector<int> range_lis_queries(const Range &values, std::span<const std::pair<int, int>> intervals, Compare compare = {}) {
+	assert(std::ranges::size(values) <= std::size_t(std::numeric_limits<int>::max()));
+	assert(intervals.size() <= std::size_t(std::numeric_limits<int>::max()));
+	int n = int(std::ranges::size(values));
+	std::vector<int> answers(intervals.size());
+	bool nontrivial = false;
+	for (std::size_t i = 0; i < intervals.size(); ++i) {
+		auto [l, r] = intervals[i];
+		assert(0 <= l && l <= r && r <= n);
+		answers[i] = r - l;
+		nontrivial |= r - l > 1;
+	}
+	if (!nontrivial) return answers;
+	auto permutation = range_lis_query_detail::permutation<Strict>(values, std::move(compare));
+	auto endpoints = range_lis_detail::seaweed(permutation);
+	std::vector<int> inverse(n, -1), offset(std::size_t(n) + 2);
+	for (int i = 0; i < n; ++i) if (endpoints[i] >= 0) {
+		assert(i < endpoints[i] && endpoints[i] < n && inverse[endpoints[i]] == -1);
+		inverse[endpoints[i]] = i;
+	}
+	for (auto [l, r] : intervals) if (r - l > 1) ++offset[r + 1];
+	for (std::size_t i = 1; i < offset.size(); ++i) offset[i] += offset[i - 1];
+	std::vector<std::pair<int, int>> ordered(offset.back());
+	auto cursor = offset;
+	for (int i = 0; i < int(intervals.size()); ++i) {
+		auto [l, r] = intervals[i];
+		if (r - l > 1) ordered[cursor[r]++] = {l, i};
+	}
+	cursor.assign(std::size_t(n) + 1, 0);
+	int active = 0;
+	for (std::size_t r = 0; r + 1 < offset.size(); ++r) {
+		if (r && inverse[r - 1] != -1) {
+			++active;
+			for (unsigned i = unsigned(inverse[r - 1]) + 1; i <= unsigned(n); i += i & -i) ++cursor[i];
+		}
+		for (int i = offset[r]; i < offset[r + 1]; ++i) {
+			auto [l, id] = ordered[i];
+			int before = 0;
+			for (unsigned j = unsigned(l); j; j &= j - 1) before += cursor[j];
+			answers[id] = int(r) - l - active + before;
+		}
+	}
+	return answers;
+}
+
 
 #endif

@@ -4,7 +4,7 @@
 #include "fps_blocked.hpp"
 #include <optional>
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
 #pragma GCC optimize("O3")
@@ -74,23 +74,36 @@ inline Vec fold(Vec s) {
 	if (terms > 12) even = fold(even), odd = fold(odd);
 	return canonical(mint_detail::Ops::reduce8(even, odd));
 }
+[[gnu::always_inline]] inline void load_lane_pair(const Word* p, Vec& even, Vec& odd) {
+	even = load(p), odd = _mm256_srli_epi64(even, 32);
+}
+struct ProductSums {
+	Vec even, odd;
+	[[gnu::always_inline]] void add(Vec x, Vec xo, Vec y, Vec yo) {
+		even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
+		odd = _mm256_add_epi64(odd, _mm256_mul_epu32(xo, yo));
+	}
+	[[gnu::always_inline]] void add(Vec x, Vec y) {
+		add(x, _mm256_srli_epi64(x, 32), y, _mm256_srli_epi64(y, 32));
+	}
+	[[gnu::always_inline]] Vec finish(size_t terms) const { return montgomery_sums(even, odd, terms); }
+};
 [[gnu::always_inline]] inline void multiply_lanes(const Word* a, size_t m, const Word* b, size_t k,
 												Word* c) {
 	Vec x[33], xo[33], y[33], yo[33];
 #pragma GCC unroll 33
-	for (size_t i = 0; i <= m; ++i) x[i] = load(a + 8 * i), xo[i] = _mm256_srli_epi64(x[i], 32);
+	for (size_t i = 0; i <= m; ++i) load_lane_pair(a + 8 * i, x[i], xo[i]);
 #pragma GCC unroll 33
-	for (size_t j = 0; j <= k; ++j) y[j] = load(b + 8 * j), yo[j] = _mm256_srli_epi64(y[j], 32);
+	for (size_t j = 0; j <= k; ++j) load_lane_pair(b + 8 * j, y[j], yo[j]);
 #pragma GCC unroll 65
 	for (size_t t = 0; t <= m + k; ++t) {
-		Vec even = _mm256_setzero_si256(), odd = _mm256_setzero_si256();
+		ProductSums sums{};
 		const size_t first = t > k ? t - k : 0, last = std::min(t, m);
 #pragma GCC unroll 17
 		for (size_t i = first; i <= last; ++i) {
-			even = _mm256_add_epi64(even, _mm256_mul_epu32(x[i], y[t - i]));
-			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(xo[i], yo[t - i]));
+			sums.add(x[i], xo[i], y[t - i], yo[t - i]);
 		}
-		store(c + 8 * t, montgomery_sums(even, odd, last - first + 1));
+		store(c + 8 * t, sums.finish(last - first + 1));
 	}
 }
 inline void multiply_lanes_any(const Word* a, size_t m, const Word* b, size_t k, Word* c) {
@@ -146,30 +159,16 @@ public:
 	void inverse(ConstSpan in, Span out, Word c = 1) const {
 		using namespace detail;
 		check_length(out.size());
-		if (out.size() < 64) {
-			const size_t nv = out.size() / 8;
-			Vec f[4];
-			for (size_t j = 0; j < nv; ++j) f[j] = load(in.data() + 8 * j);
-			inverse_small(f, nv, 0, inverse_roots_);
-			const Factor s(scale(out.size(), c));
-			for (size_t j = 0; j < nv; ++j) store(out.data() + 8 * j, reduce(times(f[j], s), kP));
-			return;
-		}
+		if (out.size() < 64) return inverse_small(in, out, c, 0);
 		run(out, Source(nullptr, 0, 0), InverseBottom{inverse_roots_, in.data()}, scale(out.size(), c), Half::kBoth);
 	}
 	void inverse_upper(ConstSpan in, Span out, Word c = 1) const {
 		using namespace detail;
 		check_length(2 * out.size());
+		if (out.size() < 64) return inverse_small(in, out, c, 1);
 		const size_t nv = out.size() / 8;
 		auto* v = reinterpret_cast<Vec*>(out.data());
 		const Factor s(scale(out.size(), c));
-		if (out.size() < 64) {
-			Vec f[4];
-			for (size_t j = 0; j < nv; ++j) f[j] = load(in.data() + 8 * j);
-			inverse_small(f, nv, 1, inverse_roots_);
-			for (size_t j = 0; j < nv; ++j) v[j] = reduce(times(f[j], s), kP);
-			return;
-		}
 		const Recursion recursion(roots_, inverse_roots_, InverseBottom{inverse_roots_, in.data() - out.size()});
 		if (std::countr_zero(nv) % 2 == 0) {
 			const size_t h = nv / 4;
@@ -191,16 +190,7 @@ public:
 			v[j] = reduce(times(add(u, w), s), kP), v[j + h] = reduce(times(diff(u, w), scale_z), kP);
 		}
 	}
-	void leaf_products(const Word* a, const Word* b, Span out) const {
-		using namespace detail;
-		const size_t leaves = out.size() / 8;
-		Window window[2];
-		fill_window(window[0], load(a), leaf_weight(roots_, 0));
-		for (size_t p = 0; p < leaves; ++p) {
-			if (p + 1 < leaves) fill_window(window[(p + 1) & 1], load(a + 8 * p + 8), leaf_weight(roots_, p + 1));
-			store(out.data() + 8 * p, reduce(leaf_product(window[p & 1], b + 8 * p), kP));
-		}
-	}
+	void leaf_products(const Word* a, const Word* b, Span out) const { leaf_products<1>({a}, {b}, out); }
 	void standard_to_lanes(const Word* in, size_t stride, size_t n, Word* out) const {
 		using namespace detail;
 		for (size_t p = 0; p < n / 8; ++p) {
@@ -218,22 +208,8 @@ public:
 			for (size_t t = 0; t < 4; ++t) store(out + 64 * p + 8 * t, canonical(lo[t])), store(out + 64 * p + 32 + 8 * t, canonical(hi[t]));
 		}
 	}
-	void leaf_product_sums(const Word* a, const Word* b, const Word* c, const Word* d,
-						Span out) const {
-		using namespace detail;
-		const size_t leaves = out.size() / 8;
-		Window window[2][2];
-		fill_window(window[0][0], load(a), leaf_weight(roots_, 0));
-		fill_window(window[0][1], load(c), leaf_weight(roots_, 0));
-		for (size_t p = 0; p < leaves; ++p) {
-			if (p + 1 < leaves) {
-				const Factor w = leaf_weight(roots_, p + 1);
-				fill_window(window[(p + 1) & 1][0], load(a + 8 * p + 8), w);
-				fill_window(window[(p + 1) & 1][1], load(c + 8 * p + 8), w);
-			}
-			const Vec ab = leaf_product(window[p & 1][0], b + 8 * p), cd = leaf_product(window[p & 1][1], d + 8 * p);
-			store(out.data() + 8 * p, canonical(add(ab, cd)));
-		}
+	void leaf_product_sums(const Word* a, const Word* b, const Word* c, const Word* d, Span out) const {
+		leaf_products<2>({a, c}, {b, d}, out);
 	}
 	static void pointwise_products(const Word* a, const Word* b, Span out) {
 		using namespace detail;
@@ -251,6 +227,31 @@ public:
 		}
 	}
 private:
+	[[gnu::always_inline]] void inverse_small(ConstSpan in, Span out, Word c, size_t block) const {
+		using namespace detail;
+		const size_t nv = out.size() / 8;
+		Vec f[4];
+		for (size_t j = 0; j < nv; ++j) f[j] = load(in.data() + 8 * j);
+		detail::inverse_small(f, nv, block, inverse_roots_);
+		const Factor s(scale(out.size(), c));
+		for (size_t j = 0; j < nv; ++j) store(out.data() + 8 * j, reduce(times(f[j], s), kP));
+	}
+	template<size_t Count>
+	[[gnu::always_inline]] inline void leaf_products(const Word* const (&a)[Count], const Word* const (&b)[Count], Span out) const {
+		using namespace detail;
+		const size_t leaves = out.size() / 8;
+		Window window[2][Count];
+		for (size_t c = 0; c < Count; ++c) fill_window(window[0][c], load(a[c]), leaf_weight(roots_, 0));
+		for (size_t p = 0; p < leaves; ++p) {
+			if (p + 1 < leaves) {
+				const Factor w = leaf_weight(roots_, p + 1);
+				for (size_t c = 0; c < Count; ++c) fill_window(window[(p + 1) & 1][c], load(a[c] + 8 * p + 8), w);
+			}
+			const Vec ab = leaf_product(window[p & 1][0], b[0] + 8 * p);
+			if constexpr (Count == 1) store(out.data() + 8 * p, reduce(ab, kP));
+			else store(out.data() + 8 * p, canonical(add(ab, leaf_product(window[p & 1][1], b[1] + 8 * p))));
+		}
+	}
 	Word scale(size_t n, Word c) const {
 		const auto lg = std::countr_zero(n);
 		if (lg > Transform::kMaxLog) std::abort();
@@ -474,32 +475,30 @@ template <size_t K, size_t C, size_t B>
 #pragma GCC unroll 17
 	for (size_t j = 0; j <= K; ++j) qo[j] = _mm256_srli_epi64(load(q + 8 * j), 32);
 	for (size_t t0 = 0; t0 < C; t0 += B) {
-		Vec even[B], odd[B];
+		ProductSums sums[B];
 #pragma GCC unroll 8
-		for (size_t s = 0; s < B; ++s) even[s] = odd[s] = _mm256_setzero_si256();
+		for (size_t s = 0; s < B; ++s) sums[s] = ProductSums{};
 #pragma GCC unroll 17
 		for (size_t j = 0; j <= K; ++j) {
 			const Vec y = load(q + 8 * j);
 #pragma GCC unroll 8
 			for (size_t s = 0; s < B && t0 + s < C; ++s) {
-				even[s] = _mm256_add_epi64(even[s], _mm256_mul_epu32(load(w + 8 * (K + t0 + s - j)), y));
-				odd[s] = _mm256_add_epi64(odd[s], _mm256_mul_epu32(wo[K + t0 + s - j], qo[j]));
+				sums[s].add(load(w + 8 * (K + t0 + s - j)), wo[K + t0 + s - j], y, qo[j]);
 			}
 		}
 #pragma GCC unroll 8
-		for (size_t s = 0; s < B && t0 + s < C; ++s) store(out + 8 * (t0 + s), montgomery_sums(even[s], odd[s], K + 1));
+		for (size_t s = 0; s < B && t0 + s < C; ++s) store(out + 8 * (t0 + s), sums[s].finish(K + 1));
 	}
 }
 [[gnu::noinline]] inline void middle_lanes(const Word* w, size_t k, const Word* q, size_t count,
 										Word* out) {
 	for (size_t t = 0; t < count; ++t) {
-		Vec even = _mm256_setzero_si256(), odd = _mm256_setzero_si256();
+		ProductSums sums{};
 		for (size_t j = 0; j <= k; ++j) {
 			const Vec x = load(w + 8 * (k + t - j)), y = load(q + 8 * j);
-			even = _mm256_add_epi64(even, _mm256_mul_epu32(x, y));
-			odd = _mm256_add_epi64(odd, _mm256_mul_epu32(_mm256_srli_epi64(x, 32), _mm256_srli_epi64(y, 32)));
+			sums.add(x, y);
 		}
-		store(out + 8 * t, montgomery_sums(even, odd, k + 1));
+		store(out + 8 * t, sums.finish(k + 1));
 	}
 }
 struct PointSlots {

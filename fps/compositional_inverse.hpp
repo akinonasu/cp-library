@@ -3,9 +3,9 @@
 
 #include "fps.hpp"
 #include "../components/fps_reversion.hpp"
-#include "../components/fps_composition_generic.hpp"
+#include "../components/fps_reversion_generic.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -33,7 +33,7 @@ FormalPowerSeries<T> compositional_inverse(const FormalPowerSeries<T> &f, int de
 			result[1] = w;
 			return result;
 		}
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 		if (deg >= 64 && deg <= (1 << 21) && fps_detail::NTT::vectorized()) {
 			F result;
 			fps_detail::composition_poly::native_reversion(f.data(), f.size(), result, deg);
@@ -46,7 +46,7 @@ FormalPowerSeries<T> compositional_inverse(const FormalPowerSeries<T> &f, int de
 
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

@@ -2,6 +2,7 @@
 #define GCD_LCM_CONVOLUTION_HPP
 
 #include "../components/gcd_convolution_mint.hpp"
+#include "../components/lcm_convolution_mint.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -23,6 +24,12 @@ std::vector<T> multiply(std::vector<T> a, std::vector<T> b) {
 	if constexpr (gcd && std::is_same_v<T, mint_detail::Mint>) {
 		if (n >= 4096 && n - 1 <= UINT32_MAX) {
 			gcd_convolution_mint_detail::multiply(a, b, ps);
+			return a;
+		}
+	}
+	if constexpr (!gcd && std::is_same_v<T, mint_detail::Mint>) {
+		if (n > (std::size_t(1) << 19) && n - 1 <= UINT32_MAX) {
+			lcm_convolution_mint_detail::multiply(a, b, ps);
 			return a;
 		}
 	}

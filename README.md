@@ -31,12 +31,16 @@
 | `components/divisor_zeta.hpp` | Divisor Zeta / Möbius Transform | [使い方](docs/divisor_zeta.md) |
 | `components/fft.hpp` | FFT | [使い方](docs/fft.md) |
 | `components/ntt_mod.hpp` | NTT（法指定） | [使い方](docs/ntt_mod.md) |
+| `components/ntt_mod_core.hpp` | 法指定 NTT の共通演算 | [使い方](docs/ntt_mod_core.md) |
+| `components/convolution_mod_core.hpp` | 任意 mod・整数畳み込みの共通処理 | [使い方](docs/convolution_mod_core.md) |
+| `components/compiler_features.hpp` | コンパイラとアーキテクチャの共通条件 | [使い方](docs/compiler_features.md) |
 | `components/ntt.hpp` | NTT（998244353） | [使い方](docs/ntt.md) |
 | `components/xor_select.hpp` | 64 bit 内の XOR 順位選択 | [使い方](docs/xor_select.md) |
 | `components/ordered_midpoint.hpp` | 順序付き整数区間の中点 | [使い方](docs/ordered_midpoint.md) |
 | `components/min_plus_convolution_integral.hpp` | min-plus / max-plus 畳み込みの整数用共通実装 | [使い方](docs/min_plus_convolution_integral.md) |
 | `components/range_add_min_node.hpp` | 区間加算・最小値のノード演算 | [使い方](docs/range_add_min_node.md) |
 | `components/range_affine_sum_simd.hpp` | 区間アフィン変換・区間和の共通実装 | [使い方](docs/range_affine_sum_simd.md) |
+| `components/range_affine_point_simd.hpp` | 区間アフィン変換・一点取得の共通実装 | [使い方](docs/range_affine_point_simd.md) |
 | `components/multivariate_convolution_core.hpp` | 多変数畳み込みの共通実装 | [使い方](docs/multivariate_convolution_core.md) |
 | `components/multivariate_ranked.hpp` | 小さい次元の多変数畳み込み | [使い方](docs/multivariate_ranked.md) |
 | `components/ordered_multiset_btree.hpp` | 順序統計多重集合の共通実装 | [使い方](docs/ordered_multiset_btree.md) |
@@ -58,6 +62,19 @@
 | `geometry/exact_polygon.hpp` | 厳密な面積・重心・凸多角形の切断 | [使い方](docs/geometry_exact_polygon.md) |
 | `geometry/exact_circle.hpp` | 厳密な円の判定・外接円・最小包含円 | [使い方](docs/geometry_exact_circle.md) |
 | `geometry/exact.hpp` | 任意精度による厳密な平面幾何の一括 include | [使い方](docs/geometry_exact.md) |
+
+### 整数幾何
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `integer_geometry/geometry.hpp` | 固定幅整数による平面幾何の一括 include | [使い方](docs/integer_geometry.md) |
+| `integer_geometry/point.hpp` | 整数の点・ベクトル・偏角順 | [使い方](docs/integer_geometry_point.md) |
+| `integer_geometry/linear.hpp` | 直線・線分の判定・平行・直交・交差 | [使い方](docs/integer_geometry_linear.md) |
+| `integer_geometry/polygon.hpp` | 多角形の面積2倍・内外・凸性 | [使い方](docs/integer_geometry_polygon.md) |
+| `integer_geometry/convex.hpp` | 凸包・最近点対・最遠点対・Minkowski 和 | [使い方](docs/integer_geometry_convex.md) |
+| `integer_geometry/dynamic_convex_hull.hpp` | 点追加型の動的凸包・支持点・面積 | [使い方](docs/integer_geometry_dynamic_convex_hull.md) |
+| `integer_geometry/circle.hpp` | 整数中心・整数半径の円の判定 | [使い方](docs/integer_geometry_circle.md) |
+| `integer_geometry/lattice.hpp` | 方向の原始化・線分と多角形の格子点数 | [使い方](docs/integer_geometry_lattice.md) |
 
 ### 畳み込み
 
@@ -126,6 +143,7 @@
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
 | `tree/path_product.hpp` | 頂点値更新・順序付き経路積 | [使い方](docs/path_product.md) |
 | `tree/contour_sum.hpp` | 頂点値更新・距離区間の和 | [使い方](docs/contour_sum.md) |
+| `tree/subtree_index.hpp` | 親配列から部分木の区間番号を構築 | [使い方](docs/subtree_index.md) |
 | `tree/auxiliary_tree.hpp` | Auxiliary Tree・圧縮木の隣接リスト | [使い方](docs/auxiliary_tree.md) |
 | `tree/tree_diameter.hpp` | 木の直径・最長パスの復元 | [使い方](docs/tree_diameter.md) |
 | `tree/tree_center.hpp` | 木の中心・最大距離を最小にする頂点 | [使い方](docs/tree_center.md) |
@@ -194,6 +212,12 @@
 | --- | --- | --- |
 | `graph/eulerian_trail.hpp` | 有向・無向 Euler 路（頂点列・辺 ID 列） | [使い方](docs/eulerian_trail.md) |
 
+### 三角形列挙
+
+| ファイル | 内容 | 使い方 |
+| --- | --- | --- |
+| `graph/enumerate_triangles.hpp` | 無向単純グラフの三角形列挙 | [使い方](docs/enumerate_triangles.md) |
+
 ### 連結性
 
 | ファイル | 内容 | 使い方 |
@@ -213,6 +237,7 @@
 | --- | --- | --- |
 | `data_structure/slope_trick.hpp` | Slope Trick | [使い方](docs/slope_trick.md) |
 | `data_structure/lazy_reversible_treap.hpp` | 遅延伝搬・反転可能な乱択平衡二分木 | [使い方](docs/lazy_reversible_treap.md) |
+| `data_structure/lazy_reversible_sequence.hpp` | 遅延伝搬・反転可能なブロック列 | [使い方](docs/lazy_reversible_sequence.md) |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
 | `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列） | [使い方](docs/flat_hash_map.md) |
@@ -260,6 +285,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `data_structure/range_affine_range_sum.hpp` | 区間アフィン変換・区間和 | [使い方](docs/range_affine_range_sum.md) |
+| `data_structure/range_affine_point_get.hpp` | 区間アフィン変換・一点取得 | [使い方](docs/range_affine_point_get.md) |
 | `data_structure/range_add_range_min.hpp` | 区間加算・区間最小値 | [使い方](docs/range_add_range_min.md) |
 | `data_structure/segtree.hpp` | セグメント木・一点更新・区間集約・境界検索 | [使い方](docs/segtree.md) |
 | `data_structure/lazy_segtree.hpp` | 遅延セグメント木・境界検索 | [使い方](docs/lazy_segtree.md) |
@@ -440,6 +466,7 @@
 | `components/offline_range_kth.hpp` | 区間順位の一括処理 | [使い方](docs/offline_range_kth.md) |
 | `components/insert_only_prefix_count_sum.hpp` | 挿入のみの区間和・個数 | [使い方](docs/insert_only_prefix_count_sum.md) |
 | `components/packed_convex_hull.hpp` | 整数点の凸包 | [使い方](docs/packed_convex_hull.md) |
+| `components/integer_geometry_bridge.hpp` | 整数幾何と通常幾何の厳密な座標変換 | [使い方](docs/integer_geometry_bridge.md) |
 | `components/min_plus_convolution_envelope.hpp` | 凹列と任意列の畳み込み | [使い方](docs/min_plus_convolution_envelope.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
 | `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |
@@ -501,6 +528,7 @@
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
 | `components/fps_log.hpp` | FPS の対数の内部変換 | [使い方](docs/fps_log.md) |
 | `components/fps_blocked.hpp` | FPS のブロック変換 | [使い方](docs/fps_blocked.md) |
+| `components/ntt_mod_blocked.hpp` | 任意法畳み込みのブロック変換 | [使い方](docs/ntt_mod_blocked.md) |
 | `components/fps_bostan.hpp` | Bostan–Mori の倍長化 | [使い方](docs/fps_bostan.md) |
 | `components/fps_horner.hpp` | FPS の一点評価 | [使い方](docs/fps_horner.md) |
 | `components/polynomial_gcd_blocked.hpp` | 多項式 Half-GCD の専用変換 | [使い方](docs/polynomial_gcd_blocked.md) |
@@ -510,10 +538,15 @@
 | `components/fps_projection_blocked.hpp` | FPS の射影の専用変換 | [使い方](docs/fps_projection_blocked.md) |
 | `components/fps_composition_light.hpp` | 軽量 FPS の合成・射影の共通部品 | [使い方](docs/fps_composition_light.md) |
 | `components/fps_composition_generic.hpp` | FPS の合成・射影の汎用実装 | [使い方](docs/fps_composition_generic.md) |
+| `components/fps_composition_stages.hpp` | FPS の合成・射影の共通段 | [使い方](docs/fps_composition_stages.md) |
+| `components/fps_compose_generic.hpp` | FPS の合成の汎用実装 | [使い方](docs/fps_compose_generic.md) |
+| `components/fps_projection_generic.hpp` | FPS の射影の汎用実装 | [使い方](docs/fps_projection_generic.md) |
+| `components/fps_reversion_generic.hpp` | FPS の合成逆元の汎用実装 | [使い方](docs/fps_reversion_generic.md) |
 | `components/fps_convolution.hpp` | FPS の融合畳み込み | [使い方](docs/fps_convolution.md) |
 | `components/mint_convolution.hpp` | modint998244353 の共有畳み込み | [使い方](docs/mint_convolution.md) |
 | `components/convolution_dispatch.hpp` | 畳み込みの型別振り分け | [使い方](docs/convolution_dispatch.md) |
 | `components/gcd_convolution_mint.hpp` | modint998244353 の GCD 畳み込み | [使い方](docs/gcd_convolution_mint.md) |
+| `components/lcm_convolution_mint.hpp` | modint998244353 の LCM 畳み込み | [使い方](docs/lcm_convolution_mint.md) |
 | `components/fps_convolution_unbalanced.hpp` | FPS の非対称畳み込み | [使い方](docs/fps_convolution_unbalanced.md) |
 | `components/fps_convolution_constant.hpp` | FPS の定数係数畳み込み | [使い方](docs/fps_convolution_constant.md) |
 | `components/fps_direct_eval.hpp` | 多点評価の内部直接計算 | [使い方](docs/fps_direct_eval.md) |

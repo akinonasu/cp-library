@@ -1,13 +1,15 @@
 #ifndef CP_COMPONENTS_RATIONAL_FPS_COEFFICIENTS_HPP
 #define CP_COMPONENTS_RATIONAL_FPS_COEFFICIENTS_HPP
 
+#include "compiler_features.hpp"
+
 #include <algorithm>
 #include <bit>
 #include <cassert>
 #include <cstddef>
 #include <utility>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -100,7 +102,7 @@ struct Coefficients {
 };
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

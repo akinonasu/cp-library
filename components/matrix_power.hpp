@@ -6,7 +6,7 @@
 #include <bit>
 #include <optional>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -49,7 +49,7 @@ struct FrobeniusPower {
 	}
 	Row apply(const Row &x) const {
 		Row result(n);
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_GNU_X86
 		if (block) {
 			std::vector<std::int32_t> centered(n);
 			for (int i = 0; i < n; ++i) centered[i] = center(x[i]);
@@ -138,7 +138,7 @@ struct FrobeniusPower {
 		return p;
 	}
 	std::optional<std::vector<Row>> decompose(bool diagonal = true) {
-#if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
+#if CP_GNU_X86
 		if (n >= 32 && avx2()) {
 			block = avx512_product() ? 16 : 8;
 			packed.resize(transpose.size());
@@ -270,7 +270,7 @@ struct FrobeniusPower {
 };
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 
