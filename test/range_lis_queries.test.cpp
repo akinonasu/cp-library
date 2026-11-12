@@ -13,5 +13,5 @@ int main() {
 	for (auto &value : values) input.read(value);
 	std::vector<std::pair<int, int>> intervals(q);
 	for (auto &[l, r] : intervals) input.read(l), input.read(r);
-	for (int answer : range_lis_queries(values, intervals)) output.println(answer);
+	for (int answer : range_lis_queries_sqrt(values, intervals)) output.println(answer);
 }

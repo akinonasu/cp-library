@@ -43,10 +43,13 @@ void exhaustive() {
 				strict_answers.push_back(a), weak_answers.push_back(b);
 			}
 			assert(range_lis_queries(values, intervals) == strict_answers);
+			assert(range_lis_queries_sqrt(values, intervals) == strict_answers);
 			assert(range_lis_queries<false>(values, intervals) == weak_answers);
+			assert(range_lis_queries_sqrt<false>(values, intervals) == weak_answers);
 			std::reverse(intervals.begin(), intervals.end());
 			std::reverse(strict_answers.begin(), strict_answers.end());
 			assert(range_lis_queries(values, intervals) == strict_answers);
+			assert(range_lis_queries_sqrt(values, intervals) == strict_answers);
 		}
 	}
 }
@@ -79,9 +82,13 @@ void randomized() {
 			auto original_values = values;
 			auto original_intervals = intervals;
 			assert(range_lis_queries(values, intervals) == answers[0]);
+			assert(range_lis_queries_sqrt(values, intervals) == answers[0]);
 			assert(range_lis_queries<false>(values, intervals) == answers[1]);
+			assert(range_lis_queries_sqrt<false>(values, intervals) == answers[1]);
 			assert(range_lis_queries(values, intervals, std::greater<>{}) == answers[2]);
+			assert(range_lis_queries_sqrt(values, intervals, std::greater<>{}) == answers[2]);
 			assert(range_lis_queries<false>(values, intervals, std::greater<>{}) == answers[3]);
+			assert(range_lis_queries_sqrt<false>(values, intervals, std::greater<>{}) == answers[3]);
 			assert(values == original_values && intervals == original_intervals);
 			auto copy = strict;
 			int answer = strict.query(0, n);
@@ -129,7 +136,9 @@ void wide_integers(const std::vector<T> &values) {
 		strict_answers.push_back(a), weak_answers.push_back(b);
 	}
 	assert(range_lis_queries(values, intervals) == strict_answers);
+	assert(range_lis_queries_sqrt(values, intervals) == strict_answers);
 	assert(range_lis_queries<false>(values, intervals) == weak_answers);
+	assert(range_lis_queries_sqrt<false>(values, intervals) == weak_answers);
 }
 #endif
 
@@ -163,6 +172,8 @@ int main() {
 	assert(tree.query(0, 5) == 3 && *pointers[0] == 3);
 	assert((range_lis_queries(pointers, std::vector<std::pair<int, int>>{ {0, 5}, {2, 2}, {1, 4} },
 		[](const auto &x, const auto &y) { return *x < *y; }) == std::vector<int>{3, 0, 2}));
+	assert((range_lis_queries_sqrt(pointers, std::vector<std::pair<int, int>>{ {0, 5}, {2, 2}, {1, 4} },
+		[](const auto &x, const auto &y) { return *x < *y; }) == std::vector<int>{3, 0, 2}));
 	int a[]{2, 1, 3};
 	tree.build(a);
 	assert(tree.query(0, 3) == 2);
@@ -171,5 +182,7 @@ int main() {
 	tree.build(std::vector<int>{});
 	assert(tree.query(0, 0) == 0);
 	assert(range_lis_queries(std::vector<int>{1, 2, 3}, std::vector<std::pair<int, int>>{}).empty());
+	assert(range_lis_queries_sqrt(std::vector<int>{1, 2, 3}, std::vector<std::pair<int, int>>{}).empty());
 	assert((range_lis_queries(std::vector<int>{}, std::vector<std::pair<int, int>>{ {0, 0}, {0, 0} }) == std::vector<int>{0, 0}));
+	assert((range_lis_queries_sqrt(std::vector<int>{}, std::vector<std::pair<int, int>>{ {0, 0}, {0, 0} }) == std::vector<int>{0, 0}));
 }
