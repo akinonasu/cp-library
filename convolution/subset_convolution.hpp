@@ -18,8 +18,12 @@ std::vector<T> subset_convolution(const std::vector<T> &a, const std::vector<T> 
 	std::size_t n = std::bit_ceil(std::max(a.size(), b.size()));
 #if (defined(__x86_64__) || defined(__i386__)) && (defined(__GNUC__) || defined(__clang__))
 	if constexpr (subset_convolution_detail::SmallModint<T>::value)
-		if (n >= 256 && n <= (std::size_t(1) << 20) && subset_convolution_detail::avx2())
+		if (n >= 256 && n <= (std::size_t(1) << 20) && subset_convolution_detail::avx2()) {
+			if (n <= (std::size_t(1) << 8)) return subset_convolution_detail::Modular<T::mod(), 8>::convolution(a, b, int(n));
+			if (n <= (std::size_t(1) << 12)) return subset_convolution_detail::Modular<T::mod(), 12>::convolution(a, b, int(n));
+			if (n <= (std::size_t(1) << 16)) return subset_convolution_detail::Modular<T::mod(), 16>::convolution(a, b, int(n));
 			return subset_convolution_detail::Modular<T::mod()>::convolution(a, b, int(n));
+		}
 #endif
 	int levels = std::bit_width(n) - 1, width = levels + 1;
 	std::vector<T> x(n * width, T(0)), y(n * width, T(0)), result(n, T(0));
