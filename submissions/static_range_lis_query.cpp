@@ -1,4 +1,4 @@
-#line 1 "test/range_lis_query.test.cpp"
+#line 1 "test/range_lis_queries.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_lis_query"
 #line 1 "data_structure/range_lis_query.hpp"
 
@@ -108,11 +108,34 @@ struct QuadBitVector {
 
 
 
-#line 6 "components/range_lis.hpp"
+#line 1 "components/default_init_allocator.hpp"
+
+
+
+#include <memory>
+#include <new>
+
+template <class T>
+struct DefaultInitAllocator : std::allocator<T> {
+	template <class U>
+	struct rebind {
+		using other = DefaultInitAllocator<U>;
+	};
+	DefaultInitAllocator() = default;
+	template <class U>
+	DefaultInitAllocator(const DefaultInitAllocator<U> &) noexcept {}
+	template <class U>
+	void construct(U *p) { ::new (static_cast<void *>(p)) U; }
+};
+
+
+#line 7 "components/range_lis.hpp"
 #include <numeric>
+#include <limits>
+#include <stdexcept>
 #include <span>
 #include <utility>
-#line 10 "components/range_lis.hpp"
+#line 13 "components/range_lis.hpp"
 
 namespace range_lis_detail {
 inline void multiply(int n, const int *a, const int *b, int *result, int *work) {
@@ -167,89 +190,245 @@ inline void multiply(int n, const int *a, const int *b, int *result, int *work) 
 	}
 }
 
-inline std::vector<int> compose(const std::vector<int> &a, const std::vector<int> &b) {
-	int n = int(a.size());
-	std::vector<int> left(n), right(n), inverse(n, -1), rows, columns;
-	rows.reserve(n);
-	columns.reserve(n);
-	for (int i = 0; i < n; ++i) if (a[i] >= 0) {
-		rows.push_back(i);
-		inverse[a[i]] = i;
-	}
-	int cursor = 0;
-	for (int i = 0; i < n; ++i) if (inverse[i] < 0) left[cursor++] = i;
-	for (int row : rows) left[cursor++] = a[row];
-	std::fill(inverse.begin(), inverse.end(), -1);
-	for (int i = 0; i < n; ++i) if (b[i] >= 0) inverse[b[i]] = i;
-	cursor = 0;
-	for (int i = 0; i < n; ++i) if (inverse[i] >= 0) {
-		right[cursor++] = inverse[i];
-		columns.push_back(i);
-	}
-	for (int i = 0; i < n; ++i) if (b[i] < 0) right[cursor++] = i;
+inline std::size_t product_space(int n) {
 	std::size_t space = 0;
 	for (int length = n; length > 1;) {
 		int half = length / 2 + length % 2;
 		space += std::size_t(length) + 5 * std::size_t(half);
 		length = half;
 	}
-	std::vector<int> product(n), work(space);
-	multiply(n, left.data(), right.data(), product.data(), work.data());
-	std::vector<int> result(n, -1);
-	for (std::size_t i = 0; i < rows.size(); ++i) {
-		int column = product[n - rows.size() + i];
-		if (std::size_t(column) < columns.size()) result[rows[i]] = columns[column];
+	return space;
+}
+
+inline void compose(int n, const int *a, const int *b, int *result, int *work) {
+	int *left = work, *right = left + n, *inverse = right + n;
+	int *rows = inverse + n, *columns = rows + n, *product = columns + n;
+	std::fill_n(inverse, n, -1);
+	int row_count = 0, column_count = 0;
+	for (int i = 0; i < n; ++i) if (a[i] >= 0) {
+		rows[row_count++] = i;
+		inverse[a[i]] = i;
 	}
+	int cursor = 0;
+	for (int i = 0; i < n; ++i) if (inverse[i] < 0) left[cursor++] = i;
+	for (int i = 0; i < row_count; ++i) left[cursor++] = a[rows[i]];
+	std::fill_n(inverse, n, -1);
+	for (int i = 0; i < n; ++i) if (b[i] >= 0) inverse[b[i]] = i;
+	cursor = 0;
+	for (int i = 0; i < n; ++i) if (inverse[i] >= 0) {
+		right[cursor++] = inverse[i];
+		columns[column_count++] = i;
+	}
+	for (int i = 0; i < n; ++i) if (b[i] < 0) right[cursor++] = i;
+	multiply(n, left, right, product, product + n);
+	std::fill_n(result, n, -1);
+	for (int i = 0; i < row_count; ++i) {
+		int column = product[n - row_count + i];
+		if (column < column_count) result[rows[i]] = columns[column];
+	}
+}
+
+inline std::vector<int> compose(const std::vector<int> &a, const std::vector<int> &b) {
+	int n = int(a.size());
+	if (std::size_t(n) > std::numeric_limits<std::size_t>::max() / 20) throw std::length_error("Range LIS workspace");
+	std::vector<int> result(n);
+	std::vector<int, DefaultInitAllocator<int>> work(6 * std::size_t(n) + product_space(n));
+	if (n) compose(n, a.data(), b.data(), result.data(), work.data());
 	return result;
+}
+
+inline std::size_t seaweed_space(int n) {
+	if (n <= 32) return n;
+	return std::max(2 * std::size_t(n) + seaweed_space(n - n / 2), 9 * std::size_t(n) + product_space(n));
+}
+
+inline void seaweed(int n, const int *permutation, int *result, int *work) {
+	if (n <= 32) {
+		std::fill_n(work, n, -1);
+		std::fill_n(result, n, -1);
+		for (int i = 0; i < n; ++i) {
+			int value = permutation[i], carry = -1;
+			work[value] = i;
+			for (int j = value + 1; j < n; ++j)
+				if (work[j] > carry) std::swap(work[j], carry);
+			if (carry >= 0) result[carry] = i;
+		}
+		return;
+	}
+	int middle = n / 2;
+	int *split = work, *positions = split + n, *child = positions + n;
+	int low = 0, high = middle;
+	for (int i = 0; i < n; ++i) {
+		int value = permutation[i];
+		int &cursor = value < middle ? low : high;
+		split[cursor] = value < middle ? value : value - middle;
+		positions[cursor++] = i;
+	}
+	seaweed(middle, split, result, child);
+	seaweed(n - middle, split + middle, result + middle, child);
+	int *a = split, *b = child;
+	std::iota(a, a + n, 0);
+	std::iota(b, b + n, 0);
+	for (int i = 0; i < middle; ++i) a[positions[i]] = result[i] < 0 ? -1 : positions[result[i]];
+	for (int i = middle; i < n; ++i) b[positions[i]] = result[i] < 0 ? -1 : positions[middle + result[i]];
+	compose(n, a, b, result, b + n);
 }
 
 inline std::vector<int> seaweed(std::span<const int> permutation) {
 	int n = int(permutation.size());
-	if (n <= 32) {
-		std::vector<int> state(n, -1), result(n, -1);
-		for (int i = 0; i < n; ++i) {
-			int value = permutation[i], carry = -1;
-			state[value] = i;
-			for (int j = value + 1; j < n; ++j)
-				if (state[j] > carry) std::swap(state[j], carry);
-			if (carry >= 0) result[carry] = i;
-		}
+	if (std::size_t(n) > std::numeric_limits<std::size_t>::max() / 20) throw std::length_error("Range LIS workspace");
+	std::vector<int> result(n);
+	if (!n) return result;
+	if (std::is_sorted(permutation.begin(), permutation.end())) {
+		std::fill(result.begin(), result.end(), -1);
 		return result;
 	}
-	int middle = n / 2;
-	std::vector<int> low, high, low_positions, high_positions;
-	low.reserve(middle);
-	high.reserve(n - middle);
-	low_positions.reserve(middle);
-	high_positions.reserve(n - middle);
+	if (std::is_sorted(permutation.rbegin(), permutation.rend())) {
+		std::iota(result.begin(), result.end(), 1);
+		result.back() = -1;
+		return result;
+	}
+	std::vector<int, DefaultInitAllocator<int>> work(seaweed_space(n));
+	seaweed(n, permutation.data(), result.data(), work.data());
+	return result;
+}
+}
+
+
+#line 1 "components/range_lis_batch.hpp"
+
+
+
+#line 6 "components/range_lis_batch.hpp"
+#include <functional>
+#line 10 "components/range_lis_batch.hpp"
+
+namespace range_lis_detail {
+inline void replace_max(std::uint32_t *heap, int size, std::uint32_t value) {
+	int at = 0;
+	while (at * 2 + 1 < size) {
+		int child = at * 2 + 1;
+		if (child + 1 < size && heap[child] < heap[child + 1]) ++child;
+		if (value >= heap[child]) break;
+		heap[at] = heap[child];
+		at = child;
+	}
+	heap[at] = value;
+}
+inline void replace_min(std::uint32_t *heap, int size, std::uint32_t value) {
+	int at = 0;
+	while (at * 2 + 1 < size) {
+		int child = at * 2 + 1;
+		if (child + 1 < size && heap[child] > heap[child + 1]) ++child;
+		if (value <= heap[child]) break;
+		heap[at] = heap[child];
+		at = child;
+	}
+	heap[at] = value;
+}
+inline void batch_sqrt(std::span<const int> permutation, std::span<const std::pair<int, int>> intervals, std::vector<int> &answers) {
+	int n = int(permutation.size());
+	std::vector<int> offset(std::size_t(n) + 2);
+	for (auto [l, r] : intervals) if (r > l) ++offset[std::size_t(r) + 1];
+	for (std::size_t i = 1; i < offset.size(); ++i) offset[i] += offset[i - 1];
+	std::vector<std::pair<int, int>> ordered(offset.back());
+	auto cursor = offset;
+	for (int i = 0; i < int(intervals.size()); ++i) {
+		auto [l, r] = intervals[i];
+		if (r > l) ordered[cursor[r]++] = {l, i};
+	}
+	int block = 1;
+	while (block < n / block) ++block;
+	int count = n ? (n - 1) / block + 1 : 0;
+	std::vector<int> sizes(count), fenwick(std::size_t(n) + 1);
+	std::vector<std::uint32_t> values(n), heap(n), pending(block);
+	std::vector<bool> dirty(count);
+	auto update = [&](unsigned at, int delta) {
+		for (; at; at &= at - 1) fenwick[at] += delta;
+	};
 	for (int i = 0; i < n; ++i) {
-		int value = permutation[i];
-		if (value < middle) {
-			low.push_back(value);
-			low_positions.push_back(i);
-		} else {
-			high.push_back(value - middle);
-			high_positions.push_back(i);
+		int x = permutation[i], part = x / block;
+		int left = part * block, right = left + std::min(block, n - left);
+		auto *local = heap.data() + left;
+		if (dirty[part]) {
+			int used = 0;
+			for (int j = 0; j < sizes[part]; ++j) if (local[j] & 1) pending[used++] = local[j] >> 1;
+			std::make_heap(pending.begin(), pending.begin() + used, std::greater<>{});
+			for (int j = left; j < right; ++j) if (used && values[j] > pending[0]) {
+				auto value = values[j];
+				values[j] = pending[0];
+				replace_min(pending.data(), used, value);
+			}
+			dirty[part] = false;
+		}
+		values[x] = unsigned(i) + 1;
+		update(unsigned(i) + 1, 1);
+		std::uint32_t carry = 0;
+		for (int j = x + 1; j < right; ++j) if (values[j] > carry) std::swap(values[j], carry);
+		for (int j = part + 1; j < count; ++j) {
+			auto *other = heap.data() + j * block;
+			if (sizes[j] && carry < (other[0] >> 1)) {
+				dirty[j] = true;
+				auto next = other[0] >> 1;
+				replace_max(other, sizes[j], (carry << 1) | 1);
+				carry = next;
+			}
+		}
+		update(carry, -1);
+		int used = 0;
+		for (int j = left; j < right; ++j) if (values[j]) local[used++] = values[j] << 1;
+		sizes[part] = used;
+		std::make_heap(local, local + used);
+		for (int j = offset[std::size_t(i) + 1]; j < offset[std::size_t(i) + 2]; ++j) {
+			auto [l, id] = ordered[j];
+			int answer = 0;
+			for (unsigned at = unsigned(l) + 1; at <= unsigned(n); at += at & -at) answer += fenwick[at];
+			answers[id] = answer;
 		}
 	}
-	low = seaweed(low);
-	high = seaweed(high);
-	std::vector<int> a(n), b(n);
-	std::iota(a.begin(), a.end(), 0);
-	std::iota(b.begin(), b.end(), 0);
-	for (int i = 0; i < middle; ++i) a[low_positions[i]] = low[i] < 0 ? -1 : low_positions[low[i]];
-	for (int i = 0; i < n - middle; ++i) b[high_positions[i]] = high[i] < 0 ? -1 : high_positions[high[i]];
-	return compose(a, b);
 }
 }
 
 
-#line 12 "data_structure/range_lis_query.hpp"
-#include <functional>
-#include <limits>
-#line 15 "data_structure/range_lis_query.hpp"
+#line 16 "data_structure/range_lis_query.hpp"
 #include <ranges>
 #line 18 "data_structure/range_lis_query.hpp"
+#include <type_traits>
+#line 21 "data_structure/range_lis_query.hpp"
+
+namespace range_lis_query_detail {
+template<bool Strict, class Range, class Compare>
+std::vector<int> permutation(const Range &values, Compare compare) {
+	int n = int(std::ranges::size(values));
+	auto first = std::ranges::begin(values);
+	std::vector<int> order(n, -1), result(n);
+	if constexpr (std::is_integral_v<std::ranges::range_value_t<Range>>
+		&& sizeof(std::ranges::range_value_t<Range>) <= sizeof(std::uintmax_t) && std::is_same_v<Compare, std::less<>>) {
+		bool direct = true;
+		for (int i = 0; i < n; ++i) {
+			auto value = first[i];
+			if constexpr (std::is_signed_v<std::ranges::range_value_t<Range>>) {
+				if (value < 0) { direct = false; break; }
+			}
+			if (std::uintmax_t(value) >= std::uintmax_t(n)) { direct = false; break; }
+			int rank = int(value);
+			if (order[rank] != -1) { direct = false; break; }
+			order[rank] = i;
+			result[i] = rank;
+		}
+		if (direct) return result;
+	}
+	std::iota(order.begin(), order.end(), 0);
+	std::sort(order.begin(), order.end(), [&](int a, int b) {
+		if (compare(first[a], first[b])) return true;
+		if (compare(first[b], first[a])) return false;
+		if constexpr (Strict) return a > b;
+		else return a < b;
+	});
+	for (int i = 0; i < n; ++i) result[order[i]] = i;
+	return result;
+}
+}
 
 template <bool Strict = true>
 class RangeLISQuery {
@@ -303,16 +482,7 @@ public:
 		bits.clear();
 		offsets.clear();
 		if (!n) return;
-		auto first = std::ranges::begin(values);
-		std::vector<int> order(n), permutation(n);
-		std::iota(order.begin(), order.end(), 0);
-		std::sort(order.begin(), order.end(), [&](int a, int b) {
-			if (compare(first[a], first[b])) return true;
-			if (compare(first[b], first[a])) return false;
-			if constexpr (Strict) return a > b;
-			else return a < b;
-		});
-		for (int i = 0; i < n; ++i) permutation[order[i]] = i;
+		auto permutation = range_lis_query_detail::permutation<Strict>(values, std::move(compare));
 		auto endpoints = range_lis_detail::seaweed(permutation);
 		std::vector<std::uint32_t> current(n), next(n);
 		for (int i = 0; i < n; ++i) current[i] = endpoints[i] < 0 ? unsigned(n) : unsigned(endpoints[i]);
@@ -342,6 +512,79 @@ public:
 	}
 };
 
+template<bool Strict = true, class Range, class Compare = std::less<>>
+	requires std::ranges::random_access_range<const Range> && std::ranges::sized_range<const Range>
+std::vector<int> range_lis_queries(const Range &values, std::span<const std::pair<int, int>> intervals, Compare compare = {}) {
+	assert(std::ranges::size(values) <= std::size_t(std::numeric_limits<int>::max()));
+	assert(intervals.size() <= std::size_t(std::numeric_limits<int>::max()));
+	int n = int(std::ranges::size(values));
+	std::vector<int> answers(intervals.size());
+	bool nontrivial = false;
+	for (std::size_t i = 0; i < intervals.size(); ++i) {
+		auto [l, r] = intervals[i];
+		assert(0 <= l && l <= r && r <= n);
+		answers[i] = r - l;
+		nontrivial |= r - l > 1;
+	}
+	if (!nontrivial) return answers;
+	auto permutation = range_lis_query_detail::permutation<Strict>(values, std::move(compare));
+	auto endpoints = range_lis_detail::seaweed(permutation);
+	std::vector<int> inverse(n, -1), offset(std::size_t(n) + 2);
+	for (int i = 0; i < n; ++i) if (endpoints[i] >= 0) {
+		assert(i < endpoints[i] && endpoints[i] < n && inverse[endpoints[i]] == -1);
+		inverse[endpoints[i]] = i;
+	}
+	for (auto [l, r] : intervals) if (r - l > 1) ++offset[r + 1];
+	for (std::size_t i = 1; i < offset.size(); ++i) offset[i] += offset[i - 1];
+	std::vector<std::pair<int, int>> ordered(offset.back());
+	auto cursor = offset;
+	for (int i = 0; i < int(intervals.size()); ++i) {
+		auto [l, r] = intervals[i];
+		if (r - l > 1) ordered[cursor[r]++] = {l, i};
+	}
+	cursor.assign(std::size_t(n) + 1, 0);
+	int active = 0;
+	for (std::size_t r = 0; r + 1 < offset.size(); ++r) {
+		if (r && inverse[r - 1] != -1) {
+			++active;
+			for (unsigned i = unsigned(inverse[r - 1]) + 1; i <= unsigned(n); i += i & -i) ++cursor[i];
+		}
+		for (int i = offset[r]; i < offset[r + 1]; ++i) {
+			auto [l, id] = ordered[i];
+			int before = 0;
+			for (unsigned j = unsigned(l); j; j &= j - 1) before += cursor[j];
+			answers[id] = int(r) - l - active + before;
+		}
+	}
+	return answers;
+}
+
+
+template<bool Strict = true, class Range, class Compare = std::less<>>
+	requires std::ranges::random_access_range<const Range> && std::ranges::sized_range<const Range>
+std::vector<int> range_lis_queries_sqrt(const Range &values, std::span<const std::pair<int, int>> intervals, Compare compare = {}) {
+	assert(std::ranges::size(values) <= std::size_t(std::numeric_limits<int>::max()));
+	assert(intervals.size() <= std::size_t(std::numeric_limits<int>::max()));
+	int n = int(std::ranges::size(values));
+	std::vector<int> answers(intervals.size());
+	bool nontrivial = false;
+	for (std::size_t i = 0; i < intervals.size(); ++i) {
+		auto [l, r] = intervals[i];
+		assert(0 <= l && l <= r && r <= n);
+		answers[i] = r - l;
+		nontrivial |= r - l > 1;
+	}
+	if (!nontrivial) return answers;
+	auto permutation = range_lis_query_detail::permutation<Strict>(values, std::move(compare));
+	if (std::is_sorted(permutation.begin(), permutation.end())) return answers;
+	if (std::is_sorted(permutation.rbegin(), permutation.rend())) {
+		for (int &answer : answers) answer = answer != 0;
+		return answers;
+	}
+	range_lis_detail::batch_sqrt(permutation, intervals, answers);
+	return answers;
+}
+
 
 #line 1 "components/fast_io.hpp"
 
@@ -352,11 +595,10 @@ public:
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>
-#include <memory>
-#include <stdexcept>
+#line 15 "components/fast_io.hpp"
 #include <string>
 #include <string_view>
-#include <type_traits>
+#line 18 "components/fast_io.hpp"
 #if defined(__unix__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -576,19 +818,16 @@ public:
 };
 
 
-#line 4 "test/range_lis_query.test.cpp"
+#line 6 "test/range_lis_queries.test.cpp"
 
 int main() {
-	FastInput in;
-	FastOutput out;
+	FastInput input;
+	FastOutput output;
 	int n = 0, q = 0;
-	in.read(n), in.read(q);
+	input.read(n), input.read(q);
 	std::vector<int> values(n);
-	for (auto &value : values) in.read(value);
-	RangeLISQuery<> tree(values);
-	while (q--) {
-		int l = 0, r = 0;
-		in.read(l), in.read(r);
-		out.println(tree.query(l, r));
-	}
+	for (auto &value : values) input.read(value);
+	std::vector<std::pair<int, int>> intervals(q);
+	for (auto &[l, r] : intervals) input.read(l), input.read(r);
+	for (int answer : range_lis_queries_sqrt(values, intervals)) output.println(answer);
 }
