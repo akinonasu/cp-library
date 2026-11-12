@@ -9,6 +9,50 @@
 #include <utility>
 #include <vector>
 
+template <class Sequence> requires requires(const Sequence &s) { s.size(); s[0]; }
+std::vector<int> palindrome_lengths(const Sequence &s) {
+	assert(s.size() <= std::size_t(std::numeric_limits<int>::max()));
+	int n = int(s.size());
+	if (!n) return {};
+	std::vector<int> result(2 * std::size_t(n) - 1);
+	int first = 1;
+	while (first < n && s[first] == s[0]) ++first;
+	for (int i = 0; i < first; ++i) {
+		result[2 * std::size_t(i)] = 2 * (std::min(i + 1, first - i) - 1) + 1;
+		if (i) result[2 * std::size_t(i) - 1] = 2 * std::min(i, first - i);
+	}
+	for (int i = first, k = 1; i < n;) {
+		int limit = std::min(i + 1, n - i);
+		while (k < limit && s[i - k] == s[i + k]) ++k;
+		result[2 * std::size_t(i)] = 2 * (k - 1) + 1;
+		int j = 1;
+		while (j < k) {
+			int reflected = result[2 * std::size_t(i - j)] / 2 + 1;
+			if (reflected == k - j) break;
+			result[2 * std::size_t(i + j)] = 2 * (std::min(reflected, k - j) - 1) + 1;
+			++j;
+		}
+		i += j;
+		k = std::max(k - j, 1);
+	}
+	for (int i = first, k = 0; i < n;) {
+		int limit = std::min(i, n - i);
+		while (k < limit && s[i - k - 1] == s[i + k]) ++k;
+		result[2 * std::size_t(i) - 1] = 2 * k;
+		int j = 1;
+		while (j < k) {
+			int reflected = result[2 * std::size_t(i - j) - 1] / 2;
+			if (reflected == k - j) break;
+			result[2 * std::size_t(i + j) - 1] = 2 * std::min(reflected, k - j);
+			++j;
+		}
+		i += j;
+		k = std::max(k - j, 0);
+	}
+	return result;
+}
+inline std::vector<int> palindrome_lengths(std::string_view s) { return palindrome_lengths<std::string_view>(s); }
+
 class Manacher {
   public:
 	std::vector<int> odd, even;

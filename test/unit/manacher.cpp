@@ -28,6 +28,7 @@ void check(const Sequence &s) {
 	assert(result.palindrome_count() == count);
 	assert(result.longest_palindrome() == longest);
 	auto lengths = result.lengths();
+	assert(palindrome_lengths(s) == lengths);
 	assert(lengths.size() == (n ? 2 * s.size() - 1 : 0));
 	for (int i = 0; i < n; ++i) {
 		int a = 1, b = 0;
@@ -55,6 +56,8 @@ int main() {
 	assert((empty.longest_palindrome() == std::pair<int, int>{0, 0}));
 	assert(empty.lengths().empty());
 	assert(Manacher("aba").size() == 3);
+	assert((palindrome_lengths("aba") == std::vector<int>{1, 0, 3, 0, 1}));
+	assert(palindrome_lengths("").empty());
 	empty.build("abba");
 	assert(empty.even[2] == 2);
 	empty.build("");
@@ -107,6 +110,9 @@ int main() {
 			assert(result.even[i] == (alternating ? 0 : std::min(i, n - i)));
 			count += std::int64_t(result.odd[i]) + result.even[i];
 		}
+		Counted::comparisons = 0;
+		assert(palindrome_lengths(s) == result.lengths());
+		assert(Counted::comparisons <= 4 * n);
 		assert(result.palindrome_count() == count);
 		if (!alternating) assert(count == std::int64_t(n) * (n + 1) / 2);
 		assert((result.longest_palindrome() == std::pair<int, int>{0, n - int(alternating)}));
