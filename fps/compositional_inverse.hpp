@@ -3,7 +3,7 @@
 
 #include "fps.hpp"
 #include "../components/fps_reversion.hpp"
-#include "../components/fps_composition_generic.hpp"
+#include "../components/fps_reversion_generic.hpp"
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
 #pragma GCC push_options

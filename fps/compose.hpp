@@ -3,7 +3,7 @@
 
 #include "fps.hpp"
 #include "../components/fps_compose_blocked.hpp"
-#include "../components/fps_composition_generic.hpp"
+#include "../components/fps_compose_generic.hpp"
 #include <numeric>
 
 #if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
