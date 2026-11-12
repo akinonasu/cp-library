@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/range_affine_point_get"
-#include "data_structure/range_affine_range_sum.hpp"
+#include "data_structure/range_affine_point_get.hpp"
 #include "components/fast_io.hpp"
 #include <vector>
 
@@ -10,7 +10,7 @@ int main() {
 	input.read(n), input.read(q);
 	std::vector<mint> values(n);
 	for (auto &value : values) { unsigned x = 0; input.read(x); value = mint::raw(x); }
-	RangeAffineRangeSum tree(values);
+	RangeAffinePointGet tree(values);
 	while (q--) {
 		int type = 0, l = 0;
 		input.read(type), input.read(l);
