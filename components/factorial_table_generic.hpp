@@ -8,6 +8,11 @@
 #include <type_traits>
 
 namespace factorial_table_detail {
+template<class Mint> void inverses(Mint *inverse, const Mint *factorial, const Mint *inverse_factorial, int n) {
+	inverse[0] = Mint(0);
+	for (int i = 1; i <= n; ++i) inverse[i] = factorial[i - 1] * inverse_factorial[i];
+}
+
 template<class Mint, bool Canonical = true> void build(Mint *factorial, Mint *inverse_factorial, int n) {
 	if constexpr (Canonical && requires(const Mint &x) { { x.val() } -> std::integral; }) {
 		const auto modulus = Mint::mod();

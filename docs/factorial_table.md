@@ -9,4 +9,6 @@ modint 型ごとに階乗・逆階乗を構築する内部部品です。通常�
 
 `Mint` は整数からの構築、乗算、`mod()` と `inv()` に対応するものを使います。`max_n` は `0` 以上 `INT_MAX` 未満とします。
 
+`factorial_detail::Table<Mint, true>(max_n)` では、同じ範囲の整数の逆元も `std::vector<Mint>` の `inverse` に保存します。`inverse[0]` は便宜上 0 とし、正の `i` では `Mint(i) * inverse[i] == Mint(1)` です。第2テンプレート引数を省略すると `false` となり、`inverse` は空です。
+
 実際の前計算上限を $$N$$、法を $$p$$ とすると、構築は $$O(N+\log p)$$ 時間、$$O(N)$$ 空間です。modint の乗算を $$O(1)$$、逆元計算を $$O(\log p)$$ とします。

@@ -11,6 +11,8 @@
 static_assert(std::is_same_v<Comb<>, light_combinatorics::Comb<>>);
 static_assert(std::is_same_v<BinomialPrefixSum<>, light_combinatorics::BinomialPrefixSum<>>);
 static_assert(std::is_same_v<IncrementalBinomialPrefixSum<>, light_combinatorics::IncrementalBinomialPrefixSum<>>);
+static_assert(std::is_same_v<decltype(inv[1]), mint>);
+static_assert(!std::is_lvalue_reference_v<decltype((inv[1]))>);
 
 int main() {
 	bool (*prime)(std::uint64_t) = is_prime;
@@ -22,11 +24,14 @@ int main() {
 	assert(is_prime(18446744073709551557ULL));
 	assert(!is_prime(18446744073709551615ULL));
 	assert(COMB_INF == COMB_MAX && fact[-1] == mint(0) && finv[-1] == mint(0));
+	assert(inv[0] == mint(0) && inv[-1] == mint(0));
 	std::array<mint, COMB_MAX + 1> row{};
 	row[0] = 1;
 	for (int n = 0; n <= COMB_MAX; ++n) {
 		assert(comb(n, -1) == mint(0) && comb(n, n + 1) == mint(0));
 		assert(fact[n] * finv[n] == mint(1));
+		assert(Comb<>::inv[n] == inv[n]);
+		assert(n ? inv[n] * mint(n) == mint(1) : inv[n] == mint(0));
 		for (int k = 0; k <= n; ++k) {
 			assert(comb(n, k) == row[k]);
 			assert(comb<mint>(n, k) == row[k]);

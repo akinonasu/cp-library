@@ -403,9 +403,9 @@
 | `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数の先頭区間和 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
 | `math/factorial_mod.hpp` | 大きな N の階乗 mod 998244353 | [使い方](docs/factorial_mod.md) |
-| `math/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
+| `math/comb.hpp` | modint 型を指定する階乗・逆階乗・逆元と二項係数 | [使い方](docs/comb.md) |
 | `math/comb_mod.hpp` | modint を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb_mod.md) |
-| `math/comb_light.hpp` | 軽量版の二項係数・階乗表 | [使い方](docs/comb_light.md) |
+| `math/comb_light.hpp` | 軽量版の二項係数・階乗・逆元表 | [使い方](docs/comb_light.md) |
 | `math/fixed_size_subset_sum.hpp` | 個数を指定して選ぶ部分和の集合 | [使い方](docs/fixed_size_subset_sum.md) |
 
 ### Floor Sum
