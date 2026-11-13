@@ -80,7 +80,6 @@ template<class Cost = std::int64_t> class ProjectSelection {
 	struct Result {
 		Wide cost;
 		std::vector<bool> selected;
-		Wide profit() const { return -cost; }
 	};
 	explicit ProjectSelection(int n = 0) : n_(n) {
 		assert(0 <= n && n <= std::numeric_limits<int>::max() / 2 - 3);
@@ -92,76 +91,54 @@ template<class Cost = std::int64_t> class ProjectSelection {
 	}
 	int size() const { return n_; }
 	bool is_flipped(int v) const { vertex(v); return orientation(v); }
-	void add_constant(Cost cost) { constant_ += Wide(cost); }
-	void add_cost(int v, Cost cost) { unary(v, 0, Wide(cost)); }
-	void add_cost(int v, Cost false_cost, Cost true_cost) { unary(v, Wide(false_cost), Wide(true_cost)); }
-	void add_profit(int v, Cost profit) { unary(v, 0, -Wide(profit)); }
-	void add_profit(int v, Cost false_profit, Cost true_profit) { unary(v, -Wide(false_profit), -Wide(true_profit)); }
-	void add_cost_if(int v, bool value, Cost cost) { unary(v, value ? 0 : Wide(cost), value ? Wide(cost) : 0); }
-	void add_profit_if(int v, bool value, Cost profit) { unary(v, value ? 0 : -Wide(profit), value ? -Wide(profit) : 0); }
-	void add_cost_if(int u, int v, bool u_value, bool v_value, Cost cost) {
-		condition(u, v, u_value, v_value, Wide(cost));
+	void add_constant(Wide cost) { constant_ += cost; }
+	void add_cost(int v, Wide cost) { unary(v, 0, cost); }
+	void add_cost(int v, Wide false_cost, Wide true_cost) { unary(v, false_cost, true_cost); }
+	void add_cost_if(int v, bool value, Wide cost) { unary(v, value ? 0 : cost, value ? cost : 0); }
+	void add_cost_if(int u, int v, bool u_value, bool v_value, Wide cost) {
+		condition(u, v, u_value, v_value, cost);
 	}
-	void add_profit_if(int u, int v, bool u_value, bool v_value, Cost profit) {
-		condition(u, v, u_value, v_value, -Wide(profit));
-	}
-	void add_penalty(int u, int v, Cost cost) {
-		assert(cost >= 0);
-		add_cost_if(u, v, true, false, cost);
-	}
-	void add_difference_cost(int u, int v, Cost cost) {
+	void add_equal_cost(int u, int v, bool equal, Wide cost) {
 		vertex(u), vertex(v);
-		assert(cost >= 0 && (u == v || !cost || orientation(u) == orientation(v)));
-		penalty(u, v, Wide(cost));
-		penalty(v, u, Wide(cost));
+		if (u == v) { if (equal) constant_ += cost; return; }
+		bool internal_equal = equal != (orientation(u) != orientation(v));
+		assert(!cost || (internal_equal ? cost < 0 : cost > 0));
+		if (internal_equal) {
+			assert(cost >= -Wide(std::numeric_limits<Cap>::max()));
+			constant_ += cost;
+			cost = -cost;
+		}
+		penalty(u, v, cost);
+		penalty(v, u, cost);
 	}
-	void add_same_cost(int u, int v, Cost cost) {
-		vertex(u), vertex(v);
-		assert(cost >= 0);
-		if (u == v) { constant_ += Wide(cost); return; }
-		assert(!cost || orientation(u) != orientation(v));
-		penalty(u, v, Wide(cost));
-		penalty(v, u, Wide(cost));
+	void add_pair_cost(int u, int v, Wide c00, Wide c01, Wide c10, Wide c11) {
+		pair(u, v, {c00, c01, c10, c11});
 	}
-	void add_same_profit(int u, int v, Cost profit) {
-		assert(profit >= 0);
-		add_difference_cost(u, v, profit);
-		constant_ -= Wide(profit);
-	}
-	void add_difference_profit(int u, int v, Cost profit) {
-		assert(profit >= 0);
-		add_same_cost(u, v, profit);
-		constant_ -= Wide(profit);
-	}
-	void add_pair_cost(int u, int v, Cost c00, Cost c01, Cost c10, Cost c11) {
-		pair(u, v, {Wide(c00), Wide(c01), Wide(c10), Wide(c11)});
-	}
-	void add_pair_profit(int u, int v, Cost p00, Cost p01, Cost p10, Cost p11) {
-		pair(u, v, {-Wide(p00), -Wide(p01), -Wide(p10), -Wide(p11)});
-	}
-	void add_all_profit(const std::vector<int> &vertices, bool value, Cost profit) {
-		assert(profit >= 0);
+	void add_all_cost(const std::vector<int> &vertices, bool value, Wide cost) {
 		for ([[maybe_unused]] int v : vertices) vertex(v);
-		if (!profit) return;
-		if (vertices.empty()) { constant_ -= Wide(profit); return; }
+		if (vertices.empty()) { constant_ += cost; return; }
 		if (vertices.size() == 1) {
-			add_profit_if(vertices[0], value, profit);
+			add_cost_if(vertices[0], value, cost);
 			return;
 		}
+		assert(-Wide(std::numeric_limits<Cap>::max()) <= cost && cost <= 0);
+		if (!cost) return;
 		for ([[maybe_unused]] int v : vertices) assert(orientation(v) == orientation(vertices[0]));
 		value = value != orientation(vertices[0]);
 		int aux = auxiliary();
-		if (value) unary_[aux] -= Wide(profit);
-		else constant_ -= Wide(profit), unary_[aux] += Wide(profit);
+		if (value) unary_[aux] += cost;
+		else constant_ += cost, unary_[aux] -= cost;
 		for (int v : vertices) {
-			if (value) penalty(aux, v, Wide(profit));
-			else penalty(v, aux, Wide(profit));
+			if (value) penalty(aux, v, -cost);
+			else penalty(v, aux, -cost);
 		}
 	}
-	void add_any_cost(const std::vector<int> &vertices, bool value, Cost cost) {
+	void add_any_cost(const std::vector<int> &vertices, bool value, Wide cost) {
+		if (vertices.empty()) return;
+		if (vertices.size() == 1) { add_cost_if(vertices[0], value, cost); return; }
 		assert(cost >= 0);
-		add_all_profit(vertices, !value, cost);
-		constant_ += Wide(cost);
+		add_all_cost(vertices, !value, -cost);
+		constant_ += cost;
 	}
 	void force(int v, bool value) {
 		vertex(v);
@@ -178,12 +155,10 @@ template<class Cost = std::int64_t> class ProjectSelection {
 		assert(u_value != v_value);
 		hard_.emplace_back(u_value ? u : v, u_value ? v : u);
 	}
-	void imply(int u, int v) { forbid(u, v, true, false); }
-	void imply(int u, int v, bool u_value, bool v_value) { forbid(u, v, u_value, !v_value); }
-	void same(int u, int v) { imply(u, v); imply(v, u); }
-	void different(int u, int v) { forbid(u, v, false, false); forbid(u, v, true, true); }
-	void at_most_one(int u, int v) { forbid(u, v, true, true); }
-	void at_least_one(int u, int v) { forbid(u, v, false, false); }
+	void force_equal(int u, int v, bool equal = true) {
+		forbid(u, v, false, equal);
+		forbid(u, v, true, !equal);
+	}
 	std::optional<Result> solve() const {
 		Wide bound = 0, base = constant_;
 		std::size_t count = edges_.size() + hard_.size();
