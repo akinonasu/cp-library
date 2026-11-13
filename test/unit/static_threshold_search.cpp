@@ -27,15 +27,20 @@ template<class T, bool Smaller, bool Reverse> void check(const std::vector<T> &a
 
 		}
 	}
-	if (n) for (int at : {0, n / 2, n - 1}) {
+	auto record = [&](const auto &source, int at) {
 		int expected = n;
 		if constexpr (Reverse) { for (int i = at; i-- > 0;) if (Smaller ? a[i] < a[at] : a[i] > a[at]) { expected = i; break; } }
 		else { for (int i = at + 1; i < n; ++i) if (Smaller ? a[i] < a[at] : a[i] > a[at]) { expected = i; break; } }
-		assert(index.next_record(at) == expected);
-	}
+		assert(source.next_record(at) == expected);
+	};
+	if (n <= 129) for (int at = 0; at < n; ++at) record(index, at);
+	else for (int at : {0, n / 2, n - 1}) record(index, at);
 	auto copy = index; copy.build({T(7)}); assert(index.size() == n);
 	copy = index; StaticThresholdSearch<T, Smaller, Reverse> moved(std::move(copy)); assert(copy.empty() && moved.size() == n);
-	copy = std::move(moved); assert(moved.empty()); copy.clear(); assert(copy.size() == 0);
+	if (n) for (int at : {0, n / 2, n - 1}) record(moved, at);
+	copy = std::move(moved); assert(moved.empty());
+	if (n) for (int at : {0, n / 2, n - 1}) record(copy, at);
+	copy.clear(); assert(copy.size() == 0);
 }
 
 template<class T> void suite() {

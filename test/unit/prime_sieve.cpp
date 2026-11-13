@@ -72,9 +72,9 @@ int main(int argc, char **) {
 		for (auto stride : strides)
 			for (auto offset : offsets) check_sample(n, stride, offset);
 	if (extended) {
-		const std::size_t n[] = {10000001, 100000001, 500000001};
-		const std::size_t counts[] = {664579, 5761455, 26355867};
-		for (int i = 0; i < 3; ++i) {
+		const std::size_t n[] = {10000001, 100000001, 500000001, 1073741825};
+		const std::size_t counts[] = {664579, 5761455, 26355867, 54400028};
+		for (int i = 0; i < 4; ++i) {
 			auto actual = prime_sieve(n[i]);
 			assert(actual.size() == counts[i]);
 			assert(std::is_sorted(actual.begin(), actual.end()));

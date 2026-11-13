@@ -1,6 +1,7 @@
 #ifndef TOP_K_SUM_HPP
 #define TOP_K_SUM_HPP
 
+#include "../components/radix_sort.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -8,11 +9,11 @@
 #include <functional>
 #include <initializer_list>
 #include <limits>
+#include <memory>
 #include <optional>
 #include <type_traits>
 #include <utility>
 #include <vector>
-#include "../components/ordered_multiset_btree.hpp"
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>, class Compare = std::greater<T>>
 class TopKSum {
@@ -26,131 +27,112 @@ private:
 	static constexpr bool descending = std::is_same_v<Compare, std::greater<T>> || std::is_same_v<Compare, std::greater<void>>;
 	static constexpr bool widen = std::is_integral_v<Sum> && sizeof(Sum) <= 8;
 	using Aggregate = std::conditional_t<widen, std::conditional_t<std::is_signed_v<Sum>, __int128_t, __uint128_t>, Sum>;
-	static constexpr bool blocked = std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8
-		&& (std::is_integral_v<Sum> || std::is_same_v<Sum, __int128_t> || std::is_same_v<Sum, __uint128_t>)
-		&& (descending || std::is_same_v<Compare, std::less<T>> || std::is_same_v<Compare, std::less<void>>);
-	struct EmptyBackend {};
-	using Backend = std::conditional_t<blocked, ordered_multiset_detail::BTree<T, Sum, Aggregate>, EmptyBackend>;
 	static Aggregate contribution(const T &value, size_type copies) {
 		auto converted = static_cast<Aggregate>(static_cast<Sum>(value));
 		return copies == 1 ? converted : converted * copies;
 	}
+	struct Node;
+	using Pointer = std::unique_ptr<Node>;
 	struct Node {
+		T value;
 		Aggregate total;
-		std::optional<T> value;
+		Pointer left, right;
 		size_type copies, size;
-		int left = -1, right = -1, height = 1;
-		Node(const T &value, size_type copies) : total(contribution(value, copies)), value(value), copies(copies), size(copies) {}
+		int height = 1;
+		Node(const T &value, size_type copies) : value(value), total(contribution(value, copies)), copies(copies), size(copies) {}
 	};
 	[[no_unique_address]] Compare order;
-	[[no_unique_address]] Backend backend;
-	std::vector<Node> nodes;
-	int root = -1, free = -1;
+	Pointer root;
 
-	size_type length(int p) const { return p < 0 ? 0 : nodes[p].size; }
-	int height(int p) const { return p < 0 ? 0 : nodes[p].height; }
-	void pull(int p) {
-		auto &node = nodes[p];
-		Aggregate total = contribution(*node.value, node.copies);
-		if (node.left >= 0) total += nodes[node.left].total;
-		if (node.right >= 0) total += nodes[node.right].total;
+	static size_type length(const Pointer &p) { return p ? p->size : 0; }
+	static int height(const Pointer &p) { return p ? p->height : 0; }
+	static void pull(Node &node) {
+		Aggregate total = contribution(node.value, node.copies);
+		if (node.left) total += node.left->total;
+		if (node.right) total += node.right->total;
 		node.total = std::move(total);
 		node.size = length(node.left) + node.copies + length(node.right);
 		node.height = (std::max)(height(node.left), height(node.right)) + 1;
 	}
-	int rotate_left(int p) {
-		int next = nodes[p].right;
-		nodes[p].right = nodes[next].left;
-		nodes[next].left = p;
-		pull(p); pull(next);
+	static Pointer rotate_left(Pointer p) {
+		auto next = std::move(p->right);
+		p->right = std::move(next->left);
+		pull(*p);
+		next->left = std::move(p);
+		pull(*next);
 		return next;
 	}
-	int rotate_right(int p) {
-		int next = nodes[p].left;
-		nodes[p].left = nodes[next].right;
-		nodes[next].right = p;
-		pull(p); pull(next);
+	static Pointer rotate_right(Pointer p) {
+		auto next = std::move(p->left);
+		p->left = std::move(next->right);
+		pull(*p);
+		next->right = std::move(p);
+		pull(*next);
 		return next;
 	}
-	int balance(int p) {
-		pull(p);
-		int left = nodes[p].left, right = nodes[p].right;
-		if (height(left) > height(right) + 1) {
-			if (height(nodes[left].left) < height(nodes[left].right)) nodes[p].left = rotate_left(left);
-			return rotate_right(p);
+	static Pointer balance(Pointer p) {
+		pull(*p);
+		if (height(p->left) > height(p->right) + 1) {
+			if (height(p->left->left) < height(p->left->right)) p->left = rotate_left(std::move(p->left));
+			return rotate_right(std::move(p));
 		}
-		if (height(right) > height(left) + 1) {
-			if (height(nodes[right].right) < height(nodes[right].left)) nodes[p].right = rotate_right(right);
-			return rotate_left(p);
+		if (height(p->right) > height(p->left) + 1) {
+			if (height(p->right->right) < height(p->right->left)) p->right = rotate_right(std::move(p->right));
+			return rotate_left(std::move(p));
 		}
 		return p;
 	}
-	int make_node(const T &value, size_type copies) {
-		if (free >= 0) {
-			int p = free, next = nodes[p].left;
-			nodes[p] = Node(value, copies);
-			free = next;
-			return p;
+	void insert_node(Pointer &p, const T &value, size_type copies) {
+		if (!p) { p = std::make_unique<Node>(value, copies); return; }
+		if (order(value, p->value)) insert_node(p->left, value, copies);
+		else if (order(p->value, value)) insert_node(p->right, value, copies);
+		else p->copies += copies;
+		p = balance(std::move(p));
+	}
+	static Pointer detach_first(Pointer &p) {
+		if (!p->left) {
+			auto first = std::move(p);
+			p = std::move(first->right);
+			return first;
 		}
-		assert(nodes.size() < std::size_t((std::numeric_limits<int>::max)()));
-		nodes.emplace_back(value, copies);
-		return static_cast<int>(nodes.size()) - 1;
+		auto first = detach_first(p->left);
+		p = balance(std::move(p));
+		return first;
 	}
-	void release(int p) {
-		nodes[p].value.reset();
-		nodes[p].total = Aggregate(0);
-		nodes[p].left = free;
-		free = p;
-	}
-	int insert_node(int p, const T &value, size_type copies) {
-		if (p < 0) return make_node(value, copies);
-		if (order(value, *nodes[p].value)) {
-			int next = insert_node(nodes[p].left, value, copies);
-			nodes[p].left = next;
-		} else if (order(*nodes[p].value, value)) {
-			int next = insert_node(nodes[p].right, value, copies);
-			nodes[p].right = next;
-		} else nodes[p].copies += copies;
-		return balance(p);
-	}
-	int detach_first(int p, int &first) {
-		if (nodes[p].left < 0) {
-			first = p;
-			return nodes[p].right;
-		}
-		nodes[p].left = detach_first(nodes[p].left, first);
-		return balance(p);
-	}
-	int erase_node(int p, const T &value, size_type copies, size_type &removed) {
-		if (p < 0) return -1;
-		if (order(value, *nodes[p].value)) nodes[p].left = erase_node(nodes[p].left, value, copies, removed);
-		else if (order(*nodes[p].value, value)) nodes[p].right = erase_node(nodes[p].right, value, copies, removed);
+	void erase_node(Pointer &p, const T &value, size_type copies, size_type &removed) {
+		if (!p) return;
+		if (order(value, p->value)) erase_node(p->left, value, copies, removed);
+		else if (order(p->value, value)) erase_node(p->right, value, copies, removed);
 		else {
-			removed = (std::min)(copies, nodes[p].copies);
-			if (removed < nodes[p].copies) nodes[p].copies -= removed;
+			removed = (std::min)(copies, p->copies);
+			if (removed < p->copies) p->copies -= removed;
 			else {
-				int left = nodes[p].left, right = nodes[p].right;
-				if (left < 0 || right < 0) {
-					release(p);
-					return left < 0 ? right : left;
+				if (!p->left || !p->right) {
+					auto next = p->left ? std::move(p->left) : std::move(p->right);
+					p = std::move(next);
+					return;
 				}
-				int next;
-				right = detach_first(right, next);
-				nodes[next].left = left; nodes[next].right = right;
-				release(p);
-				return balance(next);
+				auto next = detach_first(p->right);
+				next->left = std::move(p->left); next->right = std::move(p->right);
+				p = std::move(next);
 			}
 		}
-		return removed ? balance(p) : p;
+		if (removed) p = balance(std::move(p));
 	}
-	int build(const std::vector<T> &values, const std::vector<size_type> &counts, int first, int last) {
-		if (first == last) return -1;
-		int middle = first + (last - first) / 2;
-		int p = make_node(values[middle], counts[middle]);
-		int left = build(values, counts, first, middle), right = build(values, counts, middle + 1, last);
-		nodes[p].left = left; nodes[p].right = right;
-		pull(p);
+	static Pointer build(const std::vector<T> &values, const std::vector<size_type> &counts, std::size_t first, std::size_t last) {
+		if (first == last) return nullptr;
+		std::size_t middle = first + (last - first) / 2;
+		auto p = std::make_unique<Node>(values[middle], counts[middle]);
+		p->left = build(values, counts, first, middle); p->right = build(values, counts, middle + 1, last);
+		pull(*p);
 		return p;
+	}
+	static Pointer clone(const Pointer &p) {
+		if (!p) return nullptr;
+		auto next = std::make_unique<Node>(p->value, p->copies);
+		next->left = clone(p->left); next->right = clone(p->right);
+		next->total = p->total; next->size = p->size; next->height = p->height;
+		return next;
 	}
 	static Sum result(const Aggregate &value) {
 		if constexpr (widen) assert(static_cast<Aggregate>((std::numeric_limits<Sum>::min)()) <= value && value <= static_cast<Aggregate>((std::numeric_limits<Sum>::max)()));
@@ -158,71 +140,64 @@ private:
 	}
 	template<bool Reverse> T kth_impl(size_type k) const {
 		assert(0 <= k && k < size());
-		if constexpr (blocked) return backend.kth(Reverse != descending ? size() - 1 - k : k);
-		int p = root;
+		auto p = root.get();
 		for (;;) {
-			const auto &node = nodes[p];
-			int first = Reverse ? node.right : node.left;
+			const auto &first = Reverse ? p->right : p->left;
 			size_type before = length(first);
-			if (k < before) p = first;
-			else if (k < before + node.copies) return *node.value;
-			else { k -= before + node.copies; p = Reverse ? node.left : node.right; }
+			if (k < before) p = first.get();
+			else if (k < before + p->copies) return p->value;
+			else { k -= before + p->copies; p = (Reverse ? p->left : p->right).get(); }
 		}
 	}
 	template<bool Reverse> Sum sum_impl(size_type k) const {
 		assert(k >= 0);
-		if constexpr (blocked) {
-			k = (std::min)(k, size());
-			if constexpr (Reverse != descending) return result(backend.sum_all() - backend.sum(size() - k));
-			else return result(backend.sum(k));
-		}
 		Aggregate answer(0);
-		int p = root;
-		while (p >= 0 && k) {
-			const auto &node = nodes[p];
-			if (k >= node.size) { answer += node.total; break; }
-			int first = Reverse ? node.right : node.left;
+		auto p = root.get();
+		while (p && k) {
+			if (k >= p->size) { answer += p->total; break; }
+			const auto &first = Reverse ? p->right : p->left;
 			size_type before = length(first);
-			if (k <= before) p = first;
+			if (k <= before) p = first.get();
 			else {
-				if (first >= 0) answer += nodes[first].total;
-				size_type take = (std::min)(k - before, node.copies);
-				answer += contribution(*node.value, take);
+				if (first) answer += first->total;
+				size_type take = (std::min)(k - before, p->copies);
+				answer += contribution(p->value, take);
 				k -= before + take;
-				p = Reverse ? node.left : node.right;
+				p = (Reverse ? p->left : p->right).get();
 			}
 		}
 		return result(answer);
 	}
 	template<bool Strict> std::optional<T> bound(const T &value) const {
-		if constexpr (blocked) return backend.template bound<Strict>(value);
-		int p = root, candidate = -1;
-		while (p >= 0) {
-			const auto &node = nodes[p];
+		auto p = root.get();
+		const Node *candidate = nullptr;
+		while (p) {
 			bool found;
-			if constexpr (Strict) found = descending ? order(*node.value, value) : order(value, *node.value);
-			else found = descending ? !order(value, *node.value) : !order(*node.value, value);
-			if (found) { candidate = p; p = descending ? node.right : node.left; }
-			else p = descending ? node.left : node.right;
+			if constexpr (Strict) found = descending ? order(p->value, value) : order(value, p->value);
+			else found = descending ? !order(value, p->value) : !order(p->value, value);
+			if (found) { candidate = p; p = (descending ? p->right : p->left).get(); }
+			else p = (descending ? p->left : p->right).get();
 		}
-		return candidate < 0 ? std::nullopt : nodes[candidate].value;
+		return candidate ? std::optional<T>(candidate->value) : std::nullopt;
 	}
 
 public:
 	explicit TopKSum(Compare compare = Compare{}) : order(std::move(compare)) {}
 	explicit TopKSum(std::vector<T> values, Compare compare = Compare{}) : TopKSum(std::move(compare)) { assign(std::move(values)); }
 	TopKSum(std::initializer_list<T> values, Compare compare = Compare{}) : TopKSum(std::vector<T>(values), std::move(compare)) {}
-	TopKSum(const TopKSum &) = default;
-	TopKSum(TopKSum &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>)
-		: order(other.order), backend(std::move(other.backend)), nodes(std::move(other.nodes)), root(std::exchange(other.root, -1)), free(std::exchange(other.free, -1)) { other.nodes.clear(); }
+	TopKSum(const TopKSum &other) : order(other.order), root(clone(other.root)) {}
+	TopKSum(TopKSum &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>) : order(other.order), root(std::move(other.root)) {}
 	TopKSum &operator=(TopKSum other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		swap(other);
 		return *this;
 	}
 	void assign(std::vector<T> values) {
 		assert(values.size() <= std::size_t((std::numeric_limits<size_type>::max)()));
-		if constexpr (blocked) { Backend next; next.assign(std::move(values)); backend.swap(next); return; }
-		std::sort(values.begin(), values.end(), order);
+		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8
+			&& (descending || std::is_same_v<Compare, std::less<T>> || std::is_same_v<Compare, std::less<void>>)) {
+			radix_sort_detail::sort_by_key(values, [](T value) { return value; });
+			if constexpr (descending) std::reverse(values.begin(), values.end());
+		} else std::sort(values.begin(), values.end(), order);
 		std::vector<size_type> counts;
 		std::size_t distinct = 0;
 		for (std::size_t i = 0; i < values.size(); ++i) {
@@ -232,28 +207,22 @@ public:
 				counts.push_back(1);
 			} else ++counts.back();
 		}
-		assert(distinct <= std::size_t((std::numeric_limits<int>::max)()));
 		TopKSum next(order);
-		next.nodes.reserve(distinct);
-		next.root = next.build(values, counts, 0, static_cast<int>(distinct));
+		next.root = build(values, counts, 0, distinct);
 		swap(next);
 	}
-	void reserve(std::size_t distinct) {
+	void reserve([[maybe_unused]] std::size_t distinct) {
 		assert(distinct <= std::size_t((std::numeric_limits<int>::max)()));
-		if constexpr (blocked) backend.reserve(distinct);
-		else nodes.reserve(distinct);
 	}
 	void insert(const T &value, size_type copies = 1) {
 		assert(copies >= 0 && copies <= (std::numeric_limits<size_type>::max)() - size());
-		if constexpr (blocked) { if (copies) backend.insert(value, copies); }
-		else if (copies) root = insert_node(root, value, copies);
+		if (copies) insert_node(root, value, copies);
 	}
 	bool erase(const T &value) { return erase(value, 1) != 0; }
 	size_type erase(const T &value, size_type copies) {
 		assert(copies >= 0);
-		if constexpr (blocked) return copies ? backend.erase(value, copies) : 0;
 		size_type removed = 0;
-		if (copies) root = erase_node(root, value, copies, removed);
+		if (copies) erase_node(root, value, copies, removed);
 		return removed;
 	}
 	size_type erase_all(const T &value) { return erase(value, (std::numeric_limits<size_type>::max)()); }
@@ -262,8 +231,8 @@ public:
 		insert(new_value);
 		return true;
 	}
-	size_type size() const { if constexpr (blocked) return backend.size(); else return length(root); }
-	bool empty() const { return size() == 0; }
+	size_type size() const { return length(root); }
+	bool empty() const { return !root; }
 	T kth(size_type k) const { return kth_impl<false>(k); }
 	T kth_smallest(size_type k) const { return kth_impl<descending>(k); }
 	T kth_largest(size_type k) const { return kth_impl<!descending>(k); }
@@ -272,41 +241,30 @@ public:
 	Sum sum_largest(size_type k) const { return sum_impl<!descending>(k); }
 	std::optional<T> lower_bound(const T &value) const { return bound<false>(value); }
 	std::optional<T> upper_bound(const T &value) const { return bound<true>(value); }
-	Sum sum_all() const { if constexpr (blocked) return result(backend.sum_all()); else return root < 0 ? Sum(0) : result(nodes[root].total); }
+	Sum sum_all() const { return root ? result(root->total) : Sum(0); }
 	size_type order_of_key(const T &value) const {
-		if constexpr (blocked) {
-			if constexpr (descending) return size() - backend.template order_of_key<true>(value);
-			else return backend.order_of_key(value);
-		}
 		size_type answer = 0;
-		int p = root;
-		while (p >= 0) {
-			const auto &node = nodes[p];
-			if (order(*node.value, value)) { answer += length(node.left) + node.copies; p = node.right; }
-			else p = node.left;
+		auto p = root.get();
+		while (p) {
+			if (order(p->value, value)) { answer += length(p->left) + p->copies; p = p->right.get(); }
+			else p = p->left.get();
 		}
 		return answer;
 	}
 	size_type count(const T &value) const {
-		if constexpr (blocked) return backend.count(value);
-		int p = root;
-		while (p >= 0) {
-			if (order(value, *nodes[p].value)) p = nodes[p].left;
-			else if (order(*nodes[p].value, value)) p = nodes[p].right;
-			else return nodes[p].copies;
+		auto p = root.get();
+		while (p) {
+			if (order(value, p->value)) p = p->left.get();
+			else if (order(p->value, value)) p = p->right.get();
+			else return p->copies;
 		}
 		return 0;
 	}
 	bool contains(const T &value) const { return count(value) != 0; }
-	void clear() {
-		if constexpr (blocked) backend.clear();
-		else { nodes.clear(); root = free = -1; }
-	}
+	void clear() { root.reset(); }
 	void swap(TopKSum &other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		using std::swap;
-		if constexpr (blocked) backend.swap(other.backend);
-		swap(order, other.order); nodes.swap(other.nodes);
-		swap(root, other.root); swap(free, other.free);
+		swap(order, other.order); root.swap(other.root);
 	}
 	friend void swap(TopKSum &a, TopKSum &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
 };

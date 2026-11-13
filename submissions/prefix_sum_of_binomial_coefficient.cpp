@@ -1,24 +1,3 @@
-#line 1 "components/simd_capabilities.hpp"
-#ifndef SIMD_CAPABILITIES_HPP
-#define SIMD_CAPABILITIES_HPP
-
-#if (defined(__x86_64__) || defined(__i386__)) && defined(__GNUC__) && !defined(__clang__)
-_Pragma("GCC push_options")
-_Pragma("GCC target(\"no-avx512f,avx512f\")")
-#ifdef __AVX512F__
-#define CP_LIBRARY_AVX512 1
-#else
-#define CP_LIBRARY_AVX512 0
-#endif
-_Pragma("GCC pop_options")
-#elif (defined(__x86_64__) || defined(__i386__)) && defined(__clang__)
-#define CP_LIBRARY_AVX512 1
-#else
-#define CP_LIBRARY_AVX512 0
-#endif
-
-#endif
-
 #line 1 "test/binomial_prefix_sum.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/prefix_sum_of_binomial_coefficient"
 #line 1 "math/binomial_prefix_sum.hpp"
@@ -31,12 +10,39 @@ _Pragma("GCC pop_options")
 #line 1 "math/mint.hpp"
 
 
+#line 1 "components/compiler_features.hpp"
+
+
+
+#if defined(__x86_64__) || defined(__i386__)
+#define CP_X86 1
+#else
+#define CP_X86 0
+#endif
+#if CP_X86 && defined(__GNUC__) && !defined(__clang__)
+#define CP_GCC_X86 1
+#else
+#define CP_GCC_X86 0
+#endif
+#if CP_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CP_GNU_X86 1
+#else
+#define CP_GNU_X86 0
+#endif
+#if CP_GCC_X86 && defined(__linux__) && defined(__x86_64__)
+#define CP_GCC_LINUX64 1
+#else
+#define CP_GCC_LINUX64 0
+#endif
+
+
+#line 4 "math/mint.hpp"
 #include <cassert>
 #include <istream>
 #include <ostream>
 #include <type_traits>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -48,11 +54,11 @@ constexpr bool mint_integral = std::is_integral_v<I>
 							   || std::is_same_v<I, __int128> || std::is_same_v<I, unsigned __int128>
 #endif
 	;
-struct Mint {
+struct [[gnu::warn_unused]] Mint {
 	using mint = Mint;
 	unsigned v = 0;
-	static constexpr unsigned mod() { return 998244353; }
-	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
+	[[nodiscard]] static constexpr unsigned mod() { return 998244353; }
+	[[nodiscard, gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -62,17 +68,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	[[gnu::always_inline]] static Mint raw(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	[[gnu::always_inline]] static Mint word(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	[[gnu::always_inline]] unsigned val() const {
+	[[nodiscard, gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -111,27 +117,27 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	[[gnu::always_inline]] Mint operator+() const { return *this; }
-	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
-	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
-	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
+	[[nodiscard, gnu::always_inline]] Mint operator+() const { return *this; }
+	[[nodiscard, gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[nodiscard, gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[nodiscard, gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[nodiscard, gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[nodiscard]] Mint operator/(Mint b) const { return Mint(*this) /= b; }
+	[[nodiscard, gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[nodiscard, gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
+	[[nodiscard]] friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
+	[[nodiscard]] friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
+	[[nodiscard]] friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
+	[[nodiscard]] friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator==(I a, Mint b) { return Mint(a) == b; }
+	[[nodiscard]] friend bool operator==(I a, Mint b) { return Mint(a) == b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
-	Mint pow(long long n) const {
+	[[nodiscard]] friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
+	[[nodiscard]] Mint pow(long long n) const {
 		assert(n >= 0);
 		if (!n) return Mint(1);
 		Mint r(1), a = *this;
@@ -139,7 +145,7 @@ struct Mint {
 			if (n & 1) r *= a;
 		return r * a;
 	}
-	[[gnu::noinline]] Mint inv() const {
+	[[nodiscard, gnu::noinline]] Mint inv() const {
 		assert(*this != Mint(0));
 		Mint a2 = *this * *this, a3 = a2 * *this;
 		Mint a7 = a3 * a3 * *this;
@@ -163,7 +169,7 @@ struct Mint {
 using mint = mint_detail::Mint;
 using fps_mint = mint;
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 
@@ -176,21 +182,64 @@ using fps_mint = mint;
 
 
 
-#line 5 "components/mint_arithmetic.hpp"
-#if defined(__x86_64__) || defined(__i386__)
+#line 1 "components/mint_simd.hpp"
+
+
+
+#line 5 "components/mint_simd.hpp"
+#if CP_X86
 #include <immintrin.h>
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+namespace mint_detail {
+struct SimdOps {
+	typedef unsigned int U __attribute__((may_alias));
+	static constexpr U mod = 998244353, twice = 2 * mod;
+#if CP_X86
+	static bool vectorized() {
+#if defined(__AVX2__)
+		return true;
+#else
+		static const bool available = __builtin_cpu_supports("avx2");
+		return available;
+#endif
+	}
+	using I8 = __m256i;
+	[[gnu::target("avx2")]] static I8 load8(const U *a) {
+		return _mm256_loadu_si256(reinterpret_cast<const I8 *>(a));
+	}
+	[[gnu::target("avx2")]] static void store8(U *a, I8 x) {
+		_mm256_storeu_si256(reinterpret_cast<I8 *>(a), x);
+	}
+	__attribute__((target("avx2"), always_inline)) static inline I8 reduce8(I8 x, I8 y) {
+		I8 r = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(mod);
+		x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, r), p));
+		y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, r), p));
+		return _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
+	}
+	[[gnu::target("avx2")]] static I8 mul8(I8 a, I8 b) {
+		return reduce8(_mm256_mul_epu32(a, b), _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
+	}
+	[[gnu::target("avx2")]] static I8 add8(I8 a, I8 b) {
+		I8 x = _mm256_add_epi32(a, b);
+		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(twice)));
+	}
+#endif
+};
+}
+
+
+#line 5 "components/mint_arithmetic.hpp"
+
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
 
 namespace mint_detail {
-struct Ops {
+struct Ops : SimdOps {
 	using T = mint;
-	typedef unsigned int U __attribute__((may_alias));
-	static constexpr U mod = 998244353, twice = 2 * mod, one = 301989884;
+	static constexpr U one = 301989884;
 	static U reduce(unsigned long long x) { return T::reduce(x); }
 	static U mul(U a, U b) { return reduce((unsigned long long)a * b); }
 	static U add(U a, U b) {
@@ -211,31 +260,7 @@ struct Ops {
 		return a * r - U(((unsigned long long)a * q) >> 32) * mod;
 	}
 
-#if defined(__x86_64__) || defined(__i386__)
-	static bool vectorized() {
-#if defined(__AVX2__)
-		return true;
-#else
-		static const bool available = __builtin_cpu_supports("avx2");
-		return available;
-#endif
-	}
-	using I8 = __m256i;
-	__attribute__((target("avx2"))) static I8 load8(const U *a) {
-		return _mm256_loadu_si256(reinterpret_cast<const I8 *>(a));
-	}
-	__attribute__((target("avx2"))) static void store8(U *a, I8 x) {
-		_mm256_storeu_si256(reinterpret_cast<I8 *>(a), x);
-	}
-	__attribute__((target("avx2"), always_inline)) static inline I8 reduce8(I8 x, I8 y) {
-		I8 r = _mm256_set1_epi32(998244351), p = _mm256_set1_epi32(mod);
-		x = _mm256_add_epi64(x, _mm256_mul_epu32(_mm256_mul_epu32(x, r), p));
-		y = _mm256_add_epi64(y, _mm256_mul_epu32(_mm256_mul_epu32(y, r), p));
-		return _mm256_blend_epi32(_mm256_srli_epi64(x, 32), y, 0xaa);
-	}
-	__attribute__((target("avx2"))) static I8 mul8(I8 a, I8 b) {
-		return reduce8(_mm256_mul_epu32(a, b), _mm256_mul_epu32(_mm256_srli_epi64(a, 32), _mm256_srli_epi64(b, 32)));
-	}
+#if CP_X86
 	__attribute__((target("avx2"))) static I8 fixed_mul8(I8 a, I8 r, I8 q) {
 		I8 x = _mm256_srli_epi64(_mm256_mul_epu32(a, q), 32);
 		I8 y = _mm256_mul_epu32(_mm256_srli_epi64(a, 32), q);
@@ -248,10 +273,6 @@ struct Ops {
 		return _mm256_sub_epi64(_mm256_mul_epu32(a, r),
 								_mm256_mul_epu32(t, _mm256_set1_epi32(mod)));
 	}
-	__attribute__((target("avx2"))) static I8 add8(I8 a, I8 b) {
-		I8 x = _mm256_add_epi32(a, b);
-		return _mm256_min_epu32(x, _mm256_sub_epi32(x, _mm256_set1_epi32(twice)));
-	}
 	__attribute__((target("avx2"))) static I8 sub8(I8 a, I8 b) {
 		I8 x = _mm256_sub_epi32(a, b);
 		return _mm256_min_epu32(x, _mm256_add_epi32(x, _mm256_set1_epi32(twice)));
@@ -261,7 +282,7 @@ struct Ops {
 };
 }
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 
@@ -270,7 +291,7 @@ struct Ops {
 
 namespace mint_detail {
 
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 
 __attribute__((target("avx2"))) inline void factorial_transpose(Ops::I8 (&x)[8]) {
 	Ops::I8 a[8], b[8];
@@ -346,7 +367,7 @@ __attribute__((target("avx2"))) inline void factorials8(Ops::U* fact, Ops::U* in
 
 inline void factorials(Ops::U* fact, Ops::U* invfact, int n) {
 	if (!n) return;
-#if defined(__x86_64__) || defined(__i386__)
+#if CP_X86
 	if (n >= 256 && Ops::vectorized()) {
 		factorials8(fact, invfact, n);
 		return;
@@ -432,7 +453,28 @@ template<class Mint> struct Table {
 
 
 
-#line 6 "components/mint_inner_product.hpp"
+#line 1 "components/simd_capabilities.hpp"
+
+
+#line 4 "components/simd_capabilities.hpp"
+
+#if CP_GCC_X86
+_Pragma("GCC push_options")
+_Pragma("GCC target(\"no-avx512f,avx512f\")")
+#ifdef __AVX512F__
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+_Pragma("GCC pop_options")
+#elif CP_X86 && defined(__clang__)
+#define CP_LIBRARY_AVX512 1
+#else
+#define CP_LIBRARY_AVX512 0
+#endif
+
+
+#line 7 "components/mint_inner_product.hpp"
 #if (defined(__GNUC__) || defined(__clang__)) && (defined(__x86_64__) || defined(__i386__))
 #include <immintrin.h>
 #endif
@@ -640,103 +682,18 @@ template<class Mint, class Table> class Online {
 }
 
 
-#line 1 "components/binomial_prefix_batch.hpp"
+#line 5 "math/binomial_prefix_sum.hpp"
 
-
-
-#line 6 "components/binomial_prefix_batch.hpp"
-#include <utility>
-
-namespace binomial_prefix_detail {
-template<class Mint, class Table, class K>
-std::vector<Mint> batch(const std::vector<std::pair<int, K>>& queries, int block_size) {
-	static_assert(std::is_integral_v<K> && std::is_signed_v<K> && sizeof(K) <= 8);
-	assert(block_size >= 0 && Mint::mod() > 1);
-	std::vector<Mint> answer(queries.size());
-	if (queries.empty()) return answer;
-	int limit = 0;
-	for (auto [n, k] : queries) {
-		(void)k;
-		assert(0 <= n && n < std::numeric_limits<int>::max() && std::uint64_t(n) < Mint::mod());
-		limit = std::max(limit, n);
-	}
-	std::vector<Mint> power2(std::size_t(limit) + 1);
-	power2[0] = Mint(1);
-	for (int n = 1; n <= limit; ++n) power2[n] = power2[n - 1] + power2[n - 1];
-	struct Point { int n, k; std::size_t id; bool reflect; };
-	std::vector<Point> points;
-	points.reserve(queries.size());
-	int maximum = 0;
-	for (std::size_t i = 0; i < queries.size(); ++i) {
-		auto [n, k] = queries[i];
-		if (k <= 0) continue;
-		if (std::uint64_t(k) >= std::uint64_t(n) + 1) { answer[i] = power2[n]; continue; }
-		bool reflect = k > (n + 1) / 2;
-		int m = reflect ? n + 1 - int(k) : int(k);
-		if (m == 1) answer[i] = reflect ? power2[n] - Mint(1) : Mint(1);
-		else if ((n & 1) && m == (n + 1) / 2) answer[i] = power2[n - 1];
-		else {
-			points.push_back({n, m, i, reflect});
-			maximum = std::max(maximum, n);
-		}
-	}
-	if (points.empty()) return answer;
-	auto store = [&](const Point& point, Mint value) {
-		answer[point.id] = point.reflect ? power2[point.n] - value : value;
-	};
-	if (std::all_of(points.begin(), points.end(), [&](const Point& point) { return point.n == maximum; })) {
-		Table table(maximum);
-		int first = maximum, last = 0;
-		for (const auto& point : points) first = std::min(first, point.k), last = std::max(last, point.k);
-		std::vector<Mint> prefix(std::size_t(last - first) + 1);
-		Mint value;
-		if constexpr (std::is_same_v<Mint, mint>) value = table.factorial[maximum] * mint_detail::inner_product<true>(table.inverse_factorial.data(), table.inverse_factorial.data() + maximum, first);
-		else value = table.range(maximum, 0, first);
-		prefix[0] = value;
-		for (int k = first; k < last; ++k) prefix[k - first + 1] = value += table.binom(maximum, k);
-		for (const auto& point : points) store(point, prefix[point.k - first]);
-	} else {
-		int block = block_size ? block_size : std::max(1, int(std::round(maximum / std::sqrt(double(points.size())))));
-		if (!block_size) {
-			int alternative = std::max(1, int(std::round(maximum / std::sqrt(double(queries.size())))));
-			if (alternative != block && alternative >= block / 2 + block % 2) {
-				std::size_t count = std::min(points.size(), std::size_t(256));
-				auto estimate = [&](int width) {
-					int rows = maximum / width;
-					double sum = 0;
-					for (std::size_t i = 0; i < count; ++i) {
-						const auto& point = points[i * (points.size() / count)];
-						int row = std::min(int((std::int64_t(point.n) + width / 2) / width), rows);
-						int column = std::min(int((std::int64_t(point.k - 1) + width / 2) / width), row);
-						std::int64_t distance = std::abs(point.n - row * width) + std::int64_t(std::abs(point.k - 1 - column * width));
-						sum += std::min(std::int64_t(std::min(point.k - 1, (point.n + 1) / 2 - point.k)), distance);
-					}
-					return double(maximum) * maximum / (4 * double(width)) + double(points.size()) * sum / double(count);
-				};
-				if (estimate(alternative) < estimate(block)) block = alternative;
-			}
-		}
-		Online<Mint, Table> online(maximum, block);
-		for (const auto& point : points) store(point, online.query(point.n, point.k));
-	}
-	return answer;
-}
-}
-
-
-#line 6 "math/binomial_prefix_sum.hpp"
-
-template<class Mint = mint, class K = int>
-std::vector<Mint> binomial_prefix_sum(const std::vector<std::pair<int, K>>& queries, int block_size = 0) {
-	return binomial_prefix_detail::batch<Mint, binomial_prefix_detail::Table<Mint>>(queries, block_size);
-}
-
+#ifndef CP_BINOMIAL_PREFIX_SUM_API_HPP
+#define CP_BINOMIAL_PREFIX_SUM_API_HPP 1
 template<class Mint = mint> class BinomialPrefixSum : public binomial_prefix_detail::Online<Mint, binomial_prefix_detail::Table<Mint>> {
 	using Base = binomial_prefix_detail::Online<Mint, binomial_prefix_detail::Table<Mint>>;
 
   public:
 	explicit BinomialPrefixSum(int max_n = 0, int block_size = 0) : Base(max_n, block_size) {}
 };
+
+#endif
 
 
 #line 1 "components/fast_io.hpp"
@@ -982,11 +939,11 @@ int main() {
 	FastOutput output;
 	int t = 0;
 	input.read(t);
-	std::vector<std::pair<int, int>> queries(t);
-	for (auto& [n, k] : queries) {
+	BinomialPrefixSum<> prefix(200000);
+	while (t--) {
+		int n = 0, k = 0;
 		input.read(n);
 		input.read(k);
-		++k;
+		output.println(prefix.query(n, std::int64_t(k) + 1).val());
 	}
-	for (auto value : binomial_prefix_sum(queries)) output.println(value.val());
 }

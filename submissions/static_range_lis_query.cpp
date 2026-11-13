@@ -1,4 +1,4 @@
-#line 1 "test/range_lis_queries.test.cpp"
+#line 1 "test/range_lis_query.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/static_range_lis_query"
 #line 1 "data_structure/range_lis_query.hpp"
 
@@ -295,106 +295,13 @@ inline std::vector<int> seaweed(std::span<const int> permutation) {
 }
 
 
-#line 1 "components/range_lis_batch.hpp"
-
-
-
-#line 6 "components/range_lis_batch.hpp"
+#line 12 "data_structure/range_lis_query.hpp"
 #include <functional>
-#line 10 "components/range_lis_batch.hpp"
-
-namespace range_lis_detail {
-inline void replace_max(std::uint32_t *heap, int size, std::uint32_t value) {
-	int at = 0;
-	while (at * 2 + 1 < size) {
-		int child = at * 2 + 1;
-		if (child + 1 < size && heap[child] < heap[child + 1]) ++child;
-		if (value >= heap[child]) break;
-		heap[at] = heap[child];
-		at = child;
-	}
-	heap[at] = value;
-}
-inline void replace_min(std::uint32_t *heap, int size, std::uint32_t value) {
-	int at = 0;
-	while (at * 2 + 1 < size) {
-		int child = at * 2 + 1;
-		if (child + 1 < size && heap[child] > heap[child + 1]) ++child;
-		if (value <= heap[child]) break;
-		heap[at] = heap[child];
-		at = child;
-	}
-	heap[at] = value;
-}
-inline void batch_sqrt(std::span<const int> permutation, std::span<const std::pair<int, int>> intervals, std::vector<int> &answers) {
-	int n = int(permutation.size());
-	std::vector<int> offset(std::size_t(n) + 2);
-	for (auto [l, r] : intervals) if (r > l) ++offset[std::size_t(r) + 1];
-	for (std::size_t i = 1; i < offset.size(); ++i) offset[i] += offset[i - 1];
-	std::vector<std::pair<int, int>> ordered(offset.back());
-	auto cursor = offset;
-	for (int i = 0; i < int(intervals.size()); ++i) {
-		auto [l, r] = intervals[i];
-		if (r > l) ordered[cursor[r]++] = {l, i};
-	}
-	int block = 1;
-	while (block < n / block) ++block;
-	int count = n ? (n - 1) / block + 1 : 0;
-	std::vector<int> sizes(count), fenwick(std::size_t(n) + 1);
-	std::vector<std::uint32_t> values(n), heap(n), pending(block);
-	std::vector<bool> dirty(count);
-	auto update = [&](unsigned at, int delta) {
-		for (; at; at &= at - 1) fenwick[at] += delta;
-	};
-	for (int i = 0; i < n; ++i) {
-		int x = permutation[i], part = x / block;
-		int left = part * block, right = left + std::min(block, n - left);
-		auto *local = heap.data() + left;
-		if (dirty[part]) {
-			int used = 0;
-			for (int j = 0; j < sizes[part]; ++j) if (local[j] & 1) pending[used++] = local[j] >> 1;
-			std::make_heap(pending.begin(), pending.begin() + used, std::greater<>{});
-			for (int j = left; j < right; ++j) if (used && values[j] > pending[0]) {
-				auto value = values[j];
-				values[j] = pending[0];
-				replace_min(pending.data(), used, value);
-			}
-			dirty[part] = false;
-		}
-		values[x] = unsigned(i) + 1;
-		update(unsigned(i) + 1, 1);
-		std::uint32_t carry = 0;
-		for (int j = x + 1; j < right; ++j) if (values[j] > carry) std::swap(values[j], carry);
-		for (int j = part + 1; j < count; ++j) {
-			auto *other = heap.data() + j * block;
-			if (sizes[j] && carry < (other[0] >> 1)) {
-				dirty[j] = true;
-				auto next = other[0] >> 1;
-				replace_max(other, sizes[j], (carry << 1) | 1);
-				carry = next;
-			}
-		}
-		update(carry, -1);
-		int used = 0;
-		for (int j = left; j < right; ++j) if (values[j]) local[used++] = values[j] << 1;
-		sizes[part] = used;
-		std::make_heap(local, local + used);
-		for (int j = offset[std::size_t(i) + 1]; j < offset[std::size_t(i) + 2]; ++j) {
-			auto [l, id] = ordered[j];
-			int answer = 0;
-			for (unsigned at = unsigned(l) + 1; at <= unsigned(n); at += at & -at) answer += fenwick[at];
-			answers[id] = answer;
-		}
-	}
-}
-}
-
-
-#line 16 "data_structure/range_lis_query.hpp"
+#line 15 "data_structure/range_lis_query.hpp"
 #include <ranges>
-#line 18 "data_structure/range_lis_query.hpp"
+#line 17 "data_structure/range_lis_query.hpp"
 #include <type_traits>
-#line 21 "data_structure/range_lis_query.hpp"
+#line 20 "data_structure/range_lis_query.hpp"
 
 namespace range_lis_query_detail {
 template<bool Strict, class Range, class Compare>
@@ -559,31 +466,6 @@ std::vector<int> range_lis_queries(const Range &values, std::span<const std::pai
 	return answers;
 }
 
-
-template<bool Strict = true, class Range, class Compare = std::less<>>
-	requires std::ranges::random_access_range<const Range> && std::ranges::sized_range<const Range>
-std::vector<int> range_lis_queries_sqrt(const Range &values, std::span<const std::pair<int, int>> intervals, Compare compare = {}) {
-	assert(std::ranges::size(values) <= std::size_t(std::numeric_limits<int>::max()));
-	assert(intervals.size() <= std::size_t(std::numeric_limits<int>::max()));
-	int n = int(std::ranges::size(values));
-	std::vector<int> answers(intervals.size());
-	bool nontrivial = false;
-	for (std::size_t i = 0; i < intervals.size(); ++i) {
-		auto [l, r] = intervals[i];
-		assert(0 <= l && l <= r && r <= n);
-		answers[i] = r - l;
-		nontrivial |= r - l > 1;
-	}
-	if (!nontrivial) return answers;
-	auto permutation = range_lis_query_detail::permutation<Strict>(values, std::move(compare));
-	if (std::is_sorted(permutation.begin(), permutation.end())) return answers;
-	if (std::is_sorted(permutation.rbegin(), permutation.rend())) {
-		for (int &answer : answers) answer = answer != 0;
-		return answers;
-	}
-	range_lis_detail::batch_sqrt(permutation, intervals, answers);
-	return answers;
-}
 
 
 #line 1 "components/fast_io.hpp"
@@ -818,16 +700,19 @@ public:
 };
 
 
-#line 6 "test/range_lis_queries.test.cpp"
+#line 4 "test/range_lis_query.test.cpp"
 
 int main() {
-	FastInput input;
-	FastOutput output;
+	FastInput in;
+	FastOutput out;
 	int n = 0, q = 0;
-	input.read(n), input.read(q);
+	in.read(n), in.read(q);
 	std::vector<int> values(n);
-	for (auto &value : values) input.read(value);
-	std::vector<std::pair<int, int>> intervals(q);
-	for (auto &[l, r] : intervals) input.read(l), input.read(r);
-	for (int answer : range_lis_queries_sqrt(values, intervals)) output.println(answer);
+	for (auto &value : values) in.read(value);
+	RangeLISQuery<> tree(values);
+	while (q--) {
+		int l = 0, r = 0;
+		in.read(l), in.read(r);
+		out.println(tree.query(l, r));
+	}
 }

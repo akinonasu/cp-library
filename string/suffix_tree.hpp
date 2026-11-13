@@ -148,6 +148,7 @@ class SuffixTree {
 		nodes_.clear(); terminals_.clear(); branches_.clear(); offset_.clear(); children_.clear(); symbols_.clear();
 		tree_ready_ = false;
 		index_.reset();
+		prepare_tree();
 	}
 	void clear() { build({}); }
 	int size() const { return static_cast<int>(text_.size()); }

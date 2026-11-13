@@ -23,7 +23,48 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <cassert>
+#include <utility>
+#include <type_traits>
+#if defined(__BMI2__) && defined(__x86_64__)
+#include <immintrin.h>
+#endif
 #include <vector>
+
+namespace prime_sieve_detail {
+struct Sample {
+	std::size_t skip, stride;
+	std::size_t &count;
+	std::vector<std::size_t> &values;
+	void operator()(std::size_t p) {
+		if (skip) --skip;
+		else values.push_back(p), skip = stride - 1;
+		++count;
+	}
+	template<class At> void word(std::uint64_t word, At at) {
+		unsigned remaining = std::popcount(word);
+		count += remaining;
+		if (skip >= remaining) { skip -= remaining; return; }
+		do {
+			const unsigned rank = unsigned(skip);
+			if (rank) {
+#if defined(__BMI2__) && defined(__x86_64__)
+				word &= -_pdep_u64(std::uint64_t(1) << rank, word);
+#else
+				for (unsigned i = 0; i < rank; ++i) word &= word - 1;
+#endif
+			}
+			const unsigned bit = std::countr_zero(word);
+			values.push_back(at(bit));
+			word &= word - 1;
+			remaining -= rank + 1;
+			skip = stride - 1;
+		} while (skip < remaining);
+		skip -= remaining;
+	}
+};
+template<class F> inline constexpr bool sampled = std::is_same_v<F, Sample>;
+}
 
 inline std::vector<std::size_t> prime_sieve(std::size_t n);
 
@@ -43,9 +84,12 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (; i + 8 <= size; i += 8) {
 			std::uint64_t word;
 			std::memcpy(&word, prime.data() + i, sizeof(word));
-			while (word) {
-				emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
-				word &= word - 1;
+			if constexpr (prime_sieve_detail::sampled<F>) emit.word(word, [&](unsigned bit) { return 2 * (i + bit / 8) + 1; });
+			else {
+				while (word) {
+					emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
+					word &= word - 1;
+				}
 			}
 		}
 #endif
@@ -59,7 +103,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (unsigned i = 0; i < 8; ++i) index[residues[i]] = i;
 		return index;
 	}();
-	constexpr std::size_t period = 7 * 11 * 13, block_size = period * 32;
+	constexpr std::size_t period = 7 * 11 * 13;
 	static const auto pattern = [&] {
 		std::array<std::uint8_t, period> pattern{};
 		for (std::size_t i = 0; i < period; ++i)
@@ -72,6 +116,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 	std::size_t root = std::sqrt(static_cast<long double>(n - 1));
 	while (root > (n - 1) / root) --root;
 	while (root + 1 <= (n - 1) / (root + 1)) ++root;
+	const std::size_t block_size = (std::max(period * 32, root) + period - 1) / period * period;
 	const auto primes = prime_sieve(root + 1);
 	struct State {
 		std::size_t p;
@@ -93,7 +138,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		state.push_back(current);
 	}
 	const std::size_t size = (n - 1) / 30 + 1;
-	std::vector<std::uint8_t> prime(block_size);
+	std::vector<std::uint8_t> prime((block_size + 7) / 8 * 8);
 	constexpr auto offsets = [&] {
 		std::array<unsigned, 64> offsets{};
 		for (unsigned i = 0; i < 64; ++i) offsets[i] = 30 * (i / 8) + residues[i % 8];
@@ -135,10 +180,13 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 				word = 0;
 				for (unsigned d = 0; d < 8; ++d) word |= std::uint64_t(prime[i + d]) << (8 * d);
 			}
-			while (word) {
-				const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
-				emit(x);
-				word &= word - 1;
+			if constexpr (prime_sieve_detail::sampled<F>) emit.word(word, [&](unsigned bit) { return 30 * (base + i) + offsets[bit]; });
+			else {
+				while (word) {
+					const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
+					emit(x);
+					word &= word - 1;
+				}
 			}
 		}
 		base += length;
@@ -152,10 +200,66 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 	return result;
 }
 
+inline std::pair<std::size_t, std::vector<std::size_t>> prime_sieve_sample(std::size_t n, std::size_t stride, std::size_t offset = 0) {
+	assert(stride > 0);
+	std::pair<std::size_t, std::vector<std::size_t>> result;
+	if (stride <= 4) {
+		std::size_t skip = offset;
+		for_each_prime(n, [&](std::size_t p) {
+			if (skip) --skip;
+			else result.second.push_back(p), skip = stride - 1;
+			++result.first;
+		});
+		return result;
+	}
+	for_each_prime(n, prime_sieve_detail::Sample{offset, stride, result.first, result.second});
+	return result;
+}
 
-#line 7 "components/divisor_zeta.hpp"
+
+#line 9 "components/divisor_zeta.hpp"
+#include <span>
+#line 11 "components/divisor_zeta.hpp"
 
 namespace divisor_zeta_detail {
+
+struct Stage {
+	std::vector<std::uint32_t> divisors;
+	Stage(std::uint32_t n, std::span<const std::size_t> primes) {
+		std::vector<std::uint64_t> marked(std::size_t(n) / 64 + 1);
+		auto visit = [&](auto &&self, std::uint32_t value, std::size_t first) -> void {
+			std::uint32_t limit = n / value;
+			for (std::size_t j = first; j < primes.size() && primes[j] <= limit; ++j) {
+				std::uint32_t next = value * std::uint32_t(primes[j]);
+				marked[next >> 6] |= std::uint64_t(1) << (next & 63);
+				self(self, next, j);
+			}
+		};
+		visit(visit, 1, 0);
+		for (std::size_t i = 0; i < marked.size(); ++i)
+			for (auto bits = marked[i]; bits; bits &= bits - 1)
+				divisors.push_back(std::uint32_t(i * 64 + std::countr_zero(bits)));
+	}
+};
+
+inline std::vector<Stage> make_plan(std::uint32_t n, const std::vector<std::size_t> &primes, std::size_t &small) {
+	auto first = std::upper_bound(primes.begin(), primes.end(), 31);
+	small = std::size_t(first - primes.begin());
+	std::vector<Stage> stages;
+	auto append = [&](std::size_t bound) {
+		auto last = std::upper_bound(first, primes.end(), bound);
+		if (first != last) stages.emplace_back(n, std::span(first, last));
+		first = last;
+	};
+	std::uint64_t bound = 199;
+	append(bound);
+	while (bound * bound <= (n - 1) / (bound * bound)) {
+		bound *= bound;
+		append(std::size_t(bound));
+	}
+	if (first != primes.end()) stages.emplace_back(n, std::span(first, primes.end()));
+	return stages;
+}
 
 template <bool inverse, bool multiples, class F>
 void for_each(std::size_t n, const std::vector<std::size_t> &ps, std::size_t count, F update) {
@@ -189,7 +293,7 @@ template <bool inverse = false, bool multiples = false, class T>
 void divisor_zeta(std::vector<T> &a) { divisor_zeta<inverse, multiples>(a, prime_sieve(a.size())); }
 
 
-#line 10 "components/gcd_convolution_mint.hpp"
+#line 11 "components/gcd_convolution_mint.hpp"
 
 #if defined(__x86_64__) || defined(__i386__)
 #include <immintrin.h>
@@ -201,43 +305,46 @@ namespace gcd_convolution_mint_detail {
 
 #if defined(__x86_64__) || defined(__i386__)
 template <bool inverse, class T>
+__attribute__((target("avx2"), always_inline)) inline
+void update8(T *a, T *b, std::size_t i, std::size_t p) {
+	const __m256i mod = _mm256_set1_epi32(2 * T::mod());
+	auto gather = [&](const T *s) __attribute__((target("avx2"))) {
+		return _mm256_setr_epi32(s[0].v, s[p].v, s[2 * p].v, s[3 * p].v,
+								s[4 * p].v, s[5 * p].v, s[6 * p].v, s[7 * p].v);
+	};
+	__m256i x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i)), y = gather(a + i * p);
+	if constexpr (inverse) {
+		x = _mm256_sub_epi32(x, y);
+		x = _mm256_min_epu32(x, _mm256_add_epi32(x, mod));
+	} else {
+		x = _mm256_add_epi32(x, y);
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, mod));
+	}
+	_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
+	if constexpr (!inverse) {
+		x = _mm256_add_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i)), gather(b + i * p));
+		x = _mm256_min_epu32(x, _mm256_sub_epi32(x, mod));
+		_mm256_storeu_si256(reinterpret_cast<__m256i *>(b + i), x);
+	}
+}
+
+template <bool inverse, class T>
 __attribute__((target("avx2")))
 void prime_pass(T *a, T *b, std::size_t n, const std::vector<std::size_t> &ps, std::size_t count) {
-	const __m256i mod = _mm256_set1_epi32(2 * T::mod());
 	for (std::size_t j = 0; j < count; ++j) {
 		const std::size_t p = ps[j], end = (n - 1) / p;
 		auto scalar = [&](std::size_t i) {
 			if constexpr (inverse) a[i] -= a[i * p];
 			else a[i] += a[i * p], b[i] += b[i * p];
 		};
-		auto gather = [&](const T *s) __attribute__((target("avx2"))) {
-			return _mm256_setr_epi32(s[0].v, s[p].v, s[2 * p].v, s[3 * p].v,
-									s[4 * p].v, s[5 * p].v, s[6 * p].v, s[7 * p].v);
-		};
-		auto vector = [&](std::size_t i) __attribute__((target("avx2"))) {
-			__m256i x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(a + i)), y = gather(a + i * p);
-			if constexpr (inverse) {
-				x = _mm256_sub_epi32(x, y);
-				x = _mm256_min_epu32(x, _mm256_add_epi32(x, mod));
-			} else {
-				x = _mm256_add_epi32(x, y);
-				x = _mm256_min_epu32(x, _mm256_sub_epi32(x, mod));
-			}
-			_mm256_storeu_si256(reinterpret_cast<__m256i *>(a + i), x);
-			if constexpr (!inverse) {
-				x = _mm256_add_epi32(_mm256_loadu_si256(reinterpret_cast<const __m256i *>(b + i)), gather(b + i * p));
-				x = _mm256_min_epu32(x, _mm256_sub_epi32(x, mod));
-				_mm256_storeu_si256(reinterpret_cast<__m256i *>(b + i), x);
-			}
-		};
 		if constexpr (inverse) {
 			std::size_t i = 1;
 			for (; i <= end && i < 8; ++i) scalar(i);
-			for (; i + 7 <= end; i += 8) vector(i);
+			for (; i + 7 <= end; i += 8) update8<inverse>(a, b, i, p);
 			for (; i <= end; ++i) scalar(i);
 		} else {
 			std::size_t i = end;
-			for (; i >= 15; i -= 8) vector(i - 7);
+			for (; i >= 15; i -= 8) update8<inverse>(a, b, i - 7, p);
 			for (; i; --i) scalar(i);
 		}
 	}
@@ -278,9 +385,140 @@ void large_multiples(std::vector<T> &a, std::vector<T> &b, const std::vector<std
 	}
 }
 
+#if defined(__x86_64__) || defined(__i386__)
+template <bool inverse, class T>
+void partial_transform(std::vector<T> &a, std::vector<T> &b, const divisor_zeta_detail::Stage &stage, std::uint32_t last) {
+	constexpr std::uint64_t twice = 2 * T::mod();
+	const auto &ds = stage.divisors;
+	auto evaluate = [&](std::uint32_t i) {
+		std::uint32_t limit = last / i;
+		std::uint64_t x = 0, y = 0, xx = 0, yy = 0;
+		std::size_t j = 0;
+		for (; j + 1 < ds.size() && ds[j + 1] <= limit; j += 2) {
+			std::size_t p = std::size_t(i) * ds[j], q = std::size_t(i) * ds[j + 1];
+			x += a[p].v, xx += a[q].v;
+			if constexpr (!inverse) y += b[p].v, yy += b[q].v;
+		}
+		if (j < ds.size() && ds[j] <= limit) {
+			std::size_t p = std::size_t(i) * ds[j];
+			x += a[p].v;
+			if constexpr (!inverse) y += b[p].v;
+		}
+		if constexpr (inverse) a[i] -= T::word(std::uint32_t((x + xx) % twice));
+		else {
+			a[i] = T::word(std::uint32_t((x + xx + a[i].v) % twice));
+			b[i] = T::word(std::uint32_t((y + yy + b[i].v) % twice));
+		}
+	};
+	std::uint32_t end = last / ds[0];
+	if constexpr (inverse) for (std::uint32_t i = end; i; --i) evaluate(i);
+	else for (std::uint32_t i = 1; i <= end; ++i) evaluate(i);
+}
+
+template <bool inverse, class T>
+__attribute__((target("avx2")))
+void stage_pass(T *a, T *b, std::uint32_t first, std::uint32_t last, std::uint32_t p) {
+	std::uint32_t i = first;
+	for (; i + 7 <= last; i += 8) update8<inverse>(a, b, i, p);
+	for (; i <= last; ++i) {
+		if constexpr (inverse) a[i] -= a[std::size_t(i) * p];
+		else a[i] += a[std::size_t(i) * p], b[i] += b[std::size_t(i) * p];
+	}
+}
+
+template <bool inverse, class T>
+void stage_transform(std::vector<T> &a, std::vector<T> &b, const divisor_zeta_detail::Stage &stage,
+					 std::uint32_t block, std::uint32_t split) {
+	constexpr std::uint64_t twice = 2 * T::mod();
+	const auto &ds = stage.divisors;
+	if (ds.empty()) return;
+	std::uint32_t n = std::uint32_t(a.size() - 1);
+	std::size_t large = std::size_t(std::upper_bound(ds.begin(), ds.end(), split) - ds.begin());
+	std::uint64_t large_first = large < ds.size() ? ds[large] : std::uint64_t(n) + 1;
+	std::vector<std::size_t> cursor(std::size_t(n / large_first) + 1, large);
+	std::vector<std::uint32_t> next(large);
+	if constexpr (!inverse) {
+		std::uint32_t first_last = std::min(n, block);
+		partial_transform<false>(a, b, stage, first_last);
+		for (std::size_t j = 0; j < large; ++j) next[j] = first_last / ds[j] + 1;
+		for (std::uint32_t i = 1; i <= first_last / large_first; ++i)
+			cursor[i] = std::size_t(std::upper_bound(ds.begin() + large, ds.end(), first_last / i) - ds.begin());
+		for (std::uint64_t first = std::uint64_t(first_last) + 1; first <= n; first += block) {
+			std::uint32_t last = std::uint32_t(std::min<std::uint64_t>(n, first + block - 1));
+			for (std::size_t j = 0; j < large; ++j) {
+				std::uint32_t end = last / ds[j];
+				stage_pass<false>(a.data(), b.data(), next[j], end, ds[j]);
+				next[j] = end + 1;
+			}
+			for (std::uint32_t i = 1; i <= last / large_first; ++i) {
+				std::uint32_t limit = last / i;
+				std::size_t j = cursor[i];
+				std::uint64_t x = a[i].v, y = b[i].v, xx = 0, yy = 0;
+				for (; j + 1 < ds.size() && ds[j + 1] <= limit; j += 2) {
+					std::size_t p = std::size_t(i) * ds[j], q = std::size_t(i) * ds[j + 1];
+					x += a[p].v, y += b[p].v, xx += a[q].v, yy += b[q].v;
+				}
+				if (j < ds.size() && ds[j] <= limit) {
+					std::size_t p = std::size_t(i) * ds[j++];
+					x += a[p].v, y += b[p].v;
+				}
+				a[i] = T::word(std::uint32_t((x + xx) % twice));
+				b[i] = T::word(std::uint32_t((y + yy) % twice));
+				cursor[i] = j;
+			}
+		}
+	} else {
+		for (std::size_t j = 0; j < large; ++j) next[j] = n / ds[j];
+		for (std::uint32_t i = 1; i < cursor.size(); ++i)
+			cursor[i] = std::size_t(std::upper_bound(ds.begin() + large, ds.end(), n / i) - ds.begin());
+		for (std::uint64_t first = std::uint64_t(n / block) * block + 1; first > block; first -= block) {
+			if (first > n) continue;
+			std::uint32_t last = std::uint32_t(std::min<std::uint64_t>(n, first + block - 1));
+			for (std::size_t j = 0; j < large; ++j) {
+				std::uint32_t start = std::uint32_t((first + ds[j] - 1) / ds[j]);
+				stage_pass<true>(a.data(), b.data(), start, next[j], ds[j]);
+				next[j] = start - 1;
+			}
+			for (std::uint32_t i = 1; i <= last / large_first; ++i) {
+				std::uint32_t limit = std::uint32_t((first + i - 1) / i);
+				std::size_t j = cursor[i];
+				std::uint64_t x = 0, xx = 0;
+				for (; j >= large + 2 && ds[j - 2] >= limit; j -= 2)
+					x += a[std::size_t(i) * ds[j - 1]].v, xx += a[std::size_t(i) * ds[j - 2]].v;
+				if (j > large && ds[j - 1] >= limit) x += a[std::size_t(i) * ds[--j]].v;
+				a[i] -= T::word(std::uint32_t((x + xx) % twice));
+				cursor[i] = j;
+			}
+		}
+		partial_transform<true>(a, b, stage, std::min(n, block));
+	}
+}
+
+template <class T>
+void blocked_multiply(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &ps) {
+	std::uint32_t n = std::uint32_t(a.size() - 1);
+	if (!n) return;
+	std::size_t small;
+	auto stages = divisor_zeta_detail::make_plan(n, ps, small);
+	std::uint32_t block = std::max(32768u, std::uint32_t(1) << ((std::bit_width(n) + 1) / 2));
+	std::uint32_t split = std::max(4096u, std::uint32_t((std::uint64_t(n) + block - 1) / block));
+	transform<false>(a, b, ps, small);
+	for (const auto &stage : stages) stage_transform<false>(a, b, stage, block, split);
+	for (std::size_t i = 1; i < a.size(); ++i) a[i] *= b[i];
+	for (auto it = stages.rbegin(); it != stages.rend(); ++it) stage_transform<true>(a, b, *it, block, split);
+	transform<true>(a, b, ps, small);
+}
+#endif
+
 template <class T>
 void multiply(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &ps) {
 	const std::size_t n = a.size() - 1;
+#if defined(__x86_64__) || defined(__i386__)
+	if (n >= (std::size_t(1) << 19) && __builtin_cpu_supports("avx2")) {
+		blocked_multiply(a, b, ps);
+		return;
+	}
+#endif
 	std::size_t cutoff = std::sqrt(n);
 	while (cutoff + 1 <= n / (cutoff + 1)) ++cutoff;
 	while (cutoff && cutoff > n / cutoff) --cutoff;
@@ -295,12 +533,99 @@ void multiply(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_
 }
 
 
-#line 6 "convolution/gcd_lcm_convolution.hpp"
-#include <cassert>
-#line 9 "convolution/gcd_lcm_convolution.hpp"
-#include <type_traits>
-#include <utility>
-#line 12 "convolution/gcd_lcm_convolution.hpp"
+#line 1 "components/lcm_convolution_mint.hpp"
+
+
+
+#line 11 "components/lcm_convolution_mint.hpp"
+
+namespace lcm_convolution_mint_detail {
+using divisor_zeta_detail::Stage;
+using divisor_zeta_detail::make_plan;
+
+template<bool inverse, class T>
+void transform(std::vector<T> &a, std::vector<T> &b, const Stage &stage, std::uint32_t block, std::uint32_t split) {
+	const auto &divisors = stage.divisors;
+	if (divisors.empty()) return;
+	std::uint32_t n = std::uint32_t(a.size() - 1), end = n / divisors[0];
+	std::size_t large = std::size_t(std::upper_bound(divisors.begin(), divisors.end(), split) - divisors.begin());
+	std::uint64_t large_first = large < divisors.size() ? divisors[large] : std::uint64_t(n) + 1;
+	std::vector<std::size_t> cursor(std::size_t(n / large_first) + 1, large);
+	std::vector<std::uint64_t> next(large);
+	std::vector<std::uint32_t> source(large, 1);
+	std::vector<T> x, y;
+	if constexpr (!inverse) {
+		x.assign(a.begin(), a.begin() + std::size_t(end) + 1);
+		y.assign(b.begin(), b.begin() + std::size_t(end) + 1);
+	}
+	for (std::size_t j = 0; j < large; ++j) next[j] = divisors[j];
+	std::uint64_t first = 1;
+	if constexpr (inverse) {
+		std::uint32_t last = std::min(n, block);
+		for (std::uint32_t i = 1; i <= last / divisors[0]; ++i) {
+			std::uint32_t limit = last / i;
+			std::size_t j = 0;
+			T value = a[i];
+			while (j < divisors.size() && divisors[j] <= limit) a[std::size_t(i) * divisors[j++]] -= value;
+			if (i < cursor.size()) cursor[i] = std::max(j, large);
+		}
+		for (std::size_t j = 0; j < large; ++j) {
+			std::uint32_t i = last / divisors[j] + 1;
+			source[j] = i;
+			next[j] = std::uint64_t(i) * divisors[j];
+		}
+		first = std::uint64_t(last) + 1;
+	}
+	for (; first <= n; first += block) {
+		std::uint32_t last = std::uint32_t(std::min<std::uint64_t>(n, first + block - 1));
+		for (std::size_t j = 0; j < large; ++j) {
+			std::uint64_t at = next[j];
+			std::uint32_t i = source[j], d = divisors[j];
+			if constexpr (inverse) {
+				for (; at <= last; at += d, ++i) a[std::size_t(at)] -= a[i];
+			} else {
+				for (; at <= last; at += d, ++i) {
+					a[std::size_t(at)] += x[i];
+					b[std::size_t(at)] += y[i];
+				}
+			}
+			next[j] = at;
+			source[j] = i;
+		}
+		for (std::uint32_t i = 1; i <= last / large_first; ++i) {
+			std::uint32_t limit = last / i;
+			std::size_t j = cursor[i];
+			T value = inverse ? a[i] : x[i];
+			while (j < divisors.size() && divisors[j] <= limit) {
+				std::size_t to = std::size_t(i) * divisors[j++];
+				if constexpr (inverse) a[to] -= value;
+				else a[to] += value, b[to] += y[i];
+			}
+			cursor[i] = j;
+		}
+	}
+}
+
+template<class T>
+void multiply(std::vector<T> &a, std::vector<T> &b, const std::vector<std::size_t> &primes) {
+	std::uint32_t n = std::uint32_t(a.size() - 1);
+	if (!n) return;
+	std::size_t small;
+	auto stages = make_plan(n, primes, small);
+	std::uint32_t block = std::max(8192u, std::uint32_t(1) << ((std::bit_width(n) + 1) / 2));
+	std::uint32_t split = std::max(4096u, std::uint32_t((std::uint64_t(n) + block - 1) / block));
+	divisor_zeta_detail::for_each<false, false>(a.size(), primes, small, [&](std::size_t to, std::size_t from) {
+		a[to] += a[from], b[to] += b[from];
+	});
+	for (const auto &stage : stages) transform<false>(a, b, stage, block, split);
+	for (std::size_t i = 1; i < a.size(); ++i) a[i] *= b[i];
+	for (auto it = stages.rbegin(); it != stages.rend(); ++it) transform<true>(a, b, *it, block, split);
+	divisor_zeta_detail::for_each<true, false>(a.size(), primes, small, [&](std::size_t to, std::size_t from) { a[to] -= a[from]; });
+}
+}
+
+
+#line 13 "convolution/gcd_lcm_convolution.hpp"
 
 namespace gcd_lcm_convolution_detail {
 
@@ -315,6 +640,12 @@ std::vector<T> multiply(std::vector<T> a, std::vector<T> b) {
 	if constexpr (gcd && std::is_same_v<T, mint_detail::Mint>) {
 		if (n >= 4096 && n - 1 <= UINT32_MAX) {
 			gcd_convolution_mint_detail::multiply(a, b, ps);
+			return a;
+		}
+	}
+	if constexpr (!gcd && std::is_same_v<T, mint_detail::Mint>) {
+		if (n > (std::size_t(1) << 19) && n - 1 <= UINT32_MAX) {
+			lcm_convolution_mint_detail::multiply(a, b, ps);
 			return a;
 		}
 	}
@@ -344,6 +675,34 @@ std::vector<T> lcm_convolution(std::vector<T> a, std::vector<T> b) {
 #line 1 "components/fast_io_bulk.hpp"
 
 
+
+#line 1 "components/compiler_features.hpp"
+
+
+
+#if defined(__x86_64__) || defined(__i386__)
+#define CP_X86 1
+#else
+#define CP_X86 0
+#endif
+#if CP_X86 && defined(__GNUC__) && !defined(__clang__)
+#define CP_GCC_X86 1
+#else
+#define CP_GCC_X86 0
+#endif
+#if CP_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CP_GNU_X86 1
+#else
+#define CP_GNU_X86 0
+#endif
+#if CP_GCC_X86 && defined(__linux__) && defined(__x86_64__)
+#define CP_GCC_LINUX64 1
+#else
+#define CP_GCC_LINUX64 0
+#endif
+
+
+#line 5 "components/fast_io_bulk.hpp"
 
 #line 1 "components/fast_io_output.hpp"
 
@@ -655,11 +1014,9 @@ void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
 }
 
 
-#line 6 "components/fast_io_bulk.hpp"
-#include <span>
-#line 8 "components/fast_io_bulk.hpp"
+#line 10 "components/fast_io_bulk.hpp"
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #include <immintrin.h>
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
@@ -678,24 +1035,41 @@ struct BulkInput {
 		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
 	}
 
-	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+	template <bool Signed = false>
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid, unsigned *signs = nullptr) {
 		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
 		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
-		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+		unsigned n0 = 0, n1 = 0;
+		if constexpr (Signed) {
+			if (a < 1 || a > 11 || b <= a + 1 || b - a - 1 > 11) [[unlikely]] {
+				invalid = _mm256_set1_epi32(-1);
+				p += std::min(b + 1, 32u);
+				*signs = 0;
+				return _mm256_setzero_si256();
+			}
+			n0 = p[0] == '-', n1 = p[a + 1] == '-';
+			*signs = n0 | (n1 << 1);
+		}
+		if (a < n0 + 1 || a - n0 > 10 || b <= a + n1 + 1 || b - a - n1 - 1 > 10) [[unlikely]] {
 			invalid = _mm256_set1_epi32(-1);
 			p += std::min(b + 1, 32u);
 			return _mm256_setzero_si256();
 		}
-		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
-		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
-			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		auto window = bytes;
+		if constexpr (Signed) window = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1 + n1)), _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + n0)));
+		else window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - n1 - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a - n0].data())));
 		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
 		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
 		p += b + 1;
 		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
 	}
 
+	template <bool Signed = false>
 	static std::uint32_t one(const char *&p, bool &bad) {
+		bool negative = false;
+		if constexpr (Signed) negative = *p == '-', p += negative;
 		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
 		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
 		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
@@ -711,9 +1085,10 @@ struct BulkInput {
 		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
 		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
 		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
-		bad |= value > 0xffffffffULL;
+		if constexpr (Signed) bad |= value > 2147483647ULL + negative;
+		else bad |= value > 0xffffffffULL;
 		p += n + 1;
-		return std::uint32_t(value);
+		return negative ? 0u - std::uint32_t(value) : std::uint32_t(value);
 	}
 
 	static const char *after_separator(const char *p) {
@@ -721,6 +1096,7 @@ struct BulkInput {
 		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
 	}
 
+	template <bool Signed = false>
 	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
 		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
 		std::size_t done = 0;
@@ -730,16 +1106,27 @@ struct BulkInput {
 			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
 			if (steps <= 0) break;
 			for (auto j = steps; j; --j, done += 2) {
-				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				unsigned signs0 = 0, signs1 = 0, signs2 = 0, signs3 = 0;
+				const auto g0 = two<Signed>(p[0], invalid, &signs0), g1 = two<Signed>(p[1], invalid, &signs1), g2 = two<Signed>(p[2], invalid, &signs2), g3 = two<Signed>(p[3], invalid, &signs3);
 				const auto k = _mm256_set1_epi32(0x00012710);
 				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
 				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
 				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
 				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
-				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
-					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				auto max_high = _mm256_set1_epi32(42), max_low = _mm256_set1_epi32(94967295);
+				auto signs = _mm256_setzero_si256();
+				if constexpr (Signed) {
+					signs = _mm256_setr_epi32(signs0 & 1, signs1 & 1, signs2 & 1, signs3 & 1, signs0 >> 1, signs1 >> 1, signs2 >> 1, signs3 >> 1);
+					max_high = _mm256_set1_epi32(21), max_low = _mm256_add_epi32(_mm256_set1_epi32(47483647), signs);
+				}
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, max_high),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, max_high), _mm256_cmpgt_epi32(low, max_low)));
 				invalid = _mm256_or_si256(invalid, overflow);
-				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				if constexpr (Signed) {
+					const auto mask = _mm256_sub_epi32(_mm256_setzero_si256(), signs);
+					value = _mm256_sub_epi32(_mm256_xor_si256(value, mask), mask);
+				}
 				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
 				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
 				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
@@ -752,7 +1139,7 @@ struct BulkInput {
 		return done;
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
 		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
 		const std::size_t stream = bytes / 4;
@@ -761,12 +1148,12 @@ struct BulkInput {
 		if (!p1 || !p2 || !p3 || !last) return 0;
 		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
 		auto invalid = _mm256_setzero_si256();
-		const auto done = lockstep(s, end, out, invalid);
+		const auto done = lockstep<Signed>(s, end, out, invalid);
 		bool bad = !_mm256_testz_si256(invalid, invalid);
 		std::size_t n[4];
 		for (int k = 0; k < 4; ++k) {
 			n[k] = done;
-			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one<Signed>(s[k], bad);
 			bad |= s[k] != end[k];
 		}
 		const auto parsed = n[0] + n[1] + n[2] + n[3];
@@ -787,7 +1174,7 @@ struct BulkInput {
 		});
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
 		std::unique_ptr<unsigned[]> scratch;
 		std::size_t done = 0;
@@ -798,7 +1185,7 @@ struct BulkInput {
 			while (chunks && count - done >= 1024 && in.end - p >= 1088) {
 				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
 				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
-				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+				const auto parsed = chunk_blocks<Signed>(p, in.end, count - done, out, emit);
 				if (!parsed) {
 					chunks = false;
 					break;
@@ -807,7 +1194,7 @@ struct BulkInput {
 			}
 			unsigned tail[64];
 			std::size_t used = 0;
-			while (done + 2 <= count && in.end - p >= 32) {
+			while (!Signed && done + 2 <= count && in.end - p >= 32) {
 				const char *next = p;
 				auto invalid = _mm256_setzero_si256();
 				const auto groups = two(next, invalid);
@@ -828,9 +1215,9 @@ struct BulkInput {
 			if (used) emit(tail, used);
 			in.current = p;
 			if (done < count) {
-				unsigned value = 0;
+				std::conditional_t<Signed, std::int32_t, unsigned> value = 0;
 				in.read(value);
-				emit(&value, 1);
+				emit(reinterpret_cast<unsigned *>(&value), 1);
 				++done;
 			}
 		}
@@ -850,15 +1237,15 @@ struct BulkInput {
 
 
 namespace fast_io_detail {
-template <class Emit, std::size_t... I>
-void emit_record(Emit &emit, const std::uint32_t *values, std::index_sequence<I...>) {
+template <class Emit, class T, std::size_t... I>
+void emit_record(Emit &emit, const T *values, std::index_sequence<I...>) {
 	emit(values[I]...);
 }
 }
 
 template <class Emit>
 void read_unsigned_blocks(FastInput &input, std::size_t count, Emit emit) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (__builtin_cpu_supports("avx2")) {
 		fast_io_detail::BulkInput::read_blocks(input, count, emit);
 		return;
@@ -901,16 +1288,56 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 	});
 }
 
+template <class Emit>
+void read_signed_blocks(FastInput &input, std::size_t count, Emit emit) {
+#if CP_GCC_LINUX64
+	if (__builtin_cpu_supports("avx2")) {
+		fast_io_detail::BulkInput::read_blocks<true>(input, count, [&](const unsigned *values, std::size_t n) {
+			emit(reinterpret_cast<const std::int32_t *>(values), n);
+		});
+		return;
+	}
+#endif
+	std::int32_t values[64];
+	while (count) {
+		const auto n = std::min<std::size_t>(count, 64);
+		for (std::size_t i = 0; i < n; ++i) input.read(values[i]);
+		emit(values, n);
+		count -= n;
+	}
+}
+
+template <std::size_t Fields, class Emit>
+void read_signed_records(FastInput &input, std::size_t count, Emit emit) {
+	static_assert(Fields > 0);
+	if (count > std::numeric_limits<std::size_t>::max() / Fields) throw std::length_error("input size");
+	std::array<std::int32_t, Fields> pending;
+	std::size_t used = 0;
+	constexpr auto indices = std::make_index_sequence<Fields>();
+	read_signed_blocks(input, count * Fields, [&](const std::int32_t *values, std::size_t n) {
+		std::size_t i = 0;
+		if (used) {
+			while (used < Fields && i < n) pending[used++] = values[i++];
+			if (used == Fields) {
+				fast_io_detail::emit_record(emit, pending.data(), indices);
+				used = 0;
+			}
+		}
+		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
+		while (i < n) pending[used++] = values[i++];
+	});
+}
+
 
 #line 1 "math/mint.hpp"
 
 
-#line 4 "math/mint.hpp"
+#line 5 "math/mint.hpp"
 #include <istream>
 #include <ostream>
-#line 7 "math/mint.hpp"
+#line 8 "math/mint.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -922,11 +1349,11 @@ constexpr bool mint_integral = std::is_integral_v<I>
 							   || std::is_same_v<I, __int128> || std::is_same_v<I, unsigned __int128>
 #endif
 	;
-struct Mint {
+struct [[gnu::warn_unused]] Mint {
 	using mint = Mint;
 	unsigned v = 0;
-	static constexpr unsigned mod() { return 998244353; }
-	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
+	[[nodiscard]] static constexpr unsigned mod() { return 998244353; }
+	[[nodiscard, gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -936,17 +1363,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	[[gnu::always_inline]] static Mint raw(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	[[gnu::always_inline]] static Mint word(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	[[gnu::always_inline]] unsigned val() const {
+	[[nodiscard, gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -985,27 +1412,27 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	[[gnu::always_inline]] Mint operator+() const { return *this; }
-	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
-	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
-	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
+	[[nodiscard, gnu::always_inline]] Mint operator+() const { return *this; }
+	[[nodiscard, gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[nodiscard, gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[nodiscard, gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[nodiscard, gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[nodiscard]] Mint operator/(Mint b) const { return Mint(*this) /= b; }
+	[[nodiscard, gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[nodiscard, gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
+	[[nodiscard]] friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
+	[[nodiscard]] friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
+	[[nodiscard]] friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
+	[[nodiscard]] friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator==(I a, Mint b) { return Mint(a) == b; }
+	[[nodiscard]] friend bool operator==(I a, Mint b) { return Mint(a) == b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
-	Mint pow(long long n) const {
+	[[nodiscard]] friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
+	[[nodiscard]] Mint pow(long long n) const {
 		assert(n >= 0);
 		if (!n) return Mint(1);
 		Mint r(1), a = *this;
@@ -1013,7 +1440,7 @@ struct Mint {
 			if (n & 1) r *= a;
 		return r * a;
 	}
-	[[gnu::noinline]] Mint inv() const {
+	[[nodiscard, gnu::noinline]] Mint inv() const {
 		assert(*this != Mint(0));
 		Mint a2 = *this * *this, a3 = a2 * *this;
 		Mint a7 = a3 * a3 * *this;
@@ -1037,7 +1464,7 @@ struct Mint {
 using mint = mint_detail::Mint;
 using fps_mint = mint;
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

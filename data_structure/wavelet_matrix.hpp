@@ -8,7 +8,6 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <chrono>
 #include <limits>
 #include <optional>
 #include <type_traits>
@@ -16,7 +15,6 @@
 #include <vector>
 #include "../components/oct_bit_vector.hpp"
 #include "../components/quad_bit_vector.hpp"
-#include "../components/splitmix64.hpp"
 #include "../components/wavelet_compression.hpp"
 
 template <class T = std::int64_t, class Sum = std::conditional_t<std::is_integral_v<T>, std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>, T>>
@@ -40,17 +38,6 @@ class WaveletMatrix {
 	mutable std::vector<std::vector<Sum>> sum_prefix;
 	mutable std::vector<std::vector<CompactSum>> compact_prefix;
 	mutable bool sum_ready = false, narrow_sums = false;
-	mutable std::vector<std::uint32_t> count_index;
-	mutable std::uint64_t count_seed = 0;
-	std::uint32_t count_code(const T &x) const {
-		std::size_t mask = count_index.size() - 1;
-		std::size_t p = splitmix64((std::uint64_t(x) ^ count_seed) + 0x9e3779b97f4a7c15ULL) & mask;
-		while (auto c = count_index[p]) {
-			if (values[c - 1] == x) return c - 1;
-			p = (p + 1) & mask;
-		}
-		return static_cast<std::uint32_t>(values.size());
-	}
 	static constexpr bool supports_sum = requires(const T &x, Sum s) { Sum(x); s + s; s - s; s * 1; };
 	std::array<std::uint32_t, 8> small_codes(int l, int r) const {
 		std::array<std::uint32_t, 8> a;
@@ -467,8 +454,6 @@ class WaveletMatrix {
 	}
 	void construct(const std::vector<T> &a, bool with_sum) {
 		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
-		count_index.clear();
-		count_seed = 0;
 		sum_bits.clear();
 		sum_middle.clear();
 		sum_levels = 0;
@@ -742,19 +727,7 @@ class WaveletMatrix {
 		requires supports_sum
 	{ construct(a, with_sum); }
 	void build(const std::vector<T> &a) { construct(a, false); }
-	void prepare_count() const {
-		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8) {
-			if (values.size() <= 1024 || dense || !count_index.empty()) return;
-			count_seed = std::uint64_t(std::chrono::steady_clock::now().time_since_epoch().count());
-			count_index.assign(std::bit_ceil(2 * values.size()), 0);
-			std::size_t mask = count_index.size() - 1;
-			for (std::size_t c = 0; c < values.size(); ++c) {
-				std::size_t p = splitmix64((std::uint64_t(values[c]) ^ count_seed) + 0x9e3779b97f4a7c15ULL) & mask;
-				while (count_index[p]) p = (p + 1) & mask;
-				count_index[p] = static_cast<std::uint32_t>(c + 1);
-			}
-		}
-	}
+	void prepare_count() const {}
 	int size() const { return n; }
 	bool empty() const { return n == 0; }
 	T access(int i) const {
@@ -765,10 +738,7 @@ class WaveletMatrix {
 	int count(int l, int r, const T &x) const {
 		check(l, r);
 		if (l == r) return 0;
-		std::uint32_t c;
-		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8)
-			c = (values.size() <= 1024 || dense || count_index.empty()) ? code(x) : count_code(x);
-		else c = code(x);
+		std::uint32_t c = code(x);
 		if (c == values.size() || values[c] != x) return 0;
 		if (!levels) return r - l;
 		int start = offsets[c], end = offsets[c + 1];
@@ -803,10 +773,7 @@ class WaveletMatrix {
 	}
 	int rank(const T &x, int r) const { return count(0, r, x); }
 	int select(const T &x, int k) const {
-		std::uint32_t c;
-		if constexpr (std::is_integral_v<T> && sizeof(T) <= 8)
-			c = (values.size() <= 1024 || dense || count_index.empty()) ? code(x) : count_code(x);
-		else c = code(x);
+		std::uint32_t c = code(x);
 		if (k < 0 || c == values.size() || values[c] != x || k >= offsets[c + 1] - offsets[c]) return -1;
 		if (ordered) return (ordered > 0 ? offsets[c] : n - offsets[c + 1]) + k;
 		return levels ? positions[offsets[c] + k] : k;

@@ -44,7 +44,6 @@
 | `components/multivariate_convolution_core.hpp` | 多変数畳み込みの共通実装 | [使い方](docs/multivariate_convolution_core.md) |
 | `components/multivariate_convolution_product.hpp` | 多変数畳み込みの積 | [使い方](docs/multivariate_convolution_product.md) |
 | `components/multivariate_ranked.hpp` | 小さい次元の多変数畳み込み | [使い方](docs/multivariate_ranked.md) |
-| `components/ordered_multiset_btree.hpp` | 順序統計多重集合の共通実装 | [使い方](docs/ordered_multiset_btree.md) |
 | `components/predecessor_set.hpp` | Predecessor Set（64 分木） | [使い方](docs/predecessor_set.md) |
 
 ### 幾何
@@ -398,8 +397,8 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/binomial_prefix_sum.hpp` | 二項係数の先頭区間和・一括計算 | [使い方](docs/binomial_prefix_sum.md) |
-| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数の先頭区間和・一括計算 | [使い方](docs/binomial_prefix_sum_light.md) |
+| `math/binomial_prefix_sum.hpp` | 二項係数の先頭区間和 | [使い方](docs/binomial_prefix_sum.md) |
+| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数の先頭区間和 | [使い方](docs/binomial_prefix_sum_light.md) |
 | `math/binomial_prefix_sum_incremental.hpp` | 二項係数の先頭区間和（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
 | `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数の先頭区間和 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
@@ -457,7 +456,6 @@
 | `components/dynamic_quad_wavelet.hpp` | Dynamic Quad Wavelet Matrix | [使い方](docs/dynamic_quad_wavelet.md) |
 | `components/quad_bit_vector.hpp` | Quad Bit Vector | [使い方](docs/quad_bit_vector.md) |
 | `components/range_lis.hpp` | Range LIS の前計算 | [使い方](docs/range_lis_component.md) |
-| `components/range_lis_batch.hpp` | Range LIS の一括処理 | [使い方](docs/range_lis_batch.md) |
 | `components/oct_bit_vector.hpp` | Oct Bit Vector | [使い方](docs/oct_bit_vector.md) |
 | `components/fenwick_sum.hpp` | Fenwick Sum | [使い方](docs/fenwick_sum.md) |
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |

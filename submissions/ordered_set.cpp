@@ -1,29 +1,36 @@
-#line 1 "components/simd_capabilities.hpp"
-#ifndef SIMD_CAPABILITIES_HPP
-#define SIMD_CAPABILITIES_HPP
-
-#if (defined(__x86_64__) || defined(__i386__)) && defined(__GNUC__) && !defined(__clang__)
-_Pragma("GCC push_options")
-_Pragma("GCC target(\"no-avx512f,avx512f\")")
-#ifdef __AVX512F__
-#define CP_LIBRARY_AVX512 1
-#else
-#define CP_LIBRARY_AVX512 0
-#endif
-_Pragma("GCC pop_options")
-#elif (defined(__x86_64__) || defined(__i386__)) && defined(__clang__)
-#define CP_LIBRARY_AVX512 1
-#else
-#define CP_LIBRARY_AVX512 0
-#endif
-
-#endif
-
 #line 1 "test/ordered_set.test.cpp"
 #define PROBLEM "https://judge.yosupo.jp/problem/ordered_set"
 #line 1 "components/fast_io_bulk.hpp"
 
 
+
+#line 1 "components/compiler_features.hpp"
+
+
+
+#if defined(__x86_64__) || defined(__i386__)
+#define CP_X86 1
+#else
+#define CP_X86 0
+#endif
+#if CP_X86 && defined(__GNUC__) && !defined(__clang__)
+#define CP_GCC_X86 1
+#else
+#define CP_GCC_X86 0
+#endif
+#if CP_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CP_GNU_X86 1
+#else
+#define CP_GNU_X86 0
+#endif
+#if CP_GCC_X86 && defined(__linux__) && defined(__x86_64__)
+#define CP_GCC_LINUX64 1
+#else
+#define CP_GCC_LINUX64 0
+#endif
+
+
+#line 5 "components/fast_io_bulk.hpp"
 
 #line 1 "components/fast_io_output.hpp"
 
@@ -339,11 +346,11 @@ void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
 }
 
 
-#line 6 "components/fast_io_bulk.hpp"
-#include <span>
 #line 8 "components/fast_io_bulk.hpp"
+#include <span>
+#line 10 "components/fast_io_bulk.hpp"
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #include <immintrin.h>
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
@@ -362,24 +369,41 @@ struct BulkInput {
 		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
 	}
 
-	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+	template <bool Signed = false>
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid, unsigned *signs = nullptr) {
 		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
 		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
-		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+		unsigned n0 = 0, n1 = 0;
+		if constexpr (Signed) {
+			if (a < 1 || a > 11 || b <= a + 1 || b - a - 1 > 11) [[unlikely]] {
+				invalid = _mm256_set1_epi32(-1);
+				p += std::min(b + 1, 32u);
+				*signs = 0;
+				return _mm256_setzero_si256();
+			}
+			n0 = p[0] == '-', n1 = p[a + 1] == '-';
+			*signs = n0 | (n1 << 1);
+		}
+		if (a < n0 + 1 || a - n0 > 10 || b <= a + n1 + 1 || b - a - n1 - 1 > 10) [[unlikely]] {
 			invalid = _mm256_set1_epi32(-1);
 			p += std::min(b + 1, 32u);
 			return _mm256_setzero_si256();
 		}
-		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
-		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
-			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		auto window = bytes;
+		if constexpr (Signed) window = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1 + n1)), _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + n0)));
+		else window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - n1 - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a - n0].data())));
 		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
 		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
 		p += b + 1;
 		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
 	}
 
+	template <bool Signed = false>
 	static std::uint32_t one(const char *&p, bool &bad) {
+		bool negative = false;
+		if constexpr (Signed) negative = *p == '-', p += negative;
 		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
 		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
 		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
@@ -395,9 +419,10 @@ struct BulkInput {
 		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
 		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
 		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
-		bad |= value > 0xffffffffULL;
+		if constexpr (Signed) bad |= value > 2147483647ULL + negative;
+		else bad |= value > 0xffffffffULL;
 		p += n + 1;
-		return std::uint32_t(value);
+		return negative ? 0u - std::uint32_t(value) : std::uint32_t(value);
 	}
 
 	static const char *after_separator(const char *p) {
@@ -405,6 +430,7 @@ struct BulkInput {
 		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
 	}
 
+	template <bool Signed = false>
 	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
 		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
 		std::size_t done = 0;
@@ -414,16 +440,27 @@ struct BulkInput {
 			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
 			if (steps <= 0) break;
 			for (auto j = steps; j; --j, done += 2) {
-				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				unsigned signs0 = 0, signs1 = 0, signs2 = 0, signs3 = 0;
+				const auto g0 = two<Signed>(p[0], invalid, &signs0), g1 = two<Signed>(p[1], invalid, &signs1), g2 = two<Signed>(p[2], invalid, &signs2), g3 = two<Signed>(p[3], invalid, &signs3);
 				const auto k = _mm256_set1_epi32(0x00012710);
 				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
 				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
 				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
 				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
-				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
-					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				auto max_high = _mm256_set1_epi32(42), max_low = _mm256_set1_epi32(94967295);
+				auto signs = _mm256_setzero_si256();
+				if constexpr (Signed) {
+					signs = _mm256_setr_epi32(signs0 & 1, signs1 & 1, signs2 & 1, signs3 & 1, signs0 >> 1, signs1 >> 1, signs2 >> 1, signs3 >> 1);
+					max_high = _mm256_set1_epi32(21), max_low = _mm256_add_epi32(_mm256_set1_epi32(47483647), signs);
+				}
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, max_high),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, max_high), _mm256_cmpgt_epi32(low, max_low)));
 				invalid = _mm256_or_si256(invalid, overflow);
-				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				if constexpr (Signed) {
+					const auto mask = _mm256_sub_epi32(_mm256_setzero_si256(), signs);
+					value = _mm256_sub_epi32(_mm256_xor_si256(value, mask), mask);
+				}
 				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
 				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
 				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
@@ -436,7 +473,7 @@ struct BulkInput {
 		return done;
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
 		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
 		const std::size_t stream = bytes / 4;
@@ -445,12 +482,12 @@ struct BulkInput {
 		if (!p1 || !p2 || !p3 || !last) return 0;
 		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
 		auto invalid = _mm256_setzero_si256();
-		const auto done = lockstep(s, end, out, invalid);
+		const auto done = lockstep<Signed>(s, end, out, invalid);
 		bool bad = !_mm256_testz_si256(invalid, invalid);
 		std::size_t n[4];
 		for (int k = 0; k < 4; ++k) {
 			n[k] = done;
-			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one<Signed>(s[k], bad);
 			bad |= s[k] != end[k];
 		}
 		const auto parsed = n[0] + n[1] + n[2] + n[3];
@@ -471,7 +508,7 @@ struct BulkInput {
 		});
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
 		std::unique_ptr<unsigned[]> scratch;
 		std::size_t done = 0;
@@ -482,7 +519,7 @@ struct BulkInput {
 			while (chunks && count - done >= 1024 && in.end - p >= 1088) {
 				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
 				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
-				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+				const auto parsed = chunk_blocks<Signed>(p, in.end, count - done, out, emit);
 				if (!parsed) {
 					chunks = false;
 					break;
@@ -491,7 +528,7 @@ struct BulkInput {
 			}
 			unsigned tail[64];
 			std::size_t used = 0;
-			while (done + 2 <= count && in.end - p >= 32) {
+			while (!Signed && done + 2 <= count && in.end - p >= 32) {
 				const char *next = p;
 				auto invalid = _mm256_setzero_si256();
 				const auto groups = two(next, invalid);
@@ -512,9 +549,9 @@ struct BulkInput {
 			if (used) emit(tail, used);
 			in.current = p;
 			if (done < count) {
-				unsigned value = 0;
+				std::conditional_t<Signed, std::int32_t, unsigned> value = 0;
 				in.read(value);
-				emit(&value, 1);
+				emit(reinterpret_cast<unsigned *>(&value), 1);
 				++done;
 			}
 		}
@@ -534,15 +571,15 @@ struct BulkInput {
 
 
 namespace fast_io_detail {
-template <class Emit, std::size_t... I>
-void emit_record(Emit &emit, const std::uint32_t *values, std::index_sequence<I...>) {
+template <class Emit, class T, std::size_t... I>
+void emit_record(Emit &emit, const T *values, std::index_sequence<I...>) {
 	emit(values[I]...);
 }
 }
 
 template <class Emit>
 void read_unsigned_blocks(FastInput &input, std::size_t count, Emit emit) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (__builtin_cpu_supports("avx2")) {
 		fast_io_detail::BulkInput::read_blocks(input, count, emit);
 		return;
@@ -585,31 +622,57 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 	});
 }
 
+template <class Emit>
+void read_signed_blocks(FastInput &input, std::size_t count, Emit emit) {
+#if CP_GCC_LINUX64
+	if (__builtin_cpu_supports("avx2")) {
+		fast_io_detail::BulkInput::read_blocks<true>(input, count, [&](const unsigned *values, std::size_t n) {
+			emit(reinterpret_cast<const std::int32_t *>(values), n);
+		});
+		return;
+	}
+#endif
+	std::int32_t values[64];
+	while (count) {
+		const auto n = std::min<std::size_t>(count, 64);
+		for (std::size_t i = 0; i < n; ++i) input.read(values[i]);
+		emit(values, n);
+		count -= n;
+	}
+}
+
+template <std::size_t Fields, class Emit>
+void read_signed_records(FastInput &input, std::size_t count, Emit emit) {
+	static_assert(Fields > 0);
+	if (count > std::numeric_limits<std::size_t>::max() / Fields) throw std::length_error("input size");
+	std::array<std::int32_t, Fields> pending;
+	std::size_t used = 0;
+	constexpr auto indices = std::make_index_sequence<Fields>();
+	read_signed_blocks(input, count * Fields, [&](const std::int32_t *values, std::size_t n) {
+		std::size_t i = 0;
+		if (used) {
+			while (used < Fields && i < n) pending[used++] = values[i++];
+			if (used == Fields) {
+				fast_io_detail::emit_record(emit, pending.data(), indices);
+				used = 0;
+			}
+		}
+		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
+		while (i < n) pending[used++] = values[i++];
+	});
+}
+
 
 #line 1 "data_structure/top_k_sum.hpp"
 
 
 
-#line 8 "data_structure/top_k_sum.hpp"
-#include <functional>
-#include <initializer_list>
-#line 11 "data_structure/top_k_sum.hpp"
-#include <optional>
-#line 14 "data_structure/top_k_sum.hpp"
-#include <vector>
-#line 1 "components/ordered_multiset_btree.hpp"
-
-
-
-#line 15 "components/ordered_multiset_btree.hpp"
-#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
-#include <immintrin.h>
-#endif
 #line 1 "components/radix_sort.hpp"
 
 
 
-#line 11 "components/radix_sort.hpp"
+#line 10 "components/radix_sort.hpp"
+#include <vector>
 
 template <int Bits, class T, class Key>
 void stable_radix_sort(std::vector<T> &values, Key &&key) {
@@ -632,6 +695,28 @@ void stable_radix_sort(std::vector<T> &values, Key &&key) {
 	}
 	if (sorted) return;
 	std::vector<T> scratch(values.size());
+	if constexpr (Bits == 11 && sizeof(K) <= 4) {
+		if (values.size() <= UINT32_MAX && (varying & mask) && ((varying >> 11) & mask) && (varying >> 22)) {
+			std::array<std::array<std::uint32_t, buckets>, 3> counts{};
+			for (const auto &value : values) {
+				std::uint32_t k = key(value);
+				++counts[0][k & mask];
+				++counts[1][(k >> 11) & mask];
+				++counts[2][k >> 22];
+			}
+			for (int pass = 0; pass < 3; ++pass) {
+				auto &count = counts[pass];
+				std::uint32_t sum = 0;
+				for (auto &x : count) {
+					auto n = x;
+					x = sum, sum += n;
+				}
+				for (auto &&value : values) scratch[count[(std::uint32_t(key(value)) >> (11 * pass)) & mask]++] = std::move(value);
+				values.swap(scratch);
+			}
+			return;
+		}
+	}
 	using Counts = std::conditional_t<(Bits <= 11), std::array<std::size_t, buckets>, std::vector<std::size_t>>;
 	Counts count = [] {
 		if constexpr (Bits <= 11) return Counts{};
@@ -669,452 +754,12 @@ void sort_by_key(std::vector<T> &values, Key key) {
 }
 
 
-#line 19 "components/ordered_multiset_btree.hpp"
-
-namespace ordered_multiset_detail {
-#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
-template<bool Strict, class Key>
-__attribute__((target("avx2"))) int find_avx2(const Key *data, int n, Key value) {
-	unsigned less = 0;
-	constexpr int lanes = 32 / sizeof(Key);
-	for (int i = 0; i < n; i += lanes) {
-		auto keys = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(data + i));
-		__m256i limit, match;
-		if constexpr (sizeof(Key) == 4) {
-			limit = _mm256_set1_epi32(static_cast<int>(value));
-			if constexpr (std::is_unsigned_v<Key>) { auto sign = _mm256_set1_epi32(-2147483647 - 1); keys = _mm256_xor_si256(keys, sign); limit = _mm256_xor_si256(limit, sign); }
-			match = _mm256_cmpgt_epi32(limit, keys);
-			if constexpr (Strict) match = _mm256_or_si256(match, _mm256_cmpeq_epi32(limit, keys));
-			less |= static_cast<unsigned>(_mm256_movemask_ps(_mm256_castsi256_ps(match))) << i;
-		} else {
-			limit = _mm256_set1_epi64x(static_cast<long long>(value));
-			if constexpr (std::is_unsigned_v<Key>) { auto sign = _mm256_set1_epi64x(-9223372036854775807LL - 1); keys = _mm256_xor_si256(keys, sign); limit = _mm256_xor_si256(limit, sign); }
-			match = _mm256_cmpgt_epi64(limit, keys);
-			if constexpr (Strict) match = _mm256_or_si256(match, _mm256_cmpeq_epi64(limit, keys));
-			less |= static_cast<unsigned>(_mm256_movemask_pd(_mm256_castsi256_pd(match))) << i;
-		}
-	}
-	if (n < 32) less &= (1U << n) - 1;
-	return std::countr_one(less);
-}
-#if CP_LIBRARY_AVX512
-template<bool Strict, class Key>
-__attribute__((target("avx512f"))) int find_avx512(const Key *data, int n, Key value) {
-	unsigned less = 0;
-	constexpr int lanes = 64 / sizeof(Key);
-	for (int i = 0; i < n; i += lanes) {
-		auto keys = _mm512_loadu_si512(data + i);
-		unsigned match;
-		if constexpr (sizeof(Key) == 4) {
-			auto limit = _mm512_set1_epi32(static_cast<int>(value));
-			if constexpr (std::is_unsigned_v<Key>) match = _mm512_cmp_epu32_mask(keys, limit, Strict ? _MM_CMPINT_LE : _MM_CMPINT_LT);
-			else match = _mm512_cmp_epi32_mask(keys, limit, Strict ? _MM_CMPINT_LE : _MM_CMPINT_LT);
-		} else {
-			auto limit = _mm512_set1_epi64(static_cast<long long>(value));
-			if constexpr (std::is_unsigned_v<Key>) match = _mm512_cmp_epu64_mask(keys, limit, Strict ? _MM_CMPINT_LE : _MM_CMPINT_LT);
-			else match = _mm512_cmp_epi64_mask(keys, limit, Strict ? _MM_CMPINT_LE : _MM_CMPINT_LT);
-		}
-		less |= match << i;
-	}
-	if (n < 32) less &= (1U << n) - 1;
-	return std::countr_one(less);
-}
-#endif
-#endif
-template<bool Strict, class Key>
-int find(const Key *data, int n, Key value) {
-#if defined(__x86_64__) && (defined(__GNUC__) || defined(__clang__))
-	if constexpr (sizeof(Key) == 4 || sizeof(Key) == 8) {
-#if CP_LIBRARY_AVX512
-		static const int kernel = __builtin_cpu_supports("avx512f") ? 2 : __builtin_cpu_supports("avx2") ? 1 : 0;
-#else
-		static const int kernel = __builtin_cpu_supports("avx2") ? 1 : 0;
-#endif
-		if (n >= 8) {
-#if CP_LIBRARY_AVX512
-			if (kernel == 2) return find_avx512<Strict>(data, n, value);
-#endif
-			if (kernel == 1) return find_avx2<Strict>(data, n, value);
-		}
-	}
-#endif
-	int l = 0, r = n;
-	while (l < r) {
-		int m = (l + r) / 2;
-		if (Strict ? data[m] <= value : data[m] < value) l = m + 1;
-		else r = m;
-	}
-	return l;
-}
-
-template<class T, class Sum, class Aggregate>
-class BTree {
-	static constexpr int branch = 16, capacity = 32;
-	using Count = std::int64_t;
-	struct Leaf {
-		std::array<T, capacity + 1> keys{};
-		std::array<Count, capacity + 1> copies{};
-		Aggregate total = 0;
-		Count size = 0;
-		int used = 0;
-	};
-	struct Node {
-		std::array<T, branch + 1> high{};
-		std::array<int, branch + 1> child{};
-		std::array<Count, branch + 1> sizes{};
-		std::array<Aggregate, branch + 1> sums{};
-		int used = 0;
-	};
-	std::vector<Leaf> leaves;
-	std::vector<Node> nodes;
-	int root = 0, first = -1, last = -1, free_leaf = -1, free_node = 0;
-	static Aggregate weight(T value, Count count) { return static_cast<Aggregate>(static_cast<Sum>(value)) * count; }
-	Count length(int p) const { return p < 0 ? leaves[-p - 1].size : nodes[p - 1].sizes[nodes[p - 1].used - 1]; }
-	Aggregate total(int p) const { return p < 0 ? leaves[-p - 1].total : nodes[p - 1].sums[nodes[p - 1].used - 1]; }
-	T maximum(int p) const { return p < 0 ? leaves[-p - 1].keys[leaves[-p - 1].used - 1] : nodes[p - 1].high[nodes[p - 1].used - 1]; }
-	int used(int p) const { return p < 0 ? leaves[-p - 1].used : nodes[p - 1].used; }
-	int make_leaf() {
-		if (free_leaf >= 0) {
-			int p = free_leaf;
-			free_leaf = leaves[p].used;
-			leaves[p].used = 0;
-			leaves[p].size = 0;
-			leaves[p].total = 0;
-			return -p - 1;
-		}
-		assert(leaves.size() < std::size_t((std::numeric_limits<int>::max)()));
-		leaves.emplace_back();
-		return -static_cast<int>(leaves.size());
-	}
-	int make_node() {
-		if (free_node) {
-			int p = free_node;
-			free_node = nodes[p - 1].used;
-			nodes[p - 1].used = 0;
-			return p;
-		}
-		assert(nodes.size() < std::size_t((std::numeric_limits<int>::max)()));
-		nodes.emplace_back();
-		return static_cast<int>(nodes.size());
-	}
-	void release(int p) {
-		if (p < 0) {
-			int i = -p - 1;
-			leaves[i].used = free_leaf;
-			free_leaf = i;
-		} else {
-			nodes[p - 1].used = free_node;
-			free_node = p;
-		}
-	}
-	void pull(int p) {
-		auto &node = nodes[p - 1];
-		Count size = 0;
-		Aggregate sum = 0;
-		for (int i = 0; i < node.used; ++i) {
-			node.high[i] = maximum(node.child[i]);
-			node.sizes[i] = size += length(node.child[i]);
-			node.sums[i] = sum += total(node.child[i]);
-		}
-	}
-	void pull_leaf(int p) {
-		auto &leaf = leaves[-p - 1];
-		leaf.size = 0; leaf.total = 0;
-		for (int i = 0; i < leaf.used; ++i) {
-			leaf.size += leaf.copies[i];
-			leaf.total += weight(leaf.keys[i], leaf.copies[i]);
-		}
-	}
-	int child(int p, T value) const {
-		const auto &node = nodes[p - 1];
-		if (value <= node.high[0]) return 0;
-		if (node.high[node.used - 2] < value) return node.used - 1;
-		return find<false>(node.high.data(), node.used - 1, value);
-	}
-	static int position(const Leaf &leaf, T value) {
-		if (!leaf.used || value <= leaf.keys[0]) return 0;
-		if (leaf.keys[leaf.used - 1] <= value) return leaf.used - 1 + (leaf.keys[leaf.used - 1] < value);
-		return find<false>(leaf.keys.data(), leaf.used, value);
-	}
-	void add(int p, int j, Count delta, Aggregate difference) {
-		auto &node = nodes[p - 1];
-		node.high[j] = maximum(node.child[j]);
-		for (int i = j; i < node.used; ++i) {
-			node.sizes[i] += delta;
-			node.sums[i] += difference;
-		}
-	}
-	void prepare_split(const std::array<int, 32> &path, int depth) {
-		constexpr std::size_t limit = (std::numeric_limits<int>::max)();
-		if (free_leaf < 0 && leaves.size() == leaves.capacity()) {
-			assert(leaves.size() < limit);
-			leaves.reserve((std::min)(limit, leaves.capacity() + leaves.capacity() / 2 + 1));
-		}
-		std::size_t needed = 0;
-		while (depth && nodes[path[depth - 1] - 1].used == branch) { ++needed; --depth; }
-		if (!depth) ++needed;
-		for (int p = free_node; p && needed; p = nodes[p - 1].used) --needed;
-		if (needed > nodes.capacity() - nodes.size()) {
-			assert(needed <= limit - nodes.size());
-			nodes.reserve((std::max)(nodes.size() + needed, (std::min)(limit, nodes.capacity() + nodes.capacity() / 2 + 1)));
-		}
-	}
-	bool rebalance(int p, int slot) {
-		auto &parent = nodes[p - 1];
-		int j = slot ? slot - 1 : 0;
-		int a = parent.child[j], b = parent.child[j + 1];
-		int n = used(a) + used(b);
-		bool merge;
-		if (a < 0) {
-			std::array<T, capacity * 2> keys;
-			std::array<Count, capacity * 2> copies;
-			auto &left = leaves[-a - 1], &right = leaves[-b - 1];
-			std::copy_n(left.keys.begin(), left.used, keys.begin());
-			std::copy_n(right.keys.begin(), right.used, keys.begin() + left.used);
-			std::copy_n(left.copies.begin(), left.used, copies.begin());
-			std::copy_n(right.copies.begin(), right.used, copies.begin() + left.used);
-			merge = n <= capacity;
-			left.used = merge ? n : n / 2;
-			std::copy_n(keys.begin(), left.used, left.keys.begin());
-			std::copy_n(copies.begin(), left.used, left.copies.begin());
-			pull_leaf(a);
-			if (!merge) {
-				right.used = n - left.used;
-				std::copy_n(keys.begin() + left.used, right.used, right.keys.begin());
-				std::copy_n(copies.begin() + left.used, right.used, right.copies.begin());
-				pull_leaf(b);
-			} else if (last == -b - 1) last = -a - 1;
-		} else {
-			std::array<int, branch * 2> children;
-			auto &left = nodes[a - 1], &right = nodes[b - 1];
-			std::copy_n(left.child.begin(), left.used, children.begin());
-			std::copy_n(right.child.begin(), right.used, children.begin() + left.used);
-			merge = n <= branch;
-			left.used = merge ? n : n / 2;
-			std::copy_n(children.begin(), left.used, left.child.begin());
-			pull(a);
-			if (!merge) {
-				right.used = n - left.used;
-				std::copy_n(children.begin() + left.used, right.used, right.child.begin());
-				pull(b);
-			}
-		}
-		if (merge) {
-			release(b);
-			std::move(parent.child.begin() + j + 2, parent.child.begin() + parent.used, parent.child.begin() + j + 1);
-			--parent.used;
-		}
-		pull(p);
-		return merge;
-	}
-public:
-	BTree() = default;
-	BTree(const BTree &) = default;
-	BTree(BTree &&other) noexcept { swap(other); }
-	BTree &operator=(BTree other) noexcept { swap(other); return *this; }
-	Count size() const { return root ? length(root) : 0; }
-	void clear() { leaves.clear(); nodes.clear(); root = free_node = 0; first = last = free_leaf = -1; }
-	void reserve(std::size_t distinct) {
-		std::size_t count = distinct / (capacity / 2) + 2;
-		leaves.reserve(count); nodes.reserve(count / (branch / 2 - 1) + 2);
-	}
-	void assign(std::vector<T> values) {
-		clear();
-		if (values.empty()) return;
-		radix_sort_detail::sort_by_key(values, [](T value) { return value; });
-		std::size_t distinct = 0;
-		std::vector<Count> counts;
-		for (T value : values) {
-			if (!distinct || values[distinct - 1] != value) { values[distinct++] = value; counts.push_back(1); }
-			else ++counts.back();
-		}
-		assert(distinct <= std::size_t((std::numeric_limits<int>::max)()));
-		int count = static_cast<int>((distinct + capacity * 3 / 4 - 1) / (capacity * 3 / 4));
-		leaves.reserve(count);
-		std::vector<int> layer;
-		for (int i = 0, offset = 0; i < count; ++i) {
-			int id = make_leaf();
-			auto &leaf = leaves[-id - 1];
-			leaf.used = static_cast<int>(distinct / count + (std::size_t(i) < distinct % count));
-			std::copy_n(values.begin() + offset, leaf.used, leaf.keys.begin());
-			std::copy_n(counts.begin() + offset, leaf.used, leaf.copies.begin());
-			offset += leaf.used;
-			pull_leaf(id); layer.push_back(id);
-		}
-		first = 0; last = count - 1;
-		while (layer.size() > 1) {
-			int count = static_cast<int>((layer.size() + branch - 1) / branch);
-			std::vector<int> next;
-			for (int i = 0, offset = 0; i < count; ++i) {
-				int id = make_node();
-				auto &node = nodes[id - 1];
-				node.used = static_cast<int>(layer.size() / count + (std::size_t(i) < layer.size() % count));
-				std::copy_n(layer.begin() + offset, node.used, node.child.begin());
-				offset += node.used; pull(id); next.push_back(id);
-			}
-			layer.swap(next);
-		}
-		root = layer[0];
-	}
-	void insert(T value, Count count) {
-		std::array<int, 32> path, slots;
-		int p = root, depth = 0;
-		if (!p) { root = p = make_leaf(); first = last = -p - 1; }
-		while (p > 0) {
-			int j = child(p, value);
-			path[depth] = p; slots[depth++] = j; p = nodes[p - 1].child[j];
-		}
-		int index = -p - 1;
-		int j = position(leaves[index], value), split = 0;
-		bool present = j < leaves[index].used && leaves[index].keys[j] == value;
-		if (!present && leaves[index].used == capacity) prepare_split(path, depth);
-		auto &leaf = leaves[index];
-		Aggregate difference = weight(value, count);
-		leaf.size += count; leaf.total += difference;
-		if (present) leaf.copies[j] += count;
-		else {
-			std::move_backward(leaf.keys.begin() + j, leaf.keys.begin() + leaf.used, leaf.keys.begin() + leaf.used + 1);
-			std::move_backward(leaf.copies.begin() + j, leaf.copies.begin() + leaf.used, leaf.copies.begin() + leaf.used + 1);
-			leaf.keys[j] = value; leaf.copies[j] = count; ++leaf.used;
-			if (leaf.used > capacity) {
-				split = make_leaf();
-				auto &left = leaves[-p - 1], &right = leaves[-split - 1];
-				left.used = capacity / 2; right.used = capacity / 2 + 1;
-				std::copy_n(left.keys.begin() + left.used, right.used, right.keys.begin());
-				std::copy_n(left.copies.begin() + left.used, right.used, right.copies.begin());
-				pull_leaf(p); pull_leaf(split);
-				if (last == -p - 1) last = -split - 1;
-			}
-		}
-		while (depth) {
-			p = path[--depth]; j = slots[depth];
-			if (!split) { add(p, j, count, difference); continue; }
-			auto &node = nodes[p - 1];
-			std::move_backward(node.child.begin() + j + 1, node.child.begin() + node.used, node.child.begin() + node.used + 1);
-			node.child[j + 1] = split; ++node.used;
-			split = 0;
-			if (node.used > branch) {
-				split = make_node();
-				auto &left = nodes[p - 1], &right = nodes[split - 1];
-				left.used = branch / 2; right.used = branch / 2 + 1;
-				std::copy_n(left.child.begin() + left.used, right.used, right.child.begin());
-				pull(split);
-			}
-			pull(p);
-		}
-		if (split) {
-			int next = make_node();
-			nodes[next - 1].used = 2; nodes[next - 1].child[0] = root; nodes[next - 1].child[1] = split;
-			pull(next); root = next;
-		}
-	}
-	Count erase(T value, Count count) {
-		if (!root) return 0;
-		std::array<int, 32> path, slots;
-		int p = root, depth = 0;
-		while (p > 0) {
-			int j = child(p, value);
-			path[depth] = p; slots[depth++] = j; p = nodes[p - 1].child[j];
-		}
-		auto &leaf = leaves[-p - 1];
-		int j = position(leaf, value);
-		if (j == leaf.used || leaf.keys[j] != value) return 0;
-		count = (std::min)(count, leaf.copies[j]);
-		Aggregate difference = -weight(value, count);
-		leaf.size -= count; leaf.total += difference; leaf.copies[j] -= count;
-		if (!leaf.copies[j]) {
-			std::move(leaf.keys.begin() + j + 1, leaf.keys.begin() + leaf.used, leaf.keys.begin() + j);
-			std::move(leaf.copies.begin() + j + 1, leaf.copies.begin() + leaf.used, leaf.copies.begin() + j);
-			--leaf.used;
-		}
-		if (!depth) {
-			if (!leaf.used) { release(root); root = 0; first = last = -1; }
-			return count;
-		}
-		bool small = leaf.used < capacity / 2;
-		while (depth) {
-			p = path[--depth]; j = slots[depth];
-			if (small) { rebalance(p, j); small = nodes[p - 1].used < branch / 2; }
-			else add(p, j, -count, difference);
-		}
-		if (root > 0 && nodes[root - 1].used == 1) { int old = root; root = nodes[old - 1].child[0]; release(old); }
-		return count;
-	}
-	Count count(T value) const {
-		int p = root;
-		if (!p) return 0;
-		while (p > 0) p = nodes[p - 1].child[child(p, value)];
-		const auto &leaf = leaves[-p - 1];
-		int j = position(leaf, value);
-		return j < leaf.used && leaf.keys[j] == value ? leaf.copies[j] : 0;
-	}
-	template<bool Strict = false> Count order_of_key(T value) const {
-		Count result = 0;
-		int p = root;
-		if (!p) return 0;
-		while (p > 0) {
-			const auto &node = nodes[p - 1]; int j = child(p, value);
-			if (j) result += node.sizes[j - 1];
-			p = node.child[j];
-		}
-		const auto &leaf = leaves[-p - 1];
-		int j = find<Strict>(leaf.keys.data(), leaf.used, value);
-		for (int i = 0; i < j; ++i) result += leaf.copies[i];
-		return result;
-	}
-	T kth(Count k) const {
-		if (!k) return leaves[first].keys[0];
-		if (k == size() - 1) return leaves[last].keys[leaves[last].used - 1];
-		int p = root;
-		while (p > 0) {
-			const auto &node = nodes[p - 1];
-			int j = find<true>(node.sizes.data(), node.used, k);
-			if (j) k -= node.sizes[j - 1];
-			p = node.child[j];
-		}
-		const auto &leaf = leaves[-p - 1];
-		int j = 0;
-		while (k >= leaf.copies[j]) k -= leaf.copies[j++];
-		return leaf.keys[j];
-	}
-	Aggregate sum(Count k) const {
-		if (!root || !k) return 0;
-		if (k >= size()) return total(root);
-		Aggregate answer = 0;
-		int p = root;
-		while (p > 0) {
-			const auto &node = nodes[p - 1];
-			int j = find<false>(node.sizes.data(), node.used, k);
-			if (j) { k -= node.sizes[j - 1]; answer += node.sums[j - 1]; } p = node.child[j];
-		}
-		const auto &leaf = leaves[-p - 1];
-		for (int i = 0; k; ++i) { Count take = (std::min)(k, leaf.copies[i]); answer += weight(leaf.keys[i], take); k -= take; }
-		return answer;
-	}
-	Aggregate sum_all() const { return root ? total(root) : Aggregate(0); }
-	template<bool Strict> std::optional<T> bound(T value) const {
-		int p = root;
-		if (!p) return std::nullopt;
-		while (p > 0) {
-			const auto &node = nodes[p - 1];
-			int j = find<Strict>(node.high.data(), node.used, value);
-			if (j == node.used) return std::nullopt;
-			p = node.child[j];
-		}
-		const auto &leaf = leaves[-p - 1];
-		int j = find<Strict>(leaf.keys.data(), leaf.used, value);
-		return j == leaf.used ? std::nullopt : std::optional<T>(leaf.keys[j]);
-	}
-	void swap(BTree &other) noexcept {
-		leaves.swap(other.leaves); nodes.swap(other.nodes);
-		std::swap(root, other.root); std::swap(first, other.first); std::swap(last, other.last);
-		std::swap(free_leaf, other.free_leaf); std::swap(free_node, other.free_node);
-	}
-};
-}
-
-
-#line 16 "data_structure/top_k_sum.hpp"
+#line 9 "data_structure/top_k_sum.hpp"
+#include <functional>
+#include <initializer_list>
+#line 13 "data_structure/top_k_sum.hpp"
+#include <optional>
+#line 17 "data_structure/top_k_sum.hpp"
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>, class Compare = std::greater<T>>
 class TopKSum {
@@ -1128,131 +773,112 @@ private:
 	static constexpr bool descending = std::is_same_v<Compare, std::greater<T>> || std::is_same_v<Compare, std::greater<void>>;
 	static constexpr bool widen = std::is_integral_v<Sum> && sizeof(Sum) <= 8;
 	using Aggregate = std::conditional_t<widen, std::conditional_t<std::is_signed_v<Sum>, __int128_t, __uint128_t>, Sum>;
-	static constexpr bool blocked = std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8
-		&& (std::is_integral_v<Sum> || std::is_same_v<Sum, __int128_t> || std::is_same_v<Sum, __uint128_t>)
-		&& (descending || std::is_same_v<Compare, std::less<T>> || std::is_same_v<Compare, std::less<void>>);
-	struct EmptyBackend {};
-	using Backend = std::conditional_t<blocked, ordered_multiset_detail::BTree<T, Sum, Aggregate>, EmptyBackend>;
 	static Aggregate contribution(const T &value, size_type copies) {
 		auto converted = static_cast<Aggregate>(static_cast<Sum>(value));
 		return copies == 1 ? converted : converted * copies;
 	}
+	struct Node;
+	using Pointer = std::unique_ptr<Node>;
 	struct Node {
+		T value;
 		Aggregate total;
-		std::optional<T> value;
+		Pointer left, right;
 		size_type copies, size;
-		int left = -1, right = -1, height = 1;
-		Node(const T &value, size_type copies) : total(contribution(value, copies)), value(value), copies(copies), size(copies) {}
+		int height = 1;
+		Node(const T &value, size_type copies) : value(value), total(contribution(value, copies)), copies(copies), size(copies) {}
 	};
 	[[no_unique_address]] Compare order;
-	[[no_unique_address]] Backend backend;
-	std::vector<Node> nodes;
-	int root = -1, free = -1;
+	Pointer root;
 
-	size_type length(int p) const { return p < 0 ? 0 : nodes[p].size; }
-	int height(int p) const { return p < 0 ? 0 : nodes[p].height; }
-	void pull(int p) {
-		auto &node = nodes[p];
-		Aggregate total = contribution(*node.value, node.copies);
-		if (node.left >= 0) total += nodes[node.left].total;
-		if (node.right >= 0) total += nodes[node.right].total;
+	static size_type length(const Pointer &p) { return p ? p->size : 0; }
+	static int height(const Pointer &p) { return p ? p->height : 0; }
+	static void pull(Node &node) {
+		Aggregate total = contribution(node.value, node.copies);
+		if (node.left) total += node.left->total;
+		if (node.right) total += node.right->total;
 		node.total = std::move(total);
 		node.size = length(node.left) + node.copies + length(node.right);
 		node.height = (std::max)(height(node.left), height(node.right)) + 1;
 	}
-	int rotate_left(int p) {
-		int next = nodes[p].right;
-		nodes[p].right = nodes[next].left;
-		nodes[next].left = p;
-		pull(p); pull(next);
+	static Pointer rotate_left(Pointer p) {
+		auto next = std::move(p->right);
+		p->right = std::move(next->left);
+		pull(*p);
+		next->left = std::move(p);
+		pull(*next);
 		return next;
 	}
-	int rotate_right(int p) {
-		int next = nodes[p].left;
-		nodes[p].left = nodes[next].right;
-		nodes[next].right = p;
-		pull(p); pull(next);
+	static Pointer rotate_right(Pointer p) {
+		auto next = std::move(p->left);
+		p->left = std::move(next->right);
+		pull(*p);
+		next->right = std::move(p);
+		pull(*next);
 		return next;
 	}
-	int balance(int p) {
-		pull(p);
-		int left = nodes[p].left, right = nodes[p].right;
-		if (height(left) > height(right) + 1) {
-			if (height(nodes[left].left) < height(nodes[left].right)) nodes[p].left = rotate_left(left);
-			return rotate_right(p);
+	static Pointer balance(Pointer p) {
+		pull(*p);
+		if (height(p->left) > height(p->right) + 1) {
+			if (height(p->left->left) < height(p->left->right)) p->left = rotate_left(std::move(p->left));
+			return rotate_right(std::move(p));
 		}
-		if (height(right) > height(left) + 1) {
-			if (height(nodes[right].right) < height(nodes[right].left)) nodes[p].right = rotate_right(right);
-			return rotate_left(p);
+		if (height(p->right) > height(p->left) + 1) {
+			if (height(p->right->right) < height(p->right->left)) p->right = rotate_right(std::move(p->right));
+			return rotate_left(std::move(p));
 		}
 		return p;
 	}
-	int make_node(const T &value, size_type copies) {
-		if (free >= 0) {
-			int p = free, next = nodes[p].left;
-			nodes[p] = Node(value, copies);
-			free = next;
-			return p;
+	void insert_node(Pointer &p, const T &value, size_type copies) {
+		if (!p) { p = std::make_unique<Node>(value, copies); return; }
+		if (order(value, p->value)) insert_node(p->left, value, copies);
+		else if (order(p->value, value)) insert_node(p->right, value, copies);
+		else p->copies += copies;
+		p = balance(std::move(p));
+	}
+	static Pointer detach_first(Pointer &p) {
+		if (!p->left) {
+			auto first = std::move(p);
+			p = std::move(first->right);
+			return first;
 		}
-		assert(nodes.size() < std::size_t((std::numeric_limits<int>::max)()));
-		nodes.emplace_back(value, copies);
-		return static_cast<int>(nodes.size()) - 1;
+		auto first = detach_first(p->left);
+		p = balance(std::move(p));
+		return first;
 	}
-	void release(int p) {
-		nodes[p].value.reset();
-		nodes[p].total = Aggregate(0);
-		nodes[p].left = free;
-		free = p;
-	}
-	int insert_node(int p, const T &value, size_type copies) {
-		if (p < 0) return make_node(value, copies);
-		if (order(value, *nodes[p].value)) {
-			int next = insert_node(nodes[p].left, value, copies);
-			nodes[p].left = next;
-		} else if (order(*nodes[p].value, value)) {
-			int next = insert_node(nodes[p].right, value, copies);
-			nodes[p].right = next;
-		} else nodes[p].copies += copies;
-		return balance(p);
-	}
-	int detach_first(int p, int &first) {
-		if (nodes[p].left < 0) {
-			first = p;
-			return nodes[p].right;
-		}
-		nodes[p].left = detach_first(nodes[p].left, first);
-		return balance(p);
-	}
-	int erase_node(int p, const T &value, size_type copies, size_type &removed) {
-		if (p < 0) return -1;
-		if (order(value, *nodes[p].value)) nodes[p].left = erase_node(nodes[p].left, value, copies, removed);
-		else if (order(*nodes[p].value, value)) nodes[p].right = erase_node(nodes[p].right, value, copies, removed);
+	void erase_node(Pointer &p, const T &value, size_type copies, size_type &removed) {
+		if (!p) return;
+		if (order(value, p->value)) erase_node(p->left, value, copies, removed);
+		else if (order(p->value, value)) erase_node(p->right, value, copies, removed);
 		else {
-			removed = (std::min)(copies, nodes[p].copies);
-			if (removed < nodes[p].copies) nodes[p].copies -= removed;
+			removed = (std::min)(copies, p->copies);
+			if (removed < p->copies) p->copies -= removed;
 			else {
-				int left = nodes[p].left, right = nodes[p].right;
-				if (left < 0 || right < 0) {
-					release(p);
-					return left < 0 ? right : left;
+				if (!p->left || !p->right) {
+					auto next = p->left ? std::move(p->left) : std::move(p->right);
+					p = std::move(next);
+					return;
 				}
-				int next;
-				right = detach_first(right, next);
-				nodes[next].left = left; nodes[next].right = right;
-				release(p);
-				return balance(next);
+				auto next = detach_first(p->right);
+				next->left = std::move(p->left); next->right = std::move(p->right);
+				p = std::move(next);
 			}
 		}
-		return removed ? balance(p) : p;
+		if (removed) p = balance(std::move(p));
 	}
-	int build(const std::vector<T> &values, const std::vector<size_type> &counts, int first, int last) {
-		if (first == last) return -1;
-		int middle = first + (last - first) / 2;
-		int p = make_node(values[middle], counts[middle]);
-		int left = build(values, counts, first, middle), right = build(values, counts, middle + 1, last);
-		nodes[p].left = left; nodes[p].right = right;
-		pull(p);
+	static Pointer build(const std::vector<T> &values, const std::vector<size_type> &counts, std::size_t first, std::size_t last) {
+		if (first == last) return nullptr;
+		std::size_t middle = first + (last - first) / 2;
+		auto p = std::make_unique<Node>(values[middle], counts[middle]);
+		p->left = build(values, counts, first, middle); p->right = build(values, counts, middle + 1, last);
+		pull(*p);
 		return p;
+	}
+	static Pointer clone(const Pointer &p) {
+		if (!p) return nullptr;
+		auto next = std::make_unique<Node>(p->value, p->copies);
+		next->left = clone(p->left); next->right = clone(p->right);
+		next->total = p->total; next->size = p->size; next->height = p->height;
+		return next;
 	}
 	static Sum result(const Aggregate &value) {
 		if constexpr (widen) assert(static_cast<Aggregate>((std::numeric_limits<Sum>::min)()) <= value && value <= static_cast<Aggregate>((std::numeric_limits<Sum>::max)()));
@@ -1260,71 +886,64 @@ private:
 	}
 	template<bool Reverse> T kth_impl(size_type k) const {
 		assert(0 <= k && k < size());
-		if constexpr (blocked) return backend.kth(Reverse != descending ? size() - 1 - k : k);
-		int p = root;
+		auto p = root.get();
 		for (;;) {
-			const auto &node = nodes[p];
-			int first = Reverse ? node.right : node.left;
+			const auto &first = Reverse ? p->right : p->left;
 			size_type before = length(first);
-			if (k < before) p = first;
-			else if (k < before + node.copies) return *node.value;
-			else { k -= before + node.copies; p = Reverse ? node.left : node.right; }
+			if (k < before) p = first.get();
+			else if (k < before + p->copies) return p->value;
+			else { k -= before + p->copies; p = (Reverse ? p->left : p->right).get(); }
 		}
 	}
 	template<bool Reverse> Sum sum_impl(size_type k) const {
 		assert(k >= 0);
-		if constexpr (blocked) {
-			k = (std::min)(k, size());
-			if constexpr (Reverse != descending) return result(backend.sum_all() - backend.sum(size() - k));
-			else return result(backend.sum(k));
-		}
 		Aggregate answer(0);
-		int p = root;
-		while (p >= 0 && k) {
-			const auto &node = nodes[p];
-			if (k >= node.size) { answer += node.total; break; }
-			int first = Reverse ? node.right : node.left;
+		auto p = root.get();
+		while (p && k) {
+			if (k >= p->size) { answer += p->total; break; }
+			const auto &first = Reverse ? p->right : p->left;
 			size_type before = length(first);
-			if (k <= before) p = first;
+			if (k <= before) p = first.get();
 			else {
-				if (first >= 0) answer += nodes[first].total;
-				size_type take = (std::min)(k - before, node.copies);
-				answer += contribution(*node.value, take);
+				if (first) answer += first->total;
+				size_type take = (std::min)(k - before, p->copies);
+				answer += contribution(p->value, take);
 				k -= before + take;
-				p = Reverse ? node.left : node.right;
+				p = (Reverse ? p->left : p->right).get();
 			}
 		}
 		return result(answer);
 	}
 	template<bool Strict> std::optional<T> bound(const T &value) const {
-		if constexpr (blocked) return backend.template bound<Strict>(value);
-		int p = root, candidate = -1;
-		while (p >= 0) {
-			const auto &node = nodes[p];
+		auto p = root.get();
+		const Node *candidate = nullptr;
+		while (p) {
 			bool found;
-			if constexpr (Strict) found = descending ? order(*node.value, value) : order(value, *node.value);
-			else found = descending ? !order(value, *node.value) : !order(*node.value, value);
-			if (found) { candidate = p; p = descending ? node.right : node.left; }
-			else p = descending ? node.left : node.right;
+			if constexpr (Strict) found = descending ? order(p->value, value) : order(value, p->value);
+			else found = descending ? !order(value, p->value) : !order(p->value, value);
+			if (found) { candidate = p; p = (descending ? p->right : p->left).get(); }
+			else p = (descending ? p->left : p->right).get();
 		}
-		return candidate < 0 ? std::nullopt : nodes[candidate].value;
+		return candidate ? std::optional<T>(candidate->value) : std::nullopt;
 	}
 
 public:
 	explicit TopKSum(Compare compare = Compare{}) : order(std::move(compare)) {}
 	explicit TopKSum(std::vector<T> values, Compare compare = Compare{}) : TopKSum(std::move(compare)) { assign(std::move(values)); }
 	TopKSum(std::initializer_list<T> values, Compare compare = Compare{}) : TopKSum(std::vector<T>(values), std::move(compare)) {}
-	TopKSum(const TopKSum &) = default;
-	TopKSum(TopKSum &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>)
-		: order(other.order), backend(std::move(other.backend)), nodes(std::move(other.nodes)), root(std::exchange(other.root, -1)), free(std::exchange(other.free, -1)) { other.nodes.clear(); }
+	TopKSum(const TopKSum &other) : order(other.order), root(clone(other.root)) {}
+	TopKSum(TopKSum &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>) : order(other.order), root(std::move(other.root)) {}
 	TopKSum &operator=(TopKSum other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		swap(other);
 		return *this;
 	}
 	void assign(std::vector<T> values) {
 		assert(values.size() <= std::size_t((std::numeric_limits<size_type>::max)()));
-		if constexpr (blocked) { Backend next; next.assign(std::move(values)); backend.swap(next); return; }
-		std::sort(values.begin(), values.end(), order);
+		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8
+			&& (descending || std::is_same_v<Compare, std::less<T>> || std::is_same_v<Compare, std::less<void>>)) {
+			radix_sort_detail::sort_by_key(values, [](T value) { return value; });
+			if constexpr (descending) std::reverse(values.begin(), values.end());
+		} else std::sort(values.begin(), values.end(), order);
 		std::vector<size_type> counts;
 		std::size_t distinct = 0;
 		for (std::size_t i = 0; i < values.size(); ++i) {
@@ -1334,28 +953,22 @@ public:
 				counts.push_back(1);
 			} else ++counts.back();
 		}
-		assert(distinct <= std::size_t((std::numeric_limits<int>::max)()));
 		TopKSum next(order);
-		next.nodes.reserve(distinct);
-		next.root = next.build(values, counts, 0, static_cast<int>(distinct));
+		next.root = build(values, counts, 0, distinct);
 		swap(next);
 	}
-	void reserve(std::size_t distinct) {
+	void reserve([[maybe_unused]] std::size_t distinct) {
 		assert(distinct <= std::size_t((std::numeric_limits<int>::max)()));
-		if constexpr (blocked) backend.reserve(distinct);
-		else nodes.reserve(distinct);
 	}
 	void insert(const T &value, size_type copies = 1) {
 		assert(copies >= 0 && copies <= (std::numeric_limits<size_type>::max)() - size());
-		if constexpr (blocked) { if (copies) backend.insert(value, copies); }
-		else if (copies) root = insert_node(root, value, copies);
+		if (copies) insert_node(root, value, copies);
 	}
 	bool erase(const T &value) { return erase(value, 1) != 0; }
 	size_type erase(const T &value, size_type copies) {
 		assert(copies >= 0);
-		if constexpr (blocked) return copies ? backend.erase(value, copies) : 0;
 		size_type removed = 0;
-		if (copies) root = erase_node(root, value, copies, removed);
+		if (copies) erase_node(root, value, copies, removed);
 		return removed;
 	}
 	size_type erase_all(const T &value) { return erase(value, (std::numeric_limits<size_type>::max)()); }
@@ -1364,8 +977,8 @@ public:
 		insert(new_value);
 		return true;
 	}
-	size_type size() const { if constexpr (blocked) return backend.size(); else return length(root); }
-	bool empty() const { return size() == 0; }
+	size_type size() const { return length(root); }
+	bool empty() const { return !root; }
 	T kth(size_type k) const { return kth_impl<false>(k); }
 	T kth_smallest(size_type k) const { return kth_impl<descending>(k); }
 	T kth_largest(size_type k) const { return kth_impl<!descending>(k); }
@@ -1374,41 +987,30 @@ public:
 	Sum sum_largest(size_type k) const { return sum_impl<!descending>(k); }
 	std::optional<T> lower_bound(const T &value) const { return bound<false>(value); }
 	std::optional<T> upper_bound(const T &value) const { return bound<true>(value); }
-	Sum sum_all() const { if constexpr (blocked) return result(backend.sum_all()); else return root < 0 ? Sum(0) : result(nodes[root].total); }
+	Sum sum_all() const { return root ? result(root->total) : Sum(0); }
 	size_type order_of_key(const T &value) const {
-		if constexpr (blocked) {
-			if constexpr (descending) return size() - backend.template order_of_key<true>(value);
-			else return backend.order_of_key(value);
-		}
 		size_type answer = 0;
-		int p = root;
-		while (p >= 0) {
-			const auto &node = nodes[p];
-			if (order(*node.value, value)) { answer += length(node.left) + node.copies; p = node.right; }
-			else p = node.left;
+		auto p = root.get();
+		while (p) {
+			if (order(p->value, value)) { answer += length(p->left) + p->copies; p = p->right.get(); }
+			else p = p->left.get();
 		}
 		return answer;
 	}
 	size_type count(const T &value) const {
-		if constexpr (blocked) return backend.count(value);
-		int p = root;
-		while (p >= 0) {
-			if (order(value, *nodes[p].value)) p = nodes[p].left;
-			else if (order(*nodes[p].value, value)) p = nodes[p].right;
-			else return nodes[p].copies;
+		auto p = root.get();
+		while (p) {
+			if (order(value, p->value)) p = p->left.get();
+			else if (order(p->value, value)) p = p->right.get();
+			else return p->copies;
 		}
 		return 0;
 	}
 	bool contains(const T &value) const { return count(value) != 0; }
-	void clear() {
-		if constexpr (blocked) backend.clear();
-		else { nodes.clear(); root = free = -1; }
-	}
+	void clear() { root.reset(); }
 	void swap(TopKSum &other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		using std::swap;
-		if constexpr (blocked) backend.swap(other.backend);
-		swap(order, other.order); nodes.swap(other.nodes);
-		swap(root, other.root); swap(free, other.free);
+		swap(order, other.order); root.swap(other.root);
 	}
 	friend void swap(TopKSum &a, TopKSum &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
 };

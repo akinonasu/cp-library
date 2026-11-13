@@ -88,7 +88,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (unsigned i = 0; i < 8; ++i) index[residues[i]] = i;
 		return index;
 	}();
-	constexpr std::size_t period = 7 * 11 * 13, block_size = period * 32;
+	constexpr std::size_t period = 7 * 11 * 13;
 	static const auto pattern = [&] {
 		std::array<std::uint8_t, period> pattern{};
 		for (std::size_t i = 0; i < period; ++i)
@@ -101,6 +101,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 	std::size_t root = std::sqrt(static_cast<long double>(n - 1));
 	while (root > (n - 1) / root) --root;
 	while (root + 1 <= (n - 1) / (root + 1)) ++root;
+	const std::size_t block_size = (std::max(period * 32, root) + period - 1) / period * period;
 	const auto primes = prime_sieve(root + 1);
 	struct State {
 		std::size_t p;
@@ -122,7 +123,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		state.push_back(current);
 	}
 	const std::size_t size = (n - 1) / 30 + 1;
-	std::vector<std::uint8_t> prime(block_size);
+	std::vector<std::uint8_t> prime((block_size + 7) / 8 * 8);
 	constexpr auto offsets = [&] {
 		std::array<unsigned, 64> offsets{};
 		for (unsigned i = 0; i < 64; ++i) offsets[i] = 30 * (i / 8) + residues[i % 8];

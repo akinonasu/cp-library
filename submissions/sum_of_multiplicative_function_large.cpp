@@ -40,7 +40,7 @@ class FloorQuotientRange {
 	std::uint64_t n_, root_, large_;
 
   public:
-	explicit FloorQuotientRange(std::uint64_t n = 0) : n_(n), root_(floor_quotient_detail::square_root(n)), large_(n / (root_ + 1)) {}
+	explicit FloorQuotientRange(std::uint64_t n = 0) : n_(n), root_(floor_quotient_detail::square_root(n)), large_(root_ - (n < root_ * (root_ + 1))) {}
 	std::uint64_t max_n() const { return n_; }
 	std::uint64_t root() const { return root_; }
 	std::uint64_t large_size() const { return large_; }
@@ -376,7 +376,47 @@ template<class T> class Backend {
 #include <bit>
 #line 10 "math/prime_sieve.hpp"
 #include <cstring>
-#line 12 "math/prime_sieve.hpp"
+#line 13 "math/prime_sieve.hpp"
+#include <type_traits>
+#if defined(__BMI2__) && defined(__x86_64__)
+#include <immintrin.h>
+#endif
+#line 18 "math/prime_sieve.hpp"
+
+namespace prime_sieve_detail {
+struct Sample {
+	std::size_t skip, stride;
+	std::size_t &count;
+	std::vector<std::size_t> &values;
+	void operator()(std::size_t p) {
+		if (skip) --skip;
+		else values.push_back(p), skip = stride - 1;
+		++count;
+	}
+	template<class At> void word(std::uint64_t word, At at) {
+		unsigned remaining = std::popcount(word);
+		count += remaining;
+		if (skip >= remaining) { skip -= remaining; return; }
+		do {
+			const unsigned rank = unsigned(skip);
+			if (rank) {
+#if defined(__BMI2__) && defined(__x86_64__)
+				word &= -_pdep_u64(std::uint64_t(1) << rank, word);
+#else
+				for (unsigned i = 0; i < rank; ++i) word &= word - 1;
+#endif
+			}
+			const unsigned bit = std::countr_zero(word);
+			values.push_back(at(bit));
+			word &= word - 1;
+			remaining -= rank + 1;
+			skip = stride - 1;
+		} while (skip < remaining);
+		skip -= remaining;
+	}
+};
+template<class F> inline constexpr bool sampled = std::is_same_v<F, Sample>;
+}
 
 inline std::vector<std::size_t> prime_sieve(std::size_t n);
 
@@ -396,9 +436,12 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (; i + 8 <= size; i += 8) {
 			std::uint64_t word;
 			std::memcpy(&word, prime.data() + i, sizeof(word));
-			while (word) {
-				emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
-				word &= word - 1;
+			if constexpr (prime_sieve_detail::sampled<F>) emit.word(word, [&](unsigned bit) { return 2 * (i + bit / 8) + 1; });
+			else {
+				while (word) {
+					emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
+					word &= word - 1;
+				}
 			}
 		}
 #endif
@@ -412,7 +455,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (unsigned i = 0; i < 8; ++i) index[residues[i]] = i;
 		return index;
 	}();
-	constexpr std::size_t period = 7 * 11 * 13, block_size = period * 32;
+	constexpr std::size_t period = 7 * 11 * 13;
 	static const auto pattern = [&] {
 		std::array<std::uint8_t, period> pattern{};
 		for (std::size_t i = 0; i < period; ++i)
@@ -425,6 +468,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 	std::size_t root = std::sqrt(static_cast<long double>(n - 1));
 	while (root > (n - 1) / root) --root;
 	while (root + 1 <= (n - 1) / (root + 1)) ++root;
+	const std::size_t block_size = (std::max(period * 32, root) + period - 1) / period * period;
 	const auto primes = prime_sieve(root + 1);
 	struct State {
 		std::size_t p;
@@ -446,7 +490,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		state.push_back(current);
 	}
 	const std::size_t size = (n - 1) / 30 + 1;
-	std::vector<std::uint8_t> prime(block_size);
+	std::vector<std::uint8_t> prime((block_size + 7) / 8 * 8);
 	constexpr auto offsets = [&] {
 		std::array<unsigned, 64> offsets{};
 		for (unsigned i = 0; i < 64; ++i) offsets[i] = 30 * (i / 8) + residues[i % 8];
@@ -488,10 +532,13 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 				word = 0;
 				for (unsigned d = 0; d < 8; ++d) word |= std::uint64_t(prime[i + d]) << (8 * d);
 			}
-			while (word) {
-				const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
-				emit(x);
-				word &= word - 1;
+			if constexpr (prime_sieve_detail::sampled<F>) emit.word(word, [&](unsigned bit) { return 30 * (base + i) + offsets[bit]; });
+			else {
+				while (word) {
+					const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
+					emit(x);
+					word &= word - 1;
+				}
 			}
 		}
 		base += length;
@@ -502,6 +549,22 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 	std::vector<std::size_t> result;
 	if (n >= 1024) result.reserve(std::size_t(double(n) / (std::log(double(n)) - 1.1)));
 	for_each_prime(n, [&](std::size_t p) { result.push_back(p); });
+	return result;
+}
+
+inline std::pair<std::size_t, std::vector<std::size_t>> prime_sieve_sample(std::size_t n, std::size_t stride, std::size_t offset = 0) {
+	assert(stride > 0);
+	std::pair<std::size_t, std::vector<std::size_t>> result;
+	if (stride <= 4) {
+		std::size_t skip = offset;
+		for_each_prime(n, [&](std::size_t p) {
+			if (skip) --skip;
+			else result.second.push_back(p), skip = stride - 1;
+			++result.first;
+		});
+		return result;
+	}
+	for_each_prime(n, prime_sieve_detail::Sample{offset, stride, result.first, result.second});
 	return result;
 }
 
@@ -755,7 +818,7 @@ template<class T> class MultiplicativePrefixSum {
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <type_traits>
+#line 18 "components/fast_io.hpp"
 #if defined(__unix__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>

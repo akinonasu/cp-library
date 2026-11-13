@@ -16,6 +16,7 @@ template <std::integral T = std::int64_t, bool Smaller = false, bool Reverse = f
 requires (sizeof(T) <= 8 && !std::is_same_v<T, bool>)
 class StaticThresholdSearch {
 	std::vector<T> values_, minimum_, maximum_;
+	std::vector<int> records_;
 	unsigned base_ = 1;
 	enum class Mode { ge, gt, le, lt };
 	template <Mode M> static bool accepts(T a, T x) {
@@ -85,12 +86,22 @@ class StaticThresholdSearch {
 		if (this != &other) { StaticThresholdSearch moved(std::move(other)); swap(moved); } return *this;
 	}
 	void swap(StaticThresholdSearch &other) noexcept {
-		values_.swap(other.values_); minimum_.swap(other.minimum_); maximum_.swap(other.maximum_); std::swap(base_, other.base_);
+		values_.swap(other.values_); minimum_.swap(other.minimum_); maximum_.swap(other.maximum_); records_.swap(other.records_); std::swap(base_, other.base_);
 	}
 	void build(std::vector<T> values) {
 		assert(values.size() <= std::size_t(std::numeric_limits<int>::max()));
 		StaticThresholdSearch next;
 		next.values_ = std::move(values);
+		int n = next.size();
+		next.records_.assign(n, n);
+		std::vector<int> stack;
+		stack.reserve(n);
+		for (int step = 0; step < n; ++step) {
+			int i = Reverse ? step : n - 1 - step;
+			while (!stack.empty() && !accepts<Smaller ? Mode::lt : Mode::gt>(next.values_[stack.back()], next.values_[i])) stack.pop_back();
+			if (!stack.empty()) next.records_[i] = stack.back();
+			stack.push_back(i);
+		}
 		unsigned blocks = unsigned((next.values_.size() + 63) / 64);
 		next.base_ = std::bit_ceil(std::max(1U, blocks));
 		next.minimum_.assign(std::size_t(next.base_) * 2, std::numeric_limits<T>::max());
@@ -134,8 +145,7 @@ class StaticThresholdSearch {
 	int prev_lt(int r, T x) const requires (Smaller && Reverse) { return prev_strict(r, x); }
 	int next_record(int i) const {
 		assert(0 <= i && i < size());
-		if constexpr (Reverse) return search<Smaller ? Mode::lt : Mode::gt, false>(i, values_[i]);
-		else return search<Smaller ? Mode::lt : Mode::gt, true>(i + 1, values_[i]);
+		return records_[i];
 	}
 };
 

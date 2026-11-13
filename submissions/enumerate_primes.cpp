@@ -11,7 +11,48 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <cassert>
+#include <utility>
+#include <type_traits>
+#if defined(__BMI2__) && defined(__x86_64__)
+#include <immintrin.h>
+#endif
 #include <vector>
+
+namespace prime_sieve_detail {
+struct Sample {
+	std::size_t skip, stride;
+	std::size_t &count;
+	std::vector<std::size_t> &values;
+	void operator()(std::size_t p) {
+		if (skip) --skip;
+		else values.push_back(p), skip = stride - 1;
+		++count;
+	}
+	template<class At> void word(std::uint64_t word, At at) {
+		unsigned remaining = std::popcount(word);
+		count += remaining;
+		if (skip >= remaining) { skip -= remaining; return; }
+		do {
+			const unsigned rank = unsigned(skip);
+			if (rank) {
+#if defined(__BMI2__) && defined(__x86_64__)
+				word &= -_pdep_u64(std::uint64_t(1) << rank, word);
+#else
+				for (unsigned i = 0; i < rank; ++i) word &= word - 1;
+#endif
+			}
+			const unsigned bit = std::countr_zero(word);
+			values.push_back(at(bit));
+			word &= word - 1;
+			remaining -= rank + 1;
+			skip = stride - 1;
+		} while (skip < remaining);
+		skip -= remaining;
+	}
+};
+template<class F> inline constexpr bool sampled = std::is_same_v<F, Sample>;
+}
 
 inline std::vector<std::size_t> prime_sieve(std::size_t n);
 
@@ -31,9 +72,12 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (; i + 8 <= size; i += 8) {
 			std::uint64_t word;
 			std::memcpy(&word, prime.data() + i, sizeof(word));
-			while (word) {
-				emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
-				word &= word - 1;
+			if constexpr (prime_sieve_detail::sampled<F>) emit.word(word, [&](unsigned bit) { return 2 * (i + bit / 8) + 1; });
+			else {
+				while (word) {
+					emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
+					word &= word - 1;
+				}
 			}
 		}
 #endif
@@ -47,7 +91,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (unsigned i = 0; i < 8; ++i) index[residues[i]] = i;
 		return index;
 	}();
-	constexpr std::size_t period = 7 * 11 * 13, block_size = period * 32;
+	constexpr std::size_t period = 7 * 11 * 13;
 	static const auto pattern = [&] {
 		std::array<std::uint8_t, period> pattern{};
 		for (std::size_t i = 0; i < period; ++i)
@@ -60,6 +104,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 	std::size_t root = std::sqrt(static_cast<long double>(n - 1));
 	while (root > (n - 1) / root) --root;
 	while (root + 1 <= (n - 1) / (root + 1)) ++root;
+	const std::size_t block_size = (std::max(period * 32, root) + period - 1) / period * period;
 	const auto primes = prime_sieve(root + 1);
 	struct State {
 		std::size_t p;
@@ -81,7 +126,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		state.push_back(current);
 	}
 	const std::size_t size = (n - 1) / 30 + 1;
-	std::vector<std::uint8_t> prime(block_size);
+	std::vector<std::uint8_t> prime((block_size + 7) / 8 * 8);
 	constexpr auto offsets = [&] {
 		std::array<unsigned, 64> offsets{};
 		for (unsigned i = 0; i < 64; ++i) offsets[i] = 30 * (i / 8) + residues[i % 8];
@@ -123,10 +168,13 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 				word = 0;
 				for (unsigned d = 0; d < 8; ++d) word |= std::uint64_t(prime[i + d]) << (8 * d);
 			}
-			while (word) {
-				const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
-				emit(x);
-				word &= word - 1;
+			if constexpr (prime_sieve_detail::sampled<F>) emit.word(word, [&](unsigned bit) { return 30 * (base + i) + offsets[bit]; });
+			else {
+				while (word) {
+					const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
+					emit(x);
+					word &= word - 1;
+				}
 			}
 		}
 		base += length;
@@ -140,13 +188,36 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 	return result;
 }
 
+inline std::pair<std::size_t, std::vector<std::size_t>> prime_sieve_sample(std::size_t n, std::size_t stride, std::size_t offset = 0) {
+	assert(stride > 0);
+	std::pair<std::size_t, std::vector<std::size_t>> result;
+	if (stride <= 4) {
+		std::size_t skip = offset;
+		for_each_prime(n, [&](std::size_t p) {
+			if (skip) --skip;
+			else result.second.push_back(p), skip = stride - 1;
+			++result.first;
+		});
+		return result;
+	}
+	for_each_prime(n, prime_sieve_detail::Sample{offset, stride, result.first, result.second});
+	return result;
+}
+
+
+#line 1 "components/fast_io_output_values.hpp"
+
+
+
+#line 1 "components/fast_io_output.hpp"
+
+
 
 #line 1 "components/fast_io.hpp"
 
 
 
-#line 7 "components/fast_io.hpp"
-#include <cassert>
+#line 8 "components/fast_io.hpp"
 #include <charconv>
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
@@ -155,7 +226,7 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 #include <stdexcept>
 #include <string>
 #include <string_view>
-#include <type_traits>
+#line 18 "components/fast_io.hpp"
 #if defined(__unix__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -375,6 +446,134 @@ public:
 };
 
 
+#line 5 "components/fast_io_output.hpp"
+#include <limits>
+#line 7 "components/fast_io_output.hpp"
+
+namespace fast_io_detail {
+struct BulkOutput {
+	static char *small(char *out, std::uint32_t value) {
+		unsigned n = 1 + (value >= 10) + (value >= 100) + (value >= 1000);
+		if constexpr (std::endian::native == std::endian::little) {
+			std::uint32_t word;
+			std::memcpy(&word, FastOutput::quads[value].data(), 4);
+			word >>= (4 - n) * 8;
+			std::memcpy(out, &word, 4);
+		} else std::memcpy(out, FastOutput::quads[value].data() + 4 - n, n);
+		return out + n;
+	}
+	static char *number(char *out, std::uint32_t value) {
+		if (value >= 100000000) {
+			out = small(out, value / 100000000);
+			value %= 100000000;
+			std::memcpy(out, FastOutput::quads[value / 10000].data(), 4);
+			std::memcpy(out + 4, FastOutput::quads[value % 10000].data(), 4);
+			return out + 8;
+		}
+		if (value >= 10000) {
+			out = small(out, value / 10000);
+			std::memcpy(out, FastOutput::quads[value % 10000].data(), 4);
+			return out + 4;
+		}
+		return small(out, value);
+	}
+	template<std::size_t Fields, class Read>
+#if defined(__GNUC__) || defined(__clang__)
+	[[gnu::noinline]]
+#endif
+	static void records(FastOutput &out, std::size_t count, Read read) {
+		constexpr auto bytes = 11 * Fields;
+		constexpr auto block = std::max<std::size_t>(1, (1 << 16) / bytes);
+		for (std::size_t base = 0; base < count;) {
+			const auto n = std::min(count - base, block);
+			char *begin = out.reserve(n * bytes), *p = begin;
+			for (std::size_t i = 0; i < n; ++i) {
+				auto values = read(base + i);
+				for (std::size_t j = 0; j < Fields; ++j) {
+					p = number(p, std::uint32_t(values[j]));
+					*p++ = j + 1 == Fields ? '\n' : ' ';
+				}
+			}
+			out.length += p - begin;
+			base += n;
+		}
+	}
+	static void write(FastOutput &out, std::string_view text) {
+		if (text.size() <= (1 << 16)) return out.write(text);
+		if (out.length && !out.flush()) throw std::runtime_error("output failed");
+		std::size_t done = 0;
+		while (done < text.size()) {
+			const auto written = std::fwrite(text.data() + done, 1, text.size() - done, out.file);
+			if (!written) throw std::runtime_error("output failed");
+			done += written;
+		}
+	}
+};
+
+}
+
+template<std::size_t Fields, class Read>
+void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
+	static_assert(Fields > 0 && Fields <= std::numeric_limits<std::size_t>::max() / 11);
+	fast_io_detail::BulkOutput::records<Fields>(output, count, std::move(read));
+}
+
+
+#line 8 "components/fast_io_output_values.hpp"
+
+namespace fast_io_detail {
+struct UnsignedValues {
+	static char *padded8(char *out, std::uint32_t value) {
+		char digits[16];
+		BulkOutput::number(digits, value + 100000000);
+		std::memcpy(out, digits + 1, 8);
+		return out + 8;
+	}
+	static char *number(char *out, std::uint64_t value) {
+		constexpr std::uint64_t block = 100000000;
+		if (value >= block * block) {
+			out = BulkOutput::small(out, std::uint32_t(value / (block * block)));
+			value %= block * block;
+			out = padded8(out, std::uint32_t(value / block));
+			return padded8(out, std::uint32_t(value % block));
+		}
+		if (value >= block) {
+			out = BulkOutput::number(out, std::uint32_t(value / block));
+			return padded8(out, std::uint32_t(value % block));
+		}
+		return BulkOutput::number(out, std::uint32_t(value));
+	}
+	template<class UInt, class Read> struct Block {
+		std::size_t base, count;
+		Read &read;
+		char separator, ending;
+		std::size_t decimal_capacity() const { return count * (sizeof(UInt) <= 4 ? 11 : 21); }
+		char *to_chars(char *out) const {
+			char *p = out;
+			for (std::size_t i = 0; i < count; ++i) {
+				if constexpr (sizeof(UInt) <= 4) p = BulkOutput::number(p, std::uint32_t(read(base + i)));
+				else p = number(p, std::uint64_t(read(base + i)));
+				*p++ = separator;
+			}
+			p[-1] = ending;
+			return p;
+		}
+	};
+};
+}
+
+template<class UInt = std::uint64_t, class Read>
+void write_unsigned_values(FastOutput &output, std::size_t count, Read read, char separator = ' ', char ending = '\n') {
+	static_assert(std::is_integral_v<UInt> && std::is_unsigned_v<UInt> && sizeof(UInt) <= 8 && !std::is_same_v<UInt, bool>);
+	constexpr std::size_t block = (1 << 16) / (sizeof(UInt) <= 4 ? 11 : 21);
+	for (std::size_t base = 0; base < count;) {
+		const auto n = std::min(count - base, block);
+		output.write(fast_io_detail::UnsignedValues::Block<UInt, Read>{base, n, read, separator, base + n == count ? ending : separator});
+		base += n;
+	}
+}
+
+
 #line 4 "test/enumerate_primes.test.cpp"
 
 int main() {
@@ -382,16 +581,8 @@ int main() {
 	FastOutput output;
 	std::size_t n = 0, a = 0, b = 0;
 	input.read(n), input.read(a), input.read(b);
-	std::vector<std::size_t> selected;
-	std::size_t count = 0, next = b;
-	for_each_prime(n + 1, [&](std::size_t p) {
-		if (count == next) selected.push_back(p), next += a;
-		++count;
-	});
+	auto [count, selected] = prime_sieve_sample(n + 1, a, b);
 	output.write(count), output.write(' '), output.println(selected.size());
-	for (std::size_t i = 0; i < selected.size(); ++i) {
-		if (i) output.write(' ');
-		output.write(selected[i]);
-	}
-	output.write('\n');
+	if (selected.empty()) output.write('\n');
+	else write_unsigned_values(output, selected.size(), [&](std::size_t i) { return selected[i]; });
 }

@@ -2,14 +2,8 @@
 #define BINOMIAL_PREFIX_SUM_LIGHT_HPP
 #include "../components/binomial_prefix_core_light.hpp"
 #include "../components/binomial_prefix_online.hpp"
-#include "../components/binomial_prefix_batch.hpp"
 
 namespace light_combinatorics {
-template<class Mint = mint, class K = int>
-std::vector<Mint> binomial_prefix_sum(const std::vector<std::pair<int, K>>& queries, int block_size = 0) {
-	return binomial_prefix_detail::batch<Mint, light_binomial_prefix_detail::Table<Mint>>(queries, block_size);
-}
-
 template<class Mint = mint> class BinomialPrefixSum : public binomial_prefix_detail::Online<Mint, light_binomial_prefix_detail::Table<Mint>> {
 	using Base = binomial_prefix_detail::Online<Mint, light_binomial_prefix_detail::Table<Mint>>;
 
@@ -21,7 +15,6 @@ template<class Mint = mint> class BinomialPrefixSum : public binomial_prefix_det
 
 #ifndef CP_BINOMIAL_PREFIX_SUM_API_HPP
 #define CP_BINOMIAL_PREFIX_SUM_API_HPP 1
-using light_combinatorics::binomial_prefix_sum;
 using light_combinatorics::BinomialPrefixSum;
 #endif
 

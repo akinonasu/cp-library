@@ -17,6 +17,15 @@ struct AdditiveSum {
 	friend AdditiveSum operator*(AdditiveSum x, std::int64_t copies) { return AdditiveSum(x.value * copies); }
 };
 
+struct WeightedValue {
+	int weight;
+	explicit operator long long() const { return weight; }
+};
+
+struct WeightedLess {
+	bool operator()(const WeightedValue &a, const WeightedValue &b) const { return a.weight < b.weight; }
+};
+
 template<class Set, class Compare>
 void check(const Set &set, std::vector<typename Set::value_type> values, Compare compare) {
 	std::sort(values.begin(), values.end(), compare);
@@ -202,6 +211,19 @@ int main() {
 	assert(additive.sum_smallest(3).value == 5 && additive.sum_largest(3).value == 9);
 	assert(additive.erase_all(1) == 2);
 	assert(additive.erase(3, 3) == 3 && additive.sum(2).value == 3);
+	TopKSum<WeightedValue, long long, WeightedLess> objects;
+	objects.insert({7}, 3); objects.insert({-2}, 2); objects.insert({4});
+	assert(objects.kth_smallest(0).weight == -2 && objects.kth_largest(1).weight == 7);
+	assert(objects.sum_smallest(3) == 0 && objects.sum_largest(4) == 25);
+	assert(objects.lower_bound({0})->weight == 4 && objects.upper_bound({4})->weight == 7);
+	assert(objects.count({7}) == 3 && objects.order_of_key({4}) == 2);
+	auto object_copy = objects;
+	assert(objects.erase_all({7}) == 3 && object_copy.count({7}) == 3);
+	assert(object_copy.replace({4}, {-3}) && object_copy.sum_all() == 14);
+	auto object_moved = std::move(object_copy);
+	assert(object_copy.empty() && object_moved.sum_all() == 14);
+	object_copy.insert({9});
+	assert(object_copy.sum(1) == 9);
 
 	SmallestKSum<std::int8_t> bytes{-128, -1, 0, 127};
 	assert(bytes.kth(0) == -128 && bytes.kth(3) == 127 && bytes.order_of_key(0) == 2);

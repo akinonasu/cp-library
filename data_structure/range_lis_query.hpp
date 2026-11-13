@@ -3,7 +3,6 @@
 
 #include "../components/quad_bit_vector.hpp"
 #include "../components/range_lis.hpp"
-#include "../components/range_lis_batch.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -182,30 +181,5 @@ std::vector<int> range_lis_queries(const Range &values, std::span<const std::pai
 	return answers;
 }
 
-
-template<bool Strict = true, class Range, class Compare = std::less<>>
-	requires std::ranges::random_access_range<const Range> && std::ranges::sized_range<const Range>
-std::vector<int> range_lis_queries_sqrt(const Range &values, std::span<const std::pair<int, int>> intervals, Compare compare = {}) {
-	assert(std::ranges::size(values) <= std::size_t(std::numeric_limits<int>::max()));
-	assert(intervals.size() <= std::size_t(std::numeric_limits<int>::max()));
-	int n = int(std::ranges::size(values));
-	std::vector<int> answers(intervals.size());
-	bool nontrivial = false;
-	for (std::size_t i = 0; i < intervals.size(); ++i) {
-		auto [l, r] = intervals[i];
-		assert(0 <= l && l <= r && r <= n);
-		answers[i] = r - l;
-		nontrivial |= r - l > 1;
-	}
-	if (!nontrivial) return answers;
-	auto permutation = range_lis_query_detail::permutation<Strict>(values, std::move(compare));
-	if (std::is_sorted(permutation.begin(), permutation.end())) return answers;
-	if (std::is_sorted(permutation.rbegin(), permutation.rend())) {
-		for (int &answer : answers) answer = answer != 0;
-		return answers;
-	}
-	range_lis_detail::batch_sqrt(permutation, intervals, answers);
-	return answers;
-}
 
 #endif

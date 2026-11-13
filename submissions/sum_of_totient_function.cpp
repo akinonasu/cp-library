@@ -15,7 +15,48 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <cassert>
+#include <utility>
+#include <type_traits>
+#if defined(__BMI2__) && defined(__x86_64__)
+#include <immintrin.h>
+#endif
 #include <vector>
+
+namespace prime_sieve_detail {
+struct Sample {
+	std::size_t skip, stride;
+	std::size_t &count;
+	std::vector<std::size_t> &values;
+	void operator()(std::size_t p) {
+		if (skip) --skip;
+		else values.push_back(p), skip = stride - 1;
+		++count;
+	}
+	template<class At> void word(std::uint64_t word, At at) {
+		unsigned remaining = std::popcount(word);
+		count += remaining;
+		if (skip >= remaining) { skip -= remaining; return; }
+		do {
+			const unsigned rank = unsigned(skip);
+			if (rank) {
+#if defined(__BMI2__) && defined(__x86_64__)
+				word &= -_pdep_u64(std::uint64_t(1) << rank, word);
+#else
+				for (unsigned i = 0; i < rank; ++i) word &= word - 1;
+#endif
+			}
+			const unsigned bit = std::countr_zero(word);
+			values.push_back(at(bit));
+			word &= word - 1;
+			remaining -= rank + 1;
+			skip = stride - 1;
+		} while (skip < remaining);
+		skip -= remaining;
+	}
+};
+template<class F> inline constexpr bool sampled = std::is_same_v<F, Sample>;
+}
 
 inline std::vector<std::size_t> prime_sieve(std::size_t n);
 
@@ -35,9 +76,12 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (; i + 8 <= size; i += 8) {
 			std::uint64_t word;
 			std::memcpy(&word, prime.data() + i, sizeof(word));
-			while (word) {
-				emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
-				word &= word - 1;
+			if constexpr (prime_sieve_detail::sampled<F>) emit.word(word, [&](unsigned bit) { return 2 * (i + bit / 8) + 1; });
+			else {
+				while (word) {
+					emit(2 * (i + (std::countr_zero(word) >> 3)) + 1);
+					word &= word - 1;
+				}
 			}
 		}
 #endif
@@ -51,7 +95,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		for (unsigned i = 0; i < 8; ++i) index[residues[i]] = i;
 		return index;
 	}();
-	constexpr std::size_t period = 7 * 11 * 13, block_size = period * 32;
+	constexpr std::size_t period = 7 * 11 * 13;
 	static const auto pattern = [&] {
 		std::array<std::uint8_t, period> pattern{};
 		for (std::size_t i = 0; i < period; ++i)
@@ -64,6 +108,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 	std::size_t root = std::sqrt(static_cast<long double>(n - 1));
 	while (root > (n - 1) / root) --root;
 	while (root + 1 <= (n - 1) / (root + 1)) ++root;
+	const std::size_t block_size = (std::max(period * 32, root) + period - 1) / period * period;
 	const auto primes = prime_sieve(root + 1);
 	struct State {
 		std::size_t p;
@@ -85,7 +130,7 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 		state.push_back(current);
 	}
 	const std::size_t size = (n - 1) / 30 + 1;
-	std::vector<std::uint8_t> prime(block_size);
+	std::vector<std::uint8_t> prime((block_size + 7) / 8 * 8);
 	constexpr auto offsets = [&] {
 		std::array<unsigned, 64> offsets{};
 		for (unsigned i = 0; i < 64; ++i) offsets[i] = 30 * (i / 8) + residues[i % 8];
@@ -127,10 +172,13 @@ template<class F> void for_each_prime(std::size_t n, F emit) {
 				word = 0;
 				for (unsigned d = 0; d < 8; ++d) word |= std::uint64_t(prime[i + d]) << (8 * d);
 			}
-			while (word) {
-				const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
-				emit(x);
-				word &= word - 1;
+			if constexpr (prime_sieve_detail::sampled<F>) emit.word(word, [&](unsigned bit) { return 30 * (base + i) + offsets[bit]; });
+			else {
+				while (word) {
+					const auto x = 30 * (base + i) + offsets[std::countr_zero(word)];
+					emit(x);
+					word &= word - 1;
+				}
 			}
 		}
 		base += length;
@@ -144,6 +192,22 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 	return result;
 }
 
+inline std::pair<std::size_t, std::vector<std::size_t>> prime_sieve_sample(std::size_t n, std::size_t stride, std::size_t offset = 0) {
+	assert(stride > 0);
+	std::pair<std::size_t, std::vector<std::size_t>> result;
+	if (stride <= 4) {
+		std::size_t skip = offset;
+		for_each_prime(n, [&](std::size_t p) {
+			if (skip) --skip;
+			else result.second.push_back(p), skip = stride - 1;
+			++result.first;
+		});
+		return result;
+	}
+	for_each_prime(n, prime_sieve_detail::Sample{offset, stride, result.first, result.second});
+	return result;
+}
+
 
 #line 1 "math/kth_root.hpp"
 
@@ -151,8 +215,6 @@ inline std::vector<std::size_t> prime_sieve(std::size_t n) {
 
 #line 6 "math/kth_root.hpp"
 #include <limits>
-#line 8 "math/kth_root.hpp"
-#include <cassert>
 #line 11 "math/kth_root.hpp"
 
 namespace kth_root_detail {
@@ -315,11 +377,11 @@ inline std::uint64_t kth_root(std::uint64_t n, std::uint64_t k) {
 }
 
 
-#line 11 "math/totient_sum.hpp"
-#include <type_traits>
 #line 13 "math/totient_sum.hpp"
 
 namespace totient_detail {
+template<class T> inline constexpr bool wide_modular = requires(std::uint64_t x) { std::uint64_t(T::mod()); T{x}; };
+
 template<class T, class I> T value(I x) {
 	if constexpr (requires { std::uint64_t(T::mod()); }) {
 		auto modulus = std::uint64_t(T::mod());
@@ -419,7 +481,8 @@ template<class T, class Count> T compute(std::uint64_t n) {
 
 template<class T = std::uint64_t> T totient_sum(std::uint64_t n) {
 	constexpr bool integer = std::is_integral_v<T> || std::is_same_v<T, __int128_t> || std::is_same_v<T, __uint128_t>;
-	using A = std::conditional_t<integer, __uint128_t, T>;
+	constexpr bool modular = totient_detail::wide_modular<T>;
+	using A = std::conditional_t<integer || modular, __uint128_t, T>;
 	A answer(0);
 	if (n < 64) {
 		std::vector<unsigned> phi(n + 1);
@@ -430,19 +493,46 @@ template<class T = std::uint64_t> T totient_sum(std::uint64_t n) {
 	} else if (n <= (std::uint64_t(1) << 40)) answer = totient_detail::compute<A, std::int64_t>(n);
 	else answer = totient_detail::compute<A, __int128_t>(n);
 	if constexpr (integer) { assert(answer <= __uint128_t(std::numeric_limits<T>::max())); }
-	return T(answer);
+	if constexpr (!integer && modular) return T(std::uint64_t(answer % std::uint64_t(T::mod())));
+	else return T(answer);
 }
 
 
 #line 1 "math/mint.hpp"
 
 
-#line 4 "math/mint.hpp"
+#line 1 "components/compiler_features.hpp"
+
+
+
+#if defined(__x86_64__) || defined(__i386__)
+#define CP_X86 1
+#else
+#define CP_X86 0
+#endif
+#if CP_X86 && defined(__GNUC__) && !defined(__clang__)
+#define CP_GCC_X86 1
+#else
+#define CP_GCC_X86 0
+#endif
+#if CP_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CP_GNU_X86 1
+#else
+#define CP_GNU_X86 0
+#endif
+#if CP_GCC_X86 && defined(__linux__) && defined(__x86_64__)
+#define CP_GCC_LINUX64 1
+#else
+#define CP_GCC_LINUX64 0
+#endif
+
+
+#line 5 "math/mint.hpp"
 #include <istream>
 #include <ostream>
-#line 7 "math/mint.hpp"
+#line 8 "math/mint.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -454,11 +544,11 @@ constexpr bool mint_integral = std::is_integral_v<I>
 							   || std::is_same_v<I, __int128> || std::is_same_v<I, unsigned __int128>
 #endif
 	;
-struct Mint {
+struct [[gnu::warn_unused]] Mint {
 	using mint = Mint;
 	unsigned v = 0;
-	static constexpr unsigned mod() { return 998244353; }
-	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
+	[[nodiscard]] static constexpr unsigned mod() { return 998244353; }
+	[[nodiscard, gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -468,17 +558,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	[[gnu::always_inline]] static Mint raw(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	[[gnu::always_inline]] static Mint word(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	[[gnu::always_inline]] unsigned val() const {
+	[[nodiscard, gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -517,27 +607,27 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	[[gnu::always_inline]] Mint operator+() const { return *this; }
-	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
-	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
-	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
+	[[nodiscard, gnu::always_inline]] Mint operator+() const { return *this; }
+	[[nodiscard, gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[nodiscard, gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[nodiscard, gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[nodiscard, gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[nodiscard]] Mint operator/(Mint b) const { return Mint(*this) /= b; }
+	[[nodiscard, gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[nodiscard, gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
+	[[nodiscard]] friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
+	[[nodiscard]] friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
+	[[nodiscard]] friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
+	[[nodiscard]] friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator==(I a, Mint b) { return Mint(a) == b; }
+	[[nodiscard]] friend bool operator==(I a, Mint b) { return Mint(a) == b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
-	Mint pow(long long n) const {
+	[[nodiscard]] friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
+	[[nodiscard]] Mint pow(long long n) const {
 		assert(n >= 0);
 		if (!n) return Mint(1);
 		Mint r(1), a = *this;
@@ -545,7 +635,7 @@ struct Mint {
 			if (n & 1) r *= a;
 		return r * a;
 	}
-	[[gnu::noinline]] Mint inv() const {
+	[[nodiscard, gnu::noinline]] Mint inv() const {
 		assert(*this != Mint(0));
 		Mint a2 = *this * *this, a3 = a2 * *this;
 		Mint a7 = a3 * a3 * *this;
@@ -569,7 +659,7 @@ struct Mint {
 using mint = mint_detail::Mint;
 using fps_mint = mint;
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 
