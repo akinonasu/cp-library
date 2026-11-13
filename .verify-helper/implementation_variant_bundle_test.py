@@ -84,8 +84,8 @@ int main() {
     assert(sum.query(5, 3) == mint(16));
     assert(incremental.query(6, 3) == mint(22));
     assert(incremental.query(5, 3) == mint(16));
-    std::vector<std::pair<int, int>> queries{{5, 3}, {6, 3}, {0, 1}};
-    assert((binomial_prefix_sum(queries) == std::vector<mint>{16, 22, 1}));
+    assert(sum.query(6, 3) == mint(22));
+    assert(sum.query(0, 1) == mint(1));
 }
 '''
         programs = {}

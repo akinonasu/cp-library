@@ -170,7 +170,7 @@ struct Core : mint_detail::SimdOps {
 				if (valid) parts[e].push_back(x);
 			}
 		Rows x(outer, Row(outer == 1 ? inner : length)), y = x;
-		Row z(length), weights(32), inverse(32);
+		Row z(outer == 1 ? 0 : length), weights(32), inverse(32);
 		mint root = mint(3).pow((mod - 1) / m), scale = mint(m).inv();
 		for (int s = 0; s < m; ++s) {
 			mint step = root.pow(s), back = step.inv();
@@ -186,9 +186,13 @@ struct Core : mint_detail::SimdOps {
 				if (outer != 1) transform(x[row], false), transform(y[row], false);
 			}
 			for (int row = outer; row-- > 0;) {
-				if (outer == 1) z = product(x[0], y[0]);
-				else Core::row(z, x, y, row, parts[row]), transform(z, true);
-				apply<true>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner, m);
+				if (outer == 1) {
+					const auto &values = product(x[0], y[0]);
+					apply<true>(result.data() + row * inner, values.data(), ranks.data(), inverse.data(), inner, m);
+				} else {
+					Core::row(z, x, y, row, parts[row]), transform(z, true);
+					apply<true>(result.data() + row * inner, z.data(), ranks.data(), inverse.data(), inner, m);
+				}
 			}
 		}
 		if (run == n) return result;

@@ -84,6 +84,18 @@ inline Rooting root_parents(const std::vector<int> &parent) {
 	result.height.assign(n, 0);
 	result.size.assign(n, 1);
 	result.order.reserve(n);
+	int first = n && parent[0] == -1 ? 1 : 0;
+	while (first < n && 0 <= parent[first] && parent[first] < first) ++first;
+	if (first == n) {
+		result.order.resize(n);
+		for (int v = 0; v < n; ++v) result.order[v] = v;
+		for (int v = n - 1; v > 0; --v) {
+			int p = parent[v];
+			result.height[p] = std::max(result.height[p], result.height[v] + 1);
+			result.size[p] += result.size[v];
+		}
+		return result;
+	}
 	std::vector<int> degree(n);
 	int root = -1;
 	for (int v = 0; v < n; ++v) {

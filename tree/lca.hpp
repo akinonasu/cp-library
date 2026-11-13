@@ -15,23 +15,25 @@ class LCA {
 	StaticRangeMin<int, true> table;
 	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && static_cast<int>(in.size()) == n); }
 
-	void finish(int root) {
+	template<bool Ordered = false> void finish(int root) {
 		in[root] = n;
 		ordered_ = root == 0;
 		for (int i = n - 2; i >= 0; --i) {
-			int v = order[i], p = parent[v];
+			int v = Ordered ? n - 1 - i : order[i], p = parent[v];
 			depth[v] = depth[p] + 1;
 			in[v] = in[p];
 			in[p] -= out[v];
 		}
+		std::vector<int> values(n);
 		for (int v = 0; v < n; ++v) {
 			--in[v];
 			out[v] += in[v];
 			order[in[v]] = v;
-			ordered_ &= parent[v] < v;
+			if constexpr (Ordered) values[in[v]] = v ? parent[v] : 0;
+			else ordered_ &= parent[v] < v;
 		}
-		std::vector<int> values(n);
-		for (int i = 1; i < n; ++i) values[i] = ordered_ ? parent[order[i]] : in[parent[order[i]]];
+		if constexpr (!Ordered)
+			for (int i = 1; i < n; ++i) values[i] = ordered_ ? parent[order[i]] : in[parent[order[i]]];
 		table.build(std::move(values));
 		parent[root] = -1;
 	}
@@ -108,8 +110,9 @@ class LCA {
 		if (ordered) {
 			for (int v = n - 1; v > 0; --v) {
 				out[parent[v]] += out[v];
-				order[n - 1 - v] = v;
 			}
+			finish<true>(root);
+			return;
 		} else {
 			std::fill(in.begin(), in.end(), 0);
 			for (int v = 0; v < n; ++v) if (v != root) ++in[parent[v]];

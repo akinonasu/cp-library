@@ -119,11 +119,11 @@ struct Registry {
 int main() {
 	{
 		std::mt19937 random(117);
-		for (int n = 0; n < 150; ++n) {
+		for (int n = 0; n < 150; ++n) for (bool ordered : {false, true}) {
 			Graph graph(n);
 			std::vector<int> parents(n, -1), labels(n);
 			std::iota(labels.begin(), labels.end(), 0);
-			std::shuffle(labels.begin(), labels.end(), random);
+			if (!ordered) std::shuffle(labels.begin(), labels.end(), random);
 			for (int i = 1; i < n; ++i) {
 				int v = labels[i], p = labels[random() % i];
 				parents[v] = p;

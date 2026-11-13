@@ -42,8 +42,8 @@
 | `components/range_affine_sum_simd.hpp` | 区間アフィン変換・区間和の共通実装 | [使い方](docs/range_affine_sum_simd.md) |
 | `components/range_affine_point_simd.hpp` | 区間アフィン変換・一点取得の共通実装 | [使い方](docs/range_affine_point_simd.md) |
 | `components/multivariate_convolution_core.hpp` | 多変数畳み込みの共通実装 | [使い方](docs/multivariate_convolution_core.md) |
+| `components/multivariate_convolution_product.hpp` | 多変数畳み込みの積 | [使い方](docs/multivariate_convolution_product.md) |
 | `components/multivariate_ranked.hpp` | 小さい次元の多変数畳み込み | [使い方](docs/multivariate_ranked.md) |
-| `components/ordered_multiset_btree.hpp` | 順序統計多重集合の共通実装 | [使い方](docs/ordered_multiset_btree.md) |
 | `components/predecessor_set.hpp` | Predecessor Set（64 分木） | [使い方](docs/predecessor_set.md) |
 
 ### 幾何
@@ -397,8 +397,8 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `math/binomial_prefix_sum.hpp` | 二項係数の先頭区間和・一括計算 | [使い方](docs/binomial_prefix_sum.md) |
-| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数の先頭区間和・一括計算 | [使い方](docs/binomial_prefix_sum_light.md) |
+| `math/binomial_prefix_sum.hpp` | 二項係数の先頭区間和 | [使い方](docs/binomial_prefix_sum.md) |
+| `math/binomial_prefix_sum_light.hpp` | 軽量版の二項係数の先頭区間和 | [使い方](docs/binomial_prefix_sum_light.md) |
 | `math/binomial_prefix_sum_incremental.hpp` | 二項係数の先頭区間和（差分更新） | [使い方](docs/binomial_prefix_sum_incremental.md) |
 | `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数の先頭区間和 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |

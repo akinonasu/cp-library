@@ -36,18 +36,12 @@ int main() {
 	}
 	BinomialPrefixSum online(100);
 	IncrementalBinomialPrefixSum incremental(100);
-	std::vector<std::pair<int, std::int64_t>> queries;
-	std::vector<mint> answers;
 	for (int n = 0; n <= 100; ++n) {
 		mint sum = 0;
 		for (int k = 0; k <= n + 2; ++k) {
-			queries.emplace_back(n, k);
-			answers.push_back(sum);
 			assert(online.query(n, k) == sum);
 			assert(incremental.query(n, k) == sum);
 			sum += comb(n, k);
 		}
 	}
-	assert(binomial_prefix_sum(queries) == answers);
-	assert(binomial_prefix_sum<mint>(queries, 7) == answers);
 }

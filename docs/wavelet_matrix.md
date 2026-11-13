@@ -30,9 +30,9 @@ auto total = wm.sum_smallest(0, 5, 3); // 5: 1 + 1 + 3
 | `build(a)` | 配列で再構築。和の前処理は必要時に行う | 整数列: $$O(n\log\sigma)$$、その他: $$O(n\log n)$$ |
 | `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
 | `access(i)` / `operator[](i)` | 元の配列の要素を取得 | $$O(1)$$ |
-| `count(l,r,x)` / `rank(x,r)` | 区間／$$[0,r)$$ にある `x` の個数 | $$O(\log\sigma)$$、索引あり: 期待 $$O(\log\sigma)$$ |
-| `prepare_count()` | 整数型の `count`・`rank`・`select` 用に値検索を前処理。完了済みなら何もしない | 期待 $$O(\sigma)$$、最悪 $$O(\sigma^2)$$ |
-| `select(x,k)` | 0 始まり `k` 番目の `x` の位置。なければ -1 | $$O(\log\sigma)$$、索引あり: 期待 $$O(1)$$ |
+| `count(l,r,x)` / `rank(x,r)` | 区間／$$[0,r)$$ にある `x` の個数 | 最悪 $$O(\log\sigma)$$ |
+| `prepare_count()` | 何もしない。呼び出しは不要 | $$O(1)$$ |
+| `select(x,k)` | 0 始まり `k` 番目の `x` の位置。なければ -1 | 最悪 $$O(\log\sigma)$$ |
 | `kth_smallest(l,r,k)` / `kth_largest(l,r,k)` | 小さい順／大きい順の 0 始まり `k` 番目 | $$O(\log\sigma)$$ |
 | `range_freq(l,r,upper)` | `upper` 未満の個数 | $$O(\log\sigma)$$ |
 | `range_freq(l,r,lower,upper)` | `lower` 以上 `upper` 未満の個数 | $$O(\log\sigma)$$ |
@@ -54,7 +54,7 @@ auto total = wm.sum_smallest(0, 5, 3); // 5: 1 + 1 + 3
 
 和を使う場合は、構築時に `true` を指定して前計算できます。
 
-表の「索引あり」は、値検索用のハッシュ表を準備した場合を指します。`count`・`rank`・`select` を繰り返す場合は、`wm.prepare_count()` で値検索用のハッシュ表を準備できます。64 bit 以下の整数型に対応し、値の種類が少ない場合や連続している場合は追加の表を作りません。その他の型では何もしません。`build` で前処理は破棄されます。
+`count`・`rank`・`select` のための追加の前処理は不要です。`prepare_count()` は何も変更せず、呼び出し前後で同じ計算量を保ちます。
 
 `min_count_*`・`max_count_*` は非負整数列と整数の和の型で使います。`min_count_*` は `target <= 0` なら 0、`max_count_*` は `budget < 0` なら -1 を返します。和の準備は自動で行います。`sum_largest` などを個数について二分探索する必要はなく、1 回の問い合わせで求められます。
 
@@ -64,8 +64,4 @@ auto total = wm.sum_smallest(0, 5, 3); // 5: 1 + 1 + 3
 
 和の前処理は時間・追加空間ともに $$O(n \log \sigma)$$ で、前処理後の `range_sum(l,r)` は $$O(1)$$、値域を指定する和と上下位の和は $$O(\log \sigma)$$ です。和を使う最初のクエリには前処理時間が加わります。全体の空間は和を含めて $$O(n \log \sigma)$$ です。比較・算術演算・コピーは $$O(1)$$ とします。異なる値が 1 種類以下なら構築・和の準備は $$O(n)$$、各クエリは $$O(1)$$ です。
 
-`prepare_count` は期待 $$O(\sigma)$$・最悪 $$O(\sigma^2)$$ 時間、$$O(\sigma)$$ 空間です。前処理後の値検索は期待 $$O(1)$$・最悪 $$O(\sigma)$$、出現位置の検索を含む `count`・`rank` は期待 $$O(\log \sigma)$$、`select` は期待 $$O(1)$$ です。
-
 和の準備後の `min_count_*`・`max_count_*` は通常 $$O(\log \sigma)$$、配列全体が昇順・降順の場合は $$O(\log n)$$ です。
-
-ハッシュ表の計算量で「期待」とあるものは、ハッシュ値が偏らないときの平均時間です。
