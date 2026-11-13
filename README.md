@@ -138,6 +138,7 @@
 | `tree/tree_hash.hpp` | 根を持たない木のハッシュ | [使い方](docs/tree_hash.md) |
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
+| `tree/edge_link_cut_tree.hpp` | 辺重み・方向付きの Link Cut Tree | [使い方](docs/edge_link_cut_tree.md) |
 | `tree/persistent_link_cut_tree.hpp` | 永続 Link Cut Tree・過去版からの分岐 | [使い方](docs/persistent_link_cut_tree.md) |
 | `tree/top_tree.hpp` | Top Tree・辺の追加削除と木 DP | [使い方](docs/top_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
@@ -173,6 +174,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `graph/kruskal.hpp` | Kruskal・最小全域木／最小全域森 | [使い方](docs/kruskal.md) |
+| `graph/incremental_msf.hpp` | 辺追加に対応する最小全域森・経路の最大辺 | [使い方](docs/incremental_msf.md) |
 | `graph/directed_mst.hpp` | 有向最小全域木・採用辺と親の復元 | [使い方](docs/directed_mst.md) |
 | `graph/steiner_tree.hpp` | 最小シュタイナー木・採用辺の復元 | [使い方](docs/steiner_tree.md) |
 
@@ -182,6 +184,7 @@
 | --- | --- | --- |
 | `graph/max_flow.hpp` | 最大流・最小カット | [使い方](docs/max_flow.md) |
 | `graph/min_cost_flow.hpp` | 最小費用流・費用曲線 | [使い方](docs/min_cost_flow.md) |
+| `graph/min_cost_b_flow.hpp` | 下限付き最小費用流・頂点の需給・流量範囲 | [使い方](docs/min_cost_b_flow.md) |
 | `graph/project_selection.hpp` | Project Selection（燃やす埋める） | [使い方](docs/project_selection.md) |
 
 ### マッチング
@@ -403,9 +406,9 @@
 | `math/binomial_prefix_sum_incremental_light.hpp` | 軽量版の二項係数の先頭区間和 差分更新 | [使い方](docs/binomial_prefix_sum_incremental_light.md) |
 | `math/binomial_mod.hpp` | 任意 mod の二項係数・素数冪・合成数法 | [使い方](docs/binomial_mod.md) |
 | `math/factorial_mod.hpp` | 大きな N の階乗 mod 998244353 | [使い方](docs/factorial_mod.md) |
-| `math/comb.hpp` | modint 型を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb.md) |
+| `math/comb.hpp` | modint 型を指定する階乗・逆階乗・逆元と二項係数 | [使い方](docs/comb.md) |
 | `math/comb_mod.hpp` | modint を指定する階乗・逆階乗と二項係数 | [使い方](docs/comb_mod.md) |
-| `math/comb_light.hpp` | 軽量版の二項係数・階乗表 | [使い方](docs/comb_light.md) |
+| `math/comb_light.hpp` | 軽量版の二項係数・階乗・逆元表 | [使い方](docs/comb_light.md) |
 | `math/fixed_size_subset_sum.hpp` | 個数を指定して選ぶ部分和の集合 | [使い方](docs/fixed_size_subset_sum.md) |
 
 ### Floor Sum
@@ -424,6 +427,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `math/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
+| `math/matrix_mod2.hpp` | mod 2 専用の行列積・階数・逆行列・連立方程式 | [使い方](docs/matrix_mod2.md) |
 | `math/matrix_light.hpp` | 軽量な行列演算 | [使い方](docs/matrix_light.md) |
 | `math/xor_basis.hpp` | XOR 基底・順序統計・共通部分・復元・ロールバック・区間クエリ | [使い方](docs/xor_basis.md) |
 
@@ -470,6 +474,7 @@
 | `components/integer_geometry_bridge.hpp` | 整数幾何と通常幾何の厳密な座標変換 | [使い方](docs/integer_geometry_bridge.md) |
 | `components/min_plus_convolution_envelope.hpp` | 凹列と任意列の畳み込み | [使い方](docs/min_plus_convolution_envelope.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
+| `components/link_cut_tree_core.hpp` | Link Cut Tree の共通処理 | [使い方](docs/link_cut_tree_core.md) |
 | `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |
 | `components/field_arithmetic.hpp` | 体の演算・内積・配列の定数倍と加算 | [使い方](docs/field_arithmetic.md) |
 | `components/field_base.hpp` | 汎用型の体の演算 | [使い方](docs/field_base.md) |

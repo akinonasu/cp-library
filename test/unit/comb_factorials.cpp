@@ -11,6 +11,7 @@ int main() {
 	for (int i = 0; i <= COMB_INF; ++i) {
 		if (i) automatic = automatic * i % mint::mod();
 		require(fact[i].val() == automatic && fact[i] * finv[i] == mint(1));
+		require(i ? inv[i] * mint(i) == mint(1) : inv[i] == mint(0));
 		require(comb(i, 0) == mint(1) && comb(i, i) == mint(1));
 		if (i) require(comb(i, 1) == mint(i));
 	}

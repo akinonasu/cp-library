@@ -9,4 +9,6 @@ documentation_of: //components/insert_only_prefix_count_sum.hpp
 
 位置を 65536 要素ずつ区切った各区画について、挿入した `delta` の和が `2^bits` 未満、挿入個数が `2^(64-bits)` 未満となる `bits` を渡します。和を下位 `bits` bit、個数を残りの上位 bit に格納するための条件です。`prefix(r)` は `[0,r)`、`fold(l,r)` は `[l,r)` の和と個数を `CountSum{sum,count}` で返します。`sum` は `__int128_t` です。
 
-構築・空間は $$O(n)$$、挿入・集計は $$O(\log n)$$ です。
+長さ・添字は `int` で、`0 <= p < n`、`0 <= l <= r <= n` とします。`minimum` と和の計算途中は `__int128_t` に収めてください。空の列も構築でき、空区間の集計は和・個数がともに 0 です。
+
+構築・空間は $$O(n)$$、挿入・集計は $$O(\log n)$$ 時間・$$O(1)$$ 追加空間です。

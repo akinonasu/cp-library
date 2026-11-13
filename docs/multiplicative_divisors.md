@@ -49,10 +49,12 @@ int main() {
 }
 ```
 
-| 関数 | 内容・返り値 |
-| --- | --- |
-| `multiplicative_divisors(n, prime_power, sorted = true)` | `n` を素因数分解し、全ての `{d, f(d)}` を `std::vector<std::pair<std::uint64_t, T>>` で返す |
-| `multiplicative_divisors(factors, prime_power, sorted = true)` | `{素数, 指数}` の列から同じ結果を返す |
+以下では返す約数の個数を $$D$$ とします。列挙と並べ替えの時間は、昇順なら $$O(D\log D)$$、`sorted = false` なら $$O(D)$$ です。コールバック・値のコピー・乗算を定数時間とします。
+
+| 関数 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `multiplicative_divisors(n, prime_power, sorted = true)` | `n` を素因数分解し、全ての `{d, f(d)}` を `std::vector<std::pair<std::uint64_t, T>>` で返す | 期待 $$O(n^{1/4}\log n)$$ ＋列挙・並べ替え |
+| `multiplicative_divisors(factors, prime_power, sorted = true)` | `{素数, 指数}` の列から同じ結果を返す | 昇順: $$O(D\log D)$$、`false`: $$O(D)$$ |
 
 `n` は `std::uint64_t` で、`n >= 1` とします。`factors` は `std::vector<std::pair<std::uint64_t, int>>` で、異なる素数と正の指数を渡します。素数の順序は任意で、その積は `std::uint64_t` に収まる必要があります。素数判定や分解結果の正当性の検査は行いません。
 

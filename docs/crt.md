@@ -21,12 +21,14 @@ assert(b == a);
 assert(!crt(1, 2, 0, 4));
 ```
 
-| 操作・型 | 引数・返り値 |
-| --- | --- |
-| `crt(r0, m0, r1, m1)` | `std::int64_t` の 2 組の剰余・法を渡す。`std::optional<CRTSolution>` を返す。`constexpr` 対応 |
-| `crt(residues, moduli)` | `const std::vector<std::int64_t>&` の剰余列と法の列を渡す。同じ添字の組を合同式とし、`std::optional<CRTSolution>` を返す |
-| `solution.residue` | 最小非負解。型は `std::int64_t` |
-| `solution.modulus` | 全解の周期で、全ての法の最小公倍数。型は `std::int64_t` |
+以下では合同式の数を $$n$$、入力する法の最大値を $$M$$ とします。
+
+| 操作・型 | 引数・返り値 | 計算量 |
+| --- | --- | --- |
+| `crt(r0, m0, r1, m1)` | `std::int64_t` の 2 組の剰余・法を渡す。`std::optional<CRTSolution>` を返す。`constexpr` 対応 | $$O(\log\min(m_0,m_1))$$ |
+| `crt(residues, moduli)` | `const std::vector<std::int64_t>&` の剰余列と法の列を渡す。同じ添字の組を合同式とし、`std::optional<CRTSolution>` を返す | $$O(n\log M)$$ |
+| `solution.residue` | 最小非負解。型は `std::int64_t` | $$O(1)$$ |
+| `solution.modulus` | 全解の周期で、全ての法の最小公倍数。型は `std::int64_t` | $$O(1)$$ |
 
 各法は $$1\le m_i\le\mathrm{INT64\_MAX}$$、剰余は符号付き 64 bit 整数の全範囲で指定できます。解がなければ `std::nullopt` を返します。解があれば、全ての整数解は
 

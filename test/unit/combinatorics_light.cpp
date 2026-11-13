@@ -30,6 +30,15 @@ template<unsigned P> struct Field {
 
 const unsigned before_main = light_combinatorics::comb(10, 3).val();
 const unsigned before_main_factorial = light_combinatorics::fact[5].val();
+const unsigned before_main_inverse = (light_combinatorics::inv[7] * mint(7)).val();
+
+template<class M> void inverse_cases() {
+	using C = light_combinatorics::Comb<M>;
+	assert(C::inv[0].val() == 0 && C::inv[-1].val() == 0);
+	assert(C::inv[std::numeric_limits<int>::min()].val() == 0);
+	for (unsigned i = 1; i <= std::min(unsigned(COMB_MAX), M::mod() - 1); ++i)
+		assert((C::inv[i] * M(i)).val() == 1);
+}
 
 template<class M> void prefix_cases(int limit) {
 	std::vector<std::vector<M>> expected(limit + 1);
@@ -77,10 +86,12 @@ template<class M> void prefix_cases(int limit) {
 }
 
 void comb_cases() {
-	assert(before_main == 120 && before_main_factorial == 120);
+	assert(before_main == 120 && before_main_factorial == 120 && before_main_inverse == 1);
 	for (int n = 0; n <= COMB_MAX; ++n) {
 		assert(light_combinatorics::fact[n] == fact[n]);
 		assert(light_combinatorics::finv[n] == finv[n]);
+		assert(light_combinatorics::inv[n] == inv[n]);
+		assert(n ? inv[n] * mint(n) == mint(1) : inv[n] == mint(0));
 		for (int k = -1; k <= n + 1; ++k) assert(light_combinatorics::comb(n, k) == comb(n, k));
 	}
 	assert(light_combinatorics::fact[-1] == mint(0) && light_combinatorics::finv[-1] == mint(0));
@@ -88,15 +99,29 @@ void comb_cases() {
 	using C = light_combinatorics::Comb<M>;
 	assert(M::inversions == 0);
 	assert(C::fact[-1].val() == 0 && C::finv[-1].val() == 0 && C::comb(-1, 0).val() == 0);
+	assert(C::inv[0].val() == 0 && C::inv[-1].val() == 0);
 	assert(M::inversions == 0);
 	assert(C::comb(10, 3).val() == 120 && M::inversions == 1);
 	assert(C::fact[5].val() == 120 && (C::fact[10] * C::finv[10]).val() == 1 && M::inversions == 1);
+	inverse_cases<M>();
+	assert(M::inversions == 1);
+	inverse_cases<comb_test::Field<2>>();
+	inverse_cases<comb_test::Field<3>>();
+	inverse_cases<comb_test::Field<17>>();
 	using D = comb_test::DynamicField<31>;
 	D::set_mod(17);
 	assert(light_combinatorics::comb<D>(16, 8).val() == 1 && D::inversions == 1);
+	inverse_cases<D>();
+	assert(D::inversions == 1);
 	D::set_mod(101);
+	assert(light_combinatorics::Comb<D>::inv[0].val() == 0 && D::inversions == 1);
+	inverse_cases<D>();
+	assert(D::inversions == 2);
 	assert(light_combinatorics::comb<D>(10, 3).val() == 19 && D::inversions == 2);
 	assert(light_combinatorics::Comb<D>::fact[5].val() == 19 && D::inversions == 2);
+	using Unused = comb_test::Field<17, 91>;
+	assert(light_combinatorics::Comb<Unused>::inv[0].val() == 0);
+	assert(light_combinatorics::Comb<Unused>::inv[-1].val() == 0 && Unused::inversions == 0);
 }
 
 int main() {

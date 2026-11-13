@@ -148,6 +148,8 @@ jobs:
           manifest: .verify-helper/judge-cache.json
       - name: Test code highlighting
         run: python -m unittest discover -s .verify-helper -p 'code_highlight_test.py'
+      - name: Check documentation requirements
+        run: python .verify-helper/documentation_requirements.py
       - name: Restore documentation sources
         if: steps.route.outputs.mode == 'normal'
         id: documentation-cache

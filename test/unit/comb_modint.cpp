@@ -16,6 +16,7 @@ template<class M> void check() {
 		if (n) factorial = factorial * n % M::mod();
 		assert(Comb<M>::fact[n].val() == factorial);
 		assert((Comb<M>::fact[n] * Comb<M>::finv[n]).val() == 1);
+		assert(n ? (Comb<M>::inv[n] * M(n)).val() == 1 : Comb<M>::inv[n].val() == 0);
 		for (int k = 0; k <= n; ++k) assert(comb<M>(n, k).val() == row[k]);
 		assert(comb<M>(n, -1).val() == 0 && comb<M>(n, n + 1).val() == 0);
 		for (int k = std::min(n + 1, limit); k > 0; --k) row[k] = (std::uint64_t(row[k]) + row[k - 1]) % M::mod();
@@ -23,6 +24,7 @@ template<class M> void check() {
 	assert(Comb<M>::fact[-1].val() == 0 && Comb<M>::finv[-1].val() == 0);
 	assert(Comb<M>::fact[std::numeric_limits<int>::min()].val() == 0);
 	assert(Comb<M>::finv[std::numeric_limits<int>::min()].val() == 0);
+	assert(Comb<M>::inv[std::numeric_limits<int>::min()].val() == 0);
 	assert(comb<M>(-1, 0).val() == 0);
 }
 
@@ -71,18 +73,21 @@ struct Wide {
 };
 static_assert(std::is_same_v<decltype(Comb<First>::fact[0]), First>);
 static_assert(std::is_same_v<decltype(Comb<First>::finv[0]), First>);
+static_assert(std::is_same_v<decltype(Comb<First>::inv[0]), First>);
 static_assert(std::is_same_v<decltype(comb<First>(0, 0)), First>);
 static_assert(std::is_same_v<decltype(fact[0]), mint>);
 static_assert(!std::is_lvalue_reference_v<decltype((fact[0]))>);
 const unsigned before_main = Comb<Third>::fact[5].val();
+const unsigned before_main_inverse = (Comb<Third>::inv[5] * Third(5)).val();
 
 int main() {
-	assert(before_main == 120 && Third::inversions == 1);
+	assert(before_main == 120 && before_main_inverse == 1 && Third::inversions == 1);
 	assert(First::inversions == 0 && Second::inversions == 0);
 	const auto &accessor = Comb<First>::fact;
 	(void)accessor;
 	assert(First::inversions == 0);
 	assert(Comb<First>::fact[-1].val() == 0 && Comb<First>::finv[-1].val() == 0);
+	assert(Comb<First>::inv[0].val() == 0 && Comb<First>::inv[-1].val() == 0);
 	assert(comb<First>(-1, 0).val() == 0 && comb<First>(0, -1).val() == 0);
 	assert(comb<First>(1, 2).val() == 0 && First::inversions == 0);
 	assert((Comb<First>::finv[5] * First(120)).val() == 1 && First::inversions == 1);
@@ -95,13 +100,18 @@ int main() {
 	check<Encoded>();
 	assert(comb<Opaque>(10, 3).value.val() == 120 % 17);
 	assert(Comb<Opaque>::fact[-1].value.val() == 0 && Comb<Opaque>::finv[-1].value.val() == 0);
-	for (int i = 0; i <= 16; ++i) assert((Comb<Centered>::fact[i] * Comb<Centered>::finv[i]).val() == 1);
+	assert((Comb<Opaque>::inv[16] * Opaque(16)).value.val() == 1);
+	for (int i = 0; i <= 16; ++i) {
+		assert((Comb<Centered>::fact[i] * Comb<Centered>::finv[i]).val() == 1);
+		assert(i ? (Comb<Centered>::inv[i] * Centered(i)).val() == 1 : Comb<Centered>::inv[i].val() == 0);
+	}
 	std::vector<std::uint64_t> row(COMB_INF + 1);
 	row[0] = 1;
 	std::uint64_t expected = 1;
 	for (int n = 0; n <= COMB_INF; ++n) {
 		if (n) expected = __uint128_t(expected) * n % Wide::mod();
 		assert(Comb<Wide>::fact[n].val() == expected && (Comb<Wide>::fact[n] * Comb<Wide>::finv[n]).val() == 1);
+		assert(n ? (Comb<Wide>::inv[n] * Wide(n)).val() == 1 : Comb<Wide>::inv[n].val() == 0);
 		for (int k = 0; k <= n; ++k) assert(comb<Wide>(n, k).val() == row[k]);
 		for (int k = std::min(n + 1, COMB_INF); k; --k) row[k] = (row[k] + row[k - 1]) % Wide::mod();
 	}
@@ -112,11 +122,20 @@ int main() {
 	for (unsigned p : {1000000007U, 17U, 998244353U, 1000000007U}) {
 		int previous = Dynamic::inversions;
 		Dynamic::set_mod(p);
+		assert(Comb<Dynamic>::inv[0].val() == 0 && Dynamic::inversions == previous);
+		int last = std::min(unsigned(COMB_INF), p - 1);
+		assert((Comb<Dynamic>::inv[last] * Dynamic(last)).val() == 1);
+		assert(Dynamic::inversions == previous + 1);
 		check<Dynamic>();
 		assert(Dynamic::inversions == previous + 1);
 		check<Dynamic>();
 		assert(Dynamic::inversions == previous + 1);
 	}
 	using Unused = comb_test::Field<1000000007, 99>;
+	assert(Comb<Unused>::inv[0].val() == 0 && Comb<Unused>::inv[-1].val() == 0);
 	assert(Unused::inversions == 0);
+	using InverseOnly = comb_test::Field<17, 92>;
+	assert(InverseOnly::inversions == 0);
+	assert((Comb<InverseOnly>::inv[16] * InverseOnly(16)).val() == 1);
+	assert(InverseOnly::inversions == 1 && Comb<InverseOnly>::fact[5].val() == 1);
 }

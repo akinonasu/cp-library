@@ -21,10 +21,12 @@ assert((c == std::vector<mint>{11, 10}));
 
 長さ 2 では順列は `[0, 1]` と `[1, 0]` の順です。前者はどの順列と合成しても相手を変えず、後者を自分自身と合成すると前者になります。一般の順列と添字の相互変換には [順列の辞書順順位・復元](permutation_rank.md) を使えます。
 
-| 操作 | 引数・返り値 |
-| --- | --- |
-| `symmetric_group_convolution(a, b)` | 同じ長さの `const std::vector<Mint>&` 2 本から `std::vector<Mint>` を返す。長さから `n` を決定 |
-| `symmetric_group_convolution(fft, a, b)` | 構築済みの `const SymmetricGroupFFT<Mint>&` を使い、同じ畳み込みを返す |
+$$\lambda$$ は $$n$$ を正整数の和として表し、大きい順に並べたもの（整数分割）です。変換結果でその分割に対応する正方行列の行数を $$d_\lambda$$ とすると、$$\displaystyle\sum_\lambda d_\lambda^2=n!$$ です。
+
+| 操作 | 引数・返り値 | 時間計算量 |
+| --- | --- | --- |
+| `symmetric_group_convolution(a, b)` | 同じ長さの `const std::vector<Mint>&` 2 本から `std::vector<Mint>` を返す。長さから `n` を決定 | $$O\left(n^2n!\log(n!)+\displaystyle\sum_\lambda d_\lambda^3\right)$$ |
+| `symmetric_group_convolution(fft, a, b)` | 構築済みの `const SymmetricGroupFFT<Mint>&` を使い、同じ畳み込みを返す | $$O\left(n^2n!+\displaystyle\sum_\lambda d_\lambda^3\right)$$ |
 
 入力は変更しません。型 `Mint` は両配列で同じ modint 型とし、法は **`n` より大きい素数**を使います。`mint`・`atcoder::modint998244353`・`atcoder::modint1000000007`・動的 modint に対応します。整数からの構築・四則演算・単項マイナス・`mod()` を備える型を指定してください。動的 modint の法は `fft` の構築から使用終了まで変更しません。
 
@@ -48,4 +50,4 @@ assert(symmetric_group_convolution(fft, unit, a) == a);
 
 参考: [Library Checker issue #1432](https://github.com/yosupo06/library-checker-problems/issues/1432)、David K. Maslen, [The efficient computation of Fourier transforms on the symmetric group](https://www.ams.org/journals/mcom/1998-67-223/S0025-5718-98-00964-8/)、同手法の [FPSAC 1997 発表版](https://fpsac-archive.github.io/FPSAC97/articles.html)。
 
-$$\lambda$$ は $$n$$ を正整数の和として表し、大きい順に並べたもの（整数分割）です。変換結果でその分割に対応する正方行列の行数を $$d_\lambda$$ とすると、$$\displaystyle\sum_\lambda d_\lambda^2=n!$$ です。畳み込みは前計算後 $$O\left(n^2n!+\displaystyle\sum_\lambda d_\lambda^3\right)$$ 時間です。前計算・保持空間は [Fourier 変換](symmetric_group_fft.md) と共通で、計算時の追加作業空間は $$O(n!)$$ です。modint の演算を $$O(1)$$ とします。
+`fft` を渡さない形式は、呼び出すたびに変換を準備します。準備を含む追加空間は $$O(nn!)$$ です。構築済み `fft` を渡す形式は、保持済みの領域に加えて $$O(n!)$$ の作業空間を使います。`fft` の構築・保持空間は [Fourier 変換](symmetric_group_fft.md) を参照してください。$$n=0,1$$ はどちらの形式も $$O(1)$$ 時間・追加空間です。modint の演算を $$O(1)$$ とします。

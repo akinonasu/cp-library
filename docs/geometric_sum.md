@@ -24,10 +24,12 @@ const mint s = geometric_sum(mint(3), 1000000000000000000ULL);
 assert(s * mint(2) == mint(3).pow(1000000000000000000LL) - mint(1));
 ```
 
-| 関数 | 内容・返り値 |
-| --- | --- |
-| `geometric_sum(ratio, n)` | $$\displaystyle\sum_{i=0}^{n-1}\mathrm{ratio}^i$$ を返す。`ratio` の型 `T` が返り値の型 |
-| `geometric_sum(first, ratio, n)` | $$\mathrm{first}\cdot\displaystyle\sum_{i=0}^{n-1}\mathrm{ratio}^i$$ を返す。`first` と `ratio` は同じ型 `T` |
+以下では `T` の加算・乗算・コピーを定数時間とします。
+
+| 関数 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `geometric_sum(ratio, n)` | $$\displaystyle\sum_{i=0}^{n-1}\mathrm{ratio}^i$$ を返す。`ratio` の型 `T` が返り値の型 | $$O(\log n)$$ |
+| `geometric_sum(first, ratio, n)` | $$\mathrm{first}\cdot\displaystyle\sum_{i=0}^{n-1}\mathrm{ratio}^i$$ を返す。`first` と `ratio` は同じ型 `T` | $$O(\log n)$$ |
 
 `n` は `bool` 以外の組込み整数型、`__int128_t`、`__uint128_t` で指定します。0 項の和は `T(0)`、負の `n` は `std::invalid_argument` を送出します。既定引数はありません。
 

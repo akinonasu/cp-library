@@ -18,4 +18,6 @@ auto inverse = compositional_inverse(f, 5); // {0,1,-1,2,-5}
 | --- | --- | --- |
 | `compositional_inverse(f,deg = -1)` | $$f(g(x))=x\bmod x^{\mathrm{deg}}$$ となる $$g$$。$$f_0=0$$、長さ 2 以上を求める場合は $$f_1\ne0$$。省略時は `f.size()` | $$O(n\log^2 n)$$ |
 
-入出力の最大係数数を $$n$$ として、時間 $$O(n\log^2 n)$$、追加空間 $$O(n)$$ です。
+返り値は `FormalPowerSeries<T>` です。`deg` は $$2^{21}$$ 以下にします。`deg=0` は空列、`deg=1` は `{0}` を返します。長さ 2 以上を求める場合は入力長も 2 以上とし、空の `f` は `deg=0,1` の場合に使えます。係数型と法の条件は [FPS](fps.md) と同じです。
+
+入出力の最大係数数を $$n$$ として、時間は $$O(n\log^2 n)$$、追加空間は $$O(n\log n)$$ です。Linux x86_64/GCC の AVX2 対応 CPU では $$O(n)$$ 追加空間です。AVX2 は複数の整数をまとめて処理する CPU 命令です。

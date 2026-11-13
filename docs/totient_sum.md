@@ -28,4 +28,4 @@ modint を指定すると、その法での値を返します。整数からの�
 
 Euler φ関数の和だけが必要な場合に使います。他の乗法的関数の和や、素数上の累積和も必要な場合は [MultiplicativePrefixSum](https://qandori.github.io/cp-library/math/multiplicative_prefix_sum.hpp.html) を使えます。
 
-時間計算量は $$O(n^{2/3}/\log n)$$、追加空間は $$O(\sqrt n)$$ です。
+`T` の演算とコピー、固定幅の整数演算を $$O(1)$$ とすると、時間計算量は $$O(n^{2/3}/\log n)$$、追加空間は $$O(\sqrt n)$$ です。

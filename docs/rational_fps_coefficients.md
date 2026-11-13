@@ -42,6 +42,6 @@ auto a = rational_fps_coefficients(p, q, 10, 15);
 
 初期値と係数列の長さは同じにし、`coefficients[0]` に 1 つ前の項の係数を入れます。1 項だけなら [Bostan–Mori](bostan_mori.md) や [線形漸化式の第 k 項](linear_recurrence.md) も使えます。
 
-時間は $$O(N\log N\log r+(N+M)\log(N+M))$$、追加空間は $$O(N\log r+M)$$ です。先頭付近の取得は $$O((N+M)\log(N+M))$$ 時間です。
+時間は $$O(N\log N\log r+(N+M)\log(N+M))$$、追加空間は $$O(N\log r+M)$$ です。先頭付近の取得は $$O((N+M)\log(N+M))$$ 時間です。$$r=1$$ は $$O(N+M)$$ 時間・追加空間、空区間は引数のコピーを含めて $$O(N)$$ 時間・追加空間以内です。
 
 参考：[AtCoder Algorithm Lectures：Bostan–Mori の発展](https://info.atcoder.jp/entry/algorithm_lectures/bostan_mori_advanced)

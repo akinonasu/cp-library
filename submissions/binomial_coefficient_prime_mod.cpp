@@ -12,12 +12,39 @@
 #line 1 "math/mint.hpp"
 
 
+#line 1 "components/compiler_features.hpp"
+
+
+
+#if defined(__x86_64__) || defined(__i386__)
+#define CP_X86 1
+#else
+#define CP_X86 0
+#endif
+#if CP_X86 && defined(__GNUC__) && !defined(__clang__)
+#define CP_GCC_X86 1
+#else
+#define CP_GCC_X86 0
+#endif
+#if CP_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CP_GNU_X86 1
+#else
+#define CP_GNU_X86 0
+#endif
+#if CP_GCC_X86 && defined(__linux__) && defined(__x86_64__)
+#define CP_GCC_LINUX64 1
+#else
+#define CP_GCC_LINUX64 0
+#endif
+
+
+#line 4 "math/mint.hpp"
 #include <cassert>
 #include <istream>
 #include <ostream>
 #include <type_traits>
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -29,11 +56,11 @@ constexpr bool mint_integral = std::is_integral_v<I>
 							   || std::is_same_v<I, __int128> || std::is_same_v<I, unsigned __int128>
 #endif
 	;
-struct Mint {
+struct [[gnu::warn_unused]] Mint {
 	using mint = Mint;
 	unsigned v = 0;
-	static constexpr unsigned mod() { return 998244353; }
-	[[gnu::always_inline]] static unsigned reduce(unsigned long long x) {
+	[[nodiscard]] static constexpr unsigned mod() { return 998244353; }
+	[[nodiscard, gnu::always_inline]] static unsigned reduce(unsigned long long x) {
 		return (x + (unsigned long long)(unsigned(x) * 998244351u) * mod()) >> 32;
 	}
 	[[gnu::always_inline]] Mint() = default;
@@ -43,17 +70,17 @@ struct Mint {
 		if (r < 0) r += mod();
 		v = reduce((unsigned long long)r * 932051910);
 	}
-	[[gnu::always_inline]] static Mint raw(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint raw(unsigned x) {
 		Mint a;
 		a.v = reduce((unsigned long long)x * 932051910);
 		return a;
 	}
-	[[gnu::always_inline]] static Mint word(unsigned x) {
+	[[nodiscard, gnu::always_inline]] static Mint word(unsigned x) {
 		Mint a;
 		a.v = x;
 		return a;
 	}
-	[[gnu::always_inline]] unsigned val() const {
+	[[nodiscard, gnu::always_inline]] unsigned val() const {
 		unsigned r = reduce(v);
 		return r < mod() ? r : r - mod();
 	}
@@ -92,27 +119,27 @@ struct Mint {
 		--*this;
 		return a;
 	}
-	[[gnu::always_inline]] Mint operator+() const { return *this; }
-	[[gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
-	[[gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
-	[[gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
-	[[gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
-	Mint operator/(Mint b) const { return Mint(*this) /= b; }
-	[[gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
-	[[gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
+	[[nodiscard, gnu::always_inline]] Mint operator+() const { return *this; }
+	[[nodiscard, gnu::always_inline]] Mint operator-() const { return word(v ? 2 * mod() - v : 0); }
+	[[nodiscard, gnu::always_inline]] Mint operator+(Mint b) const { return Mint(*this) += b; }
+	[[nodiscard, gnu::always_inline]] Mint operator-(Mint b) const { return Mint(*this) -= b; }
+	[[nodiscard, gnu::always_inline]] Mint operator*(Mint b) const { return Mint(*this) *= b; }
+	[[nodiscard]] Mint operator/(Mint b) const { return Mint(*this) /= b; }
+	[[nodiscard, gnu::always_inline]] bool operator==(Mint b) const { return (v < mod() ? v : v - mod()) == (b.v < mod() ? b.v : b.v - mod()); }
+	[[nodiscard, gnu::always_inline]] bool operator!=(Mint b) const { return !(*this == b); }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
+	[[nodiscard]] friend Mint operator+(I a, Mint b) { return Mint(a) + b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
+	[[nodiscard]] friend Mint operator-(I a, Mint b) { return Mint(a) - b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
+	[[nodiscard]] friend Mint operator*(I a, Mint b) { return Mint(a) * b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
+	[[nodiscard]] friend Mint operator/(I a, Mint b) { return Mint(a) / b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator==(I a, Mint b) { return Mint(a) == b; }
+	[[nodiscard]] friend bool operator==(I a, Mint b) { return Mint(a) == b; }
 	template <class I, std::enable_if_t<mint_integral<I>, int> = 0>
-	friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
-	Mint pow(long long n) const {
+	[[nodiscard]] friend bool operator!=(I a, Mint b) { return Mint(a) != b; }
+	[[nodiscard]] Mint pow(long long n) const {
 		assert(n >= 0);
 		if (!n) return Mint(1);
 		Mint r(1), a = *this;
@@ -120,7 +147,7 @@ struct Mint {
 			if (n & 1) r *= a;
 		return r * a;
 	}
-	[[gnu::noinline]] Mint inv() const {
+	[[nodiscard, gnu::noinline]] Mint inv() const {
 		assert(*this != Mint(0));
 		Mint a2 = *this * *this, a3 = a2 * *this;
 		Mint a7 = a3 * a3 * *this;
@@ -144,7 +171,7 @@ struct Mint {
 using mint = mint_detail::Mint;
 using fps_mint = mint;
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 
@@ -187,6 +214,11 @@ struct Barrett32 {
 #line 9 "components/factorial_table_generic.hpp"
 
 namespace factorial_table_detail {
+template<class Mint> void inverses(Mint *inverse, const Mint *factorial, const Mint *inverse_factorial, int n) {
+	inverse[0] = Mint(0);
+	for (int i = 1; i <= n; ++i) inverse[i] = factorial[i - 1] * inverse_factorial[i];
+}
+
 template<class Mint, bool Canonical = true> void build(Mint *factorial, Mint *inverse_factorial, int n) {
 	if constexpr (Canonical && requires(const Mint &x) { { x.val() } -> std::integral; }) {
 		const auto modulus = Mint::mod();
@@ -225,15 +257,19 @@ template<class Mint, bool Canonical = true> void build(Mint *factorial, Mint *in
 #include <vector>
 
 namespace light_factorial_detail {
-template<class Mint> struct Table {
+template<class Mint, bool WithInverse = false> struct Table {
 	decltype(Mint::mod()) modulus;
-	std::vector<Mint> factorial, inverse_factorial;
+	std::vector<Mint> factorial, inverse_factorial, inverse;
 
 	explicit Table(int max_n) : modulus(Mint::mod()) {
 		assert(0 <= max_n && max_n < std::numeric_limits<int>::max() && modulus > 1);
 		int n = static_cast<int>(std::min(std::uint64_t(max_n), std::uint64_t(modulus) - 1));
 		factorial.resize(n + 1), inverse_factorial.resize(n + 1);
 		factorial_table_detail::build<Mint, !std::is_same_v<Mint, mint>>(factorial.data(), inverse_factorial.data(), n);
+		if constexpr (WithInverse) {
+			inverse.resize(n + 1);
+			factorial_table_detail::inverses(inverse.data(), factorial.data(), inverse_factorial.data(), n);
+		}
 	}
 };
 }
@@ -250,18 +286,19 @@ inline constexpr int COMB_INF = static_cast<int>(COMB_MAX);
 static_assert(COMB_INF >= 0 && COMB_INF < mint::mod());
 namespace detail {
 template<class Mint>
-const light_factorial_detail::Table<Mint>& table() {
-	static light_factorial_detail::Table<Mint> value(COMB_INF);
-	if (value.modulus != Mint::mod()) value = light_factorial_detail::Table<Mint>(COMB_INF);
+const light_factorial_detail::Table<Mint, true>& table() {
+	static light_factorial_detail::Table<Mint, true> value(COMB_INF);
+	if (value.modulus != Mint::mod()) value = light_factorial_detail::Table<Mint, true>(COMB_INF);
 	return value;
 }
-template<class Mint, bool Inverse> struct Factorial {
+template<class Mint, int Kind> struct Factorial {
 	Mint operator[](int i) const {
-		if (i < 0) return Mint(0);
+		if (i < 0 || (Kind == 2 && i == 0)) return Mint(0);
 		assert(i <= COMB_INF);
 		const auto& value = table<Mint>();
 		assert(std::size_t(i) < value.factorial.size());
-		if constexpr (Inverse) return value.inverse_factorial[i];
+		if constexpr (Kind == 2) return value.inverse[i];
+		else if constexpr (Kind == 1) return value.inverse_factorial[i];
 		else return value.factorial[i];
 	}
 };
@@ -277,13 +314,25 @@ Mint comb(int n, int k) {
 }
 
 template<class Mint = mint> struct Comb {
-	inline static constexpr detail::Factorial<Mint, false> fact{};
-	inline static constexpr detail::Factorial<Mint, true> finv{};
+	inline static constexpr detail::Factorial<Mint, 0> fact{};
+	inline static constexpr detail::Factorial<Mint, 1> finv{};
+	inline static constexpr detail::Factorial<Mint, 2> inv{};
 	static Mint comb(int n, int k) { return light_combinatorics::comb<Mint>(n, k); }
 };
 inline constexpr auto& fact = Comb<>::fact;
 inline constexpr auto& finv = Comb<>::finv;
+inline constexpr auto& inv = Comb<>::inv;
 }
+
+#ifndef CP_COMB_API_HPP
+#define CP_COMB_API_HPP 1
+using light_combinatorics::COMB_INF;
+using light_combinatorics::comb;
+using light_combinatorics::Comb;
+using light_combinatorics::fact;
+using light_combinatorics::finv;
+using light_combinatorics::inv;
+#endif
 
 
 #line 1 "components/fast_io.hpp"
@@ -587,6 +636,6 @@ int main() {
 	for (int q = 0; q < queries; ++q) {
 		int n = 0, k = 0;
 		input.read(n), input.read(k);
-		output.println(light_combinatorics::comb<M>(n, k).val());
+		output.println(comb<M>(n, k).val());
 	}
 }

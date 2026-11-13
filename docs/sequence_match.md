@@ -30,4 +30,4 @@ int suffix = match.backward(2, 4, 2); // 2
 
 `index_runs(n)` は同一要素区間の境界を前計算します。`forward_counted`・`backward_counted` は `(一致長, 比較量)` を返し、最初の同一要素区間をまとめて飛ばします。前計算後は元の列を変更しないでください。`z_table`・`prefix_matches` だけが必要な場合は [Z algorithm の補助部品](z_algorithm_core.md) を直接 include できます。
 
-長さを $$n$$ として、通常の比較は最悪 $$O(\mathrm{limit})$$ 時間・$$O(1)$$ 追加空間、同一要素区間の前計算は $$O(n)$$ 時間・空間、Z algorithm は合計 $$O(n)$$ 要素比較です。
+長さを $$n$$ として、通常の比較は最悪 $$O(\mathrm{limit})$$ 時間・$$O(1)$$ 追加空間、同一要素区間の前計算は $$O(n)$$ 時間・空間、Z algorithm は合計 $$O(n)$$ 要素比較です。`z_table`・`prefix_matches` は、渡した Z 配列と `match`・`emit` 自身が使う領域を除き、$$O(1)$$ 追加空間です。`emit` の処理時間は別途必要です。

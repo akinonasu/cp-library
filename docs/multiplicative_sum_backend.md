@@ -9,4 +9,4 @@ documentation_of: //components/multiplicative_sum_backend.hpp
 
 入力する関数・表の条件は公開ライブラリと同じです。上限を $$n$$ として、素数上の和の復元は $$\displaystyle O(\sqrt n\log\log n)$$ 時間です。
 
-作業領域は $$\displaystyle O(\sqrt n)$$ です。
+追加空間は $$\displaystyle O(\sqrt n)$$ です。

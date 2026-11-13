@@ -35,13 +35,13 @@ queue.erase(30);
 | `erase(t)` | 時刻 `t` の操作を取り消す | 償却期待 $$O(B\log B+m/B+\log m)$$ |
 | `top()` | 現在の先頭を `optional<T>` で取得。空なら `nullopt` | 期待 $$O(B\log B+(m/B)\log B\log m)$$ |
 | `size()` / `empty()` | 現在の要素数／空判定 | $$O(1)$$ |
-| `contains_time(t)` / `operation_count()` | 時刻 `t` の操作の有無／操作数 | contains_time: 期待 $$O(\log m)$$、operation_count: $$O(1)$$ |
+| `contains_time(t)` / `operation_count()` | 時刻 `t` の操作の有無／操作数 | contains_time: $$O(\log m)$$、operation_count: $$O(1)$$ |
 | `assign(updates)` | 操作履歴をまとめて設定。無効なら false を返して元の履歴を保つ | $$O(M+m\log m)$$ |
 | `reserve(m)` / `clear()` | 領域予約／容量を残して履歴を初期化 | $$O(M)$$ |
 | `memory_usage()` | 確保済み領域のバイト数 | $$O(m/B)$$ |
 | `swap(other)` | 内容・比較関数・乱数生成器の状態を交換 | $$O(1)$$ |
 | `top(t)` | 時刻 `t` の操作直後の先頭を `optional<T>` で取得 | 期待 $$O(B\log B+(m/B)\log B\log m)$$ |
-| `size(t)` / `empty(t)` | 時刻 `t` の操作直後の要素数／空判定 | 期待 $$O(\log m)$$ |
+| `size(t)` / `empty(t)` | 時刻 `t` の操作直後の要素数／空判定 | $$O(\log m)$$ |
 
 履歴変更は成功時に `true` を返します。時刻の衝突、対象操作の不在、`set` の対象が `pop` の場合や、変更後の履歴で空キューへの削除が発生する場合は `false` を返し、状態を保ちます。
 

@@ -27,4 +27,4 @@ auto a = rational_fps_coefficients(p, q, 10, 15);
 
 初期値と漸化式からの使い方は [通常版の説明](rational_fps_coefficients.md) を参照してください。include 先を `fps/rational_fps_coefficients_light.hpp` に切り替えると、同じコードで使えます。
 
-時間は $$O(N\log N\log r+(N+M)\log(N+M))$$、追加空間は $$O(N\log r+M)$$ です。先頭付近の取得は $$O((N+M)\log(N+M))$$ 時間です。
+時間は $$O(N\log N\log r+(N+M)\log(N+M))$$、追加空間は $$O(N\log r+M)$$ です。先頭付近の取得は $$O((N+M)\log(N+M))$$ 時間です。$$r=1$$ は $$O(N+M)$$ 時間・追加空間、空区間は引数のコピーを含めて $$O(N)$$ 時間・追加空間以内です。

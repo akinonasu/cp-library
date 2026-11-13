@@ -24,12 +24,12 @@ assert(solution->count == 2);
 assert(!linear_congruence(6, 3, 10));
 ```
 
-| 操作・型 | 引数・返り値 |
-| --- | --- |
-| `linear_congruence(a, b, m)` | 3 引数は `std::int64_t`。解があれば `std::optional<LinearCongruenceSolution>`、なければ `std::nullopt` を返す |
-| `solution.residue` | 最小非負解 `std::int64_t` |
-| `solution.period` | 全解の周期 `std::int64_t` |
-| `solution.count` | `0 <= x < m` の解の個数 `std::int64_t` |
+| 操作・型 | 引数・返り値 | 計算量 |
+| --- | --- | --- |
+| `linear_congruence(a, b, m)` | 3 引数は `std::int64_t`。解があれば `std::optional<LinearCongruenceSolution>`、なければ `std::nullopt` を返す | $$O(\log m)$$ |
+| `solution.residue` | 最小非負解 `std::int64_t` | $$O(1)$$ |
+| `solution.period` | 全解の周期 `std::int64_t` | $$O(1)$$ |
+| `solution.count` | `0 <= x < m` の解の個数 `std::int64_t` | $$O(1)$$ |
 
 $$1\le m\le\mathrm{INT64\_MAX}$$ とし、$$a,b$$ は符号付き 64 bit 整数の全範囲で指定できます。`m <= 0` は `std::invalid_argument` を送出します。全ての入力・返り値は 64 bit で扱い、途中の積だけ 128 bit を使ってオーバーフローを防ぎます。`constexpr` に対応します。
 

@@ -54,18 +54,18 @@ $$\displaystyle \texttt{prime\_prefix}[i]=G(q_i)=\sum_{\substack{p\leq q_i\\p\te
 
 以下では $$q_i=\texttt{quotients()}[i]$$ とします。
 
-| 操作 | 内容・返り値 |
-| --- | --- |
-| `MultiplicativePrefixSum<T>(n = 0)` | 上限 `n` の計算領域を作る |
-| `max_n()` / `size()` | 上限／商の表の要素数 |
-| `quotients()` | 異なる正の `n/i` を降順に並べた `const vector<uint64_t>&` |
-| `index(x)` | `quotients()` に含まれる正の `x` の添字 |
-| `prime_sum_linear(a,b)` | 各要素が $$\displaystyle\sum_{p\leq q_i,\ p\text{ prime}}(a+bp)$$ の `vector<T>` を返す |
-| `prime_sum(integer_prefix)` | **入力：** $$\displaystyle\texttt{integer\_prefix}(x)=\sum_{k=1}^x g(k)$$ を `T` で返す関数。$$g(1)=1$$ かつ全ての正整数 $$a,b$$ に対して $$g(ab)=g(a)g(b)$$ を満たす完全乗法的な $$g$$ に限る。**返り値：** 各要素が $$\displaystyle\sum_{p\leq q_i,\ p\text{ prime}}g(p)$$ の `vector<T>` |
-| `sum(prime_prefix,prime_power)` | `F(n)` を `T` で返す |
-| `prefix_sum(prime_prefix,prime_power)` | 各要素が $$\displaystyle F(q_i)=\sum_{k=1}^{q_i}f(k)$$ の `vector<T>` を返す |
-| `get(table,x)` | 作った表の `x` に対する値。`x = 0` は 0 |
-| `swap(other)` | 二つの計算領域を交換する |
+| 操作 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `MultiplicativePrefixSum<T>(n = 0)` | 上限 `n` の計算領域を作る | $$\displaystyle O(\sqrt n\log\log n)$$ |
+| `max_n()` / `size()` | 上限／商の表の要素数 | $$O(1)$$ |
+| `quotients()` | 異なる正の `n/i` を降順に並べた `const vector<uint64_t>&` | $$O(1)$$ |
+| `index(x)` | `quotients()` に含まれる正の `x` の添字 | $$O(1)$$ |
+| `prime_sum_linear(a,b)` | 各要素が $$\displaystyle\sum_{p\leq q_i,\ p\text{ prime}}(a+bp)$$ の `vector<T>` を返す | $$\displaystyle O\!\left(\frac{n^{3/4}}{\log n}\right)$$ |
+| `prime_sum(integer_prefix)` | **入力：** $$\displaystyle\texttt{integer\_prefix}(x)=\sum_{k=1}^x g(k)$$ を `T` で返す関数。$$g(1)=1$$ かつ全ての正整数 $$a,b$$ に対して $$g(ab)=g(a)g(b)$$ を満たす完全乗法的な $$g$$ に限る。**返り値：** 各要素が $$\displaystyle\sum_{p\leq q_i,\ p\text{ prime}}g(p)$$ の `vector<T>` | $$\displaystyle O\!\left(\frac{n^{3/4}}{\log n}\right)$$ |
+| `sum(prime_prefix,prime_power)` | `F(n)` を `T` で返す | $$\displaystyle O\!\left(\frac{n^{3/4}}{\log n}\right)$$ |
+| `prefix_sum(prime_prefix,prime_power)` | 各要素が $$\displaystyle F(q_i)=\sum_{k=1}^{q_i}f(k)$$ の `vector<T>` を返す | $$\displaystyle O\!\left(\frac{n^{3/4}}{\log n}\right)$$ |
+| `get(table,x)` | 作った表の `x` に対する値。`x = 0` は 0 | $$O(1)$$ |
+| `swap(other)` | 二つの計算領域を交換する | $$O(1)$$ |
 
 `prime_power(p,e,pe)` は $$f(p^e)$$ を `T` で返します。`p` は素数、`e >= 1`、`pe = p^e <= n` です。同じ引数には同じ値を返してください。`prime_prefix` の素数上の値と、このコールバックの `e = 1` の値は一致する必要があります。高い冪に対する値は任意に指定できます。
 

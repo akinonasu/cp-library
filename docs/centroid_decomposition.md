@@ -46,7 +46,7 @@ tree.for_each_ancestor(0, [&](int c, int d, int branch) {
 | `in[v]` / `out[v]` / `order[i]` | 重心分解木の部分木の左端／右端／DFS 順の頂点 | $$O(1)$$ |
 | `n` / `edges[id]` | 全頂点数／入力した辺 | $$O(1)$$ |
 
-入力は頂点番号が 0 始まりの無向木です。空の木も扱えます。根は自動で決まり、辺重みには依存しません。`size[c]` は `c` を重心として選んだ時点の成分の頂点数でもあります。各走査は再帰を使いません。
+頂点数は `0 <= n <= INT_MAX / 2`、頂点番号は `[0,n)` です。空でない入力は連結な無向木とし、辺をちょうど `n-1` 本追加してから `build()` を呼びます。空の木も扱えます。根は自動で決まり、辺重みには依存しません。`size[c]` は `c` を重心として選んだ時点の成分の頂点数でもあります。各走査は再帰を使いません。
 
 `T` は辺重みと経路和を表せる型を指定します。重み付き木では `CentroidDecomposition<long long>` などを使います。負の重みも扱えますが、最近傍探索など三角不等式を使う応用では非負の重みが必要です。
 
@@ -71,4 +71,4 @@ tree.for_each_ancestor(v, [&](int c, int d, int) {
 
 `build(false)` でも重心分解木と部分木の区間は取得できます。`ancestors`・`for_each_ancestor`・`distance_to_ancestor`・`dist` には `build(true)` が必要です。`ancestors` の返す参照は再構築・辺の追加で無効になります。構築後の公開配列は参照用です。元の木の LCA が必要なら [LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) を使います。
 
-構築は $$O(n\log n)$$ 時間、距離キャッシュを持つ場合は $$O(n\log n)$$ 空間、持たない場合は $$O(n)$$ 空間です。`add_edge` は償却 $$O(1)$$、`for_each_ancestor`・`centroid_lca`・`dist` は $$O(\log n)$$、それ以外のクエリは $$O(1)$$ です。
+頂点数を $$n$$ として、構築は $$O(n\log n)$$ 時間、距離キャッシュを持つ場合は $$O(n\log n)$$ 空間、持たない場合は $$O(n)$$ 空間です。`add_edge` は償却 $$O(1)$$、`for_each_ancestor`・`centroid_lca`・`dist` は $$O(\log n)$$、それ以外のクエリは $$O(1)$$ です。`T` の演算・コピーを $$O(1)$$ とします。`for_each_ancestor` は $$O(\log n)$$ 回 `f` を呼び、その処理時間を別に加えます。表では `f` の 1 回の実行を $$O(1)$$ とします。

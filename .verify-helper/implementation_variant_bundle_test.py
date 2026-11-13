@@ -79,6 +79,12 @@ int main() {
     Comb c;
     assert(c.comb(10, 3) == mint(120) && comb(10, 3) == mint(120));
     assert(fact[5] == mint(120) && fact[20] * finv[20] == mint(1));
+    assert(inv[0] == mint(0) && inv[-1] == mint(0));
+    for (int v = 1; v <= 200; ++v) {
+        assert(inv[v] * mint(v) == mint(1));
+        assert(c.inv[v] == inv[v]);
+        assert(light_combinatorics::inv[v] == inv[v]);
+    }
     BinomialPrefixSum sum(12);
     IncrementalBinomialPrefixSum incremental(12);
     assert(sum.query(5, 3) == mint(16));

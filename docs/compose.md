@@ -18,4 +18,6 @@ auto result = compose(f, g, 8); // {1,2,5,6,3,0,0,0}
 | --- | --- | --- |
 | `compose(f,g,deg = -1)` | $$f(g(x))\bmod x^{\mathrm{deg}}$$。$$g_0=0$$。省略時の長さは `f.size()` | $$O(n\log^2 n)$$ |
 
+返り値は `FormalPowerSeries<T>` です。`deg` は $$0\le\mathrm{deg}\le2^{22}$$ とし、係数型と法の条件は [FPS](fps.md) と同じです。`deg=0` は空列です。空の `f`・`g` は零多項式として扱い、`g` が空の場合も使えます。
+
 入出力の最大係数数を $$n$$ として、時間 $$O(n\log^2 n)$$、追加空間 $$O(n\log n)$$ です。

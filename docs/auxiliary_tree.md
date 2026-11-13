@@ -35,7 +35,7 @@ int main() {
 
 出力は `4 1 2`、`2 1 1` の 2 行です。各行は「元の頂点番号、補助木での親の元の頂点番号、親までの元の辺数」です。頂点 2 と 4 に加え、LCA の頂点 1 が残ります。元の木の頂点 3 は辺の途中にまとめられ、根だった頂点 0 も補助木には入りません。
 
-[LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) または [HLD](https://qandori.github.io/cp-library/tree/hld.hpp.html) を先に `build` してください。その根に基づく LCA を使い、補助木の根は指定頂点全体の LCA になります。
+[LCA](https://qandori.github.io/cp-library/tree/lca.hpp.html) または [HLD](https://qandori.github.io/cp-library/tree/hld.hpp.html) を先に `build` してください。その根に基づく LCA を使い、補助木の根は指定頂点全体の LCA になります。以下では元の頂点数を $$n$$、重複を含む入力列長を $$k$$、補助木の頂点数を $$m$$ とします。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -56,7 +56,7 @@ int main() {
 | `length` | 親までの元の辺数。根は 0 |
 | `selected` | 入力に含まれる頂点か。LCA として追加しただけの頂点は false |
 
-入力は `std::vector<int>`・`std::array<int,k>` などの `std::span<const int>` に変換できる列です。入力を書き換えず、重複は一つにまとめます。空入力にも対応し、異なる指定頂点が $$k$$ 個なら補助木は最大 $$2k-1$$ 頂点です。
+入力は `std::vector<int>`・`std::array<int,k>` などの `std::span<const int>` に変換できる列です。入力を書き換えず、重複は一つにまとめます。空入力にも対応し、異なる指定頂点が $$d>0$$ 個なら補助木は最大 $$2d-1$$ 頂点です。
 
 元の頂点番号と、補助木の配列を参照するための圧縮 ID は別物です。`vt[i].vertex` は元の頂点番号、`vt[i].parent` は補助木の ID です。親の元の頂点番号を取得するには、根でないことを確認して `vt[vt[i].parent].vertex` とします。
 
