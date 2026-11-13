@@ -16,4 +16,8 @@ documentation_of: //components/fps_product_tree.hpp
 
 互換 API の `frequency` は変換キャッシュを保持せず、`build` では空の各要素で初期化します。static `evaluate` の `frequency`・`consume` は結果に影響しません。専用の評価・補間の木の経路は[評価・補間の専用実装](fps_evaluation.md)が扱います。
 
-点数を $$m$$、評価する多項式の係数数を $$n$$ として、通常の構築・補間は $$O(m\log^2 m)$$ 時間・木の保持に $$O(m\log m)$$ 空間、評価は $$O((n+m)\log^2(n+m))$$ 時間です。
+点数を $$m$$、評価する多項式の係数数を $$n$$ として、通常の構築・補間は $$O(m\log^2 m)$$ 時間・木の保持に $$O(m\log m)$$ 空間、評価は $$O((n+m)\log^2(n+m))$$ 時間です。構築済みの木を除く追加空間は、評価が $$O(n+m)$$、補間が $$O(m)$$ です。空の点列の構築・評価・補間は $$O(1)$$ 時間・空間です。係数型・点数・畳み込みの上限は[共通積木](polynomial_product_tree.md)と同じです。
+
+互換 `build` では、呼び出し前の `size` を正の 2 冪、`block` を正整数とします。$$b=\texttt{block}$$、$$g=\lceil m/b\rceil$$、更新後の `size` を $$s$$ とすると、時間は $$O(s+mb+m\log^2 m)$$、返す木と `frequency` の保持空間は $$O(s+gb+m\log m)$$ です。$$gb$$ は葉が確保する係数の容量を含みます。`block` を大きくすると葉の構築に使う時間も増えます。
+
+互換 `evaluate` には、対応する `build` の木と同じ `size`・`block` を渡します。`size * block` は `int` の範囲に収めてください。$$R$$ を `root.size()`・`points.size()`・`size * block` の最大値とし、復元する多項式と剰余計算に必要な長さを FPS の上限内に収めると、時間は $$O(R\log^2 R)$$、追加空間は $$O(R\log R)$$ です。渡した木の保持空間はこれに含めません。

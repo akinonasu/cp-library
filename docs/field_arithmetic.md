@@ -9,8 +9,8 @@ documentation_of: //components/field_arithmetic.hpp
 
 | 操作 | 内容 | 計算量 |
 | --- | --- | --- |
-| `field_detail::Field<T>` | 通常の型 `T` を使う演算 | — |
-| `field_detail::ModularField<T>` | 固定法の modint を、0 以上法未満の `uint32_t` で扱う演算 | — |
+| `field_detail::Field<T>` | 通常の型 `T` を使う演算 | 型の定義（実行時処理なし） |
+| `field_detail::ModularField<T>` | 固定法の modint を、0 以上法未満の `uint32_t` で扱う演算 | 型の定義（実行時処理なし） |
 | `Ops::add(a,b)` / `Ops::mul(a,b)` / `Ops::neg(a)` / `Ops::inv(a)` | 加算・乗算・符号反転・逆元 | 型 `T` の演算による |
 | `Ops::dot(a,b,n)` | 長さ `n` の内積 | $$O(n)$$ |
 | `Ops::scale(a,n,x)` | `a` の長さ `n` の領域を `x` 倍 | $$O(n)$$ |

@@ -42,4 +42,4 @@ assert(!sat.answer()[0]);
 
 参考: [Nyaan's Library](https://github.com/NyaanNyaan/library/blob/master/math/two-sat.hpp)、[maspypy library](https://github.com/maspypy/library/blob/main/graph/twosat.hpp)。
 
-変数数を $$n$$、節数を $$m$$ として、構築は $$O(n)$$、節追加は償却 $$O(1)$$、初回または節追加後の判定は $$O(n+m)$$、変更のない問題の再判定は $$O(1)$$、代入例のコピーは $$O(n)$$、保持・作業空間は $$O(n+m)$$ です。空の問題は $$O(1)$$ 時間・空間です。
+変数数を $$n$$、節数を $$m$$ として、構築は $$O(n)$$、`size()` は $$O(1)$$、節追加は償却 $$O(1)$$、初回または節追加後の判定は $$O(n+m)$$、変更のない問題の再判定は $$O(1)$$、代入例のコピーは $$O(n)$$、保持・作業空間は $$O(n+m)$$ です。`reserve(r)` は再確保がある場合に $$O(m)$$ 時間、ない場合に $$O(1)$$ 時間で、予約した容量 $$O(r)$$ も保持空間に含めます。空の問題は $$O(1)$$ 時間・空間です。

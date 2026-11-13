@@ -29,7 +29,7 @@ if (result.feasible()) {
 }
 ```
 
-`DifferenceConstraints<Cost = std::int64_t>(n = 0)` で変数の個数を指定します。変数番号は `[0,n)`、`origin()` は定数 0 を表す頂点 `n` です。二変数の制約・差の問い合わせでは `origin()` も指定できます。差の向きは全て **`x[v] - x[u]`** です。
+`DifferenceConstraints<Cost = std::int64_t>(n = 0)` で `0 <= n <= INT_MAX - 2` の変数の個数を指定します。変数番号は `[0,n)`、`origin()` は定数 0 を表す頂点 `n` です。二変数の制約・差の問い合わせでは `origin()` も指定できます。差の向きは全て **`x[v] - x[u]`** です。
 
 既定の計算・戻り値は `std::int64_t` です。128 bit が必要な場合は `DifferenceConstraints<__int128_t>` を使ってください。`Cost` は 16 byte 以下の符号付き整数型で、戻り値の `value_type` は `Cost` が 8 byte 以下なら `std::int64_t`、それ以外なら `__int128_t` です。値と途中計算が型の範囲に収まるようにしてください。扱えない値を検出すると `std::overflow_error` を投げます。
 
@@ -82,4 +82,4 @@ if (result.feasible()) {
 | `solve()`：上記の全ての `c` が非負の場合 | $$O(N+M)$$ | $$O(N+M)$$ |
 | 上下限・差の最大値・最小値の取得（1 回） | $$O(N+Mw)$$ | $$O(N+M\log M)$$ |
 
-`solve()` と上下限の取得は $$O(N+M)$$ 追加空間を使います。同じ変数同士の差の取得と、解・負閉路の参照は $$O(1)$$ 時間です。
+構築と、`size()`・`origin()`・`constraint_count()`・`constraints()` による参照は $$O(1)$$ 時間です。制約の保持に $$O(M)$$、`solve()` と上下限の取得に $$O(N+M)$$ 追加空間を使い、`Result` の保持は $$O(N+M)$$ 空間です。`reserve(r)` は再確保がある場合に $$O(M)$$ 時間、ない場合に $$O(1)$$ 時間で、予約した容量 $$O(r)$$ も保持空間に含めます。同じ変数同士の差の取得と、結果の個数取得・解・負閉路の参照は $$O(1)$$ 時間です。

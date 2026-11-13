@@ -16,7 +16,7 @@ auto weighted = sums[1][1]; // 5
 auto signed_sum = generalized_floor_sum<1, 1>(6, 6, -2, 9); // -4
 ```
 
-以下の $$D$$ は、`generalized_floor_sum<P,Q>` では $$P+Q$$、`generalized_floor_sum_moments<D>` では指定したテンプレート引数です。
+次数 `P,Q,D` は非負の `int` とします。以下の $$D$$ は、`generalized_floor_sum<P,Q>` では $$P+Q$$、`generalized_floor_sum_moments<D>` では指定したテンプレート引数です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -37,4 +37,6 @@ $$\displaystyle \sum_{i=0}^{n-1} i^P\left\lfloor\frac{ai+b}{m}\right\rfloor^Q$$
 
 引数は順に項数 `n`、法 `m`、係数 `a`、定数項 `b` です。テンプレート引数 `P,Q` はコンパイル時に指定します。上の例では床関数の値が `{0,0,1,1}` なので、`value` は $$0\cdot0^2+1\cdot0^2+2\cdot1^2+3\cdot1^2=5$$ です。`sums[p][q]` は同じ入力に対する `generalized_floor_sum<p,q>` の値で、`p+q <= D` の範囲を参照します。
 
-時間は $$O(D^3\log m)$$、追加空間は $$O(D^2\log m)$$ です。次数 1・2 は $$O(\log m)$$、次数 1 の追加空間は $$O(1)$$ です。係数の初回前計算は $$O(D^3)$$ 時間・$$O(D^2)$$ 空間です。
+`T` の四則演算・コピーを $$O(1)$$ とすると、時間は $$O(D^3\log m)$$、追加空間は $$O(D^2\log m)$$ です。次数 0 は $$O(1)$$ 時間・追加空間、次数 1・2 は $$O(\log m)$$、次数 1 の追加空間は $$O(1)$$ です。係数の初回前計算は $$O(D^3)$$ 時間・$$O(D^2)$$ 空間です。
+
+係数の前計算表は次数と型ごとに共有し、初回生成後も $$O(D^2)$$ の領域を保持します。`T` に法を変更できる modint を指定する場合は、これらの関数を使っている間は、その型の法を変更しないでください。

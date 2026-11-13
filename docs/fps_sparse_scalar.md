@@ -7,4 +7,4 @@ documentation_of: //components/fps_sparse_scalar.hpp
 
 `Terms`・`Kind`・`collect`・`get` の引数・返り値・前提条件は [通常版の疎演算](https://qandori.github.io/cp-library/components/fps_sparse.hpp.html) と同じです。係数型は `mint` です。
 
-非零係数数を $$k$$、求める係数数を $$n$$ として、時間 $$O(nk)$$、追加空間 $$O(n+k)$$ です。逆元表の準備時間・空間は別途必要です。
+非零係数数を $$k$$、求める係数数を $$n$$ として、`get` は $$O(nk)$$ 時間・$$O(n+k)$$ 追加空間です。項が空の場合は、結果を初期化する $$O(n)$$ 時間・空間を使います。`collect` は走査する係数数を $$m$$ として $$O(m)$$ 時間、収集した項数に比例する追加空間です。逆元表の準備時間・空間は別途必要です。

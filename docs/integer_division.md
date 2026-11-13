@@ -26,10 +26,10 @@ const auto wide = floor_div<__int128_t>(std::numeric_limits<std::int64_t>::min()
 assert(wide == (__int128_t(1) << 63));
 ```
 
-| 関数 | 内容・返り値 |
-| --- | --- |
-| `floor_div(a, b)` | $$\left\lfloor\displaystyle\frac{a}{b}\right\rfloor$$ を返す |
-| `ceil_div(a, b)` | $$\left\lceil\displaystyle\frac{a}{b}\right\rceil$$ を返す |
+| 関数 | 内容・返り値 | 計算量 |
+| --- | --- | --- |
+| `floor_div(a, b)` | $$\left\lfloor\displaystyle\frac{a}{b}\right\rfloor$$ を返す | $$O(1)$$ |
+| `ceil_div(a, b)` | $$\left\lceil\displaystyle\frac{a}{b}\right\rceil$$ を返す | $$O(1)$$ |
 
 `a` の型を `T`、`b` の型を `U` として、返り値は `std::common_type_t<T, U>` です。`bool` 以外の組込み整数型と `__int128_t`・`__uint128_t` に対応し、両引数の符号の有無は揃えてください。`int64_t` と `int` のように幅が異なる組合せにも使えます。既定の型引数はありません。
 

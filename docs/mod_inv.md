@@ -26,4 +26,4 @@ auto x = inverse.inv(3); // 6
 
 小さい分子・分母による有理数表現と逆元表を前計算するため、クエリ時に Euclid の互除法や繰り返し二乗法を行いません。累乗も必要なら、逆元機能を含む [ModPow](https://qandori.github.io/cp-library/math/mod_pow.hpp.html) を使います。
 
-前計算は $$O(p^{2/3})$$ 時間・空間、`mod`・`inv` は $$O(1)$$ 時間です。
+前計算は $$O(p^{2/3})$$ 時間・空間、`mod`・`inv` は $$O(1)$$ 時間・追加空間です。
