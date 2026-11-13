@@ -4,6 +4,10 @@
 
 
 
+#line 1 "components/link_cut_tree_core.hpp"
+
+
+
 #include <cassert>
 #include <concepts>
 #include <cstddef>
@@ -14,22 +18,32 @@
 #include <utility>
 #include <vector>
 
-template <class S, auto op, auto e, bool commutative = false>
-class LinkCutTree {
-	static constexpr bool scalar = commutative && std::is_arithmetic_v<S>;
+namespace link_cut_tree_detail {
+
+template <class S, auto op, auto e, bool commutative = false, bool directional = false>
+class Tree {
+	static constexpr bool scalar = commutative && std::is_arithmetic_v<S> && !directional;
 	struct Empty {};
-	using Back = std::conditional_t<commutative, Empty, S>;
+	struct EmptyReverse {};
+	using Back = std::conditional_t<commutative && !directional, Empty, S>;
+	using Reverse = std::conditional_t<directional, S, EmptyReverse>;
 	struct Node {
 		int ch[2] = {}, parent = 0;
 		std::uint32_t count : 31 = 1;
 		std::uint32_t rev : 1 = 0;
 		S value, prod;
 		[[no_unique_address]] Back back;
+		[[no_unique_address]] Reverse value_reverse;
 		static Back make_back(const S &v) {
-			if constexpr (commutative) return {};
+			if constexpr (commutative && !directional) return {};
 			else return v;
 		}
-		explicit Node(const S &v) : value(v), prod(v), back(make_back(v)) {}
+		static Reverse make_reverse(const S &v) {
+			if constexpr (directional) return v;
+			else return {};
+		}
+
+		explicit Node(const S &v) : value(v), prod(v), back(make_back(v)), value_reverse(make_reverse(v)) {}
 	};
 	std::vector<Node> t;
 	void init(int n) {
@@ -52,15 +66,17 @@ class LinkCutTree {
 			v.prod = l ? op(t[l].prod, v.value) : v.value;
 			if (r) v.prod = op(std::move(v.prod), t[r].prod);
 		}
-		if constexpr (!commutative) {
-			v.back = r ? op(t[r].back, v.value) : v.value;
+		if constexpr (!commutative || directional) {
+			if constexpr (directional) v.back = r ? op(t[r].back, v.value_reverse) : v.value_reverse;
+			else v.back = r ? op(t[r].back, v.value) : v.value;
 			if (l) v.back = op(std::move(v.back), t[l].back);
 		}
 	}
 	void flip(int x) {
 		if constexpr (!scalar) if (!x) return;
 		std::swap(t[x].ch[0], t[x].ch[1]);
-		if constexpr (!commutative) std::ranges::swap(t[x].prod, t[x].back);
+		if constexpr (!commutative || directional) std::ranges::swap(t[x].prod, t[x].back);
+		if constexpr (directional) std::ranges::swap(t[x].value, t[x].value_reverse);
 		t[x].rev ^= 1;
 	}
 	void push(int x) {
@@ -125,17 +141,17 @@ class LinkCutTree {
 	}
 
   public:
-	explicit LinkCutTree(int n = 0) {
+	explicit Tree(int n = 0) {
 		init(n);
 		for (int repeat_index = 0; repeat_index < n; ++repeat_index) t.emplace_back(t[0].value);
 	}
-	explicit LinkCutTree(const std::vector<S> &values) {
+	explicit Tree(const std::vector<S> &values) {
 		assert(values.size() < std::size_t(std::numeric_limits<int>::max()));
 		init(static_cast<int>(values.size()));
 		for (const S &v : values) t.emplace_back(v);
 	}
 	int size() const { return t.empty() ? 0 : static_cast<int>(t.size()) - 1; }
-	void build_forest(std::span<const std::pair<int, int>> edges) {
+	void build_forest(std::span<const std::pair<int, int>> edges) requires (!directional) {
 		assert(edges.size() < std::size_t(size()) || (edges.empty() && size() == 0));
 		std::vector<int> degree(size()), neighbors(size()), parent(size(), -1), order;
 		order.reserve(size());
@@ -164,11 +180,22 @@ class LinkCutTree {
 			if constexpr (!commutative) x.back = x.value;
 		}
 	}
-	S get(int v) const { return t[node(v)].value; }
-	void set(int v, S value) {
+	S get(int v) const requires (!directional) { return t[node(v)].value; }
+	void set(int v, S value) requires (!directional) {
 		int x = node(v);
 		splay(x);
 		t[x].value = std::move(value);
+	}
+	std::pair<S, S> get(int v) requires (directional) {
+		int x = node(v);
+		access(x);
+		return {t[x].value, t[x].value_reverse};
+	}
+	void set(int v, S value, S reverse) requires (directional) {
+		int x = node(v);
+		access(x);
+		t[x].value = std::move(value);
+		t[x].value_reverse = std::move(reverse);
 	}
 	void make_root(int v) { reroot(node(v)); }
 	int root(int v) {
@@ -235,6 +262,20 @@ class LinkCutTree {
 		assert(u == v || t[u].parent != 0);
 		return w - 1;
 	}
+};
+
+}
+
+
+#line 5 "tree/link_cut_tree.hpp"
+
+template <class S, auto op, auto e, bool commutative = false>
+class LinkCutTree : public link_cut_tree_detail::Tree<S, op, e, commutative, false> {
+	using Base = link_cut_tree_detail::Tree<S, op, e, commutative, false>;
+
+  public:
+	explicit LinkCutTree(int n = 0) : Base(n) {}
+	explicit LinkCutTree(const std::vector<S> &values) : Base(values) {}
 };
 
 

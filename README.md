@@ -138,6 +138,7 @@
 | `tree/tree_hash.hpp` | 根を持たない木のハッシュ | [使い方](docs/tree_hash.md) |
 | `tree/permutation_tree.hpp` | Permutation Tree（共通区間分解木） | [使い方](docs/permutation_tree.md) |
 | `tree/link_cut_tree.hpp` | Link Cut Tree | [使い方](docs/link_cut_tree.md) |
+| `tree/edge_link_cut_tree.hpp` | 辺重み・方向付きの Link Cut Tree | [使い方](docs/edge_link_cut_tree.md) |
 | `tree/persistent_link_cut_tree.hpp` | 永続 Link Cut Tree・過去版からの分岐 | [使い方](docs/persistent_link_cut_tree.md) |
 | `tree/top_tree.hpp` | Top Tree・辺の追加削除と木 DP | [使い方](docs/top_tree.md) |
 | `tree/lca.hpp` | LCA | [使い方](docs/lca.md) |
@@ -470,6 +471,7 @@
 | `components/integer_geometry_bridge.hpp` | 整数幾何と通常幾何の厳密な座標変換 | [使い方](docs/integer_geometry_bridge.md) |
 | `components/min_plus_convolution_envelope.hpp` | 凹列と任意列の畳み込み | [使い方](docs/min_plus_convolution_envelope.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
+| `components/link_cut_tree_core.hpp` | Link Cut Tree の共通処理 | [使い方](docs/link_cut_tree_core.md) |
 | `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |
 | `components/field_arithmetic.hpp` | 体の演算・内積・配列の定数倍と加算 | [使い方](docs/field_arithmetic.md) |
 | `components/field_base.hpp` | 汎用型の体の演算 | [使い方](docs/field_base.md) |
