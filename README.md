@@ -174,6 +174,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `graph/kruskal.hpp` | Kruskal・最小全域木／最小全域森 | [使い方](docs/kruskal.md) |
+| `graph/incremental_msf.hpp` | 辺追加に対応する最小全域森・経路の最大辺 | [使い方](docs/incremental_msf.md) |
 | `graph/directed_mst.hpp` | 有向最小全域木・採用辺と親の復元 | [使い方](docs/directed_mst.md) |
 | `graph/steiner_tree.hpp` | 最小シュタイナー木・採用辺の復元 | [使い方](docs/steiner_tree.md) |
 
