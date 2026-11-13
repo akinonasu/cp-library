@@ -427,6 +427,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `math/matrix.hpp` | 行列積・行列式・逆行列・連立一次方程式など | [使い方](docs/matrix.md) |
+| `math/matrix_mod2.hpp` | mod 2 専用の行列積・階数・逆行列・連立方程式 | [使い方](docs/matrix_mod2.md) |
 | `math/matrix_light.hpp` | 軽量な行列演算 | [使い方](docs/matrix_light.md) |
 | `math/xor_basis.hpp` | XOR 基底・順序統計・共通部分・復元・ロールバック・区間クエリ | [使い方](docs/xor_basis.md) |
 
