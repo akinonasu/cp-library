@@ -99,6 +99,21 @@ class BipartiteGraph {
 		}
 		return result;
 	}
+	std::optional<std::vector<std::pair<int, int>>> matching_covering(const std::vector<int>& required) const {
+		assert(bipartite_);
+		if (required.empty()) return std::vector<std::pair<int, int>>{};
+		std::vector<unsigned char> selected(size());
+		for (int v : required) {
+			assert(0 <= v && v < size());
+			selected[v] = 1;
+		}
+		BipartiteMatching::VertexSet vertices;
+		for (int u = 0; u < int(left_.size()); ++u) if (selected[left_[u]]) vertices.left.push_back(u);
+		for (int v = 0; v < int(right_.size()); ++v) if (selected[right_[v]]) vertices.right.push_back(v);
+		auto result = matching_.matching_covering(vertices);
+		if (result) for (auto& [u, v] : *result) u = left_[u], v = right_[v];
+		return result;
+	}
 };
 
 #endif

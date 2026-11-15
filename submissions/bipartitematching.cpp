@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <limits>
 #include <numeric>
+#include <optional>
 #include <span>
 #include <utility>
 #include <vector>
@@ -240,6 +241,82 @@ inline int augment(const CSR& graph, std::vector<int>& left, std::vector<int>& r
 	return added + hopcroft_karp(graph, left, right).added;
 }
 
+inline bool cover_side(std::span<const std::pair<int, int>> edges, bool transpose,
+	const std::vector<int>& index, std::vector<int>& left, std::vector<int>& right) {
+	int matched = int(left.size()) - int(std::count(left.begin(), left.end(), -1));
+	CSR graph(int(left.size()), std::span<const std::pair<int, int>>{}, false);
+	for (auto [u, v] : edges) {
+		if (transpose) std::swap(u, v);
+		int i = index[u];
+		if (i < 0) continue;
+		++graph.start[i + 1];
+		if (left[i] < 0 && right[v] < 0) left[i] = v, right[v] = i, ++matched;
+	}
+	if (matched == int(left.size())) return true;
+	for (int i = 0; i < int(left.size()); ++i) if (!graph.start[i + 1]) return false;
+	std::partial_sum(graph.start.begin(), graph.start.end(), graph.start.begin());
+	graph.adj.resize(graph.start.back());
+	auto next = graph.start;
+	for (auto [u, v] : edges) {
+		if (transpose) std::swap(u, v);
+		if (index[u] >= 0) graph.adj[next[index[u]]++] = v;
+	}
+	return matched + augment(graph, left, right) == int(left.size());
+}
+
+inline std::optional<std::vector<std::pair<int, int>>> matching_covering(int l, int r,
+	std::span<const std::pair<int, int>> edges, std::span<const int> required_left,
+	std::span<const int> required_right) {
+	if (required_left.empty() && required_right.empty()) return std::vector<std::pair<int, int>>{};
+	std::vector<int> index_left(l, -1), index_right(r, -1), selected_left, selected_right;
+	for (int u : required_left) { assert(0 <= u && u < l); index_left[u] = 0; }
+	for (int v : required_right) { assert(0 <= v && v < r); index_right[v] = 0; }
+	for (int u = 0; u < l; ++u) if (index_left[u] >= 0) {
+		index_left[u] = int(selected_left.size());
+		selected_left.push_back(u);
+	}
+	for (int v = 0; v < r; ++v) if (index_right[v] >= 0) {
+		index_right[v] = int(selected_right.size());
+		selected_right.push_back(v);
+	}
+	if (selected_left.size() > std::size_t(r) || selected_right.size() > std::size_t(l)) return std::nullopt;
+	bool transpose = selected_left.size() < selected_right.size();
+	int first_size = transpose ? r : l, second_size = transpose ? l : r;
+	const auto& first = transpose ? selected_right : selected_left;
+	const auto& second = transpose ? selected_left : selected_right;
+	const auto& first_index = transpose ? index_right : index_left;
+	const auto& second_index = transpose ? index_left : index_right;
+	std::vector<int> phase_left(first.size(), -1), mate_first(first_size, -1), mate_second(second_size, -1);
+	if (!cover_side(edges, transpose, first_index, phase_left, mate_second)) return std::nullopt;
+	for (int i = 0; i < int(first.size()); ++i) mate_first[first[i]] = phase_left[i];
+	for (int& u : mate_second) if (u >= 0) u = first[u];
+	bool covered = true;
+	for (int v : second) covered = covered && mate_second[v] >= 0;
+	if (!covered) {
+		phase_left.assign(second.size(), -1);
+		std::vector<int> phase_right(first_size, -1);
+		for (int i = 0; i < int(second.size()); ++i) if (mate_second[second[i]] >= 0) {
+			phase_left[i] = mate_second[second[i]];
+			phase_right[phase_left[i]] = i;
+		}
+		if (!cover_side(edges, !transpose, second_index, phase_left, phase_right)) return std::nullopt;
+		for (int root : second) if (mate_second[root] < 0) {
+			int v = root;
+			while (v >= 0 && second_index[v] >= 0) {
+				int u = phase_left[second_index[v]], previous = mate_first[u];
+				mate_first[u] = v, mate_second[v] = u;
+				if (previous >= 0) mate_second[previous] = -1;
+				v = previous;
+			}
+		}
+	}
+	const auto& left = transpose ? mate_second : mate_first;
+	std::vector<std::pair<int, int>> result;
+	result.reserve(std::min(std::size_t(std::min(l, r)), first.size() + second.size()));
+	for (int u = 0; u < l; ++u) if (left[u] >= 0) result.emplace_back(u, left[u]);
+	return result;
+}
+
 struct Analysis {
 	int left_size;
 	std::vector<int> start, adj, reverse_start, reverse_adj, component, matched_edge;
@@ -322,8 +399,7 @@ struct Analysis {
 
 #line 5 "graph/bipartite_matching.hpp"
 #include <cstddef>
-#line 8 "graph/bipartite_matching.hpp"
-#include <optional>
+#line 9 "graph/bipartite_matching.hpp"
 
 class BipartiteMatching {
 public:
@@ -377,10 +453,28 @@ public:
 		dirty_ = false;
 		return size_;
 	}
+	int matching_size() { return build(); }
+	std::vector<std::pair<int, int>> maximum_matching() { return edges(); }
 	const std::vector<int>& left_mates() { build(); return left_; }
 	const std::vector<int>& right_mates() { build(); return right_; }
 	bool covers_left() { return build() == l_; }
 	bool covers_right() { return build() == r_; }
+	std::optional<std::vector<std::pair<int, int>>> matching_covering(const VertexSet& required) const {
+		if (required.left.empty() && required.right.empty()) return std::vector<std::pair<int, int>>{};
+		bool covered = true;
+		for (int u : required.left) { assert(0 <= u && u < l_); covered = covered && left_[u] >= 0; }
+		for (int v : required.right) { assert(0 <= v && v < r_); covered = covered && right_[v] >= 0; }
+		if (covered) {
+			std::vector<unsigned char> selected(l_);
+			for (int u : required.left) selected[u] = 1;
+			for (int v : required.right) selected[right_[v]] = 1;
+			std::vector<std::pair<int, int>> result;
+			result.reserve(std::min(std::size_t(size_), required.left.size() + required.right.size()));
+			for (int u = 0; u < l_; ++u) if (selected[u]) result.emplace_back(u, left_[u]);
+			return result;
+		}
+		return bipartite_matching_detail::matching_covering(l_, r_, input_, required.left, required.right);
+	}
 	std::vector<std::pair<int, int>> edges() {
 		build();
 		std::vector<std::pair<int, int>> result;

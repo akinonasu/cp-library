@@ -3,8 +3,151 @@
 #include <functional>
 #include <random>
 #include <set>
+#include <utility>
 
 void require(bool condition) { if (!condition) std::abort(); }
+
+std::vector<unsigned char> covering_oracle(int l, int r, const std::vector<std::pair<int, int>>& edges) {
+	std::vector<unsigned char> possible(1u << (l + r));
+	std::function<void(int, unsigned, unsigned)> visit = [&](int u, unsigned used, unsigned covered) {
+		if (u == l) { possible[covered] = 1; return; }
+		visit(u + 1, used, covered);
+		for (auto [from, v] : edges) if (from == u && !(used >> v & 1))
+			visit(u + 1, used | (1u << v), covered | (1u << u) | (1u << (l + v)));
+	};
+	visit(0, 0, 0);
+	for (int bit = 0; bit < l + r; ++bit)
+		for (unsigned mask = 0; mask < possible.size(); ++mask)
+			if (!(mask >> bit & 1)) possible[mask] |= possible[mask | (1u << bit)];
+	return possible;
+}
+
+void validate_covering(int l, int r, const std::vector<std::pair<int, int>>& edges,
+	const BipartiteMatching::VertexSet& required, bool feasible,
+	const std::optional<std::vector<std::pair<int, int>>>& result) {
+	require(bool(result) == feasible);
+	if (!result) return;
+	std::vector<int> left(l), right(r);
+	for (auto [u, v] : *result) {
+		require(0 <= u && u < l && 0 <= v && v < r);
+		require(!left[u]++ && !right[v]++);
+		require(std::find(edges.begin(), edges.end(), std::pair(u, v)) != edges.end());
+	}
+	for (int u : required.left) require(left[u]);
+	for (int v : required.right) require(right[v]);
+	if (required.left.empty() && required.right.empty()) require(result->empty());
+}
+
+void covering_check(int l, int r, const std::vector<std::pair<int, int>>& edges) {
+	auto possible = covering_oracle(l, r, edges);
+	for (bool built : {false, true}) {
+		BipartiteMatching graph(l, r);
+		for (auto [u, v] : edges) graph.add_edge(u, v);
+		std::vector<int> left, right;
+		if (built) {
+			graph.edge_classification();
+			left = graph.left_mates(), right = graph.right_mates();
+		}
+		auto before = graph;
+		const auto& query = graph;
+		for (unsigned mask = 0; mask < possible.size(); ++mask) {
+			BipartiteMatching::VertexSet required;
+			for (int u = l - 1; u >= 0; --u) if (mask >> u & 1) {
+				required.left.push_back(u);
+				if ((mask + u) % 3 == 0) required.left.push_back(u);
+			}
+			for (int v = r - 1; v >= 0; --v) if (mask >> (l + v) & 1) {
+				required.right.push_back(v);
+				if ((mask + v) % 3 == 0) required.right.push_back(v);
+			}
+			validate_covering(l, r, edges, required, possible[mask], query.matching_covering(required));
+			if (!built) validate_covering(l, r, edges, required, possible[mask],
+				bipartite_matching_detail::matching_covering(l, r, edges, required.left, required.right));
+			if (built) require(graph.left_mates() == left && graph.right_mates() == right);
+		}
+		require(graph.maximum_matching() == before.maximum_matching());
+		require(graph.edge_classification() == before.edge_classification());
+		auto after = graph.minimum_vertex_cover(), expected = before.minimum_vertex_cover();
+		require(after.left == expected.left && after.right == expected.right);
+	}
+}
+
+void covering_state_check() {
+	BipartiteMatching graph(2, 1);
+	graph.add_edge(1, 0);
+	graph.add_edge(0, 0);
+	auto before = graph.maximum_matching();
+	require((before == std::vector<std::pair<int, int>>{{1, 0}}));
+	auto status = graph.edge_classification();
+	const auto& query = graph;
+	BipartiteMatching::VertexSet required{{0, 0}, {0, 0}};
+	auto result = query.matching_covering(required);
+	require(result && (*result == std::vector<std::pair<int, int>>{{0, 0}}));
+	require(graph.maximum_matching() == before && graph.edge_classification() == status);
+	require(!query.matching_covering({{0, 1}, {0}}));
+	require(graph.maximum_matching() == before);
+	auto copy = graph;
+	require(copy.matching_covering(required) == result && copy.maximum_matching() == before);
+	graph.clear();
+	require(query.matching_covering({}) && query.matching_covering({})->empty());
+	require(!query.matching_covering(required));
+	require(graph.matching_size() == 0 && copy.maximum_matching() == before);
+	graph.add_edge(0, 0);
+	auto dirty = graph;
+	validate_covering(2, 1, {{0, 0}}, required, true, query.matching_covering(required));
+	require(graph.maximum_matching() == dirty.maximum_matching());
+
+	BipartiteMatching path(3, 3);
+	path.add_edge(0, 0);
+	path.add_edge(0, 1);
+	path.add_edge(1, 0);
+	auto untouched = path;
+	validate_covering(3, 3, {{0, 0}, {0, 1}, {1, 0}}, {{0, 1}, {0, 1}}, true,
+		std::as_const(path).matching_covering({{0, 1}, {0, 1}}));
+	require(path.maximum_matching() == untouched.maximum_matching());
+	path.add_edge(2, 2);
+	untouched = path;
+	validate_covering(3, 3, {{0, 0}, {0, 1}, {1, 0}, {2, 2}}, {{2}, {2}}, true,
+		std::as_const(path).matching_covering({{2}, {2}}));
+	require(path.maximum_matching() == untouched.maximum_matching());
+}
+
+void covering_tests() {
+	for (int l = 0; l <= 3; ++l) for (int r = 0; r <= 3; ++r) {
+		for (unsigned mask = 0; mask < (1u << (l * r)); ++mask) {
+			std::vector<std::pair<int, int>> edges;
+			for (int u = 0; u < l; ++u) for (int v = 0; v < r; ++v)
+				if (mask >> (u * r + v) & 1) edges.emplace_back(u, v);
+			covering_check(l, r, edges);
+		}
+	}
+	std::mt19937 random(20261115);
+	for (int trial = 0; trial < 120; ++trial) {
+		int l = random() % 5, r = random() % 5;
+		std::vector<std::pair<int, int>> edges;
+		if (l && r) for (int m = random() % 18; m--; ) edges.emplace_back(random() % l, random() % r);
+		covering_check(l, r, edges);
+	}
+	covering_state_check();
+	constexpr int n = 100000;
+	BipartiteMatching chain(n, n + 1);
+	BipartiteMatching::VertexSet required;
+	for (int u = 0; u < n; ++u) {
+		chain.add_edge(u, u + 1), chain.add_edge(u, u);
+		required.left.push_back(u);
+		if (u + 1 < n) required.right.push_back(u);
+	}
+	auto result = std::as_const(chain).matching_covering(required);
+	std::vector<int> left(n, -1), right(n + 1, -1);
+	require(result && result->size() == std::size_t(n));
+	for (auto [u, v] : *result) {
+		require(0 <= u && u < n && (v == u || v == u + 1));
+		require(left[u] < 0 && right[v] < 0);
+		left[u] = v, right[v] = u;
+	}
+	for (int u : required.left) require(left[u] >= 0);
+	for (int v : required.right) require(right[v] >= 0);
+}
 
 void check(int l, int r, const std::vector<std::pair<int, int>>& edges, bool incremental = false) {
 	BipartiteMatching graph(l, r);
@@ -140,6 +283,27 @@ void check(int l, int r, const std::vector<std::pair<int, int>>& edges, bool inc
 }
 
 int main() {
+	covering_tests();
+	{
+		BipartiteMatching graph(3, 3);
+		graph.add_edge(0, 1);
+		require(graph.matching_size() == 1);
+		graph.add_edge(0, 0);
+		graph.add_edge(1, 1);
+		auto pairs = graph.maximum_matching();
+		require(pairs.size() == 2 && graph.matching_size() == 2);
+		require((pairs == std::vector<std::pair<int, int>>{{0, 0}, {1, 1}}));
+		graph.add_edge(1, 2);
+		graph.add_edge(2, 1);
+		require(graph.matching_size() == 3);
+		pairs = graph.maximum_matching();
+		require((pairs == std::vector<std::pair<int, int>>{{0, 0}, {1, 2}, {2, 1}}));
+		require(graph.matching_size() == int(pairs.size()) && graph.edges() == pairs);
+		graph.clear();
+		require(graph.matching_size() == 0 && graph.maximum_matching().empty());
+		BipartiteMatching empty(0, 3);
+		require(empty.matching_size() == 0 && empty.maximum_matching().empty());
+	}
 	for (int l = 0; l <= 4; ++l) for (int r = 0; r <= 4; ++r) if (l * r <= 12) {
 		for (int mask = 0; mask < (1 << (l * r)); ++mask) {
 			std::vector<std::pair<int, int>> edges;
