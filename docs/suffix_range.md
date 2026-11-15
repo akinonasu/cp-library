@@ -31,20 +31,25 @@ int main() {
 
 `longest_prefix(pattern)` は、渡した文字列の先頭から本文に一致する最長の部分と、その長さを返します。パターン全体が現れなくても、途中まで一致した区間を返します。最初のバイトも一致しない場合は、空パターンの区間と長さ 0 です。
 
-本文は内部にコピーします。NUL を含む全 256 バイトに対応し、辞書順は符号なしバイトの順です。本文長は `INT_MAX/2` 未満、`concat` 後のパターン長は `INT_MAX` 以下にしてください。`Range` は同じ索引から取得したものを渡し、フィールドを書き換えずに使います。
+本文は内部にコピーします。文字列版には `string_view` のほか `vector<char>`・`array<char,N>`・`span<char>`・`span<const char>` も渡せます。NUL を含む全 256 バイトに対応し、辞書順は符号なしバイトの順です。本文長は `INT_MAX/2` 未満、`concat` 後のパターン長は `INT_MAX` 以下にしてください。`Range` は同じ索引から取得したものを渡し、フィールドを書き換えずに使います。
+
+整数列には、`char` 以外の整数型 `T` を指定した `BasicSuffixRangeIndex<T>` を使います。`T` は `bool` を除く 64 bit 以下の整数型で、負数や `uint64_t` の最大値も扱います。本文・`longest_prefix` のパターンは同じ型の `std::span<const T>`、またはそこへ変換できる `vector`・`array`・`span` で渡します。`character(c)` の値は `T`、`text()` の返り値は `std::span<const T>` です。辞書順は整数の大小順、位置と長さは要素単位になります。`SuffixRangeIndex` は文字列を扱う `BasicSuffixRangeIndex<char>` と同じ型です。
+
+
+本文長を $$n$$、最長一致接頭辞の長さを $$\ell$$、本文の値の種類数を $$\sigma$$ とします。文字列では $$\sigma\leq256$$ です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `SuffixRangeIndex()` | 空の本文の索引を作る | $$O(1)$$ |
-| `SuffixRangeIndex(text)` | 本文の索引を作る | $$O(n)$$ |
-| `size()` / `text()` | 本文のバイト数 / 保存した本文の `string_view` | $$O(1)$$ |
+| `SuffixRangeIndex()` / `BasicSuffixRangeIndex<T>()` | 空の本文の索引を作る | $$O(1)$$ |
+| `SuffixRangeIndex(text)` / `BasicSuffixRangeIndex<T>(text)` | 本文の索引を作る | 文字列は $$O(n)$$、整数列は $$O(n\log n)$$ |
+| `size()` / `text()` | 本文長 / 保存した本文の `string_view` または `span<const T>` | $$O(1)$$ |
 | `suffix_array()` | 空の接尾辞を含む接尾辞配列への const 参照 | $$O(1)$$ |
 | `empty_range()` | 空パターンの区間 | $$O(1)$$ |
-| `character(c)` | 1 バイトのパターンの区間 | $$O(1)$$ |
+| `character(c)` | 1 バイト / 1 要素のパターンの区間 | 文字列は $$O(1)$$、整数列は $$O(\log\sigma)$$ |
 | `concat(a,b)` | 2 つのパターンを連結した区間 | $$O(\log n)$$ |
 | `substring(range,l,r)` | 一致するパターン内の半開区間を切り出す | $$O(\log n)$$ |
-| `longest_prefix(pattern)` | 最長一致接頭辞の `Range` と長さの組 | $$O(\ell)$$、不一致の判定は定数時間を加える |
+| `longest_prefix(pattern)` | 最長一致接頭辞の `Range` と長さの組 | 文字列は $$O(\ell)$$、整数列は $$O(\ell\log\sigma)$$。不一致の判定は 1 要素分加わる |
 | コピー構築・コピー代入 | 索引全体をコピー | $$O(n)$$。代入は旧領域の解放も加わる |
 | ムーブ構築・ムーブ代入 | 索引を移動 | 構築 $$O(1)$$。代入は旧領域の解放も加わる |
 
-$$n$$ は本文長、$$\ell$$ は最長一致接頭辞の長さです。対数の項は本文長が 0・1 の場合に定数として扱います。`substring` には `0 <= l <= r <= range.length` を渡します。構築時間・空間は $$O(n)$$ です。
+本文長や種類数が 0・1 の場合は、対数を含む時間を定数として扱います。`substring` には `0 <= l <= r <= range.length` を渡します。保持空間・構築時の追加空間は $$O(n)$$、`substring` の追加空間は $$O(\log n)$$、他の問い合わせの追加空間は $$O(1)$$ です。

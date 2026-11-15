@@ -25,6 +25,22 @@ auto [a, b, length] = longest_common_substring(s, t);
 
 入力を変更せず、結果は入力を参照しません。NUL を含む全 256 種類のバイトに対応します。埋め込み NUL は長さを指定した `string_view` または `string` で渡してください。添字・長さはバイト単位なので、UTF-8 の文字境界は扱いません。入力の長さの合計は `INT_MAX-1` 以下としてください。
 
+同じ関数に、同じ型の整数列 2 つを `std::vector<T>` または `std::span<T>`・`std::span<const T>` で渡せます。`T` は `bool` を除く 64 bit 以下の整数型です。負数や `uint64_t` の最大値も区別して扱います。`span` は固定長・動的長のどちらでもよく、変更可能なものと読み取り専用のものを組み合わせられます。返り値は同じ `LongestCommonSubstringResult` で、開始位置・長さは要素単位になります。空列・共通要素がない場合・複数解の扱いも同じです。
+
+```cpp
+#include "lib/string/longest_common_substring.hpp"
+#include <cassert>
+#include <vector>
+
+int main() {
+	std::vector<int> s{4, -1000, 7, -1000};
+	std::vector<int> t{8, -1000, 7, -1000, 9};
+	auto result = longest_common_substring(s, t);
+	assert(result.s_pos == 1 && result.t_pos == 1 && result.length == 3);
+}
+```
+
+
 全てのバイトで一致を確認し、ハッシュ値の一致だけで答えを確定しません。
 
-入力長をそれぞれ $$n,m$$ とすると、時間・追加空間はともに $$O(n+m)$$ です。
+入力長をそれぞれ $$n,m$$ とすると、文字列は $$O(n+m)$$ 時間、整数列は $$O((n+m)\log(n+m))$$ 時間です。追加空間はどちらも $$O(n+m)$$ です。片方が空なら $$O(1)$$ 時間・追加空間で返します。

@@ -5,6 +5,9 @@
 #include <cassert>
 #include <cstdint>
 #include <limits>
+#include <map>
+#include <span>
+#include <type_traits>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -191,6 +194,180 @@ class Trie {
 		return v == -1 ? std::nullopt : std::optional<std::string>(restore(v));
 	}
 	std::optional<std::string> lower_bound(std::string_view s) const { return kth(order_of_key(s)); }
+};
+
+template<class T, class Data = trie_detail::Empty>
+class BasicTrie {
+	static_assert(std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8);
+	struct Node {
+		std::map<T, int> next;
+		int parent, depth;
+		T letter;
+		std::int64_t count = 0, terminal = 0;
+		[[no_unique_address]] Data data{};
+		Node(int p = -1, int d = 0, T c = T{}) : parent(p), depth(d), letter(c) {}
+	};
+	std::vector<Node> nodes_;
+	int distinct_ = 0;
+	void check_([[maybe_unused]] int v) const { assert(0 <= v && v < node_count()); }
+	void check_count_(std::int64_t copies) const {
+		assert(copies > 0);
+		if (copies > std::numeric_limits<std::int64_t>::max() - size()) throw std::overflow_error("Trie count");
+	}
+	int add_(int v, std::int64_t copies) {
+		if (!nodes_[v].terminal) ++distinct_;
+		nodes_[v].terminal += copies;
+		for (int u = v; u != -1; u = nodes_[u].parent) nodes_[u].count += copies;
+		return v;
+	}
+	template<class F>
+	int walk_prefixes_(std::span<const T> s, F &&visit) const {
+		int v = root;
+		for (T c : s) {
+			int u = child(v, c);
+			if (u == -1 || !nodes_[u].count) break;
+			v = u;
+			visit(v);
+		}
+		return v;
+	}
+
+  public:
+	static constexpr int root = 0;
+	BasicTrie() { nodes_.emplace_back(); }
+	std::int64_t size() const { return nodes_[root].count; }
+	bool empty() const { return size() == 0; }
+	int distinct_size() const { return distinct_; }
+	int node_count() const { return static_cast<int>(nodes_.size()); }
+	void reserve(int total_length) {
+		assert(0 <= total_length && total_length < std::numeric_limits<int>::max());
+		nodes_.reserve(std::size_t(total_length) + 1);
+	}
+	void clear() { nodes_.clear(), nodes_.emplace_back(); distinct_ = 0; }
+	int ensure(std::span<const T> s) {
+		assert(s.size() < std::size_t(std::numeric_limits<int>::max()));
+		int v = root;
+		for (T c : s) {
+			auto it = nodes_[v].next.find(c);
+			int u = it == nodes_[v].next.end() ? -1 : it->second;
+			if (u == -1) {
+				assert(node_count() < std::numeric_limits<int>::max());
+				u = node_count();
+				nodes_.emplace_back(v, nodes_[v].depth + 1, c);
+				nodes_[v].next.emplace(c, u);
+			}
+			v = u;
+		}
+		return v;
+	}
+	int insert(std::span<const T> s, std::int64_t copies = 1) {
+		check_count_(copies);
+		return add_(ensure(s), copies);
+	}
+	int insert_node(int v, std::int64_t copies = 1) {
+		check_(v), check_count_(copies);
+		return add_(v, copies);
+	}
+	bool erase_node(int v, std::int64_t copies = 1) {
+		check_(v), assert(copies > 0);
+		if (nodes_[v].terminal < copies) return false;
+		nodes_[v].terminal -= copies;
+		if (!nodes_[v].terminal) --distinct_;
+		for (int u = v; u != -1; u = nodes_[u].parent) nodes_[u].count -= copies;
+		return true;
+	}
+	bool erase(std::span<const T> s, std::int64_t copies = 1) {
+		assert(copies > 0);
+		int v = find(s);
+		return v != -1 && erase_node(v, copies);
+	}
+	int parent(int v) const { check_(v); return nodes_[v].parent; }
+	int depth(int v) const { check_(v); return nodes_[v].depth; }
+	T letter(int v) const { check_(v); assert(v != root); return nodes_[v].letter; }
+	const std::map<T, int> &children(int v) const { check_(v); return nodes_[v].next; }
+	int child(int v, T c) const {
+		check_(v);
+		auto it = nodes_[v].next.find(c);
+		return it == nodes_[v].next.end() ? -1 : it->second;
+	}
+	std::int64_t terminal_count(int v) const { check_(v); return nodes_[v].terminal; }
+	std::int64_t prefix_count(int v) const { check_(v); return nodes_[v].count; }
+	Data &data(int v) { check_(v); return nodes_[v].data; }
+	const Data &data(int v) const { check_(v); return nodes_[v].data; }
+	int walk(int v, std::span<const T> s) const {
+		check_(v);
+		for (T c : s) { v = child(v, c); if (v == -1) break; }
+		return v;
+	}
+	int find(std::span<const T> s) const { return walk(root, s); }
+	std::int64_t count(std::span<const T> s) const { int v = find(s); return v == -1 ? 0 : nodes_[v].terminal; }
+	bool contains(std::span<const T> s) const { return count(s) != 0; }
+	std::int64_t prefix_count(std::span<const T> s) const { int v = find(s); return v == -1 ? 0 : nodes_[v].count; }
+	std::vector<T> restore(int v) const {
+		check_(v);
+		std::vector<T> s(nodes_[v].depth);
+		for (int i = int(s.size()); i > 0; v = nodes_[v].parent) s[--i] = nodes_[v].letter;
+		return s;
+	}
+	template<class F>
+	void for_each_ancestor(int v, F &&visit) const {
+		check_(v);
+		for (; v != -1; v = nodes_[v].parent) visit(v);
+	}
+	template<class F>
+	void for_each_prefix(std::span<const T> s, F &&visit) const {
+		if (nodes_[root].terminal) visit(root);
+		walk_prefixes_(s, [&](int v) {
+			if (nodes_[v].terminal) visit(v);
+		});
+	}
+	int longest_prefix(std::span<const T> s) const {
+		int v = -1;
+		for_each_prefix(s, [&](int u) { v = u; });
+		return v;
+	}
+	int lcp(std::span<const T> s) const {
+		return nodes_[walk_prefixes_(s, [](int) {})].depth;
+	}
+	std::int64_t lcp_sum(std::span<const T> s) const {
+		std::int64_t sum = 0;
+		walk_prefixes_(s, [&](int v) {
+			if (nodes_[v].count > std::numeric_limits<std::int64_t>::max() - sum) throw std::overflow_error("Trie LCP sum");
+			sum += nodes_[v].count;
+		});
+		return sum;
+	}
+	std::int64_t order_of_key(std::span<const T> s) const {
+		int v = root;
+		std::int64_t rank = 0;
+		for (T c : s) {
+			rank += nodes_[v].terminal;
+			for (auto [symbol, u] : nodes_[v].next) {
+				if (!(symbol < c)) break;
+				rank += nodes_[u].count;
+			}
+			v = child(v, c);
+			if (v == -1) break;
+		}
+		return rank;
+	}
+	int kth_node(std::int64_t k) const {
+		if (k < 0 || k >= size()) return -1;
+		int v = root;
+		while (true) {
+			if (k < nodes_[v].terminal) return v;
+			k -= nodes_[v].terminal;
+			for (auto [symbol, u] : nodes_[v].next) {
+				if (k < nodes_[u].count) { v = u; break; }
+				k -= nodes_[u].count;
+			}
+		}
+	}
+	std::optional<std::vector<T>> kth(std::int64_t k) const {
+		int v = kth_node(k);
+		return v == -1 ? std::nullopt : std::optional<std::vector<T>>(restore(v));
+	}
+	std::optional<std::vector<T>> lower_bound(std::span<const T> s) const { return kth(order_of_key(s)); }
 };
 
 #endif

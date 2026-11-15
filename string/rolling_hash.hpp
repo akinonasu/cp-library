@@ -3,11 +3,13 @@
 
 #include "../components/splitmix64.hpp"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <span>
 #include <string_view>
 #include <type_traits>
 #include <vector>
@@ -82,11 +84,19 @@ class RollingHash {
   public:
 	RollingHash() = default;
 	explicit RollingHash(std::string_view s) { build(s); }
-	template <class T>
-	explicit RollingHash(const std::vector<T> &values) { build(values); }
+	template <class T, class Allocator>
+	explicit RollingHash(const std::vector<T, Allocator> &values) { build(values); }
+	template <class T, std::size_t Extent>
+	explicit RollingHash(std::span<T, Extent> values) { build(values); }
+	template <class T, std::size_t N>
+	explicit RollingHash(const std::array<T, N> &values) { build(values); }
 	void build(std::string_view s) { build_range(s); }
-	template <class T>
-	void build(const std::vector<T> &values) { build_range(values); }
+	template <class T, class Allocator>
+	void build(const std::vector<T, Allocator> &values) { build_range(values); }
+	template <class T, std::size_t Extent>
+	void build(std::span<T, Extent> values) { build_range(values); }
+	template <class T, std::size_t N>
+	void build(const std::array<T, N> &values) { build_range(values); }
 	int size() const { return prefix.empty() ? 0 : int(prefix.size() - 1); }
 	bool empty() const { return !size(); }
 	static void reserve(int n) {

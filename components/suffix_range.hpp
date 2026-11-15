@@ -3,8 +3,10 @@
 
 #include "../string/suffix_tree.hpp"
 
-class SuffixRangeIndex {
-	SuffixTree tree_;
+template <class Symbol>
+class BasicSuffixRangeIndex {
+	using View = std::conditional_t<std::is_same_v<Symbol, char>, std::string_view, std::span<const Symbol>>;
+	BasicSuffixTree<Symbol> tree_;
 	std::vector<int> rank_, minimum_;
 	int capacity_ = 1;
 	int first_below(int v, int l, int r, int ql, int qr, int length) const {
@@ -24,8 +26,8 @@ class SuffixRangeIndex {
 
   public:
 	struct Range { int left = 0, right = 0, length = 0; };
-	SuffixRangeIndex() : SuffixRangeIndex(std::string_view{}) {}
-	explicit SuffixRangeIndex(std::string_view text) : tree_(text) {
+	BasicSuffixRangeIndex() : BasicSuffixRangeIndex(View{}) {}
+	explicit BasicSuffixRangeIndex(View text) : tree_(text) {
 		int n = tree_.size();
 		rank_.resize(n + 1);
 		for (int i = 0; i <= n; ++i) rank_[suffix_array()[i]] = i;
@@ -34,11 +36,13 @@ class SuffixRangeIndex {
 		std::copy(tree_.lcp_array().begin(), tree_.lcp_array().end(), minimum_.begin() + capacity_);
 		for (int i = capacity_ - 1; i; --i) minimum_[i] = std::min(minimum_[i * 2], minimum_[i * 2 + 1]);
 	}
+	template <sequence_view_detail::CharSequence R> requires std::is_same_v<Symbol, char>
+	explicit BasicSuffixRangeIndex(const R &text) : BasicSuffixRangeIndex(sequence_view_detail::char_view(text)) {}
 	int size() const { return tree_.size(); }
-	std::string_view text() const { return tree_.text(); }
+	View text() const { return tree_.text(); }
 	const std::vector<int> &suffix_array() const { return tree_.suffix_array(); }
 	Range empty_range() const { return {0, size() + 1, 0}; }
-	Range character(char c) const {
+	Range character(Symbol c) const {
 		int v = tree_.transition(0, c);
 		if (v == -1) return {0, 0, 1};
 		auto [l, r] = tree_.occurrence_range(v);
@@ -70,9 +74,9 @@ class SuffixRangeIndex {
 		int b = first_below(1, 0, capacity_, i, size(), length);
 		return {a, b == -1 ? size() + 1 : b + 1, length};
 	}
-	std::pair<Range, int> longest_prefix(std::string_view pattern) const {
-		SuffixTree::Locus locus{0, 0};
-		for (char c : pattern) {
+	std::pair<Range, int> longest_prefix(View pattern) const {
+		typename BasicSuffixTree<Symbol>::Locus locus{0, 0};
+		for (Symbol c : pattern) {
 			auto next = tree_.advance(locus, c);
 			if (!next) break;
 			locus = *next;
@@ -80,6 +84,10 @@ class SuffixRangeIndex {
 		auto [l, r] = tree_.occurrence_range(locus.node);
 		return {Range{l, r, locus.length}, locus.length};
 	}
+	template <sequence_view_detail::CharSequence R> requires std::is_same_v<Symbol, char>
+	std::pair<Range, int> longest_prefix(const R &pattern) const { return longest_prefix(sequence_view_detail::char_view(pattern)); }
 };
+
+using SuffixRangeIndex = BasicSuffixRangeIndex<char>;
 
 #endif

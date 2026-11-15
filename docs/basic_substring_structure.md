@@ -27,7 +27,23 @@ int main() {
 }
 ```
 
-入力は `std::string_view` で渡し、内部にコピーします。構築後に入力を変更・破棄しても使えます。NUL を含む全 256 バイトに対応し、位置と長さはバイト単位です。本文長を $$n$$ として `n < INT_MAX/2` を満たす必要があります。
+入力は `std::string_view` で渡し、内部にコピーします。`vector<char>`・`array<char,N>`・`span<char>`・`span<const char>` も渡せます。構築後に入力を変更・破棄しても使えます。NUL を含む全 256 バイトに対応し、位置と長さはバイト単位です。本文長を $$n$$ として `n < INT_MAX/2` を満たす必要があります。
+
+整数列には、`char` 以外の整数型 `T` を指定した `SubstringStructure<T>` を使います。`T` は `bool` を除く 64 bit 以下の整数型です。本文は `std::span<const T>` で渡し、同じ型の `std::vector<T>`・`std::array<T,N>`・変更可能な `span` も渡せます。負数や `uint64_t` の最大値も使えます。本文はコピーされ、`text()` は `std::span<const T>` を返します。以下のバイト数・1 バイトの削除は、整数列では要素数・1 要素の削除を意味します。操作名・引数順・計算量・空入力の扱いは同じです。従来の `BasicSubstringStructure` は `SubstringStructure<char>` と同じ型です。
+
+```cpp
+#include "lib/string/basic_substring_structure.hpp"
+#include <vector>
+
+int main() {
+	std::vector<int> values{-1000, 7, -1000, 7};
+	SubstringStructure<int> structure(values);
+	auto first = structure.locate(0, 2);
+	assert(first && first == structure.locate(2, 4));
+	assert(structure.occurrence_count(*first) == 2);
+}
+```
+
 
 `locate(l,r)` は本文の半開区間 `[l,r)` を表すセルを返します。異なる位置に同じ部分文字列が現れる場合も、返すセルは同じです。空文字列はセルに含めず、`l == r` なら `std::nullopt` です。本文外の文字列を検索する API はありません。
 
@@ -61,10 +77,10 @@ int main() {
 
 | 操作 | 内容・返り値 |
 | --- | --- |
-| `BasicSubstringStructure()` | 空の本文で構築 |
-| `BasicSubstringStructure(text)` | `std::string_view` の本文で構築 |
+| `BasicSubstringStructure()` / `SubstringStructure<T>()` | 空の本文で構築 |
+| `BasicSubstringStructure(text)` / `SubstringStructure<T>(text)` | 文字列 / 整数列の本文で構築 |
 | `build(text)` / `clear()` | 本文を置き換えて再構築 / 空にする。返り値は `void` |
-| `size()` / `empty()` / `text()` | 本文長を `int` / 空判定を `bool` / 保存した本文を `std::string_view` で返す |
+| `size()` / `empty()` / `text()` | 本文長を `int` / 空判定を `bool` / 保存した本文を `std::string_view` / `std::span<const T>` で返す |
 | `block_count()` / `shape()` | ブロック数を `int` / 総行数・総列数を `std::pair<int,int>` で返す |
 | `blocks()` / `block(b)` | 全ブロックを `std::span<const Block>` / 番号 `b` のブロックを `const Block&` で返す |
 | `row_block(row)` / `column_block(column)` | 行 / 列が属するブロックの番号を `int` で返す |

@@ -8,23 +8,28 @@ library_category: string
 
 ```cpp
 #include "lib/string/trie.hpp"
+#include <cassert>
 
-Trie<> trie;
-int apple = trie.insert("apple", 2);
-trie.insert("app");
-trie.insert("bat");
-assert(trie.size() == 4 && trie.distinct_size() == 3);
-assert(trie.count("apple") == 2);
-assert(trie.prefix_count("ap") == 3);
-assert(trie.kth(1).value() == "apple"); // 0 始まり。重複も数える
-assert(trie.order_of_key("bat") == 3);
-assert(trie.lcp("apply") == 4);
-assert(trie.lcp_sum("apply") == 11);   // 4+4+3+0
-assert(trie.restore(apple) == "apple");
-trie.erase("apple");                 // 1 個削除
+int main() {
+	Trie<> trie;
+	int apple = trie.insert("apple", 2);
+	trie.insert("app");
+	trie.insert("bat");
+	assert(trie.size() == 4 && trie.distinct_size() == 3);
+	assert(trie.count("apple") == 2);
+	assert(trie.prefix_count("ap") == 3);
+	assert(trie.kth(1).value() == "apple"); // 0 始まり。重複も数える
+	assert(trie.order_of_key("bat") == 3);
+	assert(trie.lcp("apply") == 4);
+	assert(trie.lcp_sum("apply") == 11);   // 4+4+3+0
+	assert(trie.restore(apple) == "apple");
+	trie.erase("apple");                 // 1 個削除
+}
 ```
 
 `Trie<Alphabet,First,Data>` の既定値は英小文字 26 文字と追加データなしです。`Trie<2,'A'>` は `A,B`、`Trie<10,'0'>` は数字、`Trie<256,0>` は全 256 バイトに対応します。文字は `[First,First+Alphabet)` の範囲とし、辞書順は符号なしバイトの昇順です。空文字列も登録できます。
+
+$$L$$ は引数の列の長さ、$$H$$ は選ばれた列の長さ、$$d$$ は対象頂点の深さ、$$K$$ は新しく作る頂点数、$$V$$ は根を含む頂点数、$$\sigma$$ は `Alphabet` です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -67,4 +72,40 @@ trie.erase("apple");                 // 1 個削除
 
 `Data` は初期化可能で、`vector` に格納できる型とします。各頂点の初期値は `Data{}` です。登録・削除で個数は自動更新しますが、追加データの計算は利用者が行います。`visit` の呼び出し中では `data(v)` を変更できます。走査中の文字列の追加・削除・`clear()` は行わないでください。`data`・`children` の参照は、頂点追加や `reserve` による再確保・`clear()`・代入・破棄で無効になります。
 
-表の「償却」は、一連の追加にかかる合計時間から評価した1回当たりの時間です。$$L$$ は引数の文字列長、$$H$$ は選ばれた文字列長、$$d$$ は対象頂点の深さ、$$K$$ は新しく作る頂点数、$$V$$ は根を含む頂点数、$$\sigma$$ は `Alphabet` です。`Data` の初期化・移動・破棄を定数時間としています。頂点数は `INT_MAX` 以下、保持する領域は $$O(V\sigma)$$ です。再帰は使いません。
+表の「償却」は、一連の追加にかかる合計時間から評価した1回当たりの時間です。`Data` の初期化・移動・破棄を定数時間としています。頂点数は `INT_MAX` 以下、保持する領域は $$O(V\sigma)$$ です。再帰は使いません。
+
+`BasicTrie<T,Data=trie_detail::Empty>` は整数列に同じ操作を提供します。`T` は `bool` を除く 64 bit 以下の整数型です。負数・最小値・最大値もそのまま使え、事前の座標圧縮は不要です。引数の列は `span<const T>` で受け取り、同じ要素型の `vector<T>`・`span<T>` も渡せます。辞書順は `T` の `<` で比較します。
+
+```cpp
+#include "lib/string/trie.hpp"
+#include <cassert>
+#include <cstdint>
+#include <vector>
+
+int main() {
+	BasicTrie<std::int64_t> trie;
+	std::vector<std::int64_t> a{-5, 1000000000000LL};
+	int v = trie.insert(a, 2);
+	assert(trie.count(a) == 2 && trie.restore(v) == a);
+	assert(trie.kth(0).value() == a);
+}
+```
+
+`BasicTrie` の操作名・引数順・個数・頂点番号・空列・重複・削除の扱いは `Trie` と同じです。`letter(v)` は `T`、`restore(v)` は `vector<T>`、`kth(k)`・`lower_bound(s)` は `optional<vector<T>>` を返します。`children(v)` は `const map<T,int>&` で、存在する子だけを `(要素,頂点番号)` の昇順で保持します。削除後の子も残ります。参照が無効になる条件は通常版と同じです。
+
+整数版について、$$\Sigma$$ はこれまで作った子辺で使われる異なる値の数です。値が 0 種類・1 種類なら、以下の対数時間は定数時間として扱います。$$L,H,d,K,V$$ は上と同じ意味です。
+
+| 整数版の操作 | 時間計算量 |
+| --- | --- |
+| `BasicTrie()` / `clear()` / `reserve(total_length)` | $$O(1)$$ / $$O(V)$$ / $$O(V)$$ |
+| `ensure(s)` / `insert(s,copies=1)` | 償却 $$O(L\log\Sigma)$$ |
+| `erase(s,copies=1)` / `find(s)` / `walk(v,s)` / `count(s)` / `contains(s)` / `prefix_count(s)` | $$O(L\log\Sigma)$$ |
+| `for_each_prefix(s,visit)` / `longest_prefix(s)` / `lcp(s)` / `lcp_sum(s)` | $$O(L\log\Sigma)$$ |
+| `child(v,c)` | $$O(\log\Sigma)$$ |
+| `order_of_key(s)` | $$O(L\Sigma)$$ |
+| `kth_node(k)` / `kth(k)` | $$O(H\Sigma)$$ |
+| `lower_bound(s)` | $$O((L+H)\Sigma)$$ |
+| `insert_node(v,copies=1)` / `erase_node(v,copies=1)` / `restore(v)` / `for_each_ancestor(v,visit)` | $$O(d)$$ |
+| その他の取得操作 | $$O(1)$$ |
+
+整数版の保持空間は $$O(V)$$ です。`restore`・`kth`・`lower_bound` は返す列に $$O(d)$$ または $$O(H)$$ の追加空間を使い、それ以外の検索は $$O(1)$$ 追加空間です。`Data` の処理とコールバックは 1 回あたり定数時間とします。`ensure`・`insert` の新しい頂点と辺は $$O(K)$$ 空間を増やします。

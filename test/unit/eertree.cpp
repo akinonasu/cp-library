@@ -75,7 +75,62 @@ void check(const std::string &s, bool reserve) {
 	assert(copy.prefix_nodes() == tree.prefix_nodes() && copy.occurrences() == count);
 }
 
+
+template<class T>
+void integer_eertree() {
+	const std::vector<T> alphabet = {T(0), T(1), std::numeric_limits<T>::min(), std::numeric_limits<T>::max(), T(256), T(-9)};
+	std::mt19937 rng(9382);
+	for (int trial = 0; trial < 100; ++trial) {
+		std::vector<T> s;
+		for (int n = rng() % 20; n--; ) s.push_back(alphabet[rng() % alphabet.size()]);
+		BasicEertree<T> tree;
+		tree.reserve(s.size());
+		std::map<std::vector<T>, int> ids;
+		std::vector<std::uint64_t> counts(2);
+		std::uint64_t total = 0;
+		for (std::size_t end = 1; end <= s.size(); ++end) {
+			int last = -1, suffixes = 0;
+			for (std::size_t begin = end; begin--; ) {
+				std::vector<T> part(s.begin() + begin, s.begin() + end);
+				if (!std::equal(part.begin(), part.begin() + part.size() / 2, part.rbegin())) continue;
+				if (!ids.contains(part)) { ids[part] = ids.size() + 2; counts.push_back(0); }
+				last = ids.at(part); ++counts[last]; ++suffixes; ++total;
+			}
+			assert(tree.push_back(s[end - 1]) == last);
+			assert(tree.suffix_count(last) == suffixes && tree.palindrome_count() == total);
+			assert(tree.occurrences() == counts && tree.distinct_count() == int(ids.size()));
+			for (const auto &[part, v] : ids) {
+				auto [l, r] = tree.first_occurrence(v);
+				assert(std::vector<T>(s.begin() + l, s.begin() + r) == part);
+				assert(tree.transition(tree.parent(v), part.front()) == v);
+			}
+		}
+		BasicEertree<T> built{std::span<const T>(s)};
+		assert(built.occurrences() == counts && built.prefix_nodes() == tree.prefix_nodes());
+		auto copied = tree;
+		tree.clear();
+		assert(tree.empty() && tree.node_count() == 2);
+		tree.append(s);
+		assert(tree.occurrences() == copied.occurrences());
+		copied.push_back(T(777));
+		assert(copied.size() == tree.size() + 1);
+	}
+}
+
 int main() {
+	integer_eertree<std::int8_t>();
+	integer_eertree<std::uint8_t>();
+	integer_eertree<std::int16_t>();
+	integer_eertree<std::uint16_t>();
+	integer_eertree<std::int32_t>();
+	integer_eertree<std::uint32_t>();
+	integer_eertree<std::int64_t>();
+	integer_eertree<std::uint64_t>();
+	std::vector<char> byte_sequence{0, char(255), 0};
+	Eertree byte_tree(byte_sequence);
+	assert(byte_tree.length(byte_tree.longest_palindrome()) == 3);
+	byte_tree.append(std::span<const char>(byte_sequence));
+	assert(byte_tree.size() == 6);
 	for (int n = 0; n <= 9; ++n) for (int mask = 0; mask < (1 << n); ++mask) {
 		std::string s(n, 'a');
 		for (int i = 0; i < n; ++i) s[i] += (mask >> i) & 1;

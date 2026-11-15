@@ -3,6 +3,7 @@
 
 #include "../components/simd_capabilities.hpp"
 #include "../components/sequence_compare.hpp"
+#include "../components/sequence_bit_masks.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -221,6 +222,40 @@ inline int wavefront(std::string_view s, std::string_view t, int cap, int budget
 	}
 	return -1;
 }
+
+inline int bit_parallel(std::span<const sequence_bit_masks_detail::Symbol> s, std::span<const sequence_bit_masks_detail::Symbol> t, std::size_t alphabet) {
+	if (t.empty()) return int(s.size());
+	sequence_bit_masks_detail::MaskWorkspace workspace(alphabet);
+	sequence_bit_masks_detail::SparseMasks masks(t, workspace);
+	bool common = false;
+	for (auto c : s)
+		if (masks.first(c) != -1) {
+			common = true;
+			break;
+		}
+	if (!common) return int(s.size());
+	const int words = int((t.size() + 63) / 64);
+	std::vector<Word> positive(words, ~Word(0)), negative(words);
+	for (auto c : s) {
+		int index = masks.first(c);
+		Word carry_p = 1, carry_m = 0, carry_add = 0;
+		for (int j = 0; j < words; ++j) {
+			Word p = positive[j], m = negative[j], eq = masks.next(index, j), xv = eq | m;
+			__uint128_t sum = __uint128_t(eq & p) + p + carry_add;
+			carry_add = Word(sum >> 64);
+			Word xh = (Word(sum) ^ p) | eq;
+			Word ph = m | ~(xh | p), mh = p & xh;
+			Word next_p = ph >> 63, next_m = mh >> 63;
+			ph = (ph << 1) | carry_p;
+			mh = (mh << 1) | carry_m;
+			positive[j] = mh | ~(xv | ph);
+			negative[j] = ph & xv;
+			carry_p = next_p;
+			carry_m = next_m;
+		}
+	}
+	return count(positive.data(), negative.data(), int(s.size()), int(t.size()));
+}
 }
 
 inline int edit_distance(std::string_view s, std::string_view t) {
@@ -255,6 +290,26 @@ inline int edit_distance(std::string_view s, std::string_view t) {
 		if (result >= 0) return result;
 	}
 	return edit_distance_detail::bit_parallel(s, t);
+}
+
+template <class S, std::size_t SizeS, class T, std::size_t SizeT>
+requires sequence_bit_masks_detail::CompatibleSymbols<S, T>
+int edit_distance(std::span<S, SizeS> first, std::span<T, SizeT> second) {
+	using Value = std::remove_const_t<S>;
+	std::span<const Value> s = first, t = second;
+	assert(s.size() <= std::size_t(std::numeric_limits<int>::max()) && t.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if (s.empty() || t.empty()) return int(std::max(s.size(), t.size()));
+	sequence_bit_masks_detail::trim(s, t);
+	if (s.size() < t.size()) std::swap(s, t);
+	if (t.empty()) return int(s.size());
+	if (s.size() != t.size() && sequence_bit_masks_detail::subsequence(t, s)) return int(s.size() - t.size());
+	sequence_bit_masks_detail::CompressedPair<Value> input(s, t);
+	return edit_distance_detail::bit_parallel(input.first, input.second, input.symbols.size());
+}
+
+template <sequence_bit_masks_detail::IntegralSymbol T, class AllocatorS, class AllocatorT>
+int edit_distance(const std::vector<T, AllocatorS> &s, const std::vector<T, AllocatorT> &t) {
+	return edit_distance(std::span<const T>(s.data(), s.size()), std::span<const T>(t.data(), t.size()));
 }
 
 #endif

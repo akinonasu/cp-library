@@ -3,6 +3,7 @@
 
 #include "../components/simd_capabilities.hpp"
 #include "../components/sequence_compare.hpp"
+#include "../components/sequence_bit_masks.hpp"
 #include <algorithm>
 #include <array>
 #include <bit>
@@ -236,6 +237,70 @@ inline void restore(std::string_view s, std::string_view t, std::string &out) {
 	}
 	out.append(tail);
 }
+
+template <bool reverse = false>
+inline std::vector<Word> profile(std::span<const sequence_bit_masks_detail::Symbol> s, std::span<const sequence_bit_masks_detail::Symbol> t, sequence_bit_masks_detail::MaskWorkspace &workspace) {
+	const int words = int((t.size() + 63) / 64);
+	sequence_bit_masks_detail::SparseMasks masks(t, workspace, reverse);
+	std::vector<Word> row(words, ~Word(0));
+	for (int i = 0, n = int(s.size()); i < n; ++i) {
+		int index = masks.first(s[reverse ? n - 1 - i : i]);
+		if (index == -1) continue;
+		Word carry = 0;
+		for (int j = 0; j < words; ++j) {
+			Word v = row[j], u = v & masks.next(index, j);
+			__uint128_t sum = __uint128_t(v) + u + carry;
+			row[j] = Word(sum) | (v ^ u);
+			carry = Word(sum >> 64);
+		}
+	}
+	return row;
+}
+
+inline void restore(std::span<const sequence_bit_masks_detail::Symbol> s, std::span<const sequence_bit_masks_detail::Symbol> t, std::vector<sequence_bit_masks_detail::Symbol> &out, sequence_bit_masks_detail::MaskWorkspace &workspace) {
+	auto [head, tail] = sequence_bit_masks_detail::trim(s, t);
+	out.insert(out.end(), head.begin(), head.end());
+	if (s.size() < t.size()) std::swap(s, t);
+	if (t.empty()) {
+		out.insert(out.end(), tail.begin(), tail.end());
+		return;
+	}
+	if (sequence_bit_masks_detail::subsequence(t, s)) out.insert(out.end(), t.begin(), t.end());
+	else if (s.size() <= 4096 / t.size()) {
+		int n = int(s.size()), m = int(t.size()), stride = m + 1;
+		std::vector<std::uint16_t> dp((n + 1) * stride);
+		for (int i = 0; i < n; ++i)
+			for (int j = 0; j < m; ++j)
+				dp[(i + 1) * stride + j + 1] = s[i] == t[j] ? dp[i * stride + j] + 1 : std::max(dp[i * stride + j + 1], dp[(i + 1) * stride + j]);
+		std::size_t start = out.size();
+		out.resize(start + dp[n * stride + m]);
+		std::size_t pos = out.size();
+		while (n && m) {
+			if (s[n - 1] == t[m - 1]) out[--pos] = s[--n], --m;
+			else if (dp[(n - 1) * stride + m] >= dp[n * stride + m - 1]) --n;
+			else --m;
+		}
+	} else if (t.size() > 1) {
+		int middle = int(s.size() / 2), split = 0, best;
+		{
+			auto left = profile(s.first(middle), t, workspace);
+			auto right = profile<true>(s.subspan(middle), t, workspace);
+			int a = 0, b = count(right);
+			best = b;
+			for (int j = 0, m = int(t.size()); j < m; ++j) {
+				a += int((~left[j / 64] >> (j % 64)) & 1);
+				int k = m - 1 - j;
+				b -= int((~right[k / 64] >> (k % 64)) & 1);
+				if (a + b > best) best = a + b, split = j + 1;
+			}
+		}
+		if (best) {
+			restore(s.first(middle), t.first(split), out, workspace);
+			restore(s.subspan(middle), t.subspan(split), out, workspace);
+		}
+	}
+	out.insert(out.end(), tail.begin(), tail.end());
+}
 }
 
 inline int lcs_length(std::string_view s, std::string_view t) {
@@ -262,6 +327,55 @@ inline std::string lcs(std::string_view s, std::string_view t) {
 	}
 	result.append(tail);
 	return result;
+}
+
+template <class S, std::size_t SizeS, class T, std::size_t SizeT>
+requires sequence_bit_masks_detail::CompatibleSymbols<S, T>
+int lcs_length(std::span<S, SizeS> first, std::span<T, SizeT> second) {
+	using Value = std::remove_const_t<S>;
+	std::span<const Value> s = first, t = second;
+	assert(s.size() <= std::size_t(std::numeric_limits<int>::max()) && t.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if (s.empty() || t.empty()) return 0;
+	auto [head, tail] = sequence_bit_masks_detail::trim(s, t);
+	int result = int(head.size() + tail.size());
+	if (s.size() < t.size()) std::swap(s, t);
+	if (t.empty() || sequence_bit_masks_detail::subsequence(t, s)) return result + int(t.size());
+	sequence_bit_masks_detail::CompressedPair<Value> input(s, t);
+	sequence_bit_masks_detail::MaskWorkspace workspace(input.symbols.size());
+	return result + lcs_detail::count(lcs_detail::profile(input.first, input.second, workspace));
+}
+
+template <class S, std::size_t SizeS, class T, std::size_t SizeT>
+requires sequence_bit_masks_detail::CompatibleSymbols<S, T>
+std::vector<std::remove_const_t<S>> lcs(std::span<S, SizeS> first, std::span<T, SizeT> second) {
+	using Value = std::remove_const_t<S>;
+	std::span<const Value> s = first, t = second;
+	assert(s.size() <= std::size_t(std::numeric_limits<int>::max()) && t.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if (s.empty() || t.empty()) return {};
+	std::vector<Value> result;
+	result.reserve(std::min(s.size(), t.size()));
+	auto [head, tail] = sequence_bit_masks_detail::trim(s, t);
+	result.insert(result.end(), head.begin(), head.end());
+	if (!s.empty() && !t.empty()) {
+		sequence_bit_masks_detail::CompressedPair<Value> input(s, t);
+		sequence_bit_masks_detail::MaskWorkspace workspace(input.symbols.size());
+		std::vector<sequence_bit_masks_detail::Symbol> restored;
+		restored.reserve(std::min(s.size(), t.size()));
+		lcs_detail::restore(input.first, input.second, restored, workspace);
+		for (auto c : restored) result.push_back(input.symbols[c]);
+	}
+	result.insert(result.end(), tail.begin(), tail.end());
+	return result;
+}
+
+template <sequence_bit_masks_detail::IntegralSymbol T, class AllocatorS, class AllocatorT>
+int lcs_length(const std::vector<T, AllocatorS> &s, const std::vector<T, AllocatorT> &t) {
+	return lcs_length(std::span<const T>(s.data(), s.size()), std::span<const T>(t.data(), t.size()));
+}
+
+template <sequence_bit_masks_detail::IntegralSymbol T, class AllocatorS, class AllocatorT>
+std::vector<T> lcs(const std::vector<T, AllocatorS> &s, const std::vector<T, AllocatorT> &t) {
+	return lcs(std::span<const T>(s.data(), s.size()), std::span<const T>(t.data(), t.size()));
 }
 
 #endif

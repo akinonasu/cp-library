@@ -217,7 +217,7 @@ public:
 #include <limits>
 #line 8 "string/z_algorithm.hpp"
 #include <string_view>
-#line 10 "string/z_algorithm.hpp"
+#line 11 "string/z_algorithm.hpp"
 
 template <class T>
 std::vector<int> z_algorithm(std::span<const T> sequence) {
@@ -226,6 +226,11 @@ std::vector<int> z_algorithm(std::span<const T> sequence) {
 	sequence_match_detail::Matcher<T> match(sequence);
 	sequence_match_detail::z_table(int(sequence.size()), result.data(), [&](int a, int b, int limit) { return match.forward(a, b, limit); });
 	return result;
+}
+
+template <class T, std::size_t Extent> requires (!std::is_const_v<T> || Extent != std::dynamic_extent)
+std::vector<int> z_algorithm(std::span<T, Extent> sequence) {
+	return z_algorithm(std::span<const std::remove_const_t<T>>(sequence.data(), sequence.size()));
 }
 
 inline std::vector<int> z_algorithm(std::string_view sequence) {

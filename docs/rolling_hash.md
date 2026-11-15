@@ -14,6 +14,8 @@ int length = a.lcp(0, b, 0);
 auto joined = RollingHash::concat(a.get(0, 4), b.get(), b.size());
 ```
 
+列の長さを $$n$$、LCP（先頭から一致する要素数）を調べる 2 区間の短い方の長さを $$L$$、これまでに累乗の準備を要求した最大長を $$N$$ とします。
+
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `RollingHash()` / `RollingHash(s)` / `RollingHash(a)` | 空／文字列／整数配列から構築 | 空: $$O(1)$$、配列: $$O(n)$$ |
@@ -32,7 +34,24 @@ auto joined = RollingHash::concat(a.get(0, 4), b.get(), b.size());
 
 `get(l,r)` は $$[l,r)$$、`get()` は全体のハッシュです。`lcp(l,b,j)` は両接尾辞の LCP、`lcp(l,r,b,j,k)` は区間 $$[l,r)$$ と $$[j,k)$$ の LCP を返します。`concat(x,y,len)` は `x` の後ろに長さ `len` の `y` を連結します。
 
-`std::string_view`・整数の `std::vector<T>` から構築でき、`build(a)` で再構築できます。整数は法で割った余りを使い、文字列の `char` は符号なしバイトとして扱います。`size()`・`empty()` も使えます。
+`std::string_view`・整数の `std::vector<T,Allocator>`・`std::array<T,N>`・`std::span<T,Extent>` から構築でき、同じ入力で `build(a)` による再構築もできます。`span` は定数要素・変更可能な要素と、固定長・可変長に対応します。入力は保存しないため、構築後に変更・破棄できます。整数は法で割った余りを使い、文字列の `char` は符号なしバイトとして扱います。64 bit 整数の最小値・最大値も渡せますが、法で割った余りが同じ値は同じ要素として扱います。`size()`・`empty()` も使えます。
+
+```cpp
+#include "lib/string/rolling_hash.hpp"
+#include <array>
+#include <cstdint>
+#include <span>
+#include <vector>
+
+int main() {
+	std::vector<std::int64_t> values{1, 257, -1000000000000LL, 1};
+	RollingHash hash(values);
+	std::array<std::int64_t, 2> prefix{1, 257};
+	assert(hash.get(0, 2) == RollingHash(prefix).get());
+	hash.build(std::span<const std::int64_t>(values).subspan(1, 2));
+	assert(hash.size() == 2);
+}
+```
 
 入力の長さは `INT_MAX` 以下、整数の要素型は64 bit以下の組み込み整数型とします。区間には `0 <= l <= r <= size()` を満たす添字を渡し、LCP の開始位置には各列の末尾も指定できます。空区間のハッシュは 0、長さ付きの値は `e()` と等しく、空区間を含む LCP は 0 です。`reserve(n)` の `n` は非負にします。`concat` のハッシュ値は `mod` 未満、`right_length` は非負、`op` の長さは非負で合計が `INT_MAX` 以下とします。
 
@@ -54,4 +73,4 @@ bool same = part == RH("abra").value();
 
 `Value` はハッシュ値 `hash` と要素数 `length` をまとめた型です。`single(x)` は 1 要素、`op(a,b)` はこの順での連結、`e()` は空列です。`value(l,r)`・`value()` は区間・全体を `Value` として取り出します。`Value` の比較は長さも含みます。`reserve(n)` で累乗を長さ `n` まで準備できます。
 
-長さを $$n$$、LCP の比較区間の短い方の長さを $$L$$ として、構築は $$O(n)$$、取得・`single`・`e` は $$O(1)$$、LCP は $$O(\log L)$$ 時間です。基数の累乗は全インスタンスで共有し、これまでに準備を要求した最大長を $$N$$ とすると、一連の拡張は合計 $$O(N)$$ 時間・空間です。配列の再確保で既存の値を移すことがあるため、拡張1回の最悪時間は $$O(N)$$ です。連結・`op` は必要な累乗があれば $$O(1)$$、各インスタンスの空間は $$O(n)$$ です。空区間の LCP は $$O(1)$$ 時間で、それ以外の取得・LCP の追加空間は $$O(1)$$ です。Segtree で `reserve(n)` を済ませた場合、構築は $$O(n)$$、点更新・区間取得は $$O(\log n)$$、空間は $$O(n)$$ です。
+構築は $$O(n)$$、取得・`single`・`e` は $$O(1)$$、LCP は $$O(\log L)$$ 時間です。基数の累乗は全インスタンスで共有し、一連の拡張は合計 $$O(N)$$ 時間・空間です。配列の再確保で既存の値を移すことがあるため、拡張1回の最悪時間は $$O(N)$$ です。連結・`op` は必要な累乗があれば $$O(1)$$、各インスタンスの空間は $$O(n)$$ です。空区間の LCP は $$O(1)$$ 時間で、それ以外の取得・LCP の追加空間は $$O(1)$$ です。Segtree で `reserve(n)` を済ませた場合、構築は $$O(n)$$、点更新・区間取得は $$O(\log n)$$、空間は $$O(n)$$ です。

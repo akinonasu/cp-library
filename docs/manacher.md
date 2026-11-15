@@ -54,8 +54,25 @@ int main() {
 | `lengths()` | 文字・文字間の中心を左から並べた最長回文長の `vector<int>` | $$O(n)$$ |
 | `size()` / `empty()` | 入力の長さ／空か | $$O(1)$$ |
 
-`std::string`・`std::string_view`・文字列リテラルのほか、`size()`・添字アクセス・要素の等値比較が使える `vector`・`array`・`span` などを渡せます。これらの操作は定数時間とします。入力は保持しないので、構築後に変更・破棄して構いません。公開配列 `odd`・`even` は直接書き換えないでください。
+`std::string`・`std::string_view`・文字列リテラルのほか、`size()`・添字アクセス・要素の等値比較が使える `vector`・`array`・`span` などを渡せます。`vector` は独自のアロケータも使え、`span` は固定長・動的長、変更可能・読み取り専用のどれでも使えます。整数の要素は負数や `uint64_t` の最大値も元の型のまま渡せます。大小比較は不要です。これらの操作は定数時間とします。入力は保持しないので、構築後に変更・破棄して構いません。公開配列 `odd`・`even` は直接書き換えないでください。
 
 空列にも対応し、最長回文は `[0,0)`、出現数は `0`、`lengths()` は空配列になります。文字列はバイト単位で扱い、NUL を含む全てのバイトに対応します。埋め込み NUL は長さを指定した `string_view` または `string` で渡してください。入力長は `INT_MAX` 以下とします。
 
-入力長を $$n$$ とすると、構築は $$O(n)$$ 時間・空間、区間の回文判定は $$O(1)$$ 時間です。
+```cpp
+#include "lib/string/manacher.hpp"
+#include <array>
+#include <cassert>
+#include <cstdint>
+#include <limits>
+#include <span>
+
+int main() {
+	auto high = std::numeric_limits<std::uint64_t>::max();
+	std::array<std::uint64_t, 4> values{high, 0, 0, high};
+	Manacher result{std::span<const std::uint64_t, 4>(values)};
+	assert(result.is_palindrome(0, 4));
+	assert(result.palindrome_count() == 6);
+}
+```
+
+入力長を $$n$$ とすると、構築・再構築は $$O(n)$$ 時間、保持空間と構築時の追加空間は $$O(n)$$ です。`lengths()`・`palindrome_lengths(s)` は返す配列に $$O(n)$$ 空間を使い、それ以外の取得操作の追加空間は $$O(1)$$ です。区間の回文判定は $$O(1)$$ 時間です。

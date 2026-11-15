@@ -4,7 +4,7 @@ documentation_of: //string/dynamic_pattern_matching.hpp
 library_category: string/pattern_matching
 ---
 
-固定した本文に対して、パターンを編集しながら出現回数と出現位置を求めます。文字の挿入・削除・置換、部分文字列の削除・移動・コピーに対応します。照合は厳密で、ハッシュの衝突はありません。
+固定した本文に対して、パターンを編集しながら出現回数と出現位置を求めます。文字列・整数列に対応し、要素の挿入・削除・置換、区間の削除・移動・コピーができます。照合は厳密で、ハッシュの衝突はありません。
 
 ```cpp
 #include "lib/string/dynamic_pattern_matching.hpp"
@@ -32,7 +32,27 @@ int main() {
 }
 ```
 
-本文とパターンは `std::string_view` で渡します。バイト単位で扱い、NUL を含む全 256 種類に対応します。入力した文字列はコピーするため、呼び出し後に元の文字列を変更・破棄できます。本文は `INT_MAX/2` バイト未満、パターン長と位置は `uint64_t` の範囲です。パターンを編集しても本文は変わりません。本文の変更には `build` での再構築が必要です。
+整数列には `BasicDynamicPatternMatching<T>` を使います。`T` は `bool`・`char` 以外の 64 bit 以下の組み込み整数型で、本文・パターン・置換値の型を揃えます。列は `std::span<const T>` として受け取り、同じ要素型の `std::vector`・`std::array`・`std::span` を直接渡せます。`text()` は `std::span<const T>`、`operator[]` は `T`、`str()` は `std::vector<T>` を返します。負の値や 64 bit 整数の最小値・最大値も区別し、接尾辞の辞書順は `T` の数値の大小で決まります。
+
+```cpp
+#include "lib/string/dynamic_pattern_matching.hpp"
+#include <cstdint>
+#include <vector>
+
+int main() {
+	std::vector<std::int64_t> text{1, 257, 1, 257, 1};
+	std::vector<std::int64_t> pattern{1, 257, 1};
+	BasicDynamicPatternMatching<std::int64_t> matching(text, pattern);
+	assert(matching.count() == 2);
+	matching.set(1, std::int64_t(-1000000000000LL));
+	assert(matching.count() == 0);
+	assert(matching[1] == -1000000000000LL);
+	matching.assign(pattern);
+	assert(matching.str() == pattern);
+}
+```
+
+以下の操作は両方の型で共通です。`DynamicPatternMatching` は `BasicDynamicPatternMatching<char>` の別名です。文字列の本文とパターンは `std::string_view`、または要素型が `char` の `std::vector`・`std::array`・`std::span` で渡し、NUL を含む全 256 種類のバイトに対応します。`char` の辞書順は符号なしバイトの順序です。入力した列はコピーするため、呼び出し後に変更・破棄できます。本文の要素数は `INT_MAX/2` 未満、パターン長と位置は `uint64_t` の範囲です。パターンを編集しても本文は変わりません。本文の変更には `build` での再構築が必要です。`text()` の返す参照先は、その本文を共有するオブジェクトが存在する間有効です。
 
 添字は全て 0 始まり、区間は `[l,r)` です。`insert(p,...)` と `copy(l,r,p)` の挿入位置は、操作前のパターンの `p` 文字目の直前です。`p == size()` なら末尾に挿入します。`copy` は、操作前の `[l,r)` をコピーするので、`p` がコピー元の内部でも使えます。
 
@@ -48,21 +68,21 @@ int main() {
 
 参考：[String Matching with a Dynamic Pattern](https://arxiv.org/html/2506.11318v1)。このライブラリは固定した本文を扱い、論文第7節の本文への文字追加には対応しません。
 
-本文長を $$n$$、操作前後のパターン長の最大を $$m$$、渡す文字列の長さを $$s$$、出現回数を $$k$$、共有して保持する節点数を $$A$$ とします。対数の項は長さが 0・1 の場合に定数として扱います。† は節点を格納する配列の伸長も含め、一連の操作の合計から評価した1回当たりの計算量（償却計算量）です。
+本文長を $$n$$、本文に含まれる異なる整数の個数を $$\sigma$$、操作前後のパターン長の最大を $$m$$、渡す列の長さを $$s$$、出現回数を $$k$$、共有して保持する節点数を $$A$$ とします。対数の項は長さ・個数が 0・1 の場合に定数として扱います。† は節点を格納する配列の伸長も含め、一連の操作の合計から評価した1回当たりの計算量（償却計算量）です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `DynamicPatternMatching()` | 本文・パターンとも空の状態を作る | $$O(1)$$ |
-| `DynamicPatternMatching(text,pattern={})` | 本文の索引と初期パターンを作る | $$O(n+s)$$ |
-| `build(text,pattern={})` | 本文とパターンを作り直す | 新規構築 $$O(n+s)$$ と旧記憶領域の解放 |
-| `assign(pattern)` | パターンを渡した文字列に置き換える | † $$O(s)$$ |
+| 既定構築 | 本文・パターンとも空の状態を作る | $$O(1)$$ |
+| `DynamicPatternMatching(text,pattern={})` / `BasicDynamicPatternMatching<T>(text,pattern={})` | 本文の索引と初期パターンを作る | 文字列 $$O(n+s)$$、整数列 $$O(n\log n+s\log\sigma)$$ |
+| `build(text,pattern={})` | 本文とパターンを作り直す | 文字列 $$O(n+s)$$、整数列 $$O(n\log n+s\log\sigma)$$ と旧記憶領域の解放 |
+| `assign(pattern)` | パターンを渡した列に置き換える | † 文字列 $$O(s)$$、整数列 $$O(s\log\sigma)$$ |
 | `clear()` | パターンを空にする | $$O(1)$$ |
 | `size()` / `empty()` | パターン長 / パターンが空か | $$O(1)$$ |
-| `text()` | 固定した本文の `string_view` | $$O(1)$$ |
-| `insert(p,c)` | 位置 `p` に 1 バイト挿入 | † $$O(\log n+\log m)$$ |
-| `insert(p,pattern)` | 位置 `p` に文字列を挿入 | † $$O(s+\log n+\log m)$$ |
-| `erase(p)` / `erase(l,r)` | 1 バイト / 区間を削除 | † $$O(\log n+\log m)$$ |
-| `set(p,c)` | 位置 `p` を 1 バイトに置換 | † $$O(\log n+\log m)$$ |
+| `text()` | 固定した本文。文字列は `string_view`、整数列は `span<const T>` | $$O(1)$$ |
+| `insert(p,c)` | 位置 `p` に 1 要素挿入 | † $$O(\log n+\log m)$$ |
+| `insert(p,pattern)` | 位置 `p` に列を挿入 | † 文字列 $$O(s+\log n+\log m)$$、整数列 $$O(s\log\sigma+\log n+\log m)$$ |
+| `erase(p)` / `erase(l,r)` | 1 要素 / 区間を削除 | † $$O(\log n+\log m)$$ |
+| `set(p,c)` | 位置 `p` を 1 要素に置換 | † $$O(\log n+\log m)$$ |
 | `move(l,r,p)` | 区間を削除後の位置 `p` に移動 | † $$O(\log n+\log m)$$ |
 | `copy(l,r,p)` | 区間のコピーを操作前の位置 `p` に挿入 | † $$O(\log n+\log m)$$ |
 | `count()` | 出現回数を `int` で返す | $$O(1)$$ |
@@ -70,12 +90,12 @@ int main() {
 | `occurrences()` | 全出現位置の `vector<int>` | $$O(k)$$ |
 | `occurrence_range()` | 出現する接尾辞配列の区間 `[l,r)` | $$O(1)$$ |
 | `suffix_array()` | 空の接尾辞を含む接尾辞配列への const 参照 | $$O(1)$$ |
-| `operator[](p)` | パターンの位置 `p` のバイト | $$O(\log m)$$ |
-| `str()` | 現在のパターン全体を `string` に展開 | $$O(m)$$ |
+| `operator[](p)` | パターンの位置 `p` の要素 | $$O(\log m)$$ |
+| `str()` | 現在のパターン全体を文字列は `string`、整数列は `vector<T>` に展開 | $$O(m)$$ |
 | `storage_nodes()` | 共有する節点記憶領域の保持節点数 | $$O(1)$$ |
 | `compact()` | 本文の索引は共有し、現在必要な節点だけを新しい記憶領域に移す | $$O(A)$$ 時間・追加空間 |
 | コピー構築 / コピー代入 | 本文・木を共有して状態を保存 | 構築 $$O(1)$$、代入は旧記憶領域の解放が加わる |
 | ムーブ構築 / ムーブ代入 | 状態を移し、移動元を空に戻す | 構築 $$O(1)$$、代入は旧記憶領域の解放が加わる |
 | `swap(other)` | 状態を交換する | $$O(1)$$ |
 
-本文の索引は $$O(n)$$ 空間です。初期パターンには高々 $$O(s)$$ 節点を使います。文字の編集・部分文字列の操作 1 回につき追加する節点数は $$O(\log m)$$、長さ $$s$$ の文字列の代入・挿入ではさらに $$O(s)$$ です。最後に共有状態が破棄される際は、その記憶領域の解放が発生します。パターン長を本文長以下に保つ場合、編集の計算量は論文と同じ † $$O(\log n)$$ です。
+本文の索引は $$O(n)$$ 空間です。初期パターンには高々 $$O(s)$$ 節点を使います。要素の編集・区間の操作 1 回につき追加する節点数は $$O(\log m)$$、長さ $$s$$ の列の代入・挿入ではさらに $$O(s)$$ です。`str()` は出力に $$O(m)$$、`occurrences()` は出力に $$O(k)$$ 空間を使い、その他の問い合わせの追加空間は $$O(1)$$ です。最後に共有状態が破棄される際は、その記憶領域の解放が発生します。パターン長を本文長以下に保つ場合、1 要素の編集・区間の操作は † $$O(\log n)$$ です。

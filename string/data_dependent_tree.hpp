@@ -2,32 +2,55 @@
 #define DATA_DEPENDENT_TREE_HPP
 
 #include "../components/splitmix64.hpp"
+#include "../components/sequence_view.hpp"
 #include <algorithm>
 #include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <span>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
-class DataDependentTree {
+template <class Symbol>
+class BasicDataDependentTree {
+	static_assert(std::is_integral_v<Symbol> && sizeof(Symbol) <= 8 && !std::is_same_v<Symbol, bool>);
+	static constexpr bool byte = std::is_same_v<Symbol, char>;
+	using View = std::conditional_t<byte, std::string_view, std::span<const Symbol>>;
+	using Sequence = std::conditional_t<byte, std::string, std::vector<Symbol>>;
+	struct Empty {
+		explicit Empty(std::uint64_t = 0) {}
+		void swap(Empty &) noexcept {}
+	};
+	struct SymbolHash {
+		std::uint64_t seed;
+		std::size_t operator()(Symbol value) const noexcept { return splitmix64(std::uint64_t(value) + seed); }
+	};
+	struct Leaves {
+		std::unordered_map<Symbol, int, SymbolHash> index;
+		explicit Leaves(std::uint64_t seed) : index(0, SymbolHash{seed}) {}
+		void swap(Leaves &other) noexcept { index.swap(other.index); }
+	};
 	using Size = std::uint64_t;
 	struct Node {
 		Size length = 0, count = 0, priority = 0;
 		int level = -1, child = 0;
 		std::vector<int> children;
 		std::vector<Size> prefix;
+		[[no_unique_address]] std::conditional_t<byte, Empty, Symbol> symbol{};
 	};
 	struct Part { int node; Size count; };
 	using Forest = std::vector<Part>;
 	std::vector<Node> nodes_;
 	std::unordered_multimap<Size, int> signatures_;
 	Size seed_;
+	[[no_unique_address]] std::conditional_t<byte, Empty, Leaves> leaves_;
 	static Size random_seed() {
 		auto now = std::chrono::steady_clock::now().time_since_epoch().count();
 		return splitmix64(Size(now) ^ Size(reinterpret_cast<std::uintptr_t>(&now)));
@@ -73,6 +96,28 @@ class DataDependentTree {
 		try { signatures_.emplace(hash, id); }
 		catch (...) { nodes_.pop_back(); throw; }
 		return id;
+	}
+	int character(Symbol value) {
+		if constexpr (byte) return int(static_cast<unsigned char>(value)) + 1;
+		else {
+			auto it = leaves_.index.find(value);
+			if (it != leaves_.index.end()) return it->second;
+			if (nodes_.size() >= std::size_t(std::numeric_limits<int>::max())) throw std::length_error("DataDependentTree nodes");
+			int id = int(nodes_.size());
+			Node x;
+			x.length = x.count = 1;
+			x.level = 0;
+			x.priority = splitmix64(seed_ + unsigned(id));
+			x.symbol = value;
+			nodes_.push_back(std::move(x));
+			try { leaves_.index.emplace(value, id); }
+			catch (...) { nodes_.pop_back(); throw; }
+			return id;
+		}
+	}
+	Symbol symbol(int v) const {
+		if constexpr (byte) return static_cast<char>(v - 1);
+		else return nodes_[v].symbol;
 	}
 	int run(int v, Size count, int level) { return intern(level, v, count); }
 	int sequence(std::vector<int> children, int level) {
@@ -194,25 +239,25 @@ class DataDependentTree {
 
   public:
 	using size_type = Size;
-	explicit DataDependentTree(Size seed = random_seed()) : nodes_(257), seed_(seed) {
-		for (int v = 1; v <= 256; ++v) {
+	explicit BasicDataDependentTree(Size seed = random_seed()) : nodes_(byte ? 257 : 1), seed_(seed), leaves_(seed) {
+		if constexpr (byte) for (int v = 1; v <= 256; ++v) {
 			nodes_[v].length = nodes_[v].count = 1;
 			nodes_[v].level = 0;
 			nodes_[v].priority = splitmix64(seed_ + unsigned(v));
 		}
 	}
-	DataDependentTree(const DataDependentTree &) = default;
-	DataDependentTree &operator=(const DataDependentTree &other) {
-		if (this != &other) { DataDependentTree next(other); swap(next); }
+	BasicDataDependentTree(const BasicDataDependentTree &) = default;
+	BasicDataDependentTree &operator=(const BasicDataDependentTree &other) {
+		if (this != &other) { BasicDataDependentTree next(other); swap(next); }
 		return *this;
 	}
-	DataDependentTree(DataDependentTree &&other) : DataDependentTree(other.seed_) { swap(other); }
-	DataDependentTree &operator=(DataDependentTree &&other) {
-		if (this != &other) { DataDependentTree next(std::move(other)); swap(next); }
+	BasicDataDependentTree(BasicDataDependentTree &&other) : BasicDataDependentTree(other.seed_) { swap(other); }
+	BasicDataDependentTree &operator=(BasicDataDependentTree &&other) {
+		if (this != &other) { BasicDataDependentTree next(std::move(other)); swap(next); }
 		return *this;
 	}
-	void swap(DataDependentTree &other) noexcept {
-		nodes_.swap(other.nodes_); signatures_.swap(other.signatures_); std::swap(seed_, other.seed_);
+	void swap(BasicDataDependentTree &other) noexcept {
+		nodes_.swap(other.nodes_); signatures_.swap(other.signatures_); std::swap(seed_, other.seed_); leaves_.swap(other.leaves_);
 	}
 	Size size(int root) const { check(root); return nodes_[root].length; }
 	bool empty(int root) const { check(root); return !root; }
@@ -220,19 +265,22 @@ class DataDependentTree {
 	std::size_t storage_nodes() const { return nodes_.size() - 1; }
 	void reserve(std::size_t count) {
 		if (count >= std::size_t(std::numeric_limits<int>::max())) throw std::length_error("DataDependentTree nodes");
-		nodes_.reserve(std::max(count + 1, std::size_t(257)));
+		nodes_.reserve(std::max(count + 1, std::size_t(byte ? 257 : 1)));
 		signatures_.reserve(count);
+		if constexpr (!byte) leaves_.index.reserve(count);
 	}
-	int build(std::string_view text) {
+	int build(View text) {
 		Forest current;
 		current.reserve(text.size());
-		for (unsigned char c : text) push(current, int(c) + 1);
+		for (Symbol c : text) push(current, character(c));
 		for (int level = 1; !current.empty(); ++level) {
 			if (current.size() == 1 && current[0].count == 1) return trim(current[0].node);
 			current = group(current, level);
 		}
 		return 0;
 	}
+	template <sequence_view_detail::CharSequence R> requires byte
+	int build(const R &text) { return build(sequence_view_detail::char_view(text)); }
 	int concat(int a, int b) {
 		check(a); check(b); check_sum(a, b);
 		if (!a || !b) return a ? a : b;
@@ -277,7 +325,9 @@ class DataDependentTree {
 		auto [a, b] = split(root, p);
 		return concat(concat(a, text), b);
 	}
-	int insert(int root, Size p, std::string_view text) { return insert(root, p, build(text)); }
+	int insert(int root, Size p, View text) { return insert(root, p, build(text)); }
+	template <sequence_view_detail::CharSequence R> requires byte
+	int insert(int root, Size p, const R &text) { return insert(root, p, sequence_view_detail::char_view(text)); }
 	int erase(int root, Size l, Size r) {
 		assert(l <= r && r <= size(root));
 		if (l == r) return root;
@@ -285,11 +335,11 @@ class DataDependentTree {
 		int b = split(rest, r - l).second;
 		return concat(a, b);
 	}
-	int set(int root, Size p, char c) {
+	int set(int root, Size p, Symbol c) {
 		assert(p < size(root));
 		auto [a, rest] = split(root, p);
 		int b = split(rest, 1).second;
-		return concat(concat(a, int(static_cast<unsigned char>(c)) + 1), b);
+		return concat(concat(a, character(c)), b);
 	}
 	int repeat(int root, Size count) {
 		check(root);
@@ -302,7 +352,7 @@ class DataDependentTree {
 		}
 		return result;
 	}
-	char at(int root, Size p) const {
+	Symbol at(int root, Size p) const {
 		assert(p < size(root));
 		while (nodes_[root].level > 0) {
 			const auto &x = nodes_[root];
@@ -312,7 +362,7 @@ class DataDependentTree {
 				p -= x.prefix[j]; root = x.children[j];
 			}
 		}
-		return static_cast<char>(root - 1);
+		return symbol(root);
 	}
 	bool equal(int a, int b) const { check(a); check(b); return a == b; }
 	Size lcp(int a, int b, Size limit = std::numeric_limits<Size>::max()) const {
@@ -330,24 +380,28 @@ class DataDependentTree {
 	int compare(int a, int b) const {
 		Size common = lcp(a, b);
 		if (common == std::min(size(a), size(b))) return (size(a) > size(b)) - (size(a) < size(b));
-		unsigned char x = at(a, common), y = at(b, common);
+		using Ordered = std::conditional_t<byte, unsigned char, Symbol>;
+		Ordered x = at(a, common), y = at(b, common);
 		return (x > y) - (x < y);
 	}
-	std::string str(int root) const {
+	Sequence str(int root) const {
 		check(root);
-		std::string result;
+		Sequence result;
 		if (size(root) > result.max_size()) throw std::length_error("DataDependentTree string");
 		result.reserve(std::size_t(size(root)));
 		auto pending = cursor(root);
 		while (!pending.empty()) {
 			int v = pending.back().node;
 			if (!nodes_[v].level) {
-				result.append(std::size_t(pending.back().count), static_cast<char>(v - 1));
+				if constexpr (byte) result.append(std::size_t(pending.back().count), symbol(v));
+				else result.insert(result.end(), std::size_t(pending.back().count), symbol(v));
 				pending.pop_back();
 			} else expand(pending, true);
 		}
 		return result;
 	}
 };
+
+using DataDependentTree = BasicDataDependentTree<char>;
 
 #endif

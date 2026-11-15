@@ -7,12 +7,16 @@ library_category: string/palindrome
 ```cpp
 #include "lib/string/eertree.hpp"
 
-Eertree tree("ababa");
-auto count = tree.occurrences();
-int v = tree.longest_palindrome();
-auto [l, r] = tree.first_occurrence(v);
-tree.push_back('b');
+int main() {
+	Eertree tree("ababa");
+	auto count = tree.occurrences();
+	int v = tree.longest_palindrome();
+	auto [l, r] = tree.first_occurrence(v);
+	tree.push_back('b');
+}
 ```
+
+文字数を $$n$$、登場するバイトの種類数を $$\sigma\leq256$$、回文の種類数を $$d\leq n$$ とします。
 
 | 関数・定数 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -44,4 +48,38 @@ tree.push_back('b');
 
 `suffix_count(last())` は現在の末尾で終わる回文の数です。出現回数の取得は木を変更しないため、取得後も追加でき、繰り返し取得しても二重に加算されません。`prefix_nodes()` の参照先への要素追加・参照の有効期間には、通常の `vector` と同じ規則が適用されます。
 
-表の「償却」は、一連の文字追加にかかる合計時間から評価した1回当たりの時間です。文字数を $$n$$、登場するバイトの種類数を $$\sigma\leq256$$、回文の種類数を $$d\leq n$$ とします。構築・末尾追加の合計は $$O(n\sigma)$$ 時間、空間は $$O(n)$$ です。`push_back` は償却 $$O(\sigma)$$ 時間、`transition` は $$O(\sigma)$$ 時間、`occurrences` は $$O(d)$$ 時間・空間です。`reserve`・`clear` は既存領域の処理を含めて $$O(n)$$ 時間、その他の取得は $$O(1)$$ 時間です。
+表の「償却」は、一連の文字追加にかかる合計時間から評価した1回当たりの時間です。構築・末尾追加の合計は $$O(n\sigma)$$ 時間、空間は $$O(n)$$ です。`push_back` は償却 $$O(\sigma)$$ 時間、`transition` は $$O(\sigma)$$ 時間、`occurrences` は $$O(d)$$ 時間・空間です。`reserve`・`clear` は既存領域の処理を含めて $$O(n)$$ 時間、その他の取得は $$O(1)$$ 時間です。
+
+`BasicEertree<T>` は整数列にも同じ操作を提供します。`T` は `bool` を除く 64 bit 以下の整数型です。負数・最小値・最大値も使え、特別な値を予約する必要はありません。`Eertree` は `BasicEertree<char>` の別名なので、既存の型名もそのまま使えます。
+
+整数版の列引数は `span<const T>` で受け取り、同じ要素型の `vector<T>`・`span<T>` も渡せます。`push_back(c)`・`transition(v,c)` の `c` は `T` です。操作名・返り値・位置・空列・重複出現・コピーの扱いは文字列版と同じです。`Eertree` 自体にも `vector<char>`・`span<char>`・`span<const char>` を渡せます。
+
+```cpp
+#include "lib/string/eertree.hpp"
+#include <cassert>
+#include <cstdint>
+#include <vector>
+
+int main() {
+	std::vector<std::int64_t> text{-5, 1000000000000LL, -5};
+	BasicEertree<std::int64_t> tree(text);
+	assert(tree.length(tree.longest_palindrome()) == 3);
+	tree.push_back(1000000000000LL);
+	assert(tree.palindrome_count() == 6);
+}
+```
+
+整数版について、追加した要素数を $$n$$、追加済みの異なる値の数を $$\Sigma$$、回文の種類数を $$d$$ とします。値が 0 種類・1 種類なら、以下の対数時間は定数時間として扱います。
+
+| 整数版の操作 | 時間計算量 |
+| --- | --- |
+| 空の構築 | $$O(1)$$ |
+| 列からの構築・一連の `push_back` / `append` | 合計 $$O(n\log\Sigma)$$ |
+| `push_back(c)` | 償却 $$O(\log\Sigma)$$ |
+| `append(s)` | 償却 $$O(\lvert s\rvert\log\Sigma)$$ |
+| `transition(v,c)` | $$O(\log\Sigma)$$ |
+| `occurrences()` | $$O(d)$$ |
+| `reserve(n)` / `clear()` | $$O(n)$$ |
+| その他の取得操作 | $$O(1)$$ |
+
+整数版の保持空間は $$O(n)$$ です。`occurrences` は $$O(d)$$ 追加空間、それ以外の取得は $$O(1)$$ 追加空間です。

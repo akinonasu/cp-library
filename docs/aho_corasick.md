@@ -34,6 +34,8 @@ int main() {
 
 `add` の返り値は追加順のパターン ID です。全てのパターンを追加してから `build()` を呼んでください。同じ文字列を複数回追加すると別の ID になり、それぞれを一致として数えます。`build()` 後にパターンを追加する場合は、`clear()` して全て登録し直します。本文ごとの検索は状態を変更しないので、同じ構築結果を繰り返し使えます。
 
+パターンの長さの合計を $$L$$、個数を $$P$$、Trie の頂点数を $$V$$、文字集合の大きさを $$\sigma=Alphabet$$、本文の長さを $$n$$、その `add` で新しく作る頂点数を $$K$$ とします。全一致数を $$Z$$、状態 `v` での一致数を $$Z_v$$ とします。
+
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `AhoCorasick<Alphabet, First>()` | 空の [Trie](trie.md)（文字列の共通する接頭辞をまとめた木）。既定は英小文字26文字、`First='a'` | $$O(\sigma)$$ |
@@ -60,7 +62,7 @@ int main() {
 | `propagate(values)` | 頂点ごとの値を suffix link の行き先へ、幅優先順の逆順で `+=` する | $$O(V)$$ |
 | `root` | 根の頂点番号 0 | $$O(1)$$ |
 
-表の「償却」は、一連の追加にかかる合計時間から評価した1回当たりの時間です。$$K$$ は、その `add` で新しく作られる頂点数です。パターンを追加した順に、まだ存在しない接頭辞へ頂点番号を割り当てます。`terminal`・`length` の引数はパターン ID、それ以外の状態を取る関数の引数は頂点番号です。
+表の「償却」は、一連の追加にかかる合計時間から評価した1回当たりの時間です。パターンを追加した順に、まだ存在しない接頭辞へ頂点番号を割り当てます。`terminal`・`length` の引数はパターン ID、それ以外の状態を取る関数の引数は頂点番号です。
 
 `suffix_link`・`output_link`・`match_count` と検索・集計・`bfs_order`・`propagate` は `build()` 後に使います。状態は読み込んだ文字列の接尾辞のうち、Trie に存在する最長のものを表します。本文を分割して読む場合は `walk`・`transition` の返り値を次の呼び出しへ渡します。
 
@@ -74,4 +76,40 @@ int main() {
 
 既定の26文字では、頂点の配列と幅優先順だけで1頂点あたり約132バイトを使います。大きな文字集合を指定すると、その分メモリが増えます。
 
-パターンの長さの合計を $$L$$、個数を $$P$$、Trie の頂点数を $$V\leq L+1$$、文字集合の大きさを $$\sigma$$、本文の長さを $$n$$ とします。登録・構築は合計 $$O(L+P+V\sigma)$$ 時間、保持する空間は $$O(V\sigma+P)$$ です。`occurrences` は $$O(n+V+P)$$ 時間・$$O(V+P)$$ 追加空間、`count_matches` は $$O(n)$$ 時間・$$O(1)$$ 追加空間、全列挙は一致数を $$Z$$ として $$O(n+Z)$$ 時間・$$O(1)$$ 追加空間です。コールバックと `+=` の計算量は1回あたり $$O(1)$$ としています。
+登録・構築は合計 $$O(L+P+V\sigma)$$ 時間、保持する空間は $$O(V\sigma+P)$$ です。`occurrences` は $$O(n+V+P)$$ 時間・$$O(V+P)$$ 追加空間、`count_matches` は $$O(n)$$ 時間・$$O(1)$$ 追加空間、全列挙は $$O(n+Z)$$ 時間・$$O(1)$$ 追加空間です。コールバックと `+=` の計算量は1回あたり $$O(1)$$ としています。
+
+`BasicAhoCorasick<T>` は任意の整数列に同じ操作を提供します。`T` は `bool` を除く 64 bit 以下の整数型で、負数・最小値・最大値も使えます。列引数は `span<const T>` で受け取り、同じ要素型の `vector<T>`・`span<T>` も渡せます。1 要素を受け取る `child(v,c)`・`transition(v,c)` の `c` は `T` です。登録していない値が本文に出ても使え、一致を途切れさせます。操作名・引数順・返り値・空列・重複・状態の扱いは通常版と同じです。
+
+```cpp
+#include "lib/string/aho_corasick.hpp"
+#include <cassert>
+#include <cstdint>
+#include <vector>
+
+int main() {
+	BasicAhoCorasick<std::int64_t> ac;
+	std::vector<std::int64_t> pattern{-5, 1000000000000LL};
+	int id = ac.add(pattern);
+	ac.build();
+	std::vector<std::int64_t> text{-5, 1000000000000LL, -5, 1000000000000LL};
+	assert(ac.occurrences(text)[id] == 2);
+}
+```
+
+整数版について、登録した全パターンの長さの合計を $$M$$、最大長を $$H$$、登場する異なる整数の数を $$\Sigma$$ とします。$$M$$ は共通する接頭辞や重複したパターンも重ねて数えます。操作の引数の列の長さを $$m$$ とし、$$P,V,Z,Z_v$$ は上と同じ意味です。値が 0 種類・1 種類なら、以下の対数時間は定数時間として扱います。
+
+| 整数版の操作 | 時間計算量 |
+| --- | --- |
+| `BasicAhoCorasick()` / `clear()` / `reserve(total_length,patterns=0)` | $$O(1)$$ / $$O(V+P)$$ / $$O(V+P)$$ |
+| `add(pattern)` | 償却 $$O(m\log\Sigma)$$ |
+| `build()` | 初回 $$O(M\log\Sigma+P)$$、以降 $$O(1)$$ |
+| `child(v,c)` | $$O(\log\Sigma)$$ |
+| `transition(v,c)` | $$O(H\log\Sigma)$$ |
+| `walk(v,text)` | $$O((m+depth(v))\log\Sigma)$$。根からは $$O(m\log\Sigma)$$ |
+| `find_all(text,visit)` | $$O(m\log\Sigma+Z)$$ |
+| `count_matches(text)` | $$O(m\log\Sigma)$$ |
+| `occurrences(text)` | $$O(m\log\Sigma+V+P)$$ |
+| `for_each_match(v,visit)` / `propagate(values)` | $$O(Z_v)$$ / $$O(V)$$ |
+| その他の取得操作 | $$O(1)$$ |
+
+整数版の保持空間は $$O(V+P)$$ です。構築・領域予約は $$O(V+P)$$、`occurrences` は $$O(V+P)$$ の追加空間を使います。それ以外の検索は、コールバックの処理を除き $$O(1)$$ 追加空間です。状態を引き継いだ一連の `walk`・`transition` は、最初が根なら、読んだ要素数の合計を $$m$$ として $$O(m\log\Sigma)$$ 時間です。単発の `transition` が長い接尾辞を探す場合には、表の最大長に比例する時間がかかります。
