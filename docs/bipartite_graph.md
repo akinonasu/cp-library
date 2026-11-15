@@ -32,7 +32,7 @@ int main() {
 
 二部グラフでない場合、`size()`・`empty()`・`is_bipartite()`・再構築の `build(g)` を使えます。色分けや集合を取得する操作は、二部グラフであることを確認してから呼びます。入力を変更せず、構築後は入力を参照しません。
 
-$$N$$ を頂点数、$$M$$ を無向辺数、$$K$$ を色分け後の小さい側の頂点数とします。集合の取得時に必要なら最大マッチングを計算し、その結果を再利用します。下表の取得操作の計算量は、最大マッチングを計算済みの場合です。
+$$N$$ を頂点数、$$M$$ を無向辺数、$$K$$ を色分け後の小さい側の頂点数、$$Q$$ を `required` の要素数（重複を含む）とします。`matching_covering()` 以外の集合取得では、必要なら最大マッチングを計算し、その結果を再利用します。下表の取得操作の計算量は、`matching_covering()` を除き、最大マッチングを計算済みの場合です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
@@ -43,12 +43,29 @@ $$N$$ を頂点数、$$M$$ を無向辺数、$$K$$ を色分け後の小さい�
 | `coloring()` | 各頂点の色 0 または 1 の `const vector<int>&` | $$O(1)$$ |
 | `matching_size()` | 最大マッチングの辺数 | $$O(1)$$ |
 | `maximum_matching()` | 最大マッチングの頂点対 `(色0,色1)` の列 | $$O(N)$$ |
+| `matching_covering(required)` | 指定した頂点を全て対応付ける頂点対 `(色0,色1)` の列を `optional<vector<pair<int,int>>>` で返す。存在しなければ `nullopt` | 時間 $$O(Q+(N+M)\sqrt K)$$、追加空間 $$O(N+M)$$ |
 | `mates()` | 各頂点の対応相手。未対応は -1 | $$O(N)$$ |
 | `minimum_vertex_cover()` | 全辺を少なくとも片端で覆う最小の頂点集合 | $$O(N+M)$$ |
 | `maximum_independent_set()` | 選んだ頂点間に辺がない最大の頂点集合 | $$O(N+M)$$ |
 | `minimum_edge_cover()` | 全頂点を覆う最小の頂点対の列。孤立頂点があれば `nullopt` | $$O(N+M)$$ |
 
 最大独立集合の頂点数は $$N-\lvert\mathrm{matching}\rvert$$、最小頂点被覆の頂点数は最大マッチングの辺数です。両者は互いの補集合になります。最小辺被覆が存在する場合、その辺数も $$N-\lvert\mathrm{matching}\rvert$$ です。空グラフの最小辺被覆は空の列です。
+
+`matching_covering(required)` の `required` は、元の頂点番号を並べた `vector<int>` です。範囲は $$[0,N)$$ で、順序は任意、重複指定も使えます。指定した全頂点が、返す辺のいずれかの端点になります。相手には指定していない頂点も使えます。返す列は色 0 側の元の頂点番号の昇順です。指定が空なら空の列を返します。本数を最大にする操作ではなく、保存済みの最大マッチングや、`mates()` などが返す結果も変更しません。
+
+```cpp
+#include "lib/graph/bipartite_graph.hpp"
+#include <cassert>
+
+int main() {
+	std::vector<std::vector<int>> g{ {1}, {0, 2}, {1, 3}, {2} };
+	BipartiteGraph graph(g);
+	auto matching = graph.matching_covering({0, 3});
+	assert(matching && matching->size() == 2);
+}
+```
+
+上の `matching_covering()` の計算量は $$K>0$$ の場合です。指定が空なら $$O(1)$$ 時間・追加空間、片側が空で指定がある場合は $$O(N+Q)$$ 時間・$$O(N)$$ 追加空間で `nullopt` を返します。
 
 左右を指定して辺を追加したり、Hall 条件の反例・辺の分類を求めたりする場合は [二部マッチング](bipartite_matching.md) を使います。このライブラリも同じマッチング処理を利用します。
 

@@ -65,6 +65,22 @@ public:
 	const std::vector<int>& right_mates() { build(); return right_; }
 	bool covers_left() { return build() == l_; }
 	bool covers_right() { return build() == r_; }
+	std::optional<std::vector<std::pair<int, int>>> matching_covering(const VertexSet& required) const {
+		if (required.left.empty() && required.right.empty()) return std::vector<std::pair<int, int>>{};
+		bool covered = true;
+		for (int u : required.left) { assert(0 <= u && u < l_); covered = covered && left_[u] >= 0; }
+		for (int v : required.right) { assert(0 <= v && v < r_); covered = covered && right_[v] >= 0; }
+		if (covered) {
+			std::vector<unsigned char> selected(l_);
+			for (int u : required.left) selected[u] = 1;
+			for (int v : required.right) selected[right_[v]] = 1;
+			std::vector<std::pair<int, int>> result;
+			result.reserve(std::min(std::size_t(size_), required.left.size() + required.right.size()));
+			for (int u = 0; u < l_; ++u) if (selected[u]) result.emplace_back(u, left_[u]);
+			return result;
+		}
+		return bipartite_matching_detail::matching_covering(l_, r_, input_, required.left, required.right);
+	}
 	std::vector<std::pair<int, int>> edges() {
 		build();
 		std::vector<std::pair<int, int>> result;
