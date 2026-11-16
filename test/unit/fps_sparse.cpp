@@ -121,6 +121,8 @@ void check_finite_powers() {
 	for (int exponent : {0, 1, 2, 5, 11}) check<K::power>(terms, 4097, mint(17), mint(exponent));
 }
 int main() {
+	for (int degree : {1, 7, 31}) for (int n : {8193, 8199, 8200, 8201, 100003})
+		check<K::exponential>({{degree, mint::word(mint(13).v + mint::mod())}}, n, mint(17), 0);
 	check_finite_powers();
 	check_transfers();
 	check_boundaries();

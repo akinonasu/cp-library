@@ -104,11 +104,14 @@ private:
 					Cost best = value(i, 0) - price[0], second = std::numeric_limits<Cost>::max();
 					for (int j = 1; j < m; ++j) {
 						Cost x = value(i, j) - price[j];
+						if (x >= second) continue;
+						second = x;
 						if (x < best) second = best, best = x, best_col = j;
-						else if (x == best && col_to_row[best_col] != -1 && col_to_row[j] == -1) second = best, best_col = j;
-						else second = std::min(second, x);
 					}
 					if (best < second) price[best_col] -= second - best;
+					else if (col_to_row[best_col] != -1)
+						for (int j = 0; j < m; ++j)
+							if (col_to_row[j] == -1 && value(i, j) - price[j] == best) { best_col = j; break; }
 					int old = col_to_row[best_col];
 					if (old != -1) row_to_col[old] = -1;
 					row_to_col[i] = best_col;

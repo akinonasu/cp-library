@@ -64,15 +64,19 @@ inline std::pair<int, std::vector<int>> ids(int n, std::span<const std::pair<int
 	if (functional) return functional_ids<RejectPairs>(n, edges, answer, offset, degree);
 	std::vector<int> adjacency(edges.size()), work(offset.begin(), offset.end() - 1);
 	for (auto [from, to] : edges) adjacency[work[from]++] = to;
-	work.clear();
-	for (int v = 0; v < n; ++v) if (!degree[v]) work.push_back(v);
-	for (std::size_t head = 0; head < work.size(); ++head) {
+	int tail = 0;
+	for (int v = 0; v < n; ++v) { work[tail] = v; tail += degree[v] == 0; }
+	for (int head = 0; head < tail; ++head) {
 		int v = work[head];
 		answer[v] = static_cast<int>(head);
-		for (int j = offset[v]; j < offset[v + 1]; ++j)
-			if (--degree[adjacency[j]] == 0) work.push_back(adjacency[j]);
+		for (int j = offset[v]; j < offset[v + 1]; ++j) {
+			int to = adjacency[j];
+			work[tail] = to;
+			tail += --degree[to] == 0;
+		}
 	}
-	int peeled = static_cast<int>(work.size());
+	work.resize(tail);
+	int peeled = tail;
 	if (peeled == n) return {n, std::move(answer)};
 	for (int v : work) answer[v] = -answer[v] - 1;
 	for (int &x : degree) x = x ? -1 : n;

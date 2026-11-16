@@ -191,7 +191,7 @@ int main() {
 	check_modular_product<1073741823, 12>();
 	check_modular_product<1073741823, 16>();
 	check_modular_product<1073741823>();
-	std::vector<mint> a(1 << 16, mint(1));
+	std::vector<mint> a(std::size_t(1) << (subset_convolution_detail::avx2() ? 20 : 16), mint(1));
 	auto c = subset_convolution(a, a);
-	for (std::size_t mask = 0; mask < c.size(); ++mask) assert(c[mask] == mint(2).pow(std::popcount(mask)));
+	for (std::size_t mask = 0; mask < c.size(); ++mask) assert(c[mask] == mint::raw(1U << std::popcount(mask)));
 }

@@ -87,6 +87,27 @@ template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 			std::array<int, 32> left, right;
 			for (std::size_t first = 0; first < ranges.size(); first += 32) {
 				int count = int(std::min<std::size_t>(32, ranges.size() - first));
+				auto [sample_l, sample_r] = ranges[first];
+				assert(0 <= sample_l && sample_l < sample_r && sample_r <= size());
+				bool wide = std::is_integral_v<T> && sample_r - sample_l >= 256;
+				if (wide) {
+					int a = sample_l / 32, b = (sample_r - 1) / 32;
+					T middle = blocks_.prod_unchecked(a + 1, b);
+					wide = !(blocks_[a] < middle) && !(blocks_[b] < middle);
+				}
+				for (int i = 1; i < count && wide; ++i) wide = ranges[first + i].second - ranges[first + i].first >= 256;
+				if (wide) {
+					for (int i = 0; i < count; ++i) {
+						auto [l, r] = ranges[first + i];
+						assert(0 <= l && l < r && r <= size());
+						int a = l / 32, b = (r - 1) / 32;
+						T value = blocks_.prod_unchecked(a + 1, b);
+						if (blocks_[a] < value) value = minimum(value, within(l, (a + 1) * 32));
+						if (blocks_[b] < value) value = minimum(value, within(b * 32, r));
+						result.emplace_back(std::move(value));
+					}
+					continue;
+				}
 				for (int i = 0; i < count; ++i) {
 					auto [l, r] = ranges[first + i];
 					assert(0 <= l && l < r && r <= size());
