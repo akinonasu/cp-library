@@ -9,6 +9,7 @@
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 #define vec std::vector
 #include "data_structure/dynamic_bitset.hpp"
+#include "math/matrix_mod2.hpp"
 
 #if !defined(all) || !defined(rep) || !defined(vec)
 #error "Library headers must preserve user macros"
@@ -33,4 +34,11 @@ int main() {
 	assert(d[3].to_string() == "1000");
 	d[0].rotate_left(1);
 	assert(d[0].all());
+	vec<bool> binary{true, false, true};
+	assert(DynamicBitset(binary).to_string() == "101");
+	MatrixMod2 matrix(vec<vec<bool>>{ {true, false, true}, {false, true, true} });
+	assert((matrix * binary).to_string() == "10");
+	vec<int> rhs{0, 1};
+	auto solution = matrix.solve(rhs);
+	assert(solution && matrix * solution->particular == DynamicBitset(rhs));
 }

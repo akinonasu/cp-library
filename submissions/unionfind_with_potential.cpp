@@ -5,13 +5,17 @@
 
 
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
-template <class T = std::int64_t>
+template <class T = std::int64_t, auto op = nullptr, auto e = nullptr, auto inv = nullptr>
 struct WeightedUnionFind {
   private:
+	static constexpr bool custom = !std::is_same_v<decltype(op), std::nullptr_t>;
+	static_assert(custom == !std::is_same_v<decltype(e), std::nullptr_t> && custom == !std::is_same_v<decltype(inv), std::nullptr_t>);
 	int count_ = 0;
   public:
 	std::vector<int> parent;
@@ -19,7 +23,8 @@ struct WeightedUnionFind {
 	explicit WeightedUnionFind(int n) : count_(n) {
 		assert(n >= 0);
 		parent.assign(n, -1);
-		delta.resize(n);
+		if constexpr (custom) delta.assign(n, e());
+		else delta.resize(n);
 	}
 	int size() const { return static_cast<int>(parent.size()); }
 	int vertex_count() const { return size(); }
@@ -31,7 +36,8 @@ struct WeightedUnionFind {
 		if (p < 0) return x;
 		if (parent[p] < 0) return p;
 		int r = leader(p);
-		delta[x] += delta[parent[x]];
+		if constexpr (custom) delta[x] = op(delta[p], delta[x]);
+		else delta[x] += delta[parent[x]];
 		return parent[x] = r;
 	}
 	T weight(int x) {
@@ -43,13 +49,20 @@ struct WeightedUnionFind {
 	T diff(int x, int y) {
 		[[maybe_unused]] int rx = leader(x), ry = leader(y);
 		assert(rx == ry);
-		return delta[y] - delta[x];
+		if constexpr (custom) return op(inv(delta[x]), delta[y]);
+		else return delta[y] - delta[x];
 	}
 	bool merge(int x, int y, T w) {
 		int rx = leader(x), ry = leader(y);
-		w += delta[x] - delta[y];
-		if (rx == ry) return w == T(0);
-		if (parent[rx] > parent[ry]) std::swap(rx, ry), w = -w;
+		if constexpr (custom) {
+			w = op(op(delta[x], w), inv(delta[y]));
+			if (rx == ry) return w == e();
+			if (parent[rx] > parent[ry]) std::swap(rx, ry), w = inv(w);
+		} else {
+			w += delta[x] - delta[y];
+			if (rx == ry) return w == T(0);
+			if (parent[rx] > parent[ry]) std::swap(rx, ry), w = -w;
+		}
 		parent[rx] += parent[ry];
 		parent[ry] = rx;
 		delta[ry] = w;
@@ -91,7 +104,7 @@ struct WeightedUnionFind {
 #line 5 "math/mint.hpp"
 #include <istream>
 #include <ostream>
-#include <type_traits>
+#line 8 "math/mint.hpp"
 
 #if CP_GCC_X86
 #pragma GCC push_options
@@ -234,7 +247,6 @@ using fps_mint = mint;
 #include <bit>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
-#include <cstddef>
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>

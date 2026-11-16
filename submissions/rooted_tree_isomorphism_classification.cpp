@@ -34,9 +34,12 @@ class SplitMix64 {
 #include <cassert>
 #include <chrono>
 #include <compare>
+#include <concepts>
 #include <cstddef>
-#line 12 "components/tree_hash_core.hpp"
+#line 13 "components/tree_hash_core.hpp"
 #include <limits>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 struct TreeHashValue {
@@ -176,13 +179,46 @@ inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &gr
 	return hashes(tree, seed);
 }
 
+template<class Labels>
+using Label = std::remove_cvref_t<decltype(std::declval<const Labels &>()[std::size_t(0)])>;
+
+template<class Labels>
+concept LabelSequence = requires(const Labels &labels) {
+	{ labels.size() } -> std::convertible_to<std::size_t>;
+	labels[std::size_t(0)];
+} && std::is_integral_v<Label<Labels>> && sizeof(Label<Labels>) <= 8;
+
+template<class T>
+TreeHashValue label_hash(T label, std::uint64_t seed) {
+	std::uint64_t domain = std::is_signed_v<T> ? 0x510e527fade682d1ULL : 0x9b05688c2b3e6c1fULL;
+	SplitMix64 random(splitmix64(std::uint64_t(label)) ^ domain ^ seed);
+	return { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
+}
+
+template<LabelSequence Labels>
+std::vector<TreeHashValue> hashes(const Rooting &tree, const Labels &labels, std::uint64_t seed) {
+	assert(labels.size() == tree.parent.size());
+	std::vector<TreeHashValue> result;
+	result.reserve(labels.size());
+	for (std::size_t v = 0; v < labels.size(); ++v) result.push_back(label_hash(labels[v], seed));
+	if (result.empty()) return result;
+	std::vector<TreeHashValue> salt(tree.height[tree.order[0]] + 1);
+	SplitMix64 random(seed);
+	for (auto &value : salt) value = { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
+	for (auto it = tree.order.rbegin(); it + 1 != tree.order.rend(); ++it) {
+		int v = *it, p = tree.parent[v];
+		append(result[p], result[v], salt[tree.height[p]]);
+	}
+	return result;
+}
+
 }
 
 
 #line 5 "tree/rooted_tree_hash.hpp"
 #include <bit>
 #include <stdexcept>
-#include <utility>
+#line 8 "tree/rooted_tree_hash.hpp"
 
 class RootedTreeHash {
 	std::uint64_t seed_ = default_seed();
@@ -209,6 +245,30 @@ class RootedTreeHash {
 	void build_parents(const std::vector<int> &parents, std::uint64_t seed = default_seed()) {
 		auto tree = tree_hash_detail::root_parents(parents);
 		hash = tree_hash_detail::hashes(tree, seed);
+		root = tree.order.empty() ? -1 : tree.order[0];
+		parent = std::move(tree.parent);
+		height = std::move(tree.height);
+		subtree_size = std::move(tree.size);
+		seed_ = seed;
+	}
+	template<tree_hash_detail::LabelSequence Labels>
+	explicit RootedTreeHash(const std::vector<std::vector<int>> &graph, const Labels &labels, int root = 0, std::uint64_t seed = default_seed()) {
+		build(graph, labels, root, seed);
+	}
+	template<tree_hash_detail::LabelSequence Labels>
+	void build(const std::vector<std::vector<int>> &graph, const Labels &labels, int root = 0, std::uint64_t seed = default_seed()) {
+		auto tree = tree_hash_detail::root_tree(graph, root);
+		hash = tree_hash_detail::hashes(tree, labels, seed);
+		parent = std::move(tree.parent);
+		height = std::move(tree.height);
+		subtree_size = std::move(tree.size);
+		this->root = graph.empty() ? -1 : root;
+		seed_ = seed;
+	}
+	template<tree_hash_detail::LabelSequence Labels>
+	void build_parents(const std::vector<int> &parents, const Labels &labels, std::uint64_t seed = default_seed()) {
+		auto tree = tree_hash_detail::root_parents(parents);
+		hash = tree_hash_detail::hashes(tree, labels, seed);
 		root = tree.order.empty() ? -1 : tree.order[0];
 		parent = std::move(tree.parent);
 		height = std::move(tree.height);
@@ -292,7 +352,7 @@ class RootedTreeHash {
 #line 15 "components/fast_io.hpp"
 #include <string>
 #include <string_view>
-#include <type_traits>
+#line 18 "components/fast_io.hpp"
 #if defined(__unix__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>

@@ -35,11 +35,28 @@ int main() {
 
 文字列との変換では通常の二進表記と同様に、**右端が添字 0** です。例えば `"100101"` の `true` の位置は 0・2・5 です。文字列の先頭の 0 も列長に含みます。空文字列は長さ 0 に対応し、`'0'`・`'1'` 以外を含む入力には `std::invalid_argument` を投げます。
 
+0・1 の列からも構築できます。`vector<T>`・`vector<bool>`・`array<T,N>`・`span<T>` / `span<const T>`・通常の配列・`deque<T>` に対応し、`span` は固定長・可変長とも使えます。`T` は `bool` を含む 64 bit 以下の標準整数型、各値は 0 または 1 にしてください。入力は変更せず、**列の要素 `values[i]` が添字 `i` のビット**になります。例えば `vector<int>{1,0,0}` は `to_string()` で `"001"` になります。文字の `'0'`・`'1'` を並べた文字列とは入力の表し方が異なります。空の列は長さ 0 です。ただし `char[N]` など `std::string_view` に変換できる型は、文字列としての使い方を保ちます。`char` の 0・1 配列を整数列として渡す場合は `std::span` または `std::array` を使ってください。
+
+```cpp
+#include "lib/data_structure/dynamic_bitset.hpp"
+#include <array>
+#include <cassert>
+#include <vector>
+
+int main() {
+	DynamicBitset a(std::vector<bool>{true, false, true});
+	DynamicBitset b(std::array<unsigned char, 3>{1, 0, 0});
+	assert(a.to_string() == "101");
+	assert(b.to_string() == "001" && b[0]);
+}
+```
+
 | 構築・サイズの操作 | 内容・返り値 |
 | --- | --- |
 | `DynamicBitset()` | 長さ 0 の列を作る |
 | `DynamicBitset(int n, bool value = false)` | 長さ `n`、全要素が `value` の列を作る |
 | `DynamicBitset(std::string_view text)` | 二進表記をコピーして列を作る |
+| `DynamicBitset(values)` | 0・1 の整数列をコピーして列を作る |
 | `DynamicBitset::from_words(int n, std::span<const std::uint64_t> words)` | 64 bit 単位の配列をコピーして列を返す |
 | `size()` / `empty()` | 長さを `int` / 長さが 0 かを `bool` で返す |
 | `resize(int n, bool value = false)` | 長さを変更。既存部分を保ち、追加部分を `value` にする。`void` |
@@ -157,6 +174,7 @@ int main() {
 | `a \|= b` / `a ^= b` | 最悪 $$O(\max(W,V))$$ 時間・追加空間。再確保がなければ $$O(V)$$ 時間・$$O(1)$$ 追加空間 |
 | `count_or(b)` / `count_xor(b)` | $$O(\max(W,V))$$ 時間・$$O(1)$$ 追加空間 |
 | 文字列からの構築・`to_string` | $$O(n)$$ 時間・空間 |
+| 0・1 の列からの構築 | $$O(n)$$ 時間、$$O(W)$$ 空間 |
 | 一点の取得・更新、`size`・`empty`・`words`・`swap` | $$O(1)$$ 時間・追加空間 |
 | 区間の更新・個数・`rank` | 対象区間に触れるワード数に比例する時間、$$O(1)$$ 追加空間 |
 | `for_each` | 対象ワード数と列挙数の合計に比例する時間、$$O(1)$$ 追加空間 |

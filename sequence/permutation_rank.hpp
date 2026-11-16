@@ -1,11 +1,18 @@
 #ifndef PERMUTATION_RANK_HPP
 #define PERMUTATION_RANK_HPP
 
+#include <algorithm>
 #include <array>
 #include <bit>
 #include <cstdint>
+#include <functional>
 #include <limits>
+#include <numeric>
 #include <optional>
+#pragma push_macro("all")
+#undef all
+#include <ranges>
+#pragma pop_macro("all")
 #include <span>
 #include <stdexcept>
 #include <type_traits>
@@ -138,6 +145,54 @@ std::optional<std::vector<int>> permutation_unrank(int n, Rank rank) {
 		digit = available.select(digit);
 		available.erase(digit);
 	}
+	return result;
+}
+
+namespace permutation_order_detail {
+template <class Range>
+concept Sequence = std::ranges::random_access_range<const Range> && std::ranges::sized_range<const Range>;
+
+template <Sequence Range>
+std::vector<int> alphabet_order(const Range &alphabet) {
+	if (std::ranges::size(alphabet) > std::size_t(std::numeric_limits<int>::max())) throw std::length_error("permutation alphabet");
+	std::vector<int> order(std::ranges::size(alphabet));
+	std::iota(order.begin(), order.end(), 0);
+	auto first = std::ranges::begin(alphabet);
+	std::sort(order.begin(), order.end(), [&](int a, int b) { return std::less<>{}(first[a], first[b]); });
+	for (std::size_t i = 1; i < order.size(); ++i)
+		if (!std::less<>{}(first[order[i - 1]], first[order[i]])) throw std::invalid_argument("permutation alphabet");
+	return order;
+}
+}
+
+template <class Rank = std::uint64_t, permutation_order_detail::Sequence Permutation, permutation_order_detail::Sequence Alphabet>
+	requires std::is_same_v<std::ranges::range_value_t<const Permutation>, std::ranges::range_value_t<const Alphabet>>
+Rank permutation_rank(const Permutation &permutation, const Alphabet &alphabet) {
+	if (std::ranges::size(permutation) > std::size_t(std::numeric_limits<int>::max())) throw std::length_error("permutation_rank");
+	auto order = permutation_order_detail::alphabet_order(alphabet);
+	if (std::ranges::size(permutation) != order.size()) throw std::invalid_argument("permutation_rank");
+	auto symbols = std::ranges::begin(alphabet);
+	auto first = std::ranges::begin(permutation);
+	std::vector<int> indices(order.size());
+	for (std::size_t i = 0; i < order.size(); ++i) {
+		auto it = std::lower_bound(order.begin(), order.end(), first[i], [&](int id, const auto &value) { return std::less<>{}(symbols[id], value); });
+		if (it == order.end() || std::less<>{}(first[i], symbols[*it])) throw std::invalid_argument("permutation_rank");
+		indices[i] = *it;
+	}
+	return permutation_rank<Rank>(std::span<const int>(indices));
+}
+
+template <permutation_order_detail::Sequence Alphabet, class Rank>
+auto permutation_unrank(const Alphabet &alphabet, Rank rank)
+		-> std::optional<std::vector<std::ranges::range_value_t<const Alphabet>>> {
+	permutation_order_detail::alphabet_order(alphabet);
+	auto indices = permutation_unrank(int(std::ranges::size(alphabet)), std::move(rank));
+	if (!indices) return std::nullopt;
+	using T = std::ranges::range_value_t<const Alphabet>;
+	std::vector<T> result;
+	result.reserve(indices->size());
+	auto first = std::ranges::begin(alphabet);
+	for (int id : *indices) result.emplace_back(first[id]);
 	return result;
 }
 

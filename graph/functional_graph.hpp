@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <limits>
 #include <span>
+#include <stdexcept>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -114,6 +116,21 @@ class FunctionalGraph {
 		std::size_t position = cycle_position[v] + k % vertices.size();
 		if (position >= vertices.size()) position -= vertices.size();
 		return vertices[position];
+	}
+	int jump(int v, std::string_view decimal) const {
+		check(v);
+		if (decimal.empty()) throw std::invalid_argument("FunctionalGraph jump");
+		std::uint64_t capped = 0, remainder = 0;
+		std::uint64_t length = cycle_length(v);
+		for (char c : decimal) {
+			if (c < '0' || c > '9') throw std::invalid_argument("FunctionalGraph jump");
+			unsigned digit = unsigned(c - '0');
+			capped = std::min<std::uint64_t>(depth[v], capped * 10 + digit);
+			remainder = (remainder * 10 + digit) % length;
+		}
+		if (capped < std::uint64_t(depth[v])) return jump(v, capped);
+		std::uint64_t offset = (remainder + length - std::uint64_t(depth[v]) % length) % length;
+		return jump(entry[v], offset);
 	}
 	int dist(int u, int v) const {
 		if (!same_component(u, v)) return -1;

@@ -4,6 +4,11 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <deque>
+#include <memory_resource>
+#include <span>
+#include <string>
+#include <utility>
 #include <numeric>
 #include <random>
 #include <type_traits>
@@ -28,7 +33,70 @@ void bounded_ranks() {
 	assert(caught);
 }
 
+template <class T>
+void label_permutations(const std::vector<T> &alphabet) {
+	std::vector<int> indices(alphabet.size());
+	std::iota(indices.begin(), indices.end(), 0);
+	std::uint64_t rank = 0;
+	do {
+		std::vector<T> values;
+		for (int i : indices) values.push_back(alphabet[i]);
+		assert(permutation_rank(values, alphabet) == rank);
+		assert(permutation_rank<mint>(values, alphabet) == mint(rank));
+		assert(permutation_unrank(alphabet, rank) == values);
+		assert(permutation_rank(std::span<const T>(values), std::span<const T>(alphabet)) == rank);
+		++rank;
+	} while (std::next_permutation(indices.begin(), indices.end()));
+	assert(!permutation_unrank(alphabet, rank));
+	assert(!permutation_unrank(alphabet, -1));
+}
+
+void labels() {
+	label_permutations(std::vector<std::string>{});
+	label_permutations(std::vector<std::string>{"z", "a", "abc", "", "aaa", "zz"});
+	label_permutations(std::vector<std::uint64_t>{UINT64_MAX, 0, 257, UINT64_C(1) << 63, 1, UINT64_MAX - 1, 42});
+	label_permutations(std::vector<std::int64_t>{INT64_MIN, INT64_MAX, -1, 0, 257, 1});
+	label_permutations(std::vector<std::pair<int, std::string>>{ {2, "z"}, {-1, "x"}, {2, "a"}, {0, ""}, {1, "b"} });
+	std::array<std::string, 3> alphabet{"red", "blue", "green"};
+	std::deque<std::string> values{"green", "red", "blue"};
+	assert(permutation_rank(values, alphabet) == 4);
+	assert((permutation_unrank(alphabet, 4) == std::vector<std::string>{"green", "red", "blue"}));
+	std::pmr::vector<std::string> pooled(values.begin(), values.end());
+	assert(permutation_rank(pooled, std::span(alphabet)) == 4);
+	assert(permutation_rank(std::string("BAC"), std::string("CAB")) == 5);
+	assert((permutation_unrank(std::string("CAB"), 5) == std::vector<char>{'B', 'A', 'C'}));
+	std::vector<std::uint64_t> large(300);
+	for (int i = 0; i < int(large.size()); ++i) large[i] = UINT64_MAX - std::uint64_t(i) * 65537;
+	auto swapped = large;
+	std::swap(swapped[298], swapped[299]);
+	assert(permutation_rank<std::uint8_t>(swapped, large) == 1);
+	assert(permutation_unrank(large, std::uint8_t(1)) == swapped);
+	std::vector<std::string> reverse{"c", "b", "a", "f", "e", "d"}, order = reverse;
+	std::reverse(reverse.begin(), reverse.end());
+	assert(permutation_rank<Big>(reverse, order) == 719);
+	bool caught = false;
+	try { (void)permutation_rank<std::uint8_t>(reverse, order); } catch (const std::overflow_error &) { caught = true; }
+	assert(caught);
+	for (const std::vector<std::string> &bad : std::vector<std::vector<std::string>>{ {"red", "red", "green"}, {"red", "blue", "unknown"}, {"red", "blue"} }) {
+		caught = false;
+		try { (void)permutation_rank(bad, alphabet); } catch (const std::invalid_argument &) { caught = true; }
+		assert(caught);
+	}
+	std::vector<std::string> duplicates{"x", "x"};
+	caught = false;
+	try { (void)permutation_rank(duplicates, duplicates); } catch (const std::invalid_argument &) { caught = true; }
+	assert(caught);
+	caught = false;
+	try { (void)permutation_unrank(duplicates, 0); } catch (const std::invalid_argument &) { caught = true; }
+	assert(caught);
+	caught = false;
+	try { (void)permutation_rank(std::vector<int>{1000}); } catch (const std::invalid_argument &) { caught = true; }
+	assert(caught);
+	assert(permutation_rank(std::vector<int>{1000}, std::vector<int>{1000}) == 0);
+}
+
 int main() {
+	labels();
 	using namespace boost::multiprecision;
 	bounded_ranks<1, unsigned_magnitude, checked>();
 	bounded_ranks<8, unsigned_magnitude, checked>();

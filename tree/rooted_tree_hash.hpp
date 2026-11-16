@@ -37,6 +37,30 @@ class RootedTreeHash {
 		subtree_size = std::move(tree.size);
 		seed_ = seed;
 	}
+	template<tree_hash_detail::LabelSequence Labels>
+	explicit RootedTreeHash(const std::vector<std::vector<int>> &graph, const Labels &labels, int root = 0, std::uint64_t seed = default_seed()) {
+		build(graph, labels, root, seed);
+	}
+	template<tree_hash_detail::LabelSequence Labels>
+	void build(const std::vector<std::vector<int>> &graph, const Labels &labels, int root = 0, std::uint64_t seed = default_seed()) {
+		auto tree = tree_hash_detail::root_tree(graph, root);
+		hash = tree_hash_detail::hashes(tree, labels, seed);
+		parent = std::move(tree.parent);
+		height = std::move(tree.height);
+		subtree_size = std::move(tree.size);
+		this->root = graph.empty() ? -1 : root;
+		seed_ = seed;
+	}
+	template<tree_hash_detail::LabelSequence Labels>
+	void build_parents(const std::vector<int> &parents, const Labels &labels, std::uint64_t seed = default_seed()) {
+		auto tree = tree_hash_detail::root_parents(parents);
+		hash = tree_hash_detail::hashes(tree, labels, seed);
+		root = tree.order.empty() ? -1 : tree.order[0];
+		parent = std::move(tree.parent);
+		height = std::move(tree.height);
+		subtree_size = std::move(tree.size);
+		seed_ = seed;
+	}
 	std::vector<int> classify() const {
 		std::vector<int> result(size());
 		if (empty()) return result;

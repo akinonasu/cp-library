@@ -36,7 +36,26 @@ int main() {
 
 `MatrixMod2` は行数・列数を持ち、添字は 0 始まりです。`a(i,j)` と `a[i][j]` で要素を読み書きできます。書き込む値は `bool`、数値の初期値列では 0 または 1 を使います。`a(i,j) = true`・`a[i][j] = false` のように代入し、`a(i,j).flip()` で 0 と 1 を入れ替えられます。行列全体の形を変えるときは、新しい行列を代入します。要素を自分の式で計算するときも、加算には `^`、乗算には `&` を使います。
 
+0・1 の係数列には、`vector<vector<T>>`・`vector<vector<bool>>`・`array<array<T,W>,H>` などを使えます。行や行全体の配列を `span` で渡すこともでき、固定長・可変長、const の有無を問いません。要素型 `T` は `bool` を含む 64 bit 以下の標準整数型、数値は必ず 0 または 1 にしてください。`vector` は独自の allocator を指定したものも使えます。`values[i][j]` が行 `i`・列 `j` に対応し、入力は変更しません。行の配列が空なら 0 行 0 列、空の行を `n` 個並べた場合は `n` 行 0 列になります。
+
+`set_row(i,values)`・`a * values`・`solve(values)` にも同じ 0・1 の列を渡せます。`set_row` と積の入力は列数、`solve` の入力は行数に長さを合わせます。これらの 1 次元列は `vector<T>`・`vector<bool>`・`array<T,N>`・`span<T>` / `span<const T>`・通常の配列・`deque<T>` に対応します。ただし `char[N]` など `std::string_view` に変換できる型は整数列として扱いません。`char` の 0・1 配列は `std::span` または `std::array` で渡してください。添字 0 が列／行 0 に対応し、積の返り値は `DynamicBitset`、`solve` の返り値は `optional<LinearSolutionMod2>` です。
+
 行を文字列で渡す場合は、**左端の文字が列 0** です。例えば `"100"` は列 0 だけが 1 の行です。[DynamicBitset](dynamic_bitset.md) の文字列構築は右端を bit 0 とするので、`DynamicBitset("100")` と同じ並びにはなりません。`DynamicBitset` と行をやり取りするときは、bit `j` を列 `j` として扱います。連立方程式の右辺も、bit `i` が第 `i` 行に対応します。
+
+```cpp
+#include "lib/math/matrix_mod2.hpp"
+#include <array>
+#include <cassert>
+#include <vector>
+
+int main() {
+	MatrixMod2 a(std::vector<std::vector<bool>>{ {true, true}, {false, true} });
+	std::array<unsigned char, 2> b{1, 0};
+	auto solution = a.solve(b);
+	assert(solution && (a * solution->particular) == DynamicBitset(b));
+	assert((a * std::vector<int>{0, 1}).to_string() == "11");
+}
+```
 
 他の行を XOR する操作などで形を整える処理を「掃き出し」と呼びます。各行で、基準となる最初の 1 を「ピボット」と呼びます。ピボットが下の行ほど右にあり、全て 0 の行が末尾に並ぶ形が「行階段形」です。さらに各ピボットの列で、他の行の値が全て 0 の形が「簡約行階段形」です。`rank`（階数）は、ピボットの個数、つまり他の行の XOR だけでは作れない行を最大何本選べるかを表します。
 
@@ -54,7 +73,7 @@ $$P(n,k,m)=nkW(m)+nmW(k)+kW(m)+nW(m)$$
 | --- | --- | --- | --- |
 | `MatrixMod2()` | 0 行 0 列で構築 | $$O(1)$$ | $$O(1)$$ |
 | `MatrixMod2(n)` / `MatrixMod2(n,m,value = false)` | 正方行列／長方行列を同じ値で初期化 | $$O(nW(m))$$。正方行列では $$m=n$$ | $$O(nW(m))$$ |
-| `MatrixMod2{ {...},{...} }` / `MatrixMod2(vector<vector<int>>)` | 0・1 の係数列から構築。各行の長さは同じにする | $$O(nm)$$ | $$O(nW(m))$$ |
+| `MatrixMod2{ {...},{...} }` / `MatrixMod2(values)` | 0・1 の係数列から構築。各行の長さは同じにする | $$O(nm)$$ | $$O(nW(m))$$ |
 | `MatrixMod2(vector<string>)` | 各文字が 0 または 1 の行から構築 | $$O(nm)$$ | $$O(nW(m))$$ |
 | `MatrixMod2(vector<DynamicBitset>)` | 各 bitset を 1 行として構築。長さをそろえる | $$O(nW(m))$$ | $$O(nW(m))$$ |
 | `MatrixMod2::from_words(n,m,words)` | 行ごとに $$W(m)$$ 個ずつ並んだ 64 bit 整数から構築。末尾の余分な bit は除く | $$O(nW(m))$$ | $$O(nW(m))$$ |
@@ -67,6 +86,7 @@ $$P(n,k,m)=nkW(m)+nmW(k)+kW(m)+nW(m)$$
 | `row_words(i)` | 第 `i` 行を `span<const uint64_t>` で参照 | $$O(1)$$ | $$O(1)$$ |
 | `row(i)` | 第 `i` 行を `DynamicBitset` にコピー | $$O(W(m))$$ | $$O(W(m))$$ |
 | `set_row(i,bits)` | 長さ `m` の `DynamicBitset` を第 `i` 行へコピー。返り値は `void` | $$O(W(m))$$ | $$O(1)$$ |
+| `set_row(i,values)` | 長さ `m` の 0・1 の整数列を第 `i` 行へコピー。返り値は `void` | $$O(m)$$ | $$O(1)$$ |
 | `set_row(i,text)` | 長さ `m` の `string_view` を第 `i` 行へコピー。返り値は `void` | $$O(m)$$ | $$O(1)$$ |
 | `row_string(i)` | 第 `i` 行を左から列順の `string` にコピー | $$O(m)$$ | $$O(m)$$ |
 | `swap(b)` | 行列を交換。返り値は `void` | $$O(1)$$ | $$O(1)$$ |
@@ -79,6 +99,7 @@ $$P(n,k,m)=nkW(m)+nmW(k)+kW(m)+nW(m)$$
 | `a * value` / `value * a` / `a *= value` | `bool` の値を全要素に掛ける。0 倍は零行列、1 倍は元の値 | $$O(nW(m))$$ 以内 | 返す場合 $$O(nW(m))$$、その場では $$O(1)$$ |
 | `a == b` / `a != b` | 形と全要素を比較 | $$O(nW(m))$$ | $$O(1)$$ |
 | `a * bits` | 長さ `m` の `DynamicBitset` を列ベクトルとして掛ける。長さ `n` の `DynamicBitset` を返す | $$O(nW(m)+W(n))$$ | $$O(W(n))$$ |
+| `a * values` | 長さ `m` の 0・1 の整数列を掛け、長さ `n` の `DynamicBitset` を返す | $$O(m+nW(m)+W(n))$$ | $$O(W(m)+W(n))$$ |
 | `pow(k)` | 正方行列の非負整数乗。`k` は `uint64_t` | $$O(P(n,n,n)\log k+nW(n))$$ | $$O(nW(n))$$ |
 | `trace()` | 正方行列の対角成分の和を `bool` で返す | $$O(n)$$ | $$O(1)$$ |
 | `rank()` | 階数を `int` で返す | $$O(E(n,m,m))$$ | $$O(nW(m)+n+\min(n,m))$$ |
@@ -87,6 +108,7 @@ $$P(n,k,m)=nkW(m)+nmW(k)+kW(m)+nW(m)$$
 | `inverse()` | 逆行列を `optional<MatrixMod2>` で返す。存在しなければ `nullopt` | $$O(E(n,n,2n))$$ | $$O(nW(2n)+n)$$ |
 | `kernel()` | $$Ax=0$$ の全ての解を XOR で表すための基底を `vector<DynamicBitset>` で返す | $$O(E(n,m,m)+nm+mW(m))$$ | $$O(nW(m)+n+mW(m))$$ |
 | `solve(bits)` | $$Ax=b$$ の解を `optional<LinearSolutionMod2>` で返す。解なしなら `nullopt` | $$O(E(n,m,m)+nm+mW(m))$$ | $$O(nW(m)+n+mW(m))$$ |
+| `solve(values)` | 0・1 の整数列を右辺とする `solve`。返り値は `optional<LinearSolutionMod2>` | $$O(E(n,m,m)+nm+mW(m))$$ | $$O(nW(m)+n+mW(m))$$ |
 | `MatrixMod2::value_type` / `MatrixMod2::word_type` | それぞれ `bool`・`std::uint64_t` の別名 | —（型） | —（型） |
 | `LinearSolutionMod2` / `MatrixMod2::Solution` | `DynamicBitset particular` と `vector<DynamicBitset> basis` を持つ同じ型 | —（型） | —（型） |
 

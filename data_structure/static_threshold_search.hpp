@@ -6,30 +6,42 @@
 #include <cassert>
 #include <concepts>
 #include <cstdint>
+#include <functional>
 #include <limits>
 #include <span>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
-template <std::integral T = std::int64_t, bool Smaller = false, bool Reverse = false>
-requires (sizeof(T) <= 8 && !std::is_same_v<T, bool>)
+template <class T = std::int64_t, bool Smaller = false, bool Reverse = false, class Compare = std::less<T>>
+requires (!std::is_same_v<T, bool> && std::strict_weak_order<const Compare &, const T &, const T &>)
 class StaticThresholdSearch {
+	static constexpr bool integral_order = std::is_integral_v<T> && sizeof(T) <= 8 &&
+		(std::is_same_v<Compare, std::less<T>> || std::is_same_v<Compare, std::less<void>>);
+	using Argument = std::conditional_t<integral_order, T, const T &>;
 	std::vector<T> values_, minimum_, maximum_;
 	std::vector<int> records_;
 	unsigned base_ = 1;
+	[[no_unique_address]] Compare compare_{};
 	enum class Mode { ge, gt, le, lt };
-	template <Mode M> static bool accepts(T a, T x) {
-		if constexpr (M == Mode::ge) return a >= x;
-		if constexpr (M == Mode::gt) return a > x;
-		if constexpr (M == Mode::le) return a <= x;
-		if constexpr (M == Mode::lt) return a < x;
+	template <Mode M> bool accepts(Argument a, Argument x) const {
+		if constexpr (integral_order) {
+			if constexpr (M == Mode::ge) return a >= x;
+			if constexpr (M == Mode::gt) return a > x;
+			if constexpr (M == Mode::le) return a <= x;
+			if constexpr (M == Mode::lt) return a < x;
+		} else {
+			if constexpr (M == Mode::ge) return !compare_(a, x);
+			if constexpr (M == Mode::gt) return compare_(x, a);
+			if constexpr (M == Mode::le) return !compare_(x, a);
+			if constexpr (M == Mode::lt) return compare_(a, x);
+		}
 	}
 	template <Mode M> const std::vector<T> &extrema() const {
 		if constexpr (M == Mode::ge || M == Mode::gt) return maximum_;
 		else return minimum_;
 	}
-	template <Mode M, bool Forward> int search(int endpoint, T x) const {
+	template <Mode M, bool Forward> int search(int endpoint, Argument x) const {
 		assert(0 <= endpoint && endpoint <= size());
 		if constexpr (Forward) { if (endpoint == size()) return size(); }
 		else if (!endpoint) return size();
@@ -74,23 +86,32 @@ class StaticThresholdSearch {
 		return size();
 	}
 	void check_range([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= size()); }
+	void swap_data(StaticThresholdSearch &other) noexcept {
+		values_.swap(other.values_); minimum_.swap(other.minimum_); maximum_.swap(other.maximum_); records_.swap(other.records_); std::swap(base_, other.base_);
+	}
   public:
 	StaticThresholdSearch() = default;
-	explicit StaticThresholdSearch(std::vector<T> values) { build(std::move(values)); }
+	template <class C> requires std::same_as<std::remove_cvref_t<C>, Compare>
+	explicit StaticThresholdSearch(C &&compare) : compare_(std::forward<C>(compare)) {}
+	explicit StaticThresholdSearch(std::vector<T> values, Compare compare = Compare{}) : compare_(std::move(compare)) { build(std::move(values)); }
 	StaticThresholdSearch(const StaticThresholdSearch &) = default;
 	StaticThresholdSearch &operator=(const StaticThresholdSearch &other) {
 		if (this != &other) { StaticThresholdSearch copy(other); swap(copy); } return *this;
 	}
-	StaticThresholdSearch(StaticThresholdSearch &&other) noexcept { swap(other); }
-	StaticThresholdSearch &operator=(StaticThresholdSearch &&other) noexcept {
+	StaticThresholdSearch(StaticThresholdSearch &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>) : compare_(std::as_const(other.compare_)) { swap_data(other); }
+	StaticThresholdSearch &operator=(StaticThresholdSearch &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare> && std::is_nothrow_swappable_v<Compare>) {
 		if (this != &other) { StaticThresholdSearch moved(std::move(other)); swap(moved); } return *this;
 	}
-	void swap(StaticThresholdSearch &other) noexcept {
-		values_.swap(other.values_); minimum_.swap(other.minimum_); maximum_.swap(other.maximum_); records_.swap(other.records_); std::swap(base_, other.base_);
+	void swap(StaticThresholdSearch &other) noexcept(std::is_nothrow_swappable_v<Compare>) {
+		using std::swap;
+		swap(compare_, other.compare_);
+		swap_data(other);
 	}
-	void build(std::vector<T> values) {
+	friend void swap(StaticThresholdSearch &a, StaticThresholdSearch &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
+	void build(std::vector<T> values) { build(std::move(values), compare_); }
+	void build(std::vector<T> values, Compare compare) {
 		assert(values.size() <= std::size_t(std::numeric_limits<int>::max()));
-		StaticThresholdSearch next;
+		StaticThresholdSearch next(std::move(compare));
 		next.values_ = std::move(values);
 		int n = next.size();
 		next.records_.assign(n, n);
@@ -98,31 +119,46 @@ class StaticThresholdSearch {
 		stack.reserve(n);
 		for (int step = 0; step < n; ++step) {
 			int i = Reverse ? step : n - 1 - step;
-			while (!stack.empty() && !accepts<Smaller ? Mode::lt : Mode::gt>(next.values_[stack.back()], next.values_[i])) stack.pop_back();
+			while (!stack.empty() && !next.template accepts<Smaller ? Mode::lt : Mode::gt>(next.values_[stack.back()], next.values_[i])) stack.pop_back();
 			if (!stack.empty()) next.records_[i] = stack.back();
 			stack.push_back(i);
 		}
 		unsigned blocks = unsigned((next.values_.size() + 63) / 64);
 		next.base_ = std::bit_ceil(std::max(1U, blocks));
-		next.minimum_.assign(std::size_t(next.base_) * 2, std::numeric_limits<T>::max());
-		next.maximum_.assign(std::size_t(next.base_) * 2, std::numeric_limits<T>::lowest());
+		if constexpr (integral_order) {
+			next.minimum_.assign(std::size_t(next.base_) * 2, std::numeric_limits<T>::max());
+			next.maximum_.assign(std::size_t(next.base_) * 2, std::numeric_limits<T>::lowest());
+		} else if (n) {
+			next.minimum_.assign(std::size_t(next.base_) * 2, next.values_[0]);
+			next.maximum_.assign(std::size_t(next.base_) * 2, next.values_[0]);
+		}
 		for (unsigned block = 0; block < blocks; ++block) {
 			std::size_t begin = std::size_t(block) * 64, end = std::min(begin + 64, next.values_.size());
 			T low = next.values_[begin], high = low;
 			for (std::size_t i = begin + 1; i < end; ++i) {
-				low = std::min(low, next.values_[i]);
-				high = std::max(high, next.values_[i]);
+				if constexpr (integral_order) {
+					low = std::min(low, next.values_[i]);
+					high = std::max(high, next.values_[i]);
+				} else {
+					if (next.compare_(next.values_[i], low)) low = next.values_[i];
+					if (next.compare_(high, next.values_[i])) high = next.values_[i];
+				}
 			}
 			next.minimum_[next.base_ + block] = low;
 			next.maximum_[next.base_ + block] = high;
 		}
 		for (unsigned v = next.base_ - 1; v; --v) {
-			next.minimum_[v] = std::min(next.minimum_[v * 2], next.minimum_[v * 2 + 1]);
-			next.maximum_[v] = std::max(next.maximum_[v * 2], next.maximum_[v * 2 + 1]);
+			if constexpr (integral_order) {
+				next.minimum_[v] = std::min(next.minimum_[v * 2], next.minimum_[v * 2 + 1]);
+				next.maximum_[v] = std::max(next.maximum_[v * 2], next.maximum_[v * 2 + 1]);
+			} else {
+				next.minimum_[v] = next.compare_(next.minimum_[v * 2 + 1], next.minimum_[v * 2]) ? next.minimum_[v * 2 + 1] : next.minimum_[v * 2];
+				next.maximum_[v] = next.compare_(next.maximum_[v * 2], next.maximum_[v * 2 + 1]) ? next.maximum_[v * 2 + 1] : next.maximum_[v * 2];
+			}
 		}
 		swap(next);
 	}
-	void clear() { StaticThresholdSearch next; swap(next); }
+	void clear() { StaticThresholdSearch next(compare_); swap(next); }
 	int size() const { return int(values_.size()); }
 	bool empty() const { return values_.empty(); }
 	std::span<const T> values() const { return values_; }

@@ -25,6 +25,8 @@ auto value = linear_recurrence(initial, coefficients, 10); // 55
 
 [軽量 FPS](https://qandori.github.io/cp-library/fps/fps_light.hpp.html) の追加演算です。通常版と同じ関数名で呼び出します。同じ機能は通常版か軽量版のいずれか一方を include してください。法は 998244353 で、係数型は `FormalPowerSeries<T>` と同じ条件です。
 
+他の法や有理数などの線形漸化式には、[畳み込みを指定する版](linear_recurrence_generic.md)を使えます。軽量版の畳み込み関数も指定できます。
+
 係数数を $$n$$、点数を $$m$$、Bostan–Mori の分子・分母の最大係数数または漸化式の次数を $$d$$ とします。
 
 | 関数 | 内容・条件 | 時間計算量 |

@@ -182,6 +182,7 @@
 | `fps/rational_fps_coefficients.hpp` | 有理 FPS の区間係数取得 | [使い方](docs/rational_fps_coefficients.md) |
 | `fps/rational_fps_coefficients_light.hpp` | 軽量 FPS の有理 FPS 区間係数取得 | [使い方](docs/rational_fps_coefficients_light.md) |
 | `fps/linear_recurrence.hpp` | 線形漸化式の第 k 項 | [使い方](docs/linear_recurrence.md) |
+| `fps/linear_recurrence_generic.hpp` | 線形漸化式（係数型・畳み込み指定） | [使い方](docs/linear_recurrence_generic.md) |
 | `fps/berlekamp_massey.hpp` | 線形漸化式の復元（Berlekamp–Massey） | [使い方](docs/berlekamp_massey.md) |
 | `fps/compose.hpp` | 形式的冪級数の合成 | [使い方](docs/compose.md) |
 | `fps/compose_light.hpp` | 軽量 FPS の合成 | [使い方](docs/compose_light.md) |
@@ -375,6 +376,7 @@
 | `sequence/permutation_rank.hpp` | 順列の辞書順順位・復元 | [使い方](docs/permutation_rank.md) |
 | `sequence/inversion_count.hpp` | 転倒数 | [使い方](docs/inversion_count.md) |
 | `sequence/run_length_encoding.hpp` | 連長圧縮（RLE） | [使い方](docs/run_length_encoding.md) |
+| `sequence/weighted_lis.hpp` | 重み付き最長増加部分列 | [使い方](docs/weighted_lis.md) |
 
 ### string
 
@@ -500,6 +502,7 @@
 | `components/oct_bit_vector.hpp` | Oct Bit Vector | [使い方](docs/oct_bit_vector.md) |
 | `components/fenwick_sum.hpp` | Fenwick Sum | [使い方](docs/fenwick_sum.md) |
 | `components/rectangle_sum_polynomial.hpp` | 矩形和の四つの係数 | [使い方](docs/rectangle_sum_polynomial.md) |
+| `components/binary_sequence.hpp` | 0・1 の整数列の読み取り・ビット列への変換 | [使い方](docs/binary_sequence.md) |
 | `components/bitset_ops.hpp` | Bitset のワード演算・ビット数集約 | [使い方](docs/bitset_ops.md) |
 | `components/fenwick_bitset.hpp` | 更新可能ビット列の区間個数 | [使い方](docs/fenwick_bitset.md) |
 | `components/incremental_prefix_count.hpp` | 一点加算・接頭辞個数 | [使い方](docs/incremental_prefix_count.md) |

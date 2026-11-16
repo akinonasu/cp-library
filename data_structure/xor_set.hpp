@@ -5,9 +5,12 @@
 #include "../components/xor_select.hpp"
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -154,6 +157,126 @@ public:
 		std::swap(free_leaf, other.free_leaf); std::swap(all_xor, other.all_xor); std::swap(count, other.count);
 	}
 	std::size_t memory_usage() const { return directory.capacity() * sizeof(std::uint32_t) + occupied.memory_usage() + leaves.capacity() * sizeof(Leaf); }
+};
+
+template <int Bits> requires (32 <= Bits && Bits <= 64)
+class XorSet<Bits> {
+	struct Node {
+		std::uint64_t value = 0;
+		int child[2]{-1, -1};
+		int bit = -1;
+	};
+	std::vector<Node> nodes;
+	int root = -1, free_node = -1;
+	std::int64_t count = 0;
+	static void check([[maybe_unused]] std::uint64_t value) {
+		if constexpr (Bits < 64) assert((value >> Bits) == 0);
+	}
+	int make_node(Node node) {
+		if (free_node >= 0) {
+			int id = free_node;
+			free_node = nodes[id].child[0];
+			nodes[id] = node;
+			return id;
+		}
+		if (nodes.size() >= std::size_t(std::numeric_limits<int>::max())) throw std::length_error("XorSet");
+		int id = int(nodes.size());
+		nodes.push_back(node);
+		return id;
+	}
+	void release_node(int id) {
+		nodes[id].child[0] = free_node;
+		free_node = id;
+	}
+	int find_leaf(std::uint64_t value) const {
+		int id = root;
+		while (nodes[id].bit >= 0) id = nodes[id].child[(value >> nodes[id].bit) & 1];
+		return id;
+	}
+public:
+	using value_type = std::uint64_t;
+	XorSet() = default;
+	XorSet(const XorSet &) = default;
+	XorSet &operator=(const XorSet &other) {
+		if (this != &other) { XorSet copy(other); swap(copy); }
+		return *this;
+	}
+	XorSet(XorSet &&other) noexcept
+		: nodes(std::move(other.nodes)), root(std::exchange(other.root, -1)),
+		free_node(std::exchange(other.free_node, -1)), count(std::exchange(other.count, 0)) { other.nodes.clear(); }
+	XorSet &operator=(XorSet &&other) noexcept {
+		if (this != &other) { XorSet moved(std::move(other)); swap(moved); }
+		return *this;
+	}
+	std::int64_t size() const { return count; }
+	bool empty() const { return count == 0; }
+	bool contains(std::uint64_t value) const {
+		check(value);
+		return root >= 0 && nodes[find_leaf(value)].value == value;
+	}
+	bool insert(std::uint64_t value) {
+		check(value);
+		if (root < 0) {
+			root = make_node(Node{value});
+			++count;
+			return true;
+		}
+		std::uint64_t difference = value ^ nodes[find_leaf(value)].value;
+		if (!difference) return false;
+		int bit = int(std::bit_width(difference)) - 1, parent = -1, side = 0, target = root;
+		while (nodes[target].bit > bit) {
+			parent = target;
+			side = (value >> nodes[target].bit) & 1;
+			target = nodes[target].child[side];
+		}
+		int leaf = make_node(Node{value}), branch;
+		Node node;
+		node.bit = bit;
+		node.child[(value >> bit) & 1] = leaf;
+		node.child[((value >> bit) & 1) ^ 1] = target;
+		try { branch = make_node(node); }
+		catch (...) { release_node(leaf); throw; }
+		if (parent < 0) root = branch;
+		else nodes[parent].child[side] = branch;
+		++count;
+		return true;
+	}
+	bool erase(std::uint64_t value) {
+		check(value);
+		if (root < 0) return false;
+		int id = root, parent = -1, grandparent = -1, side = 0, parent_side = 0;
+		while (nodes[id].bit >= 0) {
+			grandparent = parent;
+			parent_side = side;
+			parent = id;
+			side = (value >> nodes[id].bit) & 1;
+			id = nodes[id].child[side];
+		}
+		if (nodes[id].value != value) return false;
+		if (parent < 0) root = -1;
+		else {
+			int sibling = nodes[parent].child[side ^ 1];
+			if (grandparent < 0) root = sibling;
+			else nodes[grandparent].child[parent_side] = sibling;
+			release_node(parent);
+		}
+		release_node(id);
+		--count;
+		return true;
+	}
+	std::uint64_t argmin_xor(std::uint64_t value) const {
+		assert(!empty());
+		return nodes[find_leaf(value)].value;
+	}
+	std::uint64_t argmax_xor(std::uint64_t value) const { return argmin_xor(~value); }
+	std::uint64_t min_xor(std::uint64_t value) const { return argmin_xor(value) ^ value; }
+	std::uint64_t max_xor(std::uint64_t value) const { return argmax_xor(value) ^ value; }
+	void clear() { nodes.clear(); root = free_node = -1; count = 0; }
+	void swap(XorSet &other) noexcept {
+		nodes.swap(other.nodes);
+		std::swap(root, other.root); std::swap(free_node, other.free_node); std::swap(count, other.count);
+	}
+	std::size_t memory_usage() const { return nodes.capacity() * sizeof(Node); }
 };
 
 #endif

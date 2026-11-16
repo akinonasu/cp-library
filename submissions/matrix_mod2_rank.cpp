@@ -291,6 +291,62 @@ inline std::vector<Word> multiply(const std::vector<Word>& a, const std::vector<
 
 
 
+#line 1 "components/binary_sequence.hpp"
+
+
+
+#line 6 "components/binary_sequence.hpp"
+#include <climits>
+#include <concepts>
+#line 10 "components/binary_sequence.hpp"
+#include <iterator>
+#include <string_view>
+#include <type_traits>
+#include <utility>
+
+namespace binary_sequence_detail {
+
+template <class Range>
+concept RandomAccessRange = requires(const Range &values) {
+	{ std::size(values) } -> std::convertible_to<std::size_t>;
+	{ std::begin(values) } -> std::random_access_iterator;
+	{ std::end(values) } -> std::sentinel_for<decltype(std::begin(values))>;
+};
+
+template <class Range>
+using Iterator = decltype(std::begin(std::declval<const Range &>()));
+
+template <class Range>
+concept Sequence = RandomAccessRange<Range> &&
+	std::is_integral_v<std::iter_value_t<Iterator<Range>>> && sizeof(std::iter_value_t<Iterator<Range>>) <= 8 &&
+	(!std::is_volatile_v<std::remove_reference_t<std::iter_reference_t<Iterator<Range>>>>) &&
+	(!std::convertible_to<const Range &, std::string_view>);
+
+template <class Range>
+concept Matrix = RandomAccessRange<Range> && Sequence<std::remove_cvref_t<std::iter_reference_t<Iterator<Range>>>>;
+
+template <class Range> requires requires(const Range &values) { std::size(values); }
+int size(const Range &values) {
+	assert(std::size(values) <= std::size_t(INT_MAX));
+	return int(std::size(values));
+}
+
+template <Sequence Range>
+void pack(const Range &values, std::uint64_t *words) {
+	int n = binary_sequence_detail::size(values);
+	if (!n) return;
+	std::fill_n(words, (std::size_t(n) + 63) / 64, std::uint64_t(0));
+	auto first = std::begin(values);
+	for (int i = 0; i < n; ++i) {
+		auto value = first[i];
+		assert(value == 0 || value == 1);
+		if (bool(value)) words[unsigned(i) / 64] |= std::uint64_t(1) << (i & 63);
+	}
+}
+
+}
+
+
 #line 1 "components/bitset_ops.hpp"
 
 
@@ -465,14 +521,12 @@ template <Operation Op> inline std::size_t count(const std::uint64_t *a, const s
 }
 
 
-#line 10 "data_structure/dynamic_bitset.hpp"
+#line 11 "data_structure/dynamic_bitset.hpp"
 #include <limits>
 #include <span>
 #include <stdexcept>
 #include <string>
-#include <string_view>
-#include <utility>
-#line 17 "data_structure/dynamic_bitset.hpp"
+#line 18 "data_structure/dynamic_bitset.hpp"
 
 class [[nodiscard, gnu::warn_unused]] DynamicBitset {
 	using Word = std::uint64_t;
@@ -585,6 +639,10 @@ class [[nodiscard, gnu::warn_unused]] DynamicBitset {
 			if (c != '0' && c != '1') throw std::invalid_argument("DynamicBitset");
 			if (c == '1') data_[unsigned(i) / 64] |= Word(1) << (i & 63);
 		}
+	}
+	template <binary_sequence_detail::Sequence Range>
+	explicit DynamicBitset(const Range &values) : DynamicBitset(binary_sequence_detail::size(values)) {
+		binary_sequence_detail::pack(values, data_.data());
 	}
 	DynamicBitset(const DynamicBitset &) = default;
 	DynamicBitset &operator=(const DynamicBitset &) = default;
@@ -872,6 +930,12 @@ class MatrixMod2 {
 			for (int j = 0; j < w_; ++j) { assert(values[i][j] == 0 || values[i][j] == 1); (*this)(i, j) = bool(values[i][j]); }
 		}
 	}
+	template <binary_sequence_detail::Matrix Range>
+	explicit MatrixMod2(const Range& values)
+		: MatrixMod2(binary_sequence_detail::size(values), binary_sequence_detail::size(values) == 0 ? 0 : binary_sequence_detail::size(*std::begin(values))) {
+		int i = 0;
+		for (const auto& row : values) set_row(i++, row);
+	}
 	explicit MatrixMod2(const std::vector<std::string>& values)
 		: MatrixMod2(int(values.size()), values.empty() ? 0 : int(values[0].size())) {
 		for (int i = 0; i < h_; ++i) set_row(i, values[i]);
@@ -915,6 +979,12 @@ class MatrixMod2 {
 		check_row(i);
 		assert(bits.size() == w_);
 		std::copy(bits.words().begin(), bits.words().end(), raw_row(i));
+	}
+	template <binary_sequence_detail::Sequence Range>
+	void set_row(int i, const Range& values) {
+		check_row(i);
+		assert(binary_sequence_detail::size(values) == w_);
+		binary_sequence_detail::pack(values, raw_row(i));
 	}
 	void set_row(int i, std::string_view text) {
 		check_row(i);
@@ -1010,6 +1080,8 @@ class MatrixMod2 {
 		}
 		return result;
 	}
+	template <binary_sequence_detail::Sequence Range>
+	DynamicBitset operator*(const Range& values) const { return *this * DynamicBitset(values); }
 	MatrixMod2 pow(std::uint64_t exponent) const {
 		assert(h_ == w_);
 		MatrixMod2 result = identity(h_);
@@ -1077,6 +1149,8 @@ class MatrixMod2 {
 		for (int i = 0; i < int(pivots.size()); ++i) if (work(i, w_)) result.particular.set(pivots[i]);
 		return result;
 	}
+	template <binary_sequence_detail::Sequence Range>
+	std::optional<Solution> solve(const Range& values) const { return solve(DynamicBitset(values)); }
 };
 
 
@@ -1090,8 +1164,7 @@ class MatrixMod2 {
 #include <cstdio>
 #line 13 "components/fast_io.hpp"
 #include <memory>
-#line 17 "components/fast_io.hpp"
-#include <type_traits>
+#line 18 "components/fast_io.hpp"
 #if defined(__unix__) || defined(__APPLE__)
 #include <sys/mman.h>
 #include <sys/stat.h>
