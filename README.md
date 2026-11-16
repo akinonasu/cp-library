@@ -639,6 +639,7 @@
 | `components/wildcard_pattern_matching.hpp` | ワイルドカード照合の内部部品 | [使い方](docs/wildcard_pattern_matching_core.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
 | `components/sequence_bit_masks.hpp` | 整数列の比較用ビットマスク | [使い方](docs/sequence_bit_masks.md) |
+| `components/lcs_kernel.hpp` | LCS の内部計算 | [使い方](docs/lcs_kernel.md) |
 | `components/sequence_view.hpp` | 文字配列の参照 | [使い方](docs/sequence_view.md) |
 | `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |

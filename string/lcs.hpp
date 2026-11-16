@@ -1,7 +1,7 @@
 #ifndef LCS_HPP
 #define LCS_HPP
 
-#include "../components/simd_capabilities.hpp"
+#include "../components/lcs_kernel.hpp"
 #include "../components/sequence_compare.hpp"
 #include "../components/sequence_bit_masks.hpp"
 #include <algorithm>
@@ -19,58 +19,6 @@
 #endif
 
 namespace lcs_detail {
-using Word = std::uint64_t;
-
-#if defined(__x86_64__)
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC push_options
-#pragma GCC optimize("O3")
-#endif
-template <bool reverse>
-__attribute__((target("avx2"))) inline void avx2(std::string_view s, const std::array<const Word *, 256> &masks, Word *__restrict row, int words) {
-	const __m256i ones = _mm256_set1_epi64x(-1), one = _mm256_set1_epi64x(1), positions = _mm256_setr_epi64x(0, 1, 2, 3);
-	for (int i = 0, n = int(s.size()); i < n; ++i) {
-		const Word *__restrict mask = masks[static_cast<unsigned char>(s[reverse ? n - 1 - i : i])];
-		if (!mask) continue;
-		unsigned carry = 0;
-		for (int j = 0; j < words; j += 4) {
-			__m256i v = _mm256_load_si256(reinterpret_cast<const __m256i *>(row + j));
-			__m256i u = _mm256_and_si256(v, _mm256_load_si256(reinterpret_cast<const __m256i *>(mask + j))), sum = _mm256_add_epi64(v, u);
-			unsigned g = unsigned(_mm256_movemask_pd(_mm256_castsi256_pd(_mm256_or_si256(u, _mm256_andnot_si256(sum, v)))));
-			unsigned propagation = unsigned(_mm256_movemask_pd(_mm256_castsi256_pd(_mm256_cmpeq_epi64(sum, ones))));
-			unsigned incoming = (propagation + (g << 1) + carry) ^ propagation;
-			carry = incoming >> 4;
-			__m256i increments = _mm256_and_si256(_mm256_srlv_epi64(_mm256_set1_epi64x(incoming), positions), one);
-			sum = _mm256_add_epi64(sum, increments);
-			_mm256_store_si256(reinterpret_cast<__m256i *>(row + j), _mm256_or_si256(sum, _mm256_xor_si256(v, u)));
-		}
-	}
-}
-
-#if CP_LIBRARY_AVX512
-template <bool reverse>
-__attribute__((target("avx512f"))) inline void avx512(std::string_view s, const std::array<const Word *, 256> &masks, Word *__restrict row, int words) {
-	const __m512i ones = _mm512_set1_epi64(-1), one = _mm512_set1_epi64(1);
-	for (int i = 0, n = int(s.size()); i < n; ++i) {
-		const Word *__restrict mask = masks[static_cast<unsigned char>(s[reverse ? n - 1 - i : i])];
-		if (!mask) continue;
-		unsigned carry = 0;
-		for (int j = 0; j < words; j += 8) {
-			__m512i v = _mm512_load_si512(row + j), u = _mm512_and_si512(v, _mm512_load_si512(mask + j)), sum = _mm512_add_epi64(v, u);
-			unsigned g = unsigned(_mm512_cmp_epu64_mask(sum, u, _MM_CMPINT_LT)), propagation = unsigned(_mm512_cmpeq_epi64_mask(sum, ones));
-			unsigned incoming = (propagation + (g << 1) + carry) ^ propagation;
-			carry = incoming >> 8;
-			sum = _mm512_mask_add_epi64(sum, __mmask8(incoming), sum, one);
-			_mm512_store_si512(row + j, _mm512_ternarylogic_epi64(sum, v, u, 0xf6));
-		}
-	}
-}
-#endif
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC pop_options
-#endif
-#endif
-
 inline bool subsequence(std::string_view s, std::string_view t) {
 	if (s.empty()) return true;
 	std::size_t i = 0;
@@ -239,7 +187,7 @@ inline void restore(std::string_view s, std::string_view t, std::string &out) {
 }
 
 template <bool reverse = false>
-inline std::vector<Word> profile(std::span<const sequence_bit_masks_detail::Symbol> s, std::span<const sequence_bit_masks_detail::Symbol> t, sequence_bit_masks_detail::MaskWorkspace &workspace) {
+inline std::vector<Word> profile_scalar(std::span<const sequence_bit_masks_detail::Symbol> s, std::span<const sequence_bit_masks_detail::Symbol> t, sequence_bit_masks_detail::MaskWorkspace &workspace) {
 	const int words = int((t.size() + 63) / 64);
 	sequence_bit_masks_detail::SparseMasks masks(t, workspace, reverse);
 	std::vector<Word> row(words, ~Word(0));
@@ -255,6 +203,48 @@ inline std::vector<Word> profile(std::span<const sequence_bit_masks_detail::Symb
 		}
 	}
 	return row;
+}
+
+
+template <bool reverse = false, int backend = 0>
+inline std::vector<Word> profile(std::span<const Symbol> s, std::span<const Symbol> t, MaskWorkspace &workspace) {
+	if (t.empty()) return {};
+	int words = int((t.size() + 63) / 64);
+	if constexpr (backend == 0) if (words < 8) return profile_scalar<reverse>(s, t, workspace);
+	MaskPositions positions(t, workspace, reverse);
+	if (positions.used.size() <= 256) {
+		for (std::size_t i = 0; i < positions.used.size(); ++i) workspace.head[positions.used[i]] = int(i);
+		std::string a, b;
+		a.reserve(s.size()); b.reserve(t.size());
+		for (Symbol c : s)
+			if (workspace.head[c] != -1) a.push_back(char(workspace.head[c]));
+		if (a.empty()) return std::vector<Word>(words, ~Word(0));
+		for (Symbol c : t) b.push_back(char(workspace.head[c]));
+		return profile<reverse, backend>(std::string_view(a), std::string_view(b));
+	}
+	std::uint64_t cost = 0, rows = s.size();
+	std::size_t i = 0;
+	for (; i < s.size(); ++i) {
+		Symbol c = s[i];
+		if (workspace.head[c] == -1) break;
+		cost += std::min(workspace.head[c] - workspace.tail[c], words);
+	}
+	std::vector<Symbol> common;
+	if (i < s.size()) {
+		common.reserve(s.size());
+		common.insert(common.end(), s.begin(), s.begin() + i);
+		for (++i; i < s.size(); ++i) {
+			Symbol c = s[i];
+			if (workspace.head[c] == -1) continue;
+			common.push_back(c);
+			cost += std::min(workspace.head[c] - workspace.tail[c], words);
+		}
+		s = common;
+	}
+	if (!cost) return std::vector<Word>(words, ~Word(0));
+	if constexpr (backend == 0)
+		if (cost <= rows * words / 48) return profile_sparse<reverse>(s, positions, words);
+	return profile_dense<reverse, backend>(s, positions, words);
 }
 
 inline void restore(std::span<const sequence_bit_masks_detail::Symbol> s, std::span<const sequence_bit_masks_detail::Symbol> t, std::vector<sequence_bit_masks_detail::Symbol> &out, sequence_bit_masks_detail::MaskWorkspace &workspace) {
@@ -309,6 +299,10 @@ inline int lcs_length(std::string_view s, std::string_view t) {
 	int result = int(head.size() + tail.size());
 	if (s.size() < t.size()) std::swap(s, t);
 	if (t.empty() || lcs_detail::subsequence(t, s)) return result + int(t.size());
+	if (lcs_detail::near_candidate(s.size(), t.size())) {
+		int near = lcs_detail::near(s, t);
+		if (near >= 0) return result + near;
+	}
 	std::string a, b;
 	lcs_detail::filter(s, t, a, b);
 	if (s.size() < t.size()) std::swap(s, t);
@@ -321,7 +315,8 @@ inline std::string lcs(std::string_view s, std::string_view t) {
 	result.reserve(std::min(s.size(), t.size()));
 	auto [head, tail] = lcs_detail::trim(s, t);
 	result.append(head);
-	if (!s.empty() && !t.empty()) {
+	if (!s.empty() && !t.empty() &&
+		(!lcs_detail::near_candidate(s.size(), t.size()) || lcs_detail::near(s, t, &result) < 0)) {
 		lcs_detail::filter(s, t, a, b);
 		lcs_detail::restore(s, t, result);
 	}
@@ -340,6 +335,10 @@ int lcs_length(std::span<S, SizeS> first, std::span<T, SizeT> second) {
 	int result = int(head.size() + tail.size());
 	if (s.size() < t.size()) std::swap(s, t);
 	if (t.empty() || sequence_bit_masks_detail::subsequence(t, s)) return result + int(t.size());
+	if (lcs_detail::near_candidate(s.size(), t.size())) {
+		int near = lcs_detail::near(s, t);
+		if (near >= 0) return result + near;
+	}
 	sequence_bit_masks_detail::CompressedPair<Value> input(s, t);
 	sequence_bit_masks_detail::MaskWorkspace workspace(input.symbols.size());
 	return result + lcs_detail::count(lcs_detail::profile(input.first, input.second, workspace));
@@ -356,7 +355,8 @@ std::vector<std::remove_const_t<S>> lcs(std::span<S, SizeS> first, std::span<T, 
 	result.reserve(std::min(s.size(), t.size()));
 	auto [head, tail] = sequence_bit_masks_detail::trim(s, t);
 	result.insert(result.end(), head.begin(), head.end());
-	if (!s.empty() && !t.empty()) {
+	if (!s.empty() && !t.empty() &&
+		(!lcs_detail::near_candidate(s.size(), t.size()) || lcs_detail::near(s, t, &result) < 0)) {
 		sequence_bit_masks_detail::CompressedPair<Value> input(s, t);
 		sequence_bit_masks_detail::MaskWorkspace workspace(input.symbols.size());
 		std::vector<sequence_bit_masks_detail::Symbol> restored;

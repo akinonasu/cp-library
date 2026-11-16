@@ -32,3 +32,5 @@ std::vector<int> integer_sequence = lcs(a, b); // {-2, 7}
 片方が空なら、`lcs_length` は 0、`lcs` は空文字列または空の `std::vector<T>` を返します。この場合はともに $$O(1)$$ 時間・追加空間です。
 
 長さ計算は $$O(n\lceil m/64\rceil)$$、復元は $$O(n\lceil m/64\rceil+n\log n)$$、補助空間はともに $$O(n+m)$$ です。整数列の前処理に使う $$O(n+m)$$ 時間・空間も含みます。
+
+関連部品: [LCS の内部計算](lcs_kernel.md)。
