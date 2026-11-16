@@ -27,6 +27,7 @@ template<class Cap = std::int64_t> class MaxFlowLowerBound {
 	std::optional<MaxFlow<Unsigned>> residual_;
 	int residual_source_ = -1;
 	bool residual_current_ = false;
+	int exhausted_source_ = -1, exhausted_sink_ = -1;
 	struct State { MaxFlow<Unsigned> graph; Cap value; };
 	void vertex([[maybe_unused]] int v) const { assert(0 <= v && v < size()); }
 	void index([[maybe_unused]] int i) const { assert(0 <= i && i < edge_count()); }
@@ -83,6 +84,7 @@ template<class Cap = std::int64_t> class MaxFlowLowerBound {
 	}
 	Cap continue_flow(int s, int t, Cap limit) {
 		if (!limit) { state_->value = 0; return Cap(0); }
+		if (exhausted_source_ == s && exhausted_sink_ == t) { state_->value = 0; return Cap(0); }
 		Wide outgoing = 0;
 		for (int i = 0; i < edge_count(); ++i) {
 			const auto& e = edges_[i];
@@ -91,7 +93,8 @@ template<class Cap = std::int64_t> class MaxFlowLowerBound {
 			if (e.to == s) outgoing += Wide(state_->flow[i]) - Wide(e.lower);
 			if (outgoing > Wide(limit)) break;
 		}
-		if (!outgoing) { state_->value = 0; return Cap(0); }
+		if (!outgoing) { exhausted_source_ = s; exhausted_sink_ = t; state_->value = 0; return Cap(0); }
+		exhausted_source_ = -1;
 		bool limited = outgoing > Wide(limit);
 		if (!residual_current_ || (limited && residual_source_ != s)) {
 			MaxFlow<Unsigned> graph(size() + 2);
@@ -116,6 +119,7 @@ template<class Cap = std::int64_t> class MaxFlowLowerBound {
 			state_->flow[i] = Bounds::value(Wide(edges_[i].lower) + Wide(graph.get_edge(i).flow));
 		state_->value = Cap(sent);
 		delta_[s] += Wide(sent), delta_[t] -= Wide(sent);
+		if (!limited || sent < Unsigned(limit)) exhausted_source_ = s, exhausted_sink_ = t;
 		return Cap(sent);
 	}
 	Result result(const State& state) const {
@@ -159,6 +163,7 @@ template<class Cap = std::int64_t> class MaxFlowLowerBound {
 		state_active_ = other.state_active_;
 		state_feasible_ = other.state_feasible_;
 		residual_current_ = false;
+		exhausted_source_ = -1;
 		return *this;
 	}
 	MaxFlowLowerBound(MaxFlowLowerBound&&) = default;
@@ -176,6 +181,7 @@ template<class Cap = std::int64_t> class MaxFlowLowerBound {
 		int id = edge_count();
 		edges_.push_back({from, to, lower, upper});
 		residual_current_ = false;
+		exhausted_source_ = -1;
 		if (state_active_) {
 			state_->flow.push_back(Cap(0));
 			state_feasible_ = state_feasible_ && lower <= 0 && 0 <= upper;
@@ -212,7 +218,7 @@ template<class Cap = std::int64_t> class MaxFlowLowerBound {
 		reset_flow();
 	}
 	void reset_supply() { std::fill(supply_.begin(), supply_.end(), Cap(0)); reset_flow(); }
-	void reset_flow() { state_active_ = false; residual_current_ = false; }
+	void reset_flow() { state_active_ = false; residual_current_ = false; exhausted_source_ = -1; }
 	void clear() { edges_.clear(); reset_supply(); }
 	std::optional<Result> solve() const {
 		auto state = feasible(-1, -1, 0, 0);
@@ -246,6 +252,8 @@ template<class Cap = std::int64_t> class MaxFlowLowerBound {
 		state_active_ = true;
 		state_feasible_ = true;
 		residual_current_ = false;
+		if (state_->value < limit) exhausted_source_ = s, exhausted_sink_ = t;
+		else exhausted_source_ = -1;
 		return state_->value;
 	}
 	std::optional<Result> min_flow(int s, int t, Cap lower = 0, Cap upper = std::numeric_limits<Cap>::max()) const {

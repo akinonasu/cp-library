@@ -41,7 +41,73 @@ template<class Cap, class Cost> void check() {
 	}
 }
 
+void check_prices() {
+	using Cap = std::uint64_t;
+	using Cost = std::int64_t;
+	using Total = __int128_t;
+	const Cost maximum = std::numeric_limits<Cost>::max();
+	const Cost boundary = (maximum / 5 - 1) / 3;
+	const Cap capacity = std::numeric_limits<Cap>::max();
+	for (Cost cost : {Cost(0), Cost(1), boundary - 1, boundary, boundary + 1, maximum / 2}) {
+		flow_detail::Graph<Cap> graph(3);
+		graph.add_edge(0, 1, capacity);
+		graph.add_edge(1, 2, capacity);
+		graph.build();
+		std::vector<Cost> costs{cost, -cost, cost, -cost};
+		auto reference = graph, stopped = graph;
+		auto expected = flow_detail::NetworkSimplex<Cap>(reference, costs, 0, 2, capacity, 1000000).template run<Cost, Total>(reference, costs);
+		auto actual = flow_detail::simplex_flow<Cap, Cost, Total>(graph, costs, 0, 2, capacity);
+		assert(actual && actual == expected && actual->first == capacity && actual->second == Total(capacity) * cost * 2);
+		for (std::size_t i = 0; i < graph.arcs.size(); ++i) assert(graph.arcs[i].cap == reference.arcs[i].cap);
+		auto before = stopped.arcs;
+		auto failure = flow_detail::simplex_flow<Cap, Cost, Total>(stopped, costs, 0, 2, capacity, 1);
+		assert(!failure);
+		for (std::size_t i = 0; i < before.size(); ++i) assert(stopped.arcs[i].cap == before[i].cap);
+	}
+	const Cost diamond_boundary = (maximum / 5 - 1) / 4;
+	for (Cost cost : {diamond_boundary - 1, diamond_boundary, diamond_boundary + 1}) {
+		flow_detail::Graph<Cap> graph(4);
+		graph.add_edge(0, 1, 1);
+		graph.add_edge(1, 3, 1);
+		graph.add_edge(0, 2, 1);
+		graph.add_edge(2, 3, 1);
+		graph.add_edge(1, 2, 1);
+		graph.build();
+		std::vector<Cost> costs{cost, -cost, cost, -cost, cost, -cost, cost, -cost, -cost, cost};
+		auto actual = flow_detail::simplex_flow<Cap, Cost, Total>(graph, costs, 0, 3, 10);
+		assert(actual && actual->first == 2 && actual->second == Total(cost) * 4);
+	}
+}
+
+void check_budget_bound() {
+	using Cap = std::uint64_t;
+	using Cost = std::int64_t;
+	for (int negative : {0, 1, 10}) {
+		flow_detail::Graph<Cap> graph(64);
+		std::vector<Cost> costs;
+		for (int v = 0; v < 63; ++v) {
+			graph.add_edge(v, v + 1, Cap(1));
+			Cost cost = v < negative ? -1 : 1;
+			costs.push_back(cost), costs.push_back(-cost);
+		}
+		graph.build();
+		for (std::uint64_t budget : {1ULL, 2ULL, 100ULL}) for (Cap limit : {Cap(0), Cap(1)}) {
+			auto copy = graph;
+			auto result = flow_detail::simplex_flow<Cap, Cost, __int128_t>(copy, costs, 0, 63, limit, budget);
+			if (limit) assert(!result);
+			else assert(result && result->first == 0 && result->second == 0);
+			for (std::size_t i = 0; i < graph.arcs.size(); ++i) assert(copy.arcs[i].cap == graph.arcs[i].cap);
+		}
+		auto result = flow_detail::simplex_flow<Cap, Cost, __int128_t>(graph, costs, 0, 63, Cap(1), 1000000);
+		assert(result && result->first == 1 && result->second == 63 - 2 * negative);
+		auto exhausted = flow_detail::simplex_flow<Cap, Cost, __int128_t>(graph, costs, 0, 63, Cap(1), 1);
+		assert(exhausted && exhausted->first == 0 && exhausted->second == 0);
+	}
+}
+
 int main() {
+	check_budget_bound();
+	check_prices();
 	check<int, int>();
 	check<std::int64_t, std::int64_t>();
 	check<std::uint64_t, std::int64_t>();

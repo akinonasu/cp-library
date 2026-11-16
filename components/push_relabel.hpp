@@ -5,12 +5,11 @@
 #include <cstdint>
 
 namespace flow_detail {
-template<class Cap> Cap push_relabel(Graph<Cap>& graph, int s, int t) {
-	graph.build();
+template<class Cap, class Excess> Cap push_relabel_run(Graph<Cap>& graph, int s, int t) {
 	int n = graph.n;
 	assert(n <= std::numeric_limits<int>::max() / 2 - 1);
 	int dead = 2 * n;
-	std::vector<__uint128_t> excess(n);
+	std::vector<Excess> excess(n);
 	std::vector<int> height(n), current(n), count(std::size_t(dead) + 1), head(std::size_t(dead) + 1, -1), next(n), queue(n);
 	std::vector<unsigned char> active(n);
 	int highest = -1;
@@ -42,16 +41,16 @@ template<class Cap> Cap push_relabel(Graph<Cap>& graph, int s, int t) {
 			}
 		}
 		for (int h : height) ++count[h];
-		buckets();
 		work = 0;
 	};
+	global();
 	for (int j = graph.start[s]; j < graph.start[s + 1]; ++j) {
 		int i = graph.order[j];
 		auto& e = graph.arcs[i];
-		if (e.to == s || !e.cap) continue;
+		if (e.to == s || !e.cap || height[e.to] >= n) continue;
 		excess[e.to] += e.cap, graph.arcs[i ^ 1].cap += e.cap, e.cap = 0;
 	}
-	global();
+	buckets();
 	while (highest >= 0) {
 		if (head[highest] < 0) { --highest; continue; }
 		int v = head[highest];
@@ -79,17 +78,33 @@ template<class Cap> Cap push_relabel(Graph<Cap>& graph, int s, int t) {
 				int i = graph.order[current[v]];
 				auto& e = graph.arcs[i];
 				if (!e.cap || height[v] != height[e.to] + 1) { ++current[v]; continue; }
-				Cap amount = Cap(std::min(excess[v], __uint128_t(e.cap)));
+				Cap amount = Cap(std::min(excess[v], Excess(e.cap)));
 				e.cap -= amount, graph.arcs[i ^ 1].cap += amount;
 				excess[v] -= amount, excess[e.to] += amount;
 				activate(e.to);
 			}
 		}
 		activate(v);
-		if (work >= threshold) global();
+		if (work >= threshold) { global(); buckets(); }
 	}
-	assert(excess[t] <= __uint128_t(std::numeric_limits<Cap>::max()));
+	assert(excess[t] <= Excess(std::numeric_limits<Cap>::max()));
 	return Cap(excess[t]);
+}
+template<class Cap> Cap push_relabel(Graph<Cap>& graph, int s, int t) {
+	graph.build();
+	if (graph.start[s] == graph.start[s + 1] || graph.start[t] == graph.start[t + 1]) return Cap(0);
+	if constexpr (sizeof(Cap) <= 4) return push_relabel_run<Cap, std::uint64_t>(graph, s, t);
+	else {
+		if (graph.start[s + 1] - graph.start[s] > graph.n) return push_relabel_run<Cap, __uint128_t>(graph, s, t);
+		__uint128_t total = 0;
+		for (int j = graph.start[s]; j < graph.start[s + 1]; ++j) {
+			const auto& e = graph.arcs[graph.order[j]];
+			if (e.to != s) total += e.cap;
+		}
+		if (!total) return Cap(0);
+		if (total <= std::numeric_limits<std::uint64_t>::max()) return push_relabel_run<Cap, std::uint64_t>(graph, s, t);
+		return push_relabel_run<Cap, __uint128_t>(graph, s, t);
+	}
 }
 }
 

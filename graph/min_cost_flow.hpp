@@ -16,16 +16,17 @@ class MinCostFlow {
 	static_assert(std::numeric_limits<Total>::is_integer && std::numeric_limits<Total>::is_signed);
 	flow_detail::Graph<Cap> graph_;
 	std::vector<Cost> cost_, potential_;
-	bool valid_ = false;
+	bool valid_ = false, zero_flow_ = true;
 	void vertex([[maybe_unused]] int v) const { assert(0 <= v && v < graph_.n); }
 	int index(int i) const { assert(0 <= i && std::size_t(i) < graph_.arcs.size() / 2); return 2 * i; }
 	void initialize() {
 		if (valid_) return;
 		potential_.assign(graph_.n, Cost(0));
 		bool changed = false;
+		int step = zero_flow_ ? 2 : 1;
 		for (int round = 0; round < graph_.n; ++round) {
 			changed = false;
-			for (int i = 0; i < int(cost_.size()); ++i) {
+			for (int i = 0; i < int(cost_.size()); i += step) {
 				if (!graph_.arcs[i].cap) continue;
 				int from = graph_.arcs[i ^ 1].to, to = graph_.arcs[i].to;
 				Cost next = potential_[from] + cost_[i];
@@ -39,20 +40,19 @@ class MinCostFlow {
 	template<class Report> std::pair<Cap, Total> run(int s, int t, Cap limit, Report report, int rounds = -1) {
 		vertex(s), vertex(t);
 		assert(s != t && limit >= 0);
+		if (!limit) return {0, 0};
 		graph_.build();
 		initialize();
 		auto& g = graph_;
 		const Cost inf = std::numeric_limits<Cost>::max();
 		std::vector<Cost> distance(g.n);
 		std::vector<int> parent(g.n), zero, settled;
-		std::vector<unsigned char> visited(g.n);
 		zero.reserve(g.n), settled.reserve(g.n);
 		RadixHeap<Cost> heap;
 		Cap sent = 0;
 		Total total = 0;
 		while (sent < limit && rounds != 0) {
 			std::fill(distance.begin(), distance.end(), inf);
-			std::fill(visited.begin(), visited.end(), 0);
 			zero.clear(), settled.clear(), heap.clear();
 			distance[s] = 0;
 			zero.push_back(s);
@@ -64,28 +64,30 @@ class MinCostFlow {
 					if (d != distance[u]) continue;
 					v = u;
 				}
-				if (visited[v]) continue;
-				visited[v] = 1;
+				Cost d = distance[v];
+				distance[v] = ~d;
 				settled.push_back(v);
 				if (v == t) break;
 				for (int j = g.start[v]; j < g.start[v + 1]; ++j) {
 					int i = g.order[j];
 					const auto& e = g.arcs[i];
-					if (!e.cap || visited[e.to]) continue;
+					if (!e.cap || distance[e.to] < 0) continue;
 					Cost reduced = cost_[i] + potential_[v] - potential_[e.to];
 					assert(reduced >= 0);
-					if (reduced >= inf - distance[v]) continue;
-					Cost next = distance[v] + reduced;
+					if (reduced >= inf - d) continue;
+					Cost next = d + reduced;
 					if (next >= distance[e.to]) continue;
 					distance[e.to] = next, parent[e.to] = i;
 					if (!reduced) zero.push_back(e.to);
 					else heap.push({next, e.to});
 				}
 			}
-			if (!visited[t]) break;
-			for (int v : settled) potential_[v] -= distance[t] - distance[v];
+			if (distance[t] >= 0) break;
+			Cost best = ~distance[t];
+			for (int v : settled) potential_[v] -= best - Cost(~distance[v]);
 			Cap amount = limit - sent;
 			for (int v = t; v != s; v = g.arcs[parent[v] ^ 1].to) amount = std::min(amount, g.arcs[parent[v]].cap);
+			zero_flow_ = false;
 			for (int v = t; v != s; v = g.arcs[parent[v] ^ 1].to) {
 				int i = parent[v];
 				g.arcs[i].cap -= amount, g.arcs[i ^ 1].cap += amount;
@@ -126,7 +128,7 @@ class MinCostFlow {
 		for (int i = 0; i < edge_count(); ++i) result.push_back(get_edge(i));
 		return result;
 	}
-	void reset_flow() { graph_.reset_flow(); valid_ = false; }
+	void reset_flow() { graph_.reset_flow(); valid_ = false; zero_flow_ = true; }
 	const std::vector<Cost>& potentials() { initialize(); return potential_; }
 	std::pair<Cap, Total> flow(int s, int t, Cap limit = std::numeric_limits<Cap>::max()) {
 		int count = 0, budget = 8;

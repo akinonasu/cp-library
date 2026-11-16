@@ -12,41 +12,7 @@ template<class Cap = std::int64_t> class MaxFlow {
 	void vertex([[maybe_unused]] int v) const { assert(0 <= v && v < graph_.n); }
 	int index(int i) const { assert(0 <= i && std::size_t(i) < graph_.arcs.size() / 2); return 2 * i; }
 
-  public:
-	using capacity_type = Cap;
-	struct Edge { int from, to; Cap cap, flow; };
-	explicit MaxFlow(int n = 0) : graph_(n) {}
-	int size() const { return graph_.n; }
-	int edge_count() const { return int(graph_.arcs.size() / 2); }
-	void reserve(std::size_t m) { graph_.reserve(m); }
-	int add_edge(int from, int to, Cap cap) { return graph_.add_edge(from, to, cap); }
-	Edge get_edge(int i) const {
-		int j = index(i);
-		const auto& a = graph_.arcs[j];
-		const auto& b = graph_.arcs[j ^ 1];
-		return {b.to, a.to, Cap(a.cap + b.cap), b.cap};
-	}
-	std::vector<Edge> edges() const {
-		std::vector<Edge> result;
-		result.reserve(edge_count());
-		for (int i = 0; i < edge_count(); ++i) result.push_back(get_edge(i));
-		return result;
-	}
-	void change_edge(int i, Cap cap, Cap flow) {
-		assert(0 <= flow && flow <= cap);
-		int j = index(i);
-		graph_.arcs[j].cap = cap - flow, graph_.arcs[j ^ 1].cap = flow;
-	}
-	void reset_flow() { graph_.reset_flow(); }
-	Cap flow(int s, int t) {
-		vertex(s), vertex(t);
-		assert(s != t);
-		return flow_detail::push_relabel(graph_, s, t);
-	}
-	Cap flow(int s, int t, Cap limit) {
-		vertex(s), vertex(t);
-		assert(s != t && limit >= 0);
-		graph_.build();
+	[[gnu::noinline]] Cap limited_flow(int s, int t, Cap limit) {
 		auto& g = graph_;
 		std::vector<int> level(g.n), iter(g.n), queue(g.n);
 		struct Frame { int v; Cap limit, sent; };
@@ -92,6 +58,45 @@ template<class Cap = std::int64_t> class MaxFlow {
 			}
 		}
 		return total;
+	}
+
+  public:
+	using capacity_type = Cap;
+	struct Edge { int from, to; Cap cap, flow; };
+	explicit MaxFlow(int n = 0) : graph_(n) {}
+	int size() const { return graph_.n; }
+	int edge_count() const { return int(graph_.arcs.size() / 2); }
+	void reserve(std::size_t m) { graph_.reserve(m); }
+	int add_edge(int from, int to, Cap cap) { return graph_.add_edge(from, to, cap); }
+	Edge get_edge(int i) const {
+		int j = index(i);
+		const auto& a = graph_.arcs[j];
+		const auto& b = graph_.arcs[j ^ 1];
+		return {b.to, a.to, Cap(a.cap + b.cap), b.cap};
+	}
+	std::vector<Edge> edges() const {
+		std::vector<Edge> result;
+		result.reserve(edge_count());
+		for (int i = 0; i < edge_count(); ++i) result.push_back(get_edge(i));
+		return result;
+	}
+	void change_edge(int i, Cap cap, Cap flow) {
+		assert(0 <= flow && flow <= cap);
+		int j = index(i);
+		graph_.arcs[j].cap = cap - flow, graph_.arcs[j ^ 1].cap = flow;
+	}
+	void reset_flow() { graph_.reset_flow(); }
+	Cap flow(int s, int t) {
+		vertex(s), vertex(t);
+		assert(s != t);
+		return flow_detail::push_relabel(graph_, s, t);
+	}
+	Cap flow(int s, int t, Cap limit) {
+		vertex(s), vertex(t);
+		assert(s != t && limit >= 0);
+		if (!limit || graph_.arcs.empty()) return Cap(0);
+		graph_.build();
+		return limited_flow(s, t, limit);
 	}
 	std::vector<bool> min_cut(int s) {
 		vertex(s);
