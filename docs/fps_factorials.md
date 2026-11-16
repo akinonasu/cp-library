@@ -11,7 +11,7 @@ Montgomery 表現では、係数 $$c$$ を $$c\,2^{32}$$ と法 $$p=998244353$$ 
 | 関数 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `fps_detail::factorials(fact,invfact,n)` | `fact[i] = i!`、`invfact[i] = 1/i!` を先頭 `n` 要素へ書き込む | $$O(n)$$ |
-| `fps_detail::factorials8(fact,invfact,n)` | AVX2（複数の整数をまとめて処理する CPU 命令）版。`n >= 256` | $$O(n)$$ |
+| `fps_detail::factorials8(fact,invfact,n)` | AVX2 版。`n >= 256` | $$O(n)$$ |
 | `fps_detail::factorial_chain<reverse>(out,chunk,value,factor)` | 8 本の積の列を同時に生成。各列の `value` を書き、`factor` を掛けて進める | $$O(\mathrm{chunk})$$ |
 | `fps_detail::factorial_transpose(x)` | 8×8 個の 32 bit 整数の行と列を入れ替える | $$O(1)$$ |
 

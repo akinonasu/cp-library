@@ -27,7 +27,7 @@ Montgomery 表現では、係数 $$c$$ を $$c\,2^{32}$$ と法 $$p=998244353$$ 
 
 入力 vector 自体を追加先にしても、元の要素を保持して結果を追加します。`q`・`r` が同じ vector なら商、剰余の順に追加します。
 
-内部の `divide_words(n,m)` と `divide(arena,f,g,q,r)` は通常の剰余値 $$[0,p)$$ を扱います。$$p=998244353$$ です。`f`・`g`・`q`・`r` は重ねず、`q` の長さを `quotient_size(n,m)`、`r` の長さを `remainder_size(n,m)` にします。`g` は非空で最高次係数が非零です。`n<m` の場合は商を空にして、剰余へ `f` をコピーします。作業用の整列と領域の間隔は `Arena` が管理します。
+内部の `divide_words(n,m)` と `divide(arena,f,g,q,r)` は通常の剰余値 $$[0,p)$$ を扱います。$$p=998244353$$ です。`f`・`g`・`q`・`r` は重ねず、`q` の長さを `quotient_size(n,m)`、`r` の長さを `remainder_size(n,m)` にします。`g` は非空で最高次係数が非零です。`n<m` の場合は商を空にして、剰余へ `f` をコピーします。作業領域のアライメントと間隔は `Arena` が管理します。
 
 `division_detail::append_words(out,values,n,factor)` は、通常の剰余値の配列を `factor` 倍し、その整数値を `Mint` の内部表現として `out` に追加します。入力値と `factor` は $$[0,p)$$ とします。`append_division_words` も同じ結果を追加します。
 

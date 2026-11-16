@@ -78,7 +78,7 @@ wc -c submit.cpp
 
 `sqrt(deg)` は入力を `deg` 係数で打ち切って扱います。その範囲の先頭の非零係数の次数が奇数、またはその係数を 2 乗で表す値が法 998244353 上に存在しなければ空配列です。平方根が存在する場合は一つを返します。零級数は失敗ではなく指定長の零列なので、`deg > 0` なら空配列かどうかで区別できます。
 
-係数数と長さ引数は `int` の範囲とし、積の計算に使う、素数を法とした変換（NTT）の長さは $$2^{23}$$ 以下にしてください。全ての入力長と指定する出力長を $$2^{22}$$ 以下にすると、基本演算はこの変換長に収まります。積分・対数・指数・冪で使う整数の逆元のため、次数は法未満とします。
+係数数と長さ引数は `int` の範囲とし、積の計算に使う、NTTの長さは $$2^{23}$$ 以下にしてください。全ての入力長と指定する出力長を $$2^{22}$$ 以下にすると、基本演算はこの変換長に収まります。積分・対数・指数・冪で使う整数の逆元のため、次数は法未満とします。
 
 [Bostan–Mori](https://qandori.github.io/cp-library/fps/bostan_mori.hpp.html)、[線形漸化式](https://qandori.github.io/cp-library/fps/linear_recurrence.hpp.html)、[合成](https://qandori.github.io/cp-library/fps/compose.hpp.html)、[合成逆元](https://qandori.github.io/cp-library/fps/compositional_inverse.hpp.html)、[多点評価](https://qandori.github.io/cp-library/fps/multipoint_eval.hpp.html)、[補間](https://qandori.github.io/cp-library/fps/interpolate.hpp.html)、[Taylor shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) の使い方は、各ページを参照してください。
 

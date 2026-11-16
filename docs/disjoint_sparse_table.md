@@ -7,7 +7,7 @@ redirect_from:
 library_category: data_structure/range_query
 ---
 
-構築後に値を変更しない配列の、区間の計算結果を求めます。ここで「集約」は、要素を左から右の順に `op` でまとめることです。
+構築後に値を変更しない配列の、区間の計算結果を求めます。演算 `op` は要素の左から右の順に適用します。
 
 ```cpp
 #include "lib/data_structure/disjoint_sparse_table.hpp"
@@ -22,11 +22,11 @@ auto value = table.prod(0, 2); // 2
 | --- | --- | --- |
 | `DisjointSparseTable()` / `DisjointSparseTable(a)` | 空／配列から構築 | 空: $$O(1)$$、配列: $$O(n\log n)$$ |
 | `build(a)` | 配列で再構築 | $$O(n\log n)$$ |
-| `prod(l,r)` / `all_prod()` | $$[l,r)$$／全体の集約。空区間には `e` の指定が必要 | $$O(1)$$ |
+| `prod(l,r)` / `all_prod()` | $$[l,r)$$／全体の積。空区間には `e` の指定が必要 | $$O(1)$$ |
 | `operator[](i)` | 元の配列の要素を取得 | $$O(1)$$ |
 | `size()` / `empty()` | 要素数／空判定 | $$O(1)$$ |
 
-`op` は `op(op(a,b),c) == op(a,op(b,c))` を満たします。これは要素の順番を保てば、まとめる括弧の位置を変えても結果が同じになる条件（結合法則）です。`prod(l, r)` は $$[l,r)$$ の集約、`all_prod()` は全体の集約です。
+`op` は結合律 `op(op(a,b),c) == op(a,op(b,c))` を満たすようにします。`prod(l, r)` は $$[l,r)$$ の積、`all_prod()` は全体の積です。
 
 空区間も使う場合は、`op(e(),x) == x` と `op(x,e()) == x` を満たす空区間の値（単位元）を返す関数 `e()` を定義し、`DisjointSparseTable<S, op, e>` とします。`build(a)` で再構築できます。
 

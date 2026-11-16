@@ -38,7 +38,7 @@ int main() {
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `AhoCorasick<Alphabet, First>()` | 空の [Trie](trie.md)（文字列の共通する接頭辞をまとめた木）。既定は英小文字26文字、`First='a'` | $$O(\sigma)$$ |
+| `AhoCorasick<Alphabet, First>()` | 空の [Trie](trie.md)。既定は英小文字26文字、`First='a'` | $$O(\sigma)$$ |
 | `reserve(total_length, patterns=0)` | パターンの長さの合計と個数を目安に領域を確保。呼び出しは任意 | $$O(V\sigma+P)$$ |
 | `clear()` | パターン・構築結果を全て削除。確保済み領域は保持 | $$O(V+P)$$ |
 | `add(pattern)` | `string_view` のパターンを追加し、パターン ID を返す。構築前のみ | 償却 $$O(\lvert pattern\rvert+K\sigma)$$ |
@@ -62,7 +62,7 @@ int main() {
 | `propagate(values)` | 頂点ごとの値を suffix link の行き先へ、幅優先順の逆順で `+=` する | $$O(V)$$ |
 | `root` | 根の頂点番号 0 | $$O(1)$$ |
 
-表の「償却」は、一連の追加にかかる合計時間から評価した1回当たりの時間です。パターンを追加した順に、まだ存在しない接頭辞へ頂点番号を割り当てます。`terminal`・`length` の引数はパターン ID、それ以外の状態を取る関数の引数は頂点番号です。
+パターンを追加した順に、まだ存在しない接頭辞へ頂点番号を割り当てます。`terminal`・`length` の引数はパターン ID、それ以外の状態を取る関数の引数は頂点番号です。
 
 `suffix_link`・`output_link`・`match_count` と検索・集計・`bfs_order`・`propagate` は `build()` 後に使います。状態は読み込んだ文字列の接尾辞のうち、Trie に存在する最長のものを表します。本文を分割して読む場合は `walk`・`transition` の返り値を次の呼び出しへ渡します。
 

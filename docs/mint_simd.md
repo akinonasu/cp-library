@@ -6,7 +6,7 @@ library_category: components/math
 
 NTT と多変数畳み込みが共有する内部演算です。通常は [modint998244353](https://qandori.github.io/cp-library/math/mint.hpp.html) や各畳み込みライブラリを利用します。
 
-SIMD は複数の値を CPU 命令で同時に計算する方式です。ここでは 32 bit 整数を「ワード」、一度に扱うベクトルの各要素を「レーン」と呼びます。各ワードは、法 $$p=998244353$$ に対して整数 $$a$$ を $$a\cdot2^{32}\bmod p$$ と同じ余りで保持する Montgomery 表現です。
+各ワードは、法 $$p=998244353$$ に対して整数 $$a$$ を $$a\cdot2^{32}\bmod p$$ と同じ余りで保持する Montgomery 表現です。
 
 `mint_detail::SimdOps` は静的メンバーだけを持ちます。`U` は 32 bit の符号なしワード型、`mod` は 998244353、`twice` はその 2 倍です。以下の操作と、8 本の 32 bit レーンを持つベクトル型 `I8` は x86 で提供します。既定引数はありません。
 

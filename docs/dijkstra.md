@@ -7,7 +7,7 @@ redirect_from:
 library_category: graph/shortest_path
 ---
 
-非負重みのグラフで、始点からの最短距離や経路を求めます。隣接リストのほか、隣接辺を 1 本の配列にまとめて保存する [DirectedCSR](directed_csr.md) を渡せます。以下の DAG は、有向閉路のないグラフを指します。
+非負重みのグラフで、始点からの最短距離や経路を求めます。隣接リストのほか、隣接辺を 1 本の配列にまとめて保存する [DirectedCSR](directed_csr.md) を渡せます。
 
 ```cpp
 #include "lib/graph/dijkstra.hpp"

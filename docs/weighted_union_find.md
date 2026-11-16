@@ -77,6 +77,4 @@ int main() {
 
 構築・空間は $$O(n)$$、頂点数・成分数の取得は $$O(1)$$ 時間・追加空間です。頂点を指定するその他の操作は償却 $$O(\alpha(n))$$ 時間、追加空間は最悪 $$O(\log n)$$ です。
 
-「償却」は、一連の操作にかかる合計時間から求めた、1 回あたりの計算量を表します。
-
 参考：[suisen WeightedUnionFind](https://github.com/suisen-cp/cp-library-cpp/blob/main/library/datastructure/union_find/weighted_union_find.hpp)、[maspypy Potentialized UnionFind](https://github.com/maspypy/library/blob/main/ds/unionfind/potentialized_unionfind.hpp)

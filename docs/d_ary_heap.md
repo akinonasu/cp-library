@@ -5,7 +5,7 @@ redirect_from: /data_structure/d_ary_heap.hpp.html
 library_category: components/data_structure
 ---
 
-値の追加と最大値の取り出しを行う優先度付きキューです。`D` は木の各節点が持つ子の最大数を表します。
+値の追加と最大値の取り出しを行う優先度付きキューです。`D` は木の各ノードが持つ子の最大数を表します。
 
 ```cpp
 #include "lib/components/d_ary_heap.hpp"
@@ -36,5 +36,3 @@ auto x = heap.pop_value();
 `values()` は内部配列の const 参照です。`size()`・`empty()`・`reserve(n)`・`clear()` も使えます。
 
 要素数を $$n$$、$$D$$ を定数として、配列からの構築・コピー・予約は $$O(n)$$、`push` は償却 $$O(\log n)$$、削除・置換は $$O(\log n)$$、`clear` は `int` など要素の破棄に処理を必要としない型なら $$O(1)$$、それ以外は $$O(n)$$、その他は $$O(1)$$ です。比較・要素の移動・破棄は $$O(1)$$ とします。内部配列の確保容量を $$C$$ とすると保持空間は $$O(C)$$ です。削除や `clear()` では容量を解放せず、`reserve(n)` で要素数より大きい容量を確保することもできます。
-
-償却計算量は、1 回ごとの最悪時間ではなく、一連の操作にかかる合計時間を操作回数で割ったときの上界です。

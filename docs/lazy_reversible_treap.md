@@ -4,7 +4,7 @@ documentation_of: //data_structure/lazy_reversible_treap.hpp
 library_category: data_structure/sequence
 ---
 
-挿入・削除・区間更新・反転ができる数列です。区間内の値を左から右の順に `op` でまとめた結果（集約値）を取得できます。
+挿入・削除・区間更新・反転ができる数列です。区間内の値を左から右の順に `op` でまとめた結果を取得できます。
 
 ```cpp
 #include "lib/data_structure/lazy_reversible_treap.hpp"
@@ -27,7 +27,7 @@ auto sum = tree.prod(0, 3);
 
 添字は 0 始まり、区間は $$[l,r)$$ です。引数なしで空列、`Tree(vector<S>, seed = 0)` で初期列を構築します。`Tree(seed)` は空列を作り、木の形を決める乱数の初期値（シード）を指定します。
 
-`op` は `op(op(a,b),c) == op(a,op(b,c))` を満たします。これは要素の順番を保てば、まとめる括弧の位置を変えても結果が同じになる条件（結合法則）です。 `e()` は空区間の値で、`op(e(),x) == x` と `op(x,e()) == x` を満たします。この値を単位元と呼びます。
+`op` は結合律 `op(op(a,b),c) == op(a,op(b,c))` を満たすようにします。`e()` は空区間の値となる単位元で、`op(e(),x) == x` と `op(x,e()) == x` を満たすようにします。
 
 長さ `n` の区間を `op` でまとめた結果が `x` のとき、`mapping(f,x,n)` は区間の各要素に更新 `f` を適用した結果を返します。`composition(f,g)` は `g` の後に `f` を適用する更新、`id()` は何もしない更新です。
 
@@ -43,7 +43,7 @@ auto sum = tree.prod(0, 3);
 | `get(p)` / `set(p,x)` | 1 点の取得／代入 | 期待 $$O(\log n)$$ |
 | `apply(p,f)` / `apply(l,r,f)` | 1 点／区間に更新を適用 | 期待 $$O(\log n)$$ |
 | `reverse(l,r)` | 区間を反転 | 期待 $$O(\log n)$$ |
-| `prod(l,r)` / `all_prod()` | 区間／全体の集約 | prod: 期待 $$O(\log n)$$、all_prod: $$O(1)$$ |
+| `prod(l,r)` / `all_prod()` | 区間／全体の積 | prod: 期待 $$O(\log n)$$、all_prod: $$O(1)$$ |
 | `rotate(l,m,r)` | $$[l,m)$$ と $$[m,r)$$ を入れ替える | 期待 $$O(\log n)$$ |
 | `move(l,r,p)` | 区間を切り取り、削除後の位置 `p` の直前へ挿入 | 期待 $$O(\log n)$$ |
 | `to_vector()` | 全要素を取得 | $$O(n)$$ |
@@ -54,6 +54,6 @@ auto sum = tree.prod(0, 3);
 
 要素数と予約容量は $$2^{30}$$ 未満です。削除したノードは再利用します。`clear()` は確保容量を残します。
 
-「期待」は、木の形を決める乱数について平均した時間です。
+期待計算量は木の形を決める内部乱数に関する評価です。
 
 現在の要素数を $$n$$、最大要素数を $$m$$ とすると、構築は $$O(n)$$、`assign` は $$O(m+n)$$、挿入・削除・1 点操作・区間操作は期待 $$O(\log n)$$、`all_prod`・`size`・`empty`・`memory_usage` は $$O(1)$$、`to_vector` は $$O(n)$$、`reserve`・`clear` は $$O(m)$$ です。空間は $$O(m)$$（予約容量が大きい場合はその容量分）です。演算・更新・値のコピーを $$O(1)$$ とします。

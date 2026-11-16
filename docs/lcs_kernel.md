@@ -18,6 +18,6 @@ library_category: components/string
 
 `MaskPositions` の `t` は `std::span<const std::uint32_t>` です。番号と `workspace` は [整数列の比較用ビットマスク](sequence_bit_masks.md) と同じ条件で用意し、`reverse` は省略せず指定します。作成後は元の `t` を保持する必要はありません。同じ作業領域を使う他のマスクを同時に作らず、作業領域は破棄まで保持してください。`MaskPositions` はコピーできず、作成・保持・破棄には $$O(m)$$ 時間・空間を使います。
 
-行計算の `s` も同じ番号を使う `std::span<const std::uint32_t>` とします。返り値は `std::vector<std::uint64_t>` です。`0 <= j < m` について、返り値の `j/64` 番目の要素の `j%64` ビットが 0 なら、`t` の長さ `j` の接頭辞から長さ `j+1` の接頭辞に伸ばしたときに LCS 長が 1 増えます。列末尾を超えるビットは 1、`m=0` なら空の配列です。`MaskPositions` ごとに行計算は 1 回とし、計算後は破棄してください。行計算の追加空間は $$O(m)$$ です。作業領域そのものの保持量は、扱う番号の種類数を `alphabet` として $$O(\mathrm{alphabet})$$ です。
+`profile_dense`・`profile_sparse` の `s` も同じ番号を使う `std::span<const std::uint32_t>` とします。返り値は `std::vector<std::uint64_t>` です。`0 <= j < m` について、返り値の `j/64` 番目の要素の `j%64` ビットが 0 なら、`t` の長さ `j` の接頭辞から長さ `j+1` の接頭辞に伸ばしたときに LCS 長が 1 増えます。列末尾を超えるビットは 1、`m=0` なら空の配列です。`MaskPositions` ごとにこれらの関数を 1 回だけ呼び、計算後は破棄してください。計算時の追加空間は $$O(m)$$ です。作業領域そのものの保持量は、扱う番号の種類数を `alphabet` として $$O(\mathrm{alphabet})$$ です。
 
 `profile_dense` のテンプレート引数は `<reverse=false,backend=0>`、`profile_sparse` は `<reverse=false>` です。`reverse=true` は `s` を逆順に読み、`MaskPositions` も `reverse=true` で作ります。`backend` は 0 が自動選択、1 が通常演算、2 が AVX2、3 が AVX-512F です。2・3 を明示する場合は、実行する CPU が対応していることが必要です。通常は自動選択を使ってください。

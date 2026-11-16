@@ -4,7 +4,7 @@ documentation_of: //components/fps_reversion.hpp
 library_category: components/fps
 ---
 
-`compositional_inverse` が使う内部部品です。Linux x86_64 / GCC でのみ定義され、呼び出し側が AVX2（複数の整数をまとめて処理する CPU 命令）対応を実行時に確認します。法は $$p=998244353$$ です。
+`compositional_inverse` が使う内部部品です。Linux x86_64 / GCC でのみ定義され、呼び出し側が AVX2 対応を実行時に確認します。法は $$p=998244353$$ です。
 
 Montgomery 表現では、係数 $$c$$ を $$c\,2^{32}$$ と法 $$p=998244353$$ で合同な整数として保持します。通常の剰余表現は、$$0$$ 以上 $$p$$ 未満の余りそのものです。
 

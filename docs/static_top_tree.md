@@ -12,9 +12,9 @@ redirect_from:
 
 木の形を固定したまま、頂点・辺の値の変更に合わせて木 DP を更新します。構築済みの [HLD](https://qandori.github.io/cp-library/tree/hld.hpp.html) と、DP の型・演算を渡します。
 
-このページでは、木の一部をまとめて計算する単位をクラスタと呼びます。`Path` は向き付きの 1 本の経路と、そこから伸びる枝を合わせた情報です。この区別して保持する経路を「境界の経路」と呼びます。`Point` は、親の頂点をまだ加えていない枝の情報です。
+`Path` は向き付きの 1 本の経路と、そこから伸びる枝を合わせた Path cluster の情報です。`Point` は、親の頂点をまだ加えていない枝の Point cluster の情報です。
 
-HLD で各頂点の部分木の頂点数が最大の子を 1 つ選び、その子へ進み続ける経路を heavy path と呼びます。`all_prod`・`subtree_prod` が返す `Path` では、この経路を使います。
+HLD の heavy path は、各頂点から部分木サイズが最大の子へ進む経路です。`all_prod`・`subtree_prod` が返す `Path` では、この経路を使います。
 
 ```cpp
 #include "lib/tree/static_top_tree.hpp"
@@ -52,9 +52,9 @@ long long subtree = dp.subtree_prod(1);     // 7
 | `edge_vertex(e)` | HLD に追加した辺 ID `e` の子側の頂点 | $$O(1)$$ |
 | `get(v)` | 頂点 `v` の `const Vertex&` | $$O(1)$$ |
 | `set(v,value)` | 頂点の値を変更し、必要なクラスタを更新 | $$O(\log n)$$ |
-| `all_prod()` | 木全体の `Path`。境界のパスは構築時の根から heavy path の末尾まで | $$O(1)$$ |
+| `all_prod()` | 木全体の `Path`。経路は構築時の根から heavy path の末尾まで | $$O(1)$$ |
 | `dp()` | `DP::add_edge(all_prod())` による木全体の `Point` | $$O(1)$$ |
-| `subtree_prod(v)` | 構築時の根に対する `v` の部分木の `Path`。境界のパスは `v` から heavy path の末尾まで | $$O(\log n)$$ |
+| `subtree_prod(v)` | 構築時の根に対する `v` の部分木の `Path`。経路は `v` から heavy path の末尾まで | $$O(\log n)$$ |
 | `prod(v)` | 木全体を、構築時の根から `v` へのパスに沿って集約した `Path` | $$O(\log n)$$ |
 | `Vertex` / `Point` / `Path` | `DP` に指定した型の別名 | —（型） |
 
@@ -66,7 +66,7 @@ DP には次の型と static 関数を定義します。値はコピー・代入
 | --- | --- | --- |
 | `DP::Vertex` | 頂点の情報。必要なら親辺の情報も含める | —（型） |
 | `DP::Point` | 同じ親へ接続する枝の集約 | —（型） |
-| `DP::Path` | 境界のパスを持つクラスタの集約 | —（型） |
+| `DP::Path` | 経路とそこに付く枝の計算結果 | —（型） |
 | `DP::point_identity()` | 枝がない場合の `Point` | DP による（定数時間を仮定） |
 | `DP::path_identity()` | 空のパスの `Path` | DP による（定数時間を仮定） |
 | `DP::rake(a,b)` | 同じ親へ接続する枝を併合 | DP による（定数時間を仮定） |
