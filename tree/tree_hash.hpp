@@ -52,10 +52,10 @@ std::array<TreeHashValue, 2> tree_hash(const std::vector<std::vector<int>> &grap
 		int height = 0;
 		for (int u : graph[first]) if (u != second) height = std::max(height, tree.height[u] + 1);
 		auto salt = tree_hash_detail::salt_at(height, seed);
-		TreeHashValue branch = tree_hash_detail::label_hash(labels[first], seed);
+		TreeHashValue branch = tree_hash_detail::label_hash<tree_hash_detail::Label<Labels>>(labels[first], seed);
 		for (int u : graph[first]) if (u != second) tree_hash_detail::append(branch, hashes[u], salt);
 		salt = tree_hash_detail::salt_at(std::max(tree.height[second], height + 1), seed);
-		result[1] = tree_hash_detail::label_hash(labels[second], seed);
+		result[1] = tree_hash_detail::label_hash<tree_hash_detail::Label<Labels>>(labels[second], seed);
 		for (int u : graph[second]) tree_hash_detail::append(result[1], u == first ? branch : hashes[u], salt);
 		if (result[1] < result[0]) std::swap(result[0], result[1]);
 	}

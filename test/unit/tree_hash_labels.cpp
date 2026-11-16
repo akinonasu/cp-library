@@ -3,6 +3,7 @@
 #include <array>
 #include <cassert>
 #include <map>
+#include <memory_resource>
 #include <numeric>
 #include <random>
 #include <span>
@@ -10,6 +11,63 @@
 #include <vector>
 
 using Graph = std::vector<std::vector<int>>;
+
+template<class T>
+struct ProxyLabels {
+	using value_type = T;
+	struct reference {
+		T value;
+		operator T() const { return value; }
+	};
+	std::array<T, 4> values;
+	std::size_t size() const { return values.size(); }
+	reference operator[](std::size_t p) const { return {values[p]}; }
+};
+
+struct IndexedLabels {
+	std::array<std::int64_t, 4> values;
+	std::size_t size() const { return values.size(); }
+	const std::int64_t &operator[](std::size_t p) const { return values[p]; }
+};
+
+struct IndexedLabelsWithAlias : IndexedLabels {
+	using value_type = double;
+};
+
+void proxy_labels() {
+	static_assert(tree_hash_detail::LabelSequence<ProxyLabels<bool>>);
+	static_assert(tree_hash_detail::LabelSequence<ProxyLabels<std::int64_t>>);
+	static_assert(tree_hash_detail::LabelSequence<IndexedLabels>);
+	static_assert(tree_hash_detail::LabelSequence<IndexedLabelsWithAlias>);
+	static_assert(std::is_same_v<tree_hash_detail::Label<std::vector<bool>>, bool>);
+	Graph graph{ {1}, {0, 2}, {1, 3}, {2} };
+	std::vector<int> parents{-1, 0, 1, 2};
+	constexpr std::uint64_t seed = 67231;
+	ProxyLabels<bool> bits{ {false, true, true, false} };
+	std::vector<bool> plain(bits.values.begin(), bits.values.end());
+	std::pmr::vector<bool> allocated(bits.values.begin(), bits.values.end());
+	RootedTreeHash expected(graph, bits.values, 0, seed);
+	assert(RootedTreeHash(graph, bits, 0, seed).hash == expected.hash);
+	assert(RootedTreeHash(graph, plain, 0, seed).hash == expected.hash);
+	assert(RootedTreeHash(graph, allocated, 0, seed).hash == expected.hash);
+	RootedTreeHash from_parents;
+	from_parents.build_parents(parents, bits, seed);
+	assert(from_parents.hash == expected.hash);
+	assert(tree_hash(graph, bits, seed) == tree_hash(graph, bits.values, seed));
+	assert(tree_hash(graph, plain, seed) == tree_hash(graph, bits.values, seed));
+	assert(tree_hash(graph, allocated, seed) == tree_hash(graph, bits.values, seed));
+	ProxyLabels<std::int64_t> signed_values{ {INT64_MIN, -7, 257, INT64_MAX} };
+	expected.build(graph, signed_values.values, 0, seed);
+	assert(RootedTreeHash(graph, signed_values, 0, seed).hash == expected.hash);
+	from_parents.build_parents(parents, signed_values, seed);
+	assert(from_parents.hash == expected.hash);
+	assert(tree_hash(graph, signed_values, seed) == tree_hash(graph, signed_values.values, seed));
+	IndexedLabels direct{signed_values.values};
+	assert(RootedTreeHash(graph, direct, 0, seed).hash == expected.hash);
+	assert(tree_hash(graph, direct, seed) == tree_hash(graph, signed_values.values, seed));
+	IndexedLabelsWithAlias alternate{direct};
+	assert(RootedTreeHash(graph, alternate, 0, seed).hash == expected.hash);
+}
 
 template<class T>
 std::string canonical(const Graph &graph, const std::vector<T> &labels, int v, int parent = -1) {
@@ -92,6 +150,7 @@ void typed(std::mt19937_64 &random) {
 }
 
 int main() {
+	proxy_labels();
 	std::mt19937_64 random(102443);
 	typed<signed char>(random); typed<unsigned char>(random);
 	typed<short>(random); typed<unsigned short>(random);

@@ -152,13 +152,24 @@ inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &gr
 	return hashes(tree, seed);
 }
 
+template<class Labels, class = void>
+struct LabelType {
+	using type = std::remove_cvref_t<decltype(std::declval<const Labels &>()[std::size_t(0)])>;
+};
+
 template<class Labels>
-using Label = std::remove_cvref_t<decltype(std::declval<const Labels &>()[std::size_t(0)])>;
+struct LabelType<Labels, std::void_t<typename Labels::value_type>> {
+	using indexed_type = std::remove_cvref_t<decltype(std::declval<const Labels &>()[std::size_t(0)])>;
+	using type = std::conditional_t<std::is_integral_v<indexed_type>, indexed_type, typename Labels::value_type>;
+};
+
+template<class Labels>
+using Label = std::remove_cvref_t<typename LabelType<Labels>::type>;
 
 template<class Labels>
 concept LabelSequence = requires(const Labels &labels) {
 	{ labels.size() } -> std::convertible_to<std::size_t>;
-	labels[std::size_t(0)];
+	{ labels[std::size_t(0)] } -> std::convertible_to<Label<Labels>>;
 } && std::is_integral_v<Label<Labels>> && sizeof(Label<Labels>) <= 8;
 
 template<class T>
@@ -173,7 +184,7 @@ std::vector<TreeHashValue> hashes(const Rooting &tree, const Labels &labels, std
 	assert(labels.size() == tree.parent.size());
 	std::vector<TreeHashValue> result;
 	result.reserve(labels.size());
-	for (std::size_t v = 0; v < labels.size(); ++v) result.push_back(label_hash(labels[v], seed));
+	for (std::size_t v = 0; v < labels.size(); ++v) result.push_back(label_hash<Label<Labels>>(labels[v], seed));
 	if (result.empty()) return result;
 	std::vector<TreeHashValue> salt(tree.height[tree.order[0]] + 1);
 	SplitMix64 random(seed);
