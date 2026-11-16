@@ -75,7 +75,7 @@
 | `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
 | `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列） | [使い方](docs/flat_hash_map.md) |
 | `data_structure/xor_set.hpp` | XOR の最小値・最大値を求める整数集合 | [使い方](docs/xor_set.md) |
-| `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
+| `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・順位・値の範囲の個数と和） | [使い方](docs/top_k_sum.md) |
 
 ### data_structure/li_chao_tree
 
