@@ -1,5 +1,5 @@
-#ifndef TOP_K_SUM_HPP
-#define TOP_K_SUM_HPP
+#ifndef SUPER_MULTISET_HPP
+#define SUPER_MULTISET_HPP
 
 #include "../components/radix_sort.hpp"
 #include <algorithm>
@@ -16,7 +16,7 @@
 #include <vector>
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>, class Compare = std::greater<T>>
-class TopKSum {
+class SuperMultiset {
 public:
 	using value_type = T;
 	using sum_type = Sum;
@@ -237,12 +237,12 @@ private:
 	}
 
 public:
-	explicit TopKSum(Compare compare = Compare{}) : order(std::move(compare)) {}
-	explicit TopKSum(std::vector<T> values, Compare compare = Compare{}) : TopKSum(std::move(compare)) { assign(std::move(values)); }
-	TopKSum(std::initializer_list<T> values, Compare compare = Compare{}) : TopKSum(std::vector<T>(values), std::move(compare)) {}
-	TopKSum(const TopKSum &other) : order(other.order), root(clone(other.root)) {}
-	TopKSum(TopKSum &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>) : order(other.order), root(std::move(other.root)) {}
-	TopKSum &operator=(TopKSum other) noexcept(std::is_nothrow_swappable_v<Compare>) {
+	explicit SuperMultiset(Compare compare = Compare{}) : order(std::move(compare)) {}
+	explicit SuperMultiset(std::vector<T> values, Compare compare = Compare{}) : SuperMultiset(std::move(compare)) { assign(std::move(values)); }
+	SuperMultiset(std::initializer_list<T> values, Compare compare = Compare{}) : SuperMultiset(std::vector<T>(values), std::move(compare)) {}
+	SuperMultiset(const SuperMultiset &other) : order(other.order), root(clone(other.root)) {}
+	SuperMultiset(SuperMultiset &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>) : order(other.order), root(std::move(other.root)) {}
+	SuperMultiset &operator=(SuperMultiset other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		swap(other);
 		return *this;
 	}
@@ -262,7 +262,7 @@ public:
 				counts.push_back(1);
 			} else ++counts.back();
 		}
-		TopKSum next(order);
+		SuperMultiset next(order);
 		next.root = build(values, counts, 0, distinct);
 		swap(next);
 	}
@@ -335,17 +335,17 @@ public:
 	}
 	bool contains(const T &value) const { return count(value) != 0; }
 	void clear() { root.reset(); }
-	void swap(TopKSum &other) noexcept(std::is_nothrow_swappable_v<Compare>) {
+	void swap(SuperMultiset &other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		using std::swap;
 		swap(order, other.order); root.swap(other.root);
 	}
-	friend void swap(TopKSum &a, TopKSum &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
+	friend void swap(SuperMultiset &a, SuperMultiset &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
 };
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>>
-using LargestKSum = TopKSum<T, Sum, std::greater<T>>;
+using LargestKSum = SuperMultiset<T, Sum, std::greater<T>>;
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>>
-using SmallestKSum = TopKSum<T, Sum, std::less<T>>;
+using SmallestKSum = SuperMultiset<T, Sum, std::less<T>>;
 
 #endif

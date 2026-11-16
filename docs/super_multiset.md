@@ -1,15 +1,18 @@
 ---
-title: "Top K Sum"
-documentation_of: //data_structure/top_k_sum.hpp
+title: "Super Multiset"
+documentation_of: //data_structure/super_multiset.hpp
+redirect_from:
+- /data_structure/top_k_sum.hpp.html
+- /lightweight/data_structure/top_k_sum.hpp.html
 library_category: data_structure/associative
 ---
 
 値の追加・削除ができる多重集合です。小さい順／大きい順の `k` 番目の値、下位／上位 `k` 個の和、値を指定した境界検索、指定した値以上・以下や値の区間に含まれる要素の個数・和に対応します。重複する値は個数分だけ数えます。
 
 ```cpp
-#include "lib/data_structure/top_k_sum.hpp"
+#include "lib/data_structure/super_multiset.hpp"
 
-TopKSum<> values{3, 1, 5, 5};
+SuperMultiset<> values{3, 1, 5, 5};
 auto a = values.kth_smallest(0); // 1
 auto b = values.kth_largest(1);  // 5
 auto c = values.sum_smallest(2); // 4: 1 + 3
@@ -41,8 +44,8 @@ values.replace(1, 8);           // 1 を 1 個 8 に置換
 
 | 操作 | 内容・返り値 |
 | --- | --- |
-| `TopKSum()` / `TopKSum(compare)` | 空集合を作成 |
-| `TopKSum(values)` / `TopKSum(values,compare)` | `vector<T>` または初期化子リストから構築 |
+| `SuperMultiset()` / `SuperMultiset(compare)` | 空集合を作成 |
+| `SuperMultiset(values)` / `SuperMultiset(values,compare)` | `vector<T>` または初期化子リストから構築 |
 | `kth_smallest(k)` / `kth_largest(k)` | 小さい順／大きい順の 0 始まり `k` 番目の値を `T` で返す |
 | `sum_smallest(k)` / `sum_largest(k)` | 下位／上位 `min(k,size())` 個の和を `Sum` で返す |
 | `order_of_key(x)` | `Compare` 上で `x` より前にある要素数。重複を含む |
@@ -71,13 +74,13 @@ values.replace(1, 8);           // 1 を 1 個 8 に置換
 
 ## 型と範囲
 
-`TopKSum<T,Sum,Compare>` の既定値は `T = std::int64_t`、`Sum = std::common_type_t<T,std::int64_t>`、`Compare = std::greater<T>` です。`LargestKSum<T,Sum>` は `std::greater<T>`、`SmallestKSum<T,Sum>` は `std::less<T>` を使います。どちらの型でも、大小両方の順位・和・境界検索と、値の範囲を指定した個数・和を利用できます。独自の `Compare` を指定した場合は、その比較順を小さい順として扱います。
+`SuperMultiset<T,Sum,Compare>` の既定値は `T = std::int64_t`、`Sum = std::common_type_t<T,std::int64_t>`、`Compare = std::greater<T>` です。`LargestKSum<T,Sum>` は `std::greater<T>`、`SmallestKSum<T,Sum>` は `std::less<T>` を使います。どちらの型でも、大小両方の順位・和・境界検索と、値の範囲を指定した個数・和を利用できます。独自の `Compare` を指定した場合は、その比較順を小さい順として扱います。
 
 `order_of_key(x)` は `std::less` なら `x` 未満、`std::greater` なら `x` より大きい要素数を返します。
 
 `Compare(a,b)` は `a` が `b` より前に来るかを返します。比較では、自分自身には `false` を返し、`a` が `b` より前、`b` が `c` より前なら `a` が `c` より前となるようにします。どちら向きの比較も `false` のときは同値とみなし、`a` と `b`、`b` と `c` が同値なら `a` と `c` も同値になるようにします。比較上同値な値は個数をまとめて扱うため、`Sum` へ変換しても同じ値になる必要があります。`assign`・`clear` は比較関数を維持します。
 
-`Sum` は和の型です。例えば `TopKSum<int>` の和は `std::int64_t`、64 bit を超える和には `TopKSum<std::int64_t,__int128_t>` を使います。`Sum(0)`、値から `Sum` への変換、加算代入、非負の `size_type` との乗算が必要で、減算は不要です。値の変換と和の問い合わせの結果が表現できる型を指定してください。64 bit 以下の整数型では、個数だけを求める操作や選ばない部分について、和が `Sum` の範囲を超えていても扱えます。それ以外の型では、部分和と個数倍も表現できることが必要です。浮動小数点では丸め誤差が生じます。
+`Sum` は和の型です。例えば `SuperMultiset<int>` の和は `std::int64_t`、64 bit を超える和には `SuperMultiset<std::int64_t,__int128_t>` を使います。`Sum(0)`、値から `Sum` への変換、加算代入、非負の `size_type` との乗算が必要で、減算は不要です。値の変換と和の問い合わせの結果が表現できる型を指定してください。64 bit 以下の整数型では、個数だけを求める操作や選ばない部分について、和が `Sum` の範囲を超えていても扱えます。それ以外の型では、部分和と個数倍も表現できることが必要です。浮動小数点では丸め誤差が生じます。
 
 `size_type` は `std::int64_t` です。更新個数は非負とし、全要素数がその最大値以下になるように使います。0 個の更新は何もしません。削除する個数が足りない場合は存在する分だけ削除します。
 

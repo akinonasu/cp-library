@@ -1,4 +1,4 @@
-#include "data_structure/top_k_sum.hpp"
+#include "data_structure/super_multiset.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -90,7 +90,7 @@ void check(const Set &set, const std::vector<typename Set::value_type> &values, 
 
 template<class Compare>
 void randomized(Compare compare) {
-	TopKSum<int, std::int64_t, Compare> set(compare);
+	SuperMultiset<int, std::int64_t, Compare> set(compare);
 	std::vector<int> values, probes{-40, -20, -1, 0, 1, 20, 40};
 	std::mt19937 rng(463819);
 	check(set, values, compare, probes);
@@ -136,7 +136,7 @@ void randomized(Compare compare) {
 		if (step % 97 == 0) {
 			auto copy = set;
 			check(copy, values, compare, probes);
-			TopKSum<int, std::int64_t, Compare> moved(std::move(copy));
+			SuperMultiset<int, std::int64_t, Compare> moved(std::move(copy));
 			check(copy, {}, compare, probes);
 			check(moved, values, compare, probes);
 			copy = moved;
@@ -151,19 +151,19 @@ void extremes() {
 	using T = std::int64_t;
 	constexpr T lo = (std::numeric_limits<T>::min)(), hi = (std::numeric_limits<T>::max)();
 	std::vector<T> values{lo, lo, -1, 0, 1, hi, hi};
-	TopKSum<T, __int128_t, Compare> wide(values);
+	SuperMultiset<T, __int128_t, Compare> wide(values);
 	check(wide, values, Compare{}, {lo, lo + 1, -1, 0, 1, hi - 1, hi});
-	TopKSum<T, T, Compare> mixed(values);
+	SuperMultiset<T, T, Compare> mixed(values);
 	assert(mixed.range_sum(-1, 2) == 0 && mixed.range_freq(-1, 2) == 3);
 	assert(mixed.range_sum_with_count(-1, 2) == std::make_pair(T(0), T(3)));
 	assert(mixed.range_sum(0, 1) == 0 && mixed.range_sum(hi, lo) == 0);
 	assert(mixed.count_leq(lo) == 2 && mixed.count_geq(hi) == 2);
-	TopKSum<T, T, Compare> lower{lo, lo, lo, 0, hi}, upper{lo, 0, hi, hi, hi};
+	SuperMultiset<T, T, Compare> lower{lo, lo, lo, 0, hi}, upper{lo, 0, hi, hi, hi};
 	assert(lower.sum_geq(0) == hi && lower.sum_greater(0) == hi);
 	assert(lower.sum_less(lo) == 0 && lower.range_sum(hi, hi) == 0);
 	assert(upper.sum_leq(0) == lo && upper.sum_less(0) == lo);
 	assert(upper.sum_greater(hi) == 0 && upper.range_sum(hi, lo) == 0);
-	TopKSum<T, __int128_t, Compare> copies;
+	SuperMultiset<T, __int128_t, Compare> copies;
 	copies.insert(lo, hi / 2);
 	copies.insert(hi, hi - hi / 2);
 	assert(copies.size() == hi && copies.count_leq(lo) == hi / 2);
@@ -187,7 +187,7 @@ int main() {
 	std::vector<std::uint64_t> values{0, 1, 1, std::uint64_t(1) << 63, hi, hi};
 	SmallestKSum<std::uint64_t, __uint128_t> wide_unsigned(values);
 	check(wide_unsigned, values, std::less<std::uint64_t>{}, {0, 1, 2, std::uint64_t(1) << 63, hi - 1, hi});
-	TopKSum<std::uint64_t, std::uint64_t> unsigned_copies;
+	SuperMultiset<std::uint64_t, std::uint64_t> unsigned_copies;
 	constexpr std::int64_t count = (std::numeric_limits<std::int64_t>::max)();
 	unsigned_copies.insert(3, count - 1); unsigned_copies.insert(4);
 	assert(unsigned_copies.count_leq(3) == count - 1 && unsigned_copies.count_geq(0) == count);
@@ -195,18 +195,18 @@ int main() {
 	assert(unsigned_copies.range_sum_with_count(4, 5) == std::make_pair(std::uint64_t(4), std::int64_t(1)));
 	assert(unsigned_copies.range_sum(5, 4) == 0 && unsigned_copies.sum_less(3) == 0);
 	std::vector<int> integers{-5, -5, 0, 3, 3, 9};
-	TopKSum<int, AdditiveSum> additive(integers);
+	SuperMultiset<int, AdditiveSum> additive(integers);
 	check(additive, integers, std::greater<int>{}, {-10, -5, 0, 3, 10});
 	std::vector<Bucket> buckets{ {-29, 1}, {-21, 2}, {-3, 0}, {7, 4}, {11, 7}, {19, 1}, {37, 0} };
-	TopKSum<Bucket, std::int64_t, BucketLess> grouped(buckets);
+	SuperMultiset<Bucket, std::int64_t, BucketLess> grouped(buckets);
 	check(grouped, buckets, BucketLess{}, { {-40, 0}, {-20, 9}, {-1, 3}, {15, 4}, {30, 7}, {50, 2} });
-	TopKSum<int, std::int64_t, Direction> a({-3, 0, 4}, Direction{false}), b({-2, 1, 9}, Direction{true});
+	SuperMultiset<int, std::int64_t, Direction> a({-3, 0, 4}, Direction{false}), b({-2, 1, 9}, Direction{true});
 	a.swap(b);
 	check(a, {-2, 1, 9}, Direction{true}, {-4, 0, 2, 10});
 	check(b, {-3, 0, 4}, Direction{false}, {-4, 0, 2, 10});
 	b = a;
 	check(b, {-2, 1, 9}, Direction{true}, {-4, 0, 2, 10});
-	TopKSum<double> decimals{-1.5, 0.25, 2.0, 2.0};
+	SuperMultiset<double> decimals{-1.5, 0.25, 2.0, 2.0};
 	assert(decimals.sum_leq(0.25) == -1.25 && decimals.sum_geq(2.0) == 4.0);
 	assert(decimals.count_greater(0.25) == 2 && decimals.range_sum(0.0, 3.0) == 4.25);
 	assert(decimals.range_sum_with_count(0.0, 3.0) == std::make_pair(4.25, std::int64_t(3)));

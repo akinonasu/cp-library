@@ -1,4 +1,4 @@
-#include "data_structure/top_k_sum.hpp"
+#include "data_structure/super_multiset.hpp"
 #include <cassert>
 #include <limits>
 #include <numeric>
@@ -72,7 +72,7 @@ void check(const Set &set, std::vector<typename Set::value_type> values, Compare
 template<class Compare>
 void randomized(Compare compare) {
 	std::mt19937 rng(9413);
-	TopKSum<int, long long, Compare> set(compare);
+	SuperMultiset<int, long long, Compare> set(compare);
 	std::vector<int> values;
 	for (int step = 0; step < 30000; ++step) {
 		const int operation = rng() % 14;
@@ -140,11 +140,11 @@ void randomized(Compare compare) {
 }
 
 int main() {
-	static_assert(std::is_same_v<TopKSum<int>::sum_type, std::int64_t>);
-	static_assert(std::is_signed_v<TopKSum<>::size_type>);
-	static_assert(std::is_same_v<decltype(std::declval<const TopKSum<int>&>().kth(0)), int>);
-	static_assert(std::is_same_v<decltype(std::declval<TopKSum<>&>().erase(0, 0)), TopKSum<>::size_type>);
-	TopKSum<> largest{3, 1, 5, 5};
+	static_assert(std::is_same_v<SuperMultiset<int>::sum_type, std::int64_t>);
+	static_assert(std::is_signed_v<SuperMultiset<>::size_type>);
+	static_assert(std::is_same_v<decltype(std::declval<const SuperMultiset<int>&>().kth(0)), int>);
+	static_assert(std::is_same_v<decltype(std::declval<SuperMultiset<>&>().erase(0, 0)), SuperMultiset<>::size_type>);
+	SuperMultiset<> largest{3, 1, 5, 5};
 	const auto &read = largest;
 	assert(read.sum(0) == 0 && read.sum(1) == 5 && read.sum(2) == 10 && read.sum(4) == 14);
 	assert(read.sum(100) == 14 && read.sum_all() == 14);
@@ -165,15 +165,15 @@ int main() {
 	randomized(std::greater<int>{});
 	randomized(Direction{false});
 	randomized(Direction{true});
-	TopKSum<int, long long, Direction> a({2, 3}, Direction{true});
-	TopKSum<int, long long, Direction> b({8, 9}, Direction{false});
+	SuperMultiset<int, long long, Direction> a({2, 3}, Direction{true});
+	SuperMultiset<int, long long, Direction> b({8, 9}, Direction{false});
 	swap(a, b);
 	a.insert(0); b.insert(10);
 	assert(a.sum(1) == 0 && b.sum(1) == 10);
 
 	const auto lo = (std::numeric_limits<std::int64_t>::min)();
 	const auto hi = (std::numeric_limits<std::int64_t>::max)();
-	TopKSum<> mixed{lo, lo, hi, hi};
+	SuperMultiset<> mixed{lo, lo, hi, hi};
 	assert(mixed.sum(1) == hi && mixed.sum(4) == -2);
 	assert(mixed.kth(0) == hi && mixed.kth(3) == lo);
 	assert(mixed.sum_smallest(1) == lo && mixed.sum_largest(1) == hi);
@@ -182,12 +182,12 @@ int main() {
 	SmallestKSum<> negative{lo, lo, hi, hi};
 	assert(negative.sum(1) == lo && negative.sum_all() == -2);
 	assert(negative.sum_smallest(1) == lo && negative.sum_largest(1) == hi);
-	TopKSum<std::int64_t, __int128_t> wide{lo, lo, hi, hi};
+	SuperMultiset<std::int64_t, __int128_t> wide{lo, lo, hi, hi};
 	assert(wide.sum(2) == __int128_t(hi) * 2 && wide.sum(3) == __int128_t(hi) * 2 + lo);
 	wide.insert(hi, 1000000000000LL);
 	assert(wide.sum(1000000000000LL) == __int128_t(hi) * 1000000000000LL);
 	assert(wide.erase(hi, 1000000000001LL) == 1000000000001LL && wide.count(hi) == 1);
-	TopKSum<> maximum;
+	SuperMultiset<> maximum;
 	maximum.insert(1, hi);
 	assert(maximum.size() == hi && maximum.count(1) == hi && maximum.sum(hi) == hi && maximum.kth(hi - 1) == 1);
 	assert(maximum.erase(1));
@@ -198,20 +198,20 @@ int main() {
 	assert(maximum.erase_all(lo) == 1000000000000LL && maximum.empty());
 	assert(maximum.sum_smallest(1) == 0 && maximum.sum_largest(1) == 0);
 	assert(!maximum.lower_bound(lo) && !maximum.upper_bound(hi));
-	TopKSum<unsigned, std::uint64_t> unsigned_values{0, 3, 5, 7};
+	SuperMultiset<unsigned, std::uint64_t> unsigned_values{0, 3, 5, 7};
 	assert(unsigned_values.sum(2) == 12 && unsigned_values.erase(7) && unsigned_values.sum(2) == 8);
 	assert(unsigned_values.lower_bound(0) == 0 && unsigned_values.upper_bound(0) == 3);
 	assert(!unsigned_values.lower_bound((std::numeric_limits<unsigned>::max)()));
-	TopKSum<double> decimals{1.25, -0.5, 3.5};
+	SuperMultiset<double> decimals{1.25, -0.5, 3.5};
 	assert(decimals.sum(2) == 4.75 && decimals.replace(3.5, -4.0) && decimals.sum(2) == 0.75);
-	TopKSum<int, AdditiveSum> additive;
+	SuperMultiset<int, AdditiveSum> additive;
 	additive.insert(3, 4);
 	assert(additive.sum(2).value == 6 && additive.sum_all().value == 12);
 	additive.insert(1, 2);
 	assert(additive.sum_smallest(3).value == 5 && additive.sum_largest(3).value == 9);
 	assert(additive.erase_all(1) == 2);
 	assert(additive.erase(3, 3) == 3 && additive.sum(2).value == 3);
-	TopKSum<WeightedValue, long long, WeightedLess> objects;
+	SuperMultiset<WeightedValue, long long, WeightedLess> objects;
 	objects.insert({7}, 3); objects.insert({-2}, 2); objects.insert({4});
 	assert(objects.kth_smallest(0).weight == -2 && objects.kth_largest(1).weight == 7);
 	assert(objects.sum_smallest(3) == 0 && objects.sum_largest(4) == 25);
@@ -279,7 +279,7 @@ int main() {
 	for (auto value : shuffled) blocks.insert(value);
 	assert(blocks.size() == static_cast<std::int64_t>(shuffled.size()));
 
-	TopKSum<int> alternate;
+	SuperMultiset<int> alternate;
 	alternate.reserve(100000);
 	std::vector<int> sequence(100000);
 	std::iota(sequence.begin(), sequence.end(), 1);

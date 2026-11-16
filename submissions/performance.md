@@ -60,7 +60,7 @@ min-plus は通常の公開ケースに加え、片方だけが短い列や傾�
 
 調査開始時にfastestとソースが同一だったものは9問です。それ以外で変更前の時間が参照を上回った120問を先に列挙し、残りも続けて掲載しています。小差は計測の揺らぎも含みます。「採用」は変更箇所を示し、全問でfastestと同等になったという意味ではありません。未解消の差・不採用案も調査欄に記載しています。
 
-APIと正確性を維持し、ライブラリ本体・既存ライブラリの組み合わせ・入出力をそれぞれ検討しました。通常のオンライン永続データ構造やTopKSumは維持し、オフラインで処理できる提出は専用の検証ドライバを追加しています。
+APIと正確性を維持し、ライブラリ本体・既存ライブラリの組み合わせ・入出力をそれぞれ検討しました。通常のオンライン永続データ構造やSuperMultisetは維持し、オフラインで処理できる提出は専用の検証ドライバを追加しています。
 
 変更前が参照より遅かった 120 問です。
 
@@ -89,7 +89,7 @@ APIと正確性を維持し、ライブラリ本体・既存ライブラリの�
 | [Deque](https://judge.yosupo.jp/problem/deque) · [コード](https://github.com/qandori/cp-library/blob/ec0dedd/submissions/deque.cpp) | 12.3 | 12.3 | [7.0](https://judge.yosupo.jp/submission/400806) | +0.0% | 変更なし | 提出特化の文字列転送であり、通常の値型deque APIの置換にはならない。 |
 | [Discrete Logarithm (Fixed Mod)](https://judge.yosupo.jp/problem/discrete_logarithm_fixed_mod) · [コード](https://github.com/qandori/cp-library/blob/ec0dedd/submissions/discrete_logarithm_fixed_mod.cpp) | 82.8 | 82.8 | [75.1](https://judge.yosupo.jp/submission/370158) | +0.0% | 変更なし | fastest370158 は段階的な smooth number・Pohlig-Hellman 前計算。現行も Farey 分数表と素因数再利用を持つが、前計算の構成には差が残る。今回、追加採用を裏付ける安全な改善は得られていない。 |
 | [Division of Polynomials](https://judge.yosupo.jp/problem/division_of_polynomials) · [コード](https://github.com/qandori/cp-library/blob/ec0dedd/submissions/division_of_polynomials.cpp) | 9.4 | 9.2 | [6.9](https://judge.yosupo.jp/submission/409561) | -1.6% | 共通化 | 現行APIを維持して採用できる追加改善は今回の検証では未確定。fastestのアルゴリズムと既存実装は比較済み。 |
-| [Double-Ended Priority Queue](https://judge.yosupo.jp/problem/double_ended_priority_queue) · [コード](https://github.com/qandori/cp-library/blob/ec0dedd/submissions/double_ended_priority_queue.cpp) | 100.4 | 41.3 | [20.0](https://judge.yosupo.jp/submission/410602) | -58.9% | 提出 | 既存 radix sort と PredecessorSet で挿入値を順位に変換して処理。TopKSum の通常API・検証は維持。 |
+| [Double-Ended Priority Queue](https://judge.yosupo.jp/problem/double_ended_priority_queue) · [コード](https://github.com/qandori/cp-library/blob/ec0dedd/submissions/double_ended_priority_queue.cpp) | 100.4 | 41.3 | [20.0](https://judge.yosupo.jp/submission/410602) | -58.9% | 提出 | 既存 radix sort と PredecessorSet で挿入値を順位に変換して処理。SuperMultiset の通常API・検証は維持。 |
 | [Dynamic Graph Vertex Add Component Sum](https://judge.yosupo.jp/problem/dynamic_graph_vertex_add_component_sum) · [コード](https://github.com/qandori/cp-library/blob/ec0dedd/submissions/dynamic_graph_vertex_add_component_sum.cpp) | 89.5 | 89.5 | [52.0](https://judge.yosupo.jp/submission/402761) | +0.0% | 変更なし | 参照の有効期限を使う森は連結成分和に特化している。汎用の時間軸処理・rollback APIを保った置換は未実装。 |
 | [Dynamic Sequence Range Affine Range Sum](https://judge.yosupo.jp/problem/dynamic_sequence_range_affine_range_sum) · [コード](https://github.com/qandori/cp-library/blob/ec0dedd/submissions/dynamic_sequence_range_affine_range_sum.cpp) | 997.1 | 975.9 | [307.0](https://judge.yosupo.jp/submission/402977) | -2.1% | 本体 | lazy を保持した読み取りを採用。チャンク化も比較したが、一部ケースで退行したため不採用。参照の専用SIMDチャンクとの差は残る。 |
 | [Dynamic Tree Vertex Add Path Sum](https://judge.yosupo.jp/problem/dynamic_tree_vertex_add_path_sum) · [コード](https://github.com/qandori/cp-library/blob/ec0dedd/submissions/dynamic_tree_vertex_add_path_sum.cpp) | 236.0 | 236.0 | [181.9](https://judge.yosupo.jp/submission/270626) | +0.0% | 変更なし | Link Cut Treeの循環検出・接続チェックを維持。これらを省く参照の処理はそのまま適用できず、追加の配置改善も未確定。 |
