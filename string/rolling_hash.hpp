@@ -128,10 +128,22 @@ class RollingHash {
 	}
 	int lcp(int l, int r, const RollingHash &other, int other_l, int other_r) const {
 		assert(0 <= l && l <= r && r <= size() && 0 <= other_l && other_l <= other_r && other_r <= other.size());
-		int low = 0, high = std::min(r - l, other_r - other_l);
+		int high = std::min(r - l, other_r - other_l);
+		if (!high) return 0;
+		if (high == 1) return get(l, l + 1) == other.get(other_l, other_l + 1);
+		if (this == &other && l == other_l) return high;
+		Hash difference = prefix[l] + mod - other.prefix[other_l];
+		if (difference >= mod) difference -= mod;
+		auto equal = [&](int length) {
+			Hash value = other.prefix[other_l + length] + mul(difference, powers[length]);
+			return prefix[l + length] == (value >= mod ? value - mod : value);
+		};
+		if (!equal(1)) return 0;
+		if (equal(high)) return high;
+		int low = 1;
 		while (low < high) {
 			int mid = high - (high - low) / 2;
-			if (get(l, l + mid) == other.get(other_l, other_l + mid)) low = mid;
+			if (equal(mid)) low = mid;
 			else high = mid - 1;
 		}
 		return low;

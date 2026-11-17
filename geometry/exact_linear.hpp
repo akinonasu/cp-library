@@ -3,6 +3,7 @@
 
 #include "rational.hpp"
 #include "linear.hpp"
+#include "../components/exact_geometry_integer.hpp"
 #include <algorithm>
 #include <array>
 #include <optional>
@@ -18,6 +19,11 @@ Segment<Rational> convert(Segment<T> segment) { return {to_rational(segment.a), 
 
 template<ExactCoordinate T, ExactCoordinate U>
 RPoint projection_exact(Line<T> line, Point<U> point) {
+	if constexpr (integer<T> && integer<U> && sizeof(T) <= 8 && sizeof(U) <= 8) {
+		auto [numerator, denominator] = exact_integer_detail::projection(exact_integer_detail::convert(line.a),
+			exact_integer_detail::convert(line.b), exact_integer_detail::convert(point));
+		return exact_integer_detail::quotient(numerator, denominator);
+	}
 	auto l = exact_linear_detail::convert(line);
 	auto p = to_rational(point), direction = l.b - l.a;
 	Rational square = norm2(direction);
@@ -28,11 +34,28 @@ RPoint projection_exact(Line<T> line, Point<U> point) {
 
 template<ExactCoordinate T, ExactCoordinate U>
 RPoint reflection_exact(Line<T> line, Point<U> point) {
+	if constexpr (integer<T> && integer<U> && sizeof(T) <= 8 && sizeof(U) <= 8) {
+		auto p = exact_integer_detail::convert(point);
+		auto [numerator, denominator] = exact_integer_detail::projection(exact_integer_detail::convert(line.a),
+			exact_integer_detail::convert(line.b), p);
+		return exact_integer_detail::quotient(numerator * Integer(2) - p * denominator, denominator);
+	}
 	return projection_exact(line, point) * Rational(2) - to_rational(point);
 }
 
 template<ExactCoordinate T, ExactCoordinate U>
 std::optional<RPoint> intersection_exact(Line<T> line, Line<U> other) {
+	if constexpr (integer<T> && integer<U> && sizeof(T) <= 8 && sizeof(U) <= 8) {
+		Line<Integer> l{exact_integer_detail::convert(line.a), exact_integer_detail::convert(line.b)};
+		Line<Integer> m{exact_integer_detail::convert(other.a), exact_integer_detail::convert(other.b)};
+		if (l.a == l.b) return on_line(m, l.a) ? std::optional<RPoint>(to_rational(l.a)) : std::nullopt;
+		if (m.a == m.b) return on_line(l, m.a) ? std::optional<RPoint>(to_rational(m.a)) : std::nullopt;
+		BigPoint direction = l.b - l.a, second = m.b - m.a;
+		Integer determinant = cross(direction, second);
+		if (determinant == 0) return std::nullopt;
+		Integer numerator = cross(m.a - l.a, second);
+		return exact_integer_detail::quotient(l.a * determinant + direction * numerator, determinant);
+	}
 	auto l = exact_linear_detail::convert(line), m = exact_linear_detail::convert(other);
 	if (l.a == l.b) return on_line(m, l.a) ? std::optional<RPoint>(l.a) : std::nullopt;
 	if (m.a == m.b) return on_line(l, m.a) ? std::optional<RPoint>(m.a) : std::nullopt;
@@ -77,11 +100,20 @@ std::vector<RPoint> intersection_exact(Segment<T> segment, Line<U> line) {
 
 template<ExactCoordinate T, ExactCoordinate U>
 Rational distance_squared_exact(Point<T> point, Point<U> other) {
+	if constexpr (exact_integer_detail::coordinate<T> && exact_integer_detail::coordinate<U>)
+		return Rational(distance_squared(exact_integer_detail::convert(point), exact_integer_detail::convert(other)));
 	return distance_squared(to_rational(point), to_rational(other));
 }
 
 template<ExactCoordinate T, ExactCoordinate U>
 Rational distance_squared_exact(Line<T> line, Point<U> point) {
+	if constexpr (exact_integer_detail::coordinate<T> && exact_integer_detail::coordinate<U>) {
+		BigPoint a = exact_integer_detail::convert(line.a), b = exact_integer_detail::convert(line.b);
+		BigPoint p = exact_integer_detail::convert(point);
+		if (a == b) return Rational(distance_squared(a, p));
+		Integer determinant = cross(a, b, p);
+		return Rational(Integer(determinant * determinant), distance_squared(a, b));
+	}
 	auto l = exact_linear_detail::convert(line);
 	auto p = to_rational(point);
 	if (l.a == l.b) return distance_squared(l.a, p);
@@ -91,6 +123,9 @@ Rational distance_squared_exact(Line<T> line, Point<U> point) {
 
 template<ExactCoordinate T, ExactCoordinate U>
 Rational distance_squared_exact(Segment<T> segment, Point<U> point) {
+	if constexpr (exact_integer_detail::coordinate<T> && exact_integer_detail::coordinate<U>)
+		return exact_integer_detail::segment_distance(exact_integer_detail::convert(segment.a),
+			exact_integer_detail::convert(segment.b), exact_integer_detail::convert(point));
 	auto s = exact_linear_detail::convert(segment);
 	auto p = to_rational(point), direction = s.b - s.a;
 	Rational square = norm2(direction), along = dot(p - s.a, direction);
@@ -127,6 +162,13 @@ Rational distance_squared_exact(Segment<T> segment, Line<U> line) { return dista
 
 template<ExactCoordinate T, ExactCoordinate U>
 Rational distance_squared_exact(Segment<T> segment, Segment<U> other) {
+	if constexpr (exact_integer_detail::coordinate<T> && exact_integer_detail::coordinate<U>) {
+		Segment<Integer> s{exact_integer_detail::convert(segment.a), exact_integer_detail::convert(segment.b)};
+		Segment<Integer> t{exact_integer_detail::convert(other.a), exact_integer_detail::convert(other.b)};
+		if (intersects(s, t)) return 0;
+		return std::min({exact_integer_detail::segment_distance(s.a, s.b, t.a), exact_integer_detail::segment_distance(s.a, s.b, t.b),
+			exact_integer_detail::segment_distance(t.a, t.b, s.a), exact_integer_detail::segment_distance(t.a, t.b, s.b)});
+	}
 	auto s = exact_linear_detail::convert(segment), t = exact_linear_detail::convert(other);
 	if (intersects(s, t)) return 0;
 	return std::min({distance_squared_exact(s, t.a), distance_squared_exact(s, t.b),

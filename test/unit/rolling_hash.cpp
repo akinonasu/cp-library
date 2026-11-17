@@ -137,6 +137,15 @@ int main() {
 	std::string long_prefix(200000, 'a'), changed = long_prefix;
 	changed.back() = 'b';
 	assert(RollingHash(long_prefix).lcp(0, RollingHash(changed), 0) == 199999);
+	RollingHash original(long_prefix), different(changed);
+	for (int l : {1, 2, 31, 63, 4096}) for (int j : {1, 2, 31, 63, 4096}) {
+		int limit = int(long_prefix.size()) - std::max(l, j);
+		assert(original.lcp(l, different, j) == limit - (j >= l));
+		assert(original.lcp(l, l + 10000, different, j, j + 10000) == 10000);
+		assert(original.lcp(l, l + 10000, original, l, l + 9999) == 9999);
+	}
+	assert(RollingHash("a").lcp(0, RollingHash("a"), 0) == 1);
+	assert(RollingHash("a").lcp(0, RollingHash("b"), 0) == 0);
 	for (int i = 0; i < 5000; ++i) {
 		std::uint64_t left = i < 4 ? RollingHash::mod - 1 - i : random() % RollingHash::mod;
 		std::uint64_t right = i < 4 ? RollingHash::mod - 1 - i : random() % RollingHash::mod;

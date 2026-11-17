@@ -34,7 +34,7 @@ class BasicSuffixTree {
 	mutable std::array<int, bytes ? 256 : 0> root_children_{};
 	mutable bool lcp_ready_ = false, tree_ready_ = false;
 	mutable std::uint64_t distinct_ = 0;
-	mutable std::optional<StaticRangeMin<std::pair<int, int>>> index_;
+	mutable std::optional<StaticRangeMin<std::uint64_t>> index_;
 	void check([[maybe_unused]] int v) const { prepare_tree(); assert(0 <= v && v < static_cast<int>(nodes_.size())); }
 	int range_end(int v) const { int r = nodes_[v].right; return r < 0 ? nodes_[-r - 1].right : r; }
 	void prepare_lcp() const {
@@ -109,8 +109,8 @@ class BasicSuffixTree {
 	void prepare_index() const {
 		prepare_tree();
 		if (index_) return;
-		std::vector<std::pair<int, int>> values(size());
-		for (int i = 0; i < size(); ++i) values[i] = {lcp_[i], branches_[i]};
+		std::vector<std::uint64_t> values(size());
+		for (int i = 0; i < size(); ++i) values[i] = (std::uint64_t(lcp_[i]) << 32) | std::uint32_t(branches_[i]);
 		index_.emplace(std::move(values));
 	}
 	int child(int v, Key c) const {
@@ -261,7 +261,7 @@ class BasicSuffixTree {
 		int a = rank_[p], b = rank_[q];
 		if (a > b) std::swap(a, b);
 		prepare_index();
-		return index_->prod(a, b).first;
+		return static_cast<int>(index_->prod(a, b) >> 32);
 	}
 	int lca(int u, int v) const {
 		check(u); check(v);
@@ -271,7 +271,7 @@ class BasicSuffixTree {
 		int a = nodes_[u].left, b = nodes_[v].left;
 		if (a > b) std::swap(a, b);
 		prepare_index();
-		return index_->prod(a, b).second;
+		return static_cast<int>(index_->prod(a, b) & 0xffffffffu);
 	}
 	int suffix_link(int v) const {
 		check(v);

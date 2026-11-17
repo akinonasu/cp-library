@@ -571,6 +571,7 @@
 | --- | --- | --- |
 | `components/packed_convex_hull.hpp` | 整数点の凸包 | [使い方](docs/packed_convex_hull.md) |
 | `components/integer_geometry_bridge.hpp` | 整数幾何と通常幾何の厳密な座標変換 | [使い方](docs/integer_geometry_bridge.md) |
+| `components/exact_geometry_integer.hpp` | 厳密な整数幾何の補助 | [使い方](docs/exact_geometry_integer.md) |
 | `components/closest_pair.hpp` | 最近点対の整数座標用処理 | [使い方](docs/closest_pair_core.md) |
 
 ### components/graph

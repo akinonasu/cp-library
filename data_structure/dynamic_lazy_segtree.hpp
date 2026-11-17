@@ -3,6 +3,7 @@
 
 #include "../components/ordered_midpoint.hpp"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -169,7 +170,22 @@ class DynamicLazySegtree {
 	std::size_t memory_usage() const { return nodes.capacity() * sizeof(Node); }
 	S all_prod() const { return value(root, first, last); }
 	S prod(Coord l, Coord r) const { check(l, r); return l == r ? e() : product(root, first, last, l, r); }
-	S get(Coord p) const { assert(first <= p && p < last); return prod(p, Coord(p + 1)); }
+	S get(Coord p) const {
+		assert(first <= p && p < last);
+		std::array<int, std::numeric_limits<U>::digits> path;
+		unsigned count = 0;
+		int k = root;
+		Coord l = first, r = last;
+		while (k && !leaf(l, r)) {
+			if (nodes[k].dirty) path[count++] = k;
+			Coord m = ordered_midpoint(l, r);
+			if (p < m) k = nodes[k].left, r = m;
+			else k = nodes[k].right, l = m;
+		}
+		S result = k ? nodes[k].value : base(p, Coord(p + 1));
+		while (count) result = mapping(nodes[path[--count]].lazy, std::move(result));
+		return result;
+	}
 	void set(Coord p, const S &x) { assert(first <= p && p < last); root = write(root, first, last, p, x); }
 	void apply(Coord l, Coord r, const F &f) {
 		check(l, r);
