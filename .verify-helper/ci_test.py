@@ -534,7 +534,10 @@ class IncrementalVerification(unittest.TestCase):
         affected = ["test/unit/dependency_boundaries.cpp", "test/unit/dynamic_wavelet_matrix.cpp", "test/unit/standalone.cpp", "test/unit/wavelet_matrix.cpp", "test/unit/wavelet_matrix_opt.cpp", "test/unit/wavelet_matrix_sum_bound.cpp"]
         self.assertTrue(set(affected).isdisjoint(unchanged["unit"]))
         self.assertEqual(plan["unit"], sorted(set(unchanged["unit"]) | set(affected)))
-        self.assertEqual(plan["verification"], unchanged["verification"])
+        affected = [path.relative_to(ROOT).as_posix() for path in (ROOT / "test").glob("*.test.cpp")
+                    if '#include "../data_structure/wavelet_matrix.hpp"' in path.read_text()]
+        self.assertTrue(set(affected).isdisjoint(unchanged["verification"]))
+        self.assertEqual(plan["verification"], sorted(set(unchanged["verification"]) | set(affected)))
 
     def test_repository_mint_dependencies(self):
         previous = build_plan(ROOT, environment="test")["state"]
@@ -569,7 +572,8 @@ class IncrementalVerification(unittest.TestCase):
         self.assertTrue(set(affected).isdisjoint(unchanged["unit"]))
         self.assertEqual(plan["unit"], sorted(set(unchanged["unit"]) | set(affected)))
         self.assertEqual(plan["sanitize"], plan["unit"])
-        affected = ["test/dynamic_wavelet_matrix_kth.test.cpp"]
+        affected = [path.relative_to(ROOT).as_posix() for path in (ROOT / "test").glob("*.test.cpp")
+                    if '#include "../data_structure/dynamic_wavelet_matrix.hpp"' in path.read_text()]
         self.assertTrue(set(affected).isdisjoint(unchanged["verification"]))
         self.assertEqual(plan["verification"], sorted(set(unchanged["verification"]) | set(affected)))
 
