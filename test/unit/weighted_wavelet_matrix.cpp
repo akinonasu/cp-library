@@ -226,5 +226,28 @@ int main() {
 	check_count_width<std::int16_t>();
 	check_count_width<std::int32_t>();
 	check_count_width<std::int64_t>();
+	{
+		using Sum = __int128_t;
+		const auto limit = std::numeric_limits<std::int64_t>::max();
+		std::vector<int> values{0, 1, 3, 9};
+		std::vector<std::int64_t> weights{2, limit - 4, 1, 1};
+		for (int direction = 0; direction < 2; ++direction) {
+			WeightedWaveletMatrix<int, std::int64_t, Sum> tree(values, weights);
+			require(tree.count(0, 4) == limit);
+			require(tree.kth_smallest(0, 4, limit - 3) == 1);
+			require(tree.kth_smallest(0, 4, limit - 2) == 3);
+			require(tree.kth_smallest(0, 4, limit - 1) == 9);
+			require(tree.kth_largest(0, 4, limit - 1) == 0);
+			require(tree.sum_smallest(0, 4, limit - 1) == Sum(limit) - 1);
+			require(tree.sum_largest(0, 4, 2) == 12);
+			require(tree.sum_largest(0, 4, limit - 1) == Sum(limit) + 8);
+			require(tree.min_count_smallest(0, 4, 1) == 3);
+			require(tree.max_count_smallest(0, 4, Sum(limit) - 4) == limit - 2);
+			require(tree.min_count_largest(0, 4, 12) == 2);
+			require(tree.max_count_largest(0, 4, 12) == 2);
+			std::reverse(values.begin(), values.end());
+			std::reverse(weights.begin(), weights.end());
+		}
+	}
 	std::puts("Weighted Wavelet Matrix OK");
 }

@@ -88,3 +88,5 @@ int main() {
 値の代入が必要で候補を先読みできる場合は [Point Set Wavelet Matrix (クエリ先読み)](https://qandori.github.io/cp-library/data_structure/point_set_wavelet_matrix.hpp.html) を使えます。コピーと `build` による再構築も可能です。
 
 構築・空間は $$O(n\log\sigma)$$、更新・値域を指定するクエリ・順位と和の探索は $$O(\log n\log\sigma)$$ です。`count(l,r)`・`range_sum(l,r)` は $$O(\log n)$$、サイズと要素・重みの取得は $$O(1)$$ です。要素自身が持つ文字列などの格納領域は別途必要です。
+
+値の配列 `a` が昇順または降順なら、空間は $$O(n)$$、重みの更新と各問い合わせは $$O(\log n)$$ です。`T` が64 bit以下の整数型なら構築も $$O(n)$$、それ以外は $$O(n\log\sigma)$$ です。サイズと要素・重みの取得は引き続き $$O(1)$$ です。

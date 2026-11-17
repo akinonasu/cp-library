@@ -57,6 +57,20 @@ class FenwickSum {
 		return result;
 	}
 	T prod(int l, int r) const { return prod_as<T>(l, r); }
+	int lower_bound(T target) const
+		requires requires(const T &a, const T &b) { bool(a < b); bool(a <= b); }
+	{
+		if (target <= T{}) return 0;
+		unsigned p = 0;
+		for (unsigned step = std::bit_floor(unsigned(data.size())); step; step >>= 1) {
+			unsigned next = p + step;
+			if (next <= data.size() && data[next - 1] < target) {
+				target -= data[next - 1];
+				p = next;
+			}
+		}
+		return int(p);
+	}
 };
 
 #endif
