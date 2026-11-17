@@ -117,10 +117,16 @@ def check(root):
             prefix = '' if profile == 'full' else LIGHTWEIGHT
             front, _ = split_page((destination / prefix / page).read_bytes())
             categories = front['data']['libraryCategories']
+            names = [category['name'] for category in categories]
+            assert len(names) == len(set(names)), page + ': duplicate category'
+            assert names == [name for name in config['library_categories'] if name in names], page + ': category order differs'
             for category in categories:
+                assert category['pages'], page + ': empty category'
                 for item in category['pages']:
                     source = full_pages[item['path']]
                     assert category['name'] == source.get('library_category', str(Path(item['path']).parent))
+                    assert type(item['libraryAdvanced']) is bool
+                    assert item['libraryAdvanced'] == source.get('library_advanced', False), item['path'] + ': advanced flag differs'
             structures.append([(category['name'], [item['path'] for item in category['pages']]) for category in categories])
             entries = [item for category in categories for item in category['pages']]
             assert {item['path'] for item in entries} == expected, page + ': catalog mismatch'
@@ -132,6 +138,20 @@ def check(root):
                 assert item['pagePath'] == (manifest['catalog'][name]['lightweightPage'] if profile == LIGHTWEIGHT and usable else name + '.html')
                 assert (destination / (item['pagePath'].removesuffix('.html') + '.md')).is_file(), name + ': missing link'
                 assert item['title'] == page_titles[item['pagePath']], name + ': catalog title differs from page'
+            displayed = []
+            for category in categories:
+                for item in category['pages']:
+                    auxiliary = category['name'].split('/')[0] == 'components' and item['path'] not in config.get('main_libraries', [])
+                    if front.get('advanced'):
+                        visible = item['libraryAdvanced']
+                    elif front.get('components'):
+                        visible = auxiliary
+                    else:
+                        visible = not auxiliary
+                    if visible:
+                        displayed.append(item)
+            assert front['data']['profileLibraryCount'] == len(displayed), page + ': visible library count differs'
+            assert front['data']['profileAvailableCount'] == sum(item['profileAvailable'] for item in displayed), page + ': visible available count differs'
         assert structures[0] == structures[1], page + ': profile structures differ'
     print(f'Checked {len(headers)} headers, {len(expected)} identical catalog positions, {len(eligible)} lightweight implementations and {len(different)} separate implementation pairs')
 

@@ -5,7 +5,8 @@ redirect_from:
 - /data_structure/priority_queue/partially_retroactive_priority_queue.hpp.html
 - /data_structure/advanced/partially_retroactive_priority_queue.hpp.html
 - /lightweight/data_structure/advanced/partially_retroactive_priority_queue.hpp.html
-library_category: data_structure/advanced
+library_category: data_structure
+library_advanced: true
 ---
 
 ```cpp

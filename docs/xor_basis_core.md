@@ -1,7 +1,7 @@
 ---
 title: XOR 基底の内部演算
 documentation_of: //components/xor_basis_core.hpp
-library_category: components/data_structure
+library_category: components/math
 ---
 
 `math/xor_basis.hpp` が使う固定サイズの内部表現です。通常は公開側の [XorBasis](xor_basis.md) を使います。

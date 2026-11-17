@@ -11,7 +11,10 @@
 - ヘッダーにコメント行を追加せず、既存のタブによる整形を維持する。template.hpp や利用者のマクロに依存させない。
 - 再利用できる内部部品は components/ に分離する。
 - 公開ヘッダーは math/・graph/・data_structure/ などの大分類の直下に置き、サブフォルダを増やさない。サイトの細分類は docs/ の library_category で指定する。
-- ライブラリの追加・変更時は、配置フォルダに依存せず、利用者が主な機能から探すカテゴリを再検討する。全ての説明に library_category を明示し、通常版・軽量版・README の分類を一致させる。過去版を保持して分岐することが主機能の公開ライブラリは、木・文字列のフォルダにあっても data_structure/persistent に置く。永続部品を内部で使うだけの場合は主な用途で分類する。補助部品と既存の応用ライブラリ区分を保ち、python .verify-helper/library_categories.py と python .verify-helper/check_profiles.py で分類の欠落・一覧の不一致を確認する。
+- ライブラリの追加・変更時は、公開 API の主用途と利用者が探す場所からカテゴリを判断する。名前・配置フォルダ・内部の実装手法・永続性だけで決めない。全ての説明に library_category を明示し、通常版・軽量版・README の分類を一致させる。過去版の選択・分岐を主目的とする永続データ構造は data_structure/persistent、Data Dependent Tree は永続性を持っていても文字列編集・LCP・辞書順比較の用途で string、永続 Link Cut Tree は data_structure/persistent とする。補助部品は公開入口と混同せず、部品の役割で components 以下に分類する。
+- 公開ヘッダーの persistent_ という接頭辞は、過去版の選択・分岐を主目的とするデータ構造に限って使う。内部に永続部品を使うことや、編集前の文字列も保持できることだけを理由に付けない。
+- 応用ライブラリの区分は用途のカテゴリから分離し、library_advanced: true で指定する。data_structure/advanced を用途カテゴリに使わない。既存の応用指定を保ち、README では用途カテゴリの行に「（応用）」を付ける。カテゴリの表示順は .verify-helper/docs/_config.yml の library_categories に揃える。
+- 分類変更時は実装と公開 API を読み、通常版・軽量版・補助部品・応用の一覧を生成して確認する。全ヘッダーの掲載、主用途、重複、応用指定を見直し、python .verify-helper/library_categories.py と python .verify-helper/check_profiles.py で欠落・不一致を検証する。検査に通ることだけで主用途の判断を済ませない。
 - 配置は操作対象と用途で決める。木専用の分解・経路処理・木 DP は tree/、一般のグラフの処理は graph/、集合・区間の更新や問い合わせは data_structure/、列全体の解析・変換は sequence/ に置く。文字列・幾何・数値計算に特有のものはそれぞれの分類を優先する。応用ライブラリの区分はフォルダ配置と独立して維持し、移動を理由に区分を変更しない。
 - README は一覧にとどめ、最小限の使い方と末尾の計算量は docs/ に置く。test/ には正しさの検証に必要なものだけを置く。単体テストは test/unit/、ジャッジ用テストは test/*.test.cpp、共通の型や正解実装は test/fixtures/ にまとめる。
 - 公開 API の説明には、引数の順序と既定値、返り値の型、添字・区間・順位の範囲、空入力・重複・不在時の扱い、型と演算の前提を明記する。実装変更の経緯ではなく、現在の使い方を説明する。

@@ -1,7 +1,8 @@
 ---
 title: Static Top Tree
 documentation_of: //tree/static_top_tree.hpp
-library_category: data_structure/advanced
+library_category: tree/query
+library_advanced: true
 redirect_from:
 - /graph/static_top_tree.hpp.html
 - /data_structure/advanced/static_top_tree.hpp.html

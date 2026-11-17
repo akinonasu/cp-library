@@ -5,7 +5,8 @@ redirect_from:
 - /data_structure/segment_tree/kinetic_tournament.hpp.html
 - /data_structure/advanced/kinetic_tournament.hpp.html
 - /lightweight/data_structure/advanced/kinetic_tournament.hpp.html
-library_category: data_structure/advanced
+library_category: data_structure/segment_tree
+library_advanced: true
 ---
 
 固定した昇順の係数列 $$V$$ と値の列 $$W$$ を管理します。区間内で $$W_i\gets W_i+aV_i+b$$ とする更新と、区間の最大値・その添字を求めます。$$a\geq0$$ が必要です。$$b$$ は負でも構いません。

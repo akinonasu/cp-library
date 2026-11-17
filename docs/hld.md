@@ -1,7 +1,8 @@
 ---
 title: HLD (Heavy-Light Decomposition)
 documentation_of: //tree/hld.hpp
-library_category: data_structure/advanced
+library_category: tree
+library_advanced: true
 redirect_from:
 - /graph/hld.hpp.html
 - /data_structure/advanced/hld.hpp.html

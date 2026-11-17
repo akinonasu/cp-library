@@ -56,18 +56,8 @@ exclude:
 
 library_categories:
   - components
-  - components/convolution
-  - components/data_structure
-  - components/fps
-  - components/geometry
-  - components/graph
-  - components/math
-  - components/string
-  - components/tree
-  - components/util
   - convolution
   - data_structure
-  - data_structure/advanced
   - data_structure/associative
   - data_structure/li_chao_tree
   - data_structure/persistent
@@ -102,3 +92,12 @@ library_categories:
   - tree
   - tree/dynamic
   - tree/query
+  - components/convolution
+  - components/data_structure
+  - components/fps
+  - components/geometry
+  - components/graph
+  - components/math
+  - components/string
+  - components/tree
+  - components/util

@@ -1,7 +1,7 @@
 ---
 title: Data Dependent Tree
 documentation_of: //string/data_dependent_tree.hpp
-library_category: data_structure/persistent
+library_category: string
 ---
 
 連結・分割・編集できる文字列・整数列を管理し、LCP と辞書順比較を求めます。同じ管理オブジェクト内では、内容が同じ列は構築・編集の履歴によらず同じ木になります。一致判定に誤判定はありません。

@@ -1,7 +1,8 @@
 ---
 title: 重心分解
 documentation_of: //tree/centroid_decomposition.hpp
-library_category: data_structure/advanced
+library_category: tree
+library_advanced: true
 redirect_from:
 - /graph/centroid_decomposition.hpp.html
 - /data_structure/advanced/centroid_decomposition.hpp.html

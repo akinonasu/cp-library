@@ -45,6 +45,10 @@ class SizeProfiles(unittest.TestCase):
             pages[destination / (name + '.md')] = render_page(front, b'[a](https://qandori.github.io/cp-library/tree/a.hpp.html)\n')
         for page in ['index.md', 'components/index.md', 'data_structure/advanced/index.md']:
             front = {'layout': 'toppage', 'data': {'libraryCategories': copy.deepcopy(categories)}}
+            if page == 'components/index.md':
+                front['components'] = True
+            elif page == 'data_structure/advanced/index.md':
+                front['advanced'] = True
             pages[destination / page] = render_page(front, b'catalog\n')
         pages[destination / 'test/a.test.cpp.md'] = render_page({'data': {'path': 'test/a.test.cpp'}}, b'test')
         return destination, pages
@@ -145,6 +149,88 @@ class SizeProfiles(unittest.TestCase):
             self.assertEqual([(category['name'], [item['path'] for item in category['pages']])
                               for category in front['data']['libraryCategories'] if category['pages']], expected)
 
+    def test_categories_follow_configured_order_and_omit_empty_groups(self):
+        destination, pages = self.fixture()
+        config = dict(CONFIG, library_categories=['fps', 'tree', 'string'])
+        result = prepare_pages(pages, destination, config)
+        for page in ['index.md', 'components/index.md', 'data_structure/advanced/index.md']:
+            for prefix in ['', LIGHTWEIGHT]:
+                front, _ = split_page(result[destination / prefix / page])
+                categories = front['data']['libraryCategories']
+                self.assertEqual([category['name'] for category in categories], ['fps', 'tree'])
+                self.assertTrue(all(category['pages'] for category in categories))
+
+    def test_configured_categories_reject_unknown_groups(self):
+        destination, pages = self.fixture()
+        with self.assertRaisesRegex(ValueError, 'Unknown library category: fps'):
+            prepare_pages(pages, destination, dict(CONFIG, library_categories=['tree']))
+
+    def test_advanced_libraries_share_their_purpose_category(self):
+        destination, pages = self.fixture()
+        for name in ['tree/a.hpp', 'fps/large.hpp']:
+            path = destination / (name + '.md')
+            front, body = split_page(pages[path])
+            front['library_category'] = 'tree/query'
+            if name == 'tree/a.hpp':
+                front['library_advanced'] = True
+            pages[path] = render_page(front, body)
+        result = prepare_pages(pages, destination, dict(CONFIG, library_categories=['tree/query']))
+        for page in ['index.md', 'components/index.md', 'data_structure/advanced/index.md']:
+            for prefix in ['', LIGHTWEIGHT]:
+                front, _ = split_page(result[destination / prefix / page])
+                categories = front['data']['libraryCategories']
+                self.assertEqual([category['name'] for category in categories], ['tree/query'])
+                self.assertEqual([(item['path'], item['libraryAdvanced']) for item in categories[0]['pages']],
+                                 [('tree/a.hpp', True), ('fps/large.hpp', False)])
+
+    def test_light_catalog_uses_the_logical_library_advanced_flag(self):
+        destination, pages = self.fixture()
+        path = destination / 'fps/large.hpp.md'
+        front, body = split_page(pages[path])
+        front['library_advanced'] = True
+        pages[path] = render_page(front, body)
+        config = dict(CONFIG, implementation_variants={'fps/large.hpp': 'tree/a.hpp'})
+        result = prepare_pages(pages, destination, config)
+        for prefix in ['', LIGHTWEIGHT]:
+            front, _ = split_page(result[destination / prefix / 'index.md'])
+            categories = front['data']['libraryCategories']
+            self.assertEqual(len(categories), 1)
+            self.assertTrue(categories[0]['pages'][0]['libraryAdvanced'])
+            self.assertEqual(categories[0]['pages'][0]['path'], 'fps/large.hpp')
+
+    def test_catalog_counts_only_libraries_visible_on_each_page(self):
+        destination, pages = self.fixture()
+        advanced = ['tree/hld.hpp', 'tree/centroid_decomposition.hpp', 'tree/static_top_tree.hpp',
+                    'data_structure/kinetic_tournament.hpp', 'data_structure/partially_retroactive_priority_queue.hpp',
+                    'data_structure/retroactive_priority_queue.hpp']
+        additional = ['components/helper.hpp', 'components/ntt.hpp', *advanced]
+        for name in additional:
+            code = 'x' * 65536 if name == 'data_structure/kinetic_tournament.hpp' else 'int value;\n'
+            front = {'layout': 'document', 'title': name, 'documentation_of': name,
+                     'data': {'path': name, 'bundledCode': code, 'isVerificationFile': False}}
+            if name in advanced:
+                front['library_advanced'] = True
+            pages[destination / (name + '.md')] = render_page(front, b'library\n')
+        names = ['tree/a.hpp', 'fps/large.hpp', *additional]
+        categories = []
+        for folder in ['tree', 'fps', 'components', 'data_structure']:
+            categories.append({'name': folder, 'pages': [
+                {'path': name, 'title': name, 'icon': 'OK'} for name in names if name.startswith(folder + '/')]})
+        for page in ['index.md', 'components/index.md', 'data_structure/advanced/index.md']:
+            path = destination / page
+            front, body = split_page(pages[path])
+            front['data']['libraryCategories'] = copy.deepcopy(categories)
+            pages[path] = render_page(front, body)
+        config = dict(CONFIG, main_libraries=['components/ntt.hpp'])
+        result = prepare_pages(pages, destination, config)
+        expected = {'index.md': (9, 7), 'components/index.md': (1, 1), 'data_structure/advanced/index.md': (6, 5)}
+        for page, (visible, available) in expected.items():
+            for prefix in ['', LIGHTWEIGHT]:
+                front, _ = split_page(result[destination / prefix / page])
+                self.assertEqual(front['data']['profileLibraryCount'], visible)
+                self.assertEqual(front['data']['profileAvailableCount'], visible if not prefix else available)
+                self.assertEqual(sum(len(category['pages']) for category in front['data']['libraryCategories']), 10)
+
     def test_legacy_urls_keep_their_implementation_profile(self):
         destination, pages = self.fixture()
         path = destination / 'fps/large.hpp.md'
@@ -215,7 +301,7 @@ class SizeProfiles(unittest.TestCase):
             verification, _ = split_page(result[judge])
             self.assertEqual(verification['data']['_extendedDependsOn'][0]['title'], full['title'])
             index, _ = split_page(result[destination / LIGHTWEIGHT / 'index.md'])
-            entry = index['data']['libraryCategories'][1]['pages'][0]
+            entry = index['data']['libraryCategories'][0]['pages'][0]
             linked, _ = split_page(result[destination / (entry['pagePath'].removesuffix('.html') + '.md')])
             self.assertEqual(entry['title'], linked['title'])
             if available:
@@ -255,7 +341,7 @@ class SizeProfiles(unittest.TestCase):
         self.assertIn('/lightweight/fps/large.hpp.html', front['redirect_from'])
         for prefix in ['', LIGHTWEIGHT]:
             front, _ = split_page(result[destination / prefix / 'index.md'])
-            entry = front['data']['libraryCategories'][1]['pages'][0]
+            entry = front['data']['libraryCategories'][0]['pages'][0]
             self.assertEqual(entry['pagePath'], 'fps/large.hpp.html')
             self.assertEqual(entry['title'], 'fps/large.hpp')
 
