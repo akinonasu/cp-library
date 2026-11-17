@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cassert>
 #include <limits>
+#include <span>
 #include <string_view>
 #include <vector>
 
@@ -31,7 +32,9 @@ std::vector<int> build(const Sequence &s, const std::vector<int> &sa) {
 }
 
 inline std::vector<int> lcp_array(std::string_view s, const std::vector<int> &sa) { return lcp_array_detail::build(s, sa); }
-template <class T>
-std::vector<int> lcp_array(const std::vector<T> &s, const std::vector<int> &sa) { return lcp_array_detail::build(s, sa); }
+template <class T, class Allocator>
+std::vector<int> lcp_array(const std::vector<T, Allocator> &s, const std::vector<int> &sa) { return lcp_array_detail::build(s, sa); }
+template <class T, std::size_t Extent>
+std::vector<int> lcp_array(std::span<T, Extent> s, const std::vector<int> &sa) { return lcp_array_detail::build(s, sa); }
 
 #endif

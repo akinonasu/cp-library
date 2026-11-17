@@ -5,7 +5,8 @@ redirect_from:
 - /data_structure/priority_queue/retroactive_priority_queue.hpp.html
 - /data_structure/advanced/retroactive_priority_queue.hpp.html
 - /lightweight/data_structure/advanced/retroactive_priority_queue.hpp.html
-library_category: data_structure/advanced
+library_category: data_structure
+library_advanced: true
 ---
 
 ```cpp
@@ -49,4 +50,4 @@ queue.erase(30);
 
 現在の操作数を $$m$$、過去の最大操作数を $$M$$、ブロック幅を $$B$$ とします。構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、履歴変更は償却期待 $$O(B\log B+m/B+\log m)$$、`top` は期待 $$O(B\log B+(m/B)\log B\log m)$$ です。`size(t)`・`empty(t)`・`contains_time` は $$O(\log m)$$、現在の `size`・`empty`・`operation_count` は $$O(1)$$、`reserve`・`clear` は $$O(M)$$、`memory_usage` は $$O(m/B)$$ です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。$$\displaystyle B\approx\sqrt m$$ とすると更新は償却期待 $$\displaystyle O(\sqrt m\log m)$$、`top` は期待 $$\displaystyle O(\sqrt m\log^2m)$$ です。比較・値のコピーを $$O(1)$$ とします。
 
-「期待」は内部で使う乱数について平均した時間を、「償却」は一連の操作の合計時間から求めた 1 回あたりの計算量を表します。
+期待計算量は内部乱数に関する評価です。

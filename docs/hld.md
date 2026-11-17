@@ -1,7 +1,8 @@
 ---
 title: HLD (Heavy-Light Decomposition)
 documentation_of: //tree/hld.hpp
-library_category: data_structure/advanced
+library_category: tree
+library_advanced: true
 redirect_from:
 - /graph/hld.hpp.html
 - /data_structure/advanced/hld.hpp.html
@@ -10,7 +11,7 @@ redirect_from:
 - /lightweight/data_structure/hld.hpp.html
 ---
 
-木の経路を少数の連続区間へ分け、セグメント木などの配列用データ構造で扱えるようにします。子がある頂点では、部分木の頂点数が最大の子を 1 つ選んで「重い子」と呼び、その子をたどってできる経路を「連鎖」と呼びます。
+木の経路を少数の連続区間へ分け、セグメント木などの配列用データ構造で扱えるようにします。部分木サイズが最大の子を heavy child とし、heavy child をたどる heavy path に分解します。
 
 ```cpp
 #include "lib/tree/hld.hpp"
@@ -46,7 +47,7 @@ int main() {
 | `path(u,v,edge = false)` | 経路順の `Segment{l,r,reversed}` の列 | $$O(\log n)$$ |
 | `for_each_path(u,v,f,edge = false)` | 経路順に `f(l,r,reversed)` を呼ぶ | $$O(\log n)$$ |
 | `parent[v]` / `depth[v]` / `size[v]` | 親／深さ／部分木の頂点数 | $$O(1)$$ |
-| `heavy[v]` / `head[v]` | 重い子／連鎖の先頭 | $$O(1)$$ |
+| `heavy[v]` / `head[v]` | heavy child／heavy path の先頭 | $$O(1)$$ |
 | `in[v]` / `out[v]` / `order[i]` | 部分木の左端／右端／添字に対応する頂点 | $$O(1)$$ |
 | `n` / `edges[id]` | 全頂点数／辺の両端 | $$O(1)$$ |
 
@@ -80,6 +81,6 @@ tree.for_each_path(u, v, [&](int l, int r, bool) { answer += seg.prod(l, r); });
 
 `lca(u,v)`・`dist(u,v)`・`distance(u,v)`・`is_ancestor(u,v)`、`ancestor(v,k)`（`k` 個上の祖先）・`jump(u,v,k)`（経路の 0 始まり `k` 番目の頂点）が使えます。`ancestor`・`jump` は範囲外なら `-1` です。
 
-構築後の各配列は参照用です。`parent[v]` は親（根は `-1`）、`depth[v]` は深さ、`size[v]` は部分木サイズ、`heavy[v]` は重い子（なければ `-1`）、`head[v]` は連鎖の先頭です。`in[v]`・`out[v]` は部分木の区間、`order[i]` は添字 `i` の頂点です。
+構築後の各配列は参照用です。`parent[v]` は親（根は `-1`）、`depth[v]` は深さ、`size[v]` は部分木サイズ、`heavy[v]` は heavy child（なければ `-1`）、`head[v]` は heavy path の先頭です。`in[v]`・`out[v]` は部分木の区間、`order[i]` は添字 `i` の頂点です。
 
 頂点数を $$n$$ として、構築・空間は $$O(n)$$、`lca`・`dist`・`distance`・`ancestor`・`jump`・パス分解は $$O(\log n)$$、それ以外のクエリは $$O(1)$$ です。`for_each_path` は $$O(\log n)$$ 回 `f` を呼び、その処理時間を別に加えます。表では `f` の 1 回の実行を $$O(1)$$ とします。分解される区間数は $$O(\log n)$$、Segtree と組み合わせたパスクエリは $$O(\log^2 n)$$ です。

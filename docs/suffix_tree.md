@@ -4,7 +4,7 @@ documentation_of: //string/suffix_tree.hpp
 library_category: string/substring
 ---
 
-文字列の全接尾辞（各位置から末尾までの部分文字列）を、共通する先頭部分でまとめた木です。分岐しない経路を1本の辺にまとめるため、1辺が複数の文字を表すことがあります。部分文字列の検索・出現回数・出現位置、接尾辞同士の LCP（先頭から一致する最長の長さ）、木の頂点間の LCA（共通する祖先のうち最も深い頂点）、suffix link を扱います。文字列全体から一括構築する静的版で、末尾追加や文字の変更には再構築が必要です。
+文字列の全接尾辞を、共通する先頭部分でまとめた木です。分岐しない経路を1本の辺にまとめるため、1辺が複数の文字を表すことがあります。部分文字列の検索・出現回数・出現位置、接尾辞同士の LCP、木の頂点間の LCA、suffix link を扱います。文字列全体から一括構築する静的版で、末尾追加や文字の変更には再構築が必要です。
 
 ```cpp
 #include "lib/string/suffix_tree.hpp"
@@ -28,7 +28,24 @@ int main() {
 }
 ```
 
-文字列・検索語は `std::string_view` で渡します。バイト単位で扱い、NUL と 128 以上の値も含めた全 256 種類に対応します。辞書順は符号なしバイトの順序です。入力文字列は内部にコピーするため、構築後に元の文字列を変更・破棄できます。長さは `INT_MAX/2` 未満にしてください。
+文字列・検索語は `std::string_view` で渡します。`vector<char>`・`array<char,N>`・`span<char>`・`span<const char>` も同じバイト列として渡せます。バイト単位で扱い、NUL と 128 以上の値も含めた全 256 種類に対応します。辞書順は符号なしバイトの順序です。入力文字列は内部にコピーするため、構築後に元の文字列を変更・破棄できます。長さは `INT_MAX/2` 未満にしてください。
+
+整数列には、`char` 以外の整数型 `T` を指定した `BasicSuffixTree<T>` を使います。`T` は `bool` を除く 64 bit 以下の整数型で、本文・検索語を同じ型の `std::span<const T>` で渡します。`std::vector<T>`・`std::array<T,N>`・変更可能な `span` も渡せます。負数や `uint64_t` の最大値もそのまま使え、辞書順は整数の大小順です。本文は内部へコピーされ、`text()` は保存した列の `std::span<const T>` を返します。位置・長さ・削除はバイトではなく要素単位です。他の操作名・引数順・空列の扱いは文字列版と同じです。`SuffixTree` は `BasicSuffixTree<char>` と同じ型で、従来通り文字列を扱います。
+
+```cpp
+#include "lib/string/suffix_tree.hpp"
+#include <cstdint>
+#include <vector>
+
+int main() {
+	std::vector<std::int64_t> values{-10000000000LL, 7, -10000000000LL, 7};
+	std::vector<std::int64_t> pattern{-10000000000LL, 7};
+	BasicSuffixTree<std::int64_t> tree(values);
+	assert(tree.count(pattern) == 2);
+	assert(tree.lcp(0, 2) == 2);
+}
+```
+
 
 根は頂点 `0` で、空文字列を表します。根から頂点までの辺の文字列を連結したものが、その頂点の文字列です。`depth(v)` はその長さ、`edge_range(v)` は親からの辺、`label_range(v)` は頂点の文字列全体を取り出せる区間です。どちらも元の文字列上の半開区間で、特別な終端文字は含みません。
 
@@ -44,26 +61,27 @@ int main() {
 
 頂点番号には、親が子より小さいなどの順序を仮定できません。走査には例のように `children` を使います。子は辺の先頭バイトの昇順です。`build`・`clear`・代入の後は、それ以前の頂点番号・`Locus`・参照を使わないでください。コピーとムーブに対応し、ムーブ元は空の木になります。
 
-構築時に接尾辞配列・LCP・異なる部分文字列数と木の情報を作ります。LCP・LCA・suffix link 用の、区間の最小値を調べる索引（RMQ 索引）は、必要になった最初のクエリで作成します。終点の対応だけで suffix link を求められる場合や、祖先関係だけで LCA を求められる場合は作りません。通常の部分文字列検索には索引は不要です。
+構築時に接尾辞配列・LCP・異なる部分文字列数と木の情報を作ります。LCP・LCA・suffix link 用の RMQ は、必要になった最初のクエリで作成します。終点の対応だけで suffix link を求められる場合や、祖先関係だけで LCA を求められる場合は作りません。通常の部分文字列検索には RMQ は不要です。
 
-文字数を $$n$$、検索語の長さを $$m$$、出現回数を $$k$$、子の数を $$d$$、RMQ のブロック数を $$b=\lceil n/32\rceil$$ とします。† は索引を初めて必要とする際に追加で $$O(n+b\log b)$$ 時間・空間を使います。
+本文長を $$n$$、検索語の長さを $$m$$、出現回数を $$k$$、子の数を $$d$$、本文に現れる値の種類数を $$\sigma$$、RMQ のブロック数を $$b=\lceil n/32\rceil$$ とします。文字列では $$\sigma\leq256$$ です。† は索引を初めて必要とする際に追加で $$O(n+b\log b)$$ 時間・空間を使います。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
-| `SuffixTree()` / `SuffixTree(s)` | 空の木 / 文字列 `s` から構築 | 空は $$O(1)$$、文字列は $$O(n)$$ |
-| `build(s)` / `clear()` | 再構築 / 空の木に戻す | 新旧の文字数の合計に対して $$O(n)$$ |
-| `size()` / `empty()` / `text()` | 文字数 / 空判定 / 保存した文字列への `string_view` | $$O(1)$$ |
+| `SuffixTree()` / `SuffixTree(s)`、`BasicSuffixTree<T>()` / `BasicSuffixTree<T>(s)` | 空の木 / 本文 `s` から構築 | 空は $$O(1)$$、文字列は $$O(n)$$、整数列は $$O(n\log n)$$ |
+| `build(s)` | 本文をコピーして再構築 | 文字列は $$O(n)$$、整数列は $$O(n\log n)$$。旧領域の解放も加わる |
+| `clear()` | 空の木に戻す | 旧本文長に対して $$O(n)$$ |
+| `size()` / `empty()` / `text()` | 本文長 / 空判定 / 保存した本文への `string_view` または `span<const T>` | $$O(1)$$ |
 | `node_count()` / `root` | 頂点数 / 根の番号 `0` | $$O(1)$$ |
 | `parent(v)` / `depth(v)` | 親の番号（根は `-1`）/ 根からの文字数 | $$O(1)$$ |
 | `children(v)` | 子の番号の `span<const int>` | 取得 $$O(1)$$、走査 $$O(d)$$ |
 | `edge_range(v)` / `label_range(v)` | 辺 / 頂点全体を表す元の文字列上の区間 | $$O(1)$$ |
-| `transition(v,c)` | 先頭が `c` の辺の行き先。なければ `-1` | $$O(\log\sigma)$$、根は $$O(1)$$ |
-| `find(pattern)` / `contains(pattern)` / `count(pattern)` | 検索位置 / 存在判定 / 出現回数 | $$O(m)$$（バイト種類数は固定） |
+| `transition(v,c)` | 先頭が `c` の辺の行き先。なければ `-1` | $$O(\log\sigma)$$。文字列の根は $$O(1)$$ |
+| `find(pattern)` / `contains(pattern)` / `count(pattern)` | 検索位置 / 存在判定 / 出現回数 | 文字列は $$O(m)$$、整数列は $$O(m\log\sigma)$$ |
 | `advance(locus,c)` | 検索位置を 1 バイト進める。進めなければ `nullopt` | $$O(\log\sigma)$$、辺の途中は $$O(1)$$ |
-| `occurrences(pattern)` | 出現位置を接尾辞配列の順に `vector<int>` で返す | $$O(m+k)$$ |
+| `occurrences(pattern)` | 出現位置を接尾辞配列の順に `vector<int>` で返す | 文字列は $$O(m+k)$$、整数列は $$O(m\log\sigma+k)$$ |
 | `occurrence_range(v)` / `occurrence_count(v)` | 出現する接尾辞配列の区間 / 出現回数 | $$O(1)$$ |
 | `suffix_start(v)` | 頂点で終わる接尾辞の開始位置。なければ `-1`。根は `n` | $$O(1)$$ |
-| `suffix_node(p)` | `text().substr(p)` の終点。`0 <= p <= n` | $$O(1)$$ |
+| `suffix_node(p)` | 位置 `p` から始まる接尾辞の終点。`0 <= p <= n` | $$O(1)$$ |
 | `suffix_array()` / `lcp_array()` | 接尾辞配列 / 隣接する接尾辞の LCP 配列への const 参照 | $$O(1)$$ |
 | `lcp(p,q)` | 位置 `p`・`q` から始まる接尾辞の LCP 長。両方とも `n` 以下 | † $$O(1)$$ |
 | `lca(u,v)` | 木の頂点の最小共通祖先 | † $$O(1)$$ |
@@ -72,4 +90,4 @@ int main() {
 | `swap(other)` | 内容と索引を交換 | $$O(1)$$ |
 | コピー / ムーブ | 独立した複製 / 内容を移動し、移動元を空の木に戻す | コピーは索引を含む保持量に比例、ムーブ構築は $$O(1)$$ |
 
-$$\sigma\leq256$$ はバイトの種類数です。基本の構築時間・空間は $$O(n)$$、遅延索引を含む全構築時間・空間は $$O(n+b\log b)$$ です。
+文字列の基本構築は $$O(n)$$ 時間、整数列は $$O(n\log n)$$ 時間で、どちらも保持空間・構築時の追加空間は $$O(n)$$ です。遅延索引の時間・空間は上記の通りです。`find`・`contains`・`count`・`advance` は結果のための追加空間が $$O(1)$$、`occurrences` は返す配列に $$O(k)$$、他の取得操作は $$O(1)$$ です。種類数や本文長が 0・1 の場合は、対数を含む時間を定数として扱います。

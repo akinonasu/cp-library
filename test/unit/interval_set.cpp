@@ -14,7 +14,14 @@ void boundaries() {
 	using Size = typename Set::size_type;
 	const Size length = static_cast<Size>(hi) - static_cast<Size>(lo);
 	Set s;
+	static_assert(std::is_same_v<decltype(s.cbegin()), typename Set::const_iterator>);
+	static_assert(std::is_same_v<decltype(s.cend()), typename Set::const_iterator>);
+	static_assert(std::is_same_v<decltype(s.crbegin()), typename Set::const_reverse_iterator>);
+	static_assert(std::is_same_v<decltype(s.crend()), typename Set::const_reverse_iterator>);
+	assert(s.cbegin() == s.cend() && s.crbegin() == s.crend());
 	assert(s.insert(lo, hi) == length);
+	const auto &view = s;
+	assert(view.cbegin()->first == lo && view.crbegin()->second == hi);
 	assert(s.size() == length && s.interval_count() == 1);
 	assert(s.contains(lo, hi) && !s.contains(hi));
 	assert(s.mex(lo) == hi && s.mex(hi) == hi);
@@ -59,6 +66,10 @@ void randomized() {
 			expected.emplace_back(first, x);
 		}
 		assert((std::vector<std::pair<int, int>>(s.begin(), s.end()) == expected));
+		const auto &view = s;
+		assert((std::vector<std::pair<int, int>>(view.cbegin(), view.cend()) == expected));
+		assert((std::vector<std::pair<int, int>>(view.crbegin(), view.crend()) ==
+			std::vector<std::pair<int, int>>(expected.rbegin(), expected.rend())));
 		assert((std::vector<std::pair<int, int>>(s.rbegin(), s.rend()) ==
 			std::vector<std::pair<int, int>>(expected.rbegin(), expected.rend())));
 		assert(s.size() == size && s.interval_count() == expected.size() && s.empty() == !size);

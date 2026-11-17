@@ -6,7 +6,7 @@ library_category: components/fps
 
 法 998244353 の共有 `mint` の係数列をまとめて読み書きする部品です。出力には [FPS の一括出力](fps_write.md) を読み込みます。出力だけが必要なら `components/fps_write.hpp` を直接 include すると、入力処理を読み込まずに使えます。
 
-`read_coefficients` は Linux x86_64 / GCC 用に定義されます。呼び出し側で AVX2（複数の整数をまとめて処理する CPU 命令）対応を確認してから使ってください。他の環境では `FastInput::read` と `mint::raw` などで係数を読みます。`write_coefficients` は Mac を含むすべての対応環境で使え、CPU の選択は自動です。
+`read_coefficients` は Linux x86_64 / GCC 用に定義されます。呼び出し側で AVX2 対応を確認してから使ってください。他の環境では `FastInput::read` と `mint::raw` などで係数を読みます。`write_coefficients` は Mac を含むすべての対応環境で使え、CPU の選択は自動です。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

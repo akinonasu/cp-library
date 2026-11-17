@@ -65,6 +65,35 @@ struct Value {
 	friend bool operator<(const Value &a, const Value &b) { return a.value < b.value; }
 };
 
+struct Payload {
+	int key, id;
+	friend bool operator<(const Payload &a, const Payload &b) { return a.key < b.key; }
+	friend bool operator==(const Payload &, const Payload &) = default;
+};
+
+template <class T>
+void check_wide_batches(const std::vector<T> &values) {
+	StaticRangeMin<T> range(values);
+	std::mt19937 rng(7162);
+	for (int count : {1, 15, 31, 32, 33, 64, 65, 257}) {
+		for (bool mixed : {false, true}) {
+			std::vector<std::pair<int, int>> queries;
+			for (int i = 0; i < count; ++i) {
+				int l = rng() % 400, r = 700 + rng() % 350;
+				if (mixed && i % 3 == 0) r = l + 1;
+				queries.emplace_back(l, r);
+			}
+			auto answers = range.prod_many(queries);
+			for (int i = 0; i < count; ++i) {
+				auto [l, r] = queries[i];
+				T expected = *std::min_element(values.begin() + l, values.begin() + r);
+				T actual = answers[i];
+				require(!(actual < expected) && !(expected < actual));
+			}
+		}
+	}
+}
+
 int main() {
 	static_assert(std::is_same_v<decltype(StaticRangeMin(std::vector<int>{})), StaticRangeMin<int>>);
 	std::mt19937 rng(37192);
@@ -83,6 +112,28 @@ int main() {
 	std::vector<Value> values;
 	for (int i = 0; i < 100; ++i) values.emplace_back(int(rng() % 7));
 	check(values);
+	for (int kind = 0; kind < 6; ++kind) {
+		std::vector<int> data(1057);
+		for (int i = 0; i < int(data.size()); ++i)
+			data[i] = kind == 0 ? i : kind == 1 ? -i : kind == 2 ? 7 : kind == 3 ? int(rng() % 5) : kind == 4 ? int(rng()) : (i % 32 == 16 ? -1000 : i);
+		check_wide_batches(data);
+		std::vector<Value> objects;
+		for (int value : data) objects.emplace_back(value);
+		check_wide_batches(objects);
+	}
+	check_wide_batches(std::vector<bool>(1057, true));
+
+	for (int kind = 0; kind < 2; ++kind) {
+		std::vector<Payload> payloads;
+		for (int i = 0; i < 1057; ++i) payloads.push_back({kind ? i % 5 : 0, i});
+		StaticRangeMin range(payloads);
+		std::vector<std::pair<int, int>> queries;
+		for (int i = 0; i < 257; ++i) queries.emplace_back(i, 700 + i);
+		auto answers = range.prod_many(queries);
+		for (int i = 0; i < int(queries.size()); ++i)
+			require(answers[i] == range.prod(queries[i].first, queries[i].second));
+	}
+
 	StaticRangeMin<int> empty;
 	require(empty.empty());
 }

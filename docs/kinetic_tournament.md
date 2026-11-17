@@ -5,7 +5,8 @@ redirect_from:
 - /data_structure/segment_tree/kinetic_tournament.hpp.html
 - /data_structure/advanced/kinetic_tournament.hpp.html
 - /lightweight/data_structure/advanced/kinetic_tournament.hpp.html
-library_category: data_structure/advanced
+library_category: data_structure/segment_tree
+library_advanced: true
 ---
 
 固定した昇順の係数列 $$V$$ と値の列 $$W$$ を管理します。区間内で $$W_i\gets W_i+aV_i+b$$ とする更新と、区間の最大値・その添字を求めます。$$a\geq0$$ が必要です。$$b$$ は負でも構いません。
@@ -70,5 +71,3 @@ int main() {
 参考：[JSC2024 決勝 D の公式解説](https://atcoder.jp/contests/jsc2024-final/editorial/10766)
 
 $$n$$ は添字数です。空間・構築は $$O(n)$$。初期構築後の $$q$$ 操作の合計は $$O(n\log n+q\log^2 n)$$ です。構築直後の状態で、更新によって最大値・最小値を与える要素が入れ替わる場合も数えるため、少数の更新だけで各更新が最悪 $$O(\log^2 n)$$ になるという保証ではありません。係数順が固定され、重み付き加算の係数が非負であることを使った計算量です。
-
-「償却」は、1 回だけ時間のかかる操作があっても、一連の操作の合計時間から 1 回あたりの計算量を評価するという意味です。

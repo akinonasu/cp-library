@@ -1,6 +1,6 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/ordered_set"
 #include "../components/fast_io_bulk.hpp"
-#include "../data_structure/top_k_sum.hpp"
+#include "../data_structure/super_multiset.hpp"
 #include <vector>
 
 int main() {
@@ -16,9 +16,9 @@ int main() {
 		if (type == 0) { if (!set.contains(x)) set.insert(x); }
 		if (type == 1) set.erase_all(x);
 		if (type == 2) out.println(set.size() < x ? -1 : set.kth(x - 1));
-		if (type == 3) out.println(set.order_of_key(x + 1));
+		if (type == 3) out.println(set.count_leq(x));
 		if (type == 4) {
-			auto k = set.order_of_key(x + 1);
+			auto k = set.count_leq(x);
 			out.println(k ? set.kth(k - 1) : -1);
 		}
 		if (type == 5) out.println(set.lower_bound(x).value_or(-1));

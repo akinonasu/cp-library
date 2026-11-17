@@ -76,7 +76,7 @@ Codeforces などの小さいソースサイズ上限向けの FPS です。法�
 
 平方根は入力を `deg` 係数で打ち切って扱い、先頭の非零係数の平方根のうち通常の整数値が小さい方を選びます。先頭の非零係数の次数が奇数、またはその係数を 2 乗で表す値が法 998244353 上に存在しなければ空配列を返します。零級数の平方根は指定長の零列です。
 
-`inv`・`log`・`exp`・`sqrt`・`pow`・`div_series` の出力長は $$2^{22}$$ 以下です。`divmod` は末尾の零を除いた被除数の係数数を $$2^{22}$$ 以下にします。変換長は最大 $$2^{23}$$ です。各操作の途中の積も含め、素数を法とした変換（NTT）に必要な長さがこの上限以内であることが必要です。法 998244353 の整数の逆元を用いるため、積分・対数・指数などの次数は法未満にします。
+`inv`・`log`・`exp`・`sqrt`・`pow`・`div_series` の出力長は $$2^{22}$$ 以下です。`divmod` は末尾の零を除いた被除数の係数数を $$2^{22}$$ 以下にします。変換長は最大 $$2^{23}$$ です。各操作の途中の積も含め、NTTに必要な長さがこの上限以内であることが必要です。法 998244353 の整数の逆元を用いるため、積分・対数・指数などの次数は法未満にします。
 
 Taylor shift・Bostan–Mori・線形漸化式・多点評価・補間は [軽量 FPS の追加演算](https://qandori.github.io/cp-library/fps/fps_light_algorithms.hpp.html) にあります。合成・合成逆元・power projection・多項式 GCD も、それぞれ `fps/compose_light.hpp`・`fps/compositional_inverse_light.hpp`・`fps/power_projection_light.hpp`・`fps/polynomial_gcd_light.hpp` にあります。いずれも通常版と同じ関数名で呼び出せます。`light_fps_algorithms` 名前空間でも利用できます。
 

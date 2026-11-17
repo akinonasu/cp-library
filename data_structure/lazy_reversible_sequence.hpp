@@ -503,6 +503,21 @@ class LazyReversibleSequence {
 		back_.clear(), back_product_ = e(), buffered_ -= n;
 	}
 	void flush() { if (buffered_) { flush_front(); flush_back(); } }
+	bool erase_buffered(int p, S &value) {
+		if (!p && !front_.empty()) {
+			value = std::move(front_.back());
+			front_.pop_back(), --buffered_, front_product_ = e();
+			for (auto it = front_.rbegin(); it != front_.rend(); ++it) front_product_ = op(std::move(front_product_), *it);
+			return true;
+		}
+		if (p + 1 == size() && !back_.empty()) {
+			value = std::move(back_.back());
+			back_.pop_back(), --buffered_, back_product_ = e();
+			for (const auto &x : back_) back_product_ = op(std::move(back_product_), x);
+			return true;
+		}
+		return false;
+	}
 	void bounds(int l, int r) const { assert(0 <= l && l <= r && r <= size()); (void)l; (void)r; }
 
 public:
@@ -587,7 +602,14 @@ public:
 			root_ = insert_node(root_, p, std::move(value));
 		}
 	}
-	S erase(int p) { bounds(p, p + 1); flush(); S value = e(); root_ = erase_node(root_, p, value); return value; }
+	S erase(int p) {
+		bounds(p, p + 1);
+		S value = e();
+		if (buffered_ && erase_buffered(p, value)) return value;
+		flush();
+		root_ = erase_node(root_, p, value);
+		return value;
+	}
 	S get(int p) const {
 		bounds(p, p + 1);
 		if (buffered_) {

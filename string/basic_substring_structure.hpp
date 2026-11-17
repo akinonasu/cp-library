@@ -9,7 +9,12 @@
 #include <utility>
 #include <vector>
 
-class BasicSubstringStructure {
+template <class Symbol>
+class SubstringStructure {
+	static_assert(std::is_integral_v<Symbol> && !std::is_same_v<Symbol, bool> && sizeof(Symbol) <= 8 && std::is_same_v<Symbol, std::remove_cv_t<Symbol>>);
+	static constexpr bool bytes = std::is_same_v<Symbol, char>;
+	using Storage = std::conditional_t<bytes, std::string, std::vector<Symbol>>;
+	using View = std::conditional_t<bytes, std::string_view, std::span<const Symbol>>;
   public:
 	struct Position {
 		int row, column;
@@ -20,25 +25,43 @@ class BasicSubstringStructure {
 	};
 
   private:
-	std::string text_;
+	Storage text_;
 	SuffixLocusIndex index_;
 	std::vector<Block> blocks_;
 	std::vector<int> row_block_, column_block_, width_, height_, right_, down_, node_column_;
 	std::uint64_t distinct_ = 0;
-	void construct(std::string_view text) {
+	void construct(View text) {
 		assert(text.size() < std::size_t(std::numeric_limits<int>::max() / 2));
-		text_ = text;
+		if constexpr (bytes) text_ = text;
+		else text_.assign(text.begin(), text.end());
 		if (text_.empty()) return;
 		int n = size();
-		SuffixTree forward(text_), backward(std::string(text_.rbegin(), text_.rend()));
+		BasicSuffixTree<Symbol> forward(text_), backward(Storage(text_.rbegin(), text_.rend()));
 		index_.build(forward);
 		SuffixLocusIndex reverse_index(backward);
 		int columns = forward.node_count() - 1, rows = backward.node_count() - 1;
-		std::vector<int> order{0}, low(columns + 1, 257), high(columns + 1, -1);
+		std::conditional_t<bytes, std::array<int, 0>, std::vector<int>> codes;
+		if constexpr (!bytes) {
+			codes.resize(n);
+			int code = 0, previous = -1;
+			for (int p : forward.suffix_array()) if (p < n) {
+				if (previous < 0 || text_[previous] != text_[p]) ++code;
+				codes[p] = code;
+				previous = p;
+			}
+		}
+		std::vector<int> order{0}, low(columns + 1, bytes ? 257 : n + 1), high(columns + 1, -1);
 		order.reserve(columns + 1);
 		for (std::size_t i = 0; i < order.size(); ++i) {
 			int v = order[i], p = forward.suffix_start(v);
-			if (p >= 0) low[v] = high[v] = p ? static_cast<unsigned char>(text_[p - 1]) + 1 : 0;
+			if (p >= 0) {
+				int value = 0;
+				if (p) {
+					if constexpr (bytes) value = static_cast<unsigned char>(text_[p - 1]) + 1;
+					else value = codes[p - 1];
+				}
+				low[v] = high[v] = value;
+			}
 			for (int u : forward.children(v)) order.push_back(u);
 		}
 		for (std::size_t i = order.size(); i-- > 1;) {
@@ -66,7 +89,7 @@ class BasicSubstringStructure {
 		column_block_.reserve(columns); height_.reserve(columns); down_.reserve(columns);
 		node_column_.assign(columns + 1, -1);
 		std::vector<int> node_row(rows + 1, -1);
-		auto suffix_link = [](const SuffixTree &tree, const SuffixLocusIndex &index, int v) {
+		auto suffix_link = [](const BasicSuffixTree<Symbol> &tree, const SuffixLocusIndex &index, int v) {
 			int p = tree.suffix_start(v);
 			if (p >= 0) return tree.suffix_node(p + 1);
 			auto [l, r] = tree.label_range(v);
@@ -105,16 +128,18 @@ class BasicSubstringStructure {
 	}
 
   public:
-	BasicSubstringStructure() = default;
-	explicit BasicSubstringStructure(std::string_view text) { construct(text); }
-	BasicSubstringStructure(const BasicSubstringStructure &) = default;
-	BasicSubstringStructure &operator=(const BasicSubstringStructure &) = default;
-	BasicSubstringStructure(BasicSubstringStructure &&other) noexcept { swap(other); }
-	BasicSubstringStructure &operator=(BasicSubstringStructure &&other) noexcept {
-		if (this != &other) { BasicSubstringStructure moved(std::move(other)); swap(moved); }
+	SubstringStructure() = default;
+	explicit SubstringStructure(View text) { construct(text); }
+	template <sequence_view_detail::CharSequence R> requires bytes
+	explicit SubstringStructure(const R &text) : SubstringStructure(sequence_view_detail::char_view(text)) {}
+	SubstringStructure(const SubstringStructure &) = default;
+	SubstringStructure &operator=(const SubstringStructure &) = default;
+	SubstringStructure(SubstringStructure &&other) noexcept { swap(other); }
+	SubstringStructure &operator=(SubstringStructure &&other) noexcept {
+		if (this != &other) { SubstringStructure moved(std::move(other)); swap(moved); }
 		return *this;
 	}
-	void swap(BasicSubstringStructure &other) noexcept {
+	void swap(SubstringStructure &other) noexcept {
 		text_.swap(other.text_);
 		index_.swap(other.index_);
 		blocks_.swap(other.blocks_);
@@ -123,11 +148,13 @@ class BasicSubstringStructure {
 		right_.swap(other.right_); down_.swap(other.down_); node_column_.swap(other.node_column_);
 		std::swap(distinct_, other.distinct_);
 	}
-	void build(std::string_view text) { BasicSubstringStructure next(text); swap(next); }
-	void clear() { BasicSubstringStructure next; swap(next); }
+	void build(View text) { SubstringStructure next(text); swap(next); }
+	template <sequence_view_detail::CharSequence R> requires bytes
+	void build(const R &text) { build(sequence_view_detail::char_view(text)); }
+	void clear() { SubstringStructure next; swap(next); }
 	int size() const { return static_cast<int>(text_.size()); }
 	bool empty() const { return text_.empty(); }
-	std::string_view text() const { return text_; }
+	View text() const { return {text_.data(), text_.size()}; }
 	int block_count() const { return static_cast<int>(blocks_.size()); }
 	std::span<const Block> blocks() const { return blocks_; }
 	const Block &block(int id) const { assert(0 <= id && id < block_count()); return blocks_[id]; }
@@ -173,5 +200,7 @@ class BasicSubstringStructure {
 	}
 	std::uint64_t distinct_substrings() const { return distinct_; }
 };
+
+using BasicSubstringStructure = SubstringStructure<char>;
 
 #endif

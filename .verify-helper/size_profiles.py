@@ -178,9 +178,9 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
             front.pop('permalink', None)
         data = front.get('data', {})
         if front.get('layout') == 'toppage':
-            categories = {}
+            order = config.get('library_categories')
+            categories = {name: [] for name in order} if order is not None else {}
             for category in data.get('libraryCategories', []):
-                categories.setdefault(category['name'], [])
                 for item in category['pages']:
                     name = item['path']
                     if name not in catalog:
@@ -193,11 +193,23 @@ def prepare_pages(pages, destination, config, *, targets=None, origins=None):
                     item['copyByteCount'] = size['copyBytes'][profile] if usable else None
                     item['pagePath'] = route(name, profile)
                     item['title'] = display_title(name, profile)
-                    group = sources[name][0].get('library_category', category['name'])
+                    source = sources[name][0]
+                    item['libraryAdvanced'] = source.get('library_advanced', False)
+                    group = source.get('library_category', category['name'])
+                    if order is not None and group not in categories:
+                        raise ValueError('Unknown library category: ' + group)
                     categories.setdefault(group, []).append(item)
-            data['libraryCategories'] = [{'name': name, 'pages': entries} for name, entries in categories.items()]
-            data['profileLibraryCount'] = len(catalog)
-            data['profileAvailableCount'] = sum(profile == 'full' or size['lightweightAvailable'] for size in catalog.values())
+            data['libraryCategories'] = [{'name': name, 'pages': entries} for name, entries in categories.items() if entries]
+
+            def visible(category, item):
+                if front.get('advanced'):
+                    return item['libraryAdvanced']
+                auxiliary = category['name'].split('/')[0] == 'components' and item['path'] not in config.get('main_libraries', [])
+                return auxiliary if front.get('components') else not auxiliary
+
+            displayed = [item for category in data['libraryCategories'] for item in category['pages'] if visible(category, item)]
+            data['profileLibraryCount'] = len(displayed)
+            data['profileAvailableCount'] = sum(item['profileAvailable'] for item in displayed)
             if relative == 'index.md':
                 front['title'] = '軽量ライブラリ（64 KiB）' if profile == LIGHTWEIGHT else 'ライブラリ（全体・256 KiB向け）'
         elif data.get('path') in libraries:

@@ -12,6 +12,8 @@ void require(bool ok) { if (!ok) std::abort(); }
 template <int Bits>
 void check(const XorSet<Bits> &set, const std::set<std::uint32_t> &values, std::uint32_t x) {
 	require(set.size() == std::int64_t(values.size()) && set.empty() == values.empty());
+	require(set.min() == (values.empty() ? std::nullopt : std::optional<std::uint32_t>(*values.begin())));
+	require(set.max() == (values.empty() ? std::nullopt : std::optional<std::uint32_t>(*values.rbegin())));
 	for (auto value : values) require(set.contains(value));
 	if (values.empty()) return;
 	auto lo = *values.begin(), hi = lo;

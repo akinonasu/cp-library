@@ -44,13 +44,13 @@ struct Modular {
 	using V = std::uint32_t;
 	static V add(V a, V b) { V c = a + b; return c < mod ? c : c - mod; }
 	static V sub(V a, V b) { return a >= b ? a - b : a + mod - b; }
-	static constexpr int width = (Ranks + 7) / 8 * 8;
+	static constexpr int width = Ranks;
 	__attribute__((target("avx2"))) static void transform(V *a, int n) {
 		const __m256i p = _mm256_set1_epi32(mod);
 		if (n >= 128) {
 			int q = n / 4;
-			for (int i = 0; i < q; ++i)
-				for (int rank = 0; rank < width; rank += 8) {
+			for (int i = 0; i < q; ++i) {
+				for (int rank = 0; rank + 7 < width; rank += 8) {
 					auto *p0 = reinterpret_cast<__m256i *>(a + std::size_t(i) * width + rank);
 					auto *p1 = reinterpret_cast<__m256i *>(a + std::size_t(i + q) * width + rank);
 					auto *p2 = reinterpret_cast<__m256i *>(a + std::size_t(i + q * 2) * width + rank);
@@ -76,13 +76,42 @@ struct Modular {
 					_mm256_storeu_si256(p2, x2);
 					_mm256_storeu_si256(p3, x3);
 				}
+				if constexpr (width % 8) {
+					constexpr int rank = width - 4;
+					const __m128i p4 = _mm_set1_epi32(mod);
+					auto *p0 = reinterpret_cast<__m128i *>(a + std::size_t(i) * width + rank);
+					auto *p1 = reinterpret_cast<__m128i *>(a + std::size_t(i + q) * width + rank);
+					auto *p2 = reinterpret_cast<__m128i *>(a + std::size_t(i + q * 2) * width + rank);
+					auto *p3 = reinterpret_cast<__m128i *>(a + std::size_t(i + q * 3) * width + rank);
+					__m128i x0 = _mm_loadu_si128(p0), x1 = _mm_loadu_si128(p1), x2 = _mm_loadu_si128(p2), x3 = _mm_loadu_si128(p3);
+					__m128i u = _mm_add_epi32(x0, x2), v = _mm_add_epi32(_mm_sub_epi32(x0, x2), p4);
+					x0 = _mm_min_epu32(u, _mm_sub_epi32(u, p4));
+					x2 = _mm_min_epu32(v, _mm_sub_epi32(v, p4));
+					u = _mm_add_epi32(x1, x3);
+					v = _mm_add_epi32(_mm_sub_epi32(x1, x3), p4);
+					x1 = _mm_min_epu32(u, _mm_sub_epi32(u, p4));
+					x3 = _mm_min_epu32(v, _mm_sub_epi32(v, p4));
+					u = _mm_add_epi32(x0, x1);
+					v = _mm_add_epi32(_mm_sub_epi32(x0, x1), p4);
+					x0 = _mm_min_epu32(u, _mm_sub_epi32(u, p4));
+					x1 = _mm_min_epu32(v, _mm_sub_epi32(v, p4));
+					u = _mm_add_epi32(x2, x3);
+					v = _mm_add_epi32(_mm_sub_epi32(x2, x3), p4);
+					x2 = _mm_min_epu32(u, _mm_sub_epi32(u, p4));
+					x3 = _mm_min_epu32(v, _mm_sub_epi32(v, p4));
+					_mm_storeu_si128(p0, x0);
+					_mm_storeu_si128(p1, x1);
+					_mm_storeu_si128(p2, x2);
+					_mm_storeu_si128(p3, x3);
+				}
+			}
 			for (int i = 0; i < 4; ++i) transform(a + std::size_t(i) * q * width, q);
 			return;
 		}
 		for (int half = 1; half < n; half *= 2)
 			for (int start = 0; start < n; start += 2 * half)
-				for (int j = 0; j < half; ++j)
-					for (int rank = 0; rank < width; rank += 8) {
+				for (int j = 0; j < half; ++j) {
+					for (int rank = 0; rank + 7 < width; rank += 8) {
 						auto *left = reinterpret_cast<__m256i *>(a + std::size_t(start + j) * width + rank);
 						auto *right = reinterpret_cast<__m256i *>(a + std::size_t(start + half + j) * width + rank);
 						__m256i x = _mm256_loadu_si256(left), y = _mm256_loadu_si256(right);
@@ -90,6 +119,17 @@ struct Modular {
 						_mm256_storeu_si256(left, _mm256_min_epu32(u, _mm256_sub_epi32(u, p)));
 						_mm256_storeu_si256(right, _mm256_min_epu32(v, _mm256_sub_epi32(v, p)));
 					}
+					if constexpr (width % 8) {
+						constexpr int rank = width - 4;
+						const __m128i p4 = _mm_set1_epi32(mod);
+						auto *left = reinterpret_cast<__m128i *>(a + std::size_t(start + j) * width + rank);
+						auto *right = reinterpret_cast<__m128i *>(a + std::size_t(start + half + j) * width + rank);
+						__m128i x = _mm_loadu_si128(left), y = _mm_loadu_si128(right);
+						__m128i u = _mm_add_epi32(x, y), v = _mm_add_epi32(_mm_sub_epi32(x, y), p4);
+						_mm_storeu_si128(left, _mm_min_epu32(u, _mm_sub_epi32(u, p4)));
+						_mm_storeu_si128(right, _mm_min_epu32(v, _mm_sub_epi32(v, p4)));
+					}
+				}
 	}
 	static constexpr V inverse = [] {
 		V x = 1;
@@ -152,18 +192,19 @@ struct Modular {
 	__attribute__((target("avx2"))) static std::vector<T> convolution(const std::vector<T> &a, const std::vector<T> &b, int n) {
 		int levels = std::bit_width(unsigned(n)) - 1;
 		int bottom = n >> (std::min(levels - 3, 2) + 1);
-		std::vector<V> x(std::size_t(bottom) * width), y(x.size()), counts(n), result(n);
+		std::vector<V> x(std::size_t(bottom) * width), y(x.size()), counts(2 * bottom), result(n);
 		std::vector<V> aa(n), bb(n);
 		for (int i = 0; i < int(a.size()); ++i) aa[i] = a[i].val();
 		for (int i = 0; i < int(b.size()); ++i) bb[i] = b[i].val();
-		for (int i = 1; i < n; ++i) counts[i] = std::popcount(unsigned(i)) - 1;
+		for (int i = 1; i < 2 * bottom; ++i) counts[i] = std::popcount(unsigned(i));
 		for (int top = 0; top < n / 2; top += bottom) {
 			std::fill(x.begin(), x.end(), 0);
 			std::fill(y.begin(), y.end(), 0);
 			for (int start = 0; start < n; start += 2 * bottom) {
 				bool negative = std::popcount(unsigned((start >> 1) & top)) & 1;
+				int count = std::popcount(unsigned(start)) - 1;
 				for (int mask = start == 0; mask < 2 * bottom; ++mask) {
-					std::size_t index = std::size_t(mask >> 1) * width + counts[start + mask];
+					std::size_t index = std::size_t(mask >> 1) * width + count + counts[mask];
 					if (negative) x[index] = sub(x[index], aa[start + mask]), y[index] = sub(y[index], bb[start + mask]);
 					else x[index] = add(x[index], aa[start + mask]), y[index] = add(y[index], bb[start + mask]);
 				}
@@ -174,8 +215,9 @@ struct Modular {
 			transform(x.data(), bottom);
 			for (int start = 0; start < n; start += 2 * bottom) {
 				bool negative = std::popcount(unsigned((start >> 1) & top)) & 1;
+				int count = std::popcount(unsigned(start)) - 1;
 				for (int mask = start == 0; mask < 2 * bottom; ++mask) {
-					V value = x[std::size_t(mask >> 1) * width + counts[start + mask]];
+					V value = x[std::size_t(mask >> 1) * width + count + counts[mask]];
 					result[start + mask] = negative ? sub(result[start + mask], value) : add(result[start + mask], value);
 				}
 			}

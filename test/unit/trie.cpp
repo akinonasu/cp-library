@@ -165,7 +165,67 @@ void prefix_cover() {
 	}
 }
 
+
+template<class T>
+void integer_trie() {
+	using Sequence = std::vector<T>;
+	BasicTrie<T, int> trie;
+	std::map<Sequence, std::int64_t> words;
+	const Sequence alphabet = {T(0), T(1), std::numeric_limits<T>::min(), std::numeric_limits<T>::max(), T(257), T(-7)};
+	std::mt19937 rng(36783);
+	for (int trial = 0; trial < 350; ++trial) {
+		Sequence s;
+		for (int n = rng() % 7; n--; ) s.push_back(alphabet[rng() % alphabet.size()]);
+		if (rng() % 3) { int v = trie.insert(s, 2); words[s] += 2; trie.data(v) = 17; }
+		else {
+			bool exists = words.contains(s) && words[s];
+			assert(trie.erase(s) == exists);
+			if (exists && !--words[s]) words.erase(s);
+		}
+		std::int64_t total = 0, rank = 0, prefix = 0, lcp_sum = 0;
+		int longest = 0;
+		for (const auto &[word, count] : words) {
+			total += count; rank += word < s ? count : 0;
+			prefix += word.size() >= s.size() && std::equal(s.begin(), s.end(), word.begin()) ? count : 0;
+			int k = 0;
+			while (k < int(word.size()) && k < int(s.size()) && word[k] == s[k]) ++k;
+			longest = std::max(longest, k); lcp_sum += k * count;
+			int v = trie.find(word);
+			assert(v >= 0 && trie.restore(v) == word && trie.count(word) == count && trie.data(v) == 17);
+		}
+		assert(trie.size() == total && trie.distinct_size() == int(words.size()));
+		assert(trie.order_of_key(s) == rank && trie.prefix_count(s) == prefix && trie.lcp(s) == longest && trie.lcp_sum(s) == lcp_sum);
+		std::vector<Sequence> prefixes, expected_prefixes;
+		for (const auto &[word, count] : words) if (word.size() <= s.size() && std::equal(word.begin(), word.end(), s.begin())) expected_prefixes.push_back(word);
+		trie.for_each_prefix(s, [&](int u) { prefixes.push_back(trie.restore(u)); });
+		assert(prefixes == expected_prefixes);
+		int longest_prefix = trie.longest_prefix(s);
+		assert(expected_prefixes.empty() ? longest_prefix == -1 : trie.restore(longest_prefix) == expected_prefixes.back());
+		std::int64_t k = 0;
+		for (const auto &[word, count] : words) { assert(trie.kth(k) == word && trie.kth(k + count - 1) == word); k += count; }
+		assert(!trie.kth(-1) && !trie.kth(total));
+		auto it = words.lower_bound(s);
+		assert(trie.lower_bound(s) == (it == words.end() ? std::nullopt : std::optional<Sequence>(it->first)));
+	}
+	Sequence retained{T(1234), T(5678)};
+	int v = trie.ensure(retained);
+	assert(trie.restore(v) == retained && trie.count(retained) == 0);
+	trie.insert_node(v, 3); assert(trie.erase_node(v, 3) && trie.find(retained) == v);
+	auto copied = trie;
+	trie.clear();
+	assert(trie.empty() && trie.node_count() == 1 && trie.data(0) == 0);
+	assert(copied.node_count() > 1 && copied.child(0, T(1234)) >= 0);
+}
+
 int main() {
+	integer_trie<std::int8_t>();
+	integer_trie<std::uint8_t>();
+	integer_trie<std::int16_t>();
+	integer_trie<std::uint16_t>();
+	integer_trie<std::int32_t>();
+	integer_trie<std::uint32_t>();
+	integer_trie<std::int64_t>();
+	integer_trie<std::uint64_t>();
 	Trie<> trie;
 	Dictionary words;
 	structure(trie, words);

@@ -75,6 +75,8 @@ template<class Cap, class Cost> void check() {
 }
 
 int main() {
+	check<int, std::int8_t>();
+	check<int, std::int16_t>();
 	check<int, int>();
 	check<std::int64_t, std::int64_t>();
 	check<std::uint64_t, std::int64_t>();
@@ -105,6 +107,34 @@ int main() {
 	huge.add_edge(0, 1, 1000000000000LL, 1000000000000LL);
 	auto result = huge.flow(0, 1);
 	assert(result.first == 1000000000000LL && result.second == __int128_t(1000000000000LL) * 1000000000000LL);
+	MinCostFlow<int, std::int8_t> boundary(2);
+	boundary.add_edge(0, 1, 1, 126);
+	assert(boundary.flow(0, 1, 1).second == 126);
+	boundary.add_edge(0, 1, 0, 0);
+	assert(boundary.flow(1, 0, 1).second == -126);
+	boundary.reset_flow();
+	assert(boundary.flow(0, 1, 1).second == 126);
+	MinCostFlow<int, std::int8_t> appended(6);
+	appended.add_edge(0, 1, 1, -30);
+	appended.add_edge(1, 2, 1, -30);
+	appended.add_edge(2, 5, 1, -20);
+	appended.add_edge(3, 4, 1, 20);
+	appended.add_edge(4, 5, 1, 20);
+	assert(appended.flow(0, 5, 1).second == -80);
+	appended.add_edge(0, 3, 1, 50);
+	auto appended_result = appended.flow(0, 5, 1);
+	assert(appended_result.first == 1 && appended_result.second == 90);
+	MinCostFlow<> zero(4);
+	for (int i = 2; i >= 0; --i) zero.add_edge(i, i + 1, 2, -2);
+	assert((zero.flow(0, 3, 0) == std::pair<std::int64_t, __int128_t>{0, 0}));
+	assert((zero.slope(0, 3, 0) == std::vector<std::pair<std::int64_t, __int128_t>>{{0, 0}}));
+	for (auto e : zero.edges()) assert(e.flow == 0);
+	const auto& zero_potential = zero.potentials();
+	for (auto e : zero.edges()) assert(e.cost + zero_potential[e.from] - zero_potential[e.to] >= 0);
+	assert(zero.flow(0, 3, 1).second == -6);
+	assert(zero.flow(0, 3, 0).first == 0 && zero.get_edge(0).flow == 1);
+	zero.reset_flow();
+	assert(zero.flow(0, 3, 1).second == -6);
 	MinCostFlow<> disconnected(4);
 	flow_detail::Graph<std::uint64_t> unsigned_graph(2);
 	unsigned_graph.add_edge(0, 1, std::numeric_limits<std::uint64_t>::max());

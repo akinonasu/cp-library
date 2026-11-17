@@ -7,7 +7,10 @@
 #include <algorithm>
 #include <cassert>
 #include <limits>
+#include <numeric>
+#include <span>
 #include <string_view>
+#include <type_traits>
 #include <vector>
 
 struct LongestCommonSubstringResult {
@@ -52,6 +55,56 @@ inline LongestCommonSubstringResult longest_common_substring(std::string_view s,
 		}
 	}
 	return best;
+}
+
+template <class S, std::size_t FirstExtent, class T, std::size_t SecondExtent>
+requires (std::is_integral_v<S> && !std::is_same_v<std::remove_const_t<S>, bool> && sizeof(S) <= 8 && std::is_same_v<std::remove_const_t<S>, std::remove_const_t<T>> && !std::is_volatile_v<S> && !std::is_volatile_v<T>)
+LongestCommonSubstringResult longest_common_substring(std::span<S, FirstExtent> s, std::span<T, SecondExtent> t) {
+	[[maybe_unused]] constexpr std::size_t maximum = std::numeric_limits<int>::max() - 1;
+	assert(s.size() <= maximum && t.size() <= maximum - s.size());
+	if (s.empty() || t.empty()) return {};
+	int n = int(s.size()), m = int(t.size()), bound = std::min(n, m);
+	LongestCommonSubstringResult best{0, 0, sequence_compare_detail::prefix(s.data(), t.data(), bound)};
+	if (best.length == bound) return best;
+	using Symbol = std::remove_const_t<S>;
+	std::vector<int> order(n + m), joined(n + m + 1);
+	std::iota(order.begin(), order.end(), 0);
+	auto symbol = [&](int p) -> Symbol { return p < n ? s[p] : t[p - n]; };
+	std::sort(order.begin(), order.end(), [&](int p, int q) { return symbol(p) < symbol(q); });
+	int code = 1;
+	for (int i = 0; i < n + m; ++i) {
+		if (i && symbol(order[i - 1]) != symbol(order[i])) ++code;
+		int p = order[i];
+		joined[p < n ? p : p + 1] = code;
+	}
+	if (code == n + m) return best;
+	auto sa = suffix_array_detail::induced_sort(joined, code);
+	int size = int(sa.size());
+	std::vector<int> rank(size);
+	for (int i = 0; i < size; ++i) rank[sa[i]] = i;
+	for (int p = 0, h = 0; p < size; ++p) {
+		if (h) --h;
+		if (!rank[p]) { h = 0; continue; }
+		int q = sa[rank[p] - 1];
+		if (q == n) { h = 0; continue; }
+		bool first = p < n, other = q < n;
+		int a = first ? p : p - n - 1, b = other ? q : q - n - 1;
+		auto left = first ? std::span<const Symbol>(s) : std::span<const Symbol>(t);
+		auto right = other ? std::span<const Symbol>(s) : std::span<const Symbol>(t);
+		int limit = std::min(int(left.size()) - a, int(right.size()) - b);
+		h += sequence_compare_detail::prefix(left.data() + a + h, right.data() + b + h, limit - h);
+		if (first != other && h > best.length) {
+			best = first ? LongestCommonSubstringResult{a, b, h} : LongestCommonSubstringResult{b, a, h};
+			if (h == bound) return best;
+		}
+	}
+	return best;
+}
+
+template <class Symbol, class FirstAllocator, class SecondAllocator>
+requires (std::is_integral_v<Symbol> && !std::is_same_v<Symbol, bool> && sizeof(Symbol) <= 8)
+LongestCommonSubstringResult longest_common_substring(const std::vector<Symbol, FirstAllocator> &s, const std::vector<Symbol, SecondAllocator> &t) {
+	return longest_common_substring(std::span<const Symbol>(s), std::span<const Symbol>(t));
 }
 
 #endif

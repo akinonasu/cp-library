@@ -562,6 +562,38 @@ void configuration_reset_check() {
 	validate_state(graph, {0, 0});
 }
 
+void exhausted_flow_check() {
+	MaxFlowLowerBound<> graph(2);
+	graph.add_edge(0, 1, 2);
+	assert(graph.flow(0, 1, 1) == 1);
+	assert(graph.flow(0, 1, 5) == 1);
+	for (int i = 0; i < 3; ++i) assert(graph.flow(0, 1, 5) == 0);
+	auto independent = graph.solve(0, 1, 1);
+	assert(independent && independent->flow[0] == 1);
+	assert(graph.flow(1, 0, 3) == 2);
+	assert(graph.flow(0, 1, 3) == 2);
+	graph.add_edge(0, 1, 3);
+	assert(graph.flow(0, 1, 5) == 3);
+	auto copy = graph;
+	assert(copy.flow(0, 1, 5) == 0);
+	copy.reset_flow();
+	assert(copy.flow(0, 1, 6) == 5);
+	graph = copy;
+	graph.change_edge(1, 0, 4);
+	assert(graph.flow(0, 1, 7) == 6);
+	MaxFlowLowerBound<> another(2);
+	another.add_edge(0, 1, 4);
+	assert(another.flow(0, 1, 1) == 1);
+	graph = another;
+	assert(graph.flow(0, 1, 5) == 3);
+	graph.change_edge(0, 4, 4);
+	assert(graph.flow(0, 1, 5) == 4);
+	graph.add_edge(1, 0, -3, -1);
+	assert(!graph.flow(0, 1, 0));
+	assert(graph.flow(0, 1, 3) == 3);
+	assert(graph.flow(0, 1, 1) == 0);
+}
+
 int main() {
 	random_check<std::int8_t>(200);
 	random_check<std::int16_t>(200);
@@ -584,4 +616,5 @@ int main() {
 	incremental_edges_check<std::int64_t>(150);
 	negative_upper_continuation_check();
 	configuration_reset_check();
+	exhausted_flow_check();
 }

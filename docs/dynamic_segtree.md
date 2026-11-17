@@ -7,7 +7,7 @@ redirect_from:
 library_category: data_structure/segment_tree
 ---
 
-大きな座標範囲に対して、一点更新と区間の計算結果の取得を行います。各区間の要素を左から右の順に `op` でまとめることを集約と呼びます。
+大きな座標範囲に対して、一点更新と区間の計算結果の取得を行います。演算 `op` は要素の左から右の順に適用します。
 
 ```cpp
 #include "lib/data_structure/dynamic_segtree.hpp"
@@ -30,7 +30,7 @@ auto r = seg.max_right(0, [](long long s) { return s <= 10; });
 | `set(p,x)` | 座標 `p` に代入 | 償却 $$O(\min(B,k))$$ |
 | `multiply(p,x)` | `op(現在値,x)` に更新 | 償却 $$O(\min(B,k))$$ |
 | `get(p)` | 1 点の値。未更新なら `e()` | $$O(\min(B,k))$$ |
-| `prod(l,r)` / `all_prod()` | $$[l,r)$$／全体の集約 | prod: $$O(\min(B,k))$$、all_prod: $$O(1)$$ |
+| `prod(l,r)` / `all_prod()` | $$[l,r)$$／全体の積 | prod: $$O(\min(B,k))$$、all_prod: $$O(1)$$ |
 | `max_right(l,f)` / `min_left(r,f)` | 区間積が `f` を満たす最大の右端／最小の左端 | $$O(\min(B,k))$$ |
 | `size()` / `left_bound()` / `right_bound()` | 座標範囲の長さ／左端／右端 | $$O(1)$$ |
 | `node_count()` | 更新済みの異なる座標数 | $$O(1)$$ |
@@ -38,7 +38,7 @@ auto r = seg.max_right(0, [](long long s) { return s <= 10; });
 | `memory_usage()` | 確保済みノード領域のバイト数 | $$O(1)$$ |
 | `swap(other)` | 内容と座標範囲を交換 | $$O(1)$$ |
 
-`op` は `op(op(a,b),c) == op(a,op(b,c))` を満たします。これは要素の順番を保てば、まとめる括弧の位置を変えても結果が同じになる条件（結合法則）です。 `e()` は空区間の値で、`op(e(),x) == x` と `op(x,e()) == x` を満たします。この値を単位元と呼びます。 `op(a,b)` と `op(b,a)` が異なる演算にも対応します。未更新の座標の値は `e()` です。
+`op` は結合律 `op(op(a,b),c) == op(a,op(b,c))` を満たすようにします。`e()` は空区間の値となる単位元で、`op(e(),x) == x` と `op(x,e()) == x` を満たすようにします。`op(a,b)` と `op(b,a)` が異なる演算にも対応します。未更新の座標の値は `e()` です。
 
 構築範囲は `DynamicSegtree(n)` が $$[0,n)$$、`DynamicSegtree(l,r)` が $$[l,r)$$ です。座標型は第 4 テンプレート引数で指定でき、既定は `std::int64_t` です。
 
@@ -49,8 +49,6 @@ auto r = seg.max_right(0, [](long long s) { return s <= 10; });
 `max_right(l,f)`・`min_left(r,f)` は区間積が `f` を満たす境界を返します。`f` は区間の計算結果を 1 つ受け取り、条件を満たせば `true`、満たさなければ `false` を返す関数です。同じ引数には同じ結果を返すようにします。`f(e()) == true` が必要です。区間を伸ばして一度 `false` になったら、その後は `true` に戻らない条件を使ってください。
 
 `reserve(k)` は更新する異なる座標数を目安に領域を予約します。`node_count()` はその個数、`memory_usage()` は確保済みノード領域のバイト数です。更新する異なる座標数の上限は $$2^{26}-1$$ です。`clear()` は確保領域を残して初期状態に戻します。
-
-「償却」は、1 回だけ時間のかかる操作があっても、一連の操作の合計時間から 1 回あたりの計算量を評価するという意味です。
 
 座標型の bit 数を $$B$$、更新済み座標数を $$k$$ として、更新は償却 $$O(\min(B,k))$$、`get`・`prod`・境界探索は $$O(\min(B,k))$$ です。構築・`all_prod`・サイズ取得は $$O(1)$$、`reserve`・`clear` は $$O(k)$$ です。空間は $$O(k)$$（予約容量が大きい場合はその容量分）です。
 

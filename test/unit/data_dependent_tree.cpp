@@ -1,9 +1,11 @@
 #include "string/data_dependent_tree.hpp"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <limits>
 #include <random>
+#include <span>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -198,9 +200,127 @@ void huge_runs() {
 	assert(tree.height(0) == 0 && tree.height(a) == 0);
 }
 
+void byte_sequences() {
+	DataDependentTree tree;
+	std::vector<char> values{char(0), char(255), 'a', char(0)};
+	int root = tree.build(values);
+	std::string expected(values.begin(), values.end());
+	check(tree, root, expected);
+	assert(tree.build(std::span<char>(values)) == root);
+	assert(tree.build(std::span<const char>(values)) == root);
+	std::array<char, 2> extra{'b', char(128)};
+	root = tree.insert(root, 2, extra);
+	expected.insert(2, extra.data(), extra.size());
+	check(tree, root, expected);
+	assert(tree.build(std::array<char, 0>{}) == 0);
+}
+
+template <class T>
+void integer_sequences(std::uint64_t seed) {
+	using Tree = BasicDataDependentTree<T>;
+	std::mt19937_64 rng(seed);
+	Tree tree(seed);
+	tree.reserve(1024);
+	assert(tree.storage_nodes() == 0);
+	std::vector<T> alphabet{std::numeric_limits<T>::min(), std::numeric_limits<T>::max(), T(0), T(1), T(257), T(-1)};
+	for (int i = 0; i < 400; ++i) alphabet.push_back(T(rng()));
+	std::array<T, 3> fixed{alphabet[0], alphabet[1], alphabet[2]};
+	int fixed_root = tree.build(fixed);
+	assert(tree.str(fixed_root) == std::vector<T>(fixed.begin(), fixed.end()));
+	assert(tree.build(std::span<T, 3>(fixed)) == fixed_root);
+	assert(tree.build(std::span<const T, 3>(fixed)) == fixed_root);
+	std::vector<std::vector<T>> texts(1);
+	std::vector<int> roots(1);
+	auto verify = [&](int root, const std::vector<T> &text) {
+		assert(tree.str(root) == text && tree.size(root) == text.size());
+		assert(tree.empty(root) == text.empty());
+		assert(tree.build(text) == root);
+		for (std::size_t i = 0; i < text.size(); ++i) assert(tree.at(root, i) == text[i]);
+	};
+	for (int step = 0; step < 1800; ++step) {
+		std::size_t version = rng() % roots.size();
+		int root = roots[version];
+		auto text = texts[version];
+		std::size_t l = rng() % (text.size() + 1), r = rng() % (text.size() + 1);
+		if (l > r) std::swap(l, r);
+		std::vector<T> extra(rng() % 12);
+		for (T &x : extra) x = alphabet[rng() % alphabet.size()];
+		switch (rng() % 8) {
+			case 0: root = tree.insert(root, l, extra); text.insert(text.begin() + l, extra.begin(), extra.end()); break;
+			case 1: root = tree.erase(root, l, r); text.erase(text.begin() + l, text.begin() + r); break;
+			case 2: root = tree.substr(root, l, r); text = std::vector<T>(text.begin() + l, text.begin() + r); break;
+			case 3: {
+				auto [a, b] = tree.split(root, l);
+				verify(a, std::vector<T>(text.begin(), text.begin() + l));
+				verify(b, std::vector<T>(text.begin() + l, text.end()));
+				assert(tree.concat(a, b) == root);
+				break;
+			}
+			case 4: root = tree.concat(root, tree.build(extra)); text.insert(text.end(), extra.begin(), extra.end()); break;
+			case 5: {
+				if (text.empty()) break;
+				std::size_t p = rng() % text.size();
+				text[p] = alphabet[rng() % alphabet.size()];
+				root = tree.set(root, p, text[p]);
+				break;
+			}
+			case 6: {
+				unsigned k = text.size() > 100 ? 0 : rng() % 4;
+				root = tree.repeat(root, k);
+				auto original = text;
+				text.clear();
+				for (unsigned i = 0; i < k; ++i) text.insert(text.end(), original.begin(), original.end());
+				break;
+			}
+			case 7: root = tree.insert(root, l, tree.build(extra)); text.insert(text.begin() + l, extra.begin(), extra.end()); break;
+		}
+		verify(root, text);
+		std::size_t other = rng() % roots.size();
+		verify(roots[other], texts[other]);
+		std::size_t p = rng() % (text.size() + 1), q = rng() % (texts[other].size() + 1);
+		Size prefix = 0;
+		while (prefix < text.size() && prefix < texts[other].size() && text[prefix] == texts[other][prefix]) ++prefix;
+		assert(tree.lcp(root, roots[other]) == prefix);
+		Size suffix_prefix = 0;
+		while (p + suffix_prefix < text.size() && q + suffix_prefix < texts[other].size() && text[p + suffix_prefix] == texts[other][q + suffix_prefix]) ++suffix_prefix;
+		assert(tree.lcp(root, p, roots[other], q) == suffix_prefix);
+		assert(tree.lcp(root, p, roots[other], q, 3) == std::min(Size(3), suffix_prefix));
+		assert(tree.compare(root, roots[other]) == ((text > texts[other]) - (text < texts[other])));
+		roots.push_back(root); texts.push_back(std::move(text));
+	}
+	int a = tree.build(alphabet);
+	auto copied = tree;
+	assert(copied.str(a) == alphabet);
+	int changed = copied.set(a, 0, T(12345));
+	assert(tree.str(a) == alphabet && copied.at(changed, 0) == T(12345));
+	Tree moved(std::move(copied));
+	assert(moved.at(changed, 0) == T(12345));
+	assert(copied.storage_nodes() == 0 && copied.empty(0));
+	int reused = copied.build(alphabet);
+	assert(copied.str(reused) == alphabet);
+	copied = moved;
+	assert(copied.str(a) == alphabet);
+	copied = std::move(moved);
+	assert(copied.at(changed, 0) == T(12345) && moved.empty(0));
+	tree.swap(copied);
+	assert(tree.at(changed, 0) == T(12345) && copied.str(a) == alphabet);
+	Tree huge(seed);
+	int one = huge.build(std::span<const T>(alphabet).first(1));
+	Size max = std::numeric_limits<Size>::max();
+	int repeated = huge.repeat(one, max);
+	assert(huge.at(repeated, max - 1) == alphabet[0]);
+	int replaced = huge.set(repeated, max - 1, alphabet[1]);
+	assert(huge.at(replaced, max - 1) == alphabet[1] && huge.lcp(repeated, replaced) == max - 1);
+	assert(huge.compare(repeated, replaced) == ((alphabet[0] > alphabet[1]) - (alphabet[0] < alphabet[1])));
+}
+
 int main() {
 	for (unsigned seed : {0, 1, 1729}) exhaustive(seed);
 	for (unsigned seed : {0, 1, 713, 20261023}) randomized(seed);
 	long_strings();
 	huge_runs();
+	byte_sequences();
+	integer_sequences<std::int64_t>(713);
+	integer_sequences<std::uint64_t>(129);
+	integer_sequences<int>(17);
 }

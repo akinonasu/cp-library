@@ -34,6 +34,8 @@ int main() {
 
     tree.apply(0, 2, 5); // 数列は 6, 7, 3
     assert(tree.get(1).sum == 7);
+    const auto& constant = tree;
+    assert(constant.get(0).sum == 6);
     assert(tree.prod(0, 3).sum == 16);
 
     int r = tree.max_right(0, [](S x) { return x.sum <= 13; });
@@ -61,8 +63,8 @@ modint の区間アフィン変換と区間和には、専用の [Range Affine R
 
 次の条件を満たすように定義します。`a, b, c, x` は `S` の値、`f, g` は `F` の更新です。
 
-- `op(op(a,b),c) == op(a,op(b,c))`。要素の順番を保っていれば、まとめる括弧の位置を変えても結果が同じになる条件です。これを結合法則と呼びます。
-- `op(e(),x) == x` と `op(x,e()) == x`。空区間とまとめても結果が変わりません。この `e()` を単位元と呼びます。
+- 結合律 `op(op(a,b),c) == op(a,op(b,c))`。
+- 単位元の条件 `op(e(),x) == x` と `op(x,e()) == x`。
 - `mapping(id(),x) == x`。
 - `mapping(composition(f,g),x) == mapping(f,mapping(g,x))`。合成した更新と、`g`・`f` を順番に適用した結果が一致します。
 - `mapping(f,op(a,b)) == op(mapping(f,a),mapping(f,b))`。2 つの区間をまとめてから更新しても、個別に更新してからまとめても、結果が一致します。
@@ -91,13 +93,13 @@ LazySegtree<S, op, e, F, mapping, composition, id> tree(const std::vector<S>& a)
 | --- | --- | --- |
 | `int size() const` | 要素数を返す | — |
 | `void set(int p, S x)` | `a[p]` を `x` に置き換える | `0 <= p < n` |
-| `S get(int p)` | `a[p]` の現在の値を返す | `0 <= p < n` |
+| `S get(int p)` / `S get(int p) const` | `a[p]` の現在の値を返す | `0 <= p < n` |
 | `S prod(int l, int r)` | `a[l]` から `a[r-1]` までを、左から右の順に `op` でまとめた結果を返す。空区間なら `e()` | `0 <= l <= r <= n` |
 | `S all_prod() const` | 数列全体を `op` でまとめた結果を返す。空列なら `e()` | — |
 | `void apply(int p, F f)` | `a[p]` を `mapping(f,a[p])` に置き換える | `0 <= p < n` |
 | `void apply(int l, int r, F f)` | `[l,r)` の各要素に更新 `f` を適用する。空区間では何もしない | `0 <= l <= r <= n` |
 
-`prod(l,r)` は `const` な木にも使えます。コピーした木への更新は、元の木に影響しません。
+`get(p)`・`prod(l,r)` は `const` な木にも使えます。コピーした木への更新は、元の木に影響しません。
 
 ## 境界を探す
 

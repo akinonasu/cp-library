@@ -1,5 +1,5 @@
 #define PROBLEM "https://judge.yosupo.jp/problem/double_ended_priority_queue"
-#include "../data_structure/top_k_sum.hpp"
+#include "../data_structure/super_multiset.hpp"
 #include "../components/fast_io.hpp"
 #include <vector>
 
@@ -10,7 +10,7 @@ int main() {
 	input.read(n), input.read(q);
 	std::vector<int> a(n);
 	for (int &x : a) input.read(x);
-	TopKSum<int> values(a);
+	SuperMultiset<int> values(a);
 	while (q--) {
 		int type = 0;
 		input.read(type);

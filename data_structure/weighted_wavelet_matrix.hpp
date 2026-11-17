@@ -4,11 +4,13 @@
 #include "../components/wavelet_compression.hpp"
 #include "../components/quad_bit_vector.hpp"
 #include "../components/fenwick_sum.hpp"
+#include <optional>
 
 template <class T = std::int64_t, class Count = std::int64_t,
 		class Sum = std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>>
 class WeightedWaveletMatrix {
-	static_assert(std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8);
+	static_assert(!std::is_same_v<T, bool>);
+	static constexpr bool supports_sum = std::is_integral_v<T> && sizeof(T) <= 8;
 	static_assert(std::is_integral_v<Count> && std::is_signed_v<Count> && sizeof(Count) <= 8);
 	static_assert(std::numeric_limits<Sum>::is_integer && std::numeric_limits<Sum>::is_signed);
 	struct Node {
@@ -25,8 +27,24 @@ class WeightedWaveletMatrix {
 	std::vector<FenwickSum<Count>> counts;
 	std::vector<FenwickSum<Sum>> sums;
 	bool sum_ready = false;
-	int levels = 0;
+	int levels = 0, ordered = 0;
 	void check([[maybe_unused]] int l, [[maybe_unused]] int r) const { assert(0 <= l && l <= r && r <= size()); }
+	[[gnu::noinline]] int order() const {
+		return std::is_sorted(index.original.begin(), index.original.end()) ? 1
+			: std::is_sorted(index.original.rbegin(), index.original.rend()) ? -1 : 0;
+	}
+	std::pair<int, int> ordered_interval(int l, int r, std::uint32_t low, std::uint32_t high) const {
+		auto position = [&](std::uint32_t x) {
+			if (index.values.size() == std::size_t(size())) return ordered > 0 ? int(x) : size() - int(x);
+			if (!x) return ordered > 0 ? 0 : size();
+			if (x == index.values.size()) return ordered > 0 ? size() : 0;
+			if (ordered > 0) return int(std::lower_bound(index.original.begin(), index.original.end(), x) - index.original.begin());
+			return size() - int(std::lower_bound(index.original.rbegin(), index.original.rend(), x) - index.original.rbegin());
+		};
+		int first = position(low), last = position(high);
+		if (ordered < 0) std::swap(first, last);
+		return {std::clamp(first, l, r), std::clamp(last, l, r)};
+	}
 	template <bool WithSum>
 	Node row(int d, int l, int r) const {
 		if constexpr (WithSum) return {counts[d].prod(l, r), sums[d].prod(l, r)};
@@ -40,7 +58,7 @@ class WeightedWaveletMatrix {
 		counts[d].add_pair(p, a.count, q, b.count);
 		if (sum_ready) sums[d].add_pair(p, a.sum, q, b.sum);
 	}
-	void prepare_sum_impl() {
+	void prepare_sum_impl() requires supports_sum {
 		if (sum_ready) return;
 		sums.resize(counts.size());
 		std::vector<Sum> current(size()), next(size());
@@ -92,6 +110,10 @@ class WeightedWaveletMatrix {
 		if (!x || l == r) return {};
 		if constexpr (WithSum) assert(sum_ready);
 		if (x >= index.values.size()) return row<WithSum>(0, l, r);
+		if (ordered) [[unlikely]] {
+			auto [a, b] = ordered_interval(l, r, 0, x);
+			return row<WithSum>(0, a, b);
+		}
 		Node answer{};
 		for (int d = first; d < levels && l < r; ++d) {
 			int digit = (x >> (2 * (levels - 1 - d))) & 3, high = digit >> 1, low = digit & 1;
@@ -108,6 +130,11 @@ class WeightedWaveletMatrix {
 	template <bool WithSum = false>
 	Node between(int l, int r, std::uint32_t low, std::uint32_t high) const {
 		if (low == high || l == r) return {};
+		if constexpr (WithSum) assert(sum_ready);
+		if (ordered) [[unlikely]] {
+			auto [a, b] = ordered_interval(l, r, low, high);
+			return row<WithSum>(0, a, b);
+		}
 		if (!low || high == index.values.size()) return less_than<WithSum>(l, r, high) - less_than<WithSum>(l, r, low);
 		int common = levels - (std::bit_width(low ^ high) + 1) / 2;
 		for (int d = 0; d < common; ++d) {
@@ -123,6 +150,13 @@ class WeightedWaveletMatrix {
 		assert(0 <= k && k <= total.count);
 		if (!k) return 0;
 		if (k == total.count) return total.sum;
+		if (ordered) [[unlikely]] {
+			bool forward = Largest ? ordered < 0 : ordered > 0;
+			Count before = counts[0].prefix(l);
+			int p = counts[0].lower_bound(forward ? before + k : before + (total.count - k) + 1);
+			auto rest = forward ? row<true>(0, l, p) : row<true>(0, p + 1, r);
+			return rest.sum + Sum(access(p)) * (k - rest.count);
+		}
 		Sum answer = 0;
 		auto [x, leaf] = walk<true>(l, r, total, [&](Node zero, Node all) {
 			Node preferred = Largest ? all - zero : zero;
@@ -145,6 +179,14 @@ class WeightedWaveletMatrix {
 		if constexpr (Lower) {
 			if (total.sum < target) return -1;
 		} else if (total.sum <= target) return total.count;
+		if (ordered) [[unlikely]] {
+			bool forward = Largest ? ordered < 0 : ordered > 0;
+			Sum boundary = forward ? sums[0].prefix(l) + target + !Lower : sums[0].prefix(r) - target + Lower;
+			int p = sums[0].lower_bound(boundary);
+			auto rest = forward ? row<true>(0, l, p) : row<true>(0, p + 1, r);
+			Sum remaining = target - rest.sum, value = Sum(access(p));
+			return rest.count + Count(remaining / value) + (Lower && remaining % value != 0);
+		}
 		Count answer = 0;
 		auto [x, leaf] = walk<true>(l, r, total, [&](Node zero, Node all) {
 			Node preferred = Largest ? all - zero : zero;
@@ -162,13 +204,14 @@ class WeightedWaveletMatrix {
 	using sum_type = Sum;
 	WeightedWaveletMatrix() { build({}, {}); }
 	explicit WeightedWaveletMatrix(const std::vector<T> &a) { build(a, std::vector<Count>(a.size(), 1)); }
-	WeightedWaveletMatrix(const std::vector<T> &a, const std::vector<Count> &w, bool with_sum = true) { build(a, w, with_sum); }
-	void prepare_sum() { prepare_sum_impl(); }
-	void build(const std::vector<T> &a, const std::vector<Count> &w, bool with_sum = true) {
+	WeightedWaveletMatrix(const std::vector<T> &a, const std::vector<Count> &w, bool with_sum = supports_sum) { build(a, w, with_sum); }
+	void prepare_sum() requires supports_sum { prepare_sum_impl(); }
+	void build(const std::vector<T> &a, const std::vector<Count> &w, bool with_sum = supports_sum) {
 		assert(a.size() == w.size() && a.size() <= std::size_t(std::numeric_limits<int>::max()));
 		index.build(a);
 		weights = w;
-		levels = index.values.size() <= 1 ? 0 : (std::bit_width(unsigned(index.values.size() - 1)) + 1) / 2;
+		ordered = order();
+		levels = ordered || index.values.size() <= 1 ? 0 : (std::bit_width(unsigned(index.values.size() - 1)) + 1) / 2;
 		bits.clear();
 		bits.reserve(levels);
 		middle.resize(levels);
@@ -205,7 +248,9 @@ class WeightedWaveletMatrix {
 			for (int j = 0; j < 3; ++j) counts[3 * d + 1 + j].build(zero[j]);
 			current.swap(next), root.swap(next_weights);
 		}
-		if (with_sum) prepare_sum();
+		if constexpr (supports_sum) {
+			if (with_sum) prepare_sum();
+		} else assert(!with_sum);
 	}
 	void build(const std::vector<T> &a) { build(a, std::vector<Count>(a.size(), 1)); }
 	int size() const { return index.n; }
@@ -225,7 +270,8 @@ class WeightedWaveletMatrix {
 		if (!delta) return;
 		weights[p] += delta;
 		std::uint32_t x = index.original[p];
-		Node change{delta, sum_ready ? Sum(index.values[x]) * delta : Sum(0)};
+		Node change{delta, Sum(0)};
+		if constexpr (supports_sum) change.sum = sum_ready ? Sum(index.values[x]) * delta : Sum(0);
 		add(0, p, change);
 		for (int d = 0; d < levels; ++d) {
 			int digit = (x >> (2 * (levels - 1 - d))) & 3;
@@ -244,7 +290,11 @@ class WeightedWaveletMatrix {
 		weights[from] -= amount;
 		weights[to] += amount;
 		std::uint32_t x = index.original[from], y = index.original[to];
-		Node minus{Count(-amount), sum_ready ? -Sum(index.values[x]) * amount : Sum(0)}, plus{amount, sum_ready ? Sum(index.values[y]) * amount : Sum(0)};
+		Node minus{Count(-amount), Sum(0)}, plus{amount, Sum(0)};
+		if constexpr (supports_sum) {
+			minus.sum = sum_ready ? -Sum(index.values[x]) * amount : Sum(0);
+			plus.sum = sum_ready ? Sum(index.values[y]) * amount : Sum(0);
+		}
 		add_pair(0, from, minus, to, plus);
 		for (int d = 0; d < levels; ++d) {
 			int shift = 2 * (levels - 1 - d), a = (x >> shift) & 3, b = (y >> shift) & 3;
@@ -264,17 +314,18 @@ class WeightedWaveletMatrix {
 	Count count(int l, int r, const T &x) const {
 		check(l, r);
 		auto c = index.code(x);
-		if (c == index.values.size() || index.values[c] != x) return 0;
+		if (c == index.values.size() || !wavelet_detail::equivalent(index.values[c], x)) return 0;
 		return between(l, r, c, c + 1).count;
 	}
+	Count rank(const T &x, int r) const { return count(0, r, x); }
 	Count range_freq(int l, int r, const T &upper) const { check(l, r); return less_than(l, r, index.code(upper)).count; }
 	Count range_freq(int l, int r, const T &lower, const T &upper) const {
 		check(l, r);
 		return lower < upper ? between(l, r, index.code(lower), index.code(upper)).count : 0;
 	}
-	Sum range_sum(int l, int r) const { check(l, r); assert(sum_ready); return sums[0].prod(l, r); }
-	Sum range_sum(int l, int r, const T &upper) const { check(l, r); return less_than<true>(l, r, index.code(upper)).sum; }
-	Sum range_sum(int l, int r, const T &lower, const T &upper) const {
+	Sum range_sum(int l, int r) const requires supports_sum { check(l, r); assert(sum_ready); return sums[0].prod(l, r); }
+	Sum range_sum(int l, int r, const T &upper) const requires supports_sum { check(l, r); return less_than<true>(l, r, index.code(upper)).sum; }
+	Sum range_sum(int l, int r, const T &lower, const T &upper) const requires supports_sum {
 		check(l, r);
 		return lower < upper ? between<true>(l, r, index.code(lower), index.code(upper)).sum : 0;
 	}
@@ -282,6 +333,10 @@ class WeightedWaveletMatrix {
 		check(l, r);
 		Node total{counts[0].prod(l, r), Sum(0)};
 		assert(0 <= k && k < total.count);
+		if (ordered) [[unlikely]] {
+			Count before = counts[0].prefix(l);
+			return access(counts[0].lower_bound(ordered > 0 ? before + k + 1 : before + (total.count - k)));
+		}
 		auto [x, leaf] = walk<false, false>(l, r, total, [&](Node zero, Node) {
 			bool one = k >= zero.count;
 			if (one) k -= zero.count;
@@ -290,12 +345,20 @@ class WeightedWaveletMatrix {
 		return index.values[x];
 	}
 	T kth_largest(int l, int r, Count k) const { return kth_smallest(l, r, count(l, r) - 1 - k); }
-	Sum sum_smallest(int l, int r, Count k) const { check(l, r); assert(sum_ready); return selected_sum<false>(l, r, k, row<true>(0, l, r)); }
-	Sum sum_largest(int l, int r, Count k) const { check(l, r); assert(sum_ready); return selected_sum<true>(l, r, k, row<true>(0, l, r)); }
-	Count min_count_smallest(int l, int r, Sum target) const { return sum_bound<false, true>(l, r, target); }
-	Count min_count_largest(int l, int r, Sum target) const { return sum_bound<true, true>(l, r, target); }
-	Count max_count_smallest(int l, int r, Sum budget) const { return sum_bound<false, false>(l, r, budget); }
-	Count max_count_largest(int l, int r, Sum budget) const { return sum_bound<true, false>(l, r, budget); }
+	std::optional<T> prev_value(int l, int r, const T &upper) const {
+		Count k = range_freq(l, r, upper);
+		return k ? std::optional<T>(kth_smallest(l, r, k - 1)) : std::nullopt;
+	}
+	std::optional<T> next_value(int l, int r, const T &lower) const {
+		Count k = range_freq(l, r, lower);
+		return k < count(l, r) ? std::optional<T>(kth_smallest(l, r, k)) : std::nullopt;
+	}
+	Sum sum_smallest(int l, int r, Count k) const requires supports_sum { check(l, r); assert(sum_ready); return selected_sum<false>(l, r, k, row<true>(0, l, r)); }
+	Sum sum_largest(int l, int r, Count k) const requires supports_sum { check(l, r); assert(sum_ready); return selected_sum<true>(l, r, k, row<true>(0, l, r)); }
+	Count min_count_smallest(int l, int r, Sum target) const requires supports_sum { return sum_bound<false, true>(l, r, target); }
+	Count min_count_largest(int l, int r, Sum target) const requires supports_sum { return sum_bound<true, true>(l, r, target); }
+	Count max_count_smallest(int l, int r, Sum budget) const requires supports_sum { return sum_bound<false, false>(l, r, budget); }
+	Count max_count_largest(int l, int r, Sum budget) const requires supports_sum { return sum_bound<true, false>(l, r, budget); }
 };
 
 #endif

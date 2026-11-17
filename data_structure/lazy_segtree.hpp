@@ -80,6 +80,13 @@ class LazySegtree {
 		push_path(k);
 		return data_[k];
 	}
+	[[nodiscard]] S get(int p) const {
+		vertex(p);
+		unsigned k = base_ + unsigned(p);
+		S value = data_[k];
+		for (k >>= 1; k; k >>= 1) if (dirty_[k]) value = mapping(lazy_[k], value);
+		return value;
+	}
 	[[nodiscard]] S all_prod() const { return data_[1]; }
 	[[nodiscard]] S prod(int l, int r) {
 		range(l, r);

@@ -1,12 +1,12 @@
 ---
-title: FPS の合成・射影の共通段
+title: FPS の合成・power projection の共通段
 documentation_of: //components/fps_composition_stages.hpp
 library_category: components/fps
 ---
 
 `fps_detail::composition_fallback` の内部部品です。通常は [合成](compose.md)・[power projection](power_projection.md)・[合成逆元](compositional_inverse.md) の公開ヘッダーを使います。
 
-このページの射影（power projection）は、各冪 $$f(x)^0,f(x)^1,\ldots$$ から、指定した次数の係数、または係数の重み付き和を取り出して並べる操作です。
+power projection は、各冪 $$f(x)^0,f(x)^1,\ldots$$ から、指定した次数の係数、または係数の重み付き和を取り出して並べる操作です。
 
 `composition_stages(f,n,count)` は、定数項が0の FPS `f` と正整数 `n,count` から、`std::vector<CompositionStage<F>>` を返します。`count <= n <= 1 << 22` とし、係数型は加減乗算ができるものを使います。各段は `width,before,after,parity` と偶数・奇数係数列 `even,odd` を持ちます。入力は変更しません。
 

@@ -1,10 +1,10 @@
 ---
-title: 整列した配列のアロケータ
+title: アライメントを指定するアロケータ
 documentation_of: //components/aligned_allocator.hpp
 library_category: components/util
 ---
 
-`std::vector` などのメモリ確保・解放を担当する部品（アロケータ）です。確保する先頭アドレスを指定したバイト数の倍数に揃えられます。
+`std::vector` などで、アライメントを指定してメモリを確保するアロケータです。
 
 ```cpp
 #include "lib/components/aligned_allocator.hpp"

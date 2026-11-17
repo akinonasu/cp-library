@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <functional>
 #include <numeric>
+#include <utility>
 #include <vector>
 
 #include "../fps/fps.hpp"
@@ -73,6 +74,15 @@ std::vector<T> max_min_convolution(const std::vector<T> &a, const std::vector<T>
 template <class T>
 std::vector<T> min_max_convolution(const std::vector<T> &a, const std::vector<T> &b) {
 	return max_min_convolution_detail::multiply(a, b, std::less<T>{});
+}
+
+template <class T, class Compare>
+std::vector<T> max_min_convolution(const std::vector<T> &a, const std::vector<T> &b, Compare compare) {
+	return max_min_convolution_detail::multiply(a, b, [&](const T &x, const T &y) { return compare(y, x); });
+}
+template <class T, class Compare>
+std::vector<T> min_max_convolution(const std::vector<T> &a, const std::vector<T> &b, Compare compare) {
+	return max_min_convolution_detail::multiply(a, b, std::move(compare));
 }
 
 #endif

@@ -111,6 +111,12 @@ class MatrixMod2 {
 			for (int j = 0; j < w_; ++j) { assert(values[i][j] == 0 || values[i][j] == 1); (*this)(i, j) = bool(values[i][j]); }
 		}
 	}
+	template <binary_sequence_detail::Matrix Range>
+	explicit MatrixMod2(const Range& values)
+		: MatrixMod2(binary_sequence_detail::size(values), binary_sequence_detail::size(values) == 0 ? 0 : binary_sequence_detail::size(*std::begin(values))) {
+		int i = 0;
+		for (const auto& row : values) set_row(i++, row);
+	}
 	explicit MatrixMod2(const std::vector<std::string>& values)
 		: MatrixMod2(int(values.size()), values.empty() ? 0 : int(values[0].size())) {
 		for (int i = 0; i < h_; ++i) set_row(i, values[i]);
@@ -154,6 +160,12 @@ class MatrixMod2 {
 		check_row(i);
 		assert(bits.size() == w_);
 		std::copy(bits.words().begin(), bits.words().end(), raw_row(i));
+	}
+	template <binary_sequence_detail::Sequence Range>
+	void set_row(int i, const Range& values) {
+		check_row(i);
+		assert(binary_sequence_detail::size(values) == w_);
+		binary_sequence_detail::pack(values, raw_row(i));
 	}
 	void set_row(int i, std::string_view text) {
 		check_row(i);
@@ -249,6 +261,8 @@ class MatrixMod2 {
 		}
 		return result;
 	}
+	template <binary_sequence_detail::Sequence Range>
+	DynamicBitset operator*(const Range& values) const { return *this * DynamicBitset(values); }
 	MatrixMod2 pow(std::uint64_t exponent) const {
 		assert(h_ == w_);
 		MatrixMod2 result = identity(h_);
@@ -316,6 +330,8 @@ class MatrixMod2 {
 		for (int i = 0; i < int(pivots.size()); ++i) if (work(i, w_)) result.particular.set(pivots[i]);
 		return result;
 	}
+	template <binary_sequence_detail::Sequence Range>
+	std::optional<Solution> solve(const Range& values) const { return solve(DynamicBitset(values)); }
 };
 
 #endif

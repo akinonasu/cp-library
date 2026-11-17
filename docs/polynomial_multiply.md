@@ -4,7 +4,7 @@ documentation_of: //components/polynomial_multiply.hpp
 library_category: components/fps
 ---
 
-`polynomial_detail::Products<F,Limit>` は、積の木と FPS 合成が共有する内部部品です。`F` は `F::multiply` を持つ多項式型、`Limit` はその畳み込みの最大係数数です。
+`polynomial_detail::Products<F,Limit>` は、Product Tree と FPS 合成が共有する内部部品です。`F` は `F::multiply` を持つ多項式型、`Limit` はその畳み込みの最大係数数です。
 
 `multiply(a,b)` は通常の積、`multiply_low(a,b,n)` は積の低次 `n` 係数を返します。後者の返り値は長さ `n` で、不足分は 0 です。積が `Limit` を超える場合は係数列を分割して計算します。
 

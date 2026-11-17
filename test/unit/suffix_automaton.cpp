@@ -39,7 +39,64 @@ void check(const std::string &s, SuffixAutomaton &sam) {
 	for (int i = 0; i < int(s.size()); ++i) assert(sam.find(std::string_view(s).substr(0, i + 1)) == sam.prefix_nodes()[i]);
 }
 
+
+template<class T>
+void integer_sam() {
+	const std::vector<T> alphabet = {T(0), T(1), std::numeric_limits<T>::min(), std::numeric_limits<T>::max(), T(257), T(-7)};
+	std::mt19937 rng(71151);
+	for (int trial = 0; trial < 75; ++trial) {
+		std::vector<T> s, t;
+		for (int n = rng() % 15; n--; ) s.push_back(alphabet[rng() % alphabet.size()]);
+		for (int n = rng() % 17; n--; ) t.push_back(alphabet[rng() % alphabet.size()]);
+		BasicSuffixAutomaton<T> sam;
+		sam.reserve(s.size());
+		auto verify = [&](const std::vector<T> &text) {
+			std::map<std::vector<T>, std::uint64_t> expected;
+			expected[{}] = text.size() + 1;
+			for (std::size_t l = 0; l < text.size(); ++l) for (std::size_t r = l + 1; r <= text.size(); ++r)
+				++expected[std::vector<T>(text.begin() + l, text.begin() + r)];
+			assert(sam.size() == int(text.size()) && sam.distinct_count() + 1 == expected.size());
+			for (const auto &[part, count] : expected) {
+				assert(sam.count(part) == count && sam.contains(part));
+				int v = sam.find(std::span<const T>(part));
+				assert(v >= 0 && sam.occurrences()[v] == count);
+				for (auto [c, u] : sam.transitions(v)) assert(sam.transition(v, c) == u);
+			}
+		};
+		verify({});
+		for (T c : s) { sam.push_back(c); verify(std::vector<T>(s.begin(), s.begin() + sam.size())); }
+		BasicSuffixAutomaton<T> built(s);
+		assert(built.prefix_nodes() == sam.prefix_nodes() && built.occurrences() == sam.occurrences());
+		int best = 0;
+		for (std::size_t i = 0; i < s.size(); ++i) for (std::size_t j = 0; j < t.size(); ++j) {
+			int k = 0;
+			while (i + k < s.size() && j + k < t.size() && s[i + k] == t[j + k]) ++k;
+			best = std::max(best, k);
+		}
+		auto match = sam.longest_common_substring(t);
+		assert(match.length == best && std::equal(s.begin() + match.text_pos, s.begin() + match.text_pos + best, t.begin() + match.query_pos));
+		auto copy = sam;
+		copy.append(t);
+		assert(copy.size() == int(s.size() + t.size()) && sam.size() == int(s.size()));
+		sam.clear(); verify({});
+	}
+}
+
 int main() {
+	static_assert(std::is_same_v<decltype(std::declval<SuffixAutomaton>().transitions(0)), std::vector<std::pair<unsigned char, int>>>);
+	integer_sam<std::int8_t>();
+	integer_sam<std::uint8_t>();
+	integer_sam<std::int16_t>();
+	integer_sam<std::uint16_t>();
+	integer_sam<std::int32_t>();
+	integer_sam<std::uint32_t>();
+	integer_sam<std::int64_t>();
+	integer_sam<std::uint64_t>();
+	std::vector<char> byte_sequence{0, char(255), 0};
+	SuffixAutomaton byte_sam(byte_sequence);
+	assert(byte_sam.count(std::span<const char>(byte_sequence)) == 1);
+	byte_sam.append(byte_sequence);
+	assert(byte_sam.count(byte_sequence) == 2);
 	std::mt19937 rng(727665);
 	for (int n = 0; n <= 8; ++n) for (int mask = 0; mask < (1 << n); ++mask) {
 		std::string s;

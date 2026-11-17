@@ -1,4 +1,4 @@
-#include "data_structure/top_k_sum.hpp"
+#include "data_structure/super_multiset.hpp"
 #include <cassert>
 #include <cstdlib>
 #include <new>
@@ -29,7 +29,7 @@ struct Less {
 
 template<class Compare>
 void check_storage() {
-	TopKSum<int, std::int64_t, Compare> set;
+	SuperMultiset<int, std::int64_t, Compare> set;
 	for (int i = 0; i < 8192; ++i) {
 		allocations = 0; largest_allocation = 0;
 		track_allocations = true;
@@ -67,7 +67,7 @@ int main() {
 	check_storage<std::less<int>>();
 	check_storage<std::greater<int>>();
 	check_storage<Less>();
-	TopKSum<int, LifetimeSum> history;
+	SuperMultiset<int, LifetimeSum> history;
 	for (int i = 0; i < 8192; ++i) history.insert(i);
 	for (int i = 1; i < 8192; ++i) assert(history.erase(i));
 	LifetimeSum::copies = 0;

@@ -167,6 +167,15 @@ void extremes() {
 		assert(seg.get(C(-1)).sum == 17);
 		assert(seg.prod(C(-1), C(0)).sum == 17);
 	}
+	using U = std::make_unsigned_t<C>;
+	WideTree nested(low, high);
+	for (int bit = 0; bit < std::numeric_limits<U>::digits; ++bit)
+		nested.apply(C(U(high) - (U(1) << bit)), high, 1);
+	nested.apply(low, high, 1);
+	auto count = nested.node_count();
+	assert(nested.get(C(high - 1)).sum == std::numeric_limits<U>::digits + 1);
+	assert(nested.get(C(high - 2)).sum == std::numeric_limits<U>::digits);
+	assert(nested.node_count() == count);
 }
 #endif
 

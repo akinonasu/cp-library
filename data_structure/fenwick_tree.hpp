@@ -1,6 +1,7 @@
 #ifndef FENWICK_TREE_HPP
 #define FENWICK_TREE_HPP
 
+#include <bit>
 #include <cassert>
 #include <cstddef>
 #include <limits>
@@ -24,6 +25,20 @@ template<class T, bool Padded = true> class FenwickTree {
 		if constexpr (Padded) return std::size_t(i) + (i >> 10);
 		else return i;
 	}
+	template<bool Upper> int bound(T x) const {
+		if (x < T{}) return 0;
+		if constexpr (!Upper) if (!(T{} < x)) return 0;
+		U remaining(x);
+		unsigned p = 0;
+		for (unsigned step = std::bit_floor(unsigned(n_)); step; step >>= 1) {
+			unsigned next = p + step;
+			if (next <= unsigned(n_) && (Upper ? !(remaining < data_[index(next)]) : data_[index(next)] < remaining)) {
+				remaining -= data_[index(next)];
+				p = next;
+			}
+		}
+		return int(p);
+	}
 
   public:
 	explicit FenwickTree(int n = 0) : n_(n) {
@@ -44,6 +59,14 @@ template<class T, bool Padded = true> class FenwickTree {
 		if (n_ & 1) data_[index(unsigned(n_))] += U(a.back());
 	}
 	[[nodiscard]] int size() const { return n_; }
+	[[nodiscard]] T get(int p) const { return sum(p, p + 1); }
+	void set(int p, T x) {
+		U difference(x);
+		difference -= U(get(p));
+		add(p, T(difference));
+	}
+	[[nodiscard]] int lower_bound(T x) const { return bound<false>(x); }
+	[[nodiscard]] int upper_bound(T x) const { return bound<true>(x); }
 	void add(int p, T x) {
 		assert(0 <= p && p < n_);
 		for (unsigned i = unsigned(p) + 1; i <= unsigned(n_); i += i & -i) data_[index(i)] += U(x);

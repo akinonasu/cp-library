@@ -5,7 +5,8 @@ redirect_from:
 - /data_structure/priority_queue/partially_retroactive_priority_queue.hpp.html
 - /data_structure/advanced/partially_retroactive_priority_queue.hpp.html
 - /lightweight/data_structure/advanced/partially_retroactive_priority_queue.hpp.html
-library_category: data_structure/advanced
+library_category: data_structure
+library_advanced: true
 ---
 
 ```cpp
@@ -71,4 +72,4 @@ queue.erase(30, changed);        // sum = 3
 
 操作数を $$m$$、過去の最大操作数を $$M$$ とします。履歴変更は償却期待 $$O(\log m)$$、`contains_time` は期待 $$O(\log m)$$、現在のクエリ・`operation_count`・`memory_usage` は $$O(1)$$、構築は $$O(m\log m)$$、`assign` は $$O(M+m\log m)$$、`reserve`・`clear` は $$O(M)$$、`for_each` は $$O(m)$$ です。変更通知付きも通知処理が $$O(1)$$ なら同じ計算量です。空間は $$O(M)$$（予約容量が大きい場合はその容量分）です。比較・値のコピーを $$O(1)$$ とします。
 
-「期待」は内部で使う乱数について平均した時間を、「償却」は一連の操作の合計時間から求めた 1 回あたりの計算量を表します。
+期待計算量は内部乱数に関する評価です。

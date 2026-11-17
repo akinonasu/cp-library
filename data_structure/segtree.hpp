@@ -55,6 +55,7 @@ template<class S, auto op, auto e> class Segtree {
 		data_[k] = std::move(value);
 		for (k >>= 1; k; k >>= 1) pull(k);
 	}
+	void multiply(int p, S value) { set(p, op(get(p), std::move(value))); }
 	[[nodiscard]] S get(int p) const {
 		assert(0 <= p && p < n_);
 		return data_[base_ + unsigned(p)];

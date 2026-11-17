@@ -1,5 +1,5 @@
-#ifndef TOP_K_SUM_HPP
-#define TOP_K_SUM_HPP
+#ifndef SUPER_MULTISET_HPP
+#define SUPER_MULTISET_HPP
 
 #include "../components/radix_sort.hpp"
 #include <algorithm>
@@ -16,7 +16,7 @@
 #include <vector>
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>, class Compare = std::greater<T>>
-class TopKSum {
+class SuperMultiset {
 public:
 	using value_type = T;
 	using sum_type = Sum;
@@ -180,14 +180,69 @@ private:
 		}
 		return candidate ? std::optional<T>(candidate->value) : std::nullopt;
 	}
+	bool less(const T &a, const T &b) const {
+		if constexpr (descending) return order(b, a);
+		else return order(a, b);
+	}
+	template<bool WithSum> struct Statistics {
+		size_type count = 0;
+		std::conditional_t<WithSum, Aggregate, size_type> total{0};
+		void add(const Node *p) {
+			if (!p) return;
+			count += p->size;
+			if constexpr (WithSum) total += p->total;
+		}
+		void add_value(const Node *p) {
+			count += p->copies;
+			if constexpr (WithSum) total += contribution(p->value, p->copies);
+		}
+	};
+	template<bool WithSum, bool Above, bool Inclusive>
+	void accumulate(const Node *p, const T &value, Statistics<WithSum> &answer) const {
+		while (p) {
+			bool take;
+			if constexpr (Above) take = Inclusive ? !less(p->value, value) : less(value, p->value);
+			else take = Inclusive ? !less(value, p->value) : less(p->value, value);
+			const auto &part = Above != descending ? p->right : p->left;
+			if (take) {
+				answer.add(part.get());
+				answer.add_value(p);
+				p = (Above != descending ? p->left : p->right).get();
+			} else p = part.get();
+		}
+	}
+	template<bool WithSum, bool Above, bool Inclusive>
+	Statistics<WithSum> threshold(const T &value) const {
+		Statistics<WithSum> answer;
+		accumulate<WithSum, Above, Inclusive>(root.get(), value, answer);
+		return answer;
+	}
+	template<bool WithSum> Statistics<WithSum> range(const T &lower, const T &upper) const {
+		Statistics<WithSum> answer;
+		if (!less(lower, upper)) return answer;
+		const Node *p = root.get();
+		while (p) {
+			const auto &small = descending ? p->right : p->left;
+			const auto &large = descending ? p->left : p->right;
+			if (less(p->value, lower)) p = large.get();
+			else if (!less(p->value, upper)) p = small.get();
+			else {
+				answer.add_value(p);
+				accumulate<WithSum, true, true>(small.get(), lower, answer);
+				accumulate<WithSum, false, false>(large.get(), upper, answer);
+				break;
+			}
+		}
+		return answer;
+	}
 
 public:
-	explicit TopKSum(Compare compare = Compare{}) : order(std::move(compare)) {}
-	explicit TopKSum(std::vector<T> values, Compare compare = Compare{}) : TopKSum(std::move(compare)) { assign(std::move(values)); }
-	TopKSum(std::initializer_list<T> values, Compare compare = Compare{}) : TopKSum(std::vector<T>(values), std::move(compare)) {}
-	TopKSum(const TopKSum &other) : order(other.order), root(clone(other.root)) {}
-	TopKSum(TopKSum &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>) : order(other.order), root(std::move(other.root)) {}
-	TopKSum &operator=(TopKSum other) noexcept(std::is_nothrow_swappable_v<Compare>) {
+	explicit SuperMultiset(Compare compare = Compare{}) : order(std::move(compare)) {}
+	explicit SuperMultiset(std::vector<T> values, Compare compare = Compare{}) : SuperMultiset(std::move(compare)) { assign(std::move(values)); }
+	SuperMultiset(std::initializer_list<T> values, Compare compare = Compare{}) : SuperMultiset(std::vector<T>(values), std::move(compare)) {}
+	SuperMultiset(const SuperMultiset &other) : order(other.order), root(clone(other.root)) {}
+	SuperMultiset(SuperMultiset &&other) noexcept(std::is_nothrow_copy_constructible_v<Compare>) : order(other.order), root(std::move(other.root)) {}
+	SuperMultiset &operator=(SuperMultiset other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		swap(other);
 		return *this;
 	}
@@ -207,7 +262,7 @@ public:
 				counts.push_back(1);
 			} else ++counts.back();
 		}
-		TopKSum next(order);
+		SuperMultiset next(order);
 		next.root = build(values, counts, 0, distinct);
 		swap(next);
 	}
@@ -241,7 +296,37 @@ public:
 	Sum sum_largest(size_type k) const { return sum_impl<!descending>(k); }
 	std::optional<T> lower_bound(const T &value) const { return bound<false>(value); }
 	std::optional<T> upper_bound(const T &value) const { return bound<true>(value); }
+	std::optional<T> min() const { return empty() ? std::nullopt : std::optional<T>(kth_smallest(0)); }
+	std::optional<T> max() const { return empty() ? std::nullopt : std::optional<T>(kth_largest(0)); }
+	std::optional<T> next(const T &value) const { return lower_bound(value); }
+	std::optional<T> prev(const T &value) const {
+		auto p = root.get();
+		const Node *candidate = nullptr;
+		while (p) {
+			if (!less(value, p->value)) { candidate = p; p = (descending ? p->left : p->right).get(); }
+			else p = (descending ? p->right : p->left).get();
+		}
+		return candidate ? std::optional<T>(candidate->value) : std::nullopt;
+	}
 	Sum sum_all() const { return root ? result(root->total) : Sum(0); }
+	size_type count_less(const T &value) const { return threshold<false, false, false>(value).count; }
+	size_type count_leq(const T &value) const { return threshold<false, false, true>(value).count; }
+	size_type count_greater(const T &value) const { return threshold<false, true, false>(value).count; }
+	size_type count_geq(const T &value) const { return threshold<false, true, true>(value).count; }
+	Sum sum_less(const T &value) const { return result(threshold<true, false, false>(value).total); }
+	Sum sum_leq(const T &value) const { return result(threshold<true, false, true>(value).total); }
+	Sum sum_greater(const T &value) const { return result(threshold<true, true, false>(value).total); }
+	Sum sum_geq(const T &value) const { return result(threshold<true, true, true>(value).total); }
+	size_type range_freq(const T &lower, const T &upper) const { return range<false>(lower, upper).count; }
+	Sum range_sum(const T &lower, const T &upper) const { return result(range<true>(lower, upper).total); }
+	std::pair<Sum, size_type> range_sum_with_count(const T &upper) const {
+		auto answer = threshold<true, false, false>(upper);
+		return {result(answer.total), answer.count};
+	}
+	std::pair<Sum, size_type> range_sum_with_count(const T &lower, const T &upper) const {
+		auto answer = range<true>(lower, upper);
+		return {result(answer.total), answer.count};
+	}
 	size_type order_of_key(const T &value) const {
 		size_type answer = 0;
 		auto p = root.get();
@@ -262,17 +347,17 @@ public:
 	}
 	bool contains(const T &value) const { return count(value) != 0; }
 	void clear() { root.reset(); }
-	void swap(TopKSum &other) noexcept(std::is_nothrow_swappable_v<Compare>) {
+	void swap(SuperMultiset &other) noexcept(std::is_nothrow_swappable_v<Compare>) {
 		using std::swap;
 		swap(order, other.order); root.swap(other.root);
 	}
-	friend void swap(TopKSum &a, TopKSum &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
+	friend void swap(SuperMultiset &a, SuperMultiset &b) noexcept(noexcept(a.swap(b))) { a.swap(b); }
 };
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>>
-using LargestKSum = TopKSum<T, Sum, std::greater<T>>;
+using LargestKSum = SuperMultiset<T, Sum, std::greater<T>>;
 
 template<class T = std::int64_t, class Sum = std::common_type_t<T, std::int64_t>>
-using SmallestKSum = TopKSum<T, Sum, std::less<T>>;
+using SmallestKSum = SuperMultiset<T, Sum, std::less<T>>;
 
 #endif

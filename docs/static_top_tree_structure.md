@@ -20,7 +20,7 @@ library_category: components/tree
 | `paths` / `points` | `Vertex`・`Compress` の合計数／`Rake` の数 | $$O(1)$$ |
 | `height` | クラスタ木の最大深さ。空・1 頂点では 0 | $$O(1)$$ |
 
-各頂点で、部分木の頂点数が最大になる子を 1 つ選んで重い子とします。`Vertex` の `left` は、重い子以外の子からの情報をまとめたもので、存在しない場合は `-1` です。`right` は使いません。`Compress` は上側・下側の順に、`Rake` は同じ親に接続する枝として `left`・`right` を併合します。`parent` はクラスタ木の親で、最終クラスタのみ `-1` です。`index` は `Vertex`・`Compress` 用の配列、または `Rake` 用の配列に保存する際の添字です。
+各頂点で、部分木の頂点数が最大になる子を 1 つ選んで heavy child とします。`Vertex` の `left` は、heavy child 以外の子からの情報をまとめたもので、存在しない場合は `-1` です。`right` は使いません。`Compress` は上側・下側の順に、`Rake` は同じ親に接続する枝として `left`・`right` を併合します。`parent` はクラスタ木の親で、最終クラスタのみ `-1` です。`index` は `Vertex`・`Compress` 用の配列、または `Rake` 用の配列に保存する際の添字です。
 
 構築・走査には再帰を使いません。
 

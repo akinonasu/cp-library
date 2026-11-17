@@ -3,11 +3,13 @@
 
 #include "../components/splitmix64.hpp"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <span>
 #include <string_view>
 #include <type_traits>
 #include <vector>
@@ -82,11 +84,19 @@ class RollingHash {
   public:
 	RollingHash() = default;
 	explicit RollingHash(std::string_view s) { build(s); }
-	template <class T>
-	explicit RollingHash(const std::vector<T> &values) { build(values); }
+	template <class T, class Allocator>
+	explicit RollingHash(const std::vector<T, Allocator> &values) { build(values); }
+	template <class T, std::size_t Extent>
+	explicit RollingHash(std::span<T, Extent> values) { build(values); }
+	template <class T, std::size_t N>
+	explicit RollingHash(const std::array<T, N> &values) { build(values); }
 	void build(std::string_view s) { build_range(s); }
-	template <class T>
-	void build(const std::vector<T> &values) { build_range(values); }
+	template <class T, class Allocator>
+	void build(const std::vector<T, Allocator> &values) { build_range(values); }
+	template <class T, std::size_t Extent>
+	void build(std::span<T, Extent> values) { build_range(values); }
+	template <class T, std::size_t N>
+	void build(const std::array<T, N> &values) { build_range(values); }
 	int size() const { return prefix.empty() ? 0 : int(prefix.size() - 1); }
 	bool empty() const { return !size(); }
 	static void reserve(int n) {
@@ -118,10 +128,22 @@ class RollingHash {
 	}
 	int lcp(int l, int r, const RollingHash &other, int other_l, int other_r) const {
 		assert(0 <= l && l <= r && r <= size() && 0 <= other_l && other_l <= other_r && other_r <= other.size());
-		int low = 0, high = std::min(r - l, other_r - other_l);
+		int high = std::min(r - l, other_r - other_l);
+		if (!high) return 0;
+		if (high == 1) return get(l, l + 1) == other.get(other_l, other_l + 1);
+		if (this == &other && l == other_l) return high;
+		Hash difference = prefix[l] + mod - other.prefix[other_l];
+		if (difference >= mod) difference -= mod;
+		auto equal = [&](int length) {
+			Hash value = other.prefix[other_l + length] + mul(difference, powers[length]);
+			return prefix[l + length] == (value >= mod ? value - mod : value);
+		};
+		if (!equal(1)) return 0;
+		if (equal(high)) return high;
+		int low = 1;
 		while (low < high) {
 			int mid = high - (high - low) / 2;
-			if (get(l, l + mid) == other.get(other_l, other_l + mid)) low = mid;
+			if (equal(mid)) low = mid;
 			else high = mid - 1;
 		}
 		return low;

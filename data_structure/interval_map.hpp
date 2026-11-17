@@ -162,8 +162,12 @@ public:
 	bool empty() const { return ranges.empty(); }
 	const_iterator begin() const { return ranges.begin(); }
 	const_iterator end() const { return ranges.end(); }
+	const_iterator cbegin() const { return ranges.cbegin(); }
+	const_iterator cend() const { return ranges.cend(); }
 	const_reverse_iterator rbegin() const { return ranges.rbegin(); }
 	const_reverse_iterator rend() const { return ranges.rend(); }
+	const_reverse_iterator crbegin() const { return ranges.crbegin(); }
+	const_reverse_iterator crend() const { return ranges.crend(); }
 	void clear() { ranges.clear(); total = 0; }
 	void swap(IntervalMap &other) noexcept(std::is_nothrow_swappable_v<Size> && std::is_nothrow_swappable_v<Equal>) {
 		ranges.swap(other.ranges);

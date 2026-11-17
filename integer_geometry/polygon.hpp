@@ -33,9 +33,10 @@ template<Coordinate T, Coordinate U>
 Location contains(const std::vector<BasicPoint<T>> &polygon, const BasicPoint<U> &point) {
 	std::int64_t winding = 0;
 	for (std::size_t i = 0; i < polygon.size(); ++i) {
-		const auto &a = polygon[i], &b = polygon[(i + 1) % polygon.size()];
-		if (on_segment(Segment<T>{a, b}, point)) return Location::boundary;
+		const auto &a = polygon[i], &b = polygon[i + 1 == polygon.size() ? 0 : i + 1];
 		Wide turn = linear_detail::side(a, b, point);
+		if (!turn && std::min(a.x, b.x) <= point.x && point.x <= std::max(a.x, b.x)
+			&& std::min(a.y, b.y) <= point.y && point.y <= std::max(a.y, b.y)) return Location::boundary;
 		if (a.y <= point.y && point.y < b.y && turn > 0) ++winding;
 		if (b.y <= point.y && point.y < a.y && turn < 0) --winding;
 	}

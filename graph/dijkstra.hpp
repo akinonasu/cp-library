@@ -124,23 +124,23 @@ std::pair<T, std::vector<int>> path(const G &g, int st, int target, T inf) {
 }
 }
 
-template<bool Topological, class T>
-std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, T>>> &g, int st, T inf = shortest_path_detail::infinity<T>()) {
+template<bool Topological, class W, class T = W>
+std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, W>>> &g, int st, T inf = shortest_path_detail::infinity<T>()) {
 	return shortest_path_detail::distances<Topological>(g, st, inf);
 }
 
-template<class T>
-std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, T>>> &g, int st, T inf = shortest_path_detail::infinity<T>()) {
+template<class W, class T = W>
+std::vector<T> dijkstra(const std::vector<std::vector<std::pair<int, W>>> &g, int st, T inf = shortest_path_detail::infinity<T>()) {
 	return dijkstra<false>(g, st, inf);
 }
 
-template<bool Topological, class T>
-std::pair<T, std::vector<int>> dijkstra_path(const std::vector<std::vector<std::pair<int, T>>> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
+template<bool Topological, class W, class T = W>
+std::pair<T, std::vector<int>> dijkstra_path(const std::vector<std::vector<std::pair<int, W>>> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
 	return shortest_path_detail::path<Topological>(g, st, target, inf);
 }
 
-template<class T>
-std::pair<T, std::vector<int>> dijkstra_path(const std::vector<std::vector<std::pair<int, T>>> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
+template<class W, class T = W>
+std::pair<T, std::vector<int>> dijkstra_path(const std::vector<std::vector<std::pair<int, W>>> &g, int st, int target, T inf = shortest_path_detail::infinity<T>()) {
 	return dijkstra_path<false>(g, st, target, inf);
 }
 

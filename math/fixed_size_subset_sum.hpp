@@ -7,12 +7,12 @@
 
 inline std::vector<long long> fixed_size_subset_sums(std::vector<int> values, int k) {
 	assert(k >= 0 && values.size() <= std::size_t(std::numeric_limits<int>::max()));
-	for ([[maybe_unused]] int x : values) assert(x >= 0);
 	if (!k) return {0};
 	std::sort(values.begin(), values.end());
 	values.erase(std::unique(values.begin(), values.end()), values.end());
 	int count = int(values.size());
 	if (k > count) return {};
+	if (values.front() < 0) return fixed_size_subset_sum_detail::wide_sums(values, k);
 	long long total = std::accumulate(values.begin(), values.end(), 0LL);
 	bool complement = k > count - k;
 	if (complement) k = count - k;
@@ -78,6 +78,23 @@ inline std::vector<long long> fixed_size_subset_sums(std::vector<int> values, in
 		std::reverse(result.begin(), result.end());
 	}
 	return result;
+}
+
+template <fixed_size_subset_sum_detail::IntegralValue T, class Allocator>
+std::vector<long long> fixed_size_subset_sums(std::vector<T, Allocator> values, int k) {
+	assert(k >= 0 && values.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if (!k) return {0};
+	std::sort(values.begin(), values.end());
+	values.erase(std::unique(values.begin(), values.end()), values.end());
+	if (std::size_t(k) > values.size()) return {};
+	return fixed_size_subset_sum_detail::wide_sums(values, k);
+}
+
+template <class T, std::size_t Extent> requires fixed_size_subset_sum_detail::IntegralValue<std::remove_const_t<T>> && (!std::is_volatile_v<T>)
+std::vector<long long> fixed_size_subset_sums(std::span<T, Extent> values, int k) {
+	assert(k >= 0 && values.size() <= std::size_t(std::numeric_limits<int>::max()));
+	if (!k) return {0};
+	return fixed_size_subset_sums(std::vector<std::remove_const_t<T>>(values.begin(), values.end()), k);
 }
 
 #endif

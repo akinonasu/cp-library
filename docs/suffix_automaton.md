@@ -64,3 +64,41 @@ int main() {
 文字数・予約長は `(INT_MAX-1)/3` 以下とします。状態を引数に取る操作には `[0,node_count())` の番号を渡してください。最長共通部分文字列の引数は `INT_MAX` バイト以下です。削除や途中への挿入には対応しません。バイト列として処理するため、UTF-8 の文字単位ではありません。返した配列は値のコピーです。ただし `prefix_nodes()` の参照とその要素の有効期間には `std::vector` と同じ規則が適用されます。
 
 文字数を $$N$$、検索する文字列の長さを $$M$$、登場するバイトの種類数を $$\sigma\le256$$ とします。構築・文字追加の合計は $$O(N\sigma)$$ 時間、保持空間は $$O(N)$$ です。`push_back` は、一連の追加にかかる合計時間から評価した1回当たりの時間（償却時間）が $$O(\sigma)$$、`transition` は $$O(\sigma)$$、`find`・`contains`・`walk`・最長共通部分文字列は $$O(M\sigma)$$ です。`count` は文字追加後の初回に追加で $$O(N)$$、以降は $$O(M\sigma)$$ 時間です。`occurrences`・`order_by_length` は $$O(N)$$ 時間・追加空間、`transitions(v)` は出次数に比例する時間・追加空間です。`reserve` は予約長と既存要素数に比例する時間、`clear` は $$O(N)$$ 時間、その他の取得は $$O(1)$$ 時間です。
+
+`BasicSuffixAutomaton<T>` は整数列にも同じ操作を提供します。`T` は `bool` を除く 64 bit 以下の整数型です。負数・最小値・最大値を含め、値を変換せずに扱います。`SuffixAutomaton` は `BasicSuffixAutomaton<char>` の別名なので、既存の型名もそのまま使えます。
+
+整数版の列引数は `span<const T>` で受け取り、同じ要素型の `vector<T>`・`span<T>` も渡せます。`push_back`・`transition` は `T` を受け取り、`transitions(v)` は `vector<pair<T,int>>` を返します。それ以外の操作名・返り値・位置・空列・重複出現・コピーの扱いは文字列版と同じです。`SuffixAutomaton` 自体にも `vector<char>`・`span<char>`・`span<const char>` を渡せます。
+
+```cpp
+#include "lib/string/suffix_automaton.hpp"
+#include <cassert>
+#include <cstdint>
+#include <vector>
+
+int main() {
+	std::vector<std::int64_t> text{-5, 1000000000000LL, -5};
+	BasicSuffixAutomaton<std::int64_t> sam(text);
+	std::vector<std::int64_t> pattern{-5};
+	assert(sam.count(pattern) == 2);
+	sam.push_back(1000000000000LL);
+	pattern.push_back(1000000000000LL);
+	assert(sam.count(pattern) == 2);
+}
+```
+
+整数版について、追加した要素数を $$N$$、検索列の長さを $$M$$、追加済みの異なる値の数を $$\Sigma$$ とします。値が 0 種類・1 種類なら、以下の対数時間は定数時間として扱います。
+
+| 整数版の操作 | 時間計算量 |
+| --- | --- |
+| 空の構築 | $$O(1)$$ |
+| 列からの構築・一連の `push_back` / `append` | 合計 $$O(N\log\Sigma)$$ |
+| `push_back(c)` | 償却 $$O(\log\Sigma)$$ |
+| `transition(v,c)` | $$O(\log\Sigma)$$ |
+| `find(s)` / `contains(s)` / `walk(v,s)` / `longest_common_substring(s)` | $$O(M\log\Sigma)$$ |
+| `count(s)` | $$O(M\log\Sigma)$$、追加後の初回はさらに $$O(N)$$ |
+| `occurrences()` / `order_by_length()` | $$O(N)$$ |
+| `transitions(v)` | 出次数に比例 |
+| `reserve(n)` / `clear()` | 予約長と既存要素数に比例 / $$O(N)$$ |
+| その他の取得操作 | $$O(1)$$ |
+
+整数版の保持空間は $$O(N)$$ です。`occurrences`・`order_by_length` は $$O(N)$$、`transitions` は出次数に比例する追加空間を使います。出現回数の初回計算は $$O(N)$$ 追加空間を使い、結果を次の追加まで保持します。それ以外の検索は $$O(1)$$ 追加空間です。

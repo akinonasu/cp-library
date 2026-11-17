@@ -10,7 +10,8 @@ class SuffixLocusIndex {
 
   public:
 	SuffixLocusIndex() = default;
-	explicit SuffixLocusIndex(const SuffixTree &tree) { build(tree); }
+	template <class Symbol>
+	explicit SuffixLocusIndex(const BasicSuffixTree<Symbol> &tree) { build(tree); }
 	SuffixLocusIndex(const SuffixLocusIndex &) = default;
 	SuffixLocusIndex &operator=(const SuffixLocusIndex &) = default;
 	SuffixLocusIndex(SuffixLocusIndex &&other) noexcept { swap(other); }
@@ -22,7 +23,8 @@ class SuffixLocusIndex {
 		nodes_.swap(other.nodes_);
 		terminal_.swap(other.terminal_);
 	}
-	void build(const SuffixTree &tree) {
+	template <class Symbol>
+	void build(const BasicSuffixTree<Symbol> &tree) {
 		SuffixLocusIndex result;
 		int count = tree.node_count();
 		std::vector<int> heavy(count, -1), position(count);

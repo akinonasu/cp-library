@@ -45,7 +45,7 @@ int main() {
 | `force_equal(u,v,equal = true)` | `equal == true` なら選択を一致させ、`false` なら異ならせる | 償却 $$O(1)$$ |
 | `solve()` | 最小費用と選択を `std::optional<Result>` で返す。実行不能なら `std::nullopt` | 最大流の計算量 |
 
-頂点番号 `u,v` は `int`、状態 `value,a,b,equal` は `bool`、頂点列 `vertices` は `const std::vector<int>&` です。費用を追加する関数と制約を追加する関数の返り値は `void` です。表の `k` は重複を含めた頂点列の長さです。「償却」は、複数回の追加にかかる合計時間から求めた 1 回あたりの計算量を表します。
+頂点番号 `u,v` は `int`、状態 `value,a,b,equal` は `bool`、頂点列 `vertices` は `const std::vector<int>&` です。費用を追加する関数と制約を追加する関数の返り値は `void` です。表の `k` は重複を含めた頂点列の長さです。
 
 `Cost` は符号付き 64 bit 以下の標準整数型で、`cost_type` から参照できます。金額の引数、集約中の費用、`Result::cost` は全て `total_type`（`__int128_t`）です。64 bit 整数の最小値などを符号反転する場合は、`-ProjectSelection<>::total_type(value)` のように先に型を広げます。呼び出した費用は全て加算され、既存の費用を上書きしません。
 

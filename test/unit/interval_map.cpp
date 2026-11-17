@@ -16,6 +16,12 @@ template<class T> void boundaries() {
 	const T lo = (std::numeric_limits<T>::min)(), hi = (std::numeric_limits<T>::max)();
 	const Size length = static_cast<Size>(hi) - static_cast<Size>(lo);
 	Map map(lo, hi, 1);
+	static_assert(std::is_same_v<decltype(map.cbegin()), typename Map::const_iterator>);
+	static_assert(std::is_same_v<decltype(map.cend()), typename Map::const_iterator>);
+	static_assert(std::is_same_v<decltype(map.crbegin()), typename Map::const_reverse_iterator>);
+	static_assert(std::is_same_v<decltype(map.crend()), typename Map::const_reverse_iterator>);
+	const auto &view = map;
+	assert(view.cbegin()->first == lo && view.crbegin()->second.right == hi);
 	assert(map.size() == length && map.interval_count() == 1);
 	assert(map.contains(lo, hi, 1) && !map.get(hi));
 	map.assign(lo, T(1), 2);
@@ -29,6 +35,7 @@ template<class T> void boundaries() {
 	assert(map.size() == length && map.interval_count() == 2);
 	assert(map.count(lo, hi) == length && map.erase(lo, hi) == length);
 	assert(map.empty() && map.size() == 0 && map.lower_bound(lo) == map.end());
+	assert(view.cbegin() == view.cend() && view.crbegin() == view.crend());
 }
 
 void randomized() {
@@ -77,8 +84,9 @@ void randomized() {
 			while (x < 33 && values[x + 32] == v) { ++x; ++size; }
 			expected.emplace_back(first, x, v);
 		}
-		for (const auto &[left, segment] : map) actual.emplace_back(left, segment.right, segment.value);
-		for (auto it = map.rbegin(); it != map.rend(); ++it) reversed.emplace_back(it->first, it->second.right, it->second.value);
+		const auto &view = map;
+		for (auto it = view.cbegin(); it != view.cend(); ++it) actual.emplace_back(it->first, it->second.right, it->second.value);
+		for (auto it = view.crbegin(); it != view.crend(); ++it) reversed.emplace_back(it->first, it->second.right, it->second.value);
 		assert(actual == expected && reversed == std::vector<Entry>(expected.rbegin(), expected.rend()));
 		assert(map.size() == size && map.interval_count() == expected.size() && map.empty() == expected.empty());
 		for (int x = -34; x <= 34; ++x) {

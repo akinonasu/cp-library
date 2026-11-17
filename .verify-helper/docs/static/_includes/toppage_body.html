@@ -3,20 +3,15 @@
 {% else %}
 <p class="profile-note">高速実装と軽量実装を掲載しています。各ライブラリ単体の展開コードは256 KiB未満です。解答本体や他のライブラリを加えた提出コード全体のサイズは確認してください。</p>
 {% endif %}
-<p>{{ page.data.profileLibraryCount }}項目（補助部品を含む）{% if page.size_profile == 'lightweight' %} · 軽量実装 {{ page.data.profileAvailableCount }}件{% endif %}</p>
+<p>{{ page.data.profileLibraryCount }}項目{% if page.size_profile == 'lightweight' %} · 軽量実装 {{ page.data.profileAvailableCount }}件{% endif %}</p>
 <div class="library-search">
   <label for="library-search">{% if page.components %}補助部品{% elsif page.advanced %}応用ライブラリ{% else %}ライブラリ{% endif %}を検索</label>
-  <input id="library-search" type="search" placeholder="{% if page.components %}例: Bit Vector / allocator / rank{% elsif page.advanced %}例: HLD / Beats / Retroactive{% else %}例: LCA / FFT / 素因数分解{% endif %}" autocomplete="off" aria-controls="library-list">
+  <input id="library-search" type="search" placeholder="{% if page.components %}例: Bit Vector / allocator / rank{% elsif page.advanced %}例: HLD / Kinetic / Retroactive{% else %}例: LCA / FFT / 素因数分解{% endif %}" autocomplete="off" aria-controls="library-list">
   <p id="search-status" role="status" aria-live="polite"></p>
 </div>
 <div id="library-list">
-  {% for advanced_pass in (0..1) %}
   {% for category in page.data.libraryCategories %}
   {% assign folder = category.name | split: '/' | first %}
-  {% assign advanced = false %}
-  {% if category.name == site.advanced_directory %}{% assign advanced = true %}{% endif %}
-  {% if advanced_pass == 0 and advanced %}{% continue %}{% endif %}
-  {% if advanced_pass == 1 and advanced != true %}{% continue %}{% endif %}
   {% capture entries %}
       {% for item in category.pages %}
       {% assign auxiliary = false %}
@@ -24,7 +19,7 @@
         {% unless site.main_libraries contains item.path %}{% assign auxiliary = true %}{% endunless %}
       {% endif %}
       {% if page.advanced %}
-        {% unless advanced %}{% continue %}{% endunless %}
+        {% unless item.libraryAdvanced %}{% continue %}{% endunless %}
       {% elsif page.components %}
         {% unless auxiliary %}{% continue %}{% endunless %}
       {% elsif auxiliary %}
@@ -34,18 +29,17 @@
       {% assign doc = docs | where: 'size_profile', page.size_profile | first %}
       {% unless doc %}{% assign doc = docs | where: 'size_profile', 'full' | first %}{% endunless %}
       <li class="library-entry" data-search="{{ item.title | escape }} {{ item.path | escape }} {{ item.implementationPath | escape }} {{ doc.content | strip_html | escape }}">
-        <a href="{{ item.pagePath | relative_url }}"><span>{{ item.icon }} {{ item.title | escape }}</span><small>{% if item.profileAvailable %}{{ item.implementationPath | escape }}{% else %}軽量実装なし · 高速実装はこちら{% endif %}</small></a>
+        <a href="{{ item.pagePath | relative_url }}"><span>{{ item.icon }} {{ item.title | escape }}</span><small>{% if item.libraryAdvanced %}応用 · {% endif %}{% if item.profileAvailable %}{{ item.implementationPath | escape }}{% else %}軽量実装なし · 高速実装はこちら{% endif %}</small></a>
       </li>
       {% endfor %}
   {% endcapture %}
   {% assign visible_entries = entries | strip %}
   {% if visible_entries != '' %}
   <section class="library-category">
-    <h2>{% if advanced %}応用ライブラリ{% elsif folder == 'components' and page.components != true %}変換{% elsif category.name == 'integer_geometry' %}整数幾何{% else %}{{ category.name | escape }}{% endif %}</h2>
+    <h2>{% if folder == 'components' and page.components != true %}変換{% elsif category.name == 'integer_geometry' %}整数幾何{% else %}{{ category.name | escape }}{% endif %}</h2>
     <ul class="library-entries">{{ entries }}</ul>
   </section>
   {% endif %}
-  {% endfor %}
   {% endfor %}
 </div>
 <p id="search-empty" hidden>一致するライブラリがありません。</p>

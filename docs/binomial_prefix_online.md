@@ -6,7 +6,7 @@ library_category: components/math
 
 [二項係数の累積和](https://qandori.github.io/cp-library/math/binomial_prefix_sum.hpp.html) の通常版・軽量版で共有する内部実装です。利用するときは公開ヘッダーを include してください。
 
-`binomial_prefix_detail::Online<Mint,Table>` は、素数 mod の要素型 `Mint` と階乗・逆階乗・2 の累乗を生成する `Table` を使います。`n,k` を一定間隔で選んだ点に対応する前計算表を格子と呼びます。`max_n` は非負かつ `INT_MAX` と法より小さく、`block_size` は非負にします。
+`binomial_prefix_detail::Online<Mint,Table>` は、素数 mod の要素型 `Mint` と階乗・逆階乗・2 の累乗を生成する `Table` を使います。前計算表には `n,k` を一定間隔で選んだ点に対応する値を保存します。`max_n` は非負かつ `INT_MAX` と法より小さく、`block_size` は非負にします。
 
 | 操作 | 内容・返り値 | 計算量 |
 | --- | --- | --- |

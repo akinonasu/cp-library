@@ -165,7 +165,7 @@ class MinCostBFlow {
 				graph.add_edge(n, v, Bounds::amount(balance[v]), 0);
 			} else if (balance[v] < 0) graph.add_edge(v, n + 1, Bounds::amount(-balance[v]), 0);
 		}
-		auto [sent, cost] = graph.flow(n, n + 1, Bounds::amount(need));
+		auto [sent, cost] = need ? graph.flow(n, n + 1, Bounds::amount(need)) : std::pair<Residual, Total>{0, 0};
 		if (Wide(sent) != need) return std::nullopt;
 		Result result{Total(base_cost) + cost, {}, {}, Cap(0)};
 		result.flow.reserve(m);
@@ -181,8 +181,11 @@ class MinCostBFlow {
 			result.value = narrow(objective < 0 ? Wide(upper) - delta : Wide(lower) + delta);
 		}
 		if (!objective) {
-			const auto& p = graph.potentials();
-			result.potential.assign(p.begin(), p.begin() + n);
+			if (!need) result.potential.assign(n, Cost(0));
+			else {
+				const auto& p = graph.potentials();
+				result.potential.assign(p.begin(), p.begin() + n);
+			}
 		}
 		return result;
 	}

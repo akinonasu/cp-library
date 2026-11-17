@@ -7,7 +7,7 @@ redirect_from:
 library_category: graph/connectivity
 ---
 
-無向グラフで、頂点や辺を 1 つ取り除くと連結成分の数が増えるものを求めます。そのような頂点を関節点、辺を橋と呼びます。
+無向グラフの関節点・橋を求めます。
 
 ```cpp
 #include "lib/graph/low_link.hpp"

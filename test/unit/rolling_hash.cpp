@@ -1,9 +1,12 @@
 #include "string/rolling_hash.hpp"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <limits>
+#include <memory_resource>
 #include <random>
+#include <span>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -61,6 +64,19 @@ void integer_test(std::mt19937_64 &random) {
 	std::vector<T> a{std::numeric_limits<T>::min(), std::numeric_limits<T>::max(), T(0), T(1), T(-1)};
 	RollingHash hash(a);
 	check(hash, a);
+	check(RollingHash(std::span<const T>(a)), a);
+	check(RollingHash(std::span<T>(a)), a);
+	std::array<T, 5> fixed{};
+	std::copy(a.begin(), a.end(), fixed.begin());
+	check(RollingHash(fixed), fixed);
+	check(RollingHash(std::span<const T, 5>(fixed)), fixed);
+	hash.build(std::span<T, 5>(fixed));
+	check(hash, fixed);
+	hash.build(fixed);
+	check(hash, fixed);
+	std::pmr::vector<T> allocated(a.begin(), a.end());
+	check(RollingHash(allocated), allocated);
+	check(RollingHash(std::array<T, 0>{}), std::array<T, 0>{});
 	for (int i = 0; i < 50; ++i) {
 		a.resize(random() % 60);
 		for (auto &x : a) x = T(random());
@@ -121,6 +137,15 @@ int main() {
 	std::string long_prefix(200000, 'a'), changed = long_prefix;
 	changed.back() = 'b';
 	assert(RollingHash(long_prefix).lcp(0, RollingHash(changed), 0) == 199999);
+	RollingHash original(long_prefix), different(changed);
+	for (int l : {1, 2, 31, 63, 4096}) for (int j : {1, 2, 31, 63, 4096}) {
+		int limit = int(long_prefix.size()) - std::max(l, j);
+		assert(original.lcp(l, different, j) == limit - (j >= l));
+		assert(original.lcp(l, l + 10000, different, j, j + 10000) == 10000);
+		assert(original.lcp(l, l + 10000, original, l, l + 9999) == 9999);
+	}
+	assert(RollingHash("a").lcp(0, RollingHash("a"), 0) == 1);
+	assert(RollingHash("a").lcp(0, RollingHash("b"), 0) == 0);
 	for (int i = 0; i < 5000; ++i) {
 		std::uint64_t left = i < 4 ? RollingHash::mod - 1 - i : random() % RollingHash::mod;
 		std::uint64_t right = i < 4 ? RollingHash::mod - 1 - i : random() % RollingHash::mod;

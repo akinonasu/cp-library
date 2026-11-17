@@ -6,13 +6,22 @@
 #include <bit>
 #include <cstdint>
 #include <stdexcept>
+#include <type_traits>
 #include <vector>
 
 namespace wildcard_matching_detail {
 
-template <std::uint32_t mod>
-void filter_prime(const std::vector<std::uint16_t> &text, const std::vector<std::uint16_t> &pattern,
+template <std::uint32_t mod, class Code>
+void filter_prime(const std::vector<Code> &text, const std::vector<Code> &pattern,
 		std::vector<bool> &matches, bool text_has_wildcard, bool pattern_has_wildcard) {
+	auto encode = [](Code value) -> std::uint32_t {
+		if constexpr (std::is_same_v<Code, std::uint16_t>) return value;
+		else return value % mod;
+	};
+	auto square = [](Code value) -> std::uint32_t {
+		if constexpr (std::is_same_v<Code, std::uint16_t>) return std::uint32_t(value) * value;
+		else return std::uint64_t(value) * value % mod;
+	};
 	std::size_t m = pattern.size(), length = std::bit_ceil(std::min(text.size(), 2 * m - 1));
 	bool vectorized = false;
 #if defined(__x86_64__) || defined(__i386__)
@@ -23,10 +32,10 @@ void filter_prime(const std::vector<std::uint16_t> &text, const std::vector<std:
 	std::uint64_t pattern_square_sum = 0;
 	for (std::size_t i = 0; i < m; ++i) {
 		auto value = pattern[m - 1 - i];
-		values[i] = value;
+		values[i] = encode(value);
 		if (pattern_has_wildcard) mask[i] = value != 0;
-		if (text_has_wildcard) squares[i] = std::uint32_t(value) * value;
-		pattern_square_sum += std::uint32_t(value) * value;
+		if (text_has_wildcard) squares[i] = square(value);
+		pattern_square_sum += square(value);
 	}
 	ntt_mod_detail::forward(values, plan, vectorized);
 	if (pattern_has_wildcard) ntt_mod_detail::forward(mask, plan, vectorized);
@@ -38,7 +47,7 @@ void filter_prime(const std::vector<std::uint16_t> &text, const std::vector<std:
 		std::size_t size = std::min(length, text.size() - start), count = size - m + 1;
 		auto first = matches.begin() + start, last = first + count;
 		if (std::find(first, last, true) == last) continue;
-		for (std::size_t i = 0; i < size; ++i) result[i] = text[start + i];
+		for (std::size_t i = 0; i < size; ++i) result[i] = encode(text[start + i]);
 		std::fill(result.begin() + size, result.end(), 0);
 		ntt_mod_detail::forward(result, plan, vectorized);
 		ntt_mod_detail::pointwise<mod>(result, values, vectorized);
@@ -51,7 +60,7 @@ void filter_prime(const std::vector<std::uint16_t> &text, const std::vector<std:
 			if (channel == 0 ? !pattern_has_wildcard : !text_has_wildcard) continue;
 			for (std::size_t i = 0; i < size; ++i) {
 				auto value = text[start + i];
-				work[i] = channel == 0 ? std::uint32_t(value) * value : value != 0;
+				work[i] = channel == 0 ? square(value) : value != 0;
 			}
 			std::fill(work.begin() + size, work.end(), 0);
 			ntt_mod_detail::forward(work, plan, vectorized);
@@ -66,7 +75,7 @@ void filter_prime(const std::vector<std::uint16_t> &text, const std::vector<std:
 		ntt_mod_detail::scale<mod>(result, scale, vectorized);
 		std::uint64_t window = 0;
 		if (!pattern_has_wildcard)
-			for (std::size_t i = 0; i < m; ++i) window += std::uint32_t(text[start + i]) * text[start + i];
+			for (std::size_t i = 0; i < m; ++i) window += square(text[start + i]);
 		for (std::size_t i = 0; i < count; ++i) {
 			if (matches[start + i]) {
 				std::uint32_t value = result[m - 1 + i] + constant;
@@ -75,8 +84,8 @@ void filter_prime(const std::vector<std::uint16_t> &text, const std::vector<std:
 				if (value != 0) matches[start + i] = false;
 			}
 			if (!pattern_has_wildcard && i + 1 < count) {
-				window -= std::uint32_t(text[start + i]) * text[start + i];
-				window += std::uint32_t(text[start + i + m]) * text[start + i + m];
+				window -= square(text[start + i]);
+				window += square(text[start + i + m]);
 			}
 		}
 	}
@@ -89,6 +98,17 @@ inline void filter_ntt(const std::vector<std::uint16_t> &text, const std::vector
 	filter_prime<998244353>(text, pattern, matches, text_has_wildcard, pattern_has_wildcard);
 	if (bound >= 998244353 && std::find(matches.begin(), matches.end(), true) != matches.end())
 		filter_prime<469762049>(text, pattern, matches, text_has_wildcard, pattern_has_wildcard);
+}
+
+inline void filter_ntt(const std::vector<std::uint32_t> &text, const std::vector<std::uint32_t> &pattern,
+		std::vector<bool> &matches, __uint128_t bound, bool text_has_wildcard, bool pattern_has_wildcard) {
+	if (pattern.size() > (std::size_t(1) << 22)) throw std::length_error("wildcard pattern is too long");
+	if (std::find(matches.begin(), matches.end(), true) == matches.end()) return;
+	filter_prime<998244353>(text, pattern, matches, text_has_wildcard, pattern_has_wildcard);
+	if (bound >= 998244353 && std::find(matches.begin(), matches.end(), true) != matches.end())
+		filter_prime<469762049>(text, pattern, matches, text_has_wildcard, pattern_has_wildcard);
+	if (bound >= __uint128_t(998244353) * 469762049 && std::find(matches.begin(), matches.end(), true) != matches.end())
+		filter_prime<167772161>(text, pattern, matches, text_has_wildcard, pattern_has_wildcard);
 }
 
 }

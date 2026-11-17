@@ -6,15 +6,20 @@ library_category: data_structure/associative
 
 ```cpp
 #include "lib/data_structure/interval_set.hpp"
+#include <cassert>
 
-IntervalSet<> s;
-s.insert(2, 7);
-s.insert(7, 10);
-s.erase(4, 6);
-auto size = s.size();       // 6
-auto mex = s.mex(2);        // 4
-auto next = s.next(5);      // 6
-for (auto [l, r] : s) {}    // [2,4), [6,10)
+int main() {
+	IntervalSet<> s;
+	assert(s.cbegin() == s.cend() && s.crbegin() == s.crend());
+	s.insert(2, 7);
+	s.insert(7, 10);
+	s.erase(4, 6);
+	assert(s.size() == 6);
+	assert(s.mex(2) == 4);
+	assert(s.next(5) == 6);
+	assert(s.cbegin()->first == 2 && s.cbegin()->second == 4);
+	assert(s.crbegin()->first == 6 && s.crbegin()->second == 10);
+}
 ```
 
 整数の集合を、重ならず隣接もしない半開区間 $$[l,r)$$ に圧縮します。隣接する区間は自動で結合します。`IntervalSet<T, Size>` の `T` が座標型、`Size` が要素数の型です。`T` は `bool` を除く整数型で、`__int128_t`・`__uint128_t` や Boost.Multiprecision の整数型にも対応します。既定の座標型は `std::int64_t` です。
@@ -69,10 +74,12 @@ c.insert((std::numeric_limits<int256_t>::lowest)(),
 | `size()` | 集合の要素数 | $$O(1)$$ |
 | `interval_count()` | 圧縮後の区間数 | $$O(1)$$ |
 | `empty()` | 空集合か | $$O(1)$$ |
-| `begin()` / `end()` | 区間を左端の昇順に走査する読み取り専用イテレータ | $$O(1)$$ |
-| `rbegin()` / `rend()` | 区間を降順に走査する読み取り専用イテレータ | $$O(1)$$ |
+| `begin()` / `end()` / `cbegin()` / `cend()` | 区間を左端の昇順に走査する読み取り専用イテレータ | $$O(1)$$ |
+| `rbegin()` / `rend()` / `crbegin()` / `crend()` | 区間を降順に走査する読み取り専用イテレータ | $$O(1)$$ |
 | `clear()` | 空集合に戻す | $$O(n)$$ |
 | `swap(t)` / `swap(s,t)` | 集合を交換 | $$O(1)$$ |
+
+`cbegin()`・`cend()` は `const_iterator`、`crbegin()`・`crend()` は `const_reverse_iterator` を返します。どれも読み取り専用で、空の場合は始端と終端が等しくなります。イテレータ取得は $$O(1)$$ 時間・追加空間です。
 
 `coordinate_type` は `T`、`size_type` は `Size`、`interval_type` は `std::pair<T,T>` です。`insert`・`erase`・`count`・`size` は `size_type` を返します。`const_iterator`・`const_reverse_iterator` の参照先は左端・右端の組です。更新時に結合・分割・削除・左端の変更を受けた区間のイテレータは使い直してください。
 

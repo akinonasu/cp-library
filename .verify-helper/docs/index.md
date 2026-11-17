@@ -6,4 +6,4 @@ Bit Vector やアロケータなど、主にライブラリ内部で使う部品
 
 Codeforces などコード長制限が厳しいコンテスト向けに[軽量版サイト]({{ '/lightweight/' | relative_url }})を用意しています。詳細は[サイズ制限と提出方法]({{ '/docs/source_size.html' | relative_url }})を参照してください。
 
-設計をあまり練れていない・使い方がよく分かっていないアルゴリズムは一覧末尾の [応用ライブラリ]({{ '/' | append: page.library_prefix | append: 'data_structure/advanced/' | relative_url }}) にまとめています。
+応用ライブラリも用途ごとの分類に掲載し、「応用」と表示しています。[応用ライブラリだけの一覧]({{ '/' | append: page.library_prefix | append: 'data_structure/advanced/' | relative_url }}) も利用できます。

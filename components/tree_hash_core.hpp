@@ -7,9 +7,12 @@
 #include <cassert>
 #include <chrono>
 #include <compare>
+#include <concepts>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 struct TreeHashValue {
@@ -147,6 +150,50 @@ inline std::vector<TreeHashValue> hashes(const Rooting &tree, std::uint64_t seed
 inline std::vector<TreeHashValue> hashes(const std::vector<std::vector<int>> &graph, const Rooting &tree, std::uint64_t seed) {
 	assert(graph.size() == tree.parent.size());
 	return hashes(tree, seed);
+}
+
+template<class Labels, class = void>
+struct LabelType {
+	using type = std::remove_cvref_t<decltype(std::declval<const Labels &>()[std::size_t(0)])>;
+};
+
+template<class Labels>
+struct LabelType<Labels, std::void_t<typename Labels::value_type>> {
+	using indexed_type = std::remove_cvref_t<decltype(std::declval<const Labels &>()[std::size_t(0)])>;
+	using type = std::conditional_t<std::is_integral_v<indexed_type>, indexed_type, typename Labels::value_type>;
+};
+
+template<class Labels>
+using Label = std::remove_cvref_t<typename LabelType<Labels>::type>;
+
+template<class Labels>
+concept LabelSequence = requires(const Labels &labels) {
+	{ labels.size() } -> std::convertible_to<std::size_t>;
+	{ labels[std::size_t(0)] } -> std::convertible_to<Label<Labels>>;
+} && std::is_integral_v<Label<Labels>> && sizeof(Label<Labels>) <= 8;
+
+template<class T>
+TreeHashValue label_hash(T label, std::uint64_t seed) {
+	std::uint64_t domain = std::is_signed_v<T> ? 0x510e527fade682d1ULL : 0x9b05688c2b3e6c1fULL;
+	SplitMix64 random(splitmix64(std::uint64_t(label)) ^ domain ^ seed);
+	return { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
+}
+
+template<LabelSequence Labels>
+std::vector<TreeHashValue> hashes(const Rooting &tree, const Labels &labels, std::uint64_t seed) {
+	assert(labels.size() == tree.parent.size());
+	std::vector<TreeHashValue> result;
+	result.reserve(labels.size());
+	for (std::size_t v = 0; v < labels.size(); ++v) result.push_back(label_hash<Label<Labels>>(labels[v], seed));
+	if (result.empty()) return result;
+	std::vector<TreeHashValue> salt(tree.height[tree.order[0]] + 1);
+	SplitMix64 random(seed);
+	for (auto &value : salt) value = { {random() % (mod - 1) + 1, random() % (mod - 1) + 1} };
+	for (auto it = tree.order.rbegin(); it + 1 != tree.order.rend(); ++it) {
+		int v = *it, p = tree.parent[v];
+		append(result[p], result[v], salt[tree.height[p]]);
+	}
+	return result;
 }
 
 }

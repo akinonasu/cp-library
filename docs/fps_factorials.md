@@ -1,7 +1,7 @@
 ---
 title: 階乗・逆階乗生成
 documentation_of: //components/fps_factorials.hpp
-library_category: components/fps
+library_category: components/math
 ---
 
 旧 `fps_detail` 名を利用するコード向けの互換ヘッダーです。FPS 本体を含むライブラリ内部では `mint_detail` の共通部品を直接使います。実装は [modint998244353 の階乗・逆階乗生成](https://qandori.github.io/cp-library/components/mint_factorials.hpp.html) と共有し、NTT には依存しません。通常は [階乗・逆階乗と二項係数](https://qandori.github.io/cp-library/math/comb.hpp.html) や [Taylor Shift](https://qandori.github.io/cp-library/fps/taylor_shift.hpp.html) を利用します。`factorials` には `mint*` または法 998244353 の内部 Montgomery 表現の整数値へのポインタを渡せます。
@@ -11,7 +11,7 @@ Montgomery 表現では、係数 $$c$$ を $$c\,2^{32}$$ と法 $$p=998244353$$ 
 | 関数 | 内容・返り値 | 計算量 |
 | --- | --- | --- |
 | `fps_detail::factorials(fact,invfact,n)` | `fact[i] = i!`、`invfact[i] = 1/i!` を先頭 `n` 要素へ書き込む | $$O(n)$$ |
-| `fps_detail::factorials8(fact,invfact,n)` | AVX2（複数の整数をまとめて処理する CPU 命令）版。`n >= 256` | $$O(n)$$ |
+| `fps_detail::factorials8(fact,invfact,n)` | AVX2 版。`n >= 256` | $$O(n)$$ |
 | `fps_detail::factorial_chain<reverse>(out,chunk,value,factor)` | 8 本の積の列を同時に生成。各列の `value` を書き、`factor` を掛けて進める | $$O(\mathrm{chunk})$$ |
 | `fps_detail::factorial_transpose(x)` | 8×8 個の 32 bit 整数の行と列を入れ替える | $$O(1)$$ |
 

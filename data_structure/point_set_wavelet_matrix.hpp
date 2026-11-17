@@ -5,6 +5,7 @@
 
 template <class T = std::int64_t, class Sum = std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>>
 class PointSetWaveletMatrix {
+	static constexpr bool supports_sum = std::is_integral_v<T> && sizeof(T) <= 8;
 	std::vector<T> keys;
 	std::vector<int> offsets{0}, current;
 	WeightedWaveletMatrix<T, int, Sum> wm;
@@ -25,7 +26,10 @@ class PointSetWaveletMatrix {
 		points.reserve(a.size() + candidates.size());
 		for (int i = 0; i < static_cast<int>(a.size()); ++i) points.emplace_back(i, a[i]);
 		std::sort(points.begin(), points.end());
-		points.erase(std::unique(points.begin(), points.end()), points.end());
+		if constexpr (std::is_integral_v<T>) points.erase(std::unique(points.begin(), points.end()), points.end());
+		else points.erase(std::unique(points.begin(), points.end(), [](const auto &a, const auto &b) {
+			return a.first == b.first && wavelet_detail::equivalent(a.second, b.second);
+		}), points.end());
 		assert(points.size() <= std::size_t(std::numeric_limits<int>::max()));
 		offsets.assign(a.size() + 1, 0);
 		keys.clear();
@@ -47,11 +51,11 @@ class PointSetWaveletMatrix {
 	T operator[](int p) const { return access(p); }
 	bool contains(int p, const T &x) const {
 		int q = find(p, x);
-		return q < offsets[p + 1] && keys[q] == x;
+		return q < offsets[p + 1] && wavelet_detail::equivalent(keys[q], x);
 	}
 	bool set(int p, const T &x) {
 		int q = find(p, x);
-		if (q == offsets[p + 1] || keys[q] != x) return false;
+		if (q == offsets[p + 1] || !wavelet_detail::equivalent(keys[q], x)) return false;
 		wm.move_weight(current[p], q, 1);
 		current[p] = q;
 		return true;
@@ -60,17 +64,19 @@ class PointSetWaveletMatrix {
 	int rank(const T &x, int r) const { return count(0, r, x); }
 	int range_freq(int l, int r, const T &upper) const { check(l, r); return wm.range_freq(offsets[l], offsets[r], upper); }
 	int range_freq(int l, int r, const T &lower, const T &upper) const { check(l, r); return wm.range_freq(offsets[l], offsets[r], lower, upper); }
-	Sum range_sum(int l, int r) const { check(l, r); return wm.range_sum(offsets[l], offsets[r]); }
-	Sum range_sum(int l, int r, const T &upper) const { check(l, r); return wm.range_sum(offsets[l], offsets[r], upper); }
-	Sum range_sum(int l, int r, const T &lower, const T &upper) const { check(l, r); return wm.range_sum(offsets[l], offsets[r], lower, upper); }
+	Sum range_sum(int l, int r) const requires supports_sum { check(l, r); return wm.range_sum(offsets[l], offsets[r]); }
+	Sum range_sum(int l, int r, const T &upper) const requires supports_sum { check(l, r); return wm.range_sum(offsets[l], offsets[r], upper); }
+	Sum range_sum(int l, int r, const T &lower, const T &upper) const requires supports_sum { check(l, r); return wm.range_sum(offsets[l], offsets[r], lower, upper); }
 	T kth_smallest(int l, int r, int k) const { check(l, r); return wm.kth_smallest(offsets[l], offsets[r], k); }
 	T kth_largest(int l, int r, int k) const { check(l, r); return wm.kth_largest(offsets[l], offsets[r], k); }
-	Sum sum_smallest(int l, int r, int k) const { check(l, r); return wm.sum_smallest(offsets[l], offsets[r], k); }
-	Sum sum_largest(int l, int r, int k) const { check(l, r); return wm.sum_largest(offsets[l], offsets[r], k); }
-	int min_count_smallest(int l, int r, Sum target) const { check(l, r); return wm.min_count_smallest(offsets[l], offsets[r], target); }
-	int min_count_largest(int l, int r, Sum target) const { check(l, r); return wm.min_count_largest(offsets[l], offsets[r], target); }
-	int max_count_smallest(int l, int r, Sum budget) const { check(l, r); return wm.max_count_smallest(offsets[l], offsets[r], budget); }
-	int max_count_largest(int l, int r, Sum budget) const { check(l, r); return wm.max_count_largest(offsets[l], offsets[r], budget); }
+	std::optional<T> prev_value(int l, int r, const T &upper) const { check(l, r); return wm.prev_value(offsets[l], offsets[r], upper); }
+	std::optional<T> next_value(int l, int r, const T &lower) const { check(l, r); return wm.next_value(offsets[l], offsets[r], lower); }
+	Sum sum_smallest(int l, int r, int k) const requires supports_sum { check(l, r); return wm.sum_smallest(offsets[l], offsets[r], k); }
+	Sum sum_largest(int l, int r, int k) const requires supports_sum { check(l, r); return wm.sum_largest(offsets[l], offsets[r], k); }
+	int min_count_smallest(int l, int r, Sum target) const requires supports_sum { check(l, r); return wm.min_count_smallest(offsets[l], offsets[r], target); }
+	int min_count_largest(int l, int r, Sum target) const requires supports_sum { check(l, r); return wm.min_count_largest(offsets[l], offsets[r], target); }
+	int max_count_smallest(int l, int r, Sum budget) const requires supports_sum { check(l, r); return wm.max_count_smallest(offsets[l], offsets[r], budget); }
+	int max_count_largest(int l, int r, Sum budget) const requires supports_sum { check(l, r); return wm.max_count_largest(offsets[l], offsets[r], budget); }
 };
 
 #endif

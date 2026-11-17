@@ -1,7 +1,7 @@
 ---
 title: 並列二分探索
 documentation_of: //data_structure/parallel_binary_search.hpp
-library_category: data_structure/range_query
+library_category: data_structure
 redirect_from:
 - /data_structure/range_query/parallel_binary_search.hpp.html
 - /lightweight/data_structure/range_query/parallel_binary_search.hpp.html

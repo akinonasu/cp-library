@@ -4,6 +4,10 @@
 
 
 
+#line 1 "string/suffix_array.hpp"
+
+
+
 #line 1 "components/suffix_array.hpp"
 
 
@@ -247,6 +251,56 @@ inline std::vector<int> bytes(std::string_view s) {
 #endif
 
 
+#line 5 "string/suffix_array.hpp"
+#include <span>
+#line 7 "string/suffix_array.hpp"
+
+inline std::vector<int> suffix_array(std::string_view s) { return suffix_array_detail::bytes(s); }
+
+namespace suffix_array_detail {
+template <class Sequence>
+std::vector<int> ordered(const Sequence &s) {
+	assert(s.size() <= std::size_t(std::numeric_limits<int>::max()));
+	std::vector<int> order(s.size()), ranks(s.size());
+	std::iota(order.begin(), order.end(), 0);
+	std::sort(order.begin(), order.end(), [&](int a, int b) { return s[a] < s[b]; });
+	int rank = 0;
+	for (std::size_t i = 0; i < order.size(); ++i) {
+		if (i && s[order[i - 1]] < s[order[i]]) ++rank;
+		ranks[order[i]] = rank;
+	}
+	if (!order.empty() && rank == int(order.size()) - 1) return order;
+	return suffix_array_detail::induced_sort(ranks, rank);
+}
+}
+
+template <class T, class Allocator>
+std::vector<int> suffix_array(const std::vector<T, Allocator> &s) { return suffix_array_detail::ordered(s); }
+
+template <class T, std::size_t Extent>
+std::vector<int> suffix_array(std::span<T, Extent> s) { return suffix_array_detail::ordered(s); }
+
+inline std::vector<int> suffix_array(const std::vector<int> &s, int upper) {
+	assert(upper >= 0 && s.size() <= std::size_t(std::numeric_limits<int>::max()));
+	for ([[maybe_unused]] int x : s) assert(0 <= x && x <= upper);
+	if (upper > std::numeric_limits<int>::max() - 2) return suffix_array(s);
+	return suffix_array_detail::induced_sort(s, upper);
+}
+
+template <class T, std::size_t Extent> requires std::is_same_v<std::remove_const_t<T>, int>
+std::vector<int> suffix_array(std::span<T, Extent> s, int upper) {
+	assert(upper >= 0 && s.size() <= std::size_t(std::numeric_limits<int>::max()));
+	for ([[maybe_unused]] int x : s) assert(0 <= x && x <= upper);
+	if (upper > std::numeric_limits<int>::max() - 2) return suffix_array(s);
+	return suffix_array_detail::induced_sort(s, upper);
+}
+
+template <class Allocator>
+std::vector<int> suffix_array(const std::vector<int, Allocator> &s, int upper) {
+	return suffix_array(std::span<const int>(s.data(), s.size()), upper);
+}
+
+
 #line 1 "components/sequence_compare.hpp"
 
 
@@ -343,6 +397,26 @@ inline int suffix(const T *first_end, const T *second_end, int limit) {
 	}
 	while (matched < limit && first_end[-matched - 1] == second_end[-matched - 1]) ++matched;
 	return matched;
+}
+}
+
+
+#line 1 "components/sequence_view.hpp"
+
+
+
+#line 7 "components/sequence_view.hpp"
+
+namespace sequence_view_detail {
+template<class R>
+concept CharSequence = requires(const R &s) { std::span<const char>(s); } && !std::is_convertible_v<const R &, std::string_view>;
+
+inline std::string_view char_view(std::string_view s) { return s; }
+
+template<CharSequence R>
+std::string_view char_view(const R &s) {
+	std::span<const char> view(s);
+	return {view.data(), view.size()};
 }
 }
 
@@ -458,8 +532,6 @@ class SparseTable {
 };
 
 
-#line 12 "components/static_range_min.hpp"
-#include <span>
 #line 16 "components/static_range_min.hpp"
 
 template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
@@ -565,21 +637,32 @@ template <class T = int, bool FastBoundaries = false> class StaticRangeMin {
 };
 
 
-#line 9 "string/suffix_tree.hpp"
+#line 10 "string/suffix_tree.hpp"
 #include <optional>
-#line 11 "string/suffix_tree.hpp"
+#line 12 "string/suffix_tree.hpp"
 #include <string>
-#line 13 "string/suffix_tree.hpp"
+#line 14 "string/suffix_tree.hpp"
 
-class SuffixTree {
+namespace suffix_tree_detail {
+struct Locus { int node, length; };
+}
+
+template <class Symbol>
+class BasicSuffixTree {
+	static_assert(std::is_integral_v<Symbol> && !std::is_same_v<Symbol, bool> && sizeof(Symbol) <= 8 && std::is_same_v<Symbol, std::remove_cv_t<Symbol>>);
+	static constexpr bool bytes = std::is_same_v<Symbol, char>;
+	using Storage = std::conditional_t<bytes, std::string, std::vector<Symbol>>;
+	using View = std::conditional_t<bytes, std::string_view, std::span<const Symbol>>;
+	using Key = std::conditional_t<bytes, unsigned char, Symbol>;
+	static Key key(Symbol value) { return static_cast<Key>(value); }
 	struct Node { int parent, depth, left, right; };
-	std::string text_;
+	Storage text_;
 	mutable std::vector<Node> nodes_;
 	std::vector<int> sa_;
 	mutable std::vector<int> lcp_, rank_;
 	mutable std::vector<int> terminals_, branches_, offset_, children_;
-	mutable std::vector<unsigned char> symbols_;
-	mutable std::array<int, 256> root_children_{};
+	mutable std::vector<Key> symbols_;
+	mutable std::array<int, bytes ? 256 : 0> root_children_{};
 	mutable bool lcp_ready_ = false, tree_ready_ = false;
 	mutable std::uint64_t distinct_ = 0;
 	mutable std::optional<StaticRangeMin<std::pair<int, int>>> index_;
@@ -636,12 +719,14 @@ class SuffixTree {
 		for (int v = 1; v < count; ++v) {
 			int p = nodes_[v].parent, i = cursor[p]++;
 			children_[i] = v;
-			symbols_[i] = static_cast<unsigned char>(text_[sa_[nodes_[v].left] + nodes_[p].depth]);
+			symbols_[i] = key(text_[sa_[nodes_[v].left] + nodes_[p].depth]);
 		}
-		root_children_.fill(-1);
-		for (int i = offset_[0]; i < offset_[1]; ++i) {
-			int v = children_[i];
-			root_children_[static_cast<unsigned char>(text_[sa_[nodes_[v].left]])] = v;
+		if constexpr (bytes) {
+			root_children_.fill(-1);
+			for (int i = offset_[0]; i < offset_[1]; ++i) {
+				int v = children_[i];
+				root_children_[key(text_[sa_[nodes_[v].left]])] = v;
+			}
 		}
 		for (int i = n; i >= 0; --i) {
 			int v = terminals_[sa_[i]];
@@ -659,8 +744,8 @@ class SuffixTree {
 		for (int i = 0; i < size(); ++i) values[i] = {lcp_[i], branches_[i]};
 		index_.emplace(std::move(values));
 	}
-	int child(int v, unsigned char c) const {
-		if (!v) return root_children_[c];
+	int child(int v, Key c) const {
+		if constexpr (bytes) if (!v) return root_children_[c];
 		int l = offset_[v], r = offset_[v + 1];
 		if (r - l <= 4) {
 			for (int i = l; i < r; ++i) if (symbols_[i] == c) return children_[i];
@@ -672,18 +757,20 @@ class SuffixTree {
 	}
 
   public:
-	struct Locus { int node, length; };
+	using Locus = suffix_tree_detail::Locus;
 	static constexpr int root = 0;
-	SuffixTree() { build({}); }
-	explicit SuffixTree(std::string_view s) { build(s); }
-	SuffixTree(const SuffixTree &) = default;
-	SuffixTree &operator=(const SuffixTree &) = default;
-	SuffixTree(SuffixTree &&other) : SuffixTree() { swap(other); }
-	SuffixTree &operator=(SuffixTree &&other) {
-		if (this != &other) { SuffixTree moved(std::move(other)); swap(moved); }
+	BasicSuffixTree() { build({}); }
+	explicit BasicSuffixTree(View s) { build(s); }
+	template <sequence_view_detail::CharSequence R> requires bytes
+	explicit BasicSuffixTree(const R &s) : BasicSuffixTree(sequence_view_detail::char_view(s)) {}
+	BasicSuffixTree(const BasicSuffixTree &) = default;
+	BasicSuffixTree &operator=(const BasicSuffixTree &) = default;
+	BasicSuffixTree(BasicSuffixTree &&other) : BasicSuffixTree() { swap(other); }
+	BasicSuffixTree &operator=(BasicSuffixTree &&other) {
+		if (this != &other) { BasicSuffixTree moved(std::move(other)); swap(moved); }
 		return *this;
 	}
-	void swap(SuffixTree &other) noexcept {
+	void swap(BasicSuffixTree &other) noexcept {
 		text_.swap(other.text_);
 		nodes_.swap(other.nodes_);
 		sa_.swap(other.sa_); lcp_.swap(other.lcp_); rank_.swap(other.rank_);
@@ -696,12 +783,16 @@ class SuffixTree {
 		std::swap(tree_ready_, other.tree_ready_);
 		index_.swap(other.index_);
 	}
-	void build(std::string_view s) {
+	void build(View s) {
 		assert(s.size() < std::size_t(std::numeric_limits<int>::max() / 2));
-		std::string copy(s);
+		Storage copy = [&] {
+			if constexpr (bytes) return Storage(s);
+			else return Storage(s.begin(), s.end());
+		}();
 		text_.swap(copy);
 		int n = size();
-		sa_ = suffix_array_detail::bytes(text_);
+		if constexpr (bytes) sa_ = suffix_array_detail::bytes(text_);
+		else sa_ = ::suffix_array(text_);
 		sa_.insert(sa_.begin(), n);
 		rank_.clear(); lcp_.clear();
 		lcp_ready_ = false;
@@ -710,11 +801,13 @@ class SuffixTree {
 		index_.reset();
 		prepare_tree();
 	}
+	template <sequence_view_detail::CharSequence R> requires bytes
+	void build(const R &s) { build(sequence_view_detail::char_view(s)); }
 	void clear() { build({}); }
 	int size() const { return static_cast<int>(text_.size()); }
 	bool empty() const { return text_.empty(); }
 	int node_count() const { prepare_tree(); return static_cast<int>(nodes_.size()); }
-	std::string_view text() const { return text_; }
+	View text() const { return {text_.data(), text_.size()}; }
 	int parent(int v) const { check(v); return nodes_[v].parent; }
 	int depth(int v) const { check(v); return nodes_[v].depth; }
 	std::pair<int, int> edge_range(int v) const {
@@ -729,7 +822,7 @@ class SuffixTree {
 		int count = offset_[v + 1] - offset_[v];
 		return count ? std::span<const int>(children_.data() + offset_[v], count) : std::span<const int>{};
 	}
-	int transition(int v, char c) const { check(v); return child(v, static_cast<unsigned char>(c)); }
+	int transition(int v, Symbol c) const { check(v); return child(v, key(c)); }
 	int suffix_start(int v) const { check(v); int p = sa_[nodes_[v].left]; return size() - p == nodes_[v].depth ? p : -1; }
 	int suffix_node(int p) const { prepare_tree(); assert(0 <= p && p <= size()); return terminals_[p]; }
 	std::pair<int, int> occurrence_range(int v) const { check(v); return {nodes_[v].left, range_end(v)}; }
@@ -737,12 +830,12 @@ class SuffixTree {
 	const std::vector<int> &suffix_array() const { return sa_; }
 	const std::vector<int> &lcp_array() const { prepare_lcp(); return lcp_; }
 	std::uint64_t distinct_substrings() const { prepare_lcp(); return distinct_; }
-	std::optional<Locus> find(std::string_view pattern) const {
+	std::optional<Locus> find(View pattern) const {
 		prepare_tree();
 		if (pattern.size() > text_.size()) return std::nullopt;
 		int v = 0, matched = 0, length = static_cast<int>(pattern.size());
 		while (matched < length) {
-			int u = child(v, static_cast<unsigned char>(pattern[matched]));
+			int u = child(v, key(pattern[matched]));
 			if (u == -1) return std::nullopt;
 			if (nodes_[u].right >= 0) {
 				int start = sa_[nodes_[u].left] + matched;
@@ -765,7 +858,9 @@ class SuffixTree {
 		}
 		return Locus{v, length};
 	}
-	std::optional<Locus> advance(Locus locus, char c) const {
+	template <sequence_view_detail::CharSequence R> requires bytes
+	std::optional<Locus> find(const R &pattern) const { return find(sequence_view_detail::char_view(pattern)); }
+	std::optional<Locus> advance(Locus locus, Symbol c) const {
 		check(locus.node);
 		int v = locus.node;
 		assert((!v && locus.length == 0) || (v && nodes_[nodes_[v].parent].depth < locus.length && locus.length <= nodes_[v].depth));
@@ -773,17 +868,23 @@ class SuffixTree {
 			if (text_[sa_[nodes_[v].left] + locus.length] != c) return std::nullopt;
 			return Locus{v, locus.length + 1};
 		}
-		int u = child(v, static_cast<unsigned char>(c));
+		int u = child(v, key(c));
 		return u == -1 ? std::nullopt : std::optional<Locus>(Locus{u, locus.length + 1});
 	}
-	bool contains(std::string_view pattern) const { return find(pattern).has_value(); }
-	int count(std::string_view pattern) const { auto locus = find(pattern); return locus ? occurrence_count(locus->node) : 0; }
-	std::vector<int> occurrences(std::string_view pattern) const {
+	bool contains(View pattern) const { return find(pattern).has_value(); }
+	int count(View pattern) const { auto locus = find(pattern); return locus ? occurrence_count(locus->node) : 0; }
+	std::vector<int> occurrences(View pattern) const {
 		auto locus = find(pattern);
 		if (!locus) return {};
 		auto [l, r] = occurrence_range(locus->node);
 		return {sa_.begin() + l, sa_.begin() + r};
 	}
+	template <sequence_view_detail::CharSequence R> requires bytes
+	bool contains(const R &pattern) const { return contains(sequence_view_detail::char_view(pattern)); }
+	template <sequence_view_detail::CharSequence R> requires bytes
+	int count(const R &pattern) const { return count(sequence_view_detail::char_view(pattern)); }
+	template <sequence_view_detail::CharSequence R> requires bytes
+	std::vector<int> occurrences(const R &pattern) const { return occurrences(sequence_view_detail::char_view(pattern)); }
 	int lcp(int p, int q) const {
 		assert(0 <= p && p <= size() && 0 <= q && q <= size());
 		if (p == q) return size() - p;
@@ -811,6 +912,8 @@ class SuffixTree {
 		return lca(terminals_[sa_[nodes_[v].left] + 1], terminals_[sa_[range_end(v) - 1] + 1]);
 	}
 };
+
+using SuffixTree = BasicSuffixTree<char>;
 
 
 #line 1 "components/fast_io.hpp"

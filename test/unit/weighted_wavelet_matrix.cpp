@@ -46,6 +46,18 @@ void check(const std::vector<T> &a, std::mt19937_64 &random) {
 			if (x <= value && value < y) ++count, sum += Sum(value);
 		}
 		require(wm.count(l, r, x) == exact);
+		std::int64_t prefix_count = 0;
+		for (int i = 0; i < r; ++i) if (a[i] == x) prefix_count += w[i];
+		require(std::as_const(wm).rank(x, r) == prefix_count);
+		for (T bound : {x, y}) {
+			auto it = std::lower_bound(sorted.begin(), sorted.end(), bound);
+			auto prev = std::as_const(wm).prev_value(l, r, bound);
+			auto next = std::as_const(wm).next_value(l, r, bound);
+			require(bool(prev) == (it != sorted.begin()));
+			require(bool(next) == (it != sorted.end()));
+			if (prev) require(*prev == *(it - 1));
+			if (next) require(*next == *it);
+		}
 		require(wm.range_freq(l, r, x, y) == count);
 		require(wm.range_freq(l, r, y) == std::lower_bound(sorted.begin(), sorted.end(), y) - sorted.begin());
 		require(wm.range_sum(l, r, x, y) == sum && wm.range_sum(l, r, y) == sum_below);
@@ -105,6 +117,17 @@ void check_count_width() {
 				for (int i = l; i < r; ++i) total += weights[i], total_sum += Sum(a[i]) * weights[i];
 				require(tree.count(l, r) == total);
 				if (with_sum) require(tree.range_sum(l, r) == total_sum);
+				for (auto bound : bounds) {
+					Count prefix = 0;
+					std::optional<std::int64_t> prev, next;
+					for (int i = 0; i < r; ++i) if (a[i] == bound) prefix += weights[i];
+					for (int i = l; i < r; ++i) if (weights[i]) {
+						if (a[i] < bound && (!prev || *prev < a[i])) prev = a[i];
+						if (a[i] >= bound && (!next || a[i] < *next)) next = a[i];
+					}
+					require(tree.rank(bound, r) == prefix);
+					require(tree.prev_value(l, r, bound) == prev && tree.next_value(l, r, bound) == next);
+				}
 				for (auto low : bounds) for (auto high : bounds) {
 					Sum count = 0, sum = 0;
 					for (int i = l; i < r; ++i) if (low <= a[i] && a[i] < high) count += weights[i], sum += Sum(a[i]) * weights[i];
@@ -203,5 +226,28 @@ int main() {
 	check_count_width<std::int16_t>();
 	check_count_width<std::int32_t>();
 	check_count_width<std::int64_t>();
+	{
+		using Sum = __int128_t;
+		const auto limit = std::numeric_limits<std::int64_t>::max();
+		std::vector<int> values{0, 1, 3, 9};
+		std::vector<std::int64_t> weights{2, limit - 4, 1, 1};
+		for (int direction = 0; direction < 2; ++direction) {
+			WeightedWaveletMatrix<int, std::int64_t, Sum> tree(values, weights);
+			require(tree.count(0, 4) == limit);
+			require(tree.kth_smallest(0, 4, limit - 3) == 1);
+			require(tree.kth_smallest(0, 4, limit - 2) == 3);
+			require(tree.kth_smallest(0, 4, limit - 1) == 9);
+			require(tree.kth_largest(0, 4, limit - 1) == 0);
+			require(tree.sum_smallest(0, 4, limit - 1) == Sum(limit) - 1);
+			require(tree.sum_largest(0, 4, 2) == 12);
+			require(tree.sum_largest(0, 4, limit - 1) == Sum(limit) + 8);
+			require(tree.min_count_smallest(0, 4, 1) == 3);
+			require(tree.max_count_smallest(0, 4, Sum(limit) - 4) == limit - 2);
+			require(tree.min_count_largest(0, 4, 12) == 2);
+			require(tree.max_count_largest(0, 4, 12) == 2);
+			std::reverse(values.begin(), values.end());
+			std::reverse(weights.begin(), weights.end());
+		}
+	}
 	std::puts("Weighted Wavelet Matrix OK");
 }

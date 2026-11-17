@@ -10,10 +10,12 @@
 
 #include <algorithm>
 #include <bit>
+#include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <optional>
@@ -34,6 +36,8 @@ template<class K, class V, class Hash, class Equal, bool = packed<K, V, Hash, Eq
 class Table {
 	std::unordered_map<K, V, Hash, Equal> values;
 public:
+	using iterator = typename std::unordered_map<K, V, Hash, Equal>::iterator;
+	using const_iterator = typename std::unordered_map<K, V, Hash, Equal>::const_iterator;
 	Table() = default;
 	Table(const Table &) = default;
 	Table(Table &&other) : Table() { swap(other); }
@@ -41,11 +45,28 @@ public:
 	void swap(Table &other) noexcept(noexcept(values.swap(other.values))) { values.swap(other.values); }
 	std::size_t size() const { return values.size(); }
 	bool empty() const { return values.empty(); }
-	V *find(const K &key) { auto it = values.find(key); return it == values.end() ? nullptr : &it->second; }
-	const V *find(const K &key) const { auto it = values.find(key); return it == values.end() ? nullptr : &it->second; }
+	iterator find(const K &key) { return values.find(key); }
+	const_iterator find(const K &key) const { return values.find(key); }
+	iterator begin() { return values.begin(); }
+	const_iterator begin() const { return values.begin(); }
+	iterator end() { return values.end(); }
+	const_iterator end() const { return values.end(); }
+	V *find_value(const K &key) { auto it = values.find(key); return it == values.end() ? nullptr : &it->second; }
+	const V *find_value(const K &key) const { auto it = values.find(key); return it == values.end() ? nullptr : &it->second; }
 	V &operator[](const K &key) { return values[key]; }
 	void set(const K &key, const V &value) { values.insert_or_assign(key, value); }
+	template<class Key, class... Args>
+	std::pair<iterator, bool> try_emplace(Key &&key, Args &&...args) {
+		return values.try_emplace(std::forward<Key>(key), std::forward<Args>(args)...);
+	}
+	template<class... Args>
+	std::pair<iterator, bool> emplace(Args &&...args) { return values.emplace(std::forward<Args>(args)...); }
+	template<class Key, class Value>
+	std::pair<iterator, bool> insert_or_assign(Key &&key, Value &&value) {
+		return values.insert_or_assign(std::forward<Key>(key), std::forward<Value>(value));
+	}
 	bool erase(const K &key) { return values.erase(key); }
+	iterator erase(const_iterator position) { return values.erase(position); }
 	void prefetch(const K &) const noexcept {}
 	void reserve(std::size_t n) { values.reserve(n); }
 	void clear() { values.clear(); }
@@ -53,11 +74,21 @@ public:
 
 template<class K, class V, class Hash, class Equal>
 class Table<K, V, Hash, Equal, true> {
+	enum : unsigned char { vacant = 0, occupied = 1, tombstone = 2 };
 	struct Entry { K key{}; V value{}; };
 	struct ValueSlot { V value{}; };
 	static constexpr bool combined = sizeof(Entry) == sizeof(K) + sizeof(V) && sizeof(V) <= 16;
 	using Storage = std::conditional_t<combined, std::vector<Entry>, std::pair<std::vector<K>, std::vector<ValueSlot>>>;
 	Storage storage;
+	using Slot = std::conditional_t<combined, Entry, ValueSlot>;
+	Slot *stored_slot(std::size_t p) {
+		if constexpr (combined) return std::addressof(storage[p]);
+		else return std::addressof(storage.second[p]);
+	}
+	const Slot *stored_slot(std::size_t p) const {
+		if constexpr (combined) return std::addressof(storage[p]);
+		else return std::addressof(storage.second[p]);
+	}
 	K &stored_key(std::size_t p) {
 		if constexpr (combined) return storage[p].key;
 		else return storage.first[p];
@@ -91,7 +122,7 @@ class Table<K, V, Hash, Equal, true> {
 	}
 	std::size_t locate(K key) const {
 		std::size_t p = index(key), mask = states.size() - 1;
-		while (states[p] && (states[p] != 1 || stored_key(p) != key)) p = (p + 1) & mask;
+		while (states[p] != vacant && (states[p] != occupied || stored_key(p) != key)) p = (p + 1) & mask;
 		return p;
 	}
 	void rehash(std::size_t capacity) {
@@ -99,9 +130,9 @@ class Table<K, V, Hash, Equal, true> {
 		next.salt = salt;
 		next.resize(capacity), next.states.resize(capacity);
 		next.shift = 64 - std::countr_zero(capacity);
-		for (std::size_t i = 0; i < states.size(); ++i) if (states[i] == 1) {
+		for (std::size_t i = 0; i < states.size(); ++i) if (states[i] == occupied) {
 			std::size_t p = next.locate(stored_key(i));
-			next.stored_key(p) = stored_key(i), next.stored_value(p) = stored_value(i), next.states[p] = 1;
+			next.stored_key(p) = stored_key(i), next.stored_value(p) = stored_value(i), next.states[p] = occupied;
 		}
 		next.count = count;
 		swap(next);
@@ -120,17 +151,56 @@ class Table<K, V, Hash, Equal, true> {
 	std::size_t insert(K key) {
 		prepare();
 		std::size_t p = index(key), first = states.size(), mask = states.size() - 1;
-		while (states[p]) {
-			if (states[p] == 1 && stored_key(p) == key) return p;
-			if (states[p] == 2 && first == states.size()) first = p;
+		while (states[p] != vacant) {
+			if (states[p] == occupied && stored_key(p) == key) return p;
+			if (states[p] == tombstone && first == states.size()) first = p;
 			p = (p + 1) & mask;
 		}
 		if (first != states.size()) p = first, --deleted;
-		stored_key(p) = key, stored_value(p) = V{}, states[p] = 1;
+		stored_key(p) = key, stored_value(p) = V{}, states[p] = occupied;
 		++count;
 		return p;
 	}
 public:
+	template<bool Const> class Iterator {
+		using Owner = std::conditional_t<Const, const Table, Table>;
+		using Item = std::conditional_t<Const, const Slot, Slot>;
+		Item *item = nullptr;
+		Owner *owner = nullptr;
+		friend class Table;
+		template<bool> friend class Iterator;
+		Iterator(Item *item, Owner *owner) : item(item), owner(owner) {}
+	public:
+		using value_type = std::pair<const K, V>;
+		using difference_type = std::ptrdiff_t;
+		using reference = std::pair<const K &, std::conditional_t<Const, const V &, V &>>;
+		struct pointer {
+			reference value;
+			const reference *operator->() const { return std::addressof(value); }
+		};
+		using iterator_category = std::input_iterator_tag;
+		using iterator_concept = std::input_iterator_tag;
+		Iterator() = default;
+		template<bool Other> requires (Const && !Other)
+		Iterator(const Iterator<Other> &other) : item(other.item), owner(other.owner) {}
+		reference operator*() const {
+			if constexpr (combined) return {item->key, item->value};
+			else return {owner->storage.first[item - owner->storage.second.data()], item->value};
+		}
+		pointer operator->() const { return {operator*()}; }
+		Iterator &operator++() {
+			std::size_t position;
+			if constexpr (combined) position = item - owner->storage.data();
+			else position = item - owner->storage.second.data();
+			do { ++position; } while (position < owner->states.size() && owner->states[position] != occupied);
+			item = position < owner->states.size() ? owner->stored_slot(position) : nullptr;
+			return *this;
+		}
+		Iterator operator++(int) { Iterator result(*this); ++*this; return result; }
+		template<bool Other> bool operator==(const Iterator<Other> &other) const { return item == other.item; }
+	};
+	using iterator = Iterator<false>;
+	using const_iterator = Iterator<true>;
 	Table() = default;
 	Table(const Table &) = default;
 	Table(Table &&other) noexcept { swap(other); }
@@ -141,16 +211,75 @@ public:
 	}
 	std::size_t size() const { return count; }
 	bool empty() const { return !count; }
-	V *find(K key) { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &stored_value(p) : nullptr; }
-	const V *find(K key) const { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] ? &stored_value(p) : nullptr; }
+	iterator find(K key) {
+		if (states.empty()) return end();
+		std::size_t p = locate(key);
+		return states[p] != vacant ? iterator(stored_slot(p), this) : end();
+	}
+	const_iterator find(K key) const {
+		if (states.empty()) return end();
+		std::size_t p = locate(key);
+		return states[p] != vacant ? const_iterator(stored_slot(p), this) : end();
+	}
+	iterator begin() {
+		if (!count) return end();
+		std::size_t p = 0;
+		while (states[p] != occupied) ++p;
+		return iterator(stored_slot(p), this);
+	}
+	const_iterator begin() const {
+		if (!count) return end();
+		std::size_t p = 0;
+		while (states[p] != occupied) ++p;
+		return const_iterator(stored_slot(p), this);
+	}
+	iterator end() { return iterator(); }
+	const_iterator end() const { return const_iterator(); }
+	V *find_value(K key) { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] != vacant ? &stored_value(p) : nullptr; }
+	const V *find_value(K key) const { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] != vacant ? &stored_value(p) : nullptr; }
 	V &operator[](K key) { return stored_value(insert(key)); }
 	void set(K key, const V &value) { V copy = value; stored_value(insert(key)) = copy; }
+	template<class... Args>
+	std::pair<iterator, bool> try_emplace(K key, Args &&...args) {
+		if (auto it = find(key); it != end()) return {it, false};
+		V value(std::forward<Args>(args)...);
+		std::size_t p = insert(key);
+		stored_value(p) = value;
+		return {iterator(stored_slot(p), this), true};
+	}
+	template<class... Args>
+	std::pair<iterator, bool> emplace(Args &&...args) {
+		std::pair<K, V> value(std::forward<Args>(args)...);
+		return try_emplace(value.first, std::move(value.second));
+	}
+	template<class Value>
+	std::pair<iterator, bool> insert_or_assign(K key, Value &&value) {
+		if (auto it = find(key); it != end()) {
+			it->second = std::forward<Value>(value);
+			return {it, false};
+		}
+		V copy(std::forward<Value>(value));
+		std::size_t p = insert(key);
+		stored_value(p) = copy;
+		return {iterator(stored_slot(p), this), true};
+	}
 	bool erase(K key) {
 		if (states.empty()) return false;
 		std::size_t p = locate(key);
-		if (!states[p]) return false;
-		states[p] = 2, --count, ++deleted;
+		if (states[p] == vacant) return false;
+		states[p] = tombstone, --count, ++deleted;
 		return true;
+	}
+	iterator erase(const_iterator position) {
+		assert(position.owner == this && position.item);
+		std::size_t p;
+		if constexpr (combined) p = position.item - storage.data();
+		else p = position.item - storage.second.data();
+		assert(states[p] == occupied);
+		iterator next(stored_slot(p), this);
+		++next;
+		states[p] = tombstone, --count, ++deleted;
+		return next;
 	}
 	void prefetch(K key) const noexcept {
 #if defined(__GNUC__) || defined(__clang__)
@@ -172,7 +301,7 @@ public:
 		if (capacity > limit) throw std::length_error("FlatHashMap capacity");
 		rehash(capacity);
 	}
-	void clear() { std::fill(states.begin(), states.end(), 0); count = deleted = 0; }
+	void clear() { std::fill(states.begin(), states.end(), vacant); count = deleted = 0; }
 };
 }
 
@@ -183,20 +312,50 @@ public:
 	using key_type = Key;
 	using mapped_type = T;
 	using size_type = std::size_t;
+	using value_type = std::pair<const Key, T>;
+	using iterator = typename decltype(table)::iterator;
+	using const_iterator = typename decltype(table)::const_iterator;
 	FlatHashMap() = default;
 	explicit FlatHashMap(size_type n) { reserve(n); }
 	bool empty() const { return table.empty(); }
 	size_type size() const { return table.size(); }
-	T *find(const Key &key) { return table.find(key); }
-	const T *find(const Key &key) const { return table.find(key); }
-	bool contains(const Key &key) const { return find(key) != nullptr; }
+	iterator find(const Key &key) { return table.find(key); }
+	const_iterator find(const Key &key) const { return table.find(key); }
+	iterator begin() { return table.begin(); }
+	const_iterator begin() const { return table.begin(); }
+	const_iterator cbegin() const { return table.begin(); }
+	iterator end() { return table.end(); }
+	const_iterator end() const { return table.end(); }
+	const_iterator cend() const { return table.end(); }
+	bool contains(const Key &key) const { return table.find_value(key) != nullptr; }
 	size_type count(const Key &key) const { return contains(key); }
-	std::optional<T> get(const Key &key) const { const T *p = find(key); return p ? std::optional<T>(*p) : std::nullopt; }
-	T &at(const Key &key) { T *p = find(key); if (!p) throw std::out_of_range("FlatHashMap key"); return *p; }
-	const T &at(const Key &key) const { const T *p = find(key); if (!p) throw std::out_of_range("FlatHashMap key"); return *p; }
+	std::optional<T> get(const Key &key) const { const T *p = table.find_value(key); return p ? std::optional<T>(*p) : std::nullopt; }
+	T &at(const Key &key) { T *p = table.find_value(key); if (!p) throw std::out_of_range("FlatHashMap key"); return *p; }
+	const T &at(const Key &key) const { const T *p = table.find_value(key); if (!p) throw std::out_of_range("FlatHashMap key"); return *p; }
 	T &operator[](const Key &key) { return table[key]; }
 	void set(const Key &key, const T &value) { table.set(key, value); }
+	std::pair<iterator, bool> insert(const value_type &value) { return try_emplace(value.first, value.second); }
+	std::pair<iterator, bool> insert(value_type &&value) { return try_emplace(value.first, std::move(value.second)); }
+	template<class... Args>
+	std::pair<iterator, bool> emplace(Args &&...args) { return table.emplace(std::forward<Args>(args)...); }
+	template<class... Args>
+	std::pair<iterator, bool> try_emplace(const Key &key, Args &&...args) {
+		return table.try_emplace(key, std::forward<Args>(args)...);
+	}
+	template<class... Args>
+	std::pair<iterator, bool> try_emplace(Key &&key, Args &&...args) {
+		return table.try_emplace(std::move(key), std::forward<Args>(args)...);
+	}
+	template<class Value>
+	std::pair<iterator, bool> insert_or_assign(const Key &key, Value &&value) {
+		return table.insert_or_assign(key, std::forward<Value>(value));
+	}
+	template<class Value>
+	std::pair<iterator, bool> insert_or_assign(Key &&key, Value &&value) {
+		return table.insert_or_assign(std::move(key), std::forward<Value>(value));
+	}
 	bool erase(const Key &key) { return table.erase(key); }
+	iterator erase(const_iterator position) { return table.erase(position); }
 	void prefetch(const Key &key) const noexcept { table.prefetch(key); }
 	void reserve(size_type n) { table.reserve(n); }
 	void clear() { table.clear(); }
@@ -210,7 +369,6 @@ public:
 
 
 #include <array>
-#include <cassert>
 #line 10 "components/incremental_prefix_count.hpp"
 #if defined(__x86_64__) || defined(__i386__)
 #include <immintrin.h>
@@ -326,6 +484,34 @@ class OfflineRangeCountDistinct {
 #line 1 "components/fast_io_bulk.hpp"
 
 
+
+#line 1 "components/compiler_features.hpp"
+
+
+
+#if defined(__x86_64__) || defined(__i386__)
+#define CP_X86 1
+#else
+#define CP_X86 0
+#endif
+#if CP_X86 && defined(__GNUC__) && !defined(__clang__)
+#define CP_GCC_X86 1
+#else
+#define CP_GCC_X86 0
+#endif
+#if CP_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CP_GNU_X86 1
+#else
+#define CP_GNU_X86 0
+#endif
+#if CP_GCC_X86 && defined(__linux__) && defined(__x86_64__)
+#define CP_GCC_LINUX64 1
+#else
+#define CP_GCC_LINUX64 0
+#endif
+
+
+#line 5 "components/fast_io_bulk.hpp"
 
 #line 1 "components/fast_io_output.hpp"
 
@@ -634,11 +820,11 @@ void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
 }
 
 
-#line 6 "components/fast_io_bulk.hpp"
-#include <span>
 #line 8 "components/fast_io_bulk.hpp"
+#include <span>
+#line 10 "components/fast_io_bulk.hpp"
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #include <immintrin.h>
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
@@ -657,24 +843,41 @@ struct BulkInput {
 		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
 	}
 
-	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+	template <bool Signed = false>
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid, unsigned *signs = nullptr) {
 		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
 		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
-		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+		unsigned n0 = 0, n1 = 0;
+		if constexpr (Signed) {
+			if (a < 1 || a > 11 || b <= a + 1 || b - a - 1 > 11) [[unlikely]] {
+				invalid = _mm256_set1_epi32(-1);
+				p += std::min(b + 1, 32u);
+				*signs = 0;
+				return _mm256_setzero_si256();
+			}
+			n0 = p[0] == '-', n1 = p[a + 1] == '-';
+			*signs = n0 | (n1 << 1);
+		}
+		if (a < n0 + 1 || a - n0 > 10 || b <= a + n1 + 1 || b - a - n1 - 1 > 10) [[unlikely]] {
 			invalid = _mm256_set1_epi32(-1);
 			p += std::min(b + 1, 32u);
 			return _mm256_setzero_si256();
 		}
-		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
-		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
-			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		auto window = bytes;
+		if constexpr (Signed) window = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1 + n1)), _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + n0)));
+		else window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - n1 - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a - n0].data())));
 		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
 		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
 		p += b + 1;
 		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
 	}
 
+	template <bool Signed = false>
 	static std::uint32_t one(const char *&p, bool &bad) {
+		bool negative = false;
+		if constexpr (Signed) negative = *p == '-', p += negative;
 		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
 		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
 		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
@@ -690,9 +893,10 @@ struct BulkInput {
 		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
 		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
 		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
-		bad |= value > 0xffffffffULL;
+		if constexpr (Signed) bad |= value > 2147483647ULL + negative;
+		else bad |= value > 0xffffffffULL;
 		p += n + 1;
-		return std::uint32_t(value);
+		return negative ? 0u - std::uint32_t(value) : std::uint32_t(value);
 	}
 
 	static const char *after_separator(const char *p) {
@@ -700,6 +904,7 @@ struct BulkInput {
 		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
 	}
 
+	template <bool Signed = false>
 	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
 		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
 		std::size_t done = 0;
@@ -709,16 +914,27 @@ struct BulkInput {
 			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
 			if (steps <= 0) break;
 			for (auto j = steps; j; --j, done += 2) {
-				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				unsigned signs0 = 0, signs1 = 0, signs2 = 0, signs3 = 0;
+				const auto g0 = two<Signed>(p[0], invalid, &signs0), g1 = two<Signed>(p[1], invalid, &signs1), g2 = two<Signed>(p[2], invalid, &signs2), g3 = two<Signed>(p[3], invalid, &signs3);
 				const auto k = _mm256_set1_epi32(0x00012710);
 				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
 				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
 				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
 				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
-				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
-					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				auto max_high = _mm256_set1_epi32(42), max_low = _mm256_set1_epi32(94967295);
+				auto signs = _mm256_setzero_si256();
+				if constexpr (Signed) {
+					signs = _mm256_setr_epi32(signs0 & 1, signs1 & 1, signs2 & 1, signs3 & 1, signs0 >> 1, signs1 >> 1, signs2 >> 1, signs3 >> 1);
+					max_high = _mm256_set1_epi32(21), max_low = _mm256_add_epi32(_mm256_set1_epi32(47483647), signs);
+				}
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, max_high),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, max_high), _mm256_cmpgt_epi32(low, max_low)));
 				invalid = _mm256_or_si256(invalid, overflow);
-				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				if constexpr (Signed) {
+					const auto mask = _mm256_sub_epi32(_mm256_setzero_si256(), signs);
+					value = _mm256_sub_epi32(_mm256_xor_si256(value, mask), mask);
+				}
 				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
 				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
 				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
@@ -731,7 +947,7 @@ struct BulkInput {
 		return done;
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
 		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
 		const std::size_t stream = bytes / 4;
@@ -740,12 +956,12 @@ struct BulkInput {
 		if (!p1 || !p2 || !p3 || !last) return 0;
 		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
 		auto invalid = _mm256_setzero_si256();
-		const auto done = lockstep(s, end, out, invalid);
+		const auto done = lockstep<Signed>(s, end, out, invalid);
 		bool bad = !_mm256_testz_si256(invalid, invalid);
 		std::size_t n[4];
 		for (int k = 0; k < 4; ++k) {
 			n[k] = done;
-			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one<Signed>(s[k], bad);
 			bad |= s[k] != end[k];
 		}
 		const auto parsed = n[0] + n[1] + n[2] + n[3];
@@ -766,7 +982,7 @@ struct BulkInput {
 		});
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
 		std::unique_ptr<unsigned[]> scratch;
 		std::size_t done = 0;
@@ -777,7 +993,7 @@ struct BulkInput {
 			while (chunks && count - done >= 1024 && in.end - p >= 1088) {
 				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
 				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
-				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+				const auto parsed = chunk_blocks<Signed>(p, in.end, count - done, out, emit);
 				if (!parsed) {
 					chunks = false;
 					break;
@@ -786,7 +1002,7 @@ struct BulkInput {
 			}
 			unsigned tail[64];
 			std::size_t used = 0;
-			while (done + 2 <= count && in.end - p >= 32) {
+			while (!Signed && done + 2 <= count && in.end - p >= 32) {
 				const char *next = p;
 				auto invalid = _mm256_setzero_si256();
 				const auto groups = two(next, invalid);
@@ -807,9 +1023,9 @@ struct BulkInput {
 			if (used) emit(tail, used);
 			in.current = p;
 			if (done < count) {
-				unsigned value = 0;
+				std::conditional_t<Signed, std::int32_t, unsigned> value = 0;
 				in.read(value);
-				emit(&value, 1);
+				emit(reinterpret_cast<unsigned *>(&value), 1);
 				++done;
 			}
 		}
@@ -829,15 +1045,15 @@ struct BulkInput {
 
 
 namespace fast_io_detail {
-template <class Emit, std::size_t... I>
-void emit_record(Emit &emit, const std::uint32_t *values, std::index_sequence<I...>) {
+template <class Emit, class T, std::size_t... I>
+void emit_record(Emit &emit, const T *values, std::index_sequence<I...>) {
 	emit(values[I]...);
 }
 }
 
 template <class Emit>
 void read_unsigned_blocks(FastInput &input, std::size_t count, Emit emit) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (__builtin_cpu_supports("avx2")) {
 		fast_io_detail::BulkInput::read_blocks(input, count, emit);
 		return;
@@ -867,6 +1083,46 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 	std::size_t used = 0;
 	constexpr auto indices = std::make_index_sequence<Fields>();
 	read_unsigned_blocks(input, count * Fields, [&](const std::uint32_t *values, std::size_t n) {
+		std::size_t i = 0;
+		if (used) {
+			while (used < Fields && i < n) pending[used++] = values[i++];
+			if (used == Fields) {
+				fast_io_detail::emit_record(emit, pending.data(), indices);
+				used = 0;
+			}
+		}
+		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
+		while (i < n) pending[used++] = values[i++];
+	});
+}
+
+template <class Emit>
+void read_signed_blocks(FastInput &input, std::size_t count, Emit emit) {
+#if CP_GCC_LINUX64
+	if (__builtin_cpu_supports("avx2")) {
+		fast_io_detail::BulkInput::read_blocks<true>(input, count, [&](const unsigned *values, std::size_t n) {
+			emit(reinterpret_cast<const std::int32_t *>(values), n);
+		});
+		return;
+	}
+#endif
+	std::int32_t values[64];
+	while (count) {
+		const auto n = std::min<std::size_t>(count, 64);
+		for (std::size_t i = 0; i < n; ++i) input.read(values[i]);
+		emit(values, n);
+		count -= n;
+	}
+}
+
+template <std::size_t Fields, class Emit>
+void read_signed_records(FastInput &input, std::size_t count, Emit emit) {
+	static_assert(Fields > 0);
+	if (count > std::numeric_limits<std::size_t>::max() / Fields) throw std::length_error("input size");
+	std::array<std::int32_t, Fields> pending;
+	std::size_t used = 0;
+	constexpr auto indices = std::make_index_sequence<Fields>();
+	read_signed_blocks(input, count * Fields, [&](const std::int32_t *values, std::size_t n) {
 		std::size_t i = 0;
 		if (used) {
 			while (used < Fields && i < n) pending[used++] = values[i++];

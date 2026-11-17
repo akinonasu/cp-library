@@ -31,8 +31,9 @@ template<class Cap> struct Graph {
 		for (std::size_t i = 0; i < arcs.size(); ++i) ++start[arcs[i ^ 1].to + 1];
 		for (int v = 0; v < n; ++v) start[v + 1] += start[v];
 		order.resize(arcs.size());
-		auto next = start;
-		for (int i = 0; i < int(arcs.size()); ++i) order[next[arcs[i ^ 1].to]++] = i;
+		for (int i = 0; i < int(arcs.size()); ++i) order[start[arcs[i ^ 1].to]++] = i;
+		std::move_backward(start.begin(), start.end() - 1, start.end());
+		start[0] = 0;
 		built = true;
 	}
 	void reset_flow() {

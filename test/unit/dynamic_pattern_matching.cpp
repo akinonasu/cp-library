@@ -1,8 +1,10 @@
 #include "../../string/dynamic_pattern_matching.hpp"
 #include <algorithm>
+#include <array>
 #include <cassert>
 #include <iostream>
 #include <random>
+#include <span>
 
 std::vector<int> naive(std::string_view text, std::string_view pattern) {
 	std::vector<int> result;
@@ -198,7 +200,128 @@ void limits() {
 	repeated.compact(); assert(repeated.storage_nodes() == 1);
 }
 
+void byte_sequences() {
+	std::vector<char> text{char(0), char(255), 'a', char(0), char(255)};
+	std::array<char, 2> pattern{char(0), char(255)};
+	DynamicPatternMatching matching(text, pattern);
+	check(matching, std::string(pattern.data(), pattern.size()));
+	matching.assign(std::span<const char>(pattern));
+	check(matching, std::string(pattern.data(), pattern.size()));
+	matching.insert(1, std::span<char>(text).subspan(1, 2));
+	check(matching, std::string({char(0), char(255), 'a', char(255)}));
+	matching.build(text, "a"); check(matching, "a");
+	matching.build("a", pattern); check(matching, std::string(pattern.data(), pattern.size()));
+	matching.build(std::span<char>(text), std::span<const char>(pattern));
+	check(matching, std::string(pattern.data(), pattern.size()));
+	DynamicPatternMatching left(text, "a"), right("a", pattern), empty(std::array<char, 0>{});
+	check(left, "a"); check(right, std::string(pattern.data(), pattern.size())); check(empty, "");
+}
+
+template <class T>
+void check_integer(const BasicDynamicPatternMatching<T> &matching, const std::vector<T> &pattern) {
+	assert(matching.size() == pattern.size() && matching.empty() == pattern.empty());
+	assert(matching.str() == pattern);
+	std::vector<int> expected;
+	auto text = matching.text();
+	for (std::size_t i = 0; i <= text.size(); ++i)
+		if (pattern.size() <= text.size() - i && std::equal(pattern.begin(), pattern.end(), text.begin() + i)) expected.push_back(int(i));
+	auto actual = matching.occurrences();
+	assert(matching.count() == int(expected.size()));
+	auto [l, r] = matching.occurrence_range();
+	assert(r - l == matching.count());
+	for (int i = 0; i < matching.count(); ++i) {
+		assert(matching.occurrence(i) == actual[i]);
+		assert(actual[i] == matching.suffix_array()[l + i]);
+	}
+	std::sort(actual.begin(), actual.end());
+	assert(actual == expected);
+	for (std::size_t i = 0; i < pattern.size(); ++i) assert(matching[i] == pattern[i]);
+}
+
+template <class T>
+void integer_sequences() {
+	using Matching = BasicDynamicPatternMatching<T>;
+	std::mt19937_64 rng(129817240);
+	std::vector<T> alphabet{std::numeric_limits<T>::min(), std::numeric_limits<T>::max(), T(0), T(1), T(257), T(-1)};
+	for (int i = 0; i < 400; ++i) alphabet.push_back(T(rng()));
+	std::array<T, 3> fixed{alphabet[0], alphabet[1], alphabet[2]};
+	Matching from_array(fixed, std::span<T, 3>(fixed));
+	check_integer(from_array, std::vector<T>(fixed.begin(), fixed.end()));
+	from_array.assign(std::span<const T, 3>(fixed));
+	check_integer(from_array, std::vector<T>(fixed.begin(), fixed.end()));
+	for (int trial = 0; trial < 35; ++trial) {
+		std::vector<T> text(rng() % 80);
+		for (T &x : text) x = alphabet[rng() % (trial % 2 ? 5 : alphabet.size())];
+		Matching matching(text);
+		std::vector<T> pattern;
+		std::vector<std::pair<Matching, std::vector<T>>> saved;
+		for (int step = 0; step < 600; ++step) {
+			std::size_t l = rng() % (pattern.size() + 1), r = rng() % (pattern.size() + 1);
+			if (l > r) std::swap(l, r);
+			T c = alphabet[rng() % alphabet.size()];
+			int op = pattern.size() > 100 ? 2 : rng() % 12;
+			if (op == 0) { matching.insert(l, c); pattern.insert(pattern.begin() + l, c); }
+			if (op == 1 && l < pattern.size()) { matching.set(l, c); pattern[l] = c; }
+			if (op == 2) { matching.erase(l, r); pattern.erase(pattern.begin() + l, pattern.begin() + r); }
+			if (op == 3) {
+				std::size_t p = rng() % (pattern.size() + 1);
+				std::vector<T> middle(pattern.begin() + l, pattern.begin() + r);
+				matching.copy(l, r, p); pattern.insert(pattern.begin() + p, middle.begin(), middle.end());
+			}
+			if (op == 4) {
+				std::size_t p = rng() % (pattern.size() - (r - l) + 1);
+				std::vector<T> middle(pattern.begin() + l, pattern.begin() + r);
+				matching.move(l, r, p);
+				pattern.erase(pattern.begin() + l, pattern.begin() + r);
+				pattern.insert(pattern.begin() + p, middle.begin(), middle.end());
+			}
+			if (op == 5) {
+				std::size_t p = rng() % (text.size() + 1), length = rng() % (text.size() - p + 1);
+				auto input = std::span<const T>(text).subspan(p, length);
+				matching.insert(l, input); pattern.insert(pattern.begin() + l, input.begin(), input.end());
+			}
+			if (op == 6) {
+				std::size_t p = rng() % (text.size() + 1), length = rng() % (text.size() - p + 1);
+				pattern.assign(text.begin() + p, text.begin() + p + length); matching.assign(pattern);
+			}
+			if (op == 7) { saved.emplace_back(matching, pattern); if (saved.size() > 5) saved.erase(saved.begin()); }
+			if (op == 8 && !saved.empty()) { auto &version = saved[rng() % saved.size()]; matching = version.first; pattern = version.second; }
+			if (op == 9) matching.compact();
+			if (op == 10 && l < pattern.size()) { matching.erase(l); pattern.erase(pattern.begin() + l); }
+			if (op == 11 && rng() % 5 == 0) { matching.clear(); pattern.clear(); }
+			check_integer(matching, pattern);
+			if (step % 100 == 0) for (const auto &version : saved) check_integer(version.first, version.second);
+		}
+		Matching moved(std::move(matching));
+		check_integer(moved, pattern); check_integer(matching, std::vector<T>{});
+		matching = std::move(moved);
+		check_integer(matching, pattern); check_integer(moved, std::vector<T>{});
+		matching.swap(moved);
+		check_integer(moved, pattern); check_integer(matching, std::vector<T>{});
+		matching.build(alphabet, alphabet);
+		check_integer(matching, alphabet);
+	}
+	std::vector<T> one{alphabet[0]}, absent{T(1234567)};
+	Matching huge(one, absent);
+	for (int i = 0; i < 63; ++i) huge.copy(0, huge.size(), huge.size());
+	huge.copy(1, huge.size(), 0);
+	auto max = std::numeric_limits<std::uint64_t>::max();
+	assert(huge.size() == max && huge[0] == absent[0] && huge[max - 1] == absent[0]);
+	auto saved = huge;
+	huge.set(max / 2, alphabet[1]);
+	assert(huge[max / 2] == alphabet[1] && saved[max / 2] == absent[0]);
+	huge.erase(max / 2 + 1, max);
+	huge.erase(0, max / 2);
+	check_integer(huge, std::vector<T>{alphabet[1]});
+	saved.compact();
+	assert(saved[0] == absent[0] && saved[max - 1] == absent[0]);
+}
+
 int main() {
 	ranges(); exhaustive(); randomized(); limits();
+	byte_sequences();
+	integer_sequences<std::int64_t>();
+	integer_sequences<std::uint64_t>();
+	integer_sequences<int>();
 	std::cout << "Dynamic pattern matching passed\n";
 }

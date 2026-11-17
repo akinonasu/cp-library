@@ -22,8 +22,24 @@ bool same = a == b; // true: 頂点番号だけ異なる星
 
 `TreeHashValue` は 2 本の 61 bit ハッシュを持ちます。既定 seed は [根付き木のハッシュ](rooted_tree_hash.md) と共通で、同じプロセス内では別々に構築した木同士を比較できます。値を保存して実行をまたいで比較する場合は、`tree_hash(graph,12345)` のように同じ seed を指定してください。
 
-頂点番号を付け替えて同じ形になる木では重心同士も対応するため、同型な木の戻り値は必ず一致します。異なる木がハッシュ衝突する可能性はあります。辺・頂点に付けた値や重みは扱いません。根を指定して全ての部分木のハッシュを求める場合は [根付き木のハッシュ](rooted_tree_hash.md) を使ってください。
+頂点番号を付け替えて同じ形になる木では重心同士も対応するため、同型な木の戻り値は必ず一致します。異なる木がハッシュ衝突する可能性はあります。ラベルを渡さない場合は頂点の値を区別せず、`tree_hash(graph,labels,seed = 既定 seed)` では対応する頂点のラベルも比較します。辺の値や重みは比較しません。根を指定して全ての部分木のハッシュを求める場合は [根付き木のハッシュ](rooted_tree_hash.md) を使ってください。
+
+頂点ラベルは長さが頂点数と等しい列で、`labels[v]` が頂点 `v` の値です。`vector`・固定長／可変長の `span`・`array`・`string` など、定数時間の `size()` と添字アクセスが使える列に対応し、要素型は `bool` を含む 64 bit 以下の標準整数型にしてください。負数・最小値・最大値も扱えます。別々の木を比較するときは要素型と seed を揃え、同じ値を同じラベルとして渡してください。入力は変更せず、ラベル列を呼び出し後まで保持する必要はありません。空の木には空のラベル列を渡します。返り値はラベル無しと同じ `std::array<TreeHashValue,2>` ですが、ラベル付きとラベル無しの結果は比較しないでください。
+
+```cpp
+#include "lib/tree/tree_hash.hpp"
+#include <cassert>
+
+std::vector<std::vector<int>> first{ {1, 2}, {0}, {0} };
+std::vector<std::vector<int>> second{ {1}, {0, 2}, {1} };
+std::vector<int> first_labels{1000, -7, 257}, second_labels{257, 1000, -7};
+assert(tree_hash(first, first_labels, 12345) == tree_hash(second, second_labels, 12345));
+second_labels[0] = 999;
+assert(tree_hash(first, first_labels, 12345) != tree_hash(second, second_labels, 12345));
+```
+
+ラベル付きでも、同じ形・同じ値の木なら必ず一致し、異なる木や値がハッシュ衝突する可能性はあります。
 
 子の順序のソートや再帰は使いません。
 
-頂点数を $$n$$ として、計算は $$O(n)$$ 時間・追加空間です。返すハッシュは $$O(1)$$ 空間で、比較は $$O(1)$$ 時間です。
+頂点数を $$n$$ として、`tree_hash(graph,seed)`・`tree_hash(graph,labels,seed)` はともに $$O(n)$$ 時間・追加空間です。固定幅整数の演算は定数時間として扱います。返すハッシュは $$O(1)$$ 空間で、比較は $$O(1)$$ 時間です。

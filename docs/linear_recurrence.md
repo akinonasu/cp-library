@@ -13,6 +13,8 @@ auto value = linear_recurrence(initial, coefficients, 10); // 55
 
 初期値と係数は `vector<T>` で渡します。法は 998244353 です。
 
+他の法や有理数などの係数型には、[畳み込みを指定する版](linear_recurrence_generic.md)を使えます。通常版・軽量版の畳み込み関数や、独自の畳み込みを渡せます。
+
 係数が未知で先頭の数項が分かっている場合は、[線形漸化式の復元](berlekamp_massey.md)で係数を求められます。
 
 連続する複数の項は [有理 FPS の区間係数取得](rational_fps_coefficients.md) でまとめて計算できます。

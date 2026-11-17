@@ -2,8 +2,14 @@
 #define FIXED_SIZE_SUBSET_SUM_CORE_HPP
 
 #include "ntt_mod.hpp"
+#include <algorithm>
 #include <array>
+#include <cassert>
+#include <limits>
+#include <numeric>
+#include <span>
 #include <stdexcept>
+#include <type_traits>
 
 namespace fixed_size_subset_sum_detail {
 using Word = std::uint32_t;
@@ -102,6 +108,93 @@ inline Digits coefficient_bound(int n, int k) {
 	}
 	divide(bound, Word(k));
 	return bound;
+}
+
+template <class T>
+concept IntegralValue = std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8;
+
+template <class Sequence>
+std::vector<long long> wide_sums(const Sequence &values, int k) {
+	using Wide = __int128_t;
+	int count = int(values.size());
+	auto narrow = [](Wide x) {
+		if (x < std::numeric_limits<long long>::min() || x > std::numeric_limits<long long>::max())
+			throw std::overflow_error("subset sum is out of range");
+		return static_cast<long long>(x);
+	};
+	Wide smallest = 0, largest = 0, total = 0;
+	for (int i = 0; i < k; ++i) smallest += Wide(values[i]), largest += Wide(values[count - 1 - i]);
+	narrow(smallest);
+	narrow(largest);
+	for (auto x : values) total += Wide(x);
+	bool complement = k > count - k;
+	if (complement) k = count - k;
+	if (!k) return {narrow(total)};
+	if (k == 1) {
+		std::vector<long long> result;
+		result.reserve(values.size());
+		for (auto x : values) result.push_back(narrow(complement ? total - Wide(x) : Wide(x)));
+		if (complement) std::reverse(result.begin(), result.end());
+		return result;
+	}
+	std::uint64_t ways = 1;
+	for (int i = 1; i <= k && ways <= 32768; ++i) ways = ways * (count - i + 1) / i;
+	std::vector<Wide> sums;
+	if (ways <= 32768) {
+		sums.reserve(ways);
+		auto visit = [&](auto &&self, int start, int left, Wide sum) -> void {
+			if (!left) { sums.push_back(sum); return; }
+			for (int i = start; i <= count - left; ++i) self(self, i + 1, left - 1, sum + Wide(values[i]));
+		};
+		visit(visit, 0, k, 0);
+		std::sort(sums.begin(), sums.end());
+		sums.erase(std::unique(sums.begin(), sums.end()), sums.end());
+	} else {
+		Wide base = Wide(values[0]);
+		std::uint64_t step = 0;
+		for (auto x : values) step = std::gcd(step, std::uint64_t(Wide(x) - base));
+		if ((Wide(values.back()) - base) / step > std::numeric_limits<int>::max())
+			throw std::length_error("sum range is too large");
+		std::vector<int> coordinates;
+		coordinates.reserve(values.size());
+		for (auto x : values) coordinates.push_back(int((Wide(x) - base) / step));
+		long long low = 0, high = 0;
+		for (int i = 0; i < k; ++i) low += coordinates[i], high += coordinates[count - 1 - i];
+		if (coordinates.back() == count - 1) {
+			sums.reserve(std::size_t(high - low) + 1);
+			for (long long x = low; x <= high; ++x) sums.push_back(Wide(k) * base + Wide(x) * step);
+		} else {
+			if (high >= (1 << 23)) throw std::length_error("sum range is too large");
+			auto bound = coefficient_bound(count, k);
+			std::vector<unsigned char> present(std::size_t(high - low) + 1);
+			std::size_t missing = present.size();
+			Digits product{1};
+			for (auto pass : passes) {
+				missing -= pass.include(coordinates, k, int(low), present);
+				multiply(product, pass.modulus);
+				if (!missing || less(bound, product)) break;
+				int left = 0, right = 0, candidates = 0;
+				long long small = low - coordinates[k - 1], large = high - coordinates[count - k];
+				for (std::size_t i = 0; i < present.size() && candidates < count; ++i) {
+					if (present[i]) continue;
+					long long sum = low + i;
+					while (left < count && coordinates[left] < sum - large) ++left;
+					while (right < count && coordinates[right] <= sum - small) ++right;
+					candidates = std::max(candidates, right - left);
+				}
+				bound = coefficient_bound(candidates, k);
+				if (less(bound, product)) break;
+			}
+			sums.reserve(present.size() - missing);
+			for (std::size_t i = 0; i < present.size(); ++i)
+				if (present[i]) sums.push_back(Wide(k) * base + Wide(low + i) * step);
+		}
+	}
+	std::vector<long long> result;
+	result.reserve(sums.size());
+	for (Wide sum : sums) result.push_back(narrow(complement ? total - sum : sum));
+	if (complement) std::reverse(result.begin(), result.end());
+	return result;
 }
 }
 

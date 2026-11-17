@@ -62,5 +62,3 @@ int main() {
 利用例：[Persistent Unionfind の検証コード](../test/rollback_union_find.test.cpp)。クエリを先読みしてバージョンの木を作り、併合して下の状態を調べ、戻るときに `undo` します。このドライバーも再帰を使いません。Rollback Union Find 単体の利用では、クエリの先読みは不要です。
 
 構築は $$O(n)$$ 時間、使用中のデータは $$O(n+H)$$ 空間です。`leader`・`same`・`size`・`merge` は $$O(\log n)$$ 時間で、`merge` の履歴確保だけは償却です。`undo` は $$O(1)$$、`rollback` は $$O(k)$$ 時間、`snapshot` は $$O(1)$$ 時間・追加空間です。`groups` は $$O(n\log n)$$ 時間・$$O(n)$$ 追加空間です。空の状態の構築や何もしない巻き戻しにも定数時間かかります。
-
-「償却」は、一連の操作にかかる合計時間から求めた、1 回あたりの計算量を表します。

@@ -26,7 +26,7 @@ library_category: components/fps
 | `apply(matrix,a,b)` | `half` の変換を元の多項式ペアに掛けて上書き | $$O(n\log n)$$ |
 | `apply_first(matrix,a,b)` | 変換後の先頭多項式を返す。行列の上段のみを使う | $$O(n\log n)$$ |
 | `combine(out,a,b,n,x,y,z)` | `out[i] = x*a[i]+y*b[i-1]+z*b[i]` を計算 | $$O(n)$$ |
-| `combine8(out,a,b,n,x,y,z)` | `combine` の AVX2（複数の整数をまとめて処理する CPU 命令）版。係数 `x,y,z` は通常の剰余表現 | $$O(n)$$ |
+| `combine8(out,a,b,n,x,y,z)` | `combine` の AVX2 版。係数 `x,y,z` は通常の剰余表現 | $$O(n)$$ |
 | `direct(a,b,target = -1)` | 小区間の互除法。`target = -1` は `a.size()/2` | $$O(n^2)$$ |
 | `jump(a,b,k,first_only = false)` | 後ろの多項式の次数を `deg(a)-k` 未満にする変換行列 | $$O(n\log^2 n)$$ |
 | `half(a,b)` | 互除法を進め、後ろの多項式の係数数を元の `a.size()/2` 以下にする変換行列 | $$O(n\log^2 n)$$ |

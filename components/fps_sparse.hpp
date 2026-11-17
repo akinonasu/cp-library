@@ -265,36 +265,36 @@ struct SparseSeries : SparseBase<SparseSeries> {
 	}
 	template <bool exponential = false, int streams = 1>
 	__attribute__((target("avx2"))) static void geometric8(U *out, int n, U initial, U ratio, const U *inv = nullptr) {
-		std::uint32_t first[8];
-		U step = O::one;
-		first[0] = initial;
+		U first[8], p[8], step = O::one;
 		for (int j = 0; j < 8; ++j) {
 			step = O::mul(step, ratio);
-			if (j) {
-				first[j] = O::mul(first[j - 1], ratio);
-				if constexpr (exponential) first[j] = O::mul(first[j], inv[j]);
-			}
+			if (exponential) p[j] = step;
+			first[j] = initial;
+			initial = O::mul(initial, ratio);
+			if (exponential && j < 7) initial = O::mul(initial, inv[j + 1]);
 		}
-		V value[streams], multiplier = _mm256_set1_epi32(step);
+		V value[streams], factor = _mm256_set1_epi32(step);
 		value[0] = O::load8(first);
-		for (int j = 1; j < streams; ++j) value[j] = O::mul8(value[j - 1], multiplier);
+		for (int j = 1; j < streams; ++j) value[j] = O::mul8(value[j - 1], factor);
 		for (int j = 0; j < streams; ++j) O::store8(out + 8 * j, value[j]);
 		for (int j = 1; j < streams; j *= 2) step = O::mul(step, step);
-		multiplier = _mm256_set1_epi32(step);
+		factor = _mm256_set1_epi32(step);
 		int i = 8 * streams;
 		for (; n - i >= 8 * streams; i += 8 * streams) for (int k = 0; k < streams; ++k) {
-			value[k] = O::mul8(value[k], multiplier);
-			if constexpr (exponential) {
-				V factors[4];
-#pragma GCC unroll 4
-				for (int j = 0; j < 4; ++j) factors[j] = O::mul8(O::load8(inv + i - 2 * j), O::load8(inv + i - 2 * j - 1));
-				value[k] = O::mul8(value[k], O::mul8(O::mul8(factors[0], factors[1]), O::mul8(factors[2], factors[3])));
-			}
+			if (exponential) {
+				V x = O::load8(inv + i);
+#pragma GCC unroll 3
+				for (int s = 1; s < 8; s *= 2) {
+					V j = _mm256_sub_epi32(_mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7), _mm256_set1_epi32(s));
+					x = O::mul8(x, _mm256_blendv_epi8(_mm256_permutevar8x32_epi32(x, j), _mm256_set1_epi32(O::one), _mm256_srai_epi32(j, 31)));
+				}
+				value[k] = O::mul8(x, O::mul8(O::load8(p), _mm256_permutevar8x32_epi32(value[k], _mm256_set1_epi32(7))));
+			} else value[k] = O::mul8(value[k], factor);
 			O::store8(out + i + 8 * k, value[k]);
 		}
 		for (; i < n; ++i) {
-			out[i] = O::mul(out[i - 1], ratio);
-			if constexpr (exponential) out[i] = O::mul(out[i], inv[i]);
+			U x = O::mul(out[i - 1], ratio);
+			out[i] = exponential ? O::mul(x, inv[i]) : x;
 		}
 	}
 

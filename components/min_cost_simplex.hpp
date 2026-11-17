@@ -7,8 +7,8 @@
 #include <optional>
 
 namespace flow_detail {
-template<class Cap> class NetworkSimplex {
-	using Cost = __int128_t;
+template<class Cap, class Price = __int128_t> class NetworkSimplex {
+	using Cost = Price;
 	struct Edge { int to; Cap cap; Cost cost; };
 	struct Parent { int vertex, edge; Cap up, down; };
 	int n;
@@ -18,9 +18,7 @@ template<class Cap> class NetworkSimplex {
 	bool solve() {
 		const int original_edge_count = int(edges.size());
 		potential.assign(n + 1, Cost(0));
-		Cost artificial_cost = 1;
-		for (int edge = 0; edge < original_edge_count; edge += 2)
-			artificial_cost += edges[edge].cost < 0 ? -edges[edge].cost : edges[edge].cost;
+		const Cost artificial_cost = 1;
 
 		std::vector<Parent> parent(n);
 		edges.reserve(original_edge_count + 2 * n);
@@ -242,16 +240,19 @@ template<class Cap> class NetworkSimplex {
 
 public:
 	template<class Cost>
-	NetworkSimplex(const Graph<Cap>& graph, const std::vector<Cost>& costs, int s, int t, Cap limit, std::uint64_t budget)
+	NetworkSimplex(const Graph<Cap>& graph, const std::vector<Cost>& costs, int s, int t, Cap limit, std::uint64_t budget,
+		__int128_t forcing_cost = -1)
 		: n(graph.n), budget(budget) {
 		edges.reserve(graph.arcs.size() + std::size_t(n) * 2 + 2);
-		__int128_t maximum = 0;
-		for (std::size_t i = 0; i < graph.arcs.size(); ++i) {
-			edges.push_back({graph.arcs[i].to, graph.arcs[i].cap, __int128_t(costs[i])});
-			maximum = std::max(maximum, costs[i] < 0 ? -__int128_t(costs[i]) : __int128_t(costs[i]));
+		for (std::size_t i = 0; i < graph.arcs.size(); ++i)
+			edges.push_back({graph.arcs[i].to, graph.arcs[i].cap, Price(costs[i])});
+		if (forcing_cost < 0) {
+			__int128_t maximum = 0;
+			for (Cost cost : costs) maximum = std::max(maximum, cost < 0 ? -__int128_t(cost) : __int128_t(cost));
+			forcing_cost = __int128_t(n) * maximum + 1;
 		}
-		edges.push_back({s, limit, -__int128_t(n) * maximum - 1});
-		edges.push_back({t, 0, __int128_t(n) * maximum + 1});
+		edges.push_back({s, limit, Price(-forcing_cost)});
+		edges.push_back({t, 0, Price(forcing_cost)});
 	}
 	template<class Cost, class Total>
 	std::optional<std::pair<Cap, Total>> run(Graph<Cap>& graph, const std::vector<Cost>& costs) {
@@ -276,7 +277,14 @@ std::optional<std::pair<Cap, Total>> simplex_flow(Graph<Cap>& graph, const std::
 		upper += std::min<Cap>(limit - upper, graph.arcs[graph.order[j]].cap);
 	if (!upper) return std::pair<Cap, Total>{0, 0};
 	if (!budget) budget = std::max<std::uint64_t>(10000, std::min<std::uint64_t>(25000000, std::uint64_t(graph.n) * graph.arcs.size()) * 4);
-	return NetworkSimplex<Cap>(graph, costs, s, t, upper, budget).template run<Cost, Total>(graph, costs);
+	if (budget <= graph.arcs.size()) return std::nullopt;
+	__int128_t maximum = 0;
+	for (std::size_t i = 0; i < costs.size(); i += 2)
+		maximum = std::max(maximum, costs[i] < 0 ? -__int128_t(costs[i]) : __int128_t(costs[i]));
+	__int128_t forcing_cost = __int128_t(graph.n) * maximum + 1;
+	if (forcing_cost <= std::numeric_limits<std::int64_t>::max() / 5)
+		return NetworkSimplex<Cap, std::int64_t>(graph, costs, s, t, upper, budget, forcing_cost).template run<Cost, Total>(graph, costs);
+	return NetworkSimplex<Cap>(graph, costs, s, t, upper, budget, forcing_cost).template run<Cost, Total>(graph, costs);
 }
 }
 

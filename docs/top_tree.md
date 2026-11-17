@@ -6,7 +6,7 @@ library_category: tree/dynamic
 
 辺の追加・削除で形が変わる森の木 DP を管理します。経路をつなぐ `compress` と、同じ頂点へ接続する枝をまとめる `rake` を定義します。結合を取り消す逆演算は不要で、部分木の最小値・直径・独立集合の数なども扱えます。
 
-このページでは、木の一部をまとめて計算する単位をクラスタと呼びます。`Path` は向き付きの 1 本の経路と、そこから伸びる枝を合わせた情報です。この区別して保持する経路を「境界の経路」と呼びます。`Point` は、親の頂点をまだ加えていない枝の情報です。
+`Path` は向き付きの 1 本の経路と、そこから伸びる枝を合わせた Path cluster の情報です。`Point` は、親の頂点をまだ加えていない枝の Point cluster の情報です。
 
 ```cpp
 #include "lib/tree/top_tree.hpp"
@@ -54,7 +54,7 @@ int main() {
 
 頂点番号は `0 <= v < size()` です。空の森では `size()`・`empty()` のみ使用できます。孤立点も扱えます。`link` は自己ループ・多重辺・閉路を作る場合に `false` を返します。`cut` は辺がない場合や自己ループの指定で `false` を返します。失敗しても頂点値と辺集合は変わりません。頂点の追加・削除、遅延更新は扱いません。
 
-`subtree_prod(root,v)` の 2 頂点と `prod(u,v)` の 2 頂点は連結である必要があります。根はクエリごとに指定でき、以前の操作の根に依存しません。`all_prod(root)` と `subtree_prod(root,v)` は、それぞれ `root`・`v` の 1 頂点を境界の経路とし、そのほかを枝としてまとめた値です。孤立点では `add_vertex(point_identity(), get(v))` になります。
+`subtree_prod(root,v)` の 2 頂点と `prod(u,v)` の 2 頂点は連結である必要があります。根はクエリごとに指定でき、以前の操作の根に依存しません。`all_prod(root)` と `subtree_prod(root,v)` は、それぞれ `root`・`v` の 1 頂点を `Path` 内の経路とし、そのほかを枝としてまとめた値です。孤立点では `add_vertex(point_identity(), get(v))` になります。
 
 `get` の参照は、そのオブジェクトの破棄・代入まで有効です。`set` は参照先の値を書き換えます。オブジェクトをコピーした場合は独立した森になります。DP の値はコピー・代入・交換可能な型にします。
 
@@ -69,7 +69,7 @@ int main() {
 | `DP::rake(a,b)` | `Point` 同士を併合し、`Point` を返す | $$O(1)$$ を仮定 |
 | `DP::compress(a,b)` | `Path` の `a` の末尾と `b` の先頭を辺でつなぎ、`a` から `b` の向きの `Path` を返す。頂点の重複はない | $$O(1)$$ を仮定 |
 | `DP::add_edge(path)` | `Path` の先頭を親へ接続する 1 本の枝として扱い、`Point` を返す。親は含めない | $$O(1)$$ を仮定 |
-| `DP::add_vertex(point,vertex)` | 枝を表す `Point` に親の `Vertex` を加え、その頂点だけを境界の経路とする `Path` を返す | $$O(1)$$ を仮定 |
+| `DP::add_vertex(point,vertex)` | 枝を表す `Point` に親の `Vertex` を加え、その頂点だけを `Path` 内の経路とする `Path` を返す | $$O(1)$$ を仮定 |
 
 `rake` は `rake(rake(a,b),c) == rake(a,rake(b,c))` と `rake(a,b) == rake(b,a)` を満たすようにします。`point_identity()` を左右どちらに渡しても他方の値がそのまま返ることが必要です。`compress` は `compress(compress(a,b),c) == compress(a,compress(b,c))` を満たすようにします。空の経路は扱わないため、`path_identity()` は不要です。`compress` の逆方向の値はライブラリ内部で同じ頂点を逆順に集約して保持するので、`reverse()` も不要です。`Point` の枝には順序を持たせられません。
 
@@ -124,7 +124,7 @@ int main() {
 }
 ```
 
-この DP の `length` は境界の経路の重み和、`left`・`right` はそれぞれ先頭・末尾からの最大パス和、`diameter` はクラスタ内の最大パス和です。`Point` は枝の高さの最大 2 個と、枝の内部の最大パス和を保持します。重みは非負とし、加算で `long long` があふれないようにします。
+この DP の `length` は `Path` 内の経路の重み和、`left`・`right` はそれぞれ先頭・末尾からの最大パス和、`diameter` はクラスタ内の最大パス和です。`Point` は枝の高さの最大 2 個と、枝の内部の最大パス和を保持します。重みは非負とし、加算で `long long` があふれないようにします。
 
 [Toptree 導入編](https://niuez.hatenablog.com/entry/2019/08/04/191420) の compress・rake と、[ei1333 の Lazy Top Tree](https://ei1333.github.io/library/structure/dynamic-tree/lazy-top-tree.hpp) を参考にしています。
 

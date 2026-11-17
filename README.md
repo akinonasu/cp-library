@@ -66,6 +66,9 @@
 | `data_structure/slope_trick.hpp` | Slope Trick | [使い方](docs/slope_trick.md) |
 | `data_structure/dynamic_bitset.hpp` | Dynamic Bitset・論理演算／シフト・区間更新・ビット列挙 | [使い方](docs/dynamic_bitset.md) |
 | `data_structure/double_ended_priority_queue.hpp` | 両端優先度付きキュー（最小値・最大値の取得と削除） | [使い方](docs/double_ended_priority_queue.md) |
+| `data_structure/parallel_binary_search.hpp` | 並列二分探索・条件が初めて成立する更新回数 | [使い方](docs/parallel_binary_search.md) |
+| `data_structure/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue（応用） | [使い方](docs/partially_retroactive_priority_queue.md) |
+| `data_structure/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue（応用） | [使い方](docs/retroactive_priority_queue.md) |
 
 ### data_structure/associative
 
@@ -73,9 +76,9 @@
 | --- | --- | --- |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
-| `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列） | [使い方](docs/flat_hash_map.md) |
+| `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列・要素の列挙） | [使い方](docs/flat_hash_map.md) |
 | `data_structure/xor_set.hpp` | XOR の最小値・最大値を求める整数集合 | [使い方](docs/xor_set.md) |
-| `data_structure/top_k_sum.hpp` | Top K Sum（大小 k 個の和・k 番目の値・境界検索・重複個数） | [使い方](docs/top_k_sum.md) |
+| `data_structure/super_multiset.hpp` | Super Multiset（大小 k 個の和・順位・値の範囲の個数と和・前後検索） | [使い方](docs/super_multiset.md) |
 
 ### data_structure/li_chao_tree
 
@@ -98,18 +101,16 @@
 | `data_structure/persistent_heap.hpp` | 永続併合可能ヒープ | [使い方](docs/persistent_heap.md) |
 | `data_structure/persistent_segtree.hpp` | 永続セグメント木（過去版への更新・区間コピー） | [使い方](docs/persistent_segtree.md) |
 | `data_structure/persistent_lazy_segtree.hpp` | 永続遅延セグメント木・区間コピー | [使い方](docs/persistent_lazy_segtree.md) |
-| `string/data_dependent_tree.hpp` | Data Dependent Tree・永続文字列・LCP・辞書順比較 | [使い方](docs/data_dependent_tree.md) |
 
 ### data_structure/range_query
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `data_structure/sliding_window_aggregation.hpp` | Sliding Window Aggregation（キューの集約） | [使い方](docs/sliding_window_aggregation.md) |
-| `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
+| `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・代入・区間和・累積和の検索） | [使い方](docs/fenwick_tree.md) |
 | `data_structure/static_threshold_search.hpp` | 静的整数列の閾値検索・O(log n) | [使い方](docs/static_threshold_search.md) |
 | `data_structure/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
 | `data_structure/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |
-| `data_structure/parallel_binary_search.hpp` | 並列二分探索・条件が初めて成立する更新回数 | [使い方](docs/parallel_binary_search.md) |
 | `data_structure/mo_order.hpp` | Mo's Algorithm | [使い方](docs/mo_order.md) |
 | `data_structure/mo_with_updates.hpp` | 更新付き Mo's Algorithm・一点更新と区間クエリ | [使い方](docs/mo_with_updates.md) |
 | `data_structure/offline_range_frequency.hpp` | 区間頻度（一点更新・クエリ一括処理） | [使い方](docs/offline_range_frequency.md) |
@@ -144,6 +145,7 @@
 | `data_structure/dynamic_segtree.hpp` | Dynamic Segtree | [使い方](docs/dynamic_segtree.md) |
 | `data_structure/dynamic_lazy_segtree.hpp` | Dynamic Lazy Segtree | [使い方](docs/dynamic_lazy_segtree.md) |
 | `data_structure/sortable_segtree.hpp` | Sortable Segtree（区間ソート・区間集約） | [使い方](docs/sortable_segtree.md) |
+| `data_structure/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負)（応用） | [使い方](docs/kinetic_tournament.md) |
 
 ### data_structure/sequence
 
@@ -182,6 +184,7 @@
 | `fps/rational_fps_coefficients.hpp` | 有理 FPS の区間係数取得 | [使い方](docs/rational_fps_coefficients.md) |
 | `fps/rational_fps_coefficients_light.hpp` | 軽量 FPS の有理 FPS 区間係数取得 | [使い方](docs/rational_fps_coefficients_light.md) |
 | `fps/linear_recurrence.hpp` | 線形漸化式の第 k 項 | [使い方](docs/linear_recurrence.md) |
+| `fps/linear_recurrence_generic.hpp` | 線形漸化式（係数型・畳み込み指定） | [使い方](docs/linear_recurrence_generic.md) |
 | `fps/berlekamp_massey.hpp` | 線形漸化式の復元（Berlekamp–Massey） | [使い方](docs/berlekamp_massey.md) |
 | `fps/compose.hpp` | 形式的冪級数の合成 | [使い方](docs/compose.md) |
 | `fps/compose_light.hpp` | 軽量 FPS の合成 | [使い方](docs/compose_light.md) |
@@ -375,11 +378,13 @@
 | `sequence/permutation_rank.hpp` | 順列の辞書順順位・復元 | [使い方](docs/permutation_rank.md) |
 | `sequence/inversion_count.hpp` | 転倒数 | [使い方](docs/inversion_count.md) |
 | `sequence/run_length_encoding.hpp` | 連長圧縮（RLE） | [使い方](docs/run_length_encoding.md) |
+| `sequence/weighted_lis.hpp` | 重み付き最長増加部分列 | [使い方](docs/weighted_lis.md) |
 
 ### string
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `string/data_dependent_tree.hpp` | Data Dependent Tree・永続文字列・LCP・辞書順比較 | [使い方](docs/data_dependent_tree.md) |
 | `string/concatenation_order.hpp` | 文字列結合の辞書順比較・並べ替え | [使い方](docs/concatenation_order.md) |
 | `string/trie.hpp` | Trie・重複付き辞書・接頭辞検索・辞書順検索・木 DP | [使い方](docs/trie.md) |
 
@@ -401,7 +406,6 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
-| `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/z_algorithm.hpp` | Z algorithm | [使い方](docs/z_algorithm.md) |
 | `string/wildcard_pattern_matching.hpp` | ワイルドカード付きパターンマッチング | [使い方](docs/wildcard_pattern_matching.md) |
 | `string/aho_corasick.hpp` | Aho–Corasick・複数パターン検索 | [使い方](docs/aho_corasick.md) |
@@ -411,6 +415,7 @@
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `string/rolling_hash.hpp` | Rolling Hash | [使い方](docs/rolling_hash.md) |
 | `string/longest_common_substring.hpp` | 最長共通部分文字列 | [使い方](docs/longest_common_substring.md) |
 | `string/suffix_array.hpp` | Suffix Array・整数列対応 | [使い方](docs/suffix_array_public.md) |
 | `string/lcp_array.hpp` | LCP Array | [使い方](docs/lcp_array.md) |
@@ -431,6 +436,8 @@
 | `tree/tree_center.hpp` | 木の中心・最大距離を最小にする頂点 | [使い方](docs/tree_center.md) |
 | `tree/rerooting.hpp` | 全方位木 DP | [使い方](docs/rerooting.md) |
 | `tree/dsu_on_tree.hpp` | DSU on Tree | [使い方](docs/dsu_on_tree.md) |
+| `tree/hld.hpp` | Heavy-Light Decomposition（応用） | [使い方](docs/hld.md) |
+| `tree/centroid_decomposition.hpp` | 重心分解（応用） | [使い方](docs/centroid_decomposition.md) |
 
 ### tree/dynamic
 
@@ -449,17 +456,7 @@
 | `tree/contour_sum.hpp` | 頂点値更新・距離区間の和 | [使い方](docs/contour_sum.md) |
 | `tree/subtree_index.hpp` | 親配列から部分木の区間番号を構築 | [使い方](docs/subtree_index.md) |
 | `tree/tree_mo.hpp` | 木上の Mo's Algorithm・頂点値／辺値の経路クエリ | [使い方](docs/tree_mo.md) |
-
-### data_structure/advanced
-
-| ファイル | 内容 | 使い方 |
-| --- | --- | --- |
-| `tree/hld.hpp` | Heavy-Light Decomposition | [使い方](docs/hld.md) |
-| `tree/static_top_tree.hpp` | Static Top Tree・動的な木 DP | [使い方](docs/static_top_tree.md) |
-| `tree/centroid_decomposition.hpp` | 重心分解 | [使い方](docs/centroid_decomposition.md) |
-| `data_structure/kinetic_tournament.hpp` | Kinetic Tournament (固定係数昇順・更新係数非負) | [使い方](docs/kinetic_tournament.md) |
-| `data_structure/partially_retroactive_priority_queue.hpp` | Partially Retroactive Priority Queue | [使い方](docs/partially_retroactive_priority_queue.md) |
-| `data_structure/retroactive_priority_queue.hpp` | Fully Retroactive Priority Queue | [使い方](docs/retroactive_priority_queue.md) |
+| `tree/static_top_tree.hpp` | Static Top Tree・動的な木 DP（応用） | [使い方](docs/static_top_tree.md) |
 
 ## 補助部品
 
@@ -500,6 +497,7 @@
 | `components/oct_bit_vector.hpp` | Oct Bit Vector | [使い方](docs/oct_bit_vector.md) |
 | `components/fenwick_sum.hpp` | Fenwick Sum | [使い方](docs/fenwick_sum.md) |
 | `components/rectangle_sum_polynomial.hpp` | 矩形和の四つの係数 | [使い方](docs/rectangle_sum_polynomial.md) |
+| `components/binary_sequence.hpp` | 0・1 の整数列の読み取り・ビット列への変換 | [使い方](docs/binary_sequence.md) |
 | `components/bitset_ops.hpp` | Bitset のワード演算・ビット数集約 | [使い方](docs/bitset_ops.md) |
 | `components/fenwick_bitset.hpp` | 更新可能ビット列の区間個数 | [使い方](docs/fenwick_bitset.md) |
 | `components/incremental_prefix_count.hpp` | 一点加算・接頭辞個数 | [使い方](docs/incremental_prefix_count.md) |
@@ -508,11 +506,11 @@
 | `components/static_range_min.hpp` | ブロック分割による静的 RMQ | [使い方](docs/static_range_min.md) |
 | `components/offline_time_segments.hpp` | オフラインの時間区間処理 | [使い方](docs/offline_time_segments.md) |
 | `components/d_ary_heap.hpp` | D-ary Heap | [使い方](docs/d_ary_heap.md) |
-| `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
-| `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
-| `components/online_monge_minima.hpp` | Online Monge Minima | [使い方](docs/online_monge_minima.md) |
-| `components/xor_basis_core.hpp` | XOR 基底の内部演算 | [使い方](docs/xor_basis_core.md) |
 | `components/RadixHeap.hpp` | Radix Heap | [使い方](docs/radix_heap.md) |
+| `components/dynamic_quad_wavelet.hpp` | Dynamic Quad Wavelet Matrix | [使い方](docs/dynamic_quad_wavelet.md) |
+| `components/kinetic_tournament_monoid.hpp` | Kinetic Tournament Core | [使い方](docs/kinetic_tournament_monoid.md) |
+| `components/persistent_rope.hpp` | Persistent Rope Core | [使い方](docs/persistent_rope.md) |
+| `components/wavelet_compression.hpp` | Wavelet Matrix の座標圧縮 | [使い方](docs/wavelet_compression.md) |
 
 ### components/fps
 
@@ -526,7 +524,6 @@
 | `components/fps_sparse.hpp` | 疎 FPS の共通演算 | [使い方](docs/fps_sparse.md) |
 | `components/fps_sparse_core.hpp` | 疎 FPS の次数圧縮・前処理 | [使い方](docs/fps_sparse_core.md) |
 | `components/fps_sparse_scalar.hpp` | 軽量 FPS の疎演算 | [使い方](docs/fps_sparse_scalar.md) |
-| `components/fps_factorials.hpp` | 階乗・逆階乗生成 | [使い方](docs/fps_factorials.md) |
 | `components/fps_workspace.hpp` | FPS の作業領域 | [使い方](docs/fps_workspace.md) |
 | `components/fps_log.hpp` | FPS の対数の内部変換 | [使い方](docs/fps_log.md) |
 | `components/fps_blocked.hpp` | FPS のブロック変換 | [使い方](docs/fps_blocked.md) |
@@ -549,7 +546,7 @@
 | `components/fps_direct_eval.hpp` | 多点評価の内部直接計算 | [使い方](docs/fps_direct_eval.md) |
 | `components/fps_division_blocked.hpp` | FPS と多項式除算の内部変換 | [使い方](docs/fps_division_blocked.md) |
 | `components/fps_evaluation.hpp` | 多点評価・補間の SIMD 木 | [使い方](docs/fps_evaluation.md) |
-| `components/fps_evaluation_common.hpp` | 多点評価・補間が共有する積の木 | [使い方](docs/fps_evaluation_common.md) |
+| `components/fps_evaluation_common.hpp` | 多点評価・補間が共有する Product Tree | [使い方](docs/fps_evaluation_common.md) |
 | `components/fps_multipoint.hpp` | 多点評価の SIMD 処理 | [使い方](docs/fps_multipoint.md) |
 | `components/fps_interpolation.hpp` | 多項式補間の SIMD 処理 | [使い方](docs/fps_interpolation.md) |
 | `components/fps_sparse_terms.hpp` | 疎 FPS の項収集・演算種別 | [使い方](docs/fps_sparse_terms.md) |
@@ -564,6 +561,9 @@
 | `components/fps_write.hpp` | FPS の高速出力 | [使い方](docs/fps_write.md) |
 | `components/fps_product_tree.hpp` | 多点評価・補間の内部木 | [使い方](docs/fps_product_tree.md) |
 | `components/polynomial_product_tree.hpp` | 多項式の積をまとめる共通の木 | [使い方](docs/polynomial_product_tree.md) |
+| `components/fps_backend.hpp` | FPS の互換ヘッダー | [使い方](docs/fps_backend.md) |
+| `components/fps_light_backend.hpp` | 軽量 FPS の共通実装 | [使い方](docs/fps_light_backend.md) |
+| `components/fps_light_core.hpp` | 軽量 FPS の基本演算 | [使い方](docs/fps_light_core.md) |
 
 ### components/geometry
 
@@ -571,6 +571,7 @@
 | --- | --- | --- |
 | `components/packed_convex_hull.hpp` | 整数点の凸包 | [使い方](docs/packed_convex_hull.md) |
 | `components/integer_geometry_bridge.hpp` | 整数幾何と通常幾何の厳密な座標変換 | [使い方](docs/integer_geometry_bridge.md) |
+| `components/exact_geometry_integer.hpp` | 厳密な整数幾何の補助 | [使い方](docs/exact_geometry_integer.md) |
 | `components/closest_pair.hpp` | 最近点対の整数座標用処理 | [使い方](docs/closest_pair_core.md) |
 
 ### components/graph
@@ -592,11 +593,17 @@
 | `components/two_sat_core.hpp` | 2-SAT の含意伝播・強連結成分判定の共通部品 | [使い方](docs/two_sat_core.md) |
 | `components/shortest_path_scc.hpp` | 最短路で使う到達可能部分の強連結成分分解 | [使い方](docs/shortest_path_scc.md) |
 | `components/directed_csr.hpp` | 重み付き有向グラフの CSR | [使い方](docs/directed_csr.md) |
+| `components/warshall_floyd_kernel.hpp` | ワーシャルフロイド法のブロック・SIMD 演算 | [使い方](docs/warshall_floyd_kernel.md) |
 
 ### components/math
 
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
+| `components/smawk.hpp` | SMAWK | [使い方](docs/smawk.md) |
+| `components/monotone_minima.hpp` | Monotone Minima | [使い方](docs/monotone_minima.md) |
+| `components/online_monge_minima.hpp` | Online Monge Minima | [使い方](docs/online_monge_minima.md) |
+| `components/xor_basis_core.hpp` | XOR 基底の内部演算 | [使い方](docs/xor_basis_core.md) |
+| `components/fps_factorials.hpp` | 階乗・逆階乗生成 | [使い方](docs/fps_factorials.md) |
 | `components/barrett32.hpp` | 32 bit Barrett 演算 | [使い方](docs/barrett32.md) |
 | `components/modular_power_sequence.hpp` | 剰余を取った冪の列 | [使い方](docs/modular_power_sequence.md) |
 | `components/binomial_prefix_core.hpp` | 二項係数の先頭区間和の内部演算 | [使い方](docs/binomial_prefix_core.md) |
@@ -626,6 +633,14 @@
 | `components/matrix_elimination_modular.hpp` | 固定法の行列消去 | [使い方](docs/matrix_elimination_modular.md) |
 | `components/fixed_size_subset_sum.hpp` | 個数指定の部分和集合の NTT・厳密判定 | [使い方](docs/fixed_size_subset_sum_core.md) |
 | `components/ordered_midpoint.hpp` | 順序付き整数区間の中点 | [使い方](docs/ordered_midpoint.md) |
+| `components/binomial_prefix_incremental_core.hpp` | 二項係数の累積和の差分更新部品 | [使い方](docs/binomial_prefix_incremental_core.md) |
+| `components/binomial_prefix_online.hpp` | 二項係数の累積和のオンライン処理部品 | [使い方](docs/binomial_prefix_online.md) |
+| `components/floor_quotients.hpp` | 整数商の列挙・添字 | [使い方](docs/floor_quotients.md) |
+| `components/matrix_mod2_kernel.hpp` | mod 2 行列の内部処理 | [使い方](docs/matrix_mod2_kernel.md) |
+| `components/mint_arithmetic.hpp` | modint998244353 の共通剰余演算 | [使い方](docs/mint_arithmetic.md) |
+| `components/mint_factorials.hpp` | modint998244353 の階乗・逆階乗生成 | [使い方](docs/mint_factorials.md) |
+| `components/mint_inner_product.hpp` | mint の積和部品 | [使い方](docs/mint_inner_product.md) |
+| `components/mint_simd.hpp` | modint998244353 の共通 SIMD 演算 | [使い方](docs/mint_simd.md) |
 
 ### components/string
 
@@ -635,9 +650,13 @@
 | `components/z_algorithm.hpp` | Z algorithm・接頭辞一致の列挙 | [使い方](docs/z_algorithm_core.md) |
 | `components/wildcard_pattern_matching.hpp` | ワイルドカード照合の内部部品 | [使い方](docs/wildcard_pattern_matching_core.md) |
 | `components/sequence_compare.hpp` | 共通接頭辞・接尾辞の比較 | [使い方](docs/sequence_compare.md) |
+| `components/sequence_bit_masks.hpp` | 整数列の比較用ビットマスク | [使い方](docs/sequence_bit_masks.md) |
+| `components/lcs_kernel.hpp` | LCS の内部計算 | [使い方](docs/lcs_kernel.md) |
+| `components/sequence_view.hpp` | 文字配列の参照 | [使い方](docs/sequence_view.md) |
 | `components/substring_seed.hpp` | 共通部分文字列の候補走査 | [使い方](docs/substring_seed.md) |
 | `components/suffix_array.hpp` | SA-IS による接尾辞配列の構築 | [使い方](docs/suffix_array.md) |
 | `components/suffix_locus.hpp` | 本文の区間から Suffix Tree の位置を検索 | [使い方](docs/suffix_locus.md) |
+| `components/suffix_range.hpp` | Suffix Range Core | [使い方](docs/suffix_range.md) |
 
 ### components/tree
 
@@ -646,6 +665,7 @@
 | `components/link_cut_tree_core.hpp` | Link Cut Tree の共通処理 | [使い方](docs/link_cut_tree_core.md) |
 | `components/static_top_tree_structure.hpp` | Static Top Tree の構造 | [使い方](docs/static_top_tree_structure.md) |
 | `components/tree_hash_core.hpp` | 木ハッシュの共通部品 | [使い方](docs/tree_hash_core.md) |
+| `components/am_tree.hpp` | 辺追加に対応する最小全域森の内部処理 | [使い方](docs/am_tree.md) |
 
 ### components/util
 
@@ -657,11 +677,11 @@
 | `components/fast_io_bulk.hpp` | 整数の一括入出力 | [使い方](docs/fast_io_bulk.md) |
 | `components/fast_io_output.hpp` | 非負整数の一括出力 | [使い方](docs/fast_io_output.md) |
 | `components/fast_io_output_values.hpp` | 非負整数列の一括出力 | [使い方](docs/fast_io_output_values.md) |
-| `components/dynamic_quad_wavelet.hpp` | Dynamic Quad Wavelet Matrix | [使い方](docs/dynamic_quad_wavelet.md) |
 | `components/default_init_allocator.hpp` | Default Init Allocator | [使い方](docs/default_init_allocator.md) |
 | `components/radix_sort.hpp` | 64 bit キーの安定基数ソート | [使い方](docs/radix_sort.md) |
 | `components/splitmix64.hpp` | SplitMix64 | [使い方](docs/splitmix64.md) |
-| `components/warshall_floyd_kernel.hpp` | ワーシャルフロイド法のブロック・SIMD 演算 | [使い方](docs/warshall_floyd_kernel.md) |
+| `components/aligned_allocator.hpp` | アライメントを指定するアロケータ | [使い方](docs/aligned_allocator.md) |
+| `components/simd_capabilities.hpp` | SIMD 命令のコンパイル可否 | [使い方](docs/simd_capabilities.md) |
 
 ## 使い方
 

@@ -13,6 +13,7 @@
 #include <span>
 #include <string_view>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 
 struct Run {
@@ -210,6 +211,11 @@ std::vector<Run> run_enumerate(std::span<const T> s) {
 }
 
 inline std::vector<Run> run_enumerate(std::string_view s) { return run_enumerate(std::span<const char>(s.data(), s.size())); }
+
+template <class T, std::size_t Extent> requires (!std::is_const_v<T> || Extent != std::dynamic_extent)
+std::vector<Run> run_enumerate(std::span<T, Extent> s) {
+	return run_enumerate(std::span<const std::remove_const_t<T>>(s.data(), s.size()));
+}
 
 template <class T, class Allocator>
 std::vector<Run> run_enumerate(const std::vector<T, Allocator> &s) { return run_enumerate(std::span<const T>(s.data(), s.size())); }

@@ -47,10 +47,31 @@ template<class Cap> void check() {
 	}
 }
 
+template<class Cap> void check_excess() {
+	Cap maximum = (std::numeric_limits<Cap>::max)();
+	MaxFlow<Cap> graph(8);
+	for (int i = 0; i < 3; ++i) graph.add_edge(0, 1, maximum);
+	graph.add_edge(1, 7, 7);
+	graph.add_edge(0, 0, maximum);
+	assert(graph.flow(0, 7, 0) == 0);
+	assert(graph.flow(0, 7) == 7);
+	assert(graph.flow(0, 7, 0) == 0);
+	assert(graph.flow(0, 7) == 0);
+	assert(graph.flow(7, 0) == 7);
+	assert(graph.flow(0, 7) == 7);
+	graph.reset_flow();
+	assert(graph.flow(0, 7, 0) == 0);
+	assert(graph.flow(0, 7) == 7);
+}
+
 int main() {
 	check<int>();
 	check<std::int64_t>();
 	check<std::uint64_t>();
+	check_excess<unsigned char>();
+	check_excess<std::uint32_t>();
+	check_excess<std::int64_t>();
+	check_excess<std::uint64_t>();
 	MaxFlow<> chain(300000);
 	for (int i = 1; i < chain.size(); ++i) chain.add_edge(i - 1, i, 123);
 	assert(chain.flow(0, chain.size() - 1) == 123);
@@ -61,6 +82,14 @@ int main() {
 	MaxFlow<> overflow(3);
 	overflow.add_edge(0, 1, cap), overflow.add_edge(0, 1, cap), overflow.add_edge(1, 2, 7);
 	assert(overflow.flow(0, 2) == 7);
+	MaxFlow<> exact(3);
+	exact.add_edge(0, 1, cap), exact.add_edge(0, 1, cap), exact.add_edge(0, 1, 1);
+	exact.add_edge(1, 2, 7);
+	assert(exact.flow(0, 2) == 7 && exact.flow(2, 0) == 7);
+	MaxFlow<std::uint64_t> full(2);
+	auto maximum = (std::numeric_limits<std::uint64_t>::max)();
+	full.add_edge(0, 1, maximum);
+	assert(full.flow(0, 1) == maximum && full.flow(1, 0) == maximum);
 	MaxFlow<> empty;
 	assert(empty.size() == 0 && empty.edge_count() == 0 && empty.edges().empty());
 }

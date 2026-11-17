@@ -1,6 +1,7 @@
 #ifndef DYNAMIC_BITSET_HPP
 #define DYNAMIC_BITSET_HPP
 
+#include "../components/binary_sequence.hpp"
 #include "../components/bitset_ops.hpp"
 #include <algorithm>
 #include <bit>
@@ -126,6 +127,10 @@ class [[nodiscard, gnu::warn_unused]] DynamicBitset {
 			if (c != '0' && c != '1') throw std::invalid_argument("DynamicBitset");
 			if (c == '1') data_[unsigned(i) / 64] |= Word(1) << (i & 63);
 		}
+	}
+	template <binary_sequence_detail::Sequence Range>
+	explicit DynamicBitset(const Range &values) : DynamicBitset(binary_sequence_detail::size(values)) {
+		binary_sequence_detail::pack(values, data_.data());
 	}
 	DynamicBitset(const DynamicBitset &) = default;
 	DynamicBitset &operator=(const DynamicBitset &) = default;

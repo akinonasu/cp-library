@@ -7,10 +7,18 @@
 #include <cassert>
 #include <cstdint>
 #include <limits>
+#include <map>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 namespace wavelet_detail {
+template<class T>
+bool equivalent(const T &a, const T &b) {
+	if constexpr (std::is_integral_v<T>) return a == b;
+	else return !(a < b) && !(b < a);
+}
+
 template<class T>
 std::uint32_t lower_code(const std::vector<T> &values, bool dense, const T &x) {
 	if (values.empty()) return 0;
@@ -138,9 +146,24 @@ template<class T> struct ValueIndex {
 	void build(const std::vector<T> &a) {
 		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
 		n = static_cast<int>(a.size());
-		int ordered = 0;
-		std::vector<int> positions, offsets;
-		original = compress<T, false>(a, values, ordered, positions, offsets);
+		if constexpr (std::is_integral_v<T> && !std::is_same_v<T, bool> && sizeof(T) <= 8) {
+			int ordered = 0;
+			std::vector<int> positions, offsets;
+			original = compress<T, false>(a, values, ordered, positions, offsets);
+		} else {
+			std::map<T, std::uint32_t> codes;
+			for (const T &x : a) codes.try_emplace(x, 0);
+			std::vector<T> sorted;
+			sorted.reserve(codes.size());
+			for (auto &[x, code] : codes) {
+				code = static_cast<std::uint32_t>(sorted.size());
+				sorted.push_back(x);
+			}
+			std::vector<std::uint32_t> ranks(n);
+			for (int i = 0; i < n; ++i) ranks[i] = codes.find(a[i])->second;
+			values = std::move(sorted);
+			original = std::move(ranks);
+		}
 	}
 	std::uint32_t code(const T &x) const { return lower_code(values, false, x); }
 };

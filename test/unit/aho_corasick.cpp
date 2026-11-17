@@ -1,5 +1,6 @@
 #include "string/aho_corasick.hpp"
 #include <algorithm>
+#include <cassert>
 #include <cstdint>
 #include <cstdlib>
 #include <numeric>
@@ -96,7 +97,64 @@ void check(const std::vector<std::string> &patterns, const std::string &text, bo
 	require(copied.occurrences(text) == count && copied.count_matches(text) == expected.size());
 }
 
+
+template<class T>
+void integer_aho() {
+	const std::vector<T> alphabet = {T(0), T(1), std::numeric_limits<T>::min(), std::numeric_limits<T>::max(), T(257), T(-7)};
+	std::mt19937 rng(55613);
+	for (int trial = 0; trial < 120; ++trial) {
+		BasicAhoCorasick<T> ac;
+		std::vector<std::vector<T>> patterns(rng() % 12);
+		std::vector<T> text;
+		for (auto &p : patterns) for (int n = rng() % 8; n--; ) p.push_back(alphabet[rng() % alphabet.size()]);
+		if (patterns.size() > 1) patterns.back() = patterns.front();
+		for (int n = rng() % 25; n--; ) text.push_back(alphabet[rng() % alphabet.size()]);
+		text.push_back(T(999));
+		ac.reserve(100, patterns.size());
+		for (int id = 0; id < int(patterns.size()); ++id) {
+			assert(ac.add(patterns[id]) == id);
+			int v = 0;
+			for (T c : patterns[id]) { int u = ac.child(v, c); assert(u >= 0 && ac.parent(u) == v); v = u; }
+			assert(ac.terminal(id) == v && ac.length(id) == int(patterns[id].size()));
+		}
+		ac.build(); ac.build();
+		std::vector<std::uint64_t> counts(patterns.size());
+		std::vector<std::pair<std::size_t, int>> expected, actual;
+		std::vector<int> values(ac.node_count());
+		int v = 0;
+		for (std::size_t end = 0; end <= text.size(); ++end) {
+			if (end) v = ac.transition(v, text[end - 1]);
+			++values[v];
+			int matches = 0;
+			for (int id = 0; id < int(patterns.size()); ++id) {
+				const auto &p = patterns[id];
+				if (end >= p.size() && std::equal(p.begin(), p.end(), text.begin() + end - p.size())) {
+					++counts[id]; ++matches; expected.emplace_back(end, id);
+				}
+			}
+			assert(ac.match_count(v) == matches);
+			assert(ac.walk(0, std::span<const T>(text).first(end)) == v);
+		}
+		ac.find_all(text, [&](std::size_t end, int id) { actual.emplace_back(end, id); });
+		std::sort(actual.begin(), actual.end());
+		assert(actual == expected && ac.occurrences(text) == counts && ac.count_matches(text) == actual.size());
+		ac.propagate(values);
+		for (int id = 0; id < int(patterns.size()); ++id) assert(values[ac.terminal(id)] == int(counts[id]));
+		auto copied = ac;
+		ac.clear(); ac.add(std::vector<T>{}); ac.build();
+		assert(ac.count_matches(text) == text.size() + 1 && copied.occurrences(text) == counts);
+	}
+}
+
 int main() {
+	integer_aho<std::int8_t>();
+	integer_aho<std::uint8_t>();
+	integer_aho<std::int16_t>();
+	integer_aho<std::uint16_t>();
+	integer_aho<std::int32_t>();
+	integer_aho<std::uint32_t>();
+	integer_aho<std::int64_t>();
+	integer_aho<std::uint64_t>();
 	check<26, 'a'>({}, "", false);
 	check<26, 'a'>({}, "a!ba", true);
 	check<26, 'a'>({"", "", "a", "a", "aa", "baa", "ab", "b"}, "aabaaba!aaa", true);
