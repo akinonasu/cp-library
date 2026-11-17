@@ -16,8 +16,8 @@ int main() {
 	auto apply = [&](const Query &query) {
 		if (query.type == 0) values.set(query.key, query.value);
 		else {
-			const auto *value = values.find(query.key);
-			output.println(value ? *value : 0);
+			auto it = values.find(query.key);
+			output.println(it == values.end() ? 0 : it->second);
 		}
 	};
 	auto read = [&](Query &query) {

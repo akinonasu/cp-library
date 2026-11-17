@@ -24,19 +24,19 @@ template<class K, class V> void value_layout() {
 	}
 	for (unsigned i = 0; i < 256; ++i) {
 		map.prefetch(K(i));
-		const auto *value = map.find(K(i));
-		assert(value && reinterpret_cast<std::uintptr_t>(value) % alignof(V) == 0);
-		if constexpr (std::is_same_v<V, AlignedValue>) for (auto x : value->data) assert(x == i);
-		else assert(*value == V(i));
+		auto value = map.find(K(i));
+		assert(value != map.end() && reinterpret_cast<std::uintptr_t>(std::addressof(value->second)) % alignof(V) == 0);
+		if constexpr (std::is_same_v<V, AlignedValue>) for (auto x : value->second.data) assert(x == i);
+		else assert(value->second == V(i));
 	}
 	map.reserve(2048);
 	for (unsigned i = 0; i < 128; ++i) assert(map.erase(K(i)));
 	auto copy = map;
 	for (unsigned i = 128; i < 256; ++i) {
-		const auto *value = copy.find(K(i));
-		assert(value && reinterpret_cast<std::uintptr_t>(value) % alignof(V) == 0);
-		if constexpr (std::is_same_v<V, AlignedValue>) for (auto x : value->data) assert(x == i);
-		else assert(*value == V(i));
+		auto value = copy.find(K(i));
+		assert(value != copy.end() && reinterpret_cast<std::uintptr_t>(std::addressof(value->second)) % alignof(V) == 0);
+		if constexpr (std::is_same_v<V, AlignedValue>) for (auto x : value->second.data) assert(x == i);
+		else assert(value->second == V(i));
 	}
 	map.clear();
 	assert(map.empty() && copy.size() == 128);
@@ -86,9 +86,9 @@ template<class K> void randomized() {
 		assert(map.size() == expected.size() && map.empty() == expected.empty());
 		assert(view.contains(key) == expected.contains(key));
 		assert(view.count(key) == expected.count(key));
-		assert(bool(view.find(key)) == (it != expected.end()));
+		assert((view.find(key) != view.end()) == (it != expected.end()));
 		assert(view.get(key) == (it == expected.end() ? std::nullopt : std::optional(it->second)));
-		if (it != expected.end()) assert(view.at(key) == it->second && *map.find(key) == it->second);
+		if (it != expected.end()) assert(view.at(key) == it->second && map.find(key)->second == it->second);
 		else {
 			try { map.at(key); assert(false); } catch (const std::out_of_range &) {}
 		}

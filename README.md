@@ -73,7 +73,7 @@
 | --- | --- | --- |
 | `data_structure/interval_set.hpp` | Interval Set（整数の区間集合） | [使い方](docs/interval_set.md) |
 | `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
-| `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列） | [使い方](docs/flat_hash_map.md) |
+| `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列・要素の列挙） | [使い方](docs/flat_hash_map.md) |
 | `data_structure/xor_set.hpp` | XOR の最小値・最大値を求める整数集合 | [使い方](docs/xor_set.md) |
 | `data_structure/super_multiset.hpp` | Super Multiset（大小 k 個の和・順位・値の範囲の個数と和） | [使い方](docs/super_multiset.md) |
 

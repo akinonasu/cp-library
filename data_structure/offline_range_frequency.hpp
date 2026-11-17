@@ -18,7 +18,7 @@ class OfflineRangeFrequency {
 	std::vector<Event> events;
 	int answers = 0;
 	int identify(const T &value) {
-		if (auto p = ids.find(value)) return *p;
+		if (auto it = ids.find(value); it != ids.end()) return it->second;
 		assert(ids.size() < std::size_t(std::numeric_limits<int>::max()));
 		int id = int(ids.size());
 		ids.set(value, id);
@@ -47,7 +47,7 @@ class OfflineRangeFrequency {
 	}
 	int add_query(int l, int r, const T &value) {
 		assert(0 <= l && l <= r && r <= size() && answers < std::numeric_limits<int>::max());
-		if (auto id = ids.find(value)) events.push_back({*id, l, r, answers, 0});
+		if (auto it = ids.find(value); it != ids.end()) events.push_back({it->second, l, r, answers, 0});
 		return answers++;
 	}
 	std::vector<int> solve() const {
