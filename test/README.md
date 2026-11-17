@@ -15,6 +15,8 @@ python3 test/verify.py
 
 AtCoder のジャッジ用テストは追加しません。一時的な計測コード・結果・ログはチェックアウト外の一時ディレクトリへ置き、リポジトリには保存しません。
 
+yukicoder の全ケース取得には、API トークンを環境変数 `YUKICODER_TOKEN` に設定します。GitHub Actions では同名の repository secret を使います。
+
 [yukicoder の公開 `noavx512` GCC プラグイン](https://yukicoder.me/help/environments)を用意すると、全ヘッダーと単体テストを制限付きコンパイラで検証できます。コンパイラとプラグインは同じ GCC の版を使います。既存の選択ファイルを使う場合は `--selection` を指定できます。
 
 ```sh
