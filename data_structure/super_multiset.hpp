@@ -296,6 +296,18 @@ public:
 	Sum sum_largest(size_type k) const { return sum_impl<!descending>(k); }
 	std::optional<T> lower_bound(const T &value) const { return bound<false>(value); }
 	std::optional<T> upper_bound(const T &value) const { return bound<true>(value); }
+	std::optional<T> min() const { return empty() ? std::nullopt : std::optional<T>(kth_smallest(0)); }
+	std::optional<T> max() const { return empty() ? std::nullopt : std::optional<T>(kth_largest(0)); }
+	std::optional<T> next(const T &value) const { return lower_bound(value); }
+	std::optional<T> prev(const T &value) const {
+		auto p = root.get();
+		const Node *candidate = nullptr;
+		while (p) {
+			if (!less(value, p->value)) { candidate = p; p = (descending ? p->left : p->right).get(); }
+			else p = (descending ? p->right : p->left).get();
+		}
+		return candidate ? std::optional<T>(candidate->value) : std::nullopt;
+	}
 	Sum sum_all() const { return root ? result(root->total) : Sum(0); }
 	size_type count_less(const T &value) const { return threshold<false, false, false>(value).count; }
 	size_type count_leq(const T &value) const { return threshold<false, false, true>(value).count; }

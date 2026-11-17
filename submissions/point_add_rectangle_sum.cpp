@@ -334,6 +334,7 @@ class FenwickSum {
 
 
 #line 7 "data_structure/weighted_wavelet_matrix.hpp"
+#include <optional>
 
 template <class T = std::int64_t, class Count = std::int64_t,
 		class Sum = std::conditional_t<(sizeof(T) < 8), std::int64_t, __int128_t>>
@@ -605,6 +606,7 @@ class WeightedWaveletMatrix {
 		if (c == index.values.size() || !wavelet_detail::equivalent(index.values[c], x)) return 0;
 		return between(l, r, c, c + 1).count;
 	}
+	Count rank(const T &x, int r) const { return count(0, r, x); }
 	Count range_freq(int l, int r, const T &upper) const { check(l, r); return less_than(l, r, index.code(upper)).count; }
 	Count range_freq(int l, int r, const T &lower, const T &upper) const {
 		check(l, r);
@@ -628,6 +630,14 @@ class WeightedWaveletMatrix {
 		return index.values[x];
 	}
 	T kth_largest(int l, int r, Count k) const { return kth_smallest(l, r, count(l, r) - 1 - k); }
+	std::optional<T> prev_value(int l, int r, const T &upper) const {
+		Count k = range_freq(l, r, upper);
+		return k ? std::optional<T>(kth_smallest(l, r, k - 1)) : std::nullopt;
+	}
+	std::optional<T> next_value(int l, int r, const T &lower) const {
+		Count k = range_freq(l, r, lower);
+		return k < count(l, r) ? std::optional<T>(kth_smallest(l, r, k)) : std::nullopt;
+	}
 	Sum sum_smallest(int l, int r, Count k) const requires supports_sum { check(l, r); assert(sum_ready); return selected_sum<false>(l, r, k, row<true>(0, l, r)); }
 	Sum sum_largest(int l, int r, Count k) const requires supports_sum { check(l, r); assert(sum_ready); return selected_sum<true>(l, r, k, row<true>(0, l, r)); }
 	Count min_count_smallest(int l, int r, Sum target) const requires supports_sum { return sum_bound<false, true>(l, r, target); }

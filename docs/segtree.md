@@ -7,7 +7,7 @@ redirect_from:
 - /lightweight/data_structure/segment_tree/segtree.hpp.html
 ---
 
-一点代入と、区間の要素を左から右の順に `op` でまとめた結果の取得を扱います。
+一点代入・一点への演算と、区間の要素を左から右の順に `op` でまとめた結果の取得を扱います。
 
 `op` は結合律 `op(op(a,b),c) == op(a,op(b,c))` を満たすようにします。
 
@@ -15,14 +15,20 @@ redirect_from:
 
 ```cpp
 #include "lib/data_structure/segtree.hpp"
+#include <cassert>
+#include <vector>
 
 long long op(long long a, long long b) { return a + b; }
 long long e() { return 0; }
 
-Segtree<long long, op, e> tree(std::vector<long long>{1, 2, 3});
-tree.set(1, 5);
-auto sum = tree.prod(0, 3); // 9
-int r = tree.max_right(0, [](long long x) { return x <= 6; }); // 2
+int main() {
+	Segtree<long long, op, e> tree(std::vector<long long>{1, 2, 3});
+	tree.set(1, 5);
+	assert(tree.prod(0, 3) == 9);
+	assert(tree.max_right(0, [](long long x) { return x <= 6; }) == 2);
+	tree.multiply(1, 2);
+	assert(tree.get(1) == 7);
+}
 ```
 
 `Segtree(n)` は全要素を `e()` で初期化します。添字は 0 始まり、`[l,r)` は `l` 以上 `r` 未満の添字を含む区間です。
@@ -32,6 +38,7 @@ int r = tree.max_right(0, [](long long x) { return x <= 6; }); // 2
 | `Segtree(n = 0)` / `Segtree(values)` | 長さ／値の配列から構築 | $$O(n)$$ |
 | `size()` | 要素数 | $$O(1)$$ |
 | `set(p,value)` / `get(p)` | 一点代入／取得 | $$O(\log n)$$ / $$O(1)$$ |
+| `multiply(p,value)` | `a[p]` を `op(a[p],value)` に置き換える。返り値は `void` | $$O(\log n)$$ |
 | `prod(l,r)` | 左から右の順の区間積を取得。空区間なら `e()` | $$O(\log n)$$ |
 | `all_prod()` | 全体の積。空列なら `e()` | $$O(1)$$ |
 | `max_right(l,pred)` | `pred(prod(l,r)) == true` となる最大の `r` | $$O(\log n)$$ |

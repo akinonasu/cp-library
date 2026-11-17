@@ -11,26 +11,33 @@ library_category: data_structure/associative
 
 ```cpp
 #include "lib/data_structure/super_multiset.hpp"
+#include <cassert>
 
-SuperMultiset<> values{3, 1, 5, 5};
-auto a = values.kth_smallest(0); // 1
-auto b = values.kth_largest(1);  // 5
-auto c = values.sum_smallest(2); // 4: 1 + 3
-auto d = values.sum_largest(2);  // 10: 5 + 5
-auto e = values.lower_bound(4); // optional(5)
-auto f = values.upper_bound(5); // nullopt
-auto g = values.count_geq(3);   // 3: 3, 5, 5
-auto h = values.sum_leq(3);     // 4: 1 + 3
-auto i = values.range_freq(3, 6); // 3: 3, 5, 5
-auto j = values.range_sum(3, 6);  // 13: 3 + 5 + 5
-auto [total, count] = values.range_sum_with_count(3, 6); // 13, 3
-
-values.insert(7, 3);            // 7 を 3 個追加
-values.erase(5);                // 5 を 1 個削除
-values.replace(1, 8);           // 1 を 1 個 8 に置換
+int main() {
+	SuperMultiset<> values{3, 1, 5, 5};
+	assert(values.kth_smallest(0) == 1);
+	assert(values.kth_largest(1) == 5);
+	assert(values.sum_smallest(2) == 4);
+	assert(values.sum_largest(2) == 10);
+	assert(values.min() == 1 && values.max() == 5);
+	assert(values.next(4) == 5 && values.prev(4) == 3);
+	assert(values.next(5) == 5 && !values.next(6));
+	assert(values.count_geq(3) == 3);
+	assert(values.sum_leq(3) == 4);
+	assert(values.range_freq(3, 6) == 3);
+	assert(values.range_sum(3, 6) == 13);
+	auto [total, count] = values.range_sum_with_count(3, 6);
+	assert(total == 13 && count == 3);
+	values.insert(7, 3);
+	values.erase(5);
+	values.replace(1, 8);
+	assert(values.size() == 6);
+}
 ```
 
 `kth_smallest(k)`・`kth_largest(k)` は 0 始まりで、`0 <= k < size()` が必要です。`sum_smallest(k)`・`sum_largest(k)` は `k >= 0` とし、`k = 0` なら 0、`k > size()` なら全要素の和を返します。問い合わせはすべて `const` オブジェクトから呼べます。
+
+`min()`・`max()` は最小値・最大値を、`next(x)` は `x` 以上の最小値を、`prev(x)` は `x` 以下の最大値を `std::optional<T>` で返します。検索座標自身も対象です。空集合や該当する値がない場合は `std::nullopt` です。重複は結果に影響しません。
 
 `lower_bound(x)` は `x` 以上の最小値、`upper_bound(x)` は `x` より大きい最小値を `std::optional<T>` で返します。該当する値がなければ `std::nullopt` です。標準の `std::less`・`std::greater` ではどちらも値の昇順で検索し、独自の比較関数ではその比較順で検索します。
 
@@ -49,6 +56,8 @@ values.replace(1, 8);           // 1 を 1 個 8 に置換
 | `kth_smallest(k)` / `kth_largest(k)` | 小さい順／大きい順の 0 始まり `k` 番目の値を `T` で返す |
 | `sum_smallest(k)` / `sum_largest(k)` | 下位／上位 `min(k,size())` 個の和を `Sum` で返す |
 | `order_of_key(x)` | `Compare` 上で `x` より前にある要素数。重複を含む |
+| `min()` / `max()` | 最小値／最大値を `std::optional<T>` で返す。空集合では `nullopt` |
+| `next(x)` / `prev(x)` | `x` 以上の最小値／`x` 以下の最大値を `std::optional<T>` で返す。なければ `nullopt` |
 | `lower_bound(x)` / `upper_bound(x)` | `x` 以上／`x` より大きい最初の値。なければ `nullopt` |
 | `count_less(x)` / `sum_less(x)` | `x` 未満の要素数を `size_type`／和を `Sum` で返す |
 | `count_leq(x)` / `sum_leq(x)` | `x` 以下の要素数を `size_type`／和を `Sum` で返す |
@@ -86,6 +95,6 @@ values.replace(1, 8);           // 1 を 1 個 8 に置換
 
 ## 計算量
 
-異なる値の個数を $$d$$ として、順位・和・境界検索・挿入・削除・置換・存在判定・個数取得は最悪 $$O(\log d)$$ 時間です。値の上下限や区間を指定する個数・和と `range_sum_with_count` も最悪 $$O(\log d)$$ 時間・$$O(1)$$ 追加空間です。`sum_all`・`size`・`empty`・`reserve` と 0 個の更新は $$O(1)$$、異なる値が 1 個以下なら各操作は定数時間です。
+異なる値の個数を $$d$$ として、`min`・`max`・`next`・`prev`・順位・和・境界検索・挿入・削除・置換・存在判定・個数取得は最悪 $$O(\log d)$$ 時間です。値の上下限や区間を指定する個数・和と `range_sum_with_count` も最悪 $$O(\log d)$$ 時間・$$O(1)$$ 追加空間です。`min`・`max`・`next`・`prev` の追加空間も $$O(1)$$ で、空集合への問い合わせは定数時間です。`sum_all`・`size`・`empty`・`reserve` と 0 個の更新は $$O(1)$$、異なる値が 1 個以下なら各操作は定数時間です。
 
 入力要素数を $$m$$ として、構築は $$O(m\log m)$$ 時間・$$O(m)$$ 追加空間です。`T` が `bool` 以外の 64 bit 以下の整数型で、比較が標準の `std::less`・`std::greater` の場合は、構築時間が $$O(m)$$ です。`assign` は構築時間に旧集合の $$O(d)$$ が加わります。コピーと `clear` は $$O(d)$$、移動構築と交換は $$O(1)$$ 時間です。コピー・移動代入では移動先の旧ノード数も加わります。使用空間は $$O(d)$$ で、異なる値を削除すると、その領域を解放します。値・比較・和の演算とノードの確保・解放を定数時間とした計算量です。

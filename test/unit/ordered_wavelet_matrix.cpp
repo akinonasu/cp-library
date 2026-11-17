@@ -59,6 +59,14 @@ void verify_weighted(const std::vector<T> &a, const std::vector<std::int64_t> &w
 		assert(wm.count(l, r) == std::int64_t(sorted.size()));
 		for (const T &lower : alphabet) {
 			assert(wm.count(l, r, lower) == occurrences(sorted.begin(), sorted.end(), lower));
+			std::int64_t prefix = 0;
+			for (int i = 0; i < r; ++i) if (equal(a[i], lower)) prefix += weights[i];
+			assert(wm.rank(lower, r) == prefix);
+			auto it = std::lower_bound(sorted.begin(), sorted.end(), lower);
+			auto prev = wm.prev_value(l, r, lower), next = wm.next_value(l, r, lower);
+			assert(bool(prev) == (it != sorted.begin()) && bool(next) == (it != sorted.end()));
+			if (prev) assert(equal(*prev, *(it - 1)));
+			if (next) assert(equal(*next, *it));
 			assert(wm.range_freq(l, r, lower) == std::lower_bound(sorted.begin(), sorted.end(), lower) - sorted.begin());
 			for (const T &upper : alphabet) {
 				std::int64_t count = 0;
@@ -125,6 +133,11 @@ void check(std::vector<T> alphabet) {
 			std::sort(sorted.begin(), sorted.end());
 			for (const T &lower : alphabet) {
 				assert(points.count(l, r, lower) == occurrences(sorted.begin(), sorted.end(), lower));
+				auto it = std::lower_bound(sorted.begin(), sorted.end(), lower);
+				auto prev = std::as_const(points).prev_value(l, r, lower), next = std::as_const(points).next_value(l, r, lower);
+				assert(bool(prev) == (it != sorted.begin()) && bool(next) == (it != sorted.end()));
+				if (prev) assert(equal(*prev, *(it - 1)));
+				if (next) assert(equal(*next, *it));
 				assert(points.rank(lower, r) == occurrences(a.begin(), a.begin() + r, lower));
 				assert(points.range_freq(l, r, lower) == std::lower_bound(sorted.begin(), sorted.end(), lower) - sorted.begin());
 				for (const T &upper : alphabet) {

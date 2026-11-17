@@ -4,6 +4,7 @@
 
 
 
+#include <bit>
 #include <cassert>
 #include <cstddef>
 #include <limits>
@@ -27,6 +28,20 @@ template<class T, bool Padded = true> class FenwickTree {
 		if constexpr (Padded) return std::size_t(i) + (i >> 10);
 		else return i;
 	}
+	template<bool Upper> int bound(T x) const {
+		if (x < T{}) return 0;
+		if constexpr (!Upper) if (!(T{} < x)) return 0;
+		U remaining(x);
+		unsigned p = 0;
+		for (unsigned step = std::bit_floor(unsigned(n_)); step; step >>= 1) {
+			unsigned next = p + step;
+			if (next <= unsigned(n_) && (Upper ? !(remaining < data_[index(next)]) : data_[index(next)] < remaining)) {
+				remaining -= data_[index(next)];
+				p = next;
+			}
+		}
+		return int(p);
+	}
 
   public:
 	explicit FenwickTree(int n = 0) : n_(n) {
@@ -37,24 +52,35 @@ template<class T, bool Padded = true> class FenwickTree {
 		assert(a.size() <= std::size_t(std::numeric_limits<int>::max()));
 		n_ = static_cast<int>(a.size());
 		data_.resize(index(unsigned(n_)) + 1);
-		for (unsigned i = 1; i <= unsigned(n_); ++i) {
+		for (unsigned i = 2; i <= unsigned(n_); i += 2) {
+			data_[index(i - 1)] += U(a[i - 2]);
+			data_[index(i)] += data_[index(i - 1)];
 			data_[index(i)] += U(a[i - 1]);
 			unsigned p = i + (i & -i);
 			if (p <= unsigned(n_)) data_[index(p)] += data_[index(i)];
 		}
+		if (n_ & 1) data_[index(unsigned(n_))] += U(a.back());
 	}
-	int size() const { return n_; }
+	[[nodiscard]] int size() const { return n_; }
+	[[nodiscard]] T get(int p) const { return sum(p, p + 1); }
+	void set(int p, T x) {
+		U difference(x);
+		difference -= U(get(p));
+		add(p, T(difference));
+	}
+	[[nodiscard]] int lower_bound(T x) const { return bound<false>(x); }
+	[[nodiscard]] int upper_bound(T x) const { return bound<true>(x); }
 	void add(int p, T x) {
 		assert(0 <= p && p < n_);
 		for (unsigned i = unsigned(p) + 1; i <= unsigned(n_); i += i & -i) data_[index(i)] += U(x);
 	}
-	T sum(int r) const {
+	[[nodiscard]] T sum(int r) const {
 		assert(0 <= r && r <= n_);
 		U result{};
 		for (unsigned i = unsigned(r); i; i &= i - 1) result += data_[index(i)];
 		return T(result);
 	}
-	T sum(int l, int r) const {
+	[[nodiscard]] T sum(int l, int r) const {
 		assert(0 <= l && l <= r && r <= n_);
 		U result{};
 		unsigned a = unsigned(l), b = unsigned(r);
@@ -65,255 +91,82 @@ template<class T, bool Padded = true> class FenwickTree {
 };
 
 
-#line 1 "data_structure/hld.hpp"
+#line 1 "tree/subtree_index.hpp"
 
 
 
-#include <algorithm>
-#include <array>
-#line 9 "data_structure/hld.hpp"
+#line 7 "tree/subtree_index.hpp"
 #include <utility>
-#line 11 "data_structure/hld.hpp"
+#line 9 "tree/subtree_index.hpp"
 
-class HLD {
-	int shape_ = 0, center_ = 0;
-	struct Node { int position, head, parent, offset; };
-	std::vector<Node> nodes;
-	void check([[maybe_unused]] int v) const { assert(0 <= v && v < n && int(in.size()) == n); }
-
-	void initialize() {
-		depth.assign(n, 0);
-		size.assign(n, 1);
-		heavy.assign(n, -1);
-		head.resize(n), in.resize(n), out.resize(n), order.resize(n);
-		nodes.resize(n);
-		shape_ = center_ = 0;
+class SubtreeIndex {
+	int root_ = -1;
+	void check([[maybe_unused]] int v) const { assert(0 <= v && v < size()); }
+public:
+	std::vector<int> in, out, order;
+	SubtreeIndex() = default;
+	explicit SubtreeIndex(std::vector<int> parents) { build_from_parents(std::move(parents)); }
+	SubtreeIndex(const SubtreeIndex &) = default;
+	SubtreeIndex(SubtreeIndex &&other) noexcept { swap(other); }
+	SubtreeIndex &operator=(SubtreeIndex other) noexcept { swap(other); return *this; }
+	void swap(SubtreeIndex &other) noexcept {
+		std::swap(root_, other.root_);
+		in.swap(other.in), out.swap(other.out), order.swap(other.order);
 	}
-	void finish(int root) {
-		in[root] = 0, out[root] = n, head[root] = root;
-		for (int i = n - 2; i >= 0; --i) {
-			int v = order[i], p = parent[v];
-			depth[v] = depth[p] + 1;
-			if (heavy[p] == v) in[v] = in[p] + 1, head[v] = head[p];
-			else in[v] = out[p] -= size[v], head[v] = v;
-			out[v] = in[v] + size[v];
-		}
-		for (int v = 0; v < n; ++v) out[v] = in[v] + size[v], order[in[v]] = v;
-		parent[root] = -1;
-		for (int v = 0; v < n; ++v) nodes[v] = {in[v], in[head[v]], parent[head[v]], depth[v] - in[v]};
-	}
-
-  public:
-	struct Segment {
-		int l, r;
-		bool reversed;
-	};
-	int n;
-	std::vector<std::pair<int, int>> edges;
-	std::vector<int> parent, depth, size, heavy, head, in, out, order;
-	explicit HLD(int n = 0) : n(n) {
-		assert(0 <= n && n <= std::numeric_limits<int>::max() / 2);
-		edges.reserve(std::max(0, n - 1));
-	}
-	int add_edge(int u, int v) {
-		assert(0 <= u && u < n && 0 <= v && v < n);
-		edges.emplace_back(u, v);
-		return int(edges.size()) - 1;
-	}
-	void build(int root = 0) {
-		assert(n >= 0 && edges.size() == std::size_t(std::max(0, n - 1)));
-		assert(!n || (0 <= root && root < n));
-		parent.assign(n, -1);
-		initialize();
-		if (!n) return;
-		std::vector<int> degree(n), neighbors(n);
-		for (auto [u, v] : edges) {
-			++degree[u], ++degree[v];
-			neighbors[u] ^= v, neighbors[v] ^= u;
-		}
-		center_ = int(std::max_element(degree.begin(), degree.end()) - degree.begin());
-		shape_ = degree[center_] <= 2 ? 1 : degree[center_] == n - 1 ? 2 : 0;
-		degree[root] += 2;
-		int count = 0;
-		for (int v = 0; v < n; ++v) if (degree[v] == 1) order[count++] = v;
-		for (int i = 0; i < count; ++i) {
-			int v = order[i], p = neighbors[v];
-			parent[v] = p;
-			size[p] += size[v];
-			if (heavy[p] == -1 || size[heavy[p]] < size[v]) heavy[p] = v;
-			neighbors[p] ^= v;
-			if (--degree[p] == 1) order[count++] = p;
-		}
-		assert(count == n - 1);
-		finish(root);
-	}
+	friend void swap(SubtreeIndex &a, SubtreeIndex &b) noexcept { a.swap(b); }
+	int size() const { return int(in.size()); }
+	bool empty() const { return in.empty(); }
+	int root() const { return root_; }
+	void clear() { root_ = -1; in.clear(); out.clear(); order.clear(); }
 	void build_from_parents(std::vector<int> parents) {
-		assert(parents.size() <= std::size_t(std::numeric_limits<int>::max() / 2));
-		n = static_cast<int>(parents.size());
-		parent = std::move(parents);
-		initialize();
-		edges.clear();
-		edges.reserve(std::max(0, n - 1));
+		assert(parents.size() <= std::size_t(std::numeric_limits<int>::max()));
+		int n = int(parents.size());
+		root_ = -1;
+		in.resize(n), out.assign(n, 1), order.resize(n);
 		if (!n) return;
-		std::fill(out.begin(), out.end(), 0);
-		int root = -1;
 		bool ordered = true;
 		for (int v = 0; v < n; ++v) {
-			int p = parent[v];
+			int p = parents[v];
 			assert(-1 <= p && p < n && p != v);
-			if (p == -1) {
-				assert(root == -1);
-				root = v;
-			} else {
-				++out[p];
-				edges.emplace_back(p, v);
-				ordered &= p < v;
+			if (p == -1) { assert(root_ == -1); root_ = v; }
+			else if (p >= v) ordered = false;
+		}
+		assert(root_ != -1);
+		auto finish = [&](auto vertex) {
+			for (int i = n - 1; i > 0; --i) {
+				int v = vertex(i);
+				out[parents[v]] += out[v];
 			}
-		}
-		assert(root != -1);
-		int maximum = 0;
-		for (int v = 0; v < n; ++v) {
-			int degree = out[v] + (v != root);
-			if (degree > maximum) maximum = degree, center_ = v;
-		}
-		shape_ = maximum <= 2 ? 1 : maximum == n - 1 ? 2 : 0;
-		if (ordered) {
-			for (int v = n - 1; v > 0; --v) {
-				int p = parent[v];
-				size[p] += size[v];
-				if (heavy[p] == -1 || size[heavy[p]] < size[v]) heavy[p] = v;
-				order[n - 1 - v] = v;
+			in[root_] = 0;
+			order[root_] = 1;
+			for (int i = 1; i < n; ++i) {
+				int v = vertex(i), p = parents[v];
+				in[v] = order[p];
+				order[p] += out[v];
+				order[v] = in[v] + 1;
 			}
-		} else {
-			int count = 0;
-			for (int v = 0; v < n; ++v) if (!out[v] && v != root) order[count++] = v;
-			for (int i = 0; i < count; ++i) {
-				int v = order[i], p = parent[v];
-				size[p] += size[v];
-				if (heavy[p] == -1 || size[heavy[p]] < size[v]) heavy[p] = v;
-				if (!--out[p] && p != root) order[count++] = p;
-			}
-			assert(count == n - 1);
+			for (int v = 0; v < n; ++v) out[v] += in[v], order[in[v]] = v;
+		};
+		if (ordered) { finish([](int v) { return v; }); return; }
+		std::vector<int> start(std::size_t(n) + 1), adjacent(std::size_t(n) - 1);
+		for (int p : parents) if (p >= 0) ++start[std::size_t(p) + 1];
+		for (int v = 0; v < n; ++v) start[v + 1] += start[v];
+		auto cursor = start;
+		for (int v = 0; v < n; ++v) if (parents[v] >= 0) adjacent[cursor[parents[v]]++] = v;
+		std::vector<int> traversal;
+		traversal.reserve(n);
+		traversal.push_back(root_);
+		for (std::size_t i = 0; i < traversal.size(); ++i) {
+			int v = traversal[i];
+			for (int j = start[v]; j < start[v + 1]; ++j) traversal.push_back(adjacent[j]);
 		}
-		finish(root);
+		assert(traversal.size() == std::size_t(n));
+		finish([&](int i) { return traversal[i]; });
 	}
-	int lca(int u, int v) const {
-		check(u), check(v);
-		if (shape_ == 1) return head[u] != head[v] ? order[0] : in[u] < in[v] ? u : v;
-		if (shape_ == 2) return u == v ? u : u == order[0] || v == order[0] ? order[0] : center_;
-		while (nodes[u].head != nodes[v].head) {
-			if (nodes[u].position > nodes[v].position) u = nodes[u].parent;
-			else v = nodes[v].parent;
-		}
-		return nodes[u].position < nodes[v].position ? u : v;
-	}
-	int dist(int u, int v) const {
-		int w = lca(u, v);
-		return depth[u] + depth[v] - 2 * depth[w];
-	}
+	std::pair<int, int> subtree(int v, bool edge = false) const { check(v); return {in[v] + int(edge), out[v]}; }
 	bool is_ancestor(int u, int v) const {
-		check(u), check(v);
+		check(u); check(v);
 		return in[u] <= in[v] && in[v] < out[u];
-	}
-	int ancestor(int v, int k) const {
-		check(v);
-		if (shape_) {
-			if (k < 0 || k > depth[v]) return -1;
-			if (!k) return v;
-			if (k == depth[v]) return order[0];
-			return shape_ == 2 ? parent[v] : order[in[v] - k];
-		}
-		if (k < 0) return -1;
-		int target = nodes[v].position + nodes[v].offset - k;
-		if (target < 0) return -1;
-		while (nodes[v].head + nodes[v].offset > target) v = nodes[v].parent;
-		return order[target - nodes[v].offset];
-	}
-	int jump(int u, int v, int k) const {
-		check(u), check(v);
-		if (k < 0) return -1;
-		if (!k) return u;
-		if (shape_ == 1) {
-			if (head[u] == head[v]) {
-				int delta = in[v] - in[u];
-				if (k > (delta < 0 ? -delta : delta)) return -1;
-				return order[in[u] + (delta < 0 ? -k : k)];
-			}
-			int a = depth[u], b = depth[v];
-			if (k > a + b) return -1;
-			if (k == a) return order[0];
-			return k < a ? order[in[u] - k] : order[in[v] - (a + b - k)];
-		}
-		if (shape_ == 2) {
-			int d = (u != center_) + (v != center_);
-			if (u == v || k > d) return -1;
-			return k == d ? v : center_;
-		}
-		int from = u, to = v, target = nodes[u].position + nodes[u].offset - k;
-		while (nodes[u].head != nodes[v].head) {
-			if (nodes[u].position > nodes[v].position) {
-				if (nodes[u].head + nodes[u].offset <= target) return order[target - nodes[u].offset];
-				u = nodes[u].parent;
-			} else v = nodes[v].parent;
-		}
-		int w = nodes[u].position < nodes[v].position ? u : v;
-		int d = nodes[w].position + nodes[w].offset;
-		int length = nodes[from].position + nodes[from].offset + nodes[to].position + nodes[to].offset - 2 * d;
-		if (k > length) return -1;
-		if (target >= d) return order[target - nodes[u].offset];
-		return ancestor(to, length - k);
-	}
-	std::pair<int, int> subtree(int v, bool edge = false) const {
-		check(v);
-		return {in[v] + edge, out[v]};
-	}
-	int edge_vertex(int id) const {
-		assert(0 <= id && id < int(edges.size()));
-		auto [u, v] = edges[id];
-		check(u);
-		return parent[u] == v ? u : v;
-	}
-	template <class F>
-	void for_each_path(int u, int v, F &&f, bool edge = false) const {
-		check(u), check(v);
-		if (shape_ == 1) {
-			int x = in[u], y = in[v];
-			if (head[u] == head[v]) {
-				int l = std::min(x, y) + edge, r = std::max(x, y) + 1;
-				if (l < r) f(l, r, x > y);
-			} else if (head[u] == order[0]) {
-				if (edge < x + 1) f(int(edge), x + 1, true);
-				f(in[head[v]], y + 1, false);
-			} else {
-				f(in[head[u]], x + 1, true);
-				if (edge < y + 1) f(int(edge), y + 1, false);
-			}
-			return;
-		}
-		std::array<std::array<int, 2>, 32> right;
-		int count = 0;
-		while (nodes[u].head != nodes[v].head) {
-			if (nodes[u].position > nodes[v].position) {
-				f(nodes[u].head, nodes[u].position + 1, true);
-				u = nodes[u].parent;
-			} else {
-				assert(count < int(right.size()));
-				right[count++] = {nodes[v].head, nodes[v].position + 1};
-				v = nodes[v].parent;
-			}
-		}
-		bool reversed = nodes[u].position > nodes[v].position;
-		int l = std::min(nodes[u].position, nodes[v].position) + edge, r = std::max(nodes[u].position, nodes[v].position) + 1;
-		if (l < r) f(l, r, reversed);
-		while (count) {
-			auto [a, b] = right[--count];
-			f(a, b, false);
-		}
-	}
-	std::vector<Segment> path(int u, int v, bool edge = false) const {
-		std::vector<Segment> result;
-		for_each_path(u, v, [&](int l, int r, bool reversed) { result.push_back({l, r, reversed}); }, edge);
-		return result;
 	}
 };
 
@@ -321,6 +174,34 @@ class HLD {
 #line 1 "components/fast_io_bulk.hpp"
 
 
+
+#line 1 "components/compiler_features.hpp"
+
+
+
+#if defined(__x86_64__) || defined(__i386__)
+#define CP_X86 1
+#else
+#define CP_X86 0
+#endif
+#if CP_X86 && defined(__GNUC__) && !defined(__clang__)
+#define CP_GCC_X86 1
+#else
+#define CP_GCC_X86 0
+#endif
+#if CP_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CP_GNU_X86 1
+#else
+#define CP_GNU_X86 0
+#endif
+#if CP_GCC_X86 && defined(__linux__) && defined(__x86_64__)
+#define CP_GCC_LINUX64 1
+#else
+#define CP_GCC_LINUX64 0
+#endif
+
+
+#line 5 "components/fast_io_bulk.hpp"
 
 #line 1 "components/fast_io_output.hpp"
 
@@ -330,8 +211,8 @@ class HLD {
 
 
 
-#line 6 "components/fast_io.hpp"
-#include <bit>
+#include <algorithm>
+#include <array>
 #line 8 "components/fast_io.hpp"
 #include <charconv>
 #line 10 "components/fast_io.hpp"
@@ -633,11 +514,11 @@ void write_unsigned_records(FastOutput &output, std::size_t count, Read read) {
 }
 
 
-#line 6 "components/fast_io_bulk.hpp"
-#include <span>
 #line 8 "components/fast_io_bulk.hpp"
+#include <span>
+#line 10 "components/fast_io_bulk.hpp"
 
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 #include <immintrin.h>
 #pragma GCC push_options
 _Pragma("GCC target(\"avx2\")")
@@ -656,24 +537,41 @@ struct BulkInput {
 		return unsigned(_mm256_movemask_epi8(_mm256_cmpeq_epi8(_mm256_max_epu8(bytes, _mm256_set1_epi8(' ')), _mm256_set1_epi8(' '))));
 	}
 
-	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid) {
+	template <bool Signed = false>
+	[[gnu::always_inline]] static __m256i two(const char *&p, __m256i &invalid, unsigned *signs = nullptr) {
 		const auto bytes = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(p));
 		const unsigned sep = separators(bytes), a = std::countr_zero(sep), b = std::countr_zero(sep & (sep - 1));
-		if (a < 1 || a > 10 || b <= a + 1 || b - a - 1 > 10) [[unlikely]] {
+		unsigned n0 = 0, n1 = 0;
+		if constexpr (Signed) {
+			if (a < 1 || a > 11 || b <= a + 1 || b - a - 1 > 11) [[unlikely]] {
+				invalid = _mm256_set1_epi32(-1);
+				p += std::min(b + 1, 32u);
+				*signs = 0;
+				return _mm256_setzero_si256();
+			}
+			n0 = p[0] == '-', n1 = p[a + 1] == '-';
+			*signs = n0 | (n1 << 1);
+		}
+		if (a < n0 + 1 || a - n0 > 10 || b <= a + n1 + 1 || b - a - n1 - 1 > 10) [[unlikely]] {
 			invalid = _mm256_set1_epi32(-1);
 			p += std::min(b + 1, 32u);
 			return _mm256_setzero_si256();
 		}
-		const auto window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
-		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - 1].data())),
-			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a].data())));
+		auto window = bytes;
+		if constexpr (Signed) window = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1 + n1)), _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + n0)));
+		else window = _mm256_inserti128_si256(bytes, _mm_loadu_si128(reinterpret_cast<const __m128i *>(p + a + 1)), 1);
+		const auto control = _mm256_set_m128i(_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[b - a - n1 - 1].data())),
+			_mm_loadu_si128(reinterpret_cast<const __m128i *>(rows[a - n0].data())));
 		const auto digits = _mm256_shuffle_epi8(_mm256_sub_epi8(window, _mm256_set1_epi8('0')), control);
 		invalid = _mm256_or_si256(invalid, _mm256_subs_epu8(digits, _mm256_set1_epi8(9)));
 		p += b + 1;
 		return _mm256_madd_epi16(_mm256_maddubs_epi16(digits, _mm256_set1_epi16(0x010a)), _mm256_set1_epi32(0x00010064));
 	}
 
+	template <bool Signed = false>
 	static std::uint32_t one(const char *&p, bool &bad) {
+		bool negative = false;
+		if constexpr (Signed) negative = *p == '-', p += negative;
 		const auto bytes = _mm_loadu_si128(reinterpret_cast<const __m128i *>(p));
 		const auto spaces = _mm_cmpeq_epi8(_mm_max_epu8(bytes, _mm_set1_epi8(' ')), _mm_set1_epi8(' '));
 		const unsigned n = std::countr_zero(unsigned(_mm_movemask_epi8(spaces)) | 0x10000u);
@@ -689,9 +587,10 @@ struct BulkInput {
 		const auto groups = _mm_madd_epi16(_mm_maddubs_epi16(digits, _mm_set1_epi16(0x010a)), _mm_set1_epi32(0x00010064));
 		const auto halves = _mm_madd_epi16(_mm_packus_epi32(groups, groups), _mm_set1_epi32(0x00012710));
 		const std::uint64_t value = std::uint64_t(unsigned(_mm_cvtsi128_si32(halves))) * 100000000 + unsigned(_mm_extract_epi32(halves, 1));
-		bad |= value > 0xffffffffULL;
+		if constexpr (Signed) bad |= value > 2147483647ULL + negative;
+		else bad |= value > 0xffffffffULL;
 		p += n + 1;
-		return std::uint32_t(value);
+		return negative ? 0u - std::uint32_t(value) : std::uint32_t(value);
 	}
 
 	static const char *after_separator(const char *p) {
@@ -699,6 +598,7 @@ struct BulkInput {
 		return mask ? p + std::countr_zero(mask) + 1 : nullptr;
 	}
 
+	template <bool Signed = false>
 	static std::size_t lockstep(const char *(&streams)[4], const char *const (&end)[4], unsigned *const (&out)[4], __m256i &invalid) {
 		const char *p[4] = {streams[0], streams[1], streams[2], streams[3]};
 		std::size_t done = 0;
@@ -708,16 +608,27 @@ struct BulkInput {
 			const auto steps = std::min(left / 33, std::ptrdiff_t((kCapacity - done) / 2));
 			if (steps <= 0) break;
 			for (auto j = steps; j; --j, done += 2) {
-				const auto g0 = two(p[0], invalid), g1 = two(p[1], invalid), g2 = two(p[2], invalid), g3 = two(p[3], invalid);
+				unsigned signs0 = 0, signs1 = 0, signs2 = 0, signs3 = 0;
+				const auto g0 = two<Signed>(p[0], invalid, &signs0), g1 = two<Signed>(p[1], invalid, &signs1), g2 = two<Signed>(p[2], invalid, &signs2), g3 = two<Signed>(p[3], invalid, &signs3);
 				const auto k = _mm256_set1_epi32(0x00012710);
 				const auto h01 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g0, g1), k));
 				const auto h23 = _mm256_castsi256_ps(_mm256_madd_epi16(_mm256_packus_epi32(g2, g3), k));
 				const auto high = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0x88));
 				const auto low = _mm256_castps_si256(_mm256_shuffle_ps(h01, h23, 0xdd));
-				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, _mm256_set1_epi32(42)),
-					_mm256_and_si256(_mm256_cmpeq_epi32(high, _mm256_set1_epi32(42)), _mm256_cmpgt_epi32(low, _mm256_set1_epi32(94967295))));
+				auto max_high = _mm256_set1_epi32(42), max_low = _mm256_set1_epi32(94967295);
+				auto signs = _mm256_setzero_si256();
+				if constexpr (Signed) {
+					signs = _mm256_setr_epi32(signs0 & 1, signs1 & 1, signs2 & 1, signs3 & 1, signs0 >> 1, signs1 >> 1, signs2 >> 1, signs3 >> 1);
+					max_high = _mm256_set1_epi32(21), max_low = _mm256_add_epi32(_mm256_set1_epi32(47483647), signs);
+				}
+				const auto overflow = _mm256_or_si256(_mm256_cmpgt_epi32(high, max_high),
+					_mm256_and_si256(_mm256_cmpeq_epi32(high, max_high), _mm256_cmpgt_epi32(low, max_low)));
 				invalid = _mm256_or_si256(invalid, overflow);
-				const auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				auto value = _mm256_add_epi32(_mm256_mullo_epi32(high, _mm256_set1_epi32(100000000)), low);
+				if constexpr (Signed) {
+					const auto mask = _mm256_sub_epi32(_mm256_setzero_si256(), signs);
+					value = _mm256_sub_epi32(_mm256_xor_si256(value, mask), mask);
+				}
 				const auto q = _mm256_permutevar8x32_epi32(value, _mm256_setr_epi32(0, 4, 1, 5, 2, 6, 3, 7));
 				const auto q01 = _mm256_castsi256_si128(q), q23 = _mm256_extracti128_si256(q, 1);
 				_mm_storel_epi64(reinterpret_cast<__m128i *>(out[0] + done), q01);
@@ -730,7 +641,7 @@ struct BulkInput {
 		return done;
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static std::size_t chunk_blocks(const char *&p, const char *limit, std::size_t count, unsigned *const (&out)[4], Emit &&emit) {
 		const auto bytes = std::min({kChunk, 2 * (count - 32), std::size_t(limit - p) - 64}) & ~std::size_t(3);
 		const std::size_t stream = bytes / 4;
@@ -739,12 +650,12 @@ struct BulkInput {
 		if (!p1 || !p2 || !p3 || !last) return 0;
 		const char *s[4] = {p, p1, p2, p3}, *const end[4] = {p1, p2, p3, last};
 		auto invalid = _mm256_setzero_si256();
-		const auto done = lockstep(s, end, out, invalid);
+		const auto done = lockstep<Signed>(s, end, out, invalid);
 		bool bad = !_mm256_testz_si256(invalid, invalid);
 		std::size_t n[4];
 		for (int k = 0; k < 4; ++k) {
 			n[k] = done;
-			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one(s[k], bad);
+			while (s[k] < end[k] && n[k] < kCapacity) out[k][n[k]++] = one<Signed>(s[k], bad);
 			bad |= s[k] != end[k];
 		}
 		const auto parsed = n[0] + n[1] + n[2] + n[3];
@@ -765,7 +676,7 @@ struct BulkInput {
 		});
 	}
 
-	template <class Emit>
+	template <bool Signed = false, class Emit>
 	static void read_blocks(FastInput &in, std::size_t count, Emit emit) {
 		std::unique_ptr<unsigned[]> scratch;
 		std::size_t done = 0;
@@ -776,7 +687,7 @@ struct BulkInput {
 			while (chunks && count - done >= 1024 && in.end - p >= 1088) {
 				if (!scratch) scratch = std::make_unique_for_overwrite<unsigned[]>(4 * kCapacity);
 				unsigned *const out[4] = {scratch.get(), scratch.get() + kCapacity, scratch.get() + 2 * kCapacity, scratch.get() + 3 * kCapacity};
-				const auto parsed = chunk_blocks(p, in.end, count - done, out, emit);
+				const auto parsed = chunk_blocks<Signed>(p, in.end, count - done, out, emit);
 				if (!parsed) {
 					chunks = false;
 					break;
@@ -785,7 +696,7 @@ struct BulkInput {
 			}
 			unsigned tail[64];
 			std::size_t used = 0;
-			while (done + 2 <= count && in.end - p >= 32) {
+			while (!Signed && done + 2 <= count && in.end - p >= 32) {
 				const char *next = p;
 				auto invalid = _mm256_setzero_si256();
 				const auto groups = two(next, invalid);
@@ -806,9 +717,9 @@ struct BulkInput {
 			if (used) emit(tail, used);
 			in.current = p;
 			if (done < count) {
-				unsigned value = 0;
+				std::conditional_t<Signed, std::int32_t, unsigned> value = 0;
 				in.read(value);
-				emit(&value, 1);
+				emit(reinterpret_cast<unsigned *>(&value), 1);
 				++done;
 			}
 		}
@@ -828,15 +739,15 @@ struct BulkInput {
 
 
 namespace fast_io_detail {
-template <class Emit, std::size_t... I>
-void emit_record(Emit &emit, const std::uint32_t *values, std::index_sequence<I...>) {
+template <class Emit, class T, std::size_t... I>
+void emit_record(Emit &emit, const T *values, std::index_sequence<I...>) {
 	emit(values[I]...);
 }
 }
 
 template <class Emit>
 void read_unsigned_blocks(FastInput &input, std::size_t count, Emit emit) {
-#if defined(__linux__) && defined(__x86_64__) && defined(__GNUC__) && !defined(__clang__)
+#if CP_GCC_LINUX64
 	if (__builtin_cpu_supports("avx2")) {
 		fast_io_detail::BulkInput::read_blocks(input, count, emit);
 		return;
@@ -879,6 +790,46 @@ void read_unsigned_records(FastInput &input, std::size_t count, Emit emit) {
 	});
 }
 
+template <class Emit>
+void read_signed_blocks(FastInput &input, std::size_t count, Emit emit) {
+#if CP_GCC_LINUX64
+	if (__builtin_cpu_supports("avx2")) {
+		fast_io_detail::BulkInput::read_blocks<true>(input, count, [&](const unsigned *values, std::size_t n) {
+			emit(reinterpret_cast<const std::int32_t *>(values), n);
+		});
+		return;
+	}
+#endif
+	std::int32_t values[64];
+	while (count) {
+		const auto n = std::min<std::size_t>(count, 64);
+		for (std::size_t i = 0; i < n; ++i) input.read(values[i]);
+		emit(values, n);
+		count -= n;
+	}
+}
+
+template <std::size_t Fields, class Emit>
+void read_signed_records(FastInput &input, std::size_t count, Emit emit) {
+	static_assert(Fields > 0);
+	if (count > std::numeric_limits<std::size_t>::max() / Fields) throw std::length_error("input size");
+	std::array<std::int32_t, Fields> pending;
+	std::size_t used = 0;
+	constexpr auto indices = std::make_index_sequence<Fields>();
+	read_signed_blocks(input, count * Fields, [&](const std::int32_t *values, std::size_t n) {
+		std::size_t i = 0;
+		if (used) {
+			while (used < Fields && i < n) pending[used++] = values[i++];
+			if (used == Fields) {
+				fast_io_detail::emit_record(emit, pending.data(), indices);
+				used = 0;
+			}
+		}
+		for (; i < n && n - i >= Fields; i += Fields) fast_io_detail::emit_record(emit, values + i, indices);
+		while (i < n) pending[used++] = values[i++];
+	});
+}
+
 
 #line 6 "test/hld_subtree_sum.test.cpp"
 
@@ -897,7 +848,7 @@ int main() {
 	read_unsigned_blocks(input, n - 1, [&](const std::uint32_t *values, std::size_t count) {
 		for (std::size_t i = 0; i < count; ++i) parents[offset++] = values[i];
 	});
-	HLD tree;
+	SubtreeIndex tree;
 	tree.build_from_parents(std::move(parents));
 
 	std::vector<long long> ordered(n);

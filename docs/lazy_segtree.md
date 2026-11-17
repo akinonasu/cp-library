@@ -34,6 +34,8 @@ int main() {
 
     tree.apply(0, 2, 5); // 数列は 6, 7, 3
     assert(tree.get(1).sum == 7);
+    const auto& constant = tree;
+    assert(constant.get(0).sum == 6);
     assert(tree.prod(0, 3).sum == 16);
 
     int r = tree.max_right(0, [](S x) { return x.sum <= 13; });
@@ -91,13 +93,13 @@ LazySegtree<S, op, e, F, mapping, composition, id> tree(const std::vector<S>& a)
 | --- | --- | --- |
 | `int size() const` | 要素数を返す | — |
 | `void set(int p, S x)` | `a[p]` を `x` に置き換える | `0 <= p < n` |
-| `S get(int p)` | `a[p]` の現在の値を返す | `0 <= p < n` |
+| `S get(int p)` / `S get(int p) const` | `a[p]` の現在の値を返す | `0 <= p < n` |
 | `S prod(int l, int r)` | `a[l]` から `a[r-1]` までを、左から右の順に `op` でまとめた結果を返す。空区間なら `e()` | `0 <= l <= r <= n` |
 | `S all_prod() const` | 数列全体を `op` でまとめた結果を返す。空列なら `e()` | — |
 | `void apply(int p, F f)` | `a[p]` を `mapping(f,a[p])` に置き換える | `0 <= p < n` |
 | `void apply(int l, int r, F f)` | `[l,r)` の各要素に更新 `f` を適用する。空区間では何もしない | `0 <= l <= r <= n` |
 
-`prod(l,r)` は `const` な木にも使えます。コピーした木への更新は、元の木に影響しません。
+`get(p)`・`prod(l,r)` は `const` な木にも使えます。コピーした木への更新は、元の木に影響しません。
 
 ## 境界を探す
 

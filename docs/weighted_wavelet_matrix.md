@@ -9,12 +9,20 @@ library_category: data_structure/wavelet_matrix
 
 ```cpp
 #include "lib/data_structure/weighted_wavelet_matrix.hpp"
+#include <cassert>
+#include <cstdint>
+#include <vector>
 
-WeightedWaveletMatrix<int> wm(std::vector<int>{3, 1, 5},
-                            std::vector<std::int64_t>{2, 0, 1});
-wm.set_weight(1, 4);
-auto value = wm.kth_smallest(0, 3, 2);
-auto count = wm.min_count_largest(0, 3, 8);
+int main() {
+	WeightedWaveletMatrix<int> wm(std::vector<int>{3, 1, 5},
+	                             std::vector<std::int64_t>{2, 0, 1});
+	wm.set_weight(1, 4);
+	assert(wm.kth_smallest(0, 3, 2) == 1);
+	assert(wm.min_count_largest(0, 3, 8) == 2);
+	assert(wm.prev_value(0, 3, 3) == 1);
+	assert(wm.next_value(0, 3, 3) == 3);
+	assert(wm.rank(1, 3) == 4);
+}
 ```
 
 整数の値で個数や順位だけを問い合わせる場合は、`WeightedWaveletMatrix(a,w,false)` で和の前処理を省けます。後から和・上下位の和・和に対する個数探索を使う場合は、その前に非 const の `prepare_sum()` を呼びます。整数では既定で構築時に準備済みとなり、和の問い合わせ中には前処理や状態の変更を行いません。
@@ -41,6 +49,8 @@ int main() {
 
 値と重みは同じ長さの `vector` を渡し、長さは `INT_MAX` 以下とします。一点操作は `0 <= i < size()`、区間は `0 <= l <= r <= size()` です。区間の個数 `c = count(l,r)` に対して、`kth_*` は `0 <= k < c`、`sum_smallest`・`sum_largest` は `0 <= k <= c` が必要です。空区間や重みの総和が 0 の区間の個数・和は 0、0 個を選んだ和も 0 です。同じ値の位置は重みを合計して数えます。入力は変更せず、構築後に破棄できます。
 
+`prev_value`・`next_value` は重みが正の位置だけを対象にします。空区間や重みの総和が 0 の区間では `std::nullopt` を返します。`rank(x,r)` は `0 <= r <= size()` とし、返り値は重みと同じ整数型です。
+
 固定した位置の数を $$n$$、異なる値の数を $$\sigma$$ とします。要素の比較・コピーを定数時間として、以下の計算量を表します。文字列などを使う場合は、実際の比較・コピーにかかる時間も含めて考えてください。異なる値が 0 個または 1 個の場合、対数の項は定数として扱います。
 
 | 操作 | 内容・返り値 | 計算量 |
@@ -55,13 +65,14 @@ int main() {
 | `set_weight(i,w)` / `add_weight(i,delta)` | 重みの代入／加算。更新後も非負とする | $$O(\log n\log\sigma)$$ |
 | `move_weight(i,j,w)` | 位置 `i` から `j` に個数 `w` を移す。`w <= weight(i)` とする | $$O(\log n\log\sigma)$$ |
 | `count(l,r)` | 区間の重みの総和 | $$O(\log n)$$ |
-| `count(l,r,x)` | 値が `x` の位置の重みの総和 | $$O(\log n\log\sigma)$$ |
+| `count(l,r,x)` / `rank(x,r)` | 区間／$$[0,r)$$ の値が `x` の位置の重みの総和 | $$O(\log n\log\sigma)$$ |
 | `range_freq(l,r,upper)` | `upper` 未満の重みの総和 | $$O(\log n\log\sigma)$$ |
 | `range_freq(l,r,lower,upper)` | `lower` 以上 `upper` 未満の重みの総和 | $$O(\log n\log\sigma)$$ |
 | `range_sum(l,r)` | 区間の `値 * 重み` の総和 | $$O(\log n)$$ |
 | `range_sum(l,r,upper)` | `upper` 未満の `値 * 重み` の総和 | $$O(\log n\log\sigma)$$ |
 | `range_sum(l,r,lower,upper)` | 指定した値域の `値 * 重み` の総和 | $$O(\log n\log\sigma)$$ |
 | `kth_smallest(l,r,k)` / `kth_largest(l,r,k)` | 重みを個数として、小さい順／大きい順の `k` 番目 | $$O(\log n\log\sigma)$$ |
+| `prev_value(l,r,upper)` / `next_value(l,r,lower)` | `upper` 未満の最大値／`lower` 以上の最小値。返り値は `std::optional<T>`、該当なしは `std::nullopt` | $$O(\log n\log\sigma)$$ |
 | `sum_smallest(l,r,k)` / `sum_largest(l,r,k)` | 下位／上位 `k` 個の和 | $$O(\log n\log\sigma)$$ |
 | `min_count_smallest(l,r,target)` / `min_count_largest(l,r,target)` | 各順序で和が `target` 以上になる最小個数。届かなければ -1 | $$O(\log n\log\sigma)$$ |
 | `max_count_smallest(l,r,budget)` / `max_count_largest(l,r,budget)` | 各順序で和が `budget` 以下の最大個数。空の選択も不可能なら -1 | $$O(\log n\log\sigma)$$ |

@@ -46,6 +46,18 @@ void check(const std::vector<T> &a, std::mt19937_64 &random) {
 			if (x <= value && value < y) ++count, sum += Sum(value);
 		}
 		require(wm.count(l, r, x) == exact);
+		std::int64_t prefix_count = 0;
+		for (int i = 0; i < r; ++i) if (a[i] == x) prefix_count += w[i];
+		require(std::as_const(wm).rank(x, r) == prefix_count);
+		for (T bound : {x, y}) {
+			auto it = std::lower_bound(sorted.begin(), sorted.end(), bound);
+			auto prev = std::as_const(wm).prev_value(l, r, bound);
+			auto next = std::as_const(wm).next_value(l, r, bound);
+			require(bool(prev) == (it != sorted.begin()));
+			require(bool(next) == (it != sorted.end()));
+			if (prev) require(*prev == *(it - 1));
+			if (next) require(*next == *it);
+		}
 		require(wm.range_freq(l, r, x, y) == count);
 		require(wm.range_freq(l, r, y) == std::lower_bound(sorted.begin(), sorted.end(), y) - sorted.begin());
 		require(wm.range_sum(l, r, x, y) == sum && wm.range_sum(l, r, y) == sum_below);
@@ -105,6 +117,17 @@ void check_count_width() {
 				for (int i = l; i < r; ++i) total += weights[i], total_sum += Sum(a[i]) * weights[i];
 				require(tree.count(l, r) == total);
 				if (with_sum) require(tree.range_sum(l, r) == total_sum);
+				for (auto bound : bounds) {
+					Count prefix = 0;
+					std::optional<std::int64_t> prev, next;
+					for (int i = 0; i < r; ++i) if (a[i] == bound) prefix += weights[i];
+					for (int i = l; i < r; ++i) if (weights[i]) {
+						if (a[i] < bound && (!prev || *prev < a[i])) prev = a[i];
+						if (a[i] >= bound && (!next || a[i] < *next)) next = a[i];
+					}
+					require(tree.rank(bound, r) == prefix);
+					require(tree.prev_value(l, r, bound) == prev && tree.next_value(l, r, bound) == next);
+				}
 				for (auto low : bounds) for (auto high : bounds) {
 					Sum count = 0, sum = 0;
 					for (int i = l; i < r; ++i) if (low <= a[i] && a[i] < high) count += weights[i], sum += Sum(a[i]) * weights[i];

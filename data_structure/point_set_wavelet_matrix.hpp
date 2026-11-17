@@ -69,6 +69,8 @@ class PointSetWaveletMatrix {
 	Sum range_sum(int l, int r, const T &lower, const T &upper) const requires supports_sum { check(l, r); return wm.range_sum(offsets[l], offsets[r], lower, upper); }
 	T kth_smallest(int l, int r, int k) const { check(l, r); return wm.kth_smallest(offsets[l], offsets[r], k); }
 	T kth_largest(int l, int r, int k) const { check(l, r); return wm.kth_largest(offsets[l], offsets[r], k); }
+	std::optional<T> prev_value(int l, int r, const T &upper) const { check(l, r); return wm.prev_value(offsets[l], offsets[r], upper); }
+	std::optional<T> next_value(int l, int r, const T &lower) const { check(l, r); return wm.next_value(offsets[l], offsets[r], lower); }
 	Sum sum_smallest(int l, int r, int k) const requires supports_sum { check(l, r); return wm.sum_smallest(offsets[l], offsets[r], k); }
 	Sum sum_largest(int l, int r, int k) const requires supports_sum { check(l, r); return wm.sum_largest(offsets[l], offsets[r], k); }
 	int min_count_smallest(int l, int r, Sum target) const requires supports_sum { check(l, r); return wm.min_count_smallest(offsets[l], offsets[r], target); }

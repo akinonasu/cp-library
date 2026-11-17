@@ -80,6 +80,7 @@ class LazySegtree {
 		push_path(k);
 		return data_[k];
 	}
+	[[nodiscard]] S get(int p) const { vertex(p); return prod(p, p + 1); }
 	[[nodiscard]] S all_prod() const { return data_[1]; }
 	[[nodiscard]] S prod(int l, int r) {
 		range(l, r);

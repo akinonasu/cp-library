@@ -38,6 +38,15 @@ int main() {
 				if (x <= z && z < y) sum += z, ++count;
 			}
 			require(wm.count(l, r, x) == std::count(sorted.begin(), sorted.end(), x));
+			for (int bound : {-1, 0, x, y, 30, 31}) {
+				auto it = std::lower_bound(sorted.begin(), sorted.end(), bound);
+				auto prev = std::as_const(wm).prev_value(l, r, bound);
+				auto next = std::as_const(wm).next_value(l, r, bound);
+				require(bool(prev) == (it != sorted.begin()));
+				require(bool(next) == (it != sorted.end()));
+				if (prev) require(*prev == *(it - 1));
+				if (next) require(*next == *it);
+			}
 			require(wm.range_freq(l, r, x, y) == count && wm.range_sum(l, r, x, y) == sum);
 			require(wm.range_sum(l, r, y) == below);
 			int k = random() % (sorted.size() + 1);
@@ -65,8 +74,11 @@ int main() {
 	std::vector<std::pair<int, std::int64_t>> candidates{{0, INT64_MAX}, {2, INT64_MIN}};
 	PointSetWaveletMatrix<std::int64_t> wide(extreme, candidates);
 	require(wide.range_sum(0, 3) == -1);
+	require(!wide.prev_value(0, 3, INT64_MIN) && wide.next_value(0, 3, INT64_MIN) == INT64_MIN);
+	require(wide.prev_value(0, 3, INT64_MAX) == 0 && wide.next_value(0, 3, INT64_MAX) == INT64_MAX);
 	require(wide.set(0, INT64_MAX));
 	require(wide.range_sum(0, 3) == __int128_t(INT64_MAX) * 2);
+	require(!wide.prev_value(0, 3, 0) && wide.next_value(0, 3, 1) == INT64_MAX);
 	require(wide.set(2, INT64_MIN) && wide.kth_smallest(0, 3, 0) == INT64_MIN);
 	require(wide.range_sum(0, 3) == -1);
 	PointSetWaveletMatrix<int> empty;

@@ -75,7 +75,7 @@
 | `data_structure/interval_map.hpp` | Interval Map（区間への値の代入・削除・検索） | [使い方](docs/interval_map.md) |
 | `data_structure/flat_hash_map.hpp` | Flat Hash Map（連想配列・要素の列挙） | [使い方](docs/flat_hash_map.md) |
 | `data_structure/xor_set.hpp` | XOR の最小値・最大値を求める整数集合 | [使い方](docs/xor_set.md) |
-| `data_structure/super_multiset.hpp` | Super Multiset（大小 k 個の和・順位・値の範囲の個数と和） | [使い方](docs/super_multiset.md) |
+| `data_structure/super_multiset.hpp` | Super Multiset（大小 k 個の和・順位・値の範囲の個数と和・前後検索） | [使い方](docs/super_multiset.md) |
 
 ### data_structure/li_chao_tree
 
@@ -105,7 +105,7 @@
 | ファイル | 内容 | 使い方 |
 | --- | --- | --- |
 | `data_structure/sliding_window_aggregation.hpp` | Sliding Window Aggregation（キューの集約） | [使い方](docs/sliding_window_aggregation.md) |
-| `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・区間和） | [使い方](docs/fenwick_tree.md) |
+| `data_structure/fenwick_tree.hpp` | Fenwick Tree（一点加算・代入・区間和・累積和の検索） | [使い方](docs/fenwick_tree.md) |
 | `data_structure/static_threshold_search.hpp` | 静的整数列の閾値検索・O(log n) | [使い方](docs/static_threshold_search.md) |
 | `data_structure/disjoint_sparse_table.hpp` | Disjoint Sparse Table | [使い方](docs/disjoint_sparse_table.md) |
 | `data_structure/sparse_table.hpp` | Sparse Table | [使い方](docs/sparse_table.md) |

@@ -8,22 +8,24 @@ library_category: data_structure/associative
 
 ```cpp
 #include "lib/data_structure/interval_map.hpp"
+#include <cassert>
 #include <string>
 
-IntervalMap<int, std::string> colors(0, 10, "red");
-colors.assign(3, 7, "blue");
-auto value = colors.get(4); // optional("blue")
-auto missing = colors.get(10); // nullopt
-
-colors.erase(4, 6);
-auto size = colors.size(); // 8: 値が設定されている整数の個数
-for (const auto &[left, segment] : colors) {
-    // [left, segment.right) の値が segment.value
+int main() {
+	IntervalMap<int, std::string> colors(0, 10, "red");
+	colors.assign(3, 7, "blue");
+	assert(colors.get(4) == "blue");
+	assert(!colors.get(10));
+	colors.erase(4, 6);
+	assert(colors.size() == 8);
+	assert(colors.cbegin()->first == 0);
+	assert(colors.crbegin()->second.right == 10);
+	colors.assign(3, 7, "red");
+	assert(colors.interval_count() == 1);
+	colors.set(2, "green");
+	colors.clear();
+	assert(colors.cbegin() == colors.cend() && colors.crbegin() == colors.crend());
 }
-
-colors.assign(3, 7, "red");
-auto count = colors.interval_count(); // 1: [0,10) がすべて red
-colors.set(2, "green"); // [2,3) に代入
 ```
 
 `IntervalMap<T,V,Size,Equal>` の `T` は座標型、`V` は値の型です。どちらも既定は `std::int64_t` です。`T` は `bool` を除く整数型を使います。負の座標、`__int128_t`・`__uint128_t`、Boost.Multiprecision の整数型にも対応し、ヘッダー自体は Boost に依存しません。
@@ -51,12 +53,14 @@ colors.set(2, "green"); // [2,3) に代入
 | `for_each(l,r,visit)` | 重なる区間を `[l,r)` で切り詰め、`visit(left,right,const V&)` を左から呼ぶ。未設定部分は省く |
 | `size()` / `interval_count()` | 値が設定された整数の個数／区間数 |
 | `empty()` | 区間がないか |
-| `begin()` / `end()` | 左端の昇順に区間を読み取り専用で走査 |
-| `rbegin()` / `rend()` | 左端の降順に区間を読み取り専用で走査 |
+| `begin()` / `end()` / `cbegin()` / `cend()` | 左端の昇順に区間を読み取り専用で走査 |
+| `rbegin()` / `rend()` / `crbegin()` / `crend()` | 左端の降順に区間を読み取り専用で走査 |
 | `clear()` | 全内容を削除 |
 | コピー／代入 | 独立したマップとして複製 |
 | 移動／移動代入 | 内容を移動。移動元は空になり、再利用可能 |
 | `swap(t)` / `swap(s,t)` | 内容と値の比較関数を交換 |
+
+`cbegin()`・`cend()` は `const_iterator`、`crbegin()`・`crend()` は `const_reverse_iterator` を返します。どれも読み取り専用で、空の場合は始端と終端が等しくなります。イテレータ取得は $$O(1)$$ 時間・追加空間です。
 
 `interval_type` は `{left,right,value}` の 3 メンバーを持つ構造体です。区間列に重なりがあれば、後の要素の値を優先します。イテレータは左端をキーとし、`second.right` が右端、`second.value` が値です。更新で分割・結合・削除された区間のイテレータや参照は取得し直してください。`for_each` のコールバック内で同じマップを更新しないでください。
 

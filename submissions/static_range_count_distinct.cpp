@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <bit>
+#include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
@@ -54,7 +55,18 @@ public:
 	const V *find_value(const K &key) const { auto it = values.find(key); return it == values.end() ? nullptr : &it->second; }
 	V &operator[](const K &key) { return values[key]; }
 	void set(const K &key, const V &value) { values.insert_or_assign(key, value); }
+	template<class Key, class... Args>
+	std::pair<iterator, bool> try_emplace(Key &&key, Args &&...args) {
+		return values.try_emplace(std::forward<Key>(key), std::forward<Args>(args)...);
+	}
+	template<class... Args>
+	std::pair<iterator, bool> emplace(Args &&...args) { return values.emplace(std::forward<Args>(args)...); }
+	template<class Key, class Value>
+	std::pair<iterator, bool> insert_or_assign(Key &&key, Value &&value) {
+		return values.insert_or_assign(std::forward<Key>(key), std::forward<Value>(value));
+	}
 	bool erase(const K &key) { return values.erase(key); }
+	iterator erase(const_iterator position) { return values.erase(position); }
 	void prefetch(const K &) const noexcept {}
 	void reserve(std::size_t n) { values.reserve(n); }
 	void clear() { values.clear(); }
@@ -227,12 +239,47 @@ public:
 	const V *find_value(K key) const { if (states.empty()) return nullptr; std::size_t p = locate(key); return states[p] != vacant ? &stored_value(p) : nullptr; }
 	V &operator[](K key) { return stored_value(insert(key)); }
 	void set(K key, const V &value) { V copy = value; stored_value(insert(key)) = copy; }
+	template<class... Args>
+	std::pair<iterator, bool> try_emplace(K key, Args &&...args) {
+		if (auto it = find(key); it != end()) return {it, false};
+		V value(std::forward<Args>(args)...);
+		std::size_t p = insert(key);
+		stored_value(p) = value;
+		return {iterator(stored_slot(p), this), true};
+	}
+	template<class... Args>
+	std::pair<iterator, bool> emplace(Args &&...args) {
+		std::pair<K, V> value(std::forward<Args>(args)...);
+		return try_emplace(value.first, std::move(value.second));
+	}
+	template<class Value>
+	std::pair<iterator, bool> insert_or_assign(K key, Value &&value) {
+		if (auto it = find(key); it != end()) {
+			it->second = std::forward<Value>(value);
+			return {it, false};
+		}
+		V copy(std::forward<Value>(value));
+		std::size_t p = insert(key);
+		stored_value(p) = copy;
+		return {iterator(stored_slot(p), this), true};
+	}
 	bool erase(K key) {
 		if (states.empty()) return false;
 		std::size_t p = locate(key);
 		if (states[p] == vacant) return false;
 		states[p] = tombstone, --count, ++deleted;
 		return true;
+	}
+	iterator erase(const_iterator position) {
+		assert(position.owner == this && position.item);
+		std::size_t p;
+		if constexpr (combined) p = position.item - storage.data();
+		else p = position.item - storage.second.data();
+		assert(states[p] == occupied);
+		iterator next(stored_slot(p), this);
+		++next;
+		states[p] = tombstone, --count, ++deleted;
+		return next;
 	}
 	void prefetch(K key) const noexcept {
 #if defined(__GNUC__) || defined(__clang__)
@@ -287,7 +334,28 @@ public:
 	const T &at(const Key &key) const { const T *p = table.find_value(key); if (!p) throw std::out_of_range("FlatHashMap key"); return *p; }
 	T &operator[](const Key &key) { return table[key]; }
 	void set(const Key &key, const T &value) { table.set(key, value); }
+	std::pair<iterator, bool> insert(const value_type &value) { return try_emplace(value.first, value.second); }
+	std::pair<iterator, bool> insert(value_type &&value) { return try_emplace(value.first, std::move(value.second)); }
+	template<class... Args>
+	std::pair<iterator, bool> emplace(Args &&...args) { return table.emplace(std::forward<Args>(args)...); }
+	template<class... Args>
+	std::pair<iterator, bool> try_emplace(const Key &key, Args &&...args) {
+		return table.try_emplace(key, std::forward<Args>(args)...);
+	}
+	template<class... Args>
+	std::pair<iterator, bool> try_emplace(Key &&key, Args &&...args) {
+		return table.try_emplace(std::move(key), std::forward<Args>(args)...);
+	}
+	template<class Value>
+	std::pair<iterator, bool> insert_or_assign(const Key &key, Value &&value) {
+		return table.insert_or_assign(key, std::forward<Value>(value));
+	}
+	template<class Value>
+	std::pair<iterator, bool> insert_or_assign(Key &&key, Value &&value) {
+		return table.insert_or_assign(std::move(key), std::forward<Value>(value));
+	}
 	bool erase(const Key &key) { return table.erase(key); }
+	iterator erase(const_iterator position) { return table.erase(position); }
 	void prefetch(const Key &key) const noexcept { table.prefetch(key); }
 	void reserve(size_type n) { table.reserve(n); }
 	void clear() { table.clear(); }
@@ -301,7 +369,6 @@ public:
 
 
 #include <array>
-#include <cassert>
 #line 10 "components/incremental_prefix_count.hpp"
 #if defined(__x86_64__) || defined(__i386__)
 #include <immintrin.h>

@@ -51,22 +51,42 @@ void check(const Set &set, const std::vector<typename Set::value_type> &values, 
 	static_assert(std::is_same_v<decltype(set.sum_greater(std::declval<const T &>())), Sum>);
 	static_assert(std::is_same_v<decltype(set.sum_geq(std::declval<const T &>())), Sum>);
 	static_assert(std::is_same_v<decltype(set.range_sum_with_count(std::declval<const T &>())), std::pair<Sum, Count>>);
+	static_assert(std::is_same_v<decltype(set.min()), std::optional<T>>);
+	static_assert(std::is_same_v<decltype(set.max()), std::optional<T>>);
+	static_assert(std::is_same_v<decltype(set.next(std::declval<const T &>())), std::optional<T>>);
+	static_assert(std::is_same_v<decltype(set.prev(std::declval<const T &>())), std::optional<T>>);
 	auto less = [&](const T &a, const T &b) {
 		if constexpr (std::is_same_v<Compare, std::greater<T>> || std::is_same_v<Compare, std::greater<void>>) return compare(b, a);
 		else return compare(a, b);
 	};
+	auto check_value = [&](const std::optional<T> &actual, const std::optional<T> &expected) {
+		assert(actual.has_value() == expected.has_value());
+		if (actual) assert(!less(*actual, *expected) && !less(*expected, *actual));
+	};
+	std::optional<T> minimum, maximum;
+	for (const T &value : values) {
+		if (!minimum || less(value, *minimum)) minimum = value;
+		if (!maximum || less(*maximum, value)) maximum = value;
+	}
+	check_value(set.min(), minimum);
+	check_value(set.max(), maximum);
 	assert(set.size() == Count(values.size()));
 	for (const T &x : probes) {
 		Count counts[4]{};
 		__int128_t sums[4]{};
+		std::optional<T> next, prev;
 		for (const T &value : values) {
 			bool lt = less(value, x), gt = less(x, value);
+			if (!lt && (!next || less(value, *next))) next = value;
+			if (!gt && (!prev || less(*prev, value))) prev = value;
 			bool selected[] = {lt, !gt, gt, !lt};
 			for (int i = 0; i < 4; ++i) if (selected[i]) {
 				++counts[i];
 				sums[i] += number(static_cast<Sum>(value));
 			}
 		}
+		check_value(set.next(x), next);
+		check_value(set.prev(x), prev);
 		assert(set.count_less(x) == counts[0] && number(set.sum_less(x)) == sums[0]);
 		assert(set.count_leq(x) == counts[1] && number(set.sum_leq(x)) == sums[1]);
 		assert(set.count_greater(x) == counts[2] && number(set.sum_greater(x)) == sums[2]);

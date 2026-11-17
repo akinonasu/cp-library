@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <optional>
 #include <stdexcept>
 #include <utility>
 #include <vector>
@@ -147,6 +148,8 @@ public:
 	std::uint32_t argmax_xor(std::uint32_t value) const { return argmin_xor(~value); }
 	std::uint32_t min_xor(std::uint32_t value) const { return argmin_xor(value) ^ value; }
 	std::uint32_t max_xor(std::uint32_t value) const { return argmax_xor(value) ^ value; }
+	std::optional<value_type> min() const { return empty() ? std::nullopt : std::optional<value_type>(argmin_xor(0)); }
+	std::optional<value_type> max() const { return empty() ? std::nullopt : std::optional<value_type>(argmax_xor(0)); }
 	void clear() {
 		std::fill(directory.begin(), directory.end(), 0);
 		occupied.clear(); leaves.clear();
@@ -271,6 +274,8 @@ public:
 	std::uint64_t argmax_xor(std::uint64_t value) const { return argmin_xor(~value); }
 	std::uint64_t min_xor(std::uint64_t value) const { return argmin_xor(value) ^ value; }
 	std::uint64_t max_xor(std::uint64_t value) const { return argmax_xor(value) ^ value; }
+	std::optional<value_type> min() const { return empty() ? std::nullopt : std::optional<value_type>(argmin_xor(0)); }
+	std::optional<value_type> max() const { return empty() ? std::nullopt : std::optional<value_type>(argmax_xor(0)); }
 	void clear() { nodes.clear(); root = free_node = -1; count = 0; }
 	void swap(XorSet &other) noexcept {
 		nodes.swap(other.nodes);

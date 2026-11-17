@@ -17,9 +17,13 @@ std::uint64_t mask() {
 }
 
 template <int Bits>
-void check(XorSet<Bits> &actual, const std::set<std::uint64_t> &expected, std::uint64_t query) {
+void check(const XorSet<Bits> &actual, const std::set<std::uint64_t> &expected, std::uint64_t query) {
 	assert(actual.size() == std::int64_t(expected.size()));
 	assert(actual.empty() == expected.empty());
+	static_assert(std::is_same_v<decltype(actual.min()), std::optional<std::uint64_t>>);
+	static_assert(std::is_same_v<decltype(actual.max()), std::optional<std::uint64_t>>);
+	assert(actual.min() == (expected.empty() ? std::nullopt : std::optional<std::uint64_t>(*expected.begin())));
+	assert(actual.max() == (expected.empty() ? std::nullopt : std::optional<std::uint64_t>(*expected.rbegin())));
 	if (expected.empty()) return;
 	auto small = *std::min_element(expected.begin(), expected.end(), [&](auto a, auto b) { return (a ^ query) < (b ^ query); });
 	auto large = *std::max_element(expected.begin(), expected.end(), [&](auto a, auto b) { return (a ^ query) < (b ^ query); });

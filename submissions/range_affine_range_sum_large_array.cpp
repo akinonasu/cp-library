@@ -83,6 +83,7 @@ class LazySegtree {
 		push_path(k);
 		return data_[k];
 	}
+	[[nodiscard]] S get(int p) const { vertex(p); return prod(p, p + 1); }
 	[[nodiscard]] S all_prod() const { return data_[1]; }
 	[[nodiscard]] S prod(int l, int r) {
 		range(l, r);
@@ -502,12 +503,38 @@ void sort_by_key(std::vector<T> &values, Key key) {
 #line 1 "math/mint.hpp"
 
 
-#line 4 "math/mint.hpp"
+#line 1 "components/compiler_features.hpp"
+
+
+
+#if defined(__x86_64__) || defined(__i386__)
+#define CP_X86 1
+#else
+#define CP_X86 0
+#endif
+#if CP_X86 && defined(__GNUC__) && !defined(__clang__)
+#define CP_GCC_X86 1
+#else
+#define CP_GCC_X86 0
+#endif
+#if CP_X86 && (defined(__GNUC__) || defined(__clang__))
+#define CP_GNU_X86 1
+#else
+#define CP_GNU_X86 0
+#endif
+#if CP_GCC_X86 && defined(__linux__) && defined(__x86_64__)
+#define CP_GCC_LINUX64 1
+#else
+#define CP_GCC_LINUX64 0
+#endif
+
+
+#line 5 "math/mint.hpp"
 #include <istream>
 #include <ostream>
-#line 7 "math/mint.hpp"
+#line 8 "math/mint.hpp"
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC push_options
 #pragma GCC optimize("O3")
 #endif
@@ -634,7 +661,7 @@ struct [[gnu::warn_unused]] Mint {
 using mint = mint_detail::Mint;
 using fps_mint = mint;
 
-#if defined(__GNUC__) && !defined(__clang__) && (defined(__x86_64__) || defined(__i386__))
+#if CP_GCC_X86
 #pragma GCC pop_options
 #endif
 

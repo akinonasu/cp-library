@@ -18,8 +18,9 @@ int main() {
 		for (int repeat = 0; repeat < 100; ++repeat) {
 			if (n && random() % 2) {
 				int p = random() % n;
-				values[p] = random() % 20;
-				tree.set(p, values[p]);
+				long long value = random() % 20;
+				if (random() % 2) values[p] = value, tree.set(p, value);
+				else values[p] += value, tree.multiply(p, value);
 				assert(tree.get(p) == values[p]);
 			}
 			int l = random() % (n + 1), r = random() % (n + 1);
@@ -47,6 +48,9 @@ int main() {
 	}
 	std::vector<std::string> values{"ab", "c", "de", "f", "gh"};
 	Segtree<std::string, concatenate, empty> tree(values);
+	tree.multiply(2, "XY");
+	values[2] += "XY";
+	assert(tree.get(2) == "deXY");
 	for (int l = 0; l <= 5; ++l) for (int r = l; r <= 5; ++r) {
 		std::string expected;
 		for (int i = l; i < r; ++i) expected += values[i];
