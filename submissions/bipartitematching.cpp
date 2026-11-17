@@ -8,6 +8,28 @@
 
 
 
+#line 1 "components/default_init_allocator.hpp"
+
+
+
+#include <memory>
+#include <new>
+
+template <class T>
+struct DefaultInitAllocator : std::allocator<T> {
+	template <class U>
+	struct rebind {
+		using other = DefaultInitAllocator<U>;
+	};
+	DefaultInitAllocator() = default;
+	template <class U>
+	DefaultInitAllocator(const DefaultInitAllocator<U> &) noexcept {}
+	template <class U>
+	void construct(U *p) { ::new (static_cast<void *>(p)) U; }
+};
+
+
+#line 5 "components/bipartite_matching_core.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -22,17 +44,18 @@ namespace bipartite_matching_detail {
 struct CSR {
 	std::vector<int> start, adj;
 	CSR(int n, std::span<const std::pair<int, int>> edges, bool transpose) : start(n + 1), adj(edges.size()) {
-		for (auto [u, v] : edges) ++start[(transpose ? v : u) + 1];
+		for (auto [u, v] : edges) ++start[transpose ? v : u];
 		std::partial_sum(start.begin(), start.end(), start.begin());
-		auto next = start;
-		for (auto [u, v] : edges) adj[next[transpose ? v : u]++] = transpose ? u : v;
+		for (auto it = edges.rbegin(); it != edges.rend(); ++it) {
+			auto [u, v] = *it;
+			adj[--start[transpose ? v : u]] = transpose ? u : v;
+		}
 	}
 	CSR(int n, const CSR& graph) : start(n + 1), adj(graph.adj.size()) {
-		for (int v : graph.adj) ++start[v + 1];
+		for (int v : graph.adj) ++start[v];
 		std::partial_sum(start.begin(), start.end(), start.begin());
-		auto next = start;
-		for (int u = 0; u + 1 < int(graph.start.size()); ++u)
-			for (int e = graph.start[u]; e < graph.start[u + 1]; ++e) adj[next[graph.adj[e]]++] = u;
+		for (int u = int(graph.start.size()) - 2; u >= 0; --u)
+			for (int e = graph.start[u + 1]; e > graph.start[u];) adj[--start[graph.adj[--e]]] = u;
 	}
 };
 
@@ -41,7 +64,7 @@ struct Result { int added; bool maximum; };
 inline Result hopcroft_karp(const CSR& graph, std::vector<int>& left, std::vector<int>& right,
 	int phases = std::numeric_limits<int>::max(), int max_distance = std::numeric_limits<int>::max()) {
 	int n = int(left.size()), added = 0;
-	std::vector<int> distance(n), queue(n), next(n), path(n);
+	std::vector<int, DefaultInitAllocator<int>> distance(n), queue(n), next(n), path(n);
 	for (int phase = 0; phase < phases; ++phase) {
 		int tail = 0, limit = n + 1;
 		for (int u = 0; u < n; ++u) {
@@ -233,6 +256,7 @@ inline int augment(const CSR& graph, std::vector<int>& left, std::vector<int>& r
 	int multiplier = 16, int root_divisor = 32, int easy_phases = 8) {
 	int roots = 0, n = int(left.size());
 	for (int u = 0; u < n; ++u) roots += left[u] < 0 && graph.start[u] != graph.start[u + 1];
+	if (!roots) return 0;
 	Result initial{0, false};
 	if (root_divisor > 0 && roots <= std::max(64, n / root_divisor)) initial = hopcroft_karp(graph, left, right, easy_phases);
 	if (initial.maximum || std::find(left.begin(), left.end(), -1) == left.end()) return initial.added;
@@ -552,7 +576,7 @@ public:
 #line 11 "components/fast_io.hpp"
 #include <cstdio>
 #include <cstring>
-#include <memory>
+#line 14 "components/fast_io.hpp"
 #include <stdexcept>
 #include <string>
 #include <string_view>
